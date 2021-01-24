@@ -70,6 +70,10 @@ struct ingress_metadata_t {
     bit <1> saw_rsvp;
     bit <1> mpls0_remove;
     bit <1> mpls1_remove;
+#ifdef HAVE_MCAST
+    bit<16> clone_session;
+    SubIntId_t rpf_iface;
+#endif
 #ifdef HAVE_INQOS
     SubIntId_t inqos_id;
     bit <8> inqos_res;

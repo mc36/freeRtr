@@ -560,7 +560,7 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mc):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -575,7 +575,9 @@ class BfForwarder(Thread):
         self.pbr = pbr
         self.tun = tun
         self.poe = poe
+        self.mc = mc
         self.die=False
+        self.mcast = []
         self.file = sck_file
         self._clearTable()
 
@@ -3990,6 +3992,78 @@ class BfForwarder(Thread):
 
 
 
+    def writeMlocal4rules(
+        self, op_type, vrf, sess, dip, sip, ingr, delete2
+    ):
+        print "here"
+        if self.mc == False:
+            return
+        if op_type == 1:
+            act = "act_local"
+        else:
+            act = "act_flood"
+        tbl_global_path = "ig_ctl.ig_ctl_mcast"
+        tbl_name = "%s.tbl_mcast4" % (tbl_global_path)
+        tbl_action_name = "%s.%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("hdr.ipv4.src_addr", sip),
+            gc.KeyTuple("hdr.ipv4.dst_addr", dip),
+        ]
+        data_field_list = [
+             gc.DataTuple("ingr", ingr),
+             gc.DataTuple("sess", sess),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv4.src_addr": "ipv4",
+            "hdr.ipv4.dst_addr": "ipv4",
+        }
+        data_annotation_fields = {}
+        if delete2 == "add":
+            op_type2 = 1
+        elif delete2 == "mod":
+            op_type2 = 2
+        else:
+            op_type2 = 3
+        self._processEntryFromControlPlane(
+            op_type2,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+    def writeMlocal6rules(
+        self, op_type, vrf, sess, dip, sip, ingr, delete2
+    ):
+        if self.mc == False:
+            return
+        return
+
+    def writeMroute4rules(
+        self, op_type, vrf, sess, dip, sip, ingr, port, subif, smac, dmac
+    ):
+        if self.mc == False:
+            return
+        if op_type != 3:
+            self.mcast.append({"egress_port":port, "instance":subif})
+        return
+
+    def writeMroute6rules(
+        self, op_type, vrf, sess, dip, sip, ingr, port, subif, smac, dmac
+    ):
+        if self.mc == False:
+            return
+        if op_type != 3:
+            self.mcast.append({"egress_port":port, "instance":subif})
+        return
+
+
+
+
     def run(self):
         logger.warn("BfForwarder - Main")
         logger.warn("BfForwarder - Entering message loop")
@@ -6227,6 +6301,160 @@ class BfForwarder(Thread):
                     int(splt[13]),
                 )
                 continue
+
+
+            if splt[0] == "mlocal4_add":
+                self.writeMlocal4rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    splt[6],
+                )
+                continue
+            if splt[0] == "mlocal4_mod":
+                self.writeMlocal4rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    splt[6],
+                )
+                continue
+            if splt[0] == "mlocal4_del":
+                self.writeMlocal4rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    splt[6],
+                )
+                continue
+            if splt[0] == "mlocal6_add":
+                self.writeMlocal6rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    splt[6],
+                )
+                continue
+            if splt[0] == "mlocal6_mod":
+                self.writeMlocal6rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    splt[6],
+                )
+                continue
+            if splt[0] == "mlocal6_del":
+                self.writeMlocal6rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    splt[6],
+                )
+                continue
+            if splt[0] == "mroute4_add":
+                self.writeMroute4rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                )
+                continue
+            if splt[0] == "mroute4_mod":
+                self.writeMroute4rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                )
+                continue
+            if splt[0] == "mroute4_del":
+                self.writeMroute4rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                )
+                continue
+            if splt[0] == "mroute6_add":
+                self.writeMroute6rules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                )
+                continue
+            if splt[0] == "mroute6_mod":
+                self.writeMroute6rules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                )
+                continue
+            if splt[0] == "mroute6_del":
+                self.writeMroute6rules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    splt[8],
+                    splt[9],
+                )
+                continue
+
+
             if splt[0] == "mtu":
                 self.setPortMTU(int(splt[1]), int(splt[2]))
                 continue
@@ -6392,6 +6620,16 @@ if __name__ == "__main__":
         default=True,
     )
     parser.add_argument(
+        "--mc",
+        help="enable multicast",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        action="store",
+        required=False,
+        default=True,
+    )
+    parser.add_argument(
         "--snmp",
         help="enable snmp export locally",
         type=str2bool,
@@ -6500,6 +6738,7 @@ if __name__ == "__main__":
                                args.pbr,
                                args.tun,
                                args.poe,
+                               args.mc,
                                )
 
         bf_forwarder.daemon=True

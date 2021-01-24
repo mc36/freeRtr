@@ -80,8 +80,7 @@ ig_md.layer4_dstprt:
     apply {
         if (ig_md.ipv4_valid==1)  {
             tbl_ipv4_copp.apply();
-        }
-        if (ig_md.ipv6_valid==1)  {
+        } else if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_copp.apply();
         }
     }

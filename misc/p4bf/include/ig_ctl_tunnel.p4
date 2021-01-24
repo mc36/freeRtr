@@ -225,10 +225,9 @@ ig_md.layer4_dstprt:
 #ifdef HAVE_L2TP
         l2tp_hit = 0;
 #endif
-        if (hdr.ipv4.isValid()) {
+        if (ig_md.ipv4_valid==1)  {
             tbl_tunnel4.apply();
-        }
-        else if (hdr.ipv6.isValid()) {
+        } else if (ig_md.ipv6_valid==1)  {
             tbl_tunnel6.apply();
         }
 #ifdef HAVE_L2TP

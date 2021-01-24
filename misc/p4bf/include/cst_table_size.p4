@@ -32,6 +32,9 @@ on routing only profile we can have this
 
 #define IPV4_HOST_TABLE_SIZE                   512
 #define IPV6_HOST_TABLE_SIZE                   512
+#define IPV4_MCAST_TABLE_SIZE                  512
+#define IPV6_MCAST_TABLE_SIZE                  512
+
 #define MPLS_TABLE_SIZE                        1024
 #define PORT_TABLE_SIZE                        512
 #define MAC_TABLE_SIZE                         512

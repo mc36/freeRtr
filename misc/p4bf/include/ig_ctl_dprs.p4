@@ -80,8 +80,7 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr,
                 ig_md.checksum_udp_tmp
             }, zeros_as_ones = true);
         }
-
-        if (ig_md.ipv6_valid==1) {
+        else if (ig_md.ipv6_valid==1) {
             hdr.tcp.checksum = tcp_checksum.update(data = {
                 hdr.ipv6.src_addr,
                 hdr.ipv6.dst_addr,

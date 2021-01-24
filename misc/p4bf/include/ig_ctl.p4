@@ -93,6 +93,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_FLOWSPEC
     IngressControlFlowspec() ig_ctl_flowspec;
 #endif
+#ifdef HAVE_MCAST
+    IngressControlMcast() ig_ctl_mcast;
+#endif
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
 
@@ -164,6 +167,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             if (ig_md.nexthop_id == CPU_PORT) {
 #ifdef HAVE_TUN
                 ig_ctl_tunnel.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_MCAST
+                ig_ctl_mcast.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_COPP
                 ig_ctl_copp.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);

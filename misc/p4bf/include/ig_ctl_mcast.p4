@@ -14,83 +14,91 @@
  * limitations under the License.
  */
 
+#ifndef _IG_CTL_MCAST_P4_
+#define _IG_CTL_MCAST_P4_
 
-#ifndef _IG_CTL_Acl_out_P4_
-#define _IG_CTL_Acl_out_P4_
+#ifdef HAVE_MCAST
 
-#ifdef HAVE_OUTACL
-
-control IngressControlAclOut(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md,
                              inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
-    action act_deny() {
-        ig_dprsr_md.drop_ctl = 1;
+
+    action act_local(SubIntId_t ingr, bit<16> sess) {
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.clone_session = sess;
+        ig_md.rpf_iface = ingr;
     }
 
-    action act_permit() {
+    action act_flood(SubIntId_t ingr, bit<16> sess) {
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.clone_session = sess;
+        ig_md.rpf_iface = ingr;
+        ig_tm_md.mcast_grp_a = sess;
+        ig_tm_md.bypass_egress = 0;
+        hdr.vlan.setInvalid();
     }
 
 
-    table tbl_ipv4_acl {
+    table tbl_mcast4 {
         key = {
-ig_md.aclport_id:
+ig_md.vrf:
             exact;
-hdr.ipv4.protocol:
-            ternary;
 hdr.ipv4.src_addr:
-            ternary;
+            exact;
 hdr.ipv4.dst_addr:
-            ternary;
-ig_md.layer4_srcprt:
-            ternary;
-ig_md.layer4_dstprt:
-            ternary;
+            exact;
         }
         actions = {
-            act_permit;
-            act_deny;
+            act_local;
+            act_flood;
             @defaultonly NoAction;
         }
-        size = IPV4_OUTACL_TABLE_SIZE;
+        size = IPV4_MCAST_TABLE_SIZE;
         const default_action = NoAction();
     }
 
-    table tbl_ipv6_acl {
+
+    table tbl_mcast6 {
         key = {
-ig_md.aclport_id:
+ig_md.vrf:
             exact;
-hdr.ipv6.next_hdr:
-            ternary;
 hdr.ipv6.src_addr:
-            ternary;
+            exact;
 hdr.ipv6.dst_addr:
-            ternary;
-ig_md.layer4_srcprt:
-            ternary;
-ig_md.layer4_dstprt:
-            ternary;
+            exact;
         }
         actions = {
-            act_permit;
-            act_deny;
+            act_local;
+            act_flood;
             @defaultonly NoAction;
         }
-        size = IPV6_OUTACL_TABLE_SIZE;
+        size = IPV6_MCAST_TABLE_SIZE;
         const default_action = NoAction();
     }
+
 
     apply {
+
         if (ig_md.ipv4_valid==1)  {
-            tbl_ipv4_acl.apply();
+            tbl_mcast4.apply();
         } else if (ig_md.ipv6_valid==1)  {
-            tbl_ipv6_acl.apply();
+            tbl_mcast6.apply();
         }
+
+        if ((ig_md.clone_session != 0) && (ig_md.rpf_iface != ig_md.source_id)) {
+            ig_dprsr_md.drop_ctl = 1;
+        }
+
     }
+
+
 }
 
 #endif
 
-#endif // _IG_CTL_Acl_out_P4_
+#endif // _IG_CTL_MCAST_P4_

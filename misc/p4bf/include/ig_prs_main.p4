@@ -35,7 +35,7 @@ parser ig_prs_main(packet_in pkt,
     state start {
         pkt.extract(ig_intr_md);
         pkt.advance(PORT_METADATA_SIZE);
-        ig_md.always_zero = 0;
+        ig_md.always_zero = 0; // hack
 #ifdef HAVE_INQOS
         ig_md.inqos_id = 0;
         ig_md.inqos_res = MeterColor_t.GREEN;
@@ -47,6 +47,10 @@ parser ig_prs_main(packet_in pkt,
 #ifdef HAVE_FLOWSPEC
         ig_md.flowspec_id = 0;
         ig_md.flowspec_res = MeterColor_t.GREEN;
+#endif
+#ifdef HAVE_MCAST
+        ig_md.clone_session = 0;
+        ig_md.rpf_iface = 0;
 #endif
 #ifdef HAVE_PPPOE
         ig_md.pppoe_ctrl_valid = 0;

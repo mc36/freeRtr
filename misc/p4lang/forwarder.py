@@ -2127,7 +2127,7 @@ def writeMySrv6rules(delete, p4info_helper, ingress_sw, glob, dst_addr, vrf):
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, delete2):
+def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, delete2):
     global mcast
     if delete == 1:
         act = "act_local"
@@ -2137,8 +2137,8 @@ def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
         table_name="ig_ctl.ig_ctl_mcast.tbl_mcast4",
         match_fields={
             "ig_md.vrf": vrf,
-            "hdr.ipv4.src_addr": dip,
-            "hdr.ipv4.dst_addr": sip,
+            "hdr.ipv4.src_addr": sip,
+            "hdr.ipv4.dst_addr": dip,
         },
         action_name="ig_ctl.ig_ctl_mcast."+act,
         action_params={
@@ -2158,7 +2158,7 @@ def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
     mcast = []
 
 
-def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, delete2):
+def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, delete2):
     global mcast
     if delete == 1:
         act = "act_local"
@@ -2168,8 +2168,8 @@ def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
         table_name="ig_ctl.ig_ctl_mcast.tbl_mcast6",
         match_fields={
             "ig_md.vrf": vrf,
-            "hdr.ipv6.src_addr": dip,
-            "hdr.ipv6.dst_addr": sip,
+            "hdr.ipv6.src_addr": sip,
+            "hdr.ipv6.dst_addr": dip,
         },
         action_name="ig_ctl.ig_ctl_mcast."+act,
         action_params={
@@ -2189,7 +2189,7 @@ def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
     mcast = []
 
 
-def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, port, subif, smac, dmac):
+def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, port, subif, smac, dmac):
     if delete != 3:
         mcast.append({"egress_port":port, "instance":subif})
     table_entry = p4info_helper.buildTableEntry(
@@ -2212,7 +2212,7 @@ def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, in
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, sip, dip, ingr, port, subif, smac, dmac):
+def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, port, subif, smac, dmac):
     if delete != 3:
         mcast.append({"egress_port":port, "instance":subif})
     table_entry = p4info_helper.buildTableEntry(
