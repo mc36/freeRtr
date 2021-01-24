@@ -24,6 +24,13 @@ control eg_ctl(
     inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md,
     inout egress_intrinsic_metadata_for_output_port_t eg_oport_md)
 {
+#ifdef HAVE_NOHW
+
+    apply {
+    }
+
+#else
+
 
 #ifdef HAVE_MCAST
     EgressControlMcast() eg_ctl_mcast;
@@ -45,6 +52,9 @@ control eg_ctl(
         hdr.internal.setInvalid();
 
     }
+
+#endif
+
 }
 
 #endif // _EGRESS_CONTROL_P4_

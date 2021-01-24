@@ -98,7 +98,6 @@ parser ig_prs_main(packet_in pkt,
     }
 
     state meta_init1 {
-        ig_md.ingress_id = (SubIntId_t)ig_intr_md.ingress_port;
         transition select(ig_intr_md.ingress_port) {
 CPU_PORT:
             prs_cpu;
@@ -111,6 +110,7 @@ RECIR_PORT:
 
 
     state meta_init2 {
+        ig_md.ingress_id = (SubIntId_t)ig_intr_md.ingress_port;
         transition select(ig_intr_md.resubmit_flag) {
 1w1:
             prs_resub;
