@@ -81,7 +81,6 @@
 #include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_mcast.p4"
-#include "include/eg_ctl_mcast.p4"
 #include "include/ig_ctl.p4"
 
 
@@ -90,6 +89,7 @@
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
 #include "include/eg_ctl.p4"
+#include "include/eg_ctl_mcast.p4"
 
 /*------------------ C O M P U T E  C H E C K S U M --------------------------*/
 #include "include/ig_ctl_compute_checksum.p4"
