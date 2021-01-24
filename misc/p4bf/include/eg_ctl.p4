@@ -34,15 +34,13 @@ control eg_ctl(
             eg_dprsr_md.drop_ctl = 1;
         } else {
             hdr.vlan.setInvalid();
-
 #ifdef HAVE_MCAST
             eg_ctl_mcast.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 #endif
-
             eg_ctl_vlan_out.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
-
-            hdr.internal.setInvalid();
         }
+
+        hdr.internal.setInvalid();
 
     }
 }

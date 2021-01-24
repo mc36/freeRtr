@@ -585,6 +585,19 @@ class BfForwarder(Thread):
         os._exit(0);
         self.bfgc.interface._tear_down_stream()
 
+    def _clearOneTable(self, table_name_key, table_dict):
+        try:
+            print("  Clearing Table {}".format(table_name_key))
+            keys = []
+            for (d, k) in table_dict[table_name_key].entry_get(self.bfgc.target):
+                if k is not None:
+                    keys.append(k)
+            print ("   Keys to delete: %s" % (keys))
+            table_dict[table_name_key].entry_del(self.bfgc.target, keys)
+        except Exception as e:
+            logger.warn("Error cleaning up: {}".format(e))
+
+
     def _clearTable(self):
         table_dict = {}
         for (
@@ -594,48 +607,39 @@ class BfForwarder(Thread):
             table_dict[table_info.name_get()] = gc._Table(
                 table_info, self.bfgc.interface.reader_writer_interface
             )
-        try:
-            for table_name_key in table_dict.keys():
-                if "ig_ctl_pkt_pre_emit" in table_name_key:
-                    continue
-                if "ig_ctl_bundle" in table_name_key:
-                    continue
-                # IN/OUT meters cannot be cleared
-                if "policer" in table_name_key:
-                    continue
-                # IN/OUT counters cannot be cleared
-                if "stats" in table_name_key:
-                    continue
-                if "ig_ctl" in table_name_key:
-                    print("  Clearing Table {}".format(table_name_key))
-                    keys = []
-                    for (d, k) in table_dict[table_name_key].entry_get(self.bfgc.target):
-                        if k is not None:
-                            keys.append(k)
-                    table_dict[table_name_key].entry_del(self.bfgc.target, keys)
 
-            logger.warn("Bundle specific clearing: (Order matters)")
+        logger.warn("Generic table clearing: (Order not matters)")
 
-            tbl_nexthop_bundle_name = (
-                "%s.ig_ctl.ig_ctl_bundle.tbl_nexthop_bundle" % self.bfgc.pipe_name
-            )
-            ase_bundle_name = "%s.ig_ctl.ig_ctl_bundle.ase_bundle" % self.bfgc.pipe_name
-            apr_bundle_name = "%s.ig_ctl.ig_ctl_bundle.apr_bundle" % self.bfgc.pipe_name
-            for table_name_key in [
-                tbl_nexthop_bundle_name,
-                ase_bundle_name,
-                apr_bundle_name,
-            ]:
-                print("  Clearing Bundle Table {}".format(table_name_key))
-                keys = []
-                for (d, k) in table_dict[table_name_key].entry_get(self.bfgc.target):
-                    if k is not None:
-                        keys.append(k)
-                print ("   Keys to delete: %s" % (keys))
-                table_dict[table_name_key].entry_del(self.bfgc.target, keys)
+        for table_name_key in table_dict.keys():
+            if "ig_ctl_pkt_pre_emit" in table_name_key:
+                continue
+            if "ig_ctl_bundle" in table_name_key:
+                continue
+            # IN/OUT meters cannot be cleared
+            if "policer" in table_name_key:
+                continue
+            # IN/OUT counters cannot be cleared
+            if "stats" in table_name_key:
+                continue
+            if "ig_ctl" in table_name_key:
+                self._clearOneTable(table_name_key, table_dict)
+            if "eg_ctl" in table_name_key:
+                self._clearOneTable(table_name_key, table_dict)
 
-        except Exception as e:
-            logger.warn("Error cleaning up: {}".format(e))
+        logger.warn("Bundle specific clearing: (Order matters)")
+
+        tbl_nexthop_bundle_name = (
+            "%s.ig_ctl.ig_ctl_bundle.tbl_nexthop_bundle" % self.bfgc.pipe_name
+        )
+        ase_bundle_name = "%s.ig_ctl.ig_ctl_bundle.ase_bundle" % self.bfgc.pipe_name
+        apr_bundle_name = "%s.ig_ctl.ig_ctl_bundle.apr_bundle" % self.bfgc.pipe_name
+        for table_name_key in [
+            tbl_nexthop_bundle_name,
+            ase_bundle_name,
+            apr_bundle_name,
+        ]:
+            self._clearOneTable(table_name_key, table_dict)
+
 
     def _processMeterFromControlPlane(
         self,
@@ -1264,6 +1268,24 @@ class BfForwarder(Thread):
             tbl_action_name_2,
             key_annotation_fields_2,
             data_annotation_fields_2,
+        )
+
+        tbl_global_path_3 = "eg_ctl.eg_ctl_vlan_out"
+        tbl_name_3 = "%s.tbl_vlan_out" % (tbl_global_path_3)
+        tbl_action_name_3 = "%s.act_set_vlan_port" % (tbl_global_path_3)
+        key_field_list_3 = [gc.KeyTuple("ig_md.target_id", port)]
+        data_field_list_3 = [gc.DataTuple("port", main), gc.DataTuple("vlan", vlan)]
+        key_annotation_fields_3 = {}
+        data_annotation_fields_3 = {}
+
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name_3,
+            key_field_list_3,
+            data_field_list_3,
+            tbl_action_name_3,
+            key_annotation_fields_3,
+            data_annotation_fields_3,
         )
 
     def writeBunVlanRules(self, op_type, main, vlan, port):
@@ -4041,7 +4063,39 @@ class BfForwarder(Thread):
     ):
         if self.mc == False:
             return
-        return
+        tbl_global_path = "ig_ctl.ig_ctl_mcast"
+        tbl_name = "%s.tbl_mcast6" % (tbl_global_path)
+        tbl_action_name = "%s.%s" % (tbl_global_path, act)
+        key_field_list = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("hdr.ipv6.src_addr", sip),
+            gc.KeyTuple("hdr.ipv6.dst_addr", dip),
+        ]
+        data_field_list = [
+             gc.DataTuple("ingr", ingr),
+             gc.DataTuple("sess", sess),
+        ]
+        key_annotation_fields = {
+            "hdr.ipv6.src_addr": "ipv6",
+            "hdr.ipv6.dst_addr": "ipv6",
+        }
+        data_annotation_fields = {}
+        if delete2 == "add":
+            op_type2 = 1
+        elif delete2 == "mod":
+            op_type2 = 2
+        else:
+            op_type2 = 3
+        self._processEntryFromControlPlane(
+            op_type2,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
 
     def writeMroute4rules(
         self, op_type, vrf, sess, dip, sip, ingr, port, subif, smac, dmac
@@ -4050,7 +4104,29 @@ class BfForwarder(Thread):
             return
         if op_type != 3:
             self.mcast.append({"egress_port":port, "instance":subif})
-        return
+        tbl_global_path = "eg_ctl.eg_ctl_mcast"
+        tbl_name = "%s.tbl_mcast" % (tbl_global_path)
+        tbl_action_name = "%s.act_rawip" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.internal.session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", subif),
+        ]
+        data_field_list = [
+             gc.DataTuple("src_mac_addr", smac),
+             gc.DataTuple("dst_mac_addr", dmac),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {"dst_mac_addr": "mac", "src_mac_addr": "mac"}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
 
     def writeMroute6rules(
         self, op_type, vrf, sess, dip, sip, ingr, port, subif, smac, dmac
@@ -4059,7 +4135,28 @@ class BfForwarder(Thread):
             return
         if op_type != 3:
             self.mcast.append({"egress_port":port, "instance":subif})
-        return
+        tbl_global_path = "eg_ctl.eg_ctl_mcast"
+        tbl_name = "%s.tbl_mcast" % (tbl_global_path)
+        tbl_action_name = "%s.act_rawip" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.internal.session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", subif),
+        ]
+        data_field_list = [
+             gc.DataTuple("src_mac_addr", smac),
+             gc.DataTuple("dst_mac_addr", dmac),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {"dst_mac_addr": "mac", "src_mac_addr": "mac"}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
 
 
 
