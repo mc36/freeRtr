@@ -17,7 +17,7 @@
 #ifndef _IG_CTL_IPv6_P4_
 #define _IG_CTL_IPv6_P4_
 
-control IngressControlIPv6(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlIPv6(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                            in ingress_intrinsic_metadata_t ig_intr_md,
                            inout ingress_intrinsic_metadata_for_deparser_t
                            ig_dprsr_md,

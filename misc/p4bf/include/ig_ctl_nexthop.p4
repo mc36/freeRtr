@@ -17,7 +17,7 @@
 #ifndef _NEXTHOP_P4_
 #define _NEXTHOP_P4_
 
-control IngressControlNexthop(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlNexthop(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                               inout ingress_intrinsic_metadata_for_deparser_t
                               ig_dprsr_md)
 {

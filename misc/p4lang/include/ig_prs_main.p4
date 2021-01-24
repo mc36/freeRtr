@@ -17,8 +17,6 @@
 #ifndef _INGRESS_PARSER_P4_
 #define _INGRESS_PARSER_P4_
 
-/*------------------ I N G R E S S   P A R S E R -----------------------------*/
-
 parser ig_prs_main(packet_in pkt,
                    /* User */
                    out headers hdr,

@@ -17,8 +17,16 @@
 #ifndef _EGRESS_HEADERS_P4_
 #define _EGRESS_HEADERS_P4_
 
-/*------------------ E G R E S S  H E A D E R S ----------------------------- */
 struct egress_headers_t {
+    internal_header_t internal;
+    ethernet_t ethernet;
+    vlan_t vlan;
+#ifdef HAVE_MPLS
+    mpls_t mpls0;
+    mpls_t mpls1;
+#endif
+    ipv4_t ipv4;
+    ipv6_t ipv6;
 }
 
 #endif	// _EGRESS_HEADERS_P4_

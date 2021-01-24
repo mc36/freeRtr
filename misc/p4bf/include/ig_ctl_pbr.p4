@@ -19,7 +19,7 @@
 
 #ifdef HAVE_PBR
 
-control IngressControlPBR(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlPBR(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                           in ingress_intrinsic_metadata_t ig_intr_md)
 {
 

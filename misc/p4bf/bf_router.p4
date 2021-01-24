@@ -19,12 +19,13 @@
 #include <core.p4>
 #include <tna.p4>
 #include "include/cst_bundle.p4"
+#include "include/def_types.p4"
 #include "include/cst_cpu_port.p4"
+#include "include/cst_table_size.p4"
 #include "include/cst_ethertype.p4"
 #include "include/cst_ip_protocol.p4"
-#include "include/cst_table_size.p4"
-#include "include/def_types.p4"
 #include "include/hdr_cpu.p4"
+#include "include/hdr_internal.p4"
 #include "include/hdr_ethernet.p4"
 #include "include/hdr_arp.p4"
 #include "include/hdr_llc.p4"
@@ -42,6 +43,8 @@
 /*----------------------------------------------------------------------------*
  *                   I N G R E S S   P R O C E S S I N G                      *
  *----------------------------------------------------------------------------*/
+
+#undef CURRSTAGE
 
 /*------------------ I N G R E S S  H E A D E R S --------------------------- */
 #include "include/hdr_ig_headers.p4"
@@ -87,6 +90,8 @@
  *                   E G R E S S   P R O C E S S I N G                        *
  *----------------------------------------------------------------------------*/
 
+#define CURRSTAGE 1
+
 /*------------------ E G R E S S  H E A D E R S ----------------------------- */
 #include "include/hdr_eg_headers.p4"
 
@@ -97,6 +102,8 @@
 #include "include/eg_prs_main.p4"
 
 /*------------------ E G R E S S  M A T C H - A C T I O N ------------------- */
+#include "include/eg_ctl_mcast.p4"
+#include "include/ig_ctl_vlan_out.p4"
 #include "include/eg_ctl.p4"
 
 /*------------------ E G R E S S  D E P A R S E R --------------------------- */

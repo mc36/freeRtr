@@ -15,5 +15,6 @@ mv ~/a/misc/p4bf/*.sh ~/
 cd ~
 rm -rf a/
 sudo rm `find . -name *.log*`
+sudo rm `find . -name *.pcap`
 sudo dd if=/dev/zero of=/zzz bs=1M
 sudo rm /zzz

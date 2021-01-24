@@ -17,16 +17,14 @@
 #ifndef _EGRESS_DEPARSER_P4_
 #define _EGRESS_DEPARSER_P4_
 
-/*------------------ E G R E S S  D E P A R S E R --------------------------- */
-
 control eg_ctl_dprs(packet_out pkt,
                     /* User */
-                    inout egress_headers_t eg_hdr, in egress_metadata_t eg_md,
+                    inout egress_headers_t hdr, in egress_metadata_t eg_md,
                     /* Intrinsic */
                     in egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
     apply {
-        pkt.emit(eg_hdr);
+        pkt.emit(hdr);
     }
 }
 

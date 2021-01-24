@@ -17,11 +17,9 @@
 #ifndef _INGRESS_PARSER_P4_
 #define _INGRESS_PARSER_P4_
 
-/*------------------ I N G R E S S   P A R S E R -----------------------------*/
-
 parser ig_prs_main(packet_in pkt,
                    /* User */
-                   out headers hdr, out ingress_metadata_t ig_md,
+                   out ingress_headers hdr, out ingress_metadata_t ig_md,
                    /* Intrinsic */
                    out ingress_intrinsic_metadata_t ig_intr_md)
 {
@@ -96,17 +94,34 @@ parser ig_prs_main(packet_in pkt,
         ig_md.mpls_encap_xconnect_valid = 0;
         ig_md.mpls_encap_decap_sap_type = 0;
         ig_md.l4_lookup = { 0, 0 };
-        transition meta_init;
+        transition meta_init1;
     }
 
-    state meta_init {
+    state meta_init1 {
+        ig_md.ingress_id = (SubIntId_t)ig_intr_md.ingress_port;
+        transition select(ig_intr_md.resubmit_flag) {
+1w0:
+            meta_init2;
+        default:
+            prs_resub;
+        }
+    }
+
+
+    state prs_resub {
+        pkt.extract(hdr.internal);
+        transition meta_init2;
+    }
+
+
+    state meta_init2 {
         transition select(ig_intr_md.ingress_port) {
 CPU_PORT:
             prs_cpu;
 RECIR_PORT:
             prs_recir;
         default:
-            prs_normal;
+            prs_ethernet;
         }
     }
 
@@ -133,10 +148,6 @@ ETHERTYPE_VLAN:
         transition prs_ethernet;
     }
 
-    state prs_normal {
-        ig_md.ingress_id = (SubIntId_t)ig_intr_md.ingress_port;
-        transition prs_ethernet;
-    }
 
     state prs_ethernet {
         pkt.extract(hdr.ethernet);

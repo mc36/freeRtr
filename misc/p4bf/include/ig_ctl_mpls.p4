@@ -19,7 +19,7 @@
 
 #ifdef HAVE_MPLS
 
-control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlMPLS(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                            in ingress_intrinsic_metadata_t ig_intr_md)
 {
 

@@ -17,7 +17,7 @@
 #ifndef _IG_CTL_VLAN_IN_P4_
 #define _IG_CTL_VLAN_IN_P4_
 
-control IngressControlVlanIn(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlVlanIn(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md)
 {
 

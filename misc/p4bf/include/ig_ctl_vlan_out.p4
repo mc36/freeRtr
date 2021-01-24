@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_VLAN_OUT_P4_
-#define _IG_CTL_VLAN_OUT_P4_
 
-control IngressControlVlanOut(inout headers hdr, inout ingress_metadata_t ig_md,
-                              inout ingress_intrinsic_metadata_for_tm_t
-                              ig_tm_md)
+#ifdef CURRSTAGE
+
+//#ifndef _EG_CTL_VLAN_OUT_P4_
+//#define _EG_CTL_VLAN_OUT_P4_
+
+control EggressControlVlanOut(inout egress_headers_t hdr, inout egress_metadata_t ig_md,
+    in egress_intrinsic_metadata_t eg_intr_md,
+    inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
+
+#else
+
+//#ifndef _IG_CTL_VLAN_OUT_P4_
+//#define _IG_CTL_VLAN_OUT_P4_
+
+control IngressControlVlanOut(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
+                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+{
+
+#endif // CURRSTAGE
+
 
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) stats;
@@ -58,4 +73,4 @@ ig_md.target_id:
     }
 }
 
-#endif // _IG_CTL_VLAN_OUT_P4_
+//#endif // _IG_CTL_VLAN_OUT_P4_  _EG_CTL_VLAN_OUT_P4_

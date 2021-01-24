@@ -19,7 +19,7 @@
 
 #ifdef HAVE_FLOWSPEC
 
-control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlFlowspec(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                             in ingress_intrinsic_metadata_t ig_intr_md,
                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)

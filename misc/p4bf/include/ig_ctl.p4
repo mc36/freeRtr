@@ -17,9 +17,7 @@
 #ifndef _INGRESS_CONTROL_P4_
 #define _INGRESS_CONTROL_P4_
 
-/*------------------ I N G R E S S - M A T C H - A C T I O N ---------------- */
-
-control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
+control ig_ctl(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                in ingress_intrinsic_metadata_t ig_intr_md,
                in ingress_intrinsic_metadata_from_parser_t ig_prsr_md,
                inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,

@@ -18,8 +18,6 @@
 #define _INGRESS_CONTROL_P4_
 
 
-/*------------------ I N G R E S S - M A T C H - A C T I O N ---------------- */
-
 control ig_ctl(inout headers hdr,
                inout ingress_metadata_t ig_md,
                inout standard_metadata_t ig_intr_md) {

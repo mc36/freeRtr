@@ -17,18 +17,33 @@
 #ifndef _EGRESS_CONTROL_P4_
 #define _EGRESS_CONTROL_P4_
 
-/*------------------ E G R E S S  M A T C H - A C T I O N ------------------- */
-
 control eg_ctl(
-    /* User */
-    inout egress_headers_t eg_hdr, inout egress_metadata_t eg_md,
-    /* Intrinsic */
+    inout egress_headers_t hdr, inout egress_metadata_t eg_md,
     in egress_intrinsic_metadata_t eg_intr_md,
     in egress_intrinsic_metadata_from_parser_t eg_prsr_md,
     inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md,
     inout egress_intrinsic_metadata_for_output_port_t eg_oport_md)
 {
+
+    EgressControlMcast() eg_ctl_mcast;
+    EggressControlVlanOut() eg_ctl_vlan_out;
+
     apply {
+
+        if (eg_intr_md.egress_rid_first == 0) {
+            eg_dprsr_md.drop_ctl = 1;
+        } else {
+            hdr.vlan.setInvalid();
+
+#ifdef HAVE_MCAST
+            eg_ctl_mcast.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
+#endif
+
+            eg_ctl_vlan_out.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
+
+            hdr.internal.setInvalid();
+        }
+
     }
 }
 

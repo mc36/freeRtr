@@ -17,37 +17,8 @@
 #ifndef _HEADERS_P4_
 #define _HEADERS_P4_
 
-
-
-#undef NEED_UDP2
-
-#ifdef HAVE_L2TP
-#define NEED_UDP2
-#endif
-
-#ifdef HAVE_VXLAN
-#define NEED_UDP2
-#endif
-
-#ifdef HAVE_PCKOUDP
-#define NEED_UDP2
-#endif
-
-
-
-#undef NEED_ETH4
-
-#ifdef HAVE_TAP
-#define NEED_ETH4
-#endif
-
-#ifdef HAVE_VXLAN
-#define NEED_ETH4
-#endif
-
-
-
-struct headers {
+struct ingress_headers {
+    internal_header_t internal;
     cpu_header_t cpu;
     ethernet_t ethernet;
     vlan_t vlan;

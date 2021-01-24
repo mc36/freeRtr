@@ -17,10 +17,8 @@
 #ifndef _INGRESS_DEPARSER_P4_
 #define _INGRESS_DEPARSER_P4_
 
-/*------------------ I N G R E S S  D E P A R S E R ------------------------- */
 
-control ig_ctl_dprs(packet_out pkt, inout headers hdr,
-                    in ingress_metadata_t ig_md,
+control ig_ctl_dprs(packet_out pkt, inout ingress_headers hdr, in ingress_metadata_t ig_md,
                     in ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md)
 {
 

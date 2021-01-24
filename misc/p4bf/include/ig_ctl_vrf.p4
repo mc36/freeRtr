@@ -17,7 +17,7 @@
 #ifndef _IG_CTL_VRF_P4_
 #define _IG_CTL_VRF_P4_
 
-control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
+control IngressControlVRF(inout ingress_headers hdr, inout ingress_metadata_t ig_md)
 {
 
     action act_set_vrf(switch_vrf_t vrf) {

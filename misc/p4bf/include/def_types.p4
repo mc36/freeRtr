@@ -18,6 +18,35 @@
 #ifndef _TYPES_P4_
 #define _TYPES_P4_
 
+
+#undef NEED_UDP2
+
+#ifdef HAVE_L2TP
+#define NEED_UDP2
+#endif
+
+#ifdef HAVE_VXLAN
+#define NEED_UDP2
+#endif
+
+#ifdef HAVE_PCKOUDP
+#define NEED_UDP2
+#endif
+
+
+
+#undef NEED_ETH4
+
+#ifdef HAVE_TAP
+#define NEED_ETH4
+#endif
+
+#ifdef HAVE_VXLAN
+#define NEED_ETH4
+#endif
+
+
+
 typedef bit <16> ethertype_t;
 typedef bit <48> mac_addr_t;
 #ifdef HAVE_MPLS
@@ -33,16 +62,5 @@ typedef bit<16> NextHopId_t;
 typedef bit<9> SubIntId_t;
 #define MAX_PORT 511
 
-struct l4_lookup_t {
-    bit<16>  word_1;
-    bit<16>  word_2;
-}
-
-/*
- * Since we will be calculating hash in 32-bit pieces, we will have this
- * definition, which will be either bit<32>, bit<64> or bit<96> depending
- * on HASH_WIDTH
- */
-typedef bit<(((HASH_WIDTH + 32)/32)*32)> selector_hash_t;
 
 #endif // _TYPES_P4_

@@ -19,7 +19,7 @@
 
 #ifdef HAVE_MCAST
 
-control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlMcast(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md,
                              inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
@@ -39,8 +39,14 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.clone_session = sess;
         ig_md.rpf_iface = ingr;
         ig_tm_md.mcast_grp_a = sess;
+        ig_tm_md.ucast_egress_port = 0;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();
+        hdr.ethernet.ethertype = ig_md.ethertype;
+        hdr.cpu.setInvalid();
+        hdr.internal.setValid();
+        hdr.internal.reason = INTREAS_IPMCAST;
+        hdr.internal.session = sess;
     }
 
 

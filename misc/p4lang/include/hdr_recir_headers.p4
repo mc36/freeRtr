@@ -17,7 +17,6 @@
 #ifndef _RECIR_HEADERS_P4_
 #define _RECIR_HEADERS_P4_
 
-/*------------------ E G R E S S  H E A D E R S ----------------------------- */
 struct recir_headers_t {
 }
 
