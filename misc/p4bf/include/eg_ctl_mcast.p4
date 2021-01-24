@@ -20,8 +20,8 @@
 #ifdef HAVE_MCAST
 
 control EgressControlMcast(inout egress_headers_t hdr, inout egress_metadata_t eg_md,
-    in egress_intrinsic_metadata_t eg_intr_md,
-    inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
+                           in egress_intrinsic_metadata_t eg_intr_md,
+                           inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
     action act_rawip(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr) {

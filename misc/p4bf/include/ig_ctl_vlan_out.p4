@@ -21,8 +21,8 @@
 //#define _EG_CTL_VLAN_OUT_P4_
 
 control EggressControlVlanOut(inout egress_headers_t hdr, inout egress_metadata_t ig_md,
-    in egress_intrinsic_metadata_t eg_intr_md,
-    inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
+                              in egress_intrinsic_metadata_t eg_intr_md,
+                              inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
 #else

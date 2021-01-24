@@ -18,8 +18,8 @@
 #define _IG_CTL_BUNDLE_P4_
 
 control IngressControlBundle(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
-    inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-    inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
+                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 //    bit<8>             ttl_dec = 0;
     selector_hash_t  hash = 0;

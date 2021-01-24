@@ -4152,7 +4152,6 @@ class BfForwarder(Thread):
     def writeMlocal4rules(
         self, op_type, vrf, sess, dip, sip, ingr, delete2
     ):
-        print "here"
         if self.mcast == False:
             return
         if op_type == 1:
@@ -4206,6 +4205,10 @@ class BfForwarder(Thread):
     ):
         if self.mcast == False:
             return
+        if op_type == 1:
+            act = "act_local"
+        else:
+            act = "act_flood"
         tbl_global_path = "ig_ctl.ig_ctl_mcast"
         tbl_name = "%s.tbl_mcast6" % (tbl_global_path)
         tbl_action_name = "%s.%s" % (tbl_global_path, act)
