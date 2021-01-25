@@ -944,6 +944,10 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         return master.members.get(gid % master.members.size());
     }
 
+    public addrMac getMac() {
+        return (addrMac) ifc.ethtyp.getHwAddr();
+    }
+
     public String getStateEnding() {
         return speed + " " + errCorr + " " + autoNeg + " " + flowCtrl;
     }
@@ -1908,33 +1912,31 @@ class servP4langConn implements Runnable {
             if (need.duplicate.find(ntry) != null) {
                 continue;
             }
-            servP4langIfc ifc = findIfc(ntry.ifc);
-            if (ifc == null) {
-                continue;
-            }
-            servP4langNei hop = findHop(fwd, ntry.hop);
+            servP4langNei hop = findIfc(ntry.ifc, ntry.hop);
             if (hop == null) {
                 continue;
             }
-            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
+            if (hop.mac == null) {
+                continue;
+            }
+            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + hop.iface.getMcast(gid).id + " " + hop.iface.id + " " + hop.id + " " + getLabel(ntry.lab) + " " + hop.mac.toEmuStr() + " " + hop.iface.getMac().toEmuStr());
         }
         String act;
         for (int i = 0; i < need.duplicate.size(); i++) {
             tabLabelDup ntry = need.duplicate.get(i);
-            servP4langIfc ifc = findIfc(ntry.ifc);
-            if (ifc == null) {
-                continue;
-            }
             if (done.duplicate.find(ntry) != null) {
                 act = "mod";
             } else {
                 act = "add";
             }
-            servP4langNei hop = findHop(fwd, ntry.hop);
+            servP4langNei hop = findIfc(ntry.ifc, ntry.hop);
             if (hop == null) {
                 continue;
             }
-            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
+            if (hop.mac == null) {
+                continue;
+            }
+            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + hop.iface.getMcast(gid).id + " " + hop.iface.id + " " + hop.id + " " + getLabel(ntry.lab) + " " + hop.mac.toEmuStr() + " " + hop.iface.getMac().toEmuStr());
             now++;
         }
         if (bef > 0) {
@@ -3030,7 +3032,7 @@ class servP4langConn implements Runnable {
                 } else {
                     afi = "6";
                 }
-                lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + lp + " " + rp + " " + tun);
+                lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
             } catch (Exception e) {
             }
             return;
@@ -3102,7 +3104,7 @@ class servP4langConn implements Runnable {
             } else {
                 afi = "6";
             }
-            lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.pwhe.adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + lp + " " + rp + " " + tun);
+            lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.pwhe.adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
             return;
         }
         if (ifc.ifc.type == cfgIfc.ifaceType.tunnel) {
@@ -3204,7 +3206,7 @@ class servP4langConn implements Runnable {
             } else {
                 afi = "6";
             }
-            lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + ((addrMac) hop.iface.ifc.ethtyp.getHwAddr()).toEmuStr() + par);
+            lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + par);
             return;
         }
         if (ifc.ifc.type == cfgIfc.ifaceType.dialer) {
@@ -3244,7 +3246,7 @@ class servP4langConn implements Runnable {
                 }
                 sess = ses;
             }
-            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ((addrMac) ifc.pppoe.ifc.ethtyp.getHwAddr()).toEmuStr());
+            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr());
             ifc.sentPppoe = ses;
             return;
         }
@@ -3297,7 +3299,7 @@ class servP4langConn implements Runnable {
             }
             old.mac = ntry.mac;
             old.sentIfc = outIfc;
-            lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + old.sentIfc);
+            lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
         }
     }
 
@@ -3507,7 +3509,7 @@ class servP4langConn implements Runnable {
             if (ifc == null) {
                 continue;
             }
-            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
         }
         String act;
         for (int i = 0; i < nflood.size(); i++) {
@@ -3521,7 +3523,7 @@ class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
             now++;
         }
         if (bef > 0) {
