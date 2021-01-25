@@ -743,7 +743,6 @@ drop:
 
 
 
-
 void processDataPacket(unsigned char *bufC, unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
@@ -876,6 +875,7 @@ mpls_rx:
         mpls_res->byte += bufS;
         switch (mpls_res->command) {
         case 1: // route
+mpls_rou:
             route4_ntry.vrf = mpls_res->vrf;
             route6_ntry.vrf = mpls_res->vrf;
             if ((label & 0x100) == 0) {
@@ -943,6 +943,29 @@ neigh_tx:
             goto bridgevpls_rx;
         case 6: // punt
             goto cpu;
+        case 7: // dup
+            tmp = -1;
+            for (int i = 0; i < mpls_res->flood.size; i++) {
+                flood_res = table_get(&mpls_res->flood, i);
+                int lab = (label & 0xf00) | ttl | (flood_res->lab << 12);
+                tmp2 = bufS - bufP + preBuff + 6;
+                put16msb(bufC, preBuff, ethtyp);
+                put32msb(bufC, preBuff + 2, lab);
+                memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);
+                int tmpP = preBuff;
+                int tmpE = ethtyp;
+                neigh_ntry.id = flood_res->trg;
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) continue;
+                neigh_res = table_get(&neigh_table, index);
+                tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);
+            }
+            if (mpls_res->swap != 0) goto mpls_rou;
+            if (tmp < 0) return;
+            prt2 = prt = tmp;
+            bufS = tmp2;
+            memmove(&bufD[preBuff], &bufC[preBuff], bufS);
+            goto ether_rx;
         default:
             return;
         }
@@ -965,6 +988,10 @@ neigh_tx:
         if (index < 0) goto drop;
         route4_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
+        if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
+        bufT = bufD[bufP + 0] & 0xf;
+        if (bufT < 5) goto drop;
+        bufT = bufP + (bufT << 2);
         acl4_ntry.protV = bufD[bufP + 9];
         acl4_ntry.srcAddr = mroute4_ntry.src = get32msb(bufD, bufP + 12);
         acl4_ntry.trgAddr = mroute4_ntry.grp =route4_ntry.addr = get32msb(bufD, bufP + 16);
@@ -973,10 +1000,6 @@ ipv4_rx:
         if (ttl <= 1) goto punt;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
-        if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
-        bufT = bufD[bufP + 0] & 0xf;
-        if (bufT < 5) goto drop;
-        bufT = bufP + (bufT << 2);
         extract_layer4(acl4_ntry, portvrf_res->tcpmss4);
         acls_ntry.ver = 4;
         acls_ntry.dir = 1;
@@ -1241,6 +1264,8 @@ ipv4_tx:
         if (index < 0) goto drop;
         route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
+        if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
+        bufT = bufP + 40;
         acl6_ntry.protV = bufD[bufP + 6];
         acl6_ntry.srcAddr1 = mroute6_ntry.src1 = get32msb(bufD, bufP + 8);
         acl6_ntry.srcAddr2 = mroute6_ntry.src2 = get32msb(bufD, bufP + 12);
@@ -1254,8 +1279,6 @@ ipv6_rx:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) goto punt;
         bufD[bufP + 7] = ttl;
-        if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
-        bufT = bufP + 40;
         extract_layer4(acl6_ntry, portvrf_res->tcpmss6);
         acls_ntry.ver = 6;
         acls_ntry.dir = 1;

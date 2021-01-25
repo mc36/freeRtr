@@ -23,13 +23,14 @@ long int packDr[maxPorts];
 
 struct mpls_entry {
     int label;
-    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt
+    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup
     int nexthop;
     int port;
     int bridge;
     int vrf;
     int ver;
     int swap;
+    struct table_head flood;
     long pack;
     long byte;
 };
@@ -724,6 +725,7 @@ int monitor_compare(void *ptr1, void *ptr2) {
 
 struct flood_entry {
     int trg;
+    int lab;
     unsigned char smac[6];
     unsigned char dmac[6];
 };

@@ -142,6 +142,7 @@ int doOneCommand(unsigned char* buf) {
     printf("\n");
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
+    struct mpls_entry *mpls_res;
     struct mpls_entry mpls_ntry;
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
     struct portvrf_entry *portvrf_res;
@@ -1743,6 +1744,76 @@ int doOneCommand(unsigned char* buf) {
         str2mac(flood_ntry.dmac, arg[10]);
         if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
         else table_add(&mroute6_res->flood, &flood_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "duplabloc4") == 0) {
+        mpls_ntry.vrf = atoi(arg[2]);
+        mpls_ntry.label = atoi(arg[4]);
+        mpls_ntry.ver = 4;
+        mpls_ntry.command = 7;
+        index = table_find(&mpls_table, &mpls_ntry);
+        if (index < 0) {
+            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+            table_add(&mpls_table, &mpls_ntry);
+            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
+        } else {
+            mpls_res = table_get(&mpls_table, index);
+        }
+        mpls_res->swap = del;
+        return 0;
+    }
+    if (strcmp(arg[0], "duplabloc6") == 0) {
+        mpls_ntry.vrf = atoi(arg[2]);
+        mpls_ntry.label = atoi(arg[4]);
+        mpls_ntry.ver = 6;
+        mpls_ntry.command = 7;
+        index = table_find(&mpls_table, &mpls_ntry);
+        if (index < 0) {
+            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+            table_add(&mpls_table, &mpls_ntry);
+            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
+        } else {
+            mpls_res = table_get(&mpls_table, index);
+        }
+        mpls_res->swap = del;
+        return 0;
+    }
+    if (strcmp(arg[0], "duplabel4") == 0) {
+        mpls_ntry.vrf = atoi(arg[2]);
+        mpls_ntry.label = atoi(arg[4]);
+        mpls_ntry.ver = 4;
+        mpls_ntry.command = 7;
+        index = table_find(&mpls_table, &mpls_ntry);
+        if (index < 0) {
+            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+            table_add(&mpls_table, &mpls_ntry);
+            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
+        } else {
+            mpls_res = table_get(&mpls_table, index);
+        }
+        flood_ntry.trg = atoi(arg[7]);
+        flood_ntry.lab = atoi(arg[8]);
+        if (del == 0) table_del(&mpls_res->flood, &flood_ntry);
+        else table_add(&mpls_res->flood, &flood_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "duplabel6") == 0) {
+        mpls_ntry.vrf = atoi(arg[2]);
+        mpls_ntry.label = atoi(arg[4]);
+        mpls_ntry.ver = 6;
+        mpls_ntry.command = 7;
+        index = table_find(&mpls_table, &mpls_ntry);
+        if (index < 0) {
+            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+            table_add(&mpls_table, &mpls_ntry);
+            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
+        } else {
+            mpls_res = table_get(&mpls_table, index);
+        }
+        flood_ntry.trg = atoi(arg[7]);
+        flood_ntry.lab = atoi(arg[8]);
+        if (del == 0) table_del(&mpls_res->flood, &flood_ntry);
+        else table_add(&mpls_res->flood, &flood_ntry);
         return 0;
     }
     return 0;
