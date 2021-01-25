@@ -54,9 +54,12 @@ parser ig_prs_main(packet_in pkt,
         ig_md.pppoe_ctrl_valid = 0;
         ig_md.pppoe_data_valid = 0;
 #endif
+        ig_md.aclport_id = 0;
         ig_md.source_id = 0;
         ig_md.target_id = 0;
         ig_md.nexthop_id = 0;
+        ig_md.output_id = 0;
+        ig_md.outport_id = 0;
 #ifdef HAVE_BRIDGE
         ig_md.bridge_id = 0;
         ig_md.bridge_src = 0;
@@ -87,6 +90,8 @@ parser ig_prs_main(packet_in pkt,
         ig_md.arp_valid = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_md.layer4_srcprt = 0;
+        ig_md.layer4_dstprt = 0;
         ig_md.srv_encap_l3vpn_valid = 0;
         ig_md.mpls_encap_rawip_valid = 0;
         ig_md.mpls_encap_l3vpn_valid = 0;

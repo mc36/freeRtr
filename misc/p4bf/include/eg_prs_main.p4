@@ -40,10 +40,17 @@ parser eg_prs_main(packet_in pkt,
 
     state prs_ethernet {
         pkt.extract(hdr.ethernet);
-        eg_md.ethertype = hdr.ethernet.ethertype;
         transition select(hdr.ethernet.ethertype) {
 ETHERTYPE_VLAN:
             prs_vlan;
+        default:
+            prs_nonvlan;
+        }
+    }
+
+    state prs_nonvlan {
+        eg_md.ethertype = hdr.ethernet.ethertype;
+        transition select(hdr.ethernet.ethertype) {
 #ifdef HAVE_MPLS
 ETHERTYPE_MPLS_UCAST:
             prs_mpls0;
