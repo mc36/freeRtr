@@ -78,6 +78,10 @@ parser ig_prs_main(packet_in pkt,
 #ifdef HAVE_SRV6
         ig_md.srv_target = 0;
 #endif
+#ifdef HAVE_NAT
+        ig_md.checksum_tcp_tmp = 0;
+        ig_md.checksum_udp_tmp = 0;
+#endif
         ig_md.mpls_op_type = 0;
         ig_md.srv_op_type = 0;
         ig_md.mpls0_remove = 0;

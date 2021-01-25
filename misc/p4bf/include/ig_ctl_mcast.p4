@@ -39,7 +39,7 @@ control IngressControlMcast(inout ingress_headers hdr, inout ingress_metadata_t 
         ig_md.clone_session = sess;
         ig_md.rpf_iface = ingr;
         ig_tm_md.mcast_grp_a = sess;
-        ig_tm_md.ucast_egress_port = MAX_PORT;
+        ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();
         hdr.ethernet.ethertype = ig_md.ethertype;
