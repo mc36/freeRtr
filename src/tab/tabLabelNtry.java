@@ -103,6 +103,24 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     }
 
     /**
+     * get label hash
+     *
+     * @return xor value
+     */
+    public int getHashB() {
+        return (label ^ (label >> 8) ^ (label >> 16)) & 0xff;
+    }
+
+    /**
+     * get label hash
+     *
+     * @return xor value
+     */
+    public int getHashW() {
+        return (label ^ (label >> 16)) & 0xffff;
+    }
+
+    /**
      * copy this entry
      *
      * @return copy
@@ -119,7 +137,13 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         if (remoteLab != null) {
             n.remoteLab = tabLabel.copyLabels(remoteLab);
         }
-        n.duplicate = duplicate;
+        if (duplicate != null) {
+            n.duplicate = new tabGen<tabLabelDup>();
+            for (int i = 0; i < duplicate.size(); i++) {
+                tabLabelDup ntry = duplicate.get(i);
+                n.duplicate.add(new tabLabelDup(ntry.ifc, ntry.hop, ntry.lab));
+            }
+        }
         n.bier = bier;
         n.needLocal = needLocal;
         n.cntr = cntr;
@@ -160,25 +184,25 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
                 return true;
             }
         }
-        if (remoteLab == null) {
-            if (o.remoteLab != null) {
+        if (tabRouteAttr.diffIntList(remoteLab, o.remoteLab)) {
+            return true;
+        }
+        if (duplicate == null) {
+            if (o.duplicate != null) {
                 return true;
             }
         } else {
-            if (o.remoteLab == null) {
+            if (o.duplicate == null) {
                 return true;
             }
-            if (remoteLab.size() != o.remoteLab.size()) {
+            if (duplicate.size() != o.duplicate.size()) {
                 return true;
             }
-            for (int i = 0; i < remoteLab.size(); i++) {
-                if (remoteLab.get(i).compareTo(o.remoteLab.get(i)) != 0) {
+            for (int i = 0; i < duplicate.size(); i++) {
+                if (duplicate.get(i).differs(o.duplicate.get(i))) {
                     return true;
                 }
             }
-        }
-        if (duplicate != o.duplicate) {
-            return true;
         }
         if (bier != o.bier) {
             return true;

@@ -50,6 +50,7 @@ import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
+import tab.tabLabelDup;
 import tab.tabLabelNtry;
 import tab.tabListing;
 import tab.tabListingEntry;
@@ -928,6 +929,19 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public String toString() {
         return "p4lang port " + id;
+    }
+
+    public servP4langIfc getMcast(int gid) {
+        if (master == null) {
+            return this;
+        }
+        if (master.members == null) {
+            return this;
+        }
+        if (master.members.size() < 1) {
+            return this;
+        }
+        return master.members.get(gid % master.members.size());
     }
 
     public String getStateEnding() {
@@ -1872,12 +1886,80 @@ class servP4langConn implements Runnable {
         return i;
     }
 
+    private void doLab3(ipFwd fwd, tabLabelNtry need, tabLabelNtry done) {
+        if (done.duplicate == null) {
+            done.duplicate = new tabGen<tabLabelDup>();
+        }
+        servP4langVrf vrf = findVrf(fwd);
+        if (vrf == null) {
+            return;
+        }
+        int gid = need.getHashW();
+        int now = 0;
+        int bef = done.duplicate.size();
+        if (need.needLocal) {
+            now++;
+        }
+        if (done.needLocal) {
+            bef++;
+        }
+        for (int i = 0; i < done.duplicate.size(); i++) {
+            tabLabelDup ntry = done.duplicate.get(i);
+            if (need.duplicate.find(ntry) != null) {
+                continue;
+            }
+            servP4langIfc ifc = findIfc(ntry.ifc);
+            if (ifc == null) {
+                continue;
+            }
+            servP4langNei hop = findHop(fwd, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
+        }
+        String act;
+        for (int i = 0; i < need.duplicate.size(); i++) {
+            tabLabelDup ntry = need.duplicate.get(i);
+            servP4langIfc ifc = findIfc(ntry.ifc);
+            if (ifc == null) {
+                continue;
+            }
+            if (done.duplicate.find(ntry) != null) {
+                act = "mod";
+            } else {
+                act = "add";
+            }
+            servP4langNei hop = findHop(fwd, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
+            now++;
+        }
+        if (bef > 0) {
+            act = "mod";
+            if (now < 1) {
+                act = "del";
+            }
+        } else {
+            act = "add";
+        }
+        lower.sendLine("duplabloc" + fwd.ipVersion + "_" + (need.needLocal ? "add " : "del ") + vrf.id + " " + gid + " " + need.label + " " + act);
+    }
+
     private void doLab2(tabLabelNtry ntry) {
         if (tabLabel.labels.find(ntry) != null) {
             return;
         }
         labels.del(ntry);
-        if ((ntry.duplicate != null) || (ntry.bier != null)) {
+        if (ntry.duplicate != null) {
+            tabLabelNtry empty = new tabLabelNtry(ntry.label);
+            empty.duplicate = new tabGen<tabLabelDup>();
+            doLab3(ntry.forwarder, empty, ntry);
+            return;
+        }
+        if (ntry.bier != null) {
             servP4langVrf vrf = findVrf(ntry.forwarder);
             if (vrf == null) {
                 return;
@@ -1929,7 +2011,20 @@ class servP4langConn implements Runnable {
         if (ntry.pweIfc != null) {
             return;
         }
-        if ((ntry.duplicate != null) || (ntry.bier != null)) {
+        if (ntry.duplicate != null) {
+            tabLabelNtry old = labels.find(ntry);
+            if (old != null) {
+                if (!old.differs(ntry)) {
+                    return;
+                }
+            } else {
+                old = new tabLabelNtry(ntry.label);
+            }
+            labels.put(ntry);
+            doLab3(ntry.forwarder, ntry, old);
+            return;
+        }
+        if (ntry.bier != null) {
             servP4langVrf vrf = findVrf(ntry.forwarder);
             if (vrf == null) {
                 return;
@@ -3412,16 +3507,7 @@ class servP4langConn implements Runnable {
             if (ifc == null) {
                 continue;
             }
-            servP4langIfc mst = ifc.master;
-            if (mst == null) {
-                mst = ifc;
-            }
-            if (mst.members != null) {
-                if (mst.members.size() > 0) {
-                    mst = mst.members.get(gid % mst.members.size());
-                }
-            }
-            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
         }
         String act;
         for (int i = 0; i < nflood.size(); i++) {
@@ -3435,16 +3521,7 @@ class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            servP4langIfc mst = ifc.master;
-            if (mst == null) {
-                mst = ifc;
-            }
-            if (mst.members != null) {
-                if (mst.members.size() > 0) {
-                    mst = mst.members.get(gid % mst.members.size());
-                }
-            }
-            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + mst.id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ((addrMac) ifc.ifc.ethtyp.getHwAddr()).toEmuStr() + " " + mac.toEmuStr());
             now++;
         }
         if (bef > 0) {

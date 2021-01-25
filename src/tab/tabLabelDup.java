@@ -44,6 +44,22 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
         }
     }
 
+    /**
+     * compare this entry
+     *
+     * @param o other
+     * @return false if equals, true if differs
+     */
+    public boolean differs(tabLabelDup o) {
+        if (ifc != o.ifc) {
+            return true;
+        }
+        if (hop.compare(hop, o.hop) != 0) {
+            return true;
+        }
+        return tabRouteAttr.diffIntList(lab, o.lab);
+    }
+
     public int compare(tabLabelDup o1, tabLabelDup o2) {
         return o1.hop.compare(o1.hop, o2.hop);
     }

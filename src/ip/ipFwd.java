@@ -604,6 +604,19 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             old.stopPeer();
         }
         ntry.stopPeer();
+        for (int i = 0; i < tabLabel.labels.size(); i++) {
+            tabLabelNtry lab = tabLabel.labels.get(i);
+            if (lab == null) {
+                continue;
+            }
+            if (lab.duplicate == null) {
+                continue;
+            }
+            if (lab.forwarder != this) {
+                continue;
+            }
+            lab.duplicate.del(new tabLabelDup(ntry.ifc, ntry.peer, null));
+        }
         triggerUpdate.wakeup();
     }
 

@@ -726,7 +726,14 @@ public class tabRouteAttr<T extends addrType> {
         }
     }
 
-    private static boolean diffIntList(List<Integer> l1, List<Integer> l2) {
+    /**
+     * compare two integer lists
+     *
+     * @param l1 first list
+     * @param l2 second list
+     * @return true if differs
+     */
+    public static boolean diffIntList(List<Integer> l1, List<Integer> l2) {
         if (l1 == null) {
             return l2 != null;
         }
