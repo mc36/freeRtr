@@ -48,8 +48,8 @@ int sdn2
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
- ipv4 multi static 232.2.2.2 1.1.1.2
- ipv6 multi static ff06::1 1234:1::2
+ ipv4 multi static 232.2.2.2 2.2.2.103
+ ipv6 multi static ff06::1 4321::103
  exit
 int sdn3
  bundle-gr 1
@@ -64,9 +64,11 @@ int bun1.111
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
  ipv6 ena
- ipv4 multi static 232.2.2.2 1.1.1.2
- ipv6 multi static ff06::1 1234:1::2
+ ipv4 multi static 232.2.2.2 2.2.2.103
+ ipv6 multi static ff06::1 4321::103
  exit
+ipv4 mroute v1 0.0.0.0 0.0.0.0 1.1.1.2
+ipv6 mroute v1 :: :: 1234:1::2
 server p4lang p4
  interconnect eth2
  export-vrf v1 1
@@ -111,8 +113,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
- ipv4 multi static 232.2.2.2 1.1.1.2
- ipv6 multi static ff06::1 1234:1::2
+ ipv4 multi static 232.2.2.2 2.2.2.103
+ ipv6 multi static ff06::1 4321::103
  exit
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
@@ -158,8 +160,8 @@ ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv4 mroute v1 0.0.0.0 0.0.0.0 1.1.2.1
 ipv6 mroute v1 :: :: 1234:2::1
-ipv4 multi v1 join 232.2.2.2 1.1.1.2
-ipv6 multi v1 join ff06::1 1234:1::2
+ipv4 multi v1 join 232.2.2.2 2.2.2.103
+ipv6 multi v1 join ff06::1 4321::103
 !
 
 addrouter r5
@@ -201,8 +203,8 @@ ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv4 mroute v1 0.0.0.0 0.0.0.0 1.1.3.1
 ipv6 mroute v1 :: :: 1234:3::1
-ipv4 multi v1 join 232.2.2.2 1.1.1.2
-ipv6 multi v1 join ff06::1 1234:1::2
+ipv4 multi v1 join 232.2.2.2 2.2.2.103
+ipv6 multi v1 join ff06::1 4321::103
 !
 
 
@@ -271,8 +273,8 @@ r5 tping 100 10 4321::104 /vrf v1 /int lo0
 r5 tping 100 10 2.2.2.105 /vrf v1 /int lo0
 r5 tping 100 10 4321::105 /vrf v1 /int lo0
 
-r3 tping 200 5 232.2.2.2 /vrf v1 /int eth1 /multi
-r3 tping 200 5 ff06::1 /vrf v1 /int eth1 /multi
+r3 tping 200 5 232.2.2.2 /vrf v1 /int lo0 /multi
+r3 tping 200 5 ff06::1 /vrf v1 /int lo0 /multi
 
-r1 dping 0-10000 r3 100 10 232.2.2.2 /vrf v1 /int eth1 /siz 1111 /rep 1111
-r1 dping 0-10000 r3 100 10 ff06::1 /vrf v1 /int eth1 /siz 1111 /rep 1111
+r1 dping 0-10000 r3 100 10 232.2.2.2 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping 0-10000 r3 100 10 ff06::1 /vrf v1 /int lo0 /siz 1111 /rep 1111
