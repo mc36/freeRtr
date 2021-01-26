@@ -604,18 +604,23 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             old.stopPeer();
         }
         ntry.stopPeer();
-        for (int i = 0; i < tabLabel.labels.size(); i++) {
-            tabLabelNtry lab = tabLabel.labels.get(i);
-            if (lab == null) {
+        for (int i = 0; i < ntry.pmpLearn.size(); i++) {
+            ipFwdMpmp mp = ntry.pmpLearn.get(i);
+            if (mp == null) {
                 continue;
             }
-            if (lab.duplicate == null) {
+            mp.delPeer(ntry.peer);
+            mp.updateState(this);
+        }
+        for (int i = 0; i < mp2mpLsp.size(); i++) {
+            ipFwdMpmp mp = mp2mpLsp.get(i);
+            if (mp == null) {
                 continue;
             }
-            if (lab.forwarder != this) {
+            if (mp.delPeer(ntry.peer)) {
                 continue;
             }
-            lab.duplicate.del(new tabLabelDup(ntry.ifc, ntry.peer, null));
+            mp.updateState(this);
         }
         triggerUpdate.wakeup();
     }

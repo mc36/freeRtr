@@ -2323,7 +2323,7 @@ public class userShow {
             return;
         }
         if (a.equals("mpdatabase")) {
-            doShowMptab(fwd.mp2mpLsp);
+            doShowMptab(fwd.mp2mpLsp, null);
             return;
         }
         if (!a.equals("neighbor")) {
@@ -2363,7 +2363,7 @@ public class userShow {
             return;
         }
         if (a.equals("mplearned")) {
-            doShowPmpList(nei.pmpLearn);
+            doShowMptab(nei.pmpLearn, adr);
             return;
         }
         if (a.equals("mpadvertised")) {
@@ -3757,14 +3757,20 @@ public class userShow {
         rdr.putStrTab(l);
     }
 
-    private void doShowMptab(tabGen<ipFwdMpmp> tab) {
-        userFormat l = new userFormat("|", "type|root|opaque|uplink|peers");
+    private void doShowMptab(tabGen<ipFwdMpmp> tab, addrIP peer) {
+        String a;
+        if (peer == null) {
+            a = "type|root|opaque|uplink|peers";
+        } else {
+            a = "type|root|label|opaque|uplink";
+        }
+        userFormat l = new userFormat("|", a);
         for (int i = 0; i < tab.size(); i++) {
             ipFwdMpmp ntry = tab.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.dump());
+            l.add(ntry.dump(peer));
         }
         rdr.putStrTab(l);
     }

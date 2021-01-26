@@ -99,7 +99,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     /**
      * learned (multi)point to multipoint
      */
-    public tabGen<packLdpMp> pmpLearn = new tabGen<packLdpMp>();
+    public tabGen<ipFwdMpmp> pmpLearn = new tabGen<ipFwdMpmp>();
 
     /**
      * transport address
@@ -550,12 +550,12 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             if (debugger.rtrLdpTraf) {
                 logger.debug("rx reachable multipoint=" + pmp);
             }
-            pmpLearn.put(pmp);
             ipFwdMpmp sta = new ipFwdMpmp(pmp.typ != packLdp.fecTp2mp, pmp.root, pmp.opaque);
             ipFwdMpmp old = ip.mp2mpLsp.add(sta);
             if (old != null) {
                 sta = old;
             }
+            pmpLearn.put(sta);
             sta.addPeer(peer, ifc, pmp.label, sta.mp2mp);
             sta.updateState(ip);
             if (pmp.typ != packLdp.fecTmp2mpDn) {
@@ -599,8 +599,8 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             if (debugger.rtrLdpTraf) {
                 logger.debug("rx withdraw multipoint=" + pmp);
             }
-            pmpLearn.del(pmp);
             ipFwdMpmp sta = new ipFwdMpmp(pmp.typ != packLdp.fecTp2mp, pmp.root, pmp.opaque);
+            pmpLearn.del(sta);
             sta = ip.mp2mpLsp.find(sta);
             if (sta == null) {
                 continue;

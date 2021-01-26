@@ -11,7 +11,6 @@ import pack.packLdpMp;
 import rtr.rtrLdpNeigh;
 import tab.tabGen;
 import tab.tabLabel;
-import tab.tabLabelNtry;
 import tab.tabRouteEntry;
 import util.bits;
 
@@ -65,7 +64,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
     /**
      * neighbors
      */
-    public final tabGen<ipFwdMpmpNeigh> neighs = new tabGen<ipFwdMpmpNeigh>();
+    public final tabGen<ipFwdMpNe> neighs = new tabGen<ipFwdMpNe>();
 
     /**
      * create new instance
@@ -270,20 +269,30 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
     /**
      * dump this entry
      *
+     * @param peer just one peer
      * @return string
      */
-    public String dump() {
-        String a;
-        if (local) {
-            a = "local";
+    public String dump(addrIP peer) {
+        String a = "";
+        String b = "";
+        if (peer == null) {
+            a = "|";
+            if (local) {
+                a = "|local";
+            }
+            for (int i = 0; i < neighs.size(); i++) {
+                ipFwdMpNe ntry = neighs.get(i);
+                a += " " + ntry.labelL + "/" + ntry.addr + "/" + ntry.labelR;
+            }
         } else {
-            a = "";
+            b = "|n/a";
+            ipFwdMpNe ntry = new ipFwdMpNe(peer);
+            ntry = neighs.find(ntry);
+            if (ntry != null) {
+                b = "|" + ntry.labelR;
+            }
         }
-        for (int i = 0; i < neighs.size(); i++) {
-            ipFwdMpmpNeigh ntry = neighs.get(i);
-            a += " " + ntry.labelL + "/" + ntry.addr + "/" + ntry.labelR;
-        }
-        return (mp2mp ? "mp2mp" : "p2mp") + "|" + root + "|" + bits.byteDump(opaque, 0, -1) + "|" + uplnk + "|" + a.trim();
+        return (mp2mp ? "mp2mp" : "p2mp") + "|" + root + b + "|" + bits.byteDump(opaque, 0, -1) + "|" + uplnk + a;
     }
 
     public int compare(ipFwdMpmp o1, ipFwdMpmp o2) {
@@ -291,7 +300,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             if (o1.mp2mp) {
                 return -1;
             } else {
-                return -2;
+                return +1;
             }
         }
         int i = o1.root.compare(o1.root, o2.root);
@@ -312,7 +321,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      */
     public void stopLabels() {
         for (int i = 0; i < neighs.size(); i++) {
-            ipFwdMpmpNeigh ntry = neighs.get(i);
+            ipFwdMpNe ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -332,10 +341,9 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      * @param alloc allocate local label
      */
     public void addPeer(addrIP adr, ipFwdIface ifc, int label, boolean alloc) {
-        ipFwdMpmpNeigh ntry = new ipFwdMpmpNeigh();
-        ntry.addr = adr.copyBytes();
+        ipFwdMpNe ntry = new ipFwdMpNe(adr);
         ntry.iface = ifc;
-        ipFwdMpmpNeigh old = neighs.add(ntry);
+        ipFwdMpNe old = neighs.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -349,18 +357,31 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      * delete one peer
      *
      * @param adr address
+     * @return true if nothing done
      */
-    public void delPeer(addrIP adr) {
-        ipFwdMpmpNeigh ntry = new ipFwdMpmpNeigh();
-        ntry.addr = adr.copyBytes();
+    public boolean delPeer(addrIP adr) {
+        ipFwdMpNe ntry = new ipFwdMpNe(adr);
         ntry = neighs.del(ntry);
         if (ntry == null) {
-            return;
+            return true;
+        }
+        if (uplnk != null) {
+            if (adr.compare(adr, uplnk) == 0) {
+                uplnk = null;
+            }
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            ipFwdMpNe curr = neighs.get(i);
+            if (curr.labelL == null) {
+                continue;
+            }
+            curr.labelL.clrDupMpls(5, ntry.addr);
         }
         if (ntry.labelL == null) {
-            return;
+            return false;
         }
         tabLabel.release(ntry.labelL, 5);
+        return false;
     }
 
     private int getTyp() {
@@ -393,8 +414,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      * @return reverse fec
      */
     public packLdpMp getReverse(addrIP adr, int typ) {
-        ipFwdMpmpNeigh ntry = new ipFwdMpmpNeigh();
-        ntry.addr = adr.copyBytes();
+        ipFwdMpNe ntry = new ipFwdMpNe(adr);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             return null;
@@ -490,11 +510,11 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      */
     public void updateState(ipFwd fwd) {
         for (int i = neighs.size() - 1; i >= 0; i--) {
-            ipFwdMpmpNeigh ntry = neighs.get(i);
+            ipFwdMpNe ntry = neighs.get(i);
             if (fwd.ldpNeighFind(null, ntry.addr, false) != null) {
                 continue;
             }
-            neighs.del(ntry);
+            delPeer(ntry.addr);
         }
         if (local) {
             doRootNeigh(fwd);
@@ -524,7 +544,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         }
         boolean ned = false;
         for (int o = 0; o < neighs.size(); o++) {
-            ipFwdMpmpNeigh curr = neighs.get(o);
+            ipFwdMpNe curr = neighs.get(o);
             if (curr.labelL == null) {
                 continue;
             }
@@ -540,7 +560,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                 if (i == o) {
                     continue;
                 }
-                ipFwdMpmpNeigh ntry = neighs.get(i);
+                ipFwdMpNe ntry = neighs.get(i);
                 if (ntry.labelR < 0) {
                     continue;
                 }
@@ -569,7 +589,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             fwdCor = vrfUpl;
         }
         for (int i = 0; i < neighs.size(); i++) {
-            ipFwdMpmpNeigh ntry = neighs.get(i);
+            ipFwdMpNe ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -581,22 +601,6 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             ipMpls.createMPLSheader(pck);
             fwdCor.mplsTxPack(ntry.addr, pck, false);
         }
-    }
-
-}
-
-class ipFwdMpmpNeigh implements Comparator<ipFwdMpmpNeigh> {
-
-    public addrIP addr;
-
-    public ipFwdIface iface;
-
-    public int labelR;
-
-    public tabLabelNtry labelL;
-
-    public int compare(ipFwdMpmpNeigh o1, ipFwdMpmpNeigh o2) {
-        return o1.addr.compare(o1.addr, o2.addr);
     }
 
 }

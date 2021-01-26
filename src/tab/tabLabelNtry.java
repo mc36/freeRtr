@@ -400,6 +400,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         nextHop = null;
         remoteLab = null;
         duplicate = null;
+        needLocal = false;
     }
 
     /**
