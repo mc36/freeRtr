@@ -368,7 +368,7 @@ public class userTester {
             s = persistD.remove(0);
             int round = 5000;
             rdr.setMax(round);
-            for (int rnd = 0; rnd < round; rnd++) {
+            for (int rnd = 0; rnd <= round; rnd++) {
                 a = persistC.getLine();
                 rdr.setCurr(rnd);
                 if (a == null) {
@@ -843,7 +843,7 @@ class userTesterPrc {
         rdr.debugStat(slot + "/" + name + ": pinging " + s + ".");
         rdr.setMax(round);
         int i = -1;
-        for (int rnd = 0; rnd < round; rnd++) {
+        for (int rnd = 0; rnd <= round; rnd++) {
             rdr.setCurr(rnd);
             i = doPing(s);
             if (i < 0) {
@@ -1447,7 +1447,7 @@ class userTesterOne {
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             int round = 5000;
             rdr.setMax(round);
-            for (int rnd = 0; rnd < round; rnd++) {
+            for (int rnd = 0; rnd <= round; rnd++) {
                 String a = p.getLine();
                 rdr.setCurr(rnd);
                 if (a == null) {
@@ -1622,7 +1622,7 @@ class userTesterOne {
             return;
         }
         if (s.equals("dping")) {
-            int retry = bits.str2num(cmd.word());
+            int round = bits.str2num(cmd.word());
             tabIntMatcher ned = new tabIntMatcher();
             ned.fromString(cmd.word());
             userTesterPrc op = getPrc(cmd.word());
@@ -1631,7 +1631,7 @@ class userTesterOne {
             }
             bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
             String orig = cmd.getRemaining();
-            for (; retry > 0; retry--) {
+            for (int rnd = 0; rnd <= round; rnd++) {
                 p.doSync();
                 p.putLine("terminal table raw");
                 p.putLine("clear counters");
