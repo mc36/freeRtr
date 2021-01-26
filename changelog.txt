@@ -9655,3 +9655,8 @@ qc pass: p4lang: multicast bundle routing
 qc pass: p4lang: multicast bundle vlan routing
 qc pass: p4lang: hairpin multicast routing
 qc pass: p4lang: hairpin vlan multicast routing
+---------------------------------- 2021-01-26 05:46:19
+todo: p4bf: count hairpins in bffwd to make mcast over hairpin possible
+todo: p4bf: move nexthop stuff to egress pipe
+todo: monitor-filter
+todo: pack cap should use monitor-* infra
