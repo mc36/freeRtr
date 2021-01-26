@@ -939,7 +939,7 @@ neigh_tx:
             memmove(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
             bufP += 2;
-            bridge_ntry.id = mpls_ntry.bridge;
+            bridge_ntry.id = mpls_res->bridge;
             goto bridgevpls_rx;
         case 6: // punt
             goto cpu;
