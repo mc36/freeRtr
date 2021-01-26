@@ -623,5 +623,5 @@ r6 tping 100 10 4321::205 /vrf v1 /int lo1
 r6 tping 100 10 2.2.2.206 /vrf v1 /int lo1
 r6 tping 100 10 4321::206 /vrf v1 /int lo1
 
-r1 output sho inter summ
-r1 output sho inter hwsumm
+r1 dping 0-10000 r6 100 10 2.2.2.205 /vrf v1 /int lo1 /siz 1111 /rep 1111
+r1 dping 0-10000 r6 100 10 4321::205 /vrf v1 /int lo1 /siz 1111 /rep 1111
