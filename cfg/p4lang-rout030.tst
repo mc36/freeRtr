@@ -160,7 +160,6 @@ addrouter r4
 int eth1 eth 0000.0000.4444 $4b$ $4a$
 !
 vrf def v1
- rd 1:1
  label-mode per-prefix
  exit
 access-list test4
@@ -359,5 +358,5 @@ r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
 r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
-r1 output sho inter summ
-r1 output sho inter hwsumm
+r1 dping 0-10000 r4 100 10 2.2.2.105 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping 0-10000 r4 100 10 4321::105 /vrf v1 /int lo0 /siz 1111 /rep 1111
