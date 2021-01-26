@@ -247,5 +247,5 @@ r3 tping 100 10 3333::105 /vrf v1 /int lo1
 r4 tping 100 10 3.3.3.106 /vrf v1 /int lo1
 r4 tping 100 10 3333::106 /vrf v1 /int lo1
 
-r1 dping 0-10000 r6 100 10 3.3.3.104 /vrf v1 /int lo0 /siz 1111 /rep 1111
-r1 dping 0-10000 r6 100 10 3333::104 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping 3 0-10000 r6 100 10 3.3.3.104 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping 3 0-10000 r6 100 10 3333::104 /vrf v1 /int lo0 /siz 1111 /rep 1111

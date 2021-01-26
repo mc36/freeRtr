@@ -295,12 +295,12 @@ public class userImage {
      *
      * @param cmd command to do
      */
-    public void doer(cmds cmd) {
+    public boolean doer(cmds cmd) {
         pip = cmd.pipe;
         List<String> res = bits.txt2buf(cmd.word());
         if (res == null) {
             cmd.error("no such file");
-            return;
+            return true;
         }
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
@@ -328,7 +328,9 @@ public class userImage {
             if (a.equals("include")) {
                 cmds c = new cmds("", s);
                 c.pipe = pip;
-                doer(c);
+                if (doer(c)) {
+                    return true;
+                }
                 continue;
             }
             if (a.equals("reget-time")) {
@@ -381,7 +383,7 @@ public class userImage {
                 cmds c = new cmds("", s);
                 c.pipe = pip;
                 if (readUpCatalog(c)) {
-                    return;
+                    return true;
                 }
                 continue;
             }
@@ -426,13 +428,13 @@ public class userImage {
             }
             if (a.equals("package-down")) {
                 if (downAllFiles()) {
-                    return;
+                    return true;
                 }
                 continue;
             }
             if (a.equals("package-inst")) {
                 if (instAllFiles()) {
-                    return;
+                    return true;
                 }
                 continue;
             }
@@ -447,8 +449,9 @@ public class userImage {
                 continue;
             }
             cmd.error("unknown command: " + a + " " + s);
-            return;
+            return true;
         }
+        return false;
     }
 
 }
