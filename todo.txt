@@ -1,5 +1,5 @@
-p4bf: count hairpins in bffwd to make mcast over hairpin possible
-p4bf: move nexthop stuff to egress pipe
+p4lang: count hairpins in bffwd to make mcast over hairpin possible
+p4lang: move nexthop stuff to egress pipe
 monitor-filter
 pack cap should use monitor-* infra
 nat and pbr config to have reindex

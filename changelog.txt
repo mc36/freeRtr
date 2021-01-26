@@ -9660,3 +9660,8 @@ todo: p4bf: count hairpins in bffwd to make mcast over hairpin possible
 todo: p4bf: move nexthop stuff to egress pipe
 todo: monitor-filter
 todo: pack cap should use monitor-* infra
+---------------------------------- 2021-01-26 06:22:07
+no todo: p4bf: move nexthop stuff to egress pipe
+no todo: p4bf: count hairpins in bffwd to make mcast over hairpin possible
+todo: p4lang: count hairpins in bffwd to make mcast over hairpin possible
+todo: p4lang: move nexthop stuff to egress pipe
