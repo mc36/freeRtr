@@ -725,6 +725,7 @@ int monitor_compare(void *ptr1, void *ptr2) {
 
 struct flood_entry {
     int trg;
+    int command; // 1=iface, 2=mpls
     int lab;
     unsigned char smac[6];
     unsigned char dmac[6];
@@ -733,6 +734,8 @@ struct flood_entry {
 int flood_compare(void *ptr1, void *ptr2) {
     struct flood_entry *ntry1 = ptr1;
     struct flood_entry *ntry2 = ptr2;
+    if (ntry1->command < ntry2->command) return -1;
+    if (ntry1->command > ntry2->command) return +1;
     if (ntry1->trg < ntry2->trg) return -1;
     if (ntry1->trg > ntry2->trg) return +1;
     return 0;
