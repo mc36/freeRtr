@@ -27,6 +27,8 @@ import ifc.ifcUp;
 import ip.ipFwd;
 import ip.ipFwdIface;
 import ip.ipFwdMcast;
+import ip.ipFwdMpNe;
+import ip.ipFwdMpmp;
 import ip.ipIfc;
 import ip.ipMpls;
 import java.util.ArrayList;
@@ -3498,22 +3500,61 @@ class servP4langConn implements Runnable {
         if (ingr == null) {
             return true;
         }
-        if (need.label!=null)logger.debug("here "+need.label.dump(null));/////
         tabGen<ipFwdIface> nflood = need.flood;
         tabGen<ipFwdIface> dflood = done.flood;
+        ipFwdMpmp nlabel = need.label;
+        ipFwdMpmp dlabel = done.label;
+        if (nlabel == null) {
+            nlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
+        }
+        if (dlabel == null) {
+            dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
+        }
         int now = 0;
         if (need.local) {
             nflood = new tabGen<ipFwdIface>();
-            need.label = null;
-            need.bier = null;
+            nlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
             now++;
         }
-        int bef = dflood.size();
+        int bef = dflood.size() + dlabel.neighs.size();
         if (done.local) {
             dflood = new tabGen<ipFwdIface>();
+            dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
             bef++;
         }
         addrMac mac = need.group.conv2multiMac();
+        String act;
+        for (int i = 0; i < dlabel.neighs.size(); i++) {
+            ipFwdMpNe ntry = dlabel.neighs.get(i);
+            if (ntry.labelR < 0) {
+                continue;
+            }
+            if (nlabel.neighs.find(ntry) != null) {
+                continue;
+            }
+            servP4langNei hop = findNei(ntry.iface, ntry.addr);
+            if (hop == null) {
+                continue;
+            }
+            lower.sendLine("mlabroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + hop.iface.getMcast(gid).id + " " + hop.id + " " + ntry.labelR);
+        }
+        for (int i = 0; i < nlabel.neighs.size(); i++) {
+            ipFwdMpNe ntry = nlabel.neighs.get(i);
+            if (ntry.labelR < 0) {
+                continue;
+            }
+            if (dlabel.neighs.find(ntry) != null) {
+                act = "mod";
+            } else {
+                act = "add";
+            }
+            servP4langNei hop = findNei(ntry.iface, ntry.addr);
+            if (hop == null) {
+                continue;
+            }
+            lower.sendLine("mlabroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + hop.iface.getMcast(gid).id + " " + hop.id + " " + ntry.labelR);
+            now++;
+        }
         for (int i = 0; i < dflood.size(); i++) {
             ipFwdIface ntry = dflood.get(i);
             if (nflood.find(ntry) != null) {
@@ -3525,7 +3566,6 @@ class servP4langConn implements Runnable {
             }
             lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
         }
-        String act;
         for (int i = 0; i < nflood.size(); i++) {
             ipFwdIface ntry = nflood.get(i);
             servP4langIfc ifc = findIfc(ntry);
