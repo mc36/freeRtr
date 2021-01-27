@@ -720,25 +720,38 @@ drop:
 }
 
 
-#define doFlood(mroute_res)                                     \
+#define doFlood(flood)                                          \
     tmp = -1;                                                   \
-    for (int i = 0; i < mroute_res->flood.size; i++) {          \
-        flood_res = table_get(&mroute_res->flood, i);           \
-        tmp2 = bufS - bufP + preBuff + 2;                       \
-        put16msb(bufC, preBuff, ethtyp);                        \
-        memmove(&bufC[preBuff + 2], &bufD[bufP], tmp2);         \
-        memmove(&bufH[0], &flood_res->dmac, 6);                 \
-        memmove(&bufH[6], &flood_res->smac, 6);                 \
+    for (int i = 0; i < flood.size; i++) {                      \
+        flood_res = table_get(&flood, i);                       \
         int tmpP = preBuff;                                     \
-        int tmpE = ethtyp;                                      \
-        tmp = send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);  \
-    }                                                           \
-    if (mroute_res->local != 0) goto cpu;                       \
-    if (tmp < 0) return;                                        \
-    prt2 = prt = tmp;                                           \
-    bufS = tmp2;                                                \
-    memmove(&bufD[preBuff], &bufC[preBuff], bufS);              \
-    goto ether_rx;
+        int tmpE;                                               \
+        switch (flood_res->command) {                           \
+        case 1:                                                 \
+            tmpE = ethtyp;                                      \
+            tmp2 = bufS - bufP + preBuff + 2;                   \
+            put16msb(bufC, preBuff, tmpE);                      \
+            memmove(&bufC[preBuff + 2], &bufD[bufP], tmp2);     \
+            memmove(&bufH[0], &flood_res->dmac, 6);             \
+            memmove(&bufH[6], &flood_res->smac, 6);             \
+            tmp = send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);  \
+            continue;                                           \
+        case 2:                                                 \
+            tmpE = ETHERTYPE_MPLS_UCAST;                        \
+            tmp2 = bufS - bufP + preBuff + 6;                   \
+            int tmpL = (label & 0xf00) | ttl | (flood_res->lab << 12);  \
+            put16msb(bufC, preBuff, tmpE);                      \
+            put32msb(bufC, preBuff + 2, tmpL);                  \
+            memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);     \
+            neigh_ntry.id = flood_res->trg;                     \
+            index = table_find(&neigh_table, &neigh_ntry);      \
+            if (index < 0) continue;                            \
+            neigh_res = table_get(&neigh_table, index);         \
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);   \
+            continue;                                           \
+        }                                                       \
+    }
+
 
 
 
@@ -944,22 +957,7 @@ neigh_tx:
         case 6: // punt
             goto cpu;
         case 7: // dup
-            tmp = -1;
-            for (int i = 0; i < mpls_res->flood.size; i++) {
-                flood_res = table_get(&mpls_res->flood, i);
-                int lab = (label & 0xf00) | ttl | (flood_res->lab << 12);
-                tmp2 = bufS - bufP + preBuff + 6;
-                put16msb(bufC, preBuff, ethtyp);
-                put32msb(bufC, preBuff + 2, lab);
-                memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);
-                int tmpP = preBuff;
-                int tmpE = ethtyp;
-                neigh_ntry.id = flood_res->trg;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) continue;
-                neigh_res = table_get(&neigh_table, index);
-                tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);
-            }
+            doFlood(mpls_res->flood);
             if (mpls_res->swap != 0) goto mpls_rou;
             if (tmp < 0) return;
             prt2 = prt = tmp;
@@ -1104,8 +1102,14 @@ ipv4_pbred:
             if (mroute4_res->ingr != prt) goto drop;
             mroute4_res->pack++;
             mroute4_res->byte += bufS;
-            doFlood(mroute4_res);
-            return;
+            label = 0x100;
+            doFlood(mroute4_res->flood);
+            if (mroute4_res->local != 0) goto cpu;
+            if (tmp < 0) return;
+            prt2 = prt = tmp;
+            bufS = tmp2;
+            memmove(&bufD[preBuff], &bufC[preBuff], bufS);
+            goto ether_rx;
         }
         if (acl4_ntry.protV == 46) goto cpu;
         for (int i = 32; i >= 0; i--) {
@@ -1400,8 +1404,14 @@ ipv6_pbred:
             if (mroute6_res->ingr != prt) goto drop;
             mroute6_res->pack++;
             mroute6_res->byte += bufS;
-            doFlood(mroute6_res);
-            return;
+            label = 0x100;
+            doFlood(mroute6_res->flood);
+            if (mroute6_res->local != 0) goto cpu;
+            if (tmp < 0) return;
+            prt2 = prt = tmp;
+            bufS = tmp2;
+            memmove(&bufD[preBuff], &bufC[preBuff], bufS);
+            goto ether_rx;
         }
         if (acl6_ntry.protV == 0) goto cpu;
         for (int i = 32; i >= 0; i--) {
