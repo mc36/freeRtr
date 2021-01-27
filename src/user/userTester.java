@@ -1653,7 +1653,7 @@ class userTesterOne {
             return;
         }
         if (s.equals("dping")) {
-            String what = cmd.word();
+            String what = "show interface summary | include " + cmd.word();
             int round = bits.str2num(cmd.word());
             tabIntMatcher ned = new tabIntMatcher();
             ned.fromString(cmd.word());
@@ -1664,14 +1664,17 @@ class userTesterOne {
             bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
             String orig = cmd.getRemaining();
             p.putLine("terminal table raw");
+            p.doSync();
+            int old = p.getSummary(what);
             for (int rnd = 0; rnd <= round; rnd++) {
-                p.putLine("clear counter");
                 p.doSync();
                 cmd = new cmds("ping", orig);
                 if (pingTest(op, true)) {
                     return;
                 }
-                int tot = p.getSummary("show interface summary | include " + what);
+                int cur = p.getSummary(what);
+                int tot = cur - old;
+                old = cur;
                 if (tot < 0) {
                     testRes = 8;
                     return;
