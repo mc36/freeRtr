@@ -1336,6 +1336,8 @@ qc pass: p4lang: mldp core
 qc pass: p4lang: mldp vlan core
 qc pass: p4lang: mldp egress edge
 qc pass: p4lang: mldp vlan egress edge
+qc pass: p4lang: mldp ingress edge
+qc pass: p4lang: mldp vlan ingress edge
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

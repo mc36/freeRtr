@@ -9670,3 +9670,6 @@ qc pass: p4lang: mldp core
 qc pass: p4lang: mldp vlan core
 qc pass: p4lang: mldp egress edge
 qc pass: p4lang: mldp vlan egress edge
+---------------------------------- 2021-01-27 21:24:15
+qc pass: p4lang: mldp ingress edge
+qc pass: p4lang: mldp vlan ingress edge

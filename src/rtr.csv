@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.1.27-rel, done by cs@nop.
--;-;-;2021-01-27 20:35:19, took 00:06:38, with 100 workers, on 2314 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2021-01-27 21:31:00, took 00:06:44, with 100 workers, on 2316 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -1340,6 +1340,8 @@ http://sources.nop.hu/cfg/p4lang-rout142.tst;p4lang-rout142.tst;success;p4lang: 
 http://sources.nop.hu/cfg/p4lang-rout143.tst;p4lang-rout143.tst;success;p4lang: mldp vlan core
 http://sources.nop.hu/cfg/p4lang-rout144.tst;p4lang-rout144.tst;success;p4lang: mldp egress edge
 http://sources.nop.hu/cfg/p4lang-rout145.tst;p4lang-rout145.tst;success;p4lang: mldp vlan egress edge
+http://sources.nop.hu/cfg/p4lang-rout146.tst;p4lang-rout146.tst;success;p4lang: mldp ingress edge
+http://sources.nop.hu/cfg/p4lang-rout147.tst;p4lang-rout147.tst;success;p4lang: mldp vlan ingress edge
 http://sources.nop.hu/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.nop.hu/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.nop.hu/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action
