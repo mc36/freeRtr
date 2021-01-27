@@ -2899,14 +2899,14 @@ class servP4langConn implements Runnable {
     private void doNeighs(servP4langNei ntry) {
         if (ntry.need > 0) {
             if (!ntry.igNhopSent) {
-                lower.sendLine("ignexthop_add " + ntry.id + " " + ntry.iface.id + " " + ntry.iface.getUcast().id + " " + ntry.iface.getMcast(ntry.id).id);
+                lower.sendLine("nhop2port_add " + ntry.id + " " + ntry.iface.id + " " + ntry.iface.getUcast().id + " " + ntry.iface.getMcast(ntry.id).id);
             }
             ntry.igNhopSent = true;
             return;
         }
         neighs.del(ntry);
         if (ntry.igNhopSent) {
-            lower.sendLine("ignexthop_del " + ntry.id + " " + ntry.iface.id + " " + ntry.iface.getUcast().id + " " + ntry.iface.getMcast(ntry.id).id);
+            lower.sendLine("nhop2port_del " + ntry.id + " " + ntry.iface.id + " " + ntry.iface.getUcast().id + " " + ntry.iface.getMcast(ntry.id).id);
         }
         if (ntry.mac == null) {
             return;
