@@ -294,6 +294,7 @@ public class userImage {
      * do the work
      *
      * @param cmd command to do
+     * @return true on error, false on success
      */
     public boolean doer(cmds cmd) {
         pip = cmd.pipe;
