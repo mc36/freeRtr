@@ -862,7 +862,6 @@ class userTesterPrc {
     public List<String> getOutput(String s) {
         String beg = "!begin-command-" + s;
         String end = "!end-command-" + s;
-        rdr.debugStat(slot + "/" + name + ": output " + s + ".");
         putLine(beg);
         putLine(s);
         putLine(end);
@@ -885,6 +884,38 @@ class userTesterPrc {
             }
             res.add(a);
         }
+    }
+
+    public int getSummary(String par) {
+        List<String> buf = getOutput(par);
+        if (buf == null) {
+            return -1;
+        }
+        int tot = 0;
+        int col = 0;
+        for (int i = 0; i < buf.size(); i++) {
+            cmds cmd = new cmds("res", buf.get(i));
+            int row = 0;
+            int sum = 0;
+            for (;;) {
+                String s = cmd.word(";");
+                if (s.length() < 1) {
+                    break;
+                }
+                row++;
+                sum += bits.str2num(s);
+            }
+            if (row < 3) {
+                continue;
+            }
+            tot += sum;
+            col++;
+        }
+        if (col < 1) {
+            return -1;
+        }
+        bits.buf2txt(false, bits.str2lst("res:" + tot + " bytes"), getLogName(4));
+        return tot;
     }
 
     public void doSync() {
@@ -1622,6 +1653,7 @@ class userTesterOne {
             return;
         }
         if (s.equals("dping")) {
+            String what = cmd.word();
             int round = bits.str2num(cmd.word());
             tabIntMatcher ned = new tabIntMatcher();
             ned.fromString(cmd.word());
@@ -1631,38 +1663,19 @@ class userTesterOne {
             }
             bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
             String orig = cmd.getRemaining();
+            p.putLine("terminal table raw");
             for (int rnd = 0; rnd <= round; rnd++) {
+                p.putLine("clear counter");
                 p.doSync();
-                p.putLine("terminal table raw");
-                p.putLine("clear counters");
                 cmd = new cmds("ping", orig);
                 if (pingTest(op, true)) {
                     return;
                 }
-                List<String> buf = p.getOutput("show interface summary");
-                if (buf == null) {
+                int tot = p.getSummary("show interface summary | include " + what);
+                if (tot < 0) {
                     testRes = 8;
                     return;
                 }
-                int tot = 0;
-                for (int i = 0; i < buf.size(); i++) {
-                    cmd = new cmds("csv", buf.get(i));
-                    int row = 0;
-                    int sum = 0;
-                    for (;;) {
-                        s = cmd.word(";");
-                        if (s.length() < 1) {
-                            break;
-                        }
-                        row++;
-                        sum += bits.str2num(s);
-                    }
-                    if (row < 3) {
-                        continue;
-                    }
-                    tot += sum;
-                }
-                bits.buf2txt(false, bits.str2lst("res:" + tot + " bytes"), p.getLogName(4));
                 if (ned.matches(tot)) {
                     return;
                 }
@@ -1672,7 +1685,9 @@ class userTesterOne {
             return;
         }
         if (s.equals("output")) {
-            List<String> buf = p.getOutput(cmd.getRemaining());
+            s = cmd.getRemaining();
+            rdr.debugStat(slot + "/" + p.name + ": output " + s + ".");
+            List<String> buf = p.getOutput(s);
             if (buf == null) {
                 testRes = 7;
                 return;
