@@ -160,6 +160,9 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      * @return false if equals, true if differs
      */
     public boolean differs(tabLabelNtry o) {
+        if (o == null) {
+            return true;
+        }
         if (label != o.label) {
             return true;
         }

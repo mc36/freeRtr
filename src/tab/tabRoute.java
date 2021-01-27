@@ -624,6 +624,9 @@ public class tabRoute<T extends addrType> {
      * @return false if identical, true if differs
      */
     public boolean differs(addType mod, tabRoute<T> other) {
+        if (other == null) {
+            return true;
+        }
         if (prefixes.size() != other.prefixes.size()) {
             return true;
         }

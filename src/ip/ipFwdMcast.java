@@ -113,7 +113,9 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         res.iface = iface;
         res.local = local;
         res.created = created;
-        res.label = label;
+        if (label != null) {
+            res.label = label.copyBytes();
+        }
         res.bier = bier;
         res.upsVrf = upsVrf;
         if (upstream != null) {
@@ -129,6 +131,9 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
      * @return false if equals, true if differs
      */
     public boolean differs(ipFwdMcast o) {
+        if (o == null) {
+            return true;
+        }
         if (local != o.local) {
             return true;
         }
@@ -143,6 +148,15 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         }
         if (source.compare(source, o.source) != 0) {
             return true;
+        }
+        if (label == null) {
+            if (o.label != null) {
+                return true;
+            }
+        } else {
+            if (label.differs(o.label)) {
+                return true;
+            }
         }
         if (flood.size() != o.flood.size()) {
             return true;

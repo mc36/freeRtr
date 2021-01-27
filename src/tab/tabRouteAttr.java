@@ -758,6 +758,9 @@ public class tabRouteAttr<T extends addrType> {
      * @return false on equals, true on differs
      */
     public boolean differs(tabRouteAttr<T> other) {
+        if (other == null) {
+            return true;
+        }
         if (rouTyp != other.rouTyp) {
             return true;
         }

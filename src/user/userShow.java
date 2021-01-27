@@ -450,7 +450,9 @@ public class userShow {
                     cmd.error("no such process");
                     return null;
                 }
-                rdr.putStrArr(r.getShRun(!cmd.word().equals("all")));
+                boolean filt = !cmd.word().equals("all");
+                rdr.putStrArr(r.getShRun(filt));
+                rdr.putStrArr(r.getShRun2(filt));
                 return null;
             }
             if (a.equals("interface")) {

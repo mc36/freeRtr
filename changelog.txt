@@ -9665,3 +9665,8 @@ no todo: p4bf: move nexthop stuff to egress pipe
 no todo: p4bf: count hairpins in bffwd to make mcast over hairpin possible
 todo: p4lang: count hairpins in bffwd to make mcast over hairpin possible
 todo: p4lang: move nexthop stuff to egress pipe
+---------------------------------- 2021-01-27 10:14:06
+qc pass: p4lang: mldp core
+qc pass: p4lang: mldp vlan core
+qc pass: p4lang: mldp egress edge
+qc pass: p4lang: mldp vlan egress edge

@@ -80,6 +80,81 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         bits.byteCopy(opq, 0, opaque, 0, opaque.length);
     }
 
+    /**
+     * copy bytes
+     *
+     * @return copy of record
+     */
+    public ipFwdMpmp copyBytes() {
+        ipFwdMpmp n = new ipFwdMpmp(mp2mp, root, opaque);
+        n.local = local;
+        n.selfRoot = selfRoot;
+        n.vrfUpl = vrfUpl;
+        n.vrfRx = vrfRx;
+        if (uplnk != null) {
+            n.uplnk.copyBytes();
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            ipFwdMpNe ntry = neighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            n.neighs.add(ntry.copyBytes());
+        }
+        return n;
+    }
+
+    /**
+     * compare this entry
+     *
+     * @param o other
+     * @return false if equals, true if differs
+     */
+    public boolean differs(ipFwdMpmp o) {
+        if (o == null) {
+            return true;
+        }
+        if (mp2mp != o.mp2mp) {
+            return true;
+        }
+        if (local != o.local) {
+            return true;
+        }
+        if (selfRoot != o.selfRoot) {
+            return true;
+        }
+        if (root.compare(root, o.root) != 0) {
+            return true;
+        }
+        if (opaque.length != o.opaque.length) {
+            return true;
+        }
+        if (bits.byteComp(opaque, 0, o.opaque, 0, opaque.length) != 0) {
+            return true;
+        }
+        if (uplnk == null) {
+            if (o.uplnk != null) {
+                return true;
+            }
+        } else {
+            if (o.uplnk == null) {
+                return true;
+            }
+            if (uplnk.compare(uplnk, o.uplnk) != 0) {
+                return true;
+            }
+        }
+        if (neighs.size() != o.neighs.size()) {
+            return true;
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            if (neighs.get(i).differs(o.neighs.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String toString() {
         return mp2mp + " " + root + " " + bits.byteDump(opaque, 0, -1);
     }

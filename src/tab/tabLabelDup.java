@@ -51,6 +51,9 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
      * @return false if equals, true if differs
      */
     public boolean differs(tabLabelDup o) {
+        if (o == null) {
+            return true;
+        }
         if (ifc != o.ifc) {
             return true;
         }
