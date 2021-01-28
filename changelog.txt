@@ -9678,3 +9678,6 @@ no todo: pack cap should use monitor-* infra
 no todo: monitor-filter
 no todo: p4lang: move nexthop stuff to egress pipe
 no todo: p4lang: count hairpins in bffwd to make mcast over hairpin possible
+---------------------------------- 2021-01-28 19:08:23
+qc pass: p4lang: mldp core over gre
+qc pass: p4lang: mldp core over l2tp

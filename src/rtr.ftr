@@ -1334,6 +1334,8 @@ qc pass: p4lang: hairpin multicast routing
 qc pass: p4lang: hairpin vlan multicast routing
 qc pass: p4lang: mldp core
 qc pass: p4lang: mldp vlan core
+qc pass: p4lang: mldp core over gre
+qc pass: p4lang: mldp core over l2tp
 qc pass: p4lang: mldp egress edge
 qc pass: p4lang: mldp vlan egress edge
 qc pass: p4lang: mldp ingress edge
