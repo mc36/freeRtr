@@ -8,11 +8,6 @@ import java.util.List;
 import pack.packHolder;
 import pack.packNetflow;
 import pipe.pipeSide;
-import prt.prtDccp;
-import prt.prtLudp;
-import prt.prtSctp;
-import prt.prtTcp;
-import prt.prtUdp;
 import user.userFormat;
 import util.bits;
 import util.cmds;
@@ -121,26 +116,7 @@ public class tabSession implements Runnable {
     public boolean doPack(packHolder pck, boolean dir) {
         int i = pck.dataSize();
         pck.getSkip(pck.IPsiz);
-        pck.UDPsrc = 0;
-        pck.UDPtrg = 0;
-        pck.UDPsiz = 0;
-        switch (pck.IPprt) {
-            case prtTcp.protoNum:
-                prtTcp.parseTCPports(pck);
-                break;
-            case prtUdp.protoNum:
-                prtUdp.parseUDPports(pck);
-                break;
-            case prtLudp.protoNum:
-                prtLudp.parseLUDPports(pck);
-                break;
-            case prtDccp.protoNum:
-                prtDccp.parseDCCPports(pck);
-                break;
-            case prtSctp.protoNum:
-                prtSctp.parseSCTPports(pck);
-                break;
-        }
+        tabQos.classifyLayer4(pck);
         int o = pck.dataSize();
         pck.getSkip(o - i);
         tabSessionEntry ses = new tabSessionEntry(logMacs);

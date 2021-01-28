@@ -1,14 +1,20 @@
 package ifc;
 
+import addr.addrIP;
 import addr.addrMac;
 import addr.addrType;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import ip.ipCor;
+import ip.ipIfc4;
+import ip.ipIfc6;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Comparator;
 import pack.packHolder;
+import tab.tabAceslstN;
 import tab.tabGen;
+import tab.tabListing;
 import tab.tabQos;
 import user.userFormat;
 import util.bits;
@@ -101,6 +107,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcNshFwd nshFwd;
 
     /**
+     * monitor filter
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> monFlt;
+
+    /**
      * monitor direction, 1=rx, 2=tx
      */
     public int monDir = 3;
@@ -139,6 +150,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * snap code
      */
     public final static int snap = 0xaaaa;
+
+    /**
+     * ipv4 core
+     */
+    public ipCor ip4cor;
+
+    /**
+     * ipv6 core
+     */
+    public ipCor ip6cor;
 
     private final notifier notif;
 
@@ -515,6 +536,31 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (monSmpN > 0) {
             if ((monSmpP++ % monSmpN) != 0) {
+                return null;
+            }
+        }
+        if (monFlt != null) {
+            pck.ETHtype = pck.msbGetW(0);
+            pck.getSkip(2);
+            boolean b;
+            switch (pck.ETHtype) {
+                case ipIfc4.type:
+                    b = ip4cor.parseIPheader(pck, true);
+                    break;
+                case ipIfc6.type:
+                    b = ip6cor.parseIPheader(pck, true);
+                    break;
+                default:
+                    b = true;
+                    break;
+            }
+            if (b) {
+                pck.getSkip(-2);
+                return null;
+            }
+            b = monFlt.matches(false, true, pck);
+            pck.getSkip(-2);
+            if (!b) {
                 return null;
             }
         }

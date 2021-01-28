@@ -199,7 +199,12 @@ public class tabQos {
         }
     }
 
-    private void classifyLayer4(packHolder pck) {
+    /**
+     * classify layer4 headers
+     *
+     * @param pck packet to parse
+     */
+    public static void classifyLayer4(packHolder pck) {
         pck.UDPsrc = 0;
         pck.UDPtrg = 0;
         pck.UDPsiz = 0;

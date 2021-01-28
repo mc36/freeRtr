@@ -1292,6 +1292,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! monitor-direction both",
         "interface .*! monitor-truncate 0",
         "interface .*! monitor-sample 0",
+        "interface .*! no monitor-filter",
         "interface .*! no monitor-session",
         "interface .*! no monitor-buffer",
         "interface .*! no eapol client",
@@ -5108,6 +5109,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(cmds.tabulator + "monitor-direction " + s);
         l.add(cmds.tabulator + "monitor-truncate " + ethtyp.monTrnc);
         l.add(cmds.tabulator + "monitor-sample " + ethtyp.monSmpN);
+        cmds.cfgLine(l, ethtyp.monFlt == null, cmds.tabulator, "monitor-filter", "" + ethtyp.monFlt);
         cmds.cfgLine(l, ethtyp.monSes == null, cmds.tabulator, "monitor-session", "" + ethtyp.monSes);
         cmds.cfgLine(l, ethtyp.monBufD == null, cmds.tabulator, "monitor-buffer", "" + ethtyp.getMonBufSize());
         cmds.cfgLine(l, lldp == null, cmds.tabulator, "lldp enable", "");
@@ -5547,6 +5549,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     <num>                       maximum packet size");
         l.add("1 2   monitor-sample                specify sampled monitoring");
         l.add("2 .     <num>                       one of every n packet");
+        l.add("1 2   monitor-filter                specify filtered monitoring");
+        l.add("2 .     <name>                      name of access list");
         l.add("1 2   monitor-session               set monitor session");
         l.add("2 .     <name>                      name of target interface");
         l.add("1 2   monitor-buffer                set monitor buffer");
@@ -5942,6 +5946,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             ethtyp.monBufP = 0;
             ethtyp.monBufD = new byte[i];
+            return;
+        }
+        if (a.equals("monitor-filter")) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such list");
+                return;
+            }
+            ethtyp.ip4cor = new ipCor4();
+            ethtyp.ip6cor = new ipCor6();
+            ethtyp.monFlt = acl.aceslst;
             return;
         }
         if (a.equals("monitor-direction")) {
@@ -6619,6 +6634,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("transproxy")) {
             clear2transproxy();
+            return;
+        }
+        if (a.equals("monitor-filter")) {
+            ethtyp.monFlt = null;
+            ethtyp.ip4cor = null;
+            ethtyp.ip6cor = null;
             return;
         }
         if (a.equals("monitor-buffer")) {
