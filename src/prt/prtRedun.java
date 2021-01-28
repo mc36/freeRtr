@@ -183,7 +183,7 @@ public class prtRedun implements Runnable {
             con.linePut("this node is standby, active on " + ifaces.get(act));
         }
         state = packRedundancy.statActive;
-        logger.info("lost active");
+        logger.info("lost active after " + bits.timeDump(uptime));
     }
 
     /**
