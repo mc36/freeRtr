@@ -972,7 +972,11 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public addrMac getMac() {
-        return (addrMac) ifc.ethtyp.getHwAddr();
+        addrType adr = ifc.ethtyp.getHwAddr();
+        if (adr.getSize() != addrMac.size) {
+            return new addrMac();
+        }
+        return (addrMac) adr;
     }
 
     public String getStateEnding() {
@@ -2913,11 +2917,7 @@ class servP4langConn implements Runnable {
         if (ntry.mac == null) {
             return;
         }
-        addrType mac = ntry.iface.ifc.ethtyp.getHwAddr();
-        if (mac.getSize() != addrMac.size) {
-            return;
-        }
-        lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ((addrMac) mac).toEmuStr() + " " + ntry.sentIfc);
+        lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ntry.iface.getMac().toEmuStr() + " " + ntry.sentIfc);
     }
 
     private String getIpsecParam(packEsp esp) {
