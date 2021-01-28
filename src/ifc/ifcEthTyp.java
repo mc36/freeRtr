@@ -650,9 +650,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
             return;
         }
         if (logFile != null) {
-            try {
-                logFile.write(pck.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
-            } catch (Exception e) {
+            packHolder mon = applyMonitor(pck, 2, false);
+            if (mon != null) {
+                try {
+                    logFile.write(mon.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
+                } catch (Exception e) {
+                }
             }
         }
         if (monBufD != null) {
@@ -730,9 +733,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
             return;
         }
         if (logFile != null) {
-            try {
-                logFile.write(pck.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
-            } catch (Exception e) {
+            packHolder mon = applyMonitor(pck, 1, false);
+            if (mon != null) {
+                try {
+                    logFile.write(mon.convertToPcap(bits.getTime() + cfgAll.timeServerOffset, true));
+                } catch (Exception e) {
+                }
             }
         }
         if (monBufD != null) {
