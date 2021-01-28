@@ -338,7 +338,7 @@ interface template1
  ipv6 pim bier-tunnel 299
  ipv6 pim join-source loopback0
  mpls enable
- mpls inspect
+ mpls inspect mac
  mpls ldp4
  mpls ldp6
  mpls rsvp4
@@ -629,9 +629,9 @@ proxy-profile p5
 !
 !
 !
-ipv4 flow v1 collect
+ipv4 flow v1 export p1 10.10.10.227 2055
 !
-ipv6 flow v1 collect
+ipv6 flow v1 export p1 10.10.10.227 2055
 !
 !
 !
@@ -868,6 +868,10 @@ server rfb vnc
  vrf v1
  exit
 !
+server netflow flw
+ vrf v1
+ exit
+!
 server http web
  access-log
  access-startup 10000
@@ -940,4 +944,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=b9b2d7632249b7ea43c880e52e2bb75a0721427269e1cc7677e04b97fbfb137988ff8069fa65a7f18fc512be5229fa8d7c1821a110958fb8b8a155fce6366bb3-7023fb83e7ca681008ce0e8188032fff00883a71dfddacb3e4858b6ecc4b2510ecd3f1731c9c2d5bf425141cc75f7dd9dbafe54c09644f24299fd16c2b03ea11
+end chksum=386c05567f1101d09b47895440bb0b3054046c0d46de4047cc7447c1ac541772ce9a8926a10d287d4ca8abff54696760f0b09c895f1cc61ba74626ce530abba3-ab16382cf3b7fc8863792e8f6b794d125fd2c2d3f0c7b28494736a49f9a810e2a154ff6564cd296271ecb1ed99813660a916563782dc3cd791eb25f59f512008

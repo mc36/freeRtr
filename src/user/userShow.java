@@ -66,6 +66,7 @@ import rtr.rtrRip6neigh;
 import serv.servBmp2mrt;
 import serv.servDns;
 import serv.servHttp;
+import serv.servNetflow;
 import serv.servStreamingMdt;
 import tab.tabGen;
 import tab.tabIntMatcher;
@@ -533,6 +534,15 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(exp.getShow());
+            return null;
+        }
+        if (a.equals("netflow")) {
+            servNetflow srv = cfgAll.srvrFind(new servNetflow(), cfgAll.dmnNetflow, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            doShowSession(srv.connects);
             return null;
         }
         if (a.equals("streamingmdt")) {
@@ -1113,19 +1123,7 @@ public class userShow {
                     cmd.error("not enabled");
                     return null;
                 }
-                if (ifc.mplsPack.inspect == null) {
-                    cmd.error("not enabled");
-                    return null;
-                }
-                a = cmd.word();
-                if (a.equals("session")) {
-                    rdr.putStrTab(ifc.mplsPack.inspect.doShowInsp());
-                    return null;
-                }
-                if (a.equals("toptalk")) {
-                    rdr.putStrTab(ifc.mplsPack.inspect.doShowTalk());
-                    return null;
-                }
+                doShowSession(ifc.mplsPack.inspect);
                 return null;
             }
             if (a.equals("interfaces")) {
@@ -2188,16 +2186,7 @@ public class userShow {
             cmd.error("not active");
             return;
         }
-        String a = cmd.word();
-        if (a.equals("session")) {
-            rdr.putStrTab(flw.session.doShowInsp());
-            return;
-        }
-        if (a.equals("toptalk")) {
-            rdr.putStrTab(flw.session.doShowTalk());
-            return;
-        }
-        cmd.badCmd();
+        doShowSession(flw.session);
     }
 
     private void doShowIpXhsrp(int ver) {
@@ -3884,6 +3873,22 @@ public class userShow {
             l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx + "|" + cf.packRx + "|" + cf.byteRx);
         }
         rdr.putStrTab(l);
+    }
+
+    private void doShowSession(tabSession ses) {
+        if (ses == null) {
+            cmd.error("not enabled");
+            return;
+        }
+        String a = cmd.word();
+        if (a.equals("session")) {
+            rdr.putStrTab(ses.doShowInsp());
+            return;
+        }
+        if (a.equals("toptalk")) {
+            rdr.putStrTab(ses.doShowTalk());
+            return;
+        }
     }
 
 }

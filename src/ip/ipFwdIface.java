@@ -1012,7 +1012,7 @@ public class ipFwdIface extends tabRouteIface {
             if (inspect != null) {
                 inspect.stopTimer();
             }
-            inspect = new tabSession();
+            inspect = new tabSession(true, 60000);
             inspect.fromString(cmd);
             inspect.startTimer();
             return false;

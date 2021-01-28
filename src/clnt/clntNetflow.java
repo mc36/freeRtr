@@ -43,10 +43,9 @@ public class clntNetflow implements Runnable {
      * @param ver ip version
      */
     public clntNetflow(int ver) {
-        session = new tabSession();
+        session = new tabSession(false, 60000);
         session.logBefore = false;
         session.logAfter = false;
-        session.unidir = false;
         session.ipv4 = ver == 4;
         if (session.ipv4) {
             session.limit = packNetflow.flow4;

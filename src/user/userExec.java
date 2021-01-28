@@ -953,7 +953,11 @@ public class userExec {
         hl.add("3 .          <name>              check name");
         hl.add("2 3,.    sensor                  sensor information");
         hl.add("3 .        <name>                exporter name");
-        hl.add("2 3      streamingmdt            streaming telemetry information");
+        hl.add("2 3      netflow                 netflow collector information");
+        hl.add("3 4        <name>                server name");
+        hl.add("4 .          session             list of sessions");
+        hl.add("4 .          toptalk             top talker list");
+        hl.add("2 3      streamingmdt            streaming telemetry collector information");
         hl.add("3 4,.      <name>                server name");
         hl.add("4 5,.        <name>              peer");
         hl.add("5 6            <name>            path");

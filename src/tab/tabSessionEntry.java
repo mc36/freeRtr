@@ -164,6 +164,39 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
     }
 
     /**
+     * reverse this session direction
+     *
+     * @return reversed
+     */
+    public tabSessionEntry reverseDirection() {
+        tabSessionEntry n = new tabSessionEntry(logMacs);
+        n.dir = !dir;
+        n.srcMac = trgMac;
+        n.trgMac = srcMac;
+        n.srcAdr = trgAdr;
+        n.trgAdr = srcAdr;
+        n.srcPrt = trgPrt;
+        n.trgPrt = srcPrt;
+        n.ipPrt = ipPrt;
+        n.ipTos = ipTos;
+        return n;
+    }
+
+    /**
+     * reverse this session direction
+     *
+     * @return reversed
+     */
+    public tabSessionEntry reverseCounts() {
+        tabSessionEntry n = new tabSessionEntry(logMacs);
+        n.rxByte = txByte;
+        n.txByte = rxByte;
+        n.rxPack = txPack;
+        n.txPack = rxPack;
+        return n;
+    }
+
+    /**
      * clear counters
      */
     public void clearCounts() {
@@ -198,7 +231,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
     }
 
     private String getDir() {
-        return dir ? "tx" : "rx";
+        return dir ? "rx" : "tx";
     }
 
     public String toString() {

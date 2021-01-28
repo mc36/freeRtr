@@ -45,9 +45,9 @@ public class tabSession implements Runnable {
     public int source;
 
     /**
-     * unidirection collecting
+     * bidirection collecting
      */
-    public boolean unidir = true;
+    public final boolean bidir;
 
     /**
      * log before session
@@ -69,18 +69,48 @@ public class tabSession implements Runnable {
      */
     public int timeout = 60000;
 
+    /**
+     * default timeout
+     */
+    public final int defTim;
+
+    /**
+     * create new instance
+     *
+     * @param bid bidirectional
+     * @param tim default timeout
+     */
+    public tabSession(boolean bid, int tim) {
+        bidir = bid;
+        defTim = tim;
+        timeout = tim;
+    }
+
     public String toString() {
-        String a = "";
-        if (logMacs) {
-            a = " mac";
+        List<String> cfg = new ArrayList<String>();
+        getConfig(cfg, "");
+        String s = "";
+        for (int i = 0; i < cfg.size(); i++) {
+            String a = cfg.get(i);
+            if (a.startsWith("no")) {
+                continue;
+            }
+            s += a + " ";
         }
-        if (logBefore) {
-            a = " before";
-        }
-        if (logAfter) {
-            a = " after";
-        }
-        return a.trim();
+        return s.trim();
+    }
+
+    /**
+     * get configuration
+     *
+     * @param res where to write
+     * @param beg beginning to use
+     */
+    public void getConfig(List<String> res, String beg) {
+        cmds.cfgLine(res, !logMacs, beg, "mac", "");
+        cmds.cfgLine(res, !logBefore, beg, "before", "");
+        cmds.cfgLine(res, !logAfter, beg, "after", "");
+        cmds.cfgLine(res, timeout == defTim, beg, "timeout", "" + timeout);
     }
 
     /**
@@ -94,23 +124,64 @@ public class tabSession implements Runnable {
             if (a.length() < 1) {
                 break;
             }
+            boolean negated = a.equals("no");
+            if (negated) {
+                a = cmd.word();
+            }
             if (a.equals("mac")) {
-                logMacs = true;
+                logMacs = !negated;
+                continue;
             }
             if (a.equals("before")) {
-                logBefore = true;
+                logBefore = !negated;
+                continue;
             }
             if (a.equals("after")) {
-                logAfter = true;
+                logAfter = !negated;
+                continue;
+            }
+            if (a.equals("timeout")) {
+                if (negated) {
+                    timeout = defTim;
+                } else {
+                    timeout = bits.str2num(cmd.word());
+                }
+                continue;
             }
         }
+    }
+
+    /**
+     * inspect one session
+     *
+     * @param ses session to inspect
+     * @param dir direction of packet
+     * @return entry to update, null if denied
+     */
+    public tabSessionEntry doSess(tabSessionEntry ses, boolean dir) {
+        tabSessionEntry res = connects.find(ses);
+        if ((res == null) && bidir) {
+            ses = ses.reverseDirection();
+            res = connects.find(ses);
+        }
+        if (res == null) {
+            ses.startTime = bits.getTime();
+            connects.add(ses);
+            res = ses;
+            if (logBefore) {
+                logger.info("started " + res);
+            }
+        }
+        ses.dir = res.dir;
+        res.lastTime = bits.getTime();
+        return res;
     }
 
     /**
      * inspect one packet
      *
      * @param pck packet to inspect
-     * @param dir direction of packet
+     * @param dir direction of packet, true=tx, false=tx
      * @return true to drop, false to forward
      */
     public boolean doPack(packHolder pck, boolean dir) {
@@ -127,33 +198,20 @@ public class tabSession implements Runnable {
         ses.trgPrt = pck.UDPtrg;
         ses.srcAdr = pck.IPsrc.copyBytes();
         ses.trgAdr = pck.IPtrg.copyBytes();
-        tabSessionEntry res = connects.find(ses);
-        if ((res == null) && unidir) {
-            ses.srcPrt = pck.UDPtrg;
-            ses.trgPrt = pck.UDPsrc;
-            ses.srcAdr = pck.IPtrg.copyBytes();
-            ses.trgAdr = pck.IPsrc.copyBytes();
-            res = connects.find(ses);
+        if (logMacs) {
+            ses.srcMac = pck.ETHsrc.copyBytes();
+            ses.trgMac = pck.ETHtrg.copyBytes();
         }
-        if (res == null) {
-            ses.startTime = bits.getTime();
-            if (logMacs) {
-                ses.srcMac = pck.ETHsrc.copyBytes();
-                ses.trgMac = pck.ETHtrg.copyBytes();
-            }
-            connects.add(ses);
-            res = ses;
-            if (logBefore) {
-                logger.info("started " + res);
-            }
+        ses = doSess(ses, dir);
+        if (ses == null) {
+            return true;
         }
-        res.lastTime = bits.getTime();
         if (dir) {
-            res.txByte += o;
-            res.txPack++;
+            ses.txByte += o;
+            ses.txPack++;
         } else {
-            res.rxByte += o;
-            res.rxPack++;
+            ses.rxByte += o;
+            ses.rxPack++;
         }
         return false;
     }
