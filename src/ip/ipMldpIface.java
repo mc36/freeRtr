@@ -36,7 +36,7 @@ public class ipMldpIface {
      */
     public void sendJoin(ipFwdMcast grp, boolean need) {
         addrIP rot = grp.source.copyBytes();
-        tabRouteEntry<addrIP> rou = fwdCore.actualU.route(rot);
+        tabRouteEntry<addrIP> rou = fwdCore.actualM.route(rot);
         if (rou != null) {
             if (rou.best.oldHop != null) {
                 rot = rou.best.oldHop.copyBytes();
