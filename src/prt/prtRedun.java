@@ -60,7 +60,9 @@ public class prtRedun implements Runnable {
                     if ((tim - ifc.heard) < cfgAll.redundancyHold) {
                         continue;
                     }
-                    ifc.reach.set(0);
+                    if (ifc.reach.set(0) != 0) {
+                        logger.error("peer down on " + ifc);
+                    }
                 }
                 bits.sleep(cfgAll.redundancyKeep);
             }
@@ -166,13 +168,9 @@ public class prtRedun implements Runnable {
         logger.info("became standby, active on " + ifaces.get(act));
         for (;;) {
             bits.sleep(cfgAll.redundancyKeep);
-            int i = findActive();
-            if (i < 0) {
+            act = findActive();
+            if (act < 0) {
                 break;
-            }
-            if (i != act) {
-                act = i;
-                logger.info("active changed to " + ifaces.get(act));
             }
             if (con == null) {
                 continue;
@@ -182,7 +180,7 @@ public class prtRedun implements Runnable {
             }
             byte[] buf = new byte[256];
             con.nonBlockGet(buf, 0, buf.length);
-            con.linePut("this node is standby");
+            con.linePut("this node is standby, active on " + ifaces.get(act));
         }
         state = packRedundancy.statActive;
         logger.info("lost active");
@@ -275,9 +273,13 @@ class prtRedunIfc implements ifcUp {
         }
         last = pckP;
         if (pckP.peer == prtRedun.magic) {
-            reach.set(3);
+            if (reach.set(3) != 3) {
+                logger.error("peer up on " + name);
+            }
         } else {
-            reach.set(1);
+            if (reach.set(1) >= 1) {
+                logger.error("echo mismatch on " + name);
+            }
         }
         heard = bits.getTime();
         switch (pckP.type) {
@@ -295,9 +297,9 @@ class prtRedunIfc implements ifcUp {
                 }
                 String a = prtRedun.getSelf().otherBetter(pckP);
                 if (a != null) {
-                    cfgInit.stopRouter(true, 9, "dual active, reloading myself because peer " + a);
+                    cfgInit.stopRouter(true, 9, "dual active, reloading because lost on " + a);
                 }
-                logger.warn("dual active, reloading unresponsive peer");
+                logger.warn("dual active, reloading peer");
                 dualAct++;
                 if (dualAct < 5) {
                     break;

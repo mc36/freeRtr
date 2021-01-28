@@ -52,12 +52,16 @@ public class syncInt {
      * set value
      *
      * @param v value
+     * @return old value
      */
-    public void set(int v) {
+    public int set(int v) {
+        int old;
         synchronized (lck) {
             upd++;
+            old = val;
             val = v;
         }
+        return old;
     }
 
     /**
