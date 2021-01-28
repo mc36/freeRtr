@@ -128,6 +128,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     protected int initial = 1000;
 
     /**
+     * redundancy priority
+     */
+    protected int redunPrio;
+
+    /**
      * random time between runs
      */
     public int randInt;
@@ -208,6 +213,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! mac null",
         "vdc definition .*! cpu null",
         "vdc definition .*! memory 512",
+        "vdc definition .*! priority 0",
         "vdc definition .*! cores 1",
         "vdc definition .*! nic e1000",
         "vdc definition .*! time 1000",
@@ -246,6 +252,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public cfgVdc copyBytes() {
         cfgVdc n = new cfgVdc(name);
         n.description = description;
+        n.redunPrio = redunPrio;
         n.respawn = respawn;
         n.uuidValue = uuidValue;
         n.cpuPinning = cpuPinning;
@@ -335,6 +342,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("2  .        <name>                   type parameters");
         l.add("1  2      memory                     memory of vdc");
         l.add("2  .        <num>                    megabytes");
+        l.add("1  2      priority                   specify redundancy priority");
+        l.add("2  .        <num>                    priority");
         l.add("1  2      cores                      cpu of vdc");
         l.add("2  .        <num>                    cores");
         l.add("1  2      mac                        mac address base");
@@ -388,6 +397,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "disk4 " + image4name);
         l.add(cmds.tabulator + "cdrom " + cdromName);
         l.add(cmds.tabulator + "memory " + imageMem);
+        l.add(cmds.tabulator + "priority " + redunPrio);
         l.add(cmds.tabulator + "cores " + imageCpu);
         l.add(cmds.tabulator + "nic " + nicType);
         l.add(cmds.tabulator + "mac " + macBase);
@@ -475,6 +485,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("memory")) {
             imageMem = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("priority")) {
+            redunPrio = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("cores")) {
@@ -666,6 +680,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("memory")) {
             imageMem = 512;
+            return;
+        }
+        if (a.equals("priority")) {
+            redunPrio = 0;
             return;
         }
         if (a.equals("cores")) {
@@ -926,6 +944,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             l.add("hwid " + uuidValue);
         }
         l.add("port " + beg + " " + end);
+        l.add("prio " + redunPrio);
         addParam(l, "jvm", cfgInit.jvmParam);
         addParam(l, "url", cfgAll.upgradeServer);
         addParam(l, "key", cfgAll.upgradePubKey);

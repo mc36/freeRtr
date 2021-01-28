@@ -125,6 +125,11 @@ public class cfgInit implements Runnable {
     public static final String hwCfgEnd = "hw.txt";
 
     /**
+     * redundancy priority
+     */
+    public static int redunPrio;
+
+    /**
      * set until boot completes
      */
     public static boolean booting = true;
@@ -364,6 +369,10 @@ public class cfgInit implements Runnable {
                 int rem = bits.str2num(cmd.word());
                 String adr = cmd.word();
                 prtLocTcp.startServer(loc, vrf, rem, adr);
+                continue;
+            }
+            if (s.equals("prio")) {
+                redunPrio = bits.str2num(cmd.word());
                 continue;
             }
             if (s.equals("def")) {

@@ -15,7 +15,7 @@ public class packRedundancy {
     /**
      * header size
      */
-    public static final int size = 16;
+    public static final int size = 20;
 
     /**
      * hello
@@ -108,6 +108,11 @@ public class packRedundancy {
     public int uptime;
 
     /**
+     * priority
+     */
+    public int priority;
+
+    /**
      * type to string
      *
      * @param i type
@@ -147,6 +152,7 @@ public class packRedundancy {
         magic = pck.msbGetD(4);
         peer = pck.msbGetD(8);
         uptime = pck.msbGetD(12);
+        priority = pck.msbGetD(16);
         pck.getSkip(size);
         return false;
     }
@@ -163,12 +169,41 @@ public class packRedundancy {
         pck.msbPutD(4, magic);
         pck.msbPutD(8, peer);
         pck.msbPutD(12, uptime);
+        pck.msbPutD(16, priority);
         pck.putSkip(size);
         pck.merge2beg();
     }
 
+    /**
+     * check if other better
+     *
+     * @param o other
+     * @return reason, null if not
+     */
+    public String otherBetter(packRedundancy o) {
+        if (priority < o.priority) {
+            return "priority";
+        }
+        if (priority > o.priority) {
+            return null;
+        }
+        if (uptime < o.uptime) {
+            return "uptime";
+        }
+        if (uptime > o.uptime) {
+            return null;
+        }
+        if (magic < o.magic) {
+            return "magic";
+        }
+        if (magic > o.magic) {
+            return null;
+        }
+        return null;
+    }
+
     public String toString() {
-        return "type=" + typ2str(type) + " state=" + state + " magic=" + magic + " peer=" + peer + " uptime=" + uptime;
+        return "type=" + typ2str(type) + " state=" + state + " magic=" + magic + " peer=" + peer + " priority=" + priority + " uptime=" + uptime;
     }
 
 }

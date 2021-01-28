@@ -20,6 +20,7 @@ import util.debugger;
 import util.logger;
 import util.notifier;
 import util.state;
+import util.syncInt;
 import util.version;
 
 /**
@@ -50,10 +51,16 @@ public class prtRedun implements Runnable {
         try {
             packHolder pck = new packHolder(true, true);
             for (;;) {
-                uptime = (int) ((bits.getTime() - cfgInit.started) / 1000);
+                long tim = bits.getTime();
+                uptime = (int) ((tim - cfgInit.started) / 1000);
                 for (int i = 0; i < ifaces.size(); i++) {
                     pck.clear();
-                    ifaces.get(i).doPack(packRedundancy.typHello, pck);
+                    prtRedunIfc ifc = ifaces.get(i);
+                    ifc.doPack(packRedundancy.typHello, pck);
+                    if ((tim - ifc.heard) < cfgAll.redundancyHold) {
+                        continue;
+                    }
+                    ifc.reach.set(0);
                 }
                 bits.sleep(cfgAll.redundancyKeep);
             }
@@ -68,11 +75,11 @@ public class prtRedun implements Runnable {
      * @return output
      */
     public static userFormat doShow() {
-        userFormat l = new userFormat("|", "iface|state|bidir|magic|uptime|heard");
-        l.add("self|" + state + "|-|" + magic + "|" + bits.timeDump(uptime) + "|-");
+        userFormat l = new userFormat("|", "iface|state|prio|reach|magic|uptime|heard");
+        l.add("self|" + state + "|" + cfgInit.redunPrio + "|-|" + magic + "|" + bits.timeDump(uptime) + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.doShow());
+            l.add(ifc.name + "|" + ifc.last.state + "|" + ifc.last.priority + "|" + ifc.reach + "|" + ifc.last.magic + "|" + bits.timeDump(ifc.last.uptime) + "|" + bits.timePast(ifc.heard));
         }
         return l;
     }
@@ -90,32 +97,43 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * fill in generic parts
+     *
+     * @return get self packet
+     */
+    public static packRedundancy getSelf() {
+        packRedundancy pckP = new packRedundancy();
+        pckP.state = prtRedun.state;
+        pckP.magic = prtRedun.magic;
+        pckP.uptime = prtRedun.uptime;
+        pckP.priority = cfgInit.redunPrio;
+        return pckP;
+    }
+
+    /**
      * find best peer
      *
      * @return best peer index, -1 if none
      */
     public static int findActive() {
-        long tim = bits.getTime();
-        int bi = -1;
-        int bm = magic;
+        packRedundancy bst = getSelf();
+        int idx = -1;
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            if (!ifc.bidir) {
+            if (ifc.reach.get() != 3) {
                 continue;
             }
-            if ((tim - ifc.heard) > cfgAll.redundancyHold) {
-                continue;
-            }
-            if (ifc.state == packRedundancy.statActive) {
+            if (ifc.last.state == packRedundancy.statActive) {
                 return i;
             }
-            if (ifc.magic < bm) {
+            String a = bst.otherBetter(ifc.last);
+            if (a == null) {
                 continue;
             }
-            bi = i;
-            bm = ifc.magic;
+            idx = i;
+            bst = ifc.last;
         }
-        return bi;
+        return idx;
     }
 
     /**
@@ -138,17 +156,23 @@ public class prtRedun implements Runnable {
         state = packRedundancy.statSpeak;
         new Thread(new prtRedun()).start();
         bits.sleep(cfgAll.redundancyInit);
-        if (findActive() < 0) {
+        int act = findActive();
+        if (act < 0) {
             state = packRedundancy.statActive;
             logger.info("became active");
             return;
         }
         state = packRedundancy.statStandby;
-        logger.info("became standby");
+        logger.info("became standby, active on " + ifaces.get(act));
         for (;;) {
             bits.sleep(cfgAll.redundancyKeep);
-            if (findActive() < 0) {
+            int i = findActive();
+            if (i < 0) {
                 break;
+            }
+            if (i != act) {
+                act = i;
+                logger.info("active changed to " + ifaces.get(act));
             }
             if (con == null) {
                 continue;
@@ -198,13 +222,9 @@ class prtRedunIfc implements ifcUp {
 
     public String name;
 
-    public boolean bidir;
+    public final syncInt reach = new syncInt(0);
 
-    public int magic;
-
-    public int state;
-
-    public int uptime;
+    public packRedundancy last = new packRedundancy();
 
     public long heard;
 
@@ -214,24 +234,22 @@ class prtRedunIfc implements ifcUp {
 
     public int ackRx;
 
+    public String toString() {
+        return "" + name;
+    }
+
     public void doInit(String nam, ifcThread thrd) {
-        bidir = false;
+        reach.set(0);
         name = nam;
         lower = thrd;
-        state = packRedundancy.statInit;
-        magic = 0;
+        last.state = packRedundancy.statInit;
         heard = 0;
-        uptime = 0;
         dualAct = 0;
         lower.setFilter(false);
         lower.setUpper(this);
         lower.startLoop(1);
         hwaddr = (addrMac) lower.getHwAddr();
         filNm = version.myWorkDir() + "red" + bits.randomD() + ".tmp";
-    }
-
-    public String doShow() {
-        return name + "|" + state + "|" + bidir + "|" + magic + "|" + bits.timeDump(uptime) + "|" + bits.timePast(heard);
     }
 
     public void setParent(ifcDn parent) {
@@ -255,28 +273,31 @@ class prtRedunIfc implements ifcUp {
         if (debugger.prtRedun) {
             logger.debug("rx " + pckP);
         }
-        magic = pckP.magic;
-        state = pckP.state;
-        bidir = pckP.peer == prtRedun.magic;
-        uptime = pckP.uptime;
+        last = pckP;
+        if (pckP.peer == prtRedun.magic) {
+            reach.set(3);
+        } else {
+            reach.set(1);
+        }
         heard = bits.getTime();
         switch (pckP.type) {
             case packRedundancy.typHello:
-                if ((magic == prtRedun.magic) && (state >= prtRedun.state)) {
+                if ((last.magic == prtRedun.magic) && (last.state >= prtRedun.state)) {
                     cfgInit.stopRouter(true, 6, "magic collision");
                 }
                 if (prtRedun.state != packRedundancy.statActive) {
                     dualAct = 0;
                     break;
                 }
-                if (state != packRedundancy.statActive) {
+                if (last.state != packRedundancy.statActive) {
                     dualAct = 0;
                     break;
                 }
-                if (uptime >= prtRedun.uptime) {
-                    cfgInit.stopRouter(true, 9, "dual active, peer older");
+                String a = prtRedun.getSelf().otherBetter(pckP);
+                if (a != null) {
+                    cfgInit.stopRouter(true, 9, "dual active, reloading myself because peer " + a);
                 }
-                logger.warn("dual active, peer younger");
+                logger.warn("dual active, reloading unresponsive peer");
                 dualAct++;
                 if (dualAct < 5) {
                     break;
@@ -332,7 +353,7 @@ class prtRedunIfc implements ifcUp {
                 break;
             }
             filRx = null;
-            String a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+            a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
             String b = null;
             logger.info("received file " + a);
             if (a.equals(packRedundancy.fnCore)) {
@@ -353,12 +374,9 @@ class prtRedunIfc implements ifcUp {
 
     public void doPack(int typ, packHolder pckB) {
         pckB.merge2beg();
-        packRedundancy pckP = new packRedundancy();
+        packRedundancy pckP = prtRedun.getSelf();
         pckP.type = typ;
-        pckP.state = prtRedun.state;
-        pckP.magic = prtRedun.magic;
-        pckP.uptime = prtRedun.uptime;
-        pckP.peer = magic;
+        pckP.peer = last.magic;
         pckP.createHeader(pckB);
         if (debugger.prtRedun) {
             logger.debug("tx " + pckP);
