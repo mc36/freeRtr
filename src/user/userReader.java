@@ -512,9 +512,9 @@ public class userReader implements Comparator<String> {
      * @param clr clear before draw
      */
     public synchronized void putCurrLine(boolean clr) {
-        final String trncd = "..";
+        final String trncd = "$";
         final boolean color = pipe.settingsGet(pipeSetting.colors, false);
-        final int width = pipe.settingsGet(pipeSetting.width, 80);
+        final int width = pipe.settingsGet(pipeSetting.width, 80) - 1;
         clr |= rangeCheck();
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         String s = curr.substring(beg, curr.length());
@@ -523,14 +523,14 @@ public class userReader implements Comparator<String> {
             s = trncd + s;
             crsr += trncd.length();
         }
-        int left = width - prompt.length() - 1;
+        int left = width - prompt.length();
         if (s.length() > left) {
             s = s.substring(0, left - trncd.length()) + trncd;
         }
         s = prompt + s;
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         if (clr) {
-            pipe.strPut(bits.padEnd(s, width - 1, " "));
+            pipe.strPut(bits.padEnd(s, width, " "));
         } else {
             pipe.strPut(s);
         }
@@ -547,7 +547,7 @@ public class userReader implements Comparator<String> {
     private boolean rangeCheck() {
         len = curr.length();
         int old = beg;
-        final int width = pipe.settingsGet(pipeSetting.width, 80);
+        final int width = pipe.settingsGet(pipeSetting.width, 80) - 1;
         final int mov = width / 10;
         if (pos < 0) {
             pos = 0;

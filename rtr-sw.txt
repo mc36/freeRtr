@@ -829,7 +829,6 @@ server telnet ssh
  port 22
  exec timestamp
  exec colorized
- exec spacetab
  exec tablemode table
  no exec authorization
  no login authentication
@@ -846,7 +845,6 @@ server telnet tel
  access-blackhole6 1
  exec timestamp
  exec colorized
- exec spacetab
  exec tablemode table
  no exec authorization
  login authentication access
@@ -944,4 +942,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=386c05567f1101d09b47895440bb0b3054046c0d46de4047cc7447c1ac541772ce9a8926a10d287d4ca8abff54696760f0b09c895f1cc61ba74626ce530abba3-ab16382cf3b7fc8863792e8f6b794d125fd2c2d3f0c7b28494736a49f9a810e2a154ff6564cd296271ecb1ed99813660a916563782dc3cd791eb25f59f512008
+end chksum=78e61b5fe08e5ec7ccc5fe738e324c25abbe0f1339522cf070cfb69f18f95136823e59e5fec6fa15cebf71015c2829b200fb4d1a4937915ea520fa09d38933b2-26c4f6c9ce868315ed8b9e3f765fbc64b9ad8619b5d479f4095625a04be72be445e228b71e9760b3f35b7994d3ff39bcc9e5c20cfa5788543a0f7242a2a3cb04
