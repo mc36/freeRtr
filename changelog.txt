@@ -9673,3 +9673,8 @@ qc pass: p4lang: mldp vlan egress edge
 ---------------------------------- 2021-01-27 21:24:15
 qc pass: p4lang: mldp ingress edge
 qc pass: p4lang: mldp vlan ingress edge
+---------------------------------- 2021-01-28 06:09:59
+no todo: pack cap should use monitor-* infra
+no todo: monitor-filter
+no todo: p4lang: move nexthop stuff to egress pipe
+no todo: p4lang: count hairpins in bffwd to make mcast over hairpin possible
