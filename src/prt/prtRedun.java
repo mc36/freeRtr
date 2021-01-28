@@ -49,25 +49,29 @@ public class prtRedun implements Runnable {
 
     public void run() {
         try {
-            packHolder pck = new packHolder(true, true);
             for (;;) {
-                long tim = bits.getTime();
-                uptime = (int) ((tim - cfgInit.started) / 1000);
-                for (int i = 0; i < ifaces.size(); i++) {
-                    pck.clear();
-                    prtRedunIfc ifc = ifaces.get(i);
-                    ifc.doPack(packRedundancy.typHello, pck);
-                    if ((tim - ifc.heard) < cfgAll.redundancyHold) {
-                        continue;
-                    }
-                    if (ifc.reach.set(0) != 0) {
-                        logger.error("peer down on " + ifc);
-                    }
-                }
+                sendHellos();
                 bits.sleep(cfgAll.redundancyKeep);
             }
         } catch (Exception e) {
             logger.exception(e);
+        }
+    }
+
+    private static void sendHellos() {
+        packHolder pck = new packHolder(true, true);
+        long tim = bits.getTime();
+        uptime = (int) ((tim - cfgInit.started) / 1000);
+        for (int i = 0; i < ifaces.size(); i++) {
+            pck.clear();
+            prtRedunIfc ifc = ifaces.get(i);
+            ifc.doPack(packRedundancy.typHello, pck);
+            if ((tim - ifc.heard) < cfgAll.redundancyHold) {
+                continue;
+            }
+            if (ifc.reach.set(0) != 0) {
+                logger.error("peer down on " + ifc);
+            }
         }
     }
 
@@ -161,10 +165,18 @@ public class prtRedun implements Runnable {
         int act = findActive();
         if (act < 0) {
             state = packRedundancy.statActive;
+            sendHellos();
             logger.info("became active");
             return;
         }
+        if (ifaces.get(act).last.priority < cfgInit.redunPrio) {
+            state = packRedundancy.statActive;
+            sendHellos();
+            logger.info("preempting over " + ifaces.get(act));
+            return;
+        }
         state = packRedundancy.statStandby;
+        sendHellos();
         logger.info("became standby, active on " + ifaces.get(act));
         for (;;) {
             bits.sleep(cfgAll.redundancyKeep);
@@ -183,6 +195,7 @@ public class prtRedun implements Runnable {
             con.linePut("this node is standby, active on " + ifaces.get(act));
         }
         state = packRedundancy.statActive;
+        sendHellos();
         logger.info("lost active after " + bits.timeDump(uptime));
     }
 

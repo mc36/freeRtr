@@ -791,17 +791,17 @@ public class cfgAll {
     /**
      * redundancy keepalive time
      */
-    public static int redundancyKeep = 1000;
+    public static int redundancyKeep = 500;
 
     /**
      * redundancy hold time
      */
-    public static int redundancyHold = 5 * 1000;
+    public static int redundancyHold = 5 * 500;
 
     /**
      * redundancy init time
      */
-    public static int redundancyInit = 10 * 1000;
+    public static int redundancyInit = 10 * 500;
 
     /**
      * passive mode ftp
@@ -950,7 +950,7 @@ public class cfgAll {
         "!no password-encrypt",
         "!no enable",
         // client
-        "!client redundancy 1000 5000 10000",
+        "!client redundancy 500 2500 5000",
         "!no client proxy",
         "!no client domain-name",
         "!no client name-proxy",
