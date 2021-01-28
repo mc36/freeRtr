@@ -287,7 +287,7 @@ class prtRedunIfc implements ifcUp {
         last = pckP;
         if (pckP.peer == prtRedun.magic) {
             if (reach.set(3) != 3) {
-                logger.error("peer up on " + name);
+                logger.warn("peer up on " + name);
             }
         } else {
             if (reach.set(1) >= 1) {
