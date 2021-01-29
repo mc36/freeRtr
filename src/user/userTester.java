@@ -493,11 +493,11 @@ public class userTester {
                 continue;
             }
             if (nonres && !ftr.res) {
-                rdr.debugStat("failed: " + ftr.fil);
+                rdr.debugStat("failed: " + ftr.fil + " " + ftr.csv);
                 continue;
             }
             if (ftr.ran > ranlim) {
-                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.fil);
+                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.fil + " " + ftr.csv);
                 continue;
             }
         }
