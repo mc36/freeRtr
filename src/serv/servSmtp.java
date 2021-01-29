@@ -485,6 +485,8 @@ class servSmtpDoer implements Runnable {
 
     private List<String> trgR = new ArrayList<String>();
 
+    private String trgS = "";
+
     private boolean recurAva;
 
     private int rblRes = 0;
@@ -640,7 +642,7 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("rcpt")) {
-            String last = null;
+            String last = "";
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -660,6 +662,7 @@ class servSmtpDoer implements Runnable {
             last = uniResLoc.fromEmail(last);
             servSmtpLoc loc = findLocal(last);
             if (loc != null) {
+                trgS += " " + last;
                 if (trgL.add(loc) != null) {
                     doLine("250 " + loc.email + " already added");
                     return false;
@@ -669,6 +672,7 @@ class servSmtpDoer implements Runnable {
             }
             servSmtpFwd fwd = findForward(last);
             if (fwd != null) {
+                trgS += " " + last;
                 trgR.add(fwd.remote);
                 doLine("250 " + fwd.email + " added");
                 if (fwd.bcc.length() < 1) {
@@ -681,6 +685,7 @@ class servSmtpDoer implements Runnable {
                 return false;
             }
             if (recurAva) {
+                trgS += " " + last;
                 trgR.add(last);
                 doLine("250 " + last + " will handled out");
                 return false;
@@ -690,6 +695,7 @@ class servSmtpDoer implements Runnable {
         }
         if (a.equals("rset")) {
             src = "";
+            trgS = "";
             trgL.clear();
             trgR.clear();
             doLine("250 target list cleared");
@@ -703,7 +709,7 @@ class servSmtpDoer implements Runnable {
             doLine("354 start mail input");
             packText pt = new packText(pipe);
             List<String> txt = pt.dottedRecvAll();
-            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ") by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ") (envelope-from " + src + ") with smtp at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ") by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ") (envelope-from " + src + ") with smtp for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             int o = 0;
             long tim = bits.getTime();
             for (int i = 0; i < trgL.size(); i++) {
@@ -728,6 +734,7 @@ class servSmtpDoer implements Runnable {
             }
             doLine("250 mail saved in " + o + " local and " + trgR.size() + " remote mailbox(es)");
             src = "";
+            trgS = "";
             trgL.clear();
             trgR.clear();
             return false;
