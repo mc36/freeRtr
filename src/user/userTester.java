@@ -412,6 +412,12 @@ public class userTester {
             if (paralell > 1) {
                 rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep);
             }
+            if (cmd.pipe.ready2rx() < 1) {
+                continue;
+            }
+            cmd.pipe.lineGet(1);
+            listFails(finished, true, 1);
+            listFails(needed, false, 0);
         }
         if (persistC != null) {
             persistC.applyCfg(persistD);
@@ -422,7 +428,8 @@ public class userTester {
         for (int i = 0; i < paralell; i++) {
             workers[i].stopAll();
         }
-        listFails(finished);
+        listFails(finished, true, 1);
+        listFails(needed, false, 0);
         String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
@@ -479,21 +486,23 @@ public class userTester {
         bits.buf2txt(false, txt, "../changelog" + beg + ".txt");
     }
 
-    private void listFails(tabGen<userTesterFtr> finished) {
-        for (int i = 0; i < finished.size(); i++) {
-            userTesterFtr ftr = finished.get(i);
-            if (!ftr.res) {
-                rdr.debugStat("failed: " + ftr.csv);
+    private void listFails(tabGen<userTesterFtr> lst, boolean nonres, int ranlim) {
+        for (int i = 0; i < lst.size(); i++) {
+            userTesterFtr ftr = lst.get(i);
+            if (ftr == null) {
                 continue;
             }
-            if (ftr.ran > 1) {
-                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.csv);
+            if (nonres && !ftr.res) {
+                rdr.debugStat("failed: " + ftr.fil);
+                continue;
+            }
+            if (ftr.ran > ranlim) {
+                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.fil);
                 continue;
             }
         }
     }
-    
-    
+
     /**
      * do worker round
      *
