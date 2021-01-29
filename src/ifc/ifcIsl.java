@@ -46,6 +46,7 @@ public class ifcIsl extends ifcVlan {
      * @param ethtyp handler
      */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
+        cntr.dropper = ethtyp.getCounter();
         ethtyp.addSNAP(type, "isl", this);
         ethtyp.updateSNAP(type, this);
     }

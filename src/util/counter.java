@@ -295,6 +295,11 @@ public class counter implements Comparator<counter> {
     public state.states lastState = state.states.close;
 
     /**
+     * dropper to use
+     */
+    public counter dropper;
+
+    /**
      * creates new counter
      */
     public counter() {
@@ -341,6 +346,11 @@ public class counter implements Comparator<counter> {
      * @param reason reason why dropped
      */
     public void drop(packHolder pck, reasons reason) {
+        if (dropper != null) {
+            dropper.packDr++;
+            dropper.byteDr += pck.dataSize();
+            dropper.byteDr += pck.headSize();
+        }
         packDr++;
         byteDr += pck.dataSize();
         byteDr += pck.headSize();

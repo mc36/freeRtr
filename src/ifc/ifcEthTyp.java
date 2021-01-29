@@ -522,7 +522,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             protos[i] = new counter();
         }
         hstry = new history();
-        defUpper = new ifcEthTypET(null, null);
+        defUpper = new ifcEthTypET(this, null);
         promiscous = false;
         lastState = state.states.up;
         etTyps = new tabGen<ifcEthTypET>();
@@ -586,7 +586,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (debugger.ifcEthTypTraf) {
             logger.debug("rx type=" + bits.toHexW(typ));
         }
-        ifcEthTypET et = new ifcEthTypET(null, null);
+        ifcEthTypET et = new ifcEthTypET(this, null);
         et.ethTyp = typ;
         et = etTyps.find(et);
         if (et != null) {
@@ -645,7 +645,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (debugger.ifcEthTypTraf) {
             logger.debug("rx (embedded)type=" + bits.toHexW(typ));
         }
-        et = new ifcEthTypET(null, null);
+        et = new ifcEthTypET(this, null);
         et.ethTyp = typ;
         et = etTyps.find(et);
         if (et != null) {
@@ -874,10 +874,10 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (debugger.ifcEthTypTraf) {
             logger.debug("del ethertype=" + bits.toHexW(typ));
         }
-        ifcEthTypET ntry = new ifcEthTypET(null, null);
+        ifcEthTypET ntry = new ifcEthTypET(this, null);
         if (typ == -1) {
             ntry = defUpper;
-            defUpper = new ifcEthTypET(null, null);
+            defUpper = new ifcEthTypET(this, null);
         } else {
             ntry.ethTyp = typ;
             ntry = etTyps.del(ntry);
@@ -1267,7 +1267,7 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
 
     public String name;
 
-    public ifcUp upper = new ifcNull();
+    public ifcUp upper;
 
     public boolean promiscous;
 
@@ -1277,7 +1277,13 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
 
     public ifcEthTypET(ifcEthTyp parent, ifcUp server) {
         lower = parent;
-        upper = server;
+        if (server != null) {
+            upper = server;
+            return;
+        }
+        ifcNull nul = new ifcNull();
+        nul.getCounter().dropper = parent.getCounter();
+        upper = nul;
     }
 
     public int compare(ifcEthTypET v1, ifcEthTypET v2) {
@@ -1346,10 +1352,6 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
 
     public void doRxPack(packHolder pck) {
         cntr.rx(pck);
-        if (upper == null) {
-            cntr.drop(pck, counter.reasons.noIface);
-            return;
-        }
         upper.recvPack(pck);
     }
 

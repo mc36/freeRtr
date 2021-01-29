@@ -71,6 +71,7 @@ public class ifcDot1ad extends ifcVlan {
      * @param ethtyp handler
      */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
+        cntr.dropper = ethtyp.getCounter();
         ethtyp.addET(type, "dot1ad", this);
         ethtyp.updateET(type, this);
     }

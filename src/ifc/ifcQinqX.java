@@ -109,6 +109,7 @@ public class ifcQinqX extends ifcVlan {
      * @param ethtyp handler
      */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
+        cntr.dropper = ethtyp.getCounter();
         ethtyp.addET(type, "qinqx", this);
         ethtyp.updateET(type, this);
         lower = ethtyp;
