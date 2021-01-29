@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_MPLS2_P4_
-#define _IG_CTL_MPLS2_P4_
+#ifndef _EG_DEPARSER_P4_
+#define _EG_DEPARSER_P4_
 
-control IngressControlMPLS2(inout headers hdr,
-                            inout ingress_metadata_t ig_md,
-                            inout standard_metadata_t ig_intr_md) {
-
-
+control eg_ctl_dprs(packet_out pkt,
+                    in headers hdr) {
     apply {
-
-        if (ig_md.mpls1_remove == 1) {
-            hdr.mpls1.setInvalid();
-        }
-
-        if (ig_md.mpls0_remove == 1) {
-            hdr.mpls0.setInvalid();
-            if (ig_md.ipv4_valid == 1) {
-                ig_md.ethertype = ETHERTYPE_IPV4;
-            } else {
-                ig_md.ethertype = ETHERTYPE_IPV6;
-            }
-        }
-
+        /*
+         * parsed headers that have been modified
+         * in ctl_ingress and ctl_egress
+         * have to be added again into the pkt.
+         * for emission in the wire
+         */
+        pkt.emit(hdr);
     }
 }
 
-#endif // _IG_CTL_MPLS2_P4_
-
+#endif // _EG_DEPARSER_P4_

@@ -22,7 +22,6 @@ control IngressControlCoPP(inout headers hdr,
                            inout standard_metadata_t ig_intr_md) {
 
     action act_deny() {
-        mark_to_drop(ig_intr_md);
         ig_md.dropping = 1;
     }
 

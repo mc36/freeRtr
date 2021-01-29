@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_VLAN_OUT_P4_
-#define _IG_CTL_VLAN_OUT_P4_
+#ifndef _EG_CTL_VLAN_OUT_P4_
+#define _EG_CTL_VLAN_OUT_P4_
 
-control IngressControlVlanOut(inout headers hdr,
+control EgressControlVlanOut(inout headers hdr,
                               inout ingress_metadata_t ig_md,
                               inout standard_metadata_t ig_intr_md) {
 
@@ -55,5 +55,5 @@ ig_md.target_id:
     }
 }
 
-#endif // _IG_CTL_VLAN_OUT_P4_
+#endif // _EG_CTL_VLAN_OUT_P4_
 

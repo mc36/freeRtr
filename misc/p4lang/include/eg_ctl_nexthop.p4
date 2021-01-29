@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef _NEXTHOP_P4_
-#define _NEXTHOP_P4_
+#ifndef _EG_CTL_NEXTHOP_P4_
+#define _EG_CTL_NEXTHOP_P4_
 
-control IngressControlNexthop(inout headers hdr,
+control EgressControlNexthop(inout headers hdr,
                               inout ingress_metadata_t ig_md,
                               inout standard_metadata_t ig_intr_md) {
 
@@ -355,17 +355,8 @@ ig_md.nexthop_id:
         }
         tbl_nexthop.apply();
 
-        /*
-         * We decrement the TTL
-         */
-        if (hdr.ipv4.isValid()) {
-            hdr.ipv4.ttl = hdr.ipv4.ttl -1;
-        }
-        if (hdr.ipv6.isValid()) {
-            hdr.ipv6.hop_limit = hdr.ipv6.hop_limit -1;
-        }
     }
 
 }
 
-#endif // _NEXTHOP_P4
+#endif // _EG_CTL_NEXTHOP_P4_

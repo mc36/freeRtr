@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_Acl_out_P4_
-#define _IG_CTL_Acl_out_P4_
+#ifndef _EG_CTL_Qos_out_P4_
+#define _EG_CTL_Qos_out_P4_
 
-control IngressControlAclOut(inout headers hdr,
+control EgressControlQosOut(inout headers hdr,
                              inout ingress_metadata_t ig_md,
                              inout standard_metadata_t ig_intr_md) {
 
-    action act_deny() {
-        mark_to_drop(ig_intr_md);
-        ig_md.dropping = 1;
-    }
+    meter((MAX_PORT+1), MeterType.bytes) policer;
 
-    action act_permit() {
+    action act_deny(SubIntId_t metid) {
+        ig_md.meter_id = metid;
         ig_md.dropping = 0;
     }
 
+    action act_permit(SubIntId_t metid) {
+        ig_md.meter_id = metid;
+        policer.execute_meter((bit<32>)metid, ig_md.meter_res);
+        if (ig_md.meter_res == 0) {
+            ig_md.dropping = 0;
+        } else {
+            ig_md.dropping = 1;
+        }
+    }
 
-    table tbl_ipv4_acl {
+
+    table tbl_ipv4_qos {
         key = {
 ig_md.aclport_id:
             exact;
@@ -51,11 +59,11 @@ ig_md.layer4_dstprt:
             act_deny;
             @defaultonly NoAction;
         }
-        size = IPV4_OUTACL_TABLE_SIZE;
+        size = IPV4_OUTQOS_TABLE_SIZE;
         const default_action = NoAction();
     }
 
-    table tbl_ipv6_acl {
+    table tbl_ipv6_qos {
         key = {
 ig_md.aclport_id:
             exact;
@@ -75,19 +83,19 @@ ig_md.layer4_dstprt:
             act_deny;
             @defaultonly NoAction;
         }
-        size = IPV6_OUTACL_TABLE_SIZE;
+        size = IPV6_OUTQOS_TABLE_SIZE;
         const default_action = NoAction();
     }
 
     apply {
         if (ig_md.ipv4_valid==1)  {
-            tbl_ipv4_acl.apply();
+            tbl_ipv4_qos.apply();
         }
         if (ig_md.ipv6_valid==1)  {
-            tbl_ipv6_acl.apply();
+            tbl_ipv6_qos.apply();
         }
     }
 }
 
-#endif // _IG_CTL_Acl_out_P4_
+#endif // _EG_CTL_Qos_out_P4_
 

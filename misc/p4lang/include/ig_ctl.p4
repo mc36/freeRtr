@@ -25,28 +25,24 @@ control ig_ctl(inout headers hdr,
     IngressControlARP() ig_ctl_arp;
     IngressControlPPPOE() ig_ctl_pppoe;
     IngressControlMPLS() ig_ctl_mpls;
-    IngressControlMPLS2() ig_ctl_mpls2;
     IngressControlBridge() ig_ctl_bridge;
     IngressControlIPv4() ig_ctl_ipv4;
     IngressControlIPv6() ig_ctl_ipv6;
     IngressControlIPv4b() ig_ctl_ipv4b;
     IngressControlIPv6b() ig_ctl_ipv6b;
-    IngressControlNexthop() ig_ctl_nexthop;
     IngressControlVlanIn() ig_ctl_vlan_in;
-    IngressControlVlanOut() ig_ctl_vlan_out;
-    IngressControlBundle() ig_ctl_bundle;
     IngressControlVRF() ig_ctl_vrf;
     IngressControlLLC() ig_ctl_llc;
     IngressControlCoPP() ig_ctl_copp;
     IngressControlTunnel() ig_ctl_tunnel;
     IngressControlAclIn() ig_ctl_acl_in;
-    IngressControlAclOut() ig_ctl_acl_out;
     IngressControlNAT() ig_ctl_nat;
     IngressControlPBR() ig_ctl_pbr;
     IngressControlQosIn() ig_ctl_qos_in;
-    IngressControlQosOut() ig_ctl_qos_out;
     IngressControlFlowspec() ig_ctl_flowspec;
     IngressControlMcast() ig_ctl_mcast;
+    IngressControlOutPort() ig_ctl_outport;
+    IngressControlBundle() ig_ctl_bundle;
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) pkt_out_stats;
 
@@ -139,25 +135,7 @@ control ig_ctl(inout headers hdr,
         if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
         if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
         if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();
-
-        if (ig_md.srv_op_type != 0) {
-            hdr.ipv6.setInvalid();
-        }
-        if (ig_md.srv_op_type == 2) {
-            hdr.eth3.setInvalid();
-        }
-
-        ig_ctl_mpls2.apply(hdr,ig_md,ig_intr_md);
-        ig_ctl_nexthop.apply(hdr,ig_md,ig_intr_md);
-        ig_ctl_acl_out.apply(hdr,ig_md,ig_intr_md);
-        if (ig_md.dropping == 1) {
-            return;
-        }
-        ig_ctl_qos_out.apply(hdr,ig_md,ig_intr_md);
-        if (ig_md.dropping == 1) {
-            return;
-        }
-        ig_ctl_vlan_out.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_outport.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
     }
 }

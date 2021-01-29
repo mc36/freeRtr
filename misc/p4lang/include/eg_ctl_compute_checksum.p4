@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_COMPUTE_CHECKSUM_P4_
-#define _IG_CTL_COMPUTE_CHECKSUM_P4_
+#ifndef _EG_CTL_COMPUTE_CHECKSUM_P4_
+#define _EG_CTL_COMPUTE_CHECKSUM_P4_
 
-control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_md) {
+control eg_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_md) {
     apply {
 
         update_checksum(
@@ -181,4 +181,4 @@ control ig_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t ig_m
     }
 }
 
-#endif // _IG_CTL_COMPUTE_CHECKSUM_P4_
+#endif // _EG_CTL_COMPUTE_CHECKSUM_P4_

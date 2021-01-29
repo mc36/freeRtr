@@ -57,30 +57,26 @@
 
 /*------------------ I N G R E S S - M A T C H - A C T I O N ---------------- */
 #include "include/ig_ctl_vlan_in.p4"
-#include "include/ig_ctl_vlan_out.p4"
-#include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl_vrf.p4"
 #include "include/ig_ctl_arp.p4"
 #include "include/ig_ctl_llc.p4"
-#include "include/ig_ctl_nexthop.p4"
 #include "include/ig_ctl_bridge.p4"
 #include "include/ig_ctl_pppoe.p4"
 #include "include/ig_ctl_tunnel.p4"
 #include "include/ig_ctl_mpls.p4"
-#include "include/ig_ctl_mpls2.p4"
+#include "include/ig_ctl_outport.p4"
 #include "include/ig_ctl_ipv4.p4"
 #include "include/ig_ctl_ipv6.p4"
 #include "include/ig_ctl_ipv4b.p4"
 #include "include/ig_ctl_ipv6b.p4"
 #include "include/ig_ctl_copp.p4"
 #include "include/ig_ctl_acl_in.p4"
-#include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_nat.p4"
 #include "include/ig_ctl_pbr.p4"
 #include "include/ig_ctl_qos_in.p4"
-#include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_mcast.p4"
+#include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl.p4"
 
 
@@ -89,13 +85,18 @@
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
 #include "include/eg_ctl_mcast.p4"
+#include "include/eg_ctl_hairpin.p4"
+#include "include/eg_ctl_vlan_out.p4"
+#include "include/eg_ctl_nexthop.p4"
+#include "include/eg_ctl_acl_out.p4"
+#include "include/eg_ctl_qos_out.p4"
 #include "include/eg_ctl.p4"
 
 /*------------------ C O M P U T E  C H E C K S U M --------------------------*/
-#include "include/ig_ctl_compute_checksum.p4"
+#include "include/eg_ctl_compute_checksum.p4"
 
 /*------------------ I N G R E S S  D E P A R S E R ------------------------- */
-#include "include/ig_ctl_dprs.p4"
+#include "include/eg_ctl_dprs.p4"
 
 /*------------------ F I N A L  P A C K A G E ------------------------------- */
 V1Switch(
@@ -103,6 +104,6 @@ V1Switch(
     ig_ctl_verify_checksum(),
     ig_ctl(),
     eg_ctl(),
-    ig_ctl_compute_checksum(),
-    ig_ctl_dprs()
+    eg_ctl_compute_checksum(),
+    eg_ctl_dprs()
 ) main;

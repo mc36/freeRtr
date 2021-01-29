@@ -38,7 +38,7 @@ struct ingress_metadata_t {
     bit<1>  dropping;
     bit<1>  punting;
     bit<1>  natted;
-    bit<1>  need_recir;
+    bit<2>  need_recir;
     bit<1>  need_clone;
     bit<16> clone_session;
     bit<3>  mpls_op_type;
