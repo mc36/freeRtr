@@ -9687,3 +9687,8 @@ failed: bridge inspection
 ---------------------------------- 2021-01-29 06:58:20
 no failed: bridge inspection
 qc pass: bridge inspection
+---------------------------------- 2021-01-29 08:12:02
+qc pass: interface inspection with ingress drop
+qc pass: interface inspection with egress drop
+qc pass: mpls inspection with ingress drop
+qc pass: mpls inspection with egress drop

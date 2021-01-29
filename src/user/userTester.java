@@ -422,17 +422,7 @@ public class userTester {
         for (int i = 0; i < paralell; i++) {
             workers[i].stopAll();
         }
-        for (int i = 0; i < finished.size(); i++) {
-            userTesterFtr ftr = finished.get(i);
-            if (!ftr.res) {
-                rdr.debugStat("failed: " + ftr.csv);
-                continue;
-            }
-            if (ftr.ran > 1) {
-                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.csv);
-                continue;
-            }
-        }
+        listFails(finished);
         String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
@@ -489,6 +479,21 @@ public class userTester {
         bits.buf2txt(false, txt, "../changelog" + beg + ".txt");
     }
 
+    private void listFails(tabGen<userTesterFtr> finished) {
+        for (int i = 0; i < finished.size(); i++) {
+            userTesterFtr ftr = finished.get(i);
+            if (!ftr.res) {
+                rdr.debugStat("failed: " + ftr.csv);
+                continue;
+            }
+            if (ftr.ran > 1) {
+                rdr.debugStat("ran " + ftr.ran + "x: " + ftr.csv);
+                continue;
+            }
+        }
+    }
+    
+    
     /**
      * do worker round
      *
