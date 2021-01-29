@@ -5807,6 +5807,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 3,.     mac                       log mac addresses");
         l.add("3 3,.     before                    log on session start");
         l.add("3 3,.     after                     log on session stop");
+        l.add("3 3,.     dropped                   log dropped sessions");
+        l.add("3 3,.     drop-rx                   drop sessions ingress");
+        l.add("3 3,.     drop-tx                   drop sessions egress");
         l.add("2 3     redirection                 send packets out on different interface");
         l.add("3 .       <name>                    name of interface");
         l.add("2 3,.   ldp4                        enable/disable ldp ipv4 discovery");

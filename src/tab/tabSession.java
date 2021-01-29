@@ -65,6 +65,21 @@ public class tabSession implements Runnable {
     public boolean logMacs = false;
 
     /**
+     * log dropped sessions
+     */
+    public boolean logDrop = false;
+
+    /**
+     * drop new rx sessions
+     */
+    public boolean dropRx = false;
+
+    /**
+     * drop new rx sessions
+     */
+    public boolean dropTx = false;
+
+    /**
      * session timeout
      */
     public int timeout = 60000;
@@ -110,6 +125,9 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, !logMacs, beg, "mac", "");
         cmds.cfgLine(res, !logBefore, beg, "before", "");
         cmds.cfgLine(res, !logAfter, beg, "after", "");
+        cmds.cfgLine(res, !logDrop, beg, "dropped", "");
+        cmds.cfgLine(res, !dropRx, beg, "drop-rx", "");
+        cmds.cfgLine(res, !dropTx, beg, "drop-tx", "");
         cmds.cfgLine(res, timeout == defTim, beg, "timeout", "" + timeout);
     }
 
@@ -140,6 +158,22 @@ public class tabSession implements Runnable {
                 logAfter = !negated;
                 continue;
             }
+            if (a.equals("dropped")) {
+                logDrop = !negated;
+                continue;
+            }
+            if (a.equals("dropped")) {
+                logDrop = !negated;
+                continue;
+            }
+            if (a.equals("drop-rx")) {
+                dropRx = !negated;
+                continue;
+            }
+            if (a.equals("drop-tx")) {
+                dropTx = !negated;
+                continue;
+            }
             if (a.equals("timeout")) {
                 if (negated) {
                     timeout = defTim;
@@ -165,6 +199,18 @@ public class tabSession implements Runnable {
             res = connects.find(ses);
         }
         if (res == null) {
+            if (dropRx && !dir) {
+                if (logDrop) {
+                    logger.info("dropped " + ses);
+                }
+                return null;
+            }
+            if (dropTx && dir) {
+                if (logDrop) {
+                    logger.info("dropped " + ses);
+                }
+                return null;
+            }
             ses.startTime = bits.getTime();
             connects.add(ses);
             res = ses;

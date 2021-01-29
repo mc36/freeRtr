@@ -212,14 +212,16 @@ public class ipMpls implements ifcUp {
         }
         if (inspect != null) {
             pck.getSkip(2);
-            inspectPacket(pck, true);
+            if (inspectPacket(pck, true)) {
+                return;
+            }
             pck.getSkip(-2);
         }
         cntr.tx(pck);
         lower.sendPack(pck);
     }
 
-    private void inspectPacket(packHolder pck, boolean dir) {
+    private boolean inspectPacket(packHolder pck, boolean dir) {
         int i = pck.dataSize();
         for (;;) {
             if (parseMPLSheader(pck)) {
@@ -242,10 +244,11 @@ public class ipMpls implements ifcUp {
                 break;
         }
         if (!b) {
-            inspect.doPack(pck, dir);
+            b = inspect.doPack(pck, dir);
         }
         int o = pck.dataSize();
         pck.getSkip(o - i);
+        return b;
     }
 
     /**
@@ -545,7 +548,9 @@ public class ipMpls implements ifcUp {
         }
         pck.getSkip(2);
         if (inspect != null) {
-            inspectPacket(pck, false);
+            if (inspectPacket(pck, false)) {
+                return;
+            }
         }
         gotMplsPack(fwd4, fwd6, fwdE, security, pck);
     }

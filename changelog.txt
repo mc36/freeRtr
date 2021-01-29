@@ -9681,3 +9681,9 @@ no todo: p4lang: count hairpins in bffwd to make mcast over hairpin possible
 ---------------------------------- 2021-01-28 19:08:23
 qc pass: p4lang: mldp core over gre
 qc pass: p4lang: mldp core over l2tp
+---------------------------------- 2021-01-29 05:51:29
+no qc pass: bridge inspection
+failed: bridge inspection
+---------------------------------- 2021-01-29 06:58:20
+no failed: bridge inspection
+qc pass: bridge inspection

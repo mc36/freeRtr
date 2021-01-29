@@ -1093,6 +1093,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (lower.inspect != null) {
             if (lower.inspect.doPack(pck, true)) {
+                doDrop(pck, lower, counter.reasons.denied);
                 return;
             }
         }
@@ -1183,6 +1184,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (lower.inspect != null) {
             if (lower.inspect.doPack(pck, false)) {
+                lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
         }
@@ -1761,7 +1763,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             logger.debug("fwd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
         if (netflow != null) {
-            netflow.session.doPack(pck, true);
+            if (netflow.session.doPack(pck, true)) {
+                doDrop(pck, rxIfc, counter.reasons.denied);
+                return;
+            }
         }
         pck.ETHcos = (pck.IPtos >>> 5) & 7;
         pck.MPLSexp = pck.ETHcos;

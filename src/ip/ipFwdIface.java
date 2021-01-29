@@ -434,6 +434,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 3,.     mac                       with mac addresses");
         l.add("3 3,.     before                    log on session start");
         l.add("3 3,.     after                     log on session stop");
+        l.add("3 3,.     dropped                   log dropped sessions");
+        l.add("3 3,.     drop-rx                   drop sessions ingress");
+        l.add("3 3,.     drop-tx                   drop sessions egress");
         l.add("2 3     bfd                         enable bidirectional forwarding detection");
         l.add("3 4       <num>                     tx interval in ms");
         l.add("4 5         <num>                   rx interval in ms");

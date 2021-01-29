@@ -37,8 +37,10 @@ public class servNetflow extends servGeneric implements prtServS {
         "server netflow .*! no timeout",
         "server netflow .*! no mac",
         "server netflow .*! no before",
-        "server netflow .*! no after"
-    };
+        "server netflow .*! no after",
+        "server netflow .*! no dropping",
+        "server netflow .*! no drop-rx",
+        "server netflow .*! no drop-tx",};
 
     /**
      * defaults filter
