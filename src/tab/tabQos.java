@@ -10,6 +10,8 @@ import ifc.ifcQinq3;
 import ip.ipCor;
 import ip.ipCor4;
 import ip.ipCor6;
+import ip.ipIcmp4;
+import ip.ipIcmp6;
 import ip.ipIfc4;
 import ip.ipIfc6;
 import ip.ipMpls;
@@ -223,6 +225,14 @@ public class tabQos {
                 break;
             case prtSctp.protoNum:
                 prtSctp.parseSCTPports(pck);
+                break;
+            case ipIcmp4.protoNum:
+                ipIcmp4.parseICMPports(pck);
+                pck.UDPtrg = pck.UDPsrc;
+                break;
+            case ipIcmp6.protoNum:
+                ipIcmp6.parseICMPports(pck);
+                pck.UDPtrg = pck.UDPsrc;
                 break;
         }
     }

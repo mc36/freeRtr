@@ -4,8 +4,6 @@ import addr.addrPrefix;
 import addr.addrType;
 import ip.ipCor;
 import ip.ipIcmp;
-import ip.ipIcmp4;
-import ip.ipIcmp6;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
@@ -404,34 +402,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
         }
         if (l4) {
             pck.getSkip(pck.IPsiz);
-            pck.UDPsrc = 0;
-            pck.UDPtrg = 0;
-            pck.UDPsiz = 0;
-            switch (pck.IPprt) {
-                case prtTcp.protoNum:
-                    prtTcp.parseTCPports(pck);
-                    break;
-                case prtUdp.protoNum:
-                    prtUdp.parseUDPports(pck);
-                    break;
-                case prtLudp.protoNum:
-                    prtLudp.parseLUDPports(pck);
-                    break;
-                case prtDccp.protoNum:
-                    prtDccp.parseDCCPports(pck);
-                    break;
-                case prtSctp.protoNum:
-                    prtSctp.parseSCTPports(pck);
-                    break;
-                case ipIcmp4.protoNum:
-                    ipIcmp4.parseICMPports(pck);
-                    pck.UDPtrg = pck.UDPsrc;
-                    break;
-                case ipIcmp6.protoNum:
-                    ipIcmp6.parseICMPports(pck);
-                    pck.UDPtrg = pck.UDPsrc;
-                    break;
-            }
+            tabQos.classifyLayer4(pck);
             pck.getSkip(-pck.IPsiz);
         }
     }
