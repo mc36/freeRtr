@@ -662,7 +662,7 @@ class servSmtpDoer implements Runnable {
             last = uniResLoc.fromEmail(last);
             servSmtpLoc loc = findLocal(last);
             if (loc != null) {
-                trgS += " " + last;
+                trgS += last + " ";
                 if (trgL.add(loc) != null) {
                     doLine("250 " + loc.email + " already added");
                     return false;
@@ -672,7 +672,7 @@ class servSmtpDoer implements Runnable {
             }
             servSmtpFwd fwd = findForward(last);
             if (fwd != null) {
-                trgS += " " + last;
+                trgS += last + " ";
                 trgR.add(fwd.remote);
                 doLine("250 " + fwd.email + " added");
                 if (fwd.bcc.length() < 1) {
@@ -685,7 +685,7 @@ class servSmtpDoer implements Runnable {
                 return false;
             }
             if (recurAva) {
-                trgS += " " + last;
+                trgS += last + " ";
                 trgR.add(last);
                 doLine("250 " + last + " will handled out");
                 return false;
