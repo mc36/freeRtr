@@ -12,6 +12,6 @@ public interface tabConnectLower {
      *
      * @return text
      */
-    public abstract String dumper();
+    public String dumper();
 
 }

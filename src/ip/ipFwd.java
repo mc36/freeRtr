@@ -1085,17 +1085,23 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        if (lower.tcpMssOut > 0) {
-            ifaceAdjustMss(pck, lower.tcpMssOut);
-        }
-        if (debugger.ipFwdTraf) {
-            logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " hop=" + hop + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
-        }
         if (lower.inspect != null) {
             if (lower.inspect.doPack(pck, true)) {
                 doDrop(pck, lower, counter.reasons.denied);
                 return;
             }
+        }
+        if ((netflow != null) && lower.netflowTx) {
+            if (netflow.session.doPack(pck, true)) {
+                lower.cntr.drop(pck, counter.reasons.denied);
+                return;
+            }
+        }
+        if (lower.tcpMssOut > 0) {
+            ifaceAdjustMss(pck, lower.tcpMssOut);
+        }
+        if (debugger.ipFwdTraf) {
+            logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " hop=" + hop + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
         lower.lower.sendProto(pck, hop);
     }
@@ -1176,17 +1182,23 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        if (debugger.ipFwdTraf) {
-            logger.debug("rx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
-        }
-        if (lower.tcpMssIn > 0) {
-            ifaceAdjustMss(pck, lower.tcpMssIn);
-        }
         if (lower.inspect != null) {
             if (lower.inspect.doPack(pck, false)) {
                 lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
+        }
+        if ((netflow != null) && lower.netflowRx) {
+            if (netflow.session.doPack(pck, true)) {
+                lower.cntr.drop(pck, counter.reasons.denied);
+                return;
+            }
+        }
+        if (debugger.ipFwdTraf) {
+            logger.debug("rx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
+        }
+        if (lower.tcpMssIn > 0) {
+            ifaceAdjustMss(pck, lower.tcpMssIn);
         }
         pck.INTupper = 0;
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);
@@ -1761,12 +1773,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (debugger.ipFwdTraf) {
             logger.debug("fwd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
-        }
-        if (netflow != null) {
-            if (netflow.session.doPack(pck, true)) {
-                doDrop(pck, rxIfc, counter.reasons.denied);
-                return;
-            }
         }
         pck.ETHcos = (pck.IPtos >>> 5) & 7;
         pck.MPLSexp = pck.ETHcos;

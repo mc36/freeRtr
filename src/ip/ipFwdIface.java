@@ -96,6 +96,16 @@ public class ipFwdIface extends tabRouteIface {
     public boolean mplsPropTtlAllow = true;
 
     /**
+     * process netflow on receiving
+     */
+    public boolean netflowRx = false;
+
+    /**
+     * process netflow on sending
+     */
+    public boolean netflowTx = false;
+
+    /**
      * set true to verify that source reachable
      */
     public boolean verifySource = false;
@@ -402,10 +412,14 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4       <addr>                    address of interface");
         l.add("4 .         dynamic                 dynamic netmask");
         l.add("4 .         <mask>                  subnet mask of address");
+        l.add("2 .     netflow-rx                  netflow received packets");
+        l.add("2 .     netflow-tx                  netflow transmitted packets");
         l.add("2 .     propagate-ttl-always        enable ttl propagation to mpls");
         l.add("2 .     propagate-ttl-allow         allow ttl propagation to mpls");
         l.add("2 .     unreachables                enable sending icmp unreachable messages");
         l.add("2 3     unreach-source              set unreachable source");
+        l.add("3 .       <name>                    name of interface");
+        l.add("2 3     redirection                 send packets out on different interface");
         l.add("3 .       <name>                    name of interface");
         l.add("2 .     resend-packet               enable sending packet out on same interface");
         l.add("2 .     directed-broadcast          enable forwarding of directed broadcasts");
@@ -563,6 +577,8 @@ public class ipFwdIface extends tabRouteIface {
     public void getConfig(List<String> l, ipFwd f, String beg) {
         cmds.cfgLine(l, !linkLocal, cmds.tabulator, beg + "enable", "");
         cmds.cfgLine(l, !unreachEna, cmds.tabulator, beg + "unreachables", "");
+        cmds.cfgLine(l, !netflowRx, cmds.tabulator, beg + "netflow-rx", "");
+        cmds.cfgLine(l, !netflowTx, cmds.tabulator, beg + "netflow-tx", "");
         cmds.cfgLine(l, !mplsPropTtlAlways, cmds.tabulator, beg + "propagate-ttl-always", "");
         cmds.cfgLine(l, !mplsPropTtlAllow, cmds.tabulator, beg + "propagate-ttl-allow", "");
         cmds.cfgLine(l, unreachSrc == null, cmds.tabulator, beg + "unreach-source", "" + unreachSrc);
@@ -698,6 +714,14 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("enable")) {
             linkLocal = true;
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("netflow-rx")) {
+            netflowRx = true;
+            return false;
+        }
+        if (a.equals("netflow-tx")) {
+            netflowTx = true;
             return false;
         }
         if (a.equals("propagate-ttl-always")) {
@@ -1204,6 +1228,14 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("enable")) {
             linkLocal = false;
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("netflow-rx")) {
+            netflowRx = false;
+            return false;
+        }
+        if (a.equals("netflow-tx")) {
+            netflowTx = false;
             return false;
         }
         if (a.equals("propagate-ttl-always")) {

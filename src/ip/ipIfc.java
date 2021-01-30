@@ -37,7 +37,7 @@ public interface ipIfc {
      * @param pck packet to send
      * @param nexthop next hop ip address
      */
-    public abstract void sendProto(packHolder pck, addrIP nexthop);
+    public void sendProto(packHolder pck, addrIP nexthop);
 
     /**
      * forward mpls tagged packet
@@ -45,7 +45,7 @@ public interface ipIfc {
      * @param pck packet to send
      * @param nexthop next hop ip address
      */
-    public abstract void sendMpls(packHolder pck, addrIP nexthop);
+    public void sendMpls(packHolder pck, addrIP nexthop);
 
     /**
      * send layer2 packet
@@ -53,7 +53,7 @@ public interface ipIfc {
      * @param l2info layer 2 address
      * @param nexthop ip address
      */
-    public abstract void sendL2info(addrType l2info, addrIP nexthop);
+    public void sendL2info(addrType l2info, addrIP nexthop);
 
     /**
      * update layer2 rewrite info
@@ -64,7 +64,7 @@ public interface ipIfc {
      * @param l2info layer 2 address
      * @param nexthop next hop ip address
      */
-    public abstract void updateL2info(int mod, addrType l2info, addrIP nexthop);
+    public void updateL2info(int mod, addrType l2info, addrIP nexthop);
 
     /**
      * get layer2 rewrite info
@@ -72,7 +72,7 @@ public interface ipIfc {
      * @param nexthop next hop ip address
      * @return mac address, null if not found
      */
-    public abstract addrType getL2info(addrIP nexthop);
+    public addrType getL2info(addrIP nexthop);
 
     /**
      * get layer2 rewrite info
@@ -82,7 +82,7 @@ public interface ipIfc {
      * @param mac mac address
      * @return false on success, true on error
      */
-    public abstract boolean getL2info(int seq, addrIP nexthop, addrType mac);
+    public boolean getL2info(int seq, addrIP nexthop, addrType mac);
 
     /**
      * get static layer2 rewrite info
@@ -90,7 +90,7 @@ public interface ipIfc {
      * @param lst list to append
      * @param beg beginning
      */
-    public abstract void getL2info(List<String> lst, String beg);
+    public void getL2info(List<String> lst, String beg);
 
     /**
      * get interface counter

@@ -11,9 +11,11 @@ import ifc.ifcUp;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
+import tab.tabAceslstN;
 import tab.tabLabel;
 import tab.tabLabelBier;
 import tab.tabLabelNtry;
+import tab.tabListing;
 import tab.tabNshNtry;
 import tab.tabRouteAttr;
 import tab.tabRouteEntry;
@@ -132,6 +134,26 @@ public class ipMpls implements ifcUp {
     public boolean security;
 
     /**
+     * ingress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> filterIn;
+
+    /**
+     * egress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> filterOut;
+
+    /**
+     * common ingress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> cfilterIn;
+
+    /**
+     * common egress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> cfilterOut;
+
+    /**
      * redirect packets
      */
     public ipMpls redirect;
@@ -205,10 +227,19 @@ public class ipMpls implements ifcUp {
      * @param pck packet to send
      */
     public void send2eth(packHolder pck) {
-        if (redirect != null) {
-            redirect.cntr.tx(pck);
-            redirect.lower.sendPack(pck);
-            return;
+        if (cfilterOut != null) {
+            pck.getSkip(2);
+            if (filterPacket(pck, cfilterOut)) {
+                return;
+            }
+            pck.getSkip(-2);
+        }
+        if (filterOut != null) {
+            pck.getSkip(2);
+            if (filterPacket(pck, filterOut)) {
+                return;
+            }
+            pck.getSkip(-2);
         }
         if (inspect != null) {
             pck.getSkip(2);
@@ -217,15 +248,50 @@ public class ipMpls implements ifcUp {
             }
             pck.getSkip(-2);
         }
+        if (redirect != null) {
+            redirect.cntr.tx(pck);
+            redirect.lower.sendPack(pck);
+            return;
+        }
         cntr.tx(pck);
         lower.sendPack(pck);
+    }
+
+    private boolean filterPacket(packHolder pck, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
+        int i = pck.dataSize();
+        for (;;) {
+            if (parseMPLSheader(pck)) {
+                return true;
+            }
+            if (pck.MPLSbottom) {
+                break;
+            }
+        }
+        boolean b;
+        switch (ifcEther.guessEtherType(pck)) {
+            case ipIfc4.type:
+                b = core4.parseIPheader(pck, false);
+                break;
+            case ipIfc6.type:
+                b = core6.parseIPheader(pck, false);
+                break;
+            default:
+                b = true;
+                break;
+        }
+        if (!b) {
+            b = !acl.matches(false, true, pck);
+        }
+        int o = pck.dataSize();
+        pck.getSkip(o - i);
+        return b;
     }
 
     private boolean inspectPacket(packHolder pck, boolean dir) {
         int i = pck.dataSize();
         for (;;) {
             if (parseMPLSheader(pck)) {
-                break;
+                return true;
             }
             if (pck.MPLSbottom) {
                 break;
@@ -547,6 +613,16 @@ public class ipMpls implements ifcUp {
                 return;
         }
         pck.getSkip(2);
+        if (cfilterIn != null) {
+            if (filterPacket(pck, cfilterIn)) {
+                return;
+            }
+        }
+        if (filterIn != null) {
+            if (filterPacket(pck, filterIn)) {
+                return;
+            }
+        }
         if (inspect != null) {
             if (inspectPacket(pck, false)) {
                 return;

@@ -17,14 +17,14 @@ public interface ipPrt {
      *
      * @return the number of protocol
      */
-    public abstract int getProtoNum();
+    public int getProtoNum();
 
     /**
      * signal loss of this interface
      *
      * @param iface interface number on where
      */
-    public abstract void closeUp(ipFwdIface iface);
+    public void closeUp(ipFwdIface iface);
 
     /**
      * signal state change of this interface
@@ -32,7 +32,7 @@ public interface ipPrt {
      * @param iface interface number on where
      * @param stat state of interface
      */
-    public abstract void setState(ipFwdIface iface, state.states stat);
+    public void setState(ipFwdIface iface, state.states stat);
 
     /**
      * signal packet arrival
@@ -40,7 +40,7 @@ public interface ipPrt {
      * @param rxIfc receiver interface
      * @param pck packet received
      */
-    public abstract void recvPack(ipFwdIface rxIfc, packHolder pck);
+    public void recvPack(ipFwdIface rxIfc, packHolder pck);
 
     /**
      * signal packet arrival
@@ -49,7 +49,7 @@ public interface ipPrt {
      * @param pck packet received
      * @return false if processed successfully, true if not
      */
-    public abstract boolean alertPack(ipFwdIface rxIfc, packHolder pck);
+    public boolean alertPack(ipFwdIface rxIfc, packHolder pck);
 
     /**
      * got one error reporting packet
@@ -59,7 +59,7 @@ public interface ipPrt {
      * @param rxIfc receiver interface
      * @param pck packet received
      */
-    public abstract void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck);
+    public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck);
 
     /**
      * get interface counter

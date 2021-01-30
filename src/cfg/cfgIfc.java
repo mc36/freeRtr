@@ -1321,6 +1321,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no nsh xconnect",
         // mpls
         "interface .*! no mpls enable",
+        "interface .*! no mpls access-group-in",
+        "interface .*! no mpls access-group-out",
+        "interface .*! no mpls access-group-common-in",
+        "interface .*! no mpls access-group-common-out",
         "interface .*! no mpls inspect",
         "interface .*! no mpls label-security",
         "interface .*! no mpls redirection",
@@ -1337,6 +1341,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         // ip
         "interface .*! no ipv[4|6] address",
         "interface .*! no ipv[4|6] enable",
+        "interface .*! no ipv[4|6] redirection",
         "interface .*! ipv[4|6] unreachables",
         "interface .*! no ipv[4|6] unreach-source",
         "interface .*! no ipv[4|6] propagate-ttl-always",
@@ -1366,6 +1371,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] tcp-mss-in",
         "interface .*! no ipv[4|6] tcp-mss-out",
         "interface .*! no ipv[4|6] hsrp address",
+        "interface .*! no ipv[4|6] netflow-rx",
+        "interface .*! no ipv[4|6] netflow-tx",
         "interface .*! ipv[4|6] hsrp group 0",
         "interface .*! ipv4 hsrp mac-address 0000.0c9f.f000",
         "interface .*! ipv6 hsrp mac-address 0005.73a0.0000",
@@ -5351,6 +5358,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, addr4 == null, cmds.tabulator, "ipv4 address", a);
             if (fwdIf4 != null) {
                 fwdIf4.getConfig(l, vrfFor.fwd4, "ipv4 ");
+                cmds.cfgLine(l, ipIf4.redirect == null, cmds.tabulator, "ipv4 redirection", "" + ipIf4.redirect);
                 cmds.cfgLine(l, dhcp4c == null, cmds.tabulator, "ipv4 dhcp-client enable", "");
                 if (dhcp4c != null) {
                     dhcp4c.getConfig(l, cmds.tabulator, "ipv4 dhcp-client ");
@@ -5371,6 +5379,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, addr6 == null, cmds.tabulator, "ipv6 address", a);
             if (fwdIf6 != null) {
                 fwdIf6.getConfig(l, vrfFor.fwd6, "ipv6 ");
+                cmds.cfgLine(l, ipIf6.redirect == null, cmds.tabulator, "ipv6 redirection", "" + ipIf6.redirect);
                 cmds.cfgLine(l, slaac == null, cmds.tabulator, "ipv6 slaac", "");
                 cmds.cfgLine(l, dhcp6c == null, cmds.tabulator, "ipv6 dhcp-client enable", "");
                 if (dhcp6c != null) {
@@ -5398,6 +5407,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
             cmds.cfgLine(l, mplsPack.redirect == null, cmds.tabulator, "mpls redirection", "" + mplsPack.redirect);
+            cmds.cfgLine(l, mplsPack.cfilterIn == null, cmds.tabulator, "mpls access-group-common-in", "" + mplsPack.cfilterIn);
+            cmds.cfgLine(l, mplsPack.cfilterOut == null, cmds.tabulator, "mpls access-group-common-out", "" + mplsPack.cfilterOut);
+            cmds.cfgLine(l, mplsPack.filterIn == null, cmds.tabulator, "mpls access-group-in", "" + mplsPack.filterIn);
+            cmds.cfgLine(l, mplsPack.filterOut == null, cmds.tabulator, "mpls access-group-out", "" + mplsPack.filterOut);
             cmds.cfgLine(l, mplsPack.inspect == null, cmds.tabulator, "mpls inspect", "" + mplsPack.inspect);
         }
         cmds.cfgLine(l, mplsLdp4 == null, cmds.tabulator, "mpls ldp4", rtrLdpIface.getLdpCfg(mplsLdp4, this));
@@ -5803,6 +5816,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   mpls                          multiprotocol label switching config commands");
         l.add("2 .     enable                      enable/disable packet processing");
         l.add("2 .     label-security              enable/disable security checks");
+        l.add("2 3     access-group-in             access list to apply to ingress packets");
+        l.add("3 .       <name>                    name of access list");
+        l.add("2 3     access-group-out            access list to apply to egress packets");
+        l.add("3 .       <name>                    name of access list");
+        l.add("2 3     access-group-common-in      common access list to apply to ingress packets");
+        l.add("3 .       <name>                    name of access list");
+        l.add("2 3     access-group-common-out     common access list to apply to egress packets");
+        l.add("3 .       <name>                    name of access list");
         l.add("2 3,.   inspect                     enable/disable inspection");
         l.add("3 3,.     mac                       log mac addresses");
         l.add("3 3,.     before                    log on session start");
@@ -7068,6 +7089,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmd.error("protocol not enabled");
             return;
         }
+        if (a.equals("redirection")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            ipIf4.redirect = ntry.ipIf4;
+            return;
+        }
         if (a.equals("dhcp-client")) {
             a = cmd.word();
             if (a.equals("enable")) {
@@ -7114,6 +7144,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (addr4 == null) {
             cmd.error("protocol not enabled");
+            return;
+        }
+        if (a.equals("redirection")) {
+            ipIf4.redirect = null;
             return;
         }
         if (a.equals("dhcp-client")) {
@@ -7188,6 +7222,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmd.error("protocol not enabled");
             return;
         }
+        if (a.equals("redirection")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            ipIf6.redirect = ntry.ipIf6;
+            return;
+        }
         if (a.equals("dhcp-client")) {
             a = cmd.word();
             if (a.equals("enable")) {
@@ -7255,6 +7298,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (addr6 == null) {
             cmd.error("protocol not enabled");
+            return;
+        }
+        if (a.equals("redirection")) {
+            ipIf6.redirect = null;
             return;
         }
         if (a.equals("dhcp-client")) {
@@ -7896,6 +7943,54 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2mpls();
             return;
         }
+        if (s.equals("access-group-in")) {
+            if (mplsPack == null) {
+                return;
+            }
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            mplsPack.filterIn = ntry.aceslst;
+            return;
+        }
+        if (s.equals("access-group-out")) {
+            if (mplsPack == null) {
+                return;
+            }
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            mplsPack.filterOut = ntry.aceslst;
+            return;
+        }
+        if (s.equals("access-group-common-in")) {
+            if (mplsPack == null) {
+                return;
+            }
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            mplsPack.cfilterIn = ntry.aceslst;
+            return;
+        }
+        if (s.equals("access-group-common-out")) {
+            if (mplsPack == null) {
+                return;
+            }
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            mplsPack.cfilterOut = ntry.aceslst;
+            return;
+        }
         if (s.equals("inspect")) {
             if (mplsPack == null) {
                 return;
@@ -8021,6 +8116,34 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("enable")) {
             clear2mpls();
+            return;
+        }
+        if (s.equals("access-group-in")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.filterIn = null;
+            return;
+        }
+        if (s.equals("access-group-out")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.filterOut = null;
+            return;
+        }
+        if (s.equals("access-group-common-in")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.cfilterIn = null;
+            return;
+        }
+        if (s.equals("access-group-common-out")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.cfilterOut = null;
             return;
         }
         if (s.equals("inspect")) {

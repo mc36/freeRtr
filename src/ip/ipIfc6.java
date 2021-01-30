@@ -57,6 +57,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
     private boolean needType;
 
     /**
+     * redirect packets
+     */
+    public ipIfc6 redirect;
+
+    /**
      * interface handler
      */
     protected ipFwdIface ifcHdr;
@@ -296,6 +301,12 @@ public class ipIfc6 implements ipIfc, ifcUp {
             cntr.drop(pck, counter.reasons.notInTab);
             return;
         }
+        if (redirect != null) {
+            redirect.cntr.tx(pck);
+            redirect.lower.sendPack(pck);
+            return;
+        }
+        cntr.tx(pck);
         lower.sendPack(pck);
     }
 
