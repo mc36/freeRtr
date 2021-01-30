@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.1.30-rel, done by cs@nop.
--;-;-;2021-01-30 09:14:56, took 00:05:17, with 100 workers, on 2322 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2021-01-30 09:28:16, took 00:06:41, with 100 workers, on 2326 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -521,6 +521,10 @@ http://sources.nop.hu/cfg/crypt-insp06.tst;crypt-insp06.tst;success;interface in
 http://sources.nop.hu/cfg/crypt-insp07.tst;crypt-insp07.tst;success;interface inspection with egress drop
 http://sources.nop.hu/cfg/crypt-insp08.tst;crypt-insp08.tst;success;mpls inspection with ingress drop
 http://sources.nop.hu/cfg/crypt-insp09.tst;crypt-insp09.tst;success;mpls inspection with egress drop
+http://sources.nop.hu/cfg/crypt-insp10.tst;crypt-insp10.tst;success;interface inspection with selective ingress drop
+http://sources.nop.hu/cfg/crypt-insp11.tst;crypt-insp11.tst;success;interface inspection with selective egress drop
+http://sources.nop.hu/cfg/crypt-insp12.tst;crypt-insp12.tst;success;mpls inspection with selective ingress drop
+http://sources.nop.hu/cfg/crypt-insp13.tst;crypt-insp13.tst;success;mpls inspection with selective egress drop
 http://sources.nop.hu/cfg/crypt-macsec01.tst;crypt-macsec01.tst;success;macsec over ethernet
 http://sources.nop.hu/cfg/crypt-macsec02.tst;crypt-macsec02.tst;success;macsec over ethernet vlan
 http://sources.nop.hu/cfg/crypt-macsec03.tst;crypt-macsec03.tst;success;macsec over ethernet bridge

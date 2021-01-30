@@ -9692,3 +9692,8 @@ qc pass: interface inspection with ingress drop
 qc pass: interface inspection with egress drop
 qc pass: mpls inspection with ingress drop
 qc pass: mpls inspection with egress drop
+---------------------------------- 2021-01-30 09:21:35
+qc pass: interface inspection with selective ingress drop
+qc pass: interface inspection with selective egress drop
+qc pass: mpls inspection with selective ingress drop
+qc pass: mpls inspection with selective egress drop
