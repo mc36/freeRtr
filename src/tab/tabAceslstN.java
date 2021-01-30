@@ -108,6 +108,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     public tabIntMatcher flag;
 
     /**
+     * fragment
+     */
+    public boolean frag;
+
+    /**
      * list to evaluate
      */
     public tabListing<tabAceslstN<T>, T> evaluate;
@@ -150,6 +155,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         ttl = new tabIntMatcher();
         len = new tabIntMatcher();
         flag = new tabIntMatcher();
+        frag = false;
         srcPort = new tabIntMatcher();
         trgPort = new tabIntMatcher();
     }
@@ -193,6 +199,9 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
         if (flag.action != tabIntMatcher.actionType.always) {
             a += " flag " + flag;
+        }
+        if (frag) {
+            a += " frag";
         }
         if (logMatch) {
             a += " log";
@@ -325,6 +334,10 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 }
                 continue;
             }
+            if (a.equals("frag")) {
+                ntry.frag = true;
+                continue;
+            }
             if (a.equals("flag")) {
                 if (ntry.flag.fromString(cmd.word())) {
                     return true;
@@ -425,6 +438,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
         if (!len.matches(pck.dataSize())) {
             return false;
+        }
+        if (frag) {
+            if (!pck.IPmf && (pck.IPfrg < 1)) {
+                return false;
+            }
         }
         if (!flag.matches(pck.TCPflg)) {
             return false;

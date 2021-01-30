@@ -41,6 +41,8 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
     public final static String[] defaultL = {
         "policy-map .*! sequence .* description ",
         "policy-map .*! sequence .* no match access-group",
+        "policy-map .*! sequence .* no match frag",
+        "policy-map .*! sequence .* match flag all",
         "policy-map .*! sequence .* match length all",
         "policy-map .*! sequence .* match ttl all",
         "policy-map .*! sequence .* match ethtyp all",
@@ -144,6 +146,10 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add("3 .       <num>             value to match");
         l.add("3 .       all               any value");
         l.add("2 3     tos                 match tos value");
+        l.add("3 .       <num>             value to match");
+        l.add("3 .       all               any value");
+        l.add("2 .     frag                fragmented datagrams");
+        l.add("2 3     flag                tcp flags");
         l.add("3 .       <num>             value to match");
         l.add("3 .       all               any value");
         l.add("2 3     cos                 match cos value");
@@ -356,6 +362,17 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("flag")) {
+                if (ntry.flagMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("frag")) {
+                ntry.fragMatch = true;
+                return;
+            }
             if (a.equals("cos")) {
                 if (ntry.cosMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -514,6 +531,14 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
             }
             if (a.equals("tos")) {
                 ntry.tosMatch.set2always();
+                return;
+            }
+            if (a.equals("flag")) {
+                ntry.flagMatch.set2always();
+                return;
+            }
+            if (a.equals("frag")) {
+                ntry.fragMatch = false;
                 return;
             }
             if (a.equals("cos")) {

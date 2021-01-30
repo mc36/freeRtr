@@ -82,6 +82,11 @@ public class tabSession implements Runnable {
     public boolean dropTx = false;
 
     /**
+     * drop fragmented datagrams
+     */
+    public boolean dropFrg = false;
+
+    /**
      * allow routing multicast
      */
     public boolean allowRoutng = false;
@@ -155,6 +160,7 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, !logDrop, beg, "dropped", "");
         cmds.cfgLine(res, !dropRx, beg, "drop-rx", "");
         cmds.cfgLine(res, !dropTx, beg, "drop-tx", "");
+        cmds.cfgLine(res, !dropFrg, beg, "drop-frg", "");
         cmds.cfgLine(res, !allowRoutng, beg, "allow-routing", "");
         cmds.cfgLine(res, !allowLnklc, beg, "allow-linklocal", "");
         cmds.cfgLine(res, !allowMcast, beg, "allow-multicast", "");
@@ -204,6 +210,10 @@ public class tabSession implements Runnable {
             }
             if (a.equals("drop-tx")) {
                 dropTx = !negated;
+                continue;
+            }
+            if (a.equals("drop-frg")) {
+                dropFrg = !negated;
                 continue;
             }
             if (a.equals("allow-routing")) {
@@ -272,6 +282,17 @@ public class tabSession implements Runnable {
      * @return entry to update, null if denied
      */
     public tabSessionEntry doSess(tabSessionEntry ses, packHolder pck, boolean dir) {
+        if (dropFrg) {
+            if (pck == null) {
+                return sessDrop(ses);
+            }
+            if (pck.IPmf) {
+                return sessDrop(ses);
+            }
+            if (pck.IPfrg > 0) {
+                return sessDrop(ses);
+            }
+        }
         tabSessionEntry res = connects.find(ses);
         if ((res == null) && bidir) {
             ses = ses.reverseDirection();

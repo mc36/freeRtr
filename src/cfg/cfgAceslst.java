@@ -102,6 +102,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add("10 12,.              <port>          target port");
         l.add("10 11                obj             object group target port matching");
         l.add("11 12,.                <name>        name of object group");
+        l.add("12 12,.                frag          fragmented datagrams");
         l.add("12 13                  flag          tcp flags");
         l.add("13 12,.                  all         no flag matching");
         l.add("13 12,.                  <num>       flag value");

@@ -30,6 +30,16 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater ttlSet = new tabIntUpdater();
 
     /**
+     * fragment
+     */
+    public boolean fragMatch;
+
+    /**
+     * flag
+     */
+    public tabIntMatcher flagMatch = new tabIntMatcher();
+
+    /**
      * ethertype matcher
      */
     public tabIntMatcher ethtypMatch = new tabIntMatcher();
@@ -192,6 +202,8 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match access-group " + aclMatch.listName);
         }
+        cmds.cfgLine(l, !fragMatch, beg, "match frag", "");
+        l.add(beg + "match flag " + flagMatch);
         l.add(beg + "match length " + lengthMatch);
         l.add(beg + "match ttl " + ttlMatch);
         l.add(beg + "match ethtyp " + ethtypMatch);
@@ -247,6 +259,14 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!ethtypMatch.matches(pck.ETHtype)) {
+            return false;
+        }
+        if (fragMatch) {
+            if (!pck.IPmf && (pck.IPfrg < 1)) {
+                return false;
+            }
+        }
+        if (!flagMatch.matches(pck.TCPflg)) {
             return false;
         }
         if (!tosMatch.matches(pck.IPtos)) {

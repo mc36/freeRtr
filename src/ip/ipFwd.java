@@ -1771,6 +1771,14 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.ETHcos = (pck.IPtos >>> 5) & 7;
         pck.MPLSexp = pck.ETHcos;
         if (natCfg.size() > 0) {
+            if (pck.IPmf) {
+                doDrop(pck, rxIfc, counter.reasons.denied);
+                return;
+            }
+            if (pck.IPfrg > 0) {
+                doDrop(pck, rxIfc, counter.reasons.denied);
+                return;
+            }
             natCfg.packParse(false, true, true, pck);
             tabNatTraN natT = tabNatTraN.fromPack(pck);
             natT = natTrns.find(natT);

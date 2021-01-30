@@ -437,6 +437,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 3,.     dropped                   log dropped sessions");
         l.add("3 3,.     drop-rx                   drop sessions ingress");
         l.add("3 3,.     drop-tx                   drop sessions egress");
+        l.add("3 3,.     drop-frg                  drop fragmented packets");
         l.add("3 3,.     allow-routing             allow control multicast traffic");
         l.add("3 3,.     allow-linklocal           allow link local traffic");
         l.add("3 3,.     allow-multicast           allow multicast traffic");
