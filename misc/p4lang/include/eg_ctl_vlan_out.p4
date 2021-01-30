@@ -18,8 +18,8 @@
 #define _EG_CTL_VLAN_OUT_P4_
 
 control EgressControlVlanOut(inout headers hdr,
-                              inout ingress_metadata_t eg_md,
-                              inout standard_metadata_t eg_intr_md) {
+                             inout ingress_metadata_t eg_md,
+                             inout standard_metadata_t eg_intr_md) {
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) stats;
 

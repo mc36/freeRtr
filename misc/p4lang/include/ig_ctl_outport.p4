@@ -18,8 +18,8 @@
 #define _IG_CTL_OUTPORT_P4_
 
 control IngressControlOutPort(inout headers hdr,
-                            inout ingress_metadata_t ig_md,
-                            inout standard_metadata_t ig_intr_md) {
+                              inout ingress_metadata_t ig_md,
+                              inout standard_metadata_t ig_intr_md) {
 
 
     action act_set_port(SubIntId_t port) {
