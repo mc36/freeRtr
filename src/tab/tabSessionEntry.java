@@ -3,6 +3,7 @@ package tab;
 import addr.addrIP;
 import addr.addrMac;
 import java.util.Comparator;
+import pack.packHolder;
 import util.bits;
 
 /**
@@ -73,7 +74,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
     public long lastTime;
 
     /**
-     * session direction
+     * session direction, true=rx, false=tx
      */
     public boolean dir;
 
@@ -161,6 +162,29 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
             n.trgMac = trgMac.copyBytes();
         }
         return n;
+    }
+
+    /**
+     * create entry from packet
+     *
+     * @param pck packet to use
+     * @param macs log macs
+     * @return entry
+     */
+    public static tabSessionEntry fromPack(packHolder pck, boolean macs) {
+        tabSessionEntry ses = new tabSessionEntry(macs);
+        ses.ipPrt = pck.IPprt;
+        ses.ipTos = pck.IPtos;
+        ses.srcPrt = pck.UDPsrc;
+        ses.trgPrt = pck.UDPtrg;
+        ses.srcAdr = pck.IPsrc.copyBytes();
+        ses.trgAdr = pck.IPtrg.copyBytes();
+        if (!macs) {
+            return ses;
+        }
+        ses.srcMac = pck.ETHsrc.copyBytes();
+        ses.trgMac = pck.ETHtrg.copyBytes();
+        return ses;
     }
 
     /**

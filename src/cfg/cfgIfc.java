@@ -5810,6 +5810,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 3,.     dropped                   log dropped sessions");
         l.add("3 3,.     drop-rx                   drop sessions ingress");
         l.add("3 3,.     drop-tx                   drop sessions egress");
+        l.add("3 3,.     allow-routing             allow control multicast traffic");
+        l.add("3 3,.     allow-linklocal           allow link local traffic");
+        l.add("3 3,.     allow-multicast           allow multicast traffic");
+        l.add("3 3,.     allow-broadcast           allow broadcast traffic");
+        l.add("3 4       allow-list                allow specific traffic");
+        l.add("4 3,.       <name>                  name of access list");
         l.add("2 3     redirection                 send packets out on different interface");
         l.add("3 .       <name>                    name of interface");
         l.add("2 3,.   ldp4                        enable/disable ldp ipv4 discovery");

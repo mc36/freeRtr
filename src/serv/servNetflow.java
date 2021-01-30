@@ -39,6 +39,11 @@ public class servNetflow extends servGeneric implements prtServS {
         "server netflow .*! no before",
         "server netflow .*! no after",
         "server netflow .*! no dropped",
+        "server netflow .*! no allow-routing",
+        "server netflow .*! no allow-linklocal",
+        "server netflow .*! no allow-multicast",
+        "server netflow .*! no allow-broadcast",
+        "server netflow .*! no allow-list",
         "server netflow .*! no drop-rx",
         "server netflow .*! no drop-tx",};
 
@@ -162,7 +167,7 @@ public class servNetflow extends servGeneric implements prtServS {
         long tim = bits.getTime();
         for (int i = 0; i < lst.size(); i++) {
             tabSessionEntry ntry = lst.get(i);
-            tabSessionEntry old = connects.doSess(ntry, true);
+            tabSessionEntry old = connects.doSess(ntry, null, true);
             if (old == null) {
                 continue;
             }

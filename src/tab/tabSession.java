@@ -1,6 +1,8 @@
 package tab;
 
 import addr.addrIP;
+import cfg.cfgAceslst;
+import cfg.cfgAll;
 import cfg.cfgInit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -80,6 +82,31 @@ public class tabSession implements Runnable {
     public boolean dropTx = false;
 
     /**
+     * allow routing multicast
+     */
+    public boolean allowRoutng = false;
+
+    /**
+     * allow link local
+     */
+    public boolean allowLnklc = false;
+
+    /**
+     * allow broadcast
+     */
+    public boolean allowBcast = false;
+
+    /**
+     * allow routed multicast
+     */
+    public boolean allowMcast = false;
+
+    /**
+     * allow specific packets
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> allowList;
+
+    /**
      * session timeout
      */
     public int timeout = 60000;
@@ -128,6 +155,11 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, !logDrop, beg, "dropped", "");
         cmds.cfgLine(res, !dropRx, beg, "drop-rx", "");
         cmds.cfgLine(res, !dropTx, beg, "drop-tx", "");
+        cmds.cfgLine(res, !allowRoutng, beg, "allow-routing", "");
+        cmds.cfgLine(res, !allowLnklc, beg, "allow-linklocal", "");
+        cmds.cfgLine(res, !allowMcast, beg, "allow-multicast", "");
+        cmds.cfgLine(res, !allowBcast, beg, "allow-broadcast", "");
+        cmds.cfgLine(res, allowList == null, beg, "allow-list", "" + allowList);
         cmds.cfgLine(res, timeout == defTim, beg, "timeout", "" + timeout);
     }
 
@@ -174,6 +206,34 @@ public class tabSession implements Runnable {
                 dropTx = !negated;
                 continue;
             }
+            if (a.equals("allow-routing")) {
+                allowRoutng = !negated;
+                continue;
+            }
+            if (a.equals("allow-linklocal")) {
+                allowLnklc = !negated;
+                continue;
+            }
+            if (a.equals("allow-broadcast")) {
+                allowBcast = !negated;
+                continue;
+            }
+            if (a.equals("allow-multicast")) {
+                allowMcast = !negated;
+                continue;
+            }
+            if (a.equals("allow-list")) {
+                if (negated) {
+                    allowList = null;
+                    continue;
+                }
+                cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+                if (ntry == null) {
+                    continue;
+                }
+                allowList = ntry.aceslst;
+                continue;
+            }
             if (a.equals("timeout")) {
                 if (negated) {
                     timeout = defTim;
@@ -185,49 +245,85 @@ public class tabSession implements Runnable {
         }
     }
 
+    private tabSessionEntry sessPass(tabSessionEntry ses) {
+        ses.startTime = bits.getTime();
+        ses.lastTime = ses.startTime;
+        connects.add(ses);
+        if (!logBefore) {
+            return ses;
+        }
+        logger.info("started " + ses);
+        return ses;
+    }
+
+    private tabSessionEntry sessDrop(tabSessionEntry ses) {
+        if (logDrop) {
+            logger.info("dropped " + ses);
+        }
+        return null;
+    }
+
     /**
      * inspect one session
      *
      * @param ses session to inspect
-     * @param dir direction of packet
+     * @param pck packet to inspect
+     * @param dir direction of packet, true=tx, false=rx
      * @return entry to update, null if denied
      */
-    public tabSessionEntry doSess(tabSessionEntry ses, boolean dir) {
+    public tabSessionEntry doSess(tabSessionEntry ses, packHolder pck, boolean dir) {
         tabSessionEntry res = connects.find(ses);
         if ((res == null) && bidir) {
             ses = ses.reverseDirection();
             res = connects.find(ses);
         }
-        if (res == null) {
-            if (dropRx && !dir) {
-                if (logDrop) {
-                    logger.info("dropped " + ses);
-                }
-                return null;
+        if (res != null) {
+            res.lastTime = bits.getTime();
+            ses.dir = res.dir;
+            return res;
+        }
+        if (!dropRx && !dropTx) {
+            return sessPass(ses);
+        }
+        if (dir) {
+            if (!dropTx) {
+                return sessPass(ses);
             }
-            if (dropTx && dir) {
-                if (logDrop) {
-                    logger.info("dropped " + ses);
-                }
-                return null;
-            }
-            ses.startTime = bits.getTime();
-            connects.add(ses);
-            res = ses;
-            if (logBefore) {
-                logger.info("started " + res);
+        } else {
+            if (!dropRx) {
+                return sessPass(ses);
             }
         }
-        ses.dir = res.dir;
-        res.lastTime = bits.getTime();
-        return res;
+        if (pck == null) {
+            return sessDrop(ses);
+        }
+        if (allowMcast && pck.IPmlt) {
+            return sessPass(ses);
+        }
+        if (allowRoutng && pck.IPmlr) {
+            return sessPass(ses);
+        }
+        if (allowLnklc && pck.IPlnk) {
+            return sessPass(ses);
+        }
+        if (allowBcast && pck.IPbrd) {
+            return sessPass(ses);
+        }
+        if (allowList == null) {
+            return sessDrop(ses);
+        }
+        if (allowList.matches(false, false, pck)) {
+            return sessPass(ses);
+        } else {
+            return sessDrop(ses);
+        }
     }
 
     /**
      * inspect one packet
      *
      * @param pck packet to inspect
-     * @param dir direction of packet, true=tx, false=tx
+     * @param dir direction of packet, true=tx, false=rx
      * @return true to drop, false to forward
      */
     public boolean doPack(packHolder pck, boolean dir) {
@@ -236,19 +332,9 @@ public class tabSession implements Runnable {
         tabQos.classifyLayer4(pck);
         int o = pck.dataSize();
         pck.getSkip(o - i);
-        tabSessionEntry ses = new tabSessionEntry(logMacs);
-        ses.ipPrt = pck.IPprt;
-        ses.ipTos = pck.IPtos;
+        tabSessionEntry ses = tabSessionEntry.fromPack(pck, logMacs);
         ses.dir = dir;
-        ses.srcPrt = pck.UDPsrc;
-        ses.trgPrt = pck.UDPtrg;
-        ses.srcAdr = pck.IPsrc.copyBytes();
-        ses.trgAdr = pck.IPtrg.copyBytes();
-        if (logMacs) {
-            ses.srcMac = pck.ETHsrc.copyBytes();
-            ses.trgMac = pck.ETHtrg.copyBytes();
-        }
-        ses = doSess(ses, dir);
+        ses = doSess(ses, pck, dir);
         if (ses == null) {
             return true;
         }
