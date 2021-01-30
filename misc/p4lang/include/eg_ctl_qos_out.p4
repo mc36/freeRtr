@@ -18,30 +18,30 @@
 #define _EG_CTL_Qos_out_P4_
 
 control EgressControlQosOut(inout headers hdr,
-                             inout ingress_metadata_t ig_md,
-                             inout standard_metadata_t ig_intr_md) {
+                             inout ingress_metadata_t eg_md,
+                             inout standard_metadata_t eg_intr_md) {
 
     meter((MAX_PORT+1), MeterType.bytes) policer;
 
     action act_deny(SubIntId_t metid) {
-        ig_md.meter_id = metid;
-        ig_md.dropping = 0;
+        eg_md.meter_id = metid;
+        eg_md.dropping = 0;
     }
 
     action act_permit(SubIntId_t metid) {
-        ig_md.meter_id = metid;
-        policer.execute_meter((bit<32>)metid, ig_md.meter_res);
-        if (ig_md.meter_res == 0) {
-            ig_md.dropping = 0;
+        eg_md.meter_id = metid;
+        policer.execute_meter((bit<32>)metid, eg_md.meter_res);
+        if (eg_md.meter_res == 0) {
+            eg_md.dropping = 0;
         } else {
-            ig_md.dropping = 1;
+            eg_md.dropping = 1;
         }
     }
 
 
     table tbl_ipv4_qos {
         key = {
-ig_md.aclport_id:
+eg_md.aclport_id:
             exact;
 hdr.ipv4.protocol:
             ternary;
@@ -49,9 +49,9 @@ hdr.ipv4.src_addr:
             ternary;
 hdr.ipv4.dst_addr:
             ternary;
-ig_md.layer4_srcprt:
+eg_md.layer4_srcprt:
             ternary;
-ig_md.layer4_dstprt:
+eg_md.layer4_dstprt:
             ternary;
         }
         actions = {
@@ -65,7 +65,7 @@ ig_md.layer4_dstprt:
 
     table tbl_ipv6_qos {
         key = {
-ig_md.aclport_id:
+eg_md.aclport_id:
             exact;
 hdr.ipv6.next_hdr:
             ternary;
@@ -73,9 +73,9 @@ hdr.ipv6.src_addr:
             ternary;
 hdr.ipv6.dst_addr:
             ternary;
-ig_md.layer4_srcprt:
+eg_md.layer4_srcprt:
             ternary;
-ig_md.layer4_dstprt:
+eg_md.layer4_dstprt:
             ternary;
         }
         actions = {
@@ -88,10 +88,10 @@ ig_md.layer4_dstprt:
     }
 
     apply {
-        if (ig_md.ipv4_valid==1)  {
+        if (eg_md.ipv4_valid==1)  {
             tbl_ipv4_qos.apply();
         }
-        if (ig_md.ipv6_valid==1)  {
+        if (eg_md.ipv6_valid==1)  {
             tbl_ipv6_qos.apply();
         }
     }

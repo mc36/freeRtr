@@ -4,6 +4,8 @@ CC="gcc"                                #gcc
 
 MD="-g"                                 #debug
 MD="-O3"                                #release
+#gdb xxx.bin core
+#bf -full
 
 compileFile()
 {

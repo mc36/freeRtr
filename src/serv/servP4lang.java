@@ -2910,7 +2910,7 @@ class servP4langConn implements Runnable {
         if (ntry.need < 1) {
             neighs.del(ntry);
             if (ntry.sentIgNhop != 0) {
-                lower.sendLine("nhop2port_del " + ntry.id + " " + ntry.iface.id + " " + ntry.iface.getUcast().id + " " + ntry.iface.getMcast(ntry.id).id);
+                lower.sendLine("nhop2port_del " + ntry.id + " " + ntry.iface.id + " " + ntry.sentIgNhop);
             }
             if (ntry.mac == null) {
                 return;

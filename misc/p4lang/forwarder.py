@@ -72,7 +72,7 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_vlan_out.tbl_vlan_out",
         match_fields={
-            "ig_md.target_id": port,
+            "eg_md.target_id": port,
         },
         action_name="eg_ctl.eg_ctl_vlan_out.act_set_vlan_port",
         action_params={
@@ -179,7 +179,7 @@ def writeHairpinRules(delete, p4info_helper, ingress_sw, port, trg):
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_hairpin.tbl_hairpin",
         match_fields={
-            "ig_md.outport_id": port,
+            "eg_md.outport_id": port,
         },
         action_name="eg_ctl.eg_ctl_hairpin.act_set_recir",
         action_params={
@@ -211,7 +211,7 @@ def writeGre4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_gre4",
         action_params={
@@ -254,7 +254,7 @@ def writeGre6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_gre6",
         action_params={
@@ -312,7 +312,7 @@ def writeIpip4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_ipip4",
         action_params={
@@ -375,7 +375,7 @@ def writeIpip6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_ipip6",
         action_params={
@@ -425,7 +425,7 @@ def writeL2tp4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_l2tp4",
         action_params={
@@ -471,7 +471,7 @@ def writeL2tp6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_l2tp6",
         action_params={
@@ -743,7 +743,7 @@ def writePppoeRules(delete, p4info_helper, ingress_sw, port, phport, nexthop, vr
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_pppoe",
         action_params={
@@ -1399,12 +1399,12 @@ def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
 
 
 def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
-    matches={"ig_md.aclport_id": port}
+    matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
-    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_acl_out.tbl_ipv4_acl",
         match_fields=matches,
@@ -1421,12 +1421,12 @@ def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
 
 
 def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
-    matches={"ig_md.aclport_id": port}
+    matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
-    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_acl_out.tbl_ipv6_acl",
         match_fields=matches,
@@ -1727,8 +1727,8 @@ def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
-    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_qos_out.tbl_ipv4_qos",
         match_fields=matches,
@@ -1750,8 +1750,8 @@ def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
-    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_qos_out.tbl_ipv6_qos",
         match_fields=matches,
@@ -1898,7 +1898,7 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, nexthop, dst_mac_addr, 
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
         match_fields={
-            "ig_md.nexthop_id": nexthop,
+            "eg_md.nexthop_id": nexthop,
         },
         action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_fib_hit",
         action_params={
@@ -2214,8 +2214,8 @@ def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
         match_fields={
-            "ig_md.clone_session": sess,
-            "ig_intr_md.egress_rid": subif
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": subif
         },
         action_name="eg_ctl.eg_ctl_mcast.act_rawip",
         action_params={
@@ -2237,8 +2237,8 @@ def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
         match_fields={
-            "ig_md.clone_session": sess,
-            "ig_intr_md.egress_rid": subif
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": subif
         },
         action_name="eg_ctl.eg_ctl_mcast.act_rawip",
         action_params={

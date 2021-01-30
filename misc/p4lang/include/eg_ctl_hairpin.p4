@@ -18,20 +18,20 @@
 #define _EG_CTL_HAIRPIN_P4_
 
 control EgressControlHairpin(inout headers hdr,
-                             inout ingress_metadata_t ig_md,
-                             inout standard_metadata_t ig_intr_md) {
+                             inout ingress_metadata_t eg_md,
+                             inout standard_metadata_t eg_intr_md) {
 
 
     action act_set_recir(SubIntId_t port) {
-        ig_intr_md.egress_spec = (PortId_t)port;
-        ig_md.need_recir = 2;
+        eg_intr_md.egress_spec = (PortId_t)port;
+        eg_md.need_recir = 2;
         hdr.cpu.setValid();
         hdr.cpu.port = port;
     }
 
     table tbl_hairpin {
         key = {
-ig_md.outport_id:
+eg_md.outport_id:
             exact;
         }
         actions = {

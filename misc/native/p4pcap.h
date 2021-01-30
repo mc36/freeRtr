@@ -56,6 +56,7 @@ void doIfaceLoop(int * param) {
     struct pcap_pkthdr head;
     const unsigned char *pack;
     int bufS;
+    int fail = 0;
     unsigned int addrLen;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
@@ -63,19 +64,25 @@ void doIfaceLoop(int * param) {
     if (hashCtx == NULL) err("error getting hash context");
     if (port == cpuport) {
         for (;;) {
+            if (fail++ > 16) break;
             pack = pcap_next(ifacePcap[port], &head);
+            if (pack == NULL) continue;
             bufS = head.caplen;
-            if (bufS < 0) break;
+            if (bufS < 1) continue;
             memmove(&bufD[preBuff], pack, bufS);
             processCpuPack(&bufD[0], bufS);
+            fail = 0;
         }
     } else {
         for (;;) {
+            if (fail++ > 16) break;
             pack = pcap_next(ifacePcap[port], &head);
+            if (pack == NULL) continue;
             bufS = head.caplen;
-            if (bufS < 0) break;
+            if (bufS < 1) continue;
             memmove(&bufD[preBuff], pack, bufS);
             processDataPacket(&bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
+            fail = 0;
         }
     }
     err("port thread exited");

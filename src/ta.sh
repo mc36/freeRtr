@@ -1,6 +1,6 @@
 #!/bin/sh
 ./c.sh
-./t.sh $@
+./tqb.sh $@
 ./to.sh $@
 ./tp1.sh $@
 ./tp2.sh $@

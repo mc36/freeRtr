@@ -18,27 +18,27 @@
 #define _EG_CTL_VLAN_OUT_P4_
 
 control EgressControlVlanOut(inout headers hdr,
-                              inout ingress_metadata_t ig_md,
-                              inout standard_metadata_t ig_intr_md) {
+                              inout ingress_metadata_t eg_md,
+                              inout standard_metadata_t eg_intr_md) {
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) stats;
 
     action act_set_vlan_port(SubIntId_t port, vlan_id_t vlan) {
-        ig_md.outport_id = port;
+        eg_md.outport_id = port;
         hdr.vlan.setValid();
-        hdr.vlan.ethertype = ig_md.ethertype;
+        hdr.vlan.ethertype = eg_md.ethertype;
         hdr.ethernet.ethertype = ETHERTYPE_VLAN;
         hdr.vlan.vid = vlan;
     }
 
     action act_set_port() {
-        ig_md.outport_id = ig_md.target_id;
-        hdr.ethernet.ethertype = ig_md.ethertype;
+        eg_md.outport_id = eg_md.target_id;
+        hdr.ethernet.ethertype = eg_md.ethertype;
     }
 
     table tbl_vlan_out {
         key = {
-ig_md.target_id:
+eg_md.target_id:
             exact;
         }
         actions = {
@@ -50,7 +50,7 @@ ig_md.target_id:
     }
 
     apply {
-        stats.count((bit<32>)ig_md.target_id);
+        stats.count((bit<32>)eg_md.target_id);
         tbl_vlan_out.apply();
     }
 }
