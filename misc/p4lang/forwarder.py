@@ -1723,7 +1723,7 @@ def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
 
 
 def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
-    matches={"ig_md.aclport_id": port}
+    matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
@@ -1746,7 +1746,7 @@ def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
 
 
 def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
-    matches={"ig_md.aclport_id": port}
+    matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")

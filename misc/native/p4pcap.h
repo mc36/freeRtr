@@ -64,7 +64,7 @@ void doIfaceLoop(int * param) {
     if (hashCtx == NULL) err("error getting hash context");
     if (port == cpuport) {
         for (;;) {
-            if (fail++ > 16) break;
+            if (fail++ > 1024) break;
             pack = pcap_next(ifacePcap[port], &head);
             if (pack == NULL) continue;
             bufS = head.caplen;
@@ -75,7 +75,7 @@ void doIfaceLoop(int * param) {
         }
     } else {
         for (;;) {
-            if (fail++ > 16) break;
+            if (fail++ > 1024) break;
             pack = pcap_next(ifacePcap[port], &head);
             if (pack == NULL) continue;
             bufS = head.caplen;
