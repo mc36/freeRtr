@@ -437,6 +437,10 @@ qc pass: egress source port matching hierarchical access list
 qc pass: ingress destination port matching hierarchical access list
 qc pass: egress destination port matching hierarchical access list
 qc pass: reflexive access list
+qc pass: ingress mpls access list
+qc pass: egress mpls access list
+qc pass: ingress mpls common access list
+qc pass: egress mpls common access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.1.30-rel, done by cs@nop.
--;-;-;2021-01-30 16:10:38, took 00:05:39, with 100 workers, on 2326 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2021-01-30 17:01:57, took 00:05:18, with 100 workers, on 2330 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -441,6 +441,10 @@ http://sources.nop.hu/cfg/crypt-acl60.tst;crypt-acl60.tst;success;egress source 
 http://sources.nop.hu/cfg/crypt-acl61.tst;crypt-acl61.tst;success;ingress destination port matching hierarchical access list
 http://sources.nop.hu/cfg/crypt-acl62.tst;crypt-acl62.tst;success;egress destination port matching hierarchical access list
 http://sources.nop.hu/cfg/crypt-acl63.tst;crypt-acl63.tst;success;reflexive access list
+http://sources.nop.hu/cfg/crypt-acl64.tst;crypt-acl64.tst;success;ingress mpls access list
+http://sources.nop.hu/cfg/crypt-acl65.tst;crypt-acl65.tst;success;egress mpls access list
+http://sources.nop.hu/cfg/crypt-acl66.tst;crypt-acl66.tst;success;ingress mpls common access list
+http://sources.nop.hu/cfg/crypt-acl67.tst;crypt-acl67.tst;success;egress mpls common access list
 http://sources.nop.hu/cfg/crypt-dtls.tst;crypt-dtls.tst;success;dtls test
 http://sources.nop.hu/cfg/crypt-esp101.tst;crypt-esp101.tst;success;ipv4 in esp over ipv4
 http://sources.nop.hu/cfg/crypt-esp102.tst;crypt-esp102.tst;success;ipv4 in esp over ipv6
