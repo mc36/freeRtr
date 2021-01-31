@@ -21,6 +21,7 @@ import cfg.cfgEvntmgr;
 import cfg.cfgGeneric;
 import cfg.cfgHrpn;
 import cfg.cfgIconn;
+import cfg.cfgSessn;
 import cfg.cfgKey;
 import cfg.cfgMenu;
 import cfg.cfgMtrack;
@@ -468,6 +469,8 @@ public class userConfig {
         l.add("2  .    <num>                        number of bundle group");
         l.add("1  2  hairpin                        interface hairpin parameters");
         l.add("2  .    <num>                        number of hairpin group");
+        l.add("1  2  session                        stateful session parameters");
+        l.add("2  .    <name>                       name of session");
         l.add("1  2  check                          check parameters");
         l.add("2  .    <name>                       name of check");
         l.add("1  2  sensor                         sensor parameters");
@@ -937,6 +940,15 @@ public class userConfig {
             modeDconfig = cfgAll.hrpnFind(cmd.word(), true);
             if (modeDconfig == null) {
                 cmd.error("invalid hairpin number");
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("session")) {
+            modeDconfig = cfgAll.sessnFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                cmd.error("invalid session name");
                 return;
             }
             modeV = modes.config;
@@ -1822,7 +1834,15 @@ public class userConfig {
         if (a.equals("hairpin")) {
             cfgHrpn ntry = cfgAll.hrpnDel(cmd.word());
             if (ntry == null) {
-                cmd.error("invalid bundle number");
+                cmd.error("invalid hairpin number");
+                return;
+            }
+            return;
+        }
+        if (a.equals("session")) {
+            cfgSessn ntry = cfgAll.sessnDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("invalid session name");
                 return;
             }
             return;

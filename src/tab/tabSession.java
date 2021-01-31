@@ -4,6 +4,7 @@ import addr.addrIP;
 import cfg.cfgAceslst;
 import cfg.cfgAll;
 import cfg.cfgInit;
+import cfg.cfgSessn;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +22,11 @@ import util.logger;
  * @author matecsaba
  */
 public class tabSession implements Runnable {
+
+    /**
+     * name of this group
+     */
+    public String name;
 
     /**
      * list of prefixes
@@ -50,6 +56,11 @@ public class tabSession implements Runnable {
      * bidirection collecting
      */
     public final boolean bidir;
+
+    /**
+     * member of inspection
+     */
+    protected tabSession master;
 
     /**
      * log before session
@@ -154,6 +165,11 @@ public class tabSession implements Runnable {
      * @param beg beginning to use
      */
     public void getConfig(List<String> res, String beg) {
+        if (master != null) {
+            res.add(beg + "member " + master.name + " " + name);
+        } else {
+            res.add(beg + "no member");
+        }
         cmds.cfgLine(res, !logMacs, beg, "mac", "");
         cmds.cfgLine(res, !logBefore, beg, "before", "");
         cmds.cfgLine(res, !logAfter, beg, "after", "");
@@ -232,6 +248,19 @@ public class tabSession implements Runnable {
                 allowMcast = !negated;
                 continue;
             }
+            if (a.equals("member")) {
+                if (negated) {
+                    master = null;
+                    continue;
+                }
+                cfgSessn ntry = cfgAll.sessnFind(cmd.word(), false);
+                if (ntry == null) {
+                    continue;
+                }
+                master = ntry.connects;
+                name = cmd.word();
+                continue;
+            }
             if (a.equals("allow-list")) {
                 if (negated) {
                     allowList = null;
@@ -247,15 +276,24 @@ public class tabSession implements Runnable {
             if (a.equals("timeout")) {
                 if (negated) {
                     timeout = defTim;
-                } else {
-                    timeout = bits.str2num(cmd.word());
+                    continue;
                 }
+                timeout = bits.str2num(cmd.word());
                 continue;
             }
         }
     }
 
-    private tabSessionEntry sessPass(tabSessionEntry ses) {
+    /**
+     * pass one session
+     *
+     * @param ses session to pass
+     * @return session entry
+     */
+    public tabSessionEntry sessPass(tabSessionEntry ses) {
+        if (master != null) {
+            return master.sessPass(ses);
+        }
         ses.startTime = bits.getTime();
         ses.lastTime = ses.startTime;
         connects.add(ses);
@@ -266,7 +304,16 @@ public class tabSession implements Runnable {
         return ses;
     }
 
-    private tabSessionEntry sessDrop(tabSessionEntry ses) {
+    /**
+     * drop one session
+     *
+     * @param ses session to drop
+     * @return session entry
+     */
+    public tabSessionEntry sessDrop(tabSessionEntry ses) {
+        if (master != null) {
+            return master.sessPass(ses);
+        }
         if (logDrop) {
             logger.info("dropped " + ses);
         }
@@ -293,10 +340,19 @@ public class tabSession implements Runnable {
                 return sessDrop(ses);
             }
         }
-        tabSessionEntry res = connects.find(ses);
-        if ((res == null) && bidir) {
-            ses = ses.reverseDirection();
+        tabSessionEntry res;
+        if (master == null) {
             res = connects.find(ses);
+            if ((res == null) && bidir) {
+                ses = ses.reverseDirection();
+                res = connects.find(ses);
+            }
+        } else {
+            res = master.connects.find(ses);
+            if ((res == null) && bidir) {
+                ses = ses.reverseDirection();
+                res = master.connects.find(ses);
+            }
         }
         if (res != null) {
             res.lastTime = bits.getTime();

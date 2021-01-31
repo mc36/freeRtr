@@ -164,6 +164,11 @@ public class cfgAll {
     public static final tabGen<cfgDial> dials = new tabGen<cfgDial>();
 
     /**
+     * list of sessions
+     */
+    public static final tabGen<cfgSessn> sessns = new tabGen<cfgSessn>();
+
+    /**
      * list of checks
      */
     public static final tabGen<cfgCheck> checks = new tabGen<cfgCheck>();
@@ -2745,6 +2750,47 @@ public class cfgAll {
         return ntry;
     }
 
+    /**
+     * find one session
+     *
+     * @param nam name of this
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgSessn sessnFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgSessn ntry = new cfgSessn(nam);
+        if (!create) {
+            return sessns.find(ntry);
+        }
+        cfgSessn old = sessns.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        ntry.connects.name = ntry.name;
+        ntry.connects.startTimer();
+        return ntry;
+    }
+
+    /**
+     * delete one session
+     *
+     * @param nam name of this
+     * @return descriptor, null if not found
+     */
+    public static cfgSessn sessnDel(String nam) {
+        cfgSessn ntry = new cfgSessn(nam);
+        ntry = sessns.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.connects.stopTimer();
+        return ntry;
+    }
+
     private final static String dialFind(String str) {
         if (str == null) {
             return null;
@@ -3281,6 +3327,7 @@ public class cfgAll {
         servGenList.listGetRun(l, bundles, filter);
         servGenList.listGetRun(l, bridges, filter);
         servGenList.listGetRun(l, hairpins, filter);
+        servGenList.listGetRun(l, sessns, filter);
         servGenList.listGetRun(l, menus, filter);
         servGenList.listGetRun(l, vrfs, filter);
         servGenList.listGetRun(l, routers, filter);

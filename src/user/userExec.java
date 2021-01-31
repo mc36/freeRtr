@@ -886,6 +886,10 @@ public class userExec {
         hl.add("3 .        <name>                name of list");
         hl.add("2 3      prefix-list             prefix list statistics");
         hl.add("3 .        <name>                name of list");
+        hl.add("2 3      session                 stateful session information");
+        hl.add("3 4        <name>                name of session");
+        hl.add("4 .          session             list of sessions");
+        hl.add("4 .          toptalk             top talker list");
         hl.add("2 3      dial-peer               current dial peer status");
         hl.add("3 .        description           descriptions");
         hl.add("3 .        voice                 for calls");

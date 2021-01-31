@@ -2,6 +2,7 @@ package ip;
 
 import addr.addrIP;
 import cfg.cfgIfc;
+import clnt.clntNetflow;
 import ifc.ifcDn;
 import ifc.ifcEthTyp;
 import ifc.ifcEther;
@@ -164,6 +165,16 @@ public class ipMpls implements ifcUp {
     public tabSession inspect;
 
     /**
+     * process netflow on receiving
+     */
+    public boolean netflowRx = false;
+
+    /**
+     * process netflow on sending
+     */
+    public boolean netflowTx = false;
+
+    /**
      * forwarder
      */
     protected ipFwd fwd4;
@@ -248,6 +259,13 @@ public class ipMpls implements ifcUp {
             }
             pck.getSkip(-2);
         }
+        if (netflowTx) {
+            pck.getSkip(2);
+            if (netflowPacket(pck, true)) {
+                return;
+            }
+            pck.getSkip(-2);
+        }
         if (redirect != null) {
             redirect.cntr.tx(pck);
             redirect.lower.sendPack(pck);
@@ -257,31 +275,37 @@ public class ipMpls implements ifcUp {
         lower.sendPack(pck);
     }
 
-    private boolean filterPacket(packHolder pck, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
-        int i = pck.dataSize();
+    private ipFwd parseIPhead(packHolder pck) {
         for (;;) {
             if (parseMPLSheader(pck)) {
-                return true;
+                return null;
             }
             if (pck.MPLSbottom) {
                 break;
             }
         }
-        boolean b;
         switch (ifcEther.guessEtherType(pck)) {
             case ipIfc4.type:
-                b = core4.parseIPheader(pck, false);
-                break;
+                if (core4.parseIPheader(pck, false)) {
+                    return null;
+                }
+                return fwd4;
             case ipIfc6.type:
-                b = core6.parseIPheader(pck, false);
-                break;
+                if (core6.parseIPheader(pck, false)) {
+                    return null;
+                }
+                return fwd6;
             default:
-                b = true;
-                break;
+                return null;
         }
-        if (!b) {
-            b = !acl.matches(false, true, pck);
+    }
+
+    private boolean filterPacket(packHolder pck, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
+        int i = pck.dataSize();
+        if (parseIPhead(pck) == null) {
+            return true;
         }
+        boolean b = !acl.matches(false, true, pck);
         int o = pck.dataSize();
         pck.getSkip(o - i);
         return b;
@@ -289,32 +313,27 @@ public class ipMpls implements ifcUp {
 
     private boolean inspectPacket(packHolder pck, boolean dir) {
         int i = pck.dataSize();
-        for (;;) {
-            if (parseMPLSheader(pck)) {
-                return true;
-            }
-            if (pck.MPLSbottom) {
-                break;
-            }
+        if (parseIPhead(pck) == null) {
+            return true;
         }
-        boolean b;
-        switch (ifcEther.guessEtherType(pck)) {
-            case ipIfc4.type:
-                b = core4.parseIPheader(pck, false);
-                break;
-            case ipIfc6.type:
-                b = core6.parseIPheader(pck, false);
-                break;
-            default:
-                b = true;
-                break;
-        }
-        if (!b) {
-            b = inspect.doPack(pck, dir);
-        }
+        boolean b = inspect.doPack(pck, dir);
         int o = pck.dataSize();
         pck.getSkip(o - i);
         return b;
+    }
+
+    private boolean netflowPacket(packHolder pck, boolean dir) {
+        int i = pck.dataSize();
+        ipFwd fw = parseIPhead(pck);
+        if (fw != null) {
+            clntNetflow nf = fw.netflow;
+            if (nf != null) {
+                nf.session.doPack(pck, dir);
+            }
+        }
+        int o = pck.dataSize();
+        pck.getSkip(o - i);
+        return false;
     }
 
     /**
@@ -625,6 +644,11 @@ public class ipMpls implements ifcUp {
         }
         if (inspect != null) {
             if (inspectPacket(pck, false)) {
+                return;
+            }
+        }
+        if (netflowRx) {
+            if (netflowPacket(pck, false)) {
                 return;
             }
         }

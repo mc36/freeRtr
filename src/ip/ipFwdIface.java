@@ -424,8 +424,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("2 .     resend-packet               enable sending packet out on same interface");
         l.add("2 .     directed-broadcast          enable forwarding of directed broadcasts");
         l.add("2 .     broadcast-multicast         broadcast the multicast packets");
-        l.add("2 .     disable-flowspec            disable flowspec processing");
-        l.add("2 .     disable-dapp                disable dapp processing");
+        l.add("2 .     flowspec-disable            disable flowspec processing");
+        l.add("2 .     dapp-disable                disable dapp processing");
         l.add("2 3     verify-source               enable per packet validation");
         l.add("3 .       any                       source is reachable via any interface");
         l.add("3 .       rx                        source is reachable via this interface");
@@ -458,6 +458,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 3,.     allow-broadcast           allow broadcast traffic");
         l.add("3 4       allow-list                allow specific traffic");
         l.add("4 3,.       <name>                  name of access list");
+        l.add("3 4       member                    member of inspection");
+        l.add("4 5         <name>                  name of inspection group");
+        l.add("5 3,.         <name>                local identifier in the group");
         l.add("2 3     bfd                         enable bidirectional forwarding detection");
         l.add("3 4       <num>                     tx interval in ms");
         l.add("4 5         <num>                   rx interval in ms");
@@ -585,8 +588,8 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, blockHost2host, cmds.tabulator, beg + "resend-packet", "");
         cmds.cfgLine(l, blockBroadcast, cmds.tabulator, beg + "directed-broadcast", "");
         cmds.cfgLine(l, !mcastAsBcast, cmds.tabulator, beg + "broadcast-multicast", "");
-        cmds.cfgLine(l, !disableFlowspec, cmds.tabulator, beg + "disable-flowspec", "");
-        cmds.cfgLine(l, !disableDapp, cmds.tabulator, beg + "disable-dapp", "");
+        cmds.cfgLine(l, !disableFlowspec, cmds.tabulator, beg + "flowspec-disable", "");
+        cmds.cfgLine(l, !disableDapp, cmds.tabulator, beg + "dapp-disable", "");
         String a = "";
         if (verifySource) {
             a = "any";
@@ -798,11 +801,11 @@ public class ipFwdIface extends tabRouteIface {
             blockHost2host = false;
             return false;
         }
-        if (a.equals("disable-flowspec")) {
+        if (a.equals("flowspec-disable")) {
             disableFlowspec = true;
             return false;
         }
-        if (a.equals("disable-dapp")) {
+        if (a.equals("dapp-disable")) {
             disableDapp = true;
             return false;
         }
@@ -1302,11 +1305,11 @@ public class ipFwdIface extends tabRouteIface {
             blockHost2host = true;
             return false;
         }
-        if (a.equals("disable-flowspec")) {
+        if (a.equals("flowspec-disable")) {
             disableFlowspec = false;
             return false;
         }
-        if (a.equals("disable-dapp")) {
+        if (a.equals("dapp-disable")) {
             disableDapp = false;
             return false;
         }

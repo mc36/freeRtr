@@ -117,6 +117,10 @@ bridge 4
  private-bridge
  exit
 !
+session upl
+ dropped
+ exit
+!
 vrf definition bvi
  rd 65535:2
  label-mode per-prefix
@@ -320,7 +324,7 @@ interface template1
  ipv4 address dynamic 255.255.255.252
  ipv4 netflow-rx
  ipv4 netflow-tx
- ipv4 inspect mac
+ ipv4 inspect member upl bu9 mac
  ipv4 host-watch
  ipv4 srh enable
  ipv4 ptp enable
@@ -332,7 +336,7 @@ interface template1
  ipv6 address dynamic ffff:ffff:ffff:ffff::
  ipv6 netflow-rx
  ipv6 netflow-tx
- ipv6 inspect mac
+ ipv6 inspect member upl bu9 mac
  ipv6 host-watch
  ipv6 srh enable
  ipv6 ptp enable
@@ -342,7 +346,9 @@ interface template1
  ipv6 pim bier-tunnel 299
  ipv6 pim join-source loopback0
  mpls enable
- mpls inspect mac
+ mpls netflow-rx
+ mpls netflow-tx
+ mpls inspect member upl bu9 mac
  mpls ldp4
  mpls ldp6
  mpls rsvp4
@@ -946,4 +952,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=988c0fcd5dda8e535e2cdb12a4664f0774381ef260a412667f0daf813f78e77dec08eee2f8933ff77aeb8ffc7aa121db73596040f516189bb78cde4e135faf65-f6e49727e463f6b9bba70b1f86daf634ee8c7eda45e22ed60ec9976aae86d63ca90c315ecf70a88e1f66a5c85970fd86026557cebf9d1faf8d5d57374093cf7d
+end chksum=0d0d440efe3f979cf76c88dad48a9d30ae6a6e3974930e7da0435ac6dd4088895824a4b5d3aaf4817751c5d6b61d7d16acc69da0506056d9c801fd656e7d82c7-6c87c54338faf0abf847141a1cb7f1e623add9a3da96ad04b5c6f8502dfef9cf100cddbafc65a8eecdb549fb76974770bdecea7ae8effb4b36d99444949d42d1

@@ -679,6 +679,7 @@ public class cfgInit implements Runnable {
         cfgBrdg.defaultF = createFilter(cfgBrdg.defaultL);
         cfgTrnsltn.defaultF = createFilter(cfgTrnsltn.defaultL);
         cfgDial.defaultF = createFilter(cfgDial.defaultL);
+        cfgSessn.defaultF = createFilter(cfgSessn.defaultL);
         cfgCheck.defaultF = createFilter(cfgCheck.defaultL);
         cfgSensor.defaultF = createFilter(cfgSensor.defaultL);
         cfgRoump.defaultF = createFilter(cfgRoump.defaultL);

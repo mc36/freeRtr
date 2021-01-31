@@ -1092,10 +1092,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if ((netflow != null) && lower.netflowTx) {
-            if (netflow.session.doPack(pck, true)) {
-                lower.cntr.drop(pck, counter.reasons.denied);
-                return;
-            }
+            netflow.session.doPack(pck, true);
         }
         if (lower.tcpMssOut > 0) {
             ifaceAdjustMss(pck, lower.tcpMssOut);
@@ -1189,10 +1186,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if ((netflow != null) && lower.netflowRx) {
-            if (netflow.session.doPack(pck, true)) {
-                lower.cntr.drop(pck, counter.reasons.denied);
-                return;
-            }
+            netflow.session.doPack(pck, false);
         }
         if (debugger.ipFwdTraf) {
             logger.debug("rx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);

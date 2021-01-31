@@ -1327,6 +1327,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mpls access-group-common-out",
         "interface .*! no mpls inspect",
         "interface .*! no mpls label-security",
+        "interface .*! no mpls netflow-rx",
+        "interface .*! no mpls netflow-tx",
         "interface .*! no mpls redirection",
         "interface .*! no mpls ldp4",
         "interface .*! no mpls ldp6",
@@ -1347,8 +1349,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] propagate-ttl-always",
         "interface .*! ipv[4|6] propagate-ttl-allow",
         "interface .*! no ipv[4|6] resend-packet",
-        "interface .*! no ipv[4|6] disable-dapp",
-        "interface .*! no ipv[4|6] disable-flowspec",
+        "interface .*! no ipv[4|6] dapp-disable",
+        "interface .*! no ipv[4|6] flowspec-disable",
         "interface .*! no ipv[4|6] directed-broadcast",
         "interface .*! no ipv[4|6] broadcast-multicast",
         "interface .*! no ipv[4|6] verify-source",
@@ -5406,6 +5408,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
+            cmds.cfgLine(l, !mplsPack.netflowRx, cmds.tabulator, "mpls netflow-rx", "");
+            cmds.cfgLine(l, !mplsPack.netflowTx, cmds.tabulator, "mpls netflow-tx", "");
             cmds.cfgLine(l, mplsPack.redirect == null, cmds.tabulator, "mpls redirection", "" + mplsPack.redirect);
             cmds.cfgLine(l, mplsPack.cfilterIn == null, cmds.tabulator, "mpls access-group-common-in", "" + mplsPack.cfilterIn);
             cmds.cfgLine(l, mplsPack.cfilterOut == null, cmds.tabulator, "mpls access-group-common-out", "" + mplsPack.cfilterOut);
@@ -5816,6 +5820,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2   mpls                          multiprotocol label switching config commands");
         l.add("2 .     enable                      enable/disable packet processing");
         l.add("2 .     label-security              enable/disable security checks");
+        l.add("2 .     netflow-rx                  netflow received packets");
+        l.add("2 .     netflow-tx                  netflow transmitted packets");
         l.add("2 3     access-group-in             access list to apply to ingress packets");
         l.add("3 .       <name>                    name of access list");
         l.add("2 3     access-group-out            access list to apply to egress packets");
@@ -5838,6 +5844,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 3,.     allow-broadcast           allow broadcast traffic");
         l.add("3 4       allow-list                allow specific traffic");
         l.add("4 3,.       <name>                  name of access list");
+        l.add("3 4       member                    member of inspection");
+        l.add("4 5         <name>                  name of inspection group");
+        l.add("5 3,.         <name>                local identifier in the group");
         l.add("2 3     redirection                 send packets out on different interface");
         l.add("3 .       <name>                    name of interface");
         l.add("2 3,.   ldp4                        enable/disable ldp ipv4 discovery");
@@ -8010,6 +8019,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             mplsPack.security = true;
             return;
         }
+        if (s.equals("netflow-rx")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.netflowRx = true;
+            return;
+        }
+        if (s.equals("netflow-tx")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.netflowTx = true;
+            return;
+        }
         if (s.equals("redirection")) {
             if (mplsPack == null) {
                 return;
@@ -8154,6 +8177,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 mplsPack.inspect.stopTimer();
             }
             mplsPack.inspect = null;
+            return;
+        }
+        if (s.equals("netflow-rx")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.netflowRx = false;
+            return;
+        }
+        if (s.equals("netflow-tx")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.netflowTx = false;
             return;
         }
         if (s.equals("label-security")) {

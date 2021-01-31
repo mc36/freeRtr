@@ -26,6 +26,7 @@ import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
 import cfg.cfgSensor;
+import cfg.cfgSessn;
 import cfg.cfgTrack;
 import cfg.cfgVdc;
 import cfg.cfgVdcIfc;
@@ -534,6 +535,15 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(exp.getShow());
+            return null;
+        }
+        if (a.equals("session")) {
+            cfgSessn ntry = cfgAll.sessnFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such session");
+                return null;
+            }
+            doShowSession(ntry.connects);
             return null;
         }
         if (a.equals("netflow")) {
