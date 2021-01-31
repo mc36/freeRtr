@@ -493,7 +493,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
             }
-            kdh.keyMake(keysiz);
+            kdh = cryKeyDH.findGroup(keysiz);
             kdh.clntXchg();
             kdh.servXchg();
             kdh.clntKey();
