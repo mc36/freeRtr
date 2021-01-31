@@ -74,6 +74,8 @@ int eth1
  mpls ldp6
  ipv4 access-group-in test4
  ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  exit
 ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
 ipv4 route v1 2.2.2.102 255.255.255.255 1.1.1.1
