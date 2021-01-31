@@ -45,6 +45,8 @@ public class cryECpoint {
      */
     public final static BigInteger int3 = new BigInteger("3");
 
+    private cryECpoint mul2ed;
+
     /**
      * create point
      *
@@ -59,7 +61,7 @@ public class cryECpoint {
     }
 
     public String toString() {
-        return "(" + x + "," + y + ")";
+        return "(" + x + "," + y + "," + c + ")";
     }
 
     /**
@@ -90,6 +92,9 @@ public class cryECpoint {
      * @return result
      */
     public cryECpoint add(cryECpoint p) {
+        if ((p == this) && (mul2ed != null)) {
+            return mul2ed;
+        }
         BigInteger t;
         if (p.x.compareTo(x) == 0) {
             t = ((x.modPow(int2, c.p)).multiply(int3)).add(c.a);
@@ -99,7 +104,11 @@ public class cryECpoint {
         }
         BigInteger x3 = (((t.modPow(int2, c.p)).subtract(p.x)).subtract(x)).mod(c.p);
         BigInteger y3 = ((t.multiply(x.subtract(x3))).subtract(y)).mod(c.p);
-        return new cryECpoint(c, x3, y3);
+        cryECpoint res = new cryECpoint(c, x3, y3);
+        if (p == this) {
+            mul2ed = res;
+        }
+        return res;
     }
 
     /**
@@ -115,7 +124,7 @@ public class cryECpoint {
         if (n.equals(int2)) {
             return this.add(this);
         }
-        if (n.mod(int2).equals(int0)) {
+        if (n.and(int1).equals(int0)) {
             cryECpoint r = this.mul(n.divide(int2));
             return r.add(r);
         } else {
