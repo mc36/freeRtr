@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_Qos_out_P4_
-#define _IG_CTL_Qos_out_P4_
+#ifndef _EG_CTL_Qos_out_P4_
+#define _EG_CTL_Qos_out_P4_
 
 #ifdef HAVE_OUTQOS
 
-control IngressControlQosOut(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
-                             in ingress_intrinsic_metadata_t ig_intr_md,
-                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+control EgressControlQosOut(inout headers hdr, inout ingress_metadata_t eg_md,
+                              in egress_intrinsic_metadata_t eg_intr_md,
+                              inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
@@ -31,13 +30,13 @@ control IngressControlQosOut(inout ingress_headers hdr, inout ingress_metadata_t
     }
 
     action act_permit(SubIntId_t metid) {
-        ig_md.outqos_id = metid;
+        eg_md.outqos_id = metid;
     }
 
 
     table tbl_ipv4_qos {
         key = {
-ig_md.aclport_id:
+eg_md.aclport_id:
             exact;
 hdr.ipv4.protocol:
             ternary;
@@ -45,9 +44,9 @@ hdr.ipv4.src_addr:
             ternary;
 hdr.ipv4.dst_addr:
             ternary;
-ig_md.layer4_srcprt:
+eg_md.layer4_srcprt:
             ternary;
-ig_md.layer4_dstprt:
+eg_md.layer4_dstprt:
             ternary;
         }
         actions = {
@@ -61,7 +60,7 @@ ig_md.layer4_dstprt:
 
     table tbl_ipv6_qos {
         key = {
-ig_md.aclport_id:
+eg_md.aclport_id:
             exact;
 hdr.ipv6.next_hdr:
             ternary;
@@ -69,9 +68,9 @@ hdr.ipv6.src_addr:
             ternary;
 hdr.ipv6.dst_addr:
             ternary;
-ig_md.layer4_srcprt:
+eg_md.layer4_srcprt:
             ternary;
-ig_md.layer4_dstprt:
+eg_md.layer4_dstprt:
             ternary;
         }
         actions = {
@@ -84,19 +83,19 @@ ig_md.layer4_dstprt:
     }
 
     apply {
-        if (ig_md.ipv4_valid==1)  {
+        if (eg_md.ipv4_valid==1)  {
             tbl_ipv4_qos.apply();
-        } else if (ig_md.ipv6_valid==1)  {
+        } else if (eg_md.ipv6_valid==1)  {
             tbl_ipv6_qos.apply();
         }
-        ig_md.outqos_res = policer.execute(ig_md.outqos_id);
-        if ((ig_md.outqos_id != 0) && (ig_md.outqos_res != MeterColor_t.GREEN)) {
-            ig_dprsr_md.drop_ctl = 1;
+        eg_md.outqos_res = policer.execute(eg_md.outqos_id);
+        if ((eg_md.outqos_id != 0) && (eg_md.outqos_res != MeterColor_t.GREEN)) {
+            eg_dprsr_md.drop_ctl = 1;
         }
     }
 }
 
 #endif
 
-#endif // _IG_CTL_Qos_out_P4_
+#endif // _EG_CTL_Qos_out_P4_
 

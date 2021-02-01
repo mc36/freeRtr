@@ -19,6 +19,21 @@
 #define _TYPES_P4_
 
 
+
+
+#undef NEED_PKTLEN
+
+#ifdef HAVE_TUN
+#define NEED_PKTLEN
+#endif
+
+#ifdef HAVE_PPPOE
+#define NEED_PKTLEN
+#endif
+
+
+
+
 #undef NEED_UDP2
 
 #ifdef HAVE_L2TP
@@ -34,16 +49,6 @@
 #endif
 
 
-
-#undef NEED_ETH4
-
-#ifdef HAVE_TAP
-#define NEED_ETH4
-#endif
-
-#ifdef HAVE_VXLAN
-#define NEED_ETH4
-#endif
 
 
 

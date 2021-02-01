@@ -44,8 +44,6 @@
  *                   I N G R E S S   P R O C E S S I N G                      *
  *----------------------------------------------------------------------------*/
 
-#undef CURRSTAGE
-
 /*------------------ I N G R E S S  H E A D E R S --------------------------- */
 #include "include/hdr_ig_headers.p4"
 
@@ -61,11 +59,8 @@
 #include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl_pkt_pre_emit.p4"
 #include "include/ig_ctl_vlan_in.p4"
-#include "include/ig_ctl_vlan_out.p4"
 #include "include/ig_ctl_acl_in.p4"
-#include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_vrf.p4"
-#include "include/ig_ctl_nexthop.p4"
 #include "include/ig_ctl_bridge.p4"
 #include "include/ig_ctl_mpls.p4"
 #include "include/ig_ctl_ipv4.p4"
@@ -75,12 +70,12 @@
 #include "include/ig_ctl_nat.p4"
 #include "include/ig_ctl_pbr.p4"
 #include "include/ig_ctl_qos_in.p4"
-#include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_mcast.p4"
 #include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_tunnel.p4"
 #include "include/ig_ctl_pppoe.p4"
 #include "include/ig_ctl_copp.p4"
+#include "include/ig_ctl_outport.p4"
 #include "include/ig_ctl.p4"
 
 /*------------------ I N G R E S S  D E P A R S E R ------------------------- */
@@ -90,20 +85,20 @@
  *                   E G R E S S   P R O C E S S I N G                        *
  *----------------------------------------------------------------------------*/
 
-#define CURRSTAGE 1
-
 /*------------------ E G R E S S  H E A D E R S ----------------------------- */
-#include "include/hdr_eg_headers.p4"
 
 /*------------------ E G R E S S  G L O B A L  M E T A D A T A -------------- */
-#include "include/mtd_eg_metadata.p4"
 
 /*------------------ E G R E S S  P A R S E R ------------------------------- */
 #include "include/eg_prs_main.p4"
 
 /*------------------ E G R E S S  M A T C H - A C T I O N ------------------- */
+#include "include/eg_ctl_nexthop.p4"
 #include "include/eg_ctl_mcast.p4"
-#include "include/ig_ctl_vlan_out.p4"
+#include "include/eg_ctl_vlan_out.p4"
+#include "include/eg_ctl_hairpin.p4"
+#include "include/eg_ctl_acl_out.p4"
+#include "include/eg_ctl_qos_out.p4"
 #include "include/eg_ctl.p4"
 
 /*------------------ E G R E S S  D E P A R S E R --------------------------- */

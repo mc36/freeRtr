@@ -15,19 +15,18 @@
  */
 
 
-#ifndef _IG_CTL_Acl_out_P4_
-#define _IG_CTL_Acl_out_P4_
+#ifndef _EG_CTL_Acl_out_P4_
+#define _EG_CTL_Acl_out_P4_
 
 #ifdef HAVE_OUTACL
 
-control IngressControlAclOut(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
-                             in ingress_intrinsic_metadata_t ig_intr_md,
-                             inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+control EgressControlAclOut(inout headers hdr, inout ingress_metadata_t eg_md,
+                              in egress_intrinsic_metadata_t eg_intr_md,
+                              inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
     action act_deny() {
-        ig_dprsr_md.drop_ctl = 1;
+        eg_dprsr_md.drop_ctl = 1;
     }
 
     action act_permit() {
@@ -36,7 +35,7 @@ control IngressControlAclOut(inout ingress_headers hdr, inout ingress_metadata_t
 
     table tbl_ipv4_acl {
         key = {
-ig_md.aclport_id:
+eg_md.aclport_id:
             exact;
 hdr.ipv4.protocol:
             ternary;
@@ -44,9 +43,9 @@ hdr.ipv4.src_addr:
             ternary;
 hdr.ipv4.dst_addr:
             ternary;
-ig_md.layer4_srcprt:
+eg_md.layer4_srcprt:
             ternary;
-ig_md.layer4_dstprt:
+eg_md.layer4_dstprt:
             ternary;
         }
         actions = {
@@ -60,7 +59,7 @@ ig_md.layer4_dstprt:
 
     table tbl_ipv6_acl {
         key = {
-ig_md.aclport_id:
+eg_md.aclport_id:
             exact;
 hdr.ipv6.next_hdr:
             ternary;
@@ -68,9 +67,9 @@ hdr.ipv6.src_addr:
             ternary;
 hdr.ipv6.dst_addr:
             ternary;
-ig_md.layer4_srcprt:
+eg_md.layer4_srcprt:
             ternary;
-ig_md.layer4_dstprt:
+eg_md.layer4_dstprt:
             ternary;
         }
         actions = {
@@ -83,9 +82,9 @@ ig_md.layer4_dstprt:
     }
 
     apply {
-        if (ig_md.ipv4_valid==1)  {
+        if (eg_md.ipv4_valid==1)  {
             tbl_ipv4_acl.apply();
-        } else if (ig_md.ipv6_valid==1)  {
+        } else if (eg_md.ipv6_valid==1)  {
             tbl_ipv6_acl.apply();
         }
     }
@@ -93,4 +92,4 @@ ig_md.layer4_dstprt:
 
 #endif
 
-#endif // _IG_CTL_Acl_out_P4_
+#endif // _EG_CTL_Acl_out_P4_

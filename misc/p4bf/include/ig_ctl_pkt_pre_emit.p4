@@ -17,7 +17,7 @@
 #ifndef _IG_CTL_PKT_PRE_EMIT_P4_
 #define _IG_CTL_PKT_PRE_EMIT_P4_
 
-control IngressControlPktPreEmit(inout ingress_headers hdr,
+control IngressControlPktPreEmit(inout headers hdr,
                                  inout ingress_metadata_t ig_md,
                                  in ingress_intrinsic_metadata_t ig_intr_md,
                                  inout ingress_intrinsic_metadata_for_tm_t

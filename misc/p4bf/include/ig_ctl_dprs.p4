@@ -18,7 +18,7 @@
 #define _INGRESS_DEPARSER_P4_
 
 
-control ig_ctl_dprs(packet_out pkt, inout ingress_headers hdr, in ingress_metadata_t ig_md,
+control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_md,
                     in ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md)
 {
 
@@ -98,12 +98,6 @@ control ig_ctl_dprs(packet_out pkt, inout ingress_headers hdr, in ingress_metada
 
 #endif
 
-        /*
-         * parsed headers that have been modified
-         * in ctl_ingress and ctl_egress
-         * have to be added again into the pkt.
-         * for emission in the wire
-         */
         pkt.emit(hdr);
     }
 }

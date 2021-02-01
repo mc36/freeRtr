@@ -15,7 +15,7 @@
  */
 
 control calc_default_hashes(
-    in    ingress_headers   hdr,
+    in    headers   hdr,
     in    ingress_metadata_t  ig_md,
     inout selector_hash_t        hash)
 {
@@ -23,7 +23,7 @@ control calc_default_hashes(
 }
 
 control calc_ipv4_hash(
-    in    ingress_headers   hdr,
+    in    headers   hdr,
     in    ingress_metadata_t  ig_md,
     out   bit<32> hash)(bit<32> coeff)
 {
@@ -52,7 +52,7 @@ control calc_ipv4_hash(
 }
 
 control calc_ipv4_hashes(
-    in    ingress_headers hdr,
+    in    headers hdr,
     in    ingress_metadata_t ig_md,
     inout selector_hash_t hash)
 {
@@ -76,7 +76,7 @@ control calc_ipv4_hashes(
 }
 
 control calc_ipv6_hash(
-    in    ingress_headers   hdr,
+    in    headers   hdr,
     in    ingress_metadata_t  ig_md,
     out   bit<32> hash)(bit<32> coeff)
 {
@@ -105,7 +105,7 @@ control calc_ipv6_hash(
 }
 
 control calc_ipv6_hashes(
-    in    ingress_headers hdr,
+    in    headers hdr,
     in    ingress_metadata_t ig_md,
     inout selector_hash_t hash)
 {
@@ -129,7 +129,7 @@ control calc_ipv6_hashes(
 }
 
 control calc_ethernet_hash(
-    in    ingress_headers   hdr,
+    in    headers   hdr,
     in    ingress_metadata_t  ig_md,
     out   bit<32> hash)(bit<32> coeff)
 {
@@ -156,7 +156,7 @@ control calc_ethernet_hash(
 }
 
 control calc_ethernet_hashes(
-    in    ingress_headers hdr,
+    in    headers hdr,
     in    ingress_metadata_t ig_md,
     inout selector_hash_t hash)
 {

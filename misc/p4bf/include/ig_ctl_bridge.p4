@@ -19,7 +19,7 @@
 
 #ifdef HAVE_BRIDGE
 
-control IngressControlBridge(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlBridge(inout headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
@@ -67,12 +67,12 @@ hdr.ethernet.src_mac_addr:
         ig_md.arp_valid = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
-        hdr.eth4.setValid();
-        hdr.eth4.dst_mac_addr = hdr.ethernet.dst_mac_addr;
-        hdr.eth4.src_mac_addr = hdr.ethernet.src_mac_addr;
-        hdr.eth4.ethertype = ig_md.ethertype + ig_md.always_zero; // hack
+        hdr.eth2.setValid();
+        hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+        hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
+        hdr.eth2.ethertype = ig_md.ethertype + ig_md.always_zero; // hack
         ig_md.nexthop_id = nexthop;
-        ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
+        ig_md.ethertype = ETHERTYPE_ROUTEDMAC_INT;
 #ifdef NEED_PKTLEN
         ig_md.pktlen = ig_md.pktlen + 14;
 #endif

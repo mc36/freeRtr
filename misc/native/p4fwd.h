@@ -1048,7 +1048,7 @@ ipv4_flwed:
         acls_ntry.port = route4_ntry.vrf;
         index = table_find(&acls_table, &acls_ntry);
         if (index >= 0) {
-            if (frag != 0) goto punt;
+            if (frag != 0) goto ipv4_natted;
             acls_res = table_get(&acls_table, index);
             nat4_ntry.vrf = route4_ntry.vrf;
             nat4_ntry.prot = acl4_ntry.protV;
@@ -1090,8 +1090,6 @@ ipv4_natted:
             case 3: // sethop
                 route4_ntry.vrf = acls_res->vrf;
                 neigh_ntry.id = acls_res->hop;
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
@@ -1129,8 +1127,6 @@ ipv4_pbred:
             switch (route4_res->command) {
             case 1: // route
                 neigh_ntry.id = route4_res->nexthop;
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
@@ -1143,6 +1139,8 @@ ipv4_tx:
                     acls_res = table_get(&acls_table, index);
                     if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto punt;
                 }
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
                 acls_ntry.dir = 7;
                 index = table_find(&acls_table, &acls_ntry);
                 if (index < 0) goto neigh_tx;
@@ -1348,7 +1346,7 @@ ipv6_flwed:
         acls_ntry.port = route6_ntry.vrf;
         index = table_find(&acls_table, &acls_ntry);
         if (index >= 0) {
-            if (frag != 0) goto punt;
+            if (frag != 0) goto ipv6_natted;
             acls_res = table_get(&acls_table, index);
             nat6_ntry.vrf = route6_ntry.vrf;
             nat6_ntry.prot = acl6_ntry.protV;
@@ -1407,8 +1405,6 @@ ipv6_natted:
             case 3: // sethop
                 route6_ntry.vrf = acls_res->vrf;
                 neigh_ntry.id = acls_res->hop;
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
@@ -1468,8 +1464,6 @@ ipv6_hit:
             switch (route6_res->command) {
             case 1: // route
                 neigh_ntry.id = route6_res->nexthop;
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
@@ -1482,6 +1476,8 @@ ipv6_tx:
                     acls_res = table_get(&acls_table, index);
                     if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto punt;
                 }
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
                 acls_ntry.dir = 7;
                 index = table_find(&acls_table, &acls_ntry);
                 if (index < 0) goto neigh_tx;

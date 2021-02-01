@@ -18,11 +18,18 @@
 #ifndef _INTERNAL_
 #define _INTERNAL_
 
-#define INTREAS_IPMCAST 1
+#define INTREAS_UCAST 1
+#define INTREAS_RECIR 2
+#define INTREAS_MCAST 3
 
 header internal_header_t {
-    bit<8> reason;
-    bit<16> session;
+    bit<16> clone_session;
+    bit<16> pktlen;
+    NextHopId_t nexthop_id;
+    SubIntId_t target_id;
+    SubIntId_t port_id;
+    bit<2> reason;
+    bit<2> _padding;
 }
 
 #endif // _INTERNAL_

@@ -31,6 +31,7 @@ const bit<16> ETHERTYPE_LLDP              = 0x88cc;
 const bit<16> ETHERTYPE_PPPOE_CTRL        = 0x8863;
 const bit<16> ETHERTYPE_PPPOE_DATA        = 0x8864;
 const bit<16> ETHERTYPE_ROUTEDMAC         = 0x6558;
+const bit<16> ETHERTYPE_ROUTEDMAC_INT     = 0x6559;
 
 const bit<16> PPPTYPE_IPV4                = 0x0021;
 const bit<16> PPPTYPE_IPV6                = 0x0057;

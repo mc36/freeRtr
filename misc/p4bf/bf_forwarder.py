@@ -169,11 +169,12 @@ class BfSubIfCounter(Thread):
     def getReadSwitchSubIfCounter(self):
         # for all subif
         tbl_global_path = "%s.ig_ctl" % self.pipe_name
+        tbl_global2_path = "%s.eg_ctl" % self.pipe_name
         tbl_name_vlan_in = "%s.ig_ctl_vlan_in.tbl_vlan_in" % (tbl_global_path)
         tbl_vlan_in = self.bfgc.bfrt_info.table_get(tbl_name_vlan_in)
         tbl_name_in = "%s.ig_ctl_vlan_in.stats" % (tbl_global_path)
         tbl_stats_in = self.bfgc.bfrt_info.table_get(tbl_name_in)
-        tbl_name_out = "%s.ig_ctl_vlan_out.stats" % (tbl_global_path)
+        tbl_name_out = "%s.eg_ctl_vlan_out.stats" % (tbl_global2_path)
         tbl_stats_out = self.bfgc.bfrt_info.table_get(tbl_name_out)
         tbl_name_pkt_out = "%s.pkt_out_stats" % (tbl_global_path)
         tbl_stats_pkt_out = self.bfgc.bfrt_info.table_get(tbl_name_pkt_out)
@@ -578,6 +579,7 @@ class BfForwarder(Thread):
         self.poe = poe
         self.mcast = mcast
         self.die=False
+        self.hairpins = []
         self.mcast_nid = []
         self.mcast_xid = []
         self.file = sck_file
@@ -587,17 +589,29 @@ class BfForwarder(Thread):
         os._exit(0);
         self.bfgc.interface._tear_down_stream()
 
-    def _clearOneTable(self, table_name_key, table_dict):
+    def _getTableKeys(self, table_name_key, table_dict, keys):
         try:
-            print("  Clearing Table {}".format(table_name_key))
-            keys = []
             for (d, k) in table_dict[table_name_key].entry_get(self.bfgc.target):
                 if k is not None:
                     keys.append(k)
-            print ("   Keys to delete: %s" % (keys))
-            table_dict[table_name_key].entry_del(self.bfgc.target, keys)
         except Exception as e:
             logger.warn("Error cleaning up: {}".format(e))
+        logger.debug("   Keys to delete: %s" % (keys))
+
+    def _delTableKeys(self, table_name_key, table_dict, keys):
+        print("  Clearing Table {}".format(table_name_key))
+        #table_dict[table_name_key].entry_del(self.bfgc.target, keys)
+        for k in keys:
+            try:
+                logger.debug("   Key to delete: %s" % (k))
+                table_dict[table_name_key].entry_del(self.bfgc.target, [k])
+            except Exception as e:
+                logger.warn("Error cleaning up: {}".format(e))
+
+    def _clearOneTable(self, table_name_key, table_dict):
+        keys = []
+        self._getTableKeys(table_name_key, table_dict, keys)
+        self._delTableKeys(table_name_key, table_dict, keys)
 
 
     def _clearTable(self):
@@ -630,25 +644,29 @@ class BfForwarder(Thread):
 
         logger.warn("Bundle specific clearing: (Order matters)")
 
-        tbl_nexthop_bundle_name = (
-            "%s.ig_ctl.ig_ctl_bundle.tbl_nexthop_bundle" % self.bfgc.pipe_name
-        )
-        ase_bundle_name = "%s.ig_ctl.ig_ctl_bundle.ase_bundle" % self.bfgc.pipe_name
-        apr_bundle_name = "%s.ig_ctl.ig_ctl_bundle.apr_bundle" % self.bfgc.pipe_name
-        for table_name_key in [
-            tbl_nexthop_bundle_name,
-            ase_bundle_name,
-            apr_bundle_name,
-        ]:
-            self._clearOneTable(table_name_key, table_dict)
+        nhp_name = "%s.ig_ctl.ig_ctl_bundle.tbl_nexthop_bundle" % self.bfgc.pipe_name
+        ase_name = "%s.ig_ctl.ig_ctl_bundle.ase_bundle" % self.bfgc.pipe_name
+        apr_name = "%s.ig_ctl.ig_ctl_bundle.apr_bundle" % self.bfgc.pipe_name
+        nhp_keys = []
+        ase_keys = []
+        apr_keys = []
+        self._getTableKeys(nhp_name, table_dict, nhp_keys)
+        self._getTableKeys(ase_name, table_dict, ase_keys)
+        self._getTableKeys(apr_name, table_dict, apr_keys)
+        self._delTableKeys(nhp_name, table_dict, nhp_keys)
+        self._delTableKeys(ase_name, table_dict, ase_keys)
+        self._delTableKeys(apr_name, table_dict, apr_keys)
 
         logger.warn("Multicast specific clearing: (Order matters)")
 
-        for table_name_key in [
-            "$pre.mgid",
-            "$pre.node",
-        ]:
-            self._clearOneTable(table_name_key, table_dict)
+        mgid_name = "$pre.mgid"
+        node_name = "$pre.node"
+        mgid_keys = []
+        node_keys = []
+        self._getTableKeys(mgid_name, table_dict, mgid_keys)
+        self._getTableKeys(node_name, table_dict, node_keys)
+        self._delTableKeys(mgid_name, table_dict, mgid_keys)
+        self._delTableKeys(node_name, table_dict, node_keys)
 
 
 
@@ -1248,13 +1266,43 @@ class BfForwarder(Thread):
                     "from entry list in ActionSelector table"
                 )
 
+    def hairpin2recirc(self, port):
+        if port in self.hairpins:
+            return 68
+        return port
+
+
     def writeHairpinRules(self, op_type, myid, peerid):
+        if op_type == WRITE:
+            self.hairpins.append(myid)
+        elif op_type == DELETE:
+            self.hairpins.remove(myid)
+
+        tbl_global_path = "eg_ctl.eg_ctl_hairpin"
+        tbl_name = "%s.tbl_hairpin" % (tbl_global_path)
+        tbl_action_name = "%s.act_set_recir" % (tbl_global_path)
+
+        key_fields = [gc.KeyTuple("eg_md.output_id", myid)]
+        data_fields = [gc.DataTuple("port", peerid)]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_fields,
+            data_fields,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+
         tbl_global_path = "ig_ctl.ig_ctl_bundle"
         tbl_apr_name = "%s.apr_bundle" % (tbl_global_path)
         tbl_ase_name = "%s.ase_bundle" % (tbl_global_path)
         tbl_nexthop_bundle_name = "%s.tbl_nexthop_bundle" % (tbl_global_path)
-
-
 
         max_grp_size = 120
         # actionprofile p4 objects are actually an object table
@@ -1388,10 +1436,10 @@ class BfForwarder(Thread):
             data_annotation_fields_1,
         )
 
-        tbl_global_path_2 = "ig_ctl.ig_ctl_vlan_out"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_vlan_out"
         tbl_name_2 = "%s.tbl_vlan_out" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_set_vlan_port" % (tbl_global_path_2)
-        key_field_list_2 = [gc.KeyTuple("ig_md.target_id", port)]
+        key_field_list_2 = [gc.KeyTuple("eg_md.target_id", port)]
         data_field_list_2 = [gc.DataTuple("port", main), gc.DataTuple("vlan", vlan)]
         key_annotation_fields_2 = {}
         data_annotation_fields_2 = {}
@@ -1406,11 +1454,11 @@ class BfForwarder(Thread):
             data_annotation_fields_2,
         )
 
-        tbl_global_path_3 = "eg_ctl.eg_ctl_vlan_out"
+        tbl_global_path_3 = "ig_ctl.ig_ctl_outport"
         tbl_name_3 = "%s.tbl_vlan_out" % (tbl_global_path_3)
-        tbl_action_name_3 = "%s.act_set_vlan_port" % (tbl_global_path_3)
+        tbl_action_name_3 = "%s.act_set_port" % (tbl_global_path_3)
         key_field_list_3 = [gc.KeyTuple("ig_md.target_id", port)]
-        data_field_list_3 = [gc.DataTuple("port", main), gc.DataTuple("vlan", vlan)]
+        data_field_list_3 = [gc.DataTuple("port", main)]
         key_annotation_fields_3 = {}
         data_annotation_fields_3 = {}
 
@@ -1423,6 +1471,27 @@ class BfForwarder(Thread):
             key_annotation_fields_3,
             data_annotation_fields_3,
         )
+
+    def writeNhop2portRules(self, op_type, nhop, subif, port):
+        tbl_global_path = "ig_ctl.ig_ctl_outport"
+        tbl_name = "%s.tbl_nexthop" % (tbl_global_path)
+        tbl_action_name = "%s.act_set_port" % (tbl_global_path)
+
+        key_fields = [gc.KeyTuple("ig_md.nexthop_id", nhop)]
+        data_fields = [gc.DataTuple("port", port)]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_fields,
+            data_fields,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
 
     def writeBunVlanRules(self, op_type, main, vlan, port):
         # for any reason, control plane is sending a msg
@@ -2105,11 +2174,11 @@ class BfForwarder(Thread):
         if port < 0:
             return
 
-        tbl_global_path = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path = "eg_ctl.eg_ctl_nexthop"
         tbl_name = "%s.tbl_nexthop" % (tbl_global_path)
         tbl_action_name = "%s.act_ipv4_fib_hit" % (tbl_global_path)
 
-        key_fields = [gc.KeyTuple("ig_md.nexthop_id", nexthop)]
+        key_fields = [gc.KeyTuple("eg_md.nexthop_id", nexthop)]
         data_fields = [
             gc.DataTuple("dst_mac_addr", dst_mac_addr),
             gc.DataTuple("src_mac_addr", src_mac_addr),
@@ -2915,11 +2984,11 @@ class BfForwarder(Thread):
             key_annotation_fields_1,
             data_annotation_fields_1,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_gre4" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -2984,11 +3053,11 @@ class BfForwarder(Thread):
             key_annotation_fields_1,
             data_annotation_fields_1,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_gre6" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -3081,11 +3150,11 @@ class BfForwarder(Thread):
             key_annotation_fields_3,
             data_annotation_fields_3,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_ipip4" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -3177,11 +3246,11 @@ class BfForwarder(Thread):
             key_annotation_fields_3,
             data_annotation_fields_3,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_ipip6" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -3240,11 +3309,11 @@ class BfForwarder(Thread):
             key_annotation_fields_1,
             data_annotation_fields_1,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_pppoe" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -3305,11 +3374,11 @@ class BfForwarder(Thread):
             key_annotation_fields_1,
             data_annotation_fields_1,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_l2tp4" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -3376,11 +3445,11 @@ class BfForwarder(Thread):
             key_annotation_fields_1,
             data_annotation_fields_1,
         )
-        tbl_global_path_2 = "ig_ctl.ig_ctl_nexthop"
+        tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
         tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
         tbl_action_name_2 = "%s.act_ipv4_l2tp6" % (tbl_global_path_2)
         key_field_list_2 = [
-            gc.KeyTuple("ig_md.nexthop_id", nexthop),
+            gc.KeyTuple("eg_md.nexthop_id", nexthop),
         ]
         data_field_list_2 = [
             gc.DataTuple("dst_mac_addr", dmac),
@@ -3811,17 +3880,17 @@ class BfForwarder(Thread):
     def writeOutAcl4Rules(
         self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "ig_ctl.ig_ctl_acl_out"
+        tbl_global_path = "eg_ctl.eg_ctl_acl_out"
         tbl_name = "%s.tbl_ipv4_acl" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("ig_md.aclport_id", port),
+            gc.KeyTuple("eg_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
-            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -3873,17 +3942,17 @@ class BfForwarder(Thread):
     def writeOutAcl6Rules(
         self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "ig_ctl.ig_ctl_acl_out"
+        tbl_global_path = "eg_ctl.eg_ctl_acl_out"
         tbl_name = "%s.tbl_ipv6_acl" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("ig_md.aclport_id", port),
+            gc.KeyTuple("eg_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
-            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -3940,17 +4009,17 @@ class BfForwarder(Thread):
     def writeOutQos4Rules(
         self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
+        tbl_global_path = "eg_ctl.eg_ctl_qos_out"
         tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("ig_md.aclport_id", port),
+            gc.KeyTuple("eg_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
-            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4006,17 +4075,17 @@ class BfForwarder(Thread):
     def writeOutQos6Rules(
         self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
+        tbl_global_path = "eg_ctl.eg_ctl_qos_out"
         tbl_name = "%s.tbl_ipv6_qos" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("ig_md.aclport_id", port),
+            gc.KeyTuple("eg_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
-            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4053,7 +4122,7 @@ class BfForwarder(Thread):
     def writeOutQosRules(
         self, op_type, meter, bytes, interval
     ):
-        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
+        tbl_global_path = "eg_ctl.eg_ctl_qos_out"
         tbl_name = "%s.policer" % (tbl_global_path)
         self._processMeterFromControlPlane(
             op_type,
@@ -4265,7 +4334,7 @@ class BfForwarder(Thread):
         tbl_name = "%s.tbl_mcast" % (tbl_global_path)
         tbl_action_name = "%s.act_rawip" % (tbl_global_path)
         key_field_list = [
-            gc.KeyTuple("hdr.internal.session", sess),
+            gc.KeyTuple("hdr.internal.clone_session", sess),
             gc.KeyTuple("eg_intr_md.egress_rid", subif),
         ]
         data_field_list = [
@@ -4287,7 +4356,7 @@ class BfForwarder(Thread):
             op_type,
             nodid,
             subif,
-            port,
+            self.hairpin2recirc(port),
         )
 
 
@@ -4305,7 +4374,7 @@ class BfForwarder(Thread):
         tbl_name = "%s.tbl_mcast" % (tbl_global_path)
         tbl_action_name = "%s.act_rawip" % (tbl_global_path)
         key_field_list = [
-            gc.KeyTuple("hdr.internal.session", sess),
+            gc.KeyTuple("hdr.internal.clone_session", sess),
             gc.KeyTuple("eg_intr_md.egress_rid", subif),
         ]
         data_field_list = [
@@ -4327,7 +4396,7 @@ class BfForwarder(Thread):
             op_type,
             nodid,
             subif,
-            port,
+            self.hairpin2recirc(port),
         )
 
 
@@ -4551,6 +4620,16 @@ class BfForwarder(Thread):
                 continue
             if splt[0] == "portvrf_del":
                 self.writeVrfRules(3, int(splt[1]), int(splt[2]))
+                continue
+
+            if splt[0] == "nhop2port_add":
+                self.writeNhop2portRules(1, int(splt[1]), int(splt[2]), int(splt[3]))
+                continue
+            if splt[0] == "nhop2port_mod":
+                self.writeNhop2portRules(2, int(splt[1]), int(splt[2]), int(splt[3]))
+                continue
+            if splt[0] == "nhop2port_del":
+                self.writeNhop2portRules(3, int(splt[1]), int(splt[2]), int(splt[3]))
                 continue
 
             if splt[0] == "portvlan_add":

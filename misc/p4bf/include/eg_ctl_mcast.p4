@@ -19,7 +19,7 @@
 
 #ifdef HAVE_MCAST
 
-control EgressControlMcast(inout egress_headers_t hdr, inout egress_metadata_t eg_md,
+control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
                            in egress_intrinsic_metadata_t eg_intr_md,
                            inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
@@ -30,26 +30,35 @@ control EgressControlMcast(inout egress_headers_t hdr, inout egress_metadata_t e
         eg_md.target_id = (SubIntId_t)eg_intr_md.egress_rid;
     }
 
+    action act_miss() {
+        eg_dprsr_md.drop_ctl = 1;
+    }
+
 
     table tbl_mcast {
         key = {
-hdr.internal.session:
+hdr.internal.clone_session:
             exact;
 eg_intr_md.egress_rid:
             exact;
         }
         actions = {
             act_rawip;
-            @defaultonly NoAction;
+            act_miss;
         }
         size = IPV4_MCAST_TABLE_SIZE + IPV6_MCAST_TABLE_SIZE;
-        const default_action = NoAction();
+        const default_action = act_miss();
     }
 
 
     apply {
 
-        tbl_mcast.apply();
+        if (hdr.internal.reason == INTREAS_MCAST) {
+            tbl_mcast.apply();
+            if (eg_intr_md.egress_rid_first == 0) {
+                eg_dprsr_md.drop_ctl = 1;
+            }
+        }
 
     }
 

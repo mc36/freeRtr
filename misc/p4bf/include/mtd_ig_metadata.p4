@@ -19,33 +19,16 @@
 
 
 
-#undef NEED_PKTLEN
-
-#ifdef HAVE_TUN
-#define NEED_PKTLEN
-#endif
-
-#ifdef HAVE_PPPOE
-#define NEED_PKTLEN
-#endif
-
-
-
-
-
-
-
 /*
  * User defined metadata type
  */
 struct ingress_metadata_t {
 
+    NextHopId_t nexthop_id;
+    SubIntId_t target_id;
     SubIntId_t ingress_id;
     SubIntId_t source_id;
-    SubIntId_t target_id;
     SubIntId_t aclport_id;
-    NextHopId_t nexthop_id;
-    SubIntId_t outport_id;
 #ifdef HAVE_BRIDGE
     SubIntId_t bridge_id;
     SubIntId_t bridge_src;

@@ -17,7 +17,7 @@
 #ifndef _HEADERS_P4_
 #define _HEADERS_P4_
 
-struct ingress_headers {
+struct headers {
     internal_header_t internal;
     cpu_header_t cpu;
     ethernet_t ethernet;
@@ -44,9 +44,6 @@ struct ingress_headers {
 #endif
 #ifdef HAVE_VXLAN
     vxlan_t vxlan2;
-#endif
-#ifdef NEED_ETH4
-    ethernet_t eth4;
 #endif
 #ifdef HAVE_MPLS
     mpls_t mpls0;

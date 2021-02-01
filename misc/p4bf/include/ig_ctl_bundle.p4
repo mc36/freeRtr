@@ -17,7 +17,7 @@
 #ifndef _IG_CTL_BUNDLE_P4_
 #define _IG_CTL_BUNDLE_P4_
 
-control IngressControlBundle(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
+control IngressControlBundle(inout headers hdr, inout ingress_metadata_t ig_md,
                              inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
@@ -35,26 +35,37 @@ control IngressControlBundle(inout ingress_headers hdr, inout ingress_metadata_t
         num_groups     = MAX_GROUPS) ase_bundle;
 
 
+    action send2egress() {
+        ig_tm_md.bypass_egress = 0;
+        hdr.internal.setValid();
+        hdr.internal.target_id = ig_md.target_id;
+        hdr.internal.nexthop_id = ig_md.nexthop_id;
+        hdr.internal.clone_session = 0;
+#ifdef NEED_PKTLEN
+        hdr.internal.pktlen = ig_md.pktlen;
+#endif
+    }
+
+
     action act_send_to_member(PortId_t port) {
         ig_tm_md.ucast_egress_port = port;
-        ig_tm_md.bypass_egress = 1;
-//        ttl_dec = 0;
+        send2egress();
+        hdr.internal.reason = INTREAS_UCAST;
     }
 
 
     action act_send_to_recir(SubIntId_t port) {
-        hdr.cpu.setValid();
-        hdr.cpu.port = port;
         ig_tm_md.ucast_egress_port = RECIR_PORT;
-        ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
-//        ttl_dec = 0;
+        send2egress();
+        hdr.internal.reason = INTREAS_RECIR;
+        hdr.internal.port_id = port;
     }
 
     action act_send_identical() {
         ig_tm_md.ucast_egress_port = (PortId_t)ig_md.output_id;
-        ig_tm_md.bypass_egress = 1;
-//        ttl_dec = 0;
+        send2egress();
+        hdr.internal.reason = INTREAS_UCAST;
     }
 
 #ifdef HAVE_SCRAMBLE

@@ -17,7 +17,7 @@
 #ifndef _INGRESS_CONTROL_P4_
 #define _INGRESS_CONTROL_P4_
 
-control ig_ctl(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
+control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
                in ingress_intrinsic_metadata_t ig_intr_md,
                in ingress_intrinsic_metadata_from_parser_t ig_prsr_md,
                inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
@@ -69,12 +69,7 @@ control ig_ctl(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_INACL
     IngressControlAclIn() ig_ctl_acl_in;
 #endif
-#ifdef HAVE_OUTACL
-    IngressControlAclOut() ig_ctl_acl_out;
-#endif
-    IngressControlNexthop()ig_ctl_nexthop;
     IngressControlVlanIn()ig_ctl_vlan_in;
-    IngressControlVlanOut()ig_ctl_vlan_out;
     IngressControlVRF()ig_ctl_vrf;
 #ifdef HAVE_NAT
     IngressControlNAT() ig_ctl_nat;
@@ -85,21 +80,19 @@ control ig_ctl(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_INQOS
     IngressControlQosIn() ig_ctl_qos_in;
 #endif
-#ifdef HAVE_OUTQOS
-    IngressControlQosOut() ig_ctl_qos_out;
-#endif
 #ifdef HAVE_FLOWSPEC
     IngressControlFlowspec() ig_ctl_flowspec;
 #endif
 #ifdef HAVE_MCAST
     IngressControlMcast() ig_ctl_mcast;
 #endif
+    IngressControlOutPort() ig_ctl_outport;
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
 
     apply {
 
-//        ig_dprsr_md.drop_ctl = 0; // pre-sde930 hack for odd/even ports
+        ig_dprsr_md.drop_ctl = 0; // hack for odd/even ports
 
 #ifdef NEED_PKTLEN
         if (hdr.ipv6.isValid()) ig_md.pktlen = hdr.ipv6.payload_len + 40;
@@ -177,15 +170,9 @@ control ig_ctl(inout ingress_headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_PPPOE
                 if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
 #endif
-                ig_ctl_nexthop.apply(hdr, ig_md, ig_dprsr_md);
-#ifdef HAVE_OUTACL
-                ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
-#endif
-#ifdef HAVE_OUTQOS
-                ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
-#endif
-                ig_ctl_vlan_out.apply(hdr, ig_md, ig_tm_md);
-                ig_ctl_bundle.apply (hdr, ig_md, ig_dprsr_md, ig_tm_md);
+                hdr.ethernet.ethertype = ig_md.ethertype;
+                ig_ctl_outport.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
+                ig_ctl_bundle.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
             }
         }
     }
