@@ -20,8 +20,8 @@
 #ifdef HAVE_OUTQOS
 
 control EgressControlQosOut(inout headers hdr, inout ingress_metadata_t eg_md,
-                              in egress_intrinsic_metadata_t eg_intr_md,
-                              inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
+                            in egress_intrinsic_metadata_t eg_intr_md,
+                            inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
