@@ -4401,6 +4401,44 @@ class BfForwarder(Thread):
         )
 
 
+    def writeMlabRouteRules(
+        self, op_type, ipver, vrf, sess, dip, sip, ingr, port, hopid, outlab, subif
+    ):
+        if self.mcast == False:
+            return
+        nodid = (sess << 16 ) | hopid;
+        if op_type != 3:
+            self.mcast_nid.append(nodid)
+            self.mcast_xid.append(0)
+
+        tbl_global_path = "eg_ctl.eg_ctl_mcast"
+        tbl_name = "%s.tbl_mcast" % (tbl_global_path)
+        tbl_action_name = "%s.act_encap_ipv%s_mpls" % (tbl_global_path, ipver)
+        key_field_list = [
+            gc.KeyTuple("hdr.internal.clone_session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", hopid),
+        ]
+        data_field_list = [
+             gc.DataTuple("hop", hopid),
+             gc.DataTuple("label", outlab),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            nodid,
+            hopid,
+            self.hairpin2recirc(port),
+        )
 
 
     def writeDupLabelRules(
@@ -6921,6 +6959,98 @@ class BfForwarder(Thread):
                 )
                 continue
 
+
+            if splt[0] == "mlabroute4_add":
+                self.writeMlabRouteRules(
+                    1,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                )
+                continue
+            if splt[0] == "mlabroute4_mod":
+                self.writeMlabRouteRules(
+                    2,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                )
+                continue
+            if splt[0] == "mlabroute4_del":
+                self.writeMlabRouteRules(
+                    3,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                )
+                continue
+
+            if splt[0] == "mlabroute6_add":
+                self.writeMlabRouteRules(
+                    1,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                )
+                continue
+            if splt[0] == "mlabroute6_mod":
+                self.writeMlabRouteRules(
+                    2,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                )
+                continue
+            if splt[0] == "mlabroute6_del":
+                self.writeMlabRouteRules(
+                    3,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                )
+                continue
 
 
             if splt[0] == "duplabloc4_add":

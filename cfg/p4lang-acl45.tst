@@ -340,5 +340,5 @@ r4 tping 100 10 4321::105 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
 r4 tping 5-95 10 2.2.2.106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
 r4 tping 5-95 10 4321::106 /vrf v1 /int lo0 /rep 100 /tim 250 /siz 250
 
-r1 dping sdn 10 0-50000 r4 100 10 2.2.2.105 /vrf v1 /int lo0 /siz 1111 /rep 1111
-r1 dping sdn 10 0-50000 r4 100 10 4321::105 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping sdn 10 0-100000 r4 100 10 2.2.2.105 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping sdn 10 0-100000 r4 100 10 4321::105 /vrf v1 /int lo0 /siz 1111 /rep 1111
