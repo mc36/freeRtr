@@ -61,7 +61,7 @@ control eg_ctl(
 
         if (hdr.internal.reason == INTREAS_RECIR) {
             hdr.cpu.setValid();
-            hdr.cpu.port = hdr.internal.port_id;
+            hdr.cpu.port = hdr.internal.source_id;
         }
 
 #ifdef NEED_REPLICA

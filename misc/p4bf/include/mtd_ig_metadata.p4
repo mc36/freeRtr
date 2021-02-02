@@ -24,10 +24,18 @@
  */
 struct ingress_metadata_t {
 
+#ifdef NEED_PKTLEN
+    bit<16> pktlen;
+#endif
+#ifdef NEED_REPLICA
+    bit<16> clone_session;
+#endif
     NextHopId_t nexthop_id;
+    bit<6> _padding1;
     SubIntId_t target_id;
-    SubIntId_t ingress_id;
+    bit<6> _padding2;
     SubIntId_t source_id;
+    SubIntId_t ingress_id;
     SubIntId_t aclport_id;
 #ifdef HAVE_BRIDGE
     SubIntId_t bridge_id;
@@ -37,9 +45,6 @@ struct ingress_metadata_t {
     SubIntId_t output_id;
     ethertype_t ethertype;
     switch_vrf_t vrf;
-#ifdef NEED_PKTLEN
-    bit<16> pktlen;
-#endif
 #ifdef HAVE_MPLS
     label_t mpls_encap_egress_label;
     label_t mpls_encap_svc_label;
@@ -54,7 +59,6 @@ struct ingress_metadata_t {
     bit <1> mpls0_remove;
     bit <1> mpls1_remove;
 #ifdef NEED_REPLICA
-    bit<16> clone_session;
     SubIntId_t rpf_iface;
 #endif
 #ifdef HAVE_INQOS
@@ -93,6 +97,6 @@ struct ingress_metadata_t {
     bit<16> checksum_udp_tmp;
 #endif
     l4_lookup_t   l4_lookup;
-    bit<16> always_zero;
+    ethertype_t always_zero; // hack
 }
 #endif	// _INGRESS_METADATA_P4_

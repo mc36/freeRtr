@@ -44,6 +44,49 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
     }
 
 
+#ifdef HAVE_DUPLAB
+#ifdef HAVE_MCAST
+    action act_encap_ipv4_mpls(NextHopId_t hop, label_t label) {
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv4.ttl;
+        hdr.mpls0.bos = 1;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        eg_md.nexthop_id = hop;
+    }
+
+    action act_encap_ipv6_mpls(NextHopId_t hop, label_t label) {
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+        hdr.mpls0.bos = 1;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        eg_md.nexthop_id = hop;
+    }
+
+    action act_decap_mpls_ipv4() {
+        //eg_md.need_recir = 1;
+        hdr.mpls0.setInvalid();
+        hdr.mpls1.setInvalid();
+        hdr.cpu.setValid();
+        hdr.cpu.port = hdr.internal.source_id;
+        eg_md.ethertype = ETHERTYPE_IPV4;
+    }
+
+    action act_decap_mpls_ipv6() {
+        //eg_md.need_recir = 1;
+        hdr.mpls0.setInvalid();
+        hdr.mpls1.setInvalid();
+        hdr.cpu.setValid();
+        hdr.cpu.port = hdr.internal.source_id;
+        eg_md.ethertype = ETHERTYPE_IPV6;
+    }
+#endif
+#endif
+
+
+
+
     table tbl_mcast {
         key = {
 hdr.internal.clone_session:
@@ -57,6 +100,14 @@ eg_intr_md.egress_rid:
 #endif
 #ifdef HAVE_DUPLAB
             act_duplab;
+#endif
+#ifdef HAVE_DUPLAB
+#ifdef HAVE_MCAST
+            act_decap_mpls_ipv4;
+            act_decap_mpls_ipv6;
+            act_encap_ipv4_mpls;
+            act_encap_ipv6_mpls;
+#endif
 #endif
             act_drop;
         }

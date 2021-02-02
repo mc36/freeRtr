@@ -59,7 +59,7 @@ control IngressControlBundle(inout headers hdr, inout ingress_metadata_t ig_md,
 //        recirculate(RECIR_PORT);
         send2egress();
         hdr.internal.reason = INTREAS_RECIR;
-        hdr.internal.port_id = port;
+        hdr.internal.source_id = port;
     }
 
     action act_send_identical() {

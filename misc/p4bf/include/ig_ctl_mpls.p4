@@ -132,6 +132,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.internal.setValid();
         hdr.internal.reason = INTREAS_MCAST;
         hdr.internal.clone_session = sess;
+        hdr.internal.source_id = ig_md.source_id;
         ig_md.nexthop_id = CPU_PORT;
         ig_md.rpf_iface = ig_md.source_id;
         ig_md.mpls_encap_l2vpn_valid = 1;

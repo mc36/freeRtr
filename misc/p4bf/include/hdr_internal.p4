@@ -23,13 +23,14 @@
 #define INTREAS_MCAST 3
 
 header internal_header_t {
-    bit<16> clone_session;
     bit<16> pktlen;
+    bit<16> clone_session;
     NextHopId_t nexthop_id;
+    bit<6> _padding1;
     SubIntId_t target_id;
-    SubIntId_t port_id;
-    bit<2> reason;
-    bit<2> _padding;
+    bit<6> _padding2;
+    SubIntId_t source_id;
+    bit<8> reason;
 }
 
 #endif // _INTERNAL_
