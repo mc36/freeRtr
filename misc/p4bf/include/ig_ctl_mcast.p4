@@ -41,6 +41,8 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.mcast_grp_a = sess;
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
+        hdr.mpls0.setInvalid();
+        hdr.mpls1.setInvalid();
         hdr.vlan.setInvalid();
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();
@@ -94,8 +96,10 @@ hdr.ipv6.dst_addr:
     apply {
 
         if (ig_md.ipv4_valid==1)  {
+            ig_md.ethertype = ETHERTYPE_IPV4;
             tbl_mcast4.apply();
         } else if (ig_md.ipv6_valid==1)  {
+            ig_md.ethertype = ETHERTYPE_IPV6;
             tbl_mcast6.apply();
         }
 
