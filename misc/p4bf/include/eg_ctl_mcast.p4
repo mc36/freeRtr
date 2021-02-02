@@ -17,20 +17,29 @@
 #ifndef _EG_CTL_MCAST_P4_
 #define _EG_CTL_MCAST_P4_
 
-#ifdef HAVE_MCAST
+#ifdef NEED_REPLICA
 
 control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
                            in egress_intrinsic_metadata_t eg_intr_md,
                            inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
+#ifdef HAVE_MCAST
     action act_rawip(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr) {
         hdr.ethernet.src_mac_addr = src_mac_addr;
         hdr.ethernet.dst_mac_addr = dst_mac_addr;
         eg_md.target_id = (SubIntId_t)eg_intr_md.egress_rid;
     }
+#endif
 
-    action act_miss() {
+#ifdef HAVE_DUPLAB
+    action act_duplab(NextHopId_t hop, label_t label) {
+        hdr.mpls0.label = label;
+        eg_md.nexthop_id = hop;
+    }
+#endif
+
+    action act_drop() {
         eg_dprsr_md.drop_ctl = 1;
     }
 
@@ -43,11 +52,16 @@ eg_intr_md.egress_rid:
             exact;
         }
         actions = {
+#ifdef HAVE_MCAST
             act_rawip;
-            act_miss;
+#endif
+#ifdef HAVE_DUPLAB
+            act_duplab;
+#endif
+            act_drop;
         }
         size = IPV4_MCAST_TABLE_SIZE + IPV6_MCAST_TABLE_SIZE;
-        const default_action = act_miss();
+        const default_action = act_drop();
     }
 
 

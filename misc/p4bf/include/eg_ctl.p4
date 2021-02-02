@@ -32,7 +32,7 @@ control eg_ctl(
 #else
 
 
-#ifdef HAVE_MCAST
+#ifdef NEED_REPLICA
     EgressControlMcast() eg_ctl_mcast;
 #endif
     EgressControlVlanOut() eg_ctl_vlan_out;
@@ -64,7 +64,7 @@ control eg_ctl(
             hdr.cpu.port = hdr.internal.port_id;
         }
 
-#ifdef HAVE_MCAST
+#ifdef NEED_REPLICA
         eg_ctl_mcast.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 #endif
 

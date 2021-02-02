@@ -125,7 +125,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
             ig_ctl_vrf.apply(hdr, ig_md);
 #ifdef HAVE_MPLS
-            ig_ctl_mpls.apply(hdr, ig_md, ig_intr_md);
+            ig_ctl_mpls.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_FLOWSPEC
             ig_ctl_flowspec.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);

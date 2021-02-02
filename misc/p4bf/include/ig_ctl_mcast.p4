@@ -42,6 +42,9 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();
+#ifdef HAVE_PPPOE
+        hdr.pppoeD.setInvalid();
+#endif
         hdr.ethernet.ethertype = ig_md.ethertype;
         hdr.cpu.setInvalid();
         hdr.internal.setValid();

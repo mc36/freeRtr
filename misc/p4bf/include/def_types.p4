@@ -49,6 +49,17 @@
 #endif
 
 
+#undef NEED_REPLICA
+
+#ifdef HAVE_MCAST
+#define NEED_REPLICA
+#endif
+
+#ifdef HAVE_DUPLAB
+#define NEED_REPLICA
+#endif
+
+
 
 
 

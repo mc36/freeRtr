@@ -44,7 +44,6 @@ control IngressControlMPLS(inout headers hdr,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         ig_intr_md.mcast_grp = sess;
-//        clone(CloneType.I2E, (bit<32>)sess);
     }
 
 

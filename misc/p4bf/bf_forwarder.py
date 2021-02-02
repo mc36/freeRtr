@@ -4402,6 +4402,92 @@ class BfForwarder(Thread):
 
 
 
+    def writeDupLabelRules(
+        self, op_type, vrf, sess, inlab, port, subif, hopid, outlab
+    ):
+        if self.mcast == False:
+            return
+        nodid = (sess << 16 ) | hopid;
+        if op_type != 3:
+            self.mcast_nid.append(nodid)
+            self.mcast_xid.append(0)
+        tbl_global_path = "eg_ctl.eg_ctl_mcast"
+        tbl_name = "%s.tbl_mcast" % (tbl_global_path)
+        tbl_action_name = "%s.act_duplab" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.internal.clone_session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", hopid),
+        ]
+        data_field_list = [
+             gc.DataTuple("hop", hopid),
+             gc.DataTuple("label", outlab),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            nodid,
+            hopid,
+            self.hairpin2recirc(port),
+        )
+
+
+    def writeDupLabLocRules(
+        self, op_type, ipver, vrf, sess, inlab, delete2
+    ):
+        if self.mcast == False:
+            return
+        if op_type == 1:
+            act = "act_decap_mpls_ipv"+ipver
+        else:
+            act = "act_drop"
+        tbl_global_path = "ig_ctl.ig_ctl_mpls"
+        tbl_name = "%s.tbl_mpls_fib" % (tbl_global_path)
+        tbl_action_name = "%s.act_mpls_bcast_label" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.mpls0.label", inlab),
+        ]
+        data_field_list = [
+             gc.DataTuple("sess", sess),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        if delete2 == "add":
+            op_type2 = 1
+        elif delete2 == "mod":
+            op_type2 = 2
+        else:
+            op_type2 = 3
+        self._processEntryFromControlPlane(
+            op_type2,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        self._processMcastMgidFromControlPlane(
+            op_type2,
+            sess,
+            self.mcast_nid,
+            self.mcast_xid,
+        )
+        self.mcast_nid = []
+        self.mcast_xid = []
+
+
+
+
     def run(self):
         logger.warn("BfForwarder - Main")
         logger.warn("BfForwarder - Entering message loop")
@@ -6717,6 +6803,7 @@ class BfForwarder(Thread):
                     splt[6],
                 )
                 continue
+
             if splt[0] == "mroute4_add":
                 self.writeMroute4rules(
                     1,
@@ -6799,6 +6886,142 @@ class BfForwarder(Thread):
                     int(splt[7]),
                     splt[8],
                     splt[9],
+                )
+                continue
+
+
+
+            if splt[0] == "duplabloc4_add":
+                self.writeDupLabLocRules(
+                    1,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                )
+                continue
+            if splt[0] == "duplabloc4_mod":
+                self.writeDupLabLocRules(
+                    2,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                )
+                continue
+            if splt[0] == "duplabloc4_del":
+                self.writeDupLabLocRules(
+                    3,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                )
+                continue
+            if splt[0] == "duplabloc6_add":
+                self.writeDupLabLocRules(
+                    1,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                )
+                continue
+            if splt[0] == "duplabloc6_mod":
+                self.writeDupLabLocRules(
+                    2,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                )
+                continue
+            if splt[0] == "duplabloc6_del":
+                self.writeDupLabLocRules(
+                    3,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    splt[4],
+                )
+                continue
+
+            if splt[0] == "duplabel4_add":
+                self.writeDupLabelRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                )
+                continue
+            if splt[0] == "duplabel4_mod":
+                self.writeDupLabelRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                )
+                continue
+            if splt[0] == "duplabel4_del":
+                self.writeDupLabelRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                )
+                continue
+            if splt[0] == "duplabel6_add":
+                self.writeDupLabelRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                )
+                continue
+            if splt[0] == "duplabel6_mod":
+                self.writeDupLabelRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                )
+                continue
+            if splt[0] == "duplabel6_del":
+                self.writeDupLabelRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
                 )
                 continue
 

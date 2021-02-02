@@ -14,7 +14,7 @@ ig_md.outqos_res = MeterColor_t.GREEN;
 ig_md.flowspec_id = 0;
 ig_md.flowspec_res = MeterColor_t.GREEN;
 #endif
-#ifdef HAVE_MCAST
+#ifdef NEED_REPLICA
 ig_md.clone_session = 0;
 ig_md.rpf_iface = 0;
 #endif
