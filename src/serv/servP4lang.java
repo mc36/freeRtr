@@ -721,6 +721,21 @@ class servP4langNei implements Comparator<servP4langNei> {
         return o1.adr.compare(o1.adr, o2.adr);
     }
 
+    public servP4langIfc getVia() {
+        servP4langNei via = this;
+        for (int i = 0; i < 8; i++) {
+            if (via.viaH == null) {
+                break;
+            }
+            via = via.viaH;
+        }
+        if (via.viaI == null) {
+            return via.iface;
+        } else {
+            return via.viaI;
+        }
+    }
+
 }
 
 class servP4langBr implements Comparator<servP4langBr> {
@@ -1938,7 +1953,8 @@ class servP4langConn implements Runnable {
             if (hop.mac == null) {
                 continue;
             }
-            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + hop.iface.getMcast(gid).id + " " + hop.iface.id + " " + hop.id + " " + getLabel(ntry.lab) + " " + hop.mac.toEmuStr() + " " + hop.iface.getMac().toEmuStr());
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
         }
         String act;
         for (int i = 0; i < need.duplicate.size(); i++) {
@@ -1955,7 +1971,8 @@ class servP4langConn implements Runnable {
             if (hop.mac == null) {
                 continue;
             }
-            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + hop.iface.getMcast(gid).id + " " + hop.iface.id + " " + hop.id + " " + getLabel(ntry.lab) + " " + hop.mac.toEmuStr() + " " + hop.iface.getMac().toEmuStr());
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
             now++;
         }
         if (bef > 0) {
@@ -2918,19 +2935,7 @@ class servP4langConn implements Runnable {
             lower.sendLine("neigh" + (ntry.adr.isIPv4() ? "4" : "6") + "_del " + ntry.id + " " + ntry.adr + " " + ntry.mac.toEmuStr() + " " + ntry.vrf.id + " " + ntry.iface.getMac().toEmuStr() + " " + ntry.sentIfc);
             return;
         }
-        servP4langNei via = ntry;
-        for (int i = 0; i < 8; i++) {
-            if (via.viaH == null) {
-                break;
-            }
-            via = via.viaH;
-        }
-        int val;
-        if (via.viaI == null) {
-            val = via.iface.getUcast().id;
-        } else {
-            val = via.viaI.getUcast().id;
-        }
+        int val = ntry.getVia().getUcast().id;
         if (val == ntry.sentIgNhop) {
             return;
         }
@@ -3566,7 +3571,8 @@ class servP4langConn implements Runnable {
             if (hop == null) {
                 continue;
             }
-            lower.sendLine("mlabroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + hop.iface.getMcast(gid).id + " " + hop.id + " " + ntry.labelR);
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("mlabroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.labelR + " " + ifc.id);
         }
         for (int i = 0; i < nlabel.neighs.size(); i++) {
             ipFwdMpNe ntry = nlabel.neighs.get(i);
@@ -3582,7 +3588,8 @@ class servP4langConn implements Runnable {
             if (hop == null) {
                 continue;
             }
-            lower.sendLine("mlabroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + hop.iface.getMcast(gid).id + " " + hop.id + " " + ntry.labelR);
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("mlabroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.labelR + " " + ifc.id);
             now++;
         }
         for (int i = 0; i < dflood.size(); i++) {

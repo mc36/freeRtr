@@ -2148,6 +2148,7 @@ def writeMySrv6rules(delete, p4info_helper, ingress_sw, glob, dst_addr, vrf):
 
 def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, delete2):
     global mcast
+    sess = sess & 0xfff
     if delete == 1:
         act = "act_local"
     else:
@@ -2179,6 +2180,7 @@ def writeMlocal4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
 
 def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, delete2):
     global mcast
+    sess = sess & 0xfff
     if delete == 1:
         act = "act_local"
     else:
@@ -2209,6 +2211,8 @@ def writeMlocal6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
 
 
 def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, port, subif, smac, dmac):
+    global mcast
+    sess = sess & 0xfff
     if delete != 3:
         mcast.append({"egress_port":port, "instance":subif})
     table_entry = p4info_helper.buildTableEntry(
@@ -2232,6 +2236,8 @@ def writeMroute4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
 
 
 def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, port, subif, smac, dmac):
+    global mcast
+    sess = sess & 0xfff
     if delete != 3:
         mcast.append({"egress_port":port, "instance":subif})
     table_entry = p4info_helper.buildTableEntry(
@@ -2252,6 +2258,99 @@ def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
         ingress_sw.ModifyTableEntry(table_entry, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+
+
+def writeDupLabelRules(delete, p4info_helper, ingress_sw, vrf, sess, inlab, port, subif, hopid, outlab):
+    global mcast
+    sess = sess & 0xfff
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":hopid})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": hopid
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_duplab",
+        action_params={
+            "hop": hopid,
+            "label": outlab
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeMlabRouteRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, dip, sip, ingr, port, hopid, outlab, subif):
+    global mcast
+    sess = sess & 0xfff
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":hopid})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": hopid
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_encap_ipv"+ipver+"_mpls",
+        action_params={
+            "hop": hopid,
+            "label": outlab
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeDupLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, inlab, delete2):
+    global mcast
+    sess = sess & 0xfff
+    if delete == 1:
+        act = "act_decap_mpls_ipv"+ipver
+        mcast.append({"egress_port":0, "instance":0})
+    else:
+        act = "act_drop"
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+        match_fields={
+            "hdr.mpls0.label": inlab,
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_bcast_label",
+        action_params={
+            "sess": sess
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": 0
+        },
+        action_name="eg_ctl.eg_ctl_mcast."+act,
+        action_params={}
+    )
+    table_entry3 = p4info_helper.buildMulticastGroupEntry(sess, mcast)
+    if delete2 == "add":
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WritePREEntry(table_entry3, False)
+    elif delete2 == "mod":
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyPREEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeletePREEntry(table_entry3, False)
+    mcast = []
 
 
 
@@ -3070,6 +3169,65 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeMroute6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
             continue
 
+        if splt[0] == "mlabroute4_add":
+            writeMlabRouteRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+            continue
+        if splt[0] == "mlabroute4_mod":
+            writeMlabRouteRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+            continue
+        if splt[0] == "mlabroute4_del":
+            writeMlabRouteRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+            continue
+
+        if splt[0] == "mlabroute6_add":
+            writeMlabRouteRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+            continue
+        if splt[0] == "mlabroute6_mod":
+            writeMlabRouteRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+            continue
+        if splt[0] == "mlabroute6_del":
+            writeMlabRouteRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+            continue
+
+        if splt[0] == "duplabel4_add":
+            writeDupLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+        if splt[0] == "duplabel4_mod":
+            writeDupLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+        if splt[0] == "duplabel4_del":
+            writeDupLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+
+        if splt[0] == "duplabel6_add":
+            writeDupLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+        if splt[0] == "duplabel6_mod":
+            writeDupLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+        if splt[0] == "duplabel6_del":
+            writeDupLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+
+        if splt[0] == "duplabloc4_add":
+            writeDupLabLocRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
+        if splt[0] == "duplabloc4_mod":
+            writeDupLabLocRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
+        if splt[0] == "duplabloc4_del":
+            writeDupLabLocRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
+
+        if splt[0] == "duplabloc6_add":
+            writeDupLabLocRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
+        if splt[0] == "duplabloc6_mod":
+            writeDupLabLocRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
+        if splt[0] == "duplabloc6_del":
+            writeDupLabLocRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
 
 
 

@@ -94,6 +94,11 @@ hdr.ipv6.dst_addr:
 
         if (ig_md.need_clone == 0) return;
 
+        hdr.mpls0.setInvalid();
+        hdr.mpls1.setInvalid();
+        if (hdr.ipv4.isValid()) ig_md.ethertype = ETHERTYPE_IPV4;
+        if (hdr.ipv6.isValid()) ig_md.ethertype = ETHERTYPE_IPV6;
+
         ig_intr_md.mcast_grp = ig_md.clone_session;
 //        clone(CloneType.I2E, (bit<32>)ig_md.clone_session);
 

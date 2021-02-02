@@ -46,6 +46,15 @@ control eg_ctl(
 
         if (eg_md.need_clone != 0) {
             eg_ctl_mcast.apply(hdr,eg_md,eg_intr_md);
+            if (eg_md.need_recir == 1) {
+                recir_headers_t rec_hdr;
+                recirculate<recir_headers_t>(rec_hdr);
+                return;
+            }
+            if (eg_md.dropping == 1) {
+                mark_to_drop(eg_intr_md);
+                return;
+            }
         }
 
         eg_ctl_nexthop.apply(hdr,eg_md,eg_intr_md);

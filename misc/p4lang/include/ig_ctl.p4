@@ -78,6 +78,13 @@ control ig_ctl(inout headers hdr,
         ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_llc.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.need_clone == 1) {
+            if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+            if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
+            if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
+            if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();
+            return;
+        }
         ig_ctl_flowspec.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
             return;
