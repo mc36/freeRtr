@@ -312,7 +312,7 @@ public class rtrRsvpIface implements ipPrt {
                     return;
                 }
                 List<Integer> labs = tabLabel.int2labels(ntry.trgLab);
-                if (pckRvp.isP2MP) {
+                if (ntry.isP2MP()) {
                     ntry.locLab.addDupMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
                 } else {
                     ntry.locLab.setFwdMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
