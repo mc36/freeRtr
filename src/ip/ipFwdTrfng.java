@@ -237,9 +237,21 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
                 return;
             }
         }
-        locLab.clrDupMpls(4);
+        if (isP2MP()) {
+            locLab.clrDupMpls(4);
+        }
+        locLab.setFwdDrop(4);
         tabLabel.release(locLab, 4);
         locLab = null;
+    }
+
+    /**
+     * check if point to multipoint
+     *
+     * @return true if p2mp lsp
+     */
+    public boolean isP2MP() {
+        return (subId != 0) || (!subAdr.isFilled(0));
     }
 
 }

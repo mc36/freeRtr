@@ -176,7 +176,9 @@ public class rtrRsvpIface implements ipPrt {
         }
         if (prnt.locLab == null) {
             prnt.locLab = tabLabel.allocate(4);
-            prnt.locLab.clrDupMpls(4);
+            if (ntry.isP2MP()) {
+                prnt.locLab.clrDupMpls(4);
+            }
         }
         if (prnt.locLab == null) {
             return true;
