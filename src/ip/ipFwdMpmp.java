@@ -424,6 +424,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         }
         if (alloc && (ntry.labelL == null)) {
             ntry.labelL = tabLabel.allocate(5);
+            ntry.labelL.clrDupMpls(5);
         }
         ntry.labelR = label;
     }
@@ -450,7 +451,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             if (curr.labelL == null) {
                 continue;
             }
-            curr.labelL.clrDupMpls(5, ntry.addr);
+            curr.labelL.delDupMpls(5, ntry.addr);
         }
         if (ntry.labelL == null) {
             return false;
@@ -640,13 +641,13 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                     continue;
                 }
                 List<Integer> labs = tabLabel.int2labels(ntry.labelR);
-                curr.labelL.setDupMpls(5, fwd, ntry.iface, ntry.addr, labs);
+                curr.labelL.addDupMpls(5, fwd, ntry.iface, ntry.addr, labs);
                 ned = true;
             }
             if (ned) {
                 continue;
             }
-            curr.labelL.setFwdDrop(5);
+            curr.labelL.clrDupMpls(5);
         }
     }
 

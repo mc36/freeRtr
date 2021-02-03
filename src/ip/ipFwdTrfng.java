@@ -231,13 +231,13 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         }
         if (locLab.duplicate != null) {
             if (trgHop != null) {
-                locLab.clrDupMpls(4, trgHop);
+                locLab.delDupMpls(4, trgHop);
             }
             if (locLab.duplicate.size() > 0) {
                 return;
             }
         }
-        locLab.setFwdDrop(4);
+        locLab.clrDupMpls(4);
         tabLabel.release(locLab, 4);
         locLab = null;
     }

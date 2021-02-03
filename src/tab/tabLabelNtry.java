@@ -469,7 +469,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      * @param hop next hop address
      * @param lab next hop labels
      */
-    public void setDupMpls(int ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
+    public void addDupMpls(int ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
         if (key != ky) {
             return;
         }
@@ -486,15 +486,27 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      * @param ky key to use for deallocation
      * @param hop next hop address
      */
-    public void clrDupMpls(int ky, addrIP hop) {
+    public void delDupMpls(int ky, addrIP hop) {
         if (key != ky) {
             return;
         }
         if (duplicate == null) {
-            return;
+            duplicate = new tabGen<tabLabelDup>();
         }
         tabLabelDup ntry = new tabLabelDup(null, hop, null);
         duplicate.del(ntry);
+    }
+
+    /**
+     * clear all duplications for mpls
+     *
+     * @param ky key to use for deallocation
+     */
+    public void clrDupMpls(int ky) {
+        if (key != ky) {
+            return;
+        }
+        duplicate = new tabGen<tabLabelDup>();
     }
 
     /**

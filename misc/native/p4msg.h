@@ -728,14 +728,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 1;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -745,14 +738,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 2;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -763,14 +749,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -781,14 +760,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -798,14 +770,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 3;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -815,14 +780,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 4;
         acls_ntry.ver = 4;
         acls_ntry.port = 0;
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[-1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -832,14 +790,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 1;
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -849,14 +800,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 2;
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -867,14 +811,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -885,14 +822,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -902,14 +832,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 3;
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -919,14 +842,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 4;
         acls_ntry.ver = 6;
         acls_ntry.port = 0;
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[-1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -1036,14 +952,7 @@ int doOneCommand(unsigned char* buf) {
         policer_ntry.dir = 3;
         policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         readAcl4(&acl4_ntry, &arg[3]);
         policer_ntry.meter = acl4_ntry.pri;
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
@@ -1058,14 +967,7 @@ int doOneCommand(unsigned char* buf) {
         policer_ntry.dir = 4;
         policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         readAcl6(&acl6_ntry, &arg[3]);
         policer_ntry.meter = acl6_ntry.pri;
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
@@ -1078,14 +980,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         acls_res->cmd = 1;
         readAcl4(&acl4_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
@@ -1096,14 +991,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         acls_res->cmd = 1;
         readAcl6(&acl6_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
@@ -1114,14 +1002,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         acls_res->cmd = 2;
         acls_res->vrf = atoi(arg[3]);
         readAcl4(&acl4_ntry, &arg[2]);
@@ -1133,14 +1014,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         acls_res->cmd = 2;
         acls_res->vrf = atoi(arg[3]);
         readAcl6(&acl6_ntry, &arg[2]);
@@ -1152,14 +1026,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         acls_res->cmd = 3;
         acls_res->vrf = atoi(arg[3]);
         acls_res->hop = atoi(arg[4]);
@@ -1172,14 +1039,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
-        index = table_find(&acls_table, &acls_ntry);
-        if (index < 0) {
-            table_init(&acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-            table_add(&acls_table, &acls_ntry);
-            acls_res = table_get(&acls_table, table_find(&acls_table, &acls_ntry));
-        } else {
-            acls_res = table_get(&acls_table, index);
-        }
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         acls_res->cmd = 3;
         acls_res->vrf = atoi(arg[3]);
         acls_res->hop = atoi(arg[4]);
@@ -1660,14 +1520,7 @@ int doOneCommand(unsigned char* buf) {
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        index = table_find(&mroute4_table, &mroute4_ntry);
-        if (index < 0) {
-            table_init(&mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mroute4_table, &mroute4_ntry);
-            mroute4_res = table_get(&mroute4_table, table_find(&mroute4_table, &mroute4_ntry));
-        } else {
-            mroute4_res = table_get(&mroute4_table, index);
-        }
+        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         mroute4_res->local = del;
         return 0;
@@ -1684,14 +1537,7 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        index = table_find(&mroute6_table, &mroute6_ntry);
-        if (index < 0) {
-            table_init(&mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mroute6_table, &mroute6_ntry);
-            mroute6_res = table_get(&mroute6_table, table_find(&mroute6_table, &mroute6_ntry));
-        } else {
-            mroute6_res = table_get(&mroute6_table, index);
-        }
+        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         mroute6_res->local = del;
         return 0;
@@ -1702,14 +1548,7 @@ int doOneCommand(unsigned char* buf) {
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        index = table_find(&mroute4_table, &mroute4_ntry);
-        if (index < 0) {
-            table_init(&mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mroute4_table, &mroute4_ntry);
-            mroute4_res = table_get(&mroute4_table, table_find(&mroute4_table, &mroute4_ntry));
-        } else {
-            mroute4_res = table_get(&mroute4_table, index);
-        }
+        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.command = 1;
@@ -1731,14 +1570,7 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        index = table_find(&mroute6_table, &mroute6_ntry);
-        if (index < 0) {
-            table_init(&mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mroute6_table, &mroute6_ntry);
-            mroute6_res = table_get(&mroute6_table, table_find(&mroute6_table, &mroute6_ntry));
-        } else {
-            mroute6_res = table_get(&mroute6_table, index);
-        }
+        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.command = 1;
@@ -1753,14 +1585,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.label = atoi(arg[4]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 7;
-        index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) {
-            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mpls_table, &mpls_ntry);
-            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
-        } else {
-            mpls_res = table_get(&mpls_table, index);
-        }
+        mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mpls_res->command = 7;
         mpls_res->swap = del;
         return 0;
     }
@@ -1769,14 +1595,8 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.label = atoi(arg[4]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 7;
-        index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) {
-            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mpls_table, &mpls_ntry);
-            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
-        } else {
-            mpls_res = table_get(&mpls_table, index);
-        }
+        mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mpls_res->command = 7;
         mpls_res->swap = del;
         return 0;
     }
@@ -1785,14 +1605,7 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.label = atoi(arg[4]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 7;
-        index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) {
-            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mpls_table, &mpls_ntry);
-            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
-        } else {
-            mpls_res = table_get(&mpls_table, index);
-        }
+        mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         flood_ntry.trg = atoi(arg[7]);
         flood_ntry.command = 2;
         flood_ntry.lab = atoi(arg[8]);
@@ -1805,14 +1618,7 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.label = atoi(arg[4]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 7;
-        index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) {
-            table_init(&mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mpls_table, &mpls_ntry);
-            mpls_res = table_get(&mpls_table, table_find(&mpls_table, &mpls_ntry));
-        } else {
-            mpls_res = table_get(&mpls_table, index);
-        }
+        mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         flood_ntry.trg = atoi(arg[7]);
         flood_ntry.command = 2;
         flood_ntry.lab = atoi(arg[8]);
@@ -1826,14 +1632,7 @@ int doOneCommand(unsigned char* buf) {
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        index = table_find(&mroute4_table, &mroute4_ntry);
-        if (index < 0) {
-            table_init(&mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mroute4_table, &mroute4_ntry);
-            mroute4_res = table_get(&mroute4_table, table_find(&mroute4_table, &mroute4_ntry));
-        } else {
-            mroute4_res = table_get(&mroute4_table, index);
-        }
+        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.lab = atoi(arg[9]);
@@ -1854,14 +1653,7 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        index = table_find(&mroute6_table, &mroute6_ntry);
-        if (index < 0) {
-            table_init(&mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-            table_add(&mroute6_table, &mroute6_ntry);
-            mroute6_res = table_get(&mroute6_table, table_find(&mroute6_table, &mroute6_ntry));
-        } else {
-            mroute6_res = table_get(&mroute6_table, index);
-        }
+        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.lab = atoi(arg[9]);

@@ -69,3 +69,17 @@ void table_del(struct table_head *tab, void *ntry) {
     tab->size--;
     tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+1));
 }
+
+
+void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab2, int reclen, int comparer(void *, void *)) {
+    int index = table_find(tab, ntry);
+    if (index < 0) {
+        table_add(tab, ntry);
+        index = table_find(tab, ntry);
+    }
+    void *res = table_get(tab, index);
+    struct table_head *tab3 = res + ((void*)tab2 - (void*)ntry);
+    if (tab3->reclen == reclen) return res;
+    table_init(tab3, reclen, comparer);
+    return res;
+}

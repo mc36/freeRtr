@@ -176,6 +176,7 @@ public class rtrRsvpIface implements ipPrt {
         }
         if (prnt.locLab == null) {
             prnt.locLab = tabLabel.allocate(4);
+            prnt.locLab.clrDupMpls(4);
         }
         if (prnt.locLab == null) {
             return true;
@@ -310,7 +311,7 @@ public class rtrRsvpIface implements ipPrt {
                 }
                 List<Integer> labs = tabLabel.int2labels(ntry.trgLab);
                 if (pckRvp.isP2MP) {
-                    ntry.locLab.setDupMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
+                    ntry.locLab.addDupMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
                 } else {
                     ntry.locLab.setFwdMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
                 }

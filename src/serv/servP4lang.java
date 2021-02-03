@@ -1924,7 +1924,7 @@ class servP4langConn implements Runnable {
         return i;
     }
 
-    private void doLab3(ipFwd fwd, tabLabelNtry need, tabLabelNtry done) {
+    private void doLab3(ipFwd fwd, tabLabelNtry need, tabLabelNtry done, boolean bef) {
         if (done.duplicate == null) {
             done.duplicate = new tabGen<tabLabelDup>();
         }
@@ -1934,12 +1934,8 @@ class servP4langConn implements Runnable {
         }
         int gid = need.getHashW();
         int now = 0;
-        int bef = done.duplicate.size();
         if (need.needLocal) {
             now++;
-        }
-        if (done.needLocal) {
-            bef++;
         }
         for (int i = 0; i < done.duplicate.size(); i++) {
             tabLabelDup ntry = done.duplicate.get(i);
@@ -1975,7 +1971,7 @@ class servP4langConn implements Runnable {
             lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
             now++;
         }
-        if (bef > 0) {
+        if (bef) {
             act = "mod";
             if (now < 1) {
                 act = "del";
@@ -1994,7 +1990,7 @@ class servP4langConn implements Runnable {
         if (ntry.duplicate != null) {
             tabLabelNtry empty = new tabLabelNtry(ntry.label);
             empty.duplicate = new tabGen<tabLabelDup>();
-            doLab3(ntry.forwarder, empty, ntry);
+            doLab3(ntry.forwarder, empty, ntry, true);
             return;
         }
         if (ntry.bier != null) {
@@ -2051,15 +2047,18 @@ class servP4langConn implements Runnable {
         }
         if (ntry.duplicate != null) {
             tabLabelNtry old = labels.find(ntry);
+            boolean bef;
             if (old != null) {
                 if (!old.differs(ntry)) {
                     return;
                 }
+                bef = true;
             } else {
                 old = new tabLabelNtry(ntry.label);
+                bef = false;
             }
             labels.put(ntry);
-            doLab3(ntry.forwarder, ntry, old);
+            doLab3(ntry.forwarder, ntry, old, bef);
             return;
         }
         if (ntry.bier != null) {
@@ -3529,7 +3528,7 @@ class servP4langConn implements Runnable {
         return need;
     }
 
-    private boolean doMroutes(String afi, int vrf, ipFwdMcast need, ipFwdMcast done) {
+    private boolean doMroutes(String afi, int vrf, ipFwdMcast need, ipFwdMcast done, boolean bef) {
         int gid = need.group.getHashW() ^ need.source.getHashW() ^ vrf;
         servP4langIfc ingr = findIfc(need.iface);
         if (ingr == null) {
@@ -3551,11 +3550,9 @@ class servP4langConn implements Runnable {
             nlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
             now++;
         }
-        int bef = dflood.size() + dlabel.neighs.size();
         if (done.local) {
             dflood = new tabGen<ipFwdIface>();
             dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
-            bef++;
         }
         addrMac mac = need.group.conv2multiMac();
         String act;
@@ -3617,7 +3614,7 @@ class servP4langConn implements Runnable {
             lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
             now++;
         }
-        if (bef > 0) {
+        if (bef) {
             act = "mod";
             if (now < 1) {
                 act = "del";
@@ -3640,14 +3637,17 @@ class servP4langConn implements Runnable {
             ipFwdMcast ntry = need.get(i);
             ntry = ntry.copyBytes();
             ipFwdMcast old = done.find(ntry);
+            boolean bef;
             if (old != null) {
                 if (!ntry.differs(old)) {
                     continue;
                 }
+                bef = true;
             } else {
                 old = new ipFwdMcast(ntry.group, ntry.source);
+                bef = false;
             }
-            if (doMroutes(afi, vrf, ntry, old)) {
+            if (doMroutes(afi, vrf, ntry, old, bef)) {
                 continue;
             }
             done.put(ntry);
@@ -3659,7 +3659,7 @@ class servP4langConn implements Runnable {
             }
             ipFwdMcast empty = new ipFwdMcast(ntry.group, ntry.source);
             empty.iface = ntry.iface;
-            if (doMroutes(afi, vrf, empty, ntry)) {
+            if (doMroutes(afi, vrf, empty, ntry, true)) {
                 continue;
             }
             done.del(ntry);
