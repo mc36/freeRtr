@@ -483,36 +483,38 @@ public class userTest {
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
             final String init = "tesging";
-            boolean ok = true;
+            boolean ok = false;
             krsa.keyMake(pmsiz);
             long tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 byte[] buf = init.getBytes();
                 buf = krsa.doEncrypt(buf);
                 buf = krsa.doDecrypt(buf);
-                ok = !init.equals(new String(buf));
+                ok |= !init.equals(new String(buf));
             }
             cmd.error("rsa: " + krsa.keyVerify() + " " + krsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("rsa: " + krsa.pemWriteStr(true) + " " + krsa.pemWriteStr(false));
             }
             kdsa.keyMake(pmsiz);
+            ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 byte[] buf = init.getBytes();
                 kdsa.doSigning(buf);
-                ok = kdsa.doVerify(buf);
+                ok |= kdsa.doVerify(buf);
             }
             cmd.error("dsa: " + kdsa.keyVerify() + " " + kdsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("dsa: " + kdsa.pemWriteStr(true) + " " + kdsa.pemWriteStr(false));
             }
             kecdsa.keyMake(ecsiz);
+            ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 byte[] buf = init.getBytes();
                 kecdsa.doSigning(buf);
-                ok = kecdsa.doVerify(buf);
+                ok |= kecdsa.doVerify(buf);
             }
             cmd.error("ecdsa: " + kecdsa.keyVerify() + " " + kecdsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {

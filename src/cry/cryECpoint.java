@@ -45,6 +45,8 @@ public class cryECpoint {
      */
     public final static BigInteger int3 = new BigInteger("3");
 
+    private cryECpoint mul2res;
+
     /**
      * create point
      *
@@ -90,6 +92,9 @@ public class cryECpoint {
      * @return result
      */
     public cryECpoint add(cryECpoint p) {
+        if ((p == this) && (mul2res != null)) {
+            return mul2res;
+        }
         BigInteger t;
         if (p.x.compareTo(x) == 0) {
             t = ((x.modPow(int2, c.p)).multiply(int3)).add(c.a);
@@ -99,7 +104,11 @@ public class cryECpoint {
         }
         BigInteger x3 = (((t.modPow(int2, c.p)).subtract(p.x)).subtract(x)).mod(c.p);
         BigInteger y3 = ((t.multiply(x.subtract(x3))).subtract(y)).mod(c.p);
-        return new cryECpoint(c, x3, y3);
+        cryECpoint res = new cryECpoint(c, x3, y3);
+        if (p == this) {
+            mul2res = res;
+        }
+        return res;
     }
 
     /**
@@ -109,18 +118,20 @@ public class cryECpoint {
      * @return result
      */
     public cryECpoint mul(BigInteger n) {
-        if (n.equals(int1)) {
-            return this;
+        cryECpoint res = null;
+        cryECpoint val = this;
+        int len = n.bitLength();
+        for (int pos = 0; pos < len; pos++) {
+            if (n.testBit(pos)) {
+                if (res == null) {
+                    res = val;
+                } else {
+                    res = res.add(val);
+                }
+            }
+            val = val.add(val);
         }
-        if (n.equals(int2)) {
-            return this.add(this);
-        }
-        if (n.mod(int2).equals(int0)) {
-            cryECpoint r = this.mul(n.divide(int2));
-            return r.add(r);
-        } else {
-            return this.add(this.mul(n.subtract(int1)));
-        }
+        return res;
     }
 
     /**
