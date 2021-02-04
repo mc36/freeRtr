@@ -450,7 +450,9 @@ public class userTest {
             return null;
         }
         if (a.equals("digsig")) {
-            int keysiz = 384;
+            int pmsiz = 1024;
+            int ecsiz = 128;
+            int times = 1;
             boolean showKeys = false;
             for (;;) {
                 a = cmd.word();
@@ -462,7 +464,15 @@ public class userTest {
                     continue;
                 }
                 if (a.equals("len")) {
-                    keysiz = bits.str2num(cmd.word());
+                    pmsiz = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("eclen")) {
+                    ecsiz = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("times")) {
+                    times = bits.str2num(cmd.word());
                     continue;
                 }
             }
@@ -472,42 +482,63 @@ public class userTest {
             cryKeyECDSA kecdsa = new cryKeyECDSA();
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
-            final String init = "freedom4ever";
-            byte[] buf = init.getBytes();
-            krsa.keyMake(keysiz);
-            buf = krsa.doEncrypt(buf);
-            buf = krsa.doDecrypt(buf);
-            cmd.error("rsa: " + krsa.keyVerify() + " " + krsa.keySize() + " " + !init.equals(new String(buf)));
+            final String init = "tesging";
+            boolean ok = true;
+            krsa.keyMake(pmsiz);
+            long tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                byte[] buf = init.getBytes();
+                buf = krsa.doEncrypt(buf);
+                buf = krsa.doDecrypt(buf);
+                ok = !init.equals(new String(buf));
+            }
+            cmd.error("rsa: " + krsa.keyVerify() + " " + krsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("rsa: " + krsa.pemWriteStr(true) + " " + krsa.pemWriteStr(false));
             }
-            kdsa.keyMake(keysiz);
-            kdsa.doSigning(buf);
-            cmd.error("dsa: " + kdsa.keyVerify() + " " + kdsa.keySize() + " " + kdsa.doVerify(buf));
+            kdsa.keyMake(pmsiz);
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                byte[] buf = init.getBytes();
+                kdsa.doSigning(buf);
+                ok = kdsa.doVerify(buf);
+            }
+            cmd.error("dsa: " + kdsa.keyVerify() + " " + kdsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("dsa: " + kdsa.pemWriteStr(true) + " " + kdsa.pemWriteStr(false));
             }
-            kecdsa.keyMake(keysiz);
-            kecdsa.doSigning(buf);
-            cmd.error("ecdsa: " + kecdsa.keyVerify() + " " + kecdsa.keySize() + " " + kecdsa.doVerify(buf));
+            kecdsa.keyMake(ecsiz);
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                byte[] buf = init.getBytes();
+                kecdsa.doSigning(buf);
+                ok = kecdsa.doVerify(buf);
+            }
+            cmd.error("ecdsa: " + kecdsa.keyVerify() + " " + kecdsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
             }
-            kdh = cryKeyDH.findGroup(keysiz);
-            kdh.clntXchg();
-            kdh.servXchg();
-            kdh.clntKey();
-            kdh.servKey();
-            cmd.error("dh: " + kdh.keyVerify() + " " + kdh.keySize());
+            kdh = cryKeyDH.findGroup(pmsiz);
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                kdh.clntXchg();
+                kdh.servXchg();
+                kdh.clntKey();
+                kdh.servKey();
+            }
+            cmd.error("dh: " + kdh.keyVerify() + " " + kdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("dh: " + kdh.pemWriteStr(false));
             }
-            kecdh.keyMake(keysiz);
-            kecdh.clntXchg();
-            kecdh.servXchg();
-            kecdh.clntKey();
-            kecdh.servKey();
-            cmd.error("ecdh: " + kecdh.keyVerify() + " " + kecdh.keySize());
+            kecdh.keyMake(ecsiz);
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                kecdh.clntXchg();
+                kecdh.servXchg();
+                kecdh.clntKey();
+                kecdh.servKey();
+            }
+            cmd.error("ecdh: " + kecdh.keyVerify() + " " + kecdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("ecdh: " + kecdh.pemWriteStr(false));
             }
