@@ -1691,9 +1691,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (debugger.rtrBgpComp) {
                 logger.debug("round " + compRound + " bier");
             }
-            tabLabelBier res = new tabLabelBier();
-            res.base = bierLab[0].label;
-            res.bsl = tabLabelBier.num2bsl(bierLen);
+            tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
             res.idx = bierIdx;
             for (int i = 0; i < nUni.size(); i++) {
                 tabRouteEntry<addrIP> ntry = nUni.get(i);

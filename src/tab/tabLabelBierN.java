@@ -53,6 +53,49 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     }
 
     /**
+     * copy bytee
+     *
+     * @return copy
+     */
+    public tabLabelBierN copyBytes() {
+        tabLabelBierN n = new tabLabelBierN(ifc, hop, lab);
+        for (int i = 0; i < ned.size(); i++) {
+            n.ned.add(ned.get(i));
+        }
+        return n;
+    }
+
+    /**
+     * check if differs
+     *
+     * @param o other
+     * @return true if yes, false if not
+     */
+    public boolean differs(tabLabelBierN o) {
+        if (o == null) {
+            return true;
+        }
+        if (ifc != o.ifc) {
+            return true;
+        }
+        if (lab != o.lab) {
+            return true;
+        }
+        if (hop.compare(hop, o.hop) != 0) {
+            return true;
+        }
+        if (ned.size() != o.ned.size()) {
+            return true;
+        }
+        for (int i = 0; i < ned.size(); i++) {
+            if (ned.get(i).compareTo(o.ned.get(i)) != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * set one bit
      *
      * @param idx bit index

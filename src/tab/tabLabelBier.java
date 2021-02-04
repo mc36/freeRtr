@@ -14,12 +14,12 @@ public class tabLabelBier {
     /**
      * label base
      */
-    public int base;
+    public final int base;
 
     /**
      * bit string length
      */
-    public int bsl;
+    public final int bsl;
 
     /**
      * own index
@@ -34,7 +34,66 @@ public class tabLabelBier {
     /**
      * forwarder peers
      */
-    public tabGen<tabLabelBierN> peers = new tabGen<tabLabelBierN>();
+    public final tabGen<tabLabelBierN> peers = new tabGen<tabLabelBierN>();
+
+    /**
+     * create new instance
+     *
+     * @param bas base
+     * @param len bsl
+     */
+    public tabLabelBier(int bas, int len) {
+        base = bas;
+        bsl = len;
+    }
+
+    /**
+     * copy bytee
+     *
+     * @return copy
+     */
+    public tabLabelBier copyBytes() {
+        tabLabelBier n = new tabLabelBier(base, bsl);
+        n.idx = idx;
+        n.idx2 = idx2;
+        for (int i = 0; i < peers.size(); i++) {
+            peers.add(peers.get(i).copyBytes());
+        }
+        return n;
+    }
+
+    /**
+     * check if differs
+     *
+     * @param o other
+     * @return true if yes, false if not
+     */
+    public boolean differs(tabLabelBier o) {
+        if (o == null) {
+            return true;
+        }
+        if (base != o.base) {
+            return true;
+        }
+        if (bsl != o.bsl) {
+            return true;
+        }
+        if (idx != o.idx) {
+            return true;
+        }
+        if (idx2 != o.idx2) {
+            return true;
+        }
+        if (peers.size() != o.peers.size()) {
+            return true;
+        }
+        for (int i = 0; i < peers.size(); i++) {
+            if (peers.get(i).differs(o.peers.get(idx))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * encode bit string length

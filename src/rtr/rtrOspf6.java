@@ -197,9 +197,7 @@ public class rtrOspf6 extends ipRtr {
                 o = ifc.brIndex;
                 break;
             }
-            tabLabelBier res = new tabLabelBier();
-            res.base = bierLab[0].label;
-            res.bsl = tabLabelBier.num2bsl(bierLen);
+            tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
             res.idx = o;
             for (int i = 0; i < areas.size(); i++) {
                 rtrOspf6area ntry = areas.get(i);

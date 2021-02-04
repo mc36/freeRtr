@@ -1017,9 +1017,7 @@ public class rtrIsis extends ipRtr {
                     p = ifc.brOthIdx;
                 }
             }
-            tabLabelBier res = new tabLabelBier();
-            res.base = bierLab[0].label;
-            res.bsl = tabLabelBier.num2bsl(bierLen);
+            tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
             res.idx = o;
             res.idx2 = p;
             res.mergeFrom(level1.bierRes);

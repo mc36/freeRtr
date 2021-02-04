@@ -764,10 +764,12 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * get bier info
      *
+     * @param base base
+     * @param bsl bsl
      * @return calculated bier info
      */
-    public tabLabelBier getBierI() {
-        tabLabelBier res = new tabLabelBier();
+    public tabLabelBier getBierI(int base, int bsl) {
+        tabLabelBier res = new tabLabelBier(base, bsl);
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
