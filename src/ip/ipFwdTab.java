@@ -1128,8 +1128,9 @@ public class ipFwdTab {
                 needed = true;
             }
             if (grp.bier != null) {
-                if (grp.bier.purgePeers(tim) < 1) {
-                    grp.bier.workStop();
+                int per = grp.bier.purgePeers(tim);
+                grp.bier.updatePeers();
+                if (per < 1) {
                     grp.bier = null;
                 }
                 needed = true;

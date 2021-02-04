@@ -3,21 +3,13 @@ package clnt;
 import addr.addrEmpty;
 import addr.addrIP;
 import addr.addrType;
-import ifc.ifcBridge;
 import ifc.ifcDn;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwd;
-import ip.ipIfc4;
-import ip.ipIfc6;
-import ip.ipMpls;
-import java.util.ArrayList;
-import java.util.List;
+import ip.ipFwdBier;
 import pack.packHolder;
 import tab.tabGen;
-import tab.tabLabelBier;
-import tab.tabLabelBierN;
-import tab.tabRouteEntry;
 import util.cmds;
 import util.counter;
 import util.debugger;
@@ -64,11 +56,9 @@ public class clntMplsBier implements Runnable, ifcDn {
 
     private boolean working = false;
 
+    private ipFwdBier bier;
+
     private tabGen<addrIP> targets = new tabGen<addrIP>();
-
-    private tabGen<tabLabelBierN> fwdDups = new tabGen<tabLabelBierN>();
-
-    private List<byte[]> fwdMsks = new ArrayList<byte[]>();
 
     private notifier notif1 = new notifier();
 
@@ -156,61 +146,19 @@ public class clntMplsBier implements Runnable, ifcDn {
     /**
      * send packet
      *
-     * @param orig packet
+     * @param pck packet
      */
-    public void sendPack(packHolder orig) {
-        int prt = orig.msbGetW(0);
-        orig.getSkip(2);
-        cntr.tx(orig);
-        switch (prt) {
-            case ipMpls.typeU:
-            case ipMpls.typeM:
-                prt = ipMpls.bierLabD;
-                break;
-            case ipIfc4.type:
-                prt = ipMpls.bierIp4;
-                break;
-            case ipIfc6.type:
-                prt = ipMpls.bierIp6;
-                break;
-            case ifcBridge.serialType:
-                prt = ipMpls.bierEth;
-                break;
-            default:
-                return;
-        }
-        orig.BIERid = srcId;
-        orig.BIERoam = 0;
-        orig.IPprt = prt;
+    public void sendPack(packHolder pck) {
+        cntr.tx(pck);
         if (expr >= 0) {
-            orig.MPLSexp = expr;
+            pck.MPLSexp = expr;
         }
         if (ttl >= 0) {
-            orig.MPLSttl = ttl;
+            pck.MPLSttl = ttl;
         }
-        tabGen<tabLabelBierN> trgs = fwdDups;
-        List<byte[]> msks = fwdMsks;
-        for (int i = 0; i < trgs.size(); i++) {
-            tabLabelBierN trg = trgs.get(i);
-            int sft = tabLabelBier.bsl2num(trg.len);
-            for (int o = 0;; o++) {
-                byte[] ned = trg.getAndShr(msks.get(i), sft * o);
-                if (ned == null) {
-                    break;
-                }
-                if (ned.length < 1) {
-                    continue;
-                }
-                packHolder pck = orig.copyBytes(true, true);
-                pck.BIERsi = o;
-                pck.BIERbsl = trg.len;
-                pck.BIERbs = ned;
-                ipMpls.createBIERheader(pck);
-                pck.MPLSlabel = trg.lab + o;
-                ipMpls.createMPLSheader(pck);
-                fwdCor.mplsTxPack(trg.hop, pck, false);
-            }
-        }
+        pck.ETHtype = pck.msbGetW(0);
+        pck.getSkip(2);
+        bier.sendPack(pck);
     }
 
     /**
@@ -219,7 +167,6 @@ public class clntMplsBier implements Runnable, ifcDn {
      * @param s targets
      */
     public void setTargets(String s) {
-        targets = new tabGen<addrIP>();
         cmds c = new cmds("adrs", s);
         for (;;) {
             s = c.word();
@@ -232,41 +179,6 @@ public class clntMplsBier implements Runnable, ifcDn {
             }
             targets.add(a);
         }
-        setTargets(targets);
-    }
-
-    /**
-     * set targets
-     *
-     * @param trg targets
-     */
-    public void setTargets(tabGen<addrIP> trg) {
-        targets = trg;
-        if (targets.size() < 1) {
-            notif1.wakeup();
-            return;
-        }
-        notif1.wakeup();
-    }
-
-    /**
-     * add one target
-     *
-     * @param trg target
-     */
-    public void addTarget(addrIP trg) {
-        targets.add(trg);
-        setTargets(targets);
-    }
-
-    /**
-     * delete one target
-     *
-     * @param trg target
-     */
-    public void delTarget(addrIP trg) {
-        targets.del(trg);
-        setTargets(targets);
     }
 
     /**
@@ -290,6 +202,10 @@ public class clntMplsBier implements Runnable, ifcDn {
             logger.debug("starting work");
         }
         working = true;
+        bier = new ipFwdBier(fwdCor, srcId);
+        for (int i = 0; i < targets.size(); i++) {
+            bier.addPeer(targets.get(i), -1);
+        }
         new Thread(this).start();
     }
 
@@ -319,62 +235,12 @@ public class clntMplsBier implements Runnable, ifcDn {
                 break;
             }
             try {
-                workDoer();
+                bier.updatePeers();
             } catch (Exception e) {
                 logger.traceback(e);
             }
             notif1.sleep(10000);
         }
-    }
-
-    private void workDoer() {
-        tabGen<tabLabelBierN> trgs = new tabGen<tabLabelBierN>();
-        for (int i = 0; i < targets.size(); i++) {
-            addrIP trg = targets.get(i);
-            if (trg == null) {
-                continue;
-            }
-            tabRouteEntry<addrIP> rou = fwdCor.actualU.route(trg);
-            if (rou == null) {
-                if (debugger.clntMplsBierTraf) {
-                    logger.debug("no route for " + trg);
-                }
-                continue;
-            }
-            if (rou.best.oldHop != null) {
-                rou = fwdCor.actualU.route(rou.best.oldHop);
-                if (rou == null) {
-                    continue;
-                }
-            }
-            if (rou.best.bierIdx < 1) {
-                if (debugger.clntMplsBierTraf) {
-                    logger.debug("no index for " + trg);
-                }
-                continue;
-            }
-            if (rou.best.bierBeg < 1) {
-                if (debugger.clntMplsBierTraf) {
-                    logger.debug("no base for " + trg);
-                }
-                continue;
-            }
-            tabLabelBierN ntry = new tabLabelBierN(rou.best.iface, rou.best.nextHop, rou.best.bierBeg);
-            tabLabelBierN old = trgs.add(ntry);
-            if (old != null) {
-                ntry = old;
-            }
-            ntry.len = rou.best.bierHdr;
-            ntry.setBit(rou.best.bierIdx - 1);
-        }
-        List<byte[]> msks = new ArrayList<byte[]>();
-        for (int i = 0; i < trgs.size(); i++) {
-            tabLabelBierN ntry = trgs.get(i);
-            msks.add(tabLabelBier.bsl2msk(ntry.len));
-        }
-        fwdDups = trgs;
-        fwdMsks = msks;
-        notif2.wakeup();
     }
 
 }

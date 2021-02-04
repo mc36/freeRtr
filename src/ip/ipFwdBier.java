@@ -1,10 +1,15 @@
 package ip;
 
 import addr.addrIP;
-import clnt.clntMplsBier;
+import ifc.ifcBridge;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
+import tab.tabLabelBier;
+import tab.tabLabelBierN;
+import tab.tabRouteEntry;
 import util.bits;
 
 /**
@@ -14,35 +19,85 @@ import util.bits;
  */
 public class ipFwdBier {
 
-    /**
-     * forwarder
-     */
-    public ipFwd fwd;
 
     /**
      * bfr id
      */
-    public int id;
+    public final int srcId;
 
     /**
-     * ethertype
+     * forwarder
      */
-    public int typ;
+    public final ipFwd fwd;
 
     private tabGen<ipFwdBierPeer> peers = new tabGen<ipFwdBierPeer>();
 
-    private clntMplsBier clnt = new clntMplsBier();
+    private tabGen<tabLabelBierN> fwdDups = new tabGen<tabLabelBierN>();
+
+    private List<byte[]> fwdMsks = new ArrayList<byte[]>();
 
     /**
-     * send one packet
+     * create new instance
      *
-     * @param pck packet to send
+     * @param f forwarder
+     * @param id source id
      */
-    public void sendPack(packHolder pck) {
-        pck.msbPutW(0, typ);
-        pck.putSkip(2);
-        pck.merge2beg();
-        clnt.sendPack(pck);
+    public ipFwdBier(ipFwd f, int id) {
+        fwd = f;
+        srcId = id;
+    }
+
+
+    /**
+     * send packet
+     *
+     * @param orig packet
+     */
+    public void sendPack(packHolder orig) {
+        int prt;
+        switch (orig.ETHtype) {
+            case ipMpls.typeU:
+            case ipMpls.typeM:
+                prt = ipMpls.bierLabD;
+                break;
+            case ipIfc4.type:
+                prt = ipMpls.bierIp4;
+                break;
+            case ipIfc6.type:
+                prt = ipMpls.bierIp6;
+                break;
+            case ifcBridge.serialType:
+                prt = ipMpls.bierEth;
+                break;
+            default:
+                return;
+        }
+        orig.IPprt = prt;
+        orig.BIERid = srcId;
+        orig.BIERoam = 0;
+        tabGen<tabLabelBierN> trgs = fwdDups;
+        List<byte[]> msks = fwdMsks;
+        for (int i = 0; i < trgs.size(); i++) {
+            tabLabelBierN trg = trgs.get(i);
+            int sft = tabLabelBier.bsl2num(trg.len);
+            for (int o = 0;; o++) {
+                byte[] ned = trg.getAndShr(msks.get(i), sft * o);
+                if (ned == null) {
+                    break;
+                }
+                if (ned.length < 1) {
+                    continue;
+                }
+                packHolder pck = orig.copyBytes(true, true);
+                pck.BIERsi = o;
+                pck.BIERbsl = trg.len;
+                pck.BIERbs = ned;
+                ipMpls.createBIERheader(pck);
+                pck.MPLSlabel = trg.lab + o;
+                ipMpls.createMPLSheader(pck);
+                fwd.mplsTxPack(trg.hop, pck, false);
+            }
+        }
     }
 
     /**
@@ -60,8 +115,6 @@ public class ipFwdBier {
         ipFwdBierPeer old = peers.add(ntry);
         if (old != null) {
             ntry = old;
-        } else {
-            clnt.addTarget(ntry.addr);
         }
         ntry.expires = exp;
     }
@@ -78,7 +131,49 @@ public class ipFwdBier {
         if (ntry == null) {
             return;
         }
-        clnt.delTarget(adr);
+    }
+
+    /**
+     * update peer list
+     */
+    public synchronized void updatePeers() {
+        tabGen<tabLabelBierN> trgs = new tabGen<tabLabelBierN>();
+        for (int i = 0; i < peers.size(); i++) {
+            addrIP trg = peers.get(i).addr;
+            if (trg == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> rou = fwd.actualU.route(trg);
+            if (rou == null) {
+                continue;
+            }
+            if (rou.best.oldHop != null) {
+                rou = fwd.actualU.route(rou.best.oldHop);
+                if (rou == null) {
+                    continue;
+                }
+            }
+            if (rou.best.bierIdx < 1) {
+                continue;
+            }
+            if (rou.best.bierBeg < 1) {
+                continue;
+            }
+            tabLabelBierN ntry = new tabLabelBierN(rou.best.iface, rou.best.nextHop, rou.best.bierBeg);
+            tabLabelBierN old = trgs.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            ntry.len = rou.best.bierHdr;
+            ntry.setBit(rou.best.bierIdx - 1);
+        }
+        List<byte[]> msks = new ArrayList<byte[]>();
+        for (int i = 0; i < trgs.size(); i++) {
+            tabLabelBierN ntry = trgs.get(i);
+            msks.add(tabLabelBier.bsl2msk(ntry.len));
+        }
+        fwdDups = trgs;
+        fwdMsks = msks;
     }
 
     /**
@@ -100,25 +195,8 @@ public class ipFwdBier {
                 continue;
             }
             peers.del(ntry);
-            clnt.delTarget(ntry.addr);
         }
         return peers.size();
-    }
-
-    /**
-     * start work
-     */
-    public void workStart() {
-        clnt.fwdCor = fwd;
-        clnt.srcId = id;
-        clnt.workStart();
-    }
-
-    /**
-     * stop work
-     */
-    public void workStop() {
-        clnt.workStop();
     }
 
 }

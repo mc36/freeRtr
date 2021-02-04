@@ -700,10 +700,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param src source of group
      * @param trg peer address
      * @param id local node id
-     * @param typ ethertype
      * @param exp expiration time, negative if not expires
      */
-    public void mcastAddFloodBier(addrIP grp, addrIP src, addrIP trg, int id, int typ, long exp) {
+    public void mcastAddFloodBier(addrIP grp, addrIP src, addrIP trg, int id, long exp) {
         ipFwdMcast g = new ipFwdMcast(grp, src);
         ipFwdMcast og = groups.add(g);
         if (og != null) {
@@ -714,14 +713,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipFwdBier ntry = g.bier;
         if (ntry == null) {
-            ntry = new ipFwdBier();
-            ntry.fwd = this;
-            ntry.id = id;
-            ntry.typ = typ;
+            ntry = new ipFwdBier(this, id);
             g.bier = ntry;
-            ntry.workStart();
         }
         ntry.addPeer(trg, exp);
+        ntry.updatePeers();
         tableChanger();
     }
 
@@ -742,6 +738,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         g.bier.delPeer(trg);
+        g.bier.updatePeers();
         tableChanger();
     }
 
@@ -1876,6 +1873,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 grp.label.sendPack(this, pck);
             }
             if (grp.bier != null) {
+                pck.ETHtype = rxIfc.lower.getEthtyp();
                 grp.bier.sendPack(pck);
             }
             if (grp.local && ((from & 1) != 0)) {

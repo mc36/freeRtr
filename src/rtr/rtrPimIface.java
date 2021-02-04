@@ -2,8 +2,8 @@ package rtr;
 
 import addr.addrIP;
 import addr.addrPrefix;
-import clnt.clntMplsBier;
 import ip.ipFwd;
+import ip.ipFwdBier;
 import ip.ipFwdIface;
 import ip.ipFwdMcast;
 import ip.ipPrt;
@@ -208,7 +208,7 @@ public class rtrPimIface implements ipPrt {
                             continue;
                         }
                         if (bierTunnel > 0) {
-                            fwdCore.mcastAddFloodBier(grp.group.network, src.network, pckBin.IPsrc, bierTunnel, iface.lower.getEthtyp(), tim);
+                            fwdCore.mcastAddFloodBier(grp.group.network, src.network, pckBin.IPsrc, bierTunnel, tim);
                         } else {
                             fwdCore.mcastAddFloodIfc(grp.group.network, src.network, iface, tim);
                         }
@@ -349,17 +349,11 @@ public class rtrPimIface implements ipPrt {
             return;
         }
         fwdCore.createIPheader(pckBin);
-        pckBin.msbPutW(0, iface.lower.getEthtyp());
-        pckBin.putSkip(2);
-        pckBin.merge2beg();
-        clntMplsBier clnt = new clntMplsBier();
-        clnt.fwdCor = fwdCore;
-        clnt.srcId = bierTunnel;
-        clnt.addTarget(ups);
-        clnt.workStart();
-        clnt.wait4setup(5000);
+        pckBin.ETHtype = iface.lower.getEthtyp();
+        ipFwdBier clnt = new ipFwdBier(fwdCore, bierTunnel);
+        clnt.addPeer(ups, -1);
+        clnt.updatePeers();
         clnt.sendPack(pckBin);
-        clnt.workStop();
     }
 
     /**
