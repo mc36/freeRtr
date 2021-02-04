@@ -9705,3 +9705,8 @@ qc pass: egress mpls common access list
 ---------------------------------- 2021-02-03 07:07:12
 qc pass: p4lang: mldp core and egress edge
 qc pass: p4lang: vlan mldp core and egress edge
+---------------------------------- 2021-02-04 21:54:21
+qc pass: p4lang: bier core
+qc pass: p4lang: bier vlan core
+qc pass: p4lang: bier core over gre
+qc pass: p4lang: bier core over l2tp

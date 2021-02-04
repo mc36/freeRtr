@@ -1354,6 +1354,10 @@ qc pass: p4lang: mldp ingress edge
 qc pass: p4lang: mldp vlan ingress edge
 qc pass: p4lang: mldp core and egress edge
 qc pass: p4lang: vlan mldp core and egress edge
+qc pass: p4lang: bier core
+qc pass: p4lang: bier vlan core
+qc pass: p4lang: bier core over gre
+qc pass: p4lang: bier core over l2tp
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
