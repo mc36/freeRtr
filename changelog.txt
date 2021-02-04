@@ -9710,3 +9710,8 @@ qc pass: p4lang: bier core
 qc pass: p4lang: bier vlan core
 qc pass: p4lang: bier core over gre
 qc pass: p4lang: bier core over l2tp
+---------------------------------- 2021-02-04 22:29:57
+qc pass: p4lang: bier bundle core
+qc pass: p4lang: bier bundle vlan core
+qc pass: p4lang: hairpin bier core
+qc pass: p4lang: hairpin vlan bier core
