@@ -145,6 +145,7 @@ void doMainLoop() {
 
 
 static int doPacketLoop(__rte_unused void *arg) {
+    unsigned char bufB[16384];
     unsigned char bufC[16384];
     unsigned char bufD[16384];
     int bufS;
@@ -193,7 +194,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 }
                 rte_pktmbuf_free(bufs[i]);
                 if (port == cpuport) processCpuPack(&bufD[0], bufS);
-                else processDataPacket(&bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
+                else processDataPacket(&bufB[0], &bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
             }
             pkts += num;
         }
