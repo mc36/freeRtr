@@ -780,7 +780,7 @@ drop:
             o = get32msb(bufC, preBuff + 42) & flood_res->bier[7];  \
             put32msb(bufC, preBuff + 42, o);                    \
             p |= o;                                             \
-            if (o == 0) continue;                               \
+            if (p == 0) continue;                               \
             neigh_ntry.id = flood_res->trg;                     \
             index = table_find(&neigh_table, &neigh_ntry);      \
             if (index < 0) continue;                            \
