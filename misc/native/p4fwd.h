@@ -749,6 +749,44 @@ drop:
             neigh_res = table_get(&neigh_table, index);         \
             tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);   \
             continue;                                           \
+        case 3:                                                 \
+            tmpE = ETHERTYPE_MPLS_UCAST;                        \
+            tmp2 = bufS - bufP + preBuff + 6;                   \
+            tmpL = (label & 0xf00) | ttl | (flood_res->lab << 12);  \
+            put16msb(bufC, preBuff, tmpE);                      \
+            put32msb(bufC, preBuff + 2, tmpL);                  \
+            memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);     \
+            int o = get32msb(bufC, preBuff + 14) & flood_res->bier[0];  \
+            put32msb(bufC, preBuff + 14, o);                    \
+            int p = o;                                          \
+            o = get32msb(bufC, preBuff + 18) & flood_res->bier[1];  \
+            put32msb(bufC, preBuff + 18, o);                    \
+            p |= o;                                             \
+            o = get32msb(bufC, preBuff + 22) & flood_res->bier[2];  \
+            put32msb(bufC, preBuff + 22, o);                    \
+            p |= o;                                             \
+            o = get32msb(bufC, preBuff + 26) & flood_res->bier[3];  \
+            put32msb(bufC, preBuff + 26, o);                    \
+            p |= o;                                             \
+            o = get32msb(bufC, preBuff + 30) & flood_res->bier[4];  \
+            put32msb(bufC, preBuff + 30, o);                    \
+            p |= o;                                             \
+            o = get32msb(bufC, preBuff + 34) & flood_res->bier[5];  \
+            put32msb(bufC, preBuff + 34, o);                    \
+            p |= o;                                             \
+            o = get32msb(bufC, preBuff + 38) & flood_res->bier[6];  \
+            put32msb(bufC, preBuff + 38, o);                    \
+            p |= o;                                             \
+            o = get32msb(bufC, preBuff + 42) & flood_res->bier[7];  \
+            put32msb(bufC, preBuff + 42, o);                    \
+            p |= o;                                             \
+            if (o == 0) continue;                               \
+            neigh_ntry.id = flood_res->trg;                     \
+            index = table_find(&neigh_table, &neigh_ntry);      \
+            if (index < 0) continue;                            \
+            neigh_res = table_get(&neigh_table, index);         \
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);   \
+            continue;                                           \
         }                                                       \
     }
 
@@ -960,6 +998,14 @@ neigh_tx:
         case 7: // dup
             doFlood(mpls_res->flood);
             if (mpls_res->swap != 0) goto mpls_rou;
+            if (tmp < 0) return;
+            prt2 = prt = tmp;
+            bufS = tmp2;
+            memmove(&bufD[preBuff], &bufC[preBuff], bufS);
+            goto ether_rx;
+        case 8: // bier
+            doFlood(mpls_res->flood);
+/// check local
             if (tmp < 0) return;
             prt2 = prt = tmp;
             bufS = tmp2;
