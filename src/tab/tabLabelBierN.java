@@ -149,12 +149,19 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
         return o1.hop.compare(o1.hop, o2.hop);
     }
 
+    /**
+     * dump bits
+     *
+     * @param full interested bits
+     * @param shr shift value
+     * @return dump
+     */
+    public String dumpBits(byte[] full, int shr) {
+        return bits.byteDump(getAndShr(full, shr), 0, -1);
+    }
+
     public String toString() {
-        String a = "";
-        for (int i = ned.size() - 1; i >= 0; i--) {
-            a += bits.toHexB(ned.get(i));
-        }
-        return hop + " " + ifc + " lab=" + lab + " len=" + (ned.size() * 8) + " bit=" + a;
+        return hop + " " + ifc + " " + lab;
     }
 
 }

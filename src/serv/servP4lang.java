@@ -52,6 +52,8 @@ import tab.tabAceslstN;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
+import tab.tabLabelBier;
+import tab.tabLabelBierN;
 import tab.tabLabelDup;
 import tab.tabLabelNtry;
 import tab.tabListing;
@@ -1924,6 +1926,95 @@ class servP4langConn implements Runnable {
         return i;
     }
 
+    private static String doLab5(tabLabelBierN ntry, byte[] full, int sis) {
+        byte[] res = ntry.getAndShr(full, sis);
+        if (res == null) {
+            return null;
+        }
+        if (res.length < 1) {
+            return null;
+        }
+        String a = "";
+        for (int i = 0; i < res.length; i += 4) {
+            a += " " + bits.msbGetD(res, i);
+        }
+        return a;
+    }
+
+    private void doLab4(ipFwd fwd, tabLabelNtry need, tabLabelNtry done, boolean bef) {
+        if (done.bier == null) {
+            done.bier = new tabLabelBier(0, 0);
+        }
+        servP4langVrf vrf = findVrf(fwd);
+        if (vrf == null) {
+            return;
+        }
+        int gid = need.getHashW();
+        int si = need.label - need.bier.base;
+        int bits = tabLabelBier.bsl2num(need.bier.bsl);
+        if (bits != 256) {
+            return;
+        }
+        int sis = bits * si;
+        byte[] ful = tabLabelBier.bsl2msk(need.bier.bsl);
+        int now = 0;
+        for (int i = 0; i < done.bier.peers.size(); i++) {
+            tabLabelBierN ntry = done.bier.peers.get(i);
+            if (need.bier.peers.find(ntry) != null) {
+                continue;
+            }
+            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            if (hop.mac == null) {
+                continue;
+            }
+            String a = doLab5(ntry, ful, sis);
+            if (a == null) {
+                continue;
+            }
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
+        }
+        String act;
+        for (int i = 0; i < need.bier.peers.size(); i++) {
+            tabLabelBierN ntry = need.bier.peers.get(i);
+            if (done.bier.peers.find(ntry) != null) {
+                act = "mod";
+            } else {
+                act = "add";
+            }
+            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            if (hop.mac == null) {
+                continue;
+            }
+            String a = doLab5(ntry, ful, sis);
+            if (a == null) {
+                continue;
+            }
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
+            now++;
+        }
+        if (bef) {
+            act = "mod";
+            if (now < 1) {
+                act = "del";
+            }
+        } else {
+            act = "add";
+        }
+        String a = doLab5(need.bier.getIdxMask(), ful, sis);
+        if (a == null) {
+            a = " 0 0 0 0 0 0 0 0";
+        }
+        lower.sendLine("bierlabloc" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + a);
+    }
+
     private void doLab3(ipFwd fwd, tabLabelNtry need, tabLabelNtry done, boolean bef) {
         if (done.duplicate == null) {
             done.duplicate = new tabGen<tabLabelDup>();
@@ -1987,18 +2078,16 @@ class servP4langConn implements Runnable {
             return;
         }
         labels.del(ntry);
+        if (ntry.bier != null) {
+            tabLabelNtry empty = new tabLabelNtry(ntry.label);
+            empty.bier = new tabLabelBier(0, 0);
+            doLab4(ntry.forwarder, empty, ntry, true);
+            return;
+        }
         if (ntry.duplicate != null) {
             tabLabelNtry empty = new tabLabelNtry(ntry.label);
             empty.duplicate = new tabGen<tabLabelDup>();
             doLab3(ntry.forwarder, empty, ntry, true);
-            return;
-        }
-        if (ntry.bier != null) {
-            servP4langVrf vrf = findVrf(ntry.forwarder);
-            if (vrf == null) {
-                return;
-            }
-            lower.sendLine("cpulabel_del " + ntry.label);
             return;
         }
         if (ntry.nextHop == null) {
@@ -2045,6 +2134,22 @@ class servP4langConn implements Runnable {
         if (ntry.pweIfc != null) {
             return;
         }
+        if (ntry.bier != null) {
+            tabLabelNtry old = labels.find(ntry);
+            boolean bef;
+            if (old != null) {
+                if (!old.differs(ntry)) {
+                    return;
+                }
+                bef = true;
+            } else {
+                old = new tabLabelNtry(ntry.label);
+                bef = false;
+            }
+            labels.put(ntry);
+            doLab4(ntry.forwarder, ntry, old, bef);
+            return;
+        }
         if (ntry.duplicate != null) {
             tabLabelNtry old = labels.find(ntry);
             boolean bef;
@@ -2059,23 +2164,6 @@ class servP4langConn implements Runnable {
             }
             labels.put(ntry);
             doLab3(ntry.forwarder, ntry, old, bef);
-            return;
-        }
-        if (ntry.bier != null) {
-            servP4langVrf vrf = findVrf(ntry.forwarder);
-            if (vrf == null) {
-                return;
-            }
-            tabLabelNtry old = labels.find(ntry);
-            String act = "add";
-            if (old != null) {
-                if (!old.differs(ntry)) {
-                    return;
-                }
-                act = "mod";
-            }
-            labels.put(ntry);
-            lower.sendLine("cpulabel_" + act + " " + ntry.label);
             return;
         }
         if (ntry.nextHop == null) {

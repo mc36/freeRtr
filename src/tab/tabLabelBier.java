@@ -1,5 +1,6 @@
 package tab;
 
+import addr.addrIP;
 import java.util.ArrayList;
 import java.util.List;
 import util.bits;
@@ -57,7 +58,7 @@ public class tabLabelBier {
         n.idx = idx;
         n.idx2 = idx2;
         for (int i = 0; i < peers.size(); i++) {
-            peers.add(peers.get(i).copyBytes());
+            n.peers.add(peers.get(i).copyBytes());
         }
         return n;
     }
@@ -88,7 +89,7 @@ public class tabLabelBier {
             return true;
         }
         for (int i = 0; i < peers.size(); i++) {
-            if (peers.get(i).differs(o.peers.get(idx))) {
+            if (peers.get(i).differs(o.peers.get(i))) {
                 return true;
             }
         }
@@ -193,18 +194,44 @@ public class tabLabelBier {
     }
 
     /**
+     * get mask for index
+     *
+     * @return mask
+     */
+    public tabLabelBierN getIdxMask() {
+        tabLabelBierN n = new tabLabelBierN(null, new addrIP(), 0);
+        if (idx > 0) {
+            n.setBit(idx - 1);
+        }
+        if (idx2 > 0) {
+            n.setBit(idx2 - 1);
+        }
+        return n;
+    }
+
+    /**
      * dump this entry
      *
+     * @param prnt parent entry
      * @return dump
      */
-    public List<String> getShow() {
+    public List<String> getShow(tabLabelNtry prnt) {
+        int bits = bsl2num(bsl);
+        int si = prnt.label - base;
+        int sis = bits * si;
         List<String> lst = new ArrayList<String>();
         lst.add("bier base|" + base);
-        lst.add("bier bsl|" + bsl + "-" + bsl2num(bsl));
+        lst.add("bier bsl|" + bsl + "-" + bits);
+        lst.add("bier si|" + si);
+        lst.add("bier sis|" + sis);
         lst.add("bier idx|" + idx);
         lst.add("bier idx2|" + idx2);
+        tabLabelBierN ntry = getIdxMask();
+        byte[] full = bsl2msk(bsl);
+        lst.add("bier local|" + ntry.dumpBits(full, sis));
         for (int i = 0; i < peers.size(); i++) {
-            lst.add("bier peer|" + peers.get(i));
+            ntry = peers.get(i);
+            lst.add("bier peer|" + ntry.hop + " " + ntry.ifc + " lab=" + ntry.lab + " " + ntry.dumpBits(full, sis));
         }
         return lst;
     }

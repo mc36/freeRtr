@@ -144,7 +144,9 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
                 n.duplicate.add(new tabLabelDup(ntry.ifc, ntry.hop, ntry.lab));
             }
         }
-        n.bier = bier;
+        if (bier != null) {
+            n.bier = bier.copyBytes();
+        }
         n.needLocal = needLocal;
         n.cntr = cntr;
         n.pweIfc = pweIfc;
@@ -207,8 +209,17 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
                 }
             }
         }
-        if (bier != o.bier) {
-            return true;
+        if (bier == null) {
+            if (o.bier != null) {
+                return true;
+            }
+        } else {
+            if (o.bier == null) {
+                return true;
+            }
+            if (bier.differs(o.bier)) {
+                return true;
+            }
         }
         if (needLocal != o.needLocal) {
             return true;
@@ -331,7 +342,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
             }
         }
         if (bier != null) {
-            List<String> l = bier.getShow();
+            List<String> l = bier.getShow(this);
             for (int i = 0; i < l.size(); i++) {
                 lst.add(l.get(i));
             }
