@@ -9720,3 +9720,6 @@ qc pass: p4lang: mldp bundle core
 qc pass: p4lang: mldp bundle vlan core
 qc pass: p4lang: hairpin mldp core
 qc pass: p4lang: hairpin vlan mldp core
+---------------------------------- 2021-02-05 06:28:52
+qc pass: p4lang: bier egress edge
+qc pass: p4lang: bier vlan egress edge
