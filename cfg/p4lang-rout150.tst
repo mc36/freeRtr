@@ -1,4 +1,4 @@
-description p4lang: mldp core and egress edge
+description p4lang: mldp egress edge
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -40,11 +40,8 @@ int sdn1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
- mpls ena
- mpls ldp4
- ipv4 multi mldp
- mpls ldp6
- ipv6 multi mldp
+ ipv4 multi static 232.2.2.2 2.2.2.106
+ ipv6 multi static ff06::1 4321::106
  exit
 int sdn2
  vrf for v1
@@ -66,6 +63,7 @@ int sdn4
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
+ ipv6 ena
  ipv6 ena
  mpls ena
  mpls ldp4
@@ -126,12 +124,6 @@ int bvi1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
- ipv6 ena
- mpls ena
- mpls ldp4
- ipv4 multi mldp
- mpls ldp6
- ipv6 multi mldp
  exit
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
