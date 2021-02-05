@@ -1710,6 +1710,46 @@ int doOneCommand(unsigned char* buf) {
         for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
         return 0;
     }
+    if (strcmp(arg[0], "mbierroute4") == 0) {
+        mroute4_ntry.vrf = atoi(arg[2]);
+        inet_pton(AF_INET, arg[4], buf2);
+        mroute4_ntry.grp = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[5], buf2);
+        mroute4_ntry.src = get32msb(buf2, 0);
+        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute4_res->ingr = atoi(arg[6]);
+        flood_ntry.trg = atoi(arg[8]);
+        flood_ntry.lab = atoi(arg[9]);
+        flood_ntry.command = 4;
+        flood_ntry.src = atoi(arg[11]);
+        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[12+i]);
+        if (del == 0) table_del(&mroute4_res->flood, &flood_ntry);
+        else table_add(&mroute4_res->flood, &flood_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "mbierroute6") == 0) {
+        mroute6_ntry.vrf = atoi(arg[2]);
+        inet_pton(AF_INET6, arg[4], buf2);
+        mroute6_ntry.grp1 = get32msb(buf2, 0);
+        mroute6_ntry.grp2 = get32msb(buf2, 4);
+        mroute6_ntry.grp3 = get32msb(buf2, 8);
+        mroute6_ntry.grp4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[5], buf2);
+        mroute6_ntry.src1 = get32msb(buf2, 0);
+        mroute6_ntry.src2 = get32msb(buf2, 4);
+        mroute6_ntry.src3 = get32msb(buf2, 8);
+        mroute6_ntry.src4 = get32msb(buf2, 12);
+        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute6_res->ingr = atoi(arg[6]);
+        flood_ntry.trg = atoi(arg[8]);
+        flood_ntry.lab = atoi(arg[9]);
+        flood_ntry.command = 4;
+        flood_ntry.src = atoi(arg[11]);
+        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[12+i]);
+        if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
+        else table_add(&mroute6_res->flood, &flood_ntry);
+        return 0;
+    }
     return 0;
 }
 

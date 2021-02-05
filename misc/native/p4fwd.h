@@ -787,7 +787,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             neigh_res = table_get(&neigh_table, index);
             tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);
             break;
-        case 3: // bier
+        case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
             tmp2 = bufS - bufP + preBuff + 6;
             tmpL = label | (flood_res->lab << 12);
@@ -798,6 +798,43 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             int p;
             bierAnd(bufC, preBuff + 14, flood_res->bier, o, p);
             if (p == 0) continue;
+            neigh_ntry.id = flood_res->trg;
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) continue;
+            neigh_res = table_get(&neigh_table, index);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE);
+            break;
+        case 4: // bier set
+            tmpE = ETHERTYPE_MPLS_UCAST;
+            tmp2 = bufS - bufP + preBuff + 46;
+            tmpL = label | (flood_res->lab << 12);
+            put16msb(bufC, preBuff, tmpE);
+            put32msb(bufC, preBuff + 2, tmpL);
+            bufC[preBuff + 6] = 0x50; // ver
+            bufC[preBuff + 7] = 0x30; // bsl
+            bufC[preBuff + 8] = 0; // entropy
+            bufC[preBuff + 9] = 0; // entropy
+            bufC[preBuff + 10] = 0; // oam
+            switch (ethtyp) {
+            case ETHERTYPE_IPV4:
+                bufC[preBuff + 11] = 4; // proto
+                break;
+            case ETHERTYPE_IPV6:
+                bufC[preBuff + 11] = 6; // proto
+                break;
+            default:
+                continue;
+            }
+            put16msb(bufC, preBuff + 12, flood_res->src); // bfir
+            put32msb(bufC, preBuff + 14, flood_res->bier[0]);
+            put32msb(bufC, preBuff + 18, flood_res->bier[1]);
+            put32msb(bufC, preBuff + 22, flood_res->bier[2]);
+            put32msb(bufC, preBuff + 26, flood_res->bier[3]);
+            put32msb(bufC, preBuff + 30, flood_res->bier[4]);
+            put32msb(bufC, preBuff + 34, flood_res->bier[5]);
+            put32msb(bufC, preBuff + 38, flood_res->bier[6]);
+            put32msb(bufC, preBuff + 42, flood_res->bier[7]);
+            memmove(&bufC[preBuff + 46], &bufD[bufP], tmp2);
             neigh_ntry.id = flood_res->trg;
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
