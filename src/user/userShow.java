@@ -3578,10 +3578,10 @@ public class userShow {
                 s += " local";
             }
             if (grp.label != null) {
-                s += " label";
+                s += " label=" + grp.label.listPeers();
             }
             if (grp.bier != null) {
-                s += " bier";
+                s += " bier=" + grp.bier.listPeers();
             }
             l.add(grp.source + "|" + grp.group + "|" + grp.iface + "|" + grp.upstream + "|" + s);
         }

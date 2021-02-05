@@ -19,7 +19,6 @@ import util.bits;
  */
 public class ipFwdBier {
 
-
     /**
      * bfr id
      */
@@ -46,7 +45,6 @@ public class ipFwdBier {
         fwd = f;
         srcId = id;
     }
-
 
     /**
      * send packet
@@ -98,6 +96,19 @@ public class ipFwdBier {
                 fwd.mplsTxPack(trg.hop, pck, false);
             }
         }
+    }
+
+    /**
+     * list peers
+     *
+     * @return list
+     */
+    public String listPeers() {
+        String a = "";
+        for (int i = 0; i < peers.size(); i++) {
+            a += " " + peers.get(i);
+        }
+        return a.trim();
     }
 
     /**
@@ -209,6 +220,10 @@ class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
 
     public int compare(ipFwdBierPeer o1, ipFwdBierPeer o2) {
         return o1.addr.compare(o1.addr, o2.addr);
+    }
+
+    public String toString() {
+        return "" + addr;
     }
 
 }

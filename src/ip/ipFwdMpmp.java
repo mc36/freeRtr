@@ -342,6 +342,23 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
     }
 
     /**
+     * list peers
+     *
+     * @return list
+     */
+    public String listPeers() {
+        String a = "";
+        if (local) {
+            a = " local";
+        }
+        for (int i = 0; i < neighs.size(); i++) {
+            ipFwdMpNe ntry = neighs.get(i);
+            a += " " + ntry.labelL + "/" + ntry.addr + "/" + ntry.labelR;
+        }
+        return a.trim();
+    }
+
+    /**
      * dump this entry
      *
      * @param peer just one peer
@@ -351,14 +368,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         String a = "";
         String b = "";
         if (peer == null) {
-            a = "|";
-            if (local) {
-                a = "|local";
-            }
-            for (int i = 0; i < neighs.size(); i++) {
-                ipFwdMpNe ntry = neighs.get(i);
-                a += " " + ntry.labelL + "/" + ntry.addr + "/" + ntry.labelR;
-            }
+            a = "|" + listPeers();
         } else {
             b = "|n/a";
             ipFwdMpNe ntry = new ipFwdMpNe(peer);
