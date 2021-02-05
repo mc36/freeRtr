@@ -9715,3 +9715,8 @@ qc pass: p4lang: bier bundle core
 qc pass: p4lang: bier bundle vlan core
 qc pass: p4lang: hairpin bier core
 qc pass: p4lang: hairpin vlan bier core
+---------------------------------- 2021-02-05 04:16:32
+qc pass: p4lang: mldp bundle core
+qc pass: p4lang: mldp bundle vlan core
+qc pass: p4lang: hairpin mldp core
+qc pass: p4lang: hairpin vlan mldp core
