@@ -2,9 +2,7 @@ package ip;
 
 import addr.addrIP;
 import ifc.ifcBridge;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabelBier;
@@ -29,11 +27,15 @@ public class ipFwdBier {
      */
     public final ipFwd fwd;
 
-    private tabGen<ipFwdBierPeer> peers = new tabGen<ipFwdBierPeer>();
+    /**
+     * list of peer
+     */
+    public tabGen<ipFwdBierPeer> peers = new tabGen<ipFwdBierPeer>();
 
-    private tabGen<tabLabelBierN> fwdDups = new tabGen<tabLabelBierN>();
-
-    private List<byte[]> fwdMsks = new ArrayList<byte[]>();
+    /**
+     * current forwarders
+     */
+    public tabGen<tabLabelBierN> fwds = new tabGen<tabLabelBierN>();
 
     /**
      * create new instance
@@ -44,6 +46,51 @@ public class ipFwdBier {
     public ipFwdBier(ipFwd f, int id) {
         fwd = f;
         srcId = id;
+    }
+
+    /**
+     * copy bytes
+     *
+     * @return copy of record
+     */
+    public ipFwdBier copyBytes() {
+        ipFwdBier n = new ipFwdBier(fwd, srcId);
+        for (int i = 0; i < peers.size(); i++) {
+            n.peers.add(new ipFwdBierPeer(peers.get(i).addr));
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            n.fwds.add(fwds.get(i).copyBytes());
+        }
+        return n;
+    }
+
+    /**
+     * compare this entry
+     *
+     * @param o other
+     * @return false if equals, true if differs
+     */
+    public boolean differs(ipFwdBier o) {
+        if (o == null) {
+            return true;
+        }
+        if (peers.size() != o.peers.size()) {
+            return true;
+        }
+        for (int i = 0; i < peers.size(); i++) {
+            if (o.peers.find(peers.get(i)) == null) {
+                return true;
+            }
+        }
+        if (fwds.size() != o.fwds.size()) {
+            return true;
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            if (fwds.get(i).differs(o.fwds.get(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -73,13 +120,14 @@ public class ipFwdBier {
         orig.IPprt = prt;
         orig.BIERid = srcId;
         orig.BIERoam = 0;
-        tabGen<tabLabelBierN> trgs = fwdDups;
-        List<byte[]> msks = fwdMsks;
-        for (int i = 0; i < trgs.size(); i++) {
-            tabLabelBierN trg = trgs.get(i);
+        for (int i = 0; i < fwds.size(); i++) {
+            tabLabelBierN trg = fwds.get(i);
+            if (trg == null) {
+                continue;
+            }
             int sft = tabLabelBier.bsl2num(trg.len);
             for (int o = 0;; o++) {
-                byte[] ned = trg.getAndShr(msks.get(i), sft * o);
+                byte[] ned = trg.getAndShr(tabLabelBier.bsl2msk(trg.len), sft * o);
                 if (ned == null) {
                     break;
                 }
@@ -121,8 +169,7 @@ public class ipFwdBier {
         if (exp > 0) {
             exp += bits.getTime();
         }
-        ipFwdBierPeer ntry = new ipFwdBierPeer();
-        ntry.addr = adr.copyBytes();
+        ipFwdBierPeer ntry = new ipFwdBierPeer(adr);
         ipFwdBierPeer old = peers.add(ntry);
         if (old != null) {
             ntry = old;
@@ -136,8 +183,7 @@ public class ipFwdBier {
      * @param adr address
      */
     public void delPeer(addrIP adr) {
-        ipFwdBierPeer ntry = new ipFwdBierPeer();
-        ntry.addr = adr;
+        ipFwdBierPeer ntry = new ipFwdBierPeer(adr);
         ntry = peers.del(ntry);
         if (ntry == null) {
             return;
@@ -178,13 +224,7 @@ public class ipFwdBier {
             ntry.len = rou.best.bierHdr;
             ntry.setBit(rou.best.bierIdx - 1);
         }
-        List<byte[]> msks = new ArrayList<byte[]>();
-        for (int i = 0; i < trgs.size(); i++) {
-            tabLabelBierN ntry = trgs.get(i);
-            msks.add(tabLabelBier.bsl2msk(ntry.len));
-        }
-        fwdDups = trgs;
-        fwdMsks = msks;
+        fwds = trgs;
     }
 
     /**
@@ -220,6 +260,10 @@ class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
 
     public int compare(ipFwdBierPeer o1, ipFwdBierPeer o2) {
         return o1.addr.compare(o1.addr, o2.addr);
+    }
+
+    public ipFwdBierPeer(addrIP adr) {
+        addr = adr.copyBytes();
     }
 
     public String toString() {

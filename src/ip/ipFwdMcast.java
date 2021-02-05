@@ -116,7 +116,9 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         if (label != null) {
             res.label = label.copyBytes();
         }
-        res.bier = bier;
+        if (bier != null) {
+            res.bier = bier.copyBytes();
+        }
         res.upsVrf = upsVrf;
         if (upstream != null) {
             res.upstream = upstream.copyBytes();
@@ -155,6 +157,15 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
             }
         } else {
             if (label.differs(o.label)) {
+                return true;
+            }
+        }
+        if (bier == null) {
+            if (o.bier != null) {
+                return true;
+            }
+        } else {
+            if (bier.differs(o.bier)) {
                 return true;
             }
         }

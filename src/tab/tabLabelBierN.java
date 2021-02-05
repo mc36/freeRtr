@@ -59,6 +59,7 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
      */
     public tabLabelBierN copyBytes() {
         tabLabelBierN n = new tabLabelBierN(ifc, hop, lab);
+        n.len = len;
         for (int i = 0; i < ned.size(); i++) {
             n.ned.add(ned.get(i));
         }
@@ -79,6 +80,9 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
             return true;
         }
         if (lab != o.lab) {
+            return true;
+        }
+        if (len != o.len) {
             return true;
         }
         if (hop.compare(hop, o.hop) != 0) {

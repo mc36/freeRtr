@@ -25,6 +25,7 @@ import ifc.ifcNull;
 import ifc.ifcP2pOEservSess;
 import ifc.ifcUp;
 import ip.ipFwd;
+import ip.ipFwdBier;
 import ip.ipFwdIface;
 import ip.ipFwdMcast;
 import ip.ipFwdMpNe;
@@ -3626,24 +3627,74 @@ class servP4langConn implements Runnable {
         tabGen<ipFwdIface> dflood = done.flood;
         ipFwdMpmp nlabel = need.label;
         ipFwdMpmp dlabel = done.label;
+        ipFwdBier nbier = need.bier;
+        ipFwdBier dbier = done.bier;
         if (nlabel == null) {
             nlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
         }
         if (dlabel == null) {
             dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
         }
+        if (nbier == null) {
+            nbier = new ipFwdBier(null, 0);
+        }
+        if (dbier == null) {
+            dbier = new ipFwdBier(null, 0);
+        }
         int now = 0;
         if (need.local) {
             nflood = new tabGen<ipFwdIface>();
             nlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
+            nbier = new ipFwdBier(null, 0);
             now++;
         }
         if (done.local) {
             dflood = new tabGen<ipFwdIface>();
             dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
+            dbier = new ipFwdBier(null, 0);
         }
         addrMac mac = need.group.conv2multiMac();
         String act;
+        for (int i = 0; i < dbier.fwds.size(); i++) {
+            tabLabelBierN ntry = dbier.fwds.get(i);
+            if (nbier.fwds.find(ntry) != null) {
+                continue;
+            }
+            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            if (tabLabelBier.bsl2num(ntry.len) != 256) {
+                continue;
+            }
+            String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.len), 0);
+            if (a == null) {
+                continue;
+            }
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + a);
+        }
+        for (int i = 0; i < nbier.fwds.size(); i++) {
+            tabLabelBierN ntry = nbier.fwds.get(i);
+            if (tabLabelBier.bsl2num(ntry.len) != 256) {
+                continue;
+            }
+            if (dbier.fwds.find(ntry) != null) {
+                act = "mod";
+            } else {
+                act = "add";
+            }
+            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.len), 0);
+            if (a == null) {
+                continue;
+            }
+            servP4langIfc ifc = hop.getVia();
+            lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + a);
+        }
         for (int i = 0; i < dlabel.neighs.size(); i++) {
             ipFwdMpNe ntry = dlabel.neighs.get(i);
             if (ntry.labelR < 0) {
