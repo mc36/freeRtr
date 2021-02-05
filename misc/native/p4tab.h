@@ -30,6 +30,7 @@ struct mpls_entry {
     int vrf;
     int ver;
     int swap;
+    int bier[8];
     struct table_head flood;
     long pack;
     long byte;

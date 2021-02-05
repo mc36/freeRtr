@@ -1690,6 +1690,26 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&mpls_res->flood, &flood_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "bierlabloc4") == 0) {
+        mpls_ntry.vrf = atoi(arg[2]);
+        mpls_ntry.label = atoi(arg[4]);
+        mpls_ntry.ver = 4;
+        mpls_ntry.command = 8;
+        mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mpls_res->command = 8;
+        for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
+        return 0;
+    }
+    if (strcmp(arg[0], "bierlabloc6") == 0) {
+        mpls_ntry.vrf = atoi(arg[2]);
+        mpls_ntry.label = atoi(arg[4]);
+        mpls_ntry.ver = 6;
+        mpls_ntry.command = 8;
+        mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mpls_res->command = 8;
+        for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
+        return 0;
+    }
     return 0;
 }
 

@@ -246,42 +246,42 @@ int masks[] = {
 
 
 
-#define putIpv4header(bufP, bufS, ethtyp, proto, sip, dip)                  \
-    bufP -= 20;                                                             \
-    put16msb(bufD, bufP + 0, 0x4500);                                       \
-    put16msb(bufD, bufP + 2, bufS - bufP + preBuff);                        \
-    ipids++;                                                                \
-    put16msb(bufD, bufP + 4, ipids);                                        \
-    put16msb(bufD, bufP + 6, 0);                                            \
-    bufD[bufP + 8] = 0xff;                                                  \
-    bufD[bufP + 9] = proto;                                                 \
-    put16msb(bufD, bufP + 10, 0);                                           \
-    put32msb(bufD, bufP + 12, sip);                                         \
-    put32msb(bufD, bufP + 16, dip);                                         \
-    put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));       \
-    ethtyp = ETHERTYPE_IPV4;                                                \
-    bufP -= 2;                                                              \
+#define putIpv4header(bufP, bufS, ethtyp, proto, sip, dip)      \
+    bufP -= 20;                                                 \
+    put16msb(bufD, bufP + 0, 0x4500);                           \
+    put16msb(bufD, bufP + 2, bufS - bufP + preBuff);            \
+    ipids++;                                                    \
+    put16msb(bufD, bufP + 4, ipids);                            \
+    put16msb(bufD, bufP + 6, 0);                                \
+    bufD[bufP + 8] = 0xff;                                      \
+    bufD[bufP + 9] = proto;                                     \
+    put16msb(bufD, bufP + 10, 0);                               \
+    put32msb(bufD, bufP + 12, sip);                             \
+    put32msb(bufD, bufP + 16, dip);                             \
+    put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));   \
+    ethtyp = ETHERTYPE_IPV4;                                    \
+    bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);
 
 
 
 #define putIpv6header(bufP, bufS, ethtyp, proto, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)    \
-    bufP -= 40;                                                             \
-    put16msb(bufD, bufP + 0, 0x6000);                                       \
-    put16msb(bufD, bufP + 2, 0);                                            \
-    put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40);                   \
-    bufD[bufP + 6] = proto;                                                 \
-    bufD[bufP + 7] = 0xff;                                                  \
-    put32msb(bufD, bufP + 8, sip1);                                         \
-    put32msb(bufD, bufP + 12, sip2);                                        \
-    put32msb(bufD, bufP + 16, sip3);                                        \
-    put32msb(bufD, bufP + 20, sip4);                                        \
-    put32msb(bufD, bufP + 24, dip1);                                        \
-    put32msb(bufD, bufP + 28, dip2);                                        \
-    put32msb(bufD, bufP + 32, dip3);                                        \
-    put32msb(bufD, bufP + 36, dip4);                                        \
-    ethtyp = ETHERTYPE_IPV6;                                                \
-    bufP -= 2;                                                              \
+    bufP -= 40;                                                 \
+    put16msb(bufD, bufP + 0, 0x6000);                           \
+    put16msb(bufD, bufP + 2, 0);                                \
+    put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40);       \
+    bufD[bufP + 6] = proto;                                     \
+    bufD[bufP + 7] = 0xff;                                      \
+    put32msb(bufD, bufP + 8, sip1);                             \
+    put32msb(bufD, bufP + 12, sip2);                            \
+    put32msb(bufD, bufP + 16, sip3);                            \
+    put32msb(bufD, bufP + 20, sip4);                            \
+    put32msb(bufD, bufP + 24, dip1);                            \
+    put32msb(bufD, bufP + 28, dip2);                            \
+    put32msb(bufD, bufP + 32, dip3);                            \
+    put32msb(bufD, bufP + 36, dip4);                            \
+    ethtyp = ETHERTYPE_IPV6;                                    \
+    bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);
 
 
@@ -379,14 +379,14 @@ int masks[] = {
 
 
 #define putUdpHeader(bufP, bufS, sprt, dprt, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)    \
-    bufP -= 8;                                                              \
-    put16msb(bufD, bufP + 0, sprt);                                         \
-    put16msb(bufD, bufP + 2, dprt);                                         \
-    put16msb(bufD, bufP + 4, bufS - bufP + preBuff);                        \
-    put16msb(bufD, bufP + 6, 0);                                            \
+    bufP -= 8;                                                  \
+    put16msb(bufD, bufP + 0, sprt);                             \
+    put16msb(bufD, bufP + 2, dprt);                             \
+    put16msb(bufD, bufP + 4, bufS - bufP + preBuff);            \
+    put16msb(bufD, bufP + 6, 0);                                \
     putPseudoSum(bufH, 16, 17, bufS - bufP + preBuff, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);      \
-    tmp = calcIPsum(bufH, 16, 36, 0);                                       \
-    tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);                \
+    tmp = calcIPsum(bufH, 16, 36, 0);                           \
+    tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);    \
     put16lsb(bufD, bufP + 6, 0xffff - tmp);
 
 
@@ -724,6 +724,35 @@ drop:
 }
 
 
+
+#define bierAnd(bufC, bufP, bier, tmp, res)                         \
+    tmp = get32msb(bufC, bufP + 0) & bier[0];                       \
+    put32msb(bufC, bufP + 0, tmp);                                  \
+    res = tmp;                                                      \
+    tmp = get32msb(bufC, bufP + 4) & bier[1];                       \
+    put32msb(bufC, bufP + 4, tmp);                                  \
+    res |= tmp;                                                     \
+    tmp = get32msb(bufC, bufP + 8) & bier[2];                       \
+    put32msb(bufC, bufP + 8, tmp);                                  \
+    res |= tmp;                                                     \
+    tmp = get32msb(bufC, bufP + 12) & bier[3];                      \
+    put32msb(bufC, bufP + 12, tmp);                                 \
+    res |= tmp;                                                     \
+    tmp = get32msb(bufC, bufP + 16) & bier[4];                      \
+    put32msb(bufC, bufP + 16, tmp);                                 \
+    res |= tmp;                                                     \
+    tmp = get32msb(bufC, bufP + 20) & bier[5];                      \
+    put32msb(bufC, bufP + 20, tmp);                                 \
+    res |= tmp;                                                     \
+    tmp = get32msb(bufC, bufP + 24) & bier[6];                      \
+    put32msb(bufC, bufP + 24, tmp);                                 \
+    res |= tmp;                                                     \
+    tmp = get32msb(bufC, bufP + 28) & bier[7];                      \
+    put32msb(bufC, bufP + 28, tmp);                                 \
+    res |= tmp;
+
+
+
 void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int label) {
     struct neigh_entry neigh_ntry;
     struct neigh_entry *neigh_res;
@@ -765,30 +794,9 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             put16msb(bufC, preBuff, tmpE);
             put32msb(bufC, preBuff + 2, tmpL);
             memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);
-            int o = get32msb(bufC, preBuff + 14) & flood_res->bier[0];
-            put32msb(bufC, preBuff + 14, o);
-            int p = o;
-            o = get32msb(bufC, preBuff + 18) & flood_res->bier[1];
-            put32msb(bufC, preBuff + 18, o);
-            p |= o;
-            o = get32msb(bufC, preBuff + 22) & flood_res->bier[2];
-            put32msb(bufC, preBuff + 22, o);
-            p |= o;
-            o = get32msb(bufC, preBuff + 26) & flood_res->bier[3];
-            put32msb(bufC, preBuff + 26, o);
-            p |= o;
-            o = get32msb(bufC, preBuff + 30) & flood_res->bier[4];
-            put32msb(bufC, preBuff + 30, o);
-            p |= o;
-            o = get32msb(bufC, preBuff + 34) & flood_res->bier[5];
-            put32msb(bufC, preBuff + 34, o);
-            p |= o;
-            o = get32msb(bufC, preBuff + 38) & flood_res->bier[6];
-            put32msb(bufC, preBuff + 38, o);
-            p |= o;
-            o = get32msb(bufC, preBuff + 42) & flood_res->bier[7];
-            put32msb(bufC, preBuff + 42, o);
-            p |= o;
+            int o;
+            int p;
+            bierAnd(bufC, preBuff + 14, flood_res->bier, o, p);
             if (p == 0) continue;
             neigh_ntry.id = flood_res->trg;
             index = table_find(&neigh_table, &neigh_ntry);
@@ -805,6 +813,22 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
     }
 }
 
+
+#define routeMpls()                                                 \
+    route4_ntry.vrf = mpls_res->vrf;                                \
+    route6_ntry.vrf = mpls_res->vrf;                                \
+    switch (mpls_res->ver) {                                        \
+    case 4:                                                         \
+        ethtyp = ETHERTYPE_IPV4;                                    \
+        goto ipv4_rx;                                               \
+    case 6:                                                         \
+        ethtyp = ETHERTYPE_IPV6;                                    \
+        goto ipv6_rx;                                               \
+    default:                                                        \
+        ethtyp = 0;                                                 \
+        break;                                                      \
+    }                                                               \
+    goto drop;
 
 
 
@@ -942,24 +966,11 @@ mpls_rx:
         switch (mpls_res->command) {
         case 1: // route
 mpls_rou:
-            route4_ntry.vrf = mpls_res->vrf;
-            route6_ntry.vrf = mpls_res->vrf;
             if ((label & 0x100) == 0) {
                 bufD[bufP + 3] = ttl + 1;
                 goto mpls_rx;
             }
-            switch (mpls_res->ver) {
-            case 4:
-                ethtyp = ETHERTYPE_IPV4;
-                goto ipv4_rx;
-            case 6:
-                ethtyp = ETHERTYPE_IPV6;
-                goto ipv6_rx;
-            default:
-                ethtyp = 0;
-                break;
-            }
-            goto drop;
+            routeMpls();
         case 2: // pop
             neigh_ntry.id = mpls_res->nexthop;
             if ((label & 0x100) == 0) {
@@ -1014,9 +1025,14 @@ neigh_tx:
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
+            if ((label & 0x100) == 0) goto drop;
+            if (bufD[bufP] != 0x50) goto drop;
             doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl);
-/// check local
-            return;
+            bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
+            if (tmp2 == 0) return;
+            bufP += 8;
+            bufP += 32;
+            routeMpls();
         default:
             return;
         }
