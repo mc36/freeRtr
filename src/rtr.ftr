@@ -1368,6 +1368,10 @@ qc pass: p4lang: hairpin bier core
 qc pass: p4lang: hairpin vlan bier core
 qc pass: p4lang: bier egress edge
 qc pass: p4lang: bier vlan egress edge
+qc pass: p4lang: bier ingress edge
+qc pass: p4lang: bier vlan ingress edge
+qc pass: p4lang: bier core and egress edge
+qc pass: p4lang: vlan bier core and egress edge
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
