@@ -1,1 +1,1 @@
-vlc -I dummy --sout '#rtp{access=udp,mux=ts,dst=232.2.3.2,port=1234,ttl=255}' file:///"$1"
+su mc36 -c "vlc -I dummy --sout \"#transcode{vcodec=none,acodec=mp3,ab=320,channels=2,samplerate=44100}:rtp{access=udp,mux=ts,dst=232.2.3.2,port=1234,ttl=255}\" \"file:///$1\""
