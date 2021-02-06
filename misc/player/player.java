@@ -65,6 +65,8 @@ public class player implements Runnable {
 
     private String srate = "44100";
 
+    private boolean headEnd = false;
+
     private int volMin = 0;
 
     private int volMax = 100;
@@ -133,95 +135,125 @@ public class player implements Runnable {
         return sng.file + "\"" + sng.title + s.substring(i, s.length());
     }
 
-    private synchronized void startPlay1() {
-        currSong = 0;
-        currTime = new Date().getTime();
-        currLyrc = new playerLyric();
-        currLyrc.add("dlna render");
-        try {
-            currProc.destroy();
-        } catch (Exception e) {
-        }
-        currProc = null;
+    private void runProc(String cmd[]) {
         try {
             Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[5];
-            cmd[0] = "gmediarender";
-            cmd[1] = "--gstout-audiosink=alsasink";
-            cmd[2] = "--gstout-videosink=appsink";
-            cmd[3] = "--friendly-name=" + urlF;
-            cmd[4] = "--uuid=00001234-1234-1234-" + rndSeed.nextInt();
-            currProc = rtm.exec(cmd);
+            Process prc = rtm.exec(cmd);
+            prc.waitFor();
         } catch (Exception e) {
         }
     }
 
-    private synchronized void startPlay2() {
-        currSong = 0;
-        currTime = new Date().getTime();
-        currLyrc = new playerLyric();
-        currLyrc.add("multicast receiver");
-        try {
-            currProc.destroy();
-        } catch (Exception e) {
-        }
-        currProc = null;
-        try {
-            Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[3];
-            cmd[0] = "sh";
-            cmd[1] = "-c";
-            cmd[2] = path + ".rcvr";
-            currProc = rtm.exec(cmd);
-        } catch (Exception e) {
-        }
+    private synchronized void stopProc(String s) {
+        String[] cmd = new String[3];
+        cmd[0] = "killall";
+        cmd[1] = "-9";
+        cmd[2] = s;
+        runProc(cmd);
     }
 
-    private synchronized void startPlay(String url) {
-        currSong = 0;
-        currTime = new Date().getTime();
-        currLyrc = new playerLyric();
-        currLyrc.add("downloading " + url);
-        try {
-            currProc.destroy();
-        } catch (Exception e) {
+    private synchronized void stopProc(long p) {
+        String[] cmd = new String[3];
+        cmd[0] = "kill";
+        cmd[1] = "-9";
+        cmd[2] = "" + p;
+        runProc(cmd);
+    }
+
+    private synchronized void replaceCurrProc(String[] cmd) {
+        if (currProc != null) {
+            long p = currProc.pid();
+            try {
+                currProc.destroy();
+            } catch (Exception e) {
+            }
+            stopProc(p);
         }
         currProc = null;
-        if (url.length() < 1) {
+        if (cmd == null) {
             return;
         }
         try {
             Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[3];
-            cmd[0] = "sh";
-            cmd[1] = "-c";
-            cmd[2] = "rm -f /tmp/player.*";
-            currProc = rtm.exec(cmd);
-            currProc.waitFor();
-            currProc = null;
-        } catch (Exception e) {
-        }
-        try {
-            Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[6];
-            cmd[0] = "youtube-dl";
-            cmd[1] = "--output";
-            cmd[2] = "/tmp/player.url";
-            cmd[3] = "--exec";
-            cmd[4] = "mplayer -ao alsa -vo none -srate " + srate + " {}";
-            cmd[5] = "" + url;
             currProc = rtm.exec(cmd);
         } catch (Exception e) {
         }
     }
 
-    private synchronized void startPlay(int ntry, String ss) {
+    private synchronized void stopFull() {
+        stopProc("gmediarender");
+        stopProc("mplayer");
+        stopProc("cvlc");
+        stopProc("vlc");
+        stopProc("youtube-dl");
+        stopProc("amixer");
+    }
+
+    private synchronized void setVolume(int vol) {
+        currVlme = vol;
+        int fvol = volMin + ((vol * (volMax - volMin)) / 100);
+        String[] cmd = new String[4];
+        cmd[0] = "amixer";
+        cmd[1] = "sset";
+        cmd[2] = mixer;
+        cmd[3] = fvol + "%";
+        runProc(cmd);
+    }
+
+    private synchronized void startPlayDlna() {
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("dlna receiver");
+        String[] cmd = new String[5];
+        cmd[0] = "gmediarender";
+        cmd[1] = "--gstout-audiosink=alsasink";
+        cmd[2] = "--gstout-videosink=appsink";
+        cmd[3] = "--friendly-name=" + urlF;
+        cmd[4] = "--uuid=00001234-1234-1234-" + rndSeed.nextInt();
+        replaceCurrProc(cmd);
+    }
+
+    private synchronized void startPlayRcvr() {
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("multicast receiver");
+        String[] cmd = new String[1];
+        cmd[0] = path + ".rcvr";
+        replaceCurrProc(cmd);
+    }
+
+    private synchronized void startPlayUrl(String url) {
+        if (url.length() < 1) {
+            return;
+        }
+        String[] cmd = new String[3];
+        cmd[0] = "sh";
+        cmd[1] = "-c";
+        cmd[2] = "rm -f /tmp/player.*";
+        runProc(cmd);
+        cmd = new String[6];
+        cmd[0] = "youtube-dl";
+        cmd[1] = "--output";
+        cmd[2] = "/tmp/player.url";
+        cmd[3] = "--exec";
+        cmd[4] = "mplayer -ao alsa -vo none -srate " + srate + " {}";
+        cmd[5] = "" + url;
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("downloading " + url);
+        replaceCurrProc(cmd);
+    }
+
+    private synchronized void startPlayNormal(int ntry, String ss) {
+        replaceCurrProc(null);
+        if (headEnd) {
+            stopFull();
+        }
         if ((currSong >= 0) && (prevSong != currSong)) {
             prevSong = currSong;
-        }
-        try {
-            currProc.destroy();
-        } catch (Exception e) {
         }
         for (;;) {
             if (!nextSong.remove(Integer.valueOf(ntry))) {
@@ -235,15 +267,18 @@ public class player implements Runnable {
             nextSong.add(rndSeed.nextInt(playlist.size()));
         }
         currSong = ntry;
-        currProc = null;
         currLyrc = null;
         currTime = 0;
         if (ntry < 0) {
             return;
         }
-        try {
-            Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[10];
+        String[] cmd;
+        if (headEnd) {
+            cmd = new String[2];
+            cmd[0] = path + ".strm";
+            cmd[1] = playlist.get(ntry).file;
+        } else {
+            cmd = new String[10];
             cmd[0] = "mplayer";
             cmd[1] = "-ao";
             cmd[2] = "alsa";
@@ -254,54 +289,14 @@ public class player implements Runnable {
             cmd[7] = "-ss";
             cmd[8] = ss;
             cmd[9] = playlist.get(ntry).file;
-            currProc = rtm.exec(cmd);
-            currSong = ntry;
-        } catch (Exception e) {
         }
+        replaceCurrProc(cmd);
         currTime = new Date().getTime() - (playerUtil.str2int(ss) * 1000);
         try {
             playerSong sng = playlist.get(currSong);
             currLyrc = playerUtil.readup(sng.lyrFile());
         } catch (Exception e) {
         }
-    }
-
-    private synchronized void setVolume(int vol) {
-        int fvol = volMin + ((vol * (volMax - volMin)) / 100);
-        try {
-            Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[4];
-            cmd[0] = "amixer";
-            cmd[1] = "sset";
-            cmd[2] = mixer;
-            cmd[3] = fvol + "%";
-            Process prc = rtm.exec(cmd);
-            prc.waitFor();
-            currVlme = vol;
-        } catch (Exception e) {
-        }
-    }
-
-    private synchronized void stopPlay(String s) {
-        try {
-            Runtime rtm = Runtime.getRuntime();
-            String[] cmd = new String[3];
-            cmd[0] = "killall";
-            cmd[1] = "-9";
-            cmd[2] = s;
-            Process prc = rtm.exec(cmd);
-            prc.waitFor();
-        } catch (Exception e) {
-        }
-    }
-
-    private synchronized void stopPlay() {
-        stopPlay("gmediarender");
-        stopPlay("mplayer");
-        stopPlay("cvlc");
-        stopPlay("vlc");
-        stopPlay("youtube-dl");
-        stopPlay("amixer");
     }
 
     /**
@@ -345,7 +340,7 @@ public class player implements Runnable {
         playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(0)));
         prelock = playlist;
         setVolume(volDef);
-        startPlay(-1, "0");
+        startPlayNormal(-1, "0");
         ready = true;
     }
 
@@ -369,7 +364,7 @@ public class player implements Runnable {
             if (currSong < 0) {
                 continue;
             }
-            startPlay(nextSong.get(0), "0");
+            startPlayNormal(nextSong.get(0), "0");
         }
     }
 
@@ -640,7 +635,7 @@ public class player implements Runnable {
             putMenu(buf);
             buf.write("as requested, rebooting for you".getBytes());
             staticPlayer = null;
-            startPlay(-1, "0");
+            startPlayNormal(-1, "0");
             return -1;
         }
         if (cmd.equals("seek")) {
@@ -650,7 +645,7 @@ public class player implements Runnable {
             if (i > 0) {
                 String a = "seek to " + song + " seconds.<br/><br/>";
                 buf.write(a.getBytes());
-                startPlay(currSong, song);
+                startPlayNormal(currSong, song);
             }
             int tim = (int) ((new Date().getTime() - currTime) / 1000);
             String a = "playing since " + tim + " seconds.<br/>";
@@ -800,9 +795,11 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
+            String a = "headend=" + headEnd + ", mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=mcast\">!multicast!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=receive\">!multicast receiver!</a><br/>";
+            buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=headend\">!multicast streamer!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
@@ -812,7 +809,7 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=nodlna\">!nodlna!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=fullstop\">!full stop!</a><br/>";
             buf.write(a.getBytes());
             a = "<br/><form action=\"" + urlR + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
             buf.write(a.getBytes());
@@ -823,15 +820,17 @@ public class player implements Runnable {
             putMenu(buf);
             String a = "<br/>downloading song, please wait.<br/>";
             buf.write(a.getBytes());
-            startPlay(song);
+            startPlayUrl(song);
             return -1;
         }
-        if (cmd.equals("nodlna")) {
+        if (cmd.equals("fullstop")) {
             putStart(buf, 5);
             putMenu(buf);
-            String a = "<br/>stopping dlna server.<br/>";
+            headEnd = false;
+            String a = "<br/>stopping everything.<br/>";
             buf.write(a.getBytes());
-            stopPlay();
+            startPlayNormal(-1, "0");
+            stopFull();
             return -1;
         }
         if (cmd.equals("dlna")) {
@@ -839,15 +838,23 @@ public class player implements Runnable {
             putMenu(buf);
             String a = "<br/>starting dlna server.<br/>";
             buf.write(a.getBytes());
-            startPlay1();
+            startPlayDlna();
             return -1;
         }
-        if (cmd.equals("mcast")) {
+        if (cmd.equals("headend")) {
+            headEnd = !headEnd;
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>toggled multicast streamer.<br/>";
+            buf.write(a.getBytes());
+            return -1;
+        }
+        if (cmd.equals("receive")) {
             putStart(buf, 5);
             putMenu(buf);
             String a = "<br/>starting multicast receiver.<br/>";
             buf.write(a.getBytes());
-            startPlay2();
+            startPlayRcvr();
             return -1;
         }
         if (cmd.equals("download")) {
@@ -865,35 +872,35 @@ public class player implements Runnable {
             return -2;
         }
         if (cmd.equals("stop")) {
-            startPlay(-1, "0");
+            startPlayNormal(-1, "0");
             putStart(buf, 1);
             putMenu(buf);
             buf.write("selected no song<br/>".getBytes());
             return -1;
         }
         if (cmd.equals("replay")) {
-            startPlay(currSong, "0");
+            startPlayNormal(currSong, "0");
             putStart(buf, 1);
             putMenu(buf);
             buf.write("selected current song<br/>".getBytes());
             return -1;
         }
         if (cmd.equals("next")) {
-            startPlay(nextSong.get(0), "0");
+            startPlayNormal(nextSong.get(0), "0");
             putStart(buf, 1);
             putMenu(buf);
             buf.write("selected next song<br/>".getBytes());
             return -1;
         }
         if (cmd.equals("prev")) {
-            startPlay(prevSong, "0");
+            startPlayNormal(prevSong, "0");
             putStart(buf, 1);
             putMenu(buf);
             buf.write("selected previous song<br/>".getBytes());
             return -1;
         }
         if (cmd.equals("play")) {
-            startPlay(playerUtil.str2int(song), "0");
+            startPlayNormal(playerUtil.str2int(song), "0");
             putStart(buf, 1);
             putMenu(buf);
             String a = "selected song #" + song + "<br/>";
