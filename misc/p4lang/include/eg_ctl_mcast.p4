@@ -87,9 +87,9 @@ control EgressControlMcast(inout headers hdr,
         hdr.bier.bs6 = hdr.bier.bs6 & bs6;
         hdr.bier.bs7 = hdr.bier.bs7 & bs7;
         if ((hdr.bier.bs0 | hdr.bier.bs1 | hdr.bier.bs2 | hdr.bier.bs3 | 
-            hdr.bier.bs4 | hdr.bier.bs5 | hdr.bier.bs6 | hdr.bier.bs7) == 0) {
-            eg_md.dropping = 1;
-        }
+            hdr.bier.bs4 | hdr.bier.bs5 | hdr.bier.bs6 | hdr.bier.bs7) != 0) return;
+        eg_md.dropping = 1;
+        eg_md.need_recir = 0;
     }
 
     action act_bier(NextHopId_t hop, label_t label, bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
