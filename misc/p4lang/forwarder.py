@@ -2378,7 +2378,7 @@ def writeBierLabelRules(delete, p4info_helper, ingress_sw, vrf, sess, inlab, por
             "bs4": bs4,
             "bs5": bs5,
             "bs6": bs6,
-            "bs7": bs7,
+            "bs7": bs7
         }
     )
     if delete == 1:
@@ -2416,7 +2416,7 @@ def writeBierLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, in
             "bs4": bs4,
             "bs5": bs5,
             "bs6": bs6,
-            "bs7": bs7,
+            "bs7": bs7
         }
     )
     table_entry3 = p4info_helper.buildMulticastGroupEntry(sess, mcast)
@@ -2433,6 +2433,39 @@ def writeBierLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, in
         ingress_sw.DeleteTableEntry(table_entry2, False)
         ingress_sw.DeletePREEntry(table_entry3, False)
     mcast = []
+
+def writeMbierRouteRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, dip, sip, ingr, port, hopid, outlab, subif, bfir, bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7):
+    global mcast
+    sess = sess & 0xfff
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":hopid})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": hopid
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_encap_ipv"+ipver+"_bier",
+        action_params={
+            "hop": hopid,
+            "label": outlab,
+            "bfir": bfir, 
+            "bs0": bs0,
+            "bs1": bs1,
+            "bs2": bs2,
+            "bs3": bs3,
+            "bs4": bs4,
+            "bs5": bs5,
+            "bs6": bs6,
+            "bs7": bs7
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
 
 
 
@@ -3350,6 +3383,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "bierlabloc6_del":
             writeBierLabLocRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+
+        if splt[0] == "mbierroute4_add":
+            writeMbierRouteRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            continue
+        if splt[0] == "mbierroute4_mod":
+            writeMbierRouteRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            continue
+        if splt[0] == "mbierroute4_del":
+            writeMbierRouteRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
 
 
