@@ -35,6 +35,7 @@ struct headers {
     ethernet_t		eth4;
     mpls_t		mpls0;
     mpls_t		mpls1;
+    bier_t		bier;
     ipv4_t		ipv4c;
     ipv6_t		ipv6c;
     ethernet_t		eth2;
