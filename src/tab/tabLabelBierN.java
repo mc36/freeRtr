@@ -165,7 +165,7 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     }
 
     public String toString() {
-        return hop + " " + ifc + " " + lab;
+        return hop + "," + ifc + "," + lab;
     }
 
 }

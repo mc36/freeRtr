@@ -2,7 +2,9 @@ package ip;
 
 import addr.addrIP;
 import ifc.ifcBridge;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabelBier;
@@ -152,9 +154,32 @@ public class ipFwdBier {
      * @return list
      */
     public String listPeers() {
+        List<tabLabelBierN> f = new ArrayList<tabLabelBierN>();
+        for (int i = 0; i < fwds.size(); i++) {
+            f.add(fwds.get(i));
+        }
         String a = "";
         for (int i = 0; i < peers.size(); i++) {
-            a += " " + peers.get(i);
+            ipFwdBierPeer ntry = peers.get(i);
+            a += " " + ntry;
+            if (ntry.via == null) {
+                a += ",drp";
+            } else {
+                a += ",#" + f.indexOf(ntry.via);
+            }
+        }
+        return a.trim();
+    }
+
+    /**
+     * list forwarders
+     *
+     * @return list
+     */
+    public String listFwds() {
+        String a = "";
+        for (int i = 0; i < fwds.size(); i++) {
+            a += " " + fwds.get(i);
         }
         return a.trim();
     }
@@ -196,11 +221,13 @@ public class ipFwdBier {
     public synchronized void updatePeers() {
         tabGen<tabLabelBierN> trgs = new tabGen<tabLabelBierN>();
         for (int i = 0; i < peers.size(); i++) {
-            addrIP trg = peers.get(i).addr;
+            ipFwdBierPeer trg = peers.get(i);
             if (trg == null) {
                 continue;
             }
-            tabRouteEntry<addrIP> rou = fwd.actualU.route(trg);
+            trg.bit = 0;
+            trg.via = null;
+            tabRouteEntry<addrIP> rou = fwd.actualU.route(trg.addr);
             if (rou == null) {
                 continue;
             }
@@ -223,6 +250,8 @@ public class ipFwdBier {
             }
             ntry.len = rou.best.bierHdr;
             ntry.setBit(rou.best.bierIdx - 1);
+            trg.bit = rou.best.bierIdx;
+            trg.via = ntry;
         }
         fwds = trgs;
     }
@@ -258,6 +287,10 @@ class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
 
     public long expires;
 
+    public int bit;
+
+    public tabLabelBierN via;
+
     public int compare(ipFwdBierPeer o1, ipFwdBierPeer o2) {
         return o1.addr.compare(o1.addr, o2.addr);
     }
@@ -267,7 +300,7 @@ class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
     }
 
     public String toString() {
-        return "" + addr;
+        return addr + "," + bit;
     }
 
 }

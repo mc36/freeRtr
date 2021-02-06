@@ -3581,7 +3581,7 @@ public class userShow {
                 s += " label=" + grp.label.listPeers();
             }
             if (grp.bier != null) {
-                s += " bier=" + grp.bier.listPeers();
+                s += " bierp=" + grp.bier.listPeers() + " bierf=" + grp.bier.listFwds();
             }
             l.add(grp.source + "|" + grp.group + "|" + grp.iface + "|" + grp.upstream + "|" + s);
         }
