@@ -93,31 +93,33 @@ control EgressControlMcast(inout headers hdr,
 
     action act_bier(NextHopId_t hop, label_t label, bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
             bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.label = label;
         eg_md.nexthop_id = hop;
-        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
     }
 
     action act_decap_bier_ipv4(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
             bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         eg_md.need_recir = 1;
+        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.setInvalid();
         hdr.mpls1.setInvalid();
+        hdr.bier.setInvalid();
         hdr.cpu.setValid();
         hdr.cpu.port = eg_md.source_id;
         hdr.ethernet.ethertype = ETHERTYPE_IPV4;
-        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
     }
 
     action act_decap_bier_ipv6(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
             bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         eg_md.need_recir = 1;
+        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.setInvalid();
         hdr.mpls1.setInvalid();
+        hdr.bier.setInvalid();
         hdr.cpu.setValid();
         hdr.cpu.port = eg_md.source_id;
         hdr.ethernet.ethertype = ETHERTYPE_IPV6;
-        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
     }
 
     table tbl_mcast {
