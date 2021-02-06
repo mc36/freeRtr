@@ -163,9 +163,9 @@ public class ipFwdBier {
             ipFwdBierPeer ntry = peers.get(i);
             a += " " + ntry;
             if (ntry.via == null) {
-                a += ",drp";
+                a += ",-1";
             } else {
-                a += ",#" + f.indexOf(ntry.via);
+                a += "," + f.indexOf(ntry.via);
             }
         }
         return a.trim();
