@@ -1698,6 +1698,7 @@ int doOneCommand(unsigned char* buf) {
         mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mpls_res->command = 8;
         for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bierlabloc6") == 0) {
@@ -1708,6 +1709,7 @@ int doOneCommand(unsigned char* buf) {
         mpls_res = table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mpls_res->command = 8;
         for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mbierroute4") == 0) {

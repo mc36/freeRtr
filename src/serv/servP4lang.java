@@ -1958,7 +1958,6 @@ class servP4langConn implements Runnable {
         }
         int sis = bits * si;
         byte[] ful = tabLabelBier.bsl2msk(need.bier.bsl);
-        int now = 0;
         for (int i = 0; i < done.bier.peers.size(); i++) {
             tabLabelBierN ntry = done.bier.peers.get(i);
             if (need.bier.peers.find(ntry) != null) {
@@ -1999,13 +1998,9 @@ class servP4langConn implements Runnable {
             }
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
-            now++;
         }
         if (bef) {
             act = "mod";
-            if (now < 1) {
-                act = "del";
-            }
         } else {
             act = "add";
         }
