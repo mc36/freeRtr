@@ -2356,6 +2356,89 @@ def writeDupLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, inl
 
 
 
+def writeBierLabelRules(delete, p4info_helper, ingress_sw, vrf, sess, inlab, port, subif, hopid, outlab, bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7):
+    global mcast
+    sess = sess & 0xfff
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":hopid})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": hopid
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_bier",
+        action_params={
+            "hop": hopid,
+            "label": outlab,
+            "bs0": bs0,
+            "bs1": bs1,
+            "bs2": bs2,
+            "bs3": bs3,
+            "bs4": bs4,
+            "bs5": bs5,
+            "bs6": bs6,
+            "bs7": bs7,
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeBierLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, inlab, bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7):
+    global mcast
+    sess = sess & 0xfff
+    mcast.append({"egress_port":0, "instance":0})
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+        match_fields={
+            "hdr.mpls0.label": inlab,
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_bier_label",
+        action_params={
+            "sess": sess
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": 0
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_decap_bier_ipv"+ipver,
+        action_params={
+            "bs0": bs0,
+            "bs1": bs1,
+            "bs2": bs2,
+            "bs3": bs3,
+            "bs4": bs4,
+            "bs5": bs5,
+            "bs6": bs6,
+            "bs7": bs7,
+        }
+    )
+    table_entry3 = p4info_helper.buildMulticastGroupEntry(sess, mcast)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WritePREEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyPREEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeletePREEntry(table_entry3, False)
+    mcast = []
+
+
+
+
+
+
 def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address, freerouter_port):
     p4info_helper = p4runtime_lib.helper.P4InfoHelper(p4info_file_path)
 
@@ -3227,6 +3310,30 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "duplabloc6_del":
             writeDupLabLocRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            continue
+
+        if splt[0] == "bierlabel4_add":
+            writeBierLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "bierlabel4_mod":
+            writeBierLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "bierlabel4_del":
+            writeBierLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "bierlabel6_add":
+            writeBierLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "bierlabel6_mod":
+            writeBierLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+        if splt[0] == "bierlabel6_del":
+            writeBierLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+        if splt[0] == "bierlabloc4_add":
+            writeBierLabLocRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
             continue
 
 

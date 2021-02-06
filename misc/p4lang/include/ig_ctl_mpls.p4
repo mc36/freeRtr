@@ -47,6 +47,18 @@ control IngressControlMPLS(inout headers hdr,
     }
 
 
+    action act_mpls_bier_label(bit<16> sess) {
+        ig_md.clone_session = sess;
+        ig_md.need_clone = 1;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.mpls_op_type = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_intr_md.mcast_grp = sess;
+    }
+
+
     action act_mpls_swap0_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
         /*
          * Encapsulate MPLS header
@@ -222,6 +234,11 @@ hdr.mpls0.label:
             act_mpls_bcast_label;
 
             /*
+             * mpls BIER label
+             */
+            act_mpls_bier_label;
+
+            /*
              * Default action;
              */
             @defaultonly NoAction;
@@ -272,6 +289,11 @@ hdr.mpls1.label:
              * mpls broadcast label
              */
             act_mpls_bcast_label;
+
+            /*
+             * mpls BIER label
+             */
+            act_mpls_bier_label;
 
             /*
              * Default action;

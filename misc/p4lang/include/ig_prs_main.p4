@@ -183,6 +183,8 @@ PPPTYPE_ROUTEDMAC:
             prs_ipv4; /* IPv4 only for now */
 4w0x6:
             prs_ipv6; /* IPv6 is in next lab */
+4w0x5:
+            prs_bier; /* BIER is in next lab */
         default:
             prs_eth2; /* EoMPLS is pausing problem if we don't resubmit() */
         }
@@ -200,6 +202,17 @@ ETHERTYPE_IPV6:
         }
     }
 
+    state prs_bier {
+        pkt.extract(hdr.bier);
+        transition select(hdr.bier.proto) {
+6w0x4:
+            prs_ipv4;
+6w0x6:
+            prs_ipv6;
+        default:
+            accept;
+        }
+    }
 
 
     state prs_ipv4 {

@@ -74,6 +74,52 @@ control EgressControlMcast(inout headers hdr,
         hdr.ethernet.ethertype = ETHERTYPE_IPV6;
     }
 
+
+    action and_bier_bs(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        hdr.bier.bs0 = hdr.bier.bs0 & bs0;
+        hdr.bier.bs1 = hdr.bier.bs1 & bs1;
+        hdr.bier.bs2 = hdr.bier.bs2 & bs2;
+        hdr.bier.bs3 = hdr.bier.bs3 & bs3;
+        hdr.bier.bs4 = hdr.bier.bs4 & bs4;
+        hdr.bier.bs5 = hdr.bier.bs5 & bs5;
+        hdr.bier.bs6 = hdr.bier.bs6 & bs6;
+        hdr.bier.bs7 = hdr.bier.bs7 & bs7;
+        if ((hdr.bier.bs0 | hdr.bier.bs1 | hdr.bier.bs2 | hdr.bier.bs3 | 
+            hdr.bier.bs4 | hdr.bier.bs5 | hdr.bier.bs6 | hdr.bier.bs7) == 0) {
+            eg_md.dropping = 1;
+        }
+    }
+
+    action act_bier(NextHopId_t hop, label_t label, bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        hdr.mpls0.label = label;
+        eg_md.nexthop_id = hop;
+        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
+    }
+
+    action act_decap_bier_ipv4(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        eg_md.need_recir = 1;
+        hdr.mpls0.setInvalid();
+        hdr.mpls1.setInvalid();
+        hdr.cpu.setValid();
+        hdr.cpu.port = eg_md.source_id;
+        hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
+    }
+
+    action act_decap_bier_ipv6(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        eg_md.need_recir = 1;
+        hdr.mpls0.setInvalid();
+        hdr.mpls1.setInvalid();
+        hdr.cpu.setValid();
+        hdr.cpu.port = eg_md.source_id;
+        hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
+    }
+
     table tbl_mcast {
         key = {
 eg_md.clone_session:
@@ -84,6 +130,9 @@ eg_intr_md.egress_rid:
         actions = {
             act_drop;
             act_rawip;
+            act_bier;
+            act_decap_bier_ipv4;
+            act_decap_bier_ipv6;
             act_duplab;
             act_decap_mpls_ipv4;
             act_decap_mpls_ipv6;
