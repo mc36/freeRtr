@@ -54,8 +54,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     private int ipmask;
 
-    private boolean needType;
-
     /**
      * redirect packets
      */
@@ -216,11 +214,8 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * create new ip receiver
      *
      * @param needNei true if need neighbor cache
-     * @param needTyp true if ethertype is needed
      */
-    public ipIfc6(boolean needNei, boolean needTyp) {
-        needType = needTyp;
-        needNei &= needTyp;
+    public ipIfc6(boolean needNei) {
         if (needNei) {
             neiCache = new ipIfc6nei(this);
         } else {
@@ -264,9 +259,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     private boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
-        if (!needType) {
-            return false;
-        }
         pck.msbPutW(0, typ);
         pck.putSkip(2);
         pck.merge2beg();
@@ -284,10 +276,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (!needType) {
-            upper.ifacePack(ifcHdr, pck);
-            return;
-        }
         if (pck.msbGetW(0) != type) {// ethertype
             cntr.drop(pck, counter.reasons.badEthTyp);
             return;

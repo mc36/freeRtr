@@ -2390,25 +2390,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
-     * test if interface need ethertype
-     *
-     * @return false on no, true on yes
-     */
-    public boolean ifaceNeedType() {
-        if (parent != null) {
-            return parent.ifaceNeedType();
-        }
-        switch (type) {
-            case template:
-            case loopback:
-            case nul:
-                return false;
-            default:
-                return true;
-        }
-    }
-
-    /**
      * test if interface need arp/nd
      *
      * @return false on no, true on yes
@@ -2909,6 +2890,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("frrfc")) {
             enc = 11;
         }
+        if (ifaceNeedArp()) {
+            enc = 0;
+        }
         if (a.equals("dot1q")) {
             initVlan(new ifcDot1q());
             return false;
@@ -3308,7 +3292,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (ip4 && (addr4 != null)) {
-            ipIf4 = new ipIfc4(ifaceNeedArp(), ifaceNeedType());
+            ipIf4 = new ipIfc4(ifaceNeedArp());
             fwdIf4 = vrfFor.fwd4.ifaceAdd(ipIf4);
             ipIf4.setIPv4addr(addr4, mask4.toNetmask());
             ethtyp.addET(ipIfc4.type, "ip4", ipIf4);
@@ -3321,7 +3305,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             vrfFor.fwd4.routerStaticChg();
         }
         if (ip6 && (addr6 != null)) {
-            ipIf6 = new ipIfc6(ifaceNeedArp(), ifaceNeedType());
+            ipIf6 = new ipIfc6(ifaceNeedArp());
             fwdIf6 = vrfFor.fwd6.ifaceAdd(ipIf6);
             ipIf6.setIPv6addr(addr6, mask6.toNetmask());
             ethtyp.addET(ipIfc6.type, "ip6", ipIf6);

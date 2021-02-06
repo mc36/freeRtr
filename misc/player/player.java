@@ -248,10 +248,6 @@ public class player implements Runnable {
     }
 
     private synchronized void startPlayNormal(int ntry, String ss) {
-        replaceCurrProc(null);
-        if (headEnd) {
-            stopFull();
-        }
         if ((currSong >= 0) && (prevSong != currSong)) {
             prevSong = currSong;
         }
@@ -269,6 +265,10 @@ public class player implements Runnable {
         currSong = ntry;
         currLyrc = null;
         currTime = 0;
+        replaceCurrProc(null);
+        if (headEnd) {
+            stopFull();
+        }
         if (ntry < 0) {
             return;
         }

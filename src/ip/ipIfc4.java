@@ -32,8 +32,6 @@ public class ipIfc4 implements ipIfc, ifcUp {
 
     private addrPrefix<addrIP> prefix;
 
-    private boolean needType;
-
     /**
      * redirect packets
      */
@@ -134,11 +132,8 @@ public class ipIfc4 implements ipIfc, ifcUp {
      * create new ip receiver
      *
      * @param needArp true if need arp cache
-     * @param needTyp true if ethertype is needed
      */
-    public ipIfc4(boolean needArp, boolean needTyp) {
-        needType = needTyp;
-        needArp &= needTyp;
+    public ipIfc4(boolean needArp) {
         if (needArp) {
             arpCache = new ipIfc4arp(this);
         } else {
@@ -177,9 +172,6 @@ public class ipIfc4 implements ipIfc, ifcUp {
     }
 
     private boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
-        if (!needType) {
-            return false;
-        }
         pck.msbPutW(0, typ);
         pck.putSkip(2);
         pck.merge2beg();
@@ -197,10 +189,6 @@ public class ipIfc4 implements ipIfc, ifcUp {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (!needType) {
-            upper.ifacePack(ifcHdr, pck);
-            return;
-        }
         int ethTyp = pck.msbGetW(0); // ethertype
         if ((arpCache != null) && (ethTyp == ipIfc4arp.type)) {
             arpCache.recvPack(pck);

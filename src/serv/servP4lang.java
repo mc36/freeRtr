@@ -3241,6 +3241,9 @@ class servP4langConn implements Runnable {
             nei.vrf = vrf;
             String prt;
             String par = "";
+            if (ifc.ifc.tunMode == null) {
+                return;
+            }
             switch (ifc.ifc.tunMode) {
                 case gre:
                     prt = "gre";
