@@ -1,2 +1,2 @@
 #!/bin/sh
-su mc36 -c "vlc -I dummy --audio --no-video --aout alsa rtp://10.8.255.1@232.2.3.2:1234/"
+sudo -u mc36 vlc -I dummy --audio --no-video --aout alsa rtp://10.8.255.1@232.2.3.2:1234/
