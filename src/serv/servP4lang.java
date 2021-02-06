@@ -3694,6 +3694,7 @@ class servP4langConn implements Runnable {
             }
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + " " + nbier.srcId + a);
+            now++;
         }
         for (int i = 0; i < dlabel.neighs.size(); i++) {
             ipFwdMpNe ntry = dlabel.neighs.get(i);
