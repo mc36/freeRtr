@@ -200,7 +200,7 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
         for (int i = 0; i < trgs.size(); i++) {
             tabLabelDup ntry = trgs.get(i);
             packHolder pck = orig.copyBytes(true, true);
-            pck.MPLSlabel = ntry.lab.get(0);
+            pck.MPLSlabel = ntry.label.get(0);
             if (expr >= 0) {
                 pck.MPLSexp = expr;
             }

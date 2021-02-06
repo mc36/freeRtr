@@ -231,7 +231,7 @@ public class tabLabelBier {
         lst.add("bier local bs|" + ntry.dumpBits(full, sis));
         for (int i = 0; i < peers.size(); i++) {
             ntry = peers.get(i);
-            lst.add("bier peer|" + ntry.hop + " " + ntry.ifc + " lab=" + ntry.lab + " bs=" + ntry.dumpBits(full, sis));
+            lst.add("bier peer|" + ntry.hop + " " + ntry.iface + " lab=" + ntry.label + " bs=" + ntry.dumpBits(full, sis));
         }
         return lst;
     }

@@ -855,11 +855,11 @@ class servOpenflowTx implements Runnable {
                 if (dup == null) {
                     continue;
                 }
-                int lr = getLabel(dup.lab);
+                int lr = getLabel(dup.label);
                 if (lr < 0) {
                     continue;
                 }
-                servOpenflowIfc2 ifc = new servOpenflowIfc2(dup.ifc, null, null);
+                servOpenflowIfc2 ifc = new servOpenflowIfc2(dup.iface, null, null);
                 if (ifc.ifc == null) {
                     continue;
                 }

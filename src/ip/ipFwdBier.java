@@ -127,9 +127,9 @@ public class ipFwdBier {
             if (trg == null) {
                 continue;
             }
-            int sft = tabLabelBier.bsl2num(trg.len);
+            int sft = tabLabelBier.bsl2num(trg.bsl);
             for (int o = 0;; o++) {
-                byte[] ned = trg.getAndShr(tabLabelBier.bsl2msk(trg.len), sft * o);
+                byte[] ned = trg.getAndShr(tabLabelBier.bsl2msk(trg.bsl), sft * o);
                 if (ned == null) {
                     break;
                 }
@@ -138,10 +138,10 @@ public class ipFwdBier {
                 }
                 packHolder pck = orig.copyBytes(true, true);
                 pck.BIERsi = o;
-                pck.BIERbsl = trg.len;
+                pck.BIERbsl = trg.bsl;
                 pck.BIERbs = ned;
                 ipMpls.createBIERheader(pck);
-                pck.MPLSlabel = trg.lab + o;
+                pck.MPLSlabel = trg.label + o;
                 ipMpls.createMPLSheader(pck);
                 fwd.mplsTxPack(trg.hop, pck, false);
             }
@@ -248,7 +248,7 @@ public class ipFwdBier {
             if (old != null) {
                 ntry = old;
             }
-            ntry.len = rou.best.bierHdr;
+            ntry.bsl = rou.best.bierHdr;
             ntry.setBit(rou.best.bierIdx - 1);
             trg.bit = rou.best.bierIdx;
             trg.via = ntry;

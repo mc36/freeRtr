@@ -17,7 +17,7 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     /**
      * interface
      */
-    public final ipFwdIface ifc;
+    public final ipFwdIface iface;
 
     /**
      * next hop
@@ -27,12 +27,12 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     /**
      * remote label
      */
-    public final int lab;
+    public final int label;
 
     /**
      * bsl value
      */
-    public int len;
+    public int bsl;
 
     /**
      * needed indexes
@@ -42,14 +42,14 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     /**
      * create new bier peer
      *
-     * @param iface interface
+     * @param ifa interface
      * @param nxtHop next hop
-     * @param label labels
+     * @param lab labels
      */
-    public tabLabelBierN(tabRouteIface iface, addrIP nxtHop, int label) {
-        ifc = (ipFwdIface) iface;
+    public tabLabelBierN(tabRouteIface ifa, addrIP nxtHop, int lab) {
+        iface = (ipFwdIface) ifa;
         hop = nxtHop.copyBytes();
-        lab = label;
+        label = lab;
     }
 
     /**
@@ -58,8 +58,8 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
      * @return copy
      */
     public tabLabelBierN copyBytes() {
-        tabLabelBierN n = new tabLabelBierN(ifc, hop, lab);
-        n.len = len;
+        tabLabelBierN n = new tabLabelBierN(iface, hop, label);
+        n.bsl = bsl;
         for (int i = 0; i < ned.size(); i++) {
             n.ned.add(ned.get(i));
         }
@@ -76,13 +76,13 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
         if (o == null) {
             return true;
         }
-        if (ifc != o.ifc) {
+        if (iface != o.iface) {
             return true;
         }
-        if (lab != o.lab) {
+        if (label != o.label) {
             return true;
         }
-        if (len != o.len) {
+        if (bsl != o.bsl) {
             return true;
         }
         if (hop.compare(hop, o.hop) != 0) {
@@ -144,10 +144,10 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     }
 
     public int compare(tabLabelBierN o1, tabLabelBierN o2) {
-        if (o1.ifc.ifwNum < o2.ifc.ifwNum) {
+        if (o1.iface.ifwNum < o2.iface.ifwNum) {
             return -1;
         }
-        if (o1.ifc.ifwNum > o2.ifc.ifwNum) {
+        if (o1.iface.ifwNum > o2.iface.ifwNum) {
             return +1;
         }
         return o1.hop.compare(o1.hop, o2.hop);
@@ -165,7 +165,7 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
     }
 
     public String toString() {
-        return hop + "," + ifc + "," + lab;
+        return hop + "," + iface + "," + label;
     }
 
 }

@@ -1963,7 +1963,7 @@ class servP4langConn implements Runnable {
             if (need.bier.peers.find(ntry) != null) {
                 continue;
             }
-            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            servP4langNei hop = findNei(ntry.iface, ntry.hop);
             if (hop == null) {
                 continue;
             }
@@ -1972,7 +1972,7 @@ class servP4langConn implements Runnable {
             }
             String a = doLab5(ntry, ful, sis);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
         }
         String act;
         for (int i = 0; i < need.bier.peers.size(); i++) {
@@ -1982,7 +1982,7 @@ class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            servP4langNei hop = findNei(ntry.iface, ntry.hop);
             if (hop == null) {
                 continue;
             }
@@ -1991,7 +1991,7 @@ class servP4langConn implements Runnable {
             }
             String a = doLab5(ntry, ful, sis);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
         }
         if (bef) {
             act = "mod";
@@ -2020,7 +2020,7 @@ class servP4langConn implements Runnable {
             if (need.duplicate.find(ntry) != null) {
                 continue;
             }
-            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            servP4langNei hop = findNei(ntry.iface, ntry.hop);
             if (hop == null) {
                 continue;
             }
@@ -2028,7 +2028,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
+            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.label));
         }
         String act;
         for (int i = 0; i < need.duplicate.size(); i++) {
@@ -2038,7 +2038,7 @@ class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            servP4langNei hop = findNei(ntry.iface, ntry.hop);
             if (hop == null) {
                 continue;
             }
@@ -2046,7 +2046,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.lab));
+            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.label));
             now++;
         }
         if (bef) {
@@ -3649,20 +3649,20 @@ class servP4langConn implements Runnable {
             if (nbier.fwds.find(ntry) != null) {
                 continue;
             }
-            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            servP4langNei hop = findNei(ntry.iface, ntry.hop);
             if (hop == null) {
                 continue;
             }
-            if (tabLabelBier.bsl2num(ntry.len) != 256) {
+            if (tabLabelBier.bsl2num(ntry.bsl) != 256) {
                 continue;
             }
-            String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.len), 0);
+            String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.bsl), 0);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + " " + dbier.srcId + a);
+            lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + dbier.srcId + a);
         }
         for (int i = 0; i < nbier.fwds.size(); i++) {
             tabLabelBierN ntry = nbier.fwds.get(i);
-            if (tabLabelBier.bsl2num(ntry.len) != 256) {
+            if (tabLabelBier.bsl2num(ntry.bsl) != 256) {
                 continue;
             }
             if (dbier.fwds.find(ntry) != null) {
@@ -3670,13 +3670,13 @@ class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            servP4langNei hop = findNei(ntry.ifc, ntry.hop);
+            servP4langNei hop = findNei(ntry.iface, ntry.hop);
             if (hop == null) {
                 continue;
             }
-            String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.len), 0);
+            String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.bsl), 0);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + " " + nbier.srcId + a);
+            lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + nbier.srcId + a);
             now++;
         }
         for (int i = 0; i < dlabel.neighs.size(); i++) {

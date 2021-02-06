@@ -15,7 +15,7 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
     /**
      * interface
      */
-    public final ipFwdIface ifc;
+    public final ipFwdIface iface;
 
     /**
      * next hop
@@ -25,23 +25,19 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
     /**
      * remote label
      */
-    public final List<Integer> lab;
+    public final List<Integer> label;
 
     /**
      * create new duplicator
      *
-     * @param iface interface
+     * @param ifa interface
      * @param nxtHop next hop
-     * @param labels labels
+     * @param lab labels
      */
-    public tabLabelDup(ipFwdIface iface, addrIP nxtHop, List<Integer> labels) {
-        ifc = iface;
+    public tabLabelDup(ipFwdIface ifa, addrIP nxtHop, List<Integer> lab) {
+        iface = ifa;
         hop = nxtHop.copyBytes();
-        if (labels == null) {
-            lab = null;
-        } else {
-            lab = tabLabel.copyLabels(labels);
-        }
+        label = tabLabel.copyLabels(lab);
     }
 
     /**
@@ -54,13 +50,13 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
         if (o == null) {
             return true;
         }
-        if (ifc != o.ifc) {
+        if (iface != o.iface) {
             return true;
         }
         if (hop.compare(hop, o.hop) != 0) {
             return true;
         }
-        return tabRouteAttr.diffIntList(lab, o.lab);
+        return tabRouteAttr.diffIntList(label, o.label);
     }
 
     public int compare(tabLabelDup o1, tabLabelDup o2) {
@@ -69,12 +65,12 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
 
     public String toString() {
         String s = "";
-        if (lab != null) {
-            for (int i = 0; i < lab.size(); i++) {
-                s += " " + lab.get(i);
+        if (label != null) {
+            for (int i = 0; i < label.size(); i++) {
+                s += " " + label.get(i);
             }
         }
-        return "duplicate|" + hop + " " + ifc + s;
+        return "duplicate|" + hop + " " + iface + s;
     }
 
 }

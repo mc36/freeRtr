@@ -1549,7 +1549,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 if (ntry == null) {
                     continue;
                 }
-                doMpls(ntry.ifc, ntry.hop, ntry.lab, pck.copyBytes(true, true));
+                doMpls(ntry.iface, ntry.hop, ntry.label, pck.copyBytes(true, true));
             }
             if (!lab.needLocal) {
                 return;
@@ -1581,9 +1581,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     continue;
                 }
                 ipMpls.createBIERheader(p);
-                p.MPLSlabel = ntry.lab + pck.BIERsi;
+                p.MPLSlabel = ntry.label + pck.BIERsi;
                 ipMpls.createMPLSheader(p);
-                doMpls(ntry.ifc, ntry.hop, null, p);
+                doMpls(ntry.iface, ntry.hop, null, p);
             }
             if (nedLoc) {
                 if (ipMpls.gotBierPck(fwd4, fwd6, fwdE, pck)) {

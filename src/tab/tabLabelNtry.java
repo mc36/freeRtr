@@ -141,7 +141,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
             n.duplicate = new tabGen<tabLabelDup>();
             for (int i = 0; i < duplicate.size(); i++) {
                 tabLabelDup ntry = duplicate.get(i);
-                n.duplicate.add(new tabLabelDup(ntry.ifc, ntry.hop, ntry.lab));
+                n.duplicate.add(new tabLabelDup(ntry.iface, ntry.hop, ntry.label));
             }
         }
         if (bier != null) {
