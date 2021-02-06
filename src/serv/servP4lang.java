@@ -1930,10 +1930,10 @@ class servP4langConn implements Runnable {
     private static String doLab5(tabLabelBierN ntry, byte[] full, int sis) {
         byte[] res = ntry.getAndShr(full, sis);
         if (res == null) {
-            return null;
+            return " 0 0 0 0 0 0 0 0";
         }
         if (res.length < 1) {
-            return null;
+            return " 0 0 0 0 0 0 0 0";
         }
         String a = "";
         for (int i = 0; i < res.length; i += 4) {
@@ -1971,9 +1971,6 @@ class servP4langConn implements Runnable {
                 continue;
             }
             String a = doLab5(ntry, ful, sis);
-            if (a == null) {
-                continue;
-            }
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
         }
@@ -1993,9 +1990,6 @@ class servP4langConn implements Runnable {
                 continue;
             }
             String a = doLab5(ntry, ful, sis);
-            if (a == null) {
-                continue;
-            }
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.lab + si) + a);
         }
@@ -2005,9 +1999,6 @@ class servP4langConn implements Runnable {
             act = "add";
         }
         String a = doLab5(need.bier.getIdxMask(), ful, sis);
-        if (a == null) {
-            a = " 0 0 0 0 0 0 0 0";
-        }
         lower.sendLine("bierlabloc" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + a);
     }
 
@@ -3663,9 +3654,6 @@ class servP4langConn implements Runnable {
                 continue;
             }
             String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.len), 0);
-            if (a == null) {
-                continue;
-            }
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + " " + dbier.srcId + a);
         }
@@ -3684,9 +3672,6 @@ class servP4langConn implements Runnable {
                 continue;
             }
             String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.len), 0);
-            if (a == null) {
-                continue;
-            }
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.lab + " " + ifc.id + " " + nbier.srcId + a);
             now++;
