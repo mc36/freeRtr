@@ -3335,6 +3335,22 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if splt[0] == "bierlabloc4_add":
             writeBierLabLocRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
             continue
+        if splt[0] == "bierlabloc4_mod":
+            writeBierLabLocRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+        if splt[0] == "bierlabloc4_del":
+            writeBierLabLocRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+
+        if splt[0] == "bierlabloc6_add":
+            writeBierLabLocRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+        if splt[0] == "bierlabloc6_mod":
+            writeBierLabLocRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+        if splt[0] == "bierlabloc6_del":
+            writeBierLabLocRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
 
 
 
