@@ -51,6 +51,7 @@ void err(unsigned char*buf) {
 
 void doIfaceLoop(int * param) {
     int port = *param;
+    unsigned char bufA[16384];
     unsigned char bufB[16384];
     unsigned char bufC[16384];
     unsigned char bufD[16384];
@@ -82,7 +83,7 @@ void doIfaceLoop(int * param) {
             bufS = head.caplen;
             if (bufS < 1) continue;
             memmove(&bufD[preBuff], pack, bufS);
-            processDataPacket(&bufB[0], &bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
+            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
             fail = 0;
         }
     }
