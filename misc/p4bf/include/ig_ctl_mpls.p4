@@ -143,6 +143,37 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
 
 
 
+#ifdef HAVE_BIER
+    action act_mpls_bier_label(bit<16> sess) {
+        ig_md.clone_session = sess;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.mpls_op_type = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_tm_md.mcast_grp_a = sess;
+        ig_tm_md.ucast_egress_port = CPU_PORT;
+        ig_tm_md.bypass_egress = 0;
+        hdr.vlan.setInvalid();
+#ifdef HAVE_PPPOE
+        hdr.pppoeD.setInvalid();
+#endif
+        hdr.ethernet.ethertype = ig_md.ethertype;
+        hdr.cpu.setInvalid();
+        hdr.internal.setValid();
+        hdr.internal.reason = INTREAS_MCAST;
+        hdr.internal.clone_session = sess;
+        hdr.internal.source_id = ig_md.source_id;
+        ig_md.nexthop_id = CPU_PORT;
+        ig_md.rpf_iface = ig_md.source_id;
+        ig_md.mpls_encap_l2vpn_valid = 1;
+        ig_md.mpls_encap_l3vpn_valid = 1;
+        ig_md.mpls_encap_xconnect_valid = 1;
+    }
+#endif
+
+
+
     table tbl_mpls_fib {
         key = {
 hdr.mpls0.label:
@@ -159,6 +190,9 @@ hdr.mpls0.label:
 #endif
 #ifdef HAVE_DUPLAB
             act_mpls_bcast_label;
+#endif
+#ifdef HAVE_BIER
+             act_mpls_bier_label;
 #endif
             NoAction;
         }
@@ -182,6 +216,9 @@ hdr.mpls1.label:
 #endif
 #ifdef HAVE_DUPLAB
             act_mpls_bcast_label;
+#endif
+#ifdef HAVE_BIER
+             act_mpls_bier_label;
 #endif
             NoAction;
         }

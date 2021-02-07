@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-present GÉANT RARE project
+ * Copyright 2019-present GT RARE project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
+#ifndef _BIER_P4_
+#define _BIER_P4_
 
-#ifndef _TYPES_P4_
-#define _TYPES_P4_
+header bier_t {
+    bit<8> idver;
+    bit<4> bsl;
+    bit<20> entropy;
+    bit<2> oam;
+    bit<2> reserved;
+    bit<6> dscp;
+    bit<6> proto;
+    bit<16> bfir;
+    bit<32> bs0;
+    bit<32> bs1;
+    bit<32> bs2;
+    bit<32> bs3;
+    bit<32> bs4;
+    bit<32> bs5;
+    bit<32> bs6;
+    bit<32> bs7;
+}
 
-
-
-
-typedef bit <16> ethertype_t;
-typedef bit <48> mac_addr_t;
-typedef bit <20> label_t;
-typedef bit <32> ipv4_addr_t;
-typedef bit <128> ipv6_addr_t;
-typedef bit<16> layer4_port_t;
-typedef bit <12> vlan_id_t;
-typedef bit <16> switch_vrf_t;
-//typedef bit<9> PortId_t;
-typedef bit<16> NextHopId_t;
-typedef bit<10> SubIntId_t;
-#define MAX_PORT 1023
-
-
-#endif // _TYPES_P4_
+#endif // _BIER_P4_

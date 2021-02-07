@@ -4558,6 +4558,183 @@ class BfForwarder(Thread):
 
 
 
+    def writeBierLabelRules(
+        self, op_type, vrf, sess, inlab, port, subif, hopid, outlab, bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7
+    ):
+        if self.mcast == False:
+            return
+        nodid = (sess << 16 ) | hopid;
+        if op_type != 3:
+            self.mcast_nid.append(nodid)
+            self.mcast_xid.append(0)
+        tbl_global_path = "eg_ctl.eg_ctl_mcast"
+        tbl_name = "%s.tbl_mcast" % (tbl_global_path)
+        tbl_action_name = "%s.act_bier" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.internal.clone_session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", hopid),
+        ]
+        data_field_list = [
+             gc.DataTuple("hop", hopid),
+             gc.DataTuple("label", outlab),
+             gc.DataTuple("bs0", bs0 & 0xffffffff),
+             gc.DataTuple("bs1", bs1 & 0xffffffff),
+             gc.DataTuple("bs2", bs2 & 0xffffffff),
+             gc.DataTuple("bs3", bs3 & 0xffffffff),
+             gc.DataTuple("bs4", bs4 & 0xffffffff),
+             gc.DataTuple("bs5", bs5 & 0xffffffff),
+             gc.DataTuple("bs6", bs6 & 0xffffffff),
+             gc.DataTuple("bs7", bs7 & 0xffffffff),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            nodid,
+            hopid,
+            self.hairpin2recirc(port),
+        )
+
+
+    def writeBierLabLocRules(
+        self, op_type, ipver, vrf, sess, inlab, bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7
+    ):
+        if self.mcast == False:
+            return
+        if op_type != 3:
+            self.mcast_nid.append(sess << 16)
+            self.mcast_xid.append(0)
+        tbl_global_path1 = "ig_ctl.ig_ctl_mpls"
+        tbl_name1 = "%s.tbl_mpls_fib" % (tbl_global_path1)
+        tbl_action_name1 = "%s.act_mpls_bier_label" % (tbl_global_path1)
+        key_field_list1 = [
+            gc.KeyTuple("hdr.mpls0.label", inlab),
+        ]
+        data_field_list1 = [
+             gc.DataTuple("sess", sess),
+        ]
+        key_annotation_fields1 = {}
+        data_annotation_fields1 = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name1,
+            key_field_list1,
+            data_field_list1,
+            tbl_action_name1,
+            key_annotation_fields1,
+            data_annotation_fields1,
+        )
+
+        tbl_global_path2 = "eg_ctl.eg_ctl_mcast"
+        tbl_name2 = "%s.tbl_mcast" % (tbl_global_path2)
+        tbl_action_name2 = "%s.act_decap_bier_ipv%s" % (tbl_global_path2, ipver)
+        key_field_list2 = [
+            gc.KeyTuple("hdr.internal.clone_session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", 0),
+        ]
+        data_field_list2 = [
+             gc.DataTuple("bs0", bs0 & 0xffffffff),
+             gc.DataTuple("bs1", bs1 & 0xffffffff),
+             gc.DataTuple("bs2", bs2 & 0xffffffff),
+             gc.DataTuple("bs3", bs3 & 0xffffffff),
+             gc.DataTuple("bs4", bs4 & 0xffffffff),
+             gc.DataTuple("bs5", bs5 & 0xffffffff),
+             gc.DataTuple("bs6", bs6 & 0xffffffff),
+             gc.DataTuple("bs7", bs7 & 0xffffffff),
+        ]
+        key_annotation_fields2 = {}
+        data_annotation_fields2 = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name2,
+            key_field_list2,
+            data_field_list2,
+            tbl_action_name2,
+            key_annotation_fields2,
+            data_annotation_fields2,
+        )
+
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            sess << 16,
+            0,
+            self.recirc_port,
+        )
+
+        self._processMcastMgidFromControlPlane(
+            op_type,
+            sess,
+            self.mcast_nid,
+            self.mcast_xid,
+        )
+        self.mcast_nid = []
+        self.mcast_xid = []
+
+
+    def writeMbierRouteRules(
+        self, op_type, ipver, vrf, sess, dip, sip, ingr, port, hopid, outlab, subif, bfir, si, bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7
+    ):
+        if self.mcast == False:
+            return
+        nodid = (sess << 16 ) | (hopid + si);
+        if op_type != 3:
+            self.mcast_nid.append(nodid)
+            self.mcast_xid.append(0)
+
+        tbl_global_path = "eg_ctl.eg_ctl_mcast"
+        tbl_name = "%s.tbl_mcast" % (tbl_global_path)
+        tbl_action_name = "%s.act_encap_ipv%s_bier" % (tbl_global_path, ipver)
+        key_field_list = [
+            gc.KeyTuple("hdr.internal.clone_session", sess),
+            gc.KeyTuple("eg_intr_md.egress_rid", (hopid + si)),
+        ]
+        data_field_list = [
+             gc.DataTuple("hop", hopid),
+             gc.DataTuple("label", outlab),
+             gc.DataTuple("bs0", bs0 & 0xffffffff),
+             gc.DataTuple("bs1", bs1 & 0xffffffff),
+             gc.DataTuple("bs2", bs2 & 0xffffffff),
+             gc.DataTuple("bs3", bs3 & 0xffffffff),
+             gc.DataTuple("bs4", bs4 & 0xffffffff),
+             gc.DataTuple("bs5", bs5 & 0xffffffff),
+             gc.DataTuple("bs6", bs6 & 0xffffffff),
+             gc.DataTuple("bs7", bs7 & 0xffffffff),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+        self._processMcastNodeFromControlPlane(
+            op_type,
+            nodid,
+            hopid,
+            self.hairpin2recirc(port),
+        )
+
+
+
+
+
+
+
+
+
     def run(self):
         logger.warn("BfForwarder - Main")
         logger.warn("BfForwarder - Entering message loop")
@@ -7186,6 +7363,384 @@ class BfForwarder(Thread):
                     int(splt[7]),
                 )
                 continue
+
+
+            if splt[0] == "bierlabel4_add":
+                self.writeBierLabelRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "bierlabel4_mod":
+                self.writeBierLabelRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "bierlabel4_del":
+                self.writeBierLabelRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "bierlabel6_add":
+                self.writeBierLabelRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "bierlabel6_mod":
+                self.writeBierLabelRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+            if splt[0] == "bierlabel6_del":
+                self.writeBierLabelRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                )
+                continue
+
+            if splt[0] == "bierlabloc4_add":
+                self.writeBierLabLocRules(
+                    1,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                )
+                continue
+            if splt[0] == "bierlabloc4_mod":
+                self.writeBierLabLocRules(
+                    2,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                )
+                continue
+            if splt[0] == "bierlabloc4_del":
+                self.writeBierLabLocRules(
+                    3,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                )
+                continue
+            if splt[0] == "bierlabloc6_add":
+                self.writeBierLabLocRules(
+                    1,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                )
+                continue
+            if splt[0] == "bierlabloc6_mod":
+                self.writeBierLabLocRules(
+                    2,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                )
+                continue
+            if splt[0] == "bierlabloc6_del":
+                self.writeBierLabLocRules(
+                    3,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                )
+                continue
+
+            if splt[0] == "mbierroute4_add":
+                self.writeMbierRouteRules(
+                    1,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                )
+                continue
+            if splt[0] == "mbierroute4_mod":
+                self.writeMbierRouteRules(
+                    2,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                )
+                continue
+            if splt[0] == "mbierroute4_del":
+                self.writeMbierRouteRules(
+                    3,
+                    "4",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                )
+                continue
+
+            if splt[0] == "mbierroute6_add":
+                self.writeMbierRouteRules(
+                    1,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                )
+                continue
+            if splt[0] == "mbierroute6_mod":
+                self.writeMbierRouteRules(
+                    2,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                )
+                continue
+            if splt[0] == "mbierroute6_del":
+                self.writeMbierRouteRules(
+                    3,
+                    "6",
+                    int(splt[1]),
+                    int(splt[2]),
+                    splt[3],
+                    splt[4],
+                    int(splt[5]),
+                    int(splt[6]),
+                    int(splt[7]),
+                    int(splt[8]),
+                    int(splt[9]),
+                    int(splt[10]),
+                    int(splt[11]),
+                    int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                )
+                continue
+
 
 
             if splt[0] == "mtu":

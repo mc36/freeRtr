@@ -53,6 +53,7 @@ ig_md.checksum_udp_tmp = 0;
 #endif
 ig_md.mpls_op_type = 0;
 ig_md.srv_op_type = 0;
+ig_md.bier_remove = 0;
 ig_md.mpls0_remove = 0;
 ig_md.mpls1_remove = 0;
 ig_md.srv_remove = 0;

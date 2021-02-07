@@ -49,6 +49,11 @@ struct headers {
     mpls_t mpls0;
     mpls_t mpls1;
 #endif
+#ifdef HAVE_MPLS
+#ifdef HAVE_BIER
+    bier_t bier;
+#endif
+#endif
     ethernet_t eth2;
     arp_t arp;
     llc_t llc;

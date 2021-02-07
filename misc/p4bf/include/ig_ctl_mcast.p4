@@ -43,6 +43,11 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 0;
         hdr.mpls0.setInvalid();
         hdr.mpls1.setInvalid();
+#ifdef HAVE_MPLS
+#ifdef HAVE_BIER
+        hdr.bier.setInvalid();
+#endif
+#endif
         hdr.vlan.setInvalid();
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();

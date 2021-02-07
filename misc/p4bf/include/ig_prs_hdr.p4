@@ -156,11 +156,32 @@ state prs_mpls_bos {
         prs_ipv4;		/* IPv4 only for now */
 0x6:
         prs_ipv6;		/* IPv6 is in next lab */
+#ifdef HAVE_BIER
+4w0x5:
+        prs_bier; /* BIER is in next lab */
+#endif
     default:
         prs_eth2;		/* EoMPLS is pausing problem if we don't resubmit() */
     }
 }
 #endif
+
+#ifdef HAVE_MPLS
+#ifdef HAVE_BIER
+    state prs_bier {
+        pkt.extract(hdr.bier);
+        transition select(hdr.bier.proto) {
+6w0x4:
+            prs_ipv4;
+6w0x6:
+            prs_ipv6;
+        default:
+            accept;
+        }
+    }
+#endif
+#endif
+
 
 state prs_eth2 {
     pkt.extract(hdr.eth2);
