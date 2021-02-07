@@ -413,9 +413,9 @@ r6 tping 100 10 3.3.3.0 /vrf v3
 r6 tping 100 10 3.3.3.0 /vrf v4
 r6 tping 100 10 3.3.3.0 /vrf v5
 
-r1 dping sdn 10 0-100000 r6 100 10 3.3.3.0 /vrf v2 /siz 1111 /rep 1111
-r1 dping sdn 10 0-100000 r6 100 10 3.3.3.0 /vrf v3 /siz 1111 /rep 1111
-!r1 dping sdn 10 0-100000 r6 100 10 3.3.3.0 /vrf v4 /siz 1111 /rep 1111
-!r1 dping sdn 10 0-100000 r6 100 10 3.3.3.0 /vrf v5 /siz 1111 /rep 1111
+r1 dping sdn 10 0-500000 r6 90-100 3.3.3.0 /vrf v2 /siz 1111 /rep 1111
+r1 dping sdn 10 0-500000 r6 90-100 3.3.3.0 /vrf v3 /siz 1111 /rep 1111
+!r1 dping sdn 10 0-500000 r6 90-100 3.3.3.0 /vrf v4 /siz 1111 /rep 1111
+!r1 dping sdn 10 0-500000 r6 90-100 3.3.3.0 /vrf v5 /siz 1111 /rep 1111
 r1 output show ipv4 nat v1 tra
 r1 output show ipv6 nat v1 tra

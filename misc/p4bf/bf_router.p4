@@ -18,11 +18,11 @@
 
 #include <core.p4>
 #include <tna.p4>
+#include "include/cst_table_size.p4"
 #include "include/cst_bundle.p4"
 #include "include/def_types.p4"
 #include "include/cst_cpu_port.p4"
 #include "include/cst_needs.p4"
-#include "include/cst_table_size.p4"
 #include "include/cst_ethertype.p4"
 #include "include/cst_ip_protocol.p4"
 #include "include/hdr_cpu.p4"

@@ -1669,21 +1669,21 @@ class userTesterOne {
         if (s.equals("dping")) {
             String what = "show interface summary | include " + cmd.word();
             int round = bits.str2num(cmd.word());
-            tabIntMatcher ned = new tabIntMatcher();
-            ned.fromString(cmd.word());
+            tabIntMatcher nedB = new tabIntMatcher();
+            nedB.fromString(cmd.word());
             userTesterPrc op = getPrc(cmd.word());
             if (op == null) {
                 return;
             }
+            tabIntMatcher nedP = new tabIntMatcher();
+            nedP.fromString(cmd.word());
             bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
-            String orig = cmd.getRemaining();
             p.putLine("terminal table raw");
             p.doSync();
             int old = p.getSummary(what);
             for (int rnd = 0; rnd <= round; rnd++) {
                 p.doSync();
-                cmd = new cmds("ping", orig);
-                if (pingTest(op, true)) {
+                if (op.morePings(cmd.getRemaining(), nedP, 1)) {
                     return;
                 }
                 int cur = p.getSummary(what);
@@ -1693,10 +1693,10 @@ class userTesterOne {
                     testRes = 8;
                     return;
                 }
-                if (ned.matches(tot)) {
+                if (nedB.matches(tot)) {
                     return;
                 }
-                rdr.debugStat(slot + "/" + p.name + ": test failed: got " + tot + ", expected " + ned);
+                rdr.debugStat(slot + "/" + p.name + ": test failed: got " + tot + ", expected " + nedB);
             }
             testRes = 9;
             return;
