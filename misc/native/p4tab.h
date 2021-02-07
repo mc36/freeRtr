@@ -726,6 +726,7 @@ int monitor_compare(void *ptr1, void *ptr2) {
 
 struct flood_entry {
     int trg;
+    int id;
     int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset
     int lab;
     int src;
@@ -741,6 +742,8 @@ int flood_compare(void *ptr1, void *ptr2) {
     if (ntry1->command > ntry2->command) return +1;
     if (ntry1->trg < ntry2->trg) return -1;
     if (ntry1->trg > ntry2->trg) return +1;
+    if (ntry1->id < ntry2->id) return -1;
+    if (ntry1->id > ntry2->id) return +1;
     return 0;
 }
 

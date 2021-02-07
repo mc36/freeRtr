@@ -1724,7 +1724,8 @@ int doOneCommand(unsigned char* buf) {
         flood_ntry.lab = atoi(arg[9]);
         flood_ntry.command = 4;
         flood_ntry.src = atoi(arg[11]);
-        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[12+i]);
+        flood_ntry.id =  atoi(arg[12]);
+        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[13+i]);
         if (del == 0) table_del(&mroute4_res->flood, &flood_ntry);
         else table_add(&mroute4_res->flood, &flood_ntry);
         return 0;
@@ -1747,7 +1748,8 @@ int doOneCommand(unsigned char* buf) {
         flood_ntry.lab = atoi(arg[9]);
         flood_ntry.command = 4;
         flood_ntry.src = atoi(arg[11]);
-        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[12+i]);
+        flood_ntry.id =  atoi(arg[12]);
+        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[13+i]);
         if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
         else table_add(&mroute6_res->flood, &flood_ntry);
         return 0;
