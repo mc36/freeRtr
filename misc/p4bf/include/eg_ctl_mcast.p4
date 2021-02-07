@@ -28,6 +28,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
     action act_rawip(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr) {
         hdr.ethernet.src_mac_addr = src_mac_addr;
         hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        eg_md.nexthop_id = 0;
         eg_md.target_id = (SubIntId_t)eg_intr_md.egress_rid;
     }
 #endif
@@ -36,6 +37,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
     action act_duplab(NextHopId_t hop, label_t label) {
         hdr.mpls0.label = label;
         eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
     }
 #endif
 
@@ -53,6 +55,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls0.bos = 1;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
         eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
     }
 
     action act_encap_ipv6_mpls(NextHopId_t hop, label_t label) {
@@ -62,6 +65,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls0.bos = 1;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
         eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
     }
 
     action act_decap_mpls_ipv4() {
@@ -108,6 +112,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.label = label;
         eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
     }
 #endif
 #endif
@@ -137,6 +142,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.bier.bs7 = bs7;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
         eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
     }
 
     action act_encap_ipv6_bier(NextHopId_t hop, label_t label, bit<16> bfir,
@@ -161,6 +167,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.bier.bs7 = bs7;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
         eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
     }
 
     action act_decap_bier_ipv4(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,

@@ -915,6 +915,7 @@ class userTesterPrc {
             if (s.indexOf(wht2) >= 0) {
                 continue;
             }
+            bits.buf2txt(false, bits.str2lst("hit:" + s), getLogName(4));
             cmds cmd = new cmds("res", s);
             int row = 0;
             int sum = 0;
