@@ -900,19 +900,26 @@ class userTesterPrc {
         }
     }
 
-    public int getSummary(String par) {
-        List<String> buf = getOutput(par);
+    public int getSummary(String wht1, String wht2) {
+        List<String> buf = getOutput("show interface summary");
         if (buf == null) {
             return -1;
         }
         int tot = 0;
         int col = 0;
         for (int i = 0; i < buf.size(); i++) {
-            cmds cmd = new cmds("res", buf.get(i));
+            String s = buf.get(i);
+            if (s.indexOf(wht1) < 0) {
+                continue;
+            }
+            if (s.indexOf(wht2) >= 0) {
+                continue;
+            }
+            cmds cmd = new cmds("res", s);
             int row = 0;
             int sum = 0;
             for (;;) {
-                String s = cmd.word(";");
+                s = cmd.word(";");
                 if (s.length() < 1) {
                     break;
                 }
@@ -925,10 +932,10 @@ class userTesterPrc {
             tot += sum;
             col++;
         }
+        bits.buf2txt(false, bits.str2lst("res:" + tot + " bytes"), getLogName(4));
         if (col < 1) {
             return -1;
         }
-        bits.buf2txt(false, bits.str2lst("res:" + tot + " bytes"), getLogName(4));
         return tot;
     }
 
@@ -1667,7 +1674,8 @@ class userTesterOne {
             return;
         }
         if (s.equals("dping")) {
-            String what = "show interface summary | include " + cmd.word();
+            String wht1 = cmd.word();
+            String wht2 = cmd.word();
             int round = bits.str2num(cmd.word());
             tabIntMatcher nedB = new tabIntMatcher();
             nedB.fromString(cmd.word());
@@ -1680,13 +1688,13 @@ class userTesterOne {
             bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
             p.putLine("terminal table raw");
             p.doSync();
-            int old = p.getSummary(what);
+            int old = p.getSummary(wht1, wht2);
             for (int rnd = 0; rnd <= round; rnd++) {
-                p.doSync();
                 if (op.morePings(cmd.getRemaining(), nedP, 1)) {
                     return;
                 }
-                int cur = p.getSummary(what);
+                p.doSync();
+                int cur = p.getSummary(wht1, wht2);
                 int tot = cur - old;
                 old = cur;
                 if (tot < 0) {
