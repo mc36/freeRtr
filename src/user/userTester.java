@@ -1681,14 +1681,21 @@ class userTesterOne {
             if (op == null) {
                 return;
             }
-            bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
+            String org = cmd.getRemaining();
+            String add = " /size 1111 /repeat 1111";
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            if (adr.isMulticast()) {
+                add += " /delay 11";
+            }
+            bits.buf2txt(false, bits.str2lst("cmd:" + org + add), op.getLogName(4));
             p.putLine("terminal table raw");
             p.doSync();
             int old = p.getSummary(wht1, wht2);
             for (int rnd = 0; rnd <= 5; rnd++) {
                 tabIntMatcher nedP = new tabIntMatcher();
                 nedP.fromString("90-100");
-                if (op.morePings(cmd.getRemaining() + " /size 1111 /repeat 1111 /delay 11", nedP, 1)) {
+                if (op.morePings(org + add, nedP, 1)) {
                     return;
                 }
                 p.doSync();
