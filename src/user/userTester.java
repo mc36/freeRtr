@@ -1677,21 +1677,18 @@ class userTesterOne {
         if (s.equals("dping")) {
             String wht1 = cmd.word();
             String wht2 = cmd.word();
-            int round = bits.str2num(cmd.word());
-            tabIntMatcher nedB = new tabIntMatcher();
-            nedB.fromString(cmd.word());
             userTesterPrc op = getPrc(cmd.word());
             if (op == null) {
                 return;
             }
-            tabIntMatcher nedP = new tabIntMatcher();
-            nedP.fromString(cmd.word());
             bits.buf2txt(false, bits.str2lst("cmd:" + cmd.getOriginal()), op.getLogName(4));
             p.putLine("terminal table raw");
             p.doSync();
             int old = p.getSummary(wht1, wht2);
-            for (int rnd = 0; rnd <= round; rnd++) {
-                if (op.morePings(cmd.getRemaining(), nedP, 1)) {
+            for (int rnd = 0; rnd <= 5; rnd++) {
+                tabIntMatcher nedP = new tabIntMatcher();
+                nedP.fromString("90-100");
+                if (op.morePings(cmd.getRemaining() + " /size 1111 /repeat 1111 /delay 11", nedP, 1)) {
                     return;
                 }
                 p.doSync();
@@ -1702,10 +1699,10 @@ class userTesterOne {
                     testRes = 8;
                     return;
                 }
-                if (nedB.matches(tot)) {
+                if (tot < 500000) {
                     return;
                 }
-                rdr.debugStat(slot + "/" + p.name + ": test failed: got " + tot + ", expected " + nedB);
+                rdr.debugStat(slot + "/" + p.name + ": test failed: too much traffic " + tot);
             }
             testRes = 9;
             return;

@@ -192,7 +192,7 @@ hdr.mpls0.label:
             act_mpls_bcast_label;
 #endif
 #ifdef HAVE_BIER
-             act_mpls_bier_label;
+            act_mpls_bier_label;
 #endif
             NoAction;
         }
@@ -218,7 +218,7 @@ hdr.mpls1.label:
             act_mpls_bcast_label;
 #endif
 #ifdef HAVE_BIER
-             act_mpls_bier_label;
+            act_mpls_bier_label;
 #endif
             NoAction;
         }

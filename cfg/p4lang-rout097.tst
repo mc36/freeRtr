@@ -336,5 +336,5 @@ r4 tping 100 10 3333::104 /vrf v1 /int lo1
 r4 tping 100 10 3.3.3.105 /vrf v1 /int lo1
 r4 tping 100 10 3333::105 /vrf v1 /int lo1
 
-r1 dping sdn . 10 0-500000 r3 90-100 3.3.3.105 /vrf v1 /int lo1 /siz 1111 /rep 1111
-r1 dping sdn . 10 0-500000 r3 90-100 3333::105 /vrf v1 /int lo1 /siz 1111 /rep 1111
+r1 dping sdn . r3 3.3.3.105 /vrf v1 /int lo1
+r1 dping sdn . r3 3333::105 /vrf v1 /int lo1

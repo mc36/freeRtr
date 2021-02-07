@@ -94,7 +94,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
 #ifdef HAVE_MPLS
 #ifdef HAVE_BIER
     action and_bier_bs(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
-            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+                       bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         hdr.bier.bs0 = hdr.bier.bs0 & bs0;
         hdr.bier.bs1 = hdr.bier.bs1 & bs1;
         hdr.bier.bs2 = hdr.bier.bs2 & bs2;
@@ -108,7 +108,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
 
 
     action act_bier(NextHopId_t hop, label_t label, bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
-            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+                    bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.label = label;
         eg_md.nexthop_id = hop;
@@ -121,8 +121,8 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
 #ifdef HAVE_BIER
 #ifdef HAVE_MCAST
     action act_encap_ipv4_bier(NextHopId_t hop, label_t label, bit<16> bfir,
-            bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
-            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+                               bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+                               bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         hdr.mpls0.setValid();
         hdr.mpls0.label = label;
         hdr.mpls0.ttl = hdr.ipv4.ttl;
@@ -146,8 +146,8 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
     }
 
     action act_encap_ipv6_bier(NextHopId_t hop, label_t label, bit<16> bfir,
-            bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
-            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+                               bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+                               bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         hdr.mpls0.setValid();
         hdr.mpls0.label = label;
         hdr.mpls0.ttl = hdr.ipv6.hop_limit;
@@ -171,7 +171,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
     }
 
     action act_decap_bier_ipv4(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
-            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+                               bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         //eg_md.need_recir = 1;
         and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.setInvalid();
@@ -183,7 +183,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
     }
 
     action act_decap_bier_ipv6(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
-            bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+                               bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         //eg_md.need_recir = 1;
         and_bier_bs(bs0, bs1, bs2, bs3, bs4, bs5, bs6, bs7);
         hdr.mpls0.setInvalid();
@@ -253,31 +253,31 @@ eg_intr_md.egress_rid:
 
 #ifdef HAVE_MPLS
 #ifdef HAVE_BIER
-        if (hdr.bier.isValid()) {
-            bit <1> tmp0 = 0;
-            bit <1> tmp1 = 0;
-            bit <1> tmp2 = 0;
-            bit <1> tmp3 = 0;
-            bit <1> tmp4 = 0;
-            bit <1> tmp5 = 0;
-            bit <1> tmp6 = 0;
-            bit <1> tmp7 = 0;
-            if (hdr.bier.bs0 != 0) tmp0 = 1;
-            if (hdr.bier.bs1 != 0) tmp1 = 1;
-            if (hdr.bier.bs2 != 0) tmp2 = 1;
-            if (hdr.bier.bs3 != 0) tmp3 = 1;
-            if (hdr.bier.bs4 != 0) tmp4 = 1;
-            if (hdr.bier.bs5 != 0) tmp5 = 1;
-            if (hdr.bier.bs6 != 0) tmp6 = 1;
-            if (hdr.bier.bs7 != 0) tmp7 = 1;
+            if (hdr.bier.isValid()) {
+                bit <1> tmp0 = 0;
+                bit <1> tmp1 = 0;
+                bit <1> tmp2 = 0;
+                bit <1> tmp3 = 0;
+                bit <1> tmp4 = 0;
+                bit <1> tmp5 = 0;
+                bit <1> tmp6 = 0;
+                bit <1> tmp7 = 0;
+                if (hdr.bier.bs0 != 0) tmp0 = 1;
+                if (hdr.bier.bs1 != 0) tmp1 = 1;
+                if (hdr.bier.bs2 != 0) tmp2 = 1;
+                if (hdr.bier.bs3 != 0) tmp3 = 1;
+                if (hdr.bier.bs4 != 0) tmp4 = 1;
+                if (hdr.bier.bs5 != 0) tmp5 = 1;
+                if (hdr.bier.bs6 != 0) tmp6 = 1;
+                if (hdr.bier.bs7 != 0) tmp7 = 1;
 
-            if ((tmp0==0) && (tmp1==0) && (tmp2==0) && (tmp3==0) && 
-                (tmp4==0) && (tmp5==0) && (tmp6==0) && (tmp7==0)) {
+                if ((tmp0==0) && (tmp1==0) && (tmp2==0) && (tmp3==0) &&
+                        (tmp4==0) && (tmp5==0) && (tmp6==0) && (tmp7==0)) {
                     eg_dprsr_md.drop_ctl = 1;
                 } else if (eg_md.bier_remove == 1) {
-                hdr.bier.setInvalid();
+                    hdr.bier.setInvalid();
+                }
             }
-        }
 #endif
 #endif
         }

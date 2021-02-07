@@ -273,5 +273,5 @@ r5 tping 100 10 4321::105 /vrf v1 /int lo0
 r3 tping 200 5 232.2.2.2 /vrf v1 /int lo0 /multi
 r3 tping 200 5 ff06::1 /vrf v1 /int lo0 /multi
 
-r1 dping sdn . 10 0-500000 r3 90-100 232.2.2.2 /vrf v1 /int lo0 /siz 1111 /rep 1111
-r1 dping sdn . 10 0-500000 r3 90-100 ff06::1 /vrf v1 /int lo0 /siz 1111 /rep 1111
+r1 dping sdn . r3 232.2.2.2 /vrf v1 /int lo0
+r1 dping sdn . r3 ff06::1 /vrf v1 /int lo0

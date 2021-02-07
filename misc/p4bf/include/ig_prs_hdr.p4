@@ -168,17 +168,17 @@ state prs_mpls_bos {
 
 #ifdef HAVE_MPLS
 #ifdef HAVE_BIER
-    state prs_bier {
-        pkt.extract(hdr.bier);
-        transition select(hdr.bier.proto) {
+state prs_bier {
+    pkt.extract(hdr.bier);
+    transition select(hdr.bier.proto) {
 6w0x4:
-            prs_ipv4;
+        prs_ipv4;
 6w0x6:
-            prs_ipv6;
-        default:
-            accept;
-        }
+        prs_ipv6;
+    default:
+        accept;
     }
+}
 #endif
 #endif
 
