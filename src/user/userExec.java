@@ -791,14 +791,18 @@ public class userExec {
         hl.add("3 .        description           description listing");
         hl.add("3 .        summary               summary listing");
         hl.add("3 .        hwsummary             hardware summary listing");
+        hl.add("3 .        swsummary             hardware summary listing");
         hl.add("3 .        total                 total listing");
         hl.add("3 .        traffic               traffic listing");
         hl.add("3 .        hwtraffic             hardware traffic listing");
+        hl.add("3 .        swtraffic             hardware traffic listing");
         hl.add("3 .        psummary              packet summary listing");
         hl.add("3 .        hwpsummary            hardware packet summary listing");
+        hl.add("3 .        swpsummary            hardware packet summary listing");
         hl.add("3 .        ptotal                packet total listing");
         hl.add("3 .        ptraffic              packet traffic listing");
         hl.add("3 .        hwptraffic            hardware packet traffic listing");
+        hl.add("3 .        swptraffic            hardware packet traffic listing");
         hl.add("3 .        vrf                   vrf listing");
         hl.add("3 4,.      [name]                name of (sub)interface");
         hl.add("4 .          full                full listing");

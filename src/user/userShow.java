@@ -983,6 +983,10 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(15));
                 return null;
             }
+            if (a.equals("swsummary")) {
+                rdr.putStrTab(cfgAll.getShIntTab(19));
+                return null;
+            }
             if (a.equals("total")) {
                 rdr.putStrTab(cfgAll.getShIntTab(10));
                 return null;
@@ -995,12 +999,20 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(17));
                 return null;
             }
-            if (a.equals("hwpsummary")) {
-                rdr.putStrTab(cfgAll.getShIntTab(16));
+            if (a.equals("swtraffic")) {
+                rdr.putStrTab(cfgAll.getShIntTab(21));
                 return null;
             }
             if (a.equals("psummary")) {
                 rdr.putStrTab(cfgAll.getShIntTab(11));
+                return null;
+            }
+            if (a.equals("hwpsummary")) {
+                rdr.putStrTab(cfgAll.getShIntTab(16));
+                return null;
+            }
+            if (a.equals("swpsummary")) {
+                rdr.putStrTab(cfgAll.getShIntTab(20));
                 return null;
             }
             if (a.equals("ptraffic")) {
@@ -1009,6 +1021,10 @@ public class userShow {
             }
             if (a.equals("hwptraffic")) {
                 rdr.putStrTab(cfgAll.getShIntTab(18));
+                return null;
+            }
+            if (a.equals("swptraffic")) {
+                rdr.putStrTab(cfgAll.getShIntTab(22));
                 return null;
             }
             if (a.equals("ptotal")) {

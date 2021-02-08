@@ -20,7 +20,7 @@ sensor ifaces-sw
 path interfaces-sw/interface/counter
 prefix freertr-ifaces
 key name interfaces-sw/interface
-command sho inter summ
+command sho inter swsumm
 prepend iface_sw_byte_
 name 0 ifc=
 replace \. _

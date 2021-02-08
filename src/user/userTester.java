@@ -901,7 +901,7 @@ class userTesterPrc {
     }
 
     public int getSummary(String wht1, String wht2) {
-        List<String> buf = getOutput("show interface summary");
+        List<String> buf = getOutput("show interface swsummary");
         if (buf == null) {
             return -1;
         }
@@ -1702,7 +1702,7 @@ class userTesterOne {
                 int cur = p.getSummary(wht1, wht2);
                 int tot = cur - old;
                 old = cur;
-                if (tot < 0) {
+                if (tot < 1) {
                     testRes = 8;
                     return;
                 }

@@ -20,7 +20,7 @@ sensor ifaces-swp
 path interfaces-swp/interface/counter
 prefix freertr-ifaces
 key name interfaces-swp/interface
-command sho inter psumm
+command sho inter swpsumm
 prepend iface_sw_pack_
 name 0 ifc=
 replace \. _
