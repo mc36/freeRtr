@@ -254,27 +254,19 @@ eg_intr_md.egress_rid:
 #ifdef HAVE_MPLS
 #ifdef HAVE_BIER
             if (hdr.bier.isValid()) {
-                bit <1> tmp0 = 0;
-                bit <1> tmp1 = 0;
-                bit <1> tmp2 = 0;
-                bit <1> tmp3 = 0;
-                bit <1> tmp4 = 0;
-                bit <1> tmp5 = 0;
-                bit <1> tmp6 = 0;
-                bit <1> tmp7 = 0;
-                if (hdr.bier.bs0 != 0) tmp0 = 1;
-                if (hdr.bier.bs1 != 0) tmp1 = 1;
-                if (hdr.bier.bs2 != 0) tmp2 = 1;
-                if (hdr.bier.bs3 != 0) tmp3 = 1;
-                if (hdr.bier.bs4 != 0) tmp4 = 1;
-                if (hdr.bier.bs5 != 0) tmp5 = 1;
-                if (hdr.bier.bs6 != 0) tmp6 = 1;
-                if (hdr.bier.bs7 != 0) tmp7 = 1;
 
-                if ((tmp0==0) && (tmp1==0) && (tmp2==0) && (tmp3==0) &&
-                        (tmp4==0) && (tmp5==0) && (tmp6==0) && (tmp7==0)) {
-                    eg_dprsr_md.drop_ctl = 1;
-                } else if (eg_md.bier_remove == 1) {
+                if (hdr.bier.bs0 == 0)
+                    if (hdr.bier.bs1 == 0)
+                        if (hdr.bier.bs2 == 0)
+                            if (hdr.bier.bs3 == 0)
+                                if (hdr.bier.bs4 == 0)
+                                    if (hdr.bier.bs5 == 0)
+                                        if (hdr.bier.bs6 == 0)
+                                            if (hdr.bier.bs7 == 0)
+                                            {
+                                                eg_dprsr_md.drop_ctl = 1;
+                                            }
+                if (eg_md.bier_remove == 1) {
                     hdr.bier.setInvalid();
                 }
             }
