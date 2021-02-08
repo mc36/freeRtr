@@ -1257,6 +1257,10 @@ public class userExec {
             return hl;
         }
         hl.add("1 2    clear                     clear running conditions");
+        hl.add("2 3,.    hwcounters              hardware counters on one or more interfaces");
+        hl.add("3 .        <name>                name of interface");
+        hl.add("2 3,.    swcounters              software counters on one or more interfaces");
+        hl.add("3 .        <name>                name of interface");
         hl.add("2 3,.    counters                counters on one or more interfaces");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 3      object-group            object group statistics");

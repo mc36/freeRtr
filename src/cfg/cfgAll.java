@@ -3157,7 +3157,8 @@ public class cfgAll {
     /**
      * do things with more interfaces
      *
-     * @param what what to do: 1=tunnelDest, 2=clearCntr, 3=autoBw, 4=flwTrc
+     * @param what what to do: 1=tunnelDest, 2=clearSwCntr, 3=autoBw, 4=flwTrc,
+     * 5=clearHwCntr, 6=clearAllCntr
      */
     public static void moreInterfaces(int what) {
         for (int i = 0; i < ifaces.size(); i++) {
@@ -3170,13 +3171,20 @@ public class cfgAll {
                     ifc.tunnelDomainName();
                     break;
                 case 2:
-                    ifc.ethtyp.clearCounter();
+                    ifc.ethtyp.clearSwCounter();
                     break;
                 case 3:
                     ifc.autoBandwidth();
                     break;
                 case 4:
                     ifc.followTracker();
+                    break;
+                case 5:
+                    ifc.ethtyp.clearHwCounter();
+                    break;
+                case 6:
+                    ifc.ethtyp.clearSwCounter();
+                    ifc.ethtyp.clearHwCounter();
                     break;
             }
         }

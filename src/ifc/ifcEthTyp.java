@@ -201,6 +201,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public counter hwCntr;
 
     /**
+     * hardware substract
+     */
+    public counter hwSub;
+
+    /**
      * hardware history
      */
     public history hwHstry;
@@ -1219,9 +1224,19 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     /**
+     * clear hardware counters
+     */
+    public void clearHwCounter() {
+        if (hwCntr == null) {
+            return;
+        }
+        hwSub = hwCntr.copyBytes();
+    }
+
+    /**
      * clear counters
      */
-    public void clearCounter() {
+    public void clearSwCounter() {
         for (int i = 0; i < etTyps.size(); i++) {
             etTyps.get(i).cntr.clear();
         }

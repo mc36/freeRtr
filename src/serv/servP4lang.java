@@ -1258,6 +1258,10 @@ class servP4langConn implements Runnable {
                 ntry.ifc.ethtyp.hwCntr.byteTx = bits.str2long(cmd.word());
                 ntry.ifc.ethtyp.hwCntr.packDr = bits.str2long(cmd.word());
                 ntry.ifc.ethtyp.hwCntr.byteDr = bits.str2long(cmd.word());
+                if (ntry.ifc.ethtyp.hwSub == null) {
+                    return false;
+                }
+                ntry.ifc.ethtyp.hwCntr = ntry.ifc.ethtyp.hwCntr.minus(ntry.ifc.ethtyp.hwSub);
                 return false;
             }
             if (s.equals("nattrns4_cnt")) {

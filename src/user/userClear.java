@@ -252,7 +252,7 @@ public class userClear {
             a = cmd.word();
             if (a.length() < 1) {
                 logger.warn("counters cleared on all interfaces");
-                cfgAll.moreInterfaces(2);
+                cfgAll.moreInterfaces(6);
                 return null;
             }
             cfgIfc ifc = cfgAll.ifcFind(a, false);
@@ -261,7 +261,40 @@ public class userClear {
                 return null;
             }
             logger.warn("counters cleared on " + ifc.name);
-            ifc.ethtyp.clearCounter();
+            ifc.ethtyp.clearSwCounter();
+            ifc.ethtyp.clearHwCounter();
+            return null;
+        }
+        if (a.equals("swcounters")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                logger.warn("software counters cleared on all interfaces");
+                cfgAll.moreInterfaces(2);
+                return null;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            logger.warn("software counters cleared on " + ifc.name);
+            ifc.ethtyp.clearSwCounter();
+            return null;
+        }
+        if (a.equals("hwcounters")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                logger.warn("hardware counters cleared on all interfaces");
+                cfgAll.moreInterfaces(5);
+                return null;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            logger.warn("hardware counters cleared on " + ifc.name);
+            ifc.ethtyp.clearHwCounter();
             return null;
         }
         if (a.equals("socket")) {
