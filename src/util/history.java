@@ -69,14 +69,14 @@ public class history {
             update(secs, res);
             secc++;
         }
-        if (secc < limit) {
+        if (secc <= limit) {
             return;
         }
         secc = 0;
         minc++;
         update(mina, counter.average(secs));
         update(minm, counter.maximum(secs));
-        if (minc < limit) {
+        if (minc <= limit) {
             return;
         }
         minc = 0;
@@ -86,7 +86,7 @@ public class history {
 
     private static void update(List<counter> lst, counter cur) {
         lst.add(cur);
-        if (lst.size() >= limit) {
+        for (; lst.size() > limit;) {
             lst.remove(0);
         }
     }
