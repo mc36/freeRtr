@@ -12,6 +12,12 @@ public class history {
 
     private counter ocnt; // last value
 
+    private long otim; // last updated
+
+    private int secc = 0; // current seconds
+
+    private int minc = 0; // current seconds
+
     private final static int limit = 60;
 
     private List<counter> secs = new ArrayList<counter>(); // last seconds
@@ -24,13 +30,12 @@ public class history {
 
     private List<counter> horm = new ArrayList<counter>(); // max of hours
 
-    private int secc = 0;
-
     /**
      * create new history
      */
     public history() {
         ocnt = new counter();
+        otim = bits.getTime();
     }
 
     /**
@@ -40,6 +45,7 @@ public class history {
      */
     public history(counter cur) {
         ocnt = cur.copyBytes();
+        otim = bits.getTime();
     }
 
     /**
@@ -48,18 +54,32 @@ public class history {
      * @param cur current counter
      */
     public void update(counter cur) {
-        counter res = cur.minus(ocnt);
+        long tim = bits.getTime();
+        int pst = (int) ((tim - otim) / 1000);
+        if (pst < 1) {
+            pst = 1;
+        }
+        if (pst > limit) {
+            pst = limit;
+        }
+        counter res = cur.minus(ocnt).div(pst);
         ocnt = cur.copyBytes();
-        secc += 1;
-        update(secs, res);
-        if ((secc % limit) != 0) {
+        otim = tim;
+        for (int i = 0; i < pst; i++) {
+            update(secs, res);
+            secc++;
+        }
+        if (secc < limit) {
             return;
         }
+        secc = 0;
+        minc++;
         update(mina, counter.average(secs));
         update(minm, counter.maximum(secs));
-        if ((secc % (limit * limit)) != 0) {
+        if (minc < limit) {
             return;
         }
+        minc = 0;
         update(hora, counter.average(mina));
         update(horm, counter.maximum(minm));
     }
@@ -373,6 +393,9 @@ public class history {
         history res = new history();
         res.secc = secc;
         res.ocnt = old.ocnt.plus(ocnt);
+        res.otim = otim;
+        res.secc = secc;
+        res.minc = minc;
         for (int i = 0; i < secs.size(); i++) {
             res.secs.add(old.secs.get(i).plus(secs.get(i)));
         }

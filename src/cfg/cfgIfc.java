@@ -4830,10 +4830,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public void updateHistory() {
         ethtyp.getHistory().update(ethtyp.getCounter());
-        if (ethtyp.hwCntr == null) {
-            return;
-        }
-        ethtyp.hwHstry.update(ethtyp.hwCntr);
     }
 
     /**
