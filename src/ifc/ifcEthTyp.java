@@ -1230,7 +1230,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (hwCntr == null) {
             return;
         }
-        hwSub = hwCntr.copyBytes();
+        if (hwSub == null) {
+            hwSub = hwCntr.copyBytes();
+            return;
+        }
+        hwSub = hwSub.plus(hwCntr);
     }
 
     /**
@@ -1270,8 +1274,23 @@ public class ifcEthTyp implements Runnable, ifcUp {
      *
      * @return total counters
      */
-    public counter getTotalCounter() {
+    public counter getTotalCntr() {
         return totCntr.plus(cntr);
+    }
+
+    /**
+     * get hw total counters
+     *
+     * @return total counters
+     */
+    public counter getHwTotalCntr() {
+        if (hwCntr == null) {
+            return null;
+        }
+        if (hwSub == null) {
+            return hwCntr;
+        }
+        return hwCntr.plus(hwSub);
     }
 
 }

@@ -144,6 +144,7 @@ import user.userHelping;
 import user.userTerminal;
 import util.bits;
 import util.cmds;
+import util.counter;
 import util.history;
 import util.logger;
 import util.state;
@@ -4940,7 +4941,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param mode mode to use: 1=descr, 2=sumary, 3=vrf, 4=ip4, 5=ip6, 6=cdp,
      * 7=lldp, 8=udld, 9=trafic, 10=total, 11=psumary, 12=ptrafic, 13=ptotal,
      * 14=lacp, 15=hwsum, 16=hwpsum, 17=hwtrafic, 18=hwptrafic, 19=swsum,
-     * 20=swpsum, 21=swtrafic, 22=swptrafic
+     * 20=swpsum, 21=swtrafic, 22=swptrafic, 23=hwtot, 24=hwptot, 25=swtot,
+     * 26=swptot
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -4987,7 +4989,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShHwSum(ethtyp.hwHstry));
                 break;
             case 10:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShBsum());
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCntr().getShHwBsum(ethtyp.getHwTotalCntr()));
                 break;
             case 11:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShHwPsum(ethtyp.hwCntr));
@@ -4996,7 +4998,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShHwPSum(ethtyp.hwHstry));
                 break;
             case 13:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShPsum());
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCntr().getShHwPsum(ethtyp.getHwTotalCntr()));
                 break;
             case 14:
                 if (lacp == null) {
@@ -5039,6 +5041,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case 22:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShPSum());
+                break;
+            case 23:
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + counter.getShBsum(ethtyp.getHwTotalCntr()));
+                break;
+            case 24:
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + counter.getShPsum(ethtyp.getHwTotalCntr()));
+                break;
+            case 25:
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCntr().getShBsum());
+                break;
+            case 26:
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCntr().getShPsum());
                 break;
         }
     }

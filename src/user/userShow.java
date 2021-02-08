@@ -991,6 +991,14 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(10));
                 return null;
             }
+            if (a.equals("hwtotal")) {
+                rdr.putStrTab(cfgAll.getShIntTab(23));
+                return null;
+            }
+            if (a.equals("swtotal")) {
+                rdr.putStrTab(cfgAll.getShIntTab(25));
+                return null;
+            }
             if (a.equals("traffic")) {
                 rdr.putStrTab(cfgAll.getShIntTab(9));
                 return null;
@@ -1029,6 +1037,14 @@ public class userShow {
             }
             if (a.equals("ptotal")) {
                 rdr.putStrTab(cfgAll.getShIntTab(13));
+                return null;
+            }
+            if (a.equals("hwptotal")) {
+                rdr.putStrTab(cfgAll.getShIntTab(24));
+                return null;
+            }
+            if (a.equals("swptotal")) {
+                rdr.putStrTab(cfgAll.getShIntTab(26));
                 return null;
             }
             if (a.equals("vrf")) {

@@ -572,6 +572,32 @@ public class counter implements Comparator<counter> {
     /**
      * get byte summary
      *
+     * @param c counter to show
+     * @return summary for table
+     */
+    public static String getShBsum(counter c) {
+        if (c == null) {
+            return null;
+        }
+        return c.getShBsum();
+    }
+
+    /**
+     * get byte summary
+     *
+     * @param c counter to show
+     * @return summary for table
+     */
+    public static String getShPsum(counter c) {
+        if (c == null) {
+            return null;
+        }
+        return c.getShPsum();
+    }
+
+    /**
+     * get byte summary
+     *
      * @return summary for table
      */
     public String getShBsum() {

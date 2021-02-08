@@ -3089,6 +3089,8 @@ public class cfgAll {
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 10:
+            case 23:
+            case 25:
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 11:
@@ -3102,6 +3104,8 @@ public class cfgAll {
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 13:
+            case 24:
+            case 26:
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 14:
