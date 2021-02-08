@@ -4948,8 +4948,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + description);
                 break;
             case 2:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShBsum());
-                ////
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShHwBsum(ethtyp.hwCntr));
                 break;
             case 3:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getBandwidth() + "|" + (vrfFor == null ? "n/a" : vrfFor.name));
@@ -4985,19 +4984,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(udld.getShNeigh(false));
                 break;
             case 9:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShSum());
-                ////
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShHwSum(ethtyp.hwHstry));
                 break;
             case 10:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShBsum());
                 break;
             case 11:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShPsum());
-                /////
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShHwPsum(ethtyp.hwCntr));
                 break;
             case 12:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShPSum());
-                ////
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getHistory().getShHwPSum(ethtyp.hwHstry));
                 break;
             case 13:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCounter().getShPsum());

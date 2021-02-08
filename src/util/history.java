@@ -267,6 +267,32 @@ public class history {
         return getShPSum(secs);
     }
 
+    /**
+     * get summary
+     *
+     * @param hw hw history
+     * @return summary for table
+     */
+    public String getShHwSum(history hw) {
+        if (hw == null) {
+            return getShSum(secs);
+        }
+        return getLast(secs).getShHwBsum(getLast(hw.secs));
+    }
+
+    /**
+     * get packet summary
+     *
+     * @param hw hw counter
+     * @return summary for table
+     */
+    public String getShHwPSum(history hw) {
+        if (hw == null) {
+            return getShPSum(secs);
+        }
+        return getLast(secs).getShHwPsum(getLast(hw.secs));
+    }
+
     private static counter getLast(List<counter> lst) {
         int i = lst.size() - 1;
         if (i < 0) {
