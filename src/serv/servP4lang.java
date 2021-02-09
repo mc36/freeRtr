@@ -977,7 +977,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         return master;
     }
 
-    public servP4langIfc getMcast(int gid) {
+    public servP4langIfc getMcast(int gid, servP4langNei hop) {
         servP4langIfc ifc;
         if (master == null) {
             ifc = this;
@@ -989,6 +989,9 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         }
         if (ifc.members.size() < 1) {
             return ifc;
+        }
+        if (hop != null) {
+            gid ^= hop.id;
         }
         return ifc.members.get(gid % ifc.members.size());
     }
@@ -2019,7 +2022,7 @@ class servP4langConn implements Runnable {
             }
             String a = doLab5(ntry, ful, sis);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
         }
         String act;
         for (int i = 0; i < need.bier.peers.size(); i++) {
@@ -2038,7 +2041,7 @@ class servP4langConn implements Runnable {
             }
             String a = doLab5(ntry, ful, sis);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
         }
         if (bef) {
             act = "mod";
@@ -2075,7 +2078,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.label));
+            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.label));
         }
         String act;
         for (int i = 0; i < need.duplicate.size(); i++) {
@@ -2093,7 +2096,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.label));
+            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + getLabel(ntry.label));
             now++;
         }
         if (bef) {
@@ -3705,7 +3708,7 @@ class servP4langConn implements Runnable {
             }
             String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.bsl), 0);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + dbier.srcId + " 0" + a);
+            lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + dbier.srcId + " 0" + a);
         }
         for (int i = 0; i < nbier.fwds.size(); i++) {
             tabLabelBierN ntry = nbier.fwds.get(i);
@@ -3723,7 +3726,7 @@ class servP4langConn implements Runnable {
             }
             String a = doLab5(ntry, tabLabelBier.bsl2msk(ntry.bsl), 0);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + nbier.srcId + " 0" + a);
+            lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + nbier.srcId + " 0" + a);
             now++;
         }
         for (int i = 0; i < dlabel.neighs.size(); i++) {
@@ -3739,7 +3742,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mlabroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.labelR + " " + ifc.id);
+            lower.sendLine("mlabroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.labelR + " " + ifc.id);
         }
         for (int i = 0; i < nlabel.neighs.size(); i++) {
             ipFwdMpNe ntry = nlabel.neighs.get(i);
@@ -3756,7 +3759,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mlabroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + hop.id + " " + ntry.labelR + " " + ifc.id);
+            lower.sendLine("mlabroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.labelR + " " + ifc.id);
             now++;
         }
         for (int i = 0; i < dflood.size(); i++) {
@@ -3768,7 +3771,7 @@ class servP4langConn implements Runnable {
             if (ifc == null) {
                 continue;
             }
-            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("mroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
         }
         for (int i = 0; i < nflood.size(); i++) {
             ipFwdIface ntry = nflood.get(i);
@@ -3781,7 +3784,7 @@ class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
+            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
             now++;
         }
         if (bef) {
