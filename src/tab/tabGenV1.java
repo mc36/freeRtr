@@ -45,7 +45,7 @@ public class tabGenV1<T extends Comparator<? super T>> {
      *
      * @return info
      */
-    public String getTableInfo() {
+    public String tableInfo() {
         synchronized (lst) {
             return "len=" + lst.size();
         }

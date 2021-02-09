@@ -1854,6 +1854,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     return;
                 }
             }
+            grp.cntr.tx(pck);
             for (int i = 0; i < grp.flood.size(); i++) {
                 ipFwdIface ifc = grp.flood.get(i);
                 if (ifc == null) {

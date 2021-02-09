@@ -691,7 +691,7 @@ public class userTest {
         if (!dmp) {
             return;
         }
-        cmd.pipe.strPut("," + tab.getTableInfo() + "  ");
+        cmd.pipe.strPut("," + tab.tableInfo() + "  ");
     }
 
     private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, int add, boolean dmp, String typ) {

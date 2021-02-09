@@ -13,6 +13,7 @@ import tab.tabGen;
 import tab.tabLabel;
 import tab.tabRouteEntry;
 import util.bits;
+import util.counter;
 
 /**
  * stores one multipoint lsp
@@ -65,6 +66,11 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      * neighbors
      */
     public final tabGen<ipFwdMpNe> neighs = new tabGen<ipFwdMpNe>();
+
+    /**
+     * counter
+     */
+    public counter cntr = new counter();
 
     /**
      * create new instance
@@ -668,6 +674,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
      * @param orig packet to send
      */
     public void sendPack(ipFwd fwdCor, packHolder orig) {
+        cntr.tx(orig);
         if ((!mp2mp) && (!selfRoot)) {
             return;
         }

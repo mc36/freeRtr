@@ -3595,27 +3595,25 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        userFormat l = new userFormat("|", "source|group|interface|upstream|targets");
+        String a=cmd.word();
+        if (a.length()>0) {
+            addrIP src = new addrIP();
+            src.fromString(a);
+            addrIP grp = new addrIP();
+            grp.fromString(cmd.word());
+            ipFwdMcast mr = fwd.groups.find(new ipFwdMcast(grp,src));
+            userFormat res = new userFormat("|", "category|value");
+            mr.getDump(res);
+            rdr.putStrTab(res);
+            return;
+        }
+        userFormat l = new userFormat("|", "source|group|interface|upstream|targets|traffic");
         for (int o = 0; o < fwd.groups.size(); o++) {
-            ipFwdMcast grp = fwd.groups.get(o);
-            if (grp == null) {
+            ipFwdMcast mr = fwd.groups.get(o);
+            if (mr == null) {
                 continue;
             }
-            String s = "";
-            for (int i = 0; i < grp.flood.size(); i++) {
-                ipFwdIface ifc = grp.flood.get(i);
-                s += " " + ifc;
-            }
-            if (grp.local) {
-                s += " local";
-            }
-            if (grp.label != null) {
-                s += " label=" + grp.label.listPeers();
-            }
-            if (grp.bier != null) {
-                s += " bierp=" + grp.bier.listPeers() + " bierf=" + grp.bier.listFwds();
-            }
-            l.add(grp.source + "|" + grp.group + "|" + grp.iface + "|" + grp.upstream + "|" + s);
+            l.add(mr.getShow());
         }
         rdr.putStrTab(l);
     }

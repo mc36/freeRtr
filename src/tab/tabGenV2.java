@@ -87,7 +87,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
      *
      * @return info
      */
-    public String getTableInfo() {
+    public String tableInfo() {
         synchronized (lck) {
             return "len=" + valN + ",blk=" + blkN + ",avg=" + (valN / blkN);
         }

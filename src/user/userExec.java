@@ -260,7 +260,9 @@ public class userExec {
         hl.add("3 4        protocol              routing protocol summary");
         hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        mroute                multicast forwarding table entries");
-        hl.add("4 .          <vrf>               name of routing table");
+        hl.add("4 5,.        <vrf>               name of routing table");
+        hl.add("5 6            [addr]            source");
+        hl.add("6 .              <addr>          group");
         hl.add("3 4        segrout               segment routing forwarding table entries");
         hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        bier                  bier forwarding table entries");

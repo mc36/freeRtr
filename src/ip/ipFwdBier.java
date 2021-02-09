@@ -10,7 +10,9 @@ import tab.tabGen;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
 import tab.tabRouteEntry;
+import user.userFormat;
 import util.bits;
+import util.counter;
 
 /**
  * stores one bier lsp
@@ -38,6 +40,11 @@ public class ipFwdBier {
      * current forwarders
      */
     public tabGen<tabLabelBierN> fwds = new tabGen<tabLabelBierN>();
+
+    /**
+     * counter
+     */
+    public counter cntr = new counter();
 
     /**
      * create new instance
@@ -101,6 +108,7 @@ public class ipFwdBier {
      * @param orig packet
      */
     public void sendPack(packHolder orig) {
+        cntr.tx(orig);
         int prt;
         switch (orig.ETHtype) {
             case ipMpls.typeU:
@@ -182,6 +190,20 @@ public class ipFwdBier {
             a += " " + fwds.get(i);
         }
         return a.trim();
+    }
+
+    /**
+     * get details
+     *
+     * @param res result
+     */
+    public void getDump(userFormat res) {
+        for (int i = 0; i < peers.size(); i++) {
+            res.add("bier peer|" + peers.get(i));
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            res.add("bier fwd|" + fwds.get(i));
+        }
     }
 
     /**
@@ -300,7 +322,7 @@ class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
     }
 
     public String toString() {
-        return addr + "," + bit;
+        return addr + "," + bit + "," + via;
     }
 
 }

@@ -71,10 +71,14 @@ public class ipFwdMpNe implements Comparator<ipFwdMpNe> {
         if (labelR != o.labelR) {
             return true;
         }
-        if (labelL==null) {
-            if (o.labelL!=null)return true;
+        if (labelL == null) {
+            if (o.labelL != null) {
+                return true;
+            }
         } else {
-            if (labelL.differs(o.labelL))return true;
+            if (labelL.differs(o.labelL)) {
+                return true;
+            }
         }
         if (addr.compare(addr, o.addr) != 0) {
             return true;

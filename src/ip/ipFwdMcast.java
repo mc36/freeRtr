@@ -2,7 +2,11 @@ package ip;
 
 import addr.addrIP;
 import java.util.Comparator;
+import pack.packHolder;
 import tab.tabGen;
+import tab.tabRtrmapN;
+import user.userFormat;
+import util.counter;
 
 /**
  * stores one multicast group
@@ -14,12 +18,12 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
     /**
      * group address
      */
-    public addrIP group;
+    public final addrIP group;
 
     /**
      * source address, filled with zeroes for anything
      */
-    public addrIP source;
+    public final addrIP source;
 
     /**
      * route distinguisher
@@ -75,6 +79,16 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
      * mdt vrf
      */
     public ipFwd upsVrf;
+
+    /**
+     * counter
+     */
+    public counter cntr = new counter();
+
+    /**
+     * hardware counter
+     */
+    public counter hwCntr;
 
     public int compare(ipFwdMcast o1, ipFwdMcast o2) {
         int i = o1.group.compare(o1.group, o2.group);
@@ -178,6 +192,45 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
             }
         }
         return false;
+    }
+
+    /**
+     * get show line
+     *
+     * @return text
+     */
+    public String getShow() {
+        String s = "ifc=" + flood.size();
+        if (label != null) {
+            s += " label=" + label.neighs.size();
+        }
+        if (bier != null) {
+            s += " bierp=" + bier.peers.size() + " bierf=" + bier.fwds.size();
+        }
+        if (local) {
+            s += " local";
+        }
+        return source + "|" + group + "|" + iface + "|" + upstream + "|" + s + "|" + cntr.getShHwStat(hwCntr);
+    }
+
+    /**
+     * get details
+     *
+     * @param res result
+     */
+    public void getDump(userFormat res) {
+        res.add("source|" + source);
+        res.add("group|" + group);
+        res.add("rd|" + tabRtrmapN.rd2string(rd));
+        res.add("iface|" + iface);
+        res.add("upstream|" + upstream);
+        for (int i = 0; i < flood.size(); i++) {
+            res.add("flood|" + flood.get(i));
+        }
+        res.add("label|" + label);
+        if (bier != null) {
+            bier.getDump(res);
+        }
     }
 
 }

@@ -131,8 +131,8 @@ public class tabRoute<T extends addrType> {
      *
      * @return info
      */
-    public String getTableInfo() {
-        return prefixes.getTableInfo();
+    public String tableInfo() {
+        return prefixes.tableInfo();
     }
 
     /**
