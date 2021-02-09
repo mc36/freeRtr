@@ -224,8 +224,11 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         res.add("rd|" + tabRtrmapN.rd2string(rd));
         res.add("iface|" + iface);
         res.add("upstream|" + upstream);
+        res.add("local|" + local);
+        res.add("configG|" + configG);
+        res.add("configI|" + configI);
         for (int i = 0; i < flood.size(); i++) {
-            res.add("flood|" + flood.get(i));
+            res.add("flood iface|" + flood.get(i));
         }
         res.add("label|" + label);
         if (bier != null) {

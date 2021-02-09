@@ -339,6 +339,7 @@ public class player implements Runnable {
         playlists = playerUtil.readup(path + ".cfg");
         playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(0)));
         prelock = playlist;
+        stopFull();
         setVolume(volDef);
         startPlayNormal(-1, "0");
         ready = true;
@@ -826,7 +827,6 @@ public class player implements Runnable {
         if (cmd.equals("fullstop")) {
             putStart(buf, 5);
             putMenu(buf);
-            headEnd = false;
             String a = "<br/>stopping everything.<br/>";
             buf.write(a.getBytes());
             startPlayNormal(-1, "0");

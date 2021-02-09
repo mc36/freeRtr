@@ -1835,6 +1835,28 @@ void doStatRound(FILE *commands, int round) {
         inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
         fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
     }
+    for (int i=0; i<route4_table.size; i++) {
+        struct mroute4_entry *ntry = table_get(&mroute4_table, i);
+        put32msb(buf, 0, ntry->src);
+        inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->grp);
+        inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
+        fprintf(commands, "mroute4_cnt %i %s %s %li %li\r\n", ntry->vrf, &buf2, &buf3, ntry->pack, ntry->byte);
+    }
+    for (int i=0; i<route6_table.size; i++) {
+        struct mroute6_entry *ntry = table_get(&mroute6_table, i);
+        put32msb(buf, 0, ntry->src1);
+        put32msb(buf, 4, ntry->src2);
+        put32msb(buf, 8, ntry->src3);
+        put32msb(buf, 12, ntry->src4);
+        inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->grp1);
+        put32msb(buf, 4, ntry->grp2);
+        put32msb(buf, 8, ntry->grp3);
+        put32msb(buf, 12, ntry->grp4);
+        inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
+        fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", ntry->vrf, &buf2, &buf3, ntry->pack, ntry->byte);
+    }
     for (int i=0; i<nat4_table.size; i++) {
         struct nat4_entry *ntry = table_get(&nat4_table, i);
         put32msb(buf, 0, ntry->oSrcAddr);
