@@ -234,6 +234,8 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         if (bier != null) {
             bier.getDump(res);
         }
+        res.add("counter|" + counter.getShStat(cntr));
+        res.add("hardware counter|" + counter.getShStat(hwCntr));
     }
 
 }

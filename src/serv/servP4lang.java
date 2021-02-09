@@ -1151,6 +1151,24 @@ class servP4langConn implements Runnable {
         ntry.reverse.lastUsed = ntry.lastUsed;
     }
 
+    private void updateMroute(cmds cmd, ipFwd fwd) {
+        addrIP src = new addrIP();
+        src.fromString(cmd.word());
+        addrIP grp = new addrIP();
+        grp.fromString(cmd.word());
+        ipFwdMcast ntry = new ipFwdMcast(grp, src);
+        ntry = fwd.groups.find(ntry);
+        if (ntry == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
+            return;
+        }
+        ntry.hwCntr = new counter();
+        ntry.hwCntr.packTx = bits.str2long(cmd.word());
+        ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+    }
+
     private void updateRoute(cmds cmd, ipFwd fwd, addrPrefix<addrIP> prf) {
         tabRouteEntry<addrIP> ntry = fwd.actualU.find(prf);
         if (ntry == null) {
@@ -1509,6 +1527,30 @@ class servP4langConn implements Runnable {
                     return false;
                 }
                 updateAcl(cmd, vrf.flwSpc6);
+                return false;
+            }
+            if (s.equals("mroute4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateMroute(cmd, vrf.vrf.fwd4);
+                return false;
+            }
+            if (s.equals("mroute6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateMroute(cmd, vrf.vrf.fwd6);
                 return false;
             }
             if (s.equals("route4_cnt")) {
