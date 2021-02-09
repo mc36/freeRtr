@@ -15,8 +15,8 @@
 #systemctl disable serial-getty@ttyS0
 #echo "mc36 ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 cd /home/mc36/rare/p4src
-export SDE=/home/mc36/bf-sde-9.3.1
-export SDE_INSTALL=/home/mc36/bf-sde-9.3.1/install
+export SDE=/home/mc36/bf-sde-9.4.0
+export SDE_INSTALL=/home/mc36/bf-sde-9.4.0/install
 #$SDE/install/bin/bf-p4c bf_router.p4
 sudo -E $SDE/tools/p4_build.sh -I. $@ ./bf_router.p4
 cd $SDE/logs/p4-build/bf_router
