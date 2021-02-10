@@ -210,7 +210,11 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         if (local) {
             s += " local";
         }
-        return source + "|" + group + "|" + iface + "|" + upstream + "|" + s + "|" + cntr.getShHwStat(hwCntr);
+        String a = "";
+        if (hwCntr != null) {
+            a = "+" + hwCntr.byteTx;
+        }
+        return source + "|" + group + "|" + iface + "|" + upstream + "|" + s + "|" + cntr.byteTx + a;
     }
 
     /**

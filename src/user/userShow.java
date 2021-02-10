@@ -3607,7 +3607,7 @@ public class userShow {
             rdr.putStrTab(res);
             return;
         }
-        userFormat l = new userFormat("|", "source|group|interface|upstream|targets|traffic");
+        userFormat l = new userFormat("|", "source|group|interface|upstream|targets|bytes");
         for (int o = 0; o < fwd.groups.size(); o++) {
             ipFwdMcast mr = fwd.groups.get(o);
             if (mr == null) {
