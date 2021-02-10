@@ -3595,13 +3595,17 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        String a=cmd.word();
-        if (a.length()>0) {
+        String a = cmd.word();
+        if (a.length() > 0) {
             addrIP src = new addrIP();
             src.fromString(a);
             addrIP grp = new addrIP();
             grp.fromString(cmd.word());
-            ipFwdMcast mr = fwd.groups.find(new ipFwdMcast(grp,src));
+            ipFwdMcast mr = fwd.groups.find(new ipFwdMcast(grp, src));
+            if (mr == null) {
+                cmd.error("no such group");
+                return;
+            }
             userFormat res = new userFormat("|", "category|value");
             mr.getDump(res);
             rdr.putStrTab(res);
