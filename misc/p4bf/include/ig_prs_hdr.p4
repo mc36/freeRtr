@@ -299,7 +299,7 @@ state prs_udp {
     udp_checksum.subtract({hdr.udp.checksum});
     udp_checksum.subtract({hdr.udp.src_port});
     udp_checksum.subtract({hdr.udp.dst_port});
-    ig_md.checksum_udp_tmp = udp_checksum.get();
+    udp_checksum.subtract_all_and_deposit(ig_md.checksum_udp_tmp);
 #endif
     transition select(hdr.udp.src_port, hdr.udp.dst_port) {
 #ifdef HAVE_L2TP
@@ -333,7 +333,7 @@ state prs_tcp {
     tcp_checksum.subtract({hdr.tcp.checksum});
     tcp_checksum.subtract({hdr.tcp.src_port});
     tcp_checksum.subtract({hdr.tcp.dst_port});
-    ig_md.checksum_tcp_tmp = tcp_checksum.get();
+    tcp_checksum.subtract_all_and_deposit(ig_md.checksum_tcp_tmp);
 #endif
     transition accept;
 }
