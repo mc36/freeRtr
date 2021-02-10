@@ -117,7 +117,7 @@ class BfRuntimeGrpcClient:
 
         try:
             self.interface = gc.ClientInterface(
-                self.grpc_addr, client_id=self.client_id, device_id=0, is_master=False
+                self.grpc_addr, client_id=self.client_id, device_id=0
             )
         except Exception as e:
             logger.error("[setUp error]: %s" % e)
@@ -135,7 +135,7 @@ class BfRuntimeGrpcClient:
         self.interface.bind_pipeline_config(self.p4_name)
 
     def tearDown(self):
-        self.interface._tear_down_stream()
+        self.interface.tear_down_stream()
 
 class BfSubIfCounter(Thread):
     def __init__(self, threadID, name, bfgc, sck_file,pipe_name,subif_counter_interval,):
