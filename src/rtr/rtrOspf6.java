@@ -213,6 +213,7 @@ public class rtrOspf6 extends ipRtr {
         tab.setProto(routerProtoTyp, routerProcNum);
         tab.preserveTime(routerComputedU);
         routerComputedU = tab;
+        routerComputedM = tab;
         fwdCore.routerChg(this);
     }
 

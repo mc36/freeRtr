@@ -469,6 +469,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
         tab.setProto(routerProtoTyp, routerProcNum);
         tab.preserveTime(routerComputedU);
         routerComputedU = tab;
+        routerComputedM = tab;
         fwdCore.routerChg(this);
     }
 

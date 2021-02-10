@@ -9,6 +9,7 @@ import pack.packHolder;
 import tab.tabGen;
 import tab.tabLabelBier;
 import tab.tabLabelBierN;
+import tab.tabRoute;
 import tab.tabRouteEntry;
 import user.userFormat;
 import util.bits;
@@ -253,11 +254,13 @@ public class ipFwdBier {
             if (rou == null) {
                 continue;
             }
+            rou = rou.copyBytes(tabRoute.addType.lnkAlters);
             if (rou.best.oldHop != null) {
                 rou = fwd.actualU.route(rou.best.oldHop);
                 if (rou == null) {
                     continue;
                 }
+                rou = rou.copyBytes(tabRoute.addType.lnkAlters);
             }
             if (rou.best.bierIdx < 1) {
                 continue;

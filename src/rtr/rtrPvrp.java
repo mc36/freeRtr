@@ -342,6 +342,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         tab2.setProto(routerProtoTyp, routerProcNum);
         tab2.preserveTime(routerComputedU);
         routerComputedU = tab2;
+        routerComputedM = tab2;
         fwdCore.routerChg(this);
     }
 
