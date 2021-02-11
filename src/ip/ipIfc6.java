@@ -35,6 +35,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
     public int rtrAdvInterval = 120 * 1000;
 
     /**
+     * router validity interval
+     */
+    public int rtrAdvValidity = 604800 * 1000;
+
+    /**
      * suppress router advertisements
      */
     public boolean rtrAdvSuppress = false;
@@ -43,6 +48,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * dns information
      */
     public addrIP rtrAdvDns;
+
+    /**
+     * domain information
+     */
+    public String rtrAdvDom;
 
     private ipIfc6nei neiCache = null;
 
@@ -399,7 +409,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         if (rtrAdvDns != null) {
             dns = rtrAdvDns.toIPv6();
         }
-        icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns);
+        icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns, rtrAdvDom, rtrAdvValidity);
         sendProto(pck, pck.IPtrg);
     }
 

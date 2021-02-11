@@ -4,6 +4,7 @@ import addr.addrIP;
 import addr.addrIPv6;
 import addr.addrType;
 import cfg.cfgAll;
+import pack.packDnsRec;
 import pack.packHolder;
 import util.bits;
 import util.counter;
@@ -434,7 +435,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 if (ifc.rtrAdvDns != null) {
                     adr6 = ifc.rtrAdvDns.toIPv6();
                 }
-                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLinkLocalAddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6);
+                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLinkLocalAddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6, ifc.rtrAdvDom, ifc.rtrAdvValidity);
                 ifc.sendProto(pck, pck.IPtrg);
                 break;
             case icmpRtrAdv:
@@ -602,8 +603,10 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      * @param mask mask
      * @param mtu maximum transmission unit
      * @param dns name server address
+     * @param dom domain name
+     * @param vld prefix validity
      */
-    public void createRouterAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, addrIPv6 net, int mask, int mtu, addrIPv6 dns) {
+    public void createRouterAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, addrIPv6 net, int mask, int mtu, addrIPv6 dns, String dom, int vld) {
         if (trg == null) {
             trg = addrIPv6.getAllNodes();
         } else {
@@ -632,8 +635,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         byte[] buf = new byte[64];
         buf[0] = (byte) mask; // prefix length
         buf[1] = (byte) 0xc0; // onlink:1 auto:1 router:1 site:1 reserved:4
-        bits.msbPutD(buf, 2, 2592000); // valid lifetime
-        bits.msbPutD(buf, 6, 604800); // preferred lifetime
+        bits.msbPutD(buf, 2, vld / 250); // valid lifetime
+        bits.msbPutD(buf, 6, vld / 1000); // preferred lifetime
         bits.msbPutD(buf, 10, 0); // reserved
         net.toBuffer(buf, 14); // prefix
         tlv.putBytes(pck, 3, net.getSize() + 14, buf); // prefix info
@@ -644,9 +647,26 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         }
         if (dns != null) {
             bits.msbPutW(buf, 0, 0); // reserved
-            bits.msbPutD(buf, 2, 604800); // preferred lifetime
+            bits.msbPutD(buf, 2, vld / 1000); // preferred lifetime
             dns.toBuffer(buf, 6); // address
             tlv.putBytes(pck, 25, dns.getSize() + 6, buf); // dns info
+        }
+        if (dom != null) {
+            packHolder tmp = new packHolder(true, true);
+            tmp.msbPutW(0, 0); // reserved
+            tmp.msbPutD(2, vld / 1000); // preferred lifetime
+            tmp.putSkip(6);
+            tmp.merge2end();
+            packDnsRec.putDomain(tmp, dom);
+            tmp.merge2end();
+            int pad = (tmp.dataSize() + 2) & 7;
+            if (pad > 0) {
+                pad = 8 - pad;
+                tmp.putFill(0, pad, 0);
+                tmp.putSkip(pad);
+                tmp.merge2end();
+            }
+            tlv.putBytes(pck, 31, tmp.getCopy()); // domain info
         }
         pck.merge2beg();
         pck.putByte(4, 64); // hop limit

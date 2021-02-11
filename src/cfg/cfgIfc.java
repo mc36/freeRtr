@@ -1407,7 +1407,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv6 prefix-suppress",
         "interface .*! no ipv6 slaac",
         "interface .*! no ipv6 prefix-dns",
+        "interface .*! no ipv6 prefix-domain",
         "interface .*! ipv6 prefix-interval 120000",
+        "interface .*! ipv6 prefix-validity 604800000",
         // multicast
         "interface .*! no ipv[4|6] multicast source-override-in",
         "interface .*! no ipv[4|6] multicast source-override-out",
@@ -5397,7 +5399,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmds.cfgLine(l, ip6polC == null, cmds.tabulator, "ipv6 pool", "" + ip6polC);
                 cmds.cfgLine(l, !ipIf6.rtrAdvSuppress, cmds.tabulator, "ipv6 prefix-suppress", "");
                 cmds.cfgLine(l, ipIf6.rtrAdvDns == null, cmds.tabulator, "ipv6 prefix-dns", "" + ipIf6.rtrAdvDns);
+                cmds.cfgLine(l, ipIf6.rtrAdvDom == null, cmds.tabulator, "ipv6 prefix-domain", "" + ipIf6.rtrAdvDom);
                 l.add(cmds.tabulator + "ipv6 prefix-interval " + ipIf6.rtrAdvInterval);
+                l.add(cmds.tabulator + "ipv6 prefix-validity " + ipIf6.rtrAdvValidity);
             }
             if (ipxAddr != null) {
                 l.add(cmds.tabulator + "ipx network " + bits.toHexD(ipxAddr.getNet()));
@@ -5692,7 +5696,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 .     prefix-suppress             suppress router advertisements");
         l.add("2 3     prefix-dns                  name server in router advertisements");
         l.add("3 .       <addr>                    name server address");
+        l.add("2 3     prefix-domain               domain name in router advertisements");
+        l.add("3 .       <name>                    domain name");
         l.add("2 3     prefix-interval             time between router advertisements");
+        l.add("3 .       <num>                     time in milliseconds");
+        l.add("2 3     prefix-validity             prefix validity in router advertisements");
         l.add("3 .       <num>                     time in milliseconds");
         l.add("2 3     pool                        peer address pool");
         l.add("3 .       <name>                    name of address pool");
@@ -7283,12 +7291,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ipIf6.resetTimer();
             return;
         }
+        if (a.equals("prefix-validity")) {
+            ipIf6.rtrAdvValidity = bits.str2num(cmd.word());
+            ipIf6.resetTimer();
+            return;
+        }
         if (a.equals("prefix-dns")) {
             addrIP adr = new addrIP();
             if (adr.fromString(cmd.word())) {
                 return;
             }
             ipIf6.rtrAdvDns = adr;
+            return;
+        }
+        if (a.equals("prefix-domain")) {
+            ipIf6.rtrAdvDom = cmd.word();
             return;
         }
         if (!fwdIf6.doConfig(a, cmd, vrfFor.core6, vrfFor.fwd6, vrfFor.udp6)) {
@@ -7358,6 +7375,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("prefix-dns")) {
             ipIf6.rtrAdvDns = null;
+            return;
+        }
+        if (a.equals("prefix-domain")) {
+            ipIf6.rtrAdvDom = null;
             return;
         }
         if (!fwdIf6.unConfig(a, cmd, vrfFor.fwd6)) {
