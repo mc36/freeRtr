@@ -312,6 +312,22 @@ public class secTls implements Runnable {
         if (ph.servHelloParse()) {
             return null;
         }
+        if (ph.minVer >= 0x304) {
+            p.packRecv();
+            if (!ph.chgCipherParse()) {
+                p.packRecv();
+            }
+            if (ph.calcKeysNg(true)) {
+                return null;
+            }
+            util.logger.debug("here " + ph.minVer + " " + p.pckTyp);//////
+            bits.sleep(1000);//////
+            if (ph.headerParse()) {
+                return null;
+            }
+
+            return p;
+        }
         p.packRecv();
         if (ph.headerParse()) {
             return null;

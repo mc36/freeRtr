@@ -147,38 +147,42 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
     /**
      * verify signature
      *
+     * @param pkcs oid of hash
      * @param hash generated hash
      * @param sign received
      * @return false on success, true on error
      */
-    public abstract boolean certVerify(byte[] hash, byte[] sign);
+    public abstract boolean certVerify(byte[] pkcs, byte[] hash, byte[] sign);
 
     /**
      * generate sign
      *
+     * @param pkcs oid of hash
      * @param hash generated hash
      * @return generated signature
      */
-    public abstract byte[] certSigning(byte[] hash);
+    public abstract byte[] certSigning(byte[] pkcs, byte[] hash);
 
     /**
      * verify signature
      *
      * @param ver protocol version
+     * @param pkcs oid of hash
      * @param hash generated hash
      * @param sign received
      * @return false on success, true on error
      */
-    public abstract boolean tlsVerify(int ver, byte[] hash, byte[] sign);
+    public abstract boolean tlsVerify(int ver, byte[] pkcs, byte[] hash, byte[] sign);
 
     /**
      * generate sign
      *
      * @param ver protocol version
+     * @param pkcs oid of hash
      * @param hash generated hash
      * @return generated signature
      */
-    public abstract byte[] tlsSigning(int ver, byte[] hash);
+    public abstract byte[] tlsSigning(int ver, byte[] pkcs, byte[] hash);
 
     /**
      * generate new key

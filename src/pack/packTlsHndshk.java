@@ -209,6 +209,26 @@ public class packTlsHndshk {
     public boolean datagram;
 
     /**
+     * server exchange hash
+     */
+    public byte[] servHash;
+
+    /**
+     * server exchange oid
+     */
+    public byte[] servPkcs;
+
+    /**
+     * ec private key
+     */
+    public byte[] ecPriv;
+
+    /**
+     * ec peer key
+     */
+    public byte[] ecPeer;
+
+    /**
      * hello request
      */
     public final static int typeHeloReq = 0;
@@ -284,8 +304,6 @@ public class packTlsHndshk {
     public final static int typeMsgHsh = 254;
 
     private final packTls lower;
-
-    private byte[] ecPriv;
 
     /**
      * convert type to string
@@ -547,14 +565,18 @@ public class packTlsHndshk {
 
     private int[] makeCipherList() {
         List<Integer> l1 = new ArrayList<Integer>();
-        for (int i = 0x1400; i >= 0x1300; i--) {
-            if (decodeCipherCode(i) > 0) {
-                l1.add(i);
+        if (maxVer >= 0x304) {
+            for (int i = 0x1400; i >= 0x1300; i--) {
+                if (decodeCipherCode(i) > 0) {
+                    l1.add(i);
+                }
             }
         }
-        for (int i = 0x100; i >= 0; i--) {
-            if (decodeCipherCode(i) > 0) {
-                l1.add(i);
+        if (minVer < 0x304) {
+            for (int i = 0x100; i >= 0; i--) {
+                if (decodeCipherCode(i) > 0) {
+                    l1.add(i);
+                }
             }
         }
         int[] l2 = new int[l1.size()];
@@ -594,13 +616,63 @@ public class packTlsHndshk {
         return trg;
     }
 
-    private byte[] makeExtensionList() {
-        typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    private void parseExtensionList(byte[] buf, boolean client) {
+        if (buf == null) {
+            return;
+        }
+        typLenVal tlv = getTlv();
         packHolder pck = new packHolder(true, true);
-        byte[] buf = new byte[(2 * (maxVer - minVer)) + 3];
-        buf[0] = (byte) (buf.length - 1);
-        for (int i = minVer; i <= maxVer; i++) {
-            bits.msbPutW(buf, 1 + (2 * (i - minVer)), i);
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2beg();
+        for (;;) {
+            if (tlv.getBytes(pck)) {
+                break;
+            }
+            switch (tlv.valTyp) {
+                case 43: // supported version
+                    if (!client) {
+                        minVer = bits.msbGetW(tlv.valDat, 0);
+                        maxVer = minVer;
+                        break;
+                    }
+                    minVer = 0x300;
+                    maxVer = 0x304;
+                    for (int i = 1; i < tlv.valSiz; i += 2) {
+                        int o = bits.msbGetW(tlv.valDat, i + 1);
+                        if (o < minVer) {
+                            minVer = o;
+                        }
+                        if (o > maxVer) {
+                            maxVer = o;
+                        }
+                    }
+                    break;
+                case 51:
+                    ecPeer = new byte[32];
+                    bits.byteCopy(tlv.valDat, 4, ecPeer, 0, ecPeer.length);
+                    break;
+            }
+        }
+    }
+
+    private typLenVal getTlv() {
+        return new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    }
+
+    private byte[] makeExtensionList(boolean client) {
+        typLenVal tlv = getTlv();
+        packHolder pck = new packHolder(true, true);
+        byte[] buf;
+        if (client) {
+            buf = new byte[(2 * (maxVer - minVer)) + 3];
+            buf[0] = (byte) (buf.length - 1);
+            for (int i = minVer; i <= maxVer; i++) {
+                bits.msbPutW(buf, 1 + (2 * (i - minVer)), i);
+            }
+        } else {
+            buf = new byte[2];
+            bits.msbPutW(buf, 0, maxVer);
         }
         tlv.putBytes(pck, 43, buf); // supported versions
         buf = new byte[2];
@@ -638,10 +710,16 @@ public class packTlsHndshk {
         tlv.putBytes(pck, 45, buf); // supported groups
         ecPriv = cryECcurve25519.make();
         byte[] res = cryECcurve25519.calc(ecPriv, null);
-        buf = new byte[6];
-        bits.msbPutW(buf, 0, res.length + 4);
-        bits.msbPutW(buf, 2, 0x1d); // x25519
-        bits.msbPutW(buf, 4, res.length);
+        if (client) {
+            buf = new byte[6];
+            bits.msbPutW(buf, 0, res.length + 4);
+            bits.msbPutW(buf, 2, 0x1d); // x25519
+            bits.msbPutW(buf, 4, res.length);
+        } else {
+            buf = new byte[4];
+            bits.msbPutW(buf, 0, 0x1d); // x25519
+            bits.msbPutW(buf, 2, res.length);
+        }
         tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
         pck.merge2end();
         return pck.getCopy();
@@ -656,7 +734,7 @@ public class packTlsHndshk {
         clntRand = makeRandomCookie();
         cipherList = makeCipherList();
         cmprssList = makeCompressList();
-        extnsnList = makeExtensionList();
+        extnsnList = makeExtensionList(true);
     }
 
     /**
@@ -824,7 +902,7 @@ public class packTlsHndshk {
         cipherWant = cipherList[o];
         cipherDecoded = decodeCipherCode(cipherWant);
         servRand = makeRandomCookie();
-        extnsnList = makeExtensionList();
+        extnsnList = makeExtensionList(false);
         versionFill();
         return false;
     }
@@ -875,6 +953,7 @@ public class packTlsHndshk {
         lower.pckDat.getSkip(3);
         extnsnList = lower.getBytes(2);
         cipherDecoded = decodeCipherCode(cipherWant);
+        parseExtensionList(extnsnList, true);
         if (cmprssWant != 0) {
             return true;
         }
@@ -956,7 +1035,9 @@ public class packTlsHndshk {
         logger.debug(dir + s);
     }
 
-    private byte[] servKexSign() {
+    private void servKexSign() {
+        servHash = null;
+        servPkcs = null;
         packTls h = new packTls(datagram);
         h.putBytes(clntRand, 0);
         h.putBytes(servRand, 0);
@@ -965,18 +1046,19 @@ public class packTlsHndshk {
         h.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
         h.pckDat.merge2beg();
         byte[] raw = h.pckDat.getCopy();
-        byte[] hsh = null;
         if (signHsh < 0) {
             switch (cipherDecoded & 0xf00) {
                 case 0x100:
-                    hsh = bits.byteConcat(cryHashGeneric.compute(new cryHashMd5(), raw),
+                    servHash = bits.byteConcat(cryHashGeneric.compute(new cryHashMd5(), raw),
                             cryHashGeneric.compute(new cryHashSha1(), raw));
+                    servPkcs = new cryHashMd5().getPkcs();
                     break;
                 case 0x200:
-                    hsh = cryHashGeneric.compute(new cryHashSha1(), raw);
+                    servHash = cryHashGeneric.compute(new cryHashSha1(), raw);
+                    servPkcs = new cryHashSha1().getPkcs();
                     break;
                 default:
-                    return null;
+                    return;
             }
         } else {
             cryHashGeneric alg = null;
@@ -994,14 +1076,14 @@ public class packTlsHndshk {
                     alg = new cryHashSha2512();
                     break;
                 default:
-                    return null;
+                    return;
             }
-            hsh = cryHashGeneric.compute(alg, raw);
+            servHash = cryHashGeneric.compute(alg, raw);
+            servPkcs = alg.getPkcs();
         }
         if (debugger.secTlsTraf) {
-            logger.debug("paramHash=" + bits.byteDump(hsh, 0, -1));
+            logger.debug("paramHash=" + bits.byteDump(servHash, 0, -1) + " oid=" + bits.byteDump(servPkcs, 0, -1));
         }
-        return hsh;
     }
 
     /**
@@ -1034,14 +1116,14 @@ public class packTlsHndshk {
         if (lower.verCurr >= 0x303) {
             signHsh = 2;
         }
-        byte[] hash = servKexSign();
+        servKexSign();
         switch (cipherDecoded & 0xf00) {
             case 0x100:
-                signDat = keyrsa.tlsSigning(lower.verCurr, hash);
+                signDat = keyrsa.tlsSigning(lower.verCurr, servPkcs, servHash);
                 signAlg = 1;
                 break;
             case 0x200:
-                signDat = keydsa.tlsSigning(lower.verCurr, hash);
+                signDat = keydsa.tlsSigning(lower.verCurr, servPkcs, servHash);
                 signAlg = 2;
                 break;
             default:
@@ -1095,8 +1177,11 @@ public class packTlsHndshk {
         if (debugger.secTlsTraf) {
             logger.debug("cert=" + crt);
         }
-        byte[] hash = servKexSign();
-        if (crt.key.tlsVerify(lower.verCurr, hash, signDat)) {
+        servKexSign();
+        if (servHash == null) {
+            return true;
+        }
+        if (crt.key.tlsVerify(lower.verCurr, servPkcs, servHash, signDat)) {
             return true;
         }
         return false;
@@ -1501,6 +1586,16 @@ public class packTlsHndshk {
             lower.encRx = initAlgoCipher(encCS, ivCS, false);
         }
         return false;
+    }
+
+    /**
+     * initialize keys
+     *
+     * @param client true=client, false=server
+     * @return false on success, true on error
+     */
+    public boolean calcKeysNg(boolean client) {
+        return false;////
     }
 
 }

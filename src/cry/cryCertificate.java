@@ -769,7 +769,7 @@ public class cryCertificate {
             return null;
         }
         data = cryHashGeneric.compute(h, data);
-        return key.certSigning(data);
+        return key.certSigning(h.getPkcs(), data);
     }
 
     /**
@@ -785,7 +785,7 @@ public class cryCertificate {
             return true;
         }
         data = cryHashGeneric.compute(h, data);
-        return key.certVerify(data, sign);
+        return key.certVerify(h.getPkcs(), data, sign);
     }
 
     private void addDate(packHolder pck, long tim) {

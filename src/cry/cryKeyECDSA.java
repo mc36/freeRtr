@@ -398,7 +398,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @param sign signature
      * @return false on success, true on error
      */
-    public boolean certVerify(byte[] hash, byte[] sign) {
+    public boolean certVerify(byte[] pkcs, byte[] hash, byte[] sign) {
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
@@ -423,7 +423,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @param hash hash
      * @return signature
      */
-    public byte[] certSigning(byte[] hash) {
+    public byte[] certSigning(byte[] pkcs, byte[] hash) {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
@@ -444,7 +444,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @param sign signature
      * @return false on success, true on error
      */
-    public boolean tlsVerify(int ver, byte[] hash, byte[] sign) {
+    public boolean tlsVerify(int ver, byte[] pkcs, byte[] hash, byte[] sign) {
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
@@ -469,7 +469,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @param hash hash
      * @return signature
      */
-    public byte[] tlsSigning(int ver, byte[] hash) {
+    public byte[] tlsSigning(int ver, byte[] pkcs, byte[] hash) {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
