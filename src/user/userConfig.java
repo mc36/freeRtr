@@ -21,7 +21,6 @@ import cfg.cfgEvntmgr;
 import cfg.cfgGeneric;
 import cfg.cfgHrpn;
 import cfg.cfgIconn;
-import cfg.cfgSessn;
 import cfg.cfgKey;
 import cfg.cfgMenu;
 import cfg.cfgMtrack;
@@ -38,6 +37,7 @@ import cfg.cfgRtr;
 import cfg.cfgSched;
 import cfg.cfgScrpt;
 import cfg.cfgSensor;
+import cfg.cfgSessn;
 import cfg.cfgTime;
 import cfg.cfgTlmtry;
 import cfg.cfgTrack;
@@ -559,6 +559,8 @@ public class userConfig {
         l.add("3  .      <num>                      bits");
         l.add("2  .    ftp-passive                  use passive mode ftp");
         l.add("2  .    ftp-active                   use active mode ftp");
+        l.add("2  3    tls-version                  specify tls version");
+        l.add("3  .      <num>                      forced version");
         l.add("2  3    time-server                  specify name of time server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    time-zone                    specify time zone");
@@ -1616,6 +1618,10 @@ public class userConfig {
                 cfgAll.ftpPassive = false;
                 return;
             }
+            if (a.equals("tls-version")) {
+                cfgAll.tlsVersion = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("proxy")) {
                 cfgAll.clientProxy = cfgAll.proxyFind(cmd.word(), false);
                 if (cfgAll.clientProxy == null) {
@@ -2397,6 +2403,10 @@ public class userConfig {
             }
             if (a.equals("password-stars")) {
                 cfgAll.passwdStars = false;
+                return;
+            }
+            if (a.equals("tls-version")) {
+                cfgAll.tlsVersion = -1;
                 return;
             }
             if (a.equals("prefer-ipv6")) {

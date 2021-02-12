@@ -80,6 +80,11 @@ public class secTls implements Runnable {
      */
     public int forcedVer = -1;
 
+    /**
+     * server name
+     */
+    public String serverName = null;
+
     private boolean datagram;
 
     /**
@@ -160,6 +165,7 @@ public class secTls implements Runnable {
                 p = workerServer();
             }
             if (p != null) {
+                forcedVer = p.verCurr;
                 workerThreads(p);
             }
         } catch (Exception e) {
@@ -253,11 +259,12 @@ public class secTls implements Runnable {
         }
         packTls p = new packTls(datagram);
         p.pipe = lower;
-        if (forcedVer > 0) {
-            p.verMax = forcedVer;
-            p.verMin = forcedVer;
+        if (forcedVer >= 0) {
+            p.verMax = 0x300 + forcedVer;
+            p.verMin = 0x300 + forcedVer;
         }
         packTlsHndshk ph = new packTlsHndshk(p, datagram);
+        ph.servNam = serverName;
         ph.clntHelloFill();
         ph.clntHelloCreate();
         ph.headerCreate();
@@ -342,9 +349,9 @@ public class secTls implements Runnable {
         }
         packTls p = new packTls(datagram);
         p.pipe = lower;
-        if (forcedVer > 0) {
-            p.verMax = forcedVer;
-            p.verMin = forcedVer;
+        if (forcedVer >= 0) {
+            p.verMax = 0x300 + forcedVer;
+            p.verMin = 0x300 + forcedVer;
         }
         packTlsHndshk ph = new packTlsHndshk(p, datagram);
         ph.keyrsa = keyrsa;

@@ -1,6 +1,8 @@
 package sec;
 
+import cfg.cfgAll;
 import pipe.pipeLine;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import serv.servGeneric;
 
@@ -32,6 +34,7 @@ public class secClient {
             return pipe;
         }
         int tim = pipe.getTime();
+        String a = pipe.settingsGet(pipeSetting.origin, "?");
         switch (proto & servGeneric.protoSec) {
             case servGeneric.protoSsh:
                 secSsh ssh = new secSsh(pipe, new pipeLine(65536, false));
@@ -42,6 +45,10 @@ public class secClient {
             case servGeneric.protoDtls:
                 boolean dtls = proto == servGeneric.protoDtls;
                 secTls tls = new secTls(pipe, new pipeLine(65536, dtls), dtls);
+                tls.forcedVer = cfgAll.tlsVersion;
+                if (a.length() > 1) {
+                    tls.serverName = a;
+                }
                 tls.startClient();
                 pipe = tls.getPipe();
                 break;
@@ -56,6 +63,7 @@ public class secClient {
             pipe.setClose();
             return null;
         }
+        pipe.settingsPut(pipeSetting.origin, a);
         return pipe;
     }
 

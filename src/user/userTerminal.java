@@ -5,6 +5,7 @@ import cfg.cfgAll;
 import clnt.clntDns;
 import clnt.clntProxy;
 import pipe.pipeProgress;
+import pipe.pipeSetting;
 import pipe.pipeSide;
 import sec.secClient;
 import serv.servGeneric;
@@ -153,6 +154,7 @@ public class userTerminal {
         }
         pipe.setTime(60000);
         pipe.wait4ready(60000);
+        pipe.settingsAdd(pipeSetting.origin, server);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         return pipe;

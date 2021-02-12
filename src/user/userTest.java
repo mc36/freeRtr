@@ -606,10 +606,9 @@ public class userTest {
             cryKeyRSA rsa = new cryKeyRSA();
             cryKeyDSA dss = new cryKeyDSA();
             cryKeyECDSA ecdss = new cryKeyECDSA();
-            final int keysiz = 512;
-            rsa.keyMake(keysiz);
-            dss.keyMake(keysiz);
-            ecdss.keyMake(keysiz);
+            rsa.keyMake(1024);
+            dss.keyMake(512);
+            ecdss.keyMake(128);
             pipeLine conn = new pipeLine(65536, false);
             secSsh srvH = new secSsh(conn.getSide(), new pipeLine(65536, false));
             secSsh clnH = new secSsh(conn.getSide(), new pipeLine(65536, false));
@@ -621,17 +620,17 @@ public class userTest {
         }
         if (a.equals("dtls")) {
             doTestTls(true, -1);
-            doTestTls(true, 0x302);
-            doTestTls(true, 0x303);
+            doTestTls(true, 2);
+            doTestTls(true, 3);
             return null;
         }
         if (a.equals("tls")) {
             cmd.error("performing test");
             doTestTls(false, -1);
-            doTestTls(false, 0x300);
-            doTestTls(false, 0x301);
-            doTestTls(false, 0x302);
-            doTestTls(false, 0x303);
+            doTestTls(false, 0);
+            doTestTls(false, 1);
+            doTestTls(false, 2);
+            doTestTls(false, 3);
             return null;
         }
         if (a.equals("verfile")) {
@@ -857,10 +856,9 @@ public class userTest {
         cryKeyRSA rsa = new cryKeyRSA();
         cryKeyDSA dss = new cryKeyDSA();
         cryKeyECDSA ecdss = new cryKeyECDSA();
-        final int keysiz = 512;
-        rsa.keyMake(keysiz);
-        dss.keyMake(keysiz);
-        ecdss.keyMake(keysiz);
+        rsa.keyMake(1024);
+        dss.keyMake(512);
+        ecdss.keyMake(128);
         pipeLine conn = new pipeLine(65536, dtls);
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
@@ -868,7 +866,9 @@ public class userTest {
         clnH.forcedVer = ver;
         srvH.startServer(rsa, dss, ecdss, null, null, null);
         clnH.startClient();
-        doTestPipe(packTls.version2string(dtls, ver), srvH.getPipe(), clnH.getPipe(), 1024);
+        pipeSide pip = srvH.getPipe();
+        pip.wait4ready(5000);
+        doTestPipe(packTls.version2string(dtls, srvH.forcedVer), pip, clnH.getPipe(), 1024);
         conn.setClose();
     }
 

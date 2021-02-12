@@ -21,6 +21,7 @@ import java.util.List;
 import util.bits;
 import util.debugger;
 import util.logger;
+import util.typLenVal;
 
 /**
  * transport layer security (rfc5246) handshake packet
@@ -43,6 +44,11 @@ public class packTlsHndshk {
      * mimumum version
      */
     public int minVer;
+
+    /**
+     * server name
+     */
+    public String servNam;
 
     /**
      * server random
@@ -484,7 +490,7 @@ public class packTlsHndshk {
         }
     }
 
-    private static int[] makeCipherList() {
+    private int[] makeCipherList() {
         List<Integer> l1 = new ArrayList<Integer>();
         for (int i = 0x100; i >= 0; i--) {
             if (decodeCipherCode(i) > 0) {
@@ -498,13 +504,13 @@ public class packTlsHndshk {
         return l2;
     }
 
-    private static byte[] makeCompressList() {
+    private byte[] makeCompressList() {
         byte[] buf = new byte[1];
         buf[0] = 0;
         return buf;
     }
 
-    private static byte[] makeRandomCookie() {
+    private byte[] makeRandomCookie() {
         byte[] buf = new byte[32];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
@@ -512,7 +518,7 @@ public class packTlsHndshk {
         return buf;
     }
 
-    private static int[] decodeCipherList(byte[] src) {
+    private int[] decodeCipherList(byte[] src) {
         int[] trg = new int[src.length / 2];
         for (int i = 0; i < trg.length; i++) {
             trg[i] = bits.msbGetW(src, i * 2);
@@ -520,7 +526,7 @@ public class packTlsHndshk {
         return trg;
     }
 
-    private static byte[] encodeCipherList(int[] src) {
+    private byte[] encodeCipherList(int[] src) {
         byte[] trg = new byte[src.length * 2];
         for (int i = 0; i < src.length; i++) {
             bits.msbPutW(trg, i * 2, src[i]);
@@ -528,12 +534,21 @@ public class packTlsHndshk {
         return trg;
     }
 
-    private static byte[] makeExtensionList() {
-        byte[] buf = new byte[5];
-        bits.msbPutW(buf, 0, 0xff01); // type
-        bits.msbPutW(buf, 2, 1); // length
-        buf[4] = 0; // value
-        return buf;
+    private byte[] makeExtensionList() {
+        typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+        packHolder pck = new packHolder(true, true);
+        if (servNam != null) {
+            int len = servNam.length();
+            byte[] buf = new byte[len + 5];
+            bits.msbPutW(buf, 0, len + 3);
+            buf[2] = 0; // name
+            bits.msbPutW(buf, 3, len);
+            bits.byteCopy(servNam.getBytes(), 0, buf, 5, len);
+            tlv.putBytes(pck, 0, buf); // server name
+        }
+        tlv.putBytes(pck, 0xff01, new byte[1]); // renegotiation info
+        pck.merge2end();
+        return pck.getCopy();
     }
 
     /**

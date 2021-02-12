@@ -1,6 +1,7 @@
 package sec;
 
 import auth.authGeneric;
+import cfg.cfgAll;
 import cry.cryCertificate;
 import cry.cryKeyDSA;
 import cry.cryKeyECDSA;
@@ -51,10 +52,12 @@ public class secServer {
                 return ssh.getPipe();
             case servGeneric.protoTls:
                 secTls tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), false);
+                tls.forcedVer = cfgAll.tlsVersion;
                 tls.startServer(keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
                 return tls.getPipe();
             case servGeneric.protoDtls:
                 tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), true);
+                tls.forcedVer = cfgAll.tlsVersion;
                 tls.startServer(keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
                 return tls.getPipe();
             case servGeneric.protoTelnet:
