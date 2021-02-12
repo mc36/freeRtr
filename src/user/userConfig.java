@@ -2408,8 +2408,8 @@ public class userConfig {
                 return;
             }
             if (a.equals("tls-version")) {
-                cfgAll.tlsVerMin = -1;
-                cfgAll.tlsVerMax = -1;
+                cfgAll.tlsVerMin = 0;
+                cfgAll.tlsVerMax = 4;
                 return;
             }
             if (a.equals("prefer-ipv6")) {

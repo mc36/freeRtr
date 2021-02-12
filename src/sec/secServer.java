@@ -54,8 +54,8 @@ public class secServer {
             case servGeneric.protoDtls:
                 boolean dtls = proto == servGeneric.protoDtls;
                 secTls tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), dtls);
-                tls.minVer = cfgAll.tlsVerMin;
-                tls.maxVer = cfgAll.tlsVerMax;
+                tls.minVer = 0x300 + cfgAll.tlsVerMin;
+                tls.maxVer = 0x300 + cfgAll.tlsVerMax;
                 tls.startServer(keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
                 return tls.getPipe();
             case servGeneric.protoTelnet:

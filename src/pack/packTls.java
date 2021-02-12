@@ -62,7 +62,7 @@ public class packTls {
     /**
      * maximum version
      */
-    public int verMax = 0x303;
+    public int verMax = 0x304;
 
     /**
      * sending encryption
@@ -149,6 +149,8 @@ public class packTls {
                     return "dtls10";
                 case 0x303:
                     return "dtls12";
+                case 0x304:
+                    return "dtls13";
                 default:
                     return "unknown=" + ver;
             }
@@ -162,6 +164,8 @@ public class packTls {
                 return "tls11";
             case 0x303:
                 return "tls12";
+            case 0x304:
+                return "tls13";
             default:
                 return "unknown=" + ver;
         }

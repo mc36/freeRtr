@@ -45,8 +45,8 @@ public class secClient {
             case servGeneric.protoDtls:
                 boolean dtls = proto == servGeneric.protoDtls;
                 secTls tls = new secTls(pipe, new pipeLine(65536, dtls), dtls);
-                tls.minVer = cfgAll.tlsVerMin;
-                tls.maxVer = cfgAll.tlsVerMax;
+                tls.minVer = 0x300 + cfgAll.tlsVerMin;
+                tls.maxVer = 0x300 + cfgAll.tlsVerMax;
                 if (a.length() > 1) {
                     tls.serverName = a;
                 }

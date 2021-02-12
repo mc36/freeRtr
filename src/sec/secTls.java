@@ -169,11 +169,7 @@ public class secTls implements Runnable {
             } else {
                 p = workerServer();
             }
-            if (p != null) {
-                minVer = p.verCurr;
-                maxVer = p.verCurr;
-                workerThreads(p);
-            }
+            workerThreads(p);
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -240,6 +236,21 @@ public class secTls implements Runnable {
     }
 
     private void workerThreads(packTls p) {
+        if (p == null) {
+            return;
+        }
+        if (minVer >= 0) {
+            if (minVer > p.verCurr) {
+                return;
+            }
+        }
+        if (maxVer >= 0) {
+            if (maxVer < p.verCurr) {
+                return;
+            }
+        }
+        minVer = p.verCurr;
+        maxVer = p.verCurr;
         userS.setReady();
         new secTlsRx(this, p.copyBytes());
         new secTlsTx(this, p.copyBytes());
@@ -262,10 +273,10 @@ public class secTls implements Runnable {
     private void setupCommon(packTls p) {
         p.pipe = lower;
         if (minVer >= 0) {
-            p.verMin = 0x300 + minVer;
+            p.verMin = minVer;
         }
         if (maxVer >= 0) {
-            p.verMax = 0x300 + maxVer;
+            p.verMax = maxVer;
         }
     }
 

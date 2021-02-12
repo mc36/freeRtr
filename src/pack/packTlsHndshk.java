@@ -1,6 +1,7 @@
 package pack;
 
 import cry.cryCertificate;
+import cry.cryECcurve25519;
 import cry.cryEncrCBCaes;
 import cry.cryEncrCBCdes;
 import cry.cryEncrCBCdes3;
@@ -281,6 +282,8 @@ public class packTlsHndshk {
     public final static int typeMsgHsh = 254;
 
     private final packTls lower;
+
+    private byte[] ecPriv;
 
     /**
      * convert type to string
@@ -565,16 +568,52 @@ public class packTlsHndshk {
     private byte[] makeExtensionList() {
         typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
         packHolder pck = new packHolder(true, true);
+        byte[] buf = new byte[(2 * (maxVer - minVer)) + 3];
+        buf[0] = (byte) (buf.length - 1);
+        for (int i = minVer; i <= maxVer; i++) {
+            bits.msbPutW(buf, 1 + (2 * (i - minVer)), i);
+        }
+        tlv.putBytes(pck, 43, buf); // supported versions
+        buf = new byte[2];
+        bits.msbPutW(buf, 0, 4096);
+        tlv.putBytes(pck, 28, buf); // record size limit
+        buf = new byte[6];
+        bits.msbPutW(buf, 0, buf.length - 2);
+        bits.msbPutW(buf, 2, 0x401); // rsa pkcs1 sha2256
+        bits.msbPutW(buf, 4, 0x201); // rsa pkcs1 sha1
+        tlv.putBytes(pck, 13, buf); // signature algorithms
         if (servNam != null) {
             int len = servNam.length();
-            byte[] buf = new byte[len + 5];
+            buf = new byte[len + 5];
             bits.msbPutW(buf, 0, len + 3);
             buf[2] = 0; // name
             bits.msbPutW(buf, 3, len);
             bits.byteCopy(servNam.getBytes(), 0, buf, 5, len);
             tlv.putBytes(pck, 0, buf); // server name
         }
-        tlv.putBytes(pck, 0xff01, new byte[1]); // renegotiation info
+        if (maxVer < 0x304) {
+            pck.merge2end();
+            return pck.getCopy();
+        }
+        buf = new byte[2];
+        buf[0] = 1; // length
+        buf[1] = 0; // uncompressed
+        tlv.putBytes(pck, 11, buf); // ec point format
+        buf = new byte[4];
+        bits.msbPutW(buf, 0, 2); // length
+        bits.msbPutW(buf, 2, 0x1d); // x25519
+        tlv.putBytes(pck, 10, buf); // supported groups
+        buf = new byte[2];
+        buf[0] = 1; // length
+        buf[1] = 1; // psk_dhe_ke
+        tlv.putBytes(pck, 45, buf); // supported groups
+        ecPriv = cryECcurve25519.make();
+        byte[] res = cryECcurve25519.calc(ecPriv, null);
+        buf = new byte[6];
+        bits.msbPutW(buf, 0, res.length + 4);
+        bits.msbPutW(buf, 2, 0x1d); // x25519
+        bits.msbPutW(buf, 4, res.length);
+        tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
         pck.merge2end();
         return pck.getCopy();
     }
@@ -626,6 +665,9 @@ public class packTlsHndshk {
         lower.verCurr = minVer;
         lower.pckDat.clear();
         int i = maxVer;
+        if (i > 0x303) {
+            i = 0x303;
+        }
         if (datagram) {
             i = packTls.version2dtls(i);
         }

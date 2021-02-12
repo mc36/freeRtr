@@ -619,18 +619,18 @@ public class userTest {
             return null;
         }
         if (a.equals("dtls")) {
-            doTestTls(true, -1);
             doTestTls(true, 2);
             doTestTls(true, 3);
+            doTestTls(true, 4);
             return null;
         }
         if (a.equals("tls")) {
             cmd.error("performing test");
-            doTestTls(false, -1);
             doTestTls(false, 0);
             doTestTls(false, 1);
             doTestTls(false, 2);
             doTestTls(false, 3);
+            doTestTls(false, 4);
             return null;
         }
         if (a.equals("verfile")) {
@@ -862,8 +862,8 @@ public class userTest {
         pipeLine conn = new pipeLine(65536, dtls);
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
-        srvH.minVer = ver;
-        clnH.maxVer = ver;
+        srvH.minVer = 0x300 + ver;
+        clnH.maxVer = srvH.minVer;
         srvH.startServer(rsa, dss, ecdss, null, null, null);
         clnH.startClient();
         pipeSide pip = srvH.getPipe();

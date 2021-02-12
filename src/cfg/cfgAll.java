@@ -681,12 +681,12 @@ public class cfgAll {
     /**
      * minimum tls version to use
      */
-    public static int tlsVerMin = -1;
+    public static int tlsVerMin = 0;
 
     /**
      * maximum tls version to use
      */
-    public static int tlsVerMax = -1;
+    public static int tlsVerMax = 4;
 
     /**
      * password stars
@@ -973,7 +973,7 @@ public class cfgAll {
         "!client time-zone Z",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
-        "!client tls-version -1 -1",
+        "!client tls-version 0 4",
         "!no client time-server",
         "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
