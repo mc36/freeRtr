@@ -8,7 +8,7 @@ import cfg.cfgIfc;
 import cfg.cfgVrf;
 import cry.cryBase64;
 import cry.cryECcurve25519;
-import cry.cryEnchChacha20poly1305;
+import cry.cryEncrChacha20poly1305;
 import cry.cryHashBlake2s;
 import cry.cryHashHmac;
 import ifc.ifcDn;
@@ -444,9 +444,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         pck.merge2end();
         byte[] tmp = new byte[12];
         bits.lsbPutQ(tmp, 4, seqTx);
-        cryEnchChacha20poly1305 en = new cryEnchChacha20poly1305();
+        cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
         en.init(keyTx, tmp, true);
-        i = pck.enchData(en, 0, pck.dataSize());
+        i = pck.encrData(en, 0, pck.dataSize());
         if (i < 0) {
             return;
         }
@@ -522,9 +522,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                         return false;
                     }
                 }
-                cryEnchChacha20poly1305 en = new cryEnchChacha20poly1305();
+                cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
                 en.init(keyRx, tmp1, false);
-                typ = pck.enchData(en, 0, pck.dataSize());
+                typ = pck.encrData(en, 0, pck.dataSize());
                 if (typ < 0) {
                     cntr.drop(pck, counter.reasons.badSum);
                     logger.info("got invalid data from " + target);
@@ -732,9 +732,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         packHolder pck = new packHolder(true, true);
         byte[] tmp = new byte[12];
         bits.lsbPutQ(tmp, 4, seqTx);
-        cryEnchChacha20poly1305 en = new cryEnchChacha20poly1305();
+        cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
         en.init(keyTx, tmp, true);
-        int i = pck.enchData(en, 0, pck.dataSize());
+        int i = pck.encrData(en, 0, pck.dataSize());
         if (i < 0) {
             return;
         }
@@ -855,14 +855,14 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     }
 
     private static byte[] encAead(byte[] key, byte[] msg, byte[] auth) {
-        cryEnchChacha20poly1305 c = new cryEnchChacha20poly1305();
+        cryEncrChacha20poly1305 c = new cryEncrChacha20poly1305();
         c.init(key, new byte[12], true);
         c.authAdd(auth);
         return c.compute(msg);
     }
 
     private static byte[] decAead(byte[] key, byte[] msg, byte[] auth) {
-        cryEnchChacha20poly1305 c = new cryEnchChacha20poly1305();
+        cryEncrChacha20poly1305 c = new cryEncrChacha20poly1305();
         c.init(key, new byte[12], false);
         c.authAdd(auth);
         return c.compute(msg);

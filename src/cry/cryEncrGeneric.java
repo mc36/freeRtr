@@ -57,6 +57,31 @@ public abstract class cryEncrGeneric {
     public abstract byte[] getNextIV();
 
     /**
+     * read iv size
+     *
+     * @return size in bytes
+     */
+    public abstract int getIVsize();
+
+    /**
+     * authenticate buffer
+     *
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param siz bytes to add
+     */
+    public abstract void authAdd(byte[] buf, int ofs, int siz);
+
+    /**
+     * authenticate buffer
+     *
+     * @param buf buffer to use
+     */
+    public void authAdd(byte[] buf) {
+        authAdd(buf, 0, buf.length);
+    }
+
+    /**
      * update with buffer
      *
      * @param buf buffer to use
@@ -72,10 +97,15 @@ public abstract class cryEncrGeneric {
      * @param buf buffer to use
      * @param ofs offset in buffer
      * @param siz bytes to add
+     * @return -1 on error, number of bytes on success
      */
-    public void update(byte[] buf, int ofs, int siz) {
+    public int update(byte[] buf, int ofs, int siz) {
         byte[] part = compute(buf, ofs, siz);
-        bits.byteCopy(part, 0, buf, ofs, siz);
+        if (part == null) {
+            return -1;
+        }
+        bits.byteCopy(part, 0, buf, ofs, part.length);
+        return part.length;
     }
 
     /**
@@ -106,6 +136,46 @@ public abstract class cryEncrGeneric {
      */
     public static byte[] compute(cryEncrGeneric alg, byte[] key, byte[] iv, boolean encrypt, byte[] buf) {
         alg.init(key, iv, encrypt);
+        return alg.compute(buf);
+    }
+
+    /**
+     * compute a buffer
+     *
+     * @param alg algorithm to use
+     * @param key key material
+     * @param iv init vector
+     * @param encrypt true for encryption, false for decryption
+     * @param auth authentication data, null if nothing
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param siz bytes to add
+     * @return -1 on error, number of bytes on success
+     */
+    public static int update(cryEncrGeneric alg, byte[] key, byte[] iv, boolean encrypt, byte[] auth, byte[] buf, int ofs, int siz) {
+        alg.init(key, iv, encrypt);
+        if (auth != null) {
+            alg.authAdd(auth);
+        }
+        return alg.update(buf, ofs, siz);
+    }
+
+    /**
+     * compute a buffer
+     *
+     * @param alg algorithm to use
+     * @param key key material
+     * @param iv init vector
+     * @param encrypt true for encryption, false for decryption
+     * @param auth authentication data, null if nothing
+     * @param buf buffer to use
+     * @return updated buffer, null on error
+     */
+    public static byte[] compute(cryEncrGeneric alg, byte[] key, byte[] iv, boolean encrypt, byte[] auth, byte[] buf) {
+        alg.init(key, iv, encrypt);
+        if (auth != null) {
+            alg.authAdd(auth);
+        }
         return alg.compute(buf);
     }
 

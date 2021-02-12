@@ -115,6 +115,20 @@ public class packTls {
     }
 
     /**
+     * convert version to wire
+     *
+     * @param i tls version
+     * @return wire version
+     */
+    public static int version2wire(int i) {
+        if (i > 0x303) {
+            return 0x303;
+        } else {
+            return i;
+        }
+    }
+
+    /**
      * convert type to string
      *
      * @param i type of message

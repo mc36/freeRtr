@@ -10,7 +10,7 @@ import util.logger;
  *
  * @author matecsaba
  */
-public class cryEnchCCMaes extends cryEnchGeneric {
+public class cryEncrGCMaes extends cryEncrGeneric {
 
     private Cipher crypter;
 
@@ -32,7 +32,7 @@ public class cryEnchCCMaes extends cryEnchGeneric {
         try {
             SecretKeySpec keyspec = new SecretKeySpec(key, name);
             IvParameterSpec ivspec = new IvParameterSpec(iv, 0, iv.length);
-            crypter = Cipher.getInstance(name + "/CCM/NoPadding");
+            crypter = Cipher.getInstance(name + "/GCM/NoPadding");
             crypter.init(mode, keyspec, ivspec);
         } catch (Exception e) {
             logger.exception(e);

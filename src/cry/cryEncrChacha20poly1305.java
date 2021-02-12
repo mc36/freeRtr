@@ -6,11 +6,11 @@ import javax.crypto.spec.SecretKeySpec;
 import util.logger;
 
 /**
- * advanced encryption standard (rijndael)
+ * chacha20 cipher
  *
  * @author matecsaba
  */
-public class cryEnchGCMaes extends cryEnchGeneric {
+public class cryEncrChacha20poly1305 extends cryEncrGeneric {
 
     private Cipher crypter;
 
@@ -22,7 +22,6 @@ public class cryEnchGCMaes extends cryEnchGeneric {
      * @param encrypt mode
      */
     public void init(byte[] key, byte[] iv, boolean encrypt) {
-        final String name = "AES";
         int mode;
         if (encrypt) {
             mode = Cipher.ENCRYPT_MODE;
@@ -30,9 +29,9 @@ public class cryEnchGCMaes extends cryEnchGeneric {
             mode = Cipher.DECRYPT_MODE;
         }
         try {
-            SecretKeySpec keyspec = new SecretKeySpec(key, name);
+            SecretKeySpec keyspec = new SecretKeySpec(key, "ChaCha20");
             IvParameterSpec ivspec = new IvParameterSpec(iv, 0, iv.length);
-            crypter = Cipher.getInstance(name + "/GCM/NoPadding");
+            crypter = Cipher.getInstance("ChaCha20-Poly1305/None/NoPadding");
             crypter.init(mode, keyspec, ivspec);
         } catch (Exception e) {
             logger.exception(e);
@@ -45,7 +44,7 @@ public class cryEnchGCMaes extends cryEnchGeneric {
      * @return name
      */
     public String getName() {
-        return "aes";
+        return "chacha20poly1305";
     }
 
     /**
@@ -54,7 +53,7 @@ public class cryEnchGCMaes extends cryEnchGeneric {
      * @return size
      */
     public int getBlockSize() {
-        return 16;
+        return 1;
     }
 
     /**

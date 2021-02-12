@@ -87,4 +87,23 @@ public class cryEncrCBCrc5 extends cryEncrGeneric {
         return crypter.getIV();
     }
 
+    /**
+     * read iv size
+     *
+     * @return size in bytes
+     */
+    public int getIVsize() {
+        return getBlockSize();
+    }
+
+    /**
+     * authenticate buffer
+     *
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param siz bytes to add
+     */
+    public void authAdd(byte[] buf, int ofs, int siz) {
+    }
+
 }

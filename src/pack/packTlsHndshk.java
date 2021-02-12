@@ -5,12 +5,14 @@ import cry.cryECcurve25519;
 import cry.cryEncrCBCaes;
 import cry.cryEncrCBCdes;
 import cry.cryEncrCBCdes3;
+import cry.cryEncrChacha20poly1305;
 import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
 import cry.cryHashHmac;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
 import cry.cryHashSha2256;
+import cry.cryHashSha2384;
 import cry.cryHashSha2512;
 import cry.cryHashSslMac;
 import cry.cryKeyDH;
@@ -333,11 +335,15 @@ public class packTlsHndshk {
      *
      * @param i cipher suite
      * @return decoded format, -1 if unknown format: 0x0000|key|sign|cipher|hash
-     * kex: 1=rsa, 2=dhe sign: 1=rsa, 2=dss cipher: 1=des, 2=3des, 3=aes hash:
-     * 1=md5, 2=sha1, 3=sha256
+     * kex: 1=rsa, 2=dhe sign: 1=rsa, 2=dss cipher: 1=des, 2=3des, 3=aes,
+     * 4=chacha hash: 1=md5, 2=sha1, 3=sha256, 4=sha384, 5=sha512
      */
     public static int decodeCipherCode(int i) {
         switch (i) {
+            case 0x1303: // TLS_CHACHA20_POLY1305_SHA256
+                return 0x0043;
+            case 0x1302: // TLS_AES_256_GCM_SHA384
+                return 0x0034;
             case 0x0009: // TLS_RSA_WITH_DES_CBC_SHA
                 return 0x1112;
             case 0x000A: // TLS_RSA_WITH_3DES_EDE_CBC_SHA
@@ -376,6 +382,9 @@ public class packTlsHndshk {
     public static String cipher2string(int i) {
         String s = "";
         switch (i & 0xf000) {
+            case 0x0000:
+                s += "none";
+                break;
             case 0x1000:
                 s += "rsa";
                 break;
@@ -388,6 +397,9 @@ public class packTlsHndshk {
         }
         s += "-";
         switch (i & 0xf00) {
+            case 0x000:
+                s += "none";
+                break;
             case 0x100:
                 s += "rsa";
                 break;
@@ -400,6 +412,9 @@ public class packTlsHndshk {
         }
         s += "-";
         switch (i & 0xf0) {
+            case 0x00:
+                s += "none";
+                break;
             case 0x10:
                 s += "des";
                 break;
@@ -409,12 +424,18 @@ public class packTlsHndshk {
             case 0x30:
                 s += "aes";
                 break;
+            case 0x40:
+                s += "chacha";
+                break;
             default:
                 s += "?";
                 break;
         }
         s += "-";
         switch (i & 0xf) {
+            case 0x0:
+                s += "none";
+                break;
             case 0x1:
                 s += "md5";
                 break;
@@ -423,6 +444,9 @@ public class packTlsHndshk {
                 break;
             case 0x3:
                 s += "sha256";
+                break;
+            case 0x4:
+                s += "sha384";
                 break;
             default:
                 s += "?";
@@ -523,6 +547,11 @@ public class packTlsHndshk {
 
     private int[] makeCipherList() {
         List<Integer> l1 = new ArrayList<Integer>();
+        for (int i = 0x1400; i >= 0x1300; i--) {
+            if (decodeCipherCode(i) > 0) {
+                l1.add(i);
+            }
+        }
         for (int i = 0x100; i >= 0; i--) {
             if (decodeCipherCode(i) > 0) {
                 l1.add(i);
@@ -664,10 +693,7 @@ public class packTlsHndshk {
         pckTyp = typeHeloClnt;
         lower.verCurr = minVer;
         lower.pckDat.clear();
-        int i = maxVer;
-        if (i > 0x303) {
-            i = 0x303;
-        }
+        int i = packTls.version2wire(maxVer);
         if (datagram) {
             i = packTls.version2dtls(i);
         }
@@ -1376,6 +1402,8 @@ public class packTlsHndshk {
                 return new cryEncrCBCdes3();
             case 0x30:
                 return new cryEncrCBCaes();
+            case 0x40:
+                return new cryEncrChacha20poly1305();
             default:
                 return null;
         }
@@ -1389,6 +1417,10 @@ public class packTlsHndshk {
                 return new cryHashSha1();
             case 0x3:
                 return new cryHashSha2256();
+            case 0x4:
+                return new cryHashSha2384();
+            case 0x5:
+                return new cryHashSha2512();
             default:
                 return null;
         }

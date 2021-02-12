@@ -3,7 +3,6 @@ package pack;
 import addr.addrIP;
 import addr.addrMac;
 import addr.addrType;
-import cry.cryEnchGeneric;
 import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
 import pipe.pipeSide;
@@ -1278,30 +1277,7 @@ public class packHolder {
      * @param ofs offset from where
      * @param siz bytes to calculate
      */
-    public void encrData(cryEncrGeneric enc, int ofs, int siz) {
-        enc.update(dataD, dataO + ofs, siz);
-    }
-
-    /**
-     * update encription in header
-     *
-     * @param enc encrypter to update
-     * @param ofs offset from where
-     * @param siz bytes to calculate
-     */
-    public void encrHead(cryEncrGeneric enc, int ofs, int siz) {
-        enc.update(headD, ofs, siz);
-    }
-
-    /**
-     * update encription in data
-     *
-     * @param enc encrypter to update
-     * @param ofs offset from where
-     * @param siz bytes to calculate
-     * @return number of bytes, -1 on error
-     */
-    public int enchData(cryEnchGeneric enc, int ofs, int siz) {
+    public int encrData(cryEncrGeneric enc, int ofs, int siz) {
         return enc.update(dataD, dataO + ofs, siz);
     }
 
@@ -1311,9 +1287,8 @@ public class packHolder {
      * @param enc encrypter to update
      * @param ofs offset from where
      * @param siz bytes to calculate
-     * @return number of bytes, -1 on error
      */
-    public int enchHead(cryEnchGeneric enc, int ofs, int siz) {
+    public int encrHead(cryEncrGeneric enc, int ofs, int siz) {
         return enc.update(headD, ofs, siz);
     }
 
