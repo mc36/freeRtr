@@ -51,13 +51,11 @@ public class secServer {
                 ssh.startServer(auther, keyrsa, keydsa, keyecdsa);
                 return ssh.getPipe();
             case servGeneric.protoTls:
-                secTls tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), false);
-                tls.forcedVer = cfgAll.tlsVersion;
-                tls.startServer(keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
-                return tls.getPipe();
             case servGeneric.protoDtls:
-                tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), true);
-                tls.forcedVer = cfgAll.tlsVersion;
+                boolean dtls = proto == servGeneric.protoDtls;
+                secTls tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), dtls);
+                tls.minVer = cfgAll.tlsVerMin;
+                tls.maxVer = cfgAll.tlsVerMax;
                 tls.startServer(keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
                 return tls.getPipe();
             case servGeneric.protoTelnet:

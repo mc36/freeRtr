@@ -679,9 +679,14 @@ public class cfgAll {
     public static byte[] banner = new byte[0];
 
     /**
-     * tls version to use
+     * minimum tls version to use
      */
-    public static int tlsVersion = -1;
+    public static int tlsVerMin = -1;
+
+    /**
+     * maximum tls version to use
+     */
+    public static int tlsVerMax = -1;
 
     /**
      * password stars
@@ -968,7 +973,7 @@ public class cfgAll {
         "!client time-zone Z",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
-        "!client tls-version -1",
+        "!client tls-version -1 -1",
         "!no client time-server",
         "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
@@ -3295,7 +3300,7 @@ public class cfgAll {
         cmds.cfgLine(l, configExclusive < 1, "", "client config-exclusive", "");
         l.add("client access-subnet-ipv4 " + accessSubnet4);
         l.add("client access-subnet-ipv6 " + accessSubnet6);
-        l.add("client tls-version " + tlsVersion);
+        l.add("client tls-version " + tlsVerMin + " " + tlsVerMax);
         cmds.cfgLine(l, timeServerName == null, "", "client time-server", "" + timeServerName);
         l.add("client time-zone " + timeZoneName);
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);

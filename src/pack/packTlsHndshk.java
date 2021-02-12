@@ -226,6 +226,16 @@ public class packTlsHndshk {
     public final static int typeHeloVrfy = 3;
 
     /**
+     * new session ticket
+     */
+    public final static int typeNewSesTck = 4;
+
+    /**
+     * encrypted extension
+     */
+    public final static int typeEncrExt = 8;
+
+    /**
      * certificate data
      */
     public final static int typeCertDat = 11;
@@ -260,6 +270,16 @@ public class packTlsHndshk {
      */
     public final static int typeFinish = 20;
 
+    /**
+     * key update
+     */
+    public final static int typeKeyUpd = 24;
+
+    /**
+     * message hash
+     */
+    public final static int typeMsgHsh = 254;
+
     private final packTls lower;
 
     /**
@@ -292,6 +312,14 @@ public class packTlsHndshk {
                 return "clientKex";
             case typeFinish:
                 return "finish";
+            case typeNewSesTck:
+                return "newSess";
+            case typeEncrExt:
+                return "encrExt";
+            case typeKeyUpd:
+                return "keyUpd";
+            case typeMsgHsh:
+                return "msgHsh";
             default:
                 return "unknown=" + i;
         }

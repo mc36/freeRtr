@@ -862,13 +862,13 @@ public class userTest {
         pipeLine conn = new pipeLine(65536, dtls);
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
-        srvH.forcedVer = ver;
-        clnH.forcedVer = ver;
+        srvH.minVer = ver;
+        clnH.maxVer = ver;
         srvH.startServer(rsa, dss, ecdss, null, null, null);
         clnH.startClient();
         pipeSide pip = srvH.getPipe();
         pip.wait4ready(5000);
-        doTestPipe(packTls.version2string(dtls, srvH.forcedVer), pip, clnH.getPipe(), 1024);
+        doTestPipe(packTls.version2string(dtls, srvH.minVer), pip, clnH.getPipe(), 1024);
         conn.setClose();
     }
 

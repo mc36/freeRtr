@@ -76,9 +76,14 @@ public class secTls implements Runnable {
     protected cryCertificate certecdsa;
 
     /**
-     * forced version
+     * minimum version
      */
-    public int forcedVer = -1;
+    public int minVer = -1;
+
+    /**
+     * maximum version
+     */
+    public int maxVer = -1;
 
     /**
      * server name
@@ -165,7 +170,8 @@ public class secTls implements Runnable {
                 p = workerServer();
             }
             if (p != null) {
-                forcedVer = p.verCurr;
+                minVer = p.verCurr;
+                maxVer = p.verCurr;
                 workerThreads(p);
             }
         } catch (Exception e) {
@@ -253,16 +259,22 @@ public class secTls implements Runnable {
         lower.setClose();
     }
 
+    private void setupCommon(packTls p) {
+        p.pipe = lower;
+        if (minVer >= 0) {
+            p.verMin = 0x300 + minVer;
+        }
+        if (maxVer >= 0) {
+            p.verMax = 0x300 + maxVer;
+        }
+    }
+
     private packTls workerClient() {
         if (debugger.secTlsTraf) {
             logger.debug("starting");
         }
         packTls p = new packTls(datagram);
-        p.pipe = lower;
-        if (forcedVer >= 0) {
-            p.verMax = 0x300 + forcedVer;
-            p.verMin = 0x300 + forcedVer;
-        }
+        setupCommon(p);
         packTlsHndshk ph = new packTlsHndshk(p, datagram);
         ph.servNam = serverName;
         ph.clntHelloFill();
@@ -348,11 +360,7 @@ public class secTls implements Runnable {
             logger.debug("starting");
         }
         packTls p = new packTls(datagram);
-        p.pipe = lower;
-        if (forcedVer >= 0) {
-            p.verMax = 0x300 + forcedVer;
-            p.verMin = 0x300 + forcedVer;
-        }
+        setupCommon(p);
         packTlsHndshk ph = new packTlsHndshk(p, datagram);
         ph.keyrsa = keyrsa;
         ph.keydsa = keydsa;

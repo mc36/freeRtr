@@ -560,7 +560,8 @@ public class userConfig {
         l.add("2  .    ftp-passive                  use passive mode ftp");
         l.add("2  .    ftp-active                   use active mode ftp");
         l.add("2  3    tls-version                  specify tls version");
-        l.add("3  .      <num>                      forced version");
+        l.add("3  4      <num>                      forced minimum version");
+        l.add("4  .        <num>                    forced maximum version");
         l.add("2  3    time-server                  specify name of time server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    time-zone                    specify time zone");
@@ -1619,7 +1620,8 @@ public class userConfig {
                 return;
             }
             if (a.equals("tls-version")) {
-                cfgAll.tlsVersion = bits.str2num(cmd.word());
+                cfgAll.tlsVerMin = bits.str2num(cmd.word());
+                cfgAll.tlsVerMax = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("proxy")) {
@@ -2406,7 +2408,8 @@ public class userConfig {
                 return;
             }
             if (a.equals("tls-version")) {
-                cfgAll.tlsVersion = -1;
+                cfgAll.tlsVerMin = -1;
+                cfgAll.tlsVerMax = -1;
                 return;
             }
             if (a.equals("prefer-ipv6")) {
