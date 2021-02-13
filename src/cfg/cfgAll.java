@@ -973,7 +973,7 @@ public class cfgAll {
         "!client time-zone Z",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
-        "!client tls-version 0 4",
+        "!client tls-version 1 3",////
         "!no client time-server",
         "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
