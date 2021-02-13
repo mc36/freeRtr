@@ -10,6 +10,21 @@ import util.bits;
  */
 public class cryECcurve25519 {
 
+    /**
+     * local private key
+     */
+    public byte[] locPriv;
+
+    /**
+     * remote public key
+     */
+    public byte[] remPub;
+
+    /**
+     * common secret
+     */
+    public byte[] common;
+
     private static final int NUM_LIMBS_255BIT = 10;
 
     private static final int NUM_LIMBS_510BIT = 20;
@@ -46,7 +61,10 @@ public class cryECcurve25519 {
 
     private final int[] z_3;
 
-    private cryECcurve25519() {
+    /**
+     * create instance
+     */
+    public cryECcurve25519() {
         x_1 = new int[NUM_LIMBS_255BIT];
         x_2 = new int[NUM_LIMBS_255BIT];
         x_3 = new int[NUM_LIMBS_255BIT];
@@ -76,32 +94,36 @@ public class cryECcurve25519 {
 
     /**
      * make key
-     *
-     * @return key
      */
-    public static byte[] make() {
-        byte[] buf = new byte[32];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = (byte) bits.randomB();
+    public void makePirvKey() {
+        locPriv = new byte[32];
+        for (int i = 0; i < locPriv.length; i++) {
+            locPriv[i] = (byte) bits.randomB();
         }
-        return buf;
+    }
+
+    /**
+     * get remote public key
+     *
+     * @param buf buffer to read
+     * @param ofs offset to start
+     */
+    public void getRemPub(byte[] buf, int ofs) {
+        remPub = new byte[32];
+        bits.byteCopy(buf, ofs, remPub, 0, remPub.length);
     }
 
     /**
      * calculate keys
-     *
-     * @param privateKey private key
-     * @param publicKey public key, null for base point
-     * @return result
      */
-    public static byte[] calc(final byte[] privateKey, final byte[] publicKey) {
+    public void calcCommon() {
         final cryECcurve25519 state = new cryECcurve25519();
         Arrays.fill(state.x_1, 0);
-        if (publicKey != null) {
+        if (remPub != null) {
             for (int index = 0; index < 32; ++index) {
                 final int bit = (index * 8) % 26;
                 final int word = (index * 8) / 26;
-                final int value = publicKey[index] & 0xFF;
+                final int value = remPub[index] & 0xFF;
                 if (bit <= (26 - 8)) {
                     state.x_1[word] |= value << bit;
                 } else {
@@ -121,20 +143,19 @@ public class cryECcurve25519 {
         System.arraycopy(state.x_1, 0, state.x_3, 0, state.x_1.length);
         Arrays.fill(state.z_3, 0);
         state.z_3[0] = 1;
-        state.evalCurve(privateKey);
+        state.evalCurve(locPriv);
         state.recip(state.z_3, state.z_2);
         state.mul(state.x_2, state.x_2, state.z_3);
-        byte[] result = new byte[32];
+        common = new byte[32];
         for (int index = 0; index < 32; ++index) {
             final int bit = (index * 8) % 26;
             final int word = (index * 8) / 26;
             if (bit <= (26 - 8)) {
-                result[index] = (byte) (state.x_2[word] >> bit);
+                common[index] = (byte) (state.x_2[word] >> bit);
             } else {
-                result[index] = (byte) ((state.x_2[word] >> bit) | (state.x_2[word + 1] << (26 - bit)));
+                common[index] = (byte) ((state.x_2[word] >> bit) | (state.x_2[word + 1] << (26 - bit)));
             }
         }
-        return result;
     }
 
     private static void sub(final int[] result, final int[] x, final int[] y) {

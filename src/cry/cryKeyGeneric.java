@@ -152,7 +152,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      * @param sign received
      * @return false on success, true on error
      */
-    public abstract boolean certVerify(byte[] pkcs, byte[] hash, byte[] sign);
+    public abstract boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign);
 
     /**
      * generate sign
@@ -161,7 +161,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      * @param hash generated hash
      * @return generated signature
      */
-    public abstract byte[] certSigning(byte[] pkcs, byte[] hash);
+    public abstract byte[] certSigning(cryHashGeneric pkcs, byte[] hash);
 
     /**
      * verify signature
@@ -172,7 +172,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      * @param sign received
      * @return false on success, true on error
      */
-    public abstract boolean tlsVerify(int ver, byte[] pkcs, byte[] hash, byte[] sign);
+    public abstract boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign);
 
     /**
      * generate sign
@@ -182,7 +182,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      * @param hash generated hash
      * @return generated signature
      */
-    public abstract byte[] tlsSigning(int ver, byte[] pkcs, byte[] hash);
+    public abstract byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash);
 
     /**
      * generate new key

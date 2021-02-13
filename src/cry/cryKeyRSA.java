@@ -305,13 +305,13 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     /**
-     * pad for ssh
+     * pad for tls12
      *
      * @param oid oid bytes
      * @param src buffer to pad
      * @return padded integer
      */
-    public BigInteger PKCS1t0pad(byte[] oid, byte[] src) {
+    public BigInteger PKCS1t2pad(byte[] oid, byte[] src) {
         byte[] buf = new byte[(modulus.bitLength() + 7) / 8];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) 0xff;
@@ -324,7 +324,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     /**
-     * pad for ssl
+     * pad for tls11
      *
      * @param src buffer to pad
      * @return padded integer
@@ -399,13 +399,13 @@ public class cryKeyRSA extends cryKeyGeneric {
         }
         BigInteger s = packSsh.bigUIntRead(p);
         s = s.modPow(pubExp, modulus);
-        return PKCS1t0pad(algo.getPkcs(), hash).compareTo(s) != 0;
+        return PKCS1t2pad(algo.getPkcs(), hash).compareTo(s) != 0;
     }
 
     public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
         hash = cryHashGeneric.compute(algo, hash);
         packHolder p = new packHolder(true, true);
-        BigInteger s = PKCS1t0pad(algo.getPkcs(), hash);
+        BigInteger s = PKCS1t2pad(algo.getPkcs(), hash);
         s = s.modPow(privExp, modulus);
         packSsh.stringWrite(p, algn);
         packSsh.bigUIntWrite(p, s);
@@ -413,37 +413,45 @@ public class cryKeyRSA extends cryKeyGeneric {
         return p.getCopy();
     }
 
-    public boolean certVerify(byte[] pkcs, byte[] hash, byte[] sign) {
+    public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
         BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
-        return PKCS1t0pad(pkcs, hash).compareTo(s) != 0;
+        return PKCS1t2pad(pkcs.getPkcs(), hash).compareTo(s) != 0;
     }
 
-    public byte[] certSigning(byte[] pkcs, byte[] hash) {
-        BigInteger s = PKCS1t0pad(pkcs, hash);
+    public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
+        BigInteger s = PKCS1t2pad(pkcs.getPkcs(), hash);
         s = s.modPow(privExp, modulus);
         return s.toByteArray();
     }
 
-    public boolean tlsVerify(int ver, byte[] pkcs, byte[] hash, byte[] sign) {
+    /**
+     * do padding
+     *
+     * @param ver version
+     * @param pkcs hash algorithm
+     * @param hash hash hash to pad
+     * @return padded
+     */
+    public BigInteger doPadding(int ver, cryHashGeneric pkcs, byte[] hash) {
+        if (ver < 0x100) {
+            return PKCS1t1pad(hash);
+        }
+        if (ver < 0x800) {
+            return PKCS1t2pad(pkcs.getPkcs(), hash);
+        }
+        return PKCS1t2pad(pkcs.getPkcs(), hash);////
+    }
+
+    public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
         BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
-        BigInteger h;
-        if (ver >= 0x303) {
-            h = PKCS1t0pad(pkcs, hash);
-        } else {
-            h = PKCS1t1pad(hash);
-        }
+        BigInteger h = doPadding(ver, pkcs, hash);
         return h.compareTo(s) != 0;
     }
 
-    public byte[] tlsSigning(int ver, byte[] pkcs, byte[] hash) {
-        BigInteger s;
-        if (ver >= 0x303) {
-            s = PKCS1t0pad(pkcs, hash);
-        } else {
-            s = PKCS1t1pad(hash);
-        }
+    public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
+        BigInteger s = doPadding(ver, pkcs, hash);
         s = s.modPow(privExp, modulus);
         return s.toByteArray();
     }

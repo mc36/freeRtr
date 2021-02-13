@@ -11,6 +11,7 @@ import cry.cryHashGeneric;
 import cry.cryHashHmac;
 import cry.cryHashMd5;
 import cry.cryHashSha1;
+import cry.cryHashSha2224;
 import cry.cryHashSha2256;
 import cry.cryHashSha2384;
 import cry.cryHashSha2512;
@@ -114,11 +115,6 @@ public class packTlsHndshk {
     public int signHsh = -1;
 
     /**
-     * signature algorithm
-     */
-    public int signAlg = -1;
-
-    /**
      * signature data
      */
     public byte[] signDat;
@@ -211,22 +207,22 @@ public class packTlsHndshk {
     /**
      * server exchange hash
      */
-    public byte[] servHash;
+    public byte[] paramHash;
 
     /**
      * server exchange oid
      */
-    public byte[] servPkcs;
+    public cryHashGeneric paramHsh;
 
     /**
-     * ec private key
+     * ec diffie hellman
      */
-    public byte[] ecPriv;
+    public cryECcurve25519 ecDiffHell;
 
     /**
-     * ec peer key
+     * ec mode
      */
-    public byte[] ecPeer;
+    public int ecMode;
 
     /**
      * hello request
@@ -631,7 +627,7 @@ public class packTlsHndshk {
             }
             switch (tlv.valTyp) {
                 case 43: // supported version
-                    if (!client) {
+                    if (client) {
                         minVer = bits.msbGetW(tlv.valDat, 0);
                         maxVer = minVer;
                         break;
@@ -649,8 +645,13 @@ public class packTlsHndshk {
                     }
                     break;
                 case 51:
-                    ecPeer = new byte[32];
-                    bits.byteCopy(tlv.valDat, 4, ecPeer, 0, ecPeer.length);
+                    if (client) {
+                        ecMode = bits.msbGetW(tlv.valDat, 0);
+                        ecDiffHell.getRemPub(tlv.valDat, 4);
+                        break;
+                    }
+                    ecMode = bits.msbGetW(tlv.valDat, 2);
+                    ecDiffHell.getRemPub(tlv.valDat, 6);
                     break;
             }
         }
@@ -663,7 +664,18 @@ public class packTlsHndshk {
     private byte[] makeExtensionList(boolean client) {
         typLenVal tlv = getTlv();
         packHolder pck = new packHolder(true, true);
-        byte[] buf;
+        byte[] buf = new byte[2];
+        bits.msbPutW(buf, 0, 4096);
+        tlv.putBytes(pck, 28, buf); // record size limit
+        if (servNam != null) {
+            int len = servNam.length();
+            buf = new byte[len + 5];
+            bits.msbPutW(buf, 0, len + 3);
+            buf[2] = 0; // name
+            bits.msbPutW(buf, 3, len);
+            bits.byteCopy(servNam.getBytes(), 0, buf, 5, len);
+            tlv.putBytes(pck, 0, buf); // server name
+        }
         if (client) {
             buf = new byte[(2 * (maxVer - minVer)) + 3];
             buf[0] = (byte) (buf.length - 1);
@@ -675,22 +687,20 @@ public class packTlsHndshk {
             bits.msbPutW(buf, 0, maxVer);
         }
         tlv.putBytes(pck, 43, buf); // supported versions
-        buf = new byte[2];
-        bits.msbPutW(buf, 0, 4096);
-        tlv.putBytes(pck, 28, buf); // record size limit
-        buf = new byte[6];
-        bits.msbPutW(buf, 0, buf.length - 2);
-        bits.msbPutW(buf, 2, 0x401); // rsa pkcs1 sha2256
-        bits.msbPutW(buf, 4, 0x201); // rsa pkcs1 sha1
-        tlv.putBytes(pck, 13, buf); // signature algorithms
-        if (servNam != null) {
-            int len = servNam.length();
-            buf = new byte[len + 5];
-            bits.msbPutW(buf, 0, len + 3);
-            buf[2] = 0; // name
-            bits.msbPutW(buf, 3, len);
-            bits.byteCopy(servNam.getBytes(), 0, buf, 5, len);
-            tlv.putBytes(pck, 0, buf); // server name
+        if (client) {
+            buf = new byte[16];
+            bits.msbPutW(buf, 0, buf.length - 2);
+            bits.msbPutW(buf, 2, 0x401); // rsa pkcs1 sha256
+            bits.msbPutW(buf, 4, 0x501); // rsa pkcs1 sha384
+            bits.msbPutW(buf, 6, 0x601); // rsa pkcs1 sha512
+            bits.msbPutW(buf, 8, 0x804); // rsa pss sha2256
+            bits.msbPutW(buf, 10, 0x805); // rsa pss sha2384
+            bits.msbPutW(buf, 12, 0x806); // rsa pss sha2512
+            bits.msbPutW(buf, 14, 0x201); // rsa pkcs1 sha1
+            tlv.putBytes(pck, 13, buf); // signature algorithms
+        } else {
+            buf = new byte[2];
+            bits.msbPutW(buf, 0, signHsh);
         }
         if (maxVer < 0x304) {
             pck.merge2end();
@@ -708,19 +718,20 @@ public class packTlsHndshk {
         buf[0] = 1; // length
         buf[1] = 1; // psk_dhe_ke
         tlv.putBytes(pck, 45, buf); // supported groups
-        ecPriv = cryECcurve25519.make();
-        byte[] res = cryECcurve25519.calc(ecPriv, null);
+        ecDiffHell = new cryECcurve25519();
+        ecDiffHell.makePirvKey();
+        ecDiffHell.calcCommon();
         if (client) {
             buf = new byte[6];
-            bits.msbPutW(buf, 0, res.length + 4);
+            bits.msbPutW(buf, 0, ecDiffHell.common.length + 4);
             bits.msbPutW(buf, 2, 0x1d); // x25519
-            bits.msbPutW(buf, 4, res.length);
+            bits.msbPutW(buf, 4, ecDiffHell.common.length);
         } else {
             buf = new byte[4];
             bits.msbPutW(buf, 0, 0x1d); // x25519
-            bits.msbPutW(buf, 2, res.length);
+            bits.msbPutW(buf, 2, ecDiffHell.common.length);
         }
-        tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
+        tlv.putBytes(pck, 51, bits.byteConcat(buf, ecDiffHell.common)); // key share
         pck.merge2end();
         return pck.getCopy();
     }
@@ -1035,9 +1046,15 @@ public class packTlsHndshk {
         logger.debug(dir + s);
     }
 
+    private void servKexDump() {
+        if (debugger.secTlsTraf) {
+            logger.debug("paramHash=" + bits.byteDump(paramHash, 0, -1) + " hash=" + paramHsh.getName());
+        }
+    }
+
     private void servKexSign() {
-        servHash = null;
-        servPkcs = null;
+        paramHash = null;
+        paramHsh = null;
         packTls h = new packTls(datagram);
         h.putBytes(clntRand, 0);
         h.putBytes(servRand, 0);
@@ -1049,41 +1066,51 @@ public class packTlsHndshk {
         if (signHsh < 0) {
             switch (cipherDecoded & 0xf00) {
                 case 0x100:
-                    servHash = bits.byteConcat(cryHashGeneric.compute(new cryHashMd5(), raw),
+                    paramHash = bits.byteConcat(cryHashGeneric.compute(new cryHashMd5(), raw),
                             cryHashGeneric.compute(new cryHashSha1(), raw));
-                    servPkcs = new cryHashMd5().getPkcs();
+                    paramHsh = new cryHashMd5();
                     break;
                 case 0x200:
-                    servHash = cryHashGeneric.compute(new cryHashSha1(), raw);
-                    servPkcs = new cryHashSha1().getPkcs();
+                    paramHash = cryHashGeneric.compute(new cryHashSha1(), raw);
+                    paramHsh = new cryHashSha1();
                     break;
                 default:
                     return;
             }
-        } else {
-            cryHashGeneric alg = null;
-            switch (signHsh) {
-                case 1:
-                    alg = new cryHashMd5();
-                    break;
-                case 2:
-                    alg = new cryHashSha1();
-                    break;
-                case 4:
-                    alg = new cryHashSha2256();
-                    break;
-                case 6:
-                    alg = new cryHashSha2512();
-                    break;
-                default:
-                    return;
-            }
-            servHash = cryHashGeneric.compute(alg, raw);
-            servPkcs = alg.getPkcs();
+            return;
         }
-        if (debugger.secTlsTraf) {
-            logger.debug("paramHash=" + bits.byteDump(servHash, 0, -1) + " oid=" + bits.byteDump(servPkcs, 0, -1));
+        switch (signHsh) {
+            case 0x101:
+                paramHsh = new cryHashMd5();
+                break;
+            case 0x201:
+                paramHsh = new cryHashSha1();
+                break;
+            case 0x301:
+                paramHsh = new cryHashSha2224();
+                break;
+            case 0x401:
+                paramHsh = new cryHashSha2256();
+                break;
+            case 0x501:
+                paramHsh = new cryHashSha2384();
+                break;
+            case 0x601:
+                paramHsh = new cryHashSha2512();
+                break;
+            case 0x804:
+                paramHsh = new cryHashSha2256();
+                break;
+            case 0x805:
+                paramHsh = new cryHashSha2384();
+                break;
+            case 0x806:
+                paramHsh = new cryHashSha2512();
+                break;
+            default:
+                return;
         }
+        paramHash = cryHashGeneric.compute(paramHsh, raw);
     }
 
     /**
@@ -1114,17 +1141,16 @@ public class packTlsHndshk {
         diffHell = cryKeyDH.findGroup(i);
         diffHell.servXchg();
         if (lower.verCurr >= 0x303) {
-            signHsh = 2;
+            signHsh = 0x401; // rsa pkcs1 sha256
         }
         servKexSign();
+        servKexDump();
         switch (cipherDecoded & 0xf00) {
             case 0x100:
-                signDat = keyrsa.tlsSigning(lower.verCurr, servPkcs, servHash);
-                signAlg = 1;
+                signDat = keyrsa.tlsSigning(signHsh, paramHsh, paramHash);
                 break;
             case 0x200:
-                signDat = keydsa.tlsSigning(lower.verCurr, servPkcs, servHash);
-                signAlg = 2;
+                signDat = keydsa.tlsSigning(signHsh, paramHsh, paramHash);
                 break;
             default:
                 signDat = new byte[0];
@@ -1142,8 +1168,7 @@ public class packTlsHndshk {
         lower.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
         lower.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
         if (lower.verCurr >= 0x303) {
-            lower.pckDat.putByte(0, signHsh);
-            lower.pckDat.putByte(1, signAlg);
+            lower.pckDat.msbPutW(0, signHsh);
             lower.pckDat.putSkip(2);
         }
         lower.putBytes(signDat, 2);
@@ -1164,8 +1189,7 @@ public class packTlsHndshk {
         diffHell.group = cryUtils.buf2bigUint(lower.getBytes(2));
         diffHell.servPub = cryUtils.buf2bigUint(lower.getBytes(2));
         if (lower.verCurr >= 0x303) {
-            signHsh = lower.pckDat.getByte(0);
-            signAlg = lower.pckDat.getByte(1);
+            signHsh = lower.pckDat.msbGetW(0);
             lower.pckDat.getSkip(2);
         }
         signDat = lower.getBytes(2);
@@ -1178,10 +1202,12 @@ public class packTlsHndshk {
             logger.debug("cert=" + crt);
         }
         servKexSign();
-        if (servHash == null) {
+        if (paramHash == null) {
             return true;
         }
-        if (crt.key.tlsVerify(lower.verCurr, servPkcs, servHash, signDat)) {
+        servKexDump();
+        if (crt.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
+            logger.info("signature error for " + crt);
             return true;
         }
         return false;
@@ -1595,6 +1621,10 @@ public class packTlsHndshk {
      * @return false on success, true on error
      */
     public boolean calcKeysNg(boolean client) {
+        ecDiffHell.calcCommon();
+        if (debugger.secTlsTraf) {
+            logger.debug("private=" + bits.byteDump(ecDiffHell.locPriv, 0, -1) + " peer=" + bits.byteDump(ecDiffHell.remPub, 0, -1) + " common=" + bits.byteDump(ecDiffHell.common, 0, -1));
+        }
         return false;////
     }
 

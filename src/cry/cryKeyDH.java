@@ -244,19 +244,19 @@ public class cryKeyDH extends cryKeyGeneric {
         return null;
     }
 
-    public boolean certVerify(byte[] pkcs, byte[] hash, byte[] sign) {
+    public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
         return true;
     }
 
-    public byte[] certSigning(byte[] pkcs, byte[] hash) {
+    public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
         return null;
     }
 
-    public boolean tlsVerify(int ver, byte[] pkcs, byte[] hash, byte[] sign) {
+    public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
         return true;
     }
 
-    public byte[] tlsSigning(int ver, byte[] pkcs, byte[] hash) {
+    public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
         return null;
     }
 
