@@ -29,61 +29,40 @@ public class cryECcurve25519 {
 
     private static final int NUM_LIMBS_510BIT = 20;
 
-    private final int[] A;
+    private int[] A;
 
-    private final int[] AA;
+    private int[] AA;
 
-    private final int[] B;
+    private int[] B;
 
-    private final int[] BB;
+    private int[] BB;
 
-    private final int[] C;
+    private int[] C;
 
-    private final int[] CB;
+    private int[] CB;
 
-    private final int[] D;
+    private int[] D;
 
-    private final int[] DA;
+    private int[] DA;
 
-    private final int[] E;
+    private int[] E;
 
-    private final long[] t1;
+    private long[] t1;
 
-    private final int[] t2;
+    private int[] t2;
 
-    private final int[] x_1;
+    private int[] x_1;
 
-    private final int[] x_2;
+    private int[] x_2;
 
-    private final int[] x_3;
+    private int[] x_3;
 
-    private final int[] z_2;
+    private int[] z_2;
 
-    private final int[] z_3;
+    private int[] z_3;
 
-    /**
-     * create instance
-     */
-    public cryECcurve25519() {
-        x_1 = new int[NUM_LIMBS_255BIT];
-        x_2 = new int[NUM_LIMBS_255BIT];
-        x_3 = new int[NUM_LIMBS_255BIT];
-        z_2 = new int[NUM_LIMBS_255BIT];
-        z_3 = new int[NUM_LIMBS_255BIT];
-        A = new int[NUM_LIMBS_255BIT];
-        B = new int[NUM_LIMBS_255BIT];
-        C = new int[NUM_LIMBS_255BIT];
-        D = new int[NUM_LIMBS_255BIT];
-        E = new int[NUM_LIMBS_255BIT];
-        AA = new int[NUM_LIMBS_255BIT];
-        BB = new int[NUM_LIMBS_255BIT];
-        DA = new int[NUM_LIMBS_255BIT];
-        CB = new int[NUM_LIMBS_255BIT];
-        t1 = new long[NUM_LIMBS_510BIT];
-        t2 = new int[NUM_LIMBS_510BIT];
-    }
 
-    private static void cswap(int select, final int[] x, final int[] y) {
+    private void cswap(int select, final int[] x, final int[] y) {
         select = -select;
         for (int index = 0; index < NUM_LIMBS_255BIT; ++index) {
             final int dummy = select & (x[index] ^ y[index]);
@@ -117,48 +96,63 @@ public class cryECcurve25519 {
      * calculate keys
      */
     public void calcCommon() {
-        final cryECcurve25519 state = new cryECcurve25519();
-        Arrays.fill(state.x_1, 0);
+        x_1 = new int[NUM_LIMBS_255BIT];
+        x_2 = new int[NUM_LIMBS_255BIT];
+        x_3 = new int[NUM_LIMBS_255BIT];
+        z_2 = new int[NUM_LIMBS_255BIT];
+        z_3 = new int[NUM_LIMBS_255BIT];
+        A = new int[NUM_LIMBS_255BIT];
+        B = new int[NUM_LIMBS_255BIT];
+        C = new int[NUM_LIMBS_255BIT];
+        D = new int[NUM_LIMBS_255BIT];
+        E = new int[NUM_LIMBS_255BIT];
+        AA = new int[NUM_LIMBS_255BIT];
+        BB = new int[NUM_LIMBS_255BIT];
+        DA = new int[NUM_LIMBS_255BIT];
+        CB = new int[NUM_LIMBS_255BIT];
+        t1 = new long[NUM_LIMBS_510BIT];
+        t2 = new int[NUM_LIMBS_510BIT];
+        Arrays.fill(x_1, 0);
         if (remPub != null) {
             for (int index = 0; index < 32; ++index) {
                 final int bit = (index * 8) % 26;
                 final int word = (index * 8) / 26;
                 final int value = remPub[index] & 0xFF;
                 if (bit <= (26 - 8)) {
-                    state.x_1[word] |= value << bit;
+                    x_1[word] |= value << bit;
                 } else {
-                    state.x_1[word] |= value << bit;
-                    state.x_1[word] &= 0x03FFFFFF;
-                    state.x_1[word + 1] |= value >> (26 - bit);
+                    x_1[word] |= value << bit;
+                    x_1[word] &= 0x03FFFFFF;
+                    x_1[word + 1] |= value >> (26 - bit);
                 }
             }
-            state.reduceQuick(state.x_1);
-            state.reduceQuick(state.x_1);
+            reduceQuick(x_1);
+            reduceQuick(x_1);
         } else {
-            state.x_1[0] = 9;
+            x_1[0] = 9;
         }
-        Arrays.fill(state.x_2, 0);
-        state.x_2[0] = 1;
-        Arrays.fill(state.z_2, 0);
-        System.arraycopy(state.x_1, 0, state.x_3, 0, state.x_1.length);
-        Arrays.fill(state.z_3, 0);
-        state.z_3[0] = 1;
-        state.evalCurve(locPriv);
-        state.recip(state.z_3, state.z_2);
-        state.mul(state.x_2, state.x_2, state.z_3);
+        Arrays.fill(x_2, 0);
+        x_2[0] = 1;
+        Arrays.fill(z_2, 0);
+        System.arraycopy(x_1, 0, x_3, 0, x_1.length);
+        Arrays.fill(z_3, 0);
+        z_3[0] = 1;
+        evalCurve(locPriv);
+        recip(z_3, z_2);
+        mul(x_2, x_2, z_3);
         common = new byte[32];
         for (int index = 0; index < 32; ++index) {
             final int bit = (index * 8) % 26;
             final int word = (index * 8) / 26;
             if (bit <= (26 - 8)) {
-                common[index] = (byte) (state.x_2[word] >> bit);
+                common[index] = (byte) (x_2[word] >> bit);
             } else {
-                common[index] = (byte) ((state.x_2[word] >> bit) | (state.x_2[word + 1] << (26 - bit)));
+                common[index] = (byte) ((x_2[word] >> bit) | (x_2[word + 1] << (26 - bit)));
             }
         }
     }
 
-    private static void sub(final int[] result, final int[] x, final int[] y) {
+    private void sub(final int[] result, final int[] x, final int[] y) {
         int index;
         int borrow;
         borrow = 0;
