@@ -834,7 +834,7 @@ public class packTlsHndshk {
      */
     public void clntHelloCreate() {
         pckTyp = typeHeloClnt;
-        lower.verCurr = minVer;
+        lower.verCurr = packTls.version2wire(minVer);
         lower.pckDat.clear();
         int i = packTls.version2wire(maxVer);
         if (datagram) {
@@ -903,9 +903,9 @@ public class packTlsHndshk {
      */
     public void vrfyHelloCreate() {
         pckTyp = typeHeloVrfy;
-        lower.verCurr = minVer;
+        lower.verCurr = packTls.version2wire(minVer);
         lower.pckDat.clear();
-        int i = maxVer;
+        int i = packTls.version2wire(maxVer);
         if (datagram) {
             i = packTls.version2dtls(i);
         }
@@ -990,9 +990,9 @@ public class packTlsHndshk {
      */
     public void servHelloCreate() {
         pckTyp = typeHeloServ;
-        lower.verCurr = minVer;
+        lower.verCurr = packTls.version2wire(minVer);
         lower.pckDat.clear();
-        int i = maxVer;
+        int i = packTls.version2wire(maxVer);
         if (datagram) {
             i = packTls.version2dtls(i);
         }
