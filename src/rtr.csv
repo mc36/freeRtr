@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.2.13-rel, done by cs@nop.
--;-;-;2021-02-13 12:04:00, took 00:16:28, with 100 workers, on 2350 cases, 3 failed, 0 traces, 47 retries
+-;-;-;2021-02-13 15:58:00, took 00:05:32, with 100 workers, on 2350 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
@@ -322,7 +322,7 @@ http://sources.nop.hu/cfg/conn-tdmou06.tst;conn-tdmou06.tst;success;atmdxi with 
 http://sources.nop.hu/cfg/conn-tdmou07.tst;conn-tdmou07.tst;success;isdn with tdmoudp
 http://sources.nop.hu/cfg/conn-tdmou08.tst;conn-tdmou08.tst;success;sep with tdmoudp
 http://sources.nop.hu/cfg/conn-telnet.tst;conn-telnet.tst;success;ppp over telnet
-http://sources.nop.hu/cfg/conn-tls.tst;conn-tls.tst;#6-run-r2 tping 100 40 2.2.2.0 /vrf v1;ppp over tls
+http://sources.nop.hu/cfg/conn-tls.tst;conn-tls.tst;success;ppp over tls
 http://sources.nop.hu/cfg/conn-tmux01.tst;conn-tmux01.tst;success;tmux over ipv4
 http://sources.nop.hu/cfg/conn-tmux02.tst;conn-tmux02.tst;success;tmux over ipv6
 http://sources.nop.hu/cfg/conn-tmux03.tst;conn-tmux03.tst;success;tmux over tmux
@@ -2103,7 +2103,7 @@ http://sources.nop.hu/cfg/rout-lsrp10.tst;rout-lsrp10.tst;success;lsrp default r
 http://sources.nop.hu/cfg/rout-lsrp11.tst;rout-lsrp11.tst;success;lsrp with bfd
 http://sources.nop.hu/cfg/rout-lsrp12.tst;rout-lsrp12.tst;success;lsrp authentication
 http://sources.nop.hu/cfg/rout-lsrp13.tst;rout-lsrp13.tst;success;lsrp ssh encryption
-http://sources.nop.hu/cfg/rout-lsrp14.tst;rout-lsrp14.tst;#6-run-r1 tping 100 40 2.2.2.2 /vrf v1;lsrp tls encryption
+http://sources.nop.hu/cfg/rout-lsrp14.tst;rout-lsrp14.tst;success;lsrp tls encryption
 http://sources.nop.hu/cfg/rout-lsrp15.tst;rout-lsrp15.tst;success;lsrp peer template
 http://sources.nop.hu/cfg/rout-lsrp16.tst;rout-lsrp16.tst;success;lsrp with sr
 http://sources.nop.hu/cfg/rout-lsrp17.tst;rout-lsrp17.tst;success;lsrp prefix withdraw
@@ -2247,7 +2247,7 @@ http://sources.nop.hu/cfg/rout-pvrp18.tst;rout-pvrp18.tst;success;pvrp default r
 http://sources.nop.hu/cfg/rout-pvrp19.tst;rout-pvrp19.tst;success;pvrp with bfd
 http://sources.nop.hu/cfg/rout-pvrp20.tst;rout-pvrp20.tst;success;pvrp authentication
 http://sources.nop.hu/cfg/rout-pvrp21.tst;rout-pvrp21.tst;success;pvrp ssh encryption
-http://sources.nop.hu/cfg/rout-pvrp22.tst;rout-pvrp22.tst;#6-run-r1 tping 100 40 2.2.2.2 /vrf v1;pvrp tls encryption
+http://sources.nop.hu/cfg/rout-pvrp22.tst;rout-pvrp22.tst;success;pvrp tls encryption
 http://sources.nop.hu/cfg/rout-pvrp23.tst;rout-pvrp23.tst;success;pvrp peer template
 http://sources.nop.hu/cfg/rout-pvrp24.tst;rout-pvrp24.tst;success;pvrp with labels
 http://sources.nop.hu/cfg/rout-pvrp25.tst;rout-pvrp25.tst;success;pvrp prefix withdraw

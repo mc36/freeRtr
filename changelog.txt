@@ -12126,3 +12126,10 @@ no qc pass: ppp over tls
 failed: ppp over tls
 failed: lsrp tls encryption
 failed: pvrp tls encryption
+---------------------------------- 2021-02-13 15:52:27
+no failed: pvrp tls encryption
+no failed: lsrp tls encryption
+no failed: ppp over tls
+qc pass: ppp over tls
+qc pass: lsrp tls encryption
+qc pass: pvrp tls encryption

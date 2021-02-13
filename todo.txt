@@ -7,7 +7,6 @@ hwdet default to binary in installation, rework rtr.bin support to binjar if nee
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 http server should honor no in the beginning for host commands
 http host upload optional different authentication
-tls1.3
 terminal mode resolve
 hostwatch to execute script on acl match
 optimal route reflection
@@ -15,7 +14,6 @@ bgp vpns with sr-policy
 temper: web access log
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 interface range command
-reenable which elliptic courves? sure? why that?
 https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 parse privilege levels from tacacs
 ldap client, server
