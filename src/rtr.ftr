@@ -318,7 +318,7 @@ qc pass: atmdxi with tdmoudp
 qc pass: isdn with tdmoudp
 qc pass: sep with tdmoudp
 qc pass: ppp over telnet
-qc pass: ppp over tls
+failed: ppp over tls
 qc pass: tmux over ipv4
 qc pass: tmux over ipv6
 qc pass: tmux over tmux
@@ -2099,7 +2099,7 @@ qc pass: lsrp default route
 qc pass: lsrp with bfd
 qc pass: lsrp authentication
 qc pass: lsrp ssh encryption
-qc pass: lsrp tls encryption
+failed: lsrp tls encryption
 qc pass: lsrp peer template
 qc pass: lsrp with sr
 qc pass: lsrp prefix withdraw
@@ -2243,7 +2243,7 @@ qc pass: pvrp default route
 qc pass: pvrp with bfd
 qc pass: pvrp authentication
 qc pass: pvrp ssh encryption
-qc pass: pvrp tls encryption
+failed: pvrp tls encryption
 qc pass: pvrp peer template
 qc pass: pvrp with labels
 qc pass: pvrp prefix withdraw

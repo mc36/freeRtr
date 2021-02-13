@@ -2,6 +2,7 @@ package cry;
 
 import java.math.BigInteger;
 import pack.packHolder;
+import util.bits;
 
 /**
  * elliptic curve diffie-hellman key exchange

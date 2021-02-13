@@ -12119,3 +12119,10 @@ todo: more interactive tools
 todo: more features with clean implementation
 todo: x25
 todo: default vrf for show commands
+---------------------------------- 2021-02-13 11:47:31
+no qc pass: pvrp tls encryption
+no qc pass: lsrp tls encryption
+no qc pass: ppp over tls
+failed: ppp over tls
+failed: lsrp tls encryption
+failed: pvrp tls encryption

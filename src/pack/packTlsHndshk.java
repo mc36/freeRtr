@@ -1,6 +1,7 @@
 package pack;
 
 import cry.cryCertificate;
+import cry.cryECcurve;
 import cry.cryECpoint;
 import cry.cryEncrCBCaes;
 import cry.cryEncrCBCdes;
@@ -114,11 +115,6 @@ public class packTlsHndshk {
      * ec diffie hellman
      */
     public cryKeyECDH ecDiffHell;
-
-    /**
-     * ec diffie hellman id
-     */
-    public int ecDiffId;
 
     /**
      * signature hash
@@ -485,13 +481,6 @@ public class packTlsHndshk {
             return;
         }
         ecDiffHell = new cryKeyECDH();
-        ecDiffHell.keyMake("nistp256r1");
-        ecDiffId = 0x17;
-        if (client) {
-            ecDiffHell.clntXchg();
-        } else {
-            ecDiffHell.servXchg();
-        }
     }
 
     /**
@@ -660,16 +649,36 @@ public class packTlsHndshk {
                         }
                     }
                     break;
-                case 51:
+                case 10: // supported groups
+                    for (int i = 2; i < tlv.valSiz; i += 2) {
+                        ecDiffHell.curve = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, i));
+                        if (ecDiffHell.curve != null) {
+                            break;
+                        }
+                    }
+                    break;
+                case 51: // key exchange
                     if (lower.verMax < 0x304) {
                         break;
                     }
                     if (client) {
-                        ecDiffId = bits.msbGetW(tlv.valDat, 0);
+                        ecDiffHell.curve = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, 0));
+                        if (ecDiffHell.curve == null) {
+                            break;
+                        }
                         ecDiffHell.servPub = cryECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, 4);
                         break;
                     }
-                    ecDiffId = bits.msbGetW(tlv.valDat, 2);
+                    if (ecDiffHell.curve == null) {
+                        break;
+                    }
+                    cryECcurve tmp = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, 2));
+                    if (tmp == null) {
+                        break;
+                    }
+                    if (tmp.tls != ecDiffHell.curve.tls) {
+                        break;
+                    }
                     ecDiffHell.clntPub = cryECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, 6);
                     break;
             }
@@ -729,25 +738,39 @@ public class packTlsHndshk {
         buf[0] = 1; // length
         buf[1] = 0; // uncompressed
         tlv.putBytes(pck, 11, buf); // ec point format
-        buf = new byte[4];
-        bits.msbPutW(buf, 0, 2); // length
-        bits.msbPutW(buf, 2, ecDiffId); // curve
-        tlv.putBytes(pck, 10, buf); // supported groups
         buf = new byte[2];
         buf[0] = 1; // length
         buf[1] = 1; // psk_dhe_ke
         tlv.putBytes(pck, 45, buf); // key exchange
+        if (client) {
+            List<Integer> lst = cryECcurve.listTlsIds();
+            buf = new byte[(lst.size() * 2) + 2];
+            bits.msbPutW(buf, 0, buf.length - 2); // length
+            for (int i = 0; i < lst.size(); i++) {
+                bits.msbPutW(buf, (i * 2) + 2, lst.get(i));
+            }
+            tlv.putBytes(pck, 10, buf); // supported groups
+        }
         byte[] res;
         if (client) {
-            res = ecDiffHell.clntPub.toBytes1();
-            buf = new byte[6];
-            bits.msbPutW(buf, 0, res.length + 4);
-            bits.msbPutW(buf, 2, ecDiffId); // curve
-            bits.msbPutW(buf, 4, res.length);
+            if (ecDiffHell.curve != null) {
+                res = ecDiffHell.clntPub.toBytes1();
+                buf = new byte[6];
+                bits.msbPutW(buf, 0, res.length + 4);
+                bits.msbPutW(buf, 2, ecDiffHell.curve.tls);
+                bits.msbPutW(buf, 4, res.length);
+            } else {
+                buf = new byte[2];
+                res = new byte[0];
+            }
         } else {
-            res = ecDiffHell.servPub.toBytes1();
+            if (ecDiffHell.servPub != null) {
+                res = ecDiffHell.servPub.toBytes1();
+            } else {
+                res = new byte[0];
+            }
             buf = new byte[4];
-            bits.msbPutW(buf, 0, ecDiffId); // curve
+            bits.msbPutW(buf, 0, ecDiffHell.curve.tls);
             bits.msbPutW(buf, 2, res.length);
         }
         tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
@@ -765,6 +788,17 @@ public class packTlsHndshk {
         cipherList = makeCipherList();
         cmprssList = makeCompressList();
         extnsnList = makeExtensionList(true);
+    }
+
+    /**
+     * fill up client hello
+     */
+    public boolean clntHelloFillNg() {
+        if (ecDiffHell.curve == null) {
+            return true;
+        }
+        ecDiffHell.clntXchg();
+        return false;
     }
 
     /**
@@ -899,6 +933,19 @@ public class packTlsHndshk {
         }
         maxVer = i;
         minVer = i;
+    }
+
+    /**
+     * fill up server hello
+     *
+     * @return false on successful, true on error
+     */
+    public boolean servHelloFillNg() {
+        if (ecDiffHell.curve == null) {
+            return true;
+        }
+        ecDiffHell.servXchg();
+        return false;
     }
 
     /**
