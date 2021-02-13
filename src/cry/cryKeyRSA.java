@@ -201,6 +201,9 @@ public class cryKeyRSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p);
     }
 
+    public void keyMake(String nam) {
+    }
+
     public void keyMake(int len) {
         pubExp = new BigInteger("65537", 10);
         prime1 = randomPrime(len / 2);

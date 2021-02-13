@@ -135,17 +135,53 @@ public class cryECpoint {
     }
 
     /**
+     * get x coordinate
+     *
+     * @return x coordinate
+     */
+    public byte[] getBytesX() {
+        int siz = (c.p.bitLength() + 7) / 8;
+        byte[] b1 = cryKeyGeneric.bigInt2buffer(x, siz);
+        return b1;
+    }
+
+    private byte[] getBytes() {
+        int siz = (c.p.bitLength() + 7) / 8;
+        byte[] b1 = cryKeyGeneric.bigInt2buffer(x, siz);
+        byte[] b2 = cryKeyGeneric.bigInt2buffer(y, siz);
+        return bits.byteConcat(b1, b2);
+    }
+
+    /**
      * get bytes
      *
      * @return bytes
      */
-    public byte[] toBytes() {
+    public byte[] toBytes1() {
+        byte[] b0 = new byte[1];
+        b0[0] = 4;
+        return bits.byteConcat(b0, getBytes());
+    }
+
+    /**
+     * get bytes
+     *
+     * @return bytes
+     */
+    public byte[] toBytes2() {
         byte[] b0 = new byte[2];
         b0[1] = 4;
+        return bits.byteConcat(b0, getBytes());
+    }
+
+    private static cryECpoint fromBytes(cryECcurve c, byte[] buf, int ofs) {
         int siz = (c.p.bitLength() + 7) / 8;
-        byte[] b1 = cryKeyGeneric.bigInt2buffer(x, siz);
-        byte[] b2 = cryKeyGeneric.bigInt2buffer(y, siz);
-        return bits.byteConcat(bits.byteConcat(b0, b1), b2);
+        if ((buf.length - ofs) < (siz * 2)) {
+            return null;
+        }
+        BigInteger x = cryKeyGeneric.buffer2bigInt(buf, ofs, siz);
+        BigInteger y = cryKeyGeneric.buffer2bigInt(buf, ofs + siz, siz);
+        return new cryECpoint(c, x, y);
     }
 
     /**
@@ -153,19 +189,29 @@ public class cryECpoint {
      *
      * @param c curve
      * @param buf buffer
+     * @param ofs where to start
      * @return point
      */
-    public static cryECpoint fromBytes(cryECcurve c, byte[] buf) {
-        if (buf[1] != 4) {
+    public static cryECpoint fromBytes1(cryECcurve c, byte[] buf, int ofs) {
+        if (buf[ofs] != 4) {
             return null;
         }
-        int siz = (c.p.bitLength() + 7) / 8;
-        if (buf.length < ((siz * 2) + 2)) {
+        return fromBytes(c, buf, ofs + 1);
+    }
+
+    /**
+     * convert from bytes
+     *
+     * @param c curve
+     * @param buf buffer
+     * @param ofs where to start
+     * @return point
+     */
+    public static cryECpoint fromBytes2(cryECcurve c, byte[] buf, int ofs) {
+        if (buf[ofs + 1] != 4) {
             return null;
         }
-        BigInteger x = cryKeyGeneric.buffer2bigInt(buf, 2, siz);
-        BigInteger y = cryKeyGeneric.buffer2bigInt(buf, 2 + siz, siz);
-        return new cryECpoint(c, x, y);
+        return fromBytes(c, buf, ofs + 2);
     }
 
 }

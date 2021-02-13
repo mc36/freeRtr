@@ -192,6 +192,13 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
     public abstract void keyMake(int len);
 
     /**
+     * generate new key
+     *
+     * @param nam name of key
+     */
+    public abstract void keyMake(String nam);
+
+    /**
      * verify a key
      *
      * @return false on success, true on error

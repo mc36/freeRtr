@@ -110,7 +110,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
             return true;
         }
-        pub = cryECpoint.fromBytes(curve, a.buf);
+        pub = cryECpoint.fromBytes2(curve, a.buf, 0);
         if (pub == null) {
             return true;
         }
@@ -136,7 +136,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         cryAsn1.writeEoc(p1, p2);
         p2.clear();
         packHolder p3 = new packHolder(true, true);
-        buf = pub.toBytes();
+        buf = pub.toBytes2();
         p3.putCopy(buf, 0, 0, buf.length);
         p3.putSkip(buf.length);
         p3.merge2beg();
@@ -189,7 +189,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
             return true;
         }
-        pub = cryECpoint.fromBytes(curve, a.buf);
+        pub = cryECpoint.fromBytes2(curve, a.buf, 0);
         if (pub == null) {
             return true;
         }
@@ -208,12 +208,22 @@ public class cryKeyECDSA extends cryKeyGeneric {
         cryAsn1.writeObjectId(p2, curve.oid);
         cryAsn1.writeSequence(p1, p2);
         p2.clear();
-        byte[] buf = pub.toBytes();
+        byte[] buf = pub.toBytes2();
         p2.putCopy(buf, 0, 0, buf.length);
         p2.putSkip(buf.length);
         p2.merge2beg();
         cryAsn1.writeBitString(p1, p2);
         cryAsn1.writeSequence(pck, p1);
+    }
+
+    public void keyMake(String nam) {
+        curve = cryECcurve.getByName(nam);
+        keyMake();
+    }
+
+    private void keyMake() {
+        priv = randomBigInt(curve.n.bitLength() - 2);
+        pub = curve.g.mul(priv);
     }
 
     /**
@@ -223,8 +233,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      */
     public void keyMake(int len) {
         curve = cryECcurve.getBySize(len);
-        priv = randomBigInt(curve.n.bitLength() - 2);
-        pub = curve.g.mul(priv);
+        keyMake();
     }
 
     /**
@@ -262,7 +271,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (!packSsh.stringRead(p).equals(curve + "")) {
             return true;
         }
-        pub = cryECpoint.fromBytes(curve, packSsh.bytesRead(p));
+        pub = cryECpoint.fromBytes2(curve, packSsh.bytesRead(p), 0);
         if (pub == null) {
             return true;
         }
@@ -278,7 +287,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         packHolder p = new packHolder(true, true);
         packSsh.stringWrite(p, sshName());
         packSsh.stringWrite(p, "" + curve);
-        packSsh.bytesWrite(p, pub.toBytes());
+        packSsh.bytesWrite(p, pub.toBytes2());
         return null;
     }
 

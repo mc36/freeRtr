@@ -1628,8 +1628,10 @@ public class userExec {
         hl.add("3 3,.      [str]                 parameters");
         hl.add("2 .      pipeline                test pipeline throughput");
         hl.add("2 .      ssh                     test ssh throughput");
-        hl.add("2 .      tls                     test tls throughput");
-        hl.add("2 .      dtls                    test dtls throughput");
+        hl.add("2 3,.    tls                     test tls throughput");
+        hl.add("3 .        <num>                 version");
+        hl.add("2 3,.    dtls                    test dtls throughput");
+        hl.add("3 .        <num>                 version");
         hl.add(".2 .     gc                      run garbage collector");
         hl.add("2 .      crypto                  test encryption and hash");
         hl.add("2 3,.    digsig                  test digital signatures");

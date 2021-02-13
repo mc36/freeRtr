@@ -619,13 +619,21 @@ public class userTest {
             return null;
         }
         if (a.equals("dtls")) {
-            doTestTls(true, 2);
+            a = cmd.word();
+            if (a.length() > 0) {
+                doTestTls(true, bits.str2num(a));
+                return null;
+            }
             doTestTls(true, 3);
             doTestTls(true, 4);
             return null;
         }
         if (a.equals("tls")) {
-            cmd.error("performing test");
+            a = cmd.word();
+            if (a.length() > 0) {
+                doTestTls(false, bits.str2num(a));
+                return null;
+            }
             doTestTls(false, 0);
             doTestTls(false, 1);
             doTestTls(false, 2);
@@ -863,6 +871,8 @@ public class userTest {
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         srvH.minVer = 0x300 + ver;
+        srvH.maxVer = srvH.minVer;
+        clnH.minVer = srvH.minVer;
         clnH.maxVer = srvH.minVer;
         srvH.startServer(rsa, dss, ecdss, null, null, null);
         clnH.startClient();

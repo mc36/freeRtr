@@ -208,6 +208,9 @@ public class cryKeyDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p);
     }
 
+    public void keyMake(String nam) {
+    }
+
     /**
      * make key
      *
