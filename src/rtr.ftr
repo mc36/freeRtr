@@ -2357,7 +2357,6 @@ todo: hwdet default to binary in installation, rework rtr.bin support to binjar 
 todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
-todo: tls1.3
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: optimal route reflection
@@ -2365,7 +2364,6 @@ todo: bgp vpns with sr-policy
 todo: temper: web access log
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: interface range command
-todo: reenable which elliptic courves? sure? why that?
 todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 todo: parse privilege levels from tacacs
 todo: ldap client, server

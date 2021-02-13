@@ -12133,3 +12133,6 @@ no failed: ppp over tls
 qc pass: ppp over tls
 qc pass: lsrp tls encryption
 qc pass: pvrp tls encryption
+---------------------------------- 2021-02-13 16:21:36
+no todo: reenable which elliptic courves? sure? why that?
+no todo: tls1.3
