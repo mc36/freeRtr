@@ -370,13 +370,13 @@ public class secTls implements Runnable {
             if (ph.certDatParse()) {
                 return null;
             }
+            ph.certVrfFill();
             if (p.apackRecv()) {
                 return null;
             }
             if (ph.headerParse()) {
                 return null;
             }
-            ph.certVrfFill();
             if (ph.certVrfParse()) {
                 return null;
             }

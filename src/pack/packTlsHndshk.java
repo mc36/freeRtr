@@ -672,10 +672,21 @@ public class packTlsHndshk {
                     break;
                 case 10: // supported groups
                     for (int i = 2; i < tlv.valSiz; i += 2) {
-                        ecDiffHell.curve = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, i));
+                        int o = bits.msbGetW(tlv.valDat, i);
+                        ecDiffHell.curve = cryECcurve.getByTls(o);
                         if (ecDiffHell.curve != null) {
                             break;
                         }
+                    }
+                    break;
+                case 13: // signature algorithm
+                    for (int i = 2; i < tlv.valSiz; i += 2) {
+                        int o = bits.msbGetW(tlv.valDat, i);
+                        if (getSignerHash(o) == null) {
+                            continue;
+                        }
+                        signHsh = o;
+                        break;
                     }
                     break;
                 case 51: // key exchange
@@ -1120,6 +1131,9 @@ public class packTlsHndshk {
         certificates = new ArrayList<byte[]>();
         for (; lower.pckDat.dataSize() > 0;) {
             byte[] cert = lower.getBytes(3);
+            if (cert == null) {
+                break;
+            }
             certificates.add(cert);
         }
         certDatDump("rx");
@@ -1138,10 +1152,15 @@ public class packTlsHndshk {
         if (lower.pckDat.getByte(0) != 0) {
             return true;
         }
-        lower.pckDat.getSkip(1);
+        lower.pckDat.getSkip(4);
         certificates = new ArrayList<byte[]>();
-        byte[] cert = lower.getBytes(3);
-        certificates.add(cert);
+        for (; lower.pckDat.dataSize() > 0;) {
+            byte[] cert = lower.getBytes(3);
+            if (cert == null) {
+                break;
+            }
+            certificates.add(cert);
+        }
         certDatDump("rx");
         return false;
     }
@@ -1152,12 +1171,13 @@ public class packTlsHndshk {
     public void certDatCreate() {
         pckTyp = typeCertDat;
         lower.pckDat.clear();
-        lower.pckDat.putByte(0, 0);
-        lower.pckDat.putSkip(1);
-        lower.pckDat.merge2end();
-        byte[] buf = certificates.get(0);
-        lower.putBytes(buf, 3);
-        lower.pckDat.merge2end();
+        for (int i = 0; i < certificates.size(); i++) {
+            byte[] buf = certificates.get(i);
+            lower.putBytes(buf, 3);
+            lower.pckDat.merge2end();
+        }
+        lower.pckDat.msbPutD(0, lower.pckDat.dataSize());
+        lower.pckDat.putSkip(4);
         certDatDump("tx");
     }
 
@@ -1184,9 +1204,22 @@ public class packTlsHndshk {
         }
         signHsh = lower.pckDat.msbGetW(0);
         lower.pckDat.getSkip(2);
-        paramHash = lower.getBytes(2);
-        /////
+        signDat = lower.getBytes(2);
+        paramHsh = getSignerHash(signHsh);
+        paramHash = cryHashGeneric.compute(paramHsh, paramHash);
         servKexDump();
+        cryCertificate crt = new cryCertificate();
+        if (crt.asn1ReadBuf(certificates.get(0))) {
+            logger.info("cert error");
+            return true;
+        }
+        if (debugger.secTlsTraf) {
+            logger.debug("cert=" + crt);
+        }
+        if (crt.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
+            logger.info("sign error on " + crt);
+            return true;
+        }
         return false;
     }
 
@@ -1194,12 +1227,15 @@ public class packTlsHndshk {
      * create certificate verify
      */
     public void certVrfCreate() {
+        paramHsh = getSignerHash(signHsh);
+        paramHash = cryHashGeneric.compute(paramHsh, paramHash);
+        servKexSign();
         pckTyp = typeCertVrf;
         lower.pckDat.clear();
         lower.pckDat.msbPutW(0, signHsh);
         lower.pckDat.putSkip(2);
         lower.pckDat.merge2end();
-        lower.putBytes(paramHash, 2);
+        lower.putBytes(signDat, 2);
         lower.pckDat.merge2end();
         servKexDump();
     }
@@ -1208,8 +1244,12 @@ public class packTlsHndshk {
      * fill certificate verify
      */
     public void certVrfFill() {
-        paramHash = new byte[1];////
-        paramHsh = getAlgoHasher();
+        paramHash = new byte[32];
+        bits.byteFill(paramHash, 0, paramHash.length, 32);
+        paramHash = bits.byteConcat(paramHash, "TLS 1.3, server CertificateVerify".getBytes());
+        paramHash = bits.byteConcat(paramHash, new byte[1]);
+        cryHashGeneric h = getAlgoHasher();
+        paramHash = bits.byteConcat(paramHash, calcExchangeSumV13(h));
     }
 
     private void servKexDump() {
@@ -1218,7 +1258,32 @@ public class packTlsHndshk {
         }
     }
 
-    private void servKexSign() {
+    private cryHashGeneric getSignerHash(int signHsh) {
+        switch (signHsh) {
+            case 0x101:
+                return new cryHashMd5();
+            case 0x201:
+                return new cryHashSha1();
+            case 0x301:
+                return new cryHashSha2224();
+            case 0x401:
+                return new cryHashSha2256();
+            case 0x501:
+                return new cryHashSha2384();
+            case 0x601:
+                return new cryHashSha2512();
+            case 0x804:
+                return new cryHashSha2256();
+            case 0x805:
+                return new cryHashSha2384();
+            case 0x806:
+                return new cryHashSha2512();
+            default:
+                return null;
+        }
+    }
+
+    private void servKexHash() {
         paramHash = null;
         paramHsh = null;
         packTls h = new packTls(datagram);
@@ -1245,38 +1310,22 @@ public class packTlsHndshk {
             }
             return;
         }
-        switch (signHsh) {
-            case 0x101:
-                paramHsh = new cryHashMd5();
+        paramHsh = getSignerHash(signHsh);
+        paramHash = cryHashGeneric.compute(paramHsh, raw);
+    }
+
+    private void servKexSign() {
+        switch (cipherDecoded & 0xf00) {
+            case 0x100:
+                signDat = keyrsa.tlsSigning(signHsh, paramHsh, paramHash);
                 break;
-            case 0x201:
-                paramHsh = new cryHashSha1();
-                break;
-            case 0x301:
-                paramHsh = new cryHashSha2224();
-                break;
-            case 0x401:
-                paramHsh = new cryHashSha2256();
-                break;
-            case 0x501:
-                paramHsh = new cryHashSha2384();
-                break;
-            case 0x601:
-                paramHsh = new cryHashSha2512();
-                break;
-            case 0x804:
-                paramHsh = new cryHashSha2256();
-                break;
-            case 0x805:
-                paramHsh = new cryHashSha2384();
-                break;
-            case 0x806:
-                paramHsh = new cryHashSha2512();
+            case 0x200:
+                signDat = keydsa.tlsSigning(signHsh, paramHsh, paramHash);
                 break;
             default:
-                return;
+                signDat = new byte[0];
+                break;
         }
-        paramHash = cryHashGeneric.compute(paramHsh, raw);
     }
 
     /**
@@ -1309,19 +1358,9 @@ public class packTlsHndshk {
         if (minVer >= 0x303) {
             signHsh = 0x401; // rsa pkcs1 sha256
         }
-        servKexSign();
+        servKexHash();
         servKexDump();
-        switch (cipherDecoded & 0xf00) {
-            case 0x100:
-                signDat = keyrsa.tlsSigning(signHsh, paramHsh, paramHash);
-                break;
-            case 0x200:
-                signDat = keydsa.tlsSigning(signHsh, paramHsh, paramHash);
-                break;
-            default:
-                signDat = new byte[0];
-                break;
-        }
+        servKexSign();
     }
 
     /**
@@ -1362,12 +1401,13 @@ public class packTlsHndshk {
         servKexDump("rx");
         cryCertificate crt = new cryCertificate();
         if (crt.asn1ReadBuf(certificates.get(0))) {
+            logger.info("cert error");
             return true;
         }
         if (debugger.secTlsTraf) {
             logger.debug("cert=" + crt);
         }
-        servKexSign();
+        servKexHash();
         if (paramHash == null) {
             return true;
         }
