@@ -286,7 +286,7 @@ public class secTls implements Runnable {
         }
         packTls p = new packTls(datagram);
         setupCommon(p);
-        packTlsHndshk ph = new packTlsHndshk(p, datagram, true);
+        packTlsHndshk ph = new packTlsHndshk(p, datagram);
         ph.servNam = serverName;
         ph.clntHelloFill();
         ph.clntHelloCreate();
@@ -361,16 +361,20 @@ public class secTls implements Runnable {
             if (ph.headerParse()) {
                 return null;
             }
-            if (ph.certVrfParse()) {
-                return null;
-            }
+////            if (ph.certVrfParse()) {
+////                return null;
+////            }
             if (p.apackRecv()) {
                 return null;
             }
             if (ph.headerParse()) {
                 return null;
             }
+            ph.finishedFill(true);
             if (ph.finishedParse()) {
+                return null;
+            }
+            if (ph.calcKeysAp(true)) {
                 return null;
             }
             ////
@@ -437,7 +441,7 @@ public class secTls implements Runnable {
         }
         packTls p = new packTls(datagram);
         setupCommon(p);
-        packTlsHndshk ph = new packTlsHndshk(p, datagram, false);
+        packTlsHndshk ph = new packTlsHndshk(p, datagram);
         ph.keyrsa = keyrsa;
         ph.keydsa = keydsa;
         ph.certrsa = certrsa;

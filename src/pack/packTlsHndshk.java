@@ -123,11 +123,6 @@ public class packTlsHndshk {
     public int signHsh = -1;
 
     /**
-     * derived secret
-     */
-    public byte[] deriveSec;
-
-    /**
      * signature data
      */
     public byte[] signDat;
@@ -188,9 +183,14 @@ public class packTlsHndshk {
     public byte[] finished;
 
     /**
-     * hash of exchange
+     * bytes of exchange
      */
-    public List<Integer> xchgHash;
+    public List<Byte> xchgByte;
+
+    /**
+     * packets of exchange
+     */
+    public List<Integer> xchgPack;
 
     /**
      * rsa key
@@ -480,9 +480,8 @@ public class packTlsHndshk {
      *
      * @param pack packet
      * @param dtls datagram mode
-     * @param client true=client, false=server
      */
-    public packTlsHndshk(packTls pack, boolean dtls, boolean client) {
+    public packTlsHndshk(packTls pack, boolean dtls) {
         lower = pack;
         datagram = dtls;
         clearXchgHash();
@@ -496,7 +495,8 @@ public class packTlsHndshk {
      * clear exchange hash
      */
     public void clearXchgHash() {
-        xchgHash = new ArrayList<Integer>();
+        xchgByte = new ArrayList<Byte>();
+        xchgPack = new ArrayList<Integer>();
     }
 
     /**
@@ -523,8 +523,9 @@ public class packTlsHndshk {
             return true;
         }
         for (int i = 0; i < lower.pckDat.dataSize(); i++) {
-            xchgHash.add(lower.pckDat.getByte(i));
+            xchgByte.add((byte) lower.pckDat.getByte(i));
         }
+        xchgPack.add(xchgByte.size());
         int len = lower.pckDat.msbGetD(1) >>> 8;
         if (len > (lower.pckDat.dataSize() - getHeadSize())) {
             return true;
@@ -566,8 +567,9 @@ public class packTlsHndshk {
         lower.pckDat.putSkip(getHeadSize());
         lower.pckDat.merge2beg();
         for (int i = 0; i < lower.pckDat.dataSize(); i++) {
-            xchgHash.add(lower.pckDat.getByte(i));
+            xchgByte.add((byte) lower.pckDat.getByte(i));
         }
+        xchgPack.add(xchgByte.size());
     }
 
     private int[] makeCipherList() {
@@ -1177,8 +1179,7 @@ public class packTlsHndshk {
         signHsh = lower.pckDat.msbGetW(0);
         lower.pckDat.getSkip(2);
         paramHash = lower.getBytes(2);
-        ///servKexDump();
-        util.logger.debug("here " + lower.pckDat.dump());///
+        servKexDump();
         return false;
     }
 
@@ -1276,7 +1277,7 @@ public class packTlsHndshk {
         }
         diffHell = cryKeyDH.findGroup(i);
         diffHell.servXchg();
-        if (lower.verCurr >= 0x303) {
+        if (minVer >= 0x303) {
             signHsh = 0x401; // rsa pkcs1 sha256
         }
         servKexSign();
@@ -1303,7 +1304,7 @@ public class packTlsHndshk {
         lower.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
         lower.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
         lower.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
-        if (lower.verCurr >= 0x303) {
+        if (minVer >= 0x303) {
             lower.pckDat.msbPutW(0, signHsh);
             lower.pckDat.putSkip(2);
         }
@@ -1324,7 +1325,7 @@ public class packTlsHndshk {
         diffHell.modulus = cryUtils.buf2bigUint(lower.getBytes(2));
         diffHell.group = cryUtils.buf2bigUint(lower.getBytes(2));
         diffHell.servPub = cryUtils.buf2bigUint(lower.getBytes(2));
-        if (lower.verCurr >= 0x303) {
+        if (minVer >= 0x303) {
             signHsh = lower.pckDat.msbGetW(0);
             lower.pckDat.getSkip(2);
         }
@@ -1565,10 +1566,10 @@ public class packTlsHndshk {
             }
         }
         if (max < 1) {
-            max = xchgHash.size();
+            max = xchgByte.size();
         }
         for (int i = skip; i < max; i++) {
-            h.update(xchgHash.get(i));
+            h.update(xchgByte.get(i));
         }
         if (post != null) {
             for (int i = 0; i < post.length; i++) {
@@ -1578,6 +1579,17 @@ public class packTlsHndshk {
         return h.finish();
     }
 
+    private byte[] calcExchangeSum13(cryHashGeneric h) {
+        int chl = xchgPack.get(0);
+        byte[] trf = new byte[4];
+        trf[0] = (byte) typeMsgHsh;
+        trf[3] = (byte) h.getHashSize();
+        byte[] buf = calcExchangeSum(h, 0, chl, null, null);
+        buf = bits.byteConcat(trf, buf);
+        buf = calcExchangeSum(h, chl, 0, buf, null);
+        return buf;
+    }
+
     private byte[] calcFinished(boolean client) {
         String s = "";
         if (client) {
@@ -1585,7 +1597,7 @@ public class packTlsHndshk {
         } else {
             s = "server finished";
         }
-        switch (lower.verCurr) {
+        switch (minVer) {
             case 0x300:
                 if (client) {
                     s = "CLNT";
@@ -1604,6 +1616,9 @@ public class packTlsHndshk {
                 h1 = calcExchangeSum(new cryHashSha2256(), 0, 0, null, null);
                 h2 = new byte[0];
                 return genHashV12(masterSec, s, h1, h2, 12);
+            case 0x304:
+                util.logger.debug("hereeeeeeeeeeeeeeeeeeeeeeeeeee");////
+                return null;
             default:
                 return null;
         }
@@ -1778,7 +1793,7 @@ public class packTlsHndshk {
         if (alg == null) {
             return null;
         }
-        if (lower.verCurr == 0x300) {
+        if (minVer == 0x300) {
             return new cryHashSslMac(alg, key, true);
         }
         return new cryHashHmac(alg, key);
@@ -1807,7 +1822,7 @@ public class packTlsHndshk {
                 preMaster = cryUtils.bigUint2buf(diffHell.common);
                 break;
         }
-        switch (lower.verCurr) {
+        switch (minVer) {
             case 0x300:
                 masterSec = genHashV09(preMaster, clntRand, servRand, 48);
                 keyBlockD = genHashV09(masterSec, servRand, clntRand, 256);
@@ -1897,20 +1912,37 @@ public class packTlsHndshk {
             logger.debug("clnt=" + bits.byteDump(ecDiffHell.clntPub.toBytes1(), 0, -1) + " serv=" + bits.byteDump(ecDiffHell.servPub.toBytes1(), 0, -1) + " common=" + bits.byteDump(trf, 0, -1));
         }
         cryHashGeneric h = getAlgoHasher();
-        deriveSec = genHashV13t(h, new byte[h.getHashSize()], new byte[h.getHashSize()]);
-        deriveSec = genHashV13d(h, deriveSec, "derived", "");
-        deriveSec = genHashV13t(h, deriveSec, ecDiffHell.common.getBytesX());
-        int chl = (xchgHash.get(2) << 8) + xchgHash.get(3) + 4;
-        trf = new byte[4];
-        trf[0] = (byte) typeMsgHsh;
-        trf[3] = (byte) h.getHashSize();
-        byte[] buf = calcExchangeSum(h, 0, chl, null, null);
-        buf = bits.byteConcat(trf, buf);
-        preMaster = calcExchangeSum(h, chl, 0, buf, null);
-        trf = genHashV13d(h, deriveSec, "s hs traffic", preMaster);
+        byte[] drv = genHashV13t(h, new byte[h.getHashSize()], new byte[h.getHashSize()]);
+        drv = genHashV13d(h, drv, "derived", "");
+        drv = genHashV13t(h, drv, ecDiffHell.common.getBytesX());
+        preMaster = drv;
+        byte[] xch = calcExchangeSum13(h);
+        trf = genHashV13d(h, drv, "s hs traffic", xch);
         encSC = genHashV13l(h, trf, "key".getBytes(), new byte[0], getAlgoCipher().getKeySize());
         ivSC = genHashV13l(h, trf, "iv".getBytes(), new byte[0], getAlgoCipher().getIVsize());
-        trf = genHashV13d(h, deriveSec, "c hs traffic", preMaster);
+        trf = genHashV13d(h, drv, "c hs traffic", xch);
+        encCS = genHashV13l(h, trf, "key".getBytes(), new byte[0], getAlgoCipher().getKeySize());
+        ivCS = genHashV13l(h, trf, "iv".getBytes(), new byte[0], getAlgoCipher().getIVsize());
+        drv = genHashV13d(h, drv, "derived", "");
+        drv = genHashV13t(h, drv, new byte[h.getHashSize()]);
+        masterSec = drv;
+        applyKeys(client, true);
+        return false;
+    }
+
+    /**
+     * initialize application keys
+     *
+     * @param client true=client, false=server
+     * @return false on success, true on error
+     */
+    public boolean calcKeysAp(boolean client) {
+        cryHashGeneric h = getAlgoHasher();
+        byte[] xch = calcExchangeSum13(h);
+        byte[] trf = genHashV13d(h, masterSec, "s ap traffic", xch);
+        encSC = genHashV13l(h, trf, "key".getBytes(), new byte[0], getAlgoCipher().getKeySize());
+        ivSC = genHashV13l(h, trf, "iv".getBytes(), new byte[0], getAlgoCipher().getIVsize());
+        trf = genHashV13d(h, masterSec, "c ap traffic", xch);
         encCS = genHashV13l(h, trf, "key".getBytes(), new byte[0], getAlgoCipher().getKeySize());
         ivCS = genHashV13l(h, trf, "iv".getBytes(), new byte[0], getAlgoCipher().getIVsize());
         applyKeys(client, true);
