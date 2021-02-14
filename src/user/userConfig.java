@@ -2407,11 +2407,6 @@ public class userConfig {
                 cfgAll.passwdStars = false;
                 return;
             }
-            if (a.equals("tls-version")) {
-                cfgAll.tlsVerMin = 0;
-                cfgAll.tlsVerMax = 4;
-                return;
-            }
             if (a.equals("prefer-ipv6")) {
                 cfgAll.preferIpv6 = false;
                 return;
