@@ -190,7 +190,17 @@ public class secTls implements Runnable {
             logger.debug("rx started");
         }
         for (;;) {
-            p.packRecv();
+            if (p.aeadMode) {
+                if (p.apackRecv()) {
+                    return;
+                }
+            } else {
+                p.packRecv();
+            }
+            util.logger.debug("here " + p.pckTyp);/////
+            if (p.pckTyp == packTls.typeHandshk) {
+                continue;
+            }
             if (p.pckTyp != packTls.typeAppDat) {
                 return;
             }
@@ -231,7 +241,13 @@ public class secTls implements Runnable {
             p.pckDat.putCopy(buf, 0, 0, len);
             p.pckDat.putSkip(len);
             p.pckTyp = packTls.typeAppDat;
-            p.packSend();
+            if (p.aeadMode) {
+                if (p.apackSend()) {
+                    return;
+                }
+            } else {
+                p.packSend();
+            }
         }
     }
 
@@ -361,24 +377,27 @@ public class secTls implements Runnable {
             if (ph.headerParse()) {
                 return null;
             }
-////            if (ph.certVrfParse()) {
-////                return null;
-////            }
+            ph.certVrfFill();
+            if (ph.certVrfParse()) {
+                return null;
+            }
+            ph.finishedFill(true);
             if (p.apackRecv()) {
                 return null;
             }
             if (ph.headerParse()) {
                 return null;
             }
-            ph.finishedFill(true);
             if (ph.finishedParse()) {
                 return null;
             }
-            if (ph.calcKeysAp(true)) {
-                return null;
-            }
-            ////
-
+            ph.calcKeysAp();
+            ph.finishedFill(false);
+            ph.finishedCreate();
+            ph.headerCreate();
+            p.apackSend();
+            ph.applyKeys(true, true);
+            p.verCurr = ph.minVer;
             return p;
         }
         p.packRecv();
@@ -503,8 +522,27 @@ public class secTls implements Runnable {
             ph.certDatCreate();
             ph.headerCreate();
             p.apackSend();
-            ////
-
+            ph.certVrfFill();
+            ph.certVrfCreate();
+            ph.headerCreate();
+            p.apackSend();
+            ph.finishedFill(true);
+            ph.finishedCreate();
+            ph.headerCreate();
+            p.apackSend();
+            ph.calcKeysAp();
+            ph.finishedFill(false);
+            if (p.apackRecv()) {
+                return null;
+            }
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.finishedParse()) {
+                return null;
+            }
+            ph.applyKeys(false, true);
+            p.verCurr = ph.minVer;
             return p;
         }
         if (ph.servHelloFill()) {

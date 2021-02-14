@@ -50,6 +50,11 @@ public class packTls {
     public boolean datagram;
 
     /**
+     * aead mode
+     */
+    public boolean aeadMode;
+    
+    /**
      * connection version
      */
     public int verCurr = -1;
@@ -227,6 +232,7 @@ public class packTls {
         packTls p = new packTls(datagram);
         p.pipe = pipe;
         p.padModulo = padModulo;
+        p.aeadMode = aeadMode;
         p.seqTx = seqTx;
         p.seqRx = seqRx;
         p.encTx = encTx;
@@ -468,7 +474,7 @@ public class packTls {
         if (verCurr < 0) {
             verCurr = ver;
         } else {
-            if (verCurr != ver) {
+            if (version2wire(verCurr) != ver) {
                 pipe.setClose();
                 return true;
             }
@@ -479,12 +485,12 @@ public class packTls {
     private void lineSend() {
         if (datagram) {
             pckDat.putByte(0, pckTyp);
-            pckDat.msbPutW(1, version2dtls(verCurr));
+            pckDat.msbPutW(1, version2dtls(version2wire(verCurr)));
             pckDat.msbPutQ(3, seqTx - 1);
             pckDat.msbPutW(11, pckDat.dataSize());
         } else {
             pckDat.putByte(0, pckTyp);
-            pckDat.msbPutW(1, verCurr);
+            pckDat.msbPutW(1, version2wire(verCurr));
             pckDat.msbPutW(3, pckDat.dataSize());
         }
         pckDat.putSkip(getHeadSize());
