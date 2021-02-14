@@ -577,6 +577,7 @@ public class packTls {
         encTx.authAdd(buf);
         len = pckDat.encrData(encTx, 0, len);
         if (len < 0) {
+            logger.info("aead error");
             pipe.setClose();
             return true;
         }

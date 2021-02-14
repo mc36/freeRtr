@@ -197,7 +197,6 @@ public class secTls implements Runnable {
             } else {
                 p.packRecv();
             }
-            util.logger.debug("here " + p.pckTyp);/////
             if (p.pckTyp == packTls.typeHandshk) {
                 continue;
             }
