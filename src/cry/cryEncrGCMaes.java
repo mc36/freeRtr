@@ -107,7 +107,6 @@ public class cryEncrGCMaes extends cryEncrGeneric {
         try {
             return crypter.doFinal(buf, ofs, siz);
         } catch (Exception e) {
-            logger.traceback(e);///////
             return null;
         }
     }
