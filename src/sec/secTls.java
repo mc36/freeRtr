@@ -495,6 +495,10 @@ public class secTls implements Runnable {
             ph.encrExtCreate();
             ph.headerCreate();
             p.apackSend();
+            ph.certDatFill();
+            ph.certDatCreate();
+            ph.headerCreate();
+            p.apackSend();
             ////
 
             return p;

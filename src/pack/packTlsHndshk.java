@@ -358,9 +358,9 @@ public class packTlsHndshk {
     public static int decodeCipherCode(int i) {
         switch (i) {
             case 0x1303: // TLS_CHACHA20_POLY1305_SHA256
-                return 0x0043;
+                return 0x0143;
             case 0x1302: // TLS_AES_256_GCM_SHA384
-                return 0x0054;
+                return 0x0154;
             case 0x0009: // TLS_RSA_WITH_DES_CBC_SHA
                 return 0x1112;
             case 0x000A: // TLS_RSA_WITH_3DES_EDE_CBC_SHA
@@ -1142,9 +1142,14 @@ public class packTlsHndshk {
      * parse certificates
      */
     public void certDatCreate() {
+        pckTyp = typeCertDat;
+        lower.pckDat.clear();
         lower.pckDat.putByte(0, 0);
+        lower.pckDat.putSkip(1);
+        lower.pckDat.merge2end();
         byte[] buf = certificates.get(0);
         lower.putBytes(buf, 3);
+        lower.pckDat.merge2end();
         certDatDump("tx");
     }
 
