@@ -53,7 +53,7 @@ public class cryEncrChacha20poly1305 extends cryEncrGeneric {
      * @return size
      */
     public int getBlockSize() {
-        return 1;
+        return 64;
     }
 
     /**
@@ -72,6 +72,15 @@ public class cryEncrChacha20poly1305 extends cryEncrGeneric {
      */
     public int getIVsize() {
         return 12;
+    }
+
+    /**
+     * get tag size
+     *
+     * @return size
+     */
+    public int getTagSize() {
+        return 16;
     }
 
     /**

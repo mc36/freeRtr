@@ -97,6 +97,15 @@ public class cryEncrCTRrc5 extends cryEncrGeneric {
     }
 
     /**
+     * get tag size
+     *
+     * @return size
+     */
+    public int getTagSize() {
+        return 0;
+    }
+
+    /**
      * authenticate buffer
      *
      * @param buf buffer to use

@@ -39,6 +39,14 @@ public abstract class cryEncrGeneric {
      */
     public abstract int getKeySize();
 
+
+    /**
+     * read size of tag
+     *
+     * @return size in bytes
+     */
+    public abstract int getTagSize();
+
     /**
      * update buffer
      *

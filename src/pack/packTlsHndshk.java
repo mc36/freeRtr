@@ -1863,6 +1863,10 @@ public class packTlsHndshk {
             lower.ivTx = ivSC;
             lower.ivRx = ivCS;
         }
+        if (!aead) {
+            return;
+        }
+        lower.padModulo = lower.encTx.getTagSize();
     }
 
     /**

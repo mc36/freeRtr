@@ -491,6 +491,10 @@ public class secTls implements Runnable {
             if (ph.calcKeysHs(false)) {
                 return null;
             }
+            ph.encrExtFill();
+            ph.encrExtCreate();
+            ph.headerCreate();
+            p.apackSend();
             ////
 
             return p;

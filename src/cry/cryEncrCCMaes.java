@@ -1,7 +1,7 @@
 package cry;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import util.logger;
 
@@ -31,7 +31,7 @@ public class cryEncrCCMaes extends cryEncrGeneric {
         }
         try {
             SecretKeySpec keyspec = new SecretKeySpec(key, name);
-            IvParameterSpec ivspec = new IvParameterSpec(iv, 0, iv.length);
+            GCMParameterSpec ivspec = new GCMParameterSpec(128, iv);
             crypter = Cipher.getInstance(name + "/CCM/NoPadding");
             crypter.init(mode, keyspec, ivspec);
         } catch (Exception e) {
@@ -64,6 +64,15 @@ public class cryEncrCCMaes extends cryEncrGeneric {
      */
     public int getKeySize() {
         return 32;
+    }
+
+    /**
+     * get tag size
+     *
+     * @return size
+     */
+    public int getTagSize() {
+        return 16;
     }
 
     /**

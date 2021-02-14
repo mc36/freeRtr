@@ -392,23 +392,7 @@ public class packTls {
             pckDat.encrData(encTx, 0, pckDat.dataSize());
             seqTx++;
         }
-        if (datagram) {
-            pckDat.putByte(0, pckTyp);
-            pckDat.msbPutW(1, version2dtls(verCurr));
-            pckDat.msbPutQ(3, seqTx - 1);
-            pckDat.msbPutW(11, pckDat.dataSize());
-        } else {
-            pckDat.putByte(0, pckTyp);
-            pckDat.msbPutW(1, verCurr);
-            pckDat.msbPutW(3, pckDat.dataSize());
-        }
-        pckDat.putSkip(getHeadSize());
-        pckDat.merge2beg();
-        if (datagram) {
-            pckDat.pipeSend(pipe, 0, pckDat.dataSize(), 2);
-        } else {
-            pckDat.pipeSend(pipe, 0, pckDat.dataSize(), 3);
-        }
+        lineSend();
     }
 
     /**
@@ -492,6 +476,26 @@ public class packTls {
         return false;
     }
 
+    private void lineSend() {
+        if (datagram) {
+            pckDat.putByte(0, pckTyp);
+            pckDat.msbPutW(1, version2dtls(verCurr));
+            pckDat.msbPutQ(3, seqTx - 1);
+            pckDat.msbPutW(11, pckDat.dataSize());
+        } else {
+            pckDat.putByte(0, pckTyp);
+            pckDat.msbPutW(1, verCurr);
+            pckDat.msbPutW(3, pckDat.dataSize());
+        }
+        pckDat.putSkip(getHeadSize());
+        pckDat.merge2beg();
+        if (datagram) {
+            pckDat.pipeSend(pipe, 0, pckDat.dataSize(), 2);
+        } else {
+            pckDat.pipeSend(pipe, 0, pckDat.dataSize(), 3);
+        }
+    }
+
     /**
      * receive one aead packet
      *
@@ -499,6 +503,10 @@ public class packTls {
      */
     public boolean apackRecv() {
         if (lineRecv()) {
+            return true;
+        }
+        if (pckTyp != typeAppDat) {
+            pipe.setClose();
             return true;
         }
         byte[] buf = new byte[ivRx.length];
@@ -509,13 +517,15 @@ public class packTls {
         encRx.init(keyRx, buf, false);
         int len = pckDat.dataSize();
         buf = new byte[5];
-        buf[0] = 23;
+        buf[0] = typeAppDat;
         buf[1] = 3;
         buf[2] = 3;
         bits.msbPutW(buf, 3, len);
         encRx.authAdd(buf);
         len = pckDat.encrData(encRx, 0, len);
         if (len < 0) {
+            logger.info("aead error");
+            pipe.setClose();
             return true;
         }
         for (; len > 0; len--) {
@@ -530,6 +540,44 @@ public class packTls {
         if (debugger.secTlsTraf) {
             logger.debug("rx type=" + type2string(pckTyp) + " size=" + pckDat.dataSize());
         }
+        return false;
+    }
+
+    /**
+     * send current aead packet
+     *
+     * @return false on success, true on error
+     */
+    public boolean apackSend() {
+        pckDat.merge2beg();
+        if (debugger.secTlsTraf) {
+            logger.debug("tx type=" + type2string(pckTyp) + " size=" + pckDat.dataSize());
+        }
+        pckDat.putByte(0, pckTyp);
+        pckDat.putSkip(1);
+        pckDat.merge2end();
+        byte[] buf = new byte[ivTx.length];
+        bits.msbPutQ(buf, buf.length - 8, seqTx);
+        for (int i = 0; i < buf.length; i++) {
+            buf[i] ^= ivTx[i];
+        }
+        encTx.init(keyTx, buf, true);
+        int len = pckDat.dataSize();
+        buf = new byte[5];
+        buf[0] = typeAppDat;
+        buf[1] = 3;
+        buf[2] = 3;
+        bits.msbPutW(buf, 3, len + padModulo);
+        encTx.authAdd(buf);
+        len = pckDat.encrData(encTx, 0, len);
+        if (len < 0) {
+            pipe.setClose();
+            return true;
+        }
+        pckDat.setDataSize(len);
+        pckTyp = typeAppDat;
+        lineSend();
+        seqTx++;
         return false;
     }
 
