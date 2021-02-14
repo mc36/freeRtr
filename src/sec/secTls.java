@@ -313,7 +313,7 @@ public class secTls implements Runnable {
             return null;
         }
         if (ph.minVer >= 0x304) {
-            if (ph.clntHelloFillNg()) {
+            if (ph.clntHelloFillEc()) {
                 return null;
             }
             ph.clntHelloFill();
@@ -334,7 +334,43 @@ public class secTls implements Runnable {
             if (!ph.chgCipherParse()) {
                 p.packRecv();
             }
-            if (ph.calcKeysNg(true)) {
+            if (ph.calcKeysHs(true)) {
+                return null;
+            }
+            if (p.apackRecv()) {
+                return null;
+            }
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.encrExtParse()) {
+                return null;
+            }
+            if (p.apackRecv()) {
+                return null;
+            }
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.certDatParse()) {
+                return null;
+            }
+            if (p.apackRecv()) {
+                return null;
+            }
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.certVrfParse()) {
+                return null;
+            }
+            if (p.apackRecv()) {
+                return null;
+            }
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.finishedParse()) {
                 return null;
             }
             ////
@@ -345,7 +381,7 @@ public class secTls implements Runnable {
         if (ph.headerParse()) {
             return null;
         }
-        if (ph.certDatParse()) {
+        if (ph.certLstParse()) {
             return null;
         }
         if (ph.servKexNeeded()) {
@@ -443,7 +479,7 @@ public class secTls implements Runnable {
             if (ph.clntHelloParse()) {
                 return null;
             }
-            if (ph.servHelloFillNg()) {
+            if (ph.servHelloFillEc()) {
                 return null;
             }
             if (ph.servHelloFill()) {
@@ -452,7 +488,7 @@ public class secTls implements Runnable {
             ph.servHelloCreate();
             ph.headerCreate();
             p.packSend();
-            if (ph.calcKeysNg(false)) {
+            if (ph.calcKeysHs(false)) {
                 return null;
             }
             ////
@@ -466,7 +502,7 @@ public class secTls implements Runnable {
         ph.headerCreate();
         p.packSend();
         ph.certDatFill();
-        ph.certDatCreate();
+        ph.certLstCreate();
         ph.headerCreate();
         p.packSend();
         if (ph.servKexNeeded()) {

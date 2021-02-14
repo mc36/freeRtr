@@ -85,6 +85,26 @@ public class packTls {
     public cryHashGeneric macRx;
 
     /**
+     * sending key
+     */
+    public byte[] keyTx;
+
+    /**
+     * receiving key
+     */
+    public byte[] keyRx;
+
+    /**
+     * sending iv
+     */
+    public byte[] ivTx;
+
+    /**
+     * receiving iv
+     */
+    public byte[] ivRx;
+
+    /**
      * change cipher spec
      */
     public static final int typeChgCipher = 20;
@@ -213,6 +233,10 @@ public class packTls {
         p.encRx = encRx;
         p.macTx = macTx;
         p.macRx = macRx;
+        p.keyTx = keyTx;
+        p.keyRx = keyRx;
+        p.ivTx = ivTx;
+        p.ivRx = ivRx;
         p.verCurr = verCurr;
         p.verMax = verMax;
         p.verMin = verMin;
@@ -391,44 +415,8 @@ public class packTls {
      * receive one packet
      */
     public void packRecv() {
-        pckTyp = -1;
-        pckDat.clear();
-        int hed = getHeadSize();
-        if (datagram) {
-            if (pckDat.pipeRecv(pipe, 0, pckDat.dataSize(), 143) < hed) {
-                pipe.setClose();
-                return;
-            }
-        } else {
-            if (pckDat.pipeRecv(pipe, 0, hed, 144) != hed) {
-                pipe.setClose();
-                return;
-            }
-        }
-        pckTyp = pckDat.getByte(0);
-        int ver = pckDat.msbGetW(1);
-        int len;
-        if (datagram) {
-            ver = version2dtls(ver);
-            len = pckDat.msbGetW(11);
-            seqRx = pckDat.msbGetQ(3);
-        } else {
-            len = pckDat.msbGetW(3);
-        }
-        if (!datagram) {
-            if (pckDat.pipeRecv(pipe, hed, len, 144) != len) {
-                pipe.setClose();
-                return;
-            }
-        }
-        pckDat.getSkip(hed);
-        if (verCurr < 0) {
-            verCurr = ver;
-        } else {
-            if (verCurr != ver) {
-                pipe.setClose();
-                return;
-            }
+        if (lineRecv()) {
+            return;
         }
         if (padModulo > 0) {
             pckDat.encrData(encRx, 0, pckDat.dataSize());
@@ -459,6 +447,90 @@ public class packTls {
         if (debugger.secTlsTraf) {
             logger.debug("rx type=" + type2string(pckTyp) + " size=" + pckDat.dataSize());
         }
+    }
+
+    private boolean lineRecv() {
+        pckTyp = -1;
+        pckDat.clear();
+        int hed = getHeadSize();
+        if (datagram) {
+            if (pckDat.pipeRecv(pipe, 0, pckDat.dataSize(), 143) < hed) {
+                pipe.setClose();
+                return true;
+            }
+        } else {
+            if (pckDat.pipeRecv(pipe, 0, hed, 144) != hed) {
+                pipe.setClose();
+                return true;
+            }
+        }
+        pckTyp = pckDat.getByte(0);
+        int ver = pckDat.msbGetW(1);
+        int len;
+        if (datagram) {
+            ver = version2dtls(ver);
+            len = pckDat.msbGetW(11);
+            seqRx = pckDat.msbGetQ(3);
+        } else {
+            len = pckDat.msbGetW(3);
+        }
+        if (!datagram) {
+            if (pckDat.pipeRecv(pipe, hed, len, 144) != len) {
+                pipe.setClose();
+                return true;
+            }
+        }
+        pckDat.getSkip(hed);
+        if (verCurr < 0) {
+            verCurr = ver;
+        } else {
+            if (verCurr != ver) {
+                pipe.setClose();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * receive one aead packet
+     *
+     * @return false on success, true on error
+     */
+    public boolean apackRecv() {
+        if (lineRecv()) {
+            return true;
+        }
+        byte[] buf = new byte[ivRx.length];
+        bits.msbPutQ(buf, buf.length - 8, seqRx);
+        for (int i = 0; i < buf.length; i++) {
+            buf[i] ^= ivRx[i];
+        }
+        encRx.init(keyRx, buf, false);
+        int len = pckDat.dataSize();
+        buf = new byte[5];
+        buf[0] = 23;
+        buf[1] = 3;
+        buf[2] = 3;
+        bits.msbPutW(buf, 3, len);
+        encRx.authAdd(buf);
+        len = pckDat.encrData(encRx, 0, len);
+        if (len < 0) {
+            return true;
+        }
+        for (; len > 0; len--) {
+            if (pckDat.getByte(len - 1) != 0) {
+                break;
+            }
+        }
+        len--;
+        pckTyp = pckDat.getByte(len);
+        pckDat.setDataSize(len);
+        seqRx++;
+        if (debugger.secTlsTraf) {
+            logger.debug("rx type=" + type2string(pckTyp) + " size=" + pckDat.dataSize());
+        }
+        return false;
     }
 
 }

@@ -7,6 +7,7 @@ import cry.cryEncrCBCaes;
 import cry.cryEncrCBCdes;
 import cry.cryEncrCBCdes3;
 import cry.cryEncrChacha20poly1305;
+import cry.cryEncrGCMaes;
 import cry.cryEncrGeneric;
 import cry.cryHashGeneric;
 import cry.cryHashHmac;
@@ -352,14 +353,14 @@ public class packTlsHndshk {
      * @param i cipher suite
      * @return decoded format, -1 if unknown format: 0x0000|key|sign|cipher|hash
      * kex: 1=rsa, 2=dhe sign: 1=rsa, 2=dss cipher: 1=des, 2=3des, 3=aes,
-     * 4=chacha hash: 1=md5, 2=sha1, 3=sha256, 4=sha384, 5=sha512
+     * 4=chacha, 5=aesgcm hash: 1=md5, 2=sha1, 3=sha256, 4=sha384, 5=sha512
      */
     public static int decodeCipherCode(int i) {
         switch (i) {
             case 0x1303: // TLS_CHACHA20_POLY1305_SHA256
                 return 0x0043;
             case 0x1302: // TLS_AES_256_GCM_SHA384
-                return 0x0034;
+                return 0x0054;
             case 0x0009: // TLS_RSA_WITH_DES_CBC_SHA
                 return 0x1112;
             case 0x000A: // TLS_RSA_WITH_3DES_EDE_CBC_SHA
@@ -442,6 +443,9 @@ public class packTlsHndshk {
                 break;
             case 0x40:
                 s += "chacha";
+                break;
+            case 0x50:
+                s += "aes";
                 break;
             default:
                 s += "?";
@@ -797,8 +801,10 @@ public class packTlsHndshk {
 
     /**
      * fill up client hello
+     *
+     * @return false on success, true on error
      */
-    public boolean clntHelloFillNg() {
+    public boolean clntHelloFillEc() {
         if (ecDiffHell.curve == null) {
             return true;
         }
@@ -945,7 +951,7 @@ public class packTlsHndshk {
      *
      * @return false on successful, true on error
      */
-    public boolean servHelloFillNg() {
+    public boolean servHelloFillEc() {
         if (ecDiffHell.curve == null) {
             return true;
         }
@@ -1080,7 +1086,7 @@ public class packTlsHndshk {
     /**
      * create certificates
      */
-    public void certDatCreate() {
+    public void certLstCreate() {
         pckTyp = typeCertDat;
         lower.pckDat.clear();
         for (int i = 0; i < certificates.size(); i++) {
@@ -1098,7 +1104,7 @@ public class packTlsHndshk {
      *
      * @return false on success, true on error
      */
-    public boolean certDatParse() {
+    public boolean certLstParse() {
         if (pckTyp != typeCertDat) {
             return true;
         }
@@ -1112,6 +1118,36 @@ public class packTlsHndshk {
         return false;
     }
 
+    /**
+     * parse certificates
+     *
+     * @return false on success, true on error
+     */
+    public boolean certDatParse() {
+        if (pckTyp != typeCertDat) {
+            return true;
+        }
+        if (lower.pckDat.getByte(0) != 0) {
+            return true;
+        }
+        lower.pckDat.getSkip(1);
+        certificates = new ArrayList<byte[]>();
+        byte[] cert = lower.getBytes(3);
+        certificates.add(cert);
+        certDatDump("rx");
+        return false;
+    }
+
+    /**
+     * parse certificates
+     */
+    public void certDatCreate() {
+        lower.pckDat.putByte(0, 0);
+        byte[] buf = certificates.get(0);
+        lower.putBytes(buf, 3);
+        certDatDump("tx");
+    }
+
     private void certDatDump(String dir) {
         if (!debugger.secTlsTraf) {
             return;
@@ -1122,6 +1158,23 @@ public class packTlsHndshk {
             s += " cert=" + bits.byteDump(buf, 0, -1);
         }
         logger.debug(dir + s);
+    }
+
+    /**
+     * parse certificate verify
+     *
+     * @return false on success, true on error
+     */
+    public boolean certVrfParse() {
+        if (pckTyp != typeCertVrf) {
+            return true;
+        }
+        signHsh = lower.pckDat.msbGetW(0);
+        lower.pckDat.getSkip(2);
+        paramHash = lower.getBytes(2);
+        ///servKexDump();
+        util.logger.debug("here " + lower.pckDat.dump());///
+        return false;
     }
 
     private void servKexDump() {
@@ -1285,7 +1338,7 @@ public class packTlsHndshk {
         }
         servKexDump();
         if (crt.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
-            logger.info("signature error for " + crt);
+            logger.info("sign error on " + crt);
             return true;
         }
         return false;
@@ -1458,6 +1511,45 @@ public class packTlsHndshk {
             return;
         }
         logger.debug(dir + " hash=" + bits.byteDump(finished, 0, -1));
+    }
+
+    /**
+     * parse encrypted extensions
+     *
+     * @return false on success, true on error
+     */
+    public boolean encrExtParse() {
+        if (pckTyp != typeEncrExt) {
+            return true;
+        }
+        extnsnList = lower.getBytes(2);
+        parseExtensionList(extnsnList, true);
+        encrExtDump("rx");
+        return false;
+    }
+
+    /**
+     * create encrypted extensions
+     */
+    public void encrExtCreate() {
+        pckTyp = typeEncrExt;
+        lower.pckDat.clear();
+        lower.putBytes(extnsnList, 2);
+        encrExtDump("tx");
+    }
+
+    /**
+     * fill encrypted extensions
+     */
+    public void encrExtFill() {
+        extnsnList = new byte[0];
+    }
+
+    private void encrExtDump(String dir) {
+        if (!debugger.secTlsTraf) {
+            return;
+        }
+        logger.debug(dir + " encrext=" + bits.byteDump(extnsnList, 0, -1));
     }
 
     private byte[] calcExchangeSum(cryHashGeneric h, int skip, int max, byte[] pre, byte[] post) {
@@ -1652,6 +1744,8 @@ public class packTlsHndshk {
                 return new cryEncrCBCaes();
             case 0x40:
                 return new cryEncrChacha20poly1305();
+            case 0x50:
+                return new cryEncrGCMaes();
             default:
                 return null;
         }
@@ -1731,7 +1825,7 @@ public class packTlsHndshk {
         encSC = getKeyMaterial(getAlgoCipher().getKeySize());
         ivCS = getKeyMaterial(getAlgoCipher().getBlockSize());
         ivSC = getKeyMaterial(getAlgoCipher().getBlockSize());
-        applyKeys(client,false);
+        applyKeys(client, false);
         return false;
     }
 
@@ -1751,6 +1845,10 @@ public class packTlsHndshk {
             }
             lower.encTx = initAlgoCipher(encCS, ivCS, true);
             lower.encRx = initAlgoCipher(encSC, ivSC, false);
+            lower.keyTx = encCS;
+            lower.keyRx = encSC;
+            lower.ivTx = ivCS;
+            lower.ivRx = ivSC;
         } else {
             if (!aead) {
                 lower.macTx = initAlgoHasher(macSC);
@@ -1760,6 +1858,10 @@ public class packTlsHndshk {
             }
             lower.encTx = initAlgoCipher(encSC, ivSC, true);
             lower.encRx = initAlgoCipher(encCS, ivCS, false);
+            lower.keyTx = encSC;
+            lower.keyRx = encCS;
+            lower.ivTx = ivSC;
+            lower.ivRx = ivCS;
         }
     }
 
@@ -1769,7 +1871,7 @@ public class packTlsHndshk {
      * @param client true=client, false=server
      * @return false on success, true on error
      */
-    public boolean calcKeysNg(boolean client) {
+    public boolean calcKeysHs(boolean client) {
         if (client) {
             if (ecDiffHell.servPub == null) {
                 return true;
@@ -1789,7 +1891,7 @@ public class packTlsHndshk {
         deriveSec = genHashV13t(h, new byte[h.getHashSize()], new byte[h.getHashSize()]);
         deriveSec = genHashV13d(h, deriveSec, "derived", "");
         deriveSec = genHashV13t(h, deriveSec, ecDiffHell.common.getBytesX());
-        int chl = (xchgHash.get(2) << 8) + xchgHash.get(3) + lower.getHeadSize() - 1;
+        int chl = (xchgHash.get(2) << 8) + xchgHash.get(3) + 4;
         trf = new byte[4];
         trf[0] = (byte) typeMsgHsh;
         trf[3] = (byte) h.getHashSize();

@@ -1276,6 +1276,7 @@ public class packHolder {
      * @param enc encrypter to update
      * @param ofs offset from where
      * @param siz bytes to calculate
+     * @return bytes calculated
      */
     public int encrData(cryEncrGeneric enc, int ofs, int siz) {
         return enc.update(dataD, dataO + ofs, siz);
@@ -1287,6 +1288,7 @@ public class packHolder {
      * @param enc encrypter to update
      * @param ofs offset from where
      * @param siz bytes to calculate
+     * @return bytes calculated
      */
     public int encrHead(cryEncrGeneric enc, int ofs, int siz) {
         return enc.update(headD, ofs, siz);
