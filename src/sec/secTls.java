@@ -490,6 +490,7 @@ public class secTls implements Runnable {
             if (ph.servHelloFill()) {
                 return null;
             }
+            ph.servHelloFillRetry();
             ph.servHelloCreate();
             ph.headerCreate();
             p.packSend();

@@ -764,7 +764,7 @@ public class packTlsHndshk {
         typLenVal tlv = getTlv();
         packHolder pck = new packHolder(true, true);
         byte[] buf = new byte[2];
-        bits.msbPutW(buf, 0, 4096);
+        bits.msbPutW(buf, 0, 8192);
         tlv.putBytes(pck, 28, buf); // record size limit
         if (servNam != null) {
             int len = servNam.length();
@@ -820,12 +820,13 @@ public class packTlsHndshk {
         } else {
             if (ecDiffHell.servPub != null) {
                 res = ecDiffHell.servPub.toBytes1();
+                buf = new byte[4];
+                bits.msbPutW(buf, 2, res.length);
             } else {
                 res = new byte[0];
+                buf = new byte[2];
             }
-            buf = new byte[4];
             bits.msbPutW(buf, 0, ecDiffHell.curve.tls);
-            bits.msbPutW(buf, 2, res.length);
         }
         tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
         pck.merge2end();
@@ -993,6 +994,18 @@ public class packTlsHndshk {
 
     /**
      * fill up server hello
+     */
+    public void servHelloFillRetry() {
+        servRand = new byte[]{
+            (byte) 0xCF, (byte) 0x21, (byte) 0xAD, (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11,
+            (byte) 0xBE, (byte) 0x1D, (byte) 0x8C, (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91,
+            (byte) 0xC2, (byte) 0xA2, (byte) 0x11, (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E,
+            (byte) 0x07, (byte) 0x9E, (byte) 0x09, (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C
+        };
+    }
+    
+    /**
+     * fill up server hello
      *
      * @return false on successful, true on error
      */
@@ -1000,12 +1013,6 @@ public class packTlsHndshk {
         if (ecDiffHell.curve == null) {
             return true;
         }
-        servRand = new byte[]{
-            (byte) 0xCF, (byte) 0x21, (byte) 0xAD, (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11,
-            (byte) 0xBE, (byte) 0x1D, (byte) 0x8C, (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91,
-            (byte) 0xC2, (byte) 0xA2, (byte) 0x11, (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E,
-            (byte) 0x07, (byte) 0x9E, (byte) 0x09, (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C
-        };
         ecDiffHell.servXchg();
         return false;
     }
