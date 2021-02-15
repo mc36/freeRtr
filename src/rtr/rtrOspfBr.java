@@ -45,16 +45,15 @@ public class rtrOspfBr {
         tlv.valDat[0] = 0; // subdomain
         tlv.valDat[1] = 0; // mtid
         bits.msbPutW(tlv.valDat, 2, idx); // bfr id
-        tlv.valDat[4] = 0; // algorithm
-        tlv.valSiz = 8;
+        tlv.valDat[4] = 0; // bier algorithm
+        tlv.valDat[5] = 0; // igp algorithm
+        bits.msbPutW(tlv.valDat, 8, typBierMpls);
+        bits.msbPutW(tlv.valDat, 10, 8);
+        bits.msbPutD(tlv.valDat, 12 + 0, lab[0].label); // label
+        tlv.valDat[12 + 0] = (byte) lab.length; // length
+        tlv.valDat[12 + 4] = (byte) (tabLabelBier.num2bsl(bsl) << 4); // bsl
+        tlv.valSiz = 12 + 8;
         tlv.valTyp = typBierInfo;
-        tlv.putThis(pck);
-        tlv = rtrOspfTe.getTlvHandler();
-        bits.msbPutD(tlv.valDat, 0, lab[0].label); // label
-        tlv.valDat[0] = (byte) lab.length; // length
-        tlv.valDat[4] = (byte) (tabLabelBier.num2bsl(bsl) << 4); // bsl
-        tlv.valSiz = 8;
-        tlv.valTyp = typBierMpls;
         tlv.putThis(pck);
         pck.merge2beg();
         return pck.getCopy();
@@ -67,15 +66,15 @@ public class rtrOspfBr {
      * @param prf prefix
      */
     protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
-        switch (tlv.valTyp) {
-            case typBierInfo: // bier info
-                prf.best.bierIdx = bits.msbGetW(tlv.valDat, 2); // brf id
-                break;
-            case typBierMpls: // bier mpls
-                prf.best.bierBeg = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // label
-                prf.best.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
-                break;
+        if (tlv.valTyp != typBierInfo) {
+            return;
         }
+        prf.best.bierIdx = bits.msbGetW(tlv.valDat, 2); // brf id
+        if (bits.msbGetW(tlv.valDat, 8) != typBierMpls) {
+            return;
+        }
+        prf.best.bierBeg = bits.msbGetD(tlv.valDat, 12 + 0) & 0xfffff; // label
+        prf.best.bierHdr = (tlv.valDat[12 + 4] >>> 4) & 0xf; // bsl
     }
 
 }
