@@ -708,6 +708,12 @@ public class packTlsHndshk {
                             maxVer = o;
                         }
                     }
+                    if (minVer < lower.verMin) {
+                        minVer = lower.verMin;
+                    }
+                    if (maxVer > lower.verMax) {
+                        maxVer = lower.verMax;
+                    }
                     break;
                 case 10: // supported groups
                     if (lower.verMax < 0x304) {
@@ -790,6 +796,10 @@ public class packTlsHndshk {
             bits.byteCopy(servNam.getBytes(), 0, buf, 5, len);
             tlv.putBytes(pck, 0, buf); // server name
         }
+        if (lower.verMax < 0x304) {
+            pck.merge2end();
+            return pck.getCopy();
+        }
         if (client) {
             buf = new byte[(2 * (maxVer - minVer)) + 3];
             buf[0] = (byte) (buf.length - 1);
@@ -801,10 +811,6 @@ public class packTlsHndshk {
             bits.msbPutW(buf, 0, maxVer);
         }
         tlv.putBytes(pck, 43, buf); // supported versions
-        if (lower.verMax < 0x304) {
-            pck.merge2end();
-            return pck.getCopy();
-        }
         if (client) {
             buf = extenList2bytes(makeSignatureList());
             tlv.putBytes(pck, 13, buf); // signature algorithms
@@ -1244,6 +1250,9 @@ public class packTlsHndshk {
             lower.putBytes(buf, 3);
             lower.pckDat.merge2end();
         }
+        lower.pckDat.msbPutW(0, 0);
+        lower.pckDat.putSkip(2);
+        lower.pckDat.merge2end();
         lower.pckDat.msbPutD(0, lower.pckDat.dataSize());
         lower.pckDat.putSkip(4);
         certDatDump("tx");

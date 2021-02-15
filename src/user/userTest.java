@@ -621,24 +621,28 @@ public class userTest {
         if (a.equals("dtls")) {
             a = cmd.word();
             if (a.length() > 0) {
-                doTestTls(true, bits.str2num(a));
+                String s = cmd.word();
+                doTestTls(true, bits.str2num(a), bits.str2num(s));
                 return null;
             }
-            doTestTls(true, 3);
-            doTestTls(true, 4);
+            doTestTls(true, 0, 4);
+            doTestTls(true, 3, 3);
+            doTestTls(true, 4, 4);
             return null;
         }
         if (a.equals("tls")) {
             a = cmd.word();
             if (a.length() > 0) {
-                doTestTls(false, bits.str2num(a));
+                String s = cmd.word();
+                doTestTls(false, bits.str2num(a), bits.str2num(s));
                 return null;
             }
-            doTestTls(false, 0);
-            doTestTls(false, 1);
-            doTestTls(false, 2);
-            doTestTls(false, 3);
-            doTestTls(false, 4);
+            doTestTls(false, 0, 4);
+            doTestTls(false, 0, 0);
+            doTestTls(false, 1, 1);
+            doTestTls(false, 2, 2);
+            doTestTls(false, 3, 3);
+            doTestTls(false, 4, 4);
             return null;
         }
         if (a.equals("verfile")) {
@@ -860,7 +864,7 @@ public class userTest {
                 + bits.bandwidth((xmit * 8000) / tim));
     }
 
-    private void doTestTls(boolean dtls, int ver) {
+    private void doTestTls(boolean dtls, int min, int max) {
         cryKeyRSA rsa = new cryKeyRSA();
         cryKeyDSA dss = new cryKeyDSA();
         cryKeyECDSA ecdss = new cryKeyECDSA();
@@ -870,10 +874,10 @@ public class userTest {
         pipeLine conn = new pipeLine(65536, dtls);
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
-        srvH.minVer = 0x300 + ver;
-        srvH.maxVer = srvH.minVer;
+        srvH.minVer = 0x300 + min;
+        srvH.maxVer = 0x300 + max;
         clnH.minVer = srvH.minVer;
-        clnH.maxVer = srvH.minVer;
+        clnH.maxVer = srvH.maxVer;
         srvH.startServer(rsa, dss, ecdss, null, null, null);
         clnH.startClient();
         pipeSide pip = srvH.getPipe();

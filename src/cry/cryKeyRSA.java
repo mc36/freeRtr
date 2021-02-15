@@ -526,7 +526,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         BigInteger s = doPadding(ver, pkcs, hash);
         if (s != null) {
             s = s.modPow(privExp, modulus);
-            return s.toByteArray();
+            return cryUtils.bigUint2buf(s);
         }
         byte[] salt = new byte[hash.length];
         for (int i = 0; i < salt.length; i++) {
@@ -551,7 +551,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         blk[blk.length - 1] = (byte) 0xbc;
         s = new BigInteger(blk);
         s = s.modPow(privExp, modulus);
-        return s.toByteArray();
+        return cryUtils.bigUint2buf(s);
     }
 
 }
