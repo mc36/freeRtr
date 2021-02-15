@@ -255,7 +255,7 @@ qc pass: ppp over packet over udp
 qc pass: ethernet over packet over udp
 qc pass: interworking with ethernet over packet over udp
 qc pass: interworking with packet over dtls
-failed: ppp with packet over dtls
+qc pass: ppp with packet over dtls
 qc pass: ppp with packet over tcp
 qc pass: ppp with packet over tls
 qc pass: ppp with packet over txt
@@ -441,7 +441,7 @@ qc pass: ingress mpls access list
 qc pass: egress mpls access list
 qc pass: ingress mpls common access list
 qc pass: egress mpls common access list
-failed: dtls test
+qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
 qc pass: ipv6 in esp over ipv4

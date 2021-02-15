@@ -12141,3 +12141,8 @@ no qc pass: dtls test
 no qc pass: ppp with packet over dtls
 failed: ppp with packet over dtls
 failed: dtls test
+---------------------------------- 2021-02-15 11:05:00
+no failed: dtls test
+no failed: ppp with packet over dtls
+qc pass: ppp with packet over dtls
+qc pass: dtls test
