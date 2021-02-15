@@ -68,6 +68,16 @@ public class packTlsHndshk {
     public byte[] clntRand;
 
     /**
+     * received session id
+     */
+    public byte[] rcvdSess;
+
+    /**
+     * sending session id
+     */
+    public byte[] sendSess;
+
+    /**
      * verify random
      */
     public byte[] vrfyRand;
@@ -75,7 +85,7 @@ public class packTlsHndshk {
     /**
      * list of ciphers
      */
-    public int[] cipherList;
+    public List<Integer> cipherList;
 
     /**
      * list of compressors
@@ -582,27 +592,23 @@ public class packTlsHndshk {
         xchgPack.add(xchgByte.size());
     }
 
-    private int[] makeCipherList() {
-        List<Integer> l1 = new ArrayList<Integer>();
-        if (lower.verMax >= 0x304) {
+    private List<Integer> makeCipherList() {
+        List<Integer> l = new ArrayList<Integer>();
+        if (maxVer >= 0x304) {
             for (int i = 0x1400; i >= 0x1300; i--) {
                 if (decodeCipherCode(i) > 0) {
-                    l1.add(i);
+                    l.add(i);
                 }
             }
         }
-        if (lower.verMin < 0x304) {
+        if (minVer < 0x304) {
             for (int i = 0x100; i >= 0; i--) {
                 if (decodeCipherCode(i) > 0) {
-                    l1.add(i);
+                    l.add(i);
                 }
             }
         }
-        int[] l2 = new int[l1.size()];
-        for (int i = 0; i < l2.length; i++) {
-            l2[i] = l1.get(i);
-        }
-        return l2;
+        return l;
     }
 
     private List<Integer> makeECcurveList() {
@@ -649,18 +655,18 @@ public class packTlsHndshk {
         return buf;
     }
 
-    private int[] decodeCipherList(byte[] src) {
-        int[] trg = new int[src.length / 2];
-        for (int i = 0; i < trg.length; i++) {
-            trg[i] = bits.msbGetW(src, i * 2);
+    private List<Integer> decodeCipherList(byte[] src) {
+        List<Integer> trg = new ArrayList<Integer>();
+        for (int i = 0; i < src.length; i += 2) {
+            trg.add(bits.msbGetW(src, i));
         }
         return trg;
     }
 
-    private byte[] encodeCipherList(int[] src) {
-        byte[] trg = new byte[src.length * 2];
-        for (int i = 0; i < src.length; i++) {
-            bits.msbPutW(trg, i * 2, src[i]);
+    private byte[] encodeCipherList(List<Integer> src) {
+        byte[] trg = new byte[src.size() * 2];
+        for (int i = 0; i < src.size(); i++) {
+            bits.msbPutW(trg, i * 2, src.get(i));
         }
         return trg;
     }
@@ -677,6 +683,9 @@ public class packTlsHndshk {
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
+            }
+            if (debugger.secTlsTraf) {
+                logger.debug("extension " + tlv.dump());
             }
             switch (tlv.valTyp) {
                 case 43: // supported version
@@ -701,6 +710,9 @@ public class packTlsHndshk {
                     }
                     break;
                 case 10: // supported groups
+                    if (lower.verMax < 0x304) {
+                        break;
+                    }
                     for (int i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
                         ecDiffHell.curve = cryECcurve.getByTls(o);
@@ -710,6 +722,9 @@ public class packTlsHndshk {
                     }
                     break;
                 case 13: // signature algorithm
+                    if (lower.verMax < 0x304) {
+                        break;
+                    }
                     for (int i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
                         if (getSignerHash(o) == null) {
@@ -786,6 +801,10 @@ public class packTlsHndshk {
             bits.msbPutW(buf, 0, maxVer);
         }
         tlv.putBytes(pck, 43, buf); // supported versions
+        if (lower.verMax < 0x304) {
+            pck.merge2end();
+            return pck.getCopy();
+        }
         if (client) {
             buf = extenList2bytes(makeSignatureList());
             tlv.putBytes(pck, 13, buf); // signature algorithms
@@ -793,14 +812,6 @@ public class packTlsHndshk {
             buf = new byte[2];
             bits.msbPutW(buf, 0, signHsh);
         }
-        if (lower.verMax < 0x304) {
-            pck.merge2end();
-            return pck.getCopy();
-        }
-        buf = new byte[2];
-        buf[0] = 1; // length
-        buf[1] = 0; // uncompressed
-        tlv.putBytes(pck, 11, buf); // ec point format
         if (client) {
             buf = extenList2bytes(makeECcurveList());
             tlv.putBytes(pck, 10, buf); // supported groups
@@ -829,6 +840,12 @@ public class packTlsHndshk {
             bits.msbPutW(buf, 0, ecDiffHell.curve.tls);
         }
         tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
+        if (!client && (ecDiffHell.servPub == null)) {
+            buf = new byte[6];
+            bits.msbPutD(buf, 2, bits.randomD());
+            bits.msbPutW(buf, 0, buf.length - 2); // length
+            tlv.putBytes(pck, 44, buf); // cookie
+        }
         pck.merge2end();
         return pck.getCopy();
     }
@@ -843,6 +860,7 @@ public class packTlsHndshk {
         cipherList = makeCipherList();
         cmprssList = makeCompressList();
         extnsnList = makeExtensionList(true);
+        sendSess = null;
     }
 
     /**
@@ -874,7 +892,7 @@ public class packTlsHndshk {
         }
         lower.pckDat.getSkip(2);
         clntRand = lower.getBytes(-32);
-        lower.getBytes(1); // session id
+        rcvdSess = lower.getBytes(1); // session id
         if (datagram) {
             vrfyRand = lower.getBytes(1);
         }
@@ -900,7 +918,7 @@ public class packTlsHndshk {
         lower.pckDat.msbPutW(0, i);
         lower.pckDat.putSkip(2);
         lower.putBytes(clntRand, 0);
-        lower.putBytes(null, 1); // session id
+        lower.putBytes(sendSess, 1); // session id
         if (datagram) {
             lower.putBytes(vrfyRand, 1);
         }
@@ -917,8 +935,8 @@ public class packTlsHndshk {
             return;
         }
         String s = "";
-        for (int i = 0; i < cipherList.length; i++) {
-            s += "," + cipher2string(decodeCipherCode(cipherList[i]));
+        for (int i = 0; i < cipherList.size(); i++) {
+            s += "," + cipher2string(decodeCipherCode(cipherList.get(i)));
         }
         s = s.substring(1, s.length());
         logger.debug(dir + " ver=" + packTls.version2string(datagram, minVer) + "-" + packTls.version2string(datagram, maxVer) + " random=" + bits.byteDump(clntRand, 0, -1) + " ciphers=" + s + " extensions=" + bits.byteDump(extnsnList, 0, -1));
@@ -1003,7 +1021,7 @@ public class packTlsHndshk {
             (byte) 0x07, (byte) 0x9E, (byte) 0x09, (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C
         };
     }
-    
+
     /**
      * fill up server hello
      *
@@ -1034,22 +1052,39 @@ public class packTlsHndshk {
         }
         cmprssWant = 0;
         o = -1;
-        int p = -1;
-        for (int i = 0; i < cipherList.length; i++) {
-            int q = decodeCipherCode(cipherList[i]);
-            if (q < p) {
+        List<Integer> avail = makeCipherList();
+        for (int i = 0; i < cipherList.size(); i++) {
+            int val = cipherList.get(i);
+            int dec = decodeCipherCode(val);
+            if (dec < 0) {
                 continue;
             }
-            o = i;
-            p = q;
+            if (val < o) {
+                continue;
+            }
+            int q = -1;
+            for (int p = 0; p < avail.size(); p++) {
+                if (avail.get(p) == val) {
+                    q = p;
+                }
+            }
+            if (q < 0) {
+                continue;
+            }
+            o = val;
         }
-        if (p < 0) {
+        if (o < 0) {
             return true;
         }
-        cipherWant = cipherList[o];
+        cipherWant = o;
         cipherDecoded = decodeCipherCode(cipherWant);
         servRand = makeRandomCookie();
         extnsnList = makeExtensionList(false);
+        if (maxVer >= 0x304) {
+            sendSess = rcvdSess;
+        } else {
+            sendSess = null;
+        }
         versionFill();
         return false;
     }
@@ -1068,7 +1103,7 @@ public class packTlsHndshk {
         lower.pckDat.msbPutW(0, i);
         lower.pckDat.putSkip(2);
         lower.putBytes(servRand, 0);
-        lower.putBytes(null, 1); // session id
+        lower.putBytes(sendSess, 1); // session id
         lower.pckDat.msbPutW(0, cipherWant);
         lower.pckDat.putByte(2, cmprssWant);
         lower.pckDat.putSkip(3);
@@ -1094,7 +1129,7 @@ public class packTlsHndshk {
         }
         lower.pckDat.getSkip(2);
         servRand = lower.getBytes(-32);
-        lower.getBytes(1); // session id
+        rcvdSess = lower.getBytes(1); // session id
         cipherWant = lower.pckDat.msbGetW(0);
         cmprssWant = lower.pckDat.getByte(2);
         lower.pckDat.getSkip(3);

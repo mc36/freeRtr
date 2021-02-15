@@ -496,6 +496,9 @@ public class secTls implements Runnable {
             p.packSend();
             p.verCurr = -1;
             p.packRecv();
+            if (!ph.chgCipherParse()) {
+                p.packRecv();
+            }
             if (ph.headerParse()) {
                 return null;
             }
@@ -511,6 +514,9 @@ public class secTls implements Runnable {
             ph.servHelloCreate();
             ph.headerCreate();
             p.packSend();
+            if (!ph.chgCipherParse()) {
+                p.packRecv();
+            }
             if (ph.calcKeysHs(false)) {
                 return null;
             }
