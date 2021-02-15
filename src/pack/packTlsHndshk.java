@@ -605,6 +605,36 @@ public class packTlsHndshk {
         return l2;
     }
 
+    private List<Integer> makeECcurveList() {
+        List<Integer> lst = new ArrayList<Integer>();
+        for (int i = 0; i < 0x100; i++) {
+            if (cryECcurve.getByTls(i) == null) {
+                continue;
+            }
+            lst.add(i);
+        }
+        return lst;
+    }
+
+    private List<Integer> makeSignatureList() {
+        List<Integer> lst = new ArrayList<Integer>();
+        for (int i = 0; i < 8; i++) {
+            int o = 0x800 | i; // pss
+            if (getSignerHash(o) == null) {
+                continue;
+            }
+            lst.add(o);
+        }
+        for (int i = 0; i < 8; i++) {
+            int o = (i << 8) | 0x1; // pkcs1
+            if (getSignerHash(o) == null) {
+                continue;
+            }
+            lst.add(o);
+        }
+        return lst;
+    }
+
     private byte[] makeCompressList() {
         byte[] buf = new byte[1];
         buf[0] = 0;
@@ -721,6 +751,15 @@ public class packTlsHndshk {
         return new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
     }
 
+    private byte[] extenList2bytes(List<Integer> lst) {
+        byte[] buf = new byte[(lst.size() * 2) + 2];
+        bits.msbPutW(buf, 0, buf.length - 2); // length
+        for (int i = 0; i < lst.size(); i++) {
+            bits.msbPutW(buf, (i * 2) + 2, lst.get(i));
+        }
+        return buf;
+    }
+
     private byte[] makeExtensionList(boolean client) {
         typLenVal tlv = getTlv();
         packHolder pck = new packHolder(true, true);
@@ -748,15 +787,7 @@ public class packTlsHndshk {
         }
         tlv.putBytes(pck, 43, buf); // supported versions
         if (client) {
-            buf = new byte[16];
-            bits.msbPutW(buf, 0, buf.length - 2);
-            bits.msbPutW(buf, 2, 0x401); // rsa pkcs1 sha256
-            bits.msbPutW(buf, 4, 0x501); // rsa pkcs1 sha384
-            bits.msbPutW(buf, 6, 0x601); // rsa pkcs1 sha512
-            bits.msbPutW(buf, 8, 0x804); // rsa pss sha2256
-            bits.msbPutW(buf, 10, 0x805); // rsa pss sha2384
-            bits.msbPutW(buf, 12, 0x806); // rsa pss sha2512
-            bits.msbPutW(buf, 14, 0x201); // rsa pkcs1 sha1
+            buf = extenList2bytes(makeSignatureList());
             tlv.putBytes(pck, 13, buf); // signature algorithms
         } else {
             buf = new byte[2];
@@ -771,12 +802,7 @@ public class packTlsHndshk {
         buf[1] = 0; // uncompressed
         tlv.putBytes(pck, 11, buf); // ec point format
         if (client) {
-            List<Integer> lst = cryECcurve.listTlsIds();
-            buf = new byte[(lst.size() * 2) + 2];
-            bits.msbPutW(buf, 0, buf.length - 2); // length
-            for (int i = 0; i < lst.size(); i++) {
-                bits.msbPutW(buf, (i * 2) + 2, lst.get(i));
-            }
+            buf = extenList2bytes(makeECcurveList());
             tlv.putBytes(pck, 10, buf); // supported groups
         }
         byte[] res;
@@ -1244,7 +1270,7 @@ public class packTlsHndshk {
      * fill certificate verify
      */
     public void certVrfFill() {
-        paramHash = new byte[32];
+        paramHash = new byte[64];
         bits.byteFill(paramHash, 0, paramHash.length, 32);
         paramHash = bits.byteConcat(paramHash, "TLS 1.3, server CertificateVerify".getBytes());
         paramHash = bits.byteConcat(paramHash, new byte[1]);

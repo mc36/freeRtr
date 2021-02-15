@@ -1,8 +1,6 @@
 package cry;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * one elliptic curve in form y^2=x^3+ax+b
@@ -425,22 +423,6 @@ public class cryECcurve {
             }
         }
         return null;
-    }
-
-    /**
-     * list tls ids
-     *
-     * @return ids
-     */
-    public static List<Integer> listTlsIds() {
-        List<Integer> res = new ArrayList<Integer>();
-        for (int i = 0; i < curves.length; i++) {
-            if (curves[i].tls < 0) {
-                continue;
-            }
-            res.add(curves[i].tls);
-        }
-        return res;
     }
 
 }

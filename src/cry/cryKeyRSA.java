@@ -308,6 +308,39 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     /**
+     * mask generator function 1
+     *
+     * @param hsh hash
+     * @param src source
+     * @param ofs offset
+     * @param len length
+     * @param need needed
+     * @return mask
+     */
+    public byte[] pssMgf1(cryHashGeneric hsh, byte[] src, int ofs, int len, int need) {
+        int hl = hsh.getHashSize();
+        byte[] res = new byte[need];
+        byte[] buf = new byte[4];
+        int cnt = 0;
+        for (; cnt < (need / hl); cnt++) {
+            bits.msbPutD(buf, 0, cnt);
+            hsh.init();
+            hsh.update(src, ofs, len);
+            hsh.update(buf, 0, buf.length);
+            bits.byteCopy(hsh.finish(), 0, res, cnt * hl, hl);
+        }
+        if ((cnt * hl) >= need) {
+            return res;
+        }
+        bits.msbPutD(buf, 0, cnt);
+        hsh.init();
+        hsh.update(src, ofs, len);
+        hsh.update(buf, 0, buf.length);
+        bits.byteCopy(hsh.finish(), 0, res, cnt * hl, res.length - (cnt * hl));
+        return res;
+    }
+
+    /**
      * pad for tls12
      *
      * @param oid oid bytes
@@ -434,7 +467,7 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @param ver version
      * @param pkcs hash algorithm
      * @param hash hash hash to pad
-     * @return padded
+     * @return padded, null if pss
      */
     public BigInteger doPadding(int ver, cryHashGeneric pkcs, byte[] hash) {
         if (ver < 0x100) {
@@ -443,18 +476,80 @@ public class cryKeyRSA extends cryKeyGeneric {
         if (ver < 0x800) {
             return PKCS1t2pad(pkcs.getPkcs(), hash);
         }
-        return PKCS1t2pad(pkcs.getPkcs(), hash);////
+        return null;
     }
 
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
         BigInteger s = cryUtils.buf2bigUint(sign);
         s = s.modPow(pubExp, modulus);
         BigInteger h = doPadding(ver, pkcs, hash);
-        return h.compareTo(s) != 0;
+        if (h != null) {
+            return h.compareTo(s) != 0;
+        }
+        byte[] sgn = s.toByteArray();
+        if (sgn.length < (hash.length + hash.length + 2)) {
+            return true;
+        }
+        byte[] buf = new byte[hash.length + hash.length + 8];
+        bits.byteCopy(hash, 0, buf, 8, hash.length);
+        int embt = modulus.bitLength() - 1;
+        byte[] blk = new byte[(embt + 7) / 8];
+        bits.byteCopy(sgn, 0, blk, blk.length - sgn.length, sgn.length);
+        int fbm = 0xff >>> ((blk.length * 8) - embt);
+        if ((blk[0] & 0xff) != (blk[0] & fbm)) {
+            return true;
+        }
+        if ((blk[blk.length - 1] & 0xff) != 0xbc) {
+            return true;
+        }
+        byte[] dbm = pssMgf1(pkcs, blk, blk.length - hash.length - 1, hash.length, blk.length - hash.length - 1);
+        for (int i = 0; i != dbm.length; i++) {
+            blk[i] ^= dbm[i];
+        }
+        blk[0] &= fbm;
+        for (int i = 0; i != blk.length - hash.length - hash.length - 2; i++) {
+            if (blk[i] != 0) {
+                return true;
+            }
+        }
+        if (blk[blk.length - hash.length - hash.length - 2] != 0x01) {
+            return true;
+        }
+        bits.byteCopy(blk, blk.length - hash.length - hash.length - 1, buf, buf.length - hash.length, hash.length);
+        pkcs.init();
+        pkcs.update(buf);
+        bits.byteCopy(pkcs.finish(), 0, buf, buf.length - hash.length, hash.length);
+        return bits.byteComp(blk, blk.length - hash.length - 1, buf, buf.length - hash.length, hash.length) != 0;
     }
 
     public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
         BigInteger s = doPadding(ver, pkcs, hash);
+        if (s != null) {
+            s = s.modPow(privExp, modulus);
+            return s.toByteArray();
+        }
+        byte[] salt = new byte[hash.length];
+        for (int i = 0; i < salt.length; i++) {
+            salt[i] = (byte) bits.randomB();
+        }
+        byte[] buf = new byte[hash.length + hash.length + 8];
+        bits.byteCopy(hash, 0, buf, 8, hash.length);
+        bits.byteCopy(salt, 0, buf, buf.length - hash.length, hash.length);
+        pkcs.init();
+        pkcs.update(buf);
+        byte[] h = pkcs.finish();
+        int embt = modulus.bitLength() - 1;
+        byte[] blk = new byte[(embt + 7) / 8];
+        blk[blk.length - hash.length - hash.length - 2] = 0x01;
+        bits.byteCopy(salt, 0, blk, blk.length - hash.length - hash.length - 1, hash.length);
+        byte[] dbm = pssMgf1(pkcs, h, 0, h.length, blk.length - hash.length - 1);
+        for (int i = 0; i != dbm.length; i++) {
+            blk[i] ^= dbm[i];
+        }
+        bits.byteCopy(h, 0, blk, blk.length - hash.length - 1, hash.length);
+        blk[0] &= 0xff >>> ((blk.length * 8) - embt);
+        blk[blk.length - 1] = (byte) 0xbc;
+        s = new BigInteger(blk);
         s = s.modPow(privExp, modulus);
         return s.toByteArray();
     }
