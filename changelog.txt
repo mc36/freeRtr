@@ -12136,3 +12136,8 @@ qc pass: pvrp tls encryption
 ---------------------------------- 2021-02-13 16:21:36
 no todo: reenable which elliptic courves? sure? why that?
 no todo: tls1.3
+---------------------------------- 2021-02-15 10:16:01
+no qc pass: dtls test
+no qc pass: ppp with packet over dtls
+failed: ppp with packet over dtls
+failed: dtls test

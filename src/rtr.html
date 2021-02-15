@@ -10,8 +10,8 @@
  :active { color: white }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v21.2.14-rel, done by cs@nop.<br/>
-tested: 2021-02-14 08:22:51, took 00:05:51, with 100 workers, on 2350 cases, 0 failed, 0 traces, 1 retries<br/>
+release: freeRouter v21.2.15-rel, done by cs@nop.<br/>
+tested: 2021-02-15 10:37:40, took 00:21:39, with 100 workers, on 2350 cases, 2 failed, 0 traces, 31 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -272,7 +272,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pckou14.tst">conn-pckou14.tst</a></td><td>success</td><td>ethernet over packet over udp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pckou15.tst">conn-pckou15.tst</a></td><td>success</td><td>interworking with ethernet over packet over udp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pckou16.tst">conn-pckou16.tst</a></td><td>success</td><td>interworking with packet over dtls</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-pckou17.tst">conn-pckou17.tst</a></td><td>success</td><td>ppp with packet over dtls</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-pckou17.tst">conn-pckou17.tst</a></td><td>#6-run-r2 tping 100 60 2.2.2.0 /vrf v1</td><td>ppp with packet over dtls</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pckou18.tst">conn-pckou18.tst</a></td><td>success</td><td>ppp with packet over tcp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pckou19.tst">conn-pckou19.tst</a></td><td>success</td><td>ppp with packet over tls</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-pckou20.tst">conn-pckou20.tst</a></td><td>success</td><td>ppp with packet over txt</td></tr>
@@ -458,7 +458,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl65.tst">crypt-acl65.tst</a></td><td>success</td><td>egress mpls access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl66.tst">crypt-acl66.tst</a></td><td>success</td><td>ingress mpls common access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-acl67.tst">crypt-acl67.tst</a></td><td>success</td><td>egress mpls common access list</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>success</td><td>dtls test</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>#6-run-r2 tping 100 5 2.2.2.2 /vrf v1</td><td>dtls test</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp101.tst">crypt-esp101.tst</a></td><td>success</td><td>ipv4 in esp over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>success</td><td>ipv4 in esp over ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-esp103.tst">crypt-esp103.tst</a></td><td>success</td><td>ipv6 in esp over ipv4</td></tr>

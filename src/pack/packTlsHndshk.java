@@ -2048,8 +2048,8 @@ public class packTlsHndshk {
         if (!aead) {
             return;
         }
-        lower.seqTx = 0;
-        lower.seqRx = 0;
+        lower.aeadTx = 0;
+        lower.aeadRx = 0;
         lower.padModulo = lower.encTx.getTagSize();
     }
 

@@ -45,6 +45,16 @@ public class packTls {
     public long seqRx = 0;
 
     /**
+     * sendingsequence number
+     */
+    public long aeadTx = 0;
+
+    /**
+     * receiving sequence number
+     */
+    public long aeadRx = 0;
+
+    /**
      * datagram mode
      */
     public boolean datagram;
@@ -233,6 +243,8 @@ public class packTls {
         p.pipe = pipe;
         p.padModulo = padModulo;
         p.aeadMode = aeadMode;
+        p.aeadTx = aeadTx;
+        p.aeadRx = aeadRx;
         p.seqTx = seqTx;
         p.seqRx = seqRx;
         p.encTx = encTx;
@@ -516,7 +528,7 @@ public class packTls {
             return true;
         }
         byte[] buf = new byte[ivRx.length];
-        bits.msbPutQ(buf, buf.length - 8, seqRx);
+        bits.msbPutQ(buf, buf.length - 8, aeadRx);
         for (int i = 0; i < buf.length; i++) {
             buf[i] ^= ivRx[i];
         }
@@ -542,7 +554,7 @@ public class packTls {
         len--;
         pckTyp = pckDat.getByte(len);
         pckDat.setDataSize(len);
-        seqRx++;
+        aeadRx++;
         if (debugger.secTlsTraf) {
             logger.debug("rx type=" + type2string(pckTyp) + " size=" + pckDat.dataSize());
         }
@@ -563,7 +575,7 @@ public class packTls {
         pckDat.putSkip(1);
         pckDat.merge2end();
         byte[] buf = new byte[ivTx.length];
-        bits.msbPutQ(buf, buf.length - 8, seqTx);
+        bits.msbPutQ(buf, buf.length - 8, aeadTx);
         for (int i = 0; i < buf.length; i++) {
             buf[i] ^= ivTx[i];
         }
@@ -584,7 +596,7 @@ public class packTls {
         pckDat.setDataSize(len);
         pckTyp = typeAppDat;
         lineSend();
-        seqTx++;
+        aeadTx++;
         return false;
     }
 
