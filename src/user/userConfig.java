@@ -3439,7 +3439,7 @@ public class userConfig {
                 }
                 a = cmd.word();
                 if (a.length() < 1) {
-                    a = cfgAll.hostName;
+                    a = cfgAll.getFqdn();
                 }
                 int i = bits.str2num(cmd.word());
                 if (i < 1) {

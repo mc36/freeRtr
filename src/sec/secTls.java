@@ -146,13 +146,13 @@ public class secTls implements Runnable {
         certdsa = dsaC;
         certecdsa = ecdsaC;
         if (certrsa == null) {
-            certrsa = cryCertificate.createSelfSigned(keyrsa, cfgAll.hostName, 365);
+            certrsa = cryCertificate.createSelfSigned(keyrsa, cfgAll.getFqdn(), 365);
         }
         if (certdsa == null) {
-            certdsa = cryCertificate.createSelfSigned(keydsa, cfgAll.hostName, 365);
+            certdsa = cryCertificate.createSelfSigned(keydsa, cfgAll.getFqdn(), 365);
         }
         if (certecdsa == null) {
-            certecdsa = cryCertificate.createSelfSigned(keyecdsa, cfgAll.hostName, 365);
+            certecdsa = cryCertificate.createSelfSigned(keyecdsa, cfgAll.getFqdn(), 365);
         }
         workerStart();
     }
