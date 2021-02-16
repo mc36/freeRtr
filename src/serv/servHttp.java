@@ -94,6 +94,11 @@ public class servHttp extends servGeneric implements prtServS {
     protected clntProxy proxy;
 
     /**
+     * second port to use
+     */
+    protected int secondPort = -1;
+
+    /**
      * error message
      */
     protected String error;
@@ -112,6 +117,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! no single-request",
+        "server http .*! no second-port",
         "server http .*! host .* nostyle",
         "server http .*! host .* noredir",
         "server http .*! host .* noreconn",
@@ -243,6 +249,7 @@ public class servHttp extends servGeneric implements prtServS {
         } else {
             l.add(beg + "error " + error);
         }
+        cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpServ ntry = hosts.get(hn);
@@ -412,6 +419,10 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (a.equals("second-port")) {
+            secondPort = bits.str2num(cmd.word());
+            return false;
+        }
         if (a.equals("single-request")) {
             singleRequest = true;
             return false;
@@ -431,6 +442,10 @@ public class servHttp extends servGeneric implements prtServS {
         }
         if (a.equals("no")) {
             a = cmd.word();
+            if (a.equals("second-port")) {
+                secondPort = -1;
+                return false;
+            }
             if (a.equals("single-request")) {
                 singleRequest = false;
                 return false;
@@ -787,6 +802,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("1 .  single-request                 one request per connection");
         l.add("1 2  proxy                          enable proxy support");
         l.add("2 .    <name>                       proxy profile");
+        l.add("1 2  second-port                    enable dual binding");
+        l.add("2 .    <num>                        secure port");
         l.add("1 2  error                          set error message");
         l.add("2 2,.  <name>                       error message");
         l.add("1 2  host                           define one virtual server");
@@ -897,6 +914,11 @@ public class servHttp extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean srvInit() {
+        if (secondPort > 0) {
+            if (genStrmStart(this, new pipeLine(65535, false), secondPort)) {
+                return true;
+            }
+        }
         return genStrmStart(this, new pipeLine(65536, false), 0);
     }
 
@@ -906,6 +928,11 @@ public class servHttp extends servGeneric implements prtServS {
      * @return false on success, true on error
      */
     public boolean srvDeinit() {
+        if (secondPort > 0) {
+            if (genericStop(secondPort)) {
+                return true;
+            }
+        }
         return genericStop(0);
     }
 
@@ -1242,12 +1269,15 @@ class servHttpConn implements Runnable {
 
     private List<String> headers; // tx headers
 
+    private boolean secured;
+
     public servHttpConn(servHttp parent, pipeSide stream, prtGenConn id) {
         lower = parent;
         pipe = stream;
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         peer.setAddr(id.peerAddr);
+        secured = id.portLoc == lower.secondPort;
         new Thread(this).start();
     }
 
@@ -2302,6 +2332,7 @@ class servHttpConn implements Runnable {
         res.lineRx = pipeSide.modTyp.modeCRtryLF;
         res.lineTx = pipeSide.modTyp.modeCRLF;
         pipe = res;
+        secured = true;
         return false;
     }
 
@@ -2820,6 +2851,15 @@ class servHttpConn implements Runnable {
 
     public void run() {
         try {
+            if (secured) {
+                pipeSide res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(65536, false), null);
+                if (res == null) {
+                    return;
+                }
+                res.lineRx = pipeSide.modTyp.modeCRtryLF;
+                res.lineTx = pipeSide.modTyp.modeCRLF;
+                pipe = res;
+            }
             for (;;) {
                 if (readRequest()) {
                     break;

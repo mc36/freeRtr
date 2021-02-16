@@ -881,10 +881,17 @@ server netflow flw
  exit
 !
 server http web
+ security rsakey rsa
+ security dsakey dsa
+ security ecdsakey ecdsa
+ security rsacert rsa
+ security dsacert dsa
+ security ecdsacert ecdsa
  access-log
  access-startup 10000
  access-total 128
  access-peer 16
+ second-port 443
  host * path /nfs2/own/web/
  host * redir http://sid.mchome.nop.hu/
  host *.dn42.sid.mchome.nop.hu path /nfs2/own/web/
@@ -952,4 +959,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=0d0d440efe3f979cf76c88dad48a9d30ae6a6e3974930e7da0435ac6dd4088895824a4b5d3aaf4817751c5d6b61d7d16acc69da0506056d9c801fd656e7d82c7-6c87c54338faf0abf847141a1cb7f1e623add9a3da96ad04b5c6f8502dfef9cf100cddbafc65a8eecdb549fb76974770bdecea7ae8effb4b36d99444949d42d1
+end chksum=b4b6e44bbc3e81a98bbe4d38f3da95e673f8b5d75ef88e736a2ef820184ee6a62d3f8b40796da4a5301f5d6c68b43cac3d21933d04bd78f58b6173d343014117-d68ead13e18afcb5ec2ce164996c4ee412b9266c440403ba4c4cae607d0035931594355ac1ad24c5ab3f9d148b94ee94b53dabd4fc607ce0386c37afac83f8bb

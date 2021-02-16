@@ -530,7 +530,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @return true if no, false if have all
      */
     public boolean noneSecKeys() {
-        return (keydsa == null) || (keyecdsa == null) || (keyrsa == null) || (certdsa == null) || (certecdsa == null) || (certrsa == null);
+        return (keydsa == null) || (keyecdsa == null) || (keyrsa == null);
     }
 
     /**
@@ -543,6 +543,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @return encrypted pipeline, null if error
      */
     public pipeSide negoSecSess(pipeSide pipe, int proto, pipeLine sample, authGeneric auther) {
+        if (noneSecKeys()) {
+            return null;
+        }
         return secServer.openSec(pipe, proto, sample, auther, keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
     }
 
