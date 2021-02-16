@@ -806,6 +806,7 @@ public class cryCertificate {
         cryAsn1.writeBigInt(binCont, serNum);
         p1.clear();
         cryAsn1.writeObjectId(p1, int2objId(decAlgo));
+        cryAsn1.writeNull(p1);
         cryAsn1.writeSequence(binCont, p1);
         p1.clear();
         issuer.asn1writer(p1);
@@ -827,16 +828,17 @@ public class cryCertificate {
         String s = key.algName();
         decAlgo = 0;
         if (s.equals(new cryKeyRSA().algName())) {
-            decAlgo = typRsaSha1;
+            decAlgo = typRsaSha256;
         }
         if (s.equals(new cryKeyDSA().algName())) {
             decAlgo = typDssSha1;
         }
         if (s.equals(new cryKeyECDSA().algName())) {
-            decAlgo = typEcDssSha1;
+            decAlgo = typEcDssSha256;
         }
         binAlgo = new packHolder(true, true);
         cryAsn1.writeObjectId(binAlgo, int2objId(decAlgo));
+        cryAsn1.writeNull(binAlgo);
     }
 
     /**
