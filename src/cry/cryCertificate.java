@@ -852,6 +852,9 @@ public class cryCertificate {
         binSign.putCopy(buf, 0, 0, buf.length);
         binSign.putSkip(buf.length);
         binSign.merge2beg();
+        binSign.putByte(0, 0);
+        binSign.putSkip(1);
+        binSign.merge2beg();
     }
 
     /**
