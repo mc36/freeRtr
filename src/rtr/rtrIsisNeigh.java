@@ -833,9 +833,9 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             rtrIsisLsp lsp = request.get(i);
             if (lsp != null) {
                 if (pending.find(lsp) == null) {
+                    pending.add(lsp.copyBytes(false));
                     lsp.sequence = 0;
                     iface.sendPsnpPack(lsp, level.level);
-                    pending.add(lsp.copyBytes(false));
                 }
             }
         }

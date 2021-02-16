@@ -39,6 +39,8 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
 
     private final tabGen<rtrOspf4lsa> request;
 
+    private final tabGen<rtrOspf4lsa> pending;
+
     private long lastHeard;
 
     /**
@@ -201,6 +203,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         peerBDR = new addrIPv4();
         advert = new tabGen<rtrOspf4lsa>();
         request = new tabGen<rtrOspf4lsa>();
+        pending = new tabGen<rtrOspf4lsa>();
         deadInt = iface.deadTimer;
         lastHeard = bits.getTime();
         state = stDown;
@@ -524,6 +527,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             }
             lst.put(lsa);
             request.del(lsa);
+            pending.del(lsa);
             rtrOspf4lsa old = area.lsas.add(lsa);
             if (old == null) {
                 advert.put(lsa.copyBytes(false));
@@ -805,6 +809,10 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             if (lsa == null) {
                 return;
             }
+            if (pending.find(lsa) != null) {
+                return;
+            }
+            pending.add(lsa.copyBytes(false));
             pck.clear();
             i = lsa.writeReq(pck, 0);
             pck.putSkip(i);
@@ -838,6 +846,10 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             if (advert.find(lsa) != null) {
                 continue;
             }
+            if (pending.find(lsa) != null) {
+                continue;
+            }
+            pending.add(lsa.copyBytes(false));
             pck.clear();
             iface.mkLSupdate(pck, lsa);
             packSend(pck, rtrOspf4neigh.msgTypLSupd);
@@ -849,11 +861,17 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
     }
 
     public void run() {
+        long last = 0;
         for (;;) {
             if (!need2run) {
                 break;
             }
             notif.sleep(iface.retransTimer);
+            long tim = bits.getTime();
+            if ((tim - last) >= iface.retransTimer) {
+                pending.clear();
+                last = tim;
+            }
             try {
                 checkTimeout();
                 if (noTimerNeeded()) {
