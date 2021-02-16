@@ -123,6 +123,8 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
 
     private final tabGen<rtrIsisLsp> request;
 
+    private final tabGen<rtrIsisLsp> pending;
+
     /**
      * level2 hello pdu
      */
@@ -287,6 +289,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         lastHeard = bits.getTime();
         advert = new tabGen<rtrIsisLsp>();
         request = new tabGen<rtrIsisLsp>();
+        pending = new tabGen<rtrIsisLsp>();
     }
 
     public int compare(rtrIsisNeigh o1, rtrIsisNeigh o2) {
@@ -669,6 +672,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             logger.debug("lsp " + lsp);
         }
         request.del(lsp);
+        pending.del(lsp);
         if (iface.shouldIanswer(level.level, rtrID)) {
             iface.sendPsnpPack(lsp, level.level);
         }
@@ -828,8 +832,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             i = bits.random(0, i);
             rtrIsisLsp lsp = request.get(i);
             if (lsp != null) {
-                lsp.sequence = 0;
-                iface.sendPsnpPack(lsp, level.level);
+                if (pending.find(lsp) == null) {
+                    lsp.sequence = 0;
+                    iface.sendPsnpPack(lsp, level.level);
+                    pending.add(lsp.copyBytes(false));
+                }
             }
         }
         for (i = advert.size(); i >= 0; i--) {
@@ -856,6 +863,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             if (advert.find(lsp) != null) {
                 continue;
             }
+            if (pending.find(lsp) != null) {
+                continue;
+            }
+            pending.add(lsp.copyBytes(false));
             iface.sendLspPack(lsp, level.level);
             if (debugger.rtrIsisTraf) {
                 logger.debug("lsp " + lsp);
@@ -868,11 +879,17 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     }
 
     public void run() {
+        long last = 0;
         for (;;) {
             if (!need2run) {
                 break;
             }
             notif.sleep(iface.retransTimer);
+            long tim = bits.getTime();
+            if ((tim - last) >= iface.retransTimer) {
+                pending.clear();
+                last = tim;
+            }
             try {
                 doRetrans();
             } catch (Exception e) {
