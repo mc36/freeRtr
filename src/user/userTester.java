@@ -100,6 +100,10 @@ public class userTester {
 
     private int restart = 0;
 
+    private int predelay = 0;
+
+    private int postdelay = 0;
+
     private String jvn = "java";
 
     private String jvp = " XmxZZZm -jar " + version.getFileName();
@@ -160,6 +164,18 @@ public class userTester {
             }
             if (s.equals("noreapply")) {
                 reapply = 0;
+            }
+            if (s.equals("predelay")) {
+                predelay = bits.str2num(cmd.word());
+            }
+            if (s.equals("nopredelay")) {
+                predelay = 0;
+            }
+            if (s.equals("postdelay")) {
+                postdelay = bits.str2num(cmd.word());
+            }
+            if (s.equals("nopostdelay")) {
+                postdelay = 0;
             }
             if (s.equals("restart")) {
                 restart = bits.str2num(cmd.word());
@@ -340,6 +356,8 @@ public class userTester {
         rdr.debugStat("config=" + config);
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("restart=" + restart);
+        rdr.debugStat("predelay=" + predelay);
+        rdr.debugStat("postdelay=" + postdelay);
         rdr.debugStat("randord=" + randord);
         rdr.debugStat("retry=" + maxTry);
         rdr.debugStat("other=" + others.size() + " " + other0);
@@ -565,6 +583,8 @@ public class userTester {
         lt.config = config;
         lt.reapply = reapply;
         lt.restart = restart;
+        lt.predelay = predelay;
+        lt.postdelay = postdelay;
         lt.jvm = jvn + jvp;
         lt.others = others;
         lt.remoteD = remoteD;
@@ -1018,6 +1038,10 @@ class userTesterOne {
     public int reapply;
 
     public int restart;
+
+    public int predelay;
+
+    public int postdelay;
 
     public String jvm;
 
@@ -1517,6 +1541,9 @@ class userTesterOne {
             return;
         }
         if (s.equals("addrouter")) {
+            if (predelay > 0) {
+                bits.sleep(predelay);
+            }
             String rn = cmd.word();
             boolean write = true;
             boolean telnet = true;
@@ -1616,6 +1643,9 @@ class userTesterOne {
             }
             if (config) {
                 p.putLine("reload force");
+            }
+            if (postdelay > 0) {
+                bits.sleep(postdelay);
             }
             return;
         }
