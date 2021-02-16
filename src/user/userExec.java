@@ -3451,11 +3451,7 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            int i = bits.str2num(cmd.word());
-            if (i < 20) {
-                i = 20;
-            }
-            pipe.settingsPut(pipeSetting.width, i);
+            userReader.setSizeX(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("timestamps")) {
@@ -3471,11 +3467,7 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            int i = bits.str2num(cmd.word());
-            if (i < 0) {
-                i = 0;
-            }
-            pipe.settingsPut(pipeSetting.height, i);
+            userReader.setSizeY(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("escape")) {

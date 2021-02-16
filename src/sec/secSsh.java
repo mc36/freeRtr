@@ -14,6 +14,7 @@ import pack.packSshKex;
 import pipe.pipeLine;
 import pipe.pipeSetting;
 import pipe.pipeSide;
+import user.userReader;
 import util.bits;
 import util.debugger;
 import util.logger;
@@ -351,8 +352,8 @@ public class secSsh implements Runnable {
             return true;
         }
         if (pc.type.equals(packSshChan.reqWindow)) {
-            userS.settingsPut(pipeSetting.width, p.pckDat.msbGetD(0));
-            userS.settingsPut(pipeSetting.height, p.pckDat.msbGetD(4));
+            userReader.setSizeX(userS, p.pckDat.msbGetD(0));
+            userReader.setSizeY(userS, p.pckDat.msbGetD(4));
             return true;
         }
         return false;
@@ -502,8 +503,8 @@ public class secSsh implements Runnable {
             }
             if (pc.type.equals(packSshChan.reqPtyReq)) {
                 p.stringRead();
-                userS.settingsPut(pipeSetting.width, p.pckDat.msbGetD(0));
-                userS.settingsPut(pipeSetting.height, p.pckDat.msbGetD(4));
+                userReader.setSizeX(userS, p.pckDat.msbGetD(0));
+                userReader.setSizeY(userS, p.pckDat.msbGetD(4));
                 if (pc.needReply) {
                     pc.chanSuccCreate();
                     p.packSend();

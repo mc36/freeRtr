@@ -5,6 +5,7 @@ import java.util.List;
 import pipe.pipeLine;
 import pipe.pipeSetting;
 import pipe.pipeSide;
+import user.userReader;
 import util.bits;
 import util.debugger;
 import util.logger;
@@ -423,9 +424,9 @@ public class secTelnet {
                                 break;
                             }
                             i = (lst.get(0) << 8) | lst.get(1);
-                            userS.settingsPut(pipeSetting.width, i);
+                            userReader.setSizeX(userS, i);
                             i = (lst.get(2) << 8) | lst.get(3);
-                            userS.settingsPut(pipeSetting.height, i);
+                            userReader.setSizeY(userS, i);
                             break;
                     }
                     continue;

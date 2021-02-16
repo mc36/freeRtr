@@ -169,6 +169,30 @@ public class userReader implements Comparator<String> {
     }
 
     /**
+     * set width of screen
+     * @param pip pipe to set
+     * @param siz size
+     */
+    public static void setSizeX(pipeSide pip, int siz) {
+        if (siz < 20) {
+            siz = 20;
+        }
+        pip.settingsPut(pipeSetting.width, siz);
+    }
+
+    /**
+     * set height of screen
+     * @param pip pipe to set
+     * @param siz size
+     */
+    public static void setSizeY(pipeSide pip, int siz) {
+        if (siz < 0) {
+            siz = 0;
+        }
+        pip.settingsPut(pipeSetting.height, siz);
+    }
+
+    /**
      * set context in which input will be processed
      *
      * @param hlp helper instance
