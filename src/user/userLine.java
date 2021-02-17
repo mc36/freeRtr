@@ -532,6 +532,8 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
 
     public authResult user;
 
+    public boolean preauthed;
+
     public Timer expTim;
 
     public userLineHandler(userLine prnt, pipeSide pip, String rem, int phys) {
@@ -556,7 +558,9 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         user.privilege = parent.promptPrivilege;
         pipe.settingsAdd(pipeSetting.authed, user);
         pipe.wait4ready(0);
+        authResult mine = user;
         user = pipe.settingsGet(pipeSetting.authed, user);
+        preauthed = mine != user;
     }
 
     private void doAuth() {
@@ -570,6 +574,9 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         }
         if (parent.banner) {
             pipe.linePut(parent.promptWelcome);
+        }
+        if (preauthed) {
+            return;
         }
         if (parent.authenticList == null) {
             return;
