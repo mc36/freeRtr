@@ -352,8 +352,8 @@ public class secSsh implements Runnable {
             return true;
         }
         if (pc.type.equals(packSshChan.reqWindow)) {
-            userReader.setSizeX(userS, p.pckDat.msbGetD(0));
-            userReader.setSizeY(userS, p.pckDat.msbGetD(4));
+            userReader.setTermWdt(userS, p.pckDat.msbGetD(0));
+            userReader.setTermLen(userS, p.pckDat.msbGetD(4));
             return true;
         }
         return false;
@@ -503,8 +503,8 @@ public class secSsh implements Runnable {
             }
             if (pc.type.equals(packSshChan.reqPtyReq)) {
                 p.stringRead();
-                userReader.setSizeX(userS, p.pckDat.msbGetD(0));
-                userReader.setSizeY(userS, p.pckDat.msbGetD(4));
+                userReader.setTermWdt(userS, p.pckDat.msbGetD(0));
+                userReader.setTermLen(userS, p.pckDat.msbGetD(4));
                 if (pc.needReply) {
                     pc.chanSuccCreate();
                     p.packSend();

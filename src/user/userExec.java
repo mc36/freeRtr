@@ -3451,7 +3451,7 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            userReader.setSizeX(pipe, bits.str2num(cmd.word()));
+            userReader.setTermWdt(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("timestamps")) {
@@ -3467,7 +3467,7 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            userReader.setSizeY(pipe, bits.str2num(cmd.word()));
+            userReader.setTermLen(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("escape")) {

@@ -170,10 +170,14 @@ public class userReader implements Comparator<String> {
 
     /**
      * set width of screen
+     *
      * @param pip pipe to set
      * @param siz size
      */
-    public static void setSizeX(pipeSide pip, int siz) {
+    public static void setTermWdt(pipeSide pip, int siz) {
+        if (siz < 1) {
+            return;
+        }
         if (siz < 20) {
             siz = 20;
         }
@@ -182,10 +186,11 @@ public class userReader implements Comparator<String> {
 
     /**
      * set height of screen
+     *
      * @param pip pipe to set
      * @param siz size
      */
-    public static void setSizeY(pipeSide pip, int siz) {
+    public static void setTermLen(pipeSide pip, int siz) {
         if (siz < 0) {
             siz = 0;
         }

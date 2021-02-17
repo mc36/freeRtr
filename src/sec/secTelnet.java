@@ -424,9 +424,9 @@ public class secTelnet {
                                 break;
                             }
                             i = (lst.get(0) << 8) | lst.get(1);
-                            userReader.setSizeX(userS, i);
+                            userReader.setTermWdt(userS, i);
                             i = (lst.get(2) << 8) | lst.get(3);
-                            userReader.setSizeY(userS, i);
+                            userReader.setTermLen(userS, i);
                             break;
                     }
                     continue;
