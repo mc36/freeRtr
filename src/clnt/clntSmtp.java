@@ -269,7 +269,7 @@ public class clntSmtp implements Runnable {
      * @return null on success, error string otherwise
      */
     public String doSend() {
-        String serv = "";
+        serv = "";
         lastR = "";
         lastT = "";
         if (rcpt.length() < 1) {

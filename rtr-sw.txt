@@ -816,8 +816,7 @@ dial-peer 1
  exit
 !
 !
-server telnet ssh
- security protocol ssh
+server telnet tel
  security authentication access
  security rsakey rsa
  security dsakey dsa
@@ -827,23 +826,7 @@ server telnet ssh
  access-subnet 16
  access-blackhole4 1
  access-blackhole6 1
- port 22
- exec timestamp
- exec colorized
- exec tablemode table
- no exec authorization
- no login authentication
- login logging
- vrf v1
- exit
-!
-server telnet tel
- security protocol telnet
- access-log
- access-total 128
- access-subnet 16
- access-blackhole4 1
- access-blackhole6 1
+ second-port 22
  exec timestamp
  exec colorized
  exec tablemode table
@@ -947,4 +930,4 @@ client name-server 10.10.10.10
 client time-zone CET
 client end-format chksum
 !
-end chksum=1786306fd4fe94953c17d32b54e8b823cdf46552012a26a87de51074c2be2019a7853f685a98c45ac963928bb0eb09229be926c7018d7c813688da7cd28ecbc5-d0e4f667b3849c174c698bc1a261bb7a1571cb7923f518b7a539a5a23302024e833c19eb1041231396cf9931fd491921d0507b9fe95059ede81080c4a326151c
+end chksum=2332e74d5249851d2a941b30e2ec88702054d0e2d3a5c2b79078fe6e7301906667dc2692eb56e2e5c62becbae50c34bf7ac0de93afabed59ff06bffaf27dd48e-730a9422d0c3be31647150427aa9bb7099befcc42e5a2da4fb6ae69e2639416b4ce78133e1bc76d85f15cc953db174eae218b81ab75063899a3e00c5ff835a6d
