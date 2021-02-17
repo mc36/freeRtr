@@ -38,7 +38,7 @@ public class ipIfc6nei implements ifcUp {
      */
     public int neiCacheRetry = ipIfcLoop.defaultRetryTime;
 
-    private addrMac hwaddr;
+    private addrMac hwaddr = new addrMac();
 
     private addrIPv6 ipaddr = new addrIPv6();
 

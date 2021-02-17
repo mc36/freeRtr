@@ -52,7 +52,7 @@ public class ipIfc4arp implements ifcUp {
 
     private ipIfc4 upper;
 
-    private addrMac hwaddr;
+    private addrMac hwaddr = new addrMac();
 
     private addrIPv4 ipaddr = new addrIPv4();
 

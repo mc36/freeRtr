@@ -191,7 +191,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(" 5 6     <prf>               preference");
         l.add(" 6 .       <srv>             mail server");
         l.add(" 4 5   txt                   specify a description");
-        l.add(" 5 .     <text>              description");
+        l.add(" 5 5,.   <text>              description");
         l.add(" 4 5   ns                    specify a name server");
         l.add(" 5 .     <srv>               name server");
         l.add(" 4 5   ptr                   specify a pointer");
