@@ -45,11 +45,11 @@ public class clntSmtp implements Runnable {
 
     private String serv;
 
-    private String lastS;
-
     private String lastR;
 
     private String lastT;
+
+    private List<String> errors = new ArrayList<String>();
 
     private List<String> body = new ArrayList<String>();
 
@@ -241,13 +241,11 @@ public class clntSmtp implements Runnable {
         l.add(cfgAll.getFqdn() + " because the attached mail was not");
         l.add("delivered to the recipients. sorry for it!");
         l.add("");
-        l.add("this is the protocol state:");
-        l.add("source: " + of);
-        l.add("target: " + ot);
-        l.add("server: " + serv);
-        l.add("stage: " + lastS);
-        l.add("transmitted: " + lastT);
-        l.add("received: " + lastR);
+        l.add("all i know is that " + of + " wanted to send to " + ot + ".");
+        l.add("this is what happened afterwards:");
+        for (int i = 0; i < errors.size(); i++) {
+            l.add(errors.get(i));
+        }
         l.add("");
         l.add("this is the original header:");
         for (int i = 0; i < ob.size(); i++) {
@@ -268,15 +266,15 @@ public class clntSmtp implements Runnable {
     /**
      * do sending work
      *
-     * @return false on success, true on error
+     * @return null on success, error string otherwise
      */
-    public boolean doSend() {
-        serv = "";
-        lastS = "no recipients configured";
+    public String doSend() {
+        String serv = "";
+        lastR = "";
+        lastT = "";
         if (rcpt.length() < 1) {
-            return false;
+            return "no recipients configured";
         }
-        lastS = "no suitable server found";
         serv = cfgAll.mailServerName;
         if (serv == null) {
             uniResLoc url = new uniResLoc();
@@ -286,27 +284,24 @@ public class clntSmtp implements Runnable {
             serv = clnt.getMX();
         }
         if (serv == null) {
-            return true;
+            serv = "";
+            return "no suitable server found";
         }
-        lastS = "failed to open connection to " + serv;
         pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, serv, new servSmtp().srvPort(), "smtp");
         if (pipe == null) {
-            return true;
+            return "failed to open connection";
         }
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         cons.debugStat("logging in");
-        lastS = "failed to receive greeting message";
         if (getRes(100) != 2) {
-            return true;
+            return "failed to receive greeting message";
         }
-        lastS = "failed to exchange hostname";
         sendLine("helo " + cfgAll.getFqdn());
         if (getRes(100) != 2) {
-            return true;
+            return "failed to exchange hostname";
         }
         if (cfgAll.mailServerUser != null) {
-            lastS = "failed to start authentication";
             byte[] zero = new byte[1];
             zero[0] = 0;
             byte[] buf = bits.byteConcat(zero, cfgAll.mailServerUser.getBytes());
@@ -314,33 +309,26 @@ public class clntSmtp implements Runnable {
             buf = bits.byteConcat(buf, cfgAll.mailServerPass.getBytes());
             sendLine("auth plain");
             if (getRes(100) != 3) {
-                return true;
+                return "failed to start authentication";
             }
-            lastS = "failed to finish authentication";
             sendLine(cryBase64.encodeBytes(buf));
             if (getRes(100) != 2) {
-                return true;
+                return "failed to finish authentication";
             }
         }
-        lastS = "failed to set sender";
         sendLine("mail from:<" + from + ">");
         if (getRes(100) != 2) {
-            cons.debugRes("no source accepted");
-            return true;
+            return "failed to set sender";
         }
-        lastS = "failed to set recipients";
         cons.debugStat("sending recipients");
         sendLine("rcpt to:<" + rcpt + ">");
         if (getRes(100) != 2) {
-            cons.debugRes("no recipient accepted");
-            return true;
+            return "failed to set recipients";
         }
         sendLine("data");
         if (getRes(100) != 3) {
-            cons.debugRes("no body accepted");
-            return true;
+            return "failed to start transfer";
         }
-        lastS = "failed to start lines";
         cons.setMax(body.size());
         cons.debugStat("sending " + cons.getMax() + " lines");
         for (int i = 0; i < body.size(); i++) {
@@ -349,17 +337,14 @@ public class clntSmtp implements Runnable {
             cons.setCurr(i);
         }
         cons.debugStat(body.size() + " lines done");
-        lastS = "failed to finish lines";
         sendLine(".");
         if (getRes(100) != 2) {
-            return true;
+            return "failed to finish transfer";
         }
-        lastS = "failed to log out";
-        cons.debugRes("remote accepted");
         sendLine("QUIT");
         getLine();
         pipe.setClose();
-        return false;
+        return null;
     }
 
     /**
@@ -370,10 +355,12 @@ public class clntSmtp implements Runnable {
      */
     public boolean doSend(int retry) {
         for (; retry > 0; retry--) {
-            if (!doSend()) {
+            String a = doSend();
+            if (a == null) {
                 return false;
             }
-            logger.warn("error sending email from " + from + " to " + rcpt + ", result=" + lastS);
+            errors.add(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " remote=" + serv + " issue=" + a + " sent=" + lastT + " received=" + lastR);
+            logger.warn("error sending email from " + from + " to " + rcpt);
             bits.sleep(bits.random(60 * 1000, 600 * 1000));
         }
         return true;
@@ -419,7 +406,7 @@ public class clntSmtp implements Runnable {
      * @param src target
      * @return result code
      */
-    public boolean upload(uniResLoc trg, File src) {
+    public String upload(uniResLoc trg, File src) {
         cons.debugStat("encoding " + src + " to body");
         rcpt = trg.toEmail();
         putHead("file@" + cfgAll.getFqdn(), trg.toEmail(), "" + src);
