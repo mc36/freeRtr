@@ -62,7 +62,7 @@ int lo1
  exit
 server tel tel
  vrf v1
- sec prot tel
+ security protocol tel
  exit
 !
 

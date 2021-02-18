@@ -11,7 +11,7 @@ proxy-profile p1
  vrf v1
  exit
 server telnet tel
- sec prot tel
+ security protocol tel
  vrf v1
  exit
 int lo0
@@ -46,7 +46,7 @@ proxy-profile p1
  vrf v1
  exit
 server telnet tel
- sec prot tel
+ security protocol tel
  vrf v1
  exit
 int lo0
@@ -81,7 +81,7 @@ proxy-profile p1
  vrf v1
  exit
 server telnet tel
- sec prot tel
+ security protocol tel
  vrf v1
  exit
 int lo0
@@ -116,7 +116,7 @@ proxy-profile p1
  vrf v1
  exit
 server telnet tel
- sec prot tel
+ security protocol tel
  vrf v1
  exit
 int lo0
