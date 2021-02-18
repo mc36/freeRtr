@@ -1269,16 +1269,26 @@ class userTesterOne {
         stage = "run";
         for (;;) {
             if (testRes != 2) {
-                break;
+                return;
             }
             fn = getLin();
             if (fn == null) {
-                doChatty();
                 break;
             }
             cmd = new cmds("", fn);
             doLine();
         }
+        if (chatty == null) {
+            success();
+            return;
+        }
+        stage = "chatty";
+        for (int i = 0; i < procs.size(); i++) {
+            if (doChatty(procs.get(i), chatty)) {
+                return;
+            }
+        }
+        success();
     }
 
     private String repairHwCfg(String s) {
@@ -1343,24 +1353,15 @@ class userTesterOne {
         return true;
     }
 
-    public void doChatty() {
-        if (chatty == null) {
-            success();
-            return;
+    public boolean doChatty(userTesterPrc p, tabIntMatcher rng) {
+        p.putLine("terminal table raw");
+        p.doSync();
+        int o = p.getSummary(";", "<nonexistent>");
+        if (chatty.matches(o)) {
+            return false;
         }
-        stage = "chatty";
-        for (int i = 0; i < procs.size(); i++) {
-            userTesterPrc p = procs.get(i);
-            p.putLine("terminal table raw");
-            p.doSync();
-            int o = p.getSummary(";", "<nonexistent>");
-            if (chatty.matches(o)) {
-                continue;
-            }
-            testRes = 10;
-            return;
-        }
-        success();
+        testRes = 10;
+        return true;
     }
 
     public void doLine() {
@@ -1722,6 +1723,12 @@ class userTesterOne {
                     break;
                 }
             }
+            return;
+        }
+        if (s.equals("chatty")) {
+            tabIntMatcher rng = new tabIntMatcher();
+            rng.fromString(cmd.word());
+            doChatty(p, rng);
             return;
         }
         if (s.equals("ping")) {
