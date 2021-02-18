@@ -92,6 +92,8 @@ public class userTester {
 
     private boolean randord = false;
 
+    private tabIntMatcher chatty;
+
     private String release = "unknown";
 
     private int maxTry = 1;
@@ -200,6 +202,13 @@ public class userTester {
             }
             if (s.equals("norandord")) {
                 randord = false;
+            }
+            if (s.equals("chatty")) {
+                chatty = new tabIntMatcher();
+                chatty.fromString(cmd.word());
+            }
+            if (s.equals("nochatty")) {
+                chatty = null;
             }
             if (s.equals("retry")) {
                 maxTry = bits.str2num(cmd.word());
@@ -356,6 +365,7 @@ public class userTester {
         rdr.debugStat("config=" + config);
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("restart=" + restart);
+        rdr.debugStat("chatty=" + chatty);
         rdr.debugStat("predelay=" + predelay);
         rdr.debugStat("postdelay=" + postdelay);
         rdr.debugStat("randord=" + randord);
@@ -583,6 +593,7 @@ public class userTester {
         lt.config = config;
         lt.reapply = reapply;
         lt.restart = restart;
+        lt.chatty = chatty;
         lt.predelay = predelay;
         lt.postdelay = postdelay;
         lt.jvm = jvn + jvp;
@@ -1039,6 +1050,8 @@ class userTesterOne {
 
     public int restart;
 
+    public tabIntMatcher chatty;
+
     public int predelay;
 
     public int postdelay;
@@ -1260,7 +1273,7 @@ class userTesterOne {
             }
             fn = getLin();
             if (fn == null) {
-                success();
+                doChatty();
                 break;
             }
             cmd = new cmds("", fn);
@@ -1328,6 +1341,26 @@ class userTesterOne {
             }
         }
         return true;
+    }
+
+    public void doChatty() {
+        if (chatty == null) {
+            success();
+            return;
+        }
+        stage = "chatty";
+        for (int i = 0; i < procs.size(); i++) {
+            userTesterPrc p = procs.get(i);
+            p.putLine("terminal table raw");
+            p.doSync();
+            int o = p.getSummary(";", "<nonexistent>");
+            if (chatty.matches(o)) {
+                continue;
+            }
+            testRes = 10;
+            return;
+        }
+        success();
     }
 
     public void doLine() {
