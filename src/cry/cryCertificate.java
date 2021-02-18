@@ -609,11 +609,15 @@ public class cryCertificate {
      * @param pck packet to write to
      */
     public void asn1writer(packHolder pck) {
-        packHolder p = new packHolder(true, true);
-        cryAsn1.writeSequence(p, binCont);
-        cryAsn1.writeSequence(p, binAlgo);
-        cryAsn1.writeBitString(p, binSign);
-        cryAsn1.writeSequence(pck, p);
+        packHolder p1 = new packHolder(true, true);
+        packHolder p2 = binSign.copyBytes(true, true);
+        p2.putByte(0, 0);
+        p2.putSkip(1);
+        p2.merge2beg();
+        cryAsn1.writeSequence(p1, binCont);
+        cryAsn1.writeSequence(p1, binAlgo);
+        cryAsn1.writeBitString(p1, p2);
+        cryAsn1.writeSequence(pck, p1);
     }
 
     /**
@@ -652,6 +656,7 @@ public class cryCertificate {
             return true;
         }
         binSign = a.getPack();
+        binSign.getSkip(1);
         if (pck.dataSize() != 0) {
             return true;
         }
@@ -851,9 +856,6 @@ public class cryCertificate {
         binSign.clear();
         binSign.putCopy(buf, 0, 0, buf.length);
         binSign.putSkip(buf.length);
-        binSign.merge2beg();
-        binSign.putByte(0, 0);
-        binSign.putSkip(1);
         binSign.merge2beg();
     }
 

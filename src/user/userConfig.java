@@ -60,6 +60,7 @@ import ip.ipFwd;
 import ip.ipFwdRoute;
 import ipx.ipxFwd;
 import java.util.ArrayList;
+import java.util.List;
 import pipe.pipeSetting;
 import pipe.pipeSide;
 import serv.servBmp2mrt;
@@ -654,6 +655,7 @@ public class userConfig {
         l.add("4  5,.      generate                 generate new key");
         l.add("5  .          [size]                 key size in bits");
         l.add("4  .        zeroize                  delete the key");
+        l.add("4  .        editor                   import in editor");
         l.add("2  3    dsakey                       dsa key");
         l.add("3  4      <name>                     name of key");
         l.add("4  5        import                   import key");
@@ -661,6 +663,7 @@ public class userConfig {
         l.add("4  5,.      generate                 generate new key");
         l.add("5  .          [size]                 key size in bits");
         l.add("4  .        zeroize                  delete the key");
+        l.add("4  .        editor                   import in editor");
         l.add("2  3    ecdsakey                     ecdsa key");
         l.add("3  4      <name>                     name of key");
         l.add("4  5        import                   import key");
@@ -668,6 +671,7 @@ public class userConfig {
         l.add("4  5,.      generate                 generate new key");
         l.add("5  .          [size]                 key size in bits");
         l.add("4  .        zeroize                  delete the key");
+        l.add("4  .        editor                   import in editor");
         l.add("2  3    certificate                  certificate");
         l.add("3  4      <name>                     name of certificate");
         l.add("4  5        import                   import certificate");
@@ -684,6 +688,12 @@ public class userConfig {
         l.add("7  8,.            <text>             identifier to give");
         l.add("8  .                <num>            validity in days");
         l.add("4  .        zeroize                  delete the certificate");
+        l.add("4  5        editor                   import in editor");
+        l.add("5  6          rsa                    rsa key");
+        l.add("5  6          dsa                    dsa key");
+        l.add("5  6          ecdsa                  ecdsa key");
+        l.add("6  7,.          <key>                name of key");
+        l.add("7  .              <text>             base64 encoded certificate");
         l.add("1  2  xconnect                       define one protocol cross connection");
         l.add("2  .    <name>                       name of connection");
         l.add("1  2  connect                        define one interface cross connection");
@@ -3330,6 +3340,21 @@ public class userConfig {
             cfgAll.keyDel(lst, nam);
             return;
         }
+        if (a.equals("editor")) {
+            List<String> txt = new ArrayList<String>();
+            userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "key", false);
+            if (e.doEdit()) {
+                return;
+            }
+            if (key.pemReadLst(txt, false)) {
+                cmd.error("error decoding");
+                return;
+            }
+            key.keyName = nam;
+            cfgKey<T> cfg = cfgAll.keyFind(lst, nam, true);
+            cfg.key = key;
+            return;
+        }
         if (a.equals("import")) {
             a = authLocal.passwdDecode(cmd.word());
             if (a == null) {
@@ -3408,6 +3433,28 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("zeroize")) {
                 cfgAll.certDel(nam);
+                return;
+            }
+            if (a.equals("editor")) {
+                cryKeyGeneric k = findKey();
+                if (k == null) {
+                    return;
+                }
+                cryCertificate c = new cryCertificate();
+                c.crtName = nam;
+                List<String> txt = new ArrayList<String>();
+                userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "cert", false);
+                if (e.doEdit()) {
+                    return;
+                }
+                if (c.pemReadLst(txt)) {
+                    cmd.error("error decoding");
+                    return;
+                }
+                c.key = k;
+                cfgCert cfg = cfgAll.certFind(nam, true);
+                cfg.cert = c;
+                cfg.key = k;
                 return;
             }
             if (a.equals("import")) {

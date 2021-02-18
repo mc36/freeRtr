@@ -3,7 +3,6 @@ package cry;
 import java.math.BigInteger;
 import pack.packHolder;
 import pack.packSsh;
-import util.bits;
 
 /**
  * elliptic curve digital signature algorithm
@@ -190,7 +189,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
             return true;
         }
-        pub = cryECpoint.fromBytes2(curve, a.buf, 0);
+        pub = cryECpoint.fromBytes2(curve, a.buf, 1);
         if (pub == null) {
             return true;
         }
@@ -210,8 +209,9 @@ public class cryKeyECDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(p1, p2);
         p2.clear();
         byte[] buf = pub.toBytes2();
-        p2.putCopy(buf, 0, 0, buf.length);
-        p2.putSkip(buf.length);
+        p2.putByte(0, 0);
+        p2.putCopy(buf, 0, 1, buf.length);
+        p2.putSkip(buf.length + 1);
         p2.merge2beg();
         cryAsn1.writeBitString(p1, p2);
         cryAsn1.writeSequence(pck, p1);
