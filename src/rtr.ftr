@@ -894,6 +894,7 @@ qc pass: interop9: isis sr
 qc pass: interop9: isis lsp authentication
 qc pass: interop9: isis php sr
 qc pass: interop9: integrated isis
+qc pass: interop9: isis bier
 qc pass: interop9: ldp lsp
 qc pass: interop9: ethernet over mpls
 qc pass: interop9: ldp p2mp lsp
@@ -910,6 +911,7 @@ qc pass: interop9: ospf prefix withdraw
 qc pass: interop9: ospf p2mp te
 qc pass: interop9: ospf sr
 qc pass: interop9: ospf php sr
+qc pass: interop9: ospf bier
 qc pass: interop9: pppoe client
 qc pass: interop9: pppoe server
 qc pass: interop9: mpls over pppoe

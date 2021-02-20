@@ -12146,3 +12146,6 @@ no failed: dtls test
 no failed: ppp with packet over dtls
 qc pass: ppp with packet over dtls
 qc pass: dtls test
+---------------------------------- 2021-02-20 15:42:23
+qc pass: interop9: isis bier
+qc pass: interop9: ospf bier
