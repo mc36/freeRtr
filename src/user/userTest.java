@@ -664,6 +664,11 @@ public class userTest {
             h.doer(cmd);
             return null;
         }
+        if (a.equals("hwpop")) {
+            userHwpop h = new userHwpop();
+            h.doer(cmd);
+            return null;
+        }
         if (a.equals("hwdet")) {
             userHwdet h = new userHwdet();
             h.doer(cmd);

@@ -1647,7 +1647,9 @@ public class userExec {
         hl.add("2 3      verfile                 test version updater");
         hl.add("3 4,.      <key>                 key file to use");
         hl.add("4 4,.        [str]               file to include in release");
-        hl.add("2 3,.    hwext                   perform hw externalization");
+        hl.add("2 3,.    hwext                   perform forwarding externalization");
+        hl.add("3 3,.      <str>                 parameter");
+        hl.add("2 3,.    hwpop                   perform forwarding port population");
         hl.add("3 3,.      <str>                 parameter");
         hl.add("2 3,.    hwdet                   perform hw detection");
         hl.add("3 3,.      <str>                 parameter");
