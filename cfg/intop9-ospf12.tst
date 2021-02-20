@@ -102,7 +102,7 @@ set protocols ospf3 area 0 interface ge-0/0/1.0 interface-type p2p
 set protocols ospf3 area 0 interface lo0.0
 set protocols ospf3 area 0 bier-subdomain 0
 set protocols ospf3 traffic-engineering shortcuts
-set protocols bier sub-domain 0 bfr-id 123
+set protocols bier sub-domain 0 bfr-id 3
 set protocols bier sub-domain 0 encapsulation mpls bitmask-length 256 number-sets 4
 commit
 !
