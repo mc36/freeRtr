@@ -112,7 +112,8 @@ public class userHwpop {
                 map.add(res);
             }
         }
-        orig.error("found " + map.size() + " mapping");
+        orig.error("found " + map.size() + " custom mappings");
+        orig.error("will use automap mode " + aut + " otherwise");
         tabGen<userHwpopPrt> ned = new tabGen<userHwpopPrt>();
         for (int i = 0; i < txt.size(); i++) {
             cmd = new cmds("hwp", txt.get(i));
