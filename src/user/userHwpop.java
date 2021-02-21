@@ -64,7 +64,7 @@ public class userHwpop {
                 aut = 0;
                 s = cmd.word();
                 if (s.equals("normal")) {
-                    aut = 2;
+                    aut = 1;
                 }
                 if (s.equals("split")) {
                     aut = 2;
