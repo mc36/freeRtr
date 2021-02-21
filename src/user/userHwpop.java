@@ -109,6 +109,7 @@ public class userHwpop {
                 userHwpopPrt res = new userHwpopPrt();
                 res.port = bits.str2num(cmd.word());
                 res.pipe = bits.str2num(cmd.word());
+                res.piPort = bits.str2num(cmd.word());
                 map.add(res);
             }
         }
@@ -163,6 +164,7 @@ public class userHwpop {
                 continue;
             }
             int sdn = ntry.port;
+            int spd = ntry.speed;
             switch (aut) {
                 case 1: // normal
                     sdn = bits.str2num(ntry.desc.substring(0, ntry.desc.indexOf("/")));
@@ -174,12 +176,15 @@ public class userHwpop {
             userHwpopPrt mpd = map.find(ntry);
             if (mpd != null) {
                 sdn = mpd.pipe;
+                if (mpd.piPort > 0) {
+                    spd = mpd.piPort;
+                }
             }
             txt2.add("interface sdn" + sdn);
             txt2.add(cmds.tabulator + "description front port " + ntry.desc);
             txt2.add(cmds.tabulator + cmds.finish);
             txt2.add(cmds.comment);
-            txt.add(cmds.tabulator + "export-port sdn" + sdn + " " + ntry.port + " " + ntry.speed);
+            txt.add(cmds.tabulator + "export-port sdn" + sdn + " " + ntry.port + " " + spd);
         }
         txt.add(cmds.tabulator + cmds.finish);
         txt2.addAll(txt);
