@@ -149,7 +149,7 @@ public class userHwext {
             ifl.add(0, a);
         }
         orig.error("found " + ifp.size() + " interfaces");
-        if (ifp.size() < 1) {
+        if ((dpt != dpTyp.p4sw) && (ifp.size() < 1)) {
             orig.error("no interfaces found");
             return;
         }
