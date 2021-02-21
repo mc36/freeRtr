@@ -42,8 +42,10 @@ public class userHwpop {
     public void doer(cmds cmd) {
         orig = cmd;
         orig.error("populating forwarding ports");
-        String fn = null;
+        String inf = null;
+        String mpf = null;
         String srv = null;
+        int aut = 0;
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -51,7 +53,22 @@ public class userHwpop {
             }
             s = s.toLowerCase();
             if (s.equals("input")) {
-                fn = cmd.word();
+                inf = cmd.word();
+                continue;
+            }
+            if (s.equals("map")) {
+                mpf = cmd.word();
+                continue;
+            }
+            if (s.equals("auto")) {
+                aut = 0;
+                s = cmd.word();
+                if (s.equals("normal")) {
+                    aut = 2;
+                }
+                if (s.equals("split")) {
+                    aut = 2;
+                }
                 continue;
             }
             if (s.equals("server")) {
@@ -68,7 +85,7 @@ public class userHwpop {
                 continue;
             }
         }
-        if (fn == null) {
+        if (inf == null) {
             orig.error("no input specified");
             return;
         }
@@ -76,11 +93,26 @@ public class userHwpop {
             orig.error("no server specified");
             return;
         }
-        List<String> txt = bits.txt2buf(fn);
+        List<String> txt = bits.txt2buf(inf);
         if (txt == null) {
             orig.error("error reading input");
             return;
         }
+        List<String> txt2 = null;
+        tabGen<userHwpopPrt> map = new tabGen<userHwpopPrt>();
+        if (mpf != null) {
+            txt2 = bits.txt2buf(mpf);
+        }
+        if (txt2 != null) {
+            for (int i = 0; i < txt2.size(); i++) {
+                cmd = new cmds("hwp", txt2.get(i));
+                userHwpopPrt res = new userHwpopPrt();
+                res.port = bits.str2num(cmd.word());
+                res.pipe = bits.str2num(cmd.word());
+                map.add(res);
+            }
+        }
+        orig.error("found " + map.size() + " mapping");
         tabGen<userHwpopPrt> ned = new tabGen<userHwpopPrt>();
         for (int i = 0; i < txt.size(); i++) {
             cmd = new cmds("hwp", txt.get(i));
@@ -121,7 +153,7 @@ public class userHwpop {
             fnd.add(res);
         }
         orig.error("found " + fnd.size() + " exported interfaces");
-        List<String> txt2 = new ArrayList<String>();
+        txt2 = new ArrayList<String>();
         txt.clear();
         txt.add("server " + srv);
         for (int i = 0; i < ned.size(); i++) {
@@ -129,11 +161,24 @@ public class userHwpop {
             if (fnd.find(ntry) != null) {
                 continue;
             }
-            txt2.add("interface sdn" + ntry.port);
+            int sdn = ntry.port;
+            switch (aut) {
+                case 1: // normal
+                    sdn = bits.str2num(ntry.desc.substring(0, ntry.desc.indexOf("/")));
+                    break;
+                case 2: // split
+                    sdn = bits.str2num(ntry.desc.replaceAll("/", ""));
+                    break;
+            }
+            userHwpopPrt mpd = map.find(ntry);
+            if (mpd != null) {
+                sdn = mpd.pipe;
+            }
+            txt2.add("interface sdn" + sdn);
             txt2.add(cmds.tabulator + "description front port " + ntry.desc);
             txt2.add(cmds.tabulator + cmds.finish);
             txt2.add(cmds.comment);
-            txt.add(cmds.tabulator + "export-port sdn" + ntry.port + " " + ntry.port + " " + ntry.speed);
+            txt.add(cmds.tabulator + "export-port sdn" + sdn + " " + ntry.port + " " + ntry.speed);
         }
         txt.add(cmds.tabulator + cmds.finish);
         txt2.addAll(txt);
