@@ -83,6 +83,12 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_FLOWSPEC
     IngressControlFlowspec() ig_ctl_flowspec;
 #endif
+#ifdef HAVE_OUTACL
+    IngressControlAclOut() ig_ctl_acl_out;
+#endif
+#ifdef HAVE_OUTQOS
+    IngressControlQosOut() ig_ctl_qos_out;
+#endif
 #ifdef HAVE_MCAST
     IngressControlMcast() ig_ctl_mcast;
 #endif
@@ -172,6 +178,12 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
                 hdr.ethernet.ethertype = ig_md.ethertype;
                 ig_ctl_outport.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
+#ifdef HAVE_OUTACL
+                ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_OUTQOS
+                ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
                 ig_ctl_bundle.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
             }
         }

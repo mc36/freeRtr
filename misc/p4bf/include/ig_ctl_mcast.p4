@@ -39,6 +39,7 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.clone_session = sess;
         ig_md.rpf_iface = ingr;
         ig_tm_md.mcast_grp_a = sess;
+        ig_tm_md.qid = 1;
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.mpls0.setInvalid();

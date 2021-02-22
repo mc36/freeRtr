@@ -1457,7 +1457,7 @@ class BfForwarder(Thread):
 
         tbl_global_path_3 = "ig_ctl.ig_ctl_outport"
         tbl_name_3 = "%s.tbl_vlan_out" % (tbl_global_path_3)
-        tbl_action_name_3 = "%s.act_set_port" % (tbl_global_path_3)
+        tbl_action_name_3 = "%s.act_set_port_vlan" % (tbl_global_path_3)
         key_field_list_3 = [gc.KeyTuple("ig_md.target_id", port)]
         data_field_list_3 = [gc.DataTuple("port", main)]
         key_annotation_fields_3 = {}
@@ -1476,10 +1476,13 @@ class BfForwarder(Thread):
     def writeNhop2portRules(self, op_type, nhop, subif, port):
         tbl_global_path = "ig_ctl.ig_ctl_outport"
         tbl_name = "%s.tbl_nexthop" % (tbl_global_path)
-        tbl_action_name = "%s.act_set_port" % (tbl_global_path)
+        tbl_action_name = "%s.act_set_port_nexthop" % (tbl_global_path)
 
         key_fields = [gc.KeyTuple("ig_md.nexthop_id", nhop)]
-        data_fields = [gc.DataTuple("port", port)]
+        data_fields = [
+            gc.DataTuple("port", port),
+            gc.DataTuple("subif", subif),
+        ]
         key_annotation_fields = {}
         data_annotation_fields = {}
 
@@ -3881,17 +3884,17 @@ class BfForwarder(Thread):
     def writeOutAcl4Rules(
         self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "eg_ctl.eg_ctl_acl_out"
+        tbl_global_path = "ig_ctl.ig_ctl_acl_out"
         tbl_name = "%s.tbl_ipv4_acl" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("eg_md.aclport_id", port),
+            gc.KeyTuple("ig_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
-            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -3943,17 +3946,17 @@ class BfForwarder(Thread):
     def writeOutAcl6Rules(
         self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "eg_ctl.eg_ctl_acl_out"
+        tbl_global_path = "ig_ctl.ig_ctl_acl_out"
         tbl_name = "%s.tbl_ipv6_acl" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("eg_md.aclport_id", port),
+            gc.KeyTuple("ig_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
-            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -4010,17 +4013,17 @@ class BfForwarder(Thread):
     def writeOutQos4Rules(
         self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "eg_ctl.eg_ctl_qos_out"
+        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
         tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("eg_md.aclport_id", port),
+            gc.KeyTuple("ig_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
             gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
-            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4076,17 +4079,17 @@ class BfForwarder(Thread):
     def writeOutQos6Rules(
         self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
     ):
-        tbl_global_path = "eg_ctl.eg_ctl_qos_out"
+        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
         tbl_name = "%s.tbl_ipv6_qos" % (tbl_global_path)
         tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
         key_field_list = [
-            gc.KeyTuple("eg_md.aclport_id", port),
+            gc.KeyTuple("ig_md.aclport_id", port),
             gc.KeyTuple("$MATCH_PRIORITY", pri),
             gc.KeyTuple("hdr.ipv6.next_hdr", pr, prm),
             gc.KeyTuple("hdr.ipv6.src_addr", sa, sam),
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
-            gc.KeyTuple("eg_md.layer4_srcprt", sp, spm),
-            gc.KeyTuple("eg_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
+            gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4123,7 +4126,7 @@ class BfForwarder(Thread):
     def writeOutQosRules(
         self, op_type, meter, bytes, interval
     ):
-        tbl_global_path = "eg_ctl.eg_ctl_qos_out"
+        tbl_global_path = "ig_ctl.ig_ctl_qos_out"
         tbl_name = "%s.policer" % (tbl_global_path)
         self._processMeterFromControlPlane(
             op_type,

@@ -62,6 +62,7 @@
 #include "include/ig_ctl_pkt_pre_emit.p4"
 #include "include/ig_ctl_vlan_in.p4"
 #include "include/ig_ctl_acl_in.p4"
+#include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_vrf.p4"
 #include "include/ig_ctl_bridge.p4"
 #include "include/ig_ctl_mpls.p4"
@@ -72,6 +73,7 @@
 #include "include/ig_ctl_nat.p4"
 #include "include/ig_ctl_pbr.p4"
 #include "include/ig_ctl_qos_in.p4"
+#include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_mcast.p4"
 #include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_tunnel.p4"
@@ -99,8 +101,6 @@
 #include "include/eg_ctl_mcast.p4"
 #include "include/eg_ctl_vlan_out.p4"
 #include "include/eg_ctl_hairpin.p4"
-#include "include/eg_ctl_acl_out.p4"
-#include "include/eg_ctl_qos_out.p4"
 #include "include/eg_ctl.p4"
 
 /*------------------ E G R E S S  D E P A R S E R --------------------------- */

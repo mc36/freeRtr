@@ -121,6 +121,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         ig_tm_md.mcast_grp_a = sess;
+        ig_tm_md.qid = 1;
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();
@@ -152,6 +153,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         ig_tm_md.mcast_grp_a = sess;
+        ig_tm_md.qid = 1;
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();

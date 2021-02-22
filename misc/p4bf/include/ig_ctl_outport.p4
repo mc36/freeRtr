@@ -23,12 +23,19 @@ control IngressControlOutPort(inout headers hdr, inout ingress_metadata_t ig_md,
 {
 
 
-    action act_set_port(SubIntId_t port) {
+    action act_set_port_vlan(SubIntId_t port) {
         ig_md.output_id = port;
+        ig_md.aclport_id = ig_md.target_id;
     }
 
-    action act_set_identical() {
+    action act_set_port_novlan() {
         ig_md.output_id = ig_md.target_id;
+        ig_md.aclport_id = ig_md.target_id;
+    }
+
+    action act_set_port_nexthop(SubIntId_t port, SubIntId_t subif) {
+        ig_md.output_id = port;
+        ig_md.aclport_id = subif;
     }
 
     action act_set_drop() {
@@ -43,11 +50,11 @@ ig_md.target_id:
             exact;
         }
         actions = {
-            act_set_identical;
-            act_set_port;
+            act_set_port_novlan;
+            act_set_port_vlan;
         }
         size = VLAN_TABLE_SIZE;
-        default_action = act_set_identical();
+        default_action = act_set_port_novlan();
     }
 
 
@@ -57,7 +64,7 @@ ig_md.nexthop_id:
             exact;
         }
         actions = {
-            act_set_port;
+            act_set_port_nexthop;
             act_set_drop;
         }
         size = NEXTHOP_TABLE_SIZE;

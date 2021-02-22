@@ -38,12 +38,6 @@ control eg_ctl(
     EgressControlVlanOut() eg_ctl_vlan_out;
     EgressControlHairpin() eg_ctl_hairpin;
     EgressControlNexthop()eg_ctl_nexthop;
-#ifdef HAVE_OUTACL
-    EgressControlAclOut() eg_ctl_acl_out;
-#endif
-#ifdef HAVE_OUTQOS
-    EgressControlQosOut() eg_ctl_qos_out;
-#endif
 
 
 
@@ -69,12 +63,6 @@ control eg_ctl(
 #endif
 
         eg_ctl_nexthop.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
-#ifdef HAVE_OUTACL
-        eg_ctl_acl_out.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
-#endif
-#ifdef HAVE_OUTQOS
-        eg_ctl_qos_out.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
-#endif
         eg_ctl_vlan_out.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
         eg_ctl_hairpin.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 
