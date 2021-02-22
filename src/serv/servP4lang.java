@@ -477,10 +477,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("1 2  export-port               specify port to export");
         l.add("2 3    <name>                  interface name");
         l.add("3 4,.    <num>                 port number");
-        l.add("4 5,.      <num>               speed");
-        l.add("5 6,.        <num>             fec");
-        l.add("6 7,.          <num>           autoneg");
-        l.add("7 .              <num>         flowctrl");
+        l.add("4 5,.      <num>               speed in gbps");
+        l.add("5 6,.        <num>             fec, see hw vendor manual");
+        l.add("6 7,.          <num>           autoneg, see hw vendor manual");
+        l.add("7 .              <num>         flowctrl, see hw vendor manual");
         l.add("1 2  export-srv6               specify srv6 to export");
         l.add("2 .    <name>                  interface name");
         l.add("1 2  export-copp4              specify copp acl to export");
