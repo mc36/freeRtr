@@ -120,11 +120,11 @@ public class userShow {
      *
      * @return command to execute, null if nothing
      */
-    public String doer() {
+    public cfgAlias doer() {
         String a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.show, false);
         if (alias != null) {
-            return alias.getCommand(cmd);
+            return alias;
         }
         if (a.equals("version")) {
             a = cmd.word();

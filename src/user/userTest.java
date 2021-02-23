@@ -105,11 +105,11 @@ public class userTest {
      *
      * @return command to execute, null if nothing
      */
-    public String doer() {
+    public cfgAlias doer() {
         String a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.test, false);
         if (alias != null) {
-            return alias.getCommand(cmd);
+            return alias;
         }
         if (a.equals("yangconfig")) {
             String src = cmd.word();

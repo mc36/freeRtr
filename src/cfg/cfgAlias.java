@@ -31,6 +31,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public String command = "";
 
     /**
+     * 2nd command to execute
+     */
+    public String cmd2nd = null;
+
+    /**
      * hide commands
      */
     public boolean hidden = false;
@@ -194,9 +199,15 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         String a = "alias " + type2string(type) + " " + name;
         if (hidden) {
             l.add(a + " command " + authLocal.passwdEncode(command));
+            if (cmd2nd != null) {
+                l.add(a + " cmd2nd " + authLocal.passwdEncode(cmd2nd));
+            }
             l.add(a + " hidden");
         } else {
             l.add(a + " command " + command);
+            if (cmd2nd != null) {
+                l.add(a + " cmd2nd " + cmd2nd);
+            }
         }
         if (parameter != paraMode.allow) {
             l.add(a + " parameter " + param2string(parameter));
@@ -215,6 +226,10 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("command")) {
             command = authLocal.passwdDecode(cmd.getRemaining());
+            return;
+        }
+        if (a.equals("cmd2nd")) {
+            cmd2nd = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
         if (a.equals("description")) {
@@ -272,6 +287,23 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      */
     public String getCommand(cmds cmd) {
         String s = command;
+        if (parameter != paraMode.never) {
+            s += " " + cmd.getRemaining();
+        }
+        return s;
+    }
+
+    /**
+     * get 2nd command line
+     *
+     * @param cmd parameters
+     * @return command line
+     */
+    public String getCmd2nd(cmds cmd) {
+        String s = cmd2nd;
+        if (s == null) {
+            return null;
+        }
         if (parameter != paraMode.never) {
             s += " " + cmd.getRemaining();
         }

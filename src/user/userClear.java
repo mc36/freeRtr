@@ -78,11 +78,11 @@ public class userClear {
      *
      * @return command to execute, null if nothing
      */
-    public String doer() {
+    public cfgAlias doer() {
         String a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.clear, false);
         if (alias != null) {
-            return alias.getCommand(cmd);
+            return alias;
         }
         if (a.equals("errors")) {
             List<String> err = bits.txt2buf(version.myErrorFile());

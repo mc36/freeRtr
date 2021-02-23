@@ -293,11 +293,26 @@ public class userConfig {
                     return false;
                 }
             }
-            a = shw.doer();
+            cfgAlias alias = shw.doer();
+            if (alias == null) {
+                return false;
+            }
+            cmds param = cmd.copyBytes(false);
+            userExec e = new userExec(pipe, reader);
+            a = alias.getCommand(param);
+            a = e.repairCommand(a);
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, a);
+                if (ntry.result != authResult.authSuccessful) {
+                    pipe.linePut("% not authorized to execute that");
+                    return false;
+                }
+            }
+            e.executeCommand(a);
+            a = alias.getCmd2nd(param);
             if (a == null) {
                 return false;
             }
-            userExec e = new userExec(pipe, reader);
             a = e.repairCommand(a);
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, a);
@@ -599,6 +614,8 @@ public class userConfig {
         l.add("3  4      <name>                     name of new command");
         l.add("4  .        hidden                   hide the command");
         l.add("4  5        command                  specify command to execute");
+        l.add("5  5,.        <cmd>                  command");
+        l.add("4  5        cmd2nd                   specify 2nd command to execute");
         l.add("5  5,.        <cmd>                  command");
         l.add("4  5        description              specify help description");
         l.add("5  5,.        <text>                 help text");

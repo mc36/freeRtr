@@ -1738,7 +1738,14 @@ public class userExec {
         a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.exec, false);
         if (alias != null) {
-            a = alias.getCommand(cmd);
+            cmds param = cmd.copyBytes(false);
+            a = alias.getCommand(param);
+            a = repairCommand(a);
+            executeCommand(a);
+            a = alias.getCmd2nd(param);
+            if (a == null) {
+                return cmdRes.command;
+            }
             a = repairCommand(a);
             executeCommand(a);
             return cmdRes.command;
@@ -1896,7 +1903,15 @@ public class userExec {
             s.cmd = cmd;
             s.rdr = reader;
             s.hlp = getHelping();
-            a = s.doer();
+            alias = s.doer();
+            if (alias == null) {
+                return cmdRes.command;
+            }
+            cmds param = cmd.copyBytes(false);
+            a = alias.getCommand(param);
+            a = repairCommand(a);
+            executeCommand(a);
+            a = alias.getCmd2nd(param);
             if (a == null) {
                 return cmdRes.command;
             }
@@ -1913,11 +1928,19 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("clear")) {
-            userClear s = new userClear();
+            userClear c = new userClear();
             cmd = reader.setFilter(cmd);
-            s.cmd = cmd;
-            s.rdr = reader;
-            a = s.doer();
+            c.cmd = cmd;
+            c.rdr = reader;
+            alias = c.doer();
+            if (alias == null) {
+                return cmdRes.command;
+            }
+            cmds param = cmd.copyBytes(false);
+            a = alias.getCommand(param);
+            a = repairCommand(a);
+            executeCommand(a);
+            a = alias.getCmd2nd(param);
             if (a == null) {
                 return cmdRes.command;
             }
@@ -2232,7 +2255,15 @@ public class userExec {
             t.cmd = cmd;
             t.pip = pipe;
             t.rdr = reader;
-            a = t.doer();
+            alias = t.doer();
+            if (alias == null) {
+                return cmdRes.command;
+            }
+            cmds param = cmd.copyBytes(false);
+            a = alias.getCommand(param);
+            a = repairCommand(a);
+            executeCommand(a);
+            a = alias.getCmd2nd(param);
             if (a == null) {
                 return cmdRes.command;
             }
