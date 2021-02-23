@@ -681,6 +681,7 @@ class servSmtpDoer implements Runnable {
                 loc = new servSmtpLoc();
                 loc.email = fwd.email;
                 loc.user = fwd.bcc;
+                loc.bcc = "";
                 trgL.add(loc);
                 return false;
             }
