@@ -51,7 +51,7 @@ public class userHwpop {
                 break;
             }
             s = s.toLowerCase();
-            if (s.equals("input")) {
+            if (s.equals("uclipm")) {
                 inf = cmd.word();
                 continue;
             }
