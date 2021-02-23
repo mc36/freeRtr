@@ -45,6 +45,7 @@ public class userHwpop {
         String mpf = null;
         String srv = null;
         int aut = 0;
+        int wht = 0;
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -57,6 +58,20 @@ public class userHwpop {
             }
             if (s.equals("map")) {
                 mpf = cmd.word();
+                continue;
+            }
+            if (s.equals("ports")) {
+                s = cmd.word();
+                wht = 0;
+                if (s.equals("ready")) {
+                    wht = 1;
+                }
+                if (s.equals("speed")) {
+                    wht = 2;
+                }
+                if (s.equals("all")) {
+                    wht = 3;
+                }
                 continue;
             }
             if (s.equals("auto")) {
@@ -124,7 +139,7 @@ public class userHwpop {
             }
         }
         orig.error("found " + map.size() + " custom mappings");
-        orig.error("will use automap mode " + aut + " otherwise");
+        orig.error("will use automap mode " + aut + " otherwise on " + wht + " ports");
         tabGen<userHwpopPrt> ned = new tabGen<userHwpopPrt>();
         for (int i = 0; i < txt.size(); i++) {
             cmd = new cmds("hwp", txt.get(i).trim().toLowerCase());
@@ -143,8 +158,25 @@ public class userHwpop {
             cmd.word("|"); // an
             cmd.word("|"); // kr
             a = cmd.word("|").trim();
-            if (!a.equals("yes")) {
+            boolean rdy = a.equals("yes");
+            if (!rdy && !a.equals("no")) {
                 continue;
+            }
+            switch (wht) {
+                case 1: // ready
+                    if (!rdy) {
+                        continue;
+                    }
+                    break;
+                case 2: // speed
+                    if (res.speed < 1) {
+                        continue;
+                    }
+                    break;
+                case 3: // all
+                    break;
+                default:
+                    continue;
             }
             ned.add(res);
         }
