@@ -231,6 +231,7 @@ public class userHwpop {
             }
             txt2.add("interface sdn" + sdn);
             txt2.add(cmds.tabulator + "description frontpanel port " + ntry.desc);
+            txt2.add(cmds.tabulator + "shutdown");
             txt2.add(cmds.tabulator + cmds.finish);
             txt2.add(cmds.comment);
             txt.add(cmds.tabulator + "export-port sdn" + sdn + " " + ntry.port + " " + spd);
