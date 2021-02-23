@@ -343,18 +343,34 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             servP4langIfc ntry = new servP4langIfc(bits.str2num(cmd.word()));
-            ntry.doClear();
+            ntry.lower = this;
             ntry.ifc = ifc;
+            ntry.doClear();
+            servP4langIfc old = expIfc.find(ntry);
+            servP4langIfc orig = old;
+            if (old != null) {
+                if (ntry.ifc != old.ifc) {
+                    cmd.error("port number already exported as " + old.ifc.name);
+                    return false;
+                }
+                ntry = old;
+            }
+            for (int i = 0; i < expIfc.size(); i++) {
+                old = expIfc.get(i);
+                if ((ifc == old.ifc) && (old.id != ntry.id)) {
+                    cmd.error("interface already exported as port " + old.id);
+                    return false;
+                }
+            }
             ntry.speed = bits.str2num(cmd.word());
             ntry.errCorr = bits.str2num(cmd.word());
             ntry.autoNeg = bits.str2num(cmd.word());
             ntry.flowCtrl = bits.str2num(cmd.word());
-            ntry.lower = this;
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
             if (ifc.vlanNum != 0) {
                 need = false;
                 for (int i = 0; i < expIfc.size(); i++) {
-                    servP4langIfc old = expIfc.get(i);
+                    old = expIfc.get(i);
                     if (old.master != null) {
                         continue;
                     }
@@ -371,13 +387,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             if (need) {
                 ntry.setUpper(ifc.ethtyp);
             }
-            ntry.ifc.ethtyp.hwHstry = new history();
-            ntry.ifc.ethtyp.hwCntr = new counter();
-            servP4langIfc old = expIfc.put(ntry);
-            if (old == null) {
+            if (orig == null) {
+                ifc.ethtyp.hwHstry = new history();
+                ifc.ethtyp.hwCntr = new counter();
+                expIfc.put(ntry);
                 return false;
             }
-            sendLine("state " + old.id + " 0 " + old.getStateEnding());
+            sendLine("state " + old.id + " 0 " + orig.getStateEnding());
             sendLine("state " + ntry.id + " 1 " + ntry.getStateEnding());
             return false;
         }

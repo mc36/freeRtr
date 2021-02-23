@@ -8,7 +8,6 @@ import java.util.List;
 import tab.tabGen;
 import util.bits;
 import util.cmds;
-import util.logger;
 
 /**
  * process hw population
@@ -19,14 +18,14 @@ public class userHwpop {
 
     private cmds orig;
 
-    private boolean apply = false;
+    private int apply = 0;
 
-    private void doResult(String head, List<String> res) {
+    private void doResult(String head, List<String> res, int wht) {
         orig.error("apply these for " + head + ":");
         for (int i = 0; i < res.size(); i++) {
             orig.pipe.linePut(res.get(i));
         }
-        if (!apply) {
+        if ((apply & wht) == 0) {
             return;
         }
         orig.error("applying");
@@ -77,11 +76,22 @@ public class userHwpop {
                 continue;
             }
             if (s.equals("apply")) {
-                apply = true;
-                continue;
-            }
-            if (s.equals("show")) {
-                apply = false;
+                s = cmd.word();
+                if (s.equals("add")) {
+                    apply |= 1;
+                }
+                if (s.equals("del")) {
+                    apply |= 2;
+                }
+                if (s.equals("chg")) {
+                    apply |= 4;
+                }
+                if (s.equals("none")) {
+                    apply = 0;
+                }
+                if (s.equals("all")) {
+                    apply = -1;
+                }
                 continue;
             }
         }
@@ -117,18 +127,25 @@ public class userHwpop {
         orig.error("will use automap mode " + aut + " otherwise");
         tabGen<userHwpopPrt> ned = new tabGen<userHwpopPrt>();
         for (int i = 0; i < txt.size(); i++) {
-            cmd = new cmds("hwp", txt.get(i));
+            cmd = new cmds("hwp", txt.get(i).trim().toLowerCase());
             userHwpopPrt res = new userHwpopPrt();
-            res.desc = cmd.word("|");
+            res.desc = cmd.word("|").trim();
             cmd.word("|"); // mac
-            res.port = bits.str2num(cmd.word("|"));
-            res.pipe = bits.str2num(cmd.word("/"));
-            res.piPort = bits.str2num(cmd.word("|"));
-            String a = cmd.word("|").trim().toLowerCase();
-            if (!a.endsWith("g")) {
+            res.port = bits.str2num(cmd.word("|").trim());
+            res.pipe = bits.str2num(cmd.word("/").trim());
+            res.piPort = bits.str2num(cmd.word("|").trim());
+            String a = cmd.word("|").trim();
+            if (a.length() < 1) {
                 continue;
             }
             res.speed = bits.str2num(a.substring(0, a.length() - 1));
+            cmd.word("|"); // fec
+            cmd.word("|"); // an
+            cmd.word("|"); // kr
+            a = cmd.word("|").trim();
+            if (!a.equals("yes")) {
+                continue;
+            }
             ned.add(res);
         }
         orig.error("found " + ned.size() + " dataplane interfaces");
@@ -188,7 +205,7 @@ public class userHwpop {
         }
         txt.add(cmds.tabulator + cmds.finish);
         txt2.addAll(txt);
-        doResult("new ports to appear", txt2);
+        doResult("new ports to appear", txt2, 1);
         txt2.clear();
         txt.clear();
         txt.add("server " + srv);
@@ -202,7 +219,7 @@ public class userHwpop {
         }
         txt.add(cmds.tabulator + cmds.finish);
         txt.addAll(txt2);
-        doResult("old ports to disappear", txt);
+        doResult("old ports to disappear", txt, 2);
         txt2.clear();
         txt.clear();
         txt.add("server " + srv);
@@ -218,7 +235,7 @@ public class userHwpop {
             txt.add(cmds.tabulator + "export-port " + old.desc + " " + ntry.port + " " + ntry.speed);
         }
         txt.add(cmds.tabulator + cmds.finish);
-        doResult("updated port speeds", txt);
+        doResult("updated port speeds", txt, 4);
     }
 
 }
