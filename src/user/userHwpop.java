@@ -144,12 +144,16 @@ public class userHwpop {
         for (int i = 0; i < txt.size(); i++) {
             cmd = new cmds("hwp", txt.get(i).trim().toLowerCase());
             userHwpopPrt res = new userHwpopPrt();
-            res.desc = cmd.word("|").trim();
+            String a = cmd.word("|").trim();
+            res.desc = a;
+            if ((aut == 1) && (!a.endsWith("/0"))) {
+                continue;
+            }
             cmd.word("|"); // mac
             res.port = bits.str2num(cmd.word("|").trim());
             res.pipe = bits.str2num(cmd.word("/").trim());
             res.piPort = bits.str2num(cmd.word("|").trim());
-            String a = cmd.word("|").trim();
+            a = cmd.word("|").trim();
             if (a.length() < 1) {
                 continue;
             }
