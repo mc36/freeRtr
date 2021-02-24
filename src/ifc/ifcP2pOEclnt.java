@@ -113,7 +113,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     }
 
     public void flapped() {
-        clearState();
+        currState = 255;
     }
 
     public void setUpper(ifcUp server) {
