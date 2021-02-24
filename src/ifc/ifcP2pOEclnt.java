@@ -77,7 +77,9 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     private addrMac hwAddr; // hw address
 
-    private int currState = 0; // saw: 1-pado, 2-pads
+    private int currState = 0; // saw: 1-pado, 2-pads, 3-conn, 4-wait
+
+    private int roundsWait;
 
     private byte[] acCookie; // current ac cookie
 
@@ -113,7 +115,9 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     }
 
     public void flapped() {
-        currState = 255;
+        clearState();
+        currState = 4;
+        roundsWait = 5;
     }
 
     public void setUpper(ifcUp server) {
@@ -168,6 +172,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     private void clearState() {
         currState = 0;
+        roundsWait = 0;
         serviceCur = serviceCfg;
         acName = "";
         acCookie = null;
@@ -287,6 +292,13 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 sendPADr();
                 break;
             case 3:
+                break;
+            case 4:
+                roundsWait--;
+                if (roundsWait > 0) {
+                    break;
+                }
+                clearState();
                 break;
             default:
                 clearState();
