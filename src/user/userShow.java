@@ -217,6 +217,21 @@ public class userShow {
             rdr.putStrTab(aaa.getShow());
             return null;
         }
+        if (a.equals("pppoe")) {
+            a = cmd.word();
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            if (ifc.pppoeS == null) {
+                cmd.error("not enabled");
+                return null;
+            }
+            userFormat l = ifc.pppoeS.getShow();
+            rdr.putStrTab(l);
+            return null;
+        }
         if (a.equals("macsec")) {
             a = cmd.word();
             cfgIfc ifc = cfgAll.ifcFind(a, false);

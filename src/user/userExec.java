@@ -748,6 +748,8 @@ public class userExec {
         hl.add("3 .        <str>                 aaa list");
         hl.add("2 3      macsec                  macsec information");
         hl.add("3 .        <name>                name of interface");
+        hl.add("2 3      pppoe                   pppoe information");
+        hl.add("3 .        <name>                name of interface");
         hl.add("2 .      parser                  parser information");
         hl.add("2 .      scheduler               scheduler information");
         hl.add("2 .      script                  script information");

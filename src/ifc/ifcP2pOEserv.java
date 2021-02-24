@@ -6,6 +6,7 @@ import cfg.cfgIfc;
 import pack.packHolder;
 import pack.packPppOE;
 import tab.tabGen;
+import user.userFormat;
 import util.bits;
 import util.counter;
 import util.debugger;
@@ -69,6 +70,20 @@ public class ifcP2pOEserv implements ifcUp {
             a += " delay " + serviceDly;
         }
         return clnIfc.name + a;
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShow() {
+        userFormat l = new userFormat("|", "mac|sess");
+        for (int i = 0; i < clnts.size(); i++) {
+            ifcP2pOEservSess ntry = clnts.get(i);
+            l.add(ntry.mac + "|" + ntry.sessid);
+        }
+        return l;
     }
 
     public counter getCounter() {
