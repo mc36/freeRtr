@@ -146,6 +146,9 @@ public class clntSlaac implements Runnable, ipPrt {
             if (debugger.clntSlaacTraf) {
                 logger.debug("sending solicit");
             }
+            if (cfger.addr6 == null) {
+                return false;
+            }
             pck.clear();
             ((ipIcmp6) lower.icmpCore).createRouterSol(mac, pck, cfger.addr6);
             iface.lower.sendProto(pck, pck.IPtrg);
