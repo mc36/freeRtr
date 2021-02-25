@@ -1959,6 +1959,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void errorReport(counter.reasons err, ipFwdIface iface, packHolder pck) {
         errorRcvd++;
+        int oldSiz = pck.UDPsiz;
+        int oldPrt = pck.IPprt;
         addrIP rtr = pck.IPsrc.copyBytes();
         if (ipCore.parseIPheader(pck, false)) {
             iface.cntr.drop(pck, counter.reasons.badHdr);
@@ -1973,9 +1975,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             natT.reverse.lastUsed = tim;
             natT.updateError(pck);
             natCfg.packUpdate(pck);
-            if (icmpCore.createError(pck, err, rtr, false)) {
-                return;
-            }
+            pck.IPprt = oldPrt;
+            pck.IPsrc.setAddr(rtr);
+            pck.IPtrg.setAddr(natT.newTrgAddr);
+            pck.putDefaults();
+            pck.putStart();
+            pck.getSkip(-oldSiz);
+            icmpCore.updateICMPheader(pck);
             ipCore.createIPheader(pck);
             pck.INTupper = -1;
             ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);

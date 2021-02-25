@@ -132,6 +132,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
     public static void parseICMPports(packHolder pck) {
         pck.ICMPtc = pck.msbGetW(0); // type:8 code:8
         pck.UDPsrc = pck.msbGetD(4); // id:16 seq:16
+        pck.UDPsiz = size;
     }
 
     /**
