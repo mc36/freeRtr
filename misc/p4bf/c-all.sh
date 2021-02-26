@@ -5,6 +5,7 @@
 #rm -rf $SDE/p4studio_build/p4studio_logs
 #rm -rf $SDE/p4studio_build/third_party
 #rm -rf $SDE/packages
+#rm -f `find $SDE -name *.a`
 #
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-bf2556x-1t.git
@@ -18,10 +19,10 @@
 #
 #fdisk /dev/sdb / p
 #fsck -f /dev/sdb1
-#resize2fs /dev/sdb1 2097152
+#resize2fs /dev/sdb1 1572864
 #fsck -f /dev/sdb1
-#fdisk /dev/sdb / p d n p 1 2048 16779264 n w
-#qemu-img resize --shrink p4bf.img 8390144K
+#fdisk /dev/sdb / p d n p 1 2048 12587008 n w
+#qemu-img resize --shrink p4bf.img 6294528K
 #
 cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.4.0
