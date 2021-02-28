@@ -79,15 +79,19 @@ ig_md.nexthop_id:
             tbl_vlan_out.apply();
         } else {
             tbl_nexthop.apply();
+#ifdef HAVE_MPLS
             if (hdr.mpls0.isValid()) {
                 if (hdr.mpls0.ttl < 2) act_set_drop();
+            } else {
+#endif
+                if (hdr.ipv4.isValid()) {
+                    if (hdr.ipv4.ttl < 2) act_set_drop();
+                } else if (hdr.ipv6.isValid()) {
+                    if (hdr.ipv6.hop_limit < 2) act_set_drop();
+                }
+#ifdef HAVE_MPLS
             }
-            if (hdr.ipv4.isValid()) {
-                if (hdr.ipv4.ttl < 2) act_set_drop();
-            }
-            if (hdr.ipv6.isValid()) {
-                if (hdr.ipv6.hop_limit < 2) act_set_drop();
-            }
+#endif
         }
 
     }
