@@ -95,6 +95,10 @@ ig_md.nexthop_id:
 
         tbl_nexthop.apply();
 
+        if (hdr.mpls0.isValid()) {
+            if (hdr.mpls0.ttl < 2) act_set_drop();
+            hdr.mpls0.ttl = hdr.mpls0.ttl -1;
+        }
         if (hdr.ipv4.isValid()) {
             if (hdr.ipv4.ttl < 2) act_set_drop();
             hdr.ipv4.ttl = hdr.ipv4.ttl -1;
