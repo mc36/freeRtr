@@ -230,6 +230,7 @@ hdr.mpls1.label:
 
     apply {
         if (ig_md.mpls0_valid == 1) {
+            hdr.mpls0.ttl = hdr.mpls0.ttl - 1;
             tbl_mpls_fib.apply();
             if ((ig_md.mpls_op_type == 1) && (ig_md.mpls1_valid == 1)) {
                 tbl_mpls_fib_decap.apply();

@@ -32,6 +32,7 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 
     action act_ipv4_set_nexthop(NextHopId_t nexthop_id) {
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         ig_md.nexthop_id = nexthop_id;
     }
 
@@ -39,6 +40,7 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
     action act_ipv4_mpls2_encap_set_nexthop(label_t vpn_label,
                                             label_t egress_label,
                                             NextHopId_t nexthop_id) {
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
         ig_md.mpls_encap_egress_label = egress_label;
@@ -51,6 +53,7 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_MPLS
     action act_ipv4_mpls1_encap_set_nexthop(label_t egress_label,
                                             NextHopId_t nexthop_id) {
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         ig_md.mpls0_remove = 0;
         ig_md.mpls_encap_egress_label = egress_label;
         ig_md.mpls_encap_rawip_valid = 1;
@@ -60,6 +63,7 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_SRV6
     action act_ipv4_srv_encap_set_nexthop(ipv6_addr_t target, NextHopId_t nexthop_id) {
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         ig_md.srv_target = target;
         ig_md.srv_encap_l3vpn_valid = 1;
         ig_md.nexthop_id = nexthop_id;
