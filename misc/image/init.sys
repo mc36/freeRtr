@@ -8,7 +8,7 @@ mount -t proc -o nodev,noexec,nosuid none /proc
 mount -t devtmpfs devtmpfs /dev
 mkdir /dev/net
 mkdir /dev/pts
-mount -t devpts -o nodev,noexec,nosuid none /dev/pts
+mount -t devpts devpts /dev/pts
 mknod /dev/net/tun c 10 200
 mknod /dev/pts/ptmx c 5 2
 mknod /dev/ptmx c 5 2
