@@ -772,6 +772,10 @@ public class userExec {
         hl.add("3 .        <name>                name of interface");
         hl.add("2 3,.    version                 version information");
         hl.add("3 .        number                just numbers");
+        hl.add("3 .        date-email            just date");
+        hl.add("3 .        date-machine          just date");
+        hl.add("3 .        user-agent            just user agent");
+        hl.add("3 .        url                   just url");
         hl.add("2 .      alias                   defined alieses");
         hl.add("2 .      platform                platform information");
         hl.add("2 3      me-the                  show something");

@@ -128,6 +128,22 @@ public class userShow {
         }
         if (a.equals("version")) {
             a = cmd.word();
+            if (a.equals("date-email")) {
+                rdr.putStrArr(version.shLogo(0x800));
+                return null;
+            }
+            if (a.equals("date-machine")) {
+                rdr.putStrArr(version.shLogo(0x400));
+                return null;
+            }
+            if (a.equals("user-agent")) {
+                rdr.putStrArr(version.shLogo(0x1000));
+                return null;
+            }
+            if (a.equals("url")) {
+                rdr.putStrArr(version.shLogo(0x2000));
+                return null;
+            }
             if (a.equals("number")) {
                 rdr.putStrArr(version.shLogo(0x200));
                 return null;

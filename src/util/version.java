@@ -2,6 +2,7 @@ package util;
 
 import cfg.cfgAll;
 import cfg.cfgInit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -155,6 +156,18 @@ public class version {
         if ((head & 0x200) != 0) {
             sa.add(verNum);
         }
+        if ((head & 0x400) != 0) {
+            sa.add(bits.time2str(cfgAll.timeZoneName, getFileDate(), 3));
+        }
+        if ((head & 0x800) != 0) {
+            sa.add(bits.time2str(cfgAll.timeZoneName, version.getFileDate(), 4));
+        }
+        if ((head & 0x1000) != 0) {
+            sa.add(usrAgnt);
+        }
+        if ((head & 0x2000) != 0) {
+            sa.add(verCore.homeUrl);
+        }
         return sa;
     }
 
@@ -251,6 +264,15 @@ public class version {
         } catch (Exception e) {
             return "?";
         }
+    }
+
+    /**
+     * get archive date
+     *
+     * @return date of jar
+     */
+    public static long getFileDate() {
+        return new File(version.getFileName()).lastModified();
     }
 
     /**
