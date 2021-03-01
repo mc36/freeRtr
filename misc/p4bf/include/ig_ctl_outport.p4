@@ -82,12 +82,15 @@ ig_md.nexthop_id:
 #ifdef HAVE_MPLS
             if (hdr.mpls0.isValid()) {
                 if (hdr.mpls0.ttl < 2) act_set_drop();
+                hdr.mpls0.ttl = hdr.mpls0.ttl - 1;
             } else {
 #endif
                 if (hdr.ipv4.isValid()) {
                     if (hdr.ipv4.ttl < 2) act_set_drop();
+                    hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
                 } else if (hdr.ipv6.isValid()) {
                     if (hdr.ipv6.hop_limit < 2) act_set_drop();
+                    hdr.ipv6.hop_limit = hdr.ipv6.hop_limit - 1;
                 }
 #ifdef HAVE_MPLS
             }
