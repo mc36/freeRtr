@@ -63,7 +63,6 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_SRV6
     action act_ipv4_srv_encap_set_nexthop(ipv6_addr_t target, NextHopId_t nexthop_id) {
-        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         ig_md.srv_target = target;
         ig_md.srv_encap_l3vpn_valid = 1;
         ig_md.nexthop_id = nexthop_id;

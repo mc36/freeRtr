@@ -65,7 +65,6 @@ control IngressControlIPv6(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_SRV6
     action act_ipv6_srv_encap_set_nexthop(ipv6_addr_t target, NextHopId_t nexthop_id) {
-        hdr.ipv6.hop_limit = hdr.ipv6.hop_limit - 1;
         ig_md.srv_target = target;
         ig_md.srv_encap_l3vpn_valid = 1;
         ig_md.nexthop_id = nexthop_id;
