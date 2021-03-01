@@ -27,7 +27,7 @@
 cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.4.0
 export SDE_INSTALL=$SDE/install
-#$SDE/install/bin/bf-p4c bf_router.p4
+#$SDE/install/bin/bf-p4c -I. $@ bf_router.p4
 sudo -E $SDE/tools/p4_build.sh -I. $@ ./bf_router.p4
 cd $SDE/logs/p4-build/bf_router
 sudo csplit make.log /p4c/ /p4c/

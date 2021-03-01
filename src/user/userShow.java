@@ -308,8 +308,8 @@ public class userShow {
                 rdr.putStrArr(l);
                 return null;
             }
-            l.add("clock: " + bits.time2str(cfgAll.timeZoneName, tim, 3));
-            l.add("clock: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
+            l.add("machine: " + bits.time2str(cfgAll.timeZoneName, tim, 3));
+            l.add("email: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
             l.add("zone: " + cfgAll.timeZoneName + " diff: " + bits.timeDump(cfgAll.timeServerOffset / 1000));
             rdr.putStrArr(l);
             return null;
