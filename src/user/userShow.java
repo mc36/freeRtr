@@ -2647,6 +2647,9 @@ public class userShow {
     private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
+            if (prf1 == null) {
+                continue;
+            }
             if (flt != null) {
                 if (flt.matches(rtrBgpUtil.sfiUnicast, 0, prf1)) {
                     continue;
