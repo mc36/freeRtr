@@ -79,6 +79,9 @@ public class clntIrc implements Runnable {
             return;
         }
         byte[] buf = str2lin("PRIVMSG " + chanName + " :" + s);
+        if (pipe == null) {
+            return;
+        }
         pipe.nonBlockPut(buf, 0, buf.length);
     }
 

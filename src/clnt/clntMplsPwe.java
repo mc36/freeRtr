@@ -366,6 +366,9 @@ public class clntMplsPwe implements Runnable, ifcDn {
             pweL.vccv = 0;
         }
         pweL.desc = descr;
+        if (neighL == null) {
+            return;
+        }
         neighL.pweNeed2adv.put(pweL);
         for (;;) {
             if (!working) {
