@@ -199,9 +199,18 @@ public class ifcLldp implements ifcUp {
                     if (tlv.valSiz < 1) {
                         continue;
                     }
-                    byte[] buf = new byte[tlv.valSiz - 1];
-                    bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
-                    nei.portId = new String(buf);
+                    switch (tlv.valDat[0]) {
+                        case 3: // mac
+                            addrMac mac = new addrMac();
+                            mac.fromBuf(tlv.valDat, 1);
+                            nei.portId = "" + mac;
+                            break;
+                        case 5: // str
+                            byte[] buf = new byte[tlv.valSiz - 1];
+                            bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
+                            nei.portId = new String(buf);
+                            break;
+                    }
                     break;
                 case ttypTime:
                     nei.ttl = bits.msbGetW(tlv.valDat, 0) * 1000;
