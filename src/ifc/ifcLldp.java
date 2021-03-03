@@ -210,6 +210,9 @@ public class ifcLldp implements ifcUp {
                             bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
                             nei.portId = new String(buf);
                             break;
+                        default:
+                            nei.portId = "unknown:" + tlv.dump();
+                            break;
                     }
                     break;
                 case ttypTime:
