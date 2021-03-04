@@ -239,7 +239,7 @@ public class clntSmtp implements Runnable {
         l.add("");
         l.add("this message was automatically generated at");
         l.add(cfgAll.getFqdn() + " because the attached mail was not");
-        l.add("delivered to the recipients. sorry for it!");
+        l.add("delivered to the recipient. sorry for it!");
         l.add("");
         l.add("all i know is that " + of + " wanted to send to " + ot + ".");
         l.add("this is what happened afterwards:");
