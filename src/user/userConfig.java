@@ -568,7 +568,7 @@ public class userConfig {
         l.add(".3 .      transmit                   only generate, not check");
         l.add(".3 .      none                       not generate nor check");
         l.add(".2  3    tcp-segments                set tcp segment size");
-        l.add("3  .      <num>                      bytes");
+        l.add(".3  .      <num>                      bytes");
         l.add("2  3    access-subnet-ipv4           access subnet length");
         l.add("3  .      <num>                      bits");
         l.add("2  3    access-subnet-ipv6           access subnet length");
