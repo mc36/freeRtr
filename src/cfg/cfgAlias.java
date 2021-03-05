@@ -4,6 +4,7 @@ import auth.authLocal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import user.userExec;
 import user.userFilter;
 import user.userHelping;
 import util.cmds;
@@ -70,7 +71,15 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         /**
          * test alias
          */
-        test
+        test,
+        /**
+         * packet alias
+         */
+        pckt,
+        /**
+         * flash alias
+         */
+        flsh,
 
     }
 
@@ -110,6 +119,10 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
                 return "clear";
             case test:
                 return "test";
+            case pckt:
+                return "packet";
+            case flsh:
+                return "flash";
             default:
                 return "unknown=" + i;
         }
@@ -133,6 +146,12 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         if (s.equals("test")) {
             return aliasType.test;
+        }
+        if (s.equals("packet")) {
+            return aliasType.pckt;
+        }
+        if (s.equals("flash")) {
+            return aliasType.flsh;
         }
         return aliasType.exec;
     }
@@ -277,6 +296,25 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         s = "" + (lev + 1);
         l.add(s + " " + s + ",. <text>   parameter");
+    }
+
+    /**
+     * execute commands
+     *
+     * @param exe environment
+     * @param par parameters
+     */
+    public void doCommands(userExec exe, cmds par) {
+        cmds orig = par.copyBytes(false);
+        String a = getCommand(orig);
+        a = exe.repairCommand(a);
+        exe.executeCommand(a);
+        a = getCmd2nd(orig);
+        if (a == null) {
+            return;
+        }
+        a = exe.repairCommand(a);
+        exe.executeCommand(a);
     }
 
     /**

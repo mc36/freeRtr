@@ -1,11 +1,21 @@
 package user;
 
+import cfg.cfgAlias;
 import cfg.cfgAll;
+import cfg.cfgInit;
 import clnt.clntFtp;
 import clnt.clntHttp;
 import clnt.clntSmtp;
 import clnt.clntTftp;
 import clnt.clntXmodem;
+import cry.cryHashGeneric;
+import cry.cryHashMd5;
+import cry.cryHashSha1;
+import cry.cryHashSha2256;
+import cry.cryHashSha2512;
+import cry.cryHashSha3256;
+import cry.cryHashSha3512;
+import cry.cryUtils;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -14,6 +24,7 @@ import java.util.List;
 import pipe.pipeSide;
 import tab.tabGen;
 import util.bits;
+import util.cmds;
 import util.uniResLoc;
 
 /**
@@ -23,7 +34,185 @@ import util.uniResLoc;
  */
 public class userFlash {
 
-    private userFlash() {
+    /**
+     * command to use
+     */
+    public cmds cmd;
+
+    /**
+     * pipeline to use
+     */
+    public pipeSide pip;
+
+    /**
+     * reader of user
+     */
+    public userReader rdr;
+
+    private String calcFileHash(cryHashGeneric h, String n) {
+        File f = new File(n);
+        h.init();
+        if (cryUtils.hashFile(h, f)) {
+            return null;
+        }
+        return cryUtils.hash2hex(h);
+    }
+
+    /**
+     * do the work
+     *
+     * @return command to execute, null if nothing
+     */
+    public cfgAlias doer() {
+        String a = cmd.word();
+        cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.flsh, false);
+        if (alias != null) {
+            return alias;
+        }
+        if (a.equals("editor")) {
+            a = cmd.getRemaining();
+            List<String> b = bits.txt2buf(a);
+            if (b == null) {
+                b = new ArrayList<String>();
+            }
+            userEditor e = new userEditor(new userScreen(pip), b, a, false);
+            if (e.doEdit()) {
+                return null;
+            }
+            bits.buf2txt(true, b, a);
+            return null;
+        }
+        if (a.equals("viewer")) {
+            a = cmd.getRemaining();
+            List<String> b = bits.txt2buf(a);
+            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("commander")) {
+            userFilman f = new userFilman(new userScreen(pip));
+            f.doWork();
+            return null;
+        }
+        if (a.equals("browser")) {
+            userBrowser f = new userBrowser(new userScreen(pip), cmd.getRemaining());
+            f.doWork();
+            return null;
+        }
+        if (a.equals("binviewer")) {
+            a = cmd.getRemaining();
+            List<String> b = userFlash.binRead(a);
+            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("receive")) {
+            a = cmd.word();
+            userFlash.doReceive(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            return null;
+        }
+        if (a.equals("transmit")) {
+            a = cmd.word();
+            userFlash.doSend(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            return null;
+        }
+        if (a.equals("hash")) {
+            a = cmd.getRemaining();
+            cmd.error("file=" + a);
+            cmd.error("md5=" + calcFileHash(new cryHashMd5(), a));
+            cmd.error("sha1=" + calcFileHash(new cryHashSha1(), a));
+            cmd.error("sha2256=" + calcFileHash(new cryHashSha2256(), a));
+            cmd.error("sha2512=" + calcFileHash(new cryHashSha2512(), a));
+            cmd.error("sha3256=" + calcFileHash(new cryHashSha3256(), a));
+            cmd.error("sha3512=" + calcFileHash(new cryHashSha3512(), a));
+            return null;
+        }
+        if (a.equals("disk")) {
+            a = cmd.getRemaining();
+            File f = new File(a);
+            userFormat l = new userFormat("|", "category|value");
+            try {
+                l.add("path|" + f.getCanonicalPath());
+                l.add("free|" + f.getFreeSpace());
+                l.add("total|" + f.getTotalSpace());
+                l.add("usable|" + f.getUsableSpace());
+            } catch (Exception e) {
+            }
+            rdr.putStrTab(l);
+            return null;
+        }
+        if (a.equals("info")) {
+            a = cmd.getRemaining();
+            File f = new File(a);
+            userFormat l = new userFormat("|", "category|value");
+            try {
+                l.add("file|" + f.getCanonicalPath());
+                l.add("size|" + f.length());
+                l.add("modify|" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3));
+            } catch (Exception e) {
+            }
+            rdr.putStrTab(l);
+            return null;
+        }
+        if (a.equals("upgrade")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doUpgrade();
+            return null;
+        }
+        if (a.equals("simulate")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doSimulate();
+            return null;
+        }
+        if (a.equals("backup")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doBackup();
+            return null;
+        }
+        if (a.equals("revert")) {
+            if (userUpgrade.doRevert()) {
+                return null;
+            }
+            cfgInit.stopRouter(true, 12, "revert finished");
+            return null;
+        }
+        if (a.equals("verify")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doVerify(null);
+            return null;
+        }
+        if (a.equals("type")) {
+            rdr.putStrArr(bits.txt2buf(cmd.getRemaining()));
+            return null;
+        }
+        if (a.equals("bintype")) {
+            rdr.putStrArr(userFlash.binRead(cmd.getRemaining()));
+            return null;
+        }
+        if (a.equals("copy")) {
+            String s = cmd.word();
+            cmd.error(userExec.doneFail(userFlash.copy(s, cmd.word(), false)));
+            return null;
+        }
+        if (a.equals("rename")) {
+            String s = cmd.word();
+            cmd.error(userExec.doneFail(userFlash.rename(s, cmd.word(), false, false)));
+            return null;
+        }
+        if (a.equals("delete")) {
+            cmd.error(userExec.doneFail(userFlash.delete(cmd.getRemaining())));
+            return null;
+        }
+        if (a.equals("mkdir")) {
+            cmd.error(userExec.doneFail(userFlash.mkdir(cmd.word())));
+            return null;
+        }
+        if (a.equals("list")) {
+            rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(cmd.getRemaining())));
+            return null;
+        }
+        cmd.badCmd();
+        return null;
     }
 
     /**

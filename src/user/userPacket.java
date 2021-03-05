@@ -6,6 +6,7 @@ import addr.addrIPv6;
 import addr.addrPrefix;
 import auth.authGeneric;
 import auth.authResult;
+import cfg.cfgAlias;
 import cfg.cfgAll;
 import cfg.cfgAuther;
 import cfg.cfgIfc;
@@ -191,9 +192,15 @@ public class userPacket {
 
     /**
      * do the work
+     *
+     * @return command to execute, null if nothing
      */
-    public void doer() {
+    public cfgAlias doer() {
         String a = cmd.word();
+        cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.pckt, false);
+        if (alias != null) {
+            return alias;
+        }
         if (a.equals("mrt2pcap")) {
             RandomAccessFile fs;
             RandomAccessFile ft;
@@ -208,7 +215,7 @@ public class userPacket {
                 byte[] buf = packHolder.getPcapHeader(1);
                 ft.write(buf, 0, buf.length);
             } catch (Exception e) {
-                return;
+                return null;
             }
             packHolder pck = new packHolder(true, true);
             cmd.error("converting");
@@ -253,29 +260,29 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error(pk + " packets converted");
-            return;
+            return null;
         }
         if (a.equals("mrtfilter")) {
             tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
             if (rt == null) {
                 cmd.error("invalid routing protocol");
-                return;
+                return null;
             }
             cfgRtr rp = cfgAll.rtrFind(rt, bits.str2num(cmd.word()), false);
             if (rp == null) {
                 cmd.error("bad process number");
-                return;
+                return null;
             }
             if (rp.bgp == null) {
                 cmd.error("not a bgp process");
-                return;
+                return null;
             }
             addrIP adr = new addrIP();
             adr.fromString(cmd.word());
             rtrBgpNeigh nei = rp.bgp.findPeer(adr);
             if (nei == null) {
                 cmd.error("no such peer");
-                return;
+                return null;
             }
             RandomAccessFile fs;
             RandomAccessFile ft;
@@ -287,7 +294,7 @@ public class userPacket {
                 cmd.error("opening target " + a);
                 ft = new RandomAccessFile(new File(a), "rw");
             } catch (Exception e) {
-                return;
+                return null;
             }
             addrIP sip = new addrIP();
             sip.fromString(cmd.word());
@@ -304,7 +311,7 @@ public class userPacket {
                 try {
                     fp = fs.getFilePointer();
                 } catch (Exception e) {
-                    return;
+                    return null;
                 }
                 int i = readMrt(pck, fs);
                 if (i == 1) {
@@ -351,7 +358,7 @@ public class userPacket {
                     fs.read(buf);
                     ft.write(buf);
                 } catch (Exception e) {
-                    return;
+                    return null;
                 }
             }
             try {
@@ -360,29 +367,29 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error("sent " + snt + " of " + tot + " updates, " + mat + " accepted");
-            return;
+            return null;
         }
         if (a.equals("mrt2self")) {
             tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
             if (rt == null) {
                 cmd.error("invalid routing protocol");
-                return;
+                return null;
             }
             cfgRtr rp = cfgAll.rtrFind(rt, bits.str2num(cmd.word()), false);
             if (rp == null) {
                 cmd.error("bad process number");
-                return;
+                return null;
             }
             if (rp.bgp == null) {
                 cmd.error("not a bgp process");
-                return;
+                return null;
             }
             addrIP adr = new addrIP();
             adr.fromString(cmd.word());
             rtrBgpNeigh nei = rp.bgp.findPeer(adr);
             if (nei == null) {
                 cmd.error("no such peer");
-                return;
+                return null;
             }
             RandomAccessFile fs;
             try {
@@ -390,7 +397,7 @@ public class userPacket {
                 cmd.error("opening " + a);
                 fs = new RandomAccessFile(new File(a), "r");
             } catch (Exception e) {
-                return;
+                return null;
             }
             addrIP sip = new addrIP();
             sip.fromString(cmd.word());
@@ -439,20 +446,20 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error("sent " + snt + " of " + tot + " updates");
-            return;
+            return null;
         }
         if (a.equals("mrtplay")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
-                return;
+                return null;
             }
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
-                return;
+                return null;
             }
             addrIP trg = new addrIP();
             if (trg.fromString(cmd.word())) {
-                return;
+                return null;
             }
             int las = bits.str2num(cmd.word());
             RandomAccessFile fs;
@@ -461,7 +468,7 @@ public class userPacket {
                 cmd.error("opening " + a);
                 fs = new RandomAccessFile(new File(a), "r");
             } catch (Exception e) {
-                return;
+                return null;
             }
             addrIP sip = new addrIP();
             sip.fromString(cmd.word());
@@ -492,7 +499,7 @@ public class userPacket {
             }
             if (strm == null) {
                 cmd.error("failed");
-                return;
+                return null;
             }
             cmd.error("sending safi=" + rtrBgpUtil.safi2string(safi) + " as=" + las + " open");
             rtrBgpNeigh nei = new rtrBgpNeigh(null);
@@ -573,26 +580,26 @@ public class userPacket {
             }
             strm.setClose();
             cmd.error("finished");
-            return;
+            return null;
         }
         if (a.equals("bgpattr")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
-                return;
+                return null;
             }
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
-                return;
+                return null;
             }
             addrIP trg = new addrIP();
             if (trg.fromString(cmd.word())) {
-                return;
+                return null;
             }
             int las = bits.str2num(cmd.word());
             addrPrefix<addrIP> prf = addrPrefix.str2ip(cmd.word());
             cfgRoump rmp = cfgAll.rtmpFind(cmd.word(), false);
             if (rmp == null) {
-                return;
+                return null;
             }
             List<Integer> attr = new ArrayList<Integer>();
             for (;;) {
@@ -617,7 +624,7 @@ public class userPacket {
             }
             if (strm == null) {
                 cmd.error("failed");
-                return;
+                return null;
             }
             cmd.error("sending open");
             rtrBgpNeigh nei = new rtrBgpNeigh(null);
@@ -686,26 +693,26 @@ public class userPacket {
             }
             strm.setClose();
             cmd.error("finished");
-            return;
+            return null;
         }
         if (a.equals("bgpgen")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
-                return;
+                return null;
             }
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
-                return;
+                return null;
             }
             addrIP trg = new addrIP();
             if (trg.fromString(cmd.word())) {
-                return;
+                return null;
             }
             int las = bits.str2num(cmd.word());
             addrPrefix<addrIP> prf = addrPrefix.str2ip(cmd.word());
             cfgRoump rmp = cfgAll.rtmpFind(cmd.word(), false);
             if (rmp == null) {
-                return;
+                return null;
             }
             int num = bits.str2num(cmd.word());
             pipeSide strm = null;
@@ -723,7 +730,7 @@ public class userPacket {
             }
             if (strm == null) {
                 cmd.error("failed");
-                return;
+                return null;
             }
             cmd.error("sending open");
             rtrBgpNeigh nei = new rtrBgpNeigh(null);
@@ -811,13 +818,13 @@ public class userPacket {
             }
             strm.setClose();
             cmd.error("finished");
-            return;
+            return null;
         }
         if (a.equals("flood")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
                 cmd.error("no such vrf");
-                return;
+                return null;
             }
             a = cmd.word();
             packHolder pck = new packHolder(true, true);
@@ -847,7 +854,7 @@ public class userPacket {
             ipFwd fwd = vrf.getFwd(pck.IPtrg);
             ipFwdIface ifc = ipFwdTab.findSendingIface(vrf.getFwd(pck.IPtrg), pck.IPtrg);
             if (ifc == null) {
-                return;
+                return null;
             }
             cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg);
             for (;;) {
@@ -857,14 +864,14 @@ public class userPacket {
                 }
                 fwd.protoPack(ifc, null, pck.copyBytes(true, true));
             }
-            return;
+            return null;
         }
         if (a.equals("message")) {
             clntVoice sv = new clntVoice();
             sv.called = cmd.word();
             sv.calling = cmd.word();
             cmd.error("result = " + sv.sendMessage(bits.str2lst(cmd.getRemaining())));
-            return;
+            return null;
         }
         if (a.equals("conference")) {
             clntVconf sv = new clntVconf();
@@ -885,13 +892,13 @@ public class userPacket {
             pipeSide usr = sv.getPipe();
             if (bg) {
                 usr.setClose();
-                return;
+                return null;
             }
             sv.prompt = true;
             pipeTerm trm = new pipeTerm(pip, usr);
             trm.doTerm();
             usr.setClose();
-            return;
+            return null;
         }
         if (a.equals("voice")) {
             clntVoice sv = new clntVoice();
@@ -903,7 +910,7 @@ public class userPacket {
             if (sv.callStart()) {
                 sv.callStop();
                 cmd.error("failed to place call");
-                return;
+                return null;
             }
             pipeSide usr = sv.getPipe();
             List<String> l = bits.txt2buf(cmd.word());
@@ -923,7 +930,7 @@ public class userPacket {
                 usr.setClose();
             }
             sv.callStop();
-            return;
+            return null;
         }
         if (a.equals("modem")) {
             clntModem sm = new clntModem();
@@ -935,33 +942,33 @@ public class userPacket {
             if (sm.callStart()) {
                 sm.callStop();
                 cmd.error("failed to place call");
-                return;
+                return null;
             }
             pipeTerm trm = new pipeTerm(pip, sm.getPipe());
             trm.doTerm();
             sm.callStop();
-            return;
+            return null;
         }
         if (a.equals("capture")) {
             a = cmd.word();
             cfgIfc ifc = cfgAll.ifcFind(a, false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             a += ".pcap";
             if (cmd.size() > 0) {
                 a = cmd.word();
             }
             cmd.error("capturing=" + !ifc.ethtyp.initLog(a));
-            return;
+            return null;
         }
         if (a.equals("monitor")) {
             a = cmd.word();
             cfgIfc ifc = cfgAll.ifcFind(a, false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             ifcEthTyp old = ifc.ethtyp.monSes;
             a = cmd.word();
@@ -969,7 +976,7 @@ public class userPacket {
                 cfgIfc trg = cfgAll.ifcFind(a, false);
                 if (trg == null) {
                     cmd.error("no such interface");
-                    return;
+                    return null;
                 }
                 ifc.ethtyp.monSes = trg.ethtyp;
             }
@@ -984,14 +991,14 @@ public class userPacket {
                 cmd.error(bits.padBeg(bits.toUser(cntr.packRx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteRx * 8), 12, " ") + bits.padBeg(bits.toUser(cntr.packTx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteTx * 8), 12, " "));
             }
             ifc.ethtyp.monSes = old;
-            return;
+            return null;
         }
         if (a.equals("buffer")) {
             a = cmd.word();
             cfgIfc ifc = cfgAll.ifcFind(a, false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             a += ".pcap";
             if (cmd.size() > 0) {
@@ -1000,7 +1007,7 @@ public class userPacket {
             byte[] buf = ifc.ethtyp.monBufD;
             if (buf == null) {
                 cmd.error("no buffer");
-                return;
+                return null;
             }
             cmd.error("saving " + buf.length + " bytes");
             int pos = ifc.ethtyp.monBufP;
@@ -1014,54 +1021,54 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error("issue pcapfix -d " + a);
-            return;
+            return null;
         }
         if (a.equals("wakeup")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             packWol pckWol = new packWol();
             packHolder pckBin = new packHolder(true, true);
             if (pckWol.addr.fromString(cmd.word())) {
                 cmd.error("bad address");
-                return;
+                return null;
             }
             pckWol.createPayload(pckBin);
             pckBin.merge2beg();
             cmd.error("tx: " + pckBin.dump());
             ifc.ethtyp.doTxPack(pckBin);
-            return;
+            return null;
         }
         if (a.equals("inject")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             packHolder pck = new packHolder(true, true);
             if (pck.convertFromK12("|0   |" + cmd.getRemaining())) {
                 cmd.error("error in packet");
-                return;
+                return null;
             }
             if (ifc.ifaceNeedArp()) {
                 ifcEther.parseETHheader(pck, false);
             }
             cmd.error("tx: " + pck.dump());
             ifc.ethtyp.doTxPack(pck);
-            return;
+            return null;
         }
         if (a.equals("random")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             packHolder pck = new packHolder(true, true);
             if (pck.convertFromK12("|0   |" + cmd.getRemaining())) {
                 cmd.error("error in packet");
-                return;
+                return null;
             }
             for (;;) {
                 cmd.pipe.strPut(".");
@@ -1077,18 +1084,18 @@ public class userPacket {
                 res.merge2end();
                 ifc.ethtyp.doTxPack(res);
             }
-            return;
+            return null;
         }
         if (a.equals("replay")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return;
+                return null;
             }
             List<String> txt = bits.txt2buf(cmd.word());
             if (txt == null) {
                 cmd.error("no such file");
-                return;
+                return null;
             }
             int ipg = bits.str2num(cmd.word());
             if (ipg < 1) {
@@ -1106,30 +1113,30 @@ public class userPacket {
                 ifc.ethtyp.doTxPack(pck);
                 bits.sleep(ipg);
             }
-            return;
+            return null;
         }
         if (a.equals("speed")) {
             rdr.keyFlush();
             clntSpeed.smllClnt(cmd);
             rdr.keyFlush();
-            return;
+            return null;
         }
         if (a.equals("websock")) {
             uniResLoc url = new uniResLoc();
             if (url.fromString(cmd.word())) {
                 cmd.error("bad url");
-                return;
+                return null;
             }
             pipeSide strm = secWebsock.doConnect(cfgAll.getClntPrx(), url, cmd.getRemaining());
             if (strm == null) {
                 cmd.error("failed to connect");
-                return;
+                return null;
             }
             secWebsock ws = new secWebsock(strm, new pipeLine(65536, false));
             ws.startClient();
             pipeTerm trm = new pipeTerm(cmd.pipe, ws.getPipe());
             trm.doTerm();
-            return;
+            return null;
         }
         if (a.equals("netconf")) {
             a = cmd.word();
@@ -1151,30 +1158,30 @@ public class userPacket {
             }
             if (s == null) {
                 cmd.error("invalid command");
-                return;
+                return null;
             }
             userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
             pipeSide conn = trm.resolvAndConn(servGeneric.protoTcp, cmd.word(), userNetconf.port, "netconf");
             if (conn == null) {
                 cmd.error("error opening connection");
-                return;
+                return null;
             }
             a = cmd.word();
             conn = trm.startSecurity(servGeneric.protoSsh, a, cmd.word());
             if (conn == null) {
                 cmd.error("error securing connection");
-                return;
+                return null;
             }
             userNetconf nc = new userNetconf(conn, false, false, false);
             if (nc.doHello()) {
                 cmd.error("error exchange hello");
-                return;
+                return null;
             }
             a = cmd.word();
             nc.doClient(cmd, s, a, cmd.word());
             nc.doClose();
             conn.setClose();
-            return;
+            return null;
         }
         if (a.equals("snmp")) {
             a = cmd.word();
@@ -1185,13 +1192,13 @@ public class userPacket {
             sn.oid = cmd.word();
             if (a.equals("get")) {
                 sn.doGet();
-                return;
+                return null;
             }
             if (a.equals("next")) {
                 sn.doNext();
-                return;
+                return null;
             }
-            return;
+            return null;
         }
         if (a.equals("pcep")) {
             clntPcep pc = new clntPcep();
@@ -1213,27 +1220,27 @@ public class userPacket {
             trg.fromString(cmd.word());
             if (pc.doConnect()) {
                 cmd.error("failed to connect");
-                return;
+                return null;
             }
             List<tabHop> res = pc.doCompute(st, src, trg, 0, 0, 0, 0, 0, 0, 2, 0);
             pc.doClose();
             if (res == null) {
                 cmd.error("failed to get path");
-                return;
+                return null;
             }
             cmd.error("path=" + tabHop.dumpList(res));
-            return;
+            return null;
         }
         if (a.equals("aaa")) {
             cfgAuther aa = cfgAll.autherFind(cmd.word(), null);
             if (aa == null) {
                 cmd.error("no such aaa");
-                return;
+                return null;
             }
             authGeneric aaa = aa.getAuther();
             if (aaa == null) {
                 cmd.error("no such aaa");
-                return;
+                return null;
             }
             cmd.pipe.strPut("user:");
             String usr = cmd.pipe.lineGet(0x32);
@@ -1247,7 +1254,7 @@ public class userPacket {
             String pwd = cmd.pipe.lineGet(i);
             authResult res = aaa.authUserPass(usr, pwd);
             rdr.putStrTab(res.dump());
-            return;
+            return null;
         }
         if (a.equals("nrpe")) {
             clntNrpe ch = new clntNrpe(cmd.pipe);
@@ -1256,7 +1263,7 @@ public class userPacket {
             boolean b = ch.doCheck();
             cmd.error("status=" + b + ", code=" + ch.code);
             rdr.putStrArr(ch.text);
-            return;
+            return null;
         }
         if (a.equals("smtp")) {
             clntSmtp sm = new clntSmtp(cmd.pipe);
@@ -1271,9 +1278,10 @@ public class userPacket {
             sm.putFinish();
             cmd.error("result=" + sm.doSend(1));
             sm.cleanUp();
-            return;
+            return null;
         }
         cmd.badCmd();
+        return null;
     }
 
 }

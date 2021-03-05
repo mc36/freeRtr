@@ -297,31 +297,8 @@ public class userConfig {
             if (alias == null) {
                 return false;
             }
-            cmds param = cmd.copyBytes(false);
             userExec e = new userExec(pipe, reader);
-            a = alias.getCommand(param);
-            a = e.repairCommand(a);
-            if (authorization != null) {
-                authResult ntry = authorization.authUserCommand(username, a);
-                if (ntry.result != authResult.authSuccessful) {
-                    pipe.linePut("% not authorized to execute that");
-                    return false;
-                }
-            }
-            e.executeCommand(a);
-            a = alias.getCmd2nd(param);
-            if (a == null) {
-                return false;
-            }
-            a = e.repairCommand(a);
-            if (authorization != null) {
-                authResult ntry = authorization.authUserCommand(username, a);
-                if (ntry.result != authResult.authSuccessful) {
-                    pipe.linePut("% not authorized to execute that");
-                    return false;
-                }
-            }
-            e.executeCommand(a);
+            alias.doCommands(e, cmd);
             return false;
         }
         if (a.equals("do")) {
@@ -610,6 +587,8 @@ public class userConfig {
         l.add("2  3    exec                         exec alias");
         l.add("2  3    show                         show alias");
         l.add("2  3    clear                        clear alias");
+        l.add("2  3    packet                       packet alias");
+        l.add("2  3    flash                        flash alias");
         l.add("2  3    test                         test alias");
         l.add("3  4      <name>                     name of new command");
         l.add("4  .        hidden                   hide the command");

@@ -24,14 +24,6 @@ import clnt.clntProxy;
 import clnt.clntTrace;
 import clnt.clntWhois;
 import cry.cryBase64;
-import cry.cryHashGeneric;
-import cry.cryHashMd5;
-import cry.cryHashSha1;
-import cry.cryHashSha2256;
-import cry.cryHashSha2512;
-import cry.cryHashSha3256;
-import cry.cryHashSha3512;
-import cry.cryUtils;
 import ifc.ifcNull;
 import ip.ipCor4;
 import ip.ipCor6;
@@ -1428,6 +1420,7 @@ public class userExec {
         hl.add("2 .      commander               file manager");
         hl.add("2 3,.    browser                 web browser");
         hl.add("3 .        <url>                 target url");
+        cfgAll.aliasHelps(cfgAlias.aliasType.flsh, 2, hl);
         hl.add("1 2,.  write                     save configuration");
         hl.add("2 3      file                    to disk file");
         hl.add("3 .        <file>                target file");
@@ -1585,6 +1578,7 @@ public class userExec {
         hl.add("6 7              sr              segment routing");
         hl.add("7 8                <str>         source address");
         hl.add("8 .                  <str>       target address");
+        cfgAll.aliasHelps(cfgAlias.aliasType.pckt, 2, hl);
         hl.add("1 2    test                      test various things");
         hl.add("2 3      acl                     access list merge, unroll");
         hl.add("3 4,.      <name>                name of first acl");
@@ -1745,16 +1739,7 @@ public class userExec {
         a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.exec, false);
         if (alias != null) {
-            cmds param = cmd.copyBytes(false);
-            a = alias.getCommand(param);
-            a = repairCommand(a);
-            executeCommand(a);
-            a = alias.getCmd2nd(param);
-            if (a == null) {
-                return cmdRes.command;
-            }
-            a = repairCommand(a);
-            executeCommand(a);
+            alias.doCommands(this, cmd);
             return cmdRes.command;
         }
         if (a.equals("exit")) {
@@ -1914,16 +1899,7 @@ public class userExec {
             if (alias == null) {
                 return cmdRes.command;
             }
-            cmds param = cmd.copyBytes(false);
-            a = alias.getCommand(param);
-            a = repairCommand(a);
-            executeCommand(a);
-            a = alias.getCmd2nd(param);
-            if (a == null) {
-                return cmdRes.command;
-            }
-            a = repairCommand(a);
-            executeCommand(a);
+            alias.doCommands(this, cmd);
             return cmdRes.command;
         }
         if (!privileged) {
@@ -1943,16 +1919,7 @@ public class userExec {
             if (alias == null) {
                 return cmdRes.command;
             }
-            cmds param = cmd.copyBytes(false);
-            a = alias.getCommand(param);
-            a = repairCommand(a);
-            executeCommand(a);
-            a = alias.getCmd2nd(param);
-            if (a == null) {
-                return cmdRes.command;
-            }
-            a = repairCommand(a);
-            executeCommand(a);
+            alias.doCommands(this, cmd);
             return cmdRes.command;
         }
         if (a.equals("debug")) {
@@ -2192,7 +2159,15 @@ public class userExec {
         }
         if (a.equals("flash")) {
             cmd = reader.setFilter(cmd);
-            doFlash();
+            userFlash t = new userFlash();
+            t.cmd = cmd;
+            t.pip = pipe;
+            t.rdr = reader;
+            alias = t.doer();
+            if (alias == null) {
+                return cmdRes.command;
+            }
+            alias.doCommands(this, cmd);
             return cmdRes.command;
         }
         if (a.equals("write")) {
@@ -2266,16 +2241,7 @@ public class userExec {
             if (alias == null) {
                 return cmdRes.command;
             }
-            cmds param = cmd.copyBytes(false);
-            a = alias.getCommand(param);
-            a = repairCommand(a);
-            executeCommand(a);
-            a = alias.getCmd2nd(param);
-            if (a == null) {
-                return cmdRes.command;
-            }
-            a = repairCommand(a);
-            executeCommand(a);
+            alias.doCommands(this, cmd);
             return cmdRes.command;
         }
         if (a.equals("packet")) {
@@ -2283,7 +2249,11 @@ public class userExec {
             t.cmd = cmd;
             t.pip = pipe;
             t.rdr = reader;
-            t.doer();
+            alias = t.doer();
+            if (alias == null) {
+                return cmdRes.command;
+            }
+            alias.doCommands(this, cmd);
             return cmdRes.command;
         }
         if (a.equals("reload")) {
@@ -3541,162 +3511,6 @@ public class userExec {
         }
         if (a.equals("spacetab")) {
             pipe.settingsPut(pipeSetting.spacTab, false);
-            return;
-        }
-        cmd.badCmd();
-    }
-
-    private String calcFileHash(cryHashGeneric h, String n) {
-        File f = new File(n);
-        h.init();
-        if (cryUtils.hashFile(h, f)) {
-            return null;
-        }
-        return cryUtils.hash2hex(h);
-    }
-
-    private void doFlash() {
-        String a = cmd.word();
-        if (a.equals("editor")) {
-            a = cmd.getRemaining();
-            List<String> b = bits.txt2buf(a);
-            if (b == null) {
-                b = new ArrayList<String>();
-            }
-            userEditor e = new userEditor(new userScreen(pipe), b, a, false);
-            if (e.doEdit()) {
-                return;
-            }
-            bits.buf2txt(true, b, a);
-            return;
-        }
-        if (a.equals("viewer")) {
-            a = cmd.getRemaining();
-            List<String> b = bits.txt2buf(a);
-            userEditor v = new userEditor(new userScreen(pipe), b, a, false);
-            v.doView();
-            return;
-        }
-        if (a.equals("commander")) {
-            userFilman f = new userFilman(new userScreen(pipe));
-            f.doWork();
-            return;
-        }
-        if (a.equals("browser")) {
-            userBrowser f = new userBrowser(new userScreen(pipe), cmd.getRemaining());
-            f.doWork();
-            return;
-        }
-        if (a.equals("binviewer")) {
-            a = cmd.getRemaining();
-            List<String> b = userFlash.binRead(a);
-            userEditor v = new userEditor(new userScreen(pipe), b, a, false);
-            v.doView();
-            return;
-        }
-        if (a.equals("receive")) {
-            a = cmd.word();
-            userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
-            return;
-        }
-        if (a.equals("transmit")) {
-            a = cmd.word();
-            userFlash.doSend(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
-            return;
-        }
-        if (a.equals("hash")) {
-            a = cmd.getRemaining();
-            cmd.error("file=" + a);
-            cmd.error("md5=" + calcFileHash(new cryHashMd5(), a));
-            cmd.error("sha1=" + calcFileHash(new cryHashSha1(), a));
-            cmd.error("sha2256=" + calcFileHash(new cryHashSha2256(), a));
-            cmd.error("sha2512=" + calcFileHash(new cryHashSha2512(), a));
-            cmd.error("sha3256=" + calcFileHash(new cryHashSha3256(), a));
-            cmd.error("sha3512=" + calcFileHash(new cryHashSha3512(), a));
-            return;
-        }
-        if (a.equals("disk")) {
-            a = cmd.getRemaining();
-            File f = new File(a);
-            userFormat l = new userFormat("|", "category|value");
-            try {
-                l.add("path|" + f.getCanonicalPath());
-                l.add("free|" + f.getFreeSpace());
-                l.add("total|" + f.getTotalSpace());
-                l.add("usable|" + f.getUsableSpace());
-            } catch (Exception e) {
-            }
-            reader.putStrTab(l);
-            return;
-        }
-        if (a.equals("info")) {
-            a = cmd.getRemaining();
-            File f = new File(a);
-            userFormat l = new userFormat("|", "category|value");
-            try {
-                l.add("file|" + f.getCanonicalPath());
-                l.add("size|" + f.length());
-                l.add("modify|" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3));
-            } catch (Exception e) {
-            }
-            reader.putStrTab(l);
-            return;
-        }
-        if (a.equals("upgrade")) {
-            userUpgrade u = new userUpgrade(cmd);
-            u.doUpgrade();
-            return;
-        }
-        if (a.equals("simulate")) {
-            userUpgrade u = new userUpgrade(cmd);
-            u.doSimulate();
-            return;
-        }
-        if (a.equals("backup")) {
-            userUpgrade u = new userUpgrade(cmd);
-            u.doBackup();
-            return;
-        }
-        if (a.equals("revert")) {
-            if (userUpgrade.doRevert()) {
-                return;
-            }
-            cfgInit.stopRouter(true, 12, "revert finished");
-            return;
-        }
-        if (a.equals("verify")) {
-            userUpgrade u = new userUpgrade(cmd);
-            u.doVerify(null);
-            return;
-        }
-        if (a.equals("type")) {
-            reader.putStrArr(bits.txt2buf(cmd.getRemaining()));
-            return;
-        }
-        if (a.equals("bintype")) {
-            reader.putStrArr(userFlash.binRead(cmd.getRemaining()));
-            return;
-        }
-        if (a.equals("copy")) {
-            String s = cmd.word();
-            cmd.error(doneFail(userFlash.copy(s, cmd.word(), false)));
-            return;
-        }
-        if (a.equals("rename")) {
-            String s = cmd.word();
-            cmd.error(doneFail(userFlash.rename(s, cmd.word(), false, false)));
-            return;
-        }
-        if (a.equals("delete")) {
-            cmd.error(doneFail(userFlash.delete(cmd.getRemaining())));
-            return;
-        }
-        if (a.equals("mkdir")) {
-            cmd.error(doneFail(userFlash.mkdir(cmd.word())));
-            return;
-        }
-        if (a.equals("list")) {
-            reader.putStrTab(userFlash.dir2txt(userFlash.dirList(cmd.getRemaining())));
             return;
         }
         cmd.badCmd();
