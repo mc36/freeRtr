@@ -3392,10 +3392,16 @@ public class userConfig {
             if (i < 1) {
                 i = 512;
             }
-            key.keyMake(i);
-            if (key.keyVerify()) {
-                cmd.error("bad key generated");
-                return;
+            for (;;) {
+                if (key.keyMake(i)) {
+                    cmd.error("error generating key");
+                    continue;
+                }
+                if (key.keyVerify()) {
+                    cmd.error("bad key generated");
+                    continue;
+                }
+                break;
             }
             key.keyName = nam;
             cfgKey<T> cfg = cfgAll.keyFind(lst, nam, true);

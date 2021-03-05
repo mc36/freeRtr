@@ -208,7 +208,8 @@ public class cryKeyDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p);
     }
 
-    public void keyMake(String nam) {
+    public boolean keyMake(String nam) {
+        return false;
     }
 
     /**
@@ -216,7 +217,7 @@ public class cryKeyDSA extends cryKeyGeneric {
      *
      * @param len length
      */
-    public void keyMake(int len) {
+    public boolean keyMake(int len) {
         priv = randomBigInt(hashBits);
         subprime = randomPrime(hashBits);
         for (;;) {
@@ -235,6 +236,7 @@ public class cryKeyDSA extends cryKeyGeneric {
             }
         }
         pub = group.modPow(priv, prime);
+        return false;
     }
 
     /**

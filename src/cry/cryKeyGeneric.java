@@ -188,15 +188,17 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      * generate new key
      *
      * @param len length of key
+     * @return true on error, false on success
      */
-    public abstract void keyMake(int len);
+    public abstract boolean keyMake(int len);
 
     /**
      * generate new key
      *
      * @param nam name of key
+     * @return true on error, false on success
      */
-    public abstract void keyMake(String nam);
+    public abstract boolean keyMake(String nam);
 
     /**
      * verify a key

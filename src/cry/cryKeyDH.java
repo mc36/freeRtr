@@ -87,10 +87,11 @@ public class cryKeyDH extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p);
     }
 
-    public void keyMake(String nam) {
+    public boolean keyMake(String nam) {
+        return false;
     }
 
-    public void keyMake(int len) {
+    public boolean keyMake(int len) {
         for (;;) {
             modulus = randomPrime(len);
             BigInteger i = modulus.shiftRight(1);
@@ -99,6 +100,7 @@ public class cryKeyDH extends cryKeyGeneric {
             }
         }
         group = new BigInteger("2", 16);
+        return false;
     }
 
     public boolean keyVerify() {

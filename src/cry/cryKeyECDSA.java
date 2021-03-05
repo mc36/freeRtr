@@ -217,14 +217,15 @@ public class cryKeyECDSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p1);
     }
 
-    public void keyMake(String nam) {
+    public boolean keyMake(String nam) {
         curve = cryECcurve.getByName(nam);
-        keyMake();
+        return keyMake();
     }
 
-    private void keyMake() {
+    private boolean keyMake() {
         priv = randomBigInt(curve.n.bitLength() - 2);
         pub = curve.g.mul(priv);
+        return false;
     }
 
     /**
@@ -232,9 +233,9 @@ public class cryKeyECDSA extends cryKeyGeneric {
      *
      * @param len length
      */
-    public void keyMake(int len) {
+    public boolean keyMake(int len) {
         curve = cryECcurve.getBySize(len);
-        keyMake();
+        return keyMake();
     }
 
     /**

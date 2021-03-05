@@ -103,12 +103,14 @@ public class cryKeyECDH extends cryKeyGeneric {
         return null;
     }
 
-    public void keyMake(int len) {
+    public boolean keyMake(int len) {
         curve = cryECcurve.getBySize(len);
+        return false;
     }
 
-    public void keyMake(String nam) {
+    public boolean keyMake(String nam) {
         curve = cryECcurve.getByName(nam);
+        return false;
     }
 
     public boolean keyVerify() {

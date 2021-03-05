@@ -201,10 +201,11 @@ public class cryKeyRSA extends cryKeyGeneric {
         cryAsn1.writeSequence(pck, p);
     }
 
-    public void keyMake(String nam) {
+    public boolean keyMake(String nam) {
+        return false;
     }
 
-    public void keyMake(int len) {
+    public boolean keyMake(int len) {
         pubExp = new BigInteger("65537", 10);
         prime1 = randomPrime(len / 2);
         prime2 = randomPrime(len / 2);
@@ -217,10 +218,19 @@ public class cryKeyRSA extends cryKeyGeneric {
         BigInteger i1 = prime1.subtract(BigInteger.ONE);
         BigInteger i2 = prime2.subtract(BigInteger.ONE);
         BigInteger i0 = i1.multiply(i2);
-        privExp = pubExp.modInverse(i0);
+        try {
+            privExp = pubExp.modInverse(i0);
+        } catch (Exception e) {
+            return true;
+        }
         expon1 = privExp.mod(i1);
         expon2 = privExp.mod(i2);
-        coeff = prime2.modInverse(prime1);
+        try {
+            coeff = prime2.modInverse(prime1);
+        } catch (Exception e) {
+            return true;
+        }
+        return false;
     }
 
     public boolean keyVerify() {
