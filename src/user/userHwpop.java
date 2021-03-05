@@ -44,6 +44,8 @@ public class userHwpop {
         String inf = null;
         String mpf = null;
         String srv = null;
+        boolean shted = true;
+        boolean lnklg = false;
         int aut = 0;
         int wht = 0;
         for (;;) {
@@ -54,6 +56,22 @@ public class userHwpop {
             s = s.toLowerCase();
             if (s.equals("uclipm")) {
                 inf = cmd.word();
+                continue;
+            }
+            if (s.equals("shut")) {
+                shted = true;
+                continue;
+            }
+            if (s.equals("noshut")) {
+                shted = false;
+                continue;
+            }
+            if (s.equals("lnklog")) {
+                lnklg = true;
+                continue;
+            }
+            if (s.equals("nolnklog")) {
+                lnklg = false;
                 continue;
             }
             if (s.equals("map")) {
@@ -235,7 +253,12 @@ public class userHwpop {
             }
             txt2.add("interface sdn" + sdn);
             txt2.add(cmds.tabulator + "description frontpanel port " + ntry.desc);
-            txt2.add(cmds.tabulator + "shutdown");
+            if (shted) {
+                txt2.add(cmds.tabulator + "shutdown");
+            }
+            if (lnklg) {
+                txt2.add(cmds.tabulator + "log-link-change");
+            }
             txt2.add(cmds.tabulator + cmds.finish);
             txt2.add(cmds.comment);
             txt.add(cmds.tabulator + "export-port sdn" + sdn + " " + ntry.port + " " + spd);
