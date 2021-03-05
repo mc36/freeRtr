@@ -1800,78 +1800,82 @@ public class cfgAll {
         if (prnt != null) {
             return prnt;
         }
-        ntry.name = cfgIfc.normName(nam, false);
+        String pnm = cfgIfc.normName(nam, false);
+        ntry.name = pnm;
         prnt = ifaces.find(ntry);
-        if (prnt == null) {
+        if (prnt != null) {
+            if (prnt.parent != null) {
+                return null;
+            }
             ntry.name = nam;
-            if (nam.startsWith("tunnel")) {
-                ntry.type = cfgIfc.ifaceType.tunnel;
-                ifaces.add(ntry);
-                ntry.clear2tunnel(false);
-                return ntry;
+            int i = bits.str2num(cfgIfc.normName(nam, true));
+            if (i < 1) {
+                return null;
             }
-            if (nam.startsWith("dialer")) {
-                ntry.type = cfgIfc.ifaceType.dialer;
-                ifaces.add(ntry);
-                ntry.initPhysical();
-                return ntry;
-            }
-            if (nam.startsWith("sdn")) {
-                ntry.type = cfgIfc.ifaceType.sdn;
-                ifaces.add(ntry);
-                ntry.initPhysical();
-                return ntry;
-            }
-            if (nam.startsWith("pwether")) {
-                ntry.type = cfgIfc.ifaceType.pweth;
-                ifaces.add(ntry);
-                ntry.initPhysical();
-                return ntry;
-            }
-            if (nam.startsWith("virtualppp")) {
-                ntry.type = cfgIfc.ifaceType.virtppp;
-                ifaces.add(ntry);
-                ntry.initPhysical();
-                return ntry;
-            }
-            if (nam.startsWith("loopback")) {
-                ntry.type = cfgIfc.ifaceType.loopback;
-                ifaces.add(ntry);
-                ntry.initLoopback();
-                return ntry;
-            }
-            if (nam.startsWith("null")) {
-                ntry.type = cfgIfc.ifaceType.nul;
-                ifaces.add(ntry);
-                ntry.initTemplate();
-                return ntry;
-            }
-            if (nam.startsWith("template")) {
-                ntry.type = cfgIfc.ifaceType.template;
-                ifaces.add(ntry);
-                ntry.initTemplate();
-                return ntry;
-            }
-            if (nam.startsWith("access")) {
-                ntry.type = cfgIfc.ifaceType.dialer;
-                ifaces.add(ntry);
-                ntry.initPhysical();
-                return ntry;
-            }
-            return null;
+            ntry.vlanNum = i;
+            ifaces.add(ntry);
+            ntry.initSubiface(prnt);
+            return ntry;
         }
-        if (prnt.parent != null) {
+        if (!nam.equals(pnm)) {
             return null;
         }
         ntry.name = nam;
-        int i = bits.str2num(cfgIfc.normName(nam, true));
-        if (i < 1) {
-            return null;
+        if (nam.startsWith("tunnel")) {
+            ntry.type = cfgIfc.ifaceType.tunnel;
+            ifaces.add(ntry);
+            ntry.clear2tunnel(false);
+            return ntry;
         }
-        ntry.vlanNum = i;
-        ifaces.add(ntry);
-        ntry.initSubiface(prnt);
-        return ntry;
+        if (nam.startsWith("dialer")) {
+            ntry.type = cfgIfc.ifaceType.dialer;
+            ifaces.add(ntry);
+            ntry.initPhysical();
+            return ntry;
+        }
+        if (nam.startsWith("sdn")) {
+            ntry.type = cfgIfc.ifaceType.sdn;
+            ifaces.add(ntry);
+            ntry.initPhysical();
+            return ntry;
+        }
+        if (nam.startsWith("pwether")) {
+            ntry.type = cfgIfc.ifaceType.pweth;
+            ifaces.add(ntry);
+            ntry.initPhysical();
+            return ntry;
+        }
+        if (nam.startsWith("virtualppp")) {
+            ntry.type = cfgIfc.ifaceType.virtppp;
+            ifaces.add(ntry);
+            ntry.initPhysical();
+            return ntry;
+        }
+        if (nam.startsWith("loopback")) {
+            ntry.type = cfgIfc.ifaceType.loopback;
+            ifaces.add(ntry);
+            ntry.initLoopback();
+            return ntry;
+        }
+        if (nam.startsWith("null")) {
+            ntry.type = cfgIfc.ifaceType.nul;
+            ifaces.add(ntry);
+            ntry.initTemplate();
+            return ntry;
+        }
+        if (nam.startsWith("template")) {
+            ntry.type = cfgIfc.ifaceType.template;
+            ifaces.add(ntry);
+            ntry.initTemplate();
+            return ntry;
+        }
+        if (nam.startsWith("access")) {
+            ntry.type = cfgIfc.ifaceType.dialer;
+            ifaces.add(ntry);
+            ntry.initPhysical();
+            return ntry;
+        }
+        return null;
     }
 
     /**
