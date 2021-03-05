@@ -130,7 +130,11 @@ public class userReader implements Comparator<String> {
         /**
          * set/delete mode
          */
-        setdel
+        setdel,
+        /**
+         * summary
+         */
+        summary
 
     }
 
@@ -302,6 +306,51 @@ public class userReader implements Comparator<String> {
         return res.formatAll(tabMod);
     }
 
+    private List<String> doSummary(List<String> lst) {
+        List<Long> sum = new ArrayList<Long>();
+        final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i).trim();
+            switch (tabMod) {
+                case raw:
+                case csv:
+                    a = a.replaceAll(";", " ").trim();
+                    break;
+                case fancy:
+                case table:
+                    a = a.replaceAll("\\|", " ").trim();
+                    break;
+            }
+            cmds cmd = new cmds("row", a);
+            for (int p = 0;; p++) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (p >= sum.size()) {
+                    sum.add((long) 0);
+                }
+                sum.set(p, sum.get(p) + bits.str2long(a));
+            }
+        }
+        userFormat res = new userFormat("|", "column|value");
+        for (int i = 0; i < sum.size(); i++) {
+            res.add("col" + i + "|" + sum.get(i));
+        }
+        return res.formatAll(tabMod);
+    }
+
+    private List<String> doSecond(List<String> lst) {
+        switch (filterF) {
+            case count:
+                return doCount(lst);
+            case summary:
+                return doSummary(lst);
+            default:
+                return lst;
+        }
+    }
+
     /**
      * filter the list
      *
@@ -323,10 +372,7 @@ public class userReader implements Comparator<String> {
                     }
                     res.add(s);
                 }
-                if (filterF == mode.count) {
-                    res = doCount(res);
-                }
-                return res;
+                return doSecond(res);
             case exclude:
                 res = new ArrayList<String>();
                 for (int i = 0; i < lst.size(); i++) {
@@ -337,20 +383,14 @@ public class userReader implements Comparator<String> {
                     }
                     res.add(s);
                 }
-                if (filterF == mode.count) {
-                    res = doCount(res);
-                }
-                return res;
+                return doSecond(res);
             case sort:
                 findColumn(lst.get(0));
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
                 Collections.sort(lst, this);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case uniq:
                 findColumn(lst.get(0));
                 if (columnB < 0) {
@@ -367,10 +407,7 @@ public class userReader implements Comparator<String> {
                     tab.add(b);
                     res.add(a);
                 }
-                if (filterF == mode.count) {
-                    res = doCount(res);
-                }
-                return res;
+                return doSecond(res);
             case redirect:
                 bits.buf2txt(true, lst, filterS);
                 return lst;
@@ -379,19 +416,13 @@ public class userReader implements Comparator<String> {
                 for (int i = lst.size() - 1; i >= num; i--) {
                     lst.remove(i);
                 }
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case last:
                 num = bits.str2num(filterS);
                 for (int i = lst.size() - num; i >= 0; i--) {
                     lst.remove(i);
                 }
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case begin:
                 num = bits.lstFnd(lst, filterS);
                 if (num < 0) {
@@ -401,10 +432,7 @@ public class userReader implements Comparator<String> {
                 for (int i = num; i >= 0; i--) {
                     lst.remove(i);
                 }
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case end:
                 num = bits.lstFnd(lst, filterS);
                 if (num < 0) {
@@ -414,62 +442,38 @@ public class userReader implements Comparator<String> {
                 for (int i = lst.size() - 1; i >= num; i--) {
                     lst.remove(i);
                 }
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case count:
                 lst = doCount(lst);
-                if (filterF == mode.count) {
-                    res = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
+            case summary:
+                lst = doSummary(lst);
+                return doSecond(lst);
             case headers:
                 lst = userFilter.getSecList(userFilter.text2section(lst), null, null);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case viewer:
                 userEditor edtr = new userEditor(new userScreen(pipe), lst, "result", false);
                 edtr.doView();
                 return new ArrayList<String>();
             case level:
                 lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.normal);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case csv:
                 lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.csv);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case html:
                 lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.html);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case linenum:
                 lst = bits.lst2lin(lst, true);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case section:
                 lst = userFilter.getSection(lst, filterS);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             case setdel:
                 lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.setdel);
-                if (filterF == mode.count) {
-                    lst = doCount(lst);
-                }
-                return lst;
+                return doSecond(lst);
             default:
                 return lst;
         }
@@ -1075,6 +1079,10 @@ public class userReader implements Comparator<String> {
                 filterM = mode.count;
                 return cmd;
             }
+            if (a.equals("summary")) {
+                filterM = mode.summary;
+                return cmd;
+            }
             if (a.equals("viewer")) {
                 filterM = mode.viewer;
                 return cmd;
@@ -1103,9 +1111,16 @@ public class userReader implements Comparator<String> {
         }
         filterS = a.substring(i, a.length()).trim();
         a = a.substring(0, i).trim();
-        if (filterS.endsWith(" | count")) {
-            filterS = filterS.substring(0, filterS.length() - 8);
-            filterF = mode.count;
+        i = filterS.lastIndexOf(" | ");
+        if (i > 0) {
+            String s = filterS.substring(i + 3, filterS.length()).trim();
+            filterS = filterS.substring(0, i);
+            if (s.equals("count")) {
+                filterF = mode.count;
+            }
+            if (s.equals("summary")) {
+                filterF = mode.summary;
+            }
         }
         if (a.equals("include")) {
             filterS = filter2reg(filterS);
