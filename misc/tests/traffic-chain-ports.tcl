@@ -1,6 +1,6 @@
 proc trafficMultiplierA { hops } {
 for {set a 1} {$a <= $hops} {incr a} {
-  set p [expr ($a*2)+7]
+  set p [expr ($a*2)+5]
   set b [expr $a+100]
   set c [expr (($a+2)/2)+100]
   set d "sdn$p"
@@ -13,12 +13,13 @@ for {set a 1} {$a <= $hops} {incr a} {
   config "$e" "vrf for big$c"
   config "$e" "ipv4 addr 253.252.$a.1 /30"
   config "$e" "$f ena"
+  config "serv p4la p4" "export-vrf big$c $c"
   }
 }
 
 proc trafficMultiplierB { hops } {
 for {set a 1} {$a <= $hops} {incr a} {
-  set p [expr ($a*2)+8]
+  set p [expr ($a*2)+6]
   set b [expr $a+100]
   set c [expr (($a+1)/2)+500]
   set d "sdn$p"
@@ -31,6 +32,7 @@ for {set a 1} {$a <= $hops} {incr a} {
   config "$e" "vrf for big$c"
   config "$e" "ipv4 addr 253.252.$a.2 /30"
   config "$e" "$f ena"
+  config "serv p4la p4" "export-vrf big$c $c"
   }
 }
 

@@ -13,6 +13,7 @@ for {set a 1} {$a <= $hops} {incr a} {
   config "$e" "ipv4 addr 253.252.$a.1 /30"
   config "$e" "$f ena"
   config "serv p4la p4" "export-port $d $c"
+  config "serv p4la p4" "export-vrf big$c $c"
   }
 }
 
@@ -31,6 +32,7 @@ for {set a 1} {$a <= $hops} {incr a} {
   config "$e" "ipv4 addr 253.252.$a.2 /30"
   config "$e" "$f ena"
   config "serv p4la p4" "export-port $d $c"
+  config "serv p4la p4" "export-vrf big$c $c"
   }
 }
 
