@@ -333,9 +333,14 @@ public class userReader implements Comparator<String> {
                 sum.set(p, sum.get(p) + bits.str2long(a));
             }
         }
-        userFormat res = new userFormat("|", "column|value");
+        userFormat res = new userFormat("|", "column|summary|average");
+        long div = lst.size() - 1;
+        if (div < 1) {
+            div = 1;
+        }
         for (int i = 0; i < sum.size(); i++) {
-            res.add("col" + i + "|" + sum.get(i));
+            long val = sum.get(i);
+            res.add("col" + i + "|" + val + "|" + (val / div));
         }
         return res.formatAll(tabMod);
     }
