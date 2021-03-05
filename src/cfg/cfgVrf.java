@@ -50,6 +50,11 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public String description = "";
 
     /**
+     * hidden vrf
+     */
+    protected boolean hidden = false;
+
+    /**
      * route distinguisher
      */
     public long rd;
@@ -595,6 +600,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
+        if (hidden) {
+            return l;
+        }
         l.add("vrf definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         l.add(cmds.tabulator + "rd " + tabRtrmapN.rd2string(rd));
@@ -670,6 +678,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
      */
     public synchronized List<String> getShRun2(boolean filter) {
         List<String> l = new ArrayList<String>();
+        if (hidden) {
+            return l;
+        }
         ipx.getShRun(l);
         l.add(cmds.comment);
         addRoutes(l, 4, fwd4);

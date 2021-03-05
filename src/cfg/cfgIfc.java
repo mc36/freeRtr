@@ -168,6 +168,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public String description = "";
 
     /**
+     * hidden interface
+     */
+    protected boolean hidden = false;
+
+    /**
      * name of followed tracker
      */
     public String followTrack = null;
@@ -5064,6 +5069,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
 
     public List<String> getShRun(boolean filter) {
         List<String> l = new ArrayList<String>();
+        if (hidden) {
+            return l;
+        }
         if (cloned != null) {
             return l;
         }

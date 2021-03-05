@@ -363,6 +363,22 @@ public class cfgInit implements Runnable {
                 cfgAll.passEnh = authLocal.passwdDecode(cmd.word());
                 continue;
             }
+            if (s.equals("hidevrf")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), true);
+                if (vrf == null) {
+                    continue;
+                }
+                vrf.hidden = true;
+                continue;
+            }
+            if (s.equals("hideifc")) {
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    continue;
+                }
+                ifc.hidden = true;
+                continue;
+            }
             if (s.equals("tcp2vrf")) {
                 int loc = bits.str2num(cmd.word());
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), true);

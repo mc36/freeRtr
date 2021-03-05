@@ -19,10 +19,11 @@
 #
 #fdisk /dev/sdb / p
 #fsck -f /dev/sdb1
-#resize2fs /dev/sdb1 1572864
+#resize2fs /dev/sdb1 6G
 #fsck -f /dev/sdb1
-#fdisk /dev/sdb / p d n p 1 2048 12587008 n w
-#qemu-img resize --shrink p4bf.img 6294528K
+#cfdisk /dev/sdb / resize 6.1G
+#qemu-img resize --shrink p4bf.img 6.2G
+#fallocate -d p4bf.img
 #
 cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.4.0
