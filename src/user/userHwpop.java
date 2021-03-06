@@ -45,7 +45,7 @@ public class userHwpop {
         String mpf = null;
         String srv = null;
         boolean shted = true;
-        boolean lnklg = false;
+        boolean lnklg = true;
         int aut = 0;
         int wht = 0;
         for (;;) {
