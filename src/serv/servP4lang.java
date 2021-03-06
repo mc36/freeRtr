@@ -711,7 +711,7 @@ class servP4langNei implements Comparator<servP4langNei> {
 
     public servP4langIfc viaI;
 
-    public int sentIgNhop;
+    public int sentIgNhop = -1;
 
     public int sentIfc;
 
@@ -3066,7 +3066,7 @@ class servP4langConn implements Runnable {
     private void doNeighs(servP4langNei ntry) {
         if (ntry.need < 1) {
             neighs.del(ntry);
-            if (ntry.sentIgNhop != 0) {
+            if (ntry.sentIgNhop >= 0) {
                 lower.sendLine("nhop2port_del " + ntry.id + " " + ntry.iface.id + " " + ntry.sentIgNhop);
             }
             if (ntry.mac == null) {
@@ -3080,7 +3080,7 @@ class servP4langConn implements Runnable {
             return;
         }
         String act;
-        if (ntry.sentIgNhop == 0) {
+        if (ntry.sentIgNhop < 0) {
             act = "add";
         } else {
             act = "mod";
