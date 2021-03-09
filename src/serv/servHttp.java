@@ -1403,7 +1403,7 @@ class servHttpConn implements Runnable {
 
     private void sendFoundAt(String where) {
         gotKeep = false;
-        String s = servHttp.htmlHead + getStyle() + "<title>moved</title></head><body>moved to <a href=\"" + where + "\">" + where + "</a>. will be redirected.</body></html>\n";
+        String s = servHttp.htmlHead + getStyle() + "<title>moved</title></head><body>moved to <a href=\"" + where + "\">" + where + "</a>. you will be redirected.</body></html>\n";
         headers.add("Location: " + where);
         sendRespHeader("301 moved", s.length(), "text/html");
         if (gotHead) {
