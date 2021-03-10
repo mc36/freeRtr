@@ -833,6 +833,7 @@ server telnet tel
  no exec authorization
  login authentication access
  login logging
+ login last
  vrf v1
  exit
 !
@@ -933,4 +934,4 @@ client time-zone CET
 client mail-server mail.mchome.nop.hu
 client end-format chksum
 !
-end chksum=eff74bfb7175a745638ea1b6621f726b9ec67123a0a1e6557771efaa9c7c050c5d99d02bf4826d1db89706432cdd89db4892f0b7ae0f7646b90150bad036de6d-b808b79f1781b7646374b20414b76a98ca71634175da5d3c6573a849074ce71097fbd4a5a38efe5de7f2a4e119b888f8fa59840d7a5303212a22f64bb9e51ac2
+end chksum=d0e8fce4aa35a42c00d65d68bef72ece602cd5d64c60b3d5b60ea81c799b2d29ddfc88cabeed52da5847e6a8682c4303e5cfb34b486ca9f9f81a2895da35fce7-263d60626447a34f5dedaaa70937bae4f7a27f6891add09de8e14ec0647bf29b7af20dd1cb5561f4796766a8780d6f6d8013655c7c706f9d4b1891e8d3b78fea

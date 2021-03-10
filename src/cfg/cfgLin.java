@@ -51,6 +51,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! no exec spacetab",
         ".*! exec tablemode normal",
         ".*! exec welcome welcome",
+        ".*! exec before before:",
         ".*! exec ready line ready",
         ".*! exec bye see you later",
         ".*! no exec logging",
@@ -68,7 +69,8 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! login activate 13",
         ".*! login deactivate 65536",
         ".*! login escape 3",
-        ".*! no login logging"
+        ".*! no login logging",
+        ".*! no login last",
     };
 
     /**

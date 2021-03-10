@@ -75,6 +75,11 @@ public class userLine {
     public boolean loginLogging = false;
 
     /**
+     * display last login
+     */
+    public boolean loginLast = false;
+
+    /**
      * authentication list
      */
     public authGeneric authenticList;
@@ -130,6 +135,11 @@ public class userLine {
     public String promptSuccess = "line ready";
 
     /**
+     * last prompt
+     */
+    public String promptLast = "before:";
+
+    /**
      * goodbye prompt
      */
     public String promptGoodbye = "see you later";
@@ -175,6 +185,11 @@ public class userLine {
     protected static final tabGen<userLineHandler> loggedUsers = new tabGen<userLineHandler>();
 
     /**
+     * previous user
+     */
+    protected String prevUser = "you are the first";
+
+    /**
      * get running configuration
      *
      * @param beg beginning string
@@ -195,6 +210,7 @@ public class userLine {
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
+        lst.add(beg + "exec before " + promptLast);
         lst.add(beg + "exec bye " + promptGoodbye);
         cmds.cfgLine(lst, !execLogging, beg, "exec logging", "");
         lst.add(beg + "exec autocommand " + autoCommand);
@@ -222,6 +238,7 @@ public class userLine {
         lst.add(beg + "login pass " + promptPass);
         lst.add(beg + "login fail " + promptFailed);
         cmds.cfgLine(lst, !loginLogging, beg, "login logging", "");
+        cmds.cfgLine(lst, !loginLast, beg, "login last", "");
     }
 
     /**
@@ -277,6 +294,10 @@ public class userLine {
                 execTables = userFormat.str2tabmod(cmd.word());
                 return false;
             }
+            if (s.equals("before")) {
+                promptLast = cmd.getRemaining();
+                return false;
+            }
             if (s.equals("ready")) {
                 promptSuccess = cmd.getRemaining();
                 return false;
@@ -322,6 +343,10 @@ public class userLine {
         }
         if (s.equals("login")) {
             s = cmd.word();
+            if (s.equals("last")) {
+                loginLast = true;
+                return false;
+            }
             if (s.equals("logging")) {
                 loginLogging = true;
                 return false;
@@ -423,6 +448,10 @@ public class userLine {
         }
         if (s.equals("login")) {
             s = cmd.word();
+            if (s.equals("last")) {
+                loginLast = false;
+                return false;
+            }
             if (s.equals("logging")) {
                 loginLogging = false;
                 return false;
@@ -468,6 +497,8 @@ public class userLine {
         l.add("3 3,.    <text>                     text to display");
         l.add("2 3    welcome                      set welcome message");
         l.add("3 3,.    <text>                     text to display");
+        l.add("2 3    before                       set previous user message");
+        l.add("3 3,.    <text>                     text to display");
         l.add("2 3    autocommand                  set automatic command");
         l.add("3 3,.    <text>                     autocommand of user");
         l.add("2 .    banner                       display banner");
@@ -478,6 +509,7 @@ public class userLine {
         l.add("2 3    authorization                set authorization");
         l.add("3 .      <name>                     name of authentication list");
         l.add("1 2  login                          set login parameters");
+        l.add("2 .    last                         display last login line");
         l.add("2 .    logging                      enable logging");
         l.add("2 3    authentication               set authentication");
         l.add("3 .      <name>                     name of authentication list");
@@ -631,6 +663,10 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         if (parent.banner) {
             pipe.linePut(parent.promptSuccess);
         }
+        if (parent.loginLast) {
+            pipe.linePut(parent.promptLast + parent.prevUser);
+        }
+        parent.prevUser = user.user + " from " + remote + " at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3);
         pipe.setTime(parent.execTimeOut);
         userReader rdr = new userReader(pipe, parent);
         pipe.settingsPut(pipeSetting.origin, remote);
