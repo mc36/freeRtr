@@ -26,6 +26,11 @@ public class packDnsZone implements Comparator<packDnsZone> {
     public int defttl = 0;
 
     /**
+     * zone transfer
+     */
+    public boolean axfr = false;
+
+    /**
      * time last updated
      */
     public long updated;
@@ -43,6 +48,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
     public packDnsZone(String nam) {
         name = nam;
         defttl = 24 * 60 * 60;
+        axfr = true;
     }
 
     /**
@@ -184,6 +190,10 @@ public class packDnsZone implements Comparator<packDnsZone> {
         packDnsRec ntry = new packDnsRec();
         cmds cmd = new cmds("dns", s);
         s = cmd.word();
+        if (s.equals("axfr")) {
+            axfr = cmd.word().equals("enable");
+            return false;
+        }
         if (s.equals("defttl")) {
             defttl = bits.str2num(cmd.word());
             return false;
@@ -281,6 +291,13 @@ public class packDnsZone implements Comparator<packDnsZone> {
     public List<String> saveZone(String beg) {
         List<String> txt = new ArrayList<String>();
         txt.add(beg + " defttl " + defttl);
+        String a;
+        if (axfr) {
+            a = "enable";
+        } else {
+            a = "disable";
+        }
+        txt.add(beg + " axfr " + a);
         beg += " rr ";
         for (int i = 0; i < recs.size(); i++) {
             packDnsRec ntry = recs.get(i);

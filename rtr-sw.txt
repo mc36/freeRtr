@@ -894,8 +894,10 @@ server bmp2mrt bmp
 server dns ns
  recursion enable
  zone sid.mchome.nop.hu defttl 600
+ zone sid.mchome.nop.hu axfr enable
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip4a 10.10.10.227
  zone sid.mchome.nop.hu rr *.sid.mchome.nop.hu cname sid.mchome.nop.hu
+ zone sid.mchome.nop.hu rr sid.mchome.nop.hu soa sid.mchome.nop.hu cssid.mchome.nop.husid.mchome.nop.hu 20210309 60000 120000 6000000 600
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip6a 2001:db8:1101::227:227
  vrf v1
  exit
@@ -931,4 +933,4 @@ client time-zone CET
 client mail-server mail.mchome.nop.hu
 client end-format chksum
 !
-end chksum=5175422cc4d8114a1ae19b7a69408ebbc56938c40070eb04e89905e9496cb0ff222ebe97b296682538136773e2caf26821108ea0d1d8e37828a21aa4406e03bd-94b5742efe06256ed7d434dad6a362fff95f4773a214de04aea71f4f56cf7d758fdd059c603b874330b8ce015d937c8732cab8b6bfbbb8ec9e57235226655b18
+end chksum=eff74bfb7175a745638ea1b6621f726b9ec67123a0a1e6557771efaa9c7c050c5d99d02bf4826d1db89706432cdd89db4892f0b7ae0f7646b90150bad036de6d-b808b79f1781b7646374b20414b76a98ca71634175da5d3c6573a849074ce71097fbd4a5a38efe5de7f2a4e119b888f8fa59840d7a5303212a22f64bb9e51ac2

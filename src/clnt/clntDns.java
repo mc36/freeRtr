@@ -309,6 +309,7 @@ public class clntDns {
         }
         packDnsZone zon2 = new packDnsZone(zon.name);
         zon2.defttl = zon.defttl;
+        zon2.axfr = zon.axfr;
         rrF = null;
         rrL = null;
         boolean end = false;

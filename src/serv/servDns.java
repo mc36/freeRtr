@@ -157,6 +157,9 @@ public class servDns extends servGeneric implements prtServS {
         l.add(" 2 1,.   <name>              zone name");
         l.add(" 1 3   defttl                specify time to live");
         l.add(" 3 .     <num>               time to live");
+        l.add(" 1 3   axfr                  specify zone transfer");
+        l.add(" 3 .     enable              allow");
+        l.add(" 3 .     disable             prohibit");
         l.add(" 1 .   clear                 clear all records from zone");
         l.add(" 1 3   reverse               generate reverse zone");
         l.add(" 3 .     <name>              name of zone");
@@ -600,6 +603,10 @@ class servDnsDoer implements Runnable {
             case packDnsRec.typeAXFR:
                 packDnsZone zon = parent.zones.find(new packDnsZone(req.name));
                 if (zon == null) {
+                    sendReply(pckD);
+                    return false;
+                }
+                if (!zon.axfr) {
                     sendReply(pckD);
                     return false;
                 }
