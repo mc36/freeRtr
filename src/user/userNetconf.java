@@ -280,7 +280,7 @@ public class userNetconf {
                 List<userFilter> res = new ArrayList<userFilter>();
                 for (; n.length() > 0;) {
                     a = extMrkLng.unescId(n).replaceAll("/", " ");
-                    res = userFilter.getSection(sec, a.trim(), false, false, true);
+                    res = userFilter.getSection(sec, a.trim(), false, false, false);
                     if (res.size() > 0) {
                         break;
                     }
