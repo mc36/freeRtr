@@ -12151,3 +12151,5 @@ qc pass: interop9: isis bier
 qc pass: interop9: ospf bier
 ---------------------------------- 2021-03-08 07:38:52
 todo: generate a test case from a config archive
+---------------------------------- 2021-03-12 18:37:13
+no todo: generate a test case from a config archive

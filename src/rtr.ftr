@@ -2350,7 +2350,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: generate a test case from a config archive
 todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
 todo: http conditional redirect with route-map, prefix-list or route-policy
