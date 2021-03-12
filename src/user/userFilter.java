@@ -180,20 +180,13 @@ public class userFilter implements Comparator<userFilter> {
                 txt.add(beg + s);
                 continue;
             }
-            if (beg.length() > 0) {
-                txt.add(beg + cmds.finish);
-            }
             prev = ntry.section.trim();
             if (prev.length() > 0) {
                 beg = cmds.tabulator;
-                txt.add(prev);
             } else {
                 beg = "";
             }
             txt.add(beg + s);
-        }
-        if (beg.length() > 0) {
-            txt.add(beg + cmds.finish);
         }
         return txt;
     }
@@ -245,36 +238,6 @@ public class userFilter implements Comparator<userFilter> {
         List<userFilter> res = new ArrayList<userFilter>();
         for (int i = 0; i < src.size(); i++) {
             res.add(src.get(i).negate());
-        }
-        return res;
-    }
-
-    /**
-     * normalize section
-     *
-     * @param src section to normalize
-     * @return normalized section
-     */
-    public static List<userFilter> normalizeSection(List<userFilter> src) {
-        List<userFilter> res = new ArrayList<userFilter>();
-        String prev = "";
-        for (int i = 0; i < src.size(); i++) {
-            userFilter ntry = src.get(i);
-            String sec = ntry.section.trim();
-            String cmd = ntry.command.trim();
-            if (cmd.equals(cmds.finish)) {
-                continue;
-            }
-            if (cmd.startsWith(cmds.comment)) {
-                continue;
-            }
-            if (prev.length() > 0) {
-                if (prev.equals(sec)) {
-                    res.remove(res.size() - 1);
-                }
-            }
-            res.add(new userFilter(sec, cmd, ntry.listing));
-            prev = (sec + " " + cmd).trim();
         }
         return res;
     }
@@ -356,7 +319,7 @@ public class userFilter implements Comparator<userFilter> {
      * @return lines
      */
     public static List<String> getSection(List<String> src, String sec) {
-        return userFilter.section2text(userFilter.normalizeSection(userFilter.getSection(userFilter.text2section(src), sec, true)));
+        return userFilter.section2text(userFilter.getSection(userFilter.text2section(src), sec, true, false, true));
     }
 
     /**
@@ -365,9 +328,11 @@ public class userFilter implements Comparator<userFilter> {
      * @param src source
      * @param sec section to find
      * @param reg match with regular expression
+     * @param neg negate selection
+     * @param mpty match empty section command too
      * @return lines
      */
-    public static List<userFilter> getSection(List<userFilter> src, String sec, boolean reg) {
+    public static List<userFilter> getSection(List<userFilter> src, String sec, boolean reg, boolean neg, boolean mpty) {
         List<userFilter> res = new ArrayList<userFilter>();
         for (int i = 0; i < src.size(); i++) {
             userFilter ntry = src.get(i);
@@ -376,6 +341,16 @@ public class userFilter implements Comparator<userFilter> {
                 b = ntry.section.matches(sec);
             } else {
                 b = ntry.section.equals(sec);
+            }
+            if (mpty && ntry.section.length() < 1) {
+                if (reg) {
+                    b |= ntry.command.matches(sec);
+                } else {
+                    b |= ntry.command.equals(sec);
+                }
+            }
+            if (neg) {
+                b = !b;
             }
             if (!b) {
                 continue;
@@ -414,8 +389,8 @@ public class userFilter implements Comparator<userFilter> {
     }
 
     private static void diffSec(List<userFilter> res, List<userFilter> srcO, List<userFilter> trgO, String sec) {
-        List<userFilter> srcS = getSection(srcO, sec, false);
-        List<userFilter> trgS = getSection(trgO, sec, false);
+        List<userFilter> srcS = getSection(srcO, sec, false, false, true);
+        List<userFilter> trgS = getSection(trgO, sec, false, false, true);
         setUsed(trgS, false);
         for (int i = srcS.size() - 1; i >= 0; i--) {
             userFilter ntry = srcS.get(i);
@@ -493,7 +468,7 @@ public class userFilter implements Comparator<userFilter> {
         if (trg == null) {
             return null;
         }
-        return section2text(diffText(normalizeSection(text2section(src)), normalizeSection(text2section(trg))));
+        return section2text(diffText(text2section(src), text2section(trg)));
     }
 
     /**

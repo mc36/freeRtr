@@ -82,6 +82,8 @@ public class userTester {
 
     private boolean summary = false;
 
+    private String cfgarch = "./";
+
     private boolean window = false;
 
     private boolean wait = false;
@@ -145,144 +147,196 @@ public class userTester {
             }
             if (s.equals("summary")) {
                 summary = true;
+                continue;
             }
             if (s.equals("nosummary")) {
                 summary = false;
+                continue;
+            }
+            if (s.equals("cfgarch")) {
+                cfgarch = cmd.word();
+                continue;
+            }
+            if (s.equals("nocfgarch")) {
+                cfgarch = "./";
+                continue;
             }
             if (s.equals("window")) {
                 window = true;
+                continue;
             }
             if (s.equals("nowindow")) {
                 window = false;
+                continue;
             }
             if (s.equals("wait")) {
                 wait = true;
+                continue;
             }
             if (s.equals("nowait")) {
                 wait = false;
+                continue;
             }
             if (s.equals("reapply")) {
                 reapply = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("noreapply")) {
                 reapply = 0;
+                continue;
             }
             if (s.equals("predelay")) {
                 predelay = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("nopredelay")) {
                 predelay = 0;
+                continue;
             }
             if (s.equals("postdelay")) {
                 postdelay = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("nopostdelay")) {
                 postdelay = 0;
+                continue;
             }
             if (s.equals("restart")) {
                 restart = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("norestart")) {
                 restart = 0;
+                continue;
             }
             if (s.equals("config")) {
                 config = true;
+                continue;
             }
             if (s.equals("noconfig")) {
                 config = false;
+                continue;
             }
             if (s.equals("mdfile")) {
                 mdfile = true;
+                continue;
             }
             if (s.equals("nomdfile")) {
                 mdfile = false;
+                continue;
             }
             if (s.equals("randord")) {
                 randord = true;
+                continue;
             }
             if (s.equals("norandord")) {
                 randord = false;
+                continue;
             }
             if (s.equals("chatty")) {
                 chatty = new tabIntMatcher();
                 chatty.fromString(cmd.word());
+                continue;
             }
             if (s.equals("nochatty")) {
                 chatty = null;
+                continue;
             }
             if (s.equals("retry")) {
                 maxTry = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("noretry")) {
                 maxTry = 1;
+                continue;
             }
             if (s.equals("paralell")) {
                 paralell = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("noparalell")) {
                 paralell = 0;
+                continue;
             }
             if (s.equals("slot")) {
                 slot = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("noslot")) {
                 slot = 0;
+                continue;
             }
             if (s.equals("mem")) {
                 mem = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("discard")) {
                 discard = cmd.word();
+                continue;
             }
             if (s.equals("nodiscard")) {
                 discard = "^$";
+                continue;
             }
             if (s.equals("path")) {
                 path = cmd.word();
+                continue;
             }
             if (s.equals("url")) {
                 url = cmd.word();
+                continue;
             }
             if (s.equals("persist")) {
                 persistF = cmd.word();
+                continue;
             }
             if (s.equals("nopersist")) {
                 persistF = null;
+                continue;
             }
             if (s.equals("remote")) {
                 remoteF = cmd.word();
+                continue;
             }
             if (s.equals("noremote")) {
                 remoteF = null;
+                continue;
             }
             if (s.equals("other")) {
                 userTesterImg img = new userTesterImg();
                 img.otherF = cmd.word();
                 others.add(img);
+                continue;
             }
             if (s.equals("noother")) {
                 others.clear();
+                continue;
             }
             if (s.equals("capture")) {
                 userTesterCap cap = new userTesterCap();
                 cap.rtr = cmd.word();
                 cap.ifc = cmd.word();
                 capture.add(cap);
+                continue;
             }
             if (s.equals("nocapture")) {
                 capture.clear();
+                continue;
             }
             if (s.startsWith("openjdk")) {
                 jvn = "/usr/lib/jvm/java-" + s.substring(7, s.length()) + "-openjdk-amd64/bin/java";
+                continue;
             }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
                 mem = 0;
+                continue;
             }
             if (s.equals("binary")) {
                 jvn = "./rtr.bin";
                 jvp = "";
                 mem = 0;
+                continue;
             }
         }
         String s = "-Xmx" + mem + "m";
@@ -360,6 +414,7 @@ public class userTester {
         rdr.debugStat("discard=" + discard);
         rdr.debugStat("mdfile=" + mdfile);
         rdr.debugStat("summary=" + summary);
+        rdr.debugStat("cfgarch=" + cfgarch);
         rdr.debugStat("window=" + window);
         rdr.debugStat("wait=" + wait);
         rdr.debugStat("config=" + config);
@@ -593,6 +648,7 @@ public class userTester {
         lt.config = config;
         lt.reapply = reapply;
         lt.restart = restart;
+        lt.cfgarch = cfgarch;
         lt.chatty = chatty;
         lt.predelay = predelay;
         lt.postdelay = postdelay;
@@ -1030,6 +1086,18 @@ class userTesterPrc {
 
 }
 
+class userTesterRep {
+
+    public final String src;
+
+    public String trg;
+
+    public userTesterRep(String s) {
+        src = s;
+    }
+
+}
+
 class userTesterOne {
 
     public int slot = 0;
@@ -1049,6 +1117,8 @@ class userTesterOne {
     public int reapply;
 
     public int restart;
+
+    public String cfgarch;
 
     public tabIntMatcher chatty;
 
@@ -1582,28 +1652,87 @@ class userTesterOne {
             boolean write = true;
             boolean telnet = true;
             boolean fancy = true;
+            boolean extra = false;
+            String source = null;
+            List<userTesterRep> reps = new ArrayList<userTesterRep>();
+            List<userTesterRep> dels = new ArrayList<userTesterRep>();
             for (;;) {
                 s = cmd.word();
                 if (s.length() < 1) {
-                    break;
+                    if (!extra) {
+                        break;
+                    }
+                    s = getLin();
+                    if (s.equals("!")) {
+                        break;
+                    }
+                    cmd = new cmds("ln", s);
+                    continue;
+                }
+                if (s.equals("extra")) {
+                    extra = true;
+                    continue;
+                }
+                if (s.equals("noextra")) {
+                    extra = false;
+                    continue;
                 }
                 if (s.equals("write")) {
                     write = true;
+                    continue;
                 }
                 if (s.equals("nowrite")) {
                     write = false;
+                    continue;
                 }
                 if (s.equals("fancy")) {
                     fancy = true;
+                    continue;
                 }
                 if (s.equals("nofancy")) {
                     fancy = false;
+                    continue;
                 }
                 if (s.equals("telnet")) {
                     telnet = true;
+                    continue;
                 }
                 if (s.equals("notelnet")) {
                     telnet = false;
+                    continue;
+                }
+                if (s.equals("source")) {
+                    source = cmd.word();
+                    continue;
+                }
+                if (s.equals("nosource")) {
+                    source = null;
+                    continue;
+                }
+                if (s.equals("replace")) {
+                    userTesterRep rep = new userTesterRep(cmd.word());
+                    rep.trg = cmd.word();
+                    reps.add(rep);
+                    continue;
+                }
+                if (s.equals("noreplace")) {
+                    reps.clear();
+                    continue;
+                }
+                if (s.equals("delete")) {
+                    if (extra) {
+                        s = cmd.getRemaining();
+                        cmd = new cmds("ln", "");
+                    } else {
+                        s = cmd.word();
+                    }
+                    userTesterRep rep = new userTesterRep(s);
+                    dels.add(rep);
+                    continue;
+                }
+                if (s.equals("nodelete")) {
+                    dels.clear();
+                    continue;
                 }
             }
             List<String> cfg = new ArrayList<String>();
@@ -1641,6 +1770,30 @@ class userTesterOne {
                     break;
                 }
                 cfg.add(s);
+            }
+            if (source != null) {
+                List<String> src = bits.txt2buf(cfgarch + source);
+                if (src == null) {
+                    testRes = 11;
+                    return;
+                }
+                cfg.addAll(src);
+            }
+            for (int o = 0; o < reps.size(); o++) {
+                userTesterRep rep = reps.get(o);
+                for (int i = 0; i < cfg.size(); i++) {
+                    s = cfg.get(i);
+                    s = s.replaceAll(rep.src, rep.trg);
+                    cfg.set(i, s);
+                }
+            }
+            if (dels.size() > 0) {
+                List<userFilter> secs = userFilter.text2section(cfg);
+                for (int o = 0; o < dels.size(); o++) {
+                    userTesterRep del = dels.get(o);
+                    secs = userFilter.getSection(secs, del.src, true, true, true);
+                }
+                cfg = userFilter.section2text(secs);
             }
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             s = jvm + " router" + window + " " + prefix + slot + rn + "-";

@@ -1,7 +1,6 @@
 package user;
 
 import cfg.cfgAll;
-import cfg.cfgInit;
 import cfg.cfgSensor;
 import java.util.ArrayList;
 import java.util.List;
@@ -281,7 +280,7 @@ public class userNetconf {
                 List<userFilter> res = new ArrayList<userFilter>();
                 for (; n.length() > 0;) {
                     a = extMrkLng.unescId(n).replaceAll("/", " ");
-                    res = userFilter.getSection(sec, a.trim(), false);
+                    res = userFilter.getSection(sec, a.trim(), false, false, true);
                     if (res.size() > 0) {
                         break;
                     }

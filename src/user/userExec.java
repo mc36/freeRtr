@@ -2113,7 +2113,7 @@ public class userExec {
                     return cmdRes.command;
                 }
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe), c2, "section '" + a + "'", false);
+                userEditor e = new userEditor(new userScreen(pipe), c2, "startup config", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -2133,7 +2133,7 @@ public class userExec {
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe), c2, "section '" + a + "'", false);
+                userEditor e = new userEditor(new userScreen(pipe), c2, "running config", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -2150,7 +2150,7 @@ public class userExec {
                 if (cmd.size() > 0) {
                     c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
-                userEditor v = new userEditor(new userScreen(pipe), c1, "section '" + a + "'", false);
+                userEditor v = new userEditor(new userScreen(pipe), c1, "running config", false);
                 v.doView();
                 return cmdRes.command;
             }
