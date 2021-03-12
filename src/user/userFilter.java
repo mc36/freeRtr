@@ -166,27 +166,63 @@ public class userFilter implements Comparator<userFilter> {
     /**
      * convert sections to text
      *
-     * @param sec section to convert
+     * @param src section to convert
+     * @param rep repair sections
      * @return sectioned text
      */
-    public static List<String> section2text(List<userFilter> sec) {
+    public static List<String> section2text(List<userFilter> src, boolean rep) {
+        if (rep) {
+            List<userFilter> res = new ArrayList<userFilter>();
+            String prev = "";
+            for (int i = 0; i < src.size(); i++) {
+                userFilter ntry = src.get(i);
+                String sec = ntry.section.trim();
+                String cmd = ntry.command.trim();
+                if (cmd.length() < 1) {
+                    continue;
+                }
+                if (cmd.equals(cmds.finish)) {
+                    continue;
+                }
+                if (cmd.startsWith(cmds.comment)) {
+                    continue;
+                }
+                if (prev.length() > 0) {
+                    if (prev.equals(sec)) {
+                        res.remove(res.size() - 1);
+                    }
+                }
+                res.add(new userFilter(sec, cmd, ntry.listing));
+                prev = (sec + " " + cmd).trim();
+            }
+            src = res;
+        }
         List<String> txt = new ArrayList<String>();
         String prev = "";
         String beg = "";
-        for (int i = 0; i < sec.size(); i++) {
-            userFilter ntry = sec.get(i);
+        for (int i = 0; i < src.size(); i++) {
+            userFilter ntry = src.get(i);
             String s = ntry.command.trim();
             if (prev.equals(ntry.section)) {
                 txt.add(beg + s);
                 continue;
             }
+            if (rep && (beg.length() > 0)) {
+                txt.add(beg + cmds.finish);
+            }
             prev = ntry.section.trim();
             if (prev.length() > 0) {
                 beg = cmds.tabulator;
+                if (rep) {
+                    txt.add(prev);
+                }
             } else {
                 beg = "";
             }
             txt.add(beg + s);
+        }
+        if (rep && (beg.length() > 0)) {
+            txt.add(beg + cmds.finish);
         }
         return txt;
     }
@@ -319,7 +355,7 @@ public class userFilter implements Comparator<userFilter> {
      * @return lines
      */
     public static List<String> getSection(List<String> src, String sec) {
-        return userFilter.section2text(userFilter.getSection(userFilter.text2section(src), sec, true, false, true));
+        return userFilter.section2text(userFilter.getSection(userFilter.text2section(src), sec, true, false, true), true);
     }
 
     /**
@@ -468,7 +504,7 @@ public class userFilter implements Comparator<userFilter> {
         if (trg == null) {
             return null;
         }
-        return section2text(diffText(text2section(src), text2section(trg)));
+        return section2text(diffText(text2section(src), text2section(trg)), true);
     }
 
     /**

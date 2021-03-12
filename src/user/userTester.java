@@ -1793,7 +1793,7 @@ class userTesterOne {
                     userTesterRep del = dels.get(o);
                     secs = userFilter.getSection(secs, del.src, true, true, true);
                 }
-                cfg = userFilter.section2text(secs);
+                cfg = userFilter.section2text(secs, false);
             }
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             s = jvm + " router" + window + " " + prefix + slot + rn + "-";

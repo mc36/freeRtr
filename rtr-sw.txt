@@ -886,6 +886,17 @@ server http web
  vrf v1
  exit
 !
+server ftp f
+ authentication access
+ path /nfs/own/web/
+ vrf v1
+ exit
+!
+server tftp t
+ path /nfs/own/web/
+ vrf v1
+ exit
+!
 server bmp2mrt bmp
  file bmp.log
  bulk-down
@@ -934,4 +945,4 @@ client time-zone CET
 client mail-server mail.mchome.nop.hu
 client end-format chksum
 !
-end chksum=d0e8fce4aa35a42c00d65d68bef72ece602cd5d64c60b3d5b60ea81c799b2d29ddfc88cabeed52da5847e6a8682c4303e5cfb34b486ca9f9f81a2895da35fce7-263d60626447a34f5dedaaa70937bae4f7a27f6891add09de8e14ec0647bf29b7af20dd1cb5561f4796766a8780d6f6d8013655c7c706f9d4b1891e8d3b78fea
+end chksum=daf0dd68aadcff914d96b8fc60227c6c1a4e5f76228072a9ae8d54d04015ec8146459ef406947fb85ce3bf45684a7c1f9a992edb686aacb530cde25074b052e9-904c113caa0d7e30c3e39f6fbb7da63d75acc18af0815b36b9cadb5b50bc32ebce319e8b629e06ca95c9b04ff2aafeec0ea5cf38766a228ad7d202b32e1664bc

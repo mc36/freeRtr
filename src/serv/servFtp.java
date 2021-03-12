@@ -828,7 +828,7 @@ class servFtpDoer implements Runnable {
             for (int i = 0; i < fl.length; i++) {
                 data.linePut(getOldInfo(fl[i]));
             }
-            data.setClose();
+            conn.closer(0x22);
             doLine("226 successful");
             return false;
         }
@@ -852,7 +852,7 @@ class servFtpDoer implements Runnable {
             for (int i = 0; i < fl.length; i++) {
                 data.linePut(getNameInfo(fl[i]));
             }
-            data.setClose();
+            conn.closer(0x22);
             doLine("226 successful");
             return false;
         }
@@ -876,7 +876,7 @@ class servFtpDoer implements Runnable {
             for (int i = 0; i < fl.length; i++) {
                 data.linePut(getNewInfo(fl[i]));
             }
-            data.setClose();
+            conn.closer(0x22);
             doLine("226 successful");
             return false;
         }
@@ -890,7 +890,7 @@ class servFtpDoer implements Runnable {
             a = getRelPath(a, true);
             sendResult(sendOneFile(new File(a), restartFrom));
             restartFrom = 0;
-            data.setClose();
+            conn.closer(0x22);
             return false;
         }
         if (a.equals("stor")) {
@@ -902,7 +902,7 @@ class servFtpDoer implements Runnable {
             a = getRelPath(a, true);
             sendResult(recvOneFile(new File(a), restartFrom));
             restartFrom = 0;
-            data.setClose();
+            conn.closer(0x22);
             return false;
         }
         if (a.equals("appe")) {
@@ -914,7 +914,7 @@ class servFtpDoer implements Runnable {
             a = getRelPath(a, true);
             File f = new File(a);
             sendResult(recvOneFile(f, f.length()));
-            data.setClose();
+            conn.closer(0x22);
             return false;
         }
         if (a.equals("stou")) {
@@ -925,7 +925,7 @@ class servFtpDoer implements Runnable {
             a = getRelPath(bits.getTime() + ".bin", false);
             a = getRelPath(a, true);
             sendResult(recvOneFile(new File(a), 0));
-            data.setClose();
+            conn.closer(0x22);
             return false;
         }
         doLine("500 bad command");
