@@ -1047,8 +1047,6 @@ public class cfgInit implements Runnable {
                 logger.exception(e);
             }
             pip = pl.getSide();
-            pip.lineTx = pipeSide.modTyp.modeCRLF;
-            pip.lineRx = pipeSide.modTyp.modeCRorLF;
             pl.setClose();
             pipeReader rd = new pipeReader();
             rd.setLineMode(pipeSide.modTyp.modeCRtryLF);
