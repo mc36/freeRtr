@@ -48,6 +48,25 @@ public class userFilter implements Comparator<userFilter> {
         listing = lst;
     }
 
+    /**
+     * check if this line need to be ignored
+     *
+     * @return true if yes
+     */
+    public boolean shouldIgnore() {
+        String a = command.trim();
+        if (a.length() < 1) {
+            return true;
+        }
+        if (a.equals(cmds.comment)) {
+            return true;
+        }
+        if (a.equals(cmds.finish)) {
+            return true;
+        }
+        return false;
+    }
+
     public String toString() {
         String s;
         if (listing != null) {
@@ -88,7 +107,7 @@ public class userFilter implements Comparator<userFilter> {
     /**
      * negate this entry
      *
-     * @return negated entry
+     * @return negated entry, null if nothing
      */
     public userFilter negate() {
         String c = command;
@@ -172,30 +191,7 @@ public class userFilter implements Comparator<userFilter> {
      */
     public static List<String> section2text(List<userFilter> src, boolean rep) {
         if (rep) {
-            List<userFilter> res = new ArrayList<userFilter>();
-            String prev = "";
-            for (int i = 0; i < src.size(); i++) {
-                userFilter ntry = src.get(i);
-                String sec = ntry.section.trim();
-                String cmd = ntry.command.trim();
-                if (cmd.length() < 1) {
-                    continue;
-                }
-                if (cmd.equals(cmds.finish)) {
-                    continue;
-                }
-                if (cmd.startsWith(cmds.comment)) {
-                    continue;
-                }
-                if (prev.length() > 0) {
-                    if (prev.equals(sec)) {
-                        res.remove(res.size() - 1);
-                    }
-                }
-                res.add(new userFilter(sec, cmd, ntry.listing));
-                prev = (sec + " " + cmd).trim();
-            }
-            src = res;
+            src = normalizeSection(src);
         }
         List<String> txt = new ArrayList<String>();
         String prev = "";
@@ -273,7 +269,12 @@ public class userFilter implements Comparator<userFilter> {
     public static List<userFilter> negateSection(List<userFilter> src) {
         List<userFilter> res = new ArrayList<userFilter>();
         for (int i = 0; i < src.size(); i++) {
-            res.add(src.get(i).negate());
+            userFilter ntry = src.get(i);
+            if (ntry.shouldIgnore()) {
+                continue;
+            }
+            ntry = ntry.negate();
+            res.add(ntry);
         }
         return res;
     }
@@ -348,6 +349,21 @@ public class userFilter implements Comparator<userFilter> {
     }
 
     /**
+     * del certain flag
+     *
+     * @param lst list to update
+     * @param val value to remove
+     */
+    public static void delUsed(List<userFilter> lst, boolean val) {
+        for (int i = lst.size() - 1; i >= 0; i--) {
+            if (lst.get(i).used != val) {
+                continue;
+            }
+            lst.remove(i);
+        }
+    }
+
+    /**
      * get section
      *
      * @param src source
@@ -355,7 +371,7 @@ public class userFilter implements Comparator<userFilter> {
      * @return lines
      */
     public static List<String> getSection(List<String> src, String sec) {
-        return userFilter.section2text(userFilter.getSection(userFilter.text2section(src), sec, true, false, true), true);
+        return userFilter.section2text(userFilter.getSection(userFilter.text2section(src), sec, true, false, false), true);
     }
 
     /**
@@ -459,7 +475,28 @@ public class userFilter implements Comparator<userFilter> {
         if (trgS.size() > 0) {
             return;
         }
-        res.add(new userFilter("", "no " + sec, null));
+        res.add(new userFilter("", sec, null).negate());
+    }
+
+    private static List<userFilter> normalizeSection(List<userFilter> src) {
+        List<userFilter> res = new ArrayList<userFilter>();
+        String prev = "";
+        for (int i = 0; i < src.size(); i++) {
+            userFilter ntry = src.get(i);
+            if (ntry.shouldIgnore()) {
+                continue;
+            }
+            String sec = ntry.section.trim();
+            String cmd = ntry.command.trim();
+            if (prev.length() > 0) {
+                if (prev.equals(sec)) {
+                    res.remove(res.size() - 1);
+                }
+            }
+            res.add(new userFilter(sec, cmd, ntry.listing));
+            prev = (sec + " " + cmd).trim();
+        }
+        return res;
     }
 
     /**
@@ -470,6 +507,8 @@ public class userFilter implements Comparator<userFilter> {
      * @return result
      */
     public static List<userFilter> diffText(List<userFilter> src, List<userFilter> trg) {
+        src = normalizeSection(src);
+        trg = normalizeSection(trg);
         setUsed(src, false);
         setUsed(trg, false);
         List<userFilter> res = new ArrayList<userFilter>();
