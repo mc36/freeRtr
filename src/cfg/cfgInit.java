@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import line.lineTcpLine;
+import pipe.pipeConnect;
 import pipe.pipeConsole;
 import pipe.pipeImage;
 import pipe.pipeLine;
+import pipe.pipeReader;
 import pipe.pipeSetting;
 import pipe.pipeSide;
 import pipe.pipeWindow;
@@ -1025,8 +1027,41 @@ public class cfgInit implements Runnable {
             }
             return;
         }
+        if (s.equals("show")) {
+            s = "";
+            for (int i = 0; i < args.length; i++) {
+                s += " " + args[i];
+            }
+            pipeLine pl = new pipeLine(1024 * 1024, false);
+            pipeSide pip = pl.getSide();
+            pip.lineTx = pipeSide.modTyp.modeCRLF;
+            pip.lineRx = pipeSide.modTyp.modeCRorLF;
+            userReader rdr = new userReader(pip, null);
+            pip.settingsPut(pipeSetting.height, 0);
+            userExec exe = new userExec(pip, rdr);
+            exe.privileged = true;
+            s = exe.repairCommand(s);
+            try {
+                exe.executeCommand(s);
+            } catch (Exception e) {
+                logger.exception(e);
+            }
+            pip = pl.getSide();
+            pip.lineTx = pipeSide.modTyp.modeCRLF;
+            pip.lineRx = pipeSide.modTyp.modeCRorLF;
+            pl.setClose();
+            pipeReader rd = new pipeReader();
+            rd.setLineMode(pipeSide.modTyp.modeCRtryLF);
+            pipeConnect.connect(pip, rd.getPipe(), true);
+            rd.waitFor();
+            List<String> res = rd.getResult();
+            for (int i = 0; i < res.size(); i++) {
+                putln(res.get(i));
+            }
+            return;
+        }
         boolean b = s.equals("exec");
-        if (b || s.equals("show") || s.equals("test")) {
+        if (b || s.equals("test")) {
             s = "";
             for (int i = b ? 1 : 0; i < args.length; i++) {
                 s += " " + args[i];

@@ -57,8 +57,8 @@ public class clntWhois {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.linePut(quest);
         pipeReader rd = new pipeReader();
-        pipeConnect.connect(pipe, rd.getPipe(), true);
         rd.setLineMode(pipeSide.modTyp.modeCRorLF);
+        pipeConnect.connect(pipe, rd.getPipe(), true);
         rd.waitFor();
         return rd.getResult();
     }
