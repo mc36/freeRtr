@@ -262,6 +262,9 @@ public class player implements Runnable {
             }
             nextSong.add(rndSeed.nextInt(playlist.size()));
         }
+        if (ntry >= playlist.size()) {
+            return;
+        }
         currSong = ntry;
         currLyrc = null;
         currTime = 0;
