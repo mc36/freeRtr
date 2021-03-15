@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.3.15-rel, done by cs@nop.
--;-;-;2021-03-15 04:56:49, took 00:06:23, with 100 workers, on 2352 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2021-03-15 05:03:53, took 00:05:21, with 100 workers, on 2352 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
