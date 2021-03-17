@@ -75,9 +75,9 @@ public class userLine {
     public boolean loginLogging = false;
 
     /**
-     * display last login
+     * display last login, 0=none, 1=global, 2=local
      */
-    public boolean loginLast = false;
+    public int loginLast = 0;
 
     /**
      * authentication list
@@ -187,7 +187,12 @@ public class userLine {
     /**
      * previous user
      */
-    protected String prevUser = "you are the first";
+    protected static String prevUserGlb = "you are the first on this box";
+
+    /**
+     * previous user
+     */
+    protected String prevUserLoc = "you are the first on this line";
 
     /**
      * get running configuration
@@ -238,7 +243,25 @@ public class userLine {
         lst.add(beg + "login pass " + promptPass);
         lst.add(beg + "login fail " + promptFailed);
         cmds.cfgLine(lst, !loginLogging, beg, "login logging", "");
-        cmds.cfgLine(lst, !loginLast, beg, "login last", "");
+        String a;
+        switch (loginLast) {
+            case 0:
+                a = "none";
+                break;
+            case 1:
+                a = "global";
+                break;
+            case 2:
+                a = "local";
+                break;
+            case 3:
+                a = "both";
+                break;
+            default:
+                a = "unknown:" + loginLast;
+                break;
+        }
+        lst.add(beg + "login last " + a);
     }
 
     /**
@@ -344,7 +367,29 @@ public class userLine {
         if (s.equals("login")) {
             s = cmd.word();
             if (s.equals("last")) {
-                loginLast = true;
+                loginLast = 1;
+                for (;;) {
+                    s = cmd.word();
+                    if (s.length() < 1) {
+                        break;
+                    }
+                    if (s.equals("global")) {
+                        loginLast = 1;
+                        continue;
+                    }
+                    if (s.equals("local")) {
+                        loginLast = 2;
+                        continue;
+                    }
+                    if (s.equals("both")) {
+                        loginLast = 3;
+                        continue;
+                    }
+                    if (s.equals("none")) {
+                        loginLast = 0;
+                        continue;
+                    }
+                }
                 return false;
             }
             if (s.equals("logging")) {
@@ -449,7 +494,7 @@ public class userLine {
         if (s.equals("login")) {
             s = cmd.word();
             if (s.equals("last")) {
-                loginLast = false;
+                loginLast = 0;
                 return false;
             }
             if (s.equals("logging")) {
@@ -509,7 +554,11 @@ public class userLine {
         l.add("2 3    authorization                set authorization");
         l.add("3 .      <name>                     name of authentication list");
         l.add("1 2  login                          set login parameters");
-        l.add("2 .    last                         display last login line");
+        l.add("2 3,.  last                         display last login line");
+        l.add("3 .      none                       nothing");
+        l.add("3 .      global                     globally");
+        l.add("3 .      local                      locally");
+        l.add("3 .      both                       everything");
         l.add("2 .    logging                      enable logging");
         l.add("2 3    authentication               set authentication");
         l.add("3 .      <name>                     name of authentication list");
@@ -663,10 +712,26 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         if (parent.banner) {
             pipe.linePut(parent.promptSuccess);
         }
-        if (parent.loginLast) {
-            pipe.linePut(parent.promptLast + parent.prevUser);
+        switch (parent.loginLast) {
+            case 0:
+                break;
+            case 1:
+                pipe.linePut(parent.promptLast + userLine.prevUserGlb);
+                break;
+            case 2:
+                pipe.linePut(parent.promptLast + parent.prevUserLoc);
+                break;
+            case 3:
+                pipe.linePut(parent.promptLast + userLine.prevUserGlb);
+                pipe.linePut(parent.promptLast + parent.prevUserLoc);
+                break;
+            default:
+                pipe.linePut(parent.promptLast + "unknown:" + parent.loginLast);
+                break;
         }
-        parent.prevUser = user.user + " from " + remote + " at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3);
+        String s = user.user + " from " + remote + " at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3);
+        userLine.prevUserGlb = s;
+        parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);
         userReader rdr = new userReader(pipe, parent);
         pipe.settingsPut(pipeSetting.origin, remote);
@@ -680,7 +745,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         cfg.authorization = parent.authorizeList;
         exe.username = user.user;
         cfg.username = user.user;
-        String s = parent.autoCommand;
+        s = parent.autoCommand;
         if (s.length() > 0) {
             s = exe.repairCommand(s);
             exe.executeCommand(s);

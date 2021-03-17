@@ -70,7 +70,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! login deactivate 65536",
         ".*! login escape 3",
         ".*! no login logging",
-        ".*! no login last",
+        ".*! login last none",
     };
 
     /**
