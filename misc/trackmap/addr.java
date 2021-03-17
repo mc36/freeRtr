@@ -44,7 +44,7 @@ public class addr {
     public String httpRequest(String url, String path, String peer,
             String agent, String user, String[] par, ByteArrayOutputStream buf)
             throws Exception {
-        String s = "<html><head><title>address</title></head><body bgcolor=black text=white>" + peer + "</body></html>";
+        String s = "<html lang=\"en\"><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type = \"text/css\" href = \"addr.css\" /><head><title>address</title></head><body>" + peer + "</body></html>";
         buf.write(s.getBytes());
         return "html";
     }

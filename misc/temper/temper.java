@@ -365,6 +365,14 @@ public class temper implements Runnable {
         g2d.drawString(s, mx10 - fm.stringWidth(s), y);
     }
 
+    private static void putStart(ByteArrayOutputStream buf, String tit, String res) throws Exception {
+        buf.write("<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type = \"text/css\" href = \"index.css\" /><title>".getBytes());
+        buf.write(tit.getBytes());
+        buf.write("</title><body>".getBytes());
+        buf.write(res.getBytes());
+        buf.write("</body></html>".getBytes());
+    }
+
     /**
      * do one request
      *
@@ -417,10 +425,7 @@ public class temper implements Runnable {
             int i = ((int) temperUtil.str2num(tmp)) & relayPin;
             setValue((currValue & (~relayPin)) | i);
             writeLog(peer);
-            String a = "relay set to " + i + " from range " + relayPin;
-            buf.write("<html><head><title>relay</title><body>".getBytes());
-            buf.write(a.getBytes());
-            buf.write("</body></html>".getBytes());
+            putStart(buf, "relay", "relay set to " + i + " from range " + relayPin);
             return 1;
         }
         if (cmd.equals("door")) {
@@ -440,18 +445,14 @@ public class temper implements Runnable {
                 writeLog(peer);
                 a = "door opened";
             }
-            buf.write("<html><head><title>door</title><body>".getBytes());
-            buf.write(a.getBytes());
-            buf.write("</body></html>".getBytes());
+            putStart(buf, "door", a);
             return 1;
         }
         if (!cmd.equals("graph")) {
             rangeCheck();
-            String a = "<html><head><title>temper</title>";
+            String a = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type = \"text/css\" href = \"index.css\" /><title>temper</title>";
             buf.write(a.getBytes());
-            a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head>";
-            buf.write(a.getBytes());
-            a = "<body bgcolor=\"#000000\" text=\"#00FF00\" link=\"#00FFFF\" vlink=\"#00FFFF\" alink=\"#00FFFF\">";
+            a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head><body>";
             buf.write(a.getBytes());
             long tim = temperUtil.getTime();
             for (int i = 0; i < measDat.length; i++) {

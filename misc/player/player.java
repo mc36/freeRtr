@@ -380,13 +380,13 @@ public class player implements Runnable {
      * @throws Exception on error
      */
     public void putStart(ByteArrayOutputStream buf, int refresh) throws Exception {
-        String a = "<html><head><title>music player</title><meta charset=\"utf-8\">";
+        String a = "<html lang=\"en\"><head><title>music player</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type = \"text/css\" href = \"index.css\" />";
         buf.write(a.getBytes());
         if (refresh > 0) {
             a = "<meta http-equiv=refresh content=\"" + refresh + ";url=" + urlR + "\">";
             buf.write(a.getBytes());
         }
-        a = "</head><body bgcolor=\"#000000\" text=\"#00FF00\" link=\"#00FFFF\" vlink=\"#00FFFF\" alink=\"#00FFFF\">";
+        a = "</head><body>";
         buf.write(a.getBytes());
     }
 
