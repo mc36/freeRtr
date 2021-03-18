@@ -710,7 +710,10 @@ class servSmtpDoer implements Runnable {
             doLine("354 start mail input");
             packText pt = new packText(pipe);
             List<String> txt = pt.dottedRecvAll();
-            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ") by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ") (envelope-from " + src + ") with smtp for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 4) + " (" + cfgAll.timeZoneName + ")");
+            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ")");
+            txt.add(1, "    by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ")");
+            txt.add(2, "    envelope-from " + src + " with smtp");
+            txt.add(3, "    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 4));
             int o = 0;
             long tim = bits.getTime();
             for (int i = 0; i < trgL.size(); i++) {
