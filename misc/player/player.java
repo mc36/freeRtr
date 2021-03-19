@@ -799,21 +799,21 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "headend=" + headEnd + ", mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
+            String a = "<br/>headend=" + headEnd + ", mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
+            buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=fullstop\">!full stop!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=receive\">!multicast receiver!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=headend\">!multicast streamer!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=pendrive\">!pendrive!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna!</a><br/>";
-            buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=fullstop\">!full stop!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
             a = "<br/><form action=\"" + urlR + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
             buf.write(a.getBytes());
