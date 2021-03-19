@@ -702,6 +702,15 @@ public class player implements Runnable {
                 buf.write(a.getBytes());
             }
             buf.write("<br/><br/>volume:".getBytes());
+            for (i = 0; i < 11; i++) {
+                int o = i * 10;
+                String a = "" + o;
+                if ((o / 10) == (currVlme / 10)) {
+                    a = "*" + a + "*";
+                }
+                putLink(buf, urlR + "?cmd=vol&song=" + o, a);
+            }
+            buf.write("<br/><br/>volume:".getBytes());
             for (i = -15; i < 15; i++) {
                 int o = currVlme + i;
                 if (o < 0) {
@@ -712,15 +721,6 @@ public class player implements Runnable {
                 }
                 String a = "" + o;
                 if (o == currVlme) {
-                    a = "*" + a + "*";
-                }
-                putLink(buf, urlR + "?cmd=vol&song=" + o, a);
-            }
-            buf.write("<br/><br/>volume:".getBytes());
-            for (i = 0; i < 11; i++) {
-                int o = i * 10;
-                String a = "" + o;
-                if ((o / 10) == (currVlme / 10)) {
                     a = "*" + a + "*";
                 }
                 putLink(buf, urlR + "?cmd=vol&song=" + o, a);
