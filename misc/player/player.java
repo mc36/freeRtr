@@ -277,9 +277,10 @@ public class player implements Runnable {
         }
         String[] cmd;
         if (headEnd) {
-            cmd = new String[2];
+            cmd = new String[3];
             cmd[0] = path + ".strm";
             cmd[1] = playlist.get(ntry).file;
+            cmd[2] = ss;
         } else {
             cmd = new String[10];
             cmd[0] = "mplayer";
