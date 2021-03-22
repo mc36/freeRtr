@@ -647,33 +647,28 @@ public class player implements Runnable {
             putMenu(buf);
             int i = playerUtil.str2int(song);
             if (i > 0) {
-                String a = "seek to " + song + " seconds.<br/><br/>";
+                String a = "seeked to " + song + " seconds.<br/>";
                 buf.write(a.getBytes());
                 startPlayNormal(currSong, song);
             }
             int tim = (int) ((new Date().getTime() - currTime) / 1000);
-            String a = "playing since " + tim + " seconds.<br/>";
-            buf.write(a.getBytes());
-            a = "<br/>seek to:";
-            buf.write(a.getBytes());
+            buf.write("<br/>seek:".getBytes());
+            for (i = 0; i < 30; i++) {
+                int o = (i + 1) * 10;
+                String a = "" + o;
+                if (i == (tim / 10)) {
+                    a = "*" + a + "*";
+                }
+                putLink(buf, urlR + "?cmd=seek&song=" + o, a);
+            }
+            buf.write("<br/><br/>seek:".getBytes());
             for (i = -15; i < 15; i++) {
                 int o = tim + i;
                 if (o < 0) {
                     continue;
                 }
-                a = "" + o;
+                String a = "" + o;
                 if (o == tim) {
-                    a = "*" + a + "*";
-                }
-                putLink(buf, urlR + "?cmd=seek&song=" + o, a);
-            }
-            a = "<br/><br/>seek to:";
-            buf.write(a.getBytes());
-            tim /= 10;
-            for (i = 0; i < 30; i++) {
-                int o = (i + 1) * 10;
-                a = "" + o;
-                if (i == tim) {
                     a = "*" + a + "*";
                 }
                 putLink(buf, urlR + "?cmd=seek&song=" + o, a);
@@ -698,10 +693,10 @@ public class player implements Runnable {
             int i = playerUtil.str2int(song);
             if (i >= 0) {
                 setVolume(i);
-                String a = "volume set to " + currVlme + " percent.<br/><br/>";
+                String a = "volume set to " + currVlme + " percent.<br/>";
                 buf.write(a.getBytes());
             }
-            buf.write("<br/><br/>volume:".getBytes());
+            buf.write("<br/>volume:".getBytes());
             for (i = 0; i < 11; i++) {
                 int o = i * 10;
                 String a = "" + o;
