@@ -503,6 +503,9 @@ public class userExec {
         hl.add("5 .            rpkisum           list of servers");
         hl.add("5 .            rpkitab           list of prefixes");
         hl.add("5 .            summary           list of neighbors");
+        hl.add("5 6            template          information about template");
+        hl.add("6 7              <nam>           template name");
+        hl.add("7 .                config        peer configuration");
         hl.add("5 6            neighbor          information about neighbor");
         hl.add("6 7              <addr>          neighbor address");
         hl.add("7 .                config        peer configuration");
@@ -935,12 +938,15 @@ public class userExec {
         hl.add("3 3,.      [name]                name of section");
         hl.add("3 4        interface             specified interface");
         hl.add("4 5,.        <name>              name of interface");
-        hl.add("5 .            all               do not hide defaults");
+        hl.add("5 5,.          all               do not hide defaults");
+        hl.add("5 5,.          hide              hide passwords");
         hl.add("3 4        router                specified router process");
         cfgRtr.getRouterList(hl, 2, "");
         hl.add("5 6,.          <num>             process id");
-        hl.add("6 .              all             do not hide defaults");
+        hl.add("6 6,.            all             do not hide defaults");
+        hl.add("6 6,.            hide            hide passwords");
         hl.add("3 .        all                   do not hide defaults");
+        hl.add("3 .        hide                  hide passwords");
         hl.add("2 3      vrf                     virtual routing/forwarding information");
         hl.add("3 .        routing               routing information");
         hl.add("3 .        icmp                  icmp information");

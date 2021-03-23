@@ -56,6 +56,7 @@ import rtr.rtrBabelNeigh;
 import rtr.rtrBgpGroup;
 import rtr.rtrBgpNeigh;
 import rtr.rtrBgpParam;
+import rtr.rtrBgpTemp;
 import rtr.rtrBgpUtil;
 import rtr.rtrEigrpNeigh;
 import rtr.rtrLdpNeigh;
@@ -487,6 +488,10 @@ public class userShow {
         if (a.equals("running-config")) {
             a = cmd.word();
             if (a.equals("all")) {
+                rdr.putStrArr(cfgAll.getShRun(getConfigFilter(cmd)));
+                return null;
+            }
+            if (a.equals("hide")) {
                 rdr.putStrArr(cfgAll.getShRun(getConfigFilter(cmd)));
                 return null;
             }
@@ -2788,6 +2793,21 @@ public class userShow {
         String a = cmd.word();
         if (a.equals("bestpath")) {
             rdr.putStrTab(r.bgp.getBestpath());
+            return;
+        }
+        if (a.equals("template")) {
+            rtrBgpTemp tmp = r.bgp.findTemp(cmd.word());
+            if (tmp == null) {
+                cmd.error("no such template");
+                return;
+            }
+            a = cmd.word();
+            if (a.equals("config")) {
+                List<String> l = new ArrayList<String>();
+                tmp.getConfig(l, "", 0);
+                rdr.putStrArr(l);
+                return;
+            }
             return;
         }
         if (a.equals("group")) {
