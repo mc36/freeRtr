@@ -75,7 +75,7 @@ public class servDcp extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
 

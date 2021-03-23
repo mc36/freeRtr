@@ -170,8 +170,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         cmds.cfgLine(l, worker.script == null, cmds.tabulator, "script", worker.script);
         cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
         if (worker.hidden) {
-            cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", authLocal.passwdEncode(worker.execUp));
-            cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", authLocal.passwdEncode(worker.execDn));
+            cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", authLocal.passwdEncode(worker.execUp, (filter & 2) != 0));
+            cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", authLocal.passwdEncode(worker.execDn, (filter & 2) != 0));
         } else {
             cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", worker.execUp);
             cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", worker.execDn);

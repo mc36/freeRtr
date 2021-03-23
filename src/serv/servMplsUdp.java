@@ -102,7 +102,7 @@ public class servMplsUdp extends servGeneric implements prtServP {
         return conns.del(ntry);
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (tempIfc == null) {
             l.add(beg + "no clone");
         } else {

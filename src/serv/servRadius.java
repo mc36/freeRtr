@@ -84,9 +84,9 @@ public class servRadius extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, authentic == null, beg, "authentication", "" + authentic);
-        cmds.cfgLine(l, secret == null, beg, "secret", "" + authLocal.passwdEncode(secret));
+        cmds.cfgLine(l, secret == null, beg, "secret", "" + authLocal.passwdEncode(secret, (filter & 2) != 0));
         cmds.cfgLine(l, !logRes, beg, "logging", "");
         l.add(beg + "success " + msgSucc);
         l.add(beg + "failure " + msgFail);

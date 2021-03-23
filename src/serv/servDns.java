@@ -110,7 +110,7 @@ public class servDns extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         if (recursAcl != null) {
             lst.add(beg + "recursion access-class " + recursAcl.listName);
         } else {

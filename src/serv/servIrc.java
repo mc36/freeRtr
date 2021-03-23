@@ -73,7 +73,7 @@ public class servIrc extends servGeneric implements prtServS {
      * @param beg beginning
      * @param l list
      */
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
 

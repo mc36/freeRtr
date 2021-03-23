@@ -276,7 +276,7 @@ public class servStreamingMdt extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
     }
 
     public boolean srvCfgStr(cmds cmd) {

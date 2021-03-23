@@ -3213,8 +3213,8 @@ public class cfgAll {
         List<String> l = new ArrayList<String>();
         l.add("hostname " + hostName);
         cmds.cfgLine(l, verCore.release, "", "buggy", "");
-        cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc));
-        cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass));
+        cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc, (filter & 2) != 0));
+        cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));
         l.add("banner encoded " + cryBase64.encodeBytes(banner));
         l.add(cmds.comment);
         cmds.cfgLine(l, !logger.logMillis, "", "logging milliseconds", "");
@@ -3297,7 +3297,7 @@ public class cfgAll {
         }
         cmds.cfgLine(l, configServer == null, "", "client config-server", "" + configServer);
         cmds.cfgLine(l, configUser == null, "", "client config-username", "" + configUser);
-        cmds.cfgLine(l, configPass == null, "", "client config-password", "" + authLocal.passwdEncode(configPass));
+        cmds.cfgLine(l, configPass == null, "", "client config-password", "" + authLocal.passwdEncode(configPass, (filter & 2) != 0));
         cmds.cfgLine(l, configBackup == null, "", "client config-backup", "" + configBackup);
         cmds.cfgLine(l, !configAsave, "", "client config-save", "");
         cmds.cfgLine(l, !configAbackup, "", "client config-archive", "");
@@ -3309,7 +3309,7 @@ public class cfgAll {
         l.add("client time-zone " + timeZoneName);
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);
         cmds.cfgLine(l, mailServerUser == null, "", "client mail-username", "" + mailServerUser);
-        cmds.cfgLine(l, mailServerPass == null, "", "client mail-password", "" + authLocal.passwdEncode(mailServerPass));
+        cmds.cfgLine(l, mailServerPass == null, "", "client mail-password", "" + authLocal.passwdEncode(mailServerPass, (filter & 2) != 0));
         a = "";
         if ((endForm & 0x1) != 0) {
             a += " date";

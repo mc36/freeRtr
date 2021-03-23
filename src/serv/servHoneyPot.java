@@ -78,7 +78,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, command == null, beg, "command", command);
         cmds.cfgLine(lst, !resolve, beg, "resolve", "");
     }

@@ -82,7 +82,7 @@ public class servPcep extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
         cmds.cfgLine(l, !explicit, beg, "explicit", "");
         if (expVrf == null) {

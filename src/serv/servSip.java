@@ -84,7 +84,7 @@ public class servSip extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, myPeer == null, beg, "mypeer", myPeer);
         for (int i = 0; i < trnsOutSrc.size(); i++) {
             lst.add(cmds.tabulator + "translate-out-calling " + trnsOutSrc.get(i).name);

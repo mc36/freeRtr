@@ -1282,7 +1282,7 @@ public abstract class rtrBgpParam {
         }
         l.add(beg + nei + "remote-as " + bits.num2str(remoteAs));
         cmds.cfgLine(l, description == null, beg, nei + "description", description);
-        cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode("" + passwd));
+        cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
         l.add(beg + nei + "advertisement-interval " + advertIntrval);
         l.add(beg + nei + "address-family" + mask2string(addrFams));

@@ -273,8 +273,9 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      *
      * @param l list to add
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void routerGetConfig(List<String> l, String beg) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(cmds.tabulator + beg + "enable");
         cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
@@ -292,7 +293,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !othSuppInt, cmds.tabulator, beg + "other-suppress-address", "");
         cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
-        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
+        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "priority " + disPriority);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);

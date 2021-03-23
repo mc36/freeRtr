@@ -1768,11 +1768,12 @@ public class ipFwdIface extends tabRouteIface {
      *
      * @param l list to append
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void ldpasCfg(List<String> l, String beg) {
+    public void ldpasCfg(List<String> l, String beg, int filter) {
         for (int i = 0; i < ldpas.size(); i++) {
             ipFwdIfaceLdpas ntry = ldpas.get(i);
-            l.add(beg + " " + ntry.ip + " " + authLocal.passwdEncode(ntry.pwd));
+            l.add(beg + " " + ntry.ip + " " + authLocal.passwdEncode(ntry.pwd, (filter & 2) != 0));
         }
     }
 

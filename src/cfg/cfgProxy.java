@@ -121,7 +121,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(cmds.tabulator + "protocol " + clntProxy.type2string(proxy.prxProto));
         cmds.cfgLine(l, proxy.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(proxy.secProto));
         cmds.cfgLine(l, proxy.username == null, cmds.tabulator, "username", proxy.username);
-        cmds.cfgLine(l, proxy.password == null, cmds.tabulator, "password", authLocal.passwdEncode(proxy.password));
+        cmds.cfgLine(l, proxy.password == null, cmds.tabulator, "password", authLocal.passwdEncode(proxy.password, (filter & 2) != 0));
         if (proxy.lowProxy == null) {
             l.add(cmds.tabulator + "no recursive");
         } else {

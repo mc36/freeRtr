@@ -674,7 +674,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         }
         cmds.cfgLine(l, endpt == null, cmds.tabulator, "myname", endpt);
         cmds.cfgLine(l, usr == null, cmds.tabulator, "username", usr);
-        cmds.cfgLine(l, pwd == null, cmds.tabulator, "password", authLocal.passwdEncode(pwd));
+        cmds.cfgLine(l, pwd == null, cmds.tabulator, "password", authLocal.passwdEncode(pwd, (filter & 2) != 0));
         cmds.cfgLine(l, trg == null, cmds.tabulator, "target", trg);
         l.add(cmds.tabulator + "max-calls-in " + maxCallsIn);
         l.add(cmds.tabulator + "max-calls-out " + maxCallsOut);

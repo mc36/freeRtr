@@ -46,7 +46,7 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
 
     public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
-        lst.add("crypto " + key.algName() + "key " + name + " import " + authLocal.passwdEncode(key.pemWriteStr(false)));
+        lst.add("crypto " + key.algName() + "key " + name + " import " + authLocal.passwdEncode(key.pemWriteStr(false), (filter & 2) != 0));
         lst.add(cmds.comment);
         return lst;
     }

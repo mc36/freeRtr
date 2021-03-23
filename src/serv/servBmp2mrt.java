@@ -109,7 +109,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         l.add(beg + "max-time " + maxTime);
         l.add(beg + "max-pack " + maxPack);
         l.add(beg + "max-byte " + maxByte);

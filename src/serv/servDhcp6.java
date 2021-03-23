@@ -112,7 +112,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (gateway == null) {
             l.add(beg + "no gateway");
         } else {

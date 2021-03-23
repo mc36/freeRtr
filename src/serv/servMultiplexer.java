@@ -76,7 +76,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
         l.add(beg + "timeout " + timeOut);
         l.add(beg + "buffer " + bufSiz);

@@ -210,8 +210,9 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
      *
      * @param l list to add
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void routerGetConfig(List<String> l, String beg) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(cmds.tabulator + beg + "enable");
         cmds.cfgLine(l, !allowRx, cmds.tabulator, beg + "allow-rx", "");
         cmds.cfgLine(l, !allowTx, cmds.tabulator, beg + "allow-tx", "");
@@ -228,7 +229,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
         l.add(cmds.tabulator + beg + "update-timer " + updateTimer);
         l.add(cmds.tabulator + beg + "hold-time " + holdTimer);
         l.add(cmds.tabulator + beg + "flush-time " + flushTimer);
-        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
+        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         cmds.cfgLine(l, prflstIn == null, cmds.tabulator, beg + "prefix-list-in", "" + prflstIn);
         cmds.cfgLine(l, prflstOut == null, cmds.tabulator, beg + "prefix-list-out", "" + prflstOut);
         cmds.cfgLine(l, roumapIn == null, cmds.tabulator, beg + "route-map-in", "" + roumapIn);

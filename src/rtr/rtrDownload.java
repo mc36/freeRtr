@@ -271,7 +271,7 @@ public class rtrDownload extends ipRtr {
         cmds.cfgLine(l, !hidden, beg, "hidden", "");
         cmds.cfgLine(l, !logging, beg, "log", "");
         if (hidden) {
-            l.add(beg + "url " + authLocal.passwdEncode(url));
+            l.add(beg + "url " + authLocal.passwdEncode(url, (filter & 2) != 0));
         } else {
             l.add(beg + "url " + url);
         }

@@ -86,7 +86,7 @@ public class servPop3 extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (authenticList == null) {
             l.add(beg + "no authentication");
         } else {

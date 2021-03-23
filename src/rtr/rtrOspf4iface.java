@@ -247,8 +247,9 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
      *
      * @param l list to add
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void routerGetConfig(List<String> l, String beg) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(cmds.tabulator + beg + "enable");
         String a = "";
         for (int i = 0; i < areas.size(); i++) {
@@ -279,7 +280,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(cmds.tabulator + beg + "network " + a);
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
-        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
+        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "instance " + instance);
         l.add(cmds.tabulator + beg + "cost " + metric);
         l.add(cmds.tabulator + beg + "priority " + drPriority);

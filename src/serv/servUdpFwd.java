@@ -79,7 +79,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
         if (trgVrf == null) {
             l.add(beg + "no target vrf");

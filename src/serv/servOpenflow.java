@@ -149,7 +149,7 @@ public class servOpenflow extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         l.add(beg + "version " + version);
         if (expVrf == null) {
             l.add(beg + "no export-vrf");

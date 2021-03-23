@@ -70,7 +70,7 @@ public class servGopher extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !dirListing, beg, "dirlist", "");
         l.add(beg + "path " + rootFolder);
         l.add(beg + "server " + serverName);

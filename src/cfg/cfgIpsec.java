@@ -123,7 +123,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         l.add("crypto ipsec " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         trans.getShRun(cmds.tabulator, l);
-        cmds.cfgLine(l, preshared == null, cmds.tabulator, "key", authLocal.passwdEncode(preshared));
+        cmds.cfgLine(l, preshared == null, cmds.tabulator, "key", authLocal.passwdEncode(preshared, (filter & 2) != 0));
         String s = "unknown";
         switch (role) {
             case initiator:

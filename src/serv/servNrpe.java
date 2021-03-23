@@ -65,7 +65,7 @@ public class servNrpe extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "truncate " + truncState);
     }
 

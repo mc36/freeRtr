@@ -577,7 +577,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         cmds.cfgLine(l, target == null, cmds.tabulator, "target", target);
         cmds.cfgLine(l, username == null, cmds.tabulator, "username", username);
-        cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password));
+        cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
         cmds.cfgLine(l, called == null, cmds.tabulator, "called", called);
         cmds.cfgLine(l, calling == null, cmds.tabulator, "calling", calling);
         cmds.cfgLine(l, pwmtu == 0, cmds.tabulator, "mtu", "" + pwmtu);

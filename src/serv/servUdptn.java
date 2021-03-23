@@ -50,7 +50,7 @@ public class servUdptn extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         lin.getShRun(beg, l);
     }
 

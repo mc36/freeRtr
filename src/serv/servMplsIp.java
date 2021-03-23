@@ -65,7 +65,7 @@ public class servMplsIp extends servGeneric implements ipPrt {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (tempIfc == null) {
             l.add(beg + "no clone");
         } else {

@@ -59,7 +59,7 @@ public class servRfb extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         lin.getShRun(beg, lst);
     }
 

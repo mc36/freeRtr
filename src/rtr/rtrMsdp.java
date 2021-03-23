@@ -207,7 +207,7 @@ public class rtrMsdp extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            ntry.getCfg(l, beg);
+            ntry.getCfg(l, beg, filter);
         }
     }
 

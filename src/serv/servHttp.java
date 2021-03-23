@@ -238,7 +238,7 @@ public class servHttp extends servGeneric implements prtServS {
      * @param beg beginning
      * @param l list
      */
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (proxy == null) {
             l.add(beg + "no proxy");
         } else {

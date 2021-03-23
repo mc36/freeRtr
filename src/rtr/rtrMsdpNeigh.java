@@ -386,8 +386,9 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
      *
      * @param l list to append
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void getCfg(List<String> l, String beg) {
+    public void getCfg(List<String> l, String beg, int filter) {
         String a = "neighbor " + peer + " ";
         l.add(beg + a + "enable");
         cmds.cfgLine(l, description == null, beg, a + "description", description);
@@ -396,7 +397,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         } else {
             l.add(beg + a + "update-source " + srcIface.name);
         }
-        cmds.cfgLine(l, passwd == null, beg, a + "password", authLocal.passwdEncode(passwd));
+        cmds.cfgLine(l, passwd == null, beg, a + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
         l.add(beg + a + "timer " + keepAlive + " " + holdTimer + " " + freshTimer + " " + flushTimer);
         cmds.cfgLine(l, !shutdown, beg, a + "shutdown", "");
         cmds.cfgLine(l, !bfdTrigger, beg, a + "bfd", "");

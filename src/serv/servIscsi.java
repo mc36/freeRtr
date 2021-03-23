@@ -51,7 +51,7 @@ public class servIscsi extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         for (int i = 0; i < files.size(); i++) {
             servScsi ntry = files.get(i);
             ntry.getCfg(l, beg + "target " + ntry.name + " ");

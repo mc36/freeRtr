@@ -337,8 +337,9 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      *
      * @param l list to add
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void routerGetConfig(List<String> l, String beg) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(cmds.tabulator + beg + "enable");
         if (dumpFile == null) {
             l.add(cmds.tabulator + "no " + beg + "dump");
@@ -365,7 +366,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
-        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication));
+        cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "affinity " + affinity);
         l.add(cmds.tabulator + beg + "srlg " + srlg);

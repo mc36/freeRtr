@@ -56,7 +56,7 @@ public class servPckOtcp extends servGeneric implements prtServS {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (clnIfc == null) {
             l.add(beg + "no clone");
         } else {

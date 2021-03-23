@@ -58,7 +58,7 @@ public class servTftp extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !readOnly, beg, "readonly", "");
         l.add(beg + "path " + rootFolder);
     }

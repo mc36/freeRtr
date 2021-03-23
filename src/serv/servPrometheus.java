@@ -92,7 +92,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "all-metrics " + allMets);
         for (int p = 0; p < sensors.size(); p++) {
             cfgSensor met = sensors.get(p);

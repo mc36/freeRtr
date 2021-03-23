@@ -217,9 +217,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         String a = "alias " + type2string(type) + " " + name;
         if (hidden) {
-            l.add(a + " command " + authLocal.passwdEncode(command));
+            l.add(a + " command " + authLocal.passwdEncode(command, (filter & 2) != 0));
             if (cmd2nd != null) {
-                l.add(a + " cmd2nd " + authLocal.passwdEncode(cmd2nd));
+                l.add(a + " cmd2nd " + authLocal.passwdEncode(cmd2nd, (filter & 2) != 0));
             }
             l.add(a + " hidden");
         } else {

@@ -67,7 +67,7 @@ public class servSocks extends servGeneric implements prtServS {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (trgVrf == null) {
             l.add(beg + "no target vrf");
         } else {

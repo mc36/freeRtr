@@ -81,7 +81,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
         if (originate == null) {
             l.add(beg + "no source");

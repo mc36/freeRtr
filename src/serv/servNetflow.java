@@ -117,7 +117,7 @@ public class servNetflow extends servGeneric implements prtServS {
      * @param beg beginning
      * @param lst list
      */
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         connects.getConfig(lst, beg);
     }
 

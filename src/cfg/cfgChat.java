@@ -50,7 +50,7 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("chat-script " + name);
-        l.addAll(script.getCfg(cmds.tabulator));
+        l.addAll(script.getCfg(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         return l;

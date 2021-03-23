@@ -43,7 +43,7 @@ public class authConstant extends authGeneric {
         return authUserPass(user, "");
     }
 
-    public List<String> getShRun(String beg) {
+    public List<String> getShRun(String beg, int filter) {
         return new ArrayList<String>();
     }
 

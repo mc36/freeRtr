@@ -132,7 +132,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if ((poolLo == null) || (poolHi == null)) {
             l.add(beg + "no pool");
         } else {

@@ -106,7 +106,7 @@ public class servFtp extends servGeneric implements prtServS {
         return ntry.adder(this, id, pipe);
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (authenticList == null) {
             l.add(beg + "no authentication");
         } else {

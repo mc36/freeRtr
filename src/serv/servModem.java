@@ -83,7 +83,7 @@ public class servModem extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         String a;
         if (aLaw) {
             a = "alaw";

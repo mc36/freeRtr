@@ -83,7 +83,7 @@ public class servLpd extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "path " + spoolPath);
         cmds.cfgLine(lst, printScript == null, beg, "script", printScript);
         cmds.cfgLine(lst, !keepFiles, beg, "keep", "");

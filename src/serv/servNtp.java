@@ -58,7 +58,7 @@ public class servNtp extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "stratum " + stratum);
         lst.add(beg + "reference " + refId);
     }

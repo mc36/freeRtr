@@ -78,7 +78,7 @@ public class servRpki extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         for (int i = 0; i < pref4.size(); i++) {
             lst.add(beg + "prefix4 " + pref4.get(i));
         }

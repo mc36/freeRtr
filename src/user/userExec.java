@@ -945,8 +945,10 @@ public class userExec {
         hl.add("5 6,.          <num>             process id");
         hl.add("6 6,.            all             do not hide defaults");
         hl.add("6 6,.            hide            hide passwords");
-        hl.add("3 .        all                   do not hide defaults");
-        hl.add("3 .        hide                  hide passwords");
+        hl.add("3 4,.      all                   do not hide defaults");
+        hl.add("4 .          hide                hide passwords");
+        hl.add("3 4,.      hide                  hide passwords");
+        hl.add("4 .          all                 do not hide defaults");
         hl.add("2 3      vrf                     virtual routing/forwarding information");
         hl.add("3 .        routing               routing information");
         hl.add("3 .        icmp                  icmp information");

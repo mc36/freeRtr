@@ -33,21 +33,39 @@ public class authLocal extends authGeneric {
 
     private List<String> commands;
 
-    private static final String passwdBeg = "$v10$";
+    /**
+     * password beginning
+     */
+    protected static final String passwdBeg = "$v10$";
 
-    private static final String cryptoBeg = "$w10$";
+    /**
+     * credential beginning
+     */
+    protected static final String cryptoBeg = "$w10$";
 
-    private static final String secretBeg = "$V10$";
+    /**
+     * secret beginning
+     */
+    protected static final String secretBeg = "$V10$";
+
+    /**
+     * removed secret
+     */
+    protected static final String removedEnd = "<removed>$";
 
     /**
      * hide password
      *
      * @param str cleartext password to encode
+     * @param hide hide password
      * @return encoded password
      */
-    public static String passwdHide(String str) {
+    public static String passwdHide(String str, boolean hide) {
         if (str == null) {
             return null;
+        }
+        if (hide) {
+            return passwdBeg + removedEnd;
         }
         return passwdBeg + cryBase64.encodeString(str);
     }
@@ -56,14 +74,18 @@ public class authLocal extends authGeneric {
      * encode password
      *
      * @param str cleartext password to encode
+     * @param hide hide password
      * @return encoded password
      */
-    public static String passwdEncode(String str) {
+    public static String passwdEncode(String str, boolean hide) {
         if (str == null) {
             return null;
         }
+        if (hide) {
+            return cryptoBeg + removedEnd;
+        }
         if ((cfgAll.passEnc == null) && (cfgAll.passEnh == null)) {
-            return passwdHide(str);
+            return passwdHide(str, hide);
         }
         cryEncrGeneric c = new cryEncrCTRaes();
         cryHashGeneric h1 = new cryHashSha2256();
@@ -209,11 +231,15 @@ public class authLocal extends authGeneric {
      * encode secret
      *
      * @param sec secret to encode
+     * @param hide hide password
      * @return encoded
      */
-    public static String secretEncode(byte[] sec) {
+    public static String secretEncode(byte[] sec, boolean hide) {
         if (sec == null) {
             return null;
+        }
+        if (hide) {
+            return secretBeg + removedEnd;
         }
         return secretBeg + cryBase64.encodeBytes(sec);
     }
@@ -331,13 +357,13 @@ public class authLocal extends authGeneric {
      * get config
      *
      * @param beg beginning
-     * @return confi
+     * @return config
      */
-    public List<String> getShRun(String beg) {
+    public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < users.size(); i++) {
             authLocalEntry ntry = users.get(i);
-            ntry.getShRun(beg, l);
+            ntry.getShRun(beg, l, filter);
         }
         for (int i = 0; i < commands.size(); i++) {
             l.add(beg + "allowed " + commands.get(i));
@@ -606,24 +632,24 @@ class authLocalEntry implements Comparator<authLocalEntry> {
      * @param beg beginning string
      * @param lst list to append
      */
-    public void getShRun(String beg, List<String> lst) {
+    public void getShRun(String beg, List<String> lst, int filter) {
         beg += "username " + username;
         lst.add(beg);
         beg += " ";
         if (password == null) {
             lst.add(beg + "nopassword");
         } else {
-            lst.add(beg + "password " + authLocal.passwdEncode(password));
+            lst.add(beg + "password " + authLocal.passwdEncode(password, (filter & 2) != 0));
         }
         if (secret == null) {
             lst.add(beg + "nosecret");
         } else {
-            lst.add(beg + "secret " + authLocal.secretEncode(secret));
+            lst.add(beg + "secret " + authLocal.secretEncode(secret, (filter & 2) != 0));
         }
         if (otpseed == null) {
             lst.add(beg + "nootpseed");
         } else {
-            lst.add(beg + "otpseed $v10$" + cryBase64.encodeBytes(otpseed));
+            lst.add(beg + "otpseed " + authLocal.passwdEncode(new String(otpseed), (filter & 2) != 0));
         }
         if (autoHangup) {
             lst.add(beg + "autohangup");
@@ -690,14 +716,18 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         }
         if (s.equals("otpseed")) {
             s = cmd.getRemaining();
-            if (!s.startsWith("$v10$")) {
-                byte[] buf1 = new byte[1];
-                buf1[0] = (byte) bits.str2num(cmd.word());
-                otpseed = bits.byteConcat(buf1, cmd.getRemaining().getBytes());
+            if (s.startsWith(authLocal.passwdBeg)) {
+                otpseed = null;
+                s = authLocal.passwdDecode(s);
+                if (s == null) {
+                    return false;
+                }
+                otpseed = s.getBytes();
                 return false;
             }
-            s = s.substring(5, s.length());
-            otpseed = cryBase64.decodeBytes(s);
+            byte[] buf1 = new byte[1];
+            buf1[0] = (byte) bits.str2num(cmd.word());
+            otpseed = bits.byteConcat(buf1, cmd.getRemaining().getBytes());
             return false;
         }
         if (s.equals("anypass")) {

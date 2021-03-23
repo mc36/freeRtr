@@ -105,7 +105,7 @@ public class servPckOudp extends servGeneric implements prtServP {
         return conns.del(new servPckOudpConn(id, this));
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (dialIfc == null) {
             l.add(beg + "no clone");
         } else {

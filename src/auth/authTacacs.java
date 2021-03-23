@@ -33,9 +33,9 @@ public class authTacacs extends authGeneric {
         return "tacacs";
     }
 
-    public List<String> getShRun(String beg) {
+    public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
-        cmds.cfgLine(l, secret == null, beg, "secret", authLocal.passwdEncode(secret));
+        cmds.cfgLine(l, secret == null, beg, "secret", authLocal.passwdEncode(secret, (filter & 2) != 0));
         cmds.cfgLine(l, server == null, beg, "server", server);
         l.add(beg + "privilege " + privilege);
         return l;

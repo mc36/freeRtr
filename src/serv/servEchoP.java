@@ -103,7 +103,7 @@ public class servEchoP extends servGeneric implements prtServP {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
     }
 
     public boolean srvCfgStr(cmds cmd) {

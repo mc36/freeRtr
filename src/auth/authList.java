@@ -25,7 +25,7 @@ public class authList extends authGeneric {
         l.add("3 .      <name>          name of authenticator");
     }
 
-    public List<String> getShRun(String beg) {
+    public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
             authListEntry ntry = lst.get(i);

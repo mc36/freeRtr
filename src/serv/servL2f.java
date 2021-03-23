@@ -104,13 +104,13 @@ public class servL2f extends servGeneric implements prtServP {
         return conns.del(ntry);
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (clnIfc == null) {
             l.add(beg + "no clone");
         } else {
             l.add(beg + "clone " + clnIfc.name);
         }
-        cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password));
+        cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
     }
 
     public boolean srvCfgStr(cmds cmd) {

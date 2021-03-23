@@ -28,18 +28,19 @@ public class lineScript {
     /**
      * actions
      */
-    public tabGen<lineScriptNtry> actions = new tabGen<lineScriptNtry>();
+    protected tabGen<lineScriptNtry> actions = new tabGen<lineScriptNtry>();
 
     /**
      * get config
      *
      * @param beg beginning string
+     * @param filter filter defaults
      * @return configuration
      */
-    public List<String> getCfg(String beg) {
+    public List<String> getCfg(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < actions.size(); i++) {
-            l.add(beg + actions.get(i));
+            l.add(beg + actions.get(i).getCfg(filter));
         }
         return l;
     }
@@ -212,7 +213,7 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
         return 0;
     }
 
-    public String toString() {
+    public String getCfg(int filter) {
         String s;
         switch (act) {
             case txtTx:
@@ -222,7 +223,7 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
                 s = "recv " + tim + " " + str;
                 break;
             case passwd:
-                s = "password " + authLocal.passwdEncode(str);
+                s = "password " + authLocal.passwdEncode(str, (filter & 2) != 0);
                 break;
             case binTx:
                 s = "binsend " + str;

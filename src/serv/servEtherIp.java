@@ -72,7 +72,7 @@ public class servEtherIp extends servGeneric implements ipPrt {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (brdgIfc == null) {
             l.add(beg + "no bridge");
         } else {

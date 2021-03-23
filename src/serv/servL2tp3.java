@@ -101,7 +101,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (dialIfc == null) {
             l.add(beg + "no clone");
         } else {
@@ -113,7 +113,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
             l.add(beg + "bridge " + brdgIfc.name);
         }
         cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
-        cmds.cfgLine(l, password == null, beg, "password", authLocal.passwdEncode(password));
+        cmds.cfgLine(l, password == null, beg, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
     }
 
     public boolean srvCfgStr(cmds cmd) {

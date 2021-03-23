@@ -5268,7 +5268,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             isdn.getConfig(l, cmds.tabulator + "isdn ");
         }
         if (ppp != null) {
-            ppp.getConfig(l, cmds.tabulator + "ppp ");
+            ppp.getConfig(l, cmds.tabulator + "ppp ", filter);
         }
         if (sep != null) {
             sep.getConfig(l, cmds.tabulator + "sep ");
@@ -5446,10 +5446,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "mpls ldptarget " + mplsTarget.get(i).target);
         }
         if (fwdIf4 != null) {
-            fwdIf4.ldpasCfg(l, cmds.tabulator + "mpls ldppassword");
+            fwdIf4.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
         }
         if (fwdIf6 != null) {
-            fwdIf6.ldpasCfg(l, cmds.tabulator + "mpls ldppassword");
+            fwdIf6.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
         }
         if (rtrBabel4hnd != null) {
             s = "router babel4 " + rtrBabel4hnd.number + " ";
@@ -5469,7 +5469,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (rtrRip4hnd != null) {
             s = "router rip4 " + rtrRip4hnd.number + " ";
-            rtrRip4ifc.routerGetConfig(l, s);
+            rtrRip4ifc.routerGetConfig(l, s, filter);
         }
         if (rtrRip6hnd != null) {
             s = "router rip6 " + rtrRip6hnd.number + " ";
@@ -5477,7 +5477,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (rtrOspf4hnd != null) {
             s = "router ospf4 " + rtrOspf4hnd.number + " ";
-            rtrOspf4ifc.routerGetConfig(l, s);
+            rtrOspf4ifc.routerGetConfig(l, s, filter);
         }
         if (rtrOspf6hnd != null) {
             s = "router ospf6 " + rtrOspf6hnd.number + " ";
@@ -5485,23 +5485,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (rtrIsisHnd != null) {
             s = "router isis" + rtrIsisHnd.isis.getProtoVer() + " " + rtrIsisHnd.number + " ";
-            rtrIsisIfc.routerGetConfig(l, s);
+            rtrIsisIfc.routerGetConfig(l, s, filter);
         }
         if (rtrPvrp4hnd != null) {
             s = "router pvrp4 " + rtrPvrp4hnd.number + " ";
-            rtrPvrp4ifc.routerGetConfig(l, s);
+            rtrPvrp4ifc.routerGetConfig(l, s, filter);
         }
         if (rtrPvrp6hnd != null) {
             s = "router pvrp6 " + rtrPvrp6hnd.number + " ";
-            rtrPvrp6ifc.routerGetConfig(l, s);
+            rtrPvrp6ifc.routerGetConfig(l, s, filter);
         }
         if (rtrLsrp4hnd != null) {
             s = "router lsrp4 " + rtrLsrp4hnd.number + " ";
-            rtrLsrp4ifc.routerGetConfig(l, s);
+            rtrLsrp4ifc.routerGetConfig(l, s, filter);
         }
         if (rtrLsrp6hnd != null) {
             s = "router lsrp6 " + rtrLsrp6hnd.number + " ";
-            rtrLsrp6ifc.routerGetConfig(l, s);
+            rtrLsrp6ifc.routerGetConfig(l, s, filter);
         }
         if (rtrEigrp4hnd != null) {
             s = "router eigrp4 " + rtrEigrp4hnd.number + " ";

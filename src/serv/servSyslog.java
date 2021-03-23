@@ -116,7 +116,7 @@ public class servSyslog extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !log2local, beg, "local", "");
         cmds.cfgLine(lst, log2file == null, beg, "file", log2file);
     }

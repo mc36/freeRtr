@@ -169,7 +169,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "random-time " + randInt);
         l.add(cmds.tabulator + "random-delay " + randIni);
         if (hidden) {
-            l.add(cmds.tabulator + "command " + authLocal.passwdEncode(command));
+            l.add(cmds.tabulator + "command " + authLocal.passwdEncode(command, (filter & 2) != 0));
         } else {
             l.add(cmds.tabulator + "command " + command);
         }

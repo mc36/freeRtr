@@ -124,7 +124,7 @@ public class servSmtp extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> lst) {
+    public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "rbl-threshold " + rblMin);
         lst.add(beg + "rbl-timeout " + rblTim);
         for (int i = 0; i < rbls.size(); i++) {

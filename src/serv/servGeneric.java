@@ -335,8 +335,9 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      *
      * @param beg beginning string
      * @param lst list to append
+     * @param filter filter defaults
      */
-    public abstract void srvShRun(String beg, List<String> lst);
+    public abstract void srvShRun(String beg, List<String> lst, int filter);
 
     /**
      * get default filter
@@ -1392,7 +1393,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         }
         l.add(beg + "port " + srvPort);
         l.add(beg + "protocol " + proto2string(srvProto));
-        srvShRun(beg, l);
+        srvShRun(beg, l, filter);
         if (srvIface != null) {
             l.add(beg + "interface " + srvIface.name);
         } else {

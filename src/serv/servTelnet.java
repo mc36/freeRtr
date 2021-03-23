@@ -62,7 +62,7 @@ public class servTelnet extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
         lin.getShRun(beg, l);
     }

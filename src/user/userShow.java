@@ -116,23 +116,29 @@ public class userShow {
      */
     public userHelping hlp;
 
-    private int getConfigFilter(cmds cmd) {
-        int filt = 1;
+    private static int getConfigFilter(int flt, String cmd) {
+        if (cmd.equals("all")) {
+            return flt & ~1;
+        }
+        if (cmd.equals("hide")) {
+            return flt | 2;
+        }
+        return flt;
+    }
+
+    private static int getConfigFilter(String ini, cmds cmd) {
+        int flt = 1;
+        if (ini != null) {
+            flt = getConfigFilter(flt, ini);
+        }
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("all")) {
-                filt &= ~1;
-                continue;
-            }
-            if (a.equals("hide")) {
-                filt |= 2;
-                continue;
-            }
+            flt = getConfigFilter(flt, a);
         }
-        return filt;
+        return flt;
     }
 
     /**
@@ -488,11 +494,11 @@ public class userShow {
         if (a.equals("running-config")) {
             a = cmd.word();
             if (a.equals("all")) {
-                rdr.putStrArr(cfgAll.getShRun(getConfigFilter(cmd)));
+                rdr.putStrArr(cfgAll.getShRun(getConfigFilter(a, cmd)));
                 return null;
             }
             if (a.equals("hide")) {
-                rdr.putStrArr(cfgAll.getShRun(getConfigFilter(cmd)));
+                rdr.putStrArr(cfgAll.getShRun(getConfigFilter(a, cmd)));
                 return null;
             }
             if (a.equals("router")) {
@@ -507,7 +513,7 @@ public class userShow {
                     cmd.error("no such process");
                     return null;
                 }
-                int filt = getConfigFilter(cmd);
+                int filt = getConfigFilter(null, cmd);
                 rdr.putStrArr(r.getShRun(filt));
                 rdr.putStrArr(r.getShRun2(filt));
                 return null;
@@ -518,7 +524,7 @@ public class userShow {
                     cmd.error("no such interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.getShRun(getConfigFilter(cmd)));
+                rdr.putStrArr(ifc.getShRun(getConfigFilter(null, cmd)));
                 return null;
             }
             List<String> lst = cfgAll.getShRun(1);

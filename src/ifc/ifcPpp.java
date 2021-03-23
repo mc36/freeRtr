@@ -488,12 +488,13 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      *
      * @param l storage
      * @param beg beginning
+     * @param filter filter defaults
      */
-    public void getConfig(List<String> l, String beg) {
+    public void getConfig(List<String> l, String beg, int filter) {
         l.add(beg + "keepalive " + keepaliveInterval);
         cmds.cfgLine(l, authenRem == null, cmds.tabulator, "ppp authentication", "" + authenRem);
         cmds.cfgLine(l, sentUser == null, cmds.tabulator, "ppp username", sentUser);
-        cmds.cfgLine(l, sentPass == null, cmds.tabulator, "ppp password", authLocal.passwdEncode(sentPass));
+        cmds.cfgLine(l, sentPass == null, cmds.tabulator, "ppp password", authLocal.passwdEncode(sentPass, (filter & 2) != 0));
         String a;
         switch (multilinkCfg) {
             case 1:

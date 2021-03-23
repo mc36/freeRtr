@@ -255,7 +255,7 @@ public class userTest {
             cmd.error("original = '" + a + "'");
             a = authLocal.passwdDecode(a);
             cmd.error(" decoded = '" + a + "'");
-            a = authLocal.passwdEncode(a);
+            a = authLocal.passwdEncode(a, false);
             cmd.error(" encoded = '" + a + "'");
             return null;
         }

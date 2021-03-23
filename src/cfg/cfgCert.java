@@ -60,7 +60,7 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
 
     public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
-        lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr()));
+        lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr(), (filter & 2) != 0));
         lst.add(cmds.comment);
         return lst;
     }

@@ -107,9 +107,10 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      * get running configuration
      *
      * @param beg beginning string
+     * @param filter filter defaults
      * @return string list
      */
-    public abstract List<String> getShRun(String beg);
+    public abstract List<String> getShRun(String beg, int filter);
 
     /**
      * get help text

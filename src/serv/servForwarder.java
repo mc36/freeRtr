@@ -112,7 +112,7 @@ public class servForwarder extends servGeneric implements prtServS {
         return defaultF;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
         if (trgVrf == null) {
             l.add(beg + "no target vrf");
@@ -129,7 +129,7 @@ public class servForwarder extends servGeneric implements prtServS {
         l.add(beg + "target protocol " + proto2string(trgProto));
         cmds.cfgLine(l, trgSecur == 0, beg, "target security", proto2string(trgSecur));
         cmds.cfgLine(l, trgUser == null, beg, "target username", trgUser);
-        cmds.cfgLine(l, trgPass == null, beg, "target password", authLocal.passwdEncode(trgPass));
+        cmds.cfgLine(l, trgPass == null, beg, "target password", authLocal.passwdEncode(trgPass, (filter & 2) != 0));
         l.add(beg + "timeout " + timeOut);
         l.add(beg + "buffer " + bufSiz);
     }

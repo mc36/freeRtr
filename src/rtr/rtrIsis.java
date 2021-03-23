@@ -1160,8 +1160,8 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
         l.add(beg + "distance " + distantInt + " " + distantExt);
-        getConfig(level2, l, beg);
-        getConfig(level1, l, beg);
+        getConfig(level2, l, beg, filter);
+        getConfig(level1, l, beg, filter);
         other.getConfig(l, beg + "afi-other ");
     }
 
@@ -1329,8 +1329,9 @@ public class rtrIsis extends ipRtr {
      * @param lev level to use
      * @param l list to update
      * @param beg beginning string
+     * @param filter filter defaults
      */
-    public void getConfig(rtrIsisLevel lev, List<String> l, String beg) {
+    public void getConfig(rtrIsisLevel lev, List<String> l, String beg, int filter) {
         String s = "level" + lev.level + " ";
         l.add(beg + s + "spf-log " + lev.lastSpf.logSize);
         cmds.cfgLine(l, lev.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", "");
@@ -1349,7 +1350,7 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.defOrigin, beg, s + "default-originate", "");
         cmds.cfgLine(l, !lev.odefOrigin, beg, s + "other-default-originate", "");
         l.add(beg + s + "lsp-mtu " + lev.maxLspSize);
-        cmds.cfgLine(l, lev.lspPassword == null, beg, s + "lsp-password", authLocal.passwdEncode("" + lev.lspPassword));
+        cmds.cfgLine(l, lev.lspPassword == null, beg, s + "lsp-password", authLocal.passwdEncode(lev.lspPassword, (filter & 2) != 0));
         l.add(beg + s + "lsp-refresh " + lev.lspRefresh);
         l.add(beg + s + "lsp-lifetime " + lev.lspLifetime);
         cmds.cfgLine(l, lev.prflstFrom == null, beg, s + "prefix-list-from", "" + lev.prflstFrom);

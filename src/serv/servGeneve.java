@@ -110,7 +110,7 @@ public class servGeneve extends servGeneric implements prtServP {
         return conns.del(ntry);
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
         if (brdgIfc == null) {
             l.add(beg + "no bridge");
         } else {

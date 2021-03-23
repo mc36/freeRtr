@@ -48,7 +48,7 @@ public class servCharGen extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvShRun(String beg, List<String> l) {
+    public void srvShRun(String beg, List<String> l, int filter) {
     }
 
     public boolean srvCfgStr(cmds cmd) {

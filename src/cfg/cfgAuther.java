@@ -208,7 +208,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         cmds.cfgLine(l, !aut.logErr, cmds.tabulator, "log-error", "");
         cmds.cfgLine(l, !aut.logOk, cmds.tabulator, "log-success", "");
         cmds.cfgLine(l, !aut.logPass, cmds.tabulator, "log-password", "");
-        l.addAll(aut.getShRun(cmds.tabulator));
+        l.addAll(aut.getShRun(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
