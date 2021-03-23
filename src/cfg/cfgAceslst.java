@@ -49,7 +49,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         return name;
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("access-list " + name);
         if (description != null) {

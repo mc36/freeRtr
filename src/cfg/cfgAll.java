@@ -3209,7 +3209,7 @@ public class cfgAll {
         }
     }
 
-    private static List<String> getGlobalRunBeg(boolean filter) {
+    private static List<String> getGlobalRunBeg(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("hostname " + hostName);
         cmds.cfgLine(l, verCore.release, "", "buggy", "");
@@ -3232,7 +3232,7 @@ public class cfgAll {
         a = "" + logger.logIrcHnd;
         cmds.cfgLine(l, a.length() < 1, "", "logging irc " + logger.level2string(logger.logIrcLev), a);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);
@@ -3251,7 +3251,7 @@ public class cfgAll {
         return "none";
     }
 
-    private static List<String> getGlobalRunEnd(boolean filter) {
+    private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
         if (clientProxy == null) {
@@ -3322,7 +3322,7 @@ public class cfgAll {
         }
         cmds.cfgLine(l, endForm == 0, "", "client end-format", a.trim());
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);
@@ -3331,10 +3331,10 @@ public class cfgAll {
     /**
      * build running configuration
      *
-     * @param filter true to filter defaults, false to not
+     * @param filter defaults
      * @return text to display
      */
-    public static List<String> getShRun(boolean filter) {
+    public static List<String> getShRun(int filter) {
         List<String> l = getGlobalRunBeg(filter);
         servGenList.listGetRun(l, vdcs, filter);
         servGenList.listGetRun(l, prcs, filter);

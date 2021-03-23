@@ -1504,7 +1504,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         return false;
     }
 
-    private synchronized List<String> getShRun(int mode, boolean filter) {
+    private synchronized List<String> getShRun(int mode, int filter) {
         boolean need2nd;
         switch (type) {
             case bgp4:
@@ -1552,13 +1552,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         return getShRun(2, filter);
     }
 
@@ -1568,7 +1568,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @param filter filter defaults
      * @return configuration
      */
-    public List<String> getShRun2(boolean filter) {
+    public List<String> getShRun2(int filter) {
         return getShRun(3, filter);
     }
 

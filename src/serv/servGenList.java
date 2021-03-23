@@ -101,7 +101,7 @@ public class servGenList<T extends servGeneric> {
      * @param cfg list to append
      * @param filter filter defaults
      */
-    public void getShRun(List<String> cfg, boolean filter) {
+    public void getShRun(List<String> cfg, int filter) {
         for (int i = 0; i < lst.size(); i++) {
             T ntry = lst.get(i);
             cfg.addAll(ntry.getShRun("", filter));
@@ -117,7 +117,7 @@ public class servGenList<T extends servGeneric> {
      * @param flt true to filter defaults, false to not
      */
     @SuppressWarnings("unchecked")
-    public static <T extends cfgGeneric> void listGetRun(List<String> cfg, tabGen<?> lst, boolean flt) {
+    public static <T extends cfgGeneric> void listGetRun(List<String> cfg, tabGen<?> lst, int flt) {
         for (int i = 0; i < lst.size(); i++) {
             T ace = (T) lst.get(i);
             if (ace == null) {

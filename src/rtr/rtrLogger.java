@@ -324,7 +324,7 @@ public class rtrLogger extends ipRtr {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }

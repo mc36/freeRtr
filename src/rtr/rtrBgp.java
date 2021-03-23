@@ -2402,7 +2402,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "local-as " + bits.num2str(localAs));
         l.add(beg + "router-id " + routerID);
         l.add(beg + "address-family" + rtrBgpParam.mask2string(addrFams));

@@ -159,7 +159,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
      * @param filter filter
      * @return config
      */
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("tracker " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
@@ -213,7 +213,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

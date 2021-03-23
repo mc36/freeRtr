@@ -475,7 +475,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public void doTempCfg(String cmd, boolean negated) {
     }
 
-    public void getConfig(List<String> l, String beg, boolean filter) {
+    public void getConfig(List<String> l, String beg, int filter) {
         l.addAll(getParamCfg(beg, "neighbor " + peerAddr + " ", filter));
     }
 

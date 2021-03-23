@@ -227,7 +227,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         l.add("2 2,.      <str>                  text");
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("check " + name);
         cmds.cfgLine(l, command == null, cmds.tabulator, "command", "" + command);
@@ -264,7 +264,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

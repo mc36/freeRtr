@@ -207,7 +207,7 @@ public class userHwpop {
             orig.error("no interfaces found");
             return;
         }
-        txt = cfgAll.getShRun(true);
+        txt = cfgAll.getShRun(1);
         txt = userFilter.getSection(txt, userReader.filter2reg(srv));
         if (txt.size() < 1) {
             orig.error("no server found");

@@ -274,7 +274,7 @@ public class userNetconf {
                 continue;
             }
             if (a.startsWith(getConfig)) {
-                List<String> cfg = cfgAll.getShRun(false);
+                List<String> cfg = cfgAll.getShRun(0);
                 List<userFilter> sec = userFilter.text2section(cfg);
                 n = a.substring(getConfig.length(), a.length());
                 List<userFilter> res = new ArrayList<userFilter>();

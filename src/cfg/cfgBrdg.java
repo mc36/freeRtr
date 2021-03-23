@@ -92,13 +92,13 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
         return "bvi" + name;
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("bridge " + name);
         bridgeHed.getConfig(l, cmds.tabulator);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

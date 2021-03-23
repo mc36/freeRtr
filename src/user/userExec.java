@@ -1985,7 +1985,7 @@ public class userExec {
                 return cmdRes.config;
             }
             if (a.equals("reapply")) {
-                List<String> cfg = cfgAll.getShRun(true);
+                List<String> cfg = cfgAll.getShRun(1);
                 int res = cfgInit.executeSWcommands(cfg, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));
                 return cmdRes.command;
@@ -2006,7 +2006,7 @@ public class userExec {
                     cmd.error("error reading file");
                     return cmdRes.command;
                 }
-                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c1 = cfgAll.getShRun(1);
                 List<String> c3 = userFilter.getDiffs(c1, c2);
                 reader.putStrArr(bits.lst2lin(c3, false));
                 int res = cfgInit.executeSWcommands(c3, false);
@@ -2048,7 +2048,7 @@ public class userExec {
                     cmd.error("error reading file");
                     return cmdRes.command;
                 }
-                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c1 = cfgAll.getShRun(1);
                 List<String> c3 = userFilter.getDiffs(c1, c2);
                 reader.putStrArr(bits.lst2lin(c3, false));
                 int res = cfgInit.executeSWcommands(c3, false);
@@ -2127,7 +2127,7 @@ public class userExec {
                 return null;
             }
             if (a.equals("editor")) {
-                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c1 = cfgAll.getShRun(1);
                 if (cmd.size() > 0) {
                     c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
@@ -2146,7 +2146,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("viewer")) {
-                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c1 = cfgAll.getShRun(1);
                 if (cmd.size() > 0) {
                     c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
@@ -2155,7 +2155,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("revert")) {
-                List<String> c1 = cfgAll.getShRun(true);
+                List<String> c1 = cfgAll.getShRun(1);
                 List<String> c2 = bits.txt2buf(cfgInit.cfgFileSw);
                 if (c2 == null) {
                     cmd.error("error reading file");
@@ -2201,19 +2201,19 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("terminal")) {
-                reader.putStrArr(cfgAll.getShRun(true));
+                reader.putStrArr(cfgAll.getShRun(1));
                 return cmdRes.command;
             }
             if (a.equals("file")) {
                 cmd.error("exporting configuration");
-                boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cmd.getRemaining());
+                boolean b = bits.buf2txt(true, cfgAll.getShRun(1), cmd.getRemaining());
                 cmd.error(doneFail(b));
                 return cmdRes.command;
             }
             if (a.equals("memory")) {
                 doCfgBackup();
                 cmd.error("saving configuration");
-                boolean b = bits.buf2txt(true, cfgAll.getShRun(true), cfgInit.cfgFileSw);
+                boolean b = bits.buf2txt(true, cfgAll.getShRun(1), cfgInit.cfgFileSw);
                 cmd.error(doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
@@ -2237,7 +2237,7 @@ public class userExec {
                     url.filExt = ".txt";
                 }
                 a = version.myWorkDir() + "wrt" + bits.randomD() + ".tmp";
-                if (bits.buf2txt(true, cfgAll.getShRun(true), a)) {
+                if (bits.buf2txt(true, cfgAll.getShRun(1), a)) {
                     cmd.error("failed to write temporary file!");
                     return cmdRes.command;
                 }
@@ -2310,7 +2310,7 @@ public class userExec {
                 cfgInit.stopRouter(true, 11, "user requested");
                 return cmdRes.command;
             }
-            if (userFilter.doDiffer(cfgAll.getShRun(true), bits.txt2buf(cfgInit.cfgFileSw)) > 1) {
+            if (userFilter.doDiffer(cfgAll.getShRun(1), bits.txt2buf(cfgInit.cfgFileSw)) > 1) {
                 String b = pipe.strChr("configuration not saved, proceed?", "ynYN").toLowerCase();
                 if (!b.equals("y")) {
                     return cmdRes.command;

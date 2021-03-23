@@ -197,7 +197,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         return null;
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         authGeneric aut = getAuther();
         if (aut == null) {
@@ -211,7 +211,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         l.addAll(aut.getShRun(cmds.tabulator));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

@@ -91,7 +91,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         cfgXconnSide.getHelp(l, 2);
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("xconnect " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
@@ -101,7 +101,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         cmds.cfgLine(l, !side2.ready2run(), cmds.tabulator, "side2", side2.getCfg());
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

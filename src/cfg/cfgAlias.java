@@ -213,7 +213,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         return "alias";
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         String a = "alias " + type2string(type) + " " + name;
         if (hidden) {
@@ -235,7 +235,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             l.add(a + " description " + description);
         }
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, cfgAll.defaultF);

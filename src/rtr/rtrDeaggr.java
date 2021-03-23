@@ -183,7 +183,7 @@ public class rtrDeaggr extends ipRtr {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "distance " + distance1 + " " + distance2);
         l.add(beg + "nexthop " + nextHop1 + " " + nextHop2);
     }

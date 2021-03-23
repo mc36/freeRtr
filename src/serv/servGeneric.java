@@ -1314,7 +1314,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
      * @param filter filter defaults
      * @return config text
      */
-    public List<String> getShRun(String beg, boolean filter) {
+    public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         l.add("server " + srvName() + " " + srvName);
         beg += cmds.tabulator;
@@ -1405,7 +1405,7 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, srvDefFlt());

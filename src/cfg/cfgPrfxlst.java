@@ -40,7 +40,7 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         prflst = new tabListing<tabPrfxlstN, addrIP>();
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("prefix-list " + name);
         if (description != null) {

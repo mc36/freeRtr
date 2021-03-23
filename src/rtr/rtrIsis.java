@@ -1146,7 +1146,7 @@ public class rtrIsis extends ipRtr {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "net-id " + netEntTit);
         l.add(beg + "traffeng-id " + traffEngID);
         l.add(beg + "is-type " + level2string(operateLevel));

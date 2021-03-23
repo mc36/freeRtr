@@ -115,6 +115,25 @@ public class userShow {
      */
     public userHelping hlp;
 
+    private int getConfigFilter(cmds cmd) {
+        int filt = 1;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("all")) {
+                filt &= ~1;
+                continue;
+            }
+            if (a.equals("hide")) {
+                filt |= 2;
+                continue;
+            }
+        }
+        return filt;
+    }
+
     /**
      * do the work
      *
@@ -450,11 +469,11 @@ public class userShow {
             return null;
         }
         if (a.equals("rollback-config")) {
-            rdr.putStrArr(userFilter.getDiffs(cfgAll.getShRun(true), bits.txt2buf(cfgInit.cfgFileSw)));
+            rdr.putStrArr(userFilter.getDiffs(cfgAll.getShRun(1), bits.txt2buf(cfgInit.cfgFileSw)));
             return null;
         }
         if (a.equals("config-differences")) {
-            rdr.putStrArr(userFilter.getDiffs(bits.txt2buf(cfgInit.cfgFileSw), cfgAll.getShRun(true)));
+            rdr.putStrArr(userFilter.getDiffs(bits.txt2buf(cfgInit.cfgFileSw), cfgAll.getShRun(1)));
             return null;
         }
         if (a.equals("startup-config")) {
@@ -468,7 +487,7 @@ public class userShow {
         if (a.equals("running-config")) {
             a = cmd.word();
             if (a.equals("all")) {
-                rdr.putStrArr(cfgAll.getShRun(false));
+                rdr.putStrArr(cfgAll.getShRun(getConfigFilter(cmd)));
                 return null;
             }
             if (a.equals("router")) {
@@ -483,7 +502,7 @@ public class userShow {
                     cmd.error("no such process");
                     return null;
                 }
-                boolean filt = !cmd.word().equals("all");
+                int filt = getConfigFilter(cmd);
                 rdr.putStrArr(r.getShRun(filt));
                 rdr.putStrArr(r.getShRun2(filt));
                 return null;
@@ -494,10 +513,10 @@ public class userShow {
                     cmd.error("no such interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.getShRun(!cmd.word().equals("all")));
+                rdr.putStrArr(ifc.getShRun(getConfigFilter(cmd)));
                 return null;
             }
-            List<String> lst = cfgAll.getShRun(true);
+            List<String> lst = cfgAll.getShRun(1);
             if (a.length() > 0) {
                 lst = userFilter.getSection(lst, userReader.filter2reg(a + " " + cmd.getRemaining()));
             }
@@ -2785,7 +2804,7 @@ public class userShow {
             a = cmd.word();
             if (a.equals("config")) {
                 List<String> l = new ArrayList<String>();
-                grp.getConfig(l, "", false);
+                grp.getConfig(l, "", 0);
                 rdr.putStrArr(l);
                 return;
             }
@@ -2878,7 +2897,7 @@ public class userShow {
             a = cmd.word();
             if (a.equals("config")) {
                 List<String> l = new ArrayList<String>();
-                nei.getConfig(l, "", false);
+                nei.getConfig(l, "", 0);
                 rdr.putStrArr(l);
                 return;
             }

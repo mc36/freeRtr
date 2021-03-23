@@ -61,7 +61,7 @@ public class cfgPool<T extends addrType> implements Comparator<cfgPool<T>>, cfgG
         return "pool";
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
         lst.add("ipv" + version + " pool " + name + " " + begin + " " + increment + " " + number);
         lst.add(cmds.comment);

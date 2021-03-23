@@ -872,7 +872,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "distance " + distance);
         l.add(beg + "refresh " + refresh);

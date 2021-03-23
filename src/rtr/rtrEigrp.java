@@ -393,7 +393,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "as " + as);
         String a = "";

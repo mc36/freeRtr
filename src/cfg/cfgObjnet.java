@@ -55,7 +55,7 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         l.add("3  4,.     [num]             increment number");
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("object-group network " + name);
         if (description != null) {

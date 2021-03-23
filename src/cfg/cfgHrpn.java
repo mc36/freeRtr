@@ -58,7 +58,7 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
         return "hairpin" + name + (side ? "1" : "2");
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("hairpin " + name);
         hairpinHed.getConfig(l, cmds.tabulator);

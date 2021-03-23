@@ -201,7 +201,7 @@ public class rtrMsdp extends ipRtr {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrMsdpNeigh ntry = neighs.get(i);
             if (ntry == null) {

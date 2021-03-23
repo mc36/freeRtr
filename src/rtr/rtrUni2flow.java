@@ -180,7 +180,7 @@ public class rtrUni2flow extends ipRtr {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "distance " + distance);
         l.add(beg + "direction " + ((direction == 1) ? "target" : "source"));
         l.add(beg + "as " + trgAs);

@@ -1783,7 +1783,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return null;
             }
         }
-        List<String> l = getShRun(false);
+        List<String> l = getShRun(0);
         l = userFilter.filterText(l, nocloneF);
         cfgIfc res;
         for (;;) {
@@ -4212,7 +4212,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         template = ifc;
-        List<String> l = ifc.getShRun(true);
+        List<String> l = ifc.getShRun(1);
         l = userFilter.filterText(l, notemplF);
         for (int i = 1; i < l.size() - 2; i++) {
             doCfgStr(new cmds("template", l.get(i).trim()));
@@ -5067,7 +5067,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         return "if";
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         if (hidden) {
             return l;
@@ -5530,14 +5530,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, !ethtyp.logStateChg, cmds.tabulator, "log-link-change", "");
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         l = userFilter.filterText(l, defaultF);
         if (template == null) {
             return l;
         }
-        List<String> t = template.getShRun(true);
+        List<String> t = template.getShRun(filter);
         t = userFilter.filterText(t, notemplF);
         tabGen<userFilter> f = new tabGen<userFilter>();
         for (int i = 1; i < t.size() - 2; i++) {

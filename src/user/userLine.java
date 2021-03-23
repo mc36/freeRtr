@@ -799,7 +799,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
             List<String> sesStart = null;
             if (exe.rollback) {
                 logger.info("configuration checkpoint frozen!");
-                sesStart = cfgAll.getShRun(true);
+                sesStart = cfgAll.getShRun(1);
             }
             for (;;) {
                 last = bits.getTime();
@@ -811,7 +811,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
                 sesStart = null;
             }
             if (sesStart != null) {
-                sesStart = userFilter.getDiffs(cfgAll.getShRun(true), sesStart);
+                sesStart = userFilter.getDiffs(cfgAll.getShRun(1), sesStart);
                 rdr.putStrArr(bits.lst2lin(sesStart, false));
                 int res = cfgInit.executeSWcommands(sesStart, false);
                 rdr.putStrArr(bits.str2lst("errors=" + res));

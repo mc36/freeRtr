@@ -153,7 +153,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         cmds.cfgLine(l, !negate, beg, "negate", "");
         l.add(beg + "distance " + distance);
         l.add(beg + "penalty " + penalty);

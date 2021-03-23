@@ -1273,7 +1273,7 @@ public abstract class rtrBgpParam {
      * @param filter filter defaults
      * @return list of text
      */
-    public List<String> getParamCfg(String beg, String nei, boolean filter) {
+    public List<String> getParamCfg(String beg, String nei, int filter) {
         List<String> l = new ArrayList<String>();
         if (template == null) {
             l.add(beg + "no " + nei + "template");
@@ -1422,13 +1422,13 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, wroumapOut == null, beg, nei + "ovpn-route-map-out", "" + wroumapOut);
         cmds.cfgLine(l, wroupolIn == null, beg, nei + "ovpn-route-policy-in", "" + wroupolIn);
         cmds.cfgLine(l, wroupolOut == null, beg, nei + "ovpn-route-policy-out", "" + wroupolOut);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         if (template == null) {
             return l;
         }
-        List<String> t = template.getParamCfg(beg, nei, false);
+        List<String> t = template.getParamCfg(beg, nei, filter);
         t = userFilter.filterText(t, cfgRtr.defaultF);
         tabGen<userFilter> f = new tabGen<userFilter>();
         for (int i = 1; i < t.size(); i++) {
@@ -1460,7 +1460,7 @@ public abstract class rtrBgpParam {
      * @param beg beginning
      * @param filter filter defaults
      */
-    public abstract void getConfig(List<String> l, String beg, boolean filter);
+    public abstract void getConfig(List<String> l, String beg, int filter);
 
     /**
      * parse configuration command

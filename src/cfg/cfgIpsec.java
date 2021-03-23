@@ -118,7 +118,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         trans = new secTransform();
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("crypto ipsec " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
@@ -147,7 +147,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         l.add(cmds.tabulator + "replay " + replay);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

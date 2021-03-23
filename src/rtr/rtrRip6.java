@@ -436,7 +436,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
     }
 
     /**

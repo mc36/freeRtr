@@ -128,7 +128,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         name = nam.trim();
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("line " + name);
         line.getShRun(cmds.tabulator, l);
@@ -152,7 +152,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         cmds.cfgLine(l, !runner.getMon(), cmds.tabulator, "log-monitor", "");
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

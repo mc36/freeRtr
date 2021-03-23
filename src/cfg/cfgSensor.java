@@ -233,7 +233,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         l.add("6 .                <str>          second label");
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         if (hidden) {
             return l;
@@ -283,7 +283,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

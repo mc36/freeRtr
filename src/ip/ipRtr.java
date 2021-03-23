@@ -233,9 +233,9 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      *
      * @param l list to update
      * @param beg beginning string
-     * @param filter set true to filter defaults
+     * @param filter defaults
      */
-    public abstract void routerGetConfig(List<String> l, String beg, boolean filter);
+    public abstract void routerGetConfig(List<String> l, String beg, int filter);
 
     /**
      * parse configuration

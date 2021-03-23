@@ -598,7 +598,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("ipv" + p + " flow " + name + " " + f.netflow);
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         if (hidden) {
             return l;
@@ -664,7 +664,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, !mdt6, cmds.tabulator, "mdt6", "");
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);
@@ -676,7 +676,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
      * @param filter filter defaults
      * @return list of config lines
      */
-    public synchronized List<String> getShRun2(boolean filter) {
+    public synchronized List<String> getShRun2(int filter) {
         List<String> l = new ArrayList<String>();
         if (hidden) {
             return l;
@@ -707,7 +707,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(cmds.comment);
         addCfgFlow(l, 6, fwd6);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

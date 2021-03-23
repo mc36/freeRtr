@@ -174,7 +174,7 @@ public class rtrAggreg extends ipRtr {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "netmask " + netMask);
         l.add(beg + "distance " + distance);
         l.add(beg + "nexthop " + nextHop);

@@ -139,7 +139,7 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
      * @param filter filter
      * @return config
      */
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         String a = getCmd();
         if ((trgSp != sp) || (trgSi != (si - 1))) {

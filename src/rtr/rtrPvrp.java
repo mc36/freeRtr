@@ -401,7 +401,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * @param beg beginning
      * @param filter filter
      */
-    public void routerGetConfig(List<String> l, String beg, boolean filter) {
+    public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !labels, beg, "labels", "");

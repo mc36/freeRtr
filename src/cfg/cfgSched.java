@@ -158,7 +158,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add("1  .      hidden                     hide command");
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("scheduler " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
@@ -182,7 +182,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

@@ -84,13 +84,13 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
         connects.fromString(cmd);
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
         lst.add("session " + name);
         connects.getConfig(lst, cmds.tabulator);
         lst.add(cmds.tabulator + cmds.finish);
         lst.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return lst;
         }
         return userFilter.filterText(lst, defaultF);

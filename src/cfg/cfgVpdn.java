@@ -551,7 +551,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         return "vpdn " + name;
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("vpdn " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
@@ -601,7 +601,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         cmds.cfgLine(l, proto == null, cmds.tabulator, "protocol", type2str(proto));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        if (!filter) {
+        if ((filter & 1) == 0) {
             return l;
         }
         return userFilter.filterText(l, defaultF);

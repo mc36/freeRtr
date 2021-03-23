@@ -52,8 +52,8 @@ public class rtrBgpTemp extends rtrBgpParam implements Comparator<rtrBgpTemp> {
      * @param beg beginning
      * @param filter filter
      */
-    public void getConfig(List<String> l, String beg, boolean filter) {
-        l.addAll(getParamCfg(beg, "template " + tempName + " ", false));
+    public void getConfig(List<String> l, String beg, int filter) {
+        l.addAll(getParamCfg(beg, "template " + tempName + " ", filter));
     }
 
 }

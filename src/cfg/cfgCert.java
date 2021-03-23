@@ -58,7 +58,7 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
     public void doCfgStr(cmds cmd) {
     }
 
-    public List<String> getShRun(boolean filter) {
+    public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
         lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr()));
         lst.add(cmds.comment);

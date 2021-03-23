@@ -21,10 +21,10 @@ public interface cfgGeneric {
     /**
      * get configuration of this item
      *
-     * @param filter true to filter defaults, false to not
+     * @param filter mode, 1=filter defaults, 2=hide secrets
      * @return string list
      */
-    public List<String> getShRun(boolean filter);
+    public List<String> getShRun(int filter);
 
     /**
      * convert one command line
