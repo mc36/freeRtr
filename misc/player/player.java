@@ -233,13 +233,20 @@ public class player implements Runnable {
         cmd[1] = "-c";
         cmd[2] = "rm -f /tmp/player.*";
         runProc(cmd);
-        cmd = new String[6];
+        String ply;
+        if (headEnd) {
+            ply = path + ".strm {} 0";
+        } else {
+            ply = "mplayer -ao alsa -vo none -srate " + srate + " {}";
+        }
+        cmd = new String[7];
         cmd[0] = "youtube-dl";
-        cmd[1] = "--output";
-        cmd[2] = "/tmp/player.url";
-        cmd[3] = "--exec";
-        cmd[4] = "mplayer -ao alsa -vo none -srate " + srate + " {}";
-        cmd[5] = "" + url;
+        cmd[1] = "-x";
+        cmd[2] = "--output";
+        cmd[3] = "/tmp/player.url";
+        cmd[4] = "--exec";
+        cmd[5] = ply;
+        cmd[6] = "" + url;
         currSong = 0;
         currTime = new Date().getTime();
         currLyrc = new playerLyric();

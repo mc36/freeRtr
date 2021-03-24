@@ -102,7 +102,7 @@ public class findSongs {
                 continue;
             }
             String b = a.substring(o, a.length()).toLowerCase() + ".";
-            if (".mp3.m4a.ogg.flac.wav.wma.".indexOf(b) < 0) {
+            if (".mp3.m4a.opus.ogg.flac.wav.wma.".indexOf(b) < 0) {
                 continue;
             }
             playerSong sng = new playerSong();
