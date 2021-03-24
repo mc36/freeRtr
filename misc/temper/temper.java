@@ -366,7 +366,7 @@ public class temper implements Runnable {
     }
 
     private static void putStart(ByteArrayOutputStream buf, String tit, String res) throws Exception {
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"5;url=/index.html\"><title>".getBytes());
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>".getBytes());
         buf.write(tit.getBytes());
         buf.write("</title><body>".getBytes());
         buf.write(res.getBytes());
