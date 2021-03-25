@@ -12164,3 +12164,8 @@ todo: virtual ip/mac icmp
 ---------------------------------- 2021-03-25 11:35:37
 no todo: nat log knob
 todo: introduce int for sw/hw forwarders
+---------------------------------- 2021-03-25 19:43:05
+no todo: virtual ip/mac icmp
+no todo: secondary addresses
+qc pass: secondary addresses over ethernet
+qc pass: secondary addresses over dot1q vlan
