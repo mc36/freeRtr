@@ -2620,21 +2620,24 @@ public class userConfig {
         String s = cmd.getRemaining();
         ntry.sequence = fwd.natCfg.nextseq();
         int ot = ntry.timeout;
-        if (ntry.fromString(s)) {
-            return null;
-        }
-        if (ot != ntry.timeout) {
-            tabNatCfgN res = fwd.natCfg.find(ntry);
-            if (res == null) {
+        int res = ntry.fromString(s);
+        switch (res) {
+            case 0: // entry
+                if (ntry.origSrcList != null) {
+                    ntry.origSrcList.copyCores(fwd.natCfg);
+                }
+                return vrf;
+            case 1: // error
                 return null;
-            }
-            res.timeout = ntry.timeout;
+            default:
+                break;
+        }
+        tabNatCfgN old = fwd.natCfg.find(ntry);
+        if (old == null) {
             return null;
         }
-        if (ntry.origSrcList != null) {
-            ntry.origSrcList.copyCores(fwd.natCfg);
-        }
-        return vrf;
+        old.fromString(s);
+        return null;
     }
 
     private void parseUpFlow(int ver, boolean create) {
@@ -2756,135 +2759,79 @@ public class userConfig {
         l.add("3  4,6    <vrf>                            name of routing table");
         l.add("4  5        sequence                       sequence number");
         l.add("5  6          <num>                        number");
+        l.add("6  .            log-translations           turn on logging");
         l.add("6  7            timeout                    specify timeout");
         l.add("7  .              <num>                    time in ms");
+        l.add("6  7            randomize                  randomize source port");
+        l.add("7  8              <num>                    lowest port number");
+        l.add("8  .                <num>                  highest port number");
         l.add("6  7            srclist                    source address translation");
         l.add("7  8              <name>                   access list name");
         l.add("8  9                interface              translated interface");
-        l.add("9  10,.               <name>               translated interface");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
-        l.add("8  9,.              <new>                  translated address");
-        l.add("9 10                  randomize            randomize source port");
-        l.add("10 11                     <num>            lowest port number");
-        l.add("11 .                        <num>          highest port number");
+        l.add("9  .                  <name>               translated interface");
+        l.add("8  .                <new>                  translated address");
         l.add("6  7            source                     source address translation");
         l.add("7  8              <orig>                   original address");
         l.add("8  9                interface              translated interface");
-        l.add("9  10,.               <name>               translated interface");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
-        l.add("8  9,.              <new>                  translated address");
-        l.add("9 10                  randomize            randomize source port");
-        l.add("10 11                     <num>            lowest port number");
-        l.add("11 .                        <num>          highest port number");
+        l.add("9  .                  <name>               translated interface");
+        l.add("8  .                <new>                  translated address");
         l.add("7  8              interface                original interface");
         l.add("8  9                <name>                 original interface");
         l.add("9  10                 interface            translated interface");
-        l.add("10 11,.                 <name>             translated interface");
-        l.add("11 12                     randomize        randomize source port");
-        l.add("12 13                       <num>          lowest port number");
-        l.add("13 .                          <num>        highest port number");
-        l.add("9  10,.               <new>                translated address");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
+        l.add("10 .                    <name>             translated interface");
+        l.add("9  .                  <new>                translated address");
         l.add("6  7            target                     target address translation");
         l.add("7  8              <orig>                   original address");
         l.add("8  9                interface              translated interface");
-        l.add("9  10,.               <name>               translated interface");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
-        l.add("8  9,.              <new>                  translated address");
-        l.add("9 10                  randomize            randomize source port");
-        l.add("10 11                     <num>            lowest port number");
-        l.add("11 .                        <num>          highest port number");
+        l.add("9  .                  <name>               translated interface");
+        l.add("8  .                <new>                  translated address");
         l.add("7  8              interface                original interface");
         l.add("8  9                <name>                 original interface");
         l.add("9  10                 interface            translated interface");
-        l.add("10 11,.                 <name>             translated interface");
-        l.add("11 12                     randomize        randomize source port");
-        l.add("12 13                       <num>          lowest port number");
-        l.add("13 .                          <num>        highest port number");
-        l.add("9  10,.               <new>                translated address");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
+        l.add("10 .                    <name>             translated interface");
+        l.add("9  .                  <new>                translated address");
         l.add("6  7            srcport                    source address translation");
         l.add("7  8              <proto>                  protocol number");
         l.add("8  9                <orig>                 original address");
         l.add("9  10                 <orig>               original port");
         l.add("10 11                   interface          translated interface");
         l.add("11 12                     <name>           translated interface");
-        l.add("12 13,.                     <new>          translated port");
-        l.add("13 14                         randomize    randomize source port");
-        l.add("14 15                           <num>      lowest port number");
-        l.add("15 .                              <num>    highest port number");
+        l.add("12 .                        <new>          translated port");
         l.add("10 11                   <new>              translated address");
-        l.add("11 12,.                   <new>            translated port");
-        l.add("12 13                       randomize      randomize source port");
-        l.add("13 14                         <num>        lowest port number");
-        l.add("14 .                            <num>      highest port number");
+        l.add("11 .                      <new>            translated port");
         l.add("8  9                interface              original interface");
         l.add("9  10                 <name>               original interface");
         l.add("10 11                   <orig>             original port");
         l.add("11 12                     interface        translated interface");
         l.add("12 13                       <name>         translated interface");
-        l.add("13 14,.                       <new>        translated port");
-        l.add("14 15                           randomize  randomize source port");
-        l.add("15 16                             <num>    lowest port number");
-        l.add("16 .                                <num>  highest port number");
+        l.add("13 .                          <new>        translated port");
         l.add("11 12                     <new>            translated address");
-        l.add("12 13,.                     <new>          translated port");
-        l.add("13 14                         randomize    randomize source port");
-        l.add("14 15                           <num>      lowest port number");
-        l.add("15 .                              <num>    highest port number");
+        l.add("12 .                        <new>          translated port");
         l.add("6  7            trgport                    target address translation");
         l.add("7  8              <proto>                  protocol number");
         l.add("8  9                <orig>                 original address");
         l.add("9  10                 <orig>               original port");
         l.add("10 11                   interface          translated interface");
         l.add("11 12                     <name>           translated interface");
-        l.add("12 13,.                     <new>          translated port");
-        l.add("13 14                         randomize    randomize source port");
-        l.add("14 15                           <num>      lowest port number");
-        l.add("15 .                              <num>    highest port number");
+        l.add("12 .                        <new>          translated port");
         l.add("10 11                   <new>              translated address");
-        l.add("11 12,.                   <new>            translated port");
-        l.add("12 13                       randomize      randomize source port");
-        l.add("13 14                         <num>        lowest port number");
-        l.add("14 .                            <num>      highest port number");
+        l.add("11 .                      <new>            translated port");
         l.add("8  9                interface              original interface");
         l.add("9  10                 <name>               original interface");
         l.add("10 11                   <orig>             original port");
         l.add("11 12                     interface        translated interface");
         l.add("12 13                       <name>         translated interface");
-        l.add("13 14,.                       <new>        translated port");
-        l.add("14 15                           randomize  randomize source port");
-        l.add("15 16                             <num>    lowest port number");
-        l.add("16 .                                <num>  highest port number");
+        l.add("13 .                          <new>        translated port");
         l.add("11 12                     <new>            translated address");
-        l.add("12 13,.                     <new>          translated port");
-        l.add("13 14                         randomize    randomize source port");
-        l.add("14 15                           <num>      lowest port number");
-        l.add("15 .                              <num>    highest port number");
+        l.add("12 .                        <new>          translated port");
         l.add("6  7            srcpref                    source address translation");
         l.add("7  8              <orig>                   original address");
         l.add("8  9                <new>                  translated address");
-        l.add("9  10,.               <mask>               address mask");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
+        l.add("9  .                  <mask>               address mask");
         l.add("6  7            trgpref                    target address translation");
         l.add("7  8              <orig>                   original address");
         l.add("8  9                <new>                  translated address");
-        l.add("9  10,.               <mask>               address mask");
-        l.add("10 11                   randomize          randomize source port");
-        l.add("11 12                     <num>            lowest port number");
-        l.add("12 .                        <num>          highest port number");
+        l.add("9  .                  <mask>               address mask");
         l.add("2  3    route                              configure static unicast routes");
         l.add("3  4        <vrf>                          name of routing table");
         l.add("4  5          <network>                    destination network");

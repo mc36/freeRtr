@@ -40,8 +40,10 @@ access-list test4
 access-list test6
  permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all
  exit
-ipv4 nat v1 srclist test4 interface ethernet1 random 1024 2048
-ipv6 nat v1 srclist test6 interface ethernet1 random 1024 2048
+ipv4 nat v1 seq 10 srclist test4 interface ethernet1
+ipv4 nat v1 seq 10 random 1024 2048
+ipv6 nat v1 seq 10 srclist test6 interface ethernet1
+ipv6 nat v1 seq 10 random 1024 2048
 !
 
 addrouter r3

@@ -13,6 +13,7 @@ import java.util.List;
 import pack.packHolder;
 import util.bits;
 import util.cmds;
+import util.logger;
 
 /**
  * represents one nat config (source/target, orig/new)
@@ -102,6 +103,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public int rangeMax = -1;
 
     /**
+     * log translations
+     */
+    public boolean logTrans = false;
+
+    /**
      * create instance
      */
     public tabNatCfgN() {
@@ -112,9 +118,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * convert string to address
      *
      * @param s string to convert
-     * @return true if error happened
+     * @return 0=ok, 1=error, 2=time, 3=range, 4=log
      */
-    public boolean fromString(String s) {
+    public int fromString(String s) {
         cmds cmd = new cmds("", s);
         int what = 0; // 1=source, 2=target
         s = cmd.word();
@@ -124,7 +130,16 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if (s.equals("timeout")) {
             timeout = bits.str2num(cmd.word());
-            return false;
+            return 2;
+        }
+        if (s.equals("randomize")) {
+            rangeMin = bits.str2num(cmd.word());
+            rangeMax = bits.str2num(cmd.word());
+            return 3;
+        }
+        if (s.equals("log-translations")) {
+            logTrans = true;
+            return 4;
         }
         if (s.equals("source")) {
             what = 1;
@@ -152,7 +167,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             mask = new addrIP();
         }
         if (what < 1) {
-            return true;
+            return 1;
         }
         addrIP orgA = new addrIP();
         addrIP newA = new addrIP();
@@ -161,7 +176,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (what == 3) {
             cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
             if (acl == null) {
-                return true;
+                return 1;
             }
             origSrcList = acl.aceslst;
             orgA = null;
@@ -171,10 +186,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                 origTrgIface = cfgAll.ifcFind(cmd.word(), false);
                 if (origTrgIface == null) {
                     cmd.error("no such interface");
-                    return true;
+                    return 1;
                 }
             } else if (orgA.fromString(s)) {
-                return true;
+                return 1;
             }
         }
         if (protocol >= 0) {
@@ -185,11 +200,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             newSrcIface = cfgAll.ifcFind(cmd.word(), false);
             if (newSrcIface == null) {
                 cmd.error("no such interface");
-                return true;
+                return 1;
             }
         } else {
             if (newA.fromString(s)) {
-                return true;
+                return 1;
             }
         }
         if (protocol >= 0) {
@@ -197,23 +212,12 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if (mask != null) {
             if (mask.fromString(cmd.word())) {
-                return true;
+                return 1;
             }
             orgA.setAnd(orgA, mask);
             newA.setAnd(newA, mask);
             maskNot = new addrIP();
             maskNot.setNot(mask);
-        }
-        for (;;) {
-            s = cmd.word();
-            if (s.length() < 1) {
-                break;
-            }
-            if (s.equals("randomize")) {
-                rangeMin = bits.str2num(cmd.word());
-                rangeMax = bits.str2num(cmd.word());
-                continue;
-            }
         }
         if (what == 2) {
             origTrgAddr = orgA;
@@ -226,7 +230,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             newSrcAddr = newA;
             newSrcPort = newP;
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -319,11 +323,15 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if ((what & 8) != 0) {
             s = s + " " + mask;
         }
-        if (rangeMin > 0) {
-            s += " randomize " + rangeMin + " " + rangeMax;
-        }
         l.add(beg + s);
-        l.add(beg + "sequence " + sequence + " timeout " + timeout);
+        s = beg + "sequence " + sequence;
+        l.add(s + " timeout " + timeout);
+        if (rangeMin > 0) {
+            l.add(s + " randomize " + rangeMin + " " + rangeMax);
+        }
+        if (logMatch) {
+            l.add(s + " log-translations");
+        }
         return l;
     }
 
@@ -503,6 +511,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             return n;
         }
         n.newSrcPort = bits.random(rangeMin, rangeMax);
+        if (logTrans) {
+            logger.info("creating translation " + n);
+        }
         return n;
     }
 

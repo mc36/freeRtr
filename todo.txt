@@ -1,5 +1,4 @@
 sho run this
-nat log knob
 secondary addresses
 fhrp security
 virtual ip/mac icmp
