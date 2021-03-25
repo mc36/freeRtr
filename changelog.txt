@@ -12161,3 +12161,6 @@ todo: sho run this
 todo: nat log knob
 ---------------------------------- 2021-03-25 02:38:28
 todo: virtual ip/mac icmp
+---------------------------------- 2021-03-25 11:35:37
+no todo: nat log knob
+todo: introduce int for sw/hw forwarders
