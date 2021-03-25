@@ -12153,3 +12153,9 @@ qc pass: interop9: ospf bier
 todo: generate a test case from a config archive
 ---------------------------------- 2021-03-12 18:37:13
 no todo: generate a test case from a config archive
+---------------------------------- 2021-03-25 02:18:14
+todo: secondary addresses
+todo: fhrp security
+---------------------------------- 2021-03-25 02:27:29
+todo: sho run this
+todo: nat log knob

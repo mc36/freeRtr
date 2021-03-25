@@ -2350,6 +2350,10 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: sho run this
+todo: nat log knob
+todo: secondary addresses
+todo: fhrp security
 todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
 todo: http conditional redirect with route-map, prefix-list or route-policy
