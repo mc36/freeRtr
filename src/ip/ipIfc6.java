@@ -322,6 +322,13 @@ public class ipIfc6 implements ipIfc, ifcUp {
     public void sendL2info(addrType l2info, addrIP nexthop) {
     }
 
+    public addrType getL2info() {
+        if (neiCache == null) {
+            return null;
+        }
+        return neiCache.getLocalMac();
+    }
+
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (neiCache == null) {
             return;

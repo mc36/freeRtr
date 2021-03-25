@@ -363,7 +363,7 @@ public class rtrVrrpIface implements ipPrt {
         if (currStat != lastStat) {
             logger.warn("vrrp " + ip + " changed to " + state2string(currStat));
             if (currStat == stMstr) {
-                fwdIfc.adrAdd(ip, mac);
+                fwdIfc.adrAdd(ip, mac, false);
             }
             if (lastStat == stMstr) {
                 fwdIfc.adrDel(ip);

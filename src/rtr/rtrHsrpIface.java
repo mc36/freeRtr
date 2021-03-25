@@ -364,7 +364,7 @@ public class rtrHsrpIface implements prtServP {
             logger.warn("hsrp " + ip + " changed to " + packHsrp.state2string(currStat));
             if (currStat == packHsrp.staActv) {
                 lastOpcod = packHsrp.opCoup;
-                ifc.adrAdd(ip, mac);
+                ifc.adrAdd(ip, mac, false);
             }
             if (lastStat == packHsrp.staActv) {
                 lastOpcod = packHsrp.opResign;

@@ -234,6 +234,13 @@ public class ipIfc4 implements ipIfc, ifcUp {
         arpCache.sendARPheader((addrMac) l2info, nexthop.toIPv4());
     }
 
+    public addrType getL2info() {
+        if (arpCache == null) {
+            return null;
+        }
+        return arpCache.getLocalMac();
+    }
+
     public void updateL2info(int mod, addrType l2info, addrIP nexthop) {
         if (arpCache == null) {
             return;

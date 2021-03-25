@@ -454,6 +454,15 @@ public class ipIfc6nei implements ifcUp {
         return lst;
     }
 
+    /**
+     * get local mac address
+     *
+     * @return mac address
+     */
+    public addrMac getLocalMac() {
+        return hwaddr.copyBytes();
+    }
+
 }
 
 class ipIfc6neiTimer extends TimerTask {

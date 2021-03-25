@@ -102,6 +102,10 @@ public class ipIfcLoop implements ipIfc {
     public void sendL2info(addrType l2info, addrIP nexthop) {
     }
 
+    public addrType getL2info() {
+        return null;
+    }
+
     public void updateL2info(int mod, addrType mac, addrIP nexthop) {
     }
 

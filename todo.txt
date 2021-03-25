@@ -1,7 +1,5 @@
 sho run this
-secondary addresses
 fhrp security
-virtual ip/mac icmp
 introduce int for sw/hw forwarders
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex

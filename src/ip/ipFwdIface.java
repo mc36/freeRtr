@@ -394,7 +394,7 @@ public class ipFwdIface extends tabRouteIface {
             if (adr == null) {
                 continue;
             }
-            l.add(cmds.tabulator + "additional=" + adr.ip + " " + adr.mac);
+            l.add(cmds.tabulator + "additional=" + adr.ip + " " + adr.mac + " " + adr.cfg);
         }
         l.add(cmds.tabulator + "cntr=" + cntr.getShStat());
         l.add(cmds.tabulator + "ipcntr=" + lower.getCounter().getShStat());
@@ -412,6 +412,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4       <addr>                    address of interface");
         l.add("4 .         dynamic                 dynamic netmask");
         l.add("4 .         <mask>                  subnet mask of address");
+        l.add("2 3     secondary-address           set up an additional ip address");
+        l.add("3 .       <addr>                    address of interface");
         l.add("2 .     netflow-rx                  netflow received packets");
         l.add("2 .     netflow-tx                  netflow transmitted packets");
         l.add("2 .     propagate-ttl-always        enable ttl propagation to mpls");
@@ -600,6 +602,16 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !verifySource, cmds.tabulator, beg + "verify-source", a);
         cmds.cfgLine(l, !answerNetReqs, cmds.tabulator, beg + "proxy-local", "");
         cmds.cfgLine(l, !answerDefReqs, cmds.tabulator, beg + "proxy-remote", "");
+        for (int i = 0; i < adrs.size(); i++) {
+            ipFwdIfaceAddr adr = adrs.get(i);
+            if (adr == null) {
+                continue;
+            }
+            if (!adr.cfg) {
+                continue;
+            }
+            l.add(cmds.tabulator + beg + "secondary-address " + adr.ip);
+        }
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
@@ -717,6 +729,15 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("enable")) {
             linkLocal = true;
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("secondary-address")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad ip address");
+                return false;
+            }
+            adrAdd(adr, (addrMac) lower.getL2info(), true);
             return false;
         }
         if (a.equals("netflow-rx")) {
@@ -1233,6 +1254,15 @@ public class ipFwdIface extends tabRouteIface {
             fwd.routerStaticChg();
             return false;
         }
+        if (a.equals("secondary-address")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad ip address");
+                return false;
+            }
+            adrDel(adr);
+            return false;
+        }
         if (a.equals("netflow-rx")) {
             netflowRx = false;
             return false;
@@ -1706,11 +1736,13 @@ public class ipFwdIface extends tabRouteIface {
      *
      * @param ip l3 address
      * @param mac l2 address
+     * @param cfg user configured value
      */
-    public void adrAdd(addrIP ip, addrMac mac) {
+    public void adrAdd(addrIP ip, addrMac mac, boolean cfg) {
         ipFwdIfaceAddr ntry = new ipFwdIfaceAddr();
         ntry.ip = ip;
         ntry.mac = mac;
+        ntry.cfg = cfg;
         adrs.put(ntry);
         lower.setFilter(adrs.size() > 0);
         lower.sendL2info(mac, ip);
@@ -1808,6 +1840,8 @@ class ipFwdIfaceAddr implements Comparator<ipFwdIfaceAddr> {
     public addrIP ip;
 
     public addrMac mac;
+
+    public boolean cfg;
 
     public int compare(ipFwdIfaceAddr o1, ipFwdIfaceAddr o2) {
         return o1.ip.compare(o1.ip, o2.ip);

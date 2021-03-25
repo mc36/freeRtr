@@ -56,6 +56,11 @@ public interface ipIfc {
     public void sendL2info(addrType l2info, addrIP nexthop);
 
     /**
+     * get local layer2 info
+     */
+    public addrType getL2info();
+
+    /**
      * update layer2 rewrite info
      *
      * destionaton mac header will be read from packet offset 0.

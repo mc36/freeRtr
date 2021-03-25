@@ -519,6 +519,15 @@ public class ipIfc4arp implements ifcUp {
         return lst;
     }
 
+    /**
+     * get local mac address
+     *
+     * @return mac address
+     */
+    public addrMac getLocalMac() {
+        return hwaddr.copyBytes();
+    }
+
 }
 
 class ipIfc4arpTimer extends TimerTask {
