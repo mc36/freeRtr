@@ -2,6 +2,7 @@ sho run this
 nat log knob
 secondary addresses
 fhrp security
+virtual ip/mac icmp
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
 http conditional redirect with route-map, prefix-list or route-policy

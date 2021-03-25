@@ -12159,3 +12159,5 @@ todo: fhrp security
 ---------------------------------- 2021-03-25 02:27:29
 todo: sho run this
 todo: nat log knob
+---------------------------------- 2021-03-25 02:38:28
+todo: virtual ip/mac icmp
