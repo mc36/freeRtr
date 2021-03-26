@@ -7,6 +7,7 @@ import cfg.cfgAceslst;
 import cfg.cfgAll;
 import cfg.cfgAuther;
 import cfg.cfgCert;
+import cfg.cfgGeneric;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgKey;
@@ -55,7 +56,7 @@ import util.logger;
  *
  * @author matecsaba
  */
-public abstract class servGeneric implements Comparator<servGeneric> {
+public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric> {
 
     /**
      * name of server
@@ -1311,98 +1312,96 @@ public abstract class servGeneric implements Comparator<servGeneric> {
     /**
      * get running configuration
      *
-     * @param beg beginning string
      * @param filter filter defaults
      * @return config text
      */
-    public List<String> getShRun(String beg, int filter) {
+    public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("server " + srvName() + " " + srvName);
-        beg += cmds.tabulator;
-        cmds.cfgLine(l, secProto == 0, beg, "security protocol", proto2string(secProto));
+        cmds.cfgLine(l, secProto == 0, cmds.tabulator, "security protocol", proto2string(secProto));
         if (srvAuther == null) {
-            l.add(beg + "no security authentication");
+            l.add(cmds.tabulator + "no security authentication");
         } else {
-            l.add(beg + "security authentication " + srvAuther.autName);
+            l.add(cmds.tabulator + "security authentication " + srvAuther.autName);
         }
         if (keyrsa == null) {
-            l.add(beg + "no security rsakey");
+            l.add(cmds.tabulator + "no security rsakey");
         } else {
-            l.add(beg + "security rsakey " + keyrsa.keyName);
+            l.add(cmds.tabulator + "security rsakey " + keyrsa.keyName);
         }
         if (keydsa == null) {
-            l.add(beg + "no security dsakey");
+            l.add(cmds.tabulator + "no security dsakey");
         } else {
-            l.add(beg + "security dsakey " + keydsa.keyName);
+            l.add(cmds.tabulator + "security dsakey " + keydsa.keyName);
         }
         if (keyecdsa == null) {
-            l.add(beg + "no security ecdsakey");
+            l.add(cmds.tabulator + "no security ecdsakey");
         } else {
-            l.add(beg + "security ecdsakey " + keyecdsa.keyName);
+            l.add(cmds.tabulator + "security ecdsakey " + keyecdsa.keyName);
         }
         if (certrsa == null) {
-            l.add(beg + "no security rsacert");
+            l.add(cmds.tabulator + "no security rsacert");
         } else {
-            l.add(beg + "security rsacert " + certrsa.crtName);
+            l.add(cmds.tabulator + "security rsacert " + certrsa.crtName);
         }
         if (certdsa == null) {
-            l.add(beg + "no security dsacert");
+            l.add(cmds.tabulator + "no security dsacert");
         } else {
-            l.add(beg + "security dsacert " + certdsa.crtName);
+            l.add(cmds.tabulator + "security dsacert " + certdsa.crtName);
         }
         if (certecdsa == null) {
-            l.add(beg + "no security ecdsacert");
+            l.add(cmds.tabulator + "no security ecdsacert");
         } else {
-            l.add(beg + "security ecdsacert " + certecdsa.crtName);
+            l.add(cmds.tabulator + "security ecdsacert " + certecdsa.crtName);
         }
         if (srvAccess != null) {
-            l.add(beg + "access-class " + srvAccess.listName);
+            l.add(cmds.tabulator + "access-class " + srvAccess.listName);
         } else {
-            l.add(beg + "no access-class");
+            l.add(cmds.tabulator + "no access-class");
         }
         if (srvPrfLst != null) {
-            l.add(beg + "access-prefix " + srvPrfLst.listName);
+            l.add(cmds.tabulator + "access-prefix " + srvPrfLst.listName);
         } else {
-            l.add(beg + "no access-prefix");
+            l.add(cmds.tabulator + "no access-prefix");
         }
         if (srvRouMap != null) {
-            l.add(beg + "access-map " + srvRouMap.listName);
+            l.add(cmds.tabulator + "access-map " + srvRouMap.listName);
         } else {
-            l.add(beg + "no access-map");
+            l.add(cmds.tabulator + "no access-map");
         }
         if (srvRouPol != null) {
-            l.add(beg + "access-policy " + srvRouPol.listName);
+            l.add(cmds.tabulator + "access-policy " + srvRouPol.listName);
         } else {
-            l.add(beg + "no access-policy");
+            l.add(cmds.tabulator + "no access-policy");
         }
-        cmds.cfgLine(l, !srvLogDrop, beg, "access-log", "");
-        l.add(beg + "access-rate " + srvAccRat + " " + srvAccInt);
-        l.add(beg + "access-startup " + srvStartup);
-        l.add(beg + "access-total " + srvTotLim);
-        l.add(beg + "access-peer " + srvPerLim);
-        l.add(beg + "access-subnet " + srvNetLim);
+        cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
+        l.add(cmds.tabulator + "access-rate " + srvAccRat + " " + srvAccInt);
+        l.add(cmds.tabulator + "access-startup " + srvStartup);
+        l.add(cmds.tabulator + "access-total " + srvTotLim);
+        l.add(cmds.tabulator + "access-peer " + srvPerLim);
+        l.add(cmds.tabulator + "access-subnet " + srvNetLim);
         if (srvBlckhl4 != null) {
-            l.add(beg + "access-blackhole4 " + srvBlckhl4.rtrNum);
+            l.add(cmds.tabulator + "access-blackhole4 " + srvBlckhl4.rtrNum);
         } else {
-            l.add(beg + "no access-blackhole4");
+            l.add(cmds.tabulator + "no access-blackhole4");
         }
         if (srvBlckhl6 != null) {
-            l.add(beg + "access-blackhole6 " + srvBlckhl6.rtrNum);
+            l.add(cmds.tabulator + "access-blackhole6 " + srvBlckhl6.rtrNum);
         } else {
-            l.add(beg + "no access-blackhole6");
+            l.add(cmds.tabulator + "no access-blackhole6");
         }
-        l.add(beg + "port " + srvPort);
-        l.add(beg + "protocol " + proto2string(srvProto));
-        srvShRun(beg, l, filter);
+        l.add(cmds.tabulator + "port " + srvPort);
+        l.add(cmds.tabulator + "protocol " + proto2string(srvProto));
+        srvShRun(cmds.tabulator, l, filter);
         if (srvIface != null) {
-            l.add(beg + "interface " + srvIface.name);
+            l.add(cmds.tabulator + "interface " + srvIface.name);
         } else {
-            l.add(beg + "no interface");
+            l.add(cmds.tabulator + "no interface");
         }
         if (srvVrf != null) {
-            l.add(beg + "vrf " + srvVrf.name);
+            l.add(cmds.tabulator + "vrf " + srvVrf.name);
         } else {
-            l.add(beg + "no vrf");
+            l.add(cmds.tabulator + "no vrf");
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -1412,33 +1411,27 @@ public abstract class servGeneric implements Comparator<servGeneric> {
         return userFilter.filterText(l, srvDefFlt());
     }
 
-    /**
-     * parse commands
-     *
-     * @param cmd commands
-     * @return true if error happened
-     */
-    public boolean doCfgStr(cmds cmd) {
+    public void doCfgStr(cmds cmd) {
         String a = cmd.word();
         if (a.equals("vrf")) {
             srvDeinit();
             srvVrf = cfgAll.vrfFind(cmd.word(), false);
             if (srvVrf == null) {
                 cmd.error("no such vrf exists");
-                return false;
+                return;
             }
             srvInit();
-            return false;
+            return;
         }
         if (a.equals("port")) {
             srvDeinit();
             srvPort = bits.str2num(cmd.word());
             if (srvPort < 1) {
                 cmd.error("bad port number");
-                return false;
+                return;
             }
             srvInit();
-            return false;
+            return;
         }
         if (a.equals("protocol")) {
             int i = 0;
@@ -1452,291 +1445,291 @@ public abstract class servGeneric implements Comparator<servGeneric> {
             srvDeinit();
             srvProto = i;
             srvInit();
-            return false;
+            return;
         }
         if (a.equals("interface")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
             if (ifc == null) {
                 cmd.error("no such interface");
-                return false;
+                return;
             }
             if (ifc.vrfFor == null) {
                 cmd.error("not routed interface");
-                return false;
+                return;
             }
             srvDeinit();
             srvIface = ifc;
             srvInit();
-            return false;
+            return;
         }
         if (a.equals("access-log")) {
             srvLogDrop = true;
-            return false;
+            return;
         }
         if (a.equals("access-total")) {
             srvTotLim = bits.str2num(cmd.word());
-            return false;
+            return;
         }
         if (a.equals("access-peer")) {
             srvPerLim = bits.str2num(cmd.word());
-            return false;
+            return;
         }
         if (a.equals("access-subnet")) {
             srvNetLim = bits.str2num(cmd.word());
-            return false;
+            return;
         }
         if (a.equals("access-blackhole4")) {
             cfgRtr ntry = cfgAll.rtrFind(tabRouteAttr.routeType.blackhole4, bits.str2num(cmd.word()), false);
             if (ntry == null) {
                 cmd.error("no such process");
-                return false;
+                return;
             }
             srvBlckhl4 = ntry.blackhole;
-            return false;
+            return;
         }
         if (a.equals("access-blackhole6")) {
             cfgRtr ntry = cfgAll.rtrFind(tabRouteAttr.routeType.blackhole6, bits.str2num(cmd.word()), false);
             if (ntry == null) {
                 cmd.error("no such process");
-                return false;
+                return;
             }
             srvBlckhl6 = ntry.blackhole;
-            return false;
+            return;
         }
         if (a.equals("access-class")) {
             cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such access list");
-                return false;
+                return;
             }
             srvAccess = ntry.aceslst;
-            return false;
+            return;
         }
         if (a.equals("access-prefix")) {
             cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such prefix list");
-                return false;
+                return;
             }
             srvPrfLst = ntry.prflst;
-            return false;
+            return;
         }
         if (a.equals("access-startup")) {
             srvStartup = bits.str2num(cmd.word());
-            return false;
+            return;
         }
         if (a.equals("access-rate")) {
             srvAccRat = bits.str2num(cmd.word());
             srvAccInt = bits.str2num(cmd.word());
-            return false;
+            return;
         }
         if (a.equals("access-map")) {
             cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such route map");
-                return false;
+                return;
             }
             srvRouMap = ntry.roumap;
-            return false;
+            return;
         }
         if (a.equals("access-policy")) {
             cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such route policy");
-                return false;
+                return;
             }
             srvRouPol = ntry.rouplc;
-            return false;
+            return;
         }
         if (a.equals("security")) {
             String s = cmd.word();
             if (s.equals("protocol")) {
                 secProto = string2proto(cmd.word());
-                return false;
+                return;
             }
             if (s.equals("authentication")) {
                 cfgAuther lst = cfgAll.autherFind(cmd.word(), null);
                 if (lst == null) {
                     cmd.error("no such auth list");
-                    return false;
+                    return;
                 }
                 srvAuther = lst.getAuther();
-                return false;
+                return;
             }
             if (s.equals("rsakey")) {
                 cfgKey<cryKeyRSA> cfg = cfgAll.keyFind(cfgAll.rsakeys, cmd.word(), false);
                 if (cfg == null) {
                     cmd.error("no such key");
-                    return false;
+                    return;
                 }
                 keyrsa = cfg.key;
-                return false;
+                return;
             }
             if (s.equals("dsakey")) {
                 cfgKey<cryKeyDSA> cfg = cfgAll.keyFind(cfgAll.dsakeys, cmd.word(), false);
                 if (cfg == null) {
                     cmd.error("no such key");
-                    return false;
+                    return;
                 }
                 keydsa = cfg.key;
-                return false;
+                return;
             }
             if (s.equals("ecdsakey")) {
                 cfgKey<cryKeyECDSA> cfg = cfgAll.keyFind(cfgAll.ecdsakeys, cmd.word(), false);
                 if (cfg == null) {
                     cmd.error("no such key");
-                    return false;
+                    return;
                 }
                 keyecdsa = cfg.key;
-                return false;
+                return;
             }
             if (s.equals("rsacert")) {
                 cfgCert cfg = cfgAll.certFind(cmd.word(), false);
                 if (cfg == null) {
                     cmd.error("no such cert");
-                    return false;
+                    return;
                 }
                 certrsa = cfg.cert;
-                return false;
+                return;
             }
             if (s.equals("dsacert")) {
                 cfgCert cfg = cfgAll.certFind(cmd.word(), false);
                 if (cfg == null) {
                     cmd.error("no such cert");
-                    return false;
+                    return;
                 }
                 certdsa = cfg.cert;
-                return false;
+                return;
             }
             if (s.equals("ecdsacert")) {
                 cfgCert cfg = cfgAll.certFind(cmd.word(), false);
                 if (cfg == null) {
                     cmd.error("no such cert");
-                    return false;
+                    return;
                 }
                 certecdsa = cfg.cert;
-                return false;
+                return;
             }
             cmd.badCmd();
-            return false;
+            return;
         }
         if (a.equals("no")) {
             a = cmd.word();
             if (a.equals("vrf")) {
                 srvDeinit();
                 srvVrf = null;
-                return false;
+                return;
             }
             if (a.equals("port")) {
                 srvDeinit();
                 srvPort = srvPort();
                 srvInit();
-                return false;
+                return;
             }
             if (a.equals("protocol")) {
                 srvDeinit();
                 srvProto = srvProto();
                 srvInit();
-                return false;
+                return;
             }
             if (a.equals("interface")) {
                 srvDeinit();
                 srvIface = null;
                 srvInit();
-                return false;
+                return;
             }
             if (a.equals("access-log")) {
                 srvLogDrop = false;
-                return false;
+                return;
             }
             if (a.equals("access-total")) {
                 srvTotLim = 0;
-                return false;
+                return;
             }
             if (a.equals("access-peer")) {
                 srvPerLim = 0;
-                return false;
+                return;
             }
             if (a.equals("access-subnet")) {
                 srvNetLim = 0;
-                return false;
+                return;
             }
             if (a.equals("access-blackhole4")) {
                 srvBlckhl4 = null;
-                return false;
+                return;
             }
             if (a.equals("access-blackhole6")) {
                 srvBlckhl6 = null;
-                return false;
+                return;
             }
             if (a.equals("access-class")) {
                 srvAccess = null;
-                return false;
+                return;
             }
             if (a.equals("access-prefix")) {
                 srvPrfLst = null;
-                return false;
+                return;
             }
             if (a.equals("access-startup")) {
                 srvStartup = 0;
-                return false;
+                return;
             }
             if (a.equals("access-rate")) {
                 srvAccRat = 0;
                 srvAccInt = 0;
-                return false;
+                return;
             }
             if (a.equals("access-map")) {
                 srvRouMap = null;
-                return false;
+                return;
             }
             if (a.equals("access-policy")) {
                 srvRouPol = null;
-                return false;
+                return;
             }
         }
         if (a.equals("security")) {
             String s = cmd.word();
             if (s.equals("protocol")) {
                 secProto = 0;
-                return false;
+                return;
             }
             if (s.equals("authentication")) {
                 srvAuther = null;
-                return false;
+                return;
             }
             if (s.equals("rsakey")) {
                 keyrsa = null;
-                return false;
+                return;
             }
             if (s.equals("dsakey")) {
                 keydsa = null;
-                return false;
+                return;
             }
             if (s.equals("ecdsakey")) {
                 keyecdsa = null;
-                return false;
+                return;
             }
             if (s.equals("rsacert")) {
                 certrsa = null;
-                return false;
+                return;
             }
             if (s.equals("dsacert")) {
                 certdsa = null;
-                return false;
+                return;
             }
             if (s.equals("ecdsacert")) {
                 certecdsa = null;
-                return false;
+                return;
             }
             cmd.badCmd();
-            return false;
+            return;
         }
         if (srvCfgStr(cmd.copyBytes(true))) {
             cmd.badCmd();
-            return true;
+            return;
         }
-        return false;
+        return;
     }
 
     public int compare(servGeneric o1, servGeneric o2) {

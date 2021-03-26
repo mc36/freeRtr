@@ -1,4 +1,3 @@
-sho run this
 p4 pipe demux to vdc
 introduce int for sw/hw forwarders
 nat and pbr config to have reindex

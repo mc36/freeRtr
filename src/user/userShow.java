@@ -13,6 +13,7 @@ import cfg.cfgBndl;
 import cfg.cfgBrdg;
 import cfg.cfgCheck;
 import cfg.cfgDial;
+import cfg.cfgGeneric;
 import cfg.cfgIfc;
 import cfg.cfgInit;
 import cfg.cfgMtrack;
@@ -112,9 +113,14 @@ public class userShow {
     public userReader rdr;
 
     /**
-     * current context
+     * current help context
      */
     public userHelping hlp;
+
+    /**
+     * current config context
+     */
+    public cfgGeneric cfg;
 
     private static int getConfigFilter(int flt, String cmd) {
         if (cmd.equals("all")) {
@@ -493,6 +499,13 @@ public class userShow {
         }
         if (a.equals("running-config")) {
             a = cmd.word();
+            if (a.equals("this")) {
+                if (cfg == null) {
+                    return null;
+                }
+                rdr.putStrArr(cfg.getShRun(getConfigFilter(null, cmd)));
+                return null;
+            }
             if (a.equals("all")) {
                 rdr.putStrArr(cfgAll.getShRun(getConfigFilter(a, cmd)));
                 return null;

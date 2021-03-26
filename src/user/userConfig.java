@@ -286,6 +286,14 @@ public class userConfig {
             shw.cmd = cmd;
             shw.rdr = reader;
             shw.hlp = getHelping(false, false);
+            switch (modeV) {
+                case server:
+                    shw.cfg = modeDserver;
+                    break;
+                case config:
+                    shw.cfg = modeDconfig;
+                    break;
+            }
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
                 if (ntry.result != authResult.authSuccessful) {

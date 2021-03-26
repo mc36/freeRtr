@@ -12173,3 +12173,5 @@ qc pass: secondary addresses over dot1q vlan
 todo: p4 pipe demux to vdc
 ---------------------------------- 2021-03-26 15:18:18
 no todo: fhrp security
+---------------------------------- 2021-03-26 18:21:19
+no todo: sho run this

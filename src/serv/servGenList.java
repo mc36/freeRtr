@@ -104,7 +104,7 @@ public class servGenList<T extends servGeneric> {
     public void getShRun(List<String> cfg, int filter) {
         for (int i = 0; i < lst.size(); i++) {
             T ntry = lst.get(i);
-            cfg.addAll(ntry.getShRun("", filter));
+            cfg.addAll(ntry.getShRun(filter));
         }
     }
 

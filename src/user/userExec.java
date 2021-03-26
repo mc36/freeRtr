@@ -936,6 +936,9 @@ public class userExec {
         hl.add("3 3,.      [name]                name of section");
         hl.add("2 3,.    running-config          current operating configuration");
         hl.add("3 3,.      [name]                name of section");
+        hl.add("3 4,.      this                  current subconfiguration");
+        hl.add("4 4,.        all                 do not hide defaults");
+        hl.add("4 4,.        hide                hide passwords");
         hl.add("3 4        interface             specified interface");
         hl.add("4 5,.        <name>              name of interface");
         hl.add("5 5,.          all               do not hide defaults");
