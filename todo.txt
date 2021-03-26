@@ -1,5 +1,6 @@
 sho run this
 fhrp security
+p4 pipe demux to vdc
 introduce int for sw/hw forwarders
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
