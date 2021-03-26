@@ -394,6 +394,10 @@ public class ipFwdTab {
                 continue;
             }
             lower.natTrns.del(ntry);
+            lower.natTrns.del(ntry.reverse);
+            if (ntry.logEnd) {
+                logger.info("removing translation " + ntry);
+            }
         }
         for (int i = 0; i < lower.natCfg.size(); i++) {
             tabNatCfgN ntry = lower.natCfg.get(i);

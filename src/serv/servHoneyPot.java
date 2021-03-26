@@ -118,7 +118,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         pipe.setTime(60000);
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        new servHoneyPotConn(this, pipe, id.peerAddr.copyBytes());
+        new servHoneyPotConn(this, pipe, id.peerAddr.copyBytes(), id.portRem);
         return false;
     }
 
@@ -132,10 +132,13 @@ class servHoneyPotConn implements Runnable {
 
     private addrIP addr;
 
-    public servHoneyPotConn(servHoneyPot parent, pipeSide conn, addrIP peer) {
+    private int port;
+
+    public servHoneyPotConn(servHoneyPot parent, pipeSide conn, addrIP peer, int prt) {
         lower = parent;
         pipe = conn;
         addr = peer;
+        port = prt;
         new Thread(this).start();
     }
 
@@ -146,6 +149,7 @@ class servHoneyPotConn implements Runnable {
             clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
             s = s + " - " + clnt.getPTR();
         }
+        s = s + " - " + port;
         pipe.linePut("you (" + s + ") have been logged!");
         pipe.setClose();
         logger.info("honeypot hit from " + s);

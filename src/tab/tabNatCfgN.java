@@ -329,7 +329,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (rangeMin > 0) {
             l.add(s + " randomize " + rangeMin + " " + rangeMax);
         }
-        if (logMatch) {
+        if (logTrans) {
             l.add(s + " log-translations");
         }
         return l;
@@ -511,6 +511,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             return n;
         }
         n.newSrcPort = bits.random(rangeMin, rangeMax);
+        n.logEnd = logTrans;
         if (logTrans) {
             logger.info("creating translation " + n);
         }

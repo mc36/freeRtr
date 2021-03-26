@@ -89,6 +89,11 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
     public counter hwCntr;
 
     /**
+     * log translations
+     */
+    public boolean logEnd;
+
+    /**
      * reverse entry
      *
      * @return entry reversed
