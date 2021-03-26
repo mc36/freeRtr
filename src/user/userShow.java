@@ -528,7 +528,6 @@ public class userShow {
                 }
                 int filt = getConfigFilter(null, cmd);
                 rdr.putStrArr(r.getShRun(filt));
-                rdr.putStrArr(r.getShRun2(filt));
                 return null;
             }
             if (a.equals("interface")) {

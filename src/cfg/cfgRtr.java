@@ -1559,6 +1559,16 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     }
 
     public List<String> getShRun(int filter) {
+        return getShRun(1, filter);
+    }
+
+    /**
+     * get configuration
+     *
+     * @param filter filter defaults
+     * @return configuration
+     */
+    public List<String> getShRun1(int filter) {
         return getShRun(2, filter);
     }
 

@@ -57,6 +57,7 @@ public interface ipIfc {
 
     /**
      * get local layer2 info
+     * @return local layer2 address
      */
     public addrType getL2info();
 

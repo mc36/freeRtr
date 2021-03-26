@@ -3362,7 +3362,9 @@ public class cfgAll {
         servGenList.listGetRun(l, sessns, filter);
         servGenList.listGetRun(l, menus, filter);
         servGenList.listGetRun(l, vrfs, filter);
-        servGenList.listGetRun(l, routers, filter);
+        for (int i = 0; i < routers.size(); i++) {
+            l.addAll(routers.get(i).getShRun1(filter));
+        }
         servGenList.listGetRun(l, ifaces, filter);
         for (int i = 0; i < routers.size(); i++) {
             l.addAll(routers.get(i).getShRun2(filter));
