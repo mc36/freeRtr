@@ -529,6 +529,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 .       bfd                       enable bfd triggered down");
         l.add("3 4       group                     set group number");
         l.add("4 .         <num>                   group");
+        l.add("3 4       password                  set group password");
+        l.add("4 .         <str>                   string");
         l.add("3 4       version                   set protocol version");
         l.add("4 .         <num>                   group");
         l.add("3 4       timer                     set protocol timers");
@@ -690,6 +692,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, mldpCfg == null, cmds.tabulator, beg + "multicast mldp-enable", "");
         if (hsrpCfg != null) {
             l.add(cmds.tabulator + beg + "hsrp address " + hsrpCfg.ip);
+            l.add(cmds.tabulator + beg + "hsrp password " + hsrpCfg.authen);
             l.add(cmds.tabulator + beg + "hsrp group " + hsrpCfg.group);
             l.add(cmds.tabulator + beg + "hsrp mac-address " + hsrpCfg.mac);
             l.add(cmds.tabulator + beg + "hsrp version " + hsrpCfg.version);
@@ -1138,6 +1141,10 @@ public class ipFwdIface extends tabRouteIface {
                 hsrpCfg.group = bits.str2num(cmd.word());
                 hsrpCfg.mac = hsrpCfg.genPackHolder().genMacAddr();
                 hsrpCfg.resetState();
+                return false;
+            }
+            if (a.equals("password")) {
+                hsrpCfg.authen = cmd.word();
                 return false;
             }
             if (a.equals("mac-address")) {
