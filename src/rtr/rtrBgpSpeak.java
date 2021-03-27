@@ -1345,6 +1345,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packSend(pck, rtrBgpUtil.msgKeepLiv);
     }
 
+    private byte[] encodeHostname(String s) {
+        byte[] buf = cfgAll.hostName.getBytes();
+        byte[] tmp = new byte[1];
+        tmp[0] = (byte) buf.length;
+        return bits.byteConcat(tmp, buf);
+    }
+
     /**
      * send open message
      */
@@ -1406,13 +1413,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaGraceRestart, buf);
         }
-        if (neigh.hostname) {
-            buf = cfgAll.hostName.getBytes();
-            byte[] tmp = new byte[1];
-            tmp[0] = (byte) buf.length;
-            buf = bits.byteConcat(tmp, buf);
-            tmp = new byte[1];
-            buf = bits.byteConcat(buf, tmp);
+        if (neigh.hostname > 0) {
+            buf = encodeHostname(cfgAll.hostName);
+            if (neigh.hostname > 1) {
+                buf = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
+            } else {
+                buf = bits.byteConcat(buf, encodeHostname(""));
+            }
             rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaHostname, buf);
         }
         if ((neigh.compressMode & 1) != 0) {

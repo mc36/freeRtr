@@ -205,7 +205,7 @@ public abstract class rtrBgpParam {
     /**
      * hostname
      */
-    public boolean hostname;
+    public int hostname;
 
     /**
      * not transmit during receive
@@ -1198,7 +1198,8 @@ public abstract class rtrBgpParam {
         getAfiList(l, "4 4,.", "use", true);
         l.add("3 4       extended-nexthop-other      advertise extended nexthop capability");
         getAfiList(l, "4 4,.", "use", true);
-        l.add("3 .       hostname                    advertise hostname capability");
+        l.add("3 4,.     hostname                    advertise hostname capability");
+        l.add("4 .         domain                    advertise domain too");
         l.add("3 .       unidirection                not advertise when receiving");
         l.add("3 .       fall-over                   track outgoing interface");
         l.add("3 .       soft-reconfiguration        enable soft reconfiguration");
@@ -1343,7 +1344,11 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
         l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
         l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOtr));
-        cmds.cfgLine(l, !hostname, beg, nei + "hostname", "");
+        s = "";
+        if (hostname > 1) {
+            s = "domain";
+        }
+        cmds.cfgLine(l, hostname < 1, beg, nei + "hostname", s);
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
         cmds.cfgLine(l, !sendDefRou, beg, nei + "default-originate", "");
@@ -1619,7 +1624,15 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("hostname")) {
-            hostname = !negated;
+            if (negated) {
+                hostname = 0;
+                return false;
+            }
+            hostname = 1;
+            s = cmd.word();
+            if (s.equals("domain")) {
+                hostname = 2;
+            }
             return false;
         }
         if (s.equals("unidirection")) {
