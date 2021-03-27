@@ -3303,7 +3303,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "as|neighbor|description");
                 break;
             case 9:
-                l = new userFormat("|", "as|neighbor|hostname");
+                l = new userFormat("|", "as|neighbor|hostname|domain");
                 break;
             case 10:
                 l = new userFormat("|", "as|rx|tx|rx|tx|neighbor", "1|2operate|2ratio|1");

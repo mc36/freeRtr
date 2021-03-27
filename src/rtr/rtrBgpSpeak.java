@@ -476,6 +476,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public String peerHostname;
 
     /**
+     * peer domain capability
+     */
+    public String peerDomainname;
+
+    /**
      * peer sends additional paths
      */
     public int addpathRx;
@@ -1346,7 +1351,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private byte[] encodeHostname(String s) {
-        byte[] buf = cfgAll.hostName.getBytes();
+        byte[] buf = s.getBytes();
         byte[] tmp = new byte[1];
         tmp[0] = (byte) buf.length;
         return bits.byteConcat(tmp, buf);
@@ -1415,13 +1420,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (neigh.hostname > 0) {
             buf = encodeHostname(cfgAll.hostName);
-            byte[] tmp;
             if (neigh.hostname > 1) {
-                tmp = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
+                buf = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
             } else {
-                tmp = bits.byteConcat(buf, encodeHostname(""));
+                buf = bits.byteConcat(buf, encodeHostname(""));
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaHostname, tmp);
+            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaHostname, buf);
         }
         if ((neigh.compressMode & 1) != 0) {
             compressRx = new Inflater[8];
@@ -1518,6 +1522,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         byte[] buf = new byte[tlv.valDat[0] & 0xff];
                         bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
                         peerHostname = new String(buf);
+                        i = buf.length + 1;
+                        buf = new byte[tlv.valDat[i] & 0xff];
+                        bits.byteCopy(tlv.valDat, i + 1, buf, 0, buf.length);
+                        peerDomainname = new String(buf);
                         break;
                     case rtrBgpUtil.capaCompress:
                         if ((neigh.compressMode & 2) == 0) {

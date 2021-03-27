@@ -505,6 +505,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("refresh = " + conn.peerRefresh + ", rx=" + conn.refreshRx + ", tx=" + conn.refreshTx);
         l.add("description = " + description);
         l.add("hostname = " + conn.peerHostname);
+        l.add("domainname = " + conn.peerDomainname);
         l.add("compression = rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
         l.add("graceful = " + rtrBgpParam.mask2string(conn.peerGrace));
         l.add("extnexthop cur = " + rtrBgpParam.mask2string(conn.peerExtNextCur));
@@ -1529,7 +1530,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 8:
                 return bits.num2str(remoteAs) + "|" + peerAddr + "|" + description;
             case 9:
-                return bits.num2str(remoteAs) + "|" + peerAddr + "|" + conn.peerHostname;
+                return bits.num2str(remoteAs) + "|" + peerAddr + "|" + conn.peerHostname + "|" + conn.peerDomainname;
             case 10:
                 return bits.num2str(remoteAs) + "|" + (conn.compressRx != null) + "|" + (conn.compressTx != null) + "|" + bits.percent(conn.cntr.byteRx, conn.compressCntr.byteRx) + "|" + bits.percent(conn.cntr.byteTx, conn.compressCntr.byteTx) + "|" + peerAddr;
             case 11:
