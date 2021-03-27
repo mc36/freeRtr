@@ -1415,12 +1415,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (neigh.hostname > 0) {
             buf = encodeHostname(cfgAll.hostName);
+            byte[] tmp;
             if (neigh.hostname > 1) {
-                buf = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
+                tmp = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
             } else {
-                buf = bits.byteConcat(buf, encodeHostname(""));
+                tmp = bits.byteConcat(buf, encodeHostname(""));
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaHostname, buf);
+            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaHostname, tmp);
         }
         if ((neigh.compressMode & 1) != 0) {
             compressRx = new Inflater[8];

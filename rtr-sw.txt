@@ -472,7 +472,7 @@ router bgp4 65535
  template r update-source loopback0
  template r monitor bmp
  template r dump mrt
- template r hostname
+ template r hostname domain
  template r aigp
  template r traffeng
  template r pmsitun
@@ -945,4 +945,4 @@ client time-zone CET
 client mail-server mail.mchome.nop.hu
 client end-format chksum
 !
-end chksum=8cc02a03e61ce36f1a40b8022a9dc65d7762a51f9b2fecc5d62abc22b85a43652f2bcc4d249577297d0ea4970275403fecff0ab8f5dbbc1974d7c8bad7ac7983-b2e2a6b2378e59ee1721991546a13a92cebd0169b33842608be70a625c3bff74c15310b9eac2e506682521d4cec0efa4b5e8359f9d2d97e200924e69e9ece98b
+end chksum=2bffe3a662ca0ad81c58ec756e4a6320c2f2ed08d0cc732f7ee288195204df15adac938daff4a03d19f61333ab0f597ebd6a0efaaade631ff8d0ad95b96a948b-7ae3fdcc798845d161bac1ab6f3a539a62c9ff13bd9e29656bcf4ca6c47708fdafdf632b787d2abf62df89c738881b59bf34569ea7c7c2a525722de3d53f9543
