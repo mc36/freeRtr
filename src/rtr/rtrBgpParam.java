@@ -343,6 +343,11 @@ public abstract class rtrBgpParam {
     public rtrBgpMrt dump;
 
     /**
+     * other address
+     */
+    public addrIP otherAdr;
+
+    /**
      * ingress prefix list
      */
     public tabListing<tabPrfxlstN, addrIP> prflstIn;
@@ -838,6 +843,7 @@ public abstract class rtrBgpParam {
         shutdown = src.shutdown;
         monitor = src.monitor;
         dump = src.dump;
+        otherAdr = src.otherAdr;
         passwd = src.passwd;
         accIgp = src.accIgp;
         traffEng = src.traffEng;
@@ -1142,6 +1148,8 @@ public abstract class rtrBgpParam {
         getAfiList(l, "4 4,.", "use", true);
         l.add("3 4       monitor                     bgp monitor protocol for this peer");
         l.add("4 .         <name>                    name of bmp");
+        l.add("3 4       other-address               address of peer in the other afi");
+        l.add("4 .         <addr>                    other address");
         l.add("3 4       dump                        bgp dump for this peer");
         l.add("4 .         <name>                    name of mrt");
         l.add("3 4       buffer-size                 size of buffer");
@@ -1338,6 +1346,7 @@ public abstract class rtrBgpParam {
         } else {
             l.add(beg + nei + "dump " + dump.dumpName);
         }
+        cmds.cfgLine(l, otherAdr == null, beg, nei + "other-address", "" + otherAdr);
         cmds.cfgLine(l, !bfdTrigger, beg, nei + "bfd", "");
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
@@ -1534,6 +1543,15 @@ public abstract class rtrBgpParam {
             if (srcIface == null) {
                 cmd.error("no such interface");
             }
+            return false;
+        }
+        if (s.equals("other-address")) {
+            if (negated) {
+                otherAdr = null;
+                return false;
+            }
+            otherAdr = new addrIP();
+            otherAdr.fromString(cmd.word());
             return false;
         }
         if (s.equals("dump")) {
