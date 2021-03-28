@@ -1999,7 +1999,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             cur = res;
         }
-        if (prefixReachable(cur)) {
+        if (prefixReachable(cur, safi)) {
             if (doPrefDel(learned, addpath, cur)) {
                 return;
             }
@@ -2216,7 +2216,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         trg.add(ntry);
     }
 
-    private boolean prefixReachable(tabRouteEntry<addrIP> ntry) {
+    private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int safi) {
         if (debugger.rtrBgpTraf) {
             logger.debug("processing " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }
@@ -2308,7 +2308,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
         }
         if (neigh.nxtHopPeer) {
-            ntry.best.nextHop = neigh.peerAddr.copyBytes();
+            if ((neigh.otherAdr != null) && ((safi == parent.afiOtrU) || (safi == parent.afiOtrM))) {
+                ntry.best.nextHop = neigh.otherAdr.copyBytes();
+            } else {
+                ntry.best.nextHop = neigh.peerAddr.copyBytes();
+            }
         }
         if ((ntry.best.labelRem == null) && (ntry.best.segrouIdx > 0) && (ntry.best.segrouBeg > 0)) {
             ntry.best.labelRem = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
