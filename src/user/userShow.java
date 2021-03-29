@@ -2686,14 +2686,14 @@ public class userShow {
         }
     }
 
-    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt) {
+    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
             if (prf1 == null) {
                 continue;
             }
             if (flt != null) {
-                if (flt.matches(rtrBgpUtil.sfiUnicast, 0, prf1)) {
+                if (flt.matches(safi, 0, prf1)) {
                     continue;
                 }
             }
@@ -2704,7 +2704,7 @@ public class userShow {
                 continue;
             }
             if (flt != null) {
-                if (flt.matches(rtrBgpUtil.sfiUnicast, 0, prf2)) {
+                if (flt.matches(safi, 0, prf2)) {
                     continue;
                 }
             }
@@ -2714,6 +2714,10 @@ public class userShow {
             }
             for (int i = 0; i < prf2.alts.size(); i++) {
                 ignoreAttribs(prf2.alts.get(i), ign);
+            }
+            if (upd != null) {
+                upd.update(safi, asn1, prf1, false);
+                upd.update(safi, asn2, prf2, false);
             }
             if (!prf1.differs(tabRoute.addType.alters, prf2)) {
                 continue;
@@ -3114,6 +3118,7 @@ public class userShow {
             }
             int ign = 0;
             tabListing<tabRtrmapN, addrIP> flt = null;
+            tabListing<tabRtrmapN, addrIP> upd = null;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -3127,6 +3132,14 @@ public class userShow {
                     flt = res.roumap;
                     continue;
                 }
+                if (a.equals("update")) {
+                    cfgRoump res = cfgAll.rtmpFind(cmd.word(), false);
+                    if (res == null) {
+                        continue;
+                    }
+                    upd = res.roumap;
+                    continue;
+                }
                 ign |= str2ignore(a);
             }
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
@@ -3137,8 +3150,8 @@ public class userShow {
             tabRoute<addrIP> uni1 = new tabRoute<addrIP>("tab");
             tabRoute<addrIP> uni2 = new tabRoute<addrIP>("tab");
             tabRoute<addrIP> diff = new tabRoute<addrIP>("tab");
-            compareTables(uni1, diff, acc1, acc2, ign, flt);
-            compareTables(uni2, diff, acc2, acc1, ign, flt);
+            compareTables(uni1, diff, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+            compareTables(uni2, diff, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
             cmd.error("unique to " + nei1);
             doShowRoutes(r.bgp.fwdCore, uni1, dsp);
             cmd.error("unique to " + nei2);
@@ -3165,6 +3178,7 @@ public class userShow {
             int ign = 0;
             int tim = 5000;
             tabListing<tabRtrmapN, addrIP> flt = null;
+            tabListing<tabRtrmapN, addrIP> upd = null;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -3182,6 +3196,14 @@ public class userShow {
                     flt = res.roumap;
                     continue;
                 }
+                if (a.equals("update")) {
+                    cfgRoump res = cfgAll.rtmpFind(cmd.word(), false);
+                    if (res == null) {
+                        continue;
+                    }
+                    upd = res.roumap;
+                    continue;
+                }
                 ign |= str2ignore(a);
             }
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
@@ -3190,12 +3212,12 @@ public class userShow {
                 return;
             }
             tabRoute<addrIP> dif1 = new tabRoute<addrIP>("tab");
-            compareTables(dif1, dif1, acc1, acc2, ign, flt);
-            compareTables(dif1, dif1, acc2, acc1, ign, flt);
+            compareTables(dif1, dif1, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+            compareTables(dif1, dif1, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
             bits.sleep(tim);
             tabRoute<addrIP> dif2 = new tabRoute<addrIP>("tab");
-            compareTables(dif2, dif2, acc1, acc2, ign, flt);
-            compareTables(dif2, dif2, acc2, acc1, ign, flt);
+            compareTables(dif2, dif2, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+            compareTables(dif2, dif2, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
             tabRoute<addrIP> dif3 = new tabRoute<addrIP>("tab");
             cmd.error("constant differences");
             compareDiffs(dif3, dif1, dif2);
