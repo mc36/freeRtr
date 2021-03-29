@@ -597,6 +597,9 @@ public class userPacket {
             }
             int las = bits.str2num(cmd.word());
             addrPrefix<addrIP> prf = addrPrefix.str2ip(cmd.word());
+            if (prf == null) {
+                return null;
+            }
             cfgRoump rmp = cfgAll.rtmpFind(cmd.word(), false);
             if (rmp == null) {
                 return null;
@@ -710,6 +713,9 @@ public class userPacket {
             }
             int las = bits.str2num(cmd.word());
             addrPrefix<addrIP> prf = addrPrefix.str2ip(cmd.word());
+            if (prf == null) {
+                return null;
+            }
             cfgRoump rmp = cfgAll.rtmpFind(cmd.word(), false);
             if (rmp == null) {
                 return null;
