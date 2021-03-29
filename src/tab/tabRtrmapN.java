@@ -198,6 +198,21 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public boolean privasClear;
 
     /**
+     * peer as updates
+     */
+    public boolean peerasClear;
+
+    /**
+     * exact as updates
+     */
+    public int exactasClear;
+
+    /**
+     * first as updates
+     */
+    public boolean firstasClear;
+
+    /**
      * community matcher
      */
     public int peerStdMatch;
@@ -765,6 +780,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, !extCommClear, beg, "clear extcomm", "");
         cmds.cfgLine(l, !extCommClear, beg, "clear lrgcomm", "");
         cmds.cfgLine(l, !privasClear, beg, "clear privateas", "");
+        cmds.cfgLine(l, !peerasClear, beg, "clear peeras", "");
+        cmds.cfgLine(l, exactasClear == 0, beg, "clear exactas", "" + bits.num2str(exactasClear));
+        cmds.cfgLine(l, !firstasClear, beg, "clear firstas", "");
         cmds.cfgLine(l, roumapSet == null, beg, "set route-map", "" + roumapSet);
         cmds.cfgLine(l, rouplcSet == null, beg, "set route-policy", "" + rouplcSet);
         if (aspathSet == null) {
@@ -982,7 +1000,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         return matches(rtrBgpUtil.sfiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
-    private void doUpdate(tabRouteAttr<addrIP> attr) {
+    private void doUpdate(tabRouteAttr<addrIP> attr, int asn) {
         attr.distance = distanceSet.update(attr.distance);
         attr.locPref = locPrefSet.update(attr.locPref);
         attr.accIgp = accIgpSet.update(attr.accIgp);
@@ -1007,6 +1025,23 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             rtrBgpUtil.removePrivateAs(attr.pathSeq);
             rtrBgpUtil.removePrivateAs(attr.pathSet);
         }
+        if (peerasClear) {
+            rtrBgpUtil.removeIntList(attr.pathSeq, asn);
+            rtrBgpUtil.removeIntList(attr.pathSet, asn);
+        }
+        if (exactasClear != 0) {
+            rtrBgpUtil.removeIntList(attr.pathSeq, exactasClear);
+            rtrBgpUtil.removeIntList(attr.pathSet, exactasClear);
+        }
+        if (firstasClear) {
+            if (attr.pathSeq != null) {
+                if (attr.pathSeq.size() > 0) {
+                    int o = attr.pathSeq.get(0);
+                    rtrBgpUtil.removeIntList(attr.pathSeq, o);
+                    rtrBgpUtil.removeIntList(attr.pathSet, o);
+                }
+            }
+        }
         attr.stdComm = tabLabel.prependLabels(attr.stdComm, stdCommSet);
         if (nexthopSet != null) {
             attr.nextHop = nexthopSet.copyBytes();
@@ -1027,7 +1062,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
 
     public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
         for (int i = 0; i < net.alts.size(); i++) {
-            doUpdate(net.alts.get(i));
+            doUpdate(net.alts.get(i), asn);
         }
         net.selectBest();
         if (roumapSet != null) {

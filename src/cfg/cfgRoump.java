@@ -81,6 +81,9 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no clear extcomm",
         "route-map .*! sequence .* no clear lrgcomm",
         "route-map .*! sequence .* no clear privateas",
+        "route-map .*! sequence .* no clear peeras",
+        "route-map .*! sequence .* no clear exactas",
+        "route-map .*! sequence .* no clear firstas",
         "route-map .*! sequence .* no set route-map",
         "route-map .*! sequence .* no set route-policy",
         "route-map .*! sequence .* no set aspath",
@@ -245,6 +248,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 .     extcomm             clear extended community");
         l.add("2 .     lrgcomm             clear large community");
         l.add("2 .     privateas           clear private asn");
+        l.add(".2 .    peeras              clear peer asn");
+        l.add(".2 3    exactas             clear exact asn");
+        l.add("3 .       <num>             as number to remove");
+        l.add(".2 .    firstas             clear first asn");
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
         l.add("3 3,.     <num>             as to prepend");
@@ -607,6 +614,18 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.privasClear = true;
                 return;
             }
+            if (a.equals("peeras")) {
+                ntry.peerasClear = true;
+                return;
+            }
+            if (a.equals("exactas")) {
+                ntry.exactasClear = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("firstas")) {
+                ntry.firstasClear = true;
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -893,6 +912,18 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("privateas")) {
                 ntry.privasClear = false;
+                return;
+            }
+            if (a.equals("peeras")) {
+                ntry.peerasClear = false;
+                return;
+            }
+            if (a.equals("exactas")) {
+                ntry.exactasClear = 0;
+                return;
+            }
+            if (a.equals("firstas")) {
+                ntry.firstasClear = false;
                 return;
             }
             cmd.badCmd();

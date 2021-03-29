@@ -2994,6 +2994,27 @@ public class rtrBgpUtil {
     }
 
     /**
+     * replace on integer list
+     *
+     * @param lst list to use
+     * @param src source to replace
+     * @return number of occurences removed
+     */
+    public static int removeIntList(List<Integer> lst, int src) {
+        if (lst == null) {
+            return 0;
+        }
+        int o = 0;
+        for (int i = lst.size() - 1; i >= 0; i--) {
+            if (lst.get(i) == src) {
+                lst.remove(i);
+                o++;
+            }
+        }
+        return o;
+    }
+
+    /**
      * remove private as numbers
      *
      * @param lst list to use
