@@ -79,6 +79,18 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         clrPrivas,
         /**
+         * clear peeras
+         */
+        clrPeeras,
+        /**
+         * clear exactas
+         */
+        clrExactas,
+        /**
+         * clear firstas
+         */
+        clrFirstas,
+        /**
          * set stdcomm
          */
         setStdcomm,
@@ -311,6 +323,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     public String strVal = null;
 
     /**
+     * integer value
+     */
+    public int intVal = 0;
+
+    /**
      * integer list
      */
     public List<Integer> intLst;
@@ -404,6 +421,12 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return bits.str2lst(beg + "clear lrgcomm");
             case clrPrivas:
                 return bits.str2lst(beg + "clear privateas");
+            case clrPeeras:
+                return bits.str2lst(beg + "clear peeras");
+            case clrExactas:
+                return bits.str2lst(beg + "clear exactas " + intVal);
+            case clrFirstas:
+                return bits.str2lst(beg + "clear firstas");
             case setStdcomm:
                 return bits.str2lst(beg + "set stdcomm " + tabRtrmapN.stdComms2string(intLst));
             case setExtcomm:
@@ -654,7 +677,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         return matches(rtrBgpUtil.sfiUnicast, 0, new addrPrefix<addrIP>(pck.IPsrc, new addrIP().maxBits()));
     }
 
-    private void doUpdate(tabRouteAttr<addrIP> attr) {
+    private void doUpdate(tabRouteAttr<addrIP> attr, int asn) {
         switch (doMode) {
             case clrStdcomm:
                 attr.stdComm = null;
@@ -668,6 +691,17 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case clrPrivas:
                 rtrBgpUtil.removePrivateAs(attr.pathSeq);
                 rtrBgpUtil.removePrivateAs(attr.pathSet);
+                return;
+            case clrPeeras:
+                rtrBgpUtil.removeIntList(attr.pathSeq, asn);
+                rtrBgpUtil.removeIntList(attr.pathSet, asn);
+                return;
+            case clrExactas:
+                rtrBgpUtil.removeIntList(attr.pathSeq, intVal);
+                rtrBgpUtil.removeIntList(attr.pathSet, intVal);
+                return;
+            case clrFirstas:
+                rtrBgpUtil.removeFirstAs(attr);
                 return;
             case setStdcomm:
                 attr.stdComm = tabLabel.prependLabels(attr.stdComm, intLst);
@@ -737,7 +771,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 break;
         }
         for (int i = 0; i < net.alts.size(); i++) {
-            doUpdate(net.alts.get(i));
+            doUpdate(net.alts.get(i), asn);
         }
     }
 

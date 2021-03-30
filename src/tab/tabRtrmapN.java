@@ -1034,13 +1034,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             rtrBgpUtil.removeIntList(attr.pathSet, exactasClear);
         }
         if (firstasClear) {
-            if (attr.pathSeq != null) {
-                if (attr.pathSeq.size() > 0) {
-                    int o = attr.pathSeq.get(0);
-                    rtrBgpUtil.removeIntList(attr.pathSeq, o);
-                    rtrBgpUtil.removeIntList(attr.pathSet, o);
-                }
-            }
+            rtrBgpUtil.removeFirstAs(attr);
         }
         attr.stdComm = tabLabel.prependLabels(attr.stdComm, stdCommSet);
         if (nexthopSet != null) {

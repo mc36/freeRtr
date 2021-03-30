@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packHolder;
 import tab.tabLargeComm;
+import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import util.bits;
 import util.debugger;
@@ -3032,6 +3033,25 @@ public class rtrBgpUtil {
             }
         }
         return o;
+    }
+
+    /**
+     * remove first as numbers
+     *
+     * @param attr attribute to update
+     * @return number of occurences removed
+     */
+    public static int removeFirstAs(tabRouteAttr<addrIP> attr) {
+        if (attr.pathSeq == null) {
+            return 0;
+        }
+        if (attr.pathSeq.size() < 1) {
+            return 0;
+        }
+        int o = attr.pathSeq.get(0);
+        int i = removeIntList(attr.pathSeq, o);
+        i += removeIntList(attr.pathSet, o);
+        return i;
     }
 
 }

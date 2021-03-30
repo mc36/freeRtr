@@ -184,6 +184,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add("2 .     extcomm             clear extended community");
         l.add("2 .     lrgcomm             clear large community");
         l.add("2 .     privateas           clear private asn");
+        l.add(".2 .    peeras              clear peer asn");
+        l.add(".2 3    exactas             clear exact asn");
+        l.add(".3 .      <num>             as number to remove");
+        l.add(".2 .    firstas             clear first asn");
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
         l.add("3 3,.     <num>             as to prepend");
@@ -611,6 +615,19 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("privateas")) {
                 ntry.doMode = tabRtrplcN.doType.clrPrivas;
+                return;
+            }
+            if (a.equals("peeras")) {
+                ntry.doMode = tabRtrplcN.doType.clrPeeras;
+                return;
+            }
+            if (a.equals("exactas")) {
+                ntry.doMode = tabRtrplcN.doType.clrExactas;
+                ntry.intVal = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("firstas")) {
+                ntry.doMode = tabRtrplcN.doType.clrFirstas;
                 return;
             }
             cmd.badCmd();

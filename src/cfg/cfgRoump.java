@@ -250,7 +250,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add("2 .     privateas           clear private asn");
         l.add(".2 .    peeras              clear peer asn");
         l.add(".2 3    exactas             clear exact asn");
-        l.add("3 .       <num>             as number to remove");
+        l.add(".3 .      <num>             as number to remove");
         l.add(".2 .    firstas             clear first asn");
         l.add("1 2   set                   set values in destination routing protocol");
         l.add("2 3     aspath              prepend as path");
