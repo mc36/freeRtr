@@ -515,20 +515,29 @@ public class logger {
      */
     public static List<String> bufferRead(int num) {
         List<String> l = new ArrayList<String>();
+        if (num > logBufLst.length) {
+            num = logBufLst.length;
+        }
         int o = logBufPos - num + 1;
         if (o < 0) {
             o = logBufLst.length + o;
         }
-        for (int i = 0; i < num; i++) {
-            String s = logBufLst[o];
-            o++;
-            if (o >= logBufLst.length) {
-                o = 0;
+        if (o < 0) {
+            num = num - o;
+            o = 0;
+        }
+        synchronized (logBufLst) {
+            for (int i = 0; i < num; i++) {
+                String s = logBufLst[o];
+                o++;
+                if (o >= logBufLst.length) {
+                    o = 0;
+                }
+                if (s == null) {
+                    continue;
+                }
+                l.add(s);
             }
-            if (s == null) {
-                continue;
-            }
-            l.add(s);
         }
         return l;
     }
