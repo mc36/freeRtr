@@ -2393,3 +2393,5 @@ todo: more interactive tools
 todo: more features with clean implementation
 todo: x25
 todo: default vrf for show commands
+todo: shame texts in cmd.err
+todo: 

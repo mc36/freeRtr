@@ -39,3 +39,5 @@ more interactive tools
 more features with clean implementation
 x25
 default vrf for show commands
+shame texts in cmd.err
+
