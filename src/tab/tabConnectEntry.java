@@ -108,7 +108,7 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
         } else {
             a = data.dumper();
         }
-        return name + "|" + hits + "|" + a + "|" + ipFwdTab.iface2name(f, iface) + "|" + local + "|" + remote + "|" + peer;
+        return name + "|" + a + "|" + ipFwdTab.iface2name(f, iface) + "|" + local + "|" + remote + "|" + peer + "|" + hits;
     }
 
 }
