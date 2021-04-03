@@ -12194,3 +12194,5 @@ todo: aaa randomizer
 ---------------------------------- 2021-04-03 20:17:00
 no todo: aaa randomizer
 todo: more randomizers
+---------------------------------- 2021-04-03 21:48:29
+todo: max heat interval to temper
