@@ -1,3 +1,4 @@
+remove from player favorites
 disable-macsec command
 dataplane says
 test cases for route-map/policy clear things
@@ -42,4 +43,3 @@ more features with clean implementation
 x25
 default vrf for show commands
 shame texts in cmd.err
-
