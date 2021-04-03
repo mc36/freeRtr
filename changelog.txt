@@ -12191,3 +12191,6 @@ todo: serv bmp bugfix: last pack timer
 ---------------------------------- 2021-04-03 18:40:59
 todo: client anycast-name-server
 todo: aaa randomizer
+---------------------------------- 2021-04-03 20:17:00
+no todo: aaa randomizer
+todo: more randomizers

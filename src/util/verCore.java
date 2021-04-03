@@ -48,7 +48,7 @@ public class verCore {
     /**
      * statement of release
      */
-    public final static String state = "-rel";
+    public final static String state = "-cur";
 
     /**
      * set true to hide experimental features
