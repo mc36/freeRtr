@@ -1,4 +1,4 @@
-serv bmp last packet timeout
+serv bmp bugfix: last pack timer
 remove from player favorites
 disable-macsec command
 dataplane says
