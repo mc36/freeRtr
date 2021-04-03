@@ -2352,6 +2352,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: remove from player favorites
 todo: disable-macsec command
 todo: dataplane says
 todo: test cases for route-map/policy clear things
@@ -2396,4 +2397,3 @@ todo: more features with clean implementation
 todo: x25
 todo: default vrf for show commands
 todo: shame texts in cmd.err
-todo: 

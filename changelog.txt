@@ -12183,3 +12183,6 @@ todo:
 ---------------------------------- 2021-04-02 22:26:15
 todo: disable-macsec command
 todo: dataplane says
+---------------------------------- 2021-04-03 05:57:17
+no todo:
+todo: remove from player favorites
