@@ -1,3 +1,4 @@
+client anycast-name-server
 serv bmp bugfix: last pack timer
 remove from player favorites
 disable-macsec command
