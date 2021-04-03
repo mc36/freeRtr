@@ -12188,3 +12188,6 @@ no todo:
 todo: remove from player favorites
 ---------------------------------- 2021-04-03 09:23:04
 todo: serv bmp bugfix: last pack timer
+---------------------------------- 2021-04-03 18:40:59
+todo: client anycast-name-server
+todo: aaa randomizer

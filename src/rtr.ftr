@@ -2352,6 +2352,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: client anycast-name-server
 todo: serv bmp bugfix: last pack timer
 todo: remove from player favorites
 todo: disable-macsec command
@@ -2398,3 +2399,4 @@ todo: more features with clean implementation
 todo: x25
 todo: default vrf for show commands
 todo: shame texts in cmd.err
+todo: aaa randomizer
