@@ -53,4 +53,4 @@ more randomizers
 x25
 default vrf for show commands
 shame texts in cmd.err
-last but one: rare team should contract for some months a thing i call mathy-thingy who is fluent in written english and speaks at conversation level, and does not afraid to say fuck a way too loudly and have a will to travel monthly or so
+last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to say fuck a way too loudly and have a will to travel monthly or so
