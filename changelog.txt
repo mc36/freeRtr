@@ -12205,3 +12205,6 @@ todo: trackmap img--stat swap
 todo: secondary config archive
 ---------------------------------- 2021-04-04 09:42:12
 todo: last but one: rare team should hire a mathy girly thingy who barely speak hungarian and fluent in written english
+---------------------------------- 2021-04-04 10:01:31
+no todo: last but one: rare team should hire a mathy girly thingy who barely speak hungarian and fluent in written english
+todo: last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to say fuck a way too loudly and have a will to travel monthly or so
