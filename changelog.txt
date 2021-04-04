@@ -12203,3 +12203,5 @@ todo: average of the non-discards to temper
 todo: tolerance up/down to temper
 todo: trackmap img--stat swap
 todo: secondary config archive
+---------------------------------- 2021-04-04 09:42:12
+todo: last but one: rare team should hire a mathy girly thingy who barely speak hungarian and fluent in written english
