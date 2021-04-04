@@ -1,9 +1,15 @@
+exec monitor
+hwcfg auto-stop process
 client anycast-name-server
 serv bmp bugfix: last pack timer
+average of the non-discards to temper
 max heat interval to temper
+tolerance up/down to temper
 remove from player favorites
 disable-macsec command
 dataplane says
+trackmap img--stat swap
+secondary config archive
 test cases for route-map/policy clear things
 p4 pipe demux to vdc
 introduce int for sw/hw forwarders
