@@ -12196,3 +12196,10 @@ no todo: aaa randomizer
 todo: more randomizers
 ---------------------------------- 2021-04-03 21:48:29
 todo: max heat interval to temper
+---------------------------------- 2021-04-04 08:51:15
+todo: exec monitor
+todo: hwcfg auto-stop process
+todo: average of the non-discards to temper
+todo: tolerance up/down to temper
+todo: trackmap img--stat swap
+todo: secondary config archive
