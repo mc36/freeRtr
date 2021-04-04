@@ -8,6 +8,7 @@ tolerance up/down to temper
 remove from player favorites
 disable-macsec command
 dataplane says
+lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
 trackmap img--stat swap
 secondary config archive
 test cases for route-map/policy clear things
