@@ -12211,3 +12211,8 @@ todo: last but one: rare team should contract for some months a thing i call mat
 ---------------------------------- 2021-04-04 10:47:57
 todo: wg 3rd optional param
 todo: ask hbone team if they can host ns3.(net.)nop.hu which have a ro tacacs access from the regular places
+---------------------------------- 2021-04-04 11:54:18
+no todo: last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to say fuck a way too loudly and have a will to travel monthly or so
+todo: lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
+todo: consider bgp neigh recursive-nexthop knob with proper limiters
+todo: last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to "you're way too stpuy" a way too loudly and have a will to travel monthly or so
