@@ -2359,9 +2359,13 @@ todo: serv bmp bugfix: last pack timer
 todo: average of the non-discards to temper
 todo: max heat interval to temper
 todo: tolerance up/down to temper
+todo: refresh button to temper
 todo: remove from player favorites
 todo: disable-macsec command
 todo: dataplane says
+todo: backup interface
+todo: sho log file
+todo: sho log old-file
 todo: lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
 todo: trackmap img--stat swap
 todo: secondary config archive
@@ -2404,7 +2408,7 @@ todo: more show commands
 todo: more clear commands
 todo: more interactive tools
 todo: more features with clean implementation
-todo: more randomizers
+todo: more randomizers, arp, prefix, everything :)
 todo: x25
 todo: default vrf for show commands
 todo: shame texts in cmd.err
