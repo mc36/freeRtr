@@ -5,9 +5,13 @@ serv bmp bugfix: last pack timer
 average of the non-discards to temper
 max heat interval to temper
 tolerance up/down to temper
+refresh button to temper
 remove from player favorites
 disable-macsec command
 dataplane says
+backup interface
+sho log file
+sho log old-file
 lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
 trackmap img--stat swap
 secondary config archive
@@ -50,7 +54,7 @@ more show commands
 more clear commands
 more interactive tools
 more features with clean implementation
-more randomizers
+more randomizers, arp, prefix, everything :)
 x25
 default vrf for show commands
 shame texts in cmd.err
