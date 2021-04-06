@@ -408,7 +408,9 @@ public class userUpgrade {
         }
         cons.debugRes("old release: " + old.head);
         cons.debugRes("new release: " + blb.head);
-        cons.debugRes("diff/old/new time: " + bits.timeDump((blb.time - old.time) / 1000) + "/" + old.getTime() + "/" + blb.getTime());
+        cons.debugRes("old time: " + old.getTime());
+        cons.debugRes("new time: " + blb.getTime());
+        cons.debugRes("diff: " + bits.timeDump((blb.time - old.time) / 1000));
         cons.debugRes("old files:" + old.getFilelist());
         cons.debugRes("new files:" + blb.getFilelist());
         if (old.time > blb.time) {
