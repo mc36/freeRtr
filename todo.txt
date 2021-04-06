@@ -10,6 +10,7 @@ remove from player favorites
 disable-macsec command
 dataplane says
 backup interface
+loopdetect for bridge
 sho log file
 sho log old-file
 lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible

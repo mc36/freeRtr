@@ -12230,3 +12230,5 @@ todo: more randomizers, arp, prefix, everything :)
 todo: bug: * diff/old/new time: 00:48:03/2021-04-05 11:20:19/2021-04-05 12:08:23
 ---------------------------------- 2021-04-06 04:50:08
 no todo: bug: * diff/old/new time: 00:48:03/2021-04-05 11:20:19/2021-04-05 12:08:23
+---------------------------------- 2021-04-06 08:01:16
+todo: loopdetect for bridge
