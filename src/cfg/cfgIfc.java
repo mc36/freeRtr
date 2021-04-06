@@ -193,6 +193,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public int carrierDelay;
 
     /**
+     * disable macsec on this interface
+     */
+    public boolean disableMacsec;
+
+    /**
      * packet handler
      */
     public ifcDn lower = new ifcNull();
@@ -1294,6 +1299,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no random",
         "interface .*! enforce-mtu none",
         "interface .*! no macsec",
+        "interface .*! no disable-macsec",
         "interface .*! no loss-detection",
         "interface .*! monitor-direction both",
         "interface .*! monitor-truncate 0",
@@ -5290,6 +5296,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             lapb.getConfig(l, cmds.tabulator + "lapb ");
         }
         cmds.cfgLine(l, random == null, cmds.tabulator, "random", "" + ifcRandom.getCfg(random));
+        cmds.cfgLine(l, !disableMacsec, cmds.tabulator, "disable-macsec", "");
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
         s = "none";
@@ -5932,6 +5939,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("1 2,. loss-detection                loss detection commands");
         l.add("2 3     <num>                       packet loss to block");
         l.add("3 .       <num>                     time to block");
+        l.add("1 .   disable-macsec                disable macsec");
         l.add("1 2   macsec                        mac security protocol commands");
         l.add("2 3,.   <name>                      name of ipsec profile");
         l.add("3 .       <num>                     ethertype to use");
@@ -6368,10 +6376,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.timerUpdate();
             return;
         }
+        if (a.equals("disable-macsec")) {
+            disableMacsec = true;
+            return;
+        }
         if (a.equals("macsec")) {
             cfgIpsec prf = cfgAll.ipsecFind(cmd.word(), false);
             if (prf == null) {
                 cmd.error("no such profile");
+                return;
+            }
+            if (disableMacsec) {
+                ethtyp.macSec = null;
                 return;
             }
             ifcMacSec sec = new ifcMacSec();
@@ -6855,6 +6871,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("loss-detection")) {
             ethtyp.lossDet = null;
             ethtyp.timerUpdate();
+            return;
+        }
+        if (a.equals("disable-macsec")) {
+            disableMacsec = false;
             return;
         }
         if (a.equals("macsec")) {

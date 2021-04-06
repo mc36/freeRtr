@@ -342,7 +342,7 @@ public class ifcMacSec {
     public synchronized packHolder doSync() {
         if ((hashRx != null) && (!reply)) {
             boolean fin = true;
-            if (((bits.getTime() - lastKex) > 28800000) || (keyUsage.byteTx > 0xfff0000)) {
+            if (((bits.getTime() - lastKex) > profil.trans.lifeSec) || (keyUsage.byteTx > 0xfff0000)) {
                 if (debugger.ifcMacSecTraf) {
                     logger.debug("restarting kex");
                 }
