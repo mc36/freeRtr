@@ -1,7 +1,7 @@
 #!/bin/sh
 echo cleaning
 rm -f *.jar 2> /dev/null
-rm -f *.bin 2> /dev/null
+rm -f *.bin* 2> /dev/null
 rm -f *.ver 2> /dev/null
 rm -f *.rld 2> /dev/null
 rm -f *.tmp 2> /dev/null

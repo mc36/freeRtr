@@ -1,3 +1,4 @@
+show logins
 exec monitor
 hwcfg auto-stop process
 client anycast-name-server
