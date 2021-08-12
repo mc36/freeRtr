@@ -78,7 +78,7 @@ public class secTransform {
     /**
      * lifetime in kilobytes
      */
-    public int lifeByt;
+    public long lifeByt;
 
     private int propTyp;
 
@@ -483,7 +483,7 @@ public class secTransform {
         }
         if (lifeByt > 0) {
             add1property(pck, 11, 2);
-            add1property(pck, 12, lifeByt);
+            add1property(pck, 12, (int)lifeByt);
         }
         siz = pck.headSize() - siz;
         pck.msbPutW(2 - siz, siz);
@@ -562,7 +562,7 @@ public class secTransform {
         }
         if (lifeByt > 0) {
             add1property(pck, 1, 2);
-            add1property(pck, 2, lifeByt);
+            add1property(pck, 2, (int)lifeByt);
         }
         siz = pck.headSize() - siz;
         pck.msbPutW(2 - siz, siz);
@@ -993,7 +993,7 @@ public class secTransform {
             return false;
         }
         if (s.equals("bytes")) {
-            lifeByt = bits.str2num(cmd.word());
+            lifeByt = bits.str2long(cmd.word());
             return false;
         }
         if (!s.equals("no")) {

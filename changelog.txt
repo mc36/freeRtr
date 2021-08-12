@@ -12234,3 +12234,5 @@ no todo: bug: * diff/old/new time: 00:48:03/2021-04-05 11:20:19/2021-04-05 12:08
 todo: loopdetect for bridge
 ---------------------------------- 2021-08-12 14:09:23
 todo: show logins
+---------------------------------- 2021-08-12 17:03:13
+no todo: disable-macsec command

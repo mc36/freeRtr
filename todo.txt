@@ -8,7 +8,6 @@ max heat interval to temper
 tolerance up/down to temper
 refresh button to temper
 remove from player favorites
-disable-macsec command
 dataplane says
 backup interface
 loopdetect for bridge
