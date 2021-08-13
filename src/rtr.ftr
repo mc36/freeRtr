@@ -2359,7 +2359,6 @@ todo: remove from player favorites
 todo: loopdetect for bridge
 todo: lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
 todo: test cases for route-map/policy clear things
-todo: p4 pipe demux to vdc
 todo: introduce int for sw/hw forwarders
 todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
