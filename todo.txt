@@ -1,18 +1,9 @@
-show logins
-hwcfg auto-stop process
-client anycast-name-server
-average of the non-discards to temper
 max heat interval to temper
 tolerance up/down to temper
 refresh button to temper
 remove from player favorites
-backup interface
 loopdetect for bridge
-sho log file
-sho log old-file
 lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
-trackmap img--stat swap
-secondary config archive
 test cases for route-map/policy clear things
 p4 pipe demux to vdc
 introduce int for sw/hw forwarders

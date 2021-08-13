@@ -474,6 +474,14 @@ public class userShow {
         }
         if (a.equals("logging")) {
             a = cmd.word();
+            if (a.equals("file")) {
+                rdr.putStrArr(bits.txt2buf(logger.logFilNam));
+                return null;
+            }
+            if (a.equals("old-file")) {
+                rdr.putStrArr(bits.txt2buf(logger.logRotNam));
+                return null;
+            }
             if (a.equals("last")) {
                 rdr.putStrArr(logger.bufferRead(bits.str2num(cmd.word())));
                 return null;

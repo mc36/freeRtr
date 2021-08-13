@@ -930,6 +930,8 @@ public class userExec {
         hl.add("3 .        big                   a big clock");
         hl.add("3 .        raw                   a raw clock");
         hl.add("2 3,.    logging                 logged messages");
+        hl.add("3 .        file                  saved messages");
+        hl.add("3 .        old-file              old saved messages");
         hl.add("3 4        last                  last messages");
         hl.add("4 .          <num>               message count");
         hl.add("2 .      config-differences      startup->running differences");
