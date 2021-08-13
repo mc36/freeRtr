@@ -12241,3 +12241,13 @@ no todo: dataplane says
 no todo: exec monitor
 ---------------------------------- 2021-08-13 05:55:07
 no todo: serv bmp bugfix: last pack timer
+---------------------------------- 2021-08-13 11:43:52
+no todo: secondary config archive
+no todo: trackmap img--stat swap
+no todo: sho log old-file
+no todo: sho log file
+no todo: backup interface
+no todo: average of the non-discards to temper
+no todo: client anycast-name-server
+no todo: hwcfg auto-stop process
+no todo: show logins
