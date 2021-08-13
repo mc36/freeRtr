@@ -2355,7 +2355,6 @@ qc pass: udp forwarder server
 todo: show logins
 todo: hwcfg auto-stop process
 todo: client anycast-name-server
-todo: serv bmp bugfix: last pack timer
 todo: average of the non-discards to temper
 todo: max heat interval to temper
 todo: tolerance up/down to temper

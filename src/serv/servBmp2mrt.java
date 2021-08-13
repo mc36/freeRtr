@@ -158,7 +158,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             }
             rateTim = new Timer();
             servBmp2mrtRate task = new servBmp2mrtRate(this);
-            rateTim.schedule(task, 500, 5000);
+            rateTim.schedule(task, rateInt / 10, rateInt);
             return false;
         }
         if (s.equals("bulk-down")) {
