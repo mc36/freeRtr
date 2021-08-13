@@ -5,7 +5,6 @@ remove from player favorites
 loopdetect for bridge
 lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
 test cases for route-map/policy clear things
-p4 pipe demux to vdc
 introduce int for sw/hw forwarders
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex

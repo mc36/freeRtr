@@ -180,6 +180,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected ifcEthTyp interconn = null;
 
     /**
+     * downlink interfaces
+     */
+    protected tabGen<servP4langDlnk> downLinks = new tabGen<servP4langDlnk>();
+
+    /**
      * counter
      */
     protected counter cntr = new counter();
@@ -246,6 +251,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         cmds.cfgLine(l, expDynAccSiz < 1, beg, "export-dynacc", expDynAcc1st + " " + expDynAccSiz);
         l.add(beg + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
+        for (int i = 0; i < downLinks.size(); i++) {
+            servP4langDlnk ntry = downLinks.get(i);
+            l.add(beg + "downlink " + ntry.id + " " + ntry.ifc);
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -274,6 +283,19 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ntry.doClear();
             ntry.br = br;
             expBr.put(ntry);
+            return false;
+        }
+        if (s.equals("downlink")) {
+            servP4langDlnk ntry = new servP4langDlnk(this, bits.str2num(cmd.word()));
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            ntry.ifc = ifc.ethtyp;
+            ntry.ifc.addET(-1, "p4lang", ntry);
+            ntry.ifc.updateET(-1, ntry);
+            downLinks.add(ntry);
             return false;
         }
         if (s.equals("interconnect")) {
@@ -433,6 +455,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expBr.del(ntry);
             return false;
         }
+        if (s.equals("downlink")) {
+            servP4langDlnk ntry = new servP4langDlnk(this, bits.str2num(cmd.word()));
+            downLinks.del(ntry);
+            return false;
+        }
         if (s.equals("interconnect")) {
             if (interconn == null) {
                 return false;
@@ -505,6 +532,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add("2 .    <name>                  acl name");
         l.add("1 2  export-interval           specify export interval");
         l.add("2 .    <num>                   time in ms");
+        l.add("1 2  downlink                  specify downlink for packetin");
+        l.add("2 3    <num>                   port number");
+        l.add("3 .      <name>                interface name");
         l.add("1 2  interconnect              specify port to for packetin");
         l.add("2 .    <name>                  interface name");
     }
@@ -589,7 +619,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         cntr.tx(pckB);
         ifcEther.createETHheader(pckB, false);
         if (intercon == null) {
-            sendLine("packet " + id + " " + bits.toHex(pckB.getCopy()));
             return;
         }
         pckB.msbPutW(0, id);
@@ -600,12 +629,15 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     /**
-     * process cpu packet
+     * received packet
      *
-     * @param id port id
      * @param pck packet
      */
-    protected void gotCpuPack(int id, packHolder pck) {
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
+        ifcEther.createETHheader(pck, false);
+        int id = pck.msbGetW(0);
+        pck.getSkip(2);
         ifcEther.parseETHheader(pck, false);
         if ((expDynAccIfc != null) && (id >= expDynAcc1st) && (id < (expDynAcc1st + expDynAccSiz))) {
             servP4langIfc ifc = expDynAccIfc[id - expDynAcc1st];
@@ -636,6 +668,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifc.recvPack(pck);
             return;
         }
+        servP4langDlnk dlnk = new servP4langDlnk(this, id);
+        dlnk = downLinks.find(dlnk);
+        if (dlnk != null) {
+            ifcEther.createETHheader(pck, false);
+            pck.getSkip(-2);
+            ifcEther.parseETHheader(pck, false);
+            logger.debug("here " + pck.dump());/////////////////
+            dlnk.parent.sendPack(pck);
+            return;
+        }
         servP4langIfc ntry = new servP4langIfc(id);
         ntry = expIfc.find(ntry);
         if (ntry == null) {
@@ -646,19 +688,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return;
         }
         ntry.ifc.ethtyp.gotFromDataplane(pck);
-    }
-
-    /**
-     * received packet
-     *
-     * @param pck packet
-     */
-    public void recvPack(packHolder pck) {
-        cntr.rx(pck);
-        ifcEther.createETHheader(pck, false);
-        int id = pck.msbGetW(0);
-        pck.getSkip(2);
-        gotCpuPack(id, pck);
     }
 
     /**
@@ -689,6 +718,58 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      *
      * @return counter
      */
+    public counter getCounter() {
+        return cntr;
+    }
+
+}
+
+class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
+
+    public final int id;
+
+    public final servP4lang lower;
+
+    public counter cntr = new counter();
+
+    public ifcDn parent;
+
+    public ifcEthTyp ifc;
+
+    public servP4langDlnk(servP4lang prnt, int num) {
+        id = num;
+        lower = prnt;
+    }
+
+    public int compare(servP4langDlnk o1, servP4langDlnk o2) {
+        if (o1.id < o2.id) {
+            return -1;
+        }
+        if (o1.id > o2.id) {
+            return +1;
+        }
+        return 0;
+    }
+
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
+        ifcEther.createETHheader(pck, false);
+        int id = pck.msbGetW(0);
+        pck.getSkip(2);
+        ifcEther.parseETHheader(pck, false);
+        lower.sendPack(id, pck);
+    }
+
+    public void setParent(ifcDn prnt) {
+        parent = prnt;
+    }
+
+    public void setState(state.states stat) {
+    }
+
+    public void closeUp() {
+    }
+
     public counter getCounter() {
         return cntr;
     }
@@ -1676,26 +1757,9 @@ class servP4langConn implements Runnable {
                 }
                 return false;
             }
-            if (!s.equals("packet")) {
-                if (debugger.servP4langErr) {
-                    logger.debug("got unneeded report: " + cmd.getOriginal());
-                }
-                return false;
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
             }
-            int id = bits.str2num(cmd.word());
-            packHolder pck = new packHolder(true, true);
-            s = cmd.getRemaining();
-            s = s.replaceAll(" ", "");
-            for (;;) {
-                if (s.length() < 2) {
-                    break;
-                }
-                pck.putByte(0, bits.fromHex(s.substring(0, 2)));
-                s = s.substring(2, s.length());
-                pck.putSkip(1);
-                pck.merge2end();
-            }
-            lower.gotCpuPack(id, pck);
             return false;
         }
         for (int i = 0; i < neighs.size(); i++) {
