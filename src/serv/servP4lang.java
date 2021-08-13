@@ -1265,8 +1265,8 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
-            if (s.equals("dataplane-says")) {
-                logger.info("dataplane says: " + cmd.getRemaining());
+            if (s.equals("dataplane-say")) {
+                logger.info("dataplane said: " + cmd.getRemaining());
                 return false;
             }
             if (s.equals("state")) {

@@ -110,6 +110,11 @@ public class userLine {
     public boolean expirity = false;
 
     /**
+     * monitor from start
+     */
+    public boolean monitor = false;
+
+    /**
      * username prompt
      */
     public String promptUser = "username:";
@@ -222,6 +227,7 @@ public class userLine {
         cmds.cfgLine(lst, !autoHangup, beg, "exec autohangup", "");
         cmds.cfgLine(lst, !banner, beg, "exec banner", "");
         cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
+        cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
         lst.add(beg + "exec privilege " + promptPrivilege);
         if (authorizeList == null) {
             lst.add(beg + "no exec authorization");
@@ -339,6 +345,10 @@ public class userLine {
             }
             if (s.equals("expirity")) {
                 expirity = true;
+                return false;
+            }
+            if (s.equals("monitor")) {
+                monitor = true;
                 return false;
             }
             if (s.equals("autohangup")) {
@@ -477,6 +487,10 @@ public class userLine {
                 expirity = false;
                 return false;
             }
+            if (s.equals("monitor")) {
+                monitor = false;
+                return false;
+            }
             if (s.equals("autohangup")) {
                 autoHangup = false;
                 return false;
@@ -548,6 +562,7 @@ public class userLine {
         l.add("3 3,.    <text>                     autocommand of user");
         l.add("2 .    banner                       display banner");
         l.add("2 .    expirity                     display expirity warnings");
+        l.add("2 .    monitor                      display logging information");
         l.add("2 .    autohangup                   disconnect user after autocommand");
         l.add("2 3    privilege                    set default privilege");
         l.add("3 .      <num>                      privilege of terminal");
@@ -766,6 +781,9 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
                 logger.info(user.user + " logged out from " + remote);
             }
             return;
+        }
+        if (parent.monitor) {
+            logger.pipeStart(pipe);
         }
         if (parent.expirity && (physical == 0)) {
             expTim = new Timer();

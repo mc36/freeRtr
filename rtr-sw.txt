@@ -427,15 +427,6 @@ interface ethernet1
  no log-link-change
  exit
 !
-interface ethernet2
- description uplink2
- lldp enable
- cdp enable
- bundle-group 9
- no shutdown
- no log-link-change
- exit
-!
 interface ethernet8
  description hairpin
  lldp enable
@@ -945,4 +936,4 @@ client time-zone CET
 client mail-server mail.mchome.nop.hu
 client end-format chksum
 !
-end chksum=2bffe3a662ca0ad81c58ec756e4a6320c2f2ed08d0cc732f7ee288195204df15adac938daff4a03d19f61333ab0f597ebd6a0efaaade631ff8d0ad95b96a948b-7ae3fdcc798845d161bac1ab6f3a539a62c9ff13bd9e29656bcf4ca6c47708fdafdf632b787d2abf62df89c738881b59bf34569ea7c7c2a525722de3d53f9543
+end chksum=47a811fab5abdbe2f2b6243cc6bd6415fd26927b7307956a2eaf6a10e22610cbfc17a516692af424f1cfe57f3424da6d5cf46583f8d8081d45c232d52d3fe0b2-8ba48865726cd8481da4c3d6541fb27ac7936faa5916c38004d30093c5ca29db43b0dfd90c13b24532020f004a666286bb6cfb4862f62487a16be2172c0b5d0a
