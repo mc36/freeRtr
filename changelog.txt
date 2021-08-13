@@ -12236,3 +12236,6 @@ todo: loopdetect for bridge
 todo: show logins
 ---------------------------------- 2021-08-12 17:03:13
 no todo: disable-macsec command
+---------------------------------- 2021-08-13 05:28:09
+no todo: dataplane says
+no todo: exec monitor

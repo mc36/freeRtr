@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import pack.packHolder;
 import pipe.pipeLine;
 import pipe.pipeSide;
@@ -50,7 +52,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public static final int size = 6;
 
-    private boolean bulkdn;
+    private boolean bulkDown;
 
     private final tabGen<servBmp2mrtStat> stats = new tabGen<servBmp2mrtStat>();
 
@@ -63,6 +65,12 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     private String backupName;
 
     private boolean local;
+
+    private int rateInt;
+
+    private int rateNum;
+
+    private Timer rateTim;
 
     private int maxTime;
 
@@ -92,6 +100,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         "server bmp2mrt .*! protocol " + proto2string(protoAllStrm),
         "server bmp2mrt .*! no local",
         "server bmp2mrt .*! no bulk-down",
+        "server bmp2mrt .*! rate-down 0 0",
         "server bmp2mrt .*! max-time 0",
         "server bmp2mrt .*! max-pack 0",
         "server bmp2mrt .*! max-byte 0",
@@ -116,7 +125,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         cmds.cfgLine(l, !local, beg, "local", "");
         cmds.cfgLine(l, backupName == null, beg, "backup", backupName);
         cmds.cfgLine(l, fileName == null, beg, "file", fileName);
-        cmds.cfgLine(l, !bulkdn, beg, "bulk-down", "");
+        cmds.cfgLine(l, !bulkDown, beg, "bulk-down", "");
+        l.add(beg + "rate-down " + rateInt + " " + rateNum);
         if (dynCfg != null) {
             l.add(beg + "dyneigh " + dynAcl.listName + " " + dynCfg.getCfg(false) + " " + dynTmp.tempName);
         } else {
@@ -139,8 +149,20 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("rate-down")) {
+            rateInt = bits.str2num(cmd.word());
+            rateNum = bits.str2num(cmd.word());
+            try {
+                rateTim.cancel();
+            } catch (Exception e) {
+            }
+            rateTim = new Timer();
+            servBmp2mrtRate task = new servBmp2mrtRate(this);
+            rateTim.schedule(task, 500, 5000);
+            return false;
+        }
         if (s.equals("bulk-down")) {
-            bulkdn = true;
+            bulkDown = true;
             return false;
         }
         if (s.equals("dyneigh")) {
@@ -219,8 +241,17 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("rate-down")) {
+            rateInt = 0;
+            rateNum = 0;
+            try {
+                rateTim.cancel();
+            } catch (Exception e) {
+            }
+            return false;
+        }
         if (s.equals("bulk-down")) {
-            bulkdn = false;
+            bulkDown = false;
             return false;
         }
         if (s.equals("dyneigh")) {
@@ -278,6 +309,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add("1 .    bulk-down                 down peers on speaker loss");
+        l.add("1 2    rate-down                 down peers on inactivity");
+        l.add("2 3      <num>                   ms between checks");
+        l.add("3 .        <num>                 packets between checks");
         l.add("1 2    file                      log to file");
         l.add("2 2,.    <file>                  name of file");
         l.add("1 .    local                     log to syslog");
@@ -388,7 +422,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @param st state
      */
     public void gotState(addrIP spk, boolean st) {
-        if (!bulkdn) {
+        if (!bulkDown) {
             return;
         }
         long tim = bits.getTime();
@@ -479,6 +513,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             stat.byteIn += dat.length;
         }
         stat.packLast = bits.getTime();
+        stat.packRate += dat.length;
         if (local) {
             logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(dat, 0, -1));
         }
@@ -554,6 +589,17 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     /**
+     * do rate calculation
+     */
+    public void doRates() {
+        for (int i = 0; i < stats.size(); i++) {
+            servBmp2mrtStat ntry = stats.get(i);
+            ntry.state = ntry.packRate > rateNum;
+            ntry.packRate = 0;
+        }
+    }
+
+    /**
      * do clear
      */
     public void doClear() {
@@ -622,6 +668,8 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
     public int packIn;
 
     public int packOut;
+
+    public int packRate;
 
     public long packLast;
 
@@ -788,6 +836,20 @@ class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         repAsConf += oth.repAsConf;
         repWitUpd += oth.repWitUpd;
         repWitPrf += oth.repWitPrf;
+    }
+
+}
+
+class servBmp2mrtRate extends TimerTask {
+
+    private servBmp2mrt lower;
+
+    public servBmp2mrtRate(servBmp2mrt prnt) {
+        lower = prnt;
+    }
+
+    public void run() {
+        lower.doRates();
     }
 
 }

@@ -2353,7 +2353,6 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: show logins
-todo: exec monitor
 todo: hwcfg auto-stop process
 todo: client anycast-name-server
 todo: serv bmp bugfix: last pack timer
@@ -2362,7 +2361,6 @@ todo: max heat interval to temper
 todo: tolerance up/down to temper
 todo: refresh button to temper
 todo: remove from player favorites
-todo: dataplane says
 todo: backup interface
 todo: loopdetect for bridge
 todo: sho log file
