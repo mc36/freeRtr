@@ -1,6 +1,6 @@
 #!/bin/sh
 #sudo apt install bf_sde psmisc iproute2 net-tools socat tshark iperf gcc git telnet
-#$SDE/p4studio_build/p4studio profile apply ./profiles/p4-runtime-tofino.yaml
+#$SDE/p4studio/p4studio interactive
 #rm -rf $SDE/build
 #rm -rf $SDE/p4studio/dependencies
 #rm -rf $SDE/packages
@@ -18,10 +18,10 @@
 #
 #fdisk /dev/sdb / p
 #fsck -f /dev/sdb1
-#resize2fs /dev/sdb1 6G
+#resize2fs /dev/sdb1 5G
 #fsck -f /dev/sdb1
-#cfdisk /dev/sdb / resize 6.1G
-#qemu-img resize --shrink p4bf.img 6.2G
+#cfdisk /dev/sdb / resize 5.1G
+#qemu-img resize --shrink p4bf.img 5.2G
 #fallocate -d p4bf.img
 #
 cd /home/mc36/rare/p4src
