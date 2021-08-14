@@ -674,7 +674,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             ifcEther.createETHheader(pck, false);
             pck.getSkip(-2);
             ifcEther.parseETHheader(pck, false);
-            logger.debug("here " + pck.dump());/////////////////
             dlnk.parent.sendPack(pck);
             return;
         }
