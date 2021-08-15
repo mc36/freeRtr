@@ -598,11 +598,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.label;
                 }
-                int met = ifc.metric;
-                if (ifc.acceptMetric) {
-                    met = nei.gotMet;
-                }
-                dat.addNeigh(nei.rtrId, "" + ifc.iface, met, (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
+                dat.addNeigh(nei.rtrId, "" + ifc.iface, nei.getMetric(), (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
             }
             dat.addAddr("" + ifc.iface, ifc.iface.addr);
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
@@ -723,11 +719,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (!nei.isReady()) {
                     continue;
                 }
-                int met = ifc.metric;
-                if (ifc.acceptMetric) {
-                    met = nei.gotMet;
-                }
-                spf.addNextHop(met, nei.rtrId, nei.peer, ifc.iface, null, null);
+                spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, null, null);
             }
         }
         tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, 6, segrouLab, segrouUsd);

@@ -55,6 +55,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     public int deadTimer = 15000;
 
     /**
+     * echo interval
+     */
+    public int echoTimer = 60000;
+
+    /**
      * default distance
      */
     public int distance = 80;
@@ -93,6 +98,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      * accept metric
      */
     public boolean acceptMetric = false;
+
+    /**
+     * accept metric
+     */
+    public boolean dynamicMetric = false;
 
     /**
      * advertise default route
@@ -396,6 +406,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
+        cmds.cfgLine(l, !dynamicMetric, cmds.tabulator, beg + "dynamic-metric", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
@@ -410,6 +421,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        l.add(cmds.tabulator + beg + "dynamic-time " + echoTimer);
         cmds.cfgLine(l, labelIn == null, cmds.tabulator, beg + "label-in", "" + labelIn);
         cmds.cfgLine(l, labelOut == null, cmds.tabulator, beg + "label-out", "" + labelOut);
         cmds.cfgLine(l, prflstIn == null, cmds.tabulator, beg + "prefix-list-in", "" + prflstIn);
@@ -433,6 +445,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         accept-metric           accept peer metric");
+        l.add("4 .         dynamic-metric          dynamic peer metric");
         l.add("4 .         stub                    do not route traffic");
         l.add("4 .         unstub                  do route traffic");
         l.add("4 .         suppress-prefix         do not advertise interface");
@@ -461,6 +474,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add("4 5         hello-time              time between hellos");
         l.add("5 .           <num>                 time in ms");
         l.add("4 5         dead-time               time before neighbor down");
+        l.add("5 .           <num>                 time in ms");
+        l.add("4 5         dynamic-time            measurement interval");
         l.add("5 .           <num>                 time in ms");
         l.add("4 5         route-map-in            process prefixes in ingress updates");
         l.add("5 .           <name>                name of route map");
@@ -567,6 +582,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             acceptMetric = true;
             return;
         }
+        if (a.equals("dynamic-metric")) {
+            dynamicMetric = true;
+            return;
+        }
         if (a.equals("passive")) {
             passiveInt = true;
             return;
@@ -577,6 +596,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("dead-time")) {
             deadTimer = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-time")) {
+            echoTimer = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("metric-in")) {
@@ -738,6 +761,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("dynamic-metric")) {
+            dynamicMetric = false;
             return;
         }
         if (a.equals("accept-metric")) {

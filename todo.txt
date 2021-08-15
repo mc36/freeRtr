@@ -1,5 +1,4 @@
 loopdetect for bridge
-lsrp/pvrp to have hello distance measurement
 test cases for route-map/policy clear things
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex

@@ -47,6 +47,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public int deadTimer = 15000;
 
     /**
+     * echo interval
+     */
+    public int echoTimer = 60000;
+
+    /**
      * default metric
      */
     public int metric = 10;
@@ -100,6 +105,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      * accept metric
      */
     public boolean acceptMetric = false;
+
+    /**
+     * accept metric
+     */
+    public boolean dynamicMetric = false;
 
     /**
      * suppress interface address
@@ -360,6 +370,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
+        cmds.cfgLine(l, !dynamicMetric, cmds.tabulator, beg + "dynamic-metric", "");
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
         cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
@@ -372,6 +383,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "srlg " + srlg);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        l.add(cmds.tabulator + beg + "dynamic-time " + echoTimer);
     }
 
     /**
@@ -386,6 +398,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         accept-metric           accept peer metric");
+        l.add("4 .         dynamic-metric          dynamic peer metric");
         l.add("4 .         stub                    do not route traffic");
         l.add("4 .         unstub                  do route traffic");
         l.add("4 5         segrout                 set segment routing parameters");
@@ -419,6 +432,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("4 5         hello-time              time between hellos");
         l.add("5 .           <num>                 time in ms");
         l.add("4 5         dead-time               time before neighbor down");
+        l.add("5 .           <num>                 time in ms");
+        l.add("4 5         dynamic-time            measurement interval");
         l.add("5 .           <num>                 time in ms");
     }
 
@@ -531,6 +546,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("dynamic-metric")) {
+            dynamicMetric = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
         if (a.equals("passive")) {
             passiveInt = true;
             return;
@@ -541,6 +562,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("dead-time")) {
             deadTimer = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-time")) {
+            echoTimer = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("metric")) {
@@ -633,6 +658,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("dynamic-metric")) {
+            dynamicMetric = false;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

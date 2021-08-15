@@ -68,7 +68,22 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     /**
      * metric of peer
      */
-    public int gotMet;
+    public int gotMetric;
+
+    /**
+     * time echo sent
+     */
+    public long echoTime;
+
+    /**
+     * data sent in echo
+     */
+    public int echoData;
+
+    /**
+     * calculated echo
+     */
+    public int echoCalc;
 
     /**
      * time last heard
@@ -119,7 +134,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         peer = peerAd.copyBytes();
         lastHeard = bits.getTime();
         sentMet = -1;
-        gotMet = 10;
+        gotMetric = 10;
     }
 
     public int compare(rtrPvrpNeigh o1, rtrPvrpNeigh o2) {
@@ -184,6 +199,25 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             logger.traceback(e);
         }
         stopWork();
+    }
+
+    /**
+     * get peer metric
+     *
+     * @return metric
+     */
+    public int getMetric() {
+        int met = iface.metricIn;
+        if (iface.acceptMetric) {
+            met = gotMetric;
+        }
+        if (iface.dynamicMetric) {
+            met = echoCalc;
+        }
+        if (met < 1) {
+            met = 1;
+        }
+        return met;
     }
 
     /**
@@ -409,6 +443,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             }
             notif.misleep(iface.helloTimer);
             long tim = bits.getTime();
+            if ((echoTime + iface.echoTimer) < tim) {
+                echoData = bits.randomD();
+                sendLn("echo " + echoData);
+                echoTime = tim - 1;
+            }
             if ((lastKeep + iface.helloTimer) < tim) {
                 sendLn("keepalive " + iface.deadTimer);
                 lastKeep = tim - 1;
@@ -594,6 +633,10 @@ class rtrPvrpNeighRcvr implements Runnable {
                 continue;
             }
             if (a.equals("echoed")) {
+                if (lower.echoData != bits.str2num(cmd.word())) {
+                    continue;
+                }
+                lower.echoCalc = (int) (bits.getTime() - lower.echoTime);
                 continue;
             }
             if (a.equals("echo")) {
@@ -622,7 +665,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 continue;
             }
             if (a.equals("metric")) {
-                lower.gotMet = bits.str2num(cmd.word());
+                lower.gotMetric = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("reachable")) {
@@ -639,11 +682,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                     }
                     continue;
                 }
-                if (lower.iface.acceptMetric) {
-                    ntry.best.metric += lower.gotMet;
-                } else {
-                    ntry.best.metric += lower.iface.metricIn;
-                }
+                ntry.best.metric += lower.getMetric();
                 ntry.best.nextHop = lower.peer.copyBytes();
                 ntry.best.distance = lower.iface.distance;
                 ntry.best.iface = lower.iface.iface;
