@@ -248,6 +248,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
                 rateTim.cancel();
             } catch (Exception e) {
             }
+            rateTim = null;
             return false;
         }
         if (s.equals("bulk-down")) {
