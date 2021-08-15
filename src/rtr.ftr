@@ -2352,17 +2352,11 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: max heat interval to temper
-todo: tolerance up/down to temper
-todo: refresh button to temper
-todo: remove from player favorites
 todo: loopdetect for bridge
-todo: lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
+todo: lsrp/pvrp to have hello distance measurement
 todo: test cases for route-map/policy clear things
-todo: introduce int for sw/hw forwarders
 todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
-todo: http conditional redirect with route-map, prefix-list or route-policy
 todo: bridge security from dhcp, slaac, whatever server
 todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
 todo: hwdet default to binary in installation, rework rtr.bin support to binjar if needed

@@ -12253,3 +12253,12 @@ no todo: hwcfg auto-stop process
 no todo: show logins
 ---------------------------------- 2021-08-13 14:29:46
 no todo: p4 pipe demux to vdc
+---------------------------------- 2021-08-15 07:29:46
+no todo: http conditional redirect with route-map, prefix-list or route-policy
+no todo: introduce int for sw/hw forwarders
+no todo: lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
+no todo: remove from player favorites
+no todo: refresh button to temper
+no todo: tolerance up/down to temper
+no todo: max heat interval to temper
+todo: lsrp/pvrp to have hello distance measurement

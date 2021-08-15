@@ -1,14 +1,8 @@
-max heat interval to temper
-tolerance up/down to temper
-refresh button to temper
-remove from player favorites
 loopdetect for bridge
-lsrp/pvrp to have hello distance measurement, reread bfd rfc to see if possible
+lsrp/pvrp to have hello distance measurement
 test cases for route-map/policy clear things
-introduce int for sw/hw forwarders
 nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
-http conditional redirect with route-map, prefix-list or route-policy
 bridge security from dhcp, slaac, whatever server
 lsrp, ospf, isis must list lsas/lsps as reachable or not
 hwdet default to binary in installation, rework rtr.bin support to binjar if needed
