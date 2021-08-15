@@ -12264,3 +12264,5 @@ no todo: max heat interval to temper
 todo: lsrp/pvrp to have hello distance measurement
 ---------------------------------- 2021-08-15 08:56:49
 no todo: lsrp/pvrp to have hello distance measurement
+---------------------------------- 2021-08-15 10:14:00
+no todo: loopdetect for bridge
