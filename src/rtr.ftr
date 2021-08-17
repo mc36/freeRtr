@@ -1976,6 +1976,8 @@ qc pass: bgp routemap filtering with large community
 qc pass: bgp routepolicy clearing with standard community
 qc pass: bgp routepolicy filtering with extended community
 qc pass: bgp routepolicy filtering with large community
+qc pass: bgp routemap clearing with aspath
+qc pass: bgp routepolicy clearing with aspath
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -2399,5 +2401,4 @@ todo: default vrf for show commands
 todo: shame texts in cmd.err
 todo: consider bgp neigh recursive-nexthop knob with proper limiters
 todo: wg 3rd optional param
-todo: ask hbone team if they can host ns3.(net.)nop.hu which have a ro tacacs access from the regular places
 todo: last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to "you're way too stpuy" a way too loudly and have a will to travel monthly or so... hopefully both of us will survive :)
