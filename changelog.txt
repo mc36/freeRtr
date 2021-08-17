@@ -12266,3 +12266,11 @@ todo: lsrp/pvrp to have hello distance measurement
 no todo: lsrp/pvrp to have hello distance measurement
 ---------------------------------- 2021-08-15 10:14:00
 no todo: loopdetect for bridge
+---------------------------------- 2021-08-17 03:28:59
+no todo: test cases for route-map/policy clear things
+qc pass: bgp routemap clearing with standard community
+qc pass: bgp routemap filtering with extended community
+qc pass: bgp routemap filtering with large community
+qc pass: bgp routepolicy clearing with standard community
+qc pass: bgp routepolicy filtering with extended community
+qc pass: bgp routepolicy filtering with large community
