@@ -2020,6 +2020,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showNeighs());
             return;
         }
+        if (a.equals("metric")) {
+            rdr.putStrTab(r.lsrp.showMetrics());
+            return;
+        }
         if (a.equals("interface")) {
             rdr.putStrTab(r.lsrp.showIfaces());
             return;
@@ -2113,6 +2117,10 @@ public class userShow {
         String a = cmd.word();
         if (a.equals("summary")) {
             rdr.putStrTab(r.pvrp.showNeighs());
+            return;
+        }
+        if (a.equals("metric")) {
+            rdr.putStrTab(r.pvrp.showMetrics());
             return;
         }
         if (a.equals("interface")) {

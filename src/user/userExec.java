@@ -366,6 +366,7 @@ public class userExec {
         hl.add("7 8,.              adverted      routes advertised to neighbor");
         hl.add("8 .                  [addr]      prefix to view");
         hl.add("5 .            summary           list of neighbors");
+        hl.add("5 .            metric            list of metrics");
         hl.add("5 .            interface         list of interfaces");
         hl.add("5 6,.          route             list of routes in database");
         hl.add("6 .              [addr]          prefix to view");
@@ -373,7 +374,8 @@ public class userExec {
         hl.add("6 .              [addr]          prefix to view");
         hl.add("3 4        lsrp                  link state routing protocol");
         hl.add("4 5          <num>               process id");
-        hl.add("5 .            neighbor          list of neighbor");
+        hl.add("5 .            neighbor          list of neighbors");
+        hl.add("5 .            metric            list of metrics");
         hl.add("5 .            interface         list of interfaces");
         hl.add("5 .            software          list of software");
         hl.add("5 6            zone-rev          list of reverse zone");

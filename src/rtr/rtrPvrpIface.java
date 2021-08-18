@@ -367,6 +367,21 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     }
 
     /**
+     * list of neighbors
+     *
+     * @param res list to update
+     */
+    protected void showMetrics(userFormat res) {
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrPvrpNeigh nei = neighs.get(i);
+            if (nei == null) {
+                continue;
+            }
+            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.getMetric() + "|" + nei.echoCalc);
+        }
+    }
+
+    /**
      * find one neighbor
      *
      * @param adr address of peer

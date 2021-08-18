@@ -186,6 +186,21 @@ public class rtrPvrp extends ipRtr implements Runnable {
     }
 
     /**
+     * list of neighbors
+     *
+     * @return list
+     */
+    public userFormat showMetrics() {
+        userFormat res = new userFormat("|", "iface|router|name|metric|delay");
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            ifc.showMetrics(res);
+        }
+        return res;
+    }
+
+
+    /**
      * find one neighbor
      *
      * @param adr address of peer
