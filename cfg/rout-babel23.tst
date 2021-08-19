@@ -80,6 +80,7 @@ int eth2
 
 addrouter r3
 int eth1 eth 0000.0000.3333 $2b$ $2a$
+int eth2 eth 0000.0000.3333 $3b$ $3a$
 !
 vrf def v1
  rd 1:1
