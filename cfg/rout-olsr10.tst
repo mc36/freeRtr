@@ -46,7 +46,6 @@ int eth1
 
 addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
-int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
