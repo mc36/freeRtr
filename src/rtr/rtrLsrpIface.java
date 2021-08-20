@@ -334,7 +334,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             if (nei == null) {
                 continue;
             }
-            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.getMetric() + "|" + nei.echoCalc);
+            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.peer + "|" + nei.getMetric() + "|" + nei.echoCalc);
         }
     }
 
