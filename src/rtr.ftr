@@ -2364,7 +2364,6 @@ todo: nat and pbr config to have reindex
 todo: chatscript and authlist to use tablisting and have reindex
 todo: bridge security from dhcp, slaac, whatever server
 todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
-todo: hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 todo: http server should honor no in the beginning for host commands
 todo: http host upload optional different authentication
