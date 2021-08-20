@@ -2,7 +2,6 @@ nat and pbr config to have reindex
 chatscript and authlist to use tablisting and have reindex
 bridge security from dhcp, slaac, whatever server
 lsrp, ospf, isis must list lsas/lsps as reachable or not
-hwdet default to binary in installation, rework rtr.bin support to binjar if needed
 interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 http server should honor no in the beginning for host commands
 http host upload optional different authentication
