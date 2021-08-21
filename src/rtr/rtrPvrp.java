@@ -191,7 +191,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * @return list
      */
     public userFormat showMetrics() {
-        userFormat res = new userFormat("|", "iface|router|name|peer|metric|delay");
+        userFormat res = new userFormat("|", "iface|router|name|peer|metric|delay|gotmet");
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
             ifc.showMetrics(res);
