@@ -1593,7 +1593,7 @@ class userTesterOne {
                 cfg.add(s);
             }
             s = prefix + slot + rn + ".qcow2";
-            pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + " " + s, null, true);
+            pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + ",backing_fmt=raw " + s, null, true);
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -hda " + s + " -m " + img.otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
