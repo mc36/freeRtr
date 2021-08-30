@@ -6,6 +6,7 @@ import addr.addrIPv6;
 import addr.addrIpx;
 import addr.addrMac;
 import addr.addrPrefix;
+import clnt.clntAmt;
 import clnt.clntDhcp4;
 import clnt.clntDhcp6;
 import clnt.clntDlsw;
@@ -578,6 +579,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntUdpGre tunUdpGre;
 
     /**
+     * amt tunnel handler
+     */
+    public clntAmt tunAmt;
+
+    /**
      * icmp tunnel handler
      */
     public prtIcmp tunICMP;
@@ -1094,6 +1100,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * udpgre tunnel interface
          */
         udpgre,
+        /**
+         * amt tunnel interface
+         */
+        amt,
         /**
          * icmp tunnel interface
          */
@@ -1953,6 +1963,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "gre";
             case udpgre:
                 return "udpgre";
+            case amt:
+                return "amt";
             case icmp:
                 return "icmp";
             case pim:
@@ -2058,6 +2070,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("udpgre")) {
             return tunnelType.udpgre;
+        }
+        if (s.equals("amt")) {
+            return tunnelType.amt;
         }
         if (s.equals("icmp")) {
             return tunnelType.icmp;
@@ -3369,6 +3384,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunUdpGre.closeDn();
             tunUdpGre = null;
         }
+        if (tunAmt != null) {
+            tunAmt.closeDn();
+            tunAmt = null;
+        }
         if (tunICMP != null) {
             tunICMP.closeDn();
             tunICMP = null;
@@ -3618,6 +3637,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunUdpGre.setUpper(ethtyp);
                 tunUdpGre.workStart();
                 lower = tunUdpGre;
+                break;
+            case amt:
+                tunAmt = new clntAmt();
+                tunAmt.vrf = tunVrf;
+                tunAmt.srcIfc = tunSrc;
+                tunAmt.target = "" + tunTrg;
+                tunAmt.sendingTOS = tunTOS;
+                tunAmt.sendingTTL = tunTTL;
+                tunAmt.setUpper(ethtyp);
+                tunAmt.workStart();
+                lower = tunAmt;
                 break;
             case icmp:
                 tunICMP = new prtIcmp(fwd);
@@ -5730,6 +5760,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("2 3     mode                        set encapsulation method");
         l.add("3 .       gre                       generic route encapsulation protocol");
         l.add("3 .       udpgre                    generic route encapsulation in udp");
+        l.add("3 .       amt                       automatic multicast tunneling protocol");
         l.add("3 .       icmp                      internet control message protocol");
         l.add("3 .       pim                       protocol independent multicast");
         l.add("3 .       lisp                      locator id separation protocol");
