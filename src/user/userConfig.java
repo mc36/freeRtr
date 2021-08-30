@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pipe.pipeSetting;
 import pipe.pipeSide;
+import serv.servAmt;
 import serv.servBmp2mrt;
 import serv.servBstun;
 import serv.servCharGen;
@@ -817,6 +818,8 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    mplsudp                      configure a mplsudp server");
         l.add("3  .      <name>                     name of server");
+        l.add("2  3    amt                          configure an amt server");
+        l.add("3  .      <name>                     name of server");
         l.add("2  3    pckoudp                      configure a pckoudp server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    pckodtls                     configure a pckodtls server");
@@ -1498,6 +1501,10 @@ public class userConfig {
             }
             if (a.equals("mplsudp")) {
                 daemonMake(new servMplsUdp(), cfgAll.dmnMplsUdp);
+                return;
+            }
+            if (a.equals("amt")) {
+                daemonMake(new servAmt(), cfgAll.dmnAmt);
                 return;
             }
             if (a.equals("gtp")) {
@@ -2382,6 +2389,10 @@ public class userConfig {
             }
             if (a.equals("mplsudp")) {
                 daemonErase(new servMplsUdp(), cfgAll.dmnMplsUdp);
+                return;
+            }
+            if (a.equals("amt")) {
+                daemonErase(new servAmt(), cfgAll.dmnAmt);
                 return;
             }
             if (a.equals("gtp")) {

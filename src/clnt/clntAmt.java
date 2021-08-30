@@ -5,7 +5,6 @@ import addr.addrIP;
 import addr.addrType;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
-import static clnt.clntUdpGre.portNum;
 import ifc.ifcDn;
 import ifc.ifcEther;
 import ifc.ifcNull;

@@ -25,6 +25,7 @@ import pipe.pipeWindow;
 import prt.prtLocTcp;
 import prt.prtRedun;
 import prt.prtWatch;
+import serv.servAmt;
 import serv.servBmp2mrt;
 import serv.servBstun;
 import serv.servCharGen;
@@ -757,6 +758,7 @@ public class cfgInit implements Runnable {
         servGre.defaultF = createFilter(servGre.defaultL, srvdefsF);
         servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
         servMplsUdp.defaultF = createFilter(servMplsUdp.defaultL, srvdefsF);
+        servAmt.defaultF = createFilter(servAmt.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);
         servMultiplexer.defaultF = createFilter(servMultiplexer.defaultL, srvdefsF);
         servLpd.defaultF = createFilter(servLpd.defaultL, srvdefsF);

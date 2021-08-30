@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import line.lineThread;
 import pipe.pipeSide;
+import serv.servAmt;
 import serv.servBmp2mrt;
 import serv.servBstun;
 import serv.servCharGen;
@@ -622,6 +623,11 @@ public class cfgAll {
      * mplsudp daemons
      */
     public static final servGenList<servMplsUdp> dmnMplsUdp = new servGenList<servMplsUdp>();
+
+    /**
+     * amt daemons
+     */
+    public static final servGenList<servAmt> dmnAmt = new servGenList<servAmt>();
 
     /**
      * gtp daemons
@@ -3448,6 +3454,7 @@ public class cfgAll {
         dmnGre.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
+        dmnAmt.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);
         dmnRadius.getShRun(l, filter);
