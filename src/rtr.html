@@ -11,11 +11,15 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v21.8.30-cur, done by cs@nop.<br/>
-tested: 2021-08-30 13:45:28, took 00:06:32, with 100 workers, on 2362 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2021-08-30 15:17:04, took 00:06:25, with 100 workers, on 2366 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
 <tr><td><a href="http://sources.nop.hu/cfg/basic.tst">basic.tst</a></td><td>success</td><td>dummy test</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-amt01.tst">conn-amt01.tst</a></td><td>success</td><td>amt over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-amt02.tst">conn-amt02.tst</a></td><td>success</td><td>amt over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-amt03.tst">conn-amt03.tst</a></td><td>success</td><td>amt over amt</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-amt04.tst">conn-amt04.tst</a></td><td>success</td><td>amt over loopback</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-anyconn.tst">conn-anyconn.tst</a></td><td>success</td><td>ip over anyconnect</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-atmdxi.tst">conn-atmdxi.tst</a></td><td>success</td><td>atmdxi encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-atmsar.tst">conn-atmsar.tst</a></td><td>success</td><td>atmsar encapsulation</td></tr>
