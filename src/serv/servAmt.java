@@ -315,6 +315,18 @@ class servAmtConn implements ifcDn, Comparator<servAmtConn> {
                 pck.merge2beg();
                 upper.recvPack(pck);
                 break;
+            case 6: // multicast
+                pck.getSkip(2);
+                typ = ifcEther.guessEtherType(pck);
+                if (typ < 0) {
+                    cntr.drop(pck, counter.reasons.badVal);
+                    return;
+                }
+                pck.msbPutW(0, typ);
+                pck.putSkip(2);
+                pck.merge2beg();
+                upper.recvPack(pck);
+                break;
         }
     }
 
