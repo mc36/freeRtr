@@ -223,8 +223,8 @@ router lsrp4 1
  spf-log 500
  spf-bidir
  spf-ecmp
- segrout 300 299
- bier 256 300 299
+ segrout 300 39
+ bier 256 300 39
  justadvert loopback0
  ecmp
  exit
@@ -237,8 +237,8 @@ router lsrp6 1
  spf-log 500
  spf-bidir
  spf-ecmp
- segrout 300 299
- bier 256 300 299
+ segrout 300 39
+ bier 256 300 39
  justadvert loopback0
  ecmp
  exit
@@ -316,33 +316,24 @@ interface template1
  carrier-delay 123
  vrf forwarding v1
  ipv4 address dynamic 255.255.255.252
- ipv4 netflow-rx
- ipv4 netflow-tx
- ipv4 inspect member upl bu9 mac
  ipv4 host-watch
  ipv4 srh enable
  ipv4 ptp enable
  ipv4 ptp receive
  ipv4 bfd 1000 3000 3
  ipv4 pim enable
- ipv4 pim bier-tunnel 299
+ ipv4 pim bier-tunnel 39
  ipv4 pim join-source loopback0
  ipv6 address dynamic ffff:ffff:ffff:ffff::
- ipv6 netflow-rx
- ipv6 netflow-tx
- ipv6 inspect member upl bu9 mac
  ipv6 host-watch
  ipv6 srh enable
  ipv6 ptp enable
  ipv6 ptp receive
  ipv6 bfd 1000 3000 3
  ipv6 pim enable
- ipv6 pim bier-tunnel 299
+ ipv6 pim bier-tunnel 39
  ipv6 pim join-source loopback0
  mpls enable
- mpls netflow-rx
- mpls netflow-tx
- mpls inspect member upl bu9 mac
  mpls ldp4
  mpls ldp6
  mpls rsvp4
@@ -842,10 +833,6 @@ server rfb vnc
  vrf v1
  exit
 !
-server netflow flw
- vrf v1
- exit
-!
 server http web
  security rsakey rsa
  security dsakey dsa
@@ -934,6 +921,5 @@ client whois-server whois.ripe.net
 client name-server 10.10.10.10
 client time-zone CET
 client mail-server mail.mchome.nop.hu
-client end-format chksum
 !
-end chksum=47a811fab5abdbe2f2b6243cc6bd6415fd26927b7307956a2eaf6a10e22610cbfc17a516692af424f1cfe57f3424da6d5cf46583f8d8081d45c232d52d3fe0b2-8ba48865726cd8481da4c3d6541fb27ac7936faa5916c38004d30093c5ca29db43b0dfd90c13b24532020f004a666286bb6cfb4862f62487a16be2172c0b5d0a
+end
