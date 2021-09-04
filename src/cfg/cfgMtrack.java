@@ -242,6 +242,14 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
             worker.port = packMtrack.port;
             return false;
         }
+        if (a.equals("stop")) {
+            worker.startNow();
+            return true;
+        }
+        if (a.equals("start")) {
+            worker.stopNow();
+            return true;
+        }
         cmd.badCmd();
         return false;
     }

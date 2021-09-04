@@ -283,6 +283,14 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             time = null;
             return;
         }
+        if (a.equals("stop")) {
+            startNow();
+            return;
+        }
+        if (a.equals("start")) {
+            stopNow();
+            return;
+        }
         cmd.badCmd();
     }
 

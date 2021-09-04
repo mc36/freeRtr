@@ -428,6 +428,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             worker.stopNow();
             return;
         }
+        if (a.equals("stop")) {
+            worker.startNow();
+            return;
+        }
         if (a.equals("mode")) {
             worker.mode = null;
             return;
