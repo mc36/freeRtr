@@ -383,7 +383,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                 b = "|" + ntry.labelR;
             }
         }
-        return (mp2mp ? "mp2mp" : "p2mp") + "|" + root + b + "|" + bits.byteDump(opaque, 0, -1) + "|" + uplnk + a;
+        return (mp2mp ? "mp2mp" : "p2mp") + "|" + selfRoot + " " + local + "|" + root + b + "|" + bits.byteDump(opaque, 0, -1) + "|" + uplnk + a;
     }
 
     public int compare(ipFwdMpmp o1, ipFwdMpmp o2) {

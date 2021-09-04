@@ -3924,9 +3924,9 @@ public class userShow {
     private void doShowMptab(tabGen<ipFwdMpmp> tab, addrIP peer) {
         String a;
         if (peer == null) {
-            a = "type|root|opaque|uplink|peers";
+            a = "type|local|root|opaque|uplink|peers";
         } else {
-            a = "type|root|label|opaque|uplink";
+            a = "type|local|root|label|opaque|uplink";
         }
         userFormat l = new userFormat("|", a);
         for (int i = 0; i < tab.size(); i++) {

@@ -1126,8 +1126,14 @@ public class ipFwdTab {
                 grp.flood.del(ifc);
             }
             if (grp.label != null) {
-                if (lower.mp2mpLsp.find(grp.label) == null) {
-                    grp.label = null;
+                if (grp.label.vrfUpl != null) {
+                    if (grp.label.vrfUpl.mp2mpLsp.find(grp.label) == null) {
+                        grp.label = null;
+                    }
+                } else {
+                    if (lower.mp2mpLsp.find(grp.label) == null) {
+                        grp.label = null;
+                    }
                 }
                 needed = true;
             }
