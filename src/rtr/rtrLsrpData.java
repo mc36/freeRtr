@@ -27,7 +27,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     /**
      * compare dump
      */
-    public static final int dmpComp = dmpFull - 0x100 - 0x80 - 0x8 - 0x4;
+    public static final int dmpComp = dmpFull - 0x800 - 0x100 - 0x80 - 0x8 - 0x4;
 
     /**
      * router id
