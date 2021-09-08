@@ -351,27 +351,9 @@ interface template1
  exit
 !
 interface bundle9
- description uplink
+ no description
  no shutdown
  no log-link-change
- exit
-!
-interface bundle9.11
- description uplink1
- vrf forwarding v1
- ipv4 address 10.1.123.91 255.255.255.0
- ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
- template template1
- no shutdown
- exit
-!
-interface bundle9.12
- description uplink2
- vrf forwarding v1
- ipv4 address 10.1.124.91 255.255.255.0
- ipv6 address 2001:db8:1124::91 ffff:ffff:ffff:ffff::
- template template1
- no shutdown
  exit
 !
 interface bvi1
@@ -410,12 +392,29 @@ interface bvi4
  exit
 !
 interface ethernet1
- description uplink1
+ description uplink
  lldp enable
  cdp enable
- bundle-group 9
  no shutdown
  no log-link-change
+ exit
+!
+interface ethernet1.11
+ description uplink1
+ vrf forwarding v1
+ ipv4 address 10.1.123.91 255.255.255.0
+ ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ template template1
+ no shutdown
+ exit
+!
+interface ethernet1.12
+ description uplink2
+ vrf forwarding v1
+ ipv4 address 10.1.124.91 255.255.255.0
+ ipv6 address 2001:db8:1124::91 ffff:ffff:ffff:ffff::
+ template template1
+ no shutdown
  exit
 !
 interface ethernet8
@@ -615,9 +614,7 @@ proxy-profile p5
 !
 !
 !
-ipv4 flow v1 export p1 10.10.10.227 2055
 !
-ipv6 flow v1 export p1 10.10.10.227 2055
 !
 !
 !
