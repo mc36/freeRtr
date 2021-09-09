@@ -335,6 +335,16 @@ public class version {
     }
 
     /**
+     * get memory info
+     *
+     * @return memory
+     */
+    public static String getMemoryInfo() {
+        Runtime rt = Runtime.getRuntime();
+        return bits.toUser(rt.totalMemory()) + "/" + bits.toUser(rt.maxMemory());
+    }
+
+    /**
      * get kernel name
      *
      * @return name of kernel

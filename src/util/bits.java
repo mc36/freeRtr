@@ -873,6 +873,7 @@ public class bits {
         if (num < 10000) {
             return num + "g";
         }
+        num /= 1000;
         return num + "t";
     }
 

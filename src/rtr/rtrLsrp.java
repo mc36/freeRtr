@@ -300,7 +300,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
         return res;
     }
 
-
     /**
      * list of neighbors
      *
@@ -658,7 +657,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.topoSum = lastSpf.listTopoSum().hashCode();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
-        dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname()).replaceAll(" ", "_");
+        dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo()).replaceAll(" ", "_");
         dat.middleware = version.getVMname().replaceAll(" ", "_");
         dat.kernel = version.getKernelName().replaceAll(" ", "_");
         if (segrouLab != null) {
