@@ -954,8 +954,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             conn.needFull.add(1);
             return;
         }
-        if (advertIntrval > 0) {
-            if ((bits.getTime() - advertLast) < advertIntrval) {
+        if (advertIntTx > 0) {
+            if ((bits.getTime() - advertLast) < advertIntTx) {
                 return;
             }
         }

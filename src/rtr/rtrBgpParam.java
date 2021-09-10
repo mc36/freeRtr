@@ -288,9 +288,14 @@ public abstract class rtrBgpParam {
     public boolean allowAsOut;
 
     /**
-     * advertisement interval
+     * transmit advertisement interval
      */
-    public int advertIntrval;
+    public int advertIntTx;
+
+    /**
+     * receive advertisement interval
+     */
+    public int advertIntRx;
 
     /**
      * max prefix count
@@ -879,7 +884,8 @@ public abstract class rtrBgpParam {
         intVpnClnt = src.intVpnClnt;
         allowAsIn = src.allowAsIn;
         allowAsOut = src.allowAsOut;
-        advertIntrval = src.advertIntrval;
+        advertIntTx = src.advertIntTx;
+        advertIntRx = src.advertIntRx;
         serverClnt = src.serverClnt;
         maxPrefixCnt = src.maxPrefixCnt;
         maxPrefixPrc = src.maxPrefixPrc;
@@ -1223,7 +1229,8 @@ public abstract class rtrBgpParam {
         l.add("4 4,.       none                      send no community");
         l.add("3 4       local-as                    local as number");
         l.add("4 .         <num>                     autonomous system number");
-        l.add("3 4       advertisement-interval      time between sending updates");
+        l.add("3 4       advertisement-interval-tx   time between sending updates");
+        l.add("3 4       advertisement-interval-rx   time between receiving updates");
         l.add("4 .         <num>                     interval in ms");
         l.add("3 4       dmz-link-bw                 set dmz link bandwidth");
         l.add("4 .         <num>                     link bandwidth in kb");
@@ -1293,7 +1300,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, description == null, beg, nei + "description", description);
         cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
-        l.add(beg + nei + "advertisement-interval " + advertIntrval);
+        l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
+        l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));
         l.add(beg + nei + "distance " + distance);
         l.add(beg + nei + "timer " + keepAlive + " " + holdTimer);
@@ -1695,10 +1703,17 @@ public abstract class rtrBgpParam {
             }
             return false;
         }
-        if (s.equals("advertisement-interval")) {
-            advertIntrval = bits.str2num(cmd.word());
+        if (s.equals("advertisement-interval-tx")) {
+            advertIntTx = bits.str2num(cmd.word());
             if (negated) {
-                advertIntrval = 0;
+                advertIntTx = 0;
+            }
+            return false;
+        }
+        if (s.equals("advertisement-interval-rx")) {
+            advertIntRx = bits.str2num(cmd.word());
+            if (negated) {
+                advertIntRx = 0;
             }
             return false;
         }

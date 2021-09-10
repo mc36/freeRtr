@@ -1116,6 +1116,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         parent.needFull.add(1);
         parent.compute.wakeup();
         for (;;) {
+            if (neigh.advertIntRx > 0) {
+                bits.sleep(neigh.advertIntRx);
+            }
             typ = packRecv(pckRx);
             if (typ < 0) {
                 sendNotify(1, 1);
@@ -1253,7 +1256,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pck.merge2beg();
         if ((compressTx != null) && (typ == rtrBgpUtil.msgUpdate)) {
             if (debugger.rtrBgpEvnt) {
-                logger.debug("sending " + rtrBgpUtil.type2string(typ) + " to " + neigh.peerAddr);
+                logger.debug("sending compressed " + rtrBgpUtil.type2string(typ) + " to " + neigh.peerAddr);
             }
             if (neigh.monitor != null) {
                 neigh.monitor.gotMessage(true, typ, this, neigh, pck.getCopy());
