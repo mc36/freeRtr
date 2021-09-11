@@ -516,8 +516,8 @@ int masks[] = {
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
     if (EVP_DecryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) goto drop;  \
     if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
     if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) goto drop; \
+    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
     if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) goto drop; \
     guessEthtyp;                                                \
     bufP -= 2;                                                  \
