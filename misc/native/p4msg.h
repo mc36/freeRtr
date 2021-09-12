@@ -1458,10 +1458,6 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[12]);
         neigh_ntry.encrKeyLen = str2key(arg[13], neigh_ntry.encrKeyDat);
         tun4_ntry.encrKeyLen = str2key(arg[14], tun4_ntry.encrKeyDat);
-        tun4_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
-        if (tun4_ntry.hashPkey == NULL) return 0;
-        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
-        if (neigh_ntry.hashPkey == NULL) return 0;
         tun4_ntry.prot = 17;
         tun4_ntry.command = 9;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -1493,10 +1489,6 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[12]);
         neigh_ntry.encrKeyLen = str2key(arg[13], neigh_ntry.encrKeyDat);
         tun6_ntry.encrKeyLen = str2key(arg[14], tun6_ntry.encrKeyDat);
-        tun6_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
-        if (tun6_ntry.hashPkey == NULL) return 0;
-        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
-        if (neigh_ntry.hashPkey == NULL) return 0;
         tun6_ntry.prot = 17;
         tun6_ntry.command = 9;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);

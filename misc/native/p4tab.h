@@ -864,7 +864,6 @@ int initTables() {
     OpenSSL_add_all_ciphers();
     OpenSSL_add_all_digests();
     OpenSSL_add_all_algorithms();
-    RAND_get_rand_method();
     RAND_poll();
     return 0;
 }
