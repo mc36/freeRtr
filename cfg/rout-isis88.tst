@@ -55,6 +55,7 @@ route-map p6
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  aggregate 4321::/32
  afi-other aggregate 2.2.2.0/24
  red conn

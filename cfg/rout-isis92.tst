@@ -80,7 +80,7 @@ access-list test6
  deny all 4321:: ffff:: all 4321:: ffff:: all
  permit all any all any all
  exit
-router isis6 1
+router isis4 1
  vrf v1
  net 48.6666.0000.2222.00
  multi-topology
@@ -94,10 +94,10 @@ int lo1
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- router isis6 1 ena
- router isis6 1 other-ena
- router isis6 1 bier index 3
- router isis6 1 bier other-index 4
+ router isis4 1 ena
+ router isis4 1 other-ena
+ router isis4 1 bier index 3
+ router isis4 1 bier other-index 4
  exit
 int eth1
  vrf for v1
@@ -106,8 +106,8 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  ipv6 access-group-in test6
  mpls enable
- router isis6 1 ena
- router isis6 1 other-ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 int eth2
  vrf for v1
@@ -116,8 +116,8 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 access-group-in test6
  mpls enable
- router isis6 1 ena
- router isis6 1 other-ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 !
 

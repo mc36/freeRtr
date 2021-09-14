@@ -65,6 +65,7 @@ access-list test6
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  traffeng 6.6.6.2
  segrout 10
  both segrout

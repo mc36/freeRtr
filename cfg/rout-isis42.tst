@@ -80,6 +80,7 @@ access-list test6
 router isis4 1
  vrf v1
  net 22.4444.0000.2222.00
+ is-type both
  traffeng 4.4.4.2
  segrout 10
  both segrout
@@ -88,6 +89,7 @@ router isis4 1
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  traffeng 6.6.6.2
  segrout 10
  both segrout

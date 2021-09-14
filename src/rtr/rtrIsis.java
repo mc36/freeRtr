@@ -188,7 +188,7 @@ public class rtrIsis extends ipRtr {
         fwdCore = forwarder;
         distantExt = 115;
         distantInt = 115;
-        operateLevel = 3;
+        operateLevel = 2;
         maxAreaAddr = 3;
         metricWide = true;
         ifaces = new tabGen<rtrIsisIface>();

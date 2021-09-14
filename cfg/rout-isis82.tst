@@ -35,7 +35,7 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-router isis6 1
+router isis4 1
  vrf v1
  net 48.6666.0000.2222.00
  multi-topology
@@ -52,15 +52,15 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff::
- router isis6 1 ena
- router isis6 1 other-ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
- router isis6 1 ena
- router isis6 1 other-ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 !
 

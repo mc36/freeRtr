@@ -38,6 +38,7 @@ vrf def v1
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  red conn
  afi-other enable
  afi-other red conn

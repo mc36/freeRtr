@@ -62,6 +62,7 @@ route-map p6
 router isis4 1
  vrf v1
  net 22.4444.0000.2222.00
+ is-type both
  aggregate 2.2.2.0/24
  red conn
  both route-map-into p4
@@ -69,6 +70,7 @@ router isis4 1
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  aggregate 4321::/32
  red conn
  both route-map-into p6

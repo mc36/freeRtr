@@ -83,6 +83,7 @@ access-list test6
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  bier 256 10
  both bier
  red conn

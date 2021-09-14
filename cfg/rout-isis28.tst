@@ -64,12 +64,14 @@ route-policy p6
 router isis4 1
  vrf v1
  net 22.4444.0000.2222.00
+ is-type both
  red conn
  both route-policy-into p4
  exit
 router isis6 1
  vrf v1
  net 22.6666.0000.2222.00
+ is-type both
  red conn
  both route-policy-into p6
  exit
