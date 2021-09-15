@@ -12285,3 +12285,12 @@ qc pass: amt over ipv4
 qc pass: amt over ipv6
 qc pass: amt over amt
 qc pass: amt over loopback
+---------------------------------- 2021-09-15 06:13:57
+no qc pass: bgp routepolicy filtering with large community
+no qc pass: bgp routepolicy filtering with extended community
+no qc pass: bgp routemap filtering with large community
+no qc pass: bgp routemap filtering with extended community
+qc pass: bgp routemap clearing with extended community
+qc pass: bgp routemap clearing with large community
+qc pass: bgp routepolicy clearing with extended community
+qc pass: bgp routepolicy clearing with large community

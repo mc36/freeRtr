@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.9.15-cur, done by cs@nop.
--;-;-;2021-09-15 05:43:17, took 00:05:48, with 100 workers, on 2366 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2021-09-15 06:20:32, took 00:06:35, with 100 workers, on 2366 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1979,11 +1979,11 @@ http://sources.nop.hu/cfg/rout-bgp506.tst;rout-bgp506.tst;success;ouni bgp aggre
 http://sources.nop.hu/cfg/rout-bgp507.tst;rout-bgp507.tst;success;bgp vpns aggregation
 http://sources.nop.hu/cfg/rout-bgp508.tst;rout-bgp508.tst;success;bgp othervpns aggregation
 http://sources.nop.hu/cfg/rout-bgp509.tst;rout-bgp509.tst;success;bgp routemap clearing with standard community
-http://sources.nop.hu/cfg/rout-bgp510.tst;rout-bgp510.tst;success;bgp routemap filtering with extended community
-http://sources.nop.hu/cfg/rout-bgp511.tst;rout-bgp511.tst;success;bgp routemap filtering with large community
+http://sources.nop.hu/cfg/rout-bgp510.tst;rout-bgp510.tst;success;bgp routemap clearing with extended community
+http://sources.nop.hu/cfg/rout-bgp511.tst;rout-bgp511.tst;success;bgp routemap clearing with large community
 http://sources.nop.hu/cfg/rout-bgp512.tst;rout-bgp512.tst;success;bgp routepolicy clearing with standard community
-http://sources.nop.hu/cfg/rout-bgp513.tst;rout-bgp513.tst;success;bgp routepolicy filtering with extended community
-http://sources.nop.hu/cfg/rout-bgp514.tst;rout-bgp514.tst;success;bgp routepolicy filtering with large community
+http://sources.nop.hu/cfg/rout-bgp513.tst;rout-bgp513.tst;success;bgp routepolicy clearing with extended community
+http://sources.nop.hu/cfg/rout-bgp514.tst;rout-bgp514.tst;success;bgp routepolicy clearing with large community
 http://sources.nop.hu/cfg/rout-bgp515.tst;rout-bgp515.tst;success;bgp routemap clearing with aspath
 http://sources.nop.hu/cfg/rout-bgp516.tst;rout-bgp516.tst;success;bgp routepolicy clearing with aspath
 http://sources.nop.hu/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
