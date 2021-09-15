@@ -17,7 +17,13 @@
 
 
 #include <core.p4>
+
+#if __TARGET_TOFINO__ == 2
+#include <t2na.p4>
+#else
 #include <tna.p4>
+#endif
+
 #include "include/cst_table_size.p4"
 #include "include/cst_bundle.p4"
 #include "include/def_types.p4"
