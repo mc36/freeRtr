@@ -1,4 +1,4 @@
-description bgp routemap filtering with extended community
+description bgp routemap clearing with extended community
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
