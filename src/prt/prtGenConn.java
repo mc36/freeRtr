@@ -413,6 +413,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         pck.IPtrg.setAddr(peerAddr);
         pck.IPsrc.setAddr(iface.addr);
         pck.IPdf = false;
+        pck.IPalrt = -1;
         pck.IPttl = sendTTL;
         pck.IPtos = sendTOS;
         if (lower.connectionSend(this, pck)) {

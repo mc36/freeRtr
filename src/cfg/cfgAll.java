@@ -51,6 +51,7 @@ import serv.servLoadBalancer;
 import serv.servLpd;
 import serv.servModem;
 import serv.servMplsIp;
+import serv.servMplsOam;
 import serv.servMplsUdp;
 import serv.servMultiplexer;
 import serv.servNetflow;
@@ -623,6 +624,11 @@ public class cfgAll {
      * mplsudp daemons
      */
     public static final servGenList<servMplsUdp> dmnMplsUdp = new servGenList<servMplsUdp>();
+
+    /**
+     * mplsoam daemons
+     */
+    public static final servGenList<servMplsOam> dmnMplsOam = new servGenList<servMplsOam>();
 
     /**
      * amt daemons
@@ -3454,6 +3460,7 @@ public class cfgAll {
         dmnGre.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
+        dmnMplsOam.getShRun(l, filter);
         dmnAmt.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);

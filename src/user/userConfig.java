@@ -94,6 +94,7 @@ import serv.servLoadBalancer;
 import serv.servLpd;
 import serv.servModem;
 import serv.servMplsIp;
+import serv.servMplsOam;
 import serv.servMplsUdp;
 import serv.servMultiplexer;
 import serv.servNetflow;
@@ -818,6 +819,8 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    mplsudp                      configure a mplsudp server");
         l.add("3  .      <name>                     name of server");
+        l.add("2  3    mplsoam                      configure a mplsoam server");
+        l.add("3  .      <name>                     name of server");
         l.add("2  3    amt                          configure an amt server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    pckoudp                      configure a pckoudp server");
@@ -1501,6 +1504,10 @@ public class userConfig {
             }
             if (a.equals("mplsudp")) {
                 daemonMake(new servMplsUdp(), cfgAll.dmnMplsUdp);
+                return;
+            }
+            if (a.equals("mplsoam")) {
+                daemonMake(new servMplsOam(), cfgAll.dmnMplsOam);
                 return;
             }
             if (a.equals("amt")) {
@@ -2389,6 +2396,10 @@ public class userConfig {
             }
             if (a.equals("mplsudp")) {
                 daemonErase(new servMplsUdp(), cfgAll.dmnMplsUdp);
+                return;
+            }
+            if (a.equals("mplsoam")) {
+                daemonErase(new servMplsOam(), cfgAll.dmnMplsOam);
                 return;
             }
             if (a.equals("amt")) {

@@ -56,6 +56,7 @@ import serv.servLoadBalancer;
 import serv.servLpd;
 import serv.servModem;
 import serv.servMplsIp;
+import serv.servMplsOam;
 import serv.servMplsUdp;
 import serv.servMultiplexer;
 import serv.servNetflow;
@@ -758,6 +759,7 @@ public class cfgInit implements Runnable {
         servGre.defaultF = createFilter(servGre.defaultL, srvdefsF);
         servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
         servMplsUdp.defaultF = createFilter(servMplsUdp.defaultL, srvdefsF);
+        servMplsOam.defaultF = createFilter(servMplsOam.defaultL, srvdefsF);
         servAmt.defaultF = createFilter(servAmt.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);
         servMultiplexer.defaultF = createFilter(servMultiplexer.defaultL, srvdefsF);
