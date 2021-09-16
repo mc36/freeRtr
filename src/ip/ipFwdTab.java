@@ -713,12 +713,9 @@ public class ipFwdTab {
                 if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
                     continue;
                 }
-                if (prf.prefix.compare(prf.prefix, ntry.prefix) == 0) {
-                    continue;
-                }
                 prf.best.iface = ifc;
                 prf.best.nextHop = ifc.autRouHop.copyBytes();
-                prf.best.labelRem = null;
+                prf.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);
                 prf.reduce2best();
             }
         }
