@@ -367,11 +367,17 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 sendErr("passReqRequired");
                 return;
             }
-            a = cmd.word();
+            String c = cmd.word();
+            if (c.length() < 16) {
+                sendErr("passTooSmall");
+                return;
+            }
             List<String> lst = new ArrayList<String>();
-            lst.add(a);
+            lst.add(c);
+            lst.add(b);
             lst.add(iface.authentication);
-            lst.add(a);
+            lst.add(c);
+            lst.add(b);
             sendLn("password-reply " + userUpgrade.calcTextHash(lst));
             cmd = recvLn();
             if (cmd == null) {
@@ -384,8 +390,10 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             }
             lst = new ArrayList<String>();
             lst.add(b);
+            lst.add(c);
             lst.add(iface.authentication);
             lst.add(b);
+            lst.add(c);
             a = userUpgrade.calcTextHash(lst);
             if (!a.equals(cmd.word())) {
                 sendErr("badPassword");
