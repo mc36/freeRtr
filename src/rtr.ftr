@@ -563,6 +563,7 @@ qc pass: macsec with group23
 qc pass: macsec with group24
 qc pass: macsec over ethernet bundle
 qc pass: macsec over ethernet hairpin
+qc pass: no macsec over ethernet
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source address translation to interface
@@ -2141,6 +2142,8 @@ qc pass: lsrp point2point connection with bidir check
 qc pass: lsrp point2multipoint connection with bidir check
 qc pass: lsrp ecmp connection
 qc pass: lsrp with bgp linkstate
+qc pass: lsrp no authentication
+qc pass: lsrp database authentication
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -2279,6 +2282,7 @@ qc pass: pvrp unstub interface
 qc pass: pvrp over point2point ethernet
 qc pass: pvrp peer metric
 qc pass: pvrp ecmp connection
+qc pass: pvrp no authentication
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

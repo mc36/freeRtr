@@ -12294,3 +12294,8 @@ qc pass: bgp routemap clearing with extended community
 qc pass: bgp routemap clearing with large community
 qc pass: bgp routepolicy clearing with extended community
 qc pass: bgp routepolicy clearing with large community
+---------------------------------- 2021-09-17 18:20:03
+qc pass: no macsec over ethernet
+qc pass: lsrp no authentication
+qc pass: lsrp database authentication
+qc pass: pvrp no authentication
