@@ -351,7 +351,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             sendErr("notNeeded");
             return;
         }
-        if (iface.authentication != null) {
+        if ((!iface.authenDisable) && (iface.authentication != null)) {
             byte[] buf = new byte[128];
             for (int i = 0; i < buf.length; i++) {
                 buf[i] = (byte) bits.randomB();

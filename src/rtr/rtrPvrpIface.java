@@ -133,6 +133,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      * authentication string
      */
     public String authentication = null;
+    
+    /**
+     * disable authentication
+     */
+    public boolean authenDisable = false;
 
     /**
      * ingress label filter
@@ -431,6 +436,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
+        cmds.cfgLine(l, !authenDisable, cmds.tabulator, beg + "disable-password", "");
         l.add(cmds.tabulator + beg + "distance " + distance);
         l.add(cmds.tabulator + beg + "metric-in " + metricIn);
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
@@ -463,6 +469,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add("4 .         dynamic-metric          dynamic peer metric");
         l.add("4 .         stub                    do not route traffic");
         l.add("4 .         unstub                  do route traffic");
+        l.add("4 .         disable-password        disable authentications");
         l.add("4 .         suppress-prefix         do not advertise interface");
         l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 5         encryption              select encryption method");
@@ -581,6 +588,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         if (a.equals("unstub")) {
             unstub = true;
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("disable-password")) {
+            authenDisable = true;
             return;
         }
         if (a.equals("suppress-prefix")) {
@@ -766,6 +777,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         if (a.equals("unstub")) {
             unstub = false;
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("disable-password")) {
+            authenDisable = false;
             return;
         }
         if (a.equals("suppress-prefix")) {

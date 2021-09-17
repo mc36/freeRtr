@@ -125,6 +125,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      * authentication string
      */
     public String authentication = null;
+    
+    /**
+     * disable authentication
+     */
+    public boolean authenDisable = false;
 
     /**
      * split horizon
@@ -393,6 +398,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
+        cmds.cfgLine(l, !authenDisable, cmds.tabulator, beg + "disable-password", "");
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "affinity " + affinity);
         l.add(cmds.tabulator + beg + "srlg " + srlg);
@@ -421,6 +427,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("6 6,.           pop                 advertise pop label");
         l.add("4 5         bier                    set bier parameters");
         l.add("5 .           <num>                 index");
+        l.add("4 .         disable-password        disable authentications");
         l.add("4 .         suppress-prefix         do not advertise interface");
         l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 5         encryption              select encryption method");
@@ -473,6 +480,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             unstub = true;
             lower.todo.set(0);
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("disable-password")) {
+            authenDisable = true;
             return;
         }
         if (a.equals("segrout")) {
@@ -625,6 +636,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             unstub = false;
             lower.todo.set(0);
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("disable-password")) {
+            authenDisable = false;
             return;
         }
         if (a.equals("segrout")) {
