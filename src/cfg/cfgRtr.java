@@ -187,6 +187,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router lsrp[4|6] .*! no spf-bidir",
         "router lsrp[4|6] .*! no spf-hops",
         "router lsrp[4|6] .*! no spf-ecmp",
+        "router lsrp[4|6] .*! no database-password",
         "router lsrp[4|6] .*! distance 70",
         "router lsrp[4|6] .*! no default-originate",
         "router lsrp[4|6] .*! no stub",

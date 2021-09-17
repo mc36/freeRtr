@@ -3,6 +3,7 @@ package rtr;
 import addr.addrIP;
 import addr.addrIPv4;
 import addr.addrPrefix;
+import auth.authLocal;
 import cfg.cfgAll;
 import cfg.cfgInit;
 import cfg.cfgPrfxlst;
@@ -82,6 +83,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * suppress interface addresses
      */
     public boolean suppressAddr = false;
+
+    /**
+     * database password
+     */
+    public String authentication = null;
 
     /**
      * default distance
@@ -680,6 +686,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.uptime = tim - cfgInit.started;
         dat.changesNum = changeNum;
         dat.changesTim = tim - changeTim;
+        if (authentication != null) {
+            dat.password = dat.calcPass(authentication);
+        }
         boolean ned = !dat.dump(rtrLsrpData.dmpComp).equals(old.dump(rtrLsrpData.dmpComp));
         if (ned) {
             changeNum++;
@@ -705,6 +714,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
             rtrLsrpData ntry = database.get(i);
             if (ntry == null) {
                 continue;
+            }
+            if (authentication != null) {
+                if (ntry.password == null) {
+                    continue;
+                }
+                if (!ntry.password.equals(ntry.calcPass(authentication))) {
+                    continue;
+                }
             }
             ntry.put2spf(spf, distance);
         }
@@ -847,6 +864,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add("2 .     <name>                    name of route policy");
         l.add("1 2   prefix-list                 filter prefixes");
         l.add("2 .     <name>                    name of prefix list");
+        l.add("1 2   database-password           database password");
+        l.add("2 .     <str>                     password");
         l.add("1 2   refresh                     data refresh time");
         l.add("2 .     <num>                     age in ms");
         l.add("1 2   lifetime                    data life time");
@@ -894,6 +913,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, prflstIn == null, beg, "prefix-list", "" + prflstIn);
         cmds.cfgLine(l, roumapIn == null, beg, "route-map", "" + roumapIn);
         cmds.cfgLine(l, roupolIn == null, beg, "route-policy", "" + roupolIn);
+        cmds.cfgLine(l, authentication == null, beg, "database-password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         String a = "";
         if (segrouPop) {
             a += " pop";
@@ -922,6 +942,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
             routerID.fromString(cmd.word());
             if (negated) {
                 routerID = new addrIPv4();
+            }
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("database-password")) {
+            authentication = authLocal.passwdDecode(cmd.word());
+            if (negated) {
+                authentication = null;
             }
             todo.set(0);
             notif.wakeup();

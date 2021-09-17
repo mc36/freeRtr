@@ -8,6 +8,7 @@ import tab.tabGen;
 import tab.tabLabelBier;
 import tab.tabRoute;
 import tab.tabRouteEntry;
+import user.userUpgrade;
 import util.bits;
 import util.cmds;
 import util.shrtPthFrst;
@@ -30,6 +31,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public static final int dmpComp = dmpFull - 0x800 - 0x100 - 0x80 - 0x8 - 0x4;
 
     /**
+     * checksum dump
+     */
+    public static final int dmpCsum = dmpComp - 0x4000;
+
+    /**
      * router id
      */
     public addrIPv4 rtrId;
@@ -43,6 +49,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * topology summary
      */
     public int topoSum;
+
+    /**
+     * checksum
+     */
+    public String password;
 
     /**
      * router name
@@ -316,6 +327,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x2000) != 0) {
             s += " mgmtaddr=" + mgmtIp;
         }
+        if ((typ & 0x4000) != 0) {
+            s += " password=" + password;
+        }
         if ((typ & 0x80) != 0) {
             s += " uptime=" + uptime;
         }
@@ -384,6 +398,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (rtrId.fromString(s)) {
                     return true;
                 }
+                continue;
+            }
+            if (a.equals("password")) {
+                password = s;
                 continue;
             }
             if (a.equals("external")) {
@@ -622,6 +640,16 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             spf.addSegRouI(rtrId, rou.best.segrouIdx);
             spf.addBierI(rtrId, rou.best.bierIdx);
         }
+    }
+
+    /**
+     * calculate password
+     *
+     * @param pwd password
+     * @return value
+     */
+    protected String calcPass(String pwd) {
+        return userUpgrade.calcTextHash(bits.str2lst(pwd + " " + dump(dmpCsum)));
     }
 
 }
