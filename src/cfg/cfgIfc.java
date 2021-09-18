@@ -5581,13 +5581,19 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (template == null) {
             return l;
         }
-        List<String> t = template.getShRun(filter);
-        t = userFilter.filterText(t, notemplF);
-        tabGen<userFilter> f = new tabGen<userFilter>();
-        for (int i = 1; i < t.size() - 2; i++) {
-            f.add(new userFilter("interface " + name, t.get(i), null));
+        List<userFilter> ls = userFilter.text2section(l);
+        l = template.getShRun(filter);
+        l = userFilter.filterText(l, notemplF);
+        for (int i = 1; i < l.size() - 2; i++) {
+            userFilter ntry = new userFilter("interface " + name, l.get(i), null);
+            ntry = userFilter.findText(ntry, ls);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.used = true;
         }
-        return userFilter.filterText(l, f);
+        userFilter.delUsed(ls, true);
+        return userFilter.section2text(ls, true);
     }
 
     public void getHelp(userHelping l) {
