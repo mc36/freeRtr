@@ -381,7 +381,8 @@ class prtRedunIfc implements ifcUp {
                 logger.error("got invalid filename");
                 break;
             }
-            userFlash.rename(filNm, b, true, true);
+            userFlash.copy(filNm, b, true);
+            userFlash.delete(filNm);
             doAck(-3);
             break;
         }
