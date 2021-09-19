@@ -424,16 +424,15 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         s = cmd.word();
         if (s.equals("export-vrf")) {
-            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
-            if (vrf == null) {
-                cmd.error("no such vrf");
+            cmd.word();
+            servP4langVrf ntry = new servP4langVrf(bits.str2num(cmd.word()));
+            ntry = expVrf.del(ntry);
+            if (ntry == null) {
+                cmd.error("no such export");
                 return false;
             }
-            vrf.fwd4.tableChanged = null;
-            vrf.fwd6.tableChanged = null;
-            servP4langVrf ntry = new servP4langVrf(bits.str2num(cmd.word()));
-            ntry.vrf = vrf;
-            expVrf.del(ntry);
+            ntry.vrf.fwd4.tableChanged = null;
+            ntry.vrf.fwd6.tableChanged = null;
             return false;
         }
         if (s.equals("export-copp4")) {
@@ -445,19 +444,21 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return false;
         }
         if (s.equals("export-bridge")) {
-            cfgBrdg br = cfgAll.brdgFind(cmd.word(), false);
-            if (br == null) {
-                cmd.error("no such bridge");
+            servP4langBr ntry = new servP4langBr(bits.str2num(cmd.word()));
+            ntry = expBr.del(ntry);
+            if (ntry == null) {
+                cmd.error("no such export");
                 return false;
             }
-            servP4langBr ntry = new servP4langBr(br.num);
-            ntry.br = br;
-            expBr.del(ntry);
             return false;
         }
         if (s.equals("downlink")) {
             servP4langDlnk ntry = new servP4langDlnk(this, bits.str2num(cmd.word()));
-            downLinks.del(ntry);
+            ntry = downLinks.del(ntry);
+            if (ntry == null) {
+                cmd.error("no such downlink");
+                return false;
+            }
             return false;
         }
         if (s.equals("interconnect")) {
