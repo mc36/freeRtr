@@ -148,6 +148,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private byte[] remPub;
 
+    private byte[] quantum;
+
     private long lasTim;
 
     private cryECcurve25519 dh1;
@@ -330,7 +332,13 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         locPriv.locPriv = cryBase64.decodeBytes(preshared.substring(0, i));
         locPriv.calcCommon();
         locPub = locPriv.common;
-        remPub = cryBase64.decodeBytes(preshared.substring(i, preshared.length()));
+        String a = preshared.substring(i, preshared.length());
+        i = a.indexOf("=") + 1;
+        remPub = cryBase64.decodeBytes(a.substring(0, i));
+        quantum = cryBase64.decodeBytes(a.substring(i, a.length()));
+        if (quantum.length < 1) {
+            quantum = new byte[32];
+        }
         addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {
             return;
@@ -641,7 +649,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 dh1.calcCommon();
                 ks = calcKdf(cr, dh1.common, 1);
                 cr = ks[0];
-                ks = calcKdf(cr, new byte[32], 3);
+                ks = calcKdf(cr, quantum, 3);
                 cr = ks[0];
                 h.init();
                 h.update(hr);
@@ -712,7 +720,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 locPriv.calcCommon();
                 ks = calcKdf(cr, locPriv.common, 1);
                 cr = ks[0];
-                ks = calcKdf(cr, new byte[32], 3);
+                ks = calcKdf(cr, quantum, 3);
                 cr = ks[0];
                 h.init();
                 h.update(hr);
