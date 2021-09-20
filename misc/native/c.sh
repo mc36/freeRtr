@@ -1,4 +1,5 @@
 #!/bin/sh
+CC="tcc"                                #tcc
 CC="clang"                              #clang
 CC="gcc"                                #gcc
 
