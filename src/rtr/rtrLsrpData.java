@@ -28,7 +28,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     /**
      * compare dump
      */
-    public static final int dmpComp = dmpFull - 0x800 - 0x100 - 0x80 - 0x8 - 0x4;
+    public static final int dmpComp = dmpFull - 0x800 - 0x200 - 0x100 - 0x80 - 0x8 - 0x4;
 
     /**
      * checksum dump
@@ -199,7 +199,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
-     * 0x800=toposum, 0x1000=addrs, 0x2000=mgmtip
+     * 0x800=toposum, 0x1000=addrs, 0x2000=mgmtip, 0x4000=password
      * @return dumped data
      */
     public String dump(int typ) {
