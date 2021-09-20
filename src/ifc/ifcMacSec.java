@@ -341,20 +341,23 @@ public class ifcMacSec {
      */
     public synchronized packHolder doSync() {
         if ((hashRx != null) && (!reply)) {
-            boolean fin = true;
-            if (((bits.getTime() - lastKex) > (profil.trans.lifeSec * 1000)) || (keyUsage.byteTx > profil.trans.lifeByt)) {
-                if (debugger.ifcMacSecTraf) {
-                    logger.debug("restarting kex");
-                }
-                keygen = profil.trans.getGroup();
-                keygen.servXchg();
-                reply = false;
-                hashRx = null;
-                fin = false;
+            boolean ned = false;
+            if (profil.trans.lifeSec > 0) {
+                ned |= (bits.getTime() - lastKex) > (profil.trans.lifeSec * 1000);
             }
-            if (fin) {
+            if (profil.trans.lifeByt > 0) {
+                ned |= keyUsage.byteTx > profil.trans.lifeByt;
+            }
+            if (!ned) {
                 return null;
             }
+            if (debugger.ifcMacSecTraf) {
+                logger.debug("restarting kex");
+            }
+            keygen = profil.trans.getGroup();
+            keygen.servXchg();
+            reply = false;
+            hashRx = null;
         }
         if (debugger.ifcMacSecTraf) {
             logger.debug("sending kex, common=" + keygen.common);
