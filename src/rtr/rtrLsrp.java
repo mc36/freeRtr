@@ -715,14 +715,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (authentication != null) {
-                if (ntry.password == null) {
-                    continue;
-                }
-                if (!ntry.password.equals(ntry.calcPass(authentication))) {
-                    continue;
-                }
-            }
             ntry.put2spf(spf, distance);
         }
         spf.doCalc(routerID, null);

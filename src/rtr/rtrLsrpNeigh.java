@@ -623,6 +623,16 @@ class rtrLsrpNeighRcvr implements Runnable {
                 lower.sendWrn("badUpdate");
                 continue;
             }
+            if (lower.lower.authentication != null) {
+                if (ntry.password == null) {
+                    lower.sendWrn("missingAuth");
+                    continue;
+                }
+                if (!ntry.password.equals(ntry.calcPass(lower.lower.authentication))) {
+                    lower.sendWrn("invalidAuth");
+                    continue;
+                }
+            }
             if (ntry.differs(lower.advert.find(ntry))) {
                 lower.advert.put(ntry.copyHead());
             }
