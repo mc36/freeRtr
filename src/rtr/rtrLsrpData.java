@@ -263,6 +263,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                     segrouAdj = ntry.segrou;
                 }
                 s += " peeraddr=" + ntry.peer;
+                s += " peeriface=" + ntry.perif;
                 s += " neighbor=" + ntry.rtrid;
             }
         }
@@ -351,6 +352,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         software = "";
         hardware = "";
         middleware = "";
+        password = "none";
         kernel = "";
         topoSum = 0;
         sequence = 0;
@@ -367,6 +369,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         changesNum = 0;
         changesTim = 0;
         addrIP peerAddr = new addrIP();
+        String peerIf = "unknown";
         mgmtIp = new addrIP();
         String iface = "unknown";
         boolean stub = false;
@@ -531,6 +534,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 iface = s;
                 continue;
             }
+            if (a.equals("peeriface")) {
+                peerIf = s;
+                continue;
+            }
             if (a.equals("peeraddr")) {
                 if (peerAddr.fromString(s)) {
                     return true;
@@ -559,7 +566,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, segrouAdj, peerAddr);
+                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, segrouAdj, peerAddr, peerIf);
                 continue;
             }
         }
@@ -590,8 +597,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param srl srlg
      * @param adj segrout adjacency
      * @param adr adjacency address
+     * @param pif peer interface
      */
-    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int adj, addrIP adr) {
+    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int adj, addrIP adr, String pif) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
@@ -602,6 +610,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         ntry.srlg = srl;
         ntry.segrou = adj;
         ntry.peer = adr.copyBytes();
+        ntry.perif = pif;
         rtrLsrpDataNeigh old = neighbor.find(ntry);
         if (old != null) {
             if (old.metric < met) {
@@ -718,6 +727,11 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      * segment routing
      */
     public int segrou;
+    
+    /**
+      * peer interface
+     */
+    public String perif;
 
     public int compare(rtrLsrpDataNeigh o1, rtrLsrpDataNeigh o2) {
         int i = o1.rtrid.compare(o1.rtrid, o2.rtrid);

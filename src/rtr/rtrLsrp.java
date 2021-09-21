@@ -618,7 +618,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.label;
                 }
-                dat.addNeigh(nei.rtrId, "" + ifc.iface, nei.getMetric(), (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer);
+                dat.addNeigh(nei.rtrId, "" + ifc.iface, nei.getMetric(), (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, adj, nei.peer, nei.inam);
             }
             dat.addAddr("" + ifc.iface, ifc.iface.addr);
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
