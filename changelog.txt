@@ -12299,3 +12299,5 @@ qc pass: no macsec over ethernet
 qc pass: lsrp no authentication
 qc pass: lsrp database authentication
 qc pass: pvrp no authentication
+---------------------------------- 2021-09-21 18:54:35
+qc pass: ppp over forti

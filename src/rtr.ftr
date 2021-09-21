@@ -105,6 +105,7 @@ qc pass: ethernet tunneling with etherip
 qc pass: vlan tunneling with etherip
 qc pass: tunnel interface with etherip
 qc pass: etherip server
+qc pass: ppp over forti
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
