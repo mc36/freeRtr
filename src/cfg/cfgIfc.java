@@ -5593,7 +5593,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ntry.used = true;
         }
         userFilter.delUsed(ls, true);
-        return userFilter.section2text(ls, true);
+        l = userFilter.section2text(ls, true);
+        l.add(cmds.comment);
+        return l;
     }
 
     public void getHelp(userHelping l) {
