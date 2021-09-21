@@ -688,8 +688,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
             dat.bierBeg = bierLab[0].label;
         }
         long tim = bits.getTime();
-        dat.since = tim;
         dat.time = tim + lifetime;
+        dat.uptime = tim - cfgInit.started;
+        dat.changesNum = changeNum;
+        dat.changesTim = tim - changeTim;
         rtrLsrpData old = database.find(dat);
         if (old == null) {
             old = new rtrLsrpData();
@@ -697,9 +699,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         dat.since = old.since;
         dat.sequence = old.sequence + 1;
-        dat.uptime = tim - cfgInit.started;
-        dat.changesNum = changeNum;
-        dat.changesTim = tim - changeTim;
         if (authentication != null) {
             dat.password = dat.calcPass(authentication);
         }
