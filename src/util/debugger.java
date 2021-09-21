@@ -564,6 +564,11 @@ public class debugger {
     public static boolean clntAnyconnTraf = false;
 
     /**
+     * clntForti traffic
+     */
+    public static boolean clntFortiTraf = false;
+
+    /**
      * clntSnmp traffic
      */
     public static boolean clntSnmpTraf = false;
@@ -1090,6 +1095,7 @@ public class debugger {
         h.add("3 .        pcep              path computation element protocol");
         h.add("3 .        sstp              secure socket tunneling protocol");
         h.add("3 .        anyconn           anyconnect protocol");
+        h.add("3 .        forti             fortinet protocol");
         h.add("3 .        snmp              simple network management protocol");
         h.add("3 .        dhcp4             ipv4 dynamic host config protocol");
         h.add("3 .        dhcp6             ipv6 dynamic host config protocol");
@@ -1752,6 +1758,10 @@ public class debugger {
             }
             if (s.equals("anyconn")) {
                 clntAnyconnTraf = v;
+                return false;
+            }
+            if (s.equals("forti")) {
+                clntFortiTraf = v;
                 return false;
             }
             if (s.equals("snmp")) {

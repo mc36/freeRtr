@@ -7,6 +7,7 @@ import clnt.clntBstun;
 import clnt.clntDlsw;
 import clnt.clntErspan;
 import clnt.clntEtherIp;
+import clnt.clntForti;
 import clnt.clntGeneve;
 import clnt.clntGrePpp;
 import clnt.clntGreTap;
@@ -270,6 +271,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          */
         prAnycon,
         /**
+         * forti
+         */
+        prForti,
+        /**
          * vxlan
          */
         prVxlan,
@@ -289,6 +294,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntSstp sstp;
 
     private clntAnyconn anycon;
+
+    private clntForti forti;
 
     private clntStun stun;
 
@@ -388,6 +395,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "sstp";
             case prAnycon:
                 return "anyconn";
+            case prForti:
+                return "forti";
             case prStun:
                 return "stun";
             case prTdm:
@@ -464,6 +473,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("anyconn")) {
             return protocolType.prAnycon;
+        }
+        if (s.equals("forti")) {
+            return protocolType.prForti;
         }
         if (s.equals("stun")) {
             return protocolType.prStun;
@@ -614,6 +626,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add("2 .    l2tp3                        select l2tp v3");
         l.add("2 .    sstp                         select sstp");
         l.add("2 .    anyconn                      select anyconnect");
+        l.add("2 .    forti                        select fortinet");
         l.add("2 .    stun                         select stun");
         l.add("2 .    bstun                        select bstun");
         l.add("2 .    tdmoudp                      select tdm over udp");
@@ -937,6 +950,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             anycon.workStop();
             anycon = null;
         }
+        if (forti != null) {
+            forti.workStop();
+            forti = null;
+        }
         if (stun != null) {
             stun.workStop();
             stun = null;
@@ -1129,6 +1146,20 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 anycon.setUpper(ifaceDialer.getEncapProto());
                 anycon.workStart();
                 lower = anycon;
+                break;
+            case prForti:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                forti = new clntForti();
+                forti.cfger = ifaceDialer;
+                forti.target = target;
+                forti.proxy = proxy;
+                forti.username = username;
+                forti.password = password;
+                forti.setUpper(ifaceDialer.getEncapProto());
+                forti.workStart();
+                lower = forti;
                 break;
             case prStun:
                 if (ifaceDialer == null) {
