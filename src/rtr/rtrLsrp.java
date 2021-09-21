@@ -360,7 +360,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * list database
      *
-     * @param mod mode: 1=summary, 2=uptime, 3=software
+     * @param mod mode: 1=summary, 2=uptime, 3=software, 4=middleware, 5=kernel
      * @return list of database
      */
     public userFormat showDatabase(int mod) {
@@ -370,10 +370,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l = new userFormat("|", "id|name|nei|net|seq|topo|left");
                 break;
             case 2:
-                l = new userFormat("|", "id|name|uptime|changes|changed");
+                l = new userFormat("|", "id|name|since|uptime|changes|changed");
                 break;
             case 3:
-                l = new userFormat("|", "id|name|hw|sw|middle|kernel");
+                l = new userFormat("|", "id|name|hw|software");
+                break;
+            case 4:
+                l = new userFormat("|", "id|name|middle");
+                break;
+            case 5:
+                l = new userFormat("|", "id|name|kernel");
                 break;
             default:
                 return null;
@@ -388,10 +394,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.neighbor.size() + "|" + ntry.network.size() + "|" + ntry.sequence + "|" + bits.toHexD(ntry.topoSum) + "|" + bits.timeLeft(ntry.time));
                     break;
                 case 2:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.time2str(cfgAll.timeZoneName, ntry.since, 3) + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
                     break;
                 case 3:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware + "|" + ntry.software + "|" + ntry.middleware + "|" + ntry.kernel);
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware + "|" + ntry.software);
+                    break;
+                case 4:
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.middleware);
+                    break;
+                case 5:
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.kernel);
                     break;
             }
         }
@@ -676,12 +688,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
             dat.bierBeg = bierLab[0].label;
         }
         long tim = bits.getTime();
+        dat.since = tim;
         dat.time = tim + lifetime;
         rtrLsrpData old = database.find(dat);
         if (old == null) {
             old = new rtrLsrpData();
             old.fromString(new cmds("", ""));
         }
+        dat.since = old.since;
         dat.sequence = old.sequence + 1;
         dat.uptime = tim - cfgInit.started;
         dat.changesNum = changeNum;

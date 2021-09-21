@@ -2064,6 +2064,14 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showDatabase(3));
             return;
         }
+        if (a.equals("middleware")) {
+            rdr.putStrTab(r.lsrp.showDatabase(4));
+            return;
+        }
+        if (a.equals("kernel")) {
+            rdr.putStrTab(r.lsrp.showDatabase(5));
+            return;
+        }
         if (a.equals("database")) {
             if (cmd.size() < 1) {
                 rdr.putStrTab(r.lsrp.showDatabase(1));

@@ -378,6 +378,8 @@ public class userExec {
         hl.add("5 .            metric            list of metrics");
         hl.add("5 .            interface         list of interfaces");
         hl.add("5 .            software          list of software");
+        hl.add("5 .            middleware        list of middleware");
+        hl.add("5 .            kernel            list of kernel");
         hl.add("5 6            zone-rev          list of reverse zone");
         hl.add("6 7              <name>          name of zone");
         hl.add("7 8,.              <str>         separator");

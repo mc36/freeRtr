@@ -121,6 +121,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public long uptime;
 
     /**
+     * first time
+     */
+    public long since;
+
+    /**
      * number of changes
      */
     public int changesNum;
@@ -199,7 +204,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      *
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
-     * 0x800=toposum, 0x1000=addrs, 0x2000=mgmtip, 0x4000=password
+     * 0x800=toposum, 0x1000=addrs, 0x2000=mgmtip, 0x4000=password, 0x8000=since
      * @return dumped data
      */
     public String dump(int typ) {
@@ -331,6 +336,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x4000) != 0) {
             s += " password=" + password;
         }
+        if ((typ & 0x8000) != 0) {
+            s += " since=" + since;
+        }
         if ((typ & 0x80) != 0) {
             s += " uptime=" + uptime;
         }
@@ -366,8 +374,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         bierLen = 0;
         time = 0;
         uptime = 0;
+        since = 0;
         changesNum = 0;
         changesTim = 0;
+        since = bits.getTime();
         addrIP peerAddr = new addrIP();
         String peerIf = "unknown";
         mgmtIp = new addrIP();
@@ -485,6 +495,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("uptime")) {
                 uptime = bits.str2long(s);
+                continue;
+            }
+            if (a.equals("since")) {
+                since = bits.str2long(s);
                 continue;
             }
             if (a.equals("changenum")) {
@@ -727,9 +741,9 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      * segment routing
      */
     public int segrou;
-    
+
     /**
-      * peer interface
+     * peer interface
      */
     public String perif;
 
