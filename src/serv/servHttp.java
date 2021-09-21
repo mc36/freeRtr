@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.zip.Deflater;
 import pack.packAnyconn;
+import pack.packForti;
 import pack.packHolder;
 import pack.packSstp;
 import pipe.pipeConnect;
@@ -140,6 +141,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! host .* nowebdav",
         "server http .*! host .* nosstp",
         "server http .*! host .* noanyconn",
+        "server http .*! host .* noforti",
         "server http .*! host .* noauthentication"
     };
 
@@ -393,6 +395,11 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " noanyconn");
             } else {
                 l.add(a + " anyconn " + ntry.allowAnyconn.name);
+            }
+            if (ntry.allowForti == null) {
+                l.add(a + " noforti");
+            } else {
+                l.add(a + " forti " + ntry.allowForti.name);
             }
             if (ntry.authenticList != null) {
                 l.add(a + " authentication " + ntry.authenticList.autName);
@@ -775,6 +782,23 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.allowAnyconn = null;
             return false;
         }
+        if (a.equals("forti")) {
+            ntry.allowForti = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry.allowForti == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            if (ntry.allowForti.type != cfgIfc.ifaceType.dialer) {
+                cmd.error("not dialer interface");
+                ntry.allowForti = null;
+                return false;
+            }
+            return false;
+        }
+        if (a.equals("noforti")) {
+            ntry.allowForti = null;
+            return false;
+        }
         if (a.equals("authentication")) {
             cfgAuther lst = cfgAll.autherFind(cmd.word(), null);
             if (lst == null) {
@@ -868,10 +892,13 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("3 .      nobackup                   overwrite uploaded files");
         l.add("3 4      sstp                       allow sstp clients");
         l.add("4 .        <name>                   name of interface");
+        l.add("3 .      nosstp                     forbid sstp client");
         l.add("3 4      anyconn                    allow anyconnect clients");
         l.add("4 .        <name>                   name of interface");
-        l.add("3 .      nosstp                     forbid sstp client");
         l.add("3 .      noanyconn                  forbid anyconnect clients");
+        l.add("3 4      forti                      allow fortinet clients");
+        l.add("4 .        <name>                   name of interface");
+        l.add("3 .      noforti                    forbid fortinet clients");
         l.add("3 .      noconn                     forbid direct connect to server");
         l.add("3 4      authentication             require authentication to access");
         l.add("4 .        <name>                   authentication list");
@@ -1118,6 +1145,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * anyconnect allowed
      */
     public cfgIfc allowAnyconn;
+
+    /**
+     * fortinet allowed
+     */
+    public cfgIfc allowForti;
 
     /**
      * authentication list
@@ -2438,6 +2470,66 @@ class servHttpConn implements Runnable {
         if (gotHost.logging) {
             logger.info(peer + " accessed " + gotUrl.toURL(false, true));
         }
+        if (gotHost.allowForti != null) {
+            if (gotUrl.toPathName().equals("remote/logincheck")) {
+                headers.add("Set-Cookie: SVPNCOOKIE=" + cryBase64.encodeString(gotUrl.getParam("username") + "|" + gotUrl.getParam("credential")) + "; path=/; secure; httponly");
+                sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+                return;
+            }
+            if (gotUrl.toPathName().equals("remote/index")) {
+                sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+                return;
+            }
+            if (gotUrl.toPathName().equals("remote/fortisslvpn")) {
+                sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+                return;
+            }
+            if (!gotUrl.toPathName().equals("remote/fortisslvpn_xml")) {
+                sendRespError(404, "not found");
+                return;
+            }
+            if (gotCook.size() < 1) {
+                sendRespError(401, "unauthorized");
+                return;
+            }
+            String a = gotCook.get(0);
+            int i = a.indexOf("=");
+            if (i < 0) {
+                sendRespError(401, "unauthorized");
+                return;
+            }
+            a = cryBase64.decodeString(a.substring(i + 1, a.length()));
+            if (a == null) {
+                sendRespError(401, "unauthorized");
+                return;
+            }
+            i = a.indexOf("|");
+            if (i < 0) {
+                sendRespError(401, "unauthorized");
+                return;
+            }
+            authResult res = gotHost.authenticList.authUserPass(a.substring(0, i), a.substring(i + 1, a.length()));
+            if (res.result != authResult.authSuccessful) {
+                sendRespError(401, "unauthorized");
+                return;
+            }
+            sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+            for (;;) {
+                a = pipe.lineGet(1);
+                if (debugger.servHttpTraf) {
+                    logger.debug("rx '" + a + "'");
+                }
+                if (a.length() < 1) {
+                    break;
+                }
+            }
+            servHttpForti ntry = new servHttpForti(pipe, this);
+            ntry.ifc = gotHost.allowForti.cloneStart(ntry);
+            ntry.doStart();
+            gotKeep = false;
+            pipe = null;
+            return;
+        }
         if (gotHost.allowAnyconn != null) {
             gotUrl.port = lower.srvPort;
             if (lower.secProto != 0) {
@@ -3149,6 +3241,110 @@ class servHttpAnyconn implements Runnable, ifcDn {
 
     public String toString() {
         return "anyconn";
+    }
+
+}
+
+class servHttpForti implements Runnable, ifcDn {
+
+    public counter cntr = new counter();
+
+    public cfgIfc ifc = null;
+
+    private pipeSide pipe;
+
+    private ifcUp upper = new ifcNull();
+
+    private servHttpConn lower;
+
+    public servHttpForti(pipeSide conn, servHttpConn parent) {
+        lower = parent;
+        pipe = conn;
+    }
+
+    public void doStart() {
+        new Thread(this).start();
+    }
+
+    public void run() {
+        if (ifc.ip4polA != null) {
+            ifc.addr4changed(ifc.addr4, ifc.mask4, ifc.ip4polA);
+        }
+        if (ifc.ip6polA != null) {
+            ifc.addr6changed(ifc.addr6, ifc.mask6, ifc.ip6polA);
+        }
+        try {
+            for (;;) {
+                if (doRound()) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        pipe.setClose();
+        ifc.cloneStop();
+    }
+
+    public boolean doRound() {
+        packForti pckS = new packForti(pipe);
+        packHolder pckB = new packHolder(true, true);
+        if (pckS.recvPack(pckB)) {
+            return true;
+        }
+        pckB.msbPutW(0, 0xff03);
+        pckB.putSkip(2);
+        pckB.merge2beg();
+        upper.recvPack(pckB);
+        return false;
+    }
+
+    public void sendPack(packHolder pck) {
+        cntr.tx(pck);
+        packForti ps = new packForti(pipe);
+        pck.putDefaults();
+        pck.getSkip(2);
+        ps.sendPack(pck);
+    }
+
+    public counter getCounter() {
+        return cntr;
+    }
+
+    public void closeDn() {
+        pipe.setClose();
+    }
+
+    public void flapped() {
+        pipe.setClose();
+    }
+
+    public void setUpper(ifcUp server) {
+        upper = server;
+        upper.setParent(this);
+    }
+
+    public state.states getState() {
+        return state.states.up;
+    }
+
+    public void setFilter(boolean promisc) {
+    }
+
+    public addrType getHwAddr() {
+        return new addrEmpty();
+    }
+
+    public int getMTUsize() {
+        return 1504;
+    }
+
+    public long getBandwidth() {
+        return 8000000;
+    }
+
+    public String toString() {
+        return "forti";
     }
 
 }

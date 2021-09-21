@@ -269,16 +269,6 @@ router logger6 65535
  redistribute bgp6 65535
  exit
 !
-router mobile4 1
- vrf v1
- justadvert bundle9
- exit
-!
-router mobile6 1
- vrf v1
- justadvert bundle9
- exit
-!
 interface loopback0
  description management
  vrf forwarding v1
