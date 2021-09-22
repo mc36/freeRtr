@@ -2751,9 +2751,9 @@ class servP4langConn implements Runnable {
             return;
         }
         vrf.sentMcast = true;
-        lower.sendLine("myaddr4_add 224.0.0.0/4 0 " + vrf.id);
-        lower.sendLine("myaddr4_add 255.255.255.255/32 0 " + vrf.id);
-        lower.sendLine("myaddr6_add ff00::/8 0 " + vrf.id);
+        lower.sendLine("myaddr4_add 224.0.0.0/4 -1 " + vrf.id);
+        lower.sendLine("myaddr4_add 255.255.255.255/32 -1 " + vrf.id);
+        lower.sendLine("myaddr6_add ff00::/8 -1 " + vrf.id);
     }
 
     private void doDynAcc() {
@@ -3955,7 +3955,12 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.add(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0, ntry, "save");
-            lower.sendLine("listen" + afi + "_add " + vrf + " " + prt + " " + ipFwdIface.getNum(ntry.iface) + " " + ntry.locP);
+            servP4langIfc fif = findIfc(ntry.iface);
+            String sif = "-1";
+            if (fif != null) {
+                sif = "" + fif.id;
+            }
+            lower.sendLine("listen" + afi + "_add " + vrf + " " + prt + " " + sif + " " + ntry.locP);
         }
         for (int i = 0; i < done.size(); i++) {
             prtGenServ ntry = done.get(i);
@@ -3964,7 +3969,12 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.del(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
-            lower.sendLine("listen" + afi + "_del " + vrf + " " + prt + " " + ipFwdIface.getNum(ntry.iface) + " " + ntry.locP);
+            servP4langIfc fif = findIfc(ntry.iface);
+            String sif = "-1";
+            if (fif != null) {
+                sif = "" + fif.id;
+            }
+            lower.sendLine("listen" + afi + "_del " + vrf + " " + prt + " " + sif + " " + ntry.locP);
         }
     }
 
@@ -4037,7 +4047,12 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.best.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " -1 " + vrf);
+                servP4langIfc fif = findIfc(ntry.best.iface);
+                String sif = "-1";
+                if (fif != null) {
+                    sif = "" + fif.id;
+                }
+                lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + sif + " " + vrf);
                 continue;
             }
             servP4langNei hop = findNei(ntry.best.iface, ntry.best.nextHop);
@@ -4096,7 +4111,12 @@ class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
             }
             if (ntry.best.nextHop == null) {
-                lower.sendLine("myaddr" + afi + "_del " + a + " -1 " + vrf);
+                servP4langIfc fif = findIfc(ntry.best.iface);
+                String sif = "-1";
+                if (fif != null) {
+                    sif = "" + fif.id;
+                }
+                lower.sendLine("myaddr" + afi + "_del " + a + " " + sif + " " + vrf);
                 continue;
             }
             servP4langNei hop = findNei(ntry.best.iface, ntry.best.nextHop);
