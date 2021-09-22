@@ -574,6 +574,49 @@ public class ipFwdTab {
         trg.add(tabRoute.addType.ecmp, imp, false, true);
     }
 
+    private static void autoRouteTable(tabRoute<addrIP> tab, ipFwdIface ifc) {
+        tabRouteEntry<addrIP> ntry = tab.route(ifc.autRouRtr);
+        if (ntry == null) {
+            return;
+        }
+        if (ntry.best.rouTyp != ifc.autRouTyp) {
+            return;
+        }
+        if (ntry.best.protoNum != ifc.autRouPrt) {
+            return;
+        }
+        if (ntry.best.srcRtr == null) {
+            return;
+        }
+        for (int o = 0; o < tab.size(); o++) {
+            tabRouteEntry<addrIP> prf = tab.get(o);
+            if (prf.best.rouTyp != ntry.best.rouTyp) {
+                continue;
+            }
+            if (prf.best.protoNum != ntry.best.protoNum) {
+                continue;
+            }
+            if (prf.best.srcRtr == null) {
+                continue;
+            }
+            if (prf.best.srcRtr.getSize() != ntry.best.srcRtr.getSize()) {
+                continue;
+            }
+            if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
+                continue;
+            }
+            if (ifc.autRouExcld) {
+                if (prf.prefix.matches(ifc.autRouRtr)) {
+                    continue;
+                }
+            }
+            prf.best.iface = ifc;
+            prf.best.nextHop = ifc.autRouHop.copyBytes();
+            prf.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);
+            prf.reduce2best();
+        }
+    }
+
     /**
      * update route table
      *
@@ -675,50 +718,6 @@ public class ipFwdTab {
         for (int i = 0; i < lower.staticM.size(); i++) {
             rstatic2table(lower.staticM.get(i), tabM, 1);
         }
-        for (int i = 0; i < lower.ifaces.size(); i++) {
-            ipFwdIface ifc = lower.ifaces.get(i);
-            if (!ifc.ready) {
-                continue;
-            }
-            if (ifc.autRouTyp == null) {
-                continue;
-            }
-            tabRouteEntry<addrIP> ntry = tabL.route(ifc.autRouRtr);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry.best.rouTyp != ifc.autRouTyp) {
-                continue;
-            }
-            if (ntry.best.protoNum != ifc.autRouPrt) {
-                continue;
-            }
-            if (ntry.best.srcRtr == null) {
-                continue;
-            }
-            for (int o = 0; o < tabL.size(); o++) {
-                tabRouteEntry<addrIP> prf = tabL.get(o);
-                if (prf.best.rouTyp != ntry.best.rouTyp) {
-                    continue;
-                }
-                if (prf.best.protoNum != ntry.best.protoNum) {
-                    continue;
-                }
-                if (prf.best.srcRtr == null) {
-                    continue;
-                }
-                if (prf.best.srcRtr.getSize() != ntry.best.srcRtr.getSize()) {
-                    continue;
-                }
-                if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
-                    continue;
-                }
-                prf.best.iface = ifc;
-                prf.best.nextHop = ifc.autRouHop.copyBytes();
-                prf.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);
-                prf.reduce2best();
-            }
-        }
         tabU = new tabRoute<addrIP>("locals");
         tabU.mergeFrom(tabRoute.addType.ecmp, tabL, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.routers.size(); i++) {
@@ -756,6 +755,21 @@ public class ipFwdTab {
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
             rstatic2table(lower.staticM.get(i), tabM, 3);
+        }
+        for (int i = 0; i < lower.ifaces.size(); i++) {
+            ipFwdIface ifc = lower.ifaces.get(i);
+            if (!ifc.ready) {
+                continue;
+            }
+            if (ifc.autRouTyp == null) {
+                continue;
+            }
+            if (!ifc.autRouUnic) {
+                autoRouteTable(tabU, ifc);
+            }
+            if (!ifc.autRouMcst) {
+                autoRouteTable(tabM, ifc);
+            }
         }
         if (lower.counterMap != null) {
             for (int i = 0; i < tabU.size(); i++) {

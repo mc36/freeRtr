@@ -321,6 +321,21 @@ public class ipFwdIface extends tabRouteIface {
     public addrIP autRouHop;
 
     /**
+     * autoroute multicast
+     */
+    public boolean autRouMcst;
+
+    /**
+     * autoroute multicast
+     */
+    public boolean autRouUnic;
+
+    /**
+     * autoroute excluded
+     */
+    public boolean autRouExcld;
+
+    /**
      * other interface handler
      */
     public ipFwdIface otherHandler;
@@ -505,7 +520,10 @@ public class ipFwdIface extends tabRouteIface {
         cfgRtr.getRouterList(l, 1, "");
         l.add("4  5        <num>                   process id");
         l.add("5  6          <addr>                source router");
-        l.add("6  .            <addr>              nexthop");
+        l.add("6  7,.          <addr>              nexthop");
+        l.add("7  7,.            multicast         process multicast table");
+        l.add("7  7,.            no-unicast        dont process unicast table");
+        l.add("7  7,.            exclude-match     exclude matching prefix");
         l.add("2 3     pim                         pim configuration options");
         l.add("3 .       enable                    enable pim processing");
         l.add("3 .       bfd                       enable bfd triggered down");
@@ -623,7 +641,17 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, filterIn == null, cmds.tabulator, beg + "access-group-in", "" + filterIn);
         cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
-        cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop);
+        a = "";
+        if (autRouMcst) {
+            a += " multicast";
+        }
+        if (autRouUnic) {
+            a += " no-unicast";
+        }
+        if (autRouExcld) {
+            a += " exclude-match";
+        }
+        cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         l.add(cmds.tabulator + beg + "host-retry " + lower.getCacheRetry());
@@ -797,6 +825,25 @@ public class ipFwdIface extends tabRouteIface {
             autRouHop = new addrIP();
             autRouHop.fromString(cmd.word());
             autRouTyp = cfgRtr.name2num(a);
+            autRouMcst = false;
+            autRouUnic = false;
+            autRouExcld = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("multicast")) {
+                    autRouMcst = true;
+                }
+                if (a.equals("no-unicast")) {
+                    autRouUnic = true;
+                }
+                if (a.equals("exclude-match")) {
+                    autRouExcld = true;
+                }
+            }
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("host-reach")) {
@@ -1324,6 +1371,10 @@ public class ipFwdIface extends tabRouteIface {
             autRouPrt = 0;
             autRouRtr = null;
             autRouHop = null;
+            autRouMcst = false;
+            autRouUnic = false;
+            autRouExcld = false;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("host-reach")) {
