@@ -1,6 +1,7 @@
 package tab;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import ifc.ifcUp;
 import ip.ipFwd;
 import ip.ipFwdIface;
@@ -68,6 +69,11 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     public boolean needLocal;
 
     /**
+     * created
+     */
+    public long created;
+    
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -100,6 +106,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     public tabLabelNtry(int lab) {
         label = lab;
         setFwdDrop(key);
+        created = bits.getTime();
     }
 
     /**
@@ -149,6 +156,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         }
         n.needLocal = needLocal;
         n.cntr = cntr;
+        n.created = created;
         n.pweIfc = pweIfc;
         n.pweDel = pweDel;
         n.pweAdd = pweAdd;
@@ -248,6 +256,8 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     public userFormat getShow() {
         userFormat lst = new userFormat("|", "category|value");
         lst.add("label|" + label);
+        lst.add("created|" + bits.time2str(cfgAll.timeZoneName, created, 3));
+        lst.add("lasted|" + bits.timePast(created));
         String s;
         switch (key) {
             case 1:

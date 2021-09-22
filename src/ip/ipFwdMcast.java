@@ -1,11 +1,13 @@
 package ip;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import java.util.Comparator;
 import pack.packHolder;
 import tab.tabGen;
 import tab.tabRtrmapN;
 import user.userFormat;
+import util.bits;
 import util.counter;
 
 /**
@@ -111,6 +113,7 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
     public ipFwdMcast(addrIP grp, addrIP src) {
         group = grp.copyBytes();
         source = src.copyBytes();
+        created = bits.getTime();
     }
 
     /**
@@ -226,6 +229,8 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         res.add("source|" + source);
         res.add("group|" + group);
         res.add("rd|" + tabRtrmapN.rd2string(rd));
+        res.add("created|" + bits.time2str(cfgAll.timeZoneName, created, 3));
+        res.add("lasted|" + bits.timePast(created));
         res.add("iface|" + iface);
         res.add("upstream|" + upstream);
         res.add("local|" + local);
