@@ -588,25 +588,34 @@ public class ipFwdTab {
         if (ntry.best.srcRtr == null) {
             return;
         }
-        for (int o = 0; o < tab.size(); o++) {
-            tabRouteEntry<addrIP> prf = tab.get(o);
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf.best.rouTyp != ntry.best.rouTyp) {
                 continue;
             }
             if (prf.best.protoNum != ntry.best.protoNum) {
                 continue;
             }
-            if (prf.best.srcRtr == null) {
-                continue;
-            }
-            if (prf.best.srcRtr.getSize() != ntry.best.srcRtr.getSize()) {
-                continue;
-            }
-            if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
-                continue;
-            }
             if (ifc.autRouExcld) {
                 if (prf.prefix.matches(ifc.autRouRtr)) {
+                    continue;
+                }
+            }
+            if (ntry.best.oldHop != null) {
+                if (prf.best.oldHop == null) {
+                    continue;
+                }
+                if (prf.best.oldHop.compare(prf.best.oldHop, ntry.best.oldHop) != 0) {
+                    continue;
+                }
+            } else {
+                if (prf.best.srcRtr == null) {
+                    continue;
+                }
+                if (prf.best.srcRtr.getSize() != ntry.best.srcRtr.getSize()) {
+                    continue;
+                }
+                if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
                     continue;
                 }
             }

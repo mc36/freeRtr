@@ -12301,3 +12301,5 @@ qc pass: lsrp database authentication
 qc pass: pvrp no authentication
 ---------------------------------- 2021-09-21 18:54:35
 qc pass: ppp over forti
+---------------------------------- 2021-09-22 22:07:43
+qc pass: bgp autoroute
