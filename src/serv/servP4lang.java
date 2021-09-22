@@ -42,6 +42,7 @@ import pipe.pipeSide;
 import prt.prtDccp;
 import prt.prtGen;
 import prt.prtGenConn;
+import prt.prtGenServ;
 import prt.prtLudp;
 import prt.prtSctp;
 import prt.prtServS;
@@ -50,6 +51,7 @@ import prt.prtUdp;
 import rtr.rtrBgpEvpnPeer;
 import sec.secTransform;
 import tab.tabAceslstN;
+import tab.tabConnect;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
@@ -895,6 +897,14 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
 
+    public tabConnect<addrIP, prtGenServ> udp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+
+    public tabConnect<addrIP, prtGenServ> udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+
+    public tabConnect<addrIP, prtGenServ> tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+
+    public tabConnect<addrIP, prtGenServ> tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+
     public tabGen<ipFwdMcast> mroutes4 = new tabGen<ipFwdMcast>();
 
     public tabGen<ipFwdMcast> mroutes6 = new tabGen<ipFwdMcast>();
@@ -955,6 +965,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
         pbrCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         flwSpc4 = new tabListing<tabAceslstN<addrIP>, addrIP>();
         flwSpc6 = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        udp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+        udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+        tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+        tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
     }
 
 }
@@ -1794,6 +1808,10 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
             doVrf(vrf);
+            doSockets(false, vrf.id, vrf.vrf.udp4.getProtoNum(), vrf.vrf.udp4.srvrs, vrf.udp4);
+            doSockets(true, vrf.id, vrf.vrf.udp6.getProtoNum(), vrf.vrf.udp6.srvrs, vrf.udp6);
+            doSockets(false, vrf.id, vrf.vrf.tcp4.getProtoNum(), vrf.vrf.tcp4.srvrs, vrf.tcp4);
+            doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
             doMroutes(true, vrf.id, vrf.vrf.fwd4.groups, vrf.mroutes4);
@@ -3920,6 +3938,33 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.del(ntry);
+        }
+    }
+
+    private void doSockets(boolean ipv4, int vrf, int prt, tabConnect<addrIP, prtGenServ> need, tabConnect<addrIP, prtGenServ> done) {
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
+        for (int i = 0; i < need.size(); i++) {
+            prtGenServ ntry = need.get(i);
+            prtGenServ old = done.get(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
+            if (old != null) {
+                continue;
+            }
+            done.add(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0, ntry, "save");
+            lower.sendLine("listen" + afi + "_add " + vrf + " " + prt + " " + ipFwdIface.getNum(ntry.iface) + " " + ntry.locP);
+        }
+        for (int i = 0; i < done.size(); i++) {
+            prtGenServ ntry = done.get(i);
+            prtGenServ old = need.get(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
+            if (old != null) {
+                continue;
+            }
+            done.del(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
+            lower.sendLine("listen" + afi + "_del " + vrf + " " + prt + " " + ipFwdIface.getNum(ntry.iface) + " " + ntry.locP);
         }
     }
 

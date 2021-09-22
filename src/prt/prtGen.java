@@ -33,17 +33,17 @@ public abstract class prtGen implements ipPrt {
     /**
      * forwarding core to use
      */
-    protected ipFwd fwdCore;
+    public ipFwd fwdCore;
 
     /**
      * connection table
      */
-    protected tabConnect<addrIP, prtGenConn> clnts = new tabConnect<addrIP, prtGenConn>(new addrIP(), "connections");
+    public tabConnect<addrIP, prtGenConn> clnts = new tabConnect<addrIP, prtGenConn>(new addrIP(), "connections");
 
     /**
      * listener table
      */
-    protected tabConnect<addrIP, prtGenServ> srvrs = new tabConnect<addrIP, prtGenServ>(new addrIP(), "listeners");
+    public tabConnect<addrIP, prtGenServ> srvrs = new tabConnect<addrIP, prtGenServ>(new addrIP(), "listeners");
 
     /**
      * list servers
