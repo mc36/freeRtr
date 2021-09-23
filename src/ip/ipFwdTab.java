@@ -597,7 +597,7 @@ public class ipFwdTab {
                 continue;
             }
             if (ifc.autRouExcld) {
-                if (prf.prefix.matches(ifc.autRouRtr)) {
+                if (prf.prefix.compare(prf.prefix, ntry.prefix) == 0) {
                     continue;
                 }
             }
