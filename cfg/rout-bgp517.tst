@@ -37,8 +37,8 @@ int ser2
  vrf for v1
  ipv4 addr 9.9.8.1 255.255.255.0
  ipv6 addr 9998::1 ffff::
- ipv4 autoroute bgp4 1 2.2.2.2 9.9.8.2
- ipv6 autoroute bgp6 1 4321::2 9998::2
+ ipv4 autoroute bgp4 1 2.2.2.2 9.9.8.2 recur
+ ipv6 autoroute bgp6 1 4321::2 9998::2 recur
  exit
 router bgp4 1
  vrf v1
@@ -95,8 +95,8 @@ int ser2
  vrf for v1
  ipv4 addr 9.9.8.2 255.255.255.0
  ipv6 addr 9998::2 ffff::
- ipv4 autoroute bgp4 1 2.2.2.1 9.9.8.1
- ipv6 autoroute bgp6 1 4321::1 9998::1
+ ipv4 autoroute bgp4 1 2.2.2.1 9.9.8.1 recur
+ ipv6 autoroute bgp6 1 4321::1 9998::1 recur
  exit
 router bgp4 1
  vrf v1

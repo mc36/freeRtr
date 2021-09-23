@@ -52,6 +52,7 @@ import rtr.rtrBgpEvpnPeer;
 import sec.secTransform;
 import tab.tabAceslstN;
 import tab.tabConnect;
+import tab.tabConnectEntry;
 import tab.tabGen;
 import tab.tabIntMatcher;
 import tab.tabLabel;
@@ -3948,33 +3949,28 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        for (int i = 0; i < need.size(); i++) {
-            prtGenServ ntry = need.get(i);
-            prtGenServ old = done.get(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
-            if (old != null) {
-                continue;
-            }
-            done.add(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0, ntry, "save");
-            servP4langIfc fif = findIfc(ntry.iface);
-            String sif = "-1";
-            if (fif != null) {
-                sif = "" + fif.id;
-            }
-            lower.sendLine("listen" + afi + "_add " + vrf + " " + prt + " " + sif + " " + ntry.locP);
-        }
         for (int i = 0; i < done.size(); i++) {
-            prtGenServ ntry = done.get(i);
-            prtGenServ old = need.get(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
+            tabConnectEntry<addrIP, prtGenServ> ntry = done.read(i);
+            prtGenServ old = need.get(ntry.iface, null, ntry.local, ntry.remote);
             if (old != null) {
                 continue;
             }
-            done.del(ipFwdIface.getNum(ntry.iface), null, ntry.locP, 0);
+            done.del(ntry.iface, null, ntry.local, ntry.remote);
             servP4langIfc fif = findIfc(ntry.iface);
             String sif = "-1";
             if (fif != null) {
                 sif = "" + fif.id;
             }
-            lower.sendLine("listen" + afi + "_del " + vrf + " " + prt + " " + sif + " " + ntry.locP);
+            lower.sendLine("socket" + afi + "_del " + vrf + " " + prt + " -1 " + ntry.local + " " + ntry.remote);
+        }
+        for (int i = 0; i < need.size(); i++) {
+            tabConnectEntry<addrIP, prtGenServ> ntry = need.read(i);
+            prtGenServ old = done.get(ntry.iface, null, ntry.local, ntry.remote);
+            if (old != null) {
+                continue;
+            }
+            done.add(ntry.iface, null, ntry.local, ntry.remote, new prtGenServ(), "save");
+            lower.sendLine("socket" + afi + "_add " + vrf + " " + prt + " -1 " + ntry.local + " " + ntry.remote);
         }
     }
 

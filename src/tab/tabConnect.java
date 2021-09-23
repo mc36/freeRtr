@@ -115,6 +115,23 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
         return conns.get(i).data;
     }
 
+
+    /**
+     * read one entry
+     *
+     * @param i index
+     * @return value, null if not found
+     */
+    public tabConnectEntry<Ta, Td> read(int i) {
+        if (i < 0) {
+            return null;
+        }
+        if (i > conns.size()) {
+            return null;
+        }
+        return conns.get(i);
+    }
+
     /**
      * get number of entries
      *

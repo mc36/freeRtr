@@ -727,6 +727,24 @@ public class ipFwdTab {
         for (int i = 0; i < lower.staticM.size(); i++) {
             rstatic2table(lower.staticM.get(i), tabM, 1);
         }
+        for (int i = 0; i < lower.ifaces.size(); i++) {
+            ipFwdIface ifc = lower.ifaces.get(i);
+            if (!ifc.ready) {
+                continue;
+            }
+            if (ifc.autRouTyp == null) {
+                continue;
+            }
+            if (ifc.autRouRec) {
+                continue;
+            }
+            if (!ifc.autRouUnic) {
+                autoRouteTable(tabL, ifc);
+            }
+            if (ifc.autRouMcst) {
+                autoRouteTable(tabM, ifc);
+            }
+        }
         tabU = new tabRoute<addrIP>("locals");
         tabU.mergeFrom(tabRoute.addType.ecmp, tabL, null, true, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.routers.size(); i++) {
@@ -773,10 +791,13 @@ public class ipFwdTab {
             if (ifc.autRouTyp == null) {
                 continue;
             }
+            if (!ifc.autRouRec) {
+                continue;
+            }
             if (!ifc.autRouUnic) {
                 autoRouteTable(tabU, ifc);
             }
-            if (!ifc.autRouMcst) {
+            if (ifc.autRouMcst) {
                 autoRouteTable(tabM, ifc);
             }
         }

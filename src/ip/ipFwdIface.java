@@ -321,6 +321,11 @@ public class ipFwdIface extends tabRouteIface {
     public addrIP autRouHop;
 
     /**
+     * autoroute recursive
+     */
+    public boolean autRouRec;
+
+    /**
      * autoroute multicast
      */
     public boolean autRouMcst;
@@ -521,6 +526,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("4  5        <num>                   process id");
         l.add("5  6          <addr>                source router");
         l.add("6  7,.          <addr>              nexthop");
+        l.add("7  7,.            recursive         process bgp routes");
         l.add("7  7,.            multicast         process multicast table");
         l.add("7  7,.            no-unicast        dont process unicast table");
         l.add("7  7,.            exclude-match     exclude matching prefix");
@@ -642,6 +648,9 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, filterOut == null, cmds.tabulator, beg + "access-group-out", "" + filterOut);
         cmds.cfgLine(l, inspect == null, cmds.tabulator, beg + "inspect", "" + inspect);
         a = "";
+        if (autRouRec) {
+            a += " recursive";
+        }
         if (autRouMcst) {
             a += " multicast";
         }
@@ -825,6 +834,7 @@ public class ipFwdIface extends tabRouteIface {
             autRouHop = new addrIP();
             autRouHop.fromString(cmd.word());
             autRouTyp = cfgRtr.name2num(a);
+            autRouRec = false;
             autRouMcst = false;
             autRouUnic = false;
             autRouExcld = false;
@@ -833,14 +843,21 @@ public class ipFwdIface extends tabRouteIface {
                 if (a.length() < 1) {
                     break;
                 }
+                if (a.equals("recursive")) {
+                    autRouRec = true;
+                    continue;
+                }
                 if (a.equals("multicast")) {
                     autRouMcst = true;
+                    continue;
                 }
                 if (a.equals("no-unicast")) {
                     autRouUnic = true;
+                    continue;
                 }
                 if (a.equals("exclude-match")) {
                     autRouExcld = true;
+                    continue;
                 }
             }
             fwd.routerStaticChg();
@@ -1371,6 +1388,7 @@ public class ipFwdIface extends tabRouteIface {
             autRouPrt = 0;
             autRouRtr = null;
             autRouHop = null;
+            autRouRec = false;
             autRouMcst = false;
             autRouUnic = false;
             autRouExcld = false;
