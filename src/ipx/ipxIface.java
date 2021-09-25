@@ -13,7 +13,8 @@ import util.counter;
 import util.state.states;
 
 /**
- *
+ * ipx interface
+ * 
  * @author matecsaba
  */
 public class ipxIface extends tabRouteIface implements ifcUp {

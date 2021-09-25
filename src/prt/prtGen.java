@@ -58,7 +58,6 @@ public abstract class prtGen implements ipPrt {
     /**
      * list connections
      *
-     * @param f fowarder
      * @param l list to update
      * @param b beginning to use
      */

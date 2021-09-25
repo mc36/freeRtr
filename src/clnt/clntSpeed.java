@@ -10,6 +10,7 @@ import util.bits;
 import util.cmds;
 
 /**
+ * speed test client
  *
  * @author matecsaba
  */
