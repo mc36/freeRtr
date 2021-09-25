@@ -1941,6 +1941,7 @@ void doStatRound(FILE *commands, int round) {
 
 int doConsoleCommand(unsigned char*buf) {
     unsigned char buf2[1024];
+    unsigned char buf3[1024];
     switch (buf[0]) {
     case 0:
         break;
@@ -2001,9 +2002,9 @@ int doConsoleCommand(unsigned char*buf) {
         printf("        id        vrf       port              smac              dmac\n");
         for (int i=0; i<neigh_table.size; i++) {
             struct neigh_entry *ntry = table_get(&neigh_table, i);
-            mac2str(ntry->smac, buf);
-            mac2str(ntry->dmac, buf2);
-            printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf, &buf2);
+            mac2str(ntry->smac, buf2);
+            mac2str(ntry->dmac, buf3);
+            printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf2, &buf3);
         }
         break;
     case 'b':

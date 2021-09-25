@@ -1095,6 +1095,9 @@ ipv4_rx:
         if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
         bufT = bufD[bufP + 0] & 0xf;
         if (bufT < 5) goto drop;
+        ttl = get16msb(bufD, bufP + 2) + bufP - preBuff;
+        if (ttl > bufS) goto drop;
+        bufS = ttl;
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff;
         acl4_ntry.protV = bufD[bufP + 9];
@@ -1377,6 +1380,9 @@ ipv4_tx:
         route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
         if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
+        ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff;
+        if (ttl > bufS) goto drop;
+        bufS = ttl;
         bufT = bufP + 40;
         acl6_ntry.protV = bufD[bufP + 6];
         if (acl6_ntry.protV == 44) {
