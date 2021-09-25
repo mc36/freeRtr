@@ -3961,7 +3961,7 @@ class servP4langConn implements Runnable {
             if (fif != null) {
                 sif = "" + fif.id;
             }
-            lower.sendLine("socket" + afi + "_del " + vrf + " " + prt + " -1 " + ntry.local + " " + ntry.remote);
+            lower.sendLine("socket" + afi + "_del " + vrf + " " + prt + " " + sif + " " + ntry.local + " " + ntry.remote);
         }
         for (int i = 0; i < need.size(); i++) {
             tabConnectEntry<addrIP, prtGenServ> ntry = need.read(i);
@@ -3970,7 +3970,12 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.add(ntry.iface, null, ntry.local, ntry.remote, new prtGenServ(), "save");
-            lower.sendLine("socket" + afi + "_add " + vrf + " " + prt + " -1 " + ntry.local + " " + ntry.remote);
+            servP4langIfc fif = findIfc(ntry.iface);
+            String sif = "-1";
+            if (fif != null) {
+                sif = "" + fif.id;
+            }
+            lower.sendLine("socket" + afi + "_add " + vrf + " " + prt + " " + sif + " " + ntry.local + " " + ntry.remote);
         }
     }
 

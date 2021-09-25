@@ -903,7 +903,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return prf;
     }
 
-    private int srvCountClients(int ifc, int prt, boolean ipv4, addrIP adr) {
+    private int srvCountPrtClients(ipFwdIface ifc, int prt, boolean ipv4, addrIP adr) {
         if (ipv4) {
             return srvVrf.fwd4.protos.countClients(ifc, prt, adr);
         } else {
@@ -911,7 +911,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
     }
 
-    private int srvCountSubnet(boolean ipv4, int ifc, int prt, addrIP adr) {
+    private int srvCountPrtSubnet(boolean ipv4, ipFwdIface ifc, int prt, addrIP adr) {
         addrPrefix<addrIP> prf = srvGetSubnet(ipv4, adr);
         if (ipv4) {
             return srvVrf.fwd4.protos.countSubnet(ifc, prt, prf);
@@ -1166,7 +1166,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return true;
         }
         if (srvTotLim > 0) {
-            if (srvCountClients(ifc.ifwNum, pck.IPprt, ipv4, null) >= srvTotLim) {
+            if (srvCountPrtClients(ifc, pck.IPprt, ipv4, null) >= srvTotLim) {
                 if (srvLogDrop) {
                     logger.info("total limit dropped " + pck.IPsrc + " " + pck.IPprt);
                 }
@@ -1174,7 +1174,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
         }
         if (srvPerLim > 0) {
-            if (srvCountClients(ifc.ifwNum, pck.IPprt, ipv4, pck.IPsrc) >= srvPerLim) {
+            if (srvCountPrtClients(ifc, pck.IPprt, ipv4, pck.IPsrc) >= srvPerLim) {
                 if (srvLogDrop) {
                     logger.info("peer limit dropped " + pck.IPsrc + " " + pck.IPprt);
                 }
@@ -1183,7 +1183,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
         }
         if (srvNetLim > 0) {
-            if (srvCountSubnet(ipv4, ifc.ifwNum, pck.IPprt, pck.IPsrc) >= srvNetLim) {
+            if (srvCountPrtSubnet(ipv4, ifc, pck.IPprt, pck.IPsrc) >= srvNetLim) {
                 if (srvLogDrop) {
                     logger.info("subnet limit dropped " + pck.IPsrc + " " + pck.IPprt);
                 }

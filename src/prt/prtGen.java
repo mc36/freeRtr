@@ -48,12 +48,11 @@ public abstract class prtGen implements ipPrt {
     /**
      * list servers
      *
-     * @param f fowarder
      * @param l list to update
      * @param b beginning to use
      */
-    public void listServers(ipFwd f, userFormat l, String b) {
-        srvrs.dump(f, l, b);
+    public void listServers(userFormat l, String b) {
+        srvrs.dump(l, b);
     }
 
     /**
@@ -63,8 +62,8 @@ public abstract class prtGen implements ipPrt {
      * @param l list to update
      * @param b beginning to use
      */
-    public void listConnects(ipFwd f, userFormat l, String b) {
-        clnts.dump(f, l, b);
+    public void listConnects(userFormat l, String b) {
+        clnts.dump(l, b);
     }
 
     /**
@@ -176,7 +175,7 @@ public abstract class prtGen implements ipPrt {
      */
     public void closeUp(ipFwdIface ifc) {
         for (;;) {
-            prtGenConn cln = clnts.delNext(ifc.ifwNum, null, 0, 0);
+            prtGenConn cln = clnts.delNext(ifc, null, 0, 0);
             if (cln == null) {
                 break;
             }
@@ -184,7 +183,7 @@ public abstract class prtGen implements ipPrt {
             cln.deleteImmediately();
         }
         for (;;) {
-            prtGenServ prt = srvrs.delNext(ifc.ifwNum, null, 0, 0);
+            prtGenServ prt = srvrs.delNext(ifc, null, 0, 0);
             if (prt == null) {
                 break;
             }
@@ -253,7 +252,7 @@ public abstract class prtGen implements ipPrt {
         if (debugger.prtGenTraf) {
             logger.debug("del ifc=" + locI + " prt=" + locP);
         }
-        prtGenServ ntry = srvrs.del(ipFwdIface.getNum(locI), remA, locP, remP);
+        prtGenServ ntry = srvrs.del(locI, remA, locP, remP);
         if (ntry == null) {
             return true;
         }
@@ -308,7 +307,7 @@ public abstract class prtGen implements ipPrt {
      * @return false on success, true on error
      */
     public boolean connectStop(ipFwdIface locI, int locP, addrIP remA, int remP) {
-        prtGenConn cln = clnts.get(locI.ifwNum, remA, locP, remP);
+        prtGenConn cln = clnts.get(locI, remA, locP, remP);
         if (cln == null) {
             return true;
         }
@@ -344,7 +343,7 @@ public abstract class prtGen implements ipPrt {
         if (debugger.prtGenTraf) {
             logger.debug("add " + ntry);
         }
-        return srvrs.add(ipFwdIface.getNum(locI), remA, locP, remP, ntry, ntry.name);
+        return srvrs.add(locI, remA, locP, remP, ntry, ntry.name);
     }
 
     private prtGenConn anybodyConnect(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String nam, String pwd, int ttl) {
@@ -360,7 +359,7 @@ public abstract class prtGen implements ipPrt {
         if (locP < 1) {
             for (;;) {
                 locP = getRandomPortNum();
-                if (clnts.get(locI.ifwNum, remA, locP, remP) == null) {
+                if (clnts.get(locI, remA, locP, remP) == null) {
                     break;
                 }
             }
@@ -391,7 +390,7 @@ public abstract class prtGen implements ipPrt {
      * @return connection handle
      */
     protected prtGenConn findOneConn(ipFwdIface rxIfc, packHolder pck) {
-        return clnts.get(rxIfc.ifwNum, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
+        return clnts.get(rxIfc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
     }
 
     /**
@@ -404,28 +403,28 @@ public abstract class prtGen implements ipPrt {
     protected prtGenConn connectionAccept(ipFwdIface rxIfc, packHolder pck) {
         prtGenServ srv = null;
         if (srv == null) {
-            srv = srvrs.get(rxIfc.ifwNum, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
+            srv = srvrs.get(rxIfc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
         }
         if (srv == null) {
-            srv = srvrs.get(0, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
+            srv = srvrs.get(null, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
         }
         if (srv == null) {
-            srv = srvrs.get(rxIfc.ifwNum, pck.IPsrc, pck.UDPtrg, 0);
+            srv = srvrs.get(rxIfc, pck.IPsrc, pck.UDPtrg, 0);
         }
         if (srv == null) {
-            srv = srvrs.get(0, pck.IPsrc, pck.UDPtrg, 0);
+            srv = srvrs.get(null, pck.IPsrc, pck.UDPtrg, 0);
         }
         if (srv == null) {
-            srv = srvrs.get(rxIfc.ifwNum, null, pck.UDPtrg, pck.UDPsrc);
+            srv = srvrs.get(rxIfc, null, pck.UDPtrg, pck.UDPsrc);
         }
         if (srv == null) {
-            srv = srvrs.get(0, null, pck.UDPtrg, pck.UDPsrc);
+            srv = srvrs.get(null, null, pck.UDPtrg, pck.UDPsrc);
         }
         if (srv == null) {
-            srv = srvrs.get(rxIfc.ifwNum, null, pck.UDPtrg, 0);
+            srv = srvrs.get(rxIfc, null, pck.UDPtrg, 0);
         }
         if (srv == null) {
-            srv = srvrs.get(0, null, pck.UDPtrg, 0);
+            srv = srvrs.get(null, null, pck.UDPtrg, 0);
         }
         if (srv == null) {
             cntr.drop(pck, counter.reasons.badTrgPort);
@@ -538,7 +537,7 @@ public abstract class prtGen implements ipPrt {
      * @return number of clients
      */
     public int countClients(ipFwdIface ifc, int prt, addrIP adr) {
-        return clnts.countClients(ifc.ifwNum, prt, adr);
+        return clnts.countClients(ifc, prt, adr);
     }
 
     /**
@@ -550,7 +549,7 @@ public abstract class prtGen implements ipPrt {
      * @return number of clients
      */
     public int countSubnet(ipFwdIface ifc, int prt, addrPrefix<addrIP> prf) {
-        return clnts.countSubnet(ifc.ifwNum, prt, prf);
+        return clnts.countSubnet(ifc, prt, prf);
     }
 
     /**
@@ -563,7 +562,7 @@ public abstract class prtGen implements ipPrt {
      * @param cntr counter
      */
     public void counterUpdate(ipFwdIface ifc, addrIP adr, int rem, int loc, counter cntr) {
-        prtGenConn ntry = clnts.get(ifc.ifwNum, adr, loc, rem);
+        prtGenConn ntry = clnts.get(ifc, adr, loc, rem);
         if (ntry == null) {
             return;
         }

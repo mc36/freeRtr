@@ -2,7 +2,6 @@ package tab;
 
 import addr.addrPrefix;
 import addr.addrType;
-import ip.ipFwd;
 import user.userFormat;
 import util.debugger;
 import util.logger;
@@ -47,7 +46,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
     /**
      * add one entry to this table
      *
-     * @param locInt local interface, 0 means all
+     * @param locInt local interface, null means all
      * @param remAdr remote address, null means all
      * @param locPrt local port, 0 means all
      * @param remPrt remote port, 0 means all
@@ -56,7 +55,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @return false if successful, true if already found
      */
     @SuppressWarnings("unchecked")
-    public boolean add(int locInt, Ta remAdr, int locPrt, int remPrt, Td data, String name) {
+    public boolean add(tabRouteIface locInt, Ta remAdr, int locPrt, int remPrt, Td data, String name) {
         if (data == null) {
             return true;
         }
@@ -70,7 +69,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
         ntry.name = name;
         ntry.data = data;
         if (debugger.tabConnectEvnt) {
-            logger.debug("adding " + ntry.dump(null));
+            logger.debug("adding " + ntry.dump());
         }
         conns.add(ntry);
         return false;
@@ -79,13 +78,13 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
     /**
      * read one entry
      *
-     * @param locInt local interface, 0 means all
+     * @param locInt local interface, null means all
      * @param remAdr remote address, null means all
      * @param locPrt local port, 0 means all
      * @param remPrt remote port, 0 means all
      * @return stored value, null if not found
      */
-    public Td get(int locInt, Ta remAdr, int locPrt, int remPrt) {
+    public Td get(tabRouteIface locInt, Ta remAdr, int locPrt, int remPrt) {
         tabConnectEntry<Ta, Td> ntry = new tabConnectEntry<Ta, Td>();
         ntry.iface = locInt;
         ntry.peer = remAdr;
@@ -144,19 +143,19 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
     /**
      * delete one entry
      *
-     * @param locInt local interface, 0 means all
+     * @param locInt local interface, null means all
      * @param remAdr remote address, null means all
      * @param locPrt local port, 0 means all
      * @param remPrt remote port, 0 means all
      * @return deleted value, null if not found
      */
-    public Td delNext(int locInt, Ta remAdr, int locPrt, int remPrt) {
+    public Td delNext(tabRouteIface locInt, Ta remAdr, int locPrt, int remPrt) {
         for (int i = 0; i < conns.size(); i++) {
             tabConnectEntry<Ta, Td> ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (locInt > 0) {
+            if (locInt !=null) {
                 if (locInt != ntry.iface) {
                     continue;
                 }
@@ -197,14 +196,14 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @param remPrt remote port, 0 means all
      * @return deleted value, null if not found
      */
-    public Td del(int locInt, Ta remAdr, int locPrt, int remPrt) {
+    public Td del(tabRouteIface locInt, Ta remAdr, int locPrt, int remPrt) {
         tabConnectEntry<Ta, Td> ntry = new tabConnectEntry<Ta, Td>();
         ntry.iface = locInt;
         ntry.peer = remAdr;
         ntry.local = locPrt;
         ntry.remote = remPrt;
         if (debugger.tabConnectEvnt) {
-            logger.debug("del " + ntry.dump(null));
+            logger.debug("del " + ntry.dump());
         }
         ntry = conns.del(ntry);
         if (ntry == null) {
@@ -216,13 +215,12 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
     /**
      * dump part of this table
      *
-     * @param f fowarder
      * @param l list to update
      * @param b beginning to use
      */
-    public void dump(ipFwd f, userFormat l, String b) {
+    public void dump(userFormat l, String b) {
         for (int i = 0; i < conns.size(); i++) {
-            l.add(b + "|" + conns.get(i).dump(f));
+            l.add(b + "|" + conns.get(i).dump());
         }
     }
 
@@ -234,7 +232,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @param adr remote address
      * @return number of clients
      */
-    public int countClients(int ifc, int prt, Ta adr) {
+    public int countClients(tabRouteIface ifc, int prt, Ta adr) {
         int res = 0;
         for (int i = 0; i < conns.size(); i++) {
             tabConnectEntry<Ta, Td> ntry = conns.get(i);
@@ -267,7 +265,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @param prf remote prefix
      * @return number of clients
      */
-    public int countSubnet(int ifc, int prt, addrPrefix<Ta> prf) {
+    public int countSubnet(tabRouteIface ifc, int prt, addrPrefix<Ta> prf) {
         int res = 0;
         for (int i = 0; i < conns.size(); i++) {
             tabConnectEntry<Ta, Td> ntry = conns.get(i);

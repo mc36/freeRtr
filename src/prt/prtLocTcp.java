@@ -117,16 +117,16 @@ public class prtLocTcp implements Runnable {
         int srcP = clnt.getPort();
         prtGenServ srv = null;
         if (srv == null) {
-            srv = proto.srvrs.get(0, srcA, port, srcP);
+            srv = proto.srvrs.get(null, srcA, port, srcP);
         }
         if (srv == null) {
-            srv = proto.srvrs.get(0, srcA, port, 0);
+            srv = proto.srvrs.get(null, srcA, port, 0);
         }
         if (srv == null) {
-            srv = proto.srvrs.get(0, null, port, srcP);
+            srv = proto.srvrs.get(null, null, port, srcP);
         }
         if (srv == null) {
-            srv = proto.srvrs.get(0, null, port, 0);
+            srv = proto.srvrs.get(null, null, port, 0);
         }
         if (srv == null) {
             logger.warn("server not found on port " + port + " from " + srcA + " " + srcP);

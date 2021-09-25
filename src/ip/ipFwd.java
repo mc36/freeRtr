@@ -973,7 +973,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ifc.ready = false;
         for (;;) {
-            ipFwdProto prt = protos.delNext(ifc.ifwNum, null, 0, 0);
+            ipFwdProto prt = protos.delNext(ifc, null, 0, 0);
             if (prt == null) {
                 break;
             }
@@ -1012,7 +1012,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (prt == null) {
                 continue;
             }
-            if ((prt.iface == 0) || (prt.iface == ifc.ifwNum)) {
+            if ((prt.iface == null) || (prt.iface == ifc)) {
                 prt.upper.setState(ifc, stat);
             }
         }
@@ -1208,22 +1208,14 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @return true if error happened, false if success
      */
     public boolean protoAdd(ipPrt upper, ipFwdIface ifc, addrIP trg) {
-        int iface = 0;
-        if (ifc != null) {
-            ifc = ifaces.find(ifc);
-            if (ifc == null) {
-                return true;
-            }
-            iface = ifc.ifwNum;
-        }
         if (debugger.ipFwdEvnt) {
-            logger.debug("add proto=" + upper + " iface=" + iface + " trg=" + trg);
+            logger.debug("add proto=" + upper + " iface=" + ifc + " trg=" + trg);
         }
         ipFwdProto ntry = new ipFwdProto();
         ntry.proto = upper.getProtoNum();
-        ntry.iface = iface;
+        ntry.iface = ifc;
         ntry.upper = upper;
-        return protos.add(iface, trg, ntry.proto, ntry.proto, ntry, "" + upper);
+        return protos.add(ifc, trg, ntry.proto, ntry.proto, ntry, "" + upper);
     }
 
     /**
@@ -1234,13 +1226,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param trg target address, null means all
      */
     public void protoDel(ipPrt upper, ipFwdIface ifc, addrIP trg) {
-        int iface = ipFwdIface.getNum(ifc);
         if (debugger.ipFwdEvnt) {
-            logger.debug("del proto=" + upper + " iface=" + iface + " trg=" + trg);
+            logger.debug("del proto=" + upper + " iface=" + ifc + " trg=" + trg);
         }
         int i = upper.getProtoNum();
         for (;;) {
-            ipFwdProto prt = protos.delNext(iface, trg, i, i);
+            ipFwdProto prt = protos.delNext(ifc, trg, i, i);
             if (prt == null) {
                 break;
             }
@@ -1268,16 +1259,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipFwdProto prt = null;
         if (prt == null) {
-            prt = protos.get(lower.ifwNum, pck.IPsrc, pck.IPprt, pck.IPprt);
+            prt = protos.get(lower, pck.IPsrc, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(0, pck.IPsrc, pck.IPprt, pck.IPprt);
+            prt = protos.get(null, pck.IPsrc, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(lower.ifwNum, null, pck.IPprt, pck.IPprt);
+            prt = protos.get(lower, null, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(0, null, pck.IPprt, pck.IPprt);
+            prt = protos.get(null, null, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
             doDrop(pck, lower, counter.reasons.badProto);
@@ -1303,16 +1294,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipFwdProto prt = null;
         if (prt == null) {
-            prt = protos.get(lower.ifwNum, pck.IPsrc, pck.IPprt, pck.IPprt);
+            prt = protos.get(lower, pck.IPsrc, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(0, pck.IPsrc, pck.IPprt, pck.IPprt);
+            prt = protos.get(null, pck.IPsrc, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(lower.ifwNum, null, pck.IPprt, pck.IPprt);
+            prt = protos.get(lower, null, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(0, null, pck.IPprt, pck.IPprt);
+            prt = protos.get(null, null, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
             return true;
@@ -1993,16 +1984,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ipFwdProto prt = null;
         if (prt == null) {
-            prt = protos.get(iface.ifwNum, pck.IPtrg, pck.IPprt, pck.IPprt);
+            prt = protos.get(iface, pck.IPtrg, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(0, pck.IPtrg, pck.IPprt, pck.IPprt);
+            prt = protos.get(null, pck.IPtrg, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(iface.ifwNum, null, pck.IPprt, pck.IPprt);
+            prt = protos.get(iface, null, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
-            prt = protos.get(0, null, pck.IPprt, pck.IPprt);
+            prt = protos.get(null, null, pck.IPprt, pck.IPprt);
         }
         if (prt == null) {
             return;

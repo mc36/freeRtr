@@ -197,7 +197,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     }
 
     public String toString() {
-        return name + " #" + ipFwdIface.getNum(iface) + " " + portLoc + " -> " + peerAddr + " " + portRem;
+        return name + " " + iface + " " + portLoc + " -> " + peerAddr + " " + portRem;
     }
 
     /**
@@ -237,7 +237,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (!registered) {
             return false;
         }
-        if (lower.clnts.del(iface.ifwNum, peerAddr, portLoc, portRem) != null) {
+        if (lower.clnts.del(iface, peerAddr, portLoc, portRem) != null) {
             registered = false;
             return false;
         }
@@ -260,7 +260,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (debugger.prtGenTraf) {
             logger.debug("register " + this);
         }
-        if (!lower.clnts.add(iface.ifwNum, peerAddr, portLoc, portRem, this, name)) {
+        if (!lower.clnts.add(iface, peerAddr, portLoc, portRem, this, name)) {
             registered = true;
             new Thread(this).start();
             return false;

@@ -17,7 +17,7 @@ public class ipFwdProto implements tabConnectLower {
     /**
      * interface number
      */
-    public int iface = -1;
+    public ipFwdIface iface = null;
 
     /**
      * upper protocol

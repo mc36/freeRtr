@@ -1390,16 +1390,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         userFormat l = new userFormat("|", "lower|name|state|iface|local|remote|address|hit");
         ipFwdTab.listProtocols(fwd, l, "ipPrt");
-        udp.listServers(fwd, l, "udpSrv");
-        ludp.listServers(fwd, l, "ludpSrv");
-        dccp.listServers(fwd, l, "dccpSrv");
-        sctp.listServers(fwd, l, "sctpSrv");
-        tcp.listServers(fwd, l, "tcpSrv");
-        udp.listConnects(fwd, l, "udpCln");
-        ludp.listConnects(fwd, l, "ludpCln");
-        dccp.listConnects(fwd, l, "dccpCln");
-        sctp.listConnects(fwd, l, "sctpCln");
-        tcp.listConnects(fwd, l, "tcpCln");
+        udp.listServers(l, "udpSrv");
+        ludp.listServers(l, "ludpSrv");
+        dccp.listServers(l, "dccpSrv");
+        sctp.listServers(l, "sctpSrv");
+        tcp.listServers(l, "tcpSrv");
+        udp.listConnects(l, "udpCln");
+        ludp.listConnects(l, "ludpCln");
+        dccp.listConnects(l, "dccpCln");
+        sctp.listConnects(l, "sctpCln");
+        tcp.listConnects(l, "tcpCln");
         return l;
     }
 

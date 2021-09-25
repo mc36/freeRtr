@@ -361,19 +361,6 @@ public class ipFwdIface extends tabRouteIface {
     }
 
     /**
-     * get number of interface
-     *
-     * @param ifc interface to get
-     * @return return interface number, 0 if nothing
-     */
-    public static int getNum(ipFwdIface ifc) {
-        if (ifc == null) {
-            return 0;
-        }
-        return ifc.ifwNum;
-    }
-
-    /**
      * convert to string
      *
      * @return string

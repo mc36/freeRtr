@@ -1,8 +1,6 @@
 package tab;
 
 import addr.addrType;
-import ip.ipFwd;
-import ip.ipFwdTab;
 import java.util.Comparator;
 
 /**
@@ -20,9 +18,9 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
     public Td data;
 
     /**
-     * interface number
+     * interface
      */
-    public int iface;
+    public tabRouteIface iface;
 
     /**
      * peer address
@@ -61,11 +59,18 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
         if (o1.local > o2.local) {
             return +1;
         }
-        if (o1.iface < o2.iface) {
-            return -1;
-        }
-        if (o1.iface > o2.iface) {
-            return +1;
+        if (o1.iface == null) {
+            if (o2.iface != null) {
+                return -1;
+            }
+        } else {
+            if (o2.iface == null) {
+                return +1;
+            }
+            int i = o1.iface.compare(o1.iface, o2.iface);
+            if (i != 0) {
+                return i;
+            }
         }
         if (o1.remote < o2.remote) {
             return -1;
@@ -98,17 +103,16 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
     /**
      * dump out connection
      *
-     * @param f forwarder
      * @return dump data
      */
-    public String dump(ipFwd f) {
+    public String dump() {
         String a;
         if (data == null) {
             a = "null";
         } else {
             a = data.dumper();
         }
-        return name + "|" + a + "|" + ipFwdTab.iface2name(f, iface) + "|" + local + "|" + remote + "|" + peer + "|" + hits;
+        return name + "|" + a + "|" + iface + "|" + local + "|" + remote + "|" + peer + "|" + hits;
     }
 
 }

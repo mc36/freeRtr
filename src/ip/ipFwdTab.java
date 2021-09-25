@@ -139,7 +139,7 @@ public class ipFwdTab {
      * @param b beginning to use
      */
     public static void listProtocols(ipFwd lower, userFormat l, String b) {
-        lower.protos.dump(lower, l, b);
+        lower.protos.dump(l, b);
     }
 
     /**
