@@ -284,10 +284,10 @@ class servAmtConn implements ifcDn, Comparator<servAmtConn> {
         int typ = pck.getByte(0);
         switch (typ) {
             case 1: // discovery
-                typ = pck.msbGetD(4);
+                nonce = pck.msbGetD(4);
                 pck.clear();
                 pck.msbPutD(0, 0x02000000);
-                pck.msbPutD(4, typ);
+                pck.msbPutD(4, nonce);
                 pck.putSkip(8);
                 if (conn.iface.addr.isIPv4()) {
                     pck.putAddr(0, conn.iface.addr.toIPv4());
