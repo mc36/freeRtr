@@ -183,6 +183,8 @@ public class player implements Runnable {
     private synchronized void stopFull() {
         stopProc("gmediarender");
         stopProc("mplayer");
+        stopProc("ffmpeg");
+        stopProc("ffplay");
         stopProc("cvlc");
         stopProc("vlc");
         stopProc("youtube-dl");
