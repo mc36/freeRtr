@@ -25,7 +25,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
 
     if (argc < 8) {
         if (argc <= 1) goto help;
-        char*curr = argv[1];
+        unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
         case 'V':

@@ -12,7 +12,7 @@
 #define PPP_ESCP 0x7d
 #define PPP_TRNS 0x20
 
-char *ttyName;
+unsigned char *ttyName;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
 int addrTty;
@@ -32,7 +32,7 @@ long int packTx;
 long int byteBd;
 long int packBd;
 
-void err(char*buf) {
+void err(unsigned char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -235,7 +235,7 @@ int main(int argc, char **argv) {
 
     if (argc < 5) {
         if (argc <= 1) goto help;
-        char*curr = argv[1];
+        unsigned char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
         case 'V':
