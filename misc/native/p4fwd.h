@@ -715,6 +715,16 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
+    case 15: // amt4
+        put16msb(bufD, *bufP, 0x600);
+        putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
+        putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
+        break;
+    case 16: // amt6
+        put16msb(bufD, *bufP, 0x600);
+        putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        break;
     default:
         goto drop;
     }
@@ -1312,6 +1322,14 @@ ipv4_tx:
                     case 9: // wireguard
                         decapWireguard(tun4_res);
                         break;
+                    case 10: // amt
+                        bufP = bufT + 8; // udp header
+                        if (get16msb(bufD, bufP) != 0x600) goto cpu;
+                        bufP += 2; // amt header
+                        guessEthtyp;
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ethtyp);
+                        break;
                     default:
                         goto drop;
                     }
@@ -1652,6 +1670,14 @@ ipv6_tx:
                         break;
                     case 9: // wireguard
                         decapWireguard(tun6_res);
+                        break;
+                    case 10: // amt
+                        bufP = bufT + 8; // udp header
+                        if (get16msb(bufD, bufP) != 0x600) goto cpu;
+                        bufP += 2; // amt header
+                        guessEthtyp;
+                        bufP -= 2;
+                        put16msb(bufD, bufP, ethtyp);
                         break;
                     default:
                         goto drop;
