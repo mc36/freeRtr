@@ -306,11 +306,17 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
-        if (pck.msbGetW(0) != 0x600) {
-            cntr.drop(pck, counter.reasons.badCod);
-            return false;
+        switch (pck.msbGetW(0)) {
+            case 0x600: // data
+                pck.getSkip(2);
+                break;
+            case 0x400: // query
+                pck.getSkip(12);
+                break;
+            default:
+                cntr.drop(pck, counter.reasons.badCod);
+                return false;
         }
-        pck.getSkip(2);
         int typ = ifcEther.guessEtherType(pck);
         if (typ < 0) {
             cntr.drop(pck, counter.reasons.badVal);
