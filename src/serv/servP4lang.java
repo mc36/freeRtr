@@ -363,7 +363,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.type != cfgIfc.ifaceType.virtppp)) {
+            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.type != cfgIfc.ifaceType.virtppp) && (ifc.type != cfgIfc.ifaceType.template)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -3307,6 +3307,58 @@ class servP4langConn implements Runnable {
                     afi = "6";
                 }
                 lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
+            } catch (Exception e) {
+            }
+            try {
+                servAmtConn ntry = (servAmtConn) ifc.ifc.lower;
+                addrIP src = ntry.getAddrLoc();
+                if (src == null) {
+                    return;
+                }
+                addrIP trg = ntry.getAddrRem();
+                if (trg == null) {
+                    return;
+                }
+                ipFwd ofwd = ntry.getFwder();
+                servP4langVrf ovrf = findVrf(ofwd);
+                if (ovrf == null) {
+                    return;
+                }
+                servP4langNei hop = findHop(ofwd, trg);
+                if (hop == null) {
+                    return;
+                }
+                if (hop.mac == null) {
+                    return;
+                }
+                int lp = ntry.getPortLoc();
+                if (lp < 1) {
+                    return;
+                }
+                int rp = ntry.getPortRem();
+                if (rp < 1) {
+                    return;
+                }
+                String act;
+                if (nei.mac == null) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                        return;
+                    }
+                }
+                nei.viaH = hop;
+                nei.mac = hop.mac.copyBytes();
+                nei.sentIfc = hop.sentIfc;
+                nei.sentTun = lp;
+                String afi;
+                if (trg.isIPv4()) {
+                    afi = "4";
+                } else {
+                    afi = "6";
+                }
+                lower.sendLine("amt" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp);
             } catch (Exception e) {
             }
             return;
