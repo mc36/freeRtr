@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.10.2-cur, done by cs@nop.
--;-;-;2021-10-02 09:47:26, took 00:06:31, with 100 workers, on 2372 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2021-10-02 10:51:30, took 00:05:20, with 100 workers, on 2376 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1386,6 +1386,10 @@ http://sources.nop.hu/cfg/p4lang-rout166.tst;p4lang-rout166.tst;success;p4lang: 
 http://sources.nop.hu/cfg/p4lang-rout167.tst;p4lang-rout167.tst;success;p4lang: bier vlan ingress edge
 http://sources.nop.hu/cfg/p4lang-rout168.tst;p4lang-rout168.tst;success;p4lang: bier core and egress edge
 http://sources.nop.hu/cfg/p4lang-rout169.tst;p4lang-rout169.tst;success;p4lang: vlan bier core and egress edge
+http://sources.nop.hu/cfg/p4lang-rout170.tst;p4lang-rout170.tst;success;p4lang: amt server over ipv4
+http://sources.nop.hu/cfg/p4lang-rout171.tst;p4lang-rout171.tst;success;p4lang: amt server over ipv6
+http://sources.nop.hu/cfg/p4lang-rout172.tst;p4lang-rout172.tst;success;p4lang: amt server over ipv4 loopback
+http://sources.nop.hu/cfg/p4lang-rout173.tst;p4lang-rout173.tst;success;p4lang: amt server over ipv6 loopback
 http://sources.nop.hu/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.nop.hu/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.nop.hu/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action
