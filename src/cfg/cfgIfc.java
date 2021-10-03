@@ -3645,6 +3645,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunAmt.vrf = tunVrf;
                 tunAmt.srcIfc = tunSrc;
                 tunAmt.target = "" + tunTrg;
+                tunAmt.prtR = tunKey;
+                tunAmt.prtL = tunKey2;
+                tunAmt.negotiate = tunSeq;
                 tunAmt.sendingTOS = tunTOS;
                 tunAmt.sendingTTL = tunTTL;
                 tunAmt.setUpper(ethtyp);

@@ -2,6 +2,7 @@ package clnt;
 
 import addr.addrEmpty;
 import addr.addrIP;
+import addr.addrMac;
 import addr.addrType;
 import cfg.cfgIfc;
 import cfg.cfgVrf;
@@ -10,6 +11,8 @@ import ifc.ifcEther;
 import ifc.ifcNull;
 import ifc.ifcUp;
 import ip.ipFwdIface;
+import ip.ipIcmp6;
+import ip.ipMhost4;
 import pack.packHolder;
 import prt.prtGenConn;
 import prt.prtServP;
@@ -53,6 +56,16 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     public String target = null;
 
     /**
+     * remote port number
+     */
+    public int prtR;
+
+    /**
+     * local port number
+     */
+    public int prtL;
+
+    /**
      * vrf of target
      */
     public cfgVrf vrf = null;
@@ -61,6 +74,11 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
      * source interface
      */
     public cfgIfc srcIfc = null;
+
+    /**
+     * negotiate
+     */
+    public boolean negotiate = false;
 
     private ifcUp upper = new ifcNull();
 
@@ -71,6 +89,12 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     private boolean working = true;
 
     private prtGenConn conn;
+
+    private int lasTyp;
+
+    private int nonce;
+
+    private addrMac rspMac = new addrMac();
 
     public String toString() {
         return "amt to " + target;
@@ -194,19 +218,62 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, portNum, trg, portNum, "amt", null, -1);
+        if (prtR == 0) {
+            prtR = portNum;
+        }
+        if (prtL == 0) {
+            prtL = prtR;
+        }
+        conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "amt", null, -1);
         if (conn == null) {
             return;
         }
         conn.timeout = 120000;
         conn.sendTOS = sendingTOS;
         conn.sendTTL = sendingTTL;
+        if (negotiate) {
+            nonce = bits.randomD();
+            packHolder pck = new packHolder(true, true);
+            pck.clear();
+            pck.msbPutW(0, 0x100); // discovery
+            pck.msbPutW(2, 0); // reserved
+            pck.msbPutD(4, nonce);
+            pck.putSkip(8);
+            pck.merge2beg();
+            pck.putDefaults();
+            conn.send2net(pck);
+            if (wait4pack() != 2) {
+                return;
+            }
+            pck.clear();
+            pck.msbPutW(0, 0x300); // request
+            pck.msbPutW(2, 0); // reserved
+            pck.msbPutD(4, nonce);
+            pck.putSkip(8);
+            pck.merge2beg();
+            pck.putDefaults();
+            conn.send2net(pck);
+            if (wait4pack() != 4) {
+                return;
+            }
+        }
         for (;;) {
             if (conn.txBytesFree() < 0) {
                 return;
             }
             bits.sleep(1000);
         }
+    }
+
+    private int wait4pack() {
+        lasTyp = -1;
+        for (int i = 0; i < 50; i++) {
+            bits.sleep(100);
+            if (lasTyp > 0) {
+                break;
+            }
+        }
+        return lasTyp;
     }
 
     private void clearState() {
@@ -265,8 +332,15 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.getSkip(2); // ethertype
-        pck.msbPutW(0, 0x600); // mcast data
-        pck.putSkip(2);
+        if ((pck.IPprt == ipMhost4.protoNum) || (pck.IPprt == ipIcmp6.protoNum)) {
+            pck.msbPutW(0, 0x0500); // membership
+            pck.putAddr(2, rspMac);
+            pck.msbPutD(8, nonce);
+            pck.putSkip(12);
+        } else {
+            pck.msbPutW(0, 0x600); // mcast data
+            pck.putSkip(2);
+        }
         pck.merge2beg();
         pck.putDefaults();
         conn.send2net(pck);
@@ -306,11 +380,15 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
-        switch (pck.msbGetW(0)) {
-            case 0x600: // data
+        lasTyp = pck.getByte(0);
+        switch (lasTyp) {
+            case 6: // data
                 pck.getSkip(2);
                 break;
-            case 0x400: // query
+            case 4: // query
+                rspMac = new addrMac();
+                pck.getAddr(rspMac, 2);
+                nonce = pck.msbGetD(8);
                 pck.getSkip(12);
                 break;
             default:
