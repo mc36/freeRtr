@@ -818,7 +818,7 @@ class servP4langNei implements Comparator<servP4langNei> {
         if (o1.iface.cloned != null) {
             return 0;
         }
-        if ((o1.iface.ifc.type == cfgIfc.ifaceType.dialer) || (o1.iface.ifc.type == cfgIfc.ifaceType.tunnel) || (o1.iface.ifc.type == cfgIfc.ifaceType.virtppp)) {
+        if ((o1.iface.ifc.type == cfgIfc.ifaceType.dialer) || (o1.iface.ifc.type == cfgIfc.ifaceType.tunnel) || (o1.iface.ifc.type == cfgIfc.ifaceType.virtppp) || (o1.iface.ifc.type == cfgIfc.ifaceType.template)) {
             return 0;
         }
         return o1.adr.compare(o1.adr, o2.adr);
@@ -3489,6 +3489,14 @@ class servP4langConn implements Runnable {
                     }
                     prt = "wireguard";
                     par = " " + lp + " " + ifc.ifc.tunWireguard.getRemPort() + " " + ifc.ifc.tunWireguard.idxTx + " " + bits.toHex(ifc.ifc.tunWireguard.keyTx) + " " + bits.toHex(ifc.ifc.tunWireguard.keyRx);
+                    break;
+                case amt:
+                    lp = ifc.ifc.tunAmt.getLocPort();
+                    if (lp < 1) {
+                        return;
+                    }
+                    prt = "amt";
+                    par = " " + lp + " " + ifc.ifc.tunAmt.getRemPort();
                     break;
                 default:
                     return;

@@ -101,6 +101,54 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemAddr() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.peerAddr.copyBytes();
+    }
+
+    /**
+     * get local address
+     *
+     * @return address
+     */
+    public addrIP getLocAddr() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.iface.addr.copyBytes();
+    }
+
+    /**
+     * get remote port
+     *
+     * @return address
+     */
+    public int getRemPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portRem;
+    }
+
+    /**
+     * get local port
+     *
+     * @return address
+     */
+    public int getLocPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portLoc;
+    }
+    
+    /**
      * get counter
      *
      * @return counter
