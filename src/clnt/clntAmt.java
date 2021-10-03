@@ -332,8 +332,8 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.getSkip(2); // ethertype
-        if ((pck.IPprt == ipMhost4.protoNum) || (pck.IPprt == ipIcmp6.protoNum)) {
-            pck.msbPutW(0, 0x0500); // membership
+        if (negotiate && ((pck.IPprt == ipMhost4.protoNum) || (pck.IPprt == ipIcmp6.protoNum))) {
+            pck.msbPutW(0, 0x0500); // report
             pck.putAddr(2, rspMac);
             pck.msbPutD(8, nonce);
             pck.putSkip(12);
@@ -386,6 +386,12 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
                 pck.getSkip(2);
                 break;
             case 4: // query
+                rspMac = new addrMac();
+                pck.getAddr(rspMac, 2);
+                nonce = pck.msbGetD(8);
+                pck.getSkip(12);
+                break;
+            case 5: // report
                 rspMac = new addrMac();
                 pck.getAddr(rspMac, 2);
                 nonce = pck.msbGetD(8);
