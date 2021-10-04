@@ -1324,7 +1324,7 @@ ipv4_tx:
                         break;
                     case 10: // amt
                         bufP = bufT + 8; // udp header
-                        if (get16msb(bufD, bufP) != 0x600) goto cpu;
+                        if (bufD[bufP] != 6) goto cpu;
                         bufP += 2; // amt header
                         guessEthtyp;
                         bufP -= 2;
@@ -1673,7 +1673,7 @@ ipv6_tx:
                         break;
                     case 10: // amt
                         bufP = bufT + 8; // udp header
-                        if (get16msb(bufD, bufP) != 0x600) goto cpu;
+                        if (bufD[bufP] != 6) goto cpu;
                         bufP += 2; // amt header
                         guessEthtyp;
                         bufP -= 2;
