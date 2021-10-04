@@ -22,6 +22,8 @@ import prt.prtSctp;
 import prt.prtTcp;
 import prt.prtUdp;
 import tab.tabGen;
+import tab.tabLabel;
+import tab.tabLabelNtry;
 import tab.tabNatCfgN;
 import tab.tabPbrN;
 import tab.tabQos;
@@ -210,6 +212,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public cfgPrfxlst label6fltr = null;
 
     /**
+     * ipv4 label value
+     */
+    public int label4comm = 0;
+
+    /**
+     * ipv6 label value
+     */
+    public int label6comm = 0;
+
+    /**
      * ipv4 import list
      */
     public cfgPrfxlst import4list = null;
@@ -336,6 +348,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no mdt6",
         "vrf definition .*! no label4filter",
         "vrf definition .*! no label6filter",
+        "vrf definition .*! label4common 0",
+        "vrf definition .*! label6common 0",
         "vrf definition .*! no import4list",
         "vrf definition .*! no import6list",
         "vrf definition .*! no export4list",
@@ -632,6 +646,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 break;
         }
         l.add(cmds.tabulator + "label-mode " + s);
+        l.add(cmds.tabulator + "label4common " + label4comm);
+        l.add(cmds.tabulator + "label6common " + label6comm);
         cmds.cfgLine(l, !mplsPropTtl, cmds.tabulator, "propagate-ttl", "");
         cmds.cfgLine(l, !mplsExtRep, cmds.tabulator, "report-labels", "");
         l.add(cmds.tabulator + "unreach-interval " + unreachInt);
@@ -733,6 +749,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("2 .    <name>            name of prefix list");
         l.add("1 2  label6filter        specify ipv6 label filter");
         l.add("2 .    <name>            name of prefix list");
+        l.add("1 2  label4common        specify ipv4 common label");
+        l.add("2 .    <num>             label value");
+        l.add("1 2  label6common        specify ipv6 common label");
+        l.add("2 .    <num>             label value");
         l.add("1 2  import4list         specify ipv4 import filter");
         l.add("2 .    <name>            name of prefix list");
         l.add("1 2  import6list         specify ipv6 import filter");
@@ -873,6 +893,24 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.prefixMode = labelMode;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("label4common")) {
+            label4comm = bits.str2num(cmd.word());
+            tabLabelNtry[] ntry = tabLabel.allocate(1, label4comm, 1);
+            tabLabelNtry old = fwd4.commonLabel;
+            fwd4.commonLabel = ntry[0];
+            fwd4.routerStaticChg();
+            tabLabel.release(old, 1);
+            return;
+        }
+        if (a.equals("label6common")) {
+            label6comm = bits.str2num(cmd.word());
+            tabLabelNtry[] ntry = tabLabel.allocate(1, label6comm, 1);
+            tabLabelNtry old = fwd6.commonLabel;
+            fwd6.commonLabel = ntry[0];
+            fwd6.routerStaticChg();
+            tabLabel.release(old, 1);
             return;
         }
         if (a.equals("unreach-interval")) {
@@ -1229,6 +1267,14 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             label6fltr = null;
             fwd6.labelFilter = null;
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("label4common")) {
+            label4comm = 0;
+            return;
+        }
+        if (a.equals("label6common")) {
+            label6comm = 0;
             return;
         }
         if (a.equals("import4list")) {
