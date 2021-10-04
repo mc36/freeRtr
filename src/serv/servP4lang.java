@@ -2270,6 +2270,9 @@ class servP4langConn implements Runnable {
     }
 
     private void doLab1(tabLabelNtry ntry) {
+        if (ntry == null) {
+            return;
+        }
         ntry = ntry.copyBytes();
         if (ntry.pweIfc != null) {
             return;
