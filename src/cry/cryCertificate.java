@@ -517,6 +517,15 @@ public class cryCertificate {
     }
 
     /**
+     * check if header line
+     * @param a string
+     * @return result
+     */
+    public static boolean isHeaderLine(String a) {
+        return a.startsWith("-----");
+    }
+    
+    /**
      * read pem formatted key
      *
      * @param sl list of lines
@@ -525,6 +534,9 @@ public class cryCertificate {
     public boolean pemReadArr(String[] sl) {
         String s = "";
         for (int i = 0; i < sl.length; i++) {
+            if (isHeaderLine(sl[i])) {
+                continue;
+            }
             s = s + sl[i];
         }
         return pemReadStr(s);
@@ -539,7 +551,11 @@ public class cryCertificate {
     public boolean pemReadLst(List<String> sl) {
         String s = "";
         for (int i = 0; i < sl.size(); i++) {
-            s = s + sl.get(i);
+            String a = sl.get(i);
+            if (isHeaderLine(a)) {
+                continue;
+            }
+            s = s + a;
         }
         return pemReadStr(s);
     }

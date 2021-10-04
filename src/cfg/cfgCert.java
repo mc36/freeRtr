@@ -22,6 +22,11 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
     public String name;
 
     /**
+     * name of file
+     */
+    public String filNam;
+
+    /**
      * certificate
      */
     public cryCertificate cert;
@@ -60,7 +65,11 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
 
     public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
-        lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr(), (filter & 2) != 0));
+        if (filNam == null) {
+            lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr(), (filter & 2) != 0));
+        } else {
+            lst.add("crypto certificate " + name + " external " + key.algName() + " " + key.keyName + " " + filNam);
+        }
         lst.add(cmds.comment);
         return lst;
     }

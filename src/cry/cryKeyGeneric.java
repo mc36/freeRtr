@@ -294,6 +294,9 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
     public boolean pemReadArr(String[] sl, boolean justPub) {
         String s = "";
         for (int i = 0; i < sl.length; i++) {
+            if (cryCertificate.isHeaderLine(sl[i])) {
+                continue;
+            }
             s = s + sl[i];
         }
         return pemReadStr(s, justPub);
@@ -309,7 +312,11 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
     public boolean pemReadLst(List<String> sl, boolean justPub) {
         String s = "";
         for (int i = 0; i < sl.size(); i++) {
-            s = s + sl.get(i);
+            String a = sl.get(i);
+            if (cryCertificate.isHeaderLine(a)) {
+                continue;
+            }
+            s = s + a;
         }
         return pemReadStr(s, justPub);
     }

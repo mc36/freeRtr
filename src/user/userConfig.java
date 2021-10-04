@@ -658,6 +658,8 @@ public class userConfig {
         l.add("3  4      <name>                     name of key");
         l.add("4  5        import                   import key");
         l.add("5  .          <text>                 base64 encoded private key");
+        l.add("4  5        external                 load key from file");
+        l.add("5  .          <text>                 file name");
         l.add("4  5,.      generate                 generate new key");
         l.add("5  .          [size]                 key size in bits");
         l.add("4  .        zeroize                  delete the key");
@@ -666,6 +668,8 @@ public class userConfig {
         l.add("3  4      <name>                     name of key");
         l.add("4  5        import                   import key");
         l.add("5  .          <text>                 base64 encoded private key");
+        l.add("4  5        external                 load key from file");
+        l.add("5  .          <text>                 file name");
         l.add("4  5,.      generate                 generate new key");
         l.add("5  .          [size]                 key size in bits");
         l.add("4  .        zeroize                  delete the key");
@@ -674,6 +678,8 @@ public class userConfig {
         l.add("3  4      <name>                     name of key");
         l.add("4  5        import                   import key");
         l.add("5  .          <text>                 base64 encoded private key");
+        l.add("4  5        external                 load key from file");
+        l.add("5  .          <text>                 file name");
         l.add("4  5,.      generate                 generate new key");
         l.add("5  .          [size]                 key size in bits");
         l.add("4  .        zeroize                  delete the key");
@@ -684,8 +690,14 @@ public class userConfig {
         l.add("5  6          rsa                    rsa key");
         l.add("5  6          dsa                    dsa key");
         l.add("5  6          ecdsa                  ecdsa key");
-        l.add("6  7,.          <key>                name of key");
+        l.add("6  7            <key>                name of key");
         l.add("7  .              <text>             base64 encoded certificate");
+        l.add("4  5        external                 load certificate from file");
+        l.add("5  6          rsa                    rsa key");
+        l.add("5  6          dsa                    dsa key");
+        l.add("5  6          ecdsa                  ecdsa key");
+        l.add("6  7            <key>                name of key");
+        l.add("7  .              <text>             file name");
         l.add("4  5        generate                 generate new certificate");
         l.add("5  6          rsa                    rsa key");
         l.add("5  6          dsa                    dsa key");
@@ -698,8 +710,7 @@ public class userConfig {
         l.add("5  6          rsa                    rsa key");
         l.add("5  6          dsa                    dsa key");
         l.add("5  6          ecdsa                  ecdsa key");
-        l.add("6  7,.          <key>                name of key");
-        l.add("7  .              <text>             base64 encoded certificate");
+        l.add("6  .            <key>                name of key");
         l.add("1  2  xconnect                       define one protocol cross connection");
         l.add("2  .    <name>                       name of connection");
         l.add("1  2  connect                        define one interface cross connection");
@@ -3343,6 +3354,23 @@ public class userConfig {
             cfg.key = key;
             return;
         }
+        if (a.equals("external")) {
+            a = cmd.word();
+            List<String> t = bits.txt2buf(a);
+            if (t == null) {
+                cmd.error("not found");
+                return;
+            }
+            if (key.pemReadLst(t, false)) {
+                cmd.error("error decoding");
+                return;
+            }
+            key.keyName = nam;
+            cfgKey<T> cfg = cfgAll.keyFind(lst, nam, true);
+            cfg.key = key;
+            cfg.filNam = a;
+            return;
+        }
         if (a.equals("generate")) {
             int i = bits.str2num(cmd.word());
             if (i < 1) {
@@ -3456,6 +3484,30 @@ public class userConfig {
                 cfgCert cfg = cfgAll.certFind(nam, true);
                 cfg.cert = c;
                 cfg.key = k;
+                return;
+            }
+            if (a.equals("external")) {
+                cryKeyGeneric k = findKey();
+                if (k == null) {
+                    return;
+                }
+                a = cmd.word();
+                cryCertificate c = new cryCertificate();
+                c.crtName = nam;
+                List<String> t = bits.txt2buf(a);
+                if (t == null) {
+                    cmd.error("not found");
+                    return;
+                }
+                if (c.pemReadLst(t)) {
+                    cmd.error("error decoding");
+                    return;
+                }
+                c.key = k;
+                cfgCert cfg = cfgAll.certFind(nam, true);
+                cfg.cert = c;
+                cfg.key = k;
+                cfg.filNam = a;
                 return;
             }
             if (a.equals("generate")) {

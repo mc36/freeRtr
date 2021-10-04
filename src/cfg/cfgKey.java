@@ -22,6 +22,11 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
     public String name;
 
     /**
+     * name of file
+     */
+    public String filNam;
+
+    /**
      * the key
      */
     public T key;
@@ -46,7 +51,11 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
 
     public List<String> getShRun(int filter) {
         List<String> lst = new ArrayList<String>();
-        lst.add("crypto " + key.algName() + "key " + name + " import " + authLocal.passwdEncode(key.pemWriteStr(false), (filter & 2) != 0));
+        if (filNam == null) {
+            lst.add("crypto " + key.algName() + "key " + name + " import " + authLocal.passwdEncode(key.pemWriteStr(false), (filter & 2) != 0));
+        } else {
+            lst.add("crypto " + key.algName() + "key " + name + " external " + filNam);
+        }
         lst.add(cmds.comment);
         return lst;
     }
