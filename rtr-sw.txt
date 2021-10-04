@@ -379,26 +379,9 @@ interface bvi4
 !
 interface ethernet1
  description uplink
- lldp enable
- cdp enable
- no shutdown
- no log-link-change
- exit
-!
-interface ethernet1.11
- description uplink1
  vrf forwarding v1
  ipv4 address 10.1.123.91 255.255.255.0
  ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
- template template1
- no shutdown
- exit
-!
-interface ethernet1.12
- description uplink2
- vrf forwarding v1
- ipv4 address 10.1.124.91 255.255.255.0
- ipv6 address 2001:db8:1124::91 ffff:ffff:ffff:ffff::
  template template1
  no shutdown
  exit
