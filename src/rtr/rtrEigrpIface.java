@@ -88,6 +88,11 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
     public boolean suppressAddr = false;
 
     /**
+     * check neighbor address is connected
+     */
+    public boolean connectedCheck = true;
+
+    /**
      * ingress prefix list
      */
     public tabListing<tabPrfxlstN, addrIP> prflstIn;
@@ -212,6 +217,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         l.add(cmds.tabulator + beg + "delay-in " + delayIn);
         l.add(cmds.tabulator + beg + "delay-out " + delayOut);
         l.add(cmds.tabulator + beg + "distance " + distance);
@@ -237,6 +243,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         suppress-prefix         do not advertise interface");
+        l.add("4 .         verify-source           check source address of updates");
         l.add("4 5         delay-in                ingress delay of routes");
         l.add("5 .           <num>                 set delay");
         l.add("4 5         delay-out               egress delay of routes");
@@ -317,6 +324,10 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
             lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("verify-source")) {
+            connectedCheck = true;
             return;
         }
         if (a.equals("passive")) {
@@ -435,6 +446,10 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("verify-source")) {
+            connectedCheck = false;
+            return;
+        }
         if (a.equals("passive")) {
             passiveInt = false;
             return;
@@ -544,7 +559,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
             cntr.drop(pck, reasons.badNet);
             return;
         }
-        if (!rxIfc.network.matches(pck.IPsrc)) {
+        if ((connectedCheck) && (!rxIfc.network.matches(pck.IPsrc))) {
             logger.info("got from out of subnet peer " + pck.IPsrc);
             return;
         }

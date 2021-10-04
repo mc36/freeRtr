@@ -217,7 +217,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
             return true;
         }
         if ((ifc.connectedCheck) && (!ifc.iface.lower.checkConnected(id.peerAddr))) {
-            logger.warn("got from far " + id);
+            logger.warn("got from out of subnet peer " + id);
             return true;
         }
         logger.warn("neighbor " + id.peerAddr + " up");

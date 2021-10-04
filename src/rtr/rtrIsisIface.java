@@ -105,6 +105,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public boolean othSuppAddr;
 
     /**
+     * check neighbor address is connected
+     */
+    public boolean connectedCheck = true;
+
+    /**
      * other suppress interface address
      */
     public boolean othSuppInt;
@@ -293,6 +298,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !othSuppInt, cmds.tabulator, beg + "other-suppress-address", "");
         cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
+        cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "priority " + disPriority);
@@ -403,6 +409,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (a.equals("other-suppress-address")) {
             othSuppInt = true;
             lower.genLsps(1);
+            return;
+        }
+        if (a.equals("verify-source")) {
+            connectedCheck = true;
             return;
         }
         if (a.equals("hello-time")) {
@@ -555,6 +565,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             lower.genLsps(1);
             return;
         }
+        if (a.equals("verify-source")) {
+            connectedCheck = false;
+            return;
+        }
         if (a.equals("password")) {
             authentication = null;
             return;
@@ -636,6 +650,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add("5 .           <num>                 metric");
         l.add("4 .         other-suppress-prefix   do not advertise other interface");
         l.add("4 .         other-suppress-address  do not advertise other interface");
+        l.add("4 .         verify-source           check source address of updates");
         l.add("4 5         priority                router priority");
         l.add("5 .           <num>                 priority 0=disable");
         l.add("4 5         hello-time              time between hellos");

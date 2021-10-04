@@ -536,7 +536,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             iface.cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
-        if (!iface.iface.network.matches(ifcAddr)) {
+        if ((iface.connectedCheck) && (!iface.iface.network.matches(ifcAddr))) {
             logger.info("got from out of subnet peer " + ifcAddr);
             return;
         }
@@ -553,7 +553,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                 iface.cntr.drop(pck, counter.reasons.badAddr);
                 return;
             }
-            if (!iface.oface.network.matches(ofcAddr)) {
+            if ((iface.connectedCheck) && (!iface.oface.network.matches(ofcAddr))) {
                 logger.info("got from out of subnet peer " + ofcAddr);
                 return;
             }

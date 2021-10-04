@@ -61,6 +61,11 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     public boolean suppressAddr;
 
     /**
+     * check neighbor address is connected
+     */
+    public boolean connectedCheck = true;
+
+    /**
      * passive interface
      */
     public boolean passiveInt;
@@ -280,6 +285,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(cmds.tabulator + beg + "network " + a);
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "instance " + instance);
         l.add(cmds.tabulator + beg + "cost " + metric);
@@ -412,6 +418,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             schedWork(1);
             return;
         }
+        if (a.equals("verify-source")) {
+            connectedCheck = true;
+            return;
+        }
         if (a.equals("hello-time")) {
             helloTimer = bits.str2num(cmd.word());
             restartTimer(false);
@@ -538,6 +548,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             schedWork(1);
             return;
         }
+        if (a.equals("verify-source")) {
+            connectedCheck = false;
+            return;
+        }
         if (a.equals("password")) {
             authentication = null;
             return;
@@ -604,6 +618,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add("4 .         passive                 do not process packets");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         suppress-prefix         do not advertise interface");
+        l.add("4 .         verify-source           check source address of updates");
         l.add("4 5         instance                interface instance");
         l.add("5 .           <num>                 instance");
         l.add("4 5         cost                    interface cost");
@@ -1062,7 +1077,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
-        if (!iface.network.matches(pck.IPsrc)) {
+        if ((connectedCheck) && (!iface.network.matches(pck.IPsrc))) {
             logger.info("got from out of subnet peer " + pck.IPsrc);
             cntr.drop(pck, counter.reasons.badAddr);
             return;

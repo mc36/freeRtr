@@ -122,6 +122,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public boolean unsuppressAddr = false;
 
     /**
+     * check neighbor address is connected
+     */
+    public boolean connectedCheck = true;
+
+    /**
      * authentication string
      */
     public String authentication = null;
@@ -396,6 +401,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
+        cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         cmds.cfgLine(l, !authenDisable, cmds.tabulator, beg + "disable-password", "");
@@ -430,6 +436,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("4 .         disable-password        disable authentications");
         l.add("4 .         suppress-prefix         do not advertise interface");
         l.add("4 .         unsuppress-prefix       do advertise interface");
+        l.add("4 .         verify-source           check source address of updates");
         l.add("4 5         encryption              select encryption method");
         l.add("5 6           ssh                   select secure shell");
         l.add("5 6           tls                   select transport layer security");
@@ -511,6 +518,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("split-horizon")) {
             splitHorizon = true;
+            return;
+        }
+        if (a.equals("verify-source")) {
+            connectedCheck = true;
             return;
         }
         if (a.equals("database-filter")) {
@@ -657,6 +668,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("split-horizon")) {
             splitHorizon = false;
+            return;
+        }
+        if (a.equals("verify-source")) {
+            connectedCheck = false;
             return;
         }
         if (a.equals("database-filter")) {
@@ -830,7 +845,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         id.setClosing();
-        if (!iface.network.matches(id.peerAddr)) {
+        if ((connectedCheck) && (!iface.network.matches(id.peerAddr))) {
             logger.info("got from out of subnet peer " + id);
             return true;
         }
