@@ -434,13 +434,13 @@ class ifcUdldNeigh implements Comparator<ifcUdldNeigh> {
 
     public void dump(List<String> l) {
         l.add("");
-        l.add("peer=" + peer);
-        l.add("hostname=" + hostName);
-        l.add("port id=" + portId);
-        l.add("serial=" + serNum);
-        l.add("message interval=" + msgInt);
-        l.add("timeout value=" + timOut);
-        l.add("bidir=" + bidir);
+        l.add("peer|" + peer);
+        l.add("hostname|" + hostName);
+        l.add("port id|" + portId);
+        l.add("serial|" + serNum);
+        l.add("message interval|" + msgInt);
+        l.add("timeout value|" + timOut);
+        l.add("bidir|" + bidir);
     }
 
     public int compare(ifcUdldNeigh o1, ifcUdldNeigh o2) {

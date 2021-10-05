@@ -455,17 +455,17 @@ class ifcCdpNeigh implements Comparator<ifcCdpNeigh> {
 
     public void dump(List<String> l) {
         l.add("");
-        l.add("peer=" + peer);
-        l.add("hostname=" + hostName);
-        l.add("port id=" + portId);
-        l.add("platform=" + platform);
-        l.add("ipv4 addr=" + addr4);
-        l.add("ipv6 addr=" + addr6);
-        l.add("sw version=" + swVer);
-        l.add("vlan=" + vlan);
-        l.add("vtp=" + vtp);
-        l.add("hold=" + holdTime);
-        l.add("capa=" + ifcCdp.capability2string(capa));
+        l.add("peer|" + peer);
+        l.add("hostname|" + hostName);
+        l.add("port id|" + portId);
+        l.add("platform|" + platform);
+        l.add("ipv4 addr|" + addr4);
+        l.add("ipv6 addr|" + addr6);
+        l.add("sw version|" + swVer);
+        l.add("vlan|" + vlan);
+        l.add("vtp|" + vtp);
+        l.add("hold|" + holdTime);
+        l.add("capa|" + ifcCdp.capability2string(capa));
     }
 
     public int compare(ifcCdpNeigh o1, ifcCdpNeigh o2) {

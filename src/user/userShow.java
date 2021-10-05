@@ -785,7 +785,9 @@ public class userShow {
                     cmd.error("not running on that interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.lldp.getShNeigh(true));
+                userFormat res = new userFormat("|", "category|value");
+                res.add(ifc.lldp.getShNeigh(true));
+                rdr.putStrTab(res);
                 return null;
             }
             cmd.badCmd();
@@ -807,7 +809,9 @@ public class userShow {
                     cmd.error("not running on that interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.udld.getShNeigh(true));
+                userFormat res = new userFormat("|", "category|value");
+                res.add(ifc.udld.getShNeigh(true));
+                rdr.putStrTab(res);
                 return null;
             }
             cmd.badCmd();
@@ -829,7 +833,9 @@ public class userShow {
                     cmd.error("not running on that interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.lacp.getShNeigh(true));
+                userFormat res = new userFormat("|", "category|value");
+                res.add(ifc.lacp.getShNeigh(true));
+                rdr.putStrTab(res);
                 return null;
             }
             cmd.badCmd();
@@ -851,7 +857,9 @@ public class userShow {
                     cmd.error("not running on that interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.cdp.getShNeigh(true));
+                userFormat res = new userFormat("|", "category|value");
+                res.add(ifc.cdp.getShNeigh(true));
+                rdr.putStrTab(res);
                 return null;
             }
             cmd.badCmd();
@@ -1025,7 +1033,9 @@ public class userShow {
                 cmd.error("no such tracker");
                 return null;
             }
-            rdr.putStrArr(trck.worker.getShStat());
+            userFormat res = new userFormat("|", "category|value");
+            res.add(trck.worker.getShStat());
+            rdr.putStrTab(res);
             return null;
         }
         if (a.equals("mtracker")) {
@@ -2503,9 +2513,9 @@ public class userShow {
             return;
         }
         if (a.equals("status")) {
-            List<String> l = new ArrayList<String>();
-            nei.getStatus(l);
-            rdr.putStrArr(l);
+            userFormat res = new userFormat("|", "category|value");
+            nei.getStatus(res);
+            rdr.putStrTab(res);
             return;
         }
         cmd.badCmd();

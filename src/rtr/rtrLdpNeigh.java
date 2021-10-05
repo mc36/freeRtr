@@ -24,6 +24,7 @@ import tab.tabListing;
 import tab.tabPrfxlstN;
 import tab.tabRoute;
 import tab.tabRouteEntry;
+import user.userFormat;
 import util.bits;
 import util.counter;
 import util.debugger;
@@ -195,24 +196,25 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     /**
      * get status of peer
      *
-     * @param l list to append
+     * @param res list to append
      */
-    public void getStatus(List<String> l) {
-        l.add("peer = " + peer);
-        l.add("transport = " + trans);
-        l.add("lsrid = " + lsrID);
-        l.add("local = " + ifc.addr);
-        l.add("uptime = " + bits.timePast(upTime) + " ago, at " + bits.time2str(cfgAll.timeZoneName, upTime + cfgAll.timeServerOffset, 3));
-        l.add("hold time = " + bits.timeDump(sessHelloHldtm / 1000));
-        l.add("keepalive time = " + bits.timeDump(sessHelloIntrvl / 1000));
-        l.add("prefix learned = " + prefLearn.size());
-        l.add("pwe learned = " + pweLearn.size());
-        l.add("p2mp learned = " + pmpLearn.size());
-        l.add("advertise php = " + labelPop);
-        l.add("prefix advertised = " + prefAdvert.size() + " of " + ip.labeldR.size());
-        l.add("pwe advertised = " + pweAdvert.size() + " of " + pweNeed2adv.size());
-        l.add("p2mp advertised = " + pmpAdvert.size());
-        l.add("connection = " + cntr.getShStat());
+    public void getStatus(userFormat res) {
+        res.add("peer|" + peer);
+        res.add("transport|" + trans);
+        res.add("lsrid|" + lsrID);
+        res.add("local|" + ifc.addr);
+        res.add("uptime|" + bits.timePast(upTime));
+        res.add("started|" + bits.time2str(cfgAll.timeZoneName, upTime + cfgAll.timeServerOffset, 3));
+        res.add("hold time|" + bits.timeDump(sessHelloHldtm / 1000));
+        res.add("keepalive time|" + bits.timeDump(sessHelloIntrvl / 1000));
+        res.add("prefix learned|" + prefLearn.size());
+        res.add("pwe learned|" + pweLearn.size());
+        res.add("p2mp learned|" + pmpLearn.size());
+        res.add("advertise php|" + labelPop);
+        res.add("prefix advertised|" + prefAdvert.size() + " of " + ip.labeldR.size());
+        res.add("pwe advertised|" + pweAdvert.size() + " of " + pweNeed2adv.size());
+        res.add("p2mp advertised|" + pmpAdvert.size());
+        res.add("connection|" + cntr.getShStat());
     }
 
     /**

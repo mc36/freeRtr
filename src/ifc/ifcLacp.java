@@ -180,14 +180,14 @@ public class ifcLacp implements ifcUp, Runnable {
     }
 
     private static void dumpInfo(List<String> l, byte[] buf) {
-        l.add("system priority=" + bits.msbGetW(buf, 0));
+        l.add("system priority|" + bits.msbGetW(buf, 0));
         addrMac adr = new addrMac();
         adr.fromBuf(buf, 2);
-        l.add("system address=" + adr);
-        l.add("system key=" + bits.msbGetW(buf, 8));
-        l.add("port priority=" + bits.msbGetW(buf, 10));
-        l.add("port number=" + bits.msbGetW(buf, 12));
-        l.add("port state=" + buf[14]);
+        l.add("system address|" + adr);
+        l.add("system key|" + bits.msbGetW(buf, 8));
+        l.add("port priority|" + bits.msbGetW(buf, 10));
+        l.add("port number|" + bits.msbGetW(buf, 12));
+        l.add("port state|" + buf[14]);
     }
 
     /**

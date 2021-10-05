@@ -447,17 +447,17 @@ class ifcLldpNeigh implements Comparator<ifcLldpNeigh> {
 
     public void dump(List<String> l) {
         l.add("");
-        l.add("peer=" + peer);
-        l.add("system name=" + sysName);
-        l.add("port id=" + portId);
-        l.add("port desc=" + portDesc);
-        l.add("ipv4 addr=" + addr4);
-        l.add("ipv6 addr=" + addr6);
-        l.add("mac addr=" + addrM);
-        l.add("system desc=" + sysDesc);
-        l.add("ttl=" + ttl);
-        l.add("sys capa=" + ifcLldp.capability2string(capaSys));
-        l.add("cfg capa=" + ifcLldp.capability2string(capaCfg));
+        l.add("peer|" + peer);
+        l.add("system name|" + sysName);
+        l.add("port id|" + portId);
+        l.add("port desc|" + portDesc);
+        l.add("ipv4 addr|" + addr4);
+        l.add("ipv6 addr|" + addr6);
+        l.add("mac addr|" + addrM);
+        l.add("system desc|" + sysDesc);
+        l.add("ttl|" + ttl);
+        l.add("sys capa|" + ifcLldp.capability2string(capaSys));
+        l.add("cfg capa|" + ifcLldp.capability2string(capaCfg));
     }
 
     public int compare(ifcLldpNeigh o1, ifcLldpNeigh o2) {

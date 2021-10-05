@@ -382,16 +382,26 @@ public class clntTrack implements rtrBfdClnt {
      */
     public List<String> getShStat() {
         List<String> l = new ArrayList<String>();
-        l.add("name=" + name + ", type=" + force2string(force) + " " + mode2string(mode) + ", target=" + target);
-        l.add("reported=" + getStatus() + ", since " + bits.time2str(cfgAll.timeZoneName, finalTime + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(finalTime));
-        l.add("changes=" + totalChng + ", measures=" + (totalUp + totalDn) + ", ups=" + totalUp + ", downs=" + totalDn);
-        l.add("current=" + lastState + ", count=" + lastCount + ", since " + bits.time2str(cfgAll.timeZoneName, lastTime + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(lastTime));
+        l.add("name|" + name);
+        l.add("type|" + force2string(force) + " " + mode2string(mode));
+        l.add("target|" + target);
+        l.add("reported|" + getStatus());
+        l.add("since|" + bits.time2str(cfgAll.timeZoneName, finalTime + cfgAll.timeServerOffset, 3));
+        l.add("for|" + bits.timePast(finalTime));
+        l.add("changes|" + totalChng);
+        l.add("measures|" + (totalUp + totalDn));
+        l.add("ups|" + totalUp);
+        l.add("downs|" + totalDn);
+        l.add("current|" + lastState);
+        l.add("count|" + lastCount);
+        l.add("since|" + bits.time2str(cfgAll.timeZoneName, lastTime + cfgAll.timeServerOffset, 3));
+        l.add("for|" + bits.timePast(lastTime));
         String a = "";
         for (int i = 0; i < clients.size(); i++) {
             ipFwd ntry = clients.get(i);
             a += " " + ntry;
         }
-        l.add("clients:" + a);
+        l.add("clients|" + a);
         return l;
     }
 
