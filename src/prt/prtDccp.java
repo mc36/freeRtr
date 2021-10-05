@@ -319,6 +319,7 @@ public class prtDccp extends prtGen {
         pck.IPdf = false;
         pck.IPttl = -1;
         pck.IPtos = -1;
+        pck.IPid = -1;
         createDCCPheader(pck);
         fwdCore.protoPack(ifc, null, pck);
     }
@@ -431,6 +432,7 @@ public class prtDccp extends prtGen {
         pr.updateSeq();
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
+        pck.IPid = clnt.sendFLW;
         pck.TCPmss = 0;
         pr.setSeq(pck);
         pck.TCPflg = typDatAck << 1;
@@ -493,6 +495,7 @@ public class prtDccp extends prtGen {
         pck.TCPmss = opt.length;
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
+        pck.IPid = clnt.sendFLW;
         pr.setSeq(pck);
         pck.TCPflg = typ << 1;
         pck.UDPsrc = clnt.portLoc;

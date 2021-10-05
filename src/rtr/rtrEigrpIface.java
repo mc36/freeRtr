@@ -641,6 +641,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = rtrEigrp.protoNum;
         pck.IPsrc.setAddr(iface.addr);
         if (iface.addr.isIPv4()) {

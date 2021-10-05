@@ -1129,7 +1129,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         prtTcp.updateTCPheader(pck, pck.UDPsrc, pck.UDPtrg, -1, -1, mss);
         pck.getSkip(-pck.IPsiz);
-        ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, pck.UDPsiz);
+        ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, -1, pck.UDPsiz);
     }
 
     /**
@@ -1343,12 +1343,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param prt new protocol value, -1=dont set
      * @param ttl new ttl value, -1=dont set, -2=decrement
      * @param tos new tos value, -1=dont set
+     * @param id new flow value, -1=dont set
      * @param len new payload length, -1=dont set
      */
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len) {
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int id, int len) {
         pck.INTiface = -1;
         pck.INTupper = pck.IPprt;
-        ipCore.updateIPheader(pck, src, trg, prt, ttl, tos, len);
+        ipCore.updateIPheader(pck, src, trg, prt, ttl, tos, id, len);
         ipMpls.beginMPLSfields(pck, mplsPropTtl);
     }
 
@@ -1827,7 +1828,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
             if (from != 4) {
-                ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
+                ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1, -1);
             }
             ipFwdMcast grp = new ipFwdMcast(pck.IPtrg, pck.IPsrc);
             grp = groups.find(grp);
@@ -1925,9 +1926,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (from != 4) {
             if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
-                ipCore.updateIPheader(pck, null, null, -1, pck.MPLSttl - 1, -1, -1);
+                ipCore.updateIPheader(pck, null, null, -1, pck.MPLSttl - 1, -1, -1, -1);
             } else {
-                ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1);
+                ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1, -1);
             }
         }
         if (prf.best.rouTyp == tabRouteAttr.routeType.conn) {
@@ -2010,11 +2011,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param size size of payload
      * @param ttl ttl to use
      * @param tos tos to use
+     * @param id flow to use
      * @param dat filler byte
      * @param mul multiple responses
      * @return notifier notified on reply
      */
-    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int dat, boolean mul) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int id, int dat, boolean mul) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2059,6 +2061,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.IPttl = ttl;
         pck.IPtos = tos;
+        pck.IPid = id;
         pck.INTupper = -1;
         ipCore.createIPheader(pck);
         if (coppOut != null) {

@@ -52,6 +52,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         "policy-map .*! sequence .* match dscp all",
         "policy-map .*! sequence .* match precedence all",
         "policy-map .*! sequence .* match qosgroup all",
+        "policy-map .*! sequence .* match flow all",
         "policy-map .*! sequence .* set cos leave",
         "policy-map .*! sequence .* set exp leave",
         "policy-map .*! sequence .* set tos leave",
@@ -59,6 +60,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         "policy-map .*! sequence .* set dscp leave",
         "policy-map .*! sequence .* set precedence leave",
         "policy-map .*! sequence .* set qosgroup leave",
+        "policy-map .*! sequence .* set flow leave",
         "policy-map .*! sequence .* access-rate 0",
         "policy-map .*! sequence .* exceed-rate 0",
         "policy-map .*! sequence .* time-interval 0",
@@ -161,6 +163,9 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add("2 3     qosgroup            match qos value");
         l.add("3 .       <num>             value to match");
         l.add("3 .       all               any value");
+        l.add("2 3     flow                match flow value");
+        l.add("3 .       <num>             value to match");
+        l.add("3 .       all               any value");
         l.add("1 2   set                   set values in packet");
         l.add("2 3     precedence          set precedence value");
         l.add("3 .       leave             leave value unchanged");
@@ -211,6 +216,14 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add("3 4       sub               substract value to current value");
         l.add("4 .         <num>           value");
         l.add("2 3     qosgroup            set qosgroup value");
+        l.add("3 .       leave             leave value unchanged");
+        l.add("3 4       set               set value to a specific value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       add               add value to current value");
+        l.add("4 .         <num>           value");
+        l.add("3 4       sub               substract value to current value");
+        l.add("4 .         <num>           value");
+        l.add("2 3     flow                set flow value");
         l.add("3 .       leave             leave value unchanged");
         l.add("3 4       set               set value to a specific value");
         l.add("4 .         <num>           value");
@@ -394,6 +407,13 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("flow")) {
+                if (ntry.flowMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -444,6 +464,13 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
             }
             if (a.equals("qosgroup")) {
                 if (ntry.qosSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("flow")) {
+                if (ntry.flowSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
                 }
@@ -553,6 +580,10 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
                 ntry.qosMatch.set2always();
                 return;
             }
+            if (a.equals("flow")) {
+                ntry.flowMatch.set2always();
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -585,6 +616,10 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
             }
             if (a.equals("qosgroup")) {
                 ntry.qosSet.set2unchange();
+                return;
+            }
+            if (a.equals("flow")) {
+                ntry.flowSet.set2unchange();
                 return;
             }
             cmd.badCmd();

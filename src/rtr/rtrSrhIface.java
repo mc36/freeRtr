@@ -134,7 +134,7 @@ public class rtrSrhIface implements ipPrt {
         pck.getSkip(siz);
         pck.putSkip(pck.IPsiz);
         pck.mergeHeader(-1, pck.headSize() - pck.IPsiz);
-        fwdCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.dataSize() - pck.IPsiz);
+        fwdCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.IPid, pck.dataSize() - pck.IPsiz);
         pck.IPsrc.setAddr(rtr);
         fwdCore.errorReport(err, rxIfc, pck);
     }
@@ -161,7 +161,7 @@ public class rtrSrhIface implements ipPrt {
         if ((fwdCore.mplsPropTtl | rxIfc.mplsPropTtlAlways) & rxIfc.mplsPropTtlAllow) {
             pck.IPttl = pck.MPLSttl;
         }
-        fwdCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.dataSize() - pck.IPsiz);
+        fwdCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.IPid, pck.dataSize() - pck.IPsiz);
         fwdCore.ifacePack(rxIfc, pck);
     }
 

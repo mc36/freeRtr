@@ -34,6 +34,11 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
     public int ipTos;
 
     /**
+     * ip flow number
+     */
+    public int ipFlw;
+
+    /**
      * source port
      */
     public int srcPrt;
@@ -145,6 +150,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         n.trgAdr = trgAdr.copyBytes();
         n.ipPrt = ipPrt;
         n.ipTos = ipTos;
+        n.ipFlw = ipFlw;
         n.srcPrt = srcPrt;
         n.trgPrt = trgPrt;
         n.rxByte = rxByte;
@@ -175,6 +181,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         tabSessionEntry ses = new tabSessionEntry(macs);
         ses.ipPrt = pck.IPprt;
         ses.ipTos = pck.IPtos;
+        ses.ipFlw = pck.IPid;
         ses.srcPrt = pck.UDPsrc;
         ses.trgPrt = pck.UDPtrg;
         ses.srcAdr = pck.IPsrc.copyBytes();
@@ -203,6 +210,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         n.trgPrt = srcPrt;
         n.ipPrt = ipPrt;
         n.ipTos = ipTos;
+        n.ipFlw = ipFlw;
         return n;
     }
 

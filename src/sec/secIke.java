@@ -49,6 +49,11 @@ public class secIke implements ifcDn, ifcUp {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * preshared key
      */
     public String preshared;
@@ -237,8 +242,8 @@ public class secIke implements ifcDn, ifcUp {
         fwdUdp = udp;
         espRx = new packEsp(this);
         espTx = new packEsp(this);
-        espRx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL);
-        espTx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL);
+        espRx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL, sendingFLW);
+        espTx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL, sendingFLW);
         espRx.ipv6 = ipv6;
         espTx.ipv6 = ipv6;
         espRx.replayCheck = replayCheck;

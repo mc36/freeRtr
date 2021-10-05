@@ -182,6 +182,16 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
     }
 
     /**
+     * set sending flow value
+     *
+     * @param i tos value
+     */
+    public void setTxFLW(int i) {
+        ip4.sendingFLW = i;
+        ip6.sendingFLW = i;
+    }
+
+    /**
      * set sending ttl value
      *
      * @param i ttl value

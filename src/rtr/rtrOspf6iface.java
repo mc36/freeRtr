@@ -963,6 +963,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = rtrOspf6.protoNum;
         pck.IPsrc.setAddr(iface.addr);
         if (justDR) {

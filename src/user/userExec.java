@@ -1213,6 +1213,8 @@ public class userExec {
         hl.add("4 3,.        <num>               timeout in milliseconds");
         hl.add("3 4        /tos                  specify tos value");
         hl.add("4 3,.        <num>               tos");
+        hl.add("3 4        /flow                 specify flow value");
+        hl.add("4 3,.        <num>               tos");
         hl.add("3 4        /port                 specify port value");
         hl.add("4 3,.        <num>               port");
         hl.add("3 4        /protocol             specify protocol value");
@@ -1247,6 +1249,8 @@ public class userExec {
         hl.add("3 4        /ttl                  specify ttl value");
         hl.add("4 3,.        <num>               ttl");
         hl.add("3 4        /tos                  specify tos value");
+        hl.add("4 3,.        <num>               tos");
+        hl.add("3 4        /flow                 specify flow value");
         hl.add("4 3,.        <num>               tos");
         hl.add("1 2    sleep                     do nothing for a while");
         hl.add("2 .      <num>                   milliseconds for sleep");
@@ -2563,6 +2567,7 @@ public class userExec {
         cfgIfc ifc = cfgAll.getClntIfc();
         int timeout = 1000;
         int tos = 0;
+        int flow = 0;
         int len = 64;
         int ipver = 0;
         int delay = 0;
@@ -2612,6 +2617,10 @@ public class userExec {
                 tos = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/flow")) {
+                flow = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("/size")) {
                 len = bits.str2num(cmd.word());
                 continue;
@@ -2659,7 +2668,7 @@ public class userExec {
         if (ifc != null) {
             src = ifc.getLocAddr(trg);
         }
-        pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", len=" + len);
+        pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", flow=" + flow + ", len=" + len);
         len -= adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
@@ -2669,7 +2678,7 @@ public class userExec {
             if (delay > 0) {
                 bits.sleep(delay);
             }
-            trc.doRound(ttl, tos, timeout, len);
+            trc.doRound(ttl, tos, flow, timeout, len);
             String a = "";
             if (trc.errLab > 0) {
                 a += ", mpls=" + trc.errLab;
@@ -2802,7 +2811,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, tos, 0, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, tos, 0, 0, false);
             if (ping == null) {
                 continue;
             }
@@ -2832,6 +2841,7 @@ public class userExec {
         int timeout = 1000;
         int repeat = 5;
         int tos = 0;
+        int flow = 0;
         int ttl = 255;
         int proto = 0;
         int delay = 0;
@@ -2892,6 +2902,10 @@ public class userExec {
                 tos = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/flow")) {
+                flow = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("/ipv4")) {
                 proto = 4;
                 continue;
@@ -2925,7 +2939,7 @@ public class userExec {
         int tiMin = timeout * 10;
         int tiMax = 0;
         int tiSum = 0;
-        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi + ", detail=" + detail);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi + ", detail=" + detail);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
@@ -2939,7 +2953,7 @@ public class userExec {
                 break;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, data, multi);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, flow, data, multi);
             if (ping == null) {
                 pipe.strPut("N");
                 continue;

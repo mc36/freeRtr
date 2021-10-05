@@ -445,6 +445,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             case icmpEchoReq:
                 fwdCore.echoRcvd++;
                 int i = pck.IPtos;
+                int o = pck.IPid;
                 pck.ICMPtc = icmpEchoRep;
                 adr = pck.IPsrc.copyBytes();
                 pck.IPsrc.setAddr(rxIfc.addr);
@@ -452,6 +453,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 pck.putDefaults();
                 pck.putStart();
                 pck.IPtos = i;
+                pck.IPid = o;
                 pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(size);
                 createICMPheader(pck);

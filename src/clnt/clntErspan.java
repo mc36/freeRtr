@@ -73,6 +73,11 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -191,6 +196,9 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
         }
         if (sendingTOS >= 0) {
             pckBin.IPtos = sendingTOS;
+        }
+        if (sendingFLW >= 0) {
+            pckBin.IPid = sendingFLW;
         }
         pckBin.IPprt = packErspan.prot;
         pckBin.IPsrc.setAddr(fwdIfc.addr);

@@ -42,6 +42,11 @@ public class prtMinenc implements ipPrt, ifcDn {
      */
     public int sendingTOS = -1;
 
+    /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
     private ipFwdIface sendingIfc;
 
     private ifcUp upper = new ifcNull();
@@ -303,6 +308,9 @@ public class prtMinenc implements ipPrt, ifcDn {
         }
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
+        }
+        if (sendingFLW >= 0) {
+            pck.IPid = sendingFLW;
         }
         pck.IPprt = proto;
         pck.IPtrg.setAddr(remote);

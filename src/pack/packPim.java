@@ -312,6 +312,7 @@ public class packPim {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = packPim.proto;
         pck.IPsrc.setAddr(ifc.addr);
         pck.merge2beg();

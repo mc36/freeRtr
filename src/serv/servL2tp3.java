@@ -73,6 +73,11 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * list of connections
      */
     public tabGen<servL2tp3conn> conns = new tabGen<servL2tp3conn>();
@@ -409,6 +414,9 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         }
         if (lower.sendingTOS >= 0) {
             pck.IPtos = lower.sendingTOS;
+        }
+        if (lower.sendingFLW >= 0) {
+            pck.IPid = lower.sendingFLW;
         }
         pck.IPprt = packL2tp3.prot;
         pck.IPsrc.setAddr(iface.addr);

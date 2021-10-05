@@ -97,6 +97,8 @@ public class packEsp implements ipPrt {
     private int sendingTTL = 255;
 
     private int sendingTOS = -1;
+    
+    private int sendingFLW = -1;
 
     public String toString() {
         return "esp to " + peerAddr;
@@ -120,13 +122,15 @@ public class packEsp implements ipPrt {
      * @param trg peer address
      * @param tos sending tos
      * @param ttl sending ttl
+     * @param flw sending flow
      */
-    public void lowerSetup(ipFwd fwd, ipFwdIface ifc, addrIP trg, int tos, int ttl) {
+    public void lowerSetup(ipFwd fwd, ipFwdIface ifc, addrIP trg, int tos, int ttl, int flw) {
         forwarder = fwd;
         fwdIface = ifc;
         peerAddr = trg.copyBytes();
         sendingTOS = tos;
         sendingTTL = ttl;
+        sendingFLW = flw;
     }
 
     /**
@@ -358,6 +362,9 @@ public class packEsp implements ipPrt {
         }
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
+        }
+        if (sendingFLW >= 0) {
+            pck.IPid = sendingFLW;
         }
         pck.IPprt = protoNum;
         forwarder.protoPack(fwdIface, null, pck);

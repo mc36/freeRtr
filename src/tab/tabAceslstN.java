@@ -78,6 +78,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     public tabListing<tabObjprtN<T>, T> trgOGprt;
 
     /**
+     * flow
+     */
+    public tabIntMatcher flow;
+
+    /**
      * tos
      */
     public tabIntMatcher tos;
@@ -150,6 +155,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         trgMask = (T) adr.copyBytes();
         proto = new tabIntMatcher();
         tos = new tabIntMatcher();
+        flow = new tabIntMatcher();
         dscp = new tabIntMatcher();
         prec = new tabIntMatcher();
         ttl = new tabIntMatcher();
@@ -182,6 +188,9 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
      */
     public String toString() {
         String a = proto + " " + convPart(srcAddr, srcMask, srcPort, srcOGnet, srcOGprt) + " " + convPart(trgAddr, trgMask, trgPort, trgOGnet, trgOGprt);
+        if (flow.action != tabIntMatcher.actionType.always) {
+            a += " flow " + flow;
+        }
         if (tos.action != tabIntMatcher.actionType.always) {
             a += " tos " + tos;
         }
@@ -304,6 +313,12 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 ntry.logMatch = true;
                 continue;
             }
+            if (a.equals("flow")) {
+                if (ntry.flow.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
             if (a.equals("tos")) {
                 if (ntry.tos.fromString(cmd.word())) {
                     return true;
@@ -422,6 +437,9 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             return true;
         }
         if (!proto.matches(pck.IPprt)) {
+            return false;
+        }
+        if (!flow.matches(pck.IPid)) {
             return false;
         }
         if (!tos.matches(pck.IPtos)) {

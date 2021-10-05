@@ -480,6 +480,7 @@ public class prtTcp extends prtGen {
         pck.IPdf = false;
         pck.IPttl = -1;
         pck.IPtos = -1;
+        pck.IPid = -1;
         if ((src.TCPflg & flagSYN) != 0) {
             pck.TCPack++;
         }
@@ -527,6 +528,7 @@ public class prtTcp extends prtGen {
             pck.IPdf = false;
             pck.IPttl = clnt.sendTTL;
             pck.IPtos = clnt.sendTOS;
+            pck.IPid = clnt.sendFLW;
             if ((flg & flagSYN) != 0) {
                 pck.TCPseq--;
                 pck.TCPmss = cfgAll.tcpMaxSegment;

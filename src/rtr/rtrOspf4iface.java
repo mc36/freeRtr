@@ -977,6 +977,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = rtrOspf4.protoNum;
         pck.IPsrc.setAddr(iface.addr);
         if (justDR) {

@@ -42,6 +42,11 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     public int sendTOS = -1;
 
     /**
+     * sending flow
+     */
+    public int sendFLW = -1;
+
+    /**
      * sending ttl
      */
     public int sendTTL = -1;
@@ -416,6 +421,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         pck.IPalrt = -1;
         pck.IPttl = sendTTL;
         pck.IPtos = sendTOS;
+        pck.IPid = sendFLW;
         if (lower.connectionSend(this, pck)) {
             return true;
         }

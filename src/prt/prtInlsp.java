@@ -51,6 +51,11 @@ public class prtInlsp implements ipPrt, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * sa id
      */
     public int said;
@@ -272,6 +277,9 @@ public class prtInlsp implements ipPrt, ifcDn {
         }
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
+        }
+        if (sendingFLW >= 0) {
+            pck.IPtos = sendingFLW;
         }
         pck.IPprt = prot;
         pck.IPsrc.setAddr(sendingIfc.addr);

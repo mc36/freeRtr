@@ -46,6 +46,11 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * preferred ip protocol version
      */
     public int prefer = 0;
@@ -278,6 +283,7 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
         }
         conn.timeout = 120000;
         conn.sendTOS = sendingTOS;
+        conn.sendFLW = sendingFLW;
         conn.sendTTL = sendingTTL;
         if (negotiate) {
             nonce = bits.randomD();

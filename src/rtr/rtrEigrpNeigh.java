@@ -206,6 +206,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = rtrEigrp.protoNum;
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.setAddr(peer);

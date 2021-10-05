@@ -110,6 +110,16 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater qosSet = new tabIntUpdater();
 
     /**
+     * flow
+     */
+    public tabIntMatcher flowMatch = new tabIntMatcher();
+
+    /**
+     * qos updater
+     */
+    public tabIntUpdater flowSet = new tabIntUpdater();
+
+    /**
      * byte rate of action
      */
     public long accessRate;
@@ -204,6 +214,7 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         }
         cmds.cfgLine(l, !fragMatch, beg, "match frag", "");
         l.add(beg + "match flag " + flagMatch);
+        l.add(beg + "match flow " + flowMatch);
         l.add(beg + "match length " + lengthMatch);
         l.add(beg + "match ttl " + ttlMatch);
         l.add(beg + "match ethtyp " + ethtypMatch);
@@ -219,6 +230,7 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set dscp " + dscpSet);
         l.add(beg + "set precedence " + precedenceSet);
         l.add(beg + "set ttl " + ttlSet);
+        l.add(beg + "set flow " + flowSet);
         l.add(beg + "set qosgroup " + qosSet);
         l.add(beg + "access-rate " + accessRate * 8);
         l.add(beg + "exceed-rate " + exceedRate * 8);
@@ -267,6 +279,9 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
             }
         }
         if (!flagMatch.matches(pck.TCPflg)) {
+            return false;
+        }
+        if (!flowMatch.matches(pck.IPid)) {
             return false;
         }
         if (!tosMatch.matches(pck.IPtos)) {

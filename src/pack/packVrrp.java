@@ -179,6 +179,7 @@ public class packVrrp {
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = proto;
         pck.IPtrg.setAddr(genIpAddr());
         pck.IPsrc.setAddr(ifc.addr);

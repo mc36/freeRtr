@@ -161,10 +161,12 @@ public class ipCor6 implements ipCor {
         if (pck.IPtos < 0) {
             pck.IPtos = sendingTOS;
         }
+        if (pck.IPid < 0) {
+            pck.IPid = (pck.UDPsrc ^ pck.UDPtrg ^ pck.IPprt) & 0xffff;
+        }
         if (debugger.ipCor6traf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
-        pck.IPid = (pck.UDPsrc ^ pck.UDPtrg ^ pck.IPprt) & 0xffff;
         pck.IPsiz = size;
         int oldPrt = pck.IPprt;
         if (pck.IPalrt != -1) {
@@ -195,7 +197,7 @@ public class ipCor6 implements ipCor {
         pck.merge2beg();
     }
 
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len) {
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int id, int len) {
         if (debugger.ipCor6traf) {
             logger.debug("upd src=" + src + " trg=" + trg + " prt=" + prt + " ttl=" + ttl + " tos=" + tos + " len=" + len);
         }
@@ -221,6 +223,10 @@ public class ipCor6 implements ipCor {
             verTos = (verTos & 0xf00f) | ((tos & 0xff) << 4);
             pck.msbPutW(0, verTos);
             pck.IPtos = tos;
+        }
+        if (id != -1) {
+            pck.msbPutW(2, id); // flow label
+            pck.IPid = id;
         }
         if (len != -1) {
             pck.msbPutW(4, len); // total length of this packet (hdr excl)

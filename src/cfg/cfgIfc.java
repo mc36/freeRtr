@@ -519,6 +519,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public int tunTOS;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int tunFLW;
+
+    /**
      * sending ttl value, -1 means maps out
      */
     public int tunTTL;
@@ -3569,6 +3574,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         tunTOS = -1;
+        tunFLW = 0;
         tunTTL = 255;
         tunKey = 0;
         tunKey2 = 0;
@@ -3627,6 +3633,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunGRE.setEndpoints(ifc, tunTrg, true);
                 tunGRE.setUpper(ethtyp);
                 tunGRE.sendingTOS = tunTOS;
+                tunGRE.sendingFLW = tunFLW;
                 tunGRE.sendingTTL = tunTTL;
                 tunGRE.tunnelKey = tunKey;
                 tunGRE.tunnelSum = tunSum;
@@ -3639,6 +3646,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunUdpGre.srcIfc = tunSrc;
                 tunUdpGre.target = "" + tunTrg;
                 tunUdpGre.sendingTOS = tunTOS;
+                tunUdpGre.sendingFLW = tunFLW;
                 tunUdpGre.sendingTTL = tunTTL;
                 tunUdpGre.tunnelKey = tunKey;
                 tunUdpGre.tunnelSum = tunSum;
@@ -3656,6 +3664,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunAmt.prtL = tunKey2;
                 tunAmt.negotiate = tunSeq;
                 tunAmt.sendingTOS = tunTOS;
+                tunAmt.sendingFLW = tunFLW;
                 tunAmt.sendingTTL = tunTTL;
                 tunAmt.setUpper(ethtyp);
                 tunAmt.workStart();
@@ -3666,6 +3675,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunICMP.setEndpoints(ifc, tunTrg);
                 tunICMP.setUpper(ethtyp);
                 tunICMP.sendingTOS = tunTOS;
+                tunICMP.sendingFLW = tunFLW;
                 tunICMP.sendingTTL = tunTTL;
                 tunICMP.tunnelKey = tunKey;
                 lower = tunICMP;
@@ -3675,6 +3685,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPIM.setEndpoints(ifc, tunTrg);
                 tunPIM.setUpper(ethtyp);
                 tunPIM.sendingTOS = tunTOS;
+                tunPIM.sendingFLW = tunFLW;
                 tunPIM.sendingTTL = tunTTL;
                 lower = tunPIM;
                 break;
@@ -3686,6 +3697,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunLisp.prtR = tunKey;
                 tunLisp.prtL = tunKey2;
                 tunLisp.sendingTOS = tunTOS;
+                tunLisp.sendingFLW = tunFLW;
                 tunLisp.sendingTTL = tunTTL;
                 tunLisp.setUpper(ethtyp);
                 tunLisp.workStart();
@@ -3696,6 +3708,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunMinenc.setEndpoints(ifc, tunTrg);
                 tunMinenc.setUpper(ethtyp);
                 tunMinenc.sendingTOS = tunTOS;
+                tunMinenc.sendingFLW = tunFLW;
                 tunMinenc.sendingTTL = tunTTL;
                 lower = tunMinenc;
                 break;
@@ -3704,6 +3717,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPipe.setEndpoints(ifc, tunTrg);
                 tunPipe.setUpper(ethtyp);
                 tunPipe.sendingTOS = tunTOS;
+                tunPipe.sendingFLW = tunFLW;
                 tunPipe.sendingTTL = tunTTL;
                 tunPipe.vpnId = tunKey;
                 lower = tunPipe;
@@ -3713,6 +3727,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunNos.setEndpoints(ifc, tunTrg);
                 tunNos.setUpper(ethtyp);
                 tunNos.sendingTOS = tunTOS;
+                tunNos.sendingFLW = tunFLW;
                 tunNos.sendingTTL = tunTTL;
                 lower = tunNos;
                 break;
@@ -3721,6 +3736,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunIpcomp.setEndpoints(ifc, tunTrg);
                 tunIpcomp.setUpper(ethtyp);
                 tunIpcomp.sendingTOS = tunTOS;
+                tunIpcomp.sendingFLW = tunFLW;
                 tunIpcomp.sendingTTL = tunTTL;
                 lower = tunIpcomp;
                 break;
@@ -3729,6 +3745,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunIpenc.setEndpoints(ifc, tunTrg);
                 tunIpenc.setUpper(ethtyp);
                 tunIpenc.sendingTOS = tunTOS;
+                tunIpenc.sendingFLW = tunFLW;
                 tunIpenc.sendingTTL = tunTTL;
                 tunIpenc.flowId = tunKey;
                 lower = tunIpenc;
@@ -3738,6 +3755,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTmux.setEndpoints(ifc, tunTrg);
                 tunTmux.setUpper(ethtyp);
                 tunTmux.sendingTOS = tunTOS;
+                tunTmux.sendingFLW = tunFLW;
                 tunTmux.sendingTTL = tunTTL;
                 lower = tunTmux;
                 break;
@@ -3746,6 +3764,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunMplsip.setEndpoints(ifc, tunTrg, true);
                 tunMplsip.setUpper(ethtyp);
                 tunMplsip.sendingTOS = tunTOS;
+                tunMplsip.sendingFLW = tunFLW;
                 tunMplsip.sendingTTL = tunTTL;
                 lower = tunMplsip;
                 break;
@@ -3757,6 +3776,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunMplsudp.prtR = tunKey;
                 tunMplsudp.prtL = tunKey2;
                 tunMplsudp.sendingTOS = tunTOS;
+                tunMplsudp.sendingFLW = tunFLW;
                 tunMplsudp.sendingTTL = tunTTL;
                 tunMplsudp.setUpper(ethtyp);
                 tunMplsudp.workStart();
@@ -3772,6 +3792,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSwipe.setEndpoints(ifc, tunTrg);
                 tunSwipe.setUpper(ethtyp);
                 tunSwipe.sendingTOS = tunTOS;
+                tunSwipe.sendingFLW = tunFLW;
                 tunSwipe.sendingTTL = tunTTL;
                 lower = tunSwipe;
                 break;
@@ -3784,6 +3805,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunOpenvpn.transform = tunPrt.trans;
                 tunOpenvpn.replayCheck = tunPrt.replay;
                 tunOpenvpn.sendingTOS = tunTOS;
+                tunOpenvpn.sendingFLW = tunFLW;
                 tunOpenvpn.sendingTTL = tunTTL;
                 tunOpenvpn.vrf = tunVrf;
                 tunOpenvpn.srcIfc = tunSrc;
@@ -3802,6 +3824,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunWireguard.preshared = tunPrt.preshared;
                 tunWireguard.replayCheck = tunPrt.replay;
                 tunWireguard.sendingTOS = tunTOS;
+                tunWireguard.sendingFLW = tunFLW;
                 tunWireguard.sendingTTL = tunTTL;
                 tunWireguard.vrf = tunVrf;
                 tunWireguard.srcIfc = tunSrc;
@@ -3820,6 +3843,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSatp.preshared = tunPrt.preshared;
                 tunSatp.transform = tunPrt.trans;
                 tunSatp.sendingTOS = tunTOS;
+                tunSatp.sendingFLW = tunFLW;
                 tunSatp.sendingTTL = tunTTL;
                 tunSatp.vrf = tunVrf;
                 tunSatp.srcIfc = tunSrc;
@@ -3840,6 +3864,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunInlsp.setEndpoints(ifc, tunTrg);
                 tunInlsp.setUpper(ethtyp);
                 tunInlsp.sendingTOS = tunTOS;
+                tunInlsp.sendingFLW = tunFLW;
                 tunInlsp.sendingTTL = tunTTL;
                 tunInlsp.said = tunKey;
                 lower = tunInlsp;
@@ -3854,6 +3879,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSkip.setEndpoints(ifc, tunTrg);
                 tunSkip.setUpper(ethtyp);
                 tunSkip.sendingTOS = tunTOS;
+                tunSkip.sendingFLW = tunFLW;
                 tunSkip.sendingTTL = tunTTL;
                 lower = tunSkip;
                 break;
@@ -3862,6 +3888,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunIPIP.setEndpoints(ifc, tunTrg);
                 tunIPIP.setUpper(ethtyp);
                 tunIPIP.setTxTOS(tunTOS);
+                tunIPIP.setTxFLW(tunFLW);
                 tunIPIP.setTxTTL(tunTTL);
                 lower = tunIPIP;
                 break;
@@ -3885,6 +3912,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     tunIPsec1.preshared = tunPrt.preshared;
                     tunIPsec1.sendingTTL = tunTTL;
                     tunIPsec1.sendingTOS = tunTOS;
+                    tunIPsec1.sendingFLW = tunFLW;
                     tunIPsec1.transform = tunPrt.trans;
                     tunIPsec1.ipv6 = tunPrt.ipv6;
                     tunIPsec1.replayCheck = tunPrt.replay;
@@ -3897,6 +3925,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     tunIPsec2.preshared = tunPrt.preshared;
                     tunIPsec2.sendingTTL = tunTTL;
                     tunIPsec2.sendingTOS = tunTOS;
+                    tunIPsec2.sendingFLW = tunFLW;
                     tunIPsec2.transform = tunPrt.trans;
                     tunIPsec2.ipv6 = tunPrt.ipv6;
                     tunIPsec2.replayCheck = tunPrt.replay;
@@ -3917,6 +3946,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPckOudp.prtL = tunKey2;
                 tunPckOudp.sendingTTL = tunTTL;
                 tunPckOudp.sendingTOS = tunTOS;
+                tunPckOudp.sendingFLW = tunFLW;
                 tunPckOudp.setUpper(ethtyp);
                 tunPckOudp.workStart();
                 lower = tunPckOudp;
@@ -3929,6 +3959,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPckOip.setEndpoints(ifc, tunTrg, tunKey);
                 tunPckOip.setUpper(ethtyp);
                 tunPckOip.sendingTOS = tunTOS;
+                tunPckOip.sendingFLW = tunFLW;
                 tunPckOip.sendingTTL = tunTTL;
                 lower = tunPckOip;
                 break;
@@ -3941,6 +3972,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunL2tp3.vcid = "" + tunKey;
                 tunL2tp3.direction = tunTrg.compare(tunTrg, ifc.addr) < 0;
                 tunL2tp3.sendingTOS = tunTOS;
+                tunL2tp3.sendingFLW = tunFLW;
                 tunL2tp3.sendingTTL = tunTTL;
                 tunL2tp3.setUpper(ethtyp);
                 tunL2tp3.workStart();
@@ -4001,6 +4033,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSrExt.setTargets(tunFQDN);
                 tunFQDN = tunSrExt.getTargets();
                 tunSrExt.tos = tunTOS;
+                tunSrExt.flw = tunFLW;
                 tunSrExt.ttl = tunTTL;
                 tunSrExt.setUpper(ethtyp);
                 tunSrExt.workStart();
@@ -4150,6 +4183,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunVxlan.inst = tunKey;
                 tunVxlan.prot = tunPri;
                 tunVxlan.sendingTOS = tunTOS;
+                tunVxlan.sendingFLW = tunFLW;
                 tunVxlan.sendingTTL = tunTTL;
                 tunVxlan.wildcard = tunSeq;
                 tunVxlan.setUpper(ethtyp);
@@ -4166,6 +4200,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunGeneve.srcIfc = tunSrc;
                 tunGeneve.vni = tunKey;
                 tunGeneve.sendingTOS = tunTOS;
+                tunGeneve.sendingFLW = tunFLW;
                 tunGeneve.sendingTTL = tunTTL;
                 tunGeneve.setUpper(ethtyp);
                 tunGeneve.workStart();
@@ -4182,6 +4217,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunErspan.spnid = tunKey;
                 tunErspan.vlnid = tunKey;
                 tunErspan.sendingTOS = tunTOS;
+                tunErspan.sendingFLW = tunFLW;
                 tunErspan.sendingTTL = tunTTL;
                 tunErspan.setUpper(ethtyp);
                 tunErspan.workStart();
@@ -4193,6 +4229,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunDlsw.vrf = tunVrf;
                 tunDlsw.srcIfc = tunSrc;
                 tunDlsw.sendingTOS = tunTOS;
+                tunDlsw.sendingFLW = tunFLW;
                 tunDlsw.sendingTTL = tunTTL;
                 tunDlsw.setUpper(ethtyp);
                 tunDlsw.workStart();
@@ -4204,6 +4241,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunEtherip.vrf = tunVrf;
                 tunEtherip.srcIfc = tunSrc;
                 tunEtherip.sendingTOS = tunTOS;
+                tunEtherip.sendingFLW = tunFLW;
                 tunEtherip.sendingTTL = tunTTL;
                 tunEtherip.setUpper(ethtyp);
                 tunEtherip.workStart();
@@ -4215,6 +4253,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSreth.vrf = tunVrf;
                 tunSreth.srcIfc = tunSrc;
                 tunSreth.sendingTOS = tunTOS;
+                tunSreth.sendingFLW = tunFLW;
                 tunSreth.sendingTTL = tunTTL;
                 tunSreth.setUpper(ethtyp);
                 tunSreth.workStart();
@@ -4227,6 +4266,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunUti.srcIfc = tunSrc;
                 tunUti.tunKey = tunKey;
                 tunUti.sendingTOS = tunTOS;
+                tunUti.sendingFLW = tunFLW;
                 tunUti.sendingTTL = tunTTL;
                 tunUti.setUpper(ethtyp);
                 tunUti.workStart();
@@ -4239,6 +4279,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunNvgre.srcIfc = tunSrc;
                 tunNvgre.vsid = tunKey;
                 tunNvgre.sendingTOS = tunTOS;
+                tunNvgre.sendingFLW = tunFLW;
                 tunNvgre.sendingTTL = tunTTL;
                 tunNvgre.setUpper(ethtyp);
                 tunNvgre.workStart();
@@ -5280,6 +5321,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 l.add(cmds.tabulator + "tunnel key " + tunKey + s);
                 l.add(cmds.tabulator + "tunnel tos " + tunTOS);
+                l.add(cmds.tabulator + "tunnel flow " + tunFLW);
                 l.add(cmds.tabulator + "tunnel ttl " + tunTTL);
                 l.add(cmds.tabulator + "tunnel priority " + tunPri);
                 if (tunAscAdr == null) {
@@ -7489,6 +7531,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2tunnel();
             return;
         }
+        if (a.equals("flow")) {
+            tunFLW = bits.str2num(cmd.word());
+            setup2tunnel();
+            return;
+        }
         if (a.equals("sequence-datagrams")) {
             tunSeq = true;
             setup2tunnel();
@@ -7593,6 +7640,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("tos")) {
             tunTOS = -1;
+            setup2tunnel();
+            return;
+        }
+        if (a.equals("flow")) {
+            tunFLW = 0;
             setup2tunnel();
             return;
         }

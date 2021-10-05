@@ -100,6 +100,7 @@ public class ipMhost6 extends ipMhost {
         pck.IPdf = false;
         pck.IPttl = 1;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPalrt = 0;
         pck.IPsrc.setAddr(rxIfc.addr);
         if (query) {

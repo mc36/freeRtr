@@ -51,6 +51,11 @@ public class prtSkip implements ipPrt, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending tos value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * preshared key
      */
     public String preshared;
@@ -271,6 +276,9 @@ public class prtSkip implements ipPrt, ifcDn {
         }
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
+        }
+        if (sendingFLW >= 0) {
+            pck.IPid = sendingFLW;
         }
         pck.IPprt = prot;
         pck.IPsrc.setAddr(sendingIfc.addr);

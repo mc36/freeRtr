@@ -43,9 +43,14 @@ public class clntSrExt implements ifcDn {
     public int tos = -1;
 
     /**
-     * ttl value
+     * ttl value, -1 means maps out
      */
     public int ttl = 255;
+
+    /**
+     * flow value, -1 means maps out
+     */
+    public int flw = -1;
 
     /**
      * counter
@@ -147,8 +152,11 @@ public class clntSrExt implements ifcDn {
         if (tos >= 0) {
             pck.IPtos = tos;
         }
+        if (flw >= 0) {
+            pck.IPid = flw;
+        }
         rtrSrhIface.createHeader(pck, targets);
-        fwdCor.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.dataSize() - pck.IPsiz);
+        fwdCor.updateIPheader(pck, pck.IPsrc, pck.IPtrg, pck.IPprt, pck.IPttl, pck.IPtos, pck.IPid, pck.dataSize() - pck.IPsiz);
         fwdCor.mplsTxPack(pck.IPtrg, pck, false);
     }
 

@@ -215,6 +215,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         pck.putDefaults();
         pck.IPttl = 2;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPsrc.setAddr(pckF.addr);
         pck.IPtrg.setAddr(grp);
         pck.UDPsrc = pckF.port;

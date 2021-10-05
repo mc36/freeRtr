@@ -72,8 +72,9 @@ public interface ipCor {
      * @param prt new protocol value, -1=dont set
      * @param ttl new ttl value, -1=dont set, -2=decrement
      * @param tos new tos value, -1=dont set
+     * @param id new id value, -1=dont set
      * @param len new payload length, -1=dont set
      */
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len);
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int id, int len);
 
 }

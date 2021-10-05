@@ -413,7 +413,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * @param pck packet to update
      */
     public void packUpdate(packHolder pck) {
-        myCor.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, -1);
+        myCor.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, -1, -1);
         pck.getSkip(pck.IPsiz);
         switch (pck.IPprt) {
             case prtTcp.protoNum:

@@ -141,7 +141,7 @@ public class clntTrace implements prtServP, ipPrt {
      * @param len size
      * @return true on error, false on success
      */
-    public boolean doRound(int ttl, int tos, int tim, int len) {
+    public boolean doRound(int ttl, int tos, int id, int tim, int len) {
         errRtr = null;
         errLab = -1;
         errCod = null;
@@ -158,6 +158,7 @@ public class clntTrace implements prtServP, ipPrt {
         pck.merge2beg();
         pck.IPttl = ttl;
         pck.IPtos = tos;
+        pck.IPid = id;
         started = bits.getTime();
         pck.IPprt = proto;
         pck.IPsrc.setAddr(ifc2.addr);

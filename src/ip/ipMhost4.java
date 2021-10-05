@@ -150,6 +150,7 @@ public class ipMhost4 extends ipMhost {
         pck.IPdf = false;
         pck.IPttl = 1;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPalrt = 0;
         pck.IPprt = getProtoNum();
         pck.IPsrc.setAddr(rxIfc.addr);

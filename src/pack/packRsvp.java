@@ -362,6 +362,7 @@ public class packRsvp {
         pck.IPdf = false;
         pck.IPttl = ttl;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = proto;
         pck.IPalrt = 1;
         isIP4 = pck.IPtrg.isIPv4();

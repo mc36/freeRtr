@@ -280,6 +280,7 @@ public class tabQos {
     public void updatePack(packHolder pck, tabQosN cls) {
         pck.INTqosGrp = cls.entry.qosSet.update(pck.INTqosGrp);
         int o = cls.entry.ttlSet.update(pck.IPttl);
+        int p = cls.entry.flowSet.update(pck.IPid);
         switch (pck.ETHtype) {
             case ipIfc4.type:
                 int i = cls.entry.updateTos(pck.IPtos);
@@ -287,7 +288,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(2);
-                ip4cor.updateIPheader(pck, null, null, -1, o, i, -1);
+                ip4cor.updateIPheader(pck, null, null, -1, o, i, p, -1);
                 pck.getSkip(-2);
                 return;
             case ipIfc6.type:
@@ -296,7 +297,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(2);
-                ip6cor.updateIPheader(pck, null, null, -1, o, i, -1);
+                ip6cor.updateIPheader(pck, null, null, -1, o, i, p, -1);
                 pck.getSkip(-2);
                 return;
             case ipMpls.typeM:

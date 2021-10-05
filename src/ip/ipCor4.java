@@ -137,10 +137,12 @@ public class ipCor4 implements ipCor {
         if (pck.IPtos < 0) {
             pck.IPtos = sendingTOS;
         }
+        if (pck.IPid < 0) {
+            pck.IPid = (nextPackIDval++) & 0xffff;
+        }
         if (debugger.ipCor4traf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
-        pck.IPid = (nextPackIDval++) & 0xffff;
         pck.IPsiz = size;
         if (pck.IPalrt != -1) {
             pck.msbPutD(size, 0x94040000);
@@ -178,7 +180,7 @@ public class ipCor4 implements ipCor {
         pck.merge2beg();
     }
 
-    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int len) {
+    public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int id, int len) {
         if (debugger.ipCor4traf) {
             logger.debug("upd src=" + src + " trg=" + trg + " prt=" + prt + " ttl=" + ttl + " tos=" + tos + " len=" + len);
         }
@@ -202,6 +204,10 @@ public class ipCor4 implements ipCor {
         if (tos != -1) {
             pck.putByte(1, tos); // type of service: dscp:6 unused:2
             pck.IPtos = tos;
+        }
+        if (id != -1) {
+            pck.msbPutW(4, id); // indentification
+            pck.IPid = id;
         }
         if (len != -1) {
             pck.msbPutW(2, len + pck.IPsiz); // total length

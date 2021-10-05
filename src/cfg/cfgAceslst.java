@@ -109,6 +109,9 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add("12 13                  tos           type of service matching");
         l.add("13 12,.                  all         no tos matching");
         l.add("13 12,.                  <num>       tos value");
+        l.add("12 13                  flow          flow label matching");
+        l.add("13 12,.                  all         no tos matching");
+        l.add("13 12,.                  <num>       tos value");
         l.add("12 13                  dscp          dscp matching");
         l.add("13 12,.                  all         no dscp matching");
         l.add("13 12,.                  <num>       tos value");

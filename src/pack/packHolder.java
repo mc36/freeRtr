@@ -1135,6 +1135,7 @@ public class packHolder {
     public void putDefaults() {
         IPttl = -1;
         IPtos = -1;
+        IPid = -1;
         IPdf = false;
         IPmlt = false;
         IPmlr = false;

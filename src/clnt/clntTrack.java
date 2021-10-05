@@ -203,6 +203,11 @@ public class clntTrack implements rtrBfdClnt {
     public int typOsrv;
 
     /**
+     * flow label value
+     */
+    public int flowLab;
+
+    /**
      * type of time to live
      */
     public int tim2liv = 255;
@@ -617,7 +622,7 @@ public class clntTrack implements rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, 0, false);
+                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, flowLab, 0, false);
                 if (ping == null) {
                     haveResult(false, false);
                     break;

@@ -264,6 +264,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = rtrOspf6.protoNum;
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.fromIPv6addr(peer);

@@ -63,6 +63,11 @@ public class clntNvGre implements ifcDn, ifcUp, Runnable {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * vc id
      */
     public int vsid;
@@ -232,6 +237,7 @@ public class clntNvGre implements ifcDn, ifcUp, Runnable {
         gre.tunnelKey = vsid << 8;
         gre.tunnelMsk = 0xffffff00;
         gre.sendingTOS = sendingTOS;
+        gre.sendingFLW = sendingFLW;
         gre.sendingTTL = sendingTTL;
         gre.setUpper(this);
         for (;;) {

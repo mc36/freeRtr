@@ -56,6 +56,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! interval 0",
         "tracker .*! timeout 0",
         "tracker .*! tos 0",
+        "tracker .*! flow 0",
         "tracker .*! ttl 255",
         "tracker .*! size 80",
         "tracker .*! delay-up 0",
@@ -202,6 +203,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(cmds.tabulator + "interval " + worker.interval);
         l.add(cmds.tabulator + "timeout " + worker.timeout);
         l.add(cmds.tabulator + "tos " + worker.typOsrv);
+        l.add(cmds.tabulator + "flow " + worker.flowLab);
         l.add(cmds.tabulator + "ttl " + worker.tim2liv);
         l.add(cmds.tabulator + "size " + worker.size);
         l.add(cmds.tabulator + "delay-up " + worker.delayUp);
@@ -373,6 +375,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("tos")) {
             worker.typOsrv = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("flow")) {
+            worker.flowLab = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("ttl")) {

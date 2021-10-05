@@ -258,6 +258,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         pck.IPdf = false;
         pck.IPttl = 255;
         pck.IPtos = 0;
+        pck.IPid = 0;
         pck.IPprt = rtrOspf4.protoNum;
         pck.IPsrc.setAddr(iface.iface.addr);
         pck.IPtrg.fromIPv4addr(peer);

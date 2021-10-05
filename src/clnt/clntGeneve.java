@@ -68,6 +68,11 @@ public class clntGeneve implements Runnable, prtServP, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -223,6 +228,7 @@ public class clntGeneve implements Runnable, prtServP, ifcDn {
         }
         conn.timeout = 120000;
         conn.sendTOS = sendingTOS;
+        conn.sendFLW = sendingFLW;
         conn.sendTTL = sendingTTL;
         for (;;) {
             bits.sleep(1000);
