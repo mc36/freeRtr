@@ -3067,7 +3067,16 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry));
+            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry, false));
+            return;
+        }
+        if (a.equals("flaprevpath")) {
+            addrPrefix<addrIP> ntry = addrPrefix.str2ip(cmd.word());
+            if (ntry == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry, true));
             return;
         }
         if (a.equals("allroute")) {

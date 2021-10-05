@@ -3556,9 +3556,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param afi afi
      * @param rd rd
      * @param prf prefix
+     * @param rev reverse path
      * @return list of paths
      */
-    public userFormat getFlappath(int afi, long rd, addrPrefix<addrIP> prf) {
+    public userFormat getFlappath(int afi, long rd, addrPrefix<addrIP> prf, boolean rev) {
         if (flaps == null) {
             return null;
         }
@@ -3572,7 +3573,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat l = new userFormat("|", "count|ago|last|path");
         for (int i = 0; i < ntry.paths.size(); i++) {
-            l.add("" + ntry.paths.get(i));
+            l.add("" + ntry.paths.get(i).dump(rev));
         }
         return l;
     }

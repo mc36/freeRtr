@@ -3,6 +3,7 @@ package rtr;
 import cfg.cfgAll;
 import java.util.Comparator;
 import util.bits;
+import util.cmds;
 
 /**
  * bgp4 flap statistic
@@ -31,7 +32,31 @@ public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
     }
 
     public String toString() {
-        return count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3) + "|" + path;
+        return count + " " + bits.timePast(last) + " " + path;
+    }
+
+    /**
+     * dump entry
+     *
+     * @param rev reverse path
+     * @return dumped
+     */
+    public String dump(boolean rev) {
+        String p;
+        if (rev) {
+            p = "";
+            cmds c = new cmds("pth", path);
+            for (;;) {
+                String a = c.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                p = a + " " + p;
+            }
+        } else {
+            p = path;
+        }
+        return count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3) + "|" + p;
     }
 
 }

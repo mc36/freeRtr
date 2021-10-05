@@ -589,6 +589,9 @@ public class userExec {
         hl.add("6 7              flappath        flap statistics for prefix");
         hl.add("7 8,.              <addr>        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");
+        hl.add("6 7              flaprevpath     reversed aspath flap statistics for prefix");
+        hl.add("7 8,.              <addr>        prefix to view");
+        hl.add("8 .                  [rd]        route distinguisher");
         hl.add("6 .              labels          remote and local labels");
         hl.add("6 .              ecmp            ecmp info");
         hl.add("6 .              asgraph         connectivity graph of ases");
