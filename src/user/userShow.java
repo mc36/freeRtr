@@ -2428,7 +2428,9 @@ public class userShow {
                 cmd.error("no such tunnel");
                 return;
             }
-            rdr.putStrArr(ntry.dump());
+            userFormat res = new userFormat("|", "category|value");
+            ntry.getDump(res);
+            rdr.putStrTab(res);
             return;
         }
         cmd.badCmd();

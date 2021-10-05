@@ -223,7 +223,7 @@ public class rtrRsvpIface implements ipPrt {
                 if (ntry.srcIfc == null) {
                     return;
                 }
-                ntry.created = bits.getTime();
+                ntry.updated = bits.getTime();
                 ntry.timeout = pckRvp.timeVal * 4;
                 ntry.trgAdr = pckRvp.getTrg();
                 ntry.trgId = pckRvp.sessId;
@@ -303,7 +303,7 @@ public class rtrRsvpIface implements ipPrt {
                     return;
                 }
                 ntry.trgLab = pckRvp.labelVal;
-                ntry.created = bits.getTime();
+                ntry.updated = bits.getTime();
                 ntry.timeout = pckRvp.timeVal * 4;
                 if (ntry.srcLoc > 0) {
                     return;

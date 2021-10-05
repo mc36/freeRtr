@@ -1,12 +1,14 @@
 package ip;
 
 import addr.addrIP;
+import cfg.cfgAll;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tab.tabHop;
 import tab.tabLabel;
 import tab.tabLabelNtry;
+import user.userFormat;
 import util.bits;
 
 /**
@@ -17,9 +19,14 @@ import util.bits;
 public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
 
     /**
-     * time of (re)creation
+     * time when created
      */
     public long created;
+
+    /**
+     * time of update
+     */
+    public long updated;
 
     /**
      * timeout value
@@ -170,6 +177,7 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         subAdr = adr2.copyBytes();
         subId = id2;
         timeout = 1000;
+        created = bits.getTime();
     }
 
     /**
@@ -185,37 +193,37 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
     }
 
     /**
-     * dump this tunnel
+     * get details
      *
-     * @return list of lines
+     * @param res result
      */
-    public List<String> dump() {
-        List<String> l = new ArrayList<String>();
-        l.add("source address = " + srcAdr);
-        l.add("source id = " + srcId);
-        l.add("subgroup address = " + subAdr);
-        l.add("subgroup id = " + subId);
-        l.add("target address = " + trgAdr);
-        l.add("target id = " + trgId);
+    public void getDump(userFormat res) {
+        res.add("source address|" + srcAdr);
+        res.add("source id|" + srcId);
+        res.add("subgroup address|" + subAdr);
+        res.add("subgroup id|" + subId);
+        res.add("target address|" + trgAdr);
+        res.add("target id|" + trgId);
         String a = "";
         for (int i = 0; i < midAdrs.size(); i++) {
             a += " " + midAdrs.get(i);
         }
-        l.add("midpoints = " + a);
-        l.add("ingress interface= " + srcIfc);
-        l.add("ingress hop = " + srcHop);
-        l.add("ingress label = " + locLab);
-        l.add("egress interface= " + trgIfc);
-        l.add("egress hop = " + trgHop);
-        l.add("egress label = " + trgLab);
-        l.add("bandwidth = " + bits.bandwidth(((Float) (bwdt * 8)).longValue()));
-        l.add("record route = " + recRou);
-        l.add("description = " + descr);
-        l.add("association = " + asocTyp + " " + asocAdr + " " + asocId + " " + asocGlb);
-        l.add("timeout = " + bits.timeDump(timeout / 1000));
-        l.add("updated = " + bits.timePast(created));
-        l.add("local = " + srcLoc + " " + trgLoc);
-        return l;
+        res.add("midpoints|" + a);
+        res.add("ingress interface|" + srcIfc);
+        res.add("ingress hop|" + srcHop);
+        res.add("ingress label|" + locLab);
+        res.add("egress interface|" + trgIfc);
+        res.add("egress hop|" + trgHop);
+        res.add("egress label|" + trgLab);
+        res.add("bandwidth|" + bits.bandwidth(((Float) (bwdt * 8)).longValue()));
+        res.add("record route|" + recRou);
+        res.add("description|" + descr);
+        res.add("association|" + asocTyp + " " + asocAdr + " " + asocId + " " + asocGlb);
+        res.add("timeout|" + bits.timeDump(timeout / 1000));
+        res.add("updated|" + bits.timePast(updated));
+        res.add("created|" + bits.time2str(cfgAll.timeZoneName, created, 3));
+        res.add("lasted|" + bits.timePast(created));
+        res.add("local|" + srcLoc + " " + trgLoc);
     }
 
     public String toString() {

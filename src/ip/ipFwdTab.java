@@ -1240,7 +1240,7 @@ public class ipFwdTab {
             if (ntry.srcLoc == 1) {
                 continue;
             }
-            if ((tim - ntry.created) < ntry.timeout) {
+            if ((tim - ntry.updated) < ntry.timeout) {
                 if (ntry.subId == 0) {
                     continue;
                 }
@@ -1249,7 +1249,7 @@ public class ipFwdTab {
                 if (ntry == null) {
                     continue;
                 }
-                ntry.created = tim;
+                ntry.updated = tim;
                 continue;
             }
             lower.trafEngs.del(ntry);
