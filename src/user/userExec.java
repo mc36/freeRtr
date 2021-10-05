@@ -691,6 +691,11 @@ public class userExec {
         hl.add((beg + 3) + " " + (beg + 4) + "        |                 output modifier");
         hl.add((beg + 4) + " .            count           count entities");
         hl.add((beg + 4) + " .            summary         summary entities");
+        hl.add((beg + 1) + " " + (beg + 2) + "    padsort               sort padded lines by");
+        hl.add((beg + 2) + " " + (beg + 3) + ",.    <text>              column name");
+        hl.add((beg + 3) + " " + (beg + 4) + "        |                 output modifier");
+        hl.add((beg + 4) + " .            count           count entities");
+        hl.add((beg + 4) + " .            summary         summary entities");
         hl.add((beg + 1) + " " + (beg + 2) + "    uniq                  unique lines by");
         hl.add((beg + 2) + " " + (beg + 3) + ",.    <text>              column name");
         hl.add((beg + 3) + " " + (beg + 4) + "        |                 output modifier");
