@@ -1699,6 +1699,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no tunnel checksum",
         "interface .*! no tunnel shutdown",
         "interface .*! tunnel key 0",
+        "interface .*! tunnel flow 0",
         "interface .*! tunnel tos -1",
         "interface .*! tunnel ttl 255",
         "interface .*! tunnel priority 7",
