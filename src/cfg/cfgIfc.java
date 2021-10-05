@@ -5884,6 +5884,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 4       <addr>                    source address");
         l.add("4 5,.       <num>                   unique id");
         l.add("5 .           <num>                 global id");
+        l.add("2 3     flow                        set flow label, -1 to map out");
+        l.add("3 .       <num>                     value of flow label");
         l.add("2 3     key                         set security key, 0 to disable");
         l.add("3 4,.     <num>                     value of key field");
         l.add("4 .         <num>                   value of local key field");

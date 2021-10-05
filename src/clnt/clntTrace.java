@@ -137,11 +137,12 @@ public class clntTrace implements prtServP, ipPrt {
      *
      * @param ttl hop number
      * @param tos type of service
+     * @param flw flow label
      * @param tim timeout
      * @param len size
      * @return true on error, false on success
      */
-    public boolean doRound(int ttl, int tos, int id, int tim, int len) {
+    public boolean doRound(int ttl, int tos, int flw, int tim, int len) {
         errRtr = null;
         errLab = -1;
         errCod = null;
@@ -149,6 +150,7 @@ public class clntTrace implements prtServP, ipPrt {
         if (con != null) {
             con.sendTOS = tos;
             con.sendTTL = ttl;
+            con.sendFLW = flw;
         }
         packHolder pck = new packHolder(true, true);
         pck.putDefaults();
@@ -158,7 +160,7 @@ public class clntTrace implements prtServP, ipPrt {
         pck.merge2beg();
         pck.IPttl = ttl;
         pck.IPtos = tos;
-        pck.IPid = id;
+        pck.IPid = flw;
         started = bits.getTime();
         pck.IPprt = proto;
         pck.IPsrc.setAddr(ifc2.addr);
