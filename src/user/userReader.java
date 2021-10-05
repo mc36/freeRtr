@@ -50,8 +50,6 @@ public class userReader implements Comparator<String> {
 
     private int columnE; // ending of column
 
-    private boolean columnP; // padding of column
-
     /**
      * operation modes
      */
@@ -262,7 +260,6 @@ public class userReader implements Comparator<String> {
     }
 
     private void findColumn(List<String> lst) {
-        columnP = false;
         String s = lst.get(0);
         columnB = s.indexOf(filterS);
         columnE = columnB + filterS.length();
@@ -297,11 +294,7 @@ public class userReader implements Comparator<String> {
         if (p > o) {
             p = o;
         }
-        o1 = o1.substring(p, i).trim();
-        if (!columnP) {
-            return o1;
-        }
-        return bits.padBeg(o1, columnE - columnB, " ");
+        return o1.substring(p, i);
     }
 
     public int compare(String o1, String o2) {
@@ -435,7 +428,23 @@ public class userReader implements Comparator<String> {
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                columnP = true;
+                for (int i = 0; i < lst.size(); i++) {
+                    String a = lst.get(i);
+                    int o = a.length();
+                    if (o < columnB) {
+                        continue;
+                    }
+                    String b = a.substring(0, columnB);
+                    String c = "";
+                    if (o > columnE) {
+                        c = a.substring(columnE, o);
+                        a = a.substring(columnB, columnE).trim();
+                    } else {
+                        a = a.substring(columnB, o);
+                    }
+                    a = bits.padBeg(a, columnE - columnB, " ");
+                    lst.set(i, b + a + " " + c);
+                }
                 Collections.sort(lst, this);
                 return doSecond(lst);
             case uniq:
