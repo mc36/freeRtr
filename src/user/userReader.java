@@ -282,7 +282,7 @@ public class userReader implements Comparator<String> {
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i).length();
             if (o > columnE) {
-                o = columnE;
+                columnE = o;
             }
         }
     }
