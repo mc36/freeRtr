@@ -12308,3 +12308,14 @@ qc pass: p4lang: amt server over ipv4
 qc pass: p4lang: amt server over ipv6
 qc pass: p4lang: amt server over ipv4 loopback
 qc pass: p4lang: amt server over ipv6 loopback
+---------------------------------- 2021-10-05 17:09:12
+qc pass: ingress flow matching access list
+qc pass: egress flow matching access list
+qc pass: ingress flow matching common access list
+qc pass: egress flow matching common access list
+qc pass: ingress flow matching hierarchical access list
+qc pass: egress flow matching hierarchical access list
+qc pass: qos ingress flow matcher
+qc pass: qos egress flow matcher
+qc pass: qos ingress flow set
+qc pass: qos egress flow set

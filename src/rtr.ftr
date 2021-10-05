@@ -448,6 +448,12 @@ qc pass: ingress mpls access list
 qc pass: egress mpls access list
 qc pass: ingress mpls common access list
 qc pass: egress mpls common access list
+qc pass: ingress flow matching access list
+qc pass: egress flow matching access list
+qc pass: ingress flow matching common access list
+qc pass: egress flow matching common access list
+qc pass: ingress flow matching hierarchical access list
+qc pass: egress flow matching hierarchical access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
@@ -1434,6 +1440,8 @@ qc pass: qos ingress matcher on bridged traffic
 qc pass: qos egress matcher on bridged traffic
 qc pass: qos ingress ttl matcher
 qc pass: qos egress ttl matcher
+qc pass: qos ingress flow matcher
+qc pass: qos egress flow matcher
 qc pass: qos ingress qosgroup set
 qc pass: qos ingress tos set
 qc pass: qos egress tos set
@@ -1446,6 +1454,8 @@ qc pass: qos ingress exp set
 qc pass: qos egress exp set
 qc pass: qos ingress ttl set
 qc pass: qos egress ttl set
+qc pass: qos ingress flow set
+qc pass: qos egress flow set
 qc pass: babel on one subnet
 qc pass: babel in chain
 qc pass: babel ingress route filtering with prefixlist
