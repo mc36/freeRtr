@@ -1403,7 +1403,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] netflow-rx",
         "interface .*! no ipv[4|6] netflow-tx",
         "interface .*! ipv[4|6] hsrp group 0",
-        "interface .*! ipv[4|6] hsrp password cisco",
+        "interface .*! ipv[4|6] hsrp password $v10$Y2lzY28=",
         "interface .*! ipv4 hsrp mac-address 0000.0c9f.f000",
         "interface .*! ipv6 hsrp mac-address 0005.73a0.0000",
         "interface .*! ipv[4|6] hsrp version 2",
@@ -5473,7 +5473,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             cmds.cfgLine(l, addr4 == null, cmds.tabulator, "ipv4 address", a);
             if (fwdIf4 != null) {
-                fwdIf4.getConfig(l, vrfFor.fwd4, "ipv4 ");
+                fwdIf4.getConfig(l, vrfFor.fwd4, "ipv4 ", filter);
                 cmds.cfgLine(l, ipIf4.redirect == null, cmds.tabulator, "ipv4 redirection", "" + ipIf4.redirect);
                 cmds.cfgLine(l, dhcp4c == null, cmds.tabulator, "ipv4 dhcp-client enable", "");
                 if (dhcp4c != null) {
@@ -5494,7 +5494,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             cmds.cfgLine(l, addr6 == null, cmds.tabulator, "ipv6 address", a);
             if (fwdIf6 != null) {
-                fwdIf6.getConfig(l, vrfFor.fwd6, "ipv6 ");
+                fwdIf6.getConfig(l, vrfFor.fwd6, "ipv6 ", filter);
                 cmds.cfgLine(l, ipIf6.redirect == null, cmds.tabulator, "ipv6 redirection", "" + ipIf6.redirect);
                 cmds.cfgLine(l, slaac == null, cmds.tabulator, "ipv6 slaac", "");
                 cmds.cfgLine(l, dhcp6c == null, cmds.tabulator, "ipv6 dhcp-client enable", "");

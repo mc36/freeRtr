@@ -211,6 +211,8 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
             pckB.timeRx = iface.intervalRx * 1000;
             pckB.timeTx = txint * 1000;
             pckB.multiplier = iface.multiplier;
+            pckB.keyId = iface.keyId;
+            pckB.password = iface.password;
             currState = packBfd.stDown;
             if (lastRxPack != null) {
                 if ((bits.getTime() - lastRxTime) > pckB.getRxInt(lastRxPack, iface.intervalRx)) {
@@ -230,6 +232,18 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
                     default:
                         currState = packBfd.stInit;
                         break;
+                }
+                if (iface.password != null) {
+                    if (lastRxPack.password == null) {
+                        currState = packBfd.stDown;
+                    } else {
+                        if (iface.keyId != lastRxPack.keyId) {
+                            currState = packBfd.stDown;
+                        }
+                        if (iface.password.compareTo(lastRxPack.password) != 0) {
+                            currState = packBfd.stDown;
+                        }
+                    }
                 }
                 pckB.discrRem = lastRxPack.discrLoc;
             }
@@ -285,3 +299,4 @@ class rtrBfdNeighClnt implements Comparator<rtrBfdNeighClnt> {
     }
 
 }
+

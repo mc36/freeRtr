@@ -120,6 +120,16 @@ public class packBfd {
     public int timeEcho;
 
     /**
+     * key id
+     */
+    public int keyId;
+
+    /**
+     * password
+     */
+    public String password;
+
+    /**
      * parse header
      *
      * @param pck packet to use
@@ -148,6 +158,14 @@ public class packBfd {
         timeRx = pck.msbGetD(16); // min rx time
         timeEcho = pck.msbGetD(20); // min echo time
         pck.getSkip(size);
+        if (pck.dataSize() < 3) {
+            return false;
+        }
+        if (pck.getByte(0) != 1) { // auth type
+            return true;
+        }
+        keyId = pck.getByte(2);
+        password = pck.getAsciiZ(3, pck.getByte(1), -1);
         return false;
     }
 
@@ -167,6 +185,15 @@ public class packBfd {
         pck.msbPutD(16, timeRx); // min rx time
         pck.msbPutD(20, timeEcho); // min echo time
         pck.putSkip(size);
+        if (password == null) {
+            return;
+        }
+        int len = password.length();
+        pck.putByte(0, 1); // auth type
+        pck.putByte(1, len); // auth len
+        pck.putByte(2, keyId); // auth type
+        pck.putAsciiZ(3, len, password, 0);
+        pck.putSkip(len + 3);
     }
 
     /**

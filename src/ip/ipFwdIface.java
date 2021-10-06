@@ -473,7 +473,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add("2 3     bfd                         enable bidirectional forwarding detection");
         l.add("3 4       <num>                     tx interval in ms");
         l.add("4 5         <num>                   rx interval in ms");
-        l.add("5 .           <num>                 multiplier");
+        l.add("5 6,.         <num>                 multiplier");
+        l.add("6 7             [num]               key id");
+        l.add("7 .               <str>             password");
         l.add("2 3     srh                         segment routing header commands");
         l.add("3 .       enable                    enable/disable processing");
         l.add("2 3     ptp                         precision time protococol commands");
@@ -591,8 +593,9 @@ public class ipFwdIface extends tabRouteIface {
      * @param l storage
      * @param f forwarder
      * @param beg beginning
+     * @param filter filter text
      */
-    public void getConfig(List<String> l, ipFwd f, String beg) {
+    public void getConfig(List<String> l, ipFwd f, String beg, int filter) {
         cmds.cfgLine(l, !linkLocal, cmds.tabulator, beg + "enable", "");
         cmds.cfgLine(l, !unreachEna, cmds.tabulator, beg + "unreachables", "");
         cmds.cfgLine(l, !netflowRx, cmds.tabulator, beg + "netflow-rx", "");
@@ -670,7 +673,11 @@ public class ipFwdIface extends tabRouteIface {
         if (bfdCfg == null) {
             l.add(cmds.tabulator + "no " + beg + "bfd");
         } else {
-            l.add(cmds.tabulator + beg + "bfd " + bfdCfg.intervalTx + " " + bfdCfg.intervalRx + " " + bfdCfg.multiplier);
+            a = "";
+            if (bfdCfg.password != null) {
+                a += " " + bfdCfg.keyId + " " + authLocal.passwdEncode(bfdCfg.password, (filter & 2) != 0);
+            }
+            l.add(cmds.tabulator + beg + "bfd " + bfdCfg.intervalTx + " " + bfdCfg.intervalRx + " " + bfdCfg.multiplier + a);
         }
         cmds.cfgLine(l, tcpMssIn < 1, cmds.tabulator, beg + "tcp-mss-in", "" + tcpMssIn);
         cmds.cfgLine(l, tcpMssOut < 1, cmds.tabulator, beg + "tcp-mss-out", "" + tcpMssOut);
@@ -716,7 +723,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, mldpCfg == null, cmds.tabulator, beg + "multicast mldp-enable", "");
         if (hsrpCfg != null) {
             l.add(cmds.tabulator + beg + "hsrp address " + hsrpCfg.ip);
-            l.add(cmds.tabulator + beg + "hsrp password " + hsrpCfg.authen);
+            l.add(cmds.tabulator + beg + "hsrp password " + authLocal.passwdEncode(hsrpCfg.authen, (filter & 2) != 0));
             l.add(cmds.tabulator + beg + "hsrp group " + hsrpCfg.group);
             l.add(cmds.tabulator + beg + "hsrp mac-address " + hsrpCfg.mac);
             l.add(cmds.tabulator + beg + "hsrp version " + hsrpCfg.version);
@@ -1137,6 +1144,14 @@ public class ipFwdIface extends tabRouteIface {
             bfdCfg.intervalTx = bits.str2num(cmd.word());
             bfdCfg.intervalRx = bits.str2num(cmd.word());
             bfdCfg.multiplier = bits.str2num(cmd.word());
+            int i = bits.str2num(cmd.word());
+            if (cmd.size() < 1) {
+                bfdCfg.keyId = 0;
+                bfdCfg.password = null;
+            } else {
+                bfdCfg.keyId = i;
+                bfdCfg.password = authLocal.passwdDecode(cmd.word());
+            }
             return false;
         }
         if (a.equals("srh")) {
@@ -1195,7 +1210,7 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             if (a.equals("password")) {
-                hsrpCfg.authen = cmd.word();
+                hsrpCfg.authen = authLocal.passwdDecode(cmd.word());
                 return false;
             }
             if (a.equals("mac-address")) {

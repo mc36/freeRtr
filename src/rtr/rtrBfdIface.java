@@ -47,6 +47,16 @@ public class rtrBfdIface implements prtServP {
     public int multiplier = 3;
 
     /**
+     * key id
+     */
+    public int keyId;
+
+    /**
+     * password
+     */
+    public String password;
+
+    /**
      * list of neighbors
      */
     protected final tabGen<rtrBfdNeigh> neighs;
