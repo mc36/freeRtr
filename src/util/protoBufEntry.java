@@ -10,6 +10,12 @@ import pack.packHolder;
 public class protoBufEntry {
 
     /**
+     * create instance
+     */
+    public protoBufEntry() {
+    }
+
+    /**
      * varint
      */
     public final static int tpInt = 0;

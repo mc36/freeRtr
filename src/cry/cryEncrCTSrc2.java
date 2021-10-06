@@ -14,6 +14,12 @@ public class cryEncrCTSrc2 extends cryEncrGeneric {
 
     private Cipher crypter;
 
+    /**
+     * create instance
+     */
+    public cryEncrCTSrc2() {
+    }
+
     public void init(byte[] key, byte[] iv, boolean encrypt) {
         final String name = "RC2";
         int mode;

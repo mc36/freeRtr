@@ -18,6 +18,12 @@ import util.state;
 public class ifcNshFwd implements ifcUp {
 
     /**
+     * create instance
+     */
+    public ifcNshFwd() {
+    }
+
+    /**
      * ethertype
      */
     public final static int type = 0x894f;

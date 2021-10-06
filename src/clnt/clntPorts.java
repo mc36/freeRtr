@@ -16,6 +16,12 @@ import prt.prtTcp;
 public class clntPorts {
 
     /**
+     * create instance
+     */
+    public clntPorts() {
+    }
+
+    /**
      * vrf to use
      */
     public cfgVrf vrf;

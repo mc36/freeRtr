@@ -16,6 +16,12 @@ import snd.sndCodec;
 public class clntModem {
 
     /**
+     * create instance
+     */
+    public clntModem() {
+    }
+
+    /**
      * called number
      */
     public String called = null;

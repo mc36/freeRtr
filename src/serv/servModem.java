@@ -31,6 +31,12 @@ import util.uniResLoc;
 public class servModem extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servModem() {
+    }
+
+    /**
      * codec, true=alaw, false=ulaw
      */
     protected boolean aLaw = true;

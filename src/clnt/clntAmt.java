@@ -31,6 +31,12 @@ import util.state;
 public class clntAmt implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntAmt() {
+    }
+
+    /**
      * port number of my
      */
     public final static int portNum = 2268;

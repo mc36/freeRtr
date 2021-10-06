@@ -20,6 +20,12 @@ import util.cmds;
 public class servDaytime extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servDaytime() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 13;

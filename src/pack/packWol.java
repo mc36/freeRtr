@@ -10,6 +10,12 @@ import addr.addrMac;
 public class packWol {
 
     /**
+     * create instance
+     */
+    public packWol() {
+    }
+
+    /**
      * host to wake up
      */
     public addrMac addr = new addrMac();

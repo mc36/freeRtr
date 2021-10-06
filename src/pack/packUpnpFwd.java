@@ -10,6 +10,12 @@ import addr.addrIP;
 public class packUpnpFwd {
 
     /**
+     * create instance
+     */
+    public packUpnpFwd() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 1900;

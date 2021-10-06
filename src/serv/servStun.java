@@ -31,6 +31,12 @@ import util.state;
 public class servStun extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servStun() {
+    }
+
+    /**
      * group number
      */
     public int grpNum;

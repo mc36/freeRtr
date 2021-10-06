@@ -21,6 +21,12 @@ import util.state;
 public class servEchoP extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servEchoP() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 7;

@@ -25,6 +25,12 @@ import util.uniResLoc;
 public class servLpd extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servLpd() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 515;

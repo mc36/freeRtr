@@ -33,6 +33,12 @@ import util.uniResLoc;
 public class servFtp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servFtp() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 21;

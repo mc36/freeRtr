@@ -25,6 +25,12 @@ import util.state;
 public class clntTrace implements prtServP, ipPrt {
 
     /**
+     * create instance
+     */
+    public clntTrace() {
+    }
+
+    /**
      * vrf to use
      */
     public cfgVrf vrf;

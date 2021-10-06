@@ -17,6 +17,12 @@ import util.typLenVal;
 public class tabHop {
 
     /**
+     * create instance
+     */
+    public tabHop() {
+    }
+
+    /**
      * address of hop
      */
     public addrIP adr = new addrIP();

@@ -27,6 +27,12 @@ import util.logger;
 public class servRpki extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servRpki() {
+    }
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {

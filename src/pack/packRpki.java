@@ -13,6 +13,12 @@ import pipe.pipeSide;
 public class packRpki {
 
     /**
+     * create instance
+     */
+    public packRpki() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 323;

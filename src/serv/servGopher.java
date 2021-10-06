@@ -25,6 +25,12 @@ import util.version;
 public class servGopher extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servGopher() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 70;

@@ -22,6 +22,12 @@ import util.logger;
 public class ifcMacSec {
 
     /**
+     * create instance
+     */
+    public ifcMacSec() {
+    }
+
+    /**
      * ethertype of these packets
      */
     public final static int ethtyp = 0x88e5;

@@ -21,6 +21,12 @@ import util.logger;
 public class lineScript {
 
     /**
+     * create instance
+     */
+    public lineScript() {
+    }
+
+    /**
      * name of script
      */
     public String scrName;

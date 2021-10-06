@@ -10,6 +10,12 @@ import addr.addrIPv4;
 public class packL2tp3 extends packL2tp {
 
     /**
+     * create instance
+     */
+    public packL2tp3() {
+    }
+
+    /**
      * protocol number
      */
     public static final int prot = 115;

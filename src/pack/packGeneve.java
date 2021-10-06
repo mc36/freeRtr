@@ -10,6 +10,12 @@ import ifc.ifcBridge;
 public class packGeneve {
 
     /**
+     * create instance
+     */
+    public packGeneve() {
+    }
+
+    /**
      * udp port number
      */
     public static final int port = 6081;

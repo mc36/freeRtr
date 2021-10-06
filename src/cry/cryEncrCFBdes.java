@@ -15,6 +15,12 @@ public class cryEncrCFBdes extends cryEncrGeneric {
     private Cipher crypter;
 
     /**
+     * create instance
+     */
+    public cryEncrCFBdes() {
+    }
+
+    /**
      * initialize
      *
      * @param key key

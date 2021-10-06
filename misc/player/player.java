@@ -318,6 +318,7 @@ public class player implements Runnable {
     public void doInit() {
         playlists = playerUtil.readup("/etc/asound.conf");
         int volDef = 50;
+        boolean autoPlay = false;
         if (playlists != null) {
             for (int i = 0; i < playlists.size(); i++) {
                 String a = playlists.get(i);
@@ -329,6 +330,14 @@ public class player implements Runnable {
                 a = a.substring(0, o).trim();
                 if (a.equals("#player.class mixer")) {
                     mixer = b;
+                    continue;
+                }
+                if (a.equals("#player.class headend")) {
+                    headEnd = true;
+                    continue;
+                }
+                if (a.equals("#player.class autoplay")) {
+                    autoPlay = true;
                     continue;
                 }
                 if (a.equals("#player.class srate")) {
@@ -356,6 +365,10 @@ public class player implements Runnable {
         setVolume(volDef);
         startPlayNormal(-1, "0");
         ready = true;
+        if (!autoPlay) {
+            return;
+        }
+        startPlayNormal(0, "0");
     }
 
     public void run() {

@@ -28,6 +28,12 @@ import util.state;
 public class clntErspan implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntErspan() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

@@ -25,6 +25,12 @@ import util.version;
 public class servIrc extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servIrc() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 6667;

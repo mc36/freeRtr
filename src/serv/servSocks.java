@@ -29,6 +29,12 @@ import util.logger;
 public class servSocks extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servSocks() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1080;

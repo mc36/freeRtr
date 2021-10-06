@@ -29,6 +29,12 @@ import util.state;
 public class clntTdmOudp implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntTdmOudp() {
+    }
+
+    /**
      * default port
      */
     public final static int defPort = 2142;

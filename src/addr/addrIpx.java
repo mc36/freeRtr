@@ -10,6 +10,12 @@ import util.bits;
 public class addrIpx extends addrType {
 
     /**
+     * create instance
+     */
+    public addrIpx() {
+    }
+
+    /**
      * size of address
      */
     public final static int size = 10;

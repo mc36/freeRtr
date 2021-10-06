@@ -35,6 +35,12 @@ import util.uniResLoc;
 public class userFlash {
 
     /**
+     * create instance
+     */
+    public userFlash() {
+    }
+
+    /**
      * command to use
      */
     public cmds cmd;

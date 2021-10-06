@@ -11,6 +11,12 @@ import java.util.List;
 public class packDns {
 
     /**
+     * create instance
+     */
+    public packDns() {
+    }
+
+    /**
      * default port number
      */
     public final static int portNum = 53;

@@ -31,6 +31,12 @@ import util.version;
 public class userTester {
 
     /**
+     * create instance
+     */
+    public userTester() {
+    }
+
+    /**
      * port base
      */
     protected final static int portBase = 34000;

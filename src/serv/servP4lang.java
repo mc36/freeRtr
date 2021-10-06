@@ -88,6 +88,12 @@ import util.state;
 public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
     /**
+     * create instance
+     */
+    public servP4lang() {
+    }
+
+    /**
      * port
      */
     public final static int port = 9080;

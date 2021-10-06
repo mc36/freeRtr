@@ -7,6 +7,12 @@ package snd;
  */
 public class sndDtmf extends sndDft {
 
+    /**
+     * create instance
+     */
+    public sndDtmf() {
+    }
+
     private final static int[] dtmfCols = {1209, 1336, 1477, 1633};
 
     private final static int[] dtmfRows = {697, 770, 852, 941};

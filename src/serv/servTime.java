@@ -21,6 +21,12 @@ import util.cmds;
 public class servTime extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servTime() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 37;

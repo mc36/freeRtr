@@ -10,6 +10,12 @@ import cfg.cfgAll;
 public class shrtPthFrstLog {
 
     /**
+     * create instance
+     */
+    public shrtPthFrstLog() {
+    }
+
+    /**
      * timestamp
      */
     protected long when;

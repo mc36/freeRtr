@@ -10,6 +10,12 @@ import util.bits;
 public class addrArcnet extends addrType {
 
     /**
+     * create instance
+     */
+    public addrArcnet() {
+    }
+
+    /**
      * size of address
      */
     public final static int size = 1;

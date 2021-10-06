@@ -27,6 +27,12 @@ import util.state;
 public class clntBstun implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntBstun() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

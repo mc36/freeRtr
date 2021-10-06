@@ -15,6 +15,12 @@ import util.typLenVal;
 public class packDhcp6 {
 
     /**
+     * create instance
+     */
+    public packDhcp6() {
+    }
+
+    /**
      * default client port number
      */
     public final static int portCnum = 546;

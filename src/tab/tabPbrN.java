@@ -22,6 +22,12 @@ import util.cmds;
 public class tabPbrN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabPbrN() {
+    }
+
+    /**
      * matcher access list
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> matcher;

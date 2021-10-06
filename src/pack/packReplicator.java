@@ -8,6 +8,12 @@ package pack;
 public class packReplicator {
 
     /**
+     * create instance
+     */
+    public packReplicator() {
+    }
+
+    /**
      * ethertype to use
      */
     public final static int ethTyp = 0x8086;

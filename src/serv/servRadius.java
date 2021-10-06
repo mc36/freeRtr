@@ -28,6 +28,12 @@ import util.logger;
 public class servRadius extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servRadius() {
+    }
+
+    /**
      * authenticator list
      */
     public authGeneric authentic;

@@ -10,6 +10,12 @@ import util.typLenVal;
 public class packPppOE {
 
     /**
+     * create instance
+     */
+    public packPppOE() {
+    }
+
+    /**
      * code number
      */
     public int cod;

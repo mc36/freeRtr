@@ -14,6 +14,12 @@ import util.logger;
 public class ifcLossDet {
 
     /**
+     * create instance
+     */
+    public ifcLossDet() {
+    }
+
+    /**
      * size of header
      */
     public final static int size = 10;

@@ -12,6 +12,12 @@ import util.version;
 public class packPptp {
 
     /**
+     * create instance
+     */
+    public packPptp() {
+    }
+
+    /**
      * protocol number
      */
     public final static int prot = 47;

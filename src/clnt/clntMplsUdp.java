@@ -27,6 +27,12 @@ import util.state;
 public class clntMplsUdp implements Comparator<clntMplsUdp>, Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntMplsUdp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

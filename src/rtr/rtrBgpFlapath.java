@@ -13,6 +13,12 @@ import util.cmds;
 public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
 
     /**
+     * create instance
+     */
+    public rtrBgpFlapath() {
+    }
+
+    /**
      * path
      */
     public String path;

@@ -21,6 +21,12 @@ import util.logger;
 public class clntTelemetry implements Runnable {
 
     /**
+     * create instance
+     */
+    public clntTelemetry() {
+    }
+
+    /**
      * target
      */
     public String target;

@@ -14,6 +14,12 @@ public class cryEncrCTSdes3 extends cryEncrGeneric {
 
     private Cipher crypter;
 
+    /**
+     * create instance
+     */
+    public cryEncrCTSdes3() {
+    }
+
     public void init(byte[] key, byte[] iv, boolean encrypt) {
         final String name = "TRIPLEDES";
         int mode;

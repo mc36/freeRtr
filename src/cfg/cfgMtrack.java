@@ -20,6 +20,12 @@ import util.cmds;
 public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgMtrack() {
+    }
+
+    /**
      * name of tracker
      */
     public String name;

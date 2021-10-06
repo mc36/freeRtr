@@ -24,6 +24,12 @@ import util.logger;
 public class servNetflow extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servNetflow() {
+    }
+
+    /**
      * sessions
      */
     public tabSession connects = new tabSession(true, 60000);

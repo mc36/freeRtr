@@ -22,6 +22,12 @@ import util.cmds;
 public abstract class ipRtr implements Comparator<ipRtr> {
 
     /**
+     * create instance
+     */
+    public ipRtr() {
+    }
+
+    /**
      * protocol id of this routing protocol
      */
     protected int routerProtoNum;

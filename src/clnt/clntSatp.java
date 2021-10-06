@@ -30,6 +30,12 @@ import util.state;
 public class clntSatp implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntSatp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 4445;

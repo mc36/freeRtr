@@ -10,6 +10,12 @@ import java.util.List;
  */
 public class differ {
 
+    /**
+     * create instance
+     */
+    public differ() {
+    }
+
     private List<differLin> r1;
 
     private List<differLin> r2;

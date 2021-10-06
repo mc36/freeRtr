@@ -28,6 +28,12 @@ import util.state;
 public class clntGeneve implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntGeneve() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

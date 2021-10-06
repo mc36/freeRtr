@@ -17,6 +17,12 @@ import util.cmds;
 public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgAlias() {
+    }
+
+    /**
      * type of alias
      */
     public aliasType type = aliasType.exec;

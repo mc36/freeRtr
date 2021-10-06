@@ -14,6 +14,12 @@ import util.typLenVal;
 public class packGtp {
 
     /**
+     * create instance
+     */
+    public packGtp() {
+    }
+
+    /**
      * control port
      */
     public final static int portCtrl = 2123;

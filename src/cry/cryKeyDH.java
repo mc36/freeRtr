@@ -11,6 +11,12 @@ import pack.packHolder;
 public class cryKeyDH extends cryKeyGeneric {
 
     /**
+     * create instance
+     */
+    public cryKeyDH() {
+    }
+
+    /**
      * common value
      */
     public BigInteger common;

@@ -20,6 +20,12 @@ import util.cmds;
 public abstract class authGeneric implements Comparator<authGeneric> {
 
     /**
+     * create instance
+     */
+    public authGeneric() {
+    }
+
+    /**
      * name of list
      */
     public String autName = "";

@@ -10,6 +10,12 @@ import util.bits;
 public class packBfd {
 
     /**
+     * create instance
+     */
+    public packBfd() {
+    }
+
+    /**
      * size of header
      */
     public static final int size = 24;

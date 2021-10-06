@@ -27,6 +27,12 @@ import util.state;
 public class clntEtherIp implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntEtherIp() {
+    }
+
+    /**
      * protocol number
      */
     public static final int prot = 97;

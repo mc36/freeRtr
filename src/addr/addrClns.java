@@ -10,6 +10,12 @@ import util.bits;
 public class addrClns extends addrType {
 
     /**
+     * create instance
+     */
+    public addrClns() {
+    }
+
+    /**
      * copy bytes
      *
      * @return copy

@@ -14,6 +14,12 @@ import util.state;
 public class ifcFramePpp implements ifcUp, ifcDn {
 
     /**
+     * create instance
+     */
+    public ifcFramePpp() {
+    }
+
+    /**
      * type of framerelay header
      */
     public final static int frmType = 0x3cf;

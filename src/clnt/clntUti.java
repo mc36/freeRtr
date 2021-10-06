@@ -27,6 +27,12 @@ import util.state;
 public class clntUti implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntUti() {
+    }
+
+    /**
      * protocol number
      */
     public static final int prot = 120;

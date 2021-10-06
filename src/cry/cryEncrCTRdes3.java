@@ -15,6 +15,12 @@ public class cryEncrCTRdes3 extends cryEncrGeneric {
     private Cipher crypter;
 
     /**
+     * create instance
+     */
+    public cryEncrCTRdes3() {
+    }
+
+    /**
      * initialize
      *
      * @param key key

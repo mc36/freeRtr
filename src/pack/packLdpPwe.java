@@ -16,6 +16,12 @@ import util.typLenVal;
 public class packLdpPwe implements Comparator<packLdpPwe> {
 
     /**
+     * create instance
+     */
+    public packLdpPwe() {
+    }
+
+    /**
      * label value
      */
     public int label;

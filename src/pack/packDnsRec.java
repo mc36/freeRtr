@@ -17,6 +17,12 @@ import util.cmds;
 public class packDnsRec implements Comparator<packDnsRec> {
 
     /**
+     * create instance
+     */
+    public packDnsRec() {
+    }
+
+    /**
      * time of addition
      */
     public long added;

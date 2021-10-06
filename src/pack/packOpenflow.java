@@ -18,6 +18,12 @@ import util.typLenVal;
 public class packOpenflow {
 
     /**
+     * create instance
+     */
+    public packOpenflow() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 6653;

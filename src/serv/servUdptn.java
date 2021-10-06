@@ -20,6 +20,12 @@ import util.cmds;
 public class servUdptn extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servUdptn() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 23;

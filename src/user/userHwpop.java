@@ -16,6 +16,12 @@ import util.cmds;
  */
 public class userHwpop {
 
+    /**
+     * create instance
+     */
+    public userHwpop() {
+    }
+
     private cmds orig;
 
     private int apply = 0;

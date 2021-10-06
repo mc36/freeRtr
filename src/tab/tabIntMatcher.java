@@ -10,6 +10,12 @@ import util.bits;
 public class tabIntMatcher {
 
     /**
+     * create instance
+     */
+    public tabIntMatcher() {
+    }
+
+    /**
      * match criteria
      */
     public actionType action = actionType.always;

@@ -12,6 +12,12 @@ import tab.tabConnectLower;
 public class prtGenServ implements tabConnectLower {
 
     /**
+     * create instance
+     */
+    public prtGenServ() {
+    }
+
+    /**
      * stream mode
      */
     public boolean stream;

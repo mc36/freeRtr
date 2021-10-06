@@ -15,6 +15,12 @@ import util.cmds;
 public class authTacacs extends authGeneric {
 
     /**
+     * create instance
+     */
+    public authTacacs() {
+    }
+
+    /**
      * target server
      */
     public String server = null;

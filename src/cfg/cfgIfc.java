@@ -4000,6 +4000,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunExpBun.setTargets(tunFQDN);
                 tunFQDN = tunExpBun.getTargets();
                 tunExpBun.expr = tunTOS;
+                tunExpBun.entr = tunFLW;
                 tunExpBun.ttl = tunTTL;
                 tunExpBun.setUpper(ethtyp);
                 tunExpBun.workStart();
@@ -4016,6 +4017,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSrMpls.setTargets(tunFQDN);
                 tunFQDN = tunSrMpls.getTargets();
                 tunSrMpls.expr = tunTOS;
+                tunSrMpls.entr = tunFLW;
                 tunSrMpls.ttl = tunTTL;
                 tunSrMpls.prioS = tunPri;
                 tunSrMpls.prioH = tunPri;
@@ -4051,6 +4053,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSrMpls.setTargets("" + tunTrg);
                 tunSrMpls.pcep = tunFQDN;
                 tunSrMpls.expr = tunTOS;
+                tunSrMpls.entr = tunFLW;
                 tunSrMpls.ttl = tunTTL;
                 tunSrMpls.prioS = tunPri;
                 tunSrMpls.prioH = tunPri;
@@ -4070,6 +4073,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.descr = cfgAll.hostName + ":" + name;
                 tunTeP2p.pcep = tunFQDN;
                 tunTeP2p.expr = tunTOS;
+                tunTeP2p.entr = tunFLW;
                 tunTeP2p.ttl = tunTTL;
                 tunTeP2p.ascId = tunAscId;
                 tunTeP2p.ascId2 = tunAscId2;
@@ -4090,6 +4094,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.setMiddles(tunFQDN);
                 tunTeP2p.descr = cfgAll.hostName + ":" + name;
                 tunTeP2p.expr = tunTOS;
+                tunTeP2p.entr = tunFLW;
                 tunTeP2p.ttl = tunTTL;
                 tunTeP2p.ascId = tunAscId;
                 tunTeP2p.ascId2 = tunAscId2;
@@ -4114,6 +4119,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunFQDN = tunTeP2mp.getTargets();
                 tunTeP2mp.descr = cfgAll.hostName + ":" + name;
                 tunTeP2mp.expr = tunTOS;
+                tunTeP2mp.entr = tunFLW;
                 tunTeP2mp.ttl = tunTTL;
                 tunTeP2mp.prioS = tunPri;
                 tunTeP2mp.prioH = tunPri;
@@ -4133,6 +4139,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunBier.setTargets(tunFQDN);
                 tunFQDN = tunBier.getTargets();
                 tunBier.expr = tunTOS;
+                tunBier.entr = tunFLW;
                 tunBier.ttl = tunTTL;
                 tunBier.setUpper(ethtyp);
                 tunBier.workStart();
@@ -4144,6 +4151,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunLdpP2p.trgId = tunKey;
                 tunLdpP2p.target = tunTrg.copyBytes();
                 tunLdpP2p.expr = tunTOS;
+                tunLdpP2p.entr = tunFLW;
                 tunLdpP2p.ttl = tunTTL;
                 tunLdpP2p.setUpper(ethtyp);
                 tunLdpP2p.workStart();
@@ -4156,6 +4164,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunLdpP2mp.trgId = tunKey;
                 tunLdpP2mp.target = "" + tunTrg;
                 tunLdpP2mp.expr = tunTOS;
+                tunLdpP2mp.entr = tunFLW;
                 tunLdpP2mp.ttl = tunTTL;
                 tunLdpP2mp.setUpper(ethtyp);
                 tunLdpP2mp.workStart();
@@ -4168,6 +4177,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunLdpP2mp.trgId = tunKey;
                 tunLdpP2mp.target = "" + tunTrg;
                 tunLdpP2mp.expr = tunTOS;
+                tunLdpP2mp.entr = tunFLW;
                 tunLdpP2mp.ttl = tunTTL;
                 tunLdpP2mp.setUpper(ethtyp);
                 tunLdpP2mp.workStart();

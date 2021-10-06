@@ -30,6 +30,12 @@ import util.state;
 public class servPckOtxt extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servPckOtxt() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 2554;

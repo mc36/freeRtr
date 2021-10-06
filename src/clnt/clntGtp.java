@@ -29,6 +29,12 @@ import util.state;
 public class clntGtp implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntGtp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

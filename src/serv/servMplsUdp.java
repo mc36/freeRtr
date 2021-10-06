@@ -31,6 +31,12 @@ import util.state;
 public class servMplsUdp extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servMplsUdp() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 6635;

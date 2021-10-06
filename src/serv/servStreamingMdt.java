@@ -28,6 +28,12 @@ import util.protoBufEntry;
 public class servStreamingMdt extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servStreamingMdt() {
+    }
+
+    /**
      * default port
      */
     public final static int port = 9002;

@@ -40,6 +40,12 @@ import util.version;
 public class servSmtp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servSmtp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 25;

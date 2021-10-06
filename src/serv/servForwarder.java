@@ -29,6 +29,12 @@ import util.logger;
 public class servForwarder extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servForwarder() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1;

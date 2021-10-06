@@ -14,6 +14,12 @@ import util.bits;
  */
 public class packRtp {
 
+    /**
+     * create instance
+     */
+    public packRtp() {
+    }
+
     private pipeSide connData;
 
     private pipeSide connCtrl;

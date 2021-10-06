@@ -23,6 +23,12 @@ import util.state;
 public class clntSrExt implements ifcDn {
 
     /**
+     * create instance
+     */
+    public clntSrExt() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

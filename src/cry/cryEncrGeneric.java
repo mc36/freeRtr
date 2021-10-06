@@ -10,6 +10,12 @@ import util.bits;
 public abstract class cryEncrGeneric {
 
     /**
+     * create instance
+     */
+    public cryEncrGeneric() {
+    }
+
+    /**
      * initialize cipher
      *
      * @param key key material

@@ -24,6 +24,12 @@ import util.state;
 public class clntPckOtcp implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntPckOtcp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

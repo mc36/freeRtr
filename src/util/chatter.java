@@ -10,6 +10,12 @@ import java.util.List;
  */
 public class chatter {
 
+    /**
+     * create instance
+     */
+    public chatter() {
+    }
+
     private final List<chatterLine> lines = new ArrayList<chatterLine>();
 
     private long pos = 0;

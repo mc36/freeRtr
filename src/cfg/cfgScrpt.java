@@ -30,6 +30,12 @@ import util.logger;
 public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgScrpt() {
+    }
+
+    /**
      * name of this script
      */
     public String name;

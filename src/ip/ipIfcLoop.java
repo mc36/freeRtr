@@ -19,6 +19,12 @@ import util.state;
 public class ipIfcLoop implements ipIfc {
 
     /**
+     * create instance
+     */
+    public ipIfcLoop() {
+    }
+
+    /**
      * default arp/nd cache timeout
      */
     public final static int defaultCacheTime = 6 * 60 * 1000;

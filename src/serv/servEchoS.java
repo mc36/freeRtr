@@ -19,6 +19,12 @@ import util.cmds;
 public class servEchoS extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servEchoS() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 7;

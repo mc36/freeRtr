@@ -32,6 +32,12 @@ import util.state;
 public class servGeneve extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servGeneve() {
+    }
+
+    /**
      * interface to use
      */
     public cfgBrdg brdgIfc;

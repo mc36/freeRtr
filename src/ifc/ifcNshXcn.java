@@ -13,6 +13,12 @@ import util.state;
 public class ifcNshXcn implements ifcUp {
 
     /**
+     * create instance
+     */
+    public ifcNshXcn() {
+    }
+
+    /**
      * counter of this interface
      */
     public counter cntr = new counter();

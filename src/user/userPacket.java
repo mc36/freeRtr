@@ -69,6 +69,12 @@ import util.uniResLoc;
 public class userPacket {
 
     /**
+     * create instance
+     */
+    public userPacket() {
+    }
+
+    /**
      * command to use
      */
     public cmds cmd;

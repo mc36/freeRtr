@@ -15,6 +15,12 @@ import util.bits;
 public class packLdpMp implements Comparator<packLdpMp> {
 
     /**
+     * create instance
+     */
+    public packLdpMp() {
+    }
+
+    /**
      * label value
      */
     public int label;

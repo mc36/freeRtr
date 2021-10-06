@@ -17,6 +17,12 @@ import util.version;
  */
 public class userHwdet {
 
+    /**
+     * create instance
+     */
+    public userHwdet() {
+    }
+
     private enum ifcTyp {
         socat, pcap, raw, map
     }

@@ -32,6 +32,12 @@ import util.state;
 public class clntOpenvpn implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntOpenvpn() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1194;

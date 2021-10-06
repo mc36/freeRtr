@@ -11,6 +11,12 @@ import pack.packHolder;
 public class cryKeyECDH extends cryKeyGeneric {
 
     /**
+     * create instance
+     */
+    public cryKeyECDH() {
+    }
+
+    /**
      * common value
      */
     public cryECpoint common;

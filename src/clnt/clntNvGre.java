@@ -28,6 +28,12 @@ import util.state;
 public class clntNvGre implements ifcDn, ifcUp, Runnable {
 
     /**
+     * create instance
+     */
+    public clntNvGre() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

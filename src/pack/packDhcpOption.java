@@ -14,6 +14,12 @@ import util.cmds;
 public class packDhcpOption implements Comparator<packDhcpOption> {
 
     /**
+     * create instance
+     */
+    public packDhcpOption() {
+    }
+
+    /**
      * option number
      */
     public int number;

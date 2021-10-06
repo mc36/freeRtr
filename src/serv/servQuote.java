@@ -20,6 +20,12 @@ import util.cmds;
 public class servQuote extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servQuote() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 17;

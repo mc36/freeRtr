@@ -13,6 +13,12 @@ import java.util.Comparator;
 public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> implements Comparator<tabConnectEntry<Ta, Td>> {
 
     /**
+     * create instance
+     */
+    public tabConnectEntry() {
+    }
+
+    /**
      * data to store
      */
     public Td data;

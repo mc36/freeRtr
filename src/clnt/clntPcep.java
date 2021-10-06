@@ -23,6 +23,12 @@ import util.logger;
 public class clntPcep {
 
     /**
+     * create instance
+     */
+    public clntPcep() {
+    }
+
+    /**
      * proxy profile
      */
     public clntProxy proxy;

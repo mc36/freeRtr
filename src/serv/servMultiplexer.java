@@ -28,6 +28,12 @@ import util.logger;
 public class servMultiplexer extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servMultiplexer() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1;

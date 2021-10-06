@@ -17,6 +17,12 @@ import util.cmds;
  */
 public class authList extends authGeneric {
 
+    /**
+     * create instance
+     */
+    public authList() {
+    }
+
     private tabGen<authListEntry> lst = new tabGen<authListEntry>();
 
     public void getHelp(userHelping l) {

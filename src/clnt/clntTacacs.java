@@ -24,6 +24,12 @@ import util.logger;
 public class clntTacacs {
 
     /**
+     * create instance
+     */
+    public clntTacacs() {
+    }
+
+    /**
      * target server
      */
     public String server = null;

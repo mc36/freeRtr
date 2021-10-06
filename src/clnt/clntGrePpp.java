@@ -29,6 +29,12 @@ import util.state.states;
 public class clntGrePpp implements ifcDn, ifcUp, Runnable {
 
     /**
+     * create instance
+     */
+    public clntGrePpp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();
@@ -62,6 +68,11 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
      * sending tos value, -1 means maps out
      */
     public int sendingTOS = -1;
+
+    /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
 
     /**
      * vc id
@@ -232,6 +243,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
         gre.setEndpoints(fwdIfc, fwdTrg, true);
         gre.tunnelKey = vcid;
         gre.sendingTOS = sendingTOS;
+        gre.sendingFLW = sendingFLW;
         gre.sendingTTL = sendingTTL;
         gre.setUpper(this);
         for (;;) {

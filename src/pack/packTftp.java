@@ -8,6 +8,12 @@ package pack;
 public class packTftp {
 
     /**
+     * create instance
+     */
+    public packTftp() {
+    }
+
+    /**
      * port number
      */
     public final static int port = 69;

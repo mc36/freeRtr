@@ -9,6 +9,12 @@ import util.bits;
  */
 public class cryHashBlake2s extends cryHashGeneric {
 
+    /**
+     * create instance
+     */
+    public cryHashBlake2s() {
+    }
+
     private static final int[] blake2s_IV = {
         0x6a09e667, 0xbb67ae85, 0x3c6ef372,
         0xa54ff53a, 0x510e527f, 0x9b05688c,

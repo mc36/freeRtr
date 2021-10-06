@@ -15,6 +15,12 @@ public class cryEncrCFBblowfish extends cryEncrGeneric {
     private Cipher crypter;
 
     /**
+     * create instance
+     */
+    public cryEncrCFBblowfish() {
+    }
+
+    /**
      * initialize
      *
      * @param key key

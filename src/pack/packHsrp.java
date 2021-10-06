@@ -15,6 +15,12 @@ import util.typLenVal;
 public class packHsrp {
 
     /**
+     * create instance
+     */
+    public packHsrp() {
+    }
+
+    /**
      * protocol version
      */
     public int version;

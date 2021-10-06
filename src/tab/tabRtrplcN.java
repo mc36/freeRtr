@@ -19,6 +19,12 @@ import util.bits;
 public class tabRtrplcN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabRtrplcN() {
+    }
+
+    /**
      * action type
      */
     public enum doType {

@@ -28,6 +28,12 @@ import util.state;
 public class clntVxlan implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntVxlan() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

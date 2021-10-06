@@ -12,6 +12,12 @@ import pack.packHolder;
 public class ipMhost4 extends ipMhost {
 
     /**
+     * create instance
+     */
+    public ipMhost4() {
+    }
+
+    /**
      * protocol number
      */
     public final static int protoNum = 2;

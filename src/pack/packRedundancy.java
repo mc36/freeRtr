@@ -8,6 +8,12 @@ package pack;
 public class packRedundancy {
 
     /**
+     * create instance
+     */
+    public packRedundancy() {
+    }
+
+    /**
      * ethertype
      */
     public static final int ethtyp = 0x8087;

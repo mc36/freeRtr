@@ -14,6 +14,12 @@ import ip.ipFwdIface;
 public class packVrrp {
 
     /**
+     * create instance
+     */
+    public packVrrp() {
+    }
+
+    /**
      * protocol number
      */
     public static final int proto = 112;

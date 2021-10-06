@@ -32,6 +32,12 @@ import util.logger;
 public class servDhcp6 extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servDhcp6() {
+    }
+
+    /**
      * dns1
      */
     public addrIPv6 dns1;

@@ -17,6 +17,12 @@ import tab.tabSessionEntry;
 public class packNetflow {
 
     /**
+     * create instance
+     */
+    public packNetflow() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 2055;

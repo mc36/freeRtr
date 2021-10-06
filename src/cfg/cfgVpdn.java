@@ -54,6 +54,12 @@ import util.state;
 public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgVpdn() {
+    }
+
+    /**
      * name of this vpdn
      */
     public String name = "";

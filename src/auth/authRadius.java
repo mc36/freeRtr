@@ -15,6 +15,12 @@ import util.cmds;
 public class authRadius extends authGeneric {
 
     /**
+     * create instance
+     */
+    public authRadius() {
+    }
+
+    /**
      * target server
      */
     public String server = null;

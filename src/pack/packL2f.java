@@ -11,6 +11,12 @@ import util.bits;
 public class packL2f {
 
     /**
+     * create instance
+     */
+    public packL2f() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1701;

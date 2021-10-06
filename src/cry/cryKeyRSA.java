@@ -13,6 +13,12 @@ import util.bits;
 public class cryKeyRSA extends cryKeyGeneric {
 
     /**
+     * create instance
+     */
+    public cryKeyRSA() {
+    }
+
+    /**
      * ssh name
      */
     public final static String sshName = "ssh-rsa";

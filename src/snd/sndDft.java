@@ -8,6 +8,12 @@ package snd;
 public class sndDft {
 
     /**
+     * create instance
+     */
+    public sndDft() {
+    }
+
+    /**
      * sample rate
      */
     public int sampRate = 8000;

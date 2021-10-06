@@ -8,6 +8,12 @@ package cry;
 public abstract class cryHashGeneric {
 
     /**
+     * create instance
+     */
+    public cryHashGeneric() {
+    }
+
+    /**
      * initialize hash
      */
     public abstract void init();

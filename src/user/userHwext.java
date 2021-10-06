@@ -16,6 +16,12 @@ import util.cmds;
  */
 public class userHwext {
 
+    /**
+     * create instance
+     */
+    public userHwext() {
+    }
+
     private enum dpTyp {
         opnflw, p4emu, p4dpdk, p4sw
     }

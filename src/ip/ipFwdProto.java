@@ -10,6 +10,12 @@ import tab.tabConnectLower;
 public class ipFwdProto implements tabConnectLower {
 
     /**
+     * create instance
+     */
+    public ipFwdProto() {
+    }
+
+    /**
      * protocol number
      */
     public int proto = -1;

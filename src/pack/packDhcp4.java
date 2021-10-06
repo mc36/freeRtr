@@ -14,6 +14,12 @@ import util.typLenVal;
 public class packDhcp4 {
 
     /**
+     * create instance
+     */
+    public packDhcp4() {
+    }
+
+    /**
      * default client port number
      */
     public final static int portCnum = 68;

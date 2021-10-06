@@ -19,6 +19,12 @@ import util.logger;
 public class servCharGen extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servCharGen() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 19;

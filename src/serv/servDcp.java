@@ -23,6 +23,12 @@ import util.logger;
 public class servDcp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servDcp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 411;

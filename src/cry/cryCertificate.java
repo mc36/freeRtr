@@ -14,6 +14,12 @@ import util.bits;
 public class cryCertificate {
 
     /**
+     * create instance
+     */
+    public cryCertificate() {
+    }
+
+    /**
      * name of this certificate
      */
     public String crtName;

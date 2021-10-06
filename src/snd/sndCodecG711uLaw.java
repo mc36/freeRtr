@@ -7,6 +7,12 @@ package snd;
  */
 public class sndCodecG711uLaw extends sndCodec {
 
+    /**
+     * create instance
+     */
+    public sndCodecG711uLaw() {
+    }
+
     private static int[] decode;
 
     private static int[] encode;

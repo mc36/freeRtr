@@ -30,6 +30,12 @@ import util.state;
 public class servPckOtcp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servPckOtcp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 2554;

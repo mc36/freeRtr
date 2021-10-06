@@ -26,6 +26,12 @@ import util.cmds;
 public class secTransform {
 
     /**
+     * create instance
+     */
+    public secTransform() {
+    }
+
+    /**
      * transform number
      */
     public int number;

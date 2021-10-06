@@ -31,6 +31,12 @@ import util.version;
 public class prtRedun implements Runnable {
 
     /**
+     * create instance
+     */
+    public prtRedun() {
+    }
+
+    /**
      * my magic number
      */
     protected static int magic = (bits.randomD() & 0x3fffffff) + 1;

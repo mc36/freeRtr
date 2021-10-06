@@ -15,6 +15,12 @@ import util.notifier;
 public class ipFwdEcho implements Comparator<ipFwdEcho> {
 
     /**
+     * create instance
+     */
+    public ipFwdEcho() {
+    }
+
+    /**
      * id number
      */
     public int echoNum;

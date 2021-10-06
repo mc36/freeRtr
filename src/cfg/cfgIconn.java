@@ -19,6 +19,12 @@ import util.cmds;
 public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgIconn() {
+    }
+
+    /**
      * name of connect
      */
     public String name;

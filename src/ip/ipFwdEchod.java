@@ -11,6 +11,12 @@ import util.counter;
 public class ipFwdEchod {
 
     /**
+     * create instance
+     */
+    public ipFwdEchod() {
+    }
+
+    /**
      * reporting router
      */
     public addrIP rtr;

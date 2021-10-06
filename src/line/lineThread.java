@@ -13,6 +13,12 @@ import util.logger;
 public abstract class lineThread {
 
     /**
+     * create instance
+     */
+    public lineThread() {
+    }
+
+    /**
      * data carrier detect
      */
     public final static int signalDCDi = 0x1;

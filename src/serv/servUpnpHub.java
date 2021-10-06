@@ -22,6 +22,12 @@ import util.logger;
 public class servUpnpHub extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servUpnpHub() {
+    }
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {

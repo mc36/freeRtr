@@ -23,6 +23,12 @@ import util.logger;
 public class servSyslog extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servSyslog() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 514;

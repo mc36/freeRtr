@@ -14,6 +14,12 @@ public class cryEncrCFBaes extends cryEncrGeneric {
 
     private Cipher crypter;
 
+    /**
+     * create instance
+     */
+    public cryEncrCFBaes() {
+    }
+
     public void init(byte[] key, byte[] iv, boolean encrypt) {
         final String name = "AES";
         int mode;

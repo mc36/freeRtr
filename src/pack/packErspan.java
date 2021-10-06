@@ -8,6 +8,12 @@ package pack;
 public class packErspan {
 
     /**
+     * create instance
+     */
+    public packErspan() {
+    }
+
+    /**
      * protocol number
      */
     public final static int prot = 47;

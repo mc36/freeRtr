@@ -26,6 +26,12 @@ import util.uniResLoc;
 public class servPrometheus extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servPrometheus() {
+    }
+
+    /**
      * default port
      */
     public final static int port = 9001;

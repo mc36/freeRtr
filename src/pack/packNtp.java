@@ -11,6 +11,12 @@ import util.bits;
 public class packNtp {
 
     /**
+     * create instance
+     */
+    public packNtp() {
+    }
+
+    /**
      * port number to use
      */
     public static final int port = 123;

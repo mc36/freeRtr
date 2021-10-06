@@ -16,6 +16,12 @@ import util.bits;
 public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
 
     /**
+     * create instance
+     */
+    public rtrBgpFlap() {
+    }
+
+    /**
      * address family
      */
     public int afi;

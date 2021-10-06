@@ -36,6 +36,12 @@ import util.state;
 public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntWireguard() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 51902;

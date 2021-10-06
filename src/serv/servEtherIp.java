@@ -29,6 +29,12 @@ import util.state;
 public class servEtherIp extends servGeneric implements ipPrt {
 
     /**
+     * create instance
+     */
+    public servEtherIp() {
+    }
+
+    /**
      * interface to use
      */
     public cfgBrdg brdgIfc;

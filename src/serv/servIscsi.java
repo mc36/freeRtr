@@ -23,6 +23,12 @@ import util.logger;
 public class servIscsi extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servIscsi() {
+    }
+
+    /**
      * list of files
      */
     public tabGen<servScsi> files = new tabGen<servScsi>();

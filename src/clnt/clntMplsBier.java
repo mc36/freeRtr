@@ -25,6 +25,12 @@ import util.state;
 public class clntMplsBier implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntMplsBier() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();
@@ -43,6 +49,11 @@ public class clntMplsBier implements Runnable, ifcDn {
      * experimental value, -1 means maps out
      */
     public int expr = -1;
+
+    /**
+     * entrp[y value, -1 means maps out
+     */
+    public int entr = -1;
 
     /**
      * ttl value
@@ -152,6 +163,9 @@ public class clntMplsBier implements Runnable, ifcDn {
         cntr.tx(pck);
         if (expr >= 0) {
             pck.MPLSexp = expr;
+        }
+        if (entr > 0) {
+            pck.MPLSrnd = entr;
         }
         if (ttl >= 0) {
             pck.MPLSttl = ttl;

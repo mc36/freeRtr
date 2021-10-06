@@ -14,6 +14,12 @@ import util.verCore;
  */
 public class userHelping {
 
+    /**
+     * create instance
+     */
+    public userHelping() {
+    }
+
     private final static int maxVal = 0x100000;
 
     /**

@@ -15,6 +15,12 @@ import util.state;
 public class ifcRandom implements ifcUp, Runnable {
 
     /**
+     * create instance
+     */
+    public ifcRandom() {
+    }
+
+    /**
      * ethertype to use
      */
     public int ethtyp;

@@ -28,6 +28,12 @@ import util.state;
 public class clntAx25 implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntAx25() {
+    }
+
+    /**
      * protocol number
      */
     public static final int prot = 93;

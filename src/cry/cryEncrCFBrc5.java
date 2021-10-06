@@ -15,6 +15,12 @@ public class cryEncrCFBrc5 extends cryEncrGeneric {
     private Cipher crypter;
 
     /**
+     * create instance
+     */
+    public cryEncrCFBrc5() {
+    }
+
+    /**
      * initialize
      *
      * @param key key

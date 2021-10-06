@@ -22,6 +22,12 @@ import util.typLenVal;
 public class ifcP2pOEserv implements ifcUp {
 
     /**
+     * create instance
+     */
+    public ifcP2pOEserv() {
+    }
+
+    /**
      * counter of this interface
      */
     public counter cntr = new counter();

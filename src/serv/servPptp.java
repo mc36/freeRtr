@@ -37,6 +37,12 @@ import util.state;
 public class servPptp extends servGeneric implements ipPrt, prtServS {
 
     /**
+     * create instance
+     */
+    public servPptp() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc clnIfc;

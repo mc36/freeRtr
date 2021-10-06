@@ -11,6 +11,12 @@ import java.util.Comparator;
 public class rtrBgpLnkst implements Comparator<rtrBgpLnkst> {
 
     /**
+     * create instance
+     */
+    public rtrBgpLnkst() {
+    }
+
+    /**
      * router
      */
     public ipRtr rtr;

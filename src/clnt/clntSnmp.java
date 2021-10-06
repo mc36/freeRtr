@@ -18,6 +18,12 @@ import util.debugger;
 public class clntSnmp {
 
     /**
+     * create instance
+     */
+    public clntSnmp() {
+    }
+
+    /**
      * console to use
      */
     public pipeProgress cons;

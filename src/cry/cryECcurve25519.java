@@ -11,6 +11,12 @@ import util.bits;
 public class cryECcurve25519 {
 
     /**
+     * create instance
+     */
+    public cryECcurve25519() {
+    }
+
+    /**
      * local private key
      */
     public byte[] locPriv;

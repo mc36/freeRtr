@@ -10,6 +10,12 @@ import util.bits;
 public class addrIPv4 extends addrType {
 
     /**
+     * create instance
+     */
+    public addrIPv4() {
+    }
+
+    /**
      * copy bytes
      *
      * @return copy

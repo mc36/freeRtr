@@ -14,6 +14,12 @@ import util.cmds;
 public class packRadiusOption implements Comparator<packRadiusOption> {
 
     /**
+     * create instance
+     */
+    public packRadiusOption() {
+    }
+
+    /**
      * vendor id
      */
     public int vendId;

@@ -25,6 +25,12 @@ import util.state;
 public class servAmt extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servAmt() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc tempIfc;

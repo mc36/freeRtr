@@ -39,6 +39,12 @@ import util.uniResLoc;
 public class clntSip implements Runnable {
 
     /**
+     * create instance
+     */
+    public clntSip() {
+    }
+
+    /**
      * upper
      */
     public cfgDial upper;

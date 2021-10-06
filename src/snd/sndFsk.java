@@ -8,6 +8,12 @@ package snd;
 public class sndFsk extends sndDft {
 
     /**
+     * create instance
+     */
+    public sndFsk() {
+    }
+
+    /**
      * itu v21 carriers
      */
     public final static int[] ituV21carrier = {1080, 1750};

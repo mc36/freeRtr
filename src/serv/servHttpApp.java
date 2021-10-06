@@ -10,6 +10,12 @@ import java.io.ByteArrayOutputStream;
 public class servHttpApp {
 
     /**
+     * create instance
+     */
+    public servHttpApp() {
+    }
+
+    /**
      * this is needed for cli startup
      *
      * @param args command line parameters

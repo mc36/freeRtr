@@ -15,6 +15,12 @@ import rtr.rtrBgpUtil;
 public class tabPrfxlstN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabPrfxlstN() {
+    }
+
+    /**
      * prefix that should matched
      */
     private addrIP network;

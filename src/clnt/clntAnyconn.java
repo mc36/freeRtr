@@ -31,6 +31,12 @@ import util.version;
 public class clntAnyconn implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntAnyconn() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

@@ -28,6 +28,12 @@ import util.logger;
 public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgSched() {
+    }
+
+    /**
      * name of scheduler
      */
     public String name;

@@ -10,6 +10,12 @@ import pack.packHolder;
 public class authenHead {
 
     /**
+     * create instance
+     */
+    public authenHead() {
+    }
+
+    /**
      * size of header
      */
     public final static int size = 4;

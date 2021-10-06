@@ -27,6 +27,12 @@ import util.state;
 public class clntSrEth implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntSrEth() {
+    }
+
+    /**
      * protocol number
      */
     public static final int prot = 143;

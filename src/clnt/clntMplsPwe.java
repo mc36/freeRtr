@@ -33,6 +33,12 @@ import util.state;
 public class clntMplsPwe implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntMplsPwe() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();
@@ -46,6 +52,21 @@ public class clntMplsPwe implements Runnable, ifcDn {
      * target of tunnel
      */
     public String target = null;
+
+    /**
+     * experimental value, -1 means maps out
+     */
+    public int expr = -1;
+
+    /**
+     * entrp[y value, -1 means maps out
+     */
+    public int entr = -1;
+
+    /**
+     * ttl value
+     */
+    public int ttl = 255;
 
     /**
      * vrf of target
@@ -213,6 +234,15 @@ public class clntMplsPwe implements Runnable, ifcDn {
         }
         ipMpls.beginMPLSfields(pck, false);
         pck.MPLSlabel = pweR.label;
+        if (expr >= 0) {
+            pck.MPLSexp = expr;
+        }
+        if (entr > 0) {
+            pck.MPLSrnd = entr;
+        }
+        if (ttl >= 0) {
+            pck.MPLSttl = ttl;
+        }
         ipMpls.createMPLSheader(pck);
         fwdCor.mplsTxPack(fwdTrg, pck, false);
     }

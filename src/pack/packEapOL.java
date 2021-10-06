@@ -8,6 +8,12 @@ package pack;
 public class packEapOL {
 
     /**
+     * create instance
+     */
+    public packEapOL() {
+    }
+
+    /**
      * ethertype of these packets
      */
     public final static int type = 0x888e;

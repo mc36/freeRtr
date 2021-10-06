@@ -13,6 +13,12 @@ import java.util.List;
 public class packSnmp {
 
     /**
+     * create instance
+     */
+    public packSnmp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 161;

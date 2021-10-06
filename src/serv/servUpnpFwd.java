@@ -27,6 +27,12 @@ import util.logger;
 public class servUpnpFwd extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servUpnpFwd() {
+    }
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {

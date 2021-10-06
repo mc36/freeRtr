@@ -13,6 +13,12 @@ import java.util.List;
 public class packPimGrp {
 
     /**
+     * create instance
+     */
+    public packPimGrp() {
+    }
+
+    /**
      * group number
      */
     public addrPrefix<addrIP> group;

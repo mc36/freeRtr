@@ -23,6 +23,12 @@ import util.cmds;
 public class tabRtrmapN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabRtrmapN() {
+    }
+
+    /**
      * route distinguisher matcher
      */
     public long rouDstMatch;

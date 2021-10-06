@@ -18,6 +18,12 @@ import util.typLenVal;
 public class packRadius {
 
     /**
+     * create instance
+     */
+    public packRadius() {
+    }
+
+    /**
      * port number
      */
     public final static int port = 1812;

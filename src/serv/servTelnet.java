@@ -21,6 +21,12 @@ import util.logger;
 public class servTelnet extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servTelnet() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 23;

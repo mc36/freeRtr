@@ -27,6 +27,12 @@ import util.logger;
 public class servLoadBalancer extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servLoadBalancer() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1;

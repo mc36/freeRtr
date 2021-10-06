@@ -28,6 +28,12 @@ import util.state;
 public class servMplsIp extends servGeneric implements ipPrt {
 
     /**
+     * create instance
+     */
+    public servMplsIp() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc tempIfc;

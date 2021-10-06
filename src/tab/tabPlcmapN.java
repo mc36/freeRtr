@@ -15,6 +15,12 @@ import util.cmds;
 public class tabPlcmapN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabPlcmapN() {
+    }
+
+    /**
      * length matcher
      */
     public tabIntMatcher lengthMatch = new tabIntMatcher();

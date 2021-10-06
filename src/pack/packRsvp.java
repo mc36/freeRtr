@@ -18,6 +18,12 @@ import util.typLenVal;
 public class packRsvp {
 
     /**
+     * create instance
+     */
+    public packRsvp() {
+    }
+
+    /**
      * protocol number
      */
     public static final int proto = 46;

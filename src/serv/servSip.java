@@ -30,6 +30,12 @@ import util.uniResLoc;
  */
 public class servSip extends servGeneric implements prtServS {
 
+    /**
+     * create instance
+     */
+    public servSip() {
+    }
+
     private tabGen<servSipDoer> users = new tabGen<servSipDoer>();
 
     /**

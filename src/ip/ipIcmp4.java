@@ -16,6 +16,12 @@ import util.state;
 public class ipIcmp4 implements ipIcmp, ipPrt {
 
     /**
+     * create instance
+     */
+    public ipIcmp4() {
+    }
+
+    /**
      * size of icmp header
      */
     public final static int size = 8;

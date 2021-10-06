@@ -24,6 +24,12 @@ import util.state;
 public class servPckOudp extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servPckOudp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 2554;

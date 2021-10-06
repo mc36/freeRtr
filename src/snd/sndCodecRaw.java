@@ -7,6 +7,12 @@ package snd;
  */
 public class sndCodecRaw extends sndCodec {
 
+    /**
+     * create instance
+     */
+    public sndCodecRaw() {
+    }
+
     private static int[] decode;
 
     private static int[] encode;

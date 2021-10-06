@@ -11,6 +11,12 @@ import pack.packHolder;
  */
 public class ipMhost6 extends ipMhost {
 
+    /**
+     * create instance
+     */
+    public ipMhost6() {
+    }
+
     public String toString() {
         return "mld on " + fwdCore;
     }

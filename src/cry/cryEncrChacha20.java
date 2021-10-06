@@ -14,6 +14,12 @@ public class cryEncrChacha20 extends cryEncrGeneric {
     private Cipher crypter;
 
     /**
+     * create instance
+     */
+    public cryEncrChacha20() {
+    }
+
+    /**
      * initialize
      *
      * @param key key

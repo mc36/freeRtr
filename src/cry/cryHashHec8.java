@@ -7,6 +7,12 @@ package cry;
  */
 public class cryHashHec8 extends cryHashGeneric {
 
+    /**
+     * create instance
+     */
+    public cryHashHec8() {
+    }
+
     private static int[] tab = null;
 
     private int sum;

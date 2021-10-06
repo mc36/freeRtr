@@ -11,6 +11,12 @@ import pack.packHolder;
 public class addrBridge implements Comparator<addrBridge> {
 
     /**
+     * create instance
+     */
+    public addrBridge() {
+    }
+
+    /**
      * size of address
      */
     public final static int size = 8;

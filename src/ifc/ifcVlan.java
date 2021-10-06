@@ -13,6 +13,12 @@ import util.state;
 public abstract class ifcVlan implements ifcUp {
 
     /**
+     * create instance
+     */
+    public ifcVlan() {
+    }
+
+    /**
      * state of lower
      */
     protected state.states lastState = state.states.up;

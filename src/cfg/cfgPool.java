@@ -17,6 +17,12 @@ import util.cmds;
 public class cfgPool<T extends addrType> implements Comparator<cfgPool<T>>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgPool() {
+    }
+
+    /**
      * name of pool
      */
     public String name;

@@ -14,6 +14,12 @@ import util.counter;
 public class tabNatTraN implements Comparator<tabNatTraN> {
 
     /**
+     * create instance
+     */
+    public tabNatTraN() {
+    }
+
+    /**
      * matching protocol
      */
     public int protocol = -1;

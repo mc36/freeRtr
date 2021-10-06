@@ -28,6 +28,12 @@ import util.version;
 public class clntForti implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntForti() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

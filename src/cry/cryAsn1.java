@@ -18,6 +18,12 @@ import util.cmds;
 public class cryAsn1 {
 
     /**
+     * create instance
+     */
+    public cryAsn1() {
+    }
+
+    /**
      * class of tag
      */
     public int cls;

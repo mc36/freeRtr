@@ -12,6 +12,12 @@ import java.util.List;
 public class packMtrack {
 
     /**
+     * create instance
+     */
+    public packMtrack() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 5499;

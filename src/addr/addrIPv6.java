@@ -10,6 +10,12 @@ import util.bits;
 public class addrIPv6 extends addrType {
 
     /**
+     * create instance
+     */
+    public addrIPv6() {
+    }
+
+    /**
      * size of address
      */
     public final static int size = 16;

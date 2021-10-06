@@ -19,6 +19,12 @@ import util.logger;
 public class clntNtp implements Runnable {
 
     /**
+     * create instance
+     */
+    public clntNtp() {
+    }
+
+    /**
      * name of ntp server
      */
     public String serverName;

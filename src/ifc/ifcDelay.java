@@ -11,6 +11,12 @@ import util.logger;
  */
 public class ifcDelay implements Runnable {
 
+    /**
+     * create instance
+     */
+    public ifcDelay() {
+    }
+
     private ifcDn lower;
 
     private int delay;

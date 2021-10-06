@@ -21,6 +21,12 @@ import util.typLenVal;
 public class ipIcmp6 implements ipIcmp, ipPrt {
 
     /**
+     * create instance
+     */
+    public ipIcmp6() {
+    }
+
+    /**
      * size of icmp header
      */
     public final static int size = 8;

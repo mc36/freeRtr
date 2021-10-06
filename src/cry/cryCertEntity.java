@@ -10,6 +10,12 @@ import pack.packHolder;
 public class cryCertEntity {
 
     /**
+     * create instance
+     */
+    public cryCertEntity() {
+    }
+
+    /**
      * value
      */
     public String commonName;

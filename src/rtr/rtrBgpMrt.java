@@ -19,6 +19,12 @@ import util.logger;
 public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
 
     /**
+     * create instance
+     */
+    public rtrBgpMrt() {
+    }
+
+    /**
      * bgp type
      */
     public static final int typBgp = 16;

@@ -11,6 +11,12 @@ import util.state;
  */
 public class ifcShort implements ifcUp {
 
+    /**
+     * create instance
+     */
+    public ifcShort() {
+    }
+
     private ifcDn lower = new ifcNull();
 
     private counter cntr = new counter();

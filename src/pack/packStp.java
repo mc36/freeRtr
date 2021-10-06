@@ -10,6 +10,12 @@ import addr.addrBridge;
 public class packStp {
 
     /**
+     * create instance
+     */
+    public packStp() {
+    }
+
+    /**
      * protocol id
      */
     public int id;

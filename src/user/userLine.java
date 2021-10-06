@@ -25,6 +25,12 @@ import util.logger;
 public class userLine {
 
     /**
+     * create instance
+     */
+    public userLine() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc execIface;

@@ -32,6 +32,12 @@ import util.logger;
 public class servDhcp4 extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servDhcp4() {
+    }
+
+    /**
      * lower address
      */
     public addrIPv4 poolLo;

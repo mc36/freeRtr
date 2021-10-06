@@ -10,6 +10,12 @@ import util.logger;
  */
 public class cryHashSha3224 extends cryHashGeneric {
 
+    /**
+     * create instance
+     */
+    public cryHashSha3224() {
+    }
+
     private MessageDigest digest;
 
     /**

@@ -33,6 +33,12 @@ import util.state;
 public class servGtp extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servGtp() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc clnIfc;

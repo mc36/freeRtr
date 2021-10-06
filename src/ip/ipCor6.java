@@ -14,6 +14,12 @@ import util.logger;
 public class ipCor6 implements ipCor {
 
     /**
+     * create instance
+     */
+    public ipCor6() {
+    }
+
+    /**
      * default sending ttl value
      */
     public int sendingTTL = 255;

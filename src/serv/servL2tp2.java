@@ -25,6 +25,12 @@ import util.state;
 public class servL2tp2 extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servL2tp2() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc clnIfc;

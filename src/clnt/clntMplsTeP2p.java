@@ -34,6 +34,12 @@ import util.state;
 public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntMplsTeP2p() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();
@@ -97,6 +103,11 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
      * experimental value, -1 means maps out
      */
     public int expr = -1;
+
+    /**
+     * entrp[y value, -1 means maps out
+     */
+    public int entr = -1;
 
     /**
      * ttl value
@@ -271,6 +282,9 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         pck.MPLSlabel = trfEng.trgLab;
         if (expr >= 0) {
             pck.MPLSexp = expr;
+        }
+        if (entr > 0) {
+            pck.MPLSrnd = entr;
         }
         if (ttl >= 0) {
             pck.MPLSttl = ttl;

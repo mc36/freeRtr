@@ -17,6 +17,12 @@ import util.typLenVal;
 public class packPcep {
 
     /**
+     * create instance
+     */
+    public packPcep() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 4189;

@@ -33,6 +33,12 @@ import util.state;
 public class clntL2f implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntL2f() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

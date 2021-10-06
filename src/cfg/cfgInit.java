@@ -119,6 +119,12 @@ import util.version;
 public class cfgInit implements Runnable {
 
     /**
+     * create instance
+     */
+    private cfgInit() {
+    }
+
+    /**
      * sw config end
      */
     public static final String swCfgEnd = "sw.txt";

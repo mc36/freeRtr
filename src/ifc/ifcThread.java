@@ -22,6 +22,12 @@ import util.syncInt;
 public abstract class ifcThread implements ifcDn, Runnable {
 
     /**
+     * create instance
+     */
+    public ifcThread() {
+    }
+
+    /**
      * worker interface that gets the packets from this thread
      */
     protected ifcUp upper = new ifcNull();

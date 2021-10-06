@@ -10,6 +10,12 @@ import java.util.Comparator;
 public class tabRouteIface implements Comparator<tabRouteIface> {
 
     /**
+     * create instance
+     */
+    public tabRouteIface() {
+    }
+
+    /**
      * interface number
      */
     public int ifwNum;

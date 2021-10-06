@@ -35,6 +35,12 @@ import util.cmds;
 public class cfgXconnSide {
 
     /**
+     * create instance
+     */
+    public cfgXconnSide() {
+    }
+
+    /**
      * pw mode
      */
     public cfgVpdn.protocolType pwmod;

@@ -31,6 +31,12 @@ import util.state;
 public class clntPptp implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntPptp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

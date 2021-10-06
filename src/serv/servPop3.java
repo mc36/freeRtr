@@ -32,6 +32,12 @@ import util.uniResLoc;
 public class servPop3 extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servPop3() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 110;

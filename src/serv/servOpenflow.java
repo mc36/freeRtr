@@ -52,6 +52,12 @@ import util.typLenVal;
  */
 public class servOpenflow extends servGeneric implements prtServS {
 
+    /**
+     * create instance
+     */
+    public servOpenflow() {
+    }
+
     private servOpenflowRx thrdRx;
 
     private servOpenflowTx thrdTx;

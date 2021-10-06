@@ -86,6 +86,12 @@ import util.uniResLoc;
 public class userTest {
 
     /**
+     * create instance
+     */
+    public userTest() {
+    }
+
+    /**
      * command to use
      */
     public cmds cmd;

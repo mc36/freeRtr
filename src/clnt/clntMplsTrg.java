@@ -20,6 +20,12 @@ import util.logger;
 public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
 
     /**
+     * create instance
+     */
+    public clntMplsTrg() {
+    }
+
+    /**
      * target of tunnel
      */
     public addrIP target = null;

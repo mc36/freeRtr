@@ -64,6 +64,12 @@ import util.version;
 public class userClear {
 
     /**
+     * create instance
+     */
+    public userClear() {
+    }
+
+    /**
      * command to use
      */
     public cmds cmd;

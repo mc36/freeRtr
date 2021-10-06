@@ -14,6 +14,12 @@ import pack.packHolder;
 public class tabEvntmgrN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabEvntmgrN() {
+    }
+
+    /**
      * tcl command
      */
     public String tcl;

@@ -22,6 +22,12 @@ import util.logger;
 public class clntRadius {
 
     /**
+     * create instance
+     */
+    public clntRadius() {
+    }
+
+    /**
      * target server
      */
     public String server = null;

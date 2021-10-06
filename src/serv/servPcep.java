@@ -29,6 +29,12 @@ import util.logger;
 public class servPcep extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servPcep() {
+    }
+
+    /**
      * logging
      */
     public boolean logging;

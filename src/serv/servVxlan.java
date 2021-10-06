@@ -25,6 +25,12 @@ import util.state;
 public class servVxlan extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servVxlan() {
+    }
+
+    /**
      * interface to use
      */
     public cfgBrdg brdgIfc;

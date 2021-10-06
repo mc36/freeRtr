@@ -12,6 +12,12 @@ import util.notifier;
 public abstract class autherDoer implements Runnable {
 
     /**
+     * create instance
+     */
+    public autherDoer() {
+    }
+
+    /**
      * get worker
      *
      * @param prnt parent

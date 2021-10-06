@@ -9,6 +9,12 @@ import cfg.cfgInit;
 public class router {
 
     /**
+     * create instance
+     */
+    public router() {
+    }
+
+    /**
      * this is the main method for the jar file
      *
      * @param args command line parameters

@@ -43,6 +43,12 @@ import util.typLenVal;
 public class servBmp2mrt extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servBmp2mrt() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 17971;

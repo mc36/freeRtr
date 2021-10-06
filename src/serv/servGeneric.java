@@ -59,6 +59,12 @@ import util.logger;
 public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric> {
 
     /**
+     * create instance
+     */
+    public servGeneric() {
+    }
+
+    /**
      * name of server
      */
     public String srvName;

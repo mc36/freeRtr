@@ -17,6 +17,12 @@ import util.cmds;
 public class clntSpeed {
 
     /**
+     * create instance
+     */
+    public clntSpeed() {
+    }
+
+    /**
      * rx pipeline
      */
     protected pipeSide rxp;

@@ -18,6 +18,12 @@ import snd.sndScript;
 public class clntVoice {
 
     /**
+     * create instance
+     */
+    public clntVoice() {
+    }
+
+    /**
      * called number
      */
     public String called = null;

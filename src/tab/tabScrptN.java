@@ -14,6 +14,12 @@ import pack.packHolder;
 public class tabScrptN extends tabListingEntry<addrIP> {
 
     /**
+     * create instance
+     */
+    public tabScrptN() {
+    }
+
+    /**
      * script line
      */
     public String lin;

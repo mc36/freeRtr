@@ -358,6 +358,18 @@ public class ipMpls implements ifcUp {
         return false;
     }
 
+    private static void createMPLSheader(packHolder pck, int label, boolean bottom) {
+        int i = label << 12;
+        i |= pck.MPLSttl & 0xff;
+        i |= (pck.MPLSexp & 7) << 9;
+        if (bottom) {
+            i |= 0x100;
+        }
+        pck.msbPutD(0, i);
+        pck.putSkip(sizeL);
+        pck.merge2beg();
+    }
+
     /**
      * create mpls header
      *
@@ -368,18 +380,16 @@ public class ipMpls implements ifcUp {
         if (debugger.ipMPLStrafL) {
             logger.debug("tx label=" + pck.MPLSlabel + " exp=" + pck.MPLSexp + " ttl=" + pck.MPLSttl + " bottom=" + pck.MPLSbottom);
         }
+        if (pck.MPLSrnd > 0) {
+            createMPLSheader(pck, pck.MPLSrnd, pck.MPLSbottom);
+            createMPLSheader(pck, labelEntropy, false);
+            pck.MPLSrnd = 0;
+            pck.MPLSbottom = false;
+        }
         if (pck.MPLSlabel == labelImp) {
             return;
         }
-        int i = pck.MPLSlabel << 12;
-        i |= pck.MPLSttl & 0xff;
-        i |= (pck.MPLSexp & 7) << 9;
-        if (pck.MPLSbottom) {
-            i |= 0x100;
-        }
-        pck.msbPutD(0, i);
-        pck.putSkip(sizeL);
-        pck.merge2beg();
+        createMPLSheader(pck, pck.MPLSlabel, pck.MPLSbottom);
         pck.MPLSbottom = false;
     }
 
@@ -465,6 +475,7 @@ public class ipMpls implements ifcUp {
         }
         pck.putSkip(i);
         pck.merge2beg();
+        pck.MPLSrnd = 0;
         pck.MPLSbottom = true;
     }
 
@@ -555,6 +566,7 @@ public class ipMpls implements ifcUp {
         } else {
             pck.MPLSttl = 255;
         }
+        pck.MPLSrnd = 0;
     }
 
     /**

@@ -25,6 +25,12 @@ import util.logger;
 public class servHoneyPot extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servHoneyPot() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 22;

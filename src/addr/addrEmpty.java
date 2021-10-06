@@ -8,6 +8,12 @@ package addr;
 public class addrEmpty extends addrType {
 
     /**
+     * create instance
+     */
+    public addrEmpty() {
+    }
+
+    /**
      * size of address
      */
     public final static int size = 0;

@@ -43,6 +43,12 @@ import util.state;
 public class servL2tp3 extends servGeneric implements ipPrt {
 
     /**
+     * create instance
+     */
+    public servL2tp3() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc dialIfc;

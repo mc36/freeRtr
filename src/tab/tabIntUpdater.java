@@ -10,6 +10,12 @@ import util.bits;
 public class tabIntUpdater {
 
     /**
+     * create instance
+     */
+    public tabIntUpdater() {
+    }
+
+    /**
      * set action
      */
     public actionType action = actionType.nothing;

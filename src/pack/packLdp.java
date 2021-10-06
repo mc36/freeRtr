@@ -21,6 +21,12 @@ import util.typLenVal;
 public class packLdp {
 
     /**
+     * create instance
+     */
+    public packLdp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 646;

@@ -11,6 +11,12 @@ import util.bits;
 public class tabLargeComm implements Comparator<tabLargeComm> {
 
     /**
+     * create instance
+     */
+    public tabLargeComm() {
+    }
+
+    /**
      * as number
      */
     public int as;

@@ -30,6 +30,12 @@ import util.notifier;
 public class clntMtrack implements Runnable, prtServS {
 
     /**
+     * create instance
+     */
+    public clntMtrack() {
+    }
+
+    /**
      * name of this tracker
      */
     public String name;

@@ -19,6 +19,12 @@ import util.cmds;
 public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgXconn() {
+    }
+
+    /**
      * name of connect
      */
     public String name;

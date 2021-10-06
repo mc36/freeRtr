@@ -12,6 +12,12 @@ import pack.packSsh;
 public class cryKeyDSA extends cryKeyGeneric {
 
     /**
+     * create instance
+     */
+    public cryKeyDSA() {
+    }
+
+    /**
      * ssh name
      */
     public final static String sshName = "ssh-dss";

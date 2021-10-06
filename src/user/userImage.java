@@ -20,6 +20,12 @@ import util.cmds;
  */
 public class userImage {
 
+    /**
+     * create instance
+     */
+    public userImage() {
+    }
+
     private pipeSide pip;
 
     private String tempDir = "../binDsk";

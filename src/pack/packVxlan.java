@@ -8,6 +8,12 @@ package pack;
 public class packVxlan {
 
     /**
+     * create instance
+     */
+    public packVxlan() {
+    }
+
+    /**
      * udp port number
      */
     public static final int port = 4789;

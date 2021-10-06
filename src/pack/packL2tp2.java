@@ -8,6 +8,12 @@ package pack;
 public class packL2tp2 extends packL2tp {
 
     /**
+     * create instance
+     */
+    public packL2tp2() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1701;

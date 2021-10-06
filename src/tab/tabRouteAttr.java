@@ -16,6 +16,12 @@ import util.bits;
 public class tabRouteAttr<T extends addrType> {
 
     /**
+     * create instance
+     */
+    public tabRouteAttr() {
+    }
+
+    /**
      * route type
      */
     public enum routeType {

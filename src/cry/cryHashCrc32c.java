@@ -11,6 +11,12 @@ import util.bits;
  */
 public class cryHashCrc32c extends cryHashGeneric {
 
+    /**
+     * create instance
+     */
+    public cryHashCrc32c() {
+    }
+
     private static int[] tab = null;
 
     private int crc;

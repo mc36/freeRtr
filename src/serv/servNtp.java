@@ -25,6 +25,12 @@ import util.logger;
 public class servNtp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servNtp() {
+    }
+
+    /**
      * stratum
      */
     public int stratum = 2;

@@ -21,6 +21,12 @@ import util.cmds;
 public class servBstun extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servBstun() {
+    }
+
+    /**
      * group number
      */
     public int grpNum;

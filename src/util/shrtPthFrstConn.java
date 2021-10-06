@@ -11,6 +11,12 @@ import addr.addrType;
 public class shrtPthFrstConn<Ta extends addrType> {
 
     /**
+     * create instance
+     */
+    public shrtPthFrstConn() {
+    }
+
+    /**
      * metric
      */
     protected int metric;

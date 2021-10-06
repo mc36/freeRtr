@@ -17,6 +17,12 @@ import util.version;
 public class userTemplate {
 
     /**
+     * create instance
+     */
+    public userTemplate() {
+    }
+
+    /**
      * do the work
      *
      * @param cmd command to do

@@ -28,6 +28,12 @@ import util.state;
 public class clntPckOudp implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntPckOudp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

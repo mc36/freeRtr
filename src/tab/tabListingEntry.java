@@ -17,6 +17,12 @@ import util.counter;
 public abstract class tabListingEntry<T extends addrType> implements Comparator<tabListingEntry<T>> {
 
     /**
+     * create instance
+     */
+    public tabListingEntry() {
+    }
+
+    /**
      * action type
      */
     public enum actionType {

@@ -13,6 +13,12 @@ import util.bits;
 public class packIscsi {
 
     /**
+     * create instance
+     */
+    public packIscsi() {
+    }
+
+    /**
      * port number
      */
     public final static int port = 3260;

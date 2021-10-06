@@ -23,6 +23,12 @@ import util.state;
 public class clntPckOdtls implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntPckOdtls() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

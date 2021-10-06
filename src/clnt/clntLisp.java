@@ -26,6 +26,12 @@ import util.state;
 public class clntLisp implements Comparator<clntLisp>, Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntLisp() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 4341;

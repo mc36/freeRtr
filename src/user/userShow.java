@@ -103,6 +103,12 @@ import util.version;
 public class userShow {
 
     /**
+     * create instance
+     */
+    public userShow() {
+    }
+
+    /**
      * command to use
      */
     public cmds cmd;

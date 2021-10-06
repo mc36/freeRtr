@@ -28,6 +28,12 @@ import util.state;
 public class servUdpFwd extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servUdpFwd() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 1;

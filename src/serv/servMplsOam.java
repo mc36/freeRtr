@@ -23,6 +23,12 @@ import util.state;
 public class servMplsOam extends servGeneric implements prtServP {
 
     /**
+     * create instance
+     */
+    public servMplsOam() {
+    }
+
+    /**
      * port number
      */
     public static final int portNum = 3503;

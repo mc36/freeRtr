@@ -26,6 +26,12 @@ import util.state;
 public abstract class prtGen implements ipPrt {
 
     /**
+     * create instance
+     */
+    public prtGen() {
+    }
+
+    /**
      * counter
      */
     public counter cntr = new counter();

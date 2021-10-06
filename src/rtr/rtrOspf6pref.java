@@ -11,6 +11,12 @@ import addr.addrPrefix;
 public class rtrOspf6pref {
 
     /**
+     * create instance
+     */
+    public rtrOspf6pref() {
+    }
+
+    /**
      * options
      */
     public int option;

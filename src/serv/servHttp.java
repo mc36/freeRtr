@@ -70,6 +70,12 @@ import util.version;
 public class servHttp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servHttp() {
+    }
+
+    /**
      * port number
      */
     public static final int clearPort = 80;

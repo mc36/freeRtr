@@ -28,6 +28,12 @@ import util.state;
 public class clntUdpGre implements Runnable, prtServP, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntUdpGre() {
+    }
+
+    /**
      * port number of my
      */
     public final static int portNum = 4754;

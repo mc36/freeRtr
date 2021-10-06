@@ -31,6 +31,12 @@ import util.cmds;
 public class ipFwdRoute implements Comparator<ipFwdRoute> {
 
     /**
+     * create instance
+     */
+    public ipFwdRoute() {
+    }
+
+    /**
      * prefix
      */
     public addrPrefix<addrIP> pref;

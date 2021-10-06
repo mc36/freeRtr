@@ -14,6 +14,12 @@ import serv.servHttp;
 public class uniResLoc {
 
     /**
+     * create instance
+     */
+    public uniResLoc() {
+    }
+
+    /**
      * original string
      */
     public String orig;

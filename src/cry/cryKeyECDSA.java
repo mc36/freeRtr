@@ -12,6 +12,12 @@ import pack.packSsh;
 public class cryKeyECDSA extends cryKeyGeneric {
 
     /**
+     * create instance
+     */
+    public cryKeyECDSA() {
+    }
+
+    /**
      * curve
      */
     public cryECcurve curve;

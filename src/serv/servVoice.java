@@ -32,6 +32,12 @@ import util.uniResLoc;
 public class servVoice extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servVoice() {
+    }
+
+    /**
      * codec, true=alaw, false=ulaw
      */
     protected boolean aLaw = true;

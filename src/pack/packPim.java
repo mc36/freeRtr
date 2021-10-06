@@ -20,6 +20,12 @@ import util.typLenVal;
 public class packPim {
 
     /**
+     * create instance
+     */
+    public packPim() {
+    }
+
+    /**
      * protocol number
      */
     public final static int proto = 103;

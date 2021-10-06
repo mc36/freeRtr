@@ -24,6 +24,12 @@ import util.state;
 public class clntPckOtxt implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntPckOtxt() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

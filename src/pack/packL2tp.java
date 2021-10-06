@@ -13,6 +13,12 @@ import util.typLenVal;
 public abstract class packL2tp {
 
     /**
+     * create instance
+     */
+    public packL2tp() {
+    }
+
+    /**
      * max value of tie breaker
      */
     public final static long maxTieBreak = 0xfffffffffffffff0L;

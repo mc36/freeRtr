@@ -29,6 +29,12 @@ import util.version;
 public class clntSstp implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntSstp() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

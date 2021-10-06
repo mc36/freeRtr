@@ -21,6 +21,12 @@ import util.shrtPthFrst;
 public class rtrLsrpData implements Comparator<rtrLsrpData> {
 
     /**
+     * create instance
+     */
+    public rtrLsrpData() {
+    }
+
+    /**
      * full dump
      */
     public static final int dmpFull = -1;

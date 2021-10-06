@@ -15,6 +15,12 @@ import util.typLenVal;
 public abstract class ifcPppNcp {
 
     /**
+     * create instance
+     */
+    public ifcPppNcp() {
+    }
+
+    /**
      * bitmap value of sawn events
      */
     private int sawBit;

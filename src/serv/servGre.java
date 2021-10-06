@@ -28,6 +28,12 @@ import util.state;
 public class servGre extends servGeneric implements ipPrt {
 
     /**
+     * create instance
+     */
+    public servGre() {
+    }
+
+    /**
      * interface to use
      */
     public cfgIfc tempIfc;

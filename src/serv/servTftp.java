@@ -25,6 +25,12 @@ import util.uniResLoc;
 public class servTftp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servTftp() {
+    }
+
+    /**
      * root folder
      */
     public String rootFolder = "/";

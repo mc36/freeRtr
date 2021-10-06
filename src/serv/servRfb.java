@@ -26,6 +26,12 @@ import util.notifier;
 public class servRfb extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servRfb() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 5900;

@@ -12,6 +12,12 @@ import util.bits;
 public class packPtp {
 
     /**
+     * create instance
+     */
+    public packPtp() {
+    }
+
+    /**
      * ethertype
      */
     public final static int ethtyp = 0x88f7;

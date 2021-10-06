@@ -27,6 +27,12 @@ import util.logger;
 public class servTacacs extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servTacacs() {
+    }
+
+    /**
      * authenticator list
      */
     public authGeneric authentic;

@@ -24,6 +24,12 @@ import util.logger;
 public class servNrpe extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servNrpe() {
+    }
+
+    /**
      * truncate first line
      */
     public int truncState = 12288;

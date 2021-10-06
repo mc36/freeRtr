@@ -29,6 +29,12 @@ import util.logger;
 public class servSnmp extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servSnmp() {
+    }
+
+    /**
      * authentication list
      */
     public authGeneric authenticList;

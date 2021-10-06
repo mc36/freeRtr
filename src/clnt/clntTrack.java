@@ -40,6 +40,12 @@ import util.state;
 public class clntTrack implements rtrBfdClnt {
 
     /**
+     * create instance
+     */
+    public clntTrack() {
+    }
+
+    /**
      * operation mode
      */
     public enum operMod {

@@ -17,6 +17,12 @@ import util.cmds;
 public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgKey() {
+    }
+
+    /**
      * name of key
      */
     public String name;

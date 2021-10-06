@@ -27,6 +27,12 @@ import util.state;
 public class clntTelnet implements Runnable, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntTelnet() {
+    }
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();

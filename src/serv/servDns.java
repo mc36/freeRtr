@@ -34,6 +34,12 @@ import util.logger;
 public class servDns extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servDns() {
+    }
+
+    /**
      * list of zones
      */
     public tabGen<packDnsZone> zones = new tabGen<packDnsZone>();

@@ -15,6 +15,12 @@ import util.bits;
 public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
 
     /**
+     * create instance
+     */
+    public cryKeyGeneric() {
+    }
+
+    /**
      * name of this key
      */
     public String keyName;

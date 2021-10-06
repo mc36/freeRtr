@@ -7,6 +7,12 @@ package snd;
  */
 public class sndPcm extends sndCodec {
 
+    /**
+     * create instance
+     */
+    public sndPcm() {
+    }
+
     private static int[] decode;
 
     private static int[] encode;

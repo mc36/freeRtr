@@ -19,6 +19,12 @@ import util.cmds;
 public class servDiscard extends servGeneric implements prtServS {
 
     /**
+     * create instance
+     */
+    public servDiscard() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 9;

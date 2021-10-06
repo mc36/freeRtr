@@ -16,6 +16,12 @@ import util.state.states;
 public abstract class ipMhost implements ipPrt, ipMhostHndl {
 
     /**
+     * create instance
+     */
+    public ipMhost() {
+    }
+
+    /**
      * forwarder
      */
     protected ipFwd fwdCore;

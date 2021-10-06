@@ -27,6 +27,12 @@ import util.state;
 public class clntDlsw implements Runnable, ipPrt, ifcDn {
 
     /**
+     * create instance
+     */
+    public clntDlsw() {
+    }
+
+    /**
      * protocol number
      */
     public static final int prot = 91;
