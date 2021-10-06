@@ -1699,7 +1699,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no tunnel checksum",
         "interface .*! no tunnel shutdown",
         "interface .*! tunnel key 0",
-        "interface .*! tunnel flow 0",
+        "interface .*! tunnel flow -1",
         "interface .*! tunnel tos -1",
         "interface .*! tunnel ttl 255",
         "interface .*! tunnel priority 7",
@@ -3575,7 +3575,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         tunTOS = -1;
-        tunFLW = 0;
+        tunFLW = -1;
         tunTTL = 255;
         tunKey = 0;
         tunKey2 = 0;
@@ -7647,7 +7647,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("flow")) {
-            tunFLW = 0;
+            tunFLW = -1;
             setup2tunnel();
             return;
         }
