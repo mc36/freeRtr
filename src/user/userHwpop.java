@@ -1,5 +1,6 @@
 package user;
 
+import addr.addrMac;
 import cfg.cfgAll;
 import cfg.cfgInit;
 import java.util.ArrayList;
@@ -156,6 +157,7 @@ public class userHwpop {
             for (int i = 0; i < txt2.size(); i++) {
                 cmd = new cmds("hwp", txt2.get(i));
                 userHwpopPrt res = new userHwpopPrt();
+                res.addr = addrMac.getRandom();
                 res.port = bits.str2num(cmd.word());
                 res.pipe = bits.str2num(cmd.word());
                 res.piPort = bits.str2num(cmd.word());
@@ -168,6 +170,7 @@ public class userHwpop {
         for (int i = 0; i < txt.size(); i++) {
             cmd = new cmds("hwp", txt.get(i).trim().toLowerCase());
             userHwpopPrt res = new userHwpopPrt();
+            res.addr = addrMac.getRandom();
             String a = cmd.word("|").trim();
             res.desc = a;
             if ((aut == 1) && (!a.endsWith("/0"))) {
@@ -185,11 +188,18 @@ public class userHwpop {
             cmd.word("|"); // fec
             cmd.word("|"); // an
             cmd.word("|"); // kr
-            a = cmd.word("|").trim();
+            a = cmd.word("|").trim(); // rdy
             boolean rdy = a.equals("yes");
             if (!rdy && !a.equals("no")) {
                 continue;
             }
+            cmd.word("|"); // adm
+            cmd.word("|"); // opr
+            cmd.word("|"); // lpbk
+            cmd.word("|"); // rx
+            cmd.word("|"); // tx
+            res.addr.fromString(cmd.word("|").trim()); // mac
+            cmd.word("|"); // e
             switch (wht) {
                 case 1: // ready
                     if (!rdy) {
@@ -226,6 +236,7 @@ public class userHwpop {
                 continue;
             }
             userHwpopPrt res = new userHwpopPrt();
+            res.addr = addrMac.getRandom();
             res.desc = cmd.word();
             res.port = bits.str2num(cmd.word());
             res.speed = bits.str2num(cmd.word());
@@ -258,6 +269,7 @@ public class userHwpop {
                 }
             }
             txt2.add("interface sdn" + sdn);
+            txt2.add(cmds.tabulator + "macaddr " + ntry.addr);
             txt2.add(cmds.tabulator + "description frontpanel port " + ntry.desc);
             if (shted) {
                 txt2.add(cmds.tabulator + "shutdown");
@@ -316,6 +328,8 @@ class userHwpopPrt implements Comparator<userHwpopPrt> {
 
     public int speed;
 
+    public addrMac addr;
+    
     public String desc;
 
     public int compare(userHwpopPrt o1, userHwpopPrt o2) {
