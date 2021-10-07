@@ -22,3 +22,7 @@ there is no build system in use, but you'll find shell scripts:
 * c.sh to compile
 * r.sh to run
 * t.sh to selftest
+
+## contributing
+
+feel free to reach us on the mailing lists with your patches, ideas, etc.
