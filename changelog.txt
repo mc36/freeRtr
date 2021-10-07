@@ -12319,3 +12319,8 @@ qc pass: qos ingress flow matcher
 qc pass: qos egress flow matcher
 qc pass: qos ingress flow set
 qc pass: qos egress flow set
+---------------------------------- 2021-10-07 06:16:48
+todo: bgp peer autoconfig
+todo: bgp strict bfd mode
+todo: bgp roles in update and open
+todo: bgp extended open
