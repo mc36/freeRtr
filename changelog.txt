@@ -12324,3 +12324,5 @@ todo: bgp peer autoconfig
 todo: bgp strict bfd mode
 todo: bgp roles in update and open
 todo: bgp extended open
+---------------------------------- 2021-10-07 18:38:59
+no todo: bgp extended open
