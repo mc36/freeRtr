@@ -3294,7 +3294,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "as|rx|tx|rx|tx|rx|tx|neighbor", "1|2open|2norem|2noloc|1");
                 break;
             case 6:
-                l = new userFormat("|", "as|router|wideas|refresh|type|neighbor");
+                l = new userFormat("|", "as|router|wideas|refresh|extop|extup|type|neighbor");
                 break;
             case 7:
                 l = new userFormat("|", "as|buffer|over|ver|incr|full|need|neighbor");

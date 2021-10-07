@@ -580,6 +580,11 @@ public class rtrBgpUtil {
     public static final int capaExtNextHop = 5;
 
     /**
+     * extended message
+     */
+    public static final int capaExtMessage = 6;
+
+    /**
      * graceful restart
      */
     public static final int capaGraceRestart = 64;
@@ -1984,25 +1989,32 @@ public class rtrBgpUtil {
      * place one capability
      *
      * @param pck target packet
+     * @param ext extended
      * @param typ type
      * @param buf content
      */
-    public static void placeCapability(packHolder pck, int typ, byte[] buf) {
-        pck.putByte(0, 2); // type of parameter
-        pck.putByte(1, buf.length + 2); // size of parameter
-        pck.putByte(2, typ); // type of capability
-        pck.putByte(3, buf.length); // size of capability
-        pck.putCopy(buf, 0, 4, buf.length);
-        pck.putSkip(4 + buf.length);
+    public static void placeCapability(packHolder pck, boolean ext, int typ, byte[] buf) {
+        typLenVal tlv = getCapabilityTlv(ext);
+        tlv.valDat[0] = (byte) typ;
+        tlv.valDat[1] = (byte) buf.length;
+        bits.byteCopy(buf, 0, tlv.valDat, 2, buf.length);
+        tlv.valSiz = buf.length + 2;
+        tlv.valTyp = 2;
+        tlv.putThis(pck);
     }
 
     /**
      * get capability tlv
      *
+     * @param ext extended
      * @return tlv
      */
-    public static typLenVal getCapabilityTlv() {
-        return new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    public static typLenVal getCapabilityTlv(boolean ext) {
+        if (ext) {
+            return new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
+        } else {
+            return new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+        }
     }
 
     /**

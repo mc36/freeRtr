@@ -515,10 +515,10 @@ public class userPacket {
             packHolder pck = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capa32bitAsNum, buf);
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
             buf = new byte[4];
             bits.msbPutD(buf, 0, nei.addrFams);
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaMultiProto, buf);
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
             pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
@@ -649,10 +649,10 @@ public class userPacket {
             packHolder pck = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capa32bitAsNum, buf);
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
             buf = new byte[4];
             bits.msbPutD(buf, 0, nei.addrFams);
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaMultiProto, buf);
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
             pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
@@ -758,10 +758,10 @@ public class userPacket {
             packHolder pck = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capa32bitAsNum, buf);
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
             buf = new byte[4];
             bits.msbPutD(buf, 0, nei.addrFams);
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaMultiProto, buf);
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
             pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));

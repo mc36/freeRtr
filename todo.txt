@@ -12,7 +12,6 @@ bgp vpns with sr-policy
 bgp peer autoconfig
 bgp strict bfd mode
 bgp roles in update and open
-bgp extended open
 temper: web access log
 changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 interface range command

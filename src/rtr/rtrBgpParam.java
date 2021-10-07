@@ -208,6 +208,16 @@ public abstract class rtrBgpParam {
     public int hostname;
 
     /**
+     * extended open
+     */
+    public boolean extOpen;
+
+    /**
+     * extended update
+     */
+    public boolean extUpdate;
+
+    /**
      * not transmit during receive
      */
     public boolean unidirection;
@@ -868,6 +878,8 @@ public abstract class rtrBgpParam {
         extNextCur = src.extNextCur;
         extNextOtr = src.extNextOtr;
         hostname = src.hostname;
+        extOpen = src.extOpen;
+        extUpdate = src.extUpdate;
         unidirection = src.unidirection;
         compressMode = src.compressMode;
         socketMode = src.socketMode;
@@ -1214,6 +1226,8 @@ public abstract class rtrBgpParam {
         getAfiList(l, "4 4,.", "use", true);
         l.add("3 4,.     hostname                    advertise hostname capability");
         l.add("4 .         domain                    advertise domain too");
+        l.add("3 .       extended-open               send open in extended format");
+        l.add("3 .       extended-update             advertise extended update capability");
         l.add("3 .       unidirection                not advertise when receiving");
         l.add("3 .       fall-over                   track outgoing interface");
         l.add("3 .       soft-reconfiguration        enable soft reconfiguration");
@@ -1366,6 +1380,8 @@ public abstract class rtrBgpParam {
             s = "domain";
         }
         cmds.cfgLine(l, hostname < 1, beg, nei + "hostname", s);
+        cmds.cfgLine(l, !extOpen, beg, nei + "extended-open", "");
+        cmds.cfgLine(l, !extUpdate, beg, nei + "extended-update", "");
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
         cmds.cfgLine(l, !sendDefRou, beg, nei + "default-originate", "");
@@ -1659,6 +1675,14 @@ public abstract class rtrBgpParam {
             if (s.equals("domain")) {
                 hostname = 2;
             }
+            return false;
+        }
+        if (s.equals("extended-open")) {
+            extOpen = !negated;
+            return false;
+        }
+        if (s.equals("extended-update")) {
+            extUpdate = !negated;
             return false;
         }
         if (s.equals("unidirection")) {

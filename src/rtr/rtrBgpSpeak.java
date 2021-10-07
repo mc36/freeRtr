@@ -441,6 +441,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public boolean peerRefresh;
 
     /**
+     * peer extended open capability
+     */
+    public boolean peerExtOpen;
+
+    /**
+     * peer extended message capability
+     */
+    public boolean peerExtUpd;
+
+    /**
      * route refresh sent
      */
     public int refreshTx;
@@ -1369,13 +1379,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         for (int i = 0; i < safis.size(); i++) {
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, safis.get(i));
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaMultiProto, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaMultiProto, buf);
         }
         byte[] buf = new byte[4];
         bits.msbPutD(buf, 0, neigh.localAs);
-        rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capa32bitAsNum, buf);
+        rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capa32bitAsNum, buf);
         buf = new byte[0];
-        rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaRouteRefresh, buf);
+        rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaRouteRefresh, buf);
         safis = parent.mask2list((neigh.addpathRmode | neigh.addpathTmode) & neigh.addrFams);
         if (safis.size() > 0) {
             buf = new byte[safis.size() * 4];
@@ -1392,7 +1402,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 buf[(i * 4) + 3] = (byte) m;
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaAdditionPath, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaAdditionPath, buf);
         }
         safis = parent.mask2list(neigh.extNextCur & neigh.addrFams);
         if (safis.size() > 0) {
@@ -1401,7 +1411,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, parent.afiUni >>> 16);
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaExtNextHop, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
         safis = parent.mask2list(neigh.extNextOtr & neigh.addrFams);
         if (safis.size() > 0) {
@@ -1410,7 +1420,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, parent.afiOtrU >>> 16);
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaExtNextHop, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
         safis = parent.mask2list(neigh.graceRestart & neigh.addrFams);
         if (safis.size() > 0) {
@@ -1419,7 +1429,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 4) + 2, rtrBgpUtil.safi2triplet(safis.get(i)));
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaGraceRestart, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaGraceRestart, buf);
+        }
+        if (neigh.extUpdate) {
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, new byte[0]);
         }
         if (neigh.hostname > 0) {
             buf = encodeHostname(cfgAll.hostName);
@@ -1428,7 +1441,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             } else {
                 buf = bits.byteConcat(buf, encodeHostname(""));
             }
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaHostname, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaHostname, buf);
         }
         if ((neigh.compressMode & 1) != 0) {
             compressRx = new Inflater[8];
@@ -1437,11 +1450,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             buf = new byte[2];
             buf[0] = (byte) 0x87; // deflate, 32k window
-            rtrBgpUtil.placeCapability(pck, rtrBgpUtil.capaCompress, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaCompress, buf);
         }
         pck.merge2beg();
         int i = pck.dataSize();
-        if (i > 0xff) {
+        if ((!neigh.extOpen) && (i > 0xff)) {
             logger.error("too much capabilities with peer " + neigh.peerAddr);
             i = 0xff;
         }
@@ -1450,8 +1463,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pck.msbPutW(3, neigh.holdTimer / 1000);
         buf = parent.routerID.getBytes();
         pck.putCopy(buf, 0, 5, buf.length);
-        pck.putByte(9, i);
-        pck.putSkip(10);
+        pck.putSkip(9);
+        if (neigh.extOpen) {
+            pck.msbPutW(0, 0xffff);
+            pck.msbPutW(2, i);
+            pck.putSkip(4);
+        } else {
+            pck.putByte(0, i);
+            pck.putSkip(1);
+        }
         pck.merge2beg();
         packSend(pck, rtrBgpUtil.msgOpen);
     }
@@ -1482,8 +1502,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         pck.getAddr(peerRouterID, 5);
-        i = pck.getByte(9);
-        pck.getSkip(10);
+        pck.getSkip(9);
+        if (pck.msbGetW(0) == 0xffff) {
+            i = pck.msbGetW(2);
+            pck.getSkip(4);
+            peerExtOpen = true;
+        } else {
+            i = pck.getByte(0);
+            pck.getSkip(1);
+        }
         if (i < pck.dataSize()) {
             pck.setDataSize(i);
         }
@@ -1492,7 +1519,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (pck.dataSize() < 1) {
                 break;
             }
-            typLenVal tlv = rtrBgpUtil.getCapabilityTlv();
+            typLenVal tlv = rtrBgpUtil.getCapabilityTlv(peerExtOpen);
             if (tlv.getBytes(pck)) {
                 break;
             }
@@ -1507,7 +1534,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pck2.putSkip(tlv.valSiz);
             pck2.merge2beg();
             for (;;) {
-                tlv = rtrBgpUtil.getCapabilityTlv();
+                tlv = rtrBgpUtil.getCapabilityTlv(false);
                 if (tlv.getBytes(pck2)) {
                     break;
                 }
@@ -1596,6 +1623,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         break;
                     case rtrBgpUtil.capaRouteRefresh:
                         peerRefresh = true;
+                        break;
+                    case rtrBgpUtil.capaExtMessage:
+                        peerExtUpd = true;
                         break;
                     default:
                         if (debugger.rtrBgpError) {
