@@ -543,7 +543,11 @@ public class userReader implements Comparator<String> {
         }
         need2color &= pipe.settingsGet(pipeSetting.colors, false);
         final int height = pipe.settingsGet(pipeSetting.height, 25);
-        int o = 0;
+        int p = 2;
+        if (pipe.settingsGet(pipeSetting.times, false)) {
+            p++;
+        }
+        int o = p;
         for (int i = 0; i < lst.size(); i++) {
             if ((i == 0) && need2color) {
                 userScreen.sendCol(pipe, userScreen.colBrYellow);
@@ -552,14 +556,14 @@ public class userReader implements Comparator<String> {
             if ((i == 0) && need2color) {
                 userScreen.sendCol(pipe, userScreen.colWhite);
             }
+            if (height < 1) {
+                continue;
+            }
             o++;
             if (o < height) {
                 continue;
             }
-            o = 0;
-            if (height < 1) {
-                continue;
-            }
+            o = p;
             switch (doMorePrompt()) {
                 case 1: // normal listing
                     break;
