@@ -1,3 +1,4 @@
 #!/bin/sh
 sudo -u mc36 vlc -I dummy --audio --no-video --aout alsa rtp://10.2.255.1@232.2.3.2:1234/
-#SDL_AUDIODRIVER="alsa" ffplay -nodisp -i "rtp://232.2.3.2:1234?sources=10.2.255.1&timeout=5000"
+#SDL_AUDIODRIVER="alsa" ffplay -nodisp -i "rtp://232.2.3.2:1234?sources=10.2.255.1"
+#ffmpeg -i "rtp://232.2.3.2:1234?sources=10.2.255.1" -f alsa default
