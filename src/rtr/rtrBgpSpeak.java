@@ -1454,9 +1454,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         pck.merge2beg();
         int i = pck.dataSize();
-        if ((!neigh.extOpen) && (i > 0xff)) {
-            logger.error("too much capabilities with peer " + neigh.peerAddr);
-            i = 0xff;
+        if ((!neigh.extOpen) && (i >= 0xff)) {
+            logger.error("too much capabilities for peer " + neigh.peerAddr);
+            i = 0xfe;
         }
         pck.putByte(0, rtrBgpUtil.version);
         pck.msbPutW(1, rtrBgpUtil.asNum16bit(neigh.localAs));

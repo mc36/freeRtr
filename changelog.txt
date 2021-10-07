@@ -12326,3 +12326,6 @@ todo: bgp roles in update and open
 todo: bgp extended open
 ---------------------------------- 2021-10-07 18:38:59
 no todo: bgp extended open
+---------------------------------- 2021-10-07 19:21:31
+qc pass: bgp extended open
+qc pass: bgp extended update
