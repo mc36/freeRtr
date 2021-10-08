@@ -430,6 +430,7 @@ router bgp4 65535
  template r attribset
  template r segrout
  template r bier
+ template r role attrib
  template r send-community all
  neighbor 10.5.1.10 template r
  neighbor 10.26.26.2 template r
@@ -483,6 +484,7 @@ router bgp6 65535
  template r attribset
  template r segrout
  template r bier
+ template r role attrib
  template r send-community all
  neighbor 2001:db8:36::2 template r
  neighbor 2001:db8:1026:1001::2 template r
