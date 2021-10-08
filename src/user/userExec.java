@@ -183,6 +183,7 @@ public class userExec {
         hl.add("6 7                out           resend prefixes");
         rtrBgpParam.getAfiList(hl, "7 .", "clear", false);
         hl.add("5 .            recompute         trigger full compute round");
+        hl.add("5 .            flaps             collected flaps");
         hl.add("3 4        eigrp                 enhanced interior gateway routing protocol");
         hl.add("4 5          <num>               process id");
         hl.add("5 .            <addr>            neighbor address");

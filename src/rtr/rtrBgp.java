@@ -659,7 +659,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * flap statistics
      */
-    protected tabGen<rtrBgpFlap> flaps;
+    public tabGen<rtrBgpFlap> flaps;
 
     /**
      * list of monitors

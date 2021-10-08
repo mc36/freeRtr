@@ -648,6 +648,10 @@ public class userClear {
             return;
         }
         String a = cmd.word();
+        if (a.equals("flaps")) {
+            r.bgp.flaps.clear();
+            return;
+        }
         if (a.equals("recompute")) {
             r.bgp.routerRedistChanged();
             return;
