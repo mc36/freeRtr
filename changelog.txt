@@ -12333,3 +12333,8 @@ qc pass: bgp extended update
 qc pass: bgp multiple labels
 qc pass: bgp graceful restart
 qc pass: bgp extended nexthop
+---------------------------------- 2021-10-08 08:51:58
+no todo: bgp roles in update and open
+qc pass: bgp leak prevention with customer provider
+qc pass: bgp leak prevention with route server
+qc pass: bgp leak prevention with peer

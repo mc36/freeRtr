@@ -2004,6 +2004,9 @@ qc pass: bgp extended update
 qc pass: bgp multiple labels
 qc pass: bgp graceful restart
 qc pass: bgp extended nexthop
+qc pass: bgp leak prevention with customer provider
+qc pass: bgp leak prevention with route server
+qc pass: bgp leak prevention with peer
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -2402,7 +2405,6 @@ todo: optimal route reflection
 todo: bgp vpns with sr-policy
 todo: bgp peer autoconfig
 todo: bgp strict bfd mode
-todo: bgp roles in update and open
 todo: temper: web access log
 todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: interface range command
