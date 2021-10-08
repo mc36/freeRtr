@@ -128,6 +128,21 @@ public abstract class rtrBgpParam {
     public int egressEng;
 
     /**
+     * leak prevention role
+     */
+    public int leakRole;
+
+    /**
+     * leak prevention attribute
+     */
+    public boolean leakAttr;
+
+    /**
+     * leak prevention enforced
+     */
+    public boolean leakForce;
+
+    /**
      * advertise pop label
      */
     public boolean labelPop;
@@ -834,6 +849,7 @@ public abstract class rtrBgpParam {
         socketMode = 3;
         bufferSize = 65536;
         ttlSecurity = -1;
+        leakRole = -1;
         passwd = null;
         capaNego = true;
         trackNxthop = true;
@@ -874,6 +890,9 @@ public abstract class rtrBgpParam {
         segRout = src.segRout;
         bier = src.bier;
         egressEng = src.egressEng;
+        leakRole = src.leakRole;
+        leakAttr = src.leakAttr;
+        leakForce = src.leakForce;
         labelPop = src.labelPop;
         capaNego = src.capaNego;
         trackNxthop = src.trackNxthop;
@@ -961,6 +980,12 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (addrFams != src.addrFams) {
+            return true;
+        }
+        if (leakAttr != src.leakAttr) {
+            return true;
+        }
+        if (leakRole != src.leakRole) {
             return true;
         }
         if (remoteConfed != src.remoteConfed) {
@@ -1179,9 +1204,18 @@ public abstract class rtrBgpParam {
         l.add("3 4       buffer-size                 size of buffer");
         l.add("4 .         <num>                     bytes in buffer");
         l.add("3 4       ttl-security                sending ttl value");
-        l.add("4 .         <num>                         ttl value");
+        l.add("4 .         <num>                     ttl value");
         l.add("3 4       egress-engineering          set egress engineering");
         l.add("4 .         <num>                     index value");
+        l.add("3 4       role                        leak prevention role");
+        l.add("4 5,.       disabled                  disable processing");
+        l.add("4 5,.       attrib                    only send otc attribute");
+        l.add("4 5,.       provider                  provider");
+        l.add("4 5,.       ix-server                 route server");
+        l.add("4 5,.       ix-client                 route server client");
+        l.add("4 5,.       customer                  customer");
+        l.add("4 5,.       peer                      peer");
+        l.add("5 .           enforce                 enforce negotiation");
         l.add("3 .       capability-negotiation      perform capability negosiation");
         l.add("3 .       track-next-hop              perform next hop tracking");
         l.add("3 4       connection-mode             connection mode allowed");
@@ -1414,6 +1448,11 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
+        s = rtrBgpUtil.leakRole2string(leakRole, leakAttr);
+        if (leakForce) {
+            s += " enforce";
+        }
+        l.add(beg + nei + "role " + s);
         cmds.cfgLine(l, !labelPop, beg, nei + "label-pop", "");
         cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "");
         cmds.cfgLine(l, !trackNxthop, beg, nei + "track-next-hop", "");
@@ -1841,6 +1880,42 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("bier")) {
             bier = !negated;
+            return false;
+        }
+        if (s.equals("role")) {
+            s = cmd.word();
+            leakRole = -1;
+            leakAttr = false;
+            if (s.equals("disabled")) {
+                leakRole = -1;
+            }
+            if (s.equals("provider")) {
+                leakRole = rtrBgpUtil.roleProv;
+            }
+            if (s.equals("ix-server")) {
+                leakRole = rtrBgpUtil.roleRs;
+            }
+            if (s.equals("ix-client")) {
+                leakRole = rtrBgpUtil.roleRsc;
+            }
+            if (s.equals("customer")) {
+                leakRole = rtrBgpUtil.roleCust;
+            }
+            if (s.equals("peer")) {
+                leakRole = rtrBgpUtil.rolePeer;
+            }
+            if (s.equals("attrib")) {
+                leakAttr = true;
+            }
+            leakAttr |= leakRole >= 0;
+            s = cmd.word();
+            leakForce = s.equals("enforce");
+            if (!negated) {
+                return false;
+            }
+            leakAttr = false;
+            leakForce = false;
+            leakRole = -1;
             return false;
         }
         if (s.equals("egress-engineering")) {

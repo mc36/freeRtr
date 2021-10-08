@@ -15,6 +15,7 @@ import tab.tabRouteAttr;
 import tab.tabRouteEntry;
 import tab.tabRtrmapN;
 import tab.tabRtrplcN;
+import user.userFormat;
 import util.logger;
 
 /**
@@ -281,11 +282,12 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     /**
-     * get status of group
+     * get status of peer
      *
-     * @param l list to append
+     * @return status
      */
-    public void getStatus(List<String> l) {
+    public userFormat getStatus() {
+        userFormat l = new userFormat("|", "category|value");
         String a = "";
         for (int i = 0; i < lower.neighs.size(); i++) {
             rtrBgpNeigh ntry = lower.neighs.get(i);
@@ -301,32 +303,35 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
             a += " " + ntry.peerAddr;
         }
-        l.add("peers =" + a);
-        l.add("type = " + rtrBgpUtil.peerType2string(peerType));
-        l.add("safi = " + mask2string(addrFams));
-        l.add("local = " + localAddr + " other = " + localOddr);
-        l.add("unicast advertise = " + wilUni.size() + ", list=" + chgUni.size());
-        l.add("multicast advertise = " + wilMlt.size() + ", list=" + chgMlt.size());
-        l.add("ouni advertise = " + wilOtrU.size() + ", list=" + chgOtrU.size());
-        l.add("omlt advertise = " + wilOtrM.size() + ", list=" + chgOtrM.size());
-        l.add("oflw advertise = " + wilOtrF.size() + ", list=" + chgOtrF.size());
-        l.add("osrt advertise = " + wilOtrS.size() + ", list=" + chgOtrS.size());
-        l.add("flowspec advertise = " + wilFlw.size() + ", list=" + chgFlw.size());
-        l.add("vpnuni advertise = " + wilVpnU.size() + ", list=" + chgVpnU.size());
-        l.add("vpnmlt advertise = " + wilVpnM.size() + ", list=" + chgVpnM.size());
-        l.add("vpnflw advertise = " + wilVpnF.size() + ", list=" + chgVpnF.size());
-        l.add("ovpnuni advertise = " + wilVpoU.size() + ", list=" + chgVpoU.size());
-        l.add("ovpnmlt advertise = " + wilVpoM.size() + ", list=" + chgVpoM.size());
-        l.add("ovpnflw advertise = " + wilVpoF.size() + ", list=" + chgVpoF.size());
-        l.add("vpls advertise = " + wilVpls.size() + ", list=" + chgVpls.size());
-        l.add("mspw advertise = " + wilMspw.size() + ", list=" + chgMspw.size());
-        l.add("evpn advertise = " + wilEvpn.size() + ", list=" + chgEvpn.size());
-        l.add("mdt advertise = " + wilMdt.size() + ", list=" + chgMdt.size());
-        l.add("srte advertise = " + wilSrte.size() + ", list=" + chgSrte.size());
-        l.add("linkstate advertise = " + wilLnks.size() + ", list=" + chgLnks.size());
-        l.add("mvpn advertise = " + wilMvpn.size() + ", list=" + chgMvpn.size());
-        l.add("omvpn advertise = " + wilMvpo.size() + ", list=" + chgMvpo.size());
-        l.add("version = " + minversion + " of " + lower.compRound);
+        l.add("peers|" + a);
+        l.add("type|" + rtrBgpUtil.peerType2string(peerType));
+        l.add("leak role|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
+        l.add("safi|" + mask2string(addrFams));
+        l.add("local|" + localAddr);
+        l.add("other|" + localOddr);
+        l.add("unicast advertise|" + wilUni.size() + ", list=" + chgUni.size());
+        l.add("multicast advertise|" + wilMlt.size() + ", list=" + chgMlt.size());
+        l.add("ouni advertise|" + wilOtrU.size() + ", list=" + chgOtrU.size());
+        l.add("omlt advertise|" + wilOtrM.size() + ", list=" + chgOtrM.size());
+        l.add("oflw advertise|" + wilOtrF.size() + ", list=" + chgOtrF.size());
+        l.add("osrt advertise|" + wilOtrS.size() + ", list=" + chgOtrS.size());
+        l.add("flowspec advertise|" + wilFlw.size() + ", list=" + chgFlw.size());
+        l.add("vpnuni advertise|" + wilVpnU.size() + ", list=" + chgVpnU.size());
+        l.add("vpnmlt advertise|" + wilVpnM.size() + ", list=" + chgVpnM.size());
+        l.add("vpnflw advertise|" + wilVpnF.size() + ", list=" + chgVpnF.size());
+        l.add("ovpnuni advertise|" + wilVpoU.size() + ", list=" + chgVpoU.size());
+        l.add("ovpnmlt advertise|" + wilVpoM.size() + ", list=" + chgVpoM.size());
+        l.add("ovpnflw advertise|" + wilVpoF.size() + ", list=" + chgVpoF.size());
+        l.add("vpls advertise|" + wilVpls.size() + ", list=" + chgVpls.size());
+        l.add("mspw advertise|" + wilMspw.size() + ", list=" + chgMspw.size());
+        l.add("evpn advertise|" + wilEvpn.size() + ", list=" + chgEvpn.size());
+        l.add("mdt advertise|" + wilMdt.size() + ", list=" + chgMdt.size());
+        l.add("srte advertise|" + wilSrte.size() + ", list=" + chgSrte.size());
+        l.add("linkstate advertise|" + wilLnks.size() + ", list=" + chgLnks.size());
+        l.add("mvpn advertise|" + wilMvpn.size() + ", list=" + chgMvpn.size());
+        l.add("omvpn advertise|" + wilMvpo.size() + ", list=" + chgMvpo.size());
+        l.add("version|" + minversion + " of " + lower.compRound);
+        return l;
     }
 
     /**
@@ -543,6 +548,15 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
     }
 
+    private void setCustOnly(tabRouteEntry<addrIP> ntry) {
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            if (attr.onlyCust == 0) {
+                attr.onlyCust = localAs;
+            }
+        }
+    }
+
     private void clearAttribs(tabRouteAttr<addrIP> ntry) {
         if ((sendCommunity & 1) == 0) {
             ntry.stdComm = null;
@@ -589,6 +603,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.bierSiz = 0;
             ntry.bierHdr = 0;
         }
+        if (!leakAttr) {
+            ntry.onlyCust = 0;
+        }
         if (removePrivAsOut) {
             rtrBgpUtil.removePrivateAs(ntry.pathSeq);
             rtrBgpUtil.removePrivateAs(ntry.pathSet);
@@ -628,6 +645,32 @@ public class rtrBgpGroup extends rtrBgpParam {
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         if (intVpnClnt) {
             rtrBgpUtil.decodeAttribSet(ntry);
+        }
+        switch (leakRole) {
+            case rtrBgpUtil.roleProv:
+                if (ntry.best.onlyCust != 0) {
+                    return null;
+                }
+                break;
+            case rtrBgpUtil.roleRs:
+                if (ntry.best.onlyCust != 0) {
+                    return null;
+                }
+                break;
+            case rtrBgpUtil.roleRsc:
+                setCustOnly(ntry);
+                break;
+            case rtrBgpUtil.roleCust:
+                setCustOnly(ntry);
+                break;
+            case rtrBgpUtil.rolePeer:
+                if (ntry.best.onlyCust != 0) {
+                    return null;
+                }
+                setCustOnly(ntry);
+                break;
+            default:
+                break;
         }
         nextHopSelf(afi, ntry);
         switch (peerType) {
@@ -677,6 +720,35 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (intVpnClnt) {
             ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
             rtrBgpUtil.decodeAttribSet(ntry);
+        }
+        switch (leakRole) {
+            case rtrBgpUtil.roleProv:
+                if (ntry.best.onlyCust != 0) {
+                    return null;
+                }
+                break;
+            case rtrBgpUtil.roleRs:
+                if (ntry.best.onlyCust != 0) {
+                    return null;
+                }
+                break;
+            case rtrBgpUtil.roleRsc:
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
+                setCustOnly(ntry);
+                break;
+            case rtrBgpUtil.roleCust:
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
+                setCustOnly(ntry);
+                break;
+            case rtrBgpUtil.rolePeer:
+                if (ntry.best.onlyCust != 0) {
+                    return null;
+                }
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
+                setCustOnly(ntry);
+                break;
+            default:
+                break;
         }
         if (!allowAsOut) {
             if (rtrBgpUtil.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {

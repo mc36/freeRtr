@@ -2897,9 +2897,7 @@ public class userShow {
                 return;
             }
             if (a.equals("status")) {
-                List<String> l = new ArrayList<String>();
-                grp.getStatus(l);
-                rdr.putStrArr(l);
+                rdr.putStrTab(grp.getStatus());
                 return;
             }
             int sfi = rtrBgpParam.string2mask(a);

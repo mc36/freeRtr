@@ -486,6 +486,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int peerExtNextOtr;
 
     /**
+     * peer leak prevention role capability
+     */
+    public int peerLeakRole;
+
+    /**
      * peer hostname capability
      */
     public String peerHostname;
@@ -581,6 +586,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         parent = protocol;
         neigh = neighbor;
         pipe = socket;
+        peerLeakRole = -1;
         if (pipe == null) {
             return;
         }
@@ -1448,15 +1454,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             buf = new byte[0];
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, buf);
         }
-        if (neigh.hostname > 0) {
-            buf = encodeHostname(cfgAll.hostName);
-            if (neigh.hostname > 1) {
-                buf = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
-            } else {
-                buf = bits.byteConcat(buf, encodeHostname(""));
-            }
-            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaHostname, buf);
-        }
         if ((neigh.compressMode & 1) != 0) {
             compressRx = new Inflater[8];
             for (int i = 0; i < compressRx.length; i++) {
@@ -1465,6 +1462,20 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             buf = new byte[2];
             buf[0] = (byte) 0x87; // deflate, 32k window
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaCompress, buf);
+        }
+        if (neigh.leakRole >= 0) {
+            buf = new byte[1];
+            buf[0] = (byte) neigh.leakRole;
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLeakRole, buf);
+        }
+        if (neigh.hostname > 0) {
+            buf = encodeHostname(cfgAll.hostName);
+            if (neigh.hostname > 1) {
+                buf = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
+            } else {
+                buf = bits.byteConcat(buf, encodeHostname(""));
+            }
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaHostname, buf);
         }
         pck.merge2beg();
         int i = pck.dataSize();
@@ -1561,6 +1572,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             return true;
                         }
                         peer32bitAS = true;
+                        break;
+                    case rtrBgpUtil.capaLeakRole:
+                        peerLeakRole = tlv.valDat[0];
                         break;
                     case rtrBgpUtil.capaHostname:
                         byte[] buf = new byte[tlv.valDat[0] & 0xff];
@@ -1678,6 +1692,34 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peer32bitAS = true;
             if ((neigh.compressMode & 2) != 0) {
                 compressTx = new Deflater();
+            }
+        }
+        if (neigh.leakForce || ((neigh.leakRole >= 0) && (peerLeakRole >= 0))) {
+            int ned;
+            switch (neigh.leakRole) {
+                case rtrBgpUtil.roleProv:
+                    ned = rtrBgpUtil.roleCust;
+                    break;
+                case rtrBgpUtil.roleRs:
+                    ned = rtrBgpUtil.roleRsc;
+                    break;
+                case rtrBgpUtil.roleRsc:
+                    ned = rtrBgpUtil.roleRs;
+                    break;
+                case rtrBgpUtil.roleCust:
+                    ned = rtrBgpUtil.roleProv;
+                    break;
+                case rtrBgpUtil.rolePeer:
+                    ned = rtrBgpUtil.rolePeer;
+                    break;
+                default:
+                    ned = -1;
+                    break;
+            }
+            if (peerLeakRole != ned) {
+                logger.info("neighbor " + neigh.peerAddr + " sent wrong role " + rtrBgpUtil.leakRole2string(peerLeakRole, false));
+                sendNotify(2, 8);
+                return true;
             }
         }
         originalSafiList = peerAfis;
@@ -2278,6 +2320,41 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int safi) {
         if (debugger.rtrBgpTraf) {
             logger.debug("processing " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
+        }
+        switch (neigh.leakRole) {
+            case rtrBgpUtil.roleProv:
+                if (ntry.best.onlyCust == 0) {
+                    ntry.best.onlyCust = neigh.remoteAs;
+                }
+                break;
+            case rtrBgpUtil.roleRs:
+                if (ntry.best.onlyCust == 0) {
+                    ntry.best.onlyCust = neigh.remoteAs;
+                }
+                break;
+            case rtrBgpUtil.roleRsc:
+                if (ntry.best.onlyCust != 0) {
+                    repPolRej++;
+                    return true;
+                }
+                break;
+            case rtrBgpUtil.roleCust:
+                if (ntry.best.onlyCust != 0) {
+                    repPolRej++;
+                    return true;
+                }
+                break;
+            case rtrBgpUtil.rolePeer:
+                if ((ntry.best.onlyCust != 0) && (ntry.best.onlyCust != neigh.remoteAs)) {
+                    repPolRej++;
+                    return true;
+                }
+                if (ntry.best.onlyCust == 0) {
+                    ntry.best.onlyCust = neigh.remoteAs;
+                }
+                break;
+            default:
+                break;
         }
         if (neigh.enforceFirst) {
             switch (neigh.peerType) {

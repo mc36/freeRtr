@@ -360,6 +360,31 @@ public class rtrBgpUtil {
     public final static int peerServr = 5;
 
     /**
+     * provider
+     */
+    public final static int roleProv = 0;
+
+    /**
+     * route server
+     */
+    public final static int roleRs = 1;
+
+    /**
+     * route server client
+     */
+    public final static int roleRsc = 2;
+
+    /**
+     * customer
+     */
+    public final static int roleCust = 3;
+
+    /**
+     * peer
+     */
+    public final static int rolePeer = 4;
+
+    /**
      * open
      */
     public static final int msgOpen = 1;
@@ -540,6 +565,11 @@ public class rtrBgpUtil {
     public static final int attrBgpSec = 33;
 
     /**
+     * only to customer
+     */
+    public static final int attrOnlyCust = 35;
+
+    /**
      * prefix sid
      */
     public static final int attrPrefSid = 40;
@@ -597,7 +627,7 @@ public class rtrBgpUtil {
     /**
      * bgp role
      */
-    public static final int capaBgpRole = 9;
+    public static final int capaLeakRole = 9;
 
     /**
      * graceful restart
@@ -760,6 +790,8 @@ public class rtrBgpUtil {
                         return "badTimer";
                     case 7:
                         return "badCapa";
+                    case 8:
+                        return "badRole";
                     default:
                         return "open/" + sub;
                 }
@@ -1410,6 +1442,34 @@ public class rtrBgpUtil {
     }
 
     /**
+     * convert peer role to string
+     *
+     * @param role role
+     * @param attr attrib
+     * @return string
+     */
+    public static String leakRole2string(int role, boolean attr) {
+        switch (role) {
+            case roleProv:
+                return "provider";
+            case roleRs:
+                return "ix-server";
+            case roleRsc:
+                return "ix-client";
+            case roleCust:
+                return "customer";
+            case rolePeer:
+                return "peer";
+            default:
+                if (attr) {
+                    return "attrib";
+                } else {
+                    return "disabled";
+                }
+        }
+    }
+
+    /**
      * convert peer type to string
      *
      * @param i peer type
@@ -1905,6 +1965,16 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse only to customer attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseOnlyCust(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.onlyCust = pck.msbGetD(0);
+    }
+
+    /**
      * parse reachable attribute
      *
      * @param lower where to signal
@@ -2226,6 +2296,9 @@ public class rtrBgpUtil {
             case attrClustList:
                 parseClustList(ntry, pck);
                 break;
+            case attrOnlyCust:
+                parseOnlyCust(ntry, pck);
+                break;
             default:
                 if (debugger.rtrBgpError) {
                     logger.debug("unknown (" + pck.ETHtype + ") attrib " + pck.dump());
@@ -2301,6 +2374,7 @@ public class rtrBgpUtil {
         placePmsiTun(pck, hlp, ntry);
         placeTunEnc(pck, hlp, ntry);
         placeLnkSta(pck, hlp, ntry);
+        placeOnlyCust(pck, hlp, ntry);
         placePrefSid(safi, pck, hlp, ntry);
         placeBier(pck, hlp, ntry);
         placeAttribSet(pck, hlp, ntry);
@@ -2836,6 +2910,23 @@ public class rtrBgpUtil {
             hlp.putSkip(addrIPv4.size);
         }
         placeAttrib(flagOptional, attrClustList, trg, hlp);
+    }
+
+    /**
+     * place only to customer attribute
+     *
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeOnlyCust(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.onlyCust == 0) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, ntry.best.onlyCust);
+        hlp.putSkip(4);
+        placeAttrib(flagOptional | flagTransitive, attrOnlyCust, trg, hlp);
     }
 
     /**

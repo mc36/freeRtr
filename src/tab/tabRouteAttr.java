@@ -251,6 +251,11 @@ public class tabRouteAttr<T extends addrType> {
     public int validity;
 
     /**
+     * only to customer
+     */
+    public int onlyCust;
+
+    /**
      * segment routing index
      */
     public int segrouIdx;
@@ -617,6 +622,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.tag = tag;
         atr.origin = origin;
         atr.validity = validity;
+        atr.onlyCust = onlyCust;
         atr.segrouIdx = segrouIdx;
         atr.segrouSiz = segrouSiz;
         atr.segrouBeg = segrouBeg;
@@ -822,6 +828,9 @@ public class tabRouteAttr<T extends addrType> {
             return true;
         }
         if (validity != other.validity) {
+            return true;
+        }
+        if (onlyCust != other.onlyCust) {
             return true;
         }
         if (origin != other.origin) {
@@ -1206,6 +1215,7 @@ public class tabRouteAttr<T extends addrType> {
         l.add("type = " + rouTyp + " " + protoNum);
         l.add("source = " + srcRtr);
         l.add("validity = " + validity);
+        l.add("only to customer = " + onlyCust);
         l.add("segment routing index = " + segrouIdx);
         l.add("segment routing old base = " + segrouOld);
         l.add("segment routing base = " + segrouBeg);
