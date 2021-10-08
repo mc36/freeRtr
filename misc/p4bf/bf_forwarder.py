@@ -276,7 +276,7 @@ class BfIfStatus(Thread):
         for d, k in resp:
             key_fields = k.to_dict()
             data_fields = d.to_dict()
-            return (key_fields[b'$DEV_PORT']['value'], data_fields[b'$PORT_NAME'])
+            return (key_fields['$DEV_PORT']['value'], data_fields['$PORT_NAME'])
 
     def run(self):
         try:
