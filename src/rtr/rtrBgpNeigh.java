@@ -511,6 +511,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("compression = rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
         l.add("graceful got =" + rtrBgpParam.mask2string(conn.peerGrace));
         l.add("graceful sent =" + rtrBgpParam.mask2string(graceRestart));
+        l.add("multilabel got =" + rtrBgpParam.mask2string(conn.peerMltLab));
+        l.add("multilabel sent =" + rtrBgpParam.mask2string(multiLabel));
         l.add("extnexthop cur =" + rtrBgpParam.mask2string(conn.peerExtNextCur));
         l.add("extnexthop otr =" + rtrBgpParam.mask2string(conn.peerExtNextOtr));
         l.add("addpath rx open =" + rtrBgpParam.mask2string(conn.addpathRx));
@@ -1544,6 +1546,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return bits.num2str(remoteAs) + "|" + peerAddr + "|" + clnt.getPTR();
             case 13:
                 return bits.num2str(remoteAs) + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + conn.ready2adv + "|" + peerAddr + "|" + bits.timePast(conn.upTime);
+            case 14:
+                return bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams) + "|" + peerAddr;
             default:
                 return null;
         }

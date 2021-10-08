@@ -193,6 +193,11 @@ public abstract class rtrBgpParam {
     public int graceRestart;
 
     /**
+     * multiple labels
+     */
+    public int multiLabel;
+
+    /**
      * extended nexthop current afi
      */
     public int extNextCur;
@@ -875,6 +880,7 @@ public abstract class rtrBgpParam {
         bfdTrigger = src.bfdTrigger;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
+        multiLabel = src.multiLabel;
         extNextCur = src.extNextCur;
         extNextOtr = src.extNextOtr;
         hostname = src.hostname;
@@ -1218,6 +1224,8 @@ public abstract class rtrBgpParam {
         l.add("3 .       next-hop-self               send next hop myself to peer");
         l.add("3 .       next-hop-peer               set next hop to peer address");
         l.add("3 .       bfd                         enable bfd triggered down");
+        l.add("3 4       multiple-labels             advertise multiple labels capability");
+        getAfiList(l, "4 4,.", "use", true);
         l.add("3 4       graceful-restart            advertise graceful restart capability");
         getAfiList(l, "4 4,.", "use", true);
         l.add("3 4       extended-nexthop-current    advertise extended nexthop capability");
@@ -1372,6 +1380,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !bfdTrigger, beg, nei + "bfd", "");
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
+        l.add(beg + nei + "multiple-labels" + mask2string(multiLabel));
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
         l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
         l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOtr));
@@ -1655,6 +1664,13 @@ public abstract class rtrBgpParam {
             extNextOtr = rtrBgpParam.string2mask(cmd);
             if (negated) {
                 extNextOtr = 0;
+            }
+            return false;
+        }
+        if (s.equals("multiple-labels")) {
+            multiLabel = rtrBgpParam.string2mask(cmd);
+            if (negated) {
+                multiLabel = 0;
             }
             return false;
         }

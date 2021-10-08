@@ -2930,6 +2930,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(4));
             return;
         }
+        if (a.equals("multiple-labels")) {
+            rdr.putStrTab(r.bgp.showSummary(14));
+            return;
+        }
         if (a.equals("resolve")) {
             rdr.putStrTab(r.bgp.showSummary(12));
             return;

@@ -585,6 +585,21 @@ public class rtrBgpUtil {
     public static final int capaExtMessage = 6;
 
     /**
+     * bgpsec
+     */
+    public static final int capaBgpSec = 7;
+
+    /**
+     * multiple labels
+     */
+    public static final int capaMultiLabel = 8;
+
+    /**
+     * bgp role
+     */
+    public static final int capaBgpRole = 9;
+
+    /**
      * graceful restart
      */
     public static final int capaGraceRestart = 64;
@@ -620,9 +635,9 @@ public class rtrBgpUtil {
     public static final int capaLongGrace = 71;
 
     /**
-     * covering prefixes outbound route filter
+     * routing policy distribution
      */
-    public static final int capaCoverFilter = 72;
+    public static final int capaRoutePolicy = 72;
 
     /**
      * hostname

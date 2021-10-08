@@ -471,6 +471,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int peerGrace;
 
     /**
+     * peer multiple labels capability
+     */
+    public int peerMltLab;
+
+    /**
      * peer extended nexthop capability
      */
     public int peerExtNextCur;
@@ -1431,6 +1436,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaGraceRestart, buf);
         }
+        safis = parent.mask2list(neigh.multiLabel & neigh.addrFams);
+        if (safis.size() > 0) {
+            buf = new byte[safis.size() * 4];
+            for (int i = 0; i < safis.size(); i++) {
+                bits.msbPutD(buf, i * 4, rtrBgpUtil.safi2triplet(safis.get(i)) | 16);
+            }
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaMultiLabel, buf);
+        }
         if (neigh.extUpdate) {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, new byte[0]);
         }
@@ -1577,6 +1590,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             peerAfis |= o;
                         }
                         break;
+                    case rtrBgpUtil.capaMultiLabel:
+                        for (i = 0; i < tlv.valSiz; i += 4) {
+                            int o = bits.msbGetD(tlv.valDat, i);
+                            o = rtrBgpUtil.triplet2safi(o);
+                            o = parent.safi2mask(o);
+                            if (o < 1) {
+                                continue;
+                            }
+                            peerMltLab |= o;
+                        }
+                        break;
                     case rtrBgpUtil.capaGraceRestart:
                         for (i = 2; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
@@ -1644,6 +1668,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!neigh.capaNego) {
             peerAfis = neigh.addrFams;
             peerGrace = neigh.graceRestart;
+            peerMltLab = neigh.multiLabel;
             peerExtNextCur = neigh.extNextCur;
             peerExtNextOtr = neigh.extNextOtr;
             addpathRx = neigh.addpathRmode;
