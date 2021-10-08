@@ -839,7 +839,10 @@ public class rtrBgpGroup extends rtrBgpParam {
             default:
                 return null;
         }
-        clearAttribs(ntry.best);
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            clearAttribs(attr);
+        }
         if (nxtHopSelf) {
             nextHopSelf(afi, ntry);
             return ntry;
