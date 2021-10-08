@@ -12329,3 +12329,7 @@ no todo: bgp extended open
 ---------------------------------- 2021-10-07 19:21:31
 qc pass: bgp extended open
 qc pass: bgp extended update
+---------------------------------- 2021-10-08 04:19:33
+qc pass: bgp multiple labels
+qc pass: bgp graceful restart
+qc pass: bgp extended nexthop

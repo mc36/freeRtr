@@ -2001,6 +2001,9 @@ qc pass: bgp routepolicy clearing with aspath
 qc pass: bgp autoroute
 qc pass: bgp extended open
 qc pass: bgp extended update
+qc pass: bgp multiple labels
+qc pass: bgp graceful restart
+qc pass: bgp extended nexthop
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

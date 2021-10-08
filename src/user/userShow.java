@@ -2990,9 +2990,7 @@ public class userShow {
                 return;
             }
             if (a.equals("status")) {
-                List<String> l = new ArrayList<String>();
-                nei.getStatus(l);
-                rdr.putStrArr(l);
+                rdr.putStrTab(nei.getStatus());
                 return;
             }
             int sfi = rtrBgpParam.string2mask(a);
