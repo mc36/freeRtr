@@ -1215,7 +1215,7 @@ public class tabRouteAttr<T extends addrType> {
         l.add("type = " + rouTyp + " " + protoNum);
         l.add("source = " + srcRtr);
         l.add("validity = " + validity);
-        l.add("only to customer = " + onlyCust);
+        l.add("only to customer = " + bits.num2str(onlyCust));
         l.add("segment routing index = " + segrouIdx);
         l.add("segment routing old base = " + segrouOld);
         l.add("segment routing base = " + segrouBeg);
