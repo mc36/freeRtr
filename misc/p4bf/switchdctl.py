@@ -21,16 +21,15 @@
 import argparse, grpc, os, sys, socket, logging, mib, re, linecache, shutil, inspect
 from time import sleep
 
-SDE = os.environ.get("SDE", "~/bf-sde-9.6.0")
+SDE = os.environ.get("SDE", "~/bf-sde-9.7.0")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
-BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python2.7/site-packages/tofino/"
+BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.7/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 P4_BASE="%s/share/tofinopd/" % SDE_INSTALL
 
 # set our lib path
-sys.path.append(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB)
-)
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB+"bfrt_grpc"))
 
 import bfrt_grpc.bfruntime_pb2 as bfruntime_pb2
 import bfrt_grpc.client as gc

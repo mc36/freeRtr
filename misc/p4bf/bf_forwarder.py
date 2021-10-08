@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 
 ###############################################################################
 #
@@ -22,15 +22,14 @@ from threading import Thread
 import argparse, grpc, os, sys, socket, logging, mib, re, linecache, shutil, inspect
 from time import sleep
 
-SDE = os.environ.get("SDE", "~/bf-sde-9.6.0")
+SDE = os.environ.get("SDE", "~/bf-sde-9.7.0")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
-BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python2.7/site-packages/tofino/"
+BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.7/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 
 # set our lib path
-sys.path.append(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB)
-)
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./", BF_RUNTIME_LIB+"bfrt_grpc"))
 import bfrt_grpc.client as gc
 import bfrt_grpc.bfruntime_pb2 as bfrt_pb2
 
@@ -61,7 +60,7 @@ try:
     from sal_services_pb2 import UNDEFINED_AN, AN_OFF, AN_ON
     from salgrpcclient import SalGrpcClient, SAL_PORT_ID
 except ImportError:
-    logger.warn("sal import failed")
+    logger.warning("sal import failed")
 
 
 PORT_SPEED = [1,10,25,40, 50,100]
@@ -111,9 +110,9 @@ class BfRuntimeGrpcClient:
         self.p4_name = p4_program_name
         self.client_id = client_id
         self.pipe_name = pipe_name
-        logger.warn("GRPC_ADDRESS: %s" % self.grpc_addr)
-        logger.warn("P4_NAME: %s" % self.p4_name)
-        logger.warn("CLIENT_ID: %s" % self.client_id)
+        logger.warning("GRPC_ADDRESS: %s" % self.grpc_addr)
+        logger.warning("P4_NAME: %s" % self.p4_name)
+        logger.warning("CLIENT_ID: %s" % self.client_id)
 
         try:
             self.interface = gc.ClientInterface(
@@ -151,11 +150,11 @@ class BfSubIfCounter(Thread):
 
     def run(self):
         try:
-            logger.warn("%s - main" % (self.class_name))
+            logger.warning("%s - main" % (self.class_name))
             while not self.die:
                 logger.debug("%s - loop" % (self.class_name))
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warn("%s - No active ports" % (self.class_name))
+                    logger.warning("%s - No active ports" % (self.class_name))
                 else:
                     logger.debug("%s - ACTIVE_PORTS%s" % (self.class_name, ACTIVE_PORTS.keys()))
                     self.getReadSwitchSubIfCounter()
@@ -163,7 +162,7 @@ class BfSubIfCounter(Thread):
 
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
+            logger.warning("%s - exited with code [%s]" % (self.class_name,_Exception()))
             self.tearDown()
 
     def getReadSwitchSubIfCounter(self):
@@ -282,13 +281,13 @@ class BfIfStatus(Thread):
     def run(self):
         try:
 
-            logger.warn("%s - main" % (self.class_name))
+            logger.warning("%s - main" % (self.class_name))
             while not self.die:
                 logger.debug("%s - loop" % (self.class_name))
                 logger.debug("%s - %s" % (self.class_name,self.getAllActivePorts()))
                 self.getAllActivePorts()
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warn("%s - No active ports" %(self.class_name))
+                    logger.warning("%s - No active ports" %(self.class_name))
                 else:
                     self.getActiveSwitchOperStatus()
 
@@ -297,7 +296,7 @@ class BfIfStatus(Thread):
 
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
+            logger.warning("%s - exited with code [%s]" % (self.class_name,_Exception()))
             self.tearDown()
 
     def getActiveSwitchOperStatus(self):
@@ -318,19 +317,19 @@ class BfIfStatus(Thread):
                     self.file.write("state %s %s\n" % (port_id, 0))
                     #self.file.writelines(["state %s %s" % (port_id, 0)])
                     self.file.flush()
-                    logger.warn("tx: ['state','%s','0','\\n']" % port_id )
+                    logger.warning("tx: ['state','%s','0','\\n']" % port_id )
                     PORTS_OPER_STATUS[port_id] = False
                     logger.debug("%s - PORTS_OPER_STATUS[%s] state change to DOWN" % (self.class_name,port_id) )
                 elif (PORTS_OPER_STATUS[port_id] == False) and (port["$PORT_UP"] == True):
                     self.file.write("state %s %s\n" % (port_id, 1))
                     #self.file.writelines(["state %s %s" % (port_id, 1)])
                     self.file.flush()
-                    logger.warn("tx: ['state','%s','1','\\n']" % port_id )
+                    logger.warning("tx: ['state','%s','1','\\n']" % port_id )
                     PORTS_OPER_STATUS[port_id] = True
                     logger.debug("%s - PORTS_OPER_STATUS[%s] state change to UP" % (self.class_name,port_id) )
 
             else:
-                logger.warn("%s - PORTS_OPER_STATUS[%s] does not exist, adding it ..." % (self.class_name,port_id) )
+                logger.warning("%s - PORTS_OPER_STATUS[%s] does not exist, adding it ..." % (self.class_name,port_id) )
                 PORTS_OPER_STATUS[port_id]=port["$PORT_UP"]
 
     def tearDown(self):
@@ -359,34 +358,34 @@ class BfIfSnmpClient(Thread):
                 os.unlink(self.ifmibs_dir + "/" + file)
 
     def run(self):
-        logger.warn("%s - main" % (self.class_name))
+        logger.warning("%s - main" % (self.class_name))
         try:
             # re-initialize ifindex file
             shutil.copy("%s.init" % self.ifindex,self.ifindex)
             while not self.die:
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warn("%s - No active ports" % (self.class_name))
+                    logger.warning("%s - No active ports" % (self.class_name))
                 else:
                     for port in ACTIVE_PORTS.keys():
                         if port not in self.snmp_ports:
                             self.addSnmpPort(port,ACTIVE_PORTS[port])
                             self.snmp_ports.append(port)
-                            logger.warn("%s - added stats for port %s" % (self.class_name,port))
+                            logger.warning("%s - added stats for port %s" % (self.class_name,port))
                     for subif in ACTIVE_SUBIFS.keys():
                         if subif not in self.snmp_subifs:
                                 self.addSnmpSubIf(subif)
                                 self.snmp_subifs.append(subif)
-                                logger.warn("%s - added stats for sub-interface %s" % (self.class_name,subif))
+                                logger.warning("%s - added stats for sub-interface %s" % (self.class_name,subif))
                     for port in self.snmp_ports:
                         if port not in ACTIVE_PORTS.keys():
                             self.deleteSnmpPort(port,0)
                             self.snmp_ports.remove(port)
-                            logger.warn("%s - removing stats for port %s" % (self.class_name,port))
+                            logger.warning("%s - removing stats for port %s" % (self.class_name,port))
                     for subif in self.snmp_subifs:
                         if subif not in ACTIVE_SUBIFS.keys():
                             self.deleteSnmpPort(subif,1)
                             self.snmp_subifs.remove(subif)
-                            logger.warn("%s - removing stats for sub-interface %s" % (self.class_name,subif))
+                            logger.warning("%s - removing stats for sub-interface %s" % (self.class_name,subif))
 
                     self.updateStats()
 
@@ -394,7 +393,7 @@ class BfIfSnmpClient(Thread):
 
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
+            logger.warning("%s - exited with code [%s]" % (self.class_name,_Exception()))
             self.tearDown()
 
     def addSnmpSubIf(self, port_id):
@@ -534,7 +533,7 @@ class BfIfSnmpClient(Thread):
                 return None
 
         except Exception as e:
-            logger.warn("Error cleaning up: {}".format(e))
+            logger.warning("Error cleaning up: {}".format(e))
 
     def updateIndex(self,op_type, mib_file,mib_ifindex):
         if op_type == WRITE:
@@ -544,7 +543,7 @@ class BfIfSnmpClient(Thread):
                 output.write("%s %s\n" % (mib_file,self.ifindex_offset + mib_ifindex))
                 #output.close()
         if op_type == DELETE:
-            logger.warn("updateIndex:DELETE")
+            logger.warning("updateIndex:DELETE")
             shutil.copy(self.ifindex,"%s.prev" % self.ifindex)
             with open("%s.prev" % self.ifindex, "r") as input:
                 with open(self.ifindex, "w") as output:
@@ -596,7 +595,7 @@ class BfForwarder(Thread):
                 if k is not None:
                     keys.append(k)
         except Exception as e:
-            logger.warn("Error cleaning up: {}".format(e))
+            logger.warning("Error cleaning up: {}".format(e))
         logger.debug("   Keys to delete: %s" % (keys))
 
     def _delTableKeys(self, table_name_key, table_dict, keys):
@@ -607,7 +606,7 @@ class BfForwarder(Thread):
                 logger.debug("   Key to delete: %s" % (k))
                 table_dict[table_name_key].entry_del(self.bfgc.target, [k])
             except Exception as e:
-                logger.warn("Error cleaning up: {}".format(e))
+                logger.warning("Error cleaning up: {}".format(e))
 
     def _clearOneTable(self, table_name_key, table_dict):
         keys = []
@@ -620,12 +619,12 @@ class BfForwarder(Thread):
         for (
             table_name,
             table_info,
-        ) in self.bfgc.bfrt_info.parsed_info.table_info_dict_get().iteritems():
+        ) in self.bfgc.bfrt_info.parsed_info.table_info_dict_get().items():
             table_dict[table_info.name_get()] = gc._Table(
                 table_info, self.bfgc.interface.reader_writer_interface
             )
 
-        logger.warn("Generic table clearing: (Order not matters)")
+        logger.warning("Generic table clearing: (Order not matters)")
 
         for table_name_key in table_dict.keys():
             if "ig_ctl_pkt_pre_emit" in table_name_key:
@@ -643,7 +642,7 @@ class BfForwarder(Thread):
             if "eg_ctl" in table_name_key:
                 self._clearOneTable(table_name_key, table_dict)
 
-        logger.warn("Bundle specific clearing: (Order matters)")
+        logger.warning("Bundle specific clearing: (Order matters)")
 
         nhp_name = "%s.ig_ctl.ig_ctl_bundle.tbl_nexthop_bundle" % self.bfgc.pipe_name
         ase_name = "%s.ig_ctl.ig_ctl_bundle.ase_bundle" % self.bfgc.pipe_name
@@ -658,7 +657,7 @@ class BfForwarder(Thread):
         self._delTableKeys(ase_name, table_dict, ase_keys)
         self._delTableKeys(apr_name, table_dict, apr_keys)
 
-        logger.warn("Multicast specific clearing: (Order matters)")
+        logger.warning("Multicast specific clearing: (Order matters)")
 
         mgid_name = "$pre.mgid"
         node_name = "$pre.node"
@@ -931,7 +930,7 @@ class BfForwarder(Thread):
         sal_port = SAL_PORT_ID[port_id]
         if adm_status == 1:
             if self._checkParamCoherence(port_speed,fec,autoneg,flowctrl) == False:
-                logger.warn("%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                logger.warning("%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
                                  % (self.class_name,port_id,port_speed,fec,autoneg,flowctrl ))
                 return None
             try:
@@ -941,15 +940,15 @@ class BfForwarder(Thread):
 
                 ACTIVE_PORTS[port_id]=port_speed
             except:
-                logger.warn("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                logger.warning("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
                              % (self.class_name,method_name,port_id,port_speed,fec,autoneg,flowctrl ))
-                logger.warn("%s:%s - with code [%s]" % (self.class_name,method_name,_Exception()))
+                logger.warning("%s:%s - with code [%s]" % (self.class_name,method_name,_Exception()))
         else:
             try:
                 self.salgc.DelPort(port_num=sal_port, lane=0)
                 ACTIVE_PORTS.pop(port_id)
             except:
-                logger.warn("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
+                logger.warning("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
 
     def _checkParamCoherence(self,port_speed,fec,autoneg,flowctrl):
         if (port_speed == 1) or (port_speed == 10):
@@ -999,7 +998,7 @@ class BfForwarder(Thread):
                 return
 
             if self._checkParamCoherence(port_speed,fec,autoneg,flowctrl) == False:
-                logger.warn("%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                logger.warning("%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
                                  % (self.class_name,port_id,port_speed,fec,autoneg,flowctrl ))
                 return None
 
@@ -1024,9 +1023,9 @@ class BfForwarder(Thread):
                 ACTIVE_PORTS[port_id]=port_speed
                 logger.debug("Port[%s] administratively enabled", port_id)
             except:
-                logger.warn("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
+                logger.warning("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
                             % (self.class_name,method_name,port_id,port_speed,fec,autoneg,flowctrl ))
-                logger.warn("%s:%s - with code [%s]" % (self.class_name,method_name,_Exception()))
+                logger.warning("%s:%s - with code [%s]" % (self.class_name,method_name,_Exception()))
         else:
             try:
                 self.bfgc.port_table.entry_del(
@@ -1038,7 +1037,7 @@ class BfForwarder(Thread):
 
                 logger.debug("Port[%s] administratively disabled", port_id)
             except:
-                logger.warn("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
+                logger.warning("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
 
 
     def setBundleAdmStatus(self, op_type, bundle_id, member_id_list):
@@ -1079,8 +1078,8 @@ class BfForwarder(Thread):
                        self.bfgc.target, tbl_apr_bundle_key, tbl_apr_bundle_data
                    )
                 except gc.BfruntimeRpcException as e:
-                    logger.warn("bundle_add - %s" %  e.__str__())
-                    logger.warn("bundle_add - GRPC error code: %s" % e.grpc_error.code())
+                    logger.warning("bundle_add - %s" %  e.__str__())
+                    logger.warning("bundle_add - GRPC error code: %s" % e.grpc_error.code())
 
 
             tbl_ase_bundle_key = [
@@ -1261,7 +1260,7 @@ class BfForwarder(Thread):
                 tbl_apr_bundle.entry_del(self.bfgc.target, tbl_apr_bundle_key)
 
             if member_id_list.sort() != mem_dict_recv.keys().sort():
-                logger.warn(
+                logger.warning(
                     "[setBundleAdmStatus]: "
                     "Member list from Control Plane is different "
                     "from entry list in ActionSelector table"
@@ -4739,8 +4738,8 @@ class BfForwarder(Thread):
 
 
     def run(self):
-        logger.warn("BfForwarder - Main")
-        logger.warn("BfForwarder - Entering message loop")
+        logger.warning("BfForwarder - Main")
+        logger.warning("BfForwarder - Entering message loop")
         while not self.die:
 
             if len(ACTIVE_PORTS.keys())==0:
@@ -4754,18 +4753,18 @@ class BfForwarder(Thread):
                 line = self.file.readline(8192)
             except Exception as e:
                 e = sys.exc_info()[0]
-                logger.warn("%s - exited with code [%s]" % (self.class_name,_Exception()))
+                logger.warning("%s - exited with code [%s]" % (self.class_name,_Exception()))
                 self.tearDown()
 
             if len(line) == 0:
-                logger.warn("BfForwarder - Empty message from control plane" )
-                logger.warn("BfForwarder: connection with control plane lost, quitting ...")
+                logger.warning("BfForwarder - Empty message from control plane" )
+                logger.warning("BfForwarder: connection with control plane lost, quitting ...")
                 graceful_exit(bf_client,sck)
                 continue
 
             splt = line.split(" ")
             if not ("portbundle_" in splt[0]):
-                logger.warn("rx: %s", splt)
+                logger.warning("rx: %s", splt)
             else:
                 continue
             if splt[0] == "route4_add":
@@ -7981,7 +7980,7 @@ if __name__ == "__main__":
         SUBIF_COUNTERS_OUT = {}
         if (args.platform=="bf2556x1t"):
             # start TOFINO via SAL GRPC client
-            logger.warn('Starting TOFINO via SAL')
+            logger.warning('Starting TOFINO via SAL')
             sal_client = SalGrpcClient(args.sal_grpc_server_address)
             sal_client.TestConnection()
             sal_client.GetSwitchModel()
@@ -7990,7 +7989,7 @@ if __name__ == "__main__":
         else:
             sal_client = None
 
-        logger.warn("%s running on: %s" % (PROGRAM_NAME,args.platform.upper()))
+        logger.warning("%s running on: %s" % (PROGRAM_NAME,args.platform.upper()))
 
         sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sck.connect((args.freerouter_address,
@@ -8012,9 +8011,9 @@ if __name__ == "__main__":
                              args.ifindex)
             bf_snmp.daemon=True
             bf_snmp.start()
-            logger.warn("bf_switchd started with SNMP export")
+            logger.warning("bf_switchd started with SNMP export")
         else:
-            logger.warn("bf_switchd started with no SNMP export")
+            logger.warning("bf_switchd started with no SNMP export")
 
         bf_forwarder = BfForwarder(2,
                                "bf_forwarder",
@@ -8068,8 +8067,8 @@ if __name__ == "__main__":
         logger.error("%s - Is control plane started ?" % PROGRAM_NAME)
         sys.exit(1)
     except KeyboardInterrupt:
-        logger.warn("\n%s - Received signal 2 ..." % PROGRAM_NAME)
+        logger.warning("\n%s - Received signal 2 ..." % PROGRAM_NAME)
         for t in ALL_THREADS:
             t.die = True
-        logger.warn("%s - Quitting !" % PROGRAM_NAME)
+        logger.warning("%s - Quitting !" % PROGRAM_NAME)
         graceful_exit(bf_client,sck)
