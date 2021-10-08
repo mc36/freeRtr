@@ -1445,7 +1445,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaMultiLabel, buf);
         }
         if (neigh.extUpdate) {
-            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, new byte[0]);
+            buf = new byte[0];
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, buf);
         }
         if (neigh.hostname > 0) {
             buf = encodeHostname(cfgAll.hostName);
