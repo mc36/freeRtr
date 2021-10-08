@@ -797,6 +797,7 @@ public class userExec {
         hl.add("2 3      transproxy              transparent proxy connections");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 3,.    version                 version information");
+        hl.add("3 .        brief                 just headline");
         hl.add("3 .        number                just numbers");
         hl.add("3 .        date-email            just date");
         hl.add("3 .        date-machine          just date");

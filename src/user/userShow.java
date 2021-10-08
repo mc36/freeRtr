@@ -166,6 +166,10 @@ public class userShow {
         }
         if (a.equals("version")) {
             a = cmd.word();
+            if (a.equals("brief")) {
+                rdr.putStrArr(version.shLogo(0x2));
+                return null;
+            }
             if (a.equals("date-email")) {
                 rdr.putStrArr(version.shLogo(0x800));
                 return null;
