@@ -3475,7 +3475,7 @@ public class userExec {
             cmd.error("no reply");
             return;
         }
-        reader.putStrArr(bits.str2lst(res.toUserStr(" ", false)));
+        reader.putStrArr(res.toUserStr(" ", "", false));
     }
 
     private void doTclsh() {

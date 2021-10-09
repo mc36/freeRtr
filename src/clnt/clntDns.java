@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pack.packDns;
 import pack.packDnsRec;
+import pack.packDnsRes;
 import pack.packDnsZone;
 import pack.packHolder;
 import pack.packSize;
@@ -134,7 +135,7 @@ public class clntDns {
             if (debugger.clntDnsTraf) {
                 logger.debug("cache redir " + cac);
             }
-            nam = cac.target;
+            nam = cac.res.get(bits.random(0, cac.res.size())).target;
             cac = loPcache.findUser(nam, typ);
         }
         if (curPrx == null) {
@@ -146,6 +147,8 @@ public class clntDns {
         query = new packDns();
         packHolder pck = new packHolder(true, true);
         packDnsRec rr = new packDnsRec();
+        packDnsRes rs = new packDnsRes();
+        rr.res.add(rs);
         rr.name = nam;
         rr.typ = typ;
         rr.ttl = 180;
@@ -265,7 +268,7 @@ public class clntDns {
             if (nam.length() < 1) {
                 break;
             }
-            addrIP adr = userTerminal.justResolv(rec.target, curPrx.proxy.prefer);
+            addrIP adr = userTerminal.justResolv(rec.res.get(bits.random(0, rec.res.size())).target, curPrx.proxy.prefer);
             if (adr == null) {
                 return null;
             }
@@ -289,6 +292,8 @@ public class clntDns {
         packDnsRec rrF = new packDnsRec();
         packDnsRec rrL = new packDnsRec();
         packHolder pck = new packHolder(true, true);
+        packDnsRes rs = new packDnsRes();
+        rrF.res.add(rs);
         rrF.name = zon.name;
         rrF.typ = packDnsRec.typeAXFR;
         query.queries.add(rrF);
@@ -348,13 +353,13 @@ public class clntDns {
         if ((rrF.typ != packDnsRec.typeSOA) || (rrL.typ != packDnsRec.typeSOA)) {
             return null;
         }
-        if (rrF.sequence != rrL.sequence) {
+        if (rrF.res.get(0).sequence != rrL.res.get(0).sequence) {
             return null;
         }
         packDnsRec rrO = zon.findUser(zon.name, packDnsRec.typeSOA);
         boolean dl = rrO == null;
         if (!dl) {
-            dl = rrF.sequence != rrO.sequence;
+            dl = rrF.res.get(0).sequence != rrO.res.get(0).sequence;
         }
         dl |= forced;
         if (!dl) {
@@ -432,7 +437,9 @@ public class clntDns {
         addrIP adr = new addrIP();
         if (!adr.fromString(nam)) {
             packDnsRec rr = new packDnsRec();
-            rr.addr = adr;
+            packDnsRes rs = new packDnsRes();
+            rs.addr = adr;
+            rr.res.add(rs);
             rr.typ = getTypPri(prefer);
             reply = new packDns();
             reply.answers.add(rr);
@@ -516,7 +523,7 @@ public class clntDns {
         if (rr == null) {
             return null;
         }
-        return rr.addr;
+        return rr.res.get(bits.random(0, rr.res.size())).addr;
     }
 
     /**
@@ -529,7 +536,7 @@ public class clntDns {
         if (rr == null) {
             return null;
         }
-        return rr.target;
+        return rr.res.get(bits.random(0, rr.res.size())).target;
     }
 
     /**
@@ -542,7 +549,7 @@ public class clntDns {
         if (rr == null) {
             return null;
         }
-        return rr.target;
+        return rr.res.get(bits.random(0, rr.res.size())).target;
     }
 
     /**
@@ -555,7 +562,7 @@ public class clntDns {
         if (rr == null) {
             return null;
         }
-        return rr.target;
+        return rr.res.get(bits.random(0, rr.res.size())).target;
     }
 
 }

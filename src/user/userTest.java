@@ -58,6 +58,7 @@ import cry.cryOtp;
 import java.util.ArrayList;
 import java.util.List;
 import pack.packDnsRec;
+import pack.packDnsRes;
 import pack.packDnsZone;
 import pack.packHolder;
 import pack.packTls;
@@ -201,19 +202,23 @@ public class userTest {
                 }
                 if (ifc.addr4 != null) {
                     packDnsRec rec = new packDnsRec();
+                    packDnsRes res = new packDnsRes();
                     rec.clss = packDnsRec.classIN;
-                    rec.addr = new addrIP();
                     rec.name = ifc.name + "." + a;
-                    rec.addr.fromIPv4addr(ifc.addr4);
+                    res.addr = new addrIP();
+                    res.addr.fromIPv4addr(ifc.addr4);
+                    rec.res.add(res);
                     rec.typ = packDnsRec.typeA;
                     zon.addBin(rec);
                 }
                 if (ifc.addr6 != null) {
                     packDnsRec rec = new packDnsRec();
+                    packDnsRes res = new packDnsRes();
                     rec.clss = packDnsRec.classIN;
-                    rec.addr = new addrIP();
                     rec.name = ifc.name + "." + a;
-                    rec.addr.fromIPv6addr(ifc.addr6);
+                    res.addr = new addrIP();
+                    res.addr.fromIPv6addr(ifc.addr6);
+                    rec.res.add(res);
                     rec.typ = packDnsRec.typeAAAA;
                     zon.addBin(rec);
                 }

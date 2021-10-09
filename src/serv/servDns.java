@@ -507,8 +507,11 @@ class servDnsDoer implements Runnable {
                 return false;
             }
             rr = rr.copyBytes();
-            bits.byteFill(rr.addr.getBytes(), 0, addrIP.size - addrIPv4.size, 0);
-            rr.addr.setOr(rr.addr, parent.recurs6to4);
+            for (int i = 0; i < rr.res.size(); i++) {
+                addrIP adr = rr.res.get(i).addr;
+                bits.byteFill(adr.getBytes(), 0, addrIP.size - addrIPv4.size, 0);
+                adr.setOr(adr, parent.recurs6to4);
+            }
             rr.typ = packDnsRec.typeAAAA;
             rr.name = old;
             res.add(rr);
@@ -547,19 +550,6 @@ class servDnsDoer implements Runnable {
             return true;
         }
         res.add(rep);
-        if (typ != packDnsRec.typeNS) {
-            return true;
-        }
-        rep = zon.findUser(nam, packDnsRec.typeSOA);
-        if (rep == null) {
-            return true;
-        }
-        packDnsRec ns = new packDnsRec();
-        ns.typ = packDnsRec.typeNS;
-        ns.name = rep.name;
-        ns.target = rep.target;
-        ns.ttl = rep.ttl;
-        res.add(ns);
         return true;
     }
 
@@ -626,14 +616,6 @@ class servDnsDoer implements Runnable {
                 pckD.answers.clear();
                 pckD.answers.add(soa);
                 sendReply(pckD);
-                pckD.answers.clear();
-                packDnsRec ns = new packDnsRec();
-                ns.typ = packDnsRec.typeNS;
-                ns.name = soa.name;
-                ns.target = soa.target;
-                ns.ttl = soa.ttl;
-                pckD.answers.add(ns);
-                sendReply(pckD);
                 for (i = 0; i < zon.size(); i++) {
                     if (pipe.isClosed() != 0) {
                         break;
@@ -690,7 +672,7 @@ class servDnsDoer implements Runnable {
             if (req.typ != packDnsRec.typeCNAME) {
                 break;
             }
-            doResolve(pckD.answers, typ, req.target);
+            doResolve(pckD.answers, typ, req.res.get(0).target);
             if (p >= pckD.answers.size()) {
                 break;
             }

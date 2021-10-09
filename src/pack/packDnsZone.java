@@ -75,9 +75,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
             if (ntry == null) {
                 continue;
             }
-            ntry.added = tim;
-            ntry.asked = 1;
-            if (recs.add(ntry) == null) {
+            if (!addBin(ntry)) {
                 add++;
             }
         }
@@ -101,9 +99,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
             if (ntry == null) {
                 continue;
             }
-            ntry.added = tim;
-            ntry.asked = 1;
-            if (recs.add(ntry) == null) {
+            if (!addBin(ntry)) {
                 add++;
             }
         }
@@ -122,7 +118,12 @@ public class packDnsZone implements Comparator<packDnsZone> {
         }
         ntry.added = bits.getTime();
         ntry.asked = 1;
-        return recs.put(ntry) != null;
+        packDnsRec old = recs.put(ntry);
+        if (old == null) {
+            return false;
+        }
+        ntry.res.addAll(old.res);
+        return true;
     }
 
     /**
@@ -304,7 +305,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
             if (ntry == null) {
                 continue;
             }
-            txt.add(beg + ntry.toUserStr(" ", false));
+            txt.addAll(ntry.toUserStr(" ", beg, false));
         }
         return txt;
     }
@@ -322,7 +323,10 @@ public class packDnsZone implements Comparator<packDnsZone> {
         }
         userFormat res = new userFormat("|", "name|type|data" + a);
         for (int i = 0; i < recs.size(); i++) {
-            res.add(recs.get(i).toUserStr("|", stat));
+            List<String> lst = recs.get(i).toUserStr("|", "", stat);
+            for (int o = 0; o < lst.size(); o++) {
+                res.add(lst.get(o));
+            }
         }
         return res;
     }
@@ -346,8 +350,10 @@ public class packDnsZone implements Comparator<packDnsZone> {
                 case packDnsRec.typeAAAA:
                 case packDnsRec.typeA6:
                     packDnsRec ntry2 = new packDnsRec();
-                    ntry2.target = ntry.name;
-                    ntry2.name = packDnsRec.generateReverse(ntry.addr);
+                    packDnsRes res = new packDnsRes();
+                    ntry2.res.add(res);
+                    res.target = ntry.name;
+                    ntry2.name = packDnsRec.generateReverse(ntry.res.get(0).addr);
                     ntry2.clss = packDnsRec.classIN;
                     ntry2.typ = packDnsRec.typePTR;
                     ntry2.ttl = ntry.ttl;

@@ -202,7 +202,10 @@ public class packDns {
             if (ntry == null) {
                 continue;
             }
-            s += "(" + ntry.toUserStr(" ", false) + ")";
+            List<String> l = ntry.toUserStr(" ", "", false);
+            for (int o = 0; o < l.size(); o++) {
+                s += "(" + l.get(o) + ")";
+            }
         }
         return s;
     }
@@ -212,14 +215,23 @@ public class packDns {
     }
 
     private boolean readRRs(packHolder pck, List<packDnsRec> lst, int max, int beg, boolean question) {
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i < max;) {
             packDnsRec rr = new packDnsRec();
             if (rr.parseHeader(pck, beg, question)) {
                 return true;
             }
             lst.add(rr);
+            i += rr.res.size();
         }
         return false;
+    }
+
+    private int countRRs(List<packDnsRec> lst) {
+        int o = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            o += lst.get(i).res.size();
+        }
+        return o;
     }
 
     private void writeRRs(packHolder pck, List<packDnsRec> lst, boolean question) {
@@ -283,9 +295,9 @@ public class packDns {
         pck.msbPutW(0, id);
         pck.msbPutW(2, flag);
         pck.msbPutW(4, queries.size());
-        pck.msbPutW(6, answers.size());
-        pck.msbPutW(8, servers.size());
-        pck.msbPutW(10, addition.size());
+        pck.msbPutW(6, countRRs(answers));
+        pck.msbPutW(8, countRRs(servers));
+        pck.msbPutW(10, countRRs(addition));
         pck.putSkip(12);
         writeRRs(pck, queries, true);
         writeRRs(pck, answers, false);
