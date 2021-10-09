@@ -15,7 +15,7 @@
 # distributed under the License is distributed On an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+g# limitations under the License.
 #
 ###############################################################################
 
@@ -23,9 +23,7 @@ import argparse, grpc, os, sys, socket
 from time import sleep
 
 # set our lib path
-sys.path.append(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)),
-        './'))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),'./'))
 # And then we import
 import p4runtime_lib.bmv2
 import p4runtime_lib.helper
@@ -1306,7 +1304,7 @@ def writeSrvRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
 
 def add2dictIfNot(dic, key, val, msk, cnd):
     if msk == cnd:
-	return;
+        return;
     dic[key] = (val,msk)
 
 
@@ -2492,7 +2490,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     while 1:
         line = fil.readline(8192)
         splt = line.split(" ")
-        print "rx: ", splt
+        print("rx: ", splt)
 
 
         if splt[0] == "route4_add":
@@ -3431,11 +3429,11 @@ if __name__ == '__main__':
 
     if not os.path.exists(args.p4info):
         parser.print_help()
-        print "p4info file not found."
+        print("p4info file not found.")
         parser.exit(1)
     if not os.path.exists(args.bmv2_json):
         parser.print_help()
-        print "BMv2 JSON file not found."
+        print("BMv2 JSON file not found.")
         parser.exit(1)
 
     main(args.p4info, args.bmv2_json, args.p4runtime_address, args.freerouter_address, args.freerouter_port)

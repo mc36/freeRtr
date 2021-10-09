@@ -1151,6 +1151,8 @@ qc pass: p4lang: transmit flowspec
 qc pass: p4lang: drop flowspec
 qc pass: p4lang: policer flowspec
 qc pass: p4lang: priority flowspec
+qc pass: p4lang: ingress amt access list
+qc pass: p4lang: egress amt access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128
