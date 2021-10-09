@@ -806,7 +806,7 @@ class BfForwarder(Thread):
         if interval == 0:
             kbps = 0
         else:
-            kbps = bytes * 8 / interval
+            kbps = int(bytes * 8 / interval)
         try:
             tbl = self.bfgc.bfrt_info.table_get(tbl_name)
             key_field_list = [
@@ -6361,7 +6361,7 @@ class BfForwarder(Thread):
                 self.writeInQosRules(
                     1,
                     int(splt[1]),
-                    long(splt[2]),
+                    int(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -6369,7 +6369,7 @@ class BfForwarder(Thread):
                 self.writeInQosRules(
                     2,
                     int(splt[1]),
-                    long(splt[2]),
+                    int(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -6377,7 +6377,7 @@ class BfForwarder(Thread):
                 self.writeInQosRules(
                     3,
                     int(splt[1]),
-                    long(splt[2]),
+                    int(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -6385,7 +6385,7 @@ class BfForwarder(Thread):
                 self.writeOutQosRules(
                     1,
                     int(splt[1]),
-                    long(splt[2]),
+                    int(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -6393,7 +6393,7 @@ class BfForwarder(Thread):
                 self.writeOutQosRules(
                     2,
                     int(splt[1]),
-                    long(splt[2]),
+                    int(splt[2]),
                     int(splt[3]),
                 )
                 continue
@@ -6401,7 +6401,7 @@ class BfForwarder(Thread):
                 self.writeOutQosRules(
                     3,
                     int(splt[1]),
-                    long(splt[2]),
+                    int(splt[2]),
                     int(splt[3]),
                 )
                 continue
