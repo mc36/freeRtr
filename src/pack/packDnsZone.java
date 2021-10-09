@@ -46,7 +46,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
      * @param nam name of zone
      */
     public packDnsZone(String nam) {
-        name = nam;
+        name = nam.toLowerCase();
         defttl = 24 * 60 * 60;
         axfr = true;
     }
@@ -113,6 +113,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
      * @return false if added, true if updated
      */
     public boolean addBin(packDnsRec ntry) {
+        ntry.name = ntry.name.toLowerCase();
         if (ntry.ttl < 0) {
             ntry.ttl = defttl;
         }
@@ -135,6 +136,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
      * @return record, null if not found
      */
     public packDnsRec findBin(packDnsRec ntry) {
+        ntry.name = ntry.name.toLowerCase();
         ntry = recs.find(ntry);
         if (ntry == null) {
             return null;
@@ -150,6 +152,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
      * @return false if deleteed, true if not found
      */
     public boolean delBin(packDnsRec ntry) {
+        ntry.name = ntry.name.toLowerCase();
         return recs.del(ntry) == null;
     }
 
@@ -369,7 +372,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
     }
 
     public int compare(packDnsZone o1, packDnsZone o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+        return o1.name.compareTo(o2.name);
     }
 
 }

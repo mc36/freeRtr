@@ -849,16 +849,16 @@ public class packDnsRec implements Comparator<packDnsRec> {
      * @return false if successful, true if error happened
      */
     public boolean fromUserStr(cmds cmd) {
-        name = cmd.word();
+        name = cmd.word().toLowerCase();
         if (name.toLowerCase().equals("rev")) {
             name = cmd.word();
             addrIP adr = new addrIP();
             if (adr.fromString(name)) {
                 return true;
             }
-            name = generateReverse(adr);
+            name = generateReverse(adr).toLowerCase();
         }
-        String s = cmd.word().trim().toLowerCase();
+        String s = cmd.word().toLowerCase();
         typ = -1;
         if (s.equals("ip4a")) {
             typ = typeA;
@@ -922,7 +922,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         if (pck.dataSize() < 1) {
             return true;
         }
-        name = getChain(pck, len);
+        name = getChain(pck, len).toLowerCase();
         typ = pck.msbGetW(0); // type
         clss = pck.msbGetW(2); // class
         pck.getSkip(4);
@@ -974,7 +974,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         if ((o1.typ & cmp) > (o2.typ & cmp)) {
             return +1;
         }
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+        return o1.name.compareTo(o2.name);
     }
     
 }

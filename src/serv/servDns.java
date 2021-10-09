@@ -230,13 +230,13 @@ public class servDns extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("delresolver")) {
-            servDnsResolv res = new servDnsResolv();
+            servDnsResolv res = new servDnsResolv(cmd.word());
             res.fromString(cmd);
             resolvs.del(res);
             return false;
         }
         if (s.equals("resolver")) {
-            servDnsResolv res = new servDnsResolv();
+            servDnsResolv res = new servDnsResolv(cmd.word());
             if (res.fromString(cmd)) {
                 return false;
             }
@@ -352,12 +352,16 @@ public class servDns extends servGeneric implements prtServS {
 
 class servDnsResolv implements Comparator<servDnsResolv> {
 
-    public String name;
+    public final String name;
 
     public addrIP addr;
 
+    public servDnsResolv(String nam) {
+        name = nam.toLowerCase();
+    }
+
     public int compare(servDnsResolv o1, servDnsResolv o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+        return o1.name.compareTo(o2.name);
     }
 
     public String toString() {
@@ -365,7 +369,6 @@ class servDnsResolv implements Comparator<servDnsResolv> {
     }
 
     public boolean fromString(cmds cmd) {
-        name = cmd.word();
         addr = new addrIP();
         return addr.fromString(cmd.word());
     }
@@ -413,26 +416,7 @@ class servDnsDoer implements Runnable {
         pck.answers.add(rr);
     }
 
-    private boolean doSlaves(List<packDnsRec> res, int typ, String nam) {
-        nam = nam.toLowerCase();
-        int num = -1;
-        int len = -1;
-        servDnsResolv ntry;
-        for (int i = 0; i < parent.resolvs.size(); i++) {
-            ntry = parent.resolvs.get(i);
-            if (!nam.endsWith(ntry.name.toLowerCase())) {
-                continue;
-            }
-            if (ntry.name.length() < len) {
-                continue;
-            }
-            num = i;
-            len = ntry.name.length();
-        }
-        if (len < 1) {
-            return false;
-        }
-        ntry = parent.resolvs.get(num);
+    private boolean doSlaves(servDnsResolv ntry, List<packDnsRec> res, int typ, String nam) {
         clntDns clnt = new clntDns();
         if (clnt.doResolvOne(ntry.addr, nam, false, typ) != 0) {
             return false;
@@ -452,13 +436,15 @@ class servDnsDoer implements Runnable {
     }
 
     private boolean doResolve(List<packDnsRec> res, int typ, String nam) { // true if authoritative
-        if (doSlaves(res, typ, nam)) {
-            return true;
-        }
         packDnsZone zon = parent.zones.find(new packDnsZone(nam));
+        servDnsResolv rslvr = parent.resolvs.find(new servDnsResolv(nam));
         String old = nam;
         String a = "";
         for (; zon == null;) {
+            if (rslvr != null) {
+                doSlaves(rslvr, res, typ, old);
+                return true;
+            }
             int i = nam.indexOf(".");
             if (i >= 0) {
                 a = nam.substring(0, i);
@@ -468,11 +454,16 @@ class servDnsDoer implements Runnable {
                 nam = "";
             }
             zon = parent.zones.find(new packDnsZone(nam));
+            rslvr = parent.resolvs.find(new servDnsResolv(nam));
             if (i < 0) {
                 break;
             }
         }
         if (zon == null) {
+            if (rslvr != null) {
+                doSlaves(rslvr, res, typ, old);
+                return true;
+            }
             if (!recurse) {
                 return false;
             }
