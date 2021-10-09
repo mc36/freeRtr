@@ -6,6 +6,7 @@ import addr.addrIPv6;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import tab.tabGen;
 import util.bits;
 import util.cmds;
 
@@ -55,7 +56,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
     /**
      * responses
      */
-    public List<packDnsRes> res = new ArrayList<packDnsRes>();
+    public tabGen<packDnsRes> res = new tabGen<packDnsRes>();
 
     /**
      * the internet
@@ -465,7 +466,9 @@ public class packDnsRec implements Comparator<packDnsRec> {
         n.typ = typ;
         n.clss = clss;
         n.ttl = ttl;
-        n.res.addAll(res);
+        for (int i = 0; i < res.size(); i++) {
+            n.res.add(res.get(i));
+        }
         return n;
     }
 
@@ -810,7 +813,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         }
         putString(pck, "");
     }
-
+    
     public String toString() {
         return "name=" + name + " class=" + class2str(clss) + " type=" + type2str(typ) + " ttl=" + ttl;
     }
@@ -962,7 +965,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
             res.get(i).createHeader(typ, pck);
         }
     }
-
+    
     public int compare(packDnsRec o1, packDnsRec o2) {
         final int cmp = 0xffff;
         if ((o1.typ & cmp) < (o2.typ & cmp)) {
@@ -973,5 +976,5 @@ public class packDnsRec implements Comparator<packDnsRec> {
         }
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
-
+    
 }

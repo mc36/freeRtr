@@ -5,6 +5,7 @@ import addr.addrIPv4;
 import addr.addrIPv6;
 import cfg.cfgAll;
 import cfg.cfgIfc;
+import java.util.Comparator;
 import util.bits;
 import util.cmds;
 
@@ -13,7 +14,7 @@ import util.cmds;
  *
  * @author matecsaba
  */
-public class packDnsRes {
+public class packDnsRes implements Comparator<packDnsRes> {
 
     /**
      * create instance
@@ -374,6 +375,63 @@ public class packDnsRes {
         }
         int siz = pck.headSize() - ofs;
         pck.msbPutW(-siz - 2, siz);
+    }
+
+    public int compare(packDnsRes o1, packDnsRes o2) {
+
+        if (o1.sequence < o2.sequence) {
+            return -1;
+        }
+        if (o1.sequence > o2.sequence) {
+            return +1;
+        }
+        if (o1.fresh < o2.fresh) {
+            return -1;
+        }
+        if (o1.fresh > o2.fresh) {
+            return +1;
+        }
+        if (o1.retry < o2.retry) {
+            return -1;
+        }
+        if (o1.retry > o2.retry) {
+            return +1;
+        }
+        if (o1.expire < o2.expire) {
+            return -1;
+        }
+        if (o1.expire > o2.expire) {
+            return +1;
+        }
+        if (o1.minttl < o2.minttl) {
+            return -1;
+        }
+        if (o1.minttl > o2.minttl) {
+            return +1;
+        }
+        int i = addr.compare(o1.addr, o2.addr);
+        if (i != 0) {
+            return i;
+        }
+        i = o1.target.compareTo(o2.target);
+        if (i != 0) {
+            return i;
+        }
+        i = o1.email.compareTo(o2.email);
+        if (i != 0) {
+            return i;
+        }
+        if (o1.iface == null) {
+            if (o2.iface == null) {
+                return 0;
+            }
+            return +1;
+        } else {
+            if (o2.iface == null) {
+                return -1;
+            }
+            return o1.iface.compare(o1.iface, o2.iface);
+        }
     }
 
 }

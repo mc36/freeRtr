@@ -122,7 +122,9 @@ public class packDnsZone implements Comparator<packDnsZone> {
         if (old == null) {
             return false;
         }
-        ntry.res.addAll(old.res);
+        for (int i = 0; i < old.res.size(); i++) {
+            ntry.res.add(old.res.get(i));
+        }
         return true;
     }
 
