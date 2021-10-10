@@ -5,12 +5,8 @@
  */
 module net.freertr {
 
-    exports net.freertr;
+    requires java.management;
 
-    requires static java.base;
-
-    requires static java.management;
-
-    requires static java.desktop;
+    requires java.desktop;
 
 }
