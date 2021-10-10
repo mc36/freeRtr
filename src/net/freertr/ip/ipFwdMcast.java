@@ -3,7 +3,6 @@ package net.freertr.ip;
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
-import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.user.userFormat;

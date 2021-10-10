@@ -1,7 +1,6 @@
 package net.freertr.rtr;
 
 import java.util.Comparator;
-import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;

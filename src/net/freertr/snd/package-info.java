@@ -1,5 +1,5 @@
 /**
- * package info
+ * sound
  *
  * @author matecsaba
  */

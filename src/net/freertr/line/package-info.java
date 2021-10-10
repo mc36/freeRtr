@@ -1,5 +1,5 @@
 /**
- * package info
+ * lines
  *
  * @author matecsaba
  */

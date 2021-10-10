@@ -2,9 +2,7 @@ package net.freertr.tab;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.freertr.addr.addrIP;
 import net.freertr.pack.packHolder;
-import net.freertr.tab.tabListingEntry.actionType;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 

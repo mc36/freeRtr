@@ -1,5 +1,5 @@
 /**
- * package info
+ * ipx protocol
  *
  * @author matecsaba
  */
