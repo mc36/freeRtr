@@ -32,6 +32,19 @@ control IngressControlPktPreEmit(inout headers hdr,
     }
 
 #ifdef HAVE_MPLS
+    action act_pkt_mpls_swap_0() {
+        ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+#endif
+
+#ifdef HAVE_MPLS
+    action act_pkt_mpls_swap_1() {
+        hdr.mpls0.setInvalid();
+        ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+#endif
+
+#ifdef HAVE_MPLS
     action act_pkt_mpls_ipv4_decap_0_1() {
         hdr.mpls0.setInvalid();
         hdr.mpls1.setInvalid();
@@ -268,6 +281,8 @@ ig_md.nexthop_id:
             act_pkt_mpls_ipv6_decap_0_1;
             act_pkt_mpls_ipv6_decap_0;
             act_pkt_mpls_ipv6_decap_1;
+            act_pkt_mpls_swap_0;
+            act_pkt_mpls_swap_1;
 #endif
 #ifdef HAVE_SRV6
             act_pkt_srv_ipv4_decap;
@@ -313,9 +328,13 @@ ig_md.nexthop_id:
             (0, 0, 0, 0, 0, 1, 0, 0, 4, _):act_pkt_srv_ipv4_decap();
             (0, 0, 0, 0, 0, 1, 0, 0, 6, _):act_pkt_srv_ipv6_decap();
 #endif
+#ifdef HAVE_MPLS
+            (0, 0, 0, 0, 0, 0, 0, 0, 1, _):act_pkt_mpls_swap_0();
+            (0, 0, 0, 0, 0, 0, 1, 0, 1, _):act_pkt_mpls_swap_1();
+#endif
         }
 
-        size = 18;
+        size = 20;
         default_action = NoAction();
 
     }

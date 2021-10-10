@@ -258,7 +258,7 @@ int tun12
 int tun21
  tun sou lo0
  tun dest 2.2.2.104
- tun domain 2.2.2.104
+ tun domain 2.2.2.101
  tun vrf v1
  tun mod srmpls
  vrf for v1
@@ -267,7 +267,7 @@ int tun21
 int tun22
  tun sou lo0
  tun dest 4321::104
- tun domain 4321::104
+ tun domain 4321::101
  tun vrf v1
  tun mod srmpls
  vrf for v1
@@ -276,7 +276,7 @@ int tun22
 int tun31
  tun sou lo0
  tun dest 2.2.2.105
- tun domain 2.2.2.105
+ tun domain 2.2.2.101
  tun vrf v1
  tun mod srmpls
  vrf for v1
@@ -285,7 +285,7 @@ int tun31
 int tun32
  tun sou lo0
  tun dest 4321::105
- tun domain 4321::105
+ tun domain 4321::101
  tun vrf v1
  tun mod srmpls
  vrf for v1
@@ -294,7 +294,7 @@ int tun32
 int tun41
  tun sou lo0
  tun dest 2.2.2.106
- tun domain 2.2.2.106
+ tun domain 2.2.2.101
  tun vrf v1
  tun mod srmpls
  vrf for v1
@@ -303,7 +303,7 @@ int tun41
 int tun42
  tun sou lo0
  tun dest 4321::106
- tun domain 4321::106
+ tun domain 4321::101
  tun vrf v1
  tun mod srmpls
  vrf for v1

@@ -44,6 +44,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.mpls_op_type = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_md.mpls_encap_decap_sap_type = 1;
     }
 
     action act_mpls_swap1_set_nexthop(label_t egress_label, NextHopId_t nexthop_id) {
@@ -52,6 +53,8 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.mpls_op_type = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_md.mpls_encap_decap_sap_type = 1;
+        ig_md.mpls1_remove = 0;
     }
 
     action act_mpls_decap_set_nexthop(NextHopId_t nexthop_id) {

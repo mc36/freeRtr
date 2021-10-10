@@ -83,6 +83,9 @@ control IngressControlMPLS(inout headers hdr,
          * Indicate nexthop_id
          */
         ig_md.nexthop_id = nexthop_id;
+        hdr.mpls0.setInvalid();
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
         ig_md.mpls_op_type = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
