@@ -11,4 +11,6 @@ module net.freertr {
 
     requires static java.management;
 
+    requires static java.desktop;
+
 }

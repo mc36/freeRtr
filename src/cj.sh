@@ -1,3 +1,3 @@
 #!/bin/sh
 echo compiling
-javac -source 9 -target 9 -Xlint:all -deprecation -d ../binOut/ *.java net/freertr/*.java
+javac -source 9 -target 9 -Xlint:all -deprecation -d ../binOut/ -sourcepath ./ *.java net/freertr/*.java
