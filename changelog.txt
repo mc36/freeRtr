@@ -12341,3 +12341,11 @@ qc pass: bgp leak prevention with peer
 ---------------------------------- 2021-10-09 03:46:50
 qc pass: p4lang: ingress amt access list
 qc pass: p4lang: egress amt access list
+---------------------------------- 2021-10-11 03:38:42
+no todo: last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to "you're way too stpuy" a way too loudly and have a will to travel monthly or so... hopefully both of us will survive :)
+no todo: wg 3rd optional param
+no todo: more randomizers, arp, prefix, everything :)
+no todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
+no todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
+todo: telnet tls mode
+todo: more randomizers

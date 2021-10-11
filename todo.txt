@@ -12,9 +12,8 @@ bgp vpns with sr-policy
 bgp peer autoconfig
 bgp strict bfd mode
 temper: web access log
-changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 interface range command
-https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
+telnet tls mode
 parse privilege levels from tacacs
 ldap client, server
 trustpoint for certificates
@@ -34,10 +33,8 @@ more show commands
 more clear commands
 more interactive tools
 more features with clean implementation
-more randomizers, arp, prefix, everything :)
+more randomizers
 x25
 default vrf for show commands
 shame texts in cmd.err
 consider bgp neigh recursive-nexthop knob with proper limiters
-wg 3rd optional param
-last but one: rare team should contract for some months a thing i call mathy-thingy-a-bit-oldshchool-c-coder-who-does-not-afraid-of-openjdk who is fluent in written english and speaks at conversation level, and does not afraid to "you're way too stpuy" a way too loudly and have a will to travel monthly or so... hopefully both of us will survive :)
