@@ -1,4 +1,3 @@
-package net.freertr;
 
 import net.freertr.cfg.cfgInit;
 

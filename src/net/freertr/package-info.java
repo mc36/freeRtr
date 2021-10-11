@@ -1,5 +1,5 @@
 /**
- * main
+ * root
  *
  * @author matecsaba
  */

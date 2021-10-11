@@ -1,8 +1,12 @@
 -source 11
 -target 11
+
 -Xlint:all
 -deprecation
+
 -d ../binOut/
+
 -sourcepath ./
+
 module-info.java
-net/freertr/router.java
+router.java
