@@ -1825,6 +1825,7 @@ void doStatRound(FILE *commands, int round) {
         int o = getState(i);
         fprintf(commands, "state %i %i\r\n", i, o);
     }
+#ifndef basicLoop
     for (int i=0; i<bundle_table.size; i++) {
         struct bundle_entry *ntry = table_get(&bundle_table, i);
         fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
@@ -1990,6 +1991,7 @@ void doStatRound(FILE *commands, int round) {
             fprintf(commands, "%s %i %li %li\r\n", &buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
         }
     }
+#endif
     fflush(commands);
 }
 
@@ -2010,6 +2012,7 @@ int doConsoleCommand(unsigned char*buf) {
         printf("h - this help\n");
         printf("x - exit process\n");
         printf("i - interface counters\n");
+#ifndef basicLoop
         printf("p - display portvrf table\n");
         printf("b - display bridge table\n");
         printf("m - display mpls table\n");
@@ -2019,6 +2022,7 @@ int doConsoleCommand(unsigned char*buf) {
         printf("a - display acl table\n");
         printf("q - display qos table\n");
         printf("v - display vlan table\n");
+#endif
         break;
     case 'x':
     case 'X':
@@ -2031,6 +2035,7 @@ int doConsoleCommand(unsigned char*buf) {
             printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
         }
         break;
+#ifndef basicLoop
     case 'm':
     case 'M':
         printf("     label ip        vrf cmd       swap    nexthop\n");
@@ -2113,6 +2118,7 @@ int doConsoleCommand(unsigned char*buf) {
             printf("%40s %3i %10i %3i %10i %10i %10i\n", &buf2, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
         }
         break;
+#endif
     default:
         printf("unknown command '%s', try ?\n", buf);
         break;
