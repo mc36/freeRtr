@@ -112,7 +112,10 @@ void readAcl6(struct acl6_entry *acl6_ntry, unsigned char**arg) {
 
 
 
+
+
 int doOneCommand(unsigned char* buf) {
+#ifndef basicLoop
     unsigned char buf2[1024];
     unsigned char* arg[128];
     int cnt;
@@ -1800,6 +1803,7 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&mroute6_res->flood, &flood_ntry);
         return 0;
     }
+#endif
     return 0;
 }
 
