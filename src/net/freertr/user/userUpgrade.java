@@ -16,6 +16,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
+import net.freertr.user.userUpgradeNtry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
@@ -413,6 +414,12 @@ public class userUpgrade {
         cons.debugRes("diff: " + bits.timeDump((blb.time - old.time) / 1000));
         cons.debugRes("old files:" + old.getFilelist());
         cons.debugRes("new files:" + blb.getFilelist());
+        userUpgradeBlob diff = blb.copyBytes();
+        diff.delFiles(old.files);
+        cons.debugRes("extra files:" + diff.getFilelist());
+        diff = old.copyBytes();
+        diff.delFiles(blb.files);
+        cons.debugRes("excess files:" + diff.getFilelist());
         if (old.time > blb.time) {
             cons.debugRes("no downgrade allowed!");
             if (needStop(0x200)) {
@@ -700,6 +707,46 @@ class userUpgradeBlob {
         head = version.headLine;
         jars = userUpgrade.calcFileHash(version.getFileName());
         time = 0;
+    }
+
+    public userUpgradeBlob copyBytes() {
+        userUpgradeBlob n = new userUpgradeBlob();
+        n.head = head;
+        n.jars = jars;
+        n.time = time;
+        n.sign = sign;
+        n.addFiles(files);
+        return n;
+    }
+
+    public int findFile(userUpgradeNtry ntry) {
+        for (int i = 0; i < files.size(); i++) {
+            if (files.get(i).name.compareTo(ntry.name) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void addFiles(List<userUpgradeNtry> f) {
+        for (int i = 0; i < f.size(); i++) {
+            userUpgradeNtry ntry = f.get(i);
+            if (findFile(ntry) >= 0) {
+                continue;
+            }
+            files.add(ntry);
+        }
+    }
+
+    public void delFiles(List<userUpgradeNtry> f) {
+        for (int i = 0; i < f.size(); i++) {
+            userUpgradeNtry ntry = f.get(i);
+            int o = findFile(ntry);
+            if (o < 0) {
+                continue;
+            }
+            files.remove(o);
+        }
     }
 
     public String getFilelist(int flg) {

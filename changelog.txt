@@ -12349,3 +12349,6 @@ no todo: https://tools.ietf.org/html/draft-ietf-tn3270e-telnet-tls-06
 no todo: changelog converter for https://manpages.debian.org/testing/dpkg-dev/deb-changelog.5.en.html format with notodo lines
 todo: telnet tls mode
 todo: more randomizers
+---------------------------------- 2021-10-12 03:44:33
+qc pass: lsrp with strict bfd
+qc pass: pvrp with strict bfd
