@@ -1,11 +1,12 @@
 package net.freertr.auth;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
-import net.freertr.tab.tabGen;
+import net.freertr.tab.tabAuthlstN;
+import net.freertr.tab.tabListing;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -23,23 +24,20 @@ public class authList extends authGeneric {
     public authList() {
     }
 
-    private tabGen<authListEntry> lst = new tabGen<authListEntry>();
+    private tabListing<tabAuthlstN, addrIP> methods = new tabListing<tabAuthlstN, addrIP>();
 
     public void getHelp(userHelping l) {
         l.add("1 2  sequence            select sequence number");
         l.add("2 3    <num>             number of entry");
         l.add("3 .      <name>          name of authenticator");
+        l.add("1 2,. reindex            reindex prefix list");
+        l.add("2 3,.   [num]            initial number to start with");
+        l.add("3 4,.     [num]          increment number");
     }
 
     public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
-        for (int i = 0; i < lst.size(); i++) {
-            authListEntry ntry = lst.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            l.add(beg + ntry);
-        }
+        l.addAll(methods.dump(cmds.tabulator));
         return l;
     }
 
@@ -48,39 +46,50 @@ public class authList extends authGeneric {
     }
 
     public boolean fromString(cmds cmd) {
-        String s = cmd.word();
-        if (s.equals("sequence")) {
-            int seq = bits.str2num(cmd.word());
-            cfgAuther auth = cfgAll.autherFind(cmd.word(), null);
-            if (auth == null) {
+        String a = cmd.word();
+        if (a.equals("no")) {
+            a = cmd.word();
+            if (a.equals("sequence")) {
+                tabAuthlstN ntry = new tabAuthlstN();
+                ntry.sequence = bits.str2num(cmd.word());
+                if (methods.del(ntry)) {
+                    cmd.error("invalid sequence");
+                    return false;
+                }
                 return false;
             }
-            if (auth.name.equals(autName)) {
-                return false;
-            }
-            authListEntry ntry = new authListEntry();
-            ntry.seq = seq;
-            ntry.auth = auth.getAuther();
-            lst.put(ntry);
+            cmd.badCmd();
             return false;
         }
-        if (!s.equals("no")) {
-            return true;
-        }
-        s = cmd.word();
-        if (s.equals("sequence")) {
-            int seq = bits.str2num(cmd.word());
-            authListEntry ntry = new authListEntry();
-            ntry.seq = seq;
-            lst.del(ntry);
+        if (a.equals("reindex")) {
+            int i = bits.str2num(cmd.word());
+            methods.reindex(i, bits.str2num(cmd.word()));
             return false;
         }
-        return true;
+        int seq = methods.nextseq();
+        if (a.equals("sequence")) {
+            seq = bits.str2num(cmd.word());
+            a = cmd.word();
+        }
+        tabAuthlstN ntry = new tabAuthlstN();
+        ntry.sequence = seq;
+        cfgAuther auth = cfgAll.autherFind(a, null);
+        if (auth == null) {
+            cmd.error("no such method");
+            return false;
+        }
+        if (auth.name.equals(autName)) {
+            cmd.error("loop detected");
+            return false;
+        }
+        ntry.auth = auth.getAuther();
+        methods.add(ntry);
+        return false;
     }
 
     public authResult authUserPass(String user, String pass) {
-        for (int i = 0; i < lst.size(); i++) {
-            authListEntry ntry = lst.get(i);
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -97,8 +106,8 @@ public class authList extends authGeneric {
     }
 
     public authResult authUserCommand(String user, String cmd) {
-        for (int i = 0; i < lst.size(); i++) {
-            authListEntry ntry = lst.get(i);
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -115,8 +124,8 @@ public class authList extends authGeneric {
     }
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
-        for (int i = 0; i < lst.size(); i++) {
-            authListEntry ntry = lst.get(i);
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -133,8 +142,8 @@ public class authList extends authGeneric {
     }
 
     public authResult authUserApop(String cookie, String user, String resp) {
-        for (int i = 0; i < lst.size(); i++) {
-            authListEntry ntry = lst.get(i);
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -148,28 +157,6 @@ public class authList extends authGeneric {
             return res;
         }
         return new authResult(this, authResult.authServerError, user, "");
-    }
-
-}
-
-class authListEntry implements Comparator<authListEntry> {
-
-    public int seq;
-
-    public authGeneric auth;
-
-    public String toString() {
-        return "sequence " + seq + " " + auth.autName;
-    }
-
-    public int compare(authListEntry o1, authListEntry o2) {
-        if (o1.seq < o2.seq) {
-            return -1;
-        }
-        if (o1.seq > o2.seq) {
-            return +1;
-        }
-        return 0;
     }
 
 }
