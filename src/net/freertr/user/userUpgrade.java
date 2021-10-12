@@ -781,6 +781,9 @@ class userUpgradeBlob {
 
     public String getFilelist(boolean impl) {
         String a = "";
+        if (impl) {
+            a += " " + userUpgrade.myVerFile();
+        }
         a += " " + getFilelist(userUpgradeNtry.flgBefore);
         if (impl) {
             a += " " + version.getFileName();
