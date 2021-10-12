@@ -94,7 +94,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     /**
      * bfd enabled
      */
-    public boolean bfdTrigger = false;
+    public int bfdTrigger = 0;
 
     /**
      * passive interface
@@ -130,7 +130,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      * authentication string
      */
     public String authentication = null;
-    
+
     /**
      * disable authentication
      */
@@ -396,7 +396,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
         cmds.cfgLine(l, !dynamicMetric, cmds.tabulator, beg + "dynamic-metric", "");
-        cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
+        a = "";
+        if (bfdTrigger == 2) {
+            a = "strict";
+        }
+        cmds.cfgLine(l, bfdTrigger < 1, cmds.tabulator, beg + "bfd", a);
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
         cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
@@ -422,7 +426,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add("4 .         enable                  enable protocol processing");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         database-filter         advertise only own data");
-        l.add("4 .         bfd                     enable bfd triggered down");
+        l.add("4 5,.       bfd                     enable bfd triggered down");
+        l.add("5 .           strict                enable strict mode");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         accept-metric           accept peer metric");
         l.add("4 .         dynamic-metric          dynamic peer metric");
@@ -474,7 +479,17 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      */
     public void routerDoConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
-            bfdTrigger = true;
+            bfdTrigger = 1;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("strict")) {
+                    bfdTrigger = 2;
+                    continue;
+                }
+            }
             return;
         }
         if (a.equals("stub")) {
@@ -634,7 +649,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      */
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
-            bfdTrigger = false;
+            bfdTrigger = 0;
             return;
         }
         if (a.equals("stub")) {

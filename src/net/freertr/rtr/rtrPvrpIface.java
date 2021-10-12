@@ -87,7 +87,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * bfd enabled
      */
-    public boolean bfdTrigger;
+    public int bfdTrigger = 0;
 
     /**
      * passive interface
@@ -432,7 +432,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
         cmds.cfgLine(l, !dynamicMetric, cmds.tabulator, beg + "dynamic-metric", "");
-        cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
+        String a = "";
+        if (bfdTrigger == 2) {
+            a = "strict";
+        }
+        cmds.cfgLine(l, bfdTrigger < 1, cmds.tabulator, beg + "bfd", a);
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
@@ -466,7 +470,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      */
     public static void routerGetHelp(userHelping l) {
         l.add("4 .         enable                  enable protocol processing");
-        l.add("4 .         bfd                     enable bfd triggered down");
+        l.add("4 5,.       bfd                     enable bfd triggered down");
+        l.add("5 .           strict                enable strict mode");
         l.add("4 .         default-originate       send default route to peer");
         l.add("4 .         label-pop               advertise php");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
@@ -532,7 +537,17 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      */
     public void routerDoConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
-            bfdTrigger = true;
+            bfdTrigger = 1;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("strict")) {
+                    bfdTrigger = 2;
+                    continue;
+                }
+            }
             return;
         }
         if (a.equals("label-pop")) {
@@ -745,7 +760,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      */
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("bfd")) {
-            bfdTrigger = false;
+            bfdTrigger = 0;
             return;
         }
         if (a.equals("label-pop")) {

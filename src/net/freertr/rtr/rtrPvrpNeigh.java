@@ -415,6 +415,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         }
         name = "?";
         inam = "?";
+        int mtu = 0;
+        int bfd = 0;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -431,6 +433,31 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 name = a.substring(5, a.length());
                 continue;
             }
+            if (a.startsWith("mtu")) {
+                mtu = bits.str2num(a.substring(4, a.length()));
+                continue;
+            }
+            if (a.startsWith("bfd")) {
+                bfd = bits.str2num(a.substring(4, a.length()));
+                continue;
+            }
+        }
+        if (mtu != iface.iface.lower.getMTUsize()) {
+            logger.info("mtu mismatch with " + peer);
+        }
+        if (bfd != iface.bfdTrigger) {
+            logger.info("bfd mismatch with " + peer);
+        }
+        if (!need2run) {
+            sendErr("notNeeded");
+            return;
+        }
+        if ((bfd == 2) && (iface.bfdTrigger == 2)) {
+            iface.iface.bfdAdd(peer, this, "pvrp");
+            if (iface.iface.bfdWait(peer, iface.deadTimer)) {
+                sendErr("bfdFail");
+                return;
+            }
         }
         if (!need2run) {
             sendErr("notNeeded");
@@ -441,7 +468,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         logger.warn("neighbor " + name + " (" + peer + ") up");
         new rtrPvrpNeighRcvr(this).startWork();
         lower.notif.wakeup();
-        if (iface.bfdTrigger) {
+        if (iface.bfdTrigger > 0) {
             iface.iface.bfdAdd(peer, this, "pvrp");
         }
         long lastKeep = 0;

@@ -9,6 +9,7 @@ import net.freertr.prt.prtServP;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
+import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -112,6 +113,34 @@ public class rtrBfdIface implements prtServP {
                 continue;
             }
             l.add(ifc + "|" + nei.getShNeigh());
+        }
+    }
+
+    /**
+     * add one client
+     *
+     * @param adr address of peer
+     * @param tim maximum time to wait
+     * @return false on success, true on error
+     */
+    public boolean clientWait(addrIP adr, int tim) {
+        if (debugger.rtrBfdEvnt) {
+            logger.debug("waiting for client " + adr);
+        }
+        long beg = bits.getTime();
+        for (;;) {
+            bits.sleep(intervalTx);
+            if ((bits.getTime() - beg) > tim) {
+                return true;
+            }
+            rtrBfdNeigh nei = new rtrBfdNeigh(this, adr);
+            nei = neighs.find(nei);
+            if (nei == null) {
+                return true;
+            }
+            if (nei.getState()) {
+                return false;
+            }
         }
     }
 

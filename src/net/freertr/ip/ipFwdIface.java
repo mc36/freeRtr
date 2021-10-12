@@ -1681,6 +1681,46 @@ public class ipFwdIface extends tabRouteIface {
     }
 
     /**
+     * wait for bfd peer
+     *
+     * @param adr address of peer
+     * @param tim maximum time to wait
+     * @return false on success, true on error
+     */
+    public boolean bfdWait(addrIP adr, int tim) {
+        if (bfdCfg == null) {
+            return true;
+        }
+        return bfdCfg.clientWait(adr, tim);
+    }
+
+    /**
+     * wait for bfd peer
+     *
+     * @param adr address of peer
+     * @param tim maximum time to wait
+     * @return false on success, true on error
+     */
+    public boolean bfdWait(addrIPv4 adr, int tim) {
+        addrIP a = new addrIP();
+        a.fromIPv4addr(adr);
+        return bfdWait(a, tim);
+    }
+
+    /**
+     * wait for bfd peer
+     *
+     * @param adr address of peer
+     * @param tim maximum time to wait
+     * @return false on success, true on error
+     */
+    public boolean bfdWait(addrIPv6 adr, int tim) {
+        addrIP a = new addrIP();
+        a.fromIPv6addr(adr);
+        return bfdWait(a, tim);
+    }
+
+    /**
      * add one bfd peer
      *
      * @param adr address of peer
