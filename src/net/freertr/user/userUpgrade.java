@@ -16,7 +16,6 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
-import net.freertr.user.userUpgradeNtry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
