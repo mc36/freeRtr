@@ -12356,3 +12356,5 @@ qc pass: pvrp with strict bfd
 no todo: http server should honor no in the beginning for host commands
 ---------------------------------- 2021-10-12 15:40:57
 no todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
+---------------------------------- 2021-10-12 16:39:43
+no todo: chatscript and authlist to use tablisting and have reindex
