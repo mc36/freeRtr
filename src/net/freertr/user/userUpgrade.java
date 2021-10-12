@@ -242,8 +242,9 @@ public class userUpgrade {
             }
         }
         cmd.error("release: " + blb.head);
-        cmd.error("files: " + blb.getFilelist());
+        cmd.error("files: " + blb.getFilelist(true));
         cmd.error("time: " + blb.getTime());
+        cmd.error("sign: " + blb.keyed + " key");
         cmd.error("hash: " + blb.getSum(2));
         err += verifyFile(version.getFileName(), blb.jars);
         for (int i = 0; i < blb.files.size(); i++) {
@@ -412,14 +413,14 @@ public class userUpgrade {
         cons.debugRes("old time: " + old.getTime());
         cons.debugRes("new time: " + blb.getTime());
         cons.debugRes("diff: " + bits.timeDump((blb.time - old.time) / 1000));
-        cons.debugRes("old files:" + old.getFilelist());
-        cons.debugRes("new files:" + blb.getFilelist());
+        cons.debugRes("old files:" + old.getFilelist(true));
+        cons.debugRes("new files:" + blb.getFilelist(true));
         userUpgradeBlob diff = blb.copyBytes();
         diff.delFiles(old.files);
-        cons.debugRes("extra files:" + diff.getFilelist());
+        cons.debugRes("extra files:" + diff.getFilelist(false));
         diff = old.copyBytes();
         diff.delFiles(blb.files);
-        cons.debugRes("excess files:" + diff.getFilelist());
+        cons.debugRes("excess files:" + diff.getFilelist(false));
         if (old.time > blb.time) {
             cons.debugRes("no downgrade allowed!");
             if (needStop(0x200)) {
@@ -472,6 +473,20 @@ public class userUpgrade {
             if (needStop(0x80)) {
                 return;
             }
+        }
+        diff = old.copyBytes();
+        diff.delFiles(blb.files);
+        for (i = 0; i < diff.files.size(); i++) {
+            userUpgradeNtry ntry = diff.files.get(i);
+            a = version.myWorkDir() + ntry.name;
+            cons.debugStat("removing " + a);
+            userFlash.delete(a);
+            if (!cfgAll.upgradeBackup) {
+                continue;
+            }
+            a += bakExt;
+            cons.debugStat("removing " + a);
+            userFlash.delete(a);
         }
         if (doVerify(blb) > 0) {
             if (needStop(0x10)) {
@@ -701,6 +716,8 @@ class userUpgradeBlob {
 
     public String sign;
 
+    public String keyed;
+
     public final List<userUpgradeNtry> files = new ArrayList<userUpgradeNtry>();
 
     public void putSelf() {
@@ -715,6 +732,7 @@ class userUpgradeBlob {
         n.jars = jars;
         n.time = time;
         n.sign = sign;
+        n.keyed = keyed;
         n.addFiles(files);
         return n;
     }
@@ -761,8 +779,14 @@ class userUpgradeBlob {
         return s.trim();
     }
 
-    public String getFilelist() {
-        return getFilelist(userUpgradeNtry.flgBefore) + " " + version.getFileName() + " " + getFilelist(userUpgradeNtry.flgAfter);
+    public String getFilelist(boolean impl) {
+        String a = "";
+        a += " " + getFilelist(userUpgradeNtry.flgBefore);
+        if (impl) {
+            a += " " + version.getFileName();
+        }
+        a += " " + getFilelist(userUpgradeNtry.flgAfter);
+        return a.trim();
     }
 
     public String getTime() {
@@ -829,6 +853,7 @@ class userUpgradeBlob {
         if (buf == null) {
             return "error decoding signature!";
         }
+        keyed = "configured";
         if (cfgAll.upgradeOwnKey) {
             return doVrfy(cfgAll.upgradePubKey, buf);
         }
@@ -839,12 +864,15 @@ class userUpgradeBlob {
         }
         res = doVrfy(verCore.pubKeyC, buf);
         if (res == null) {
+            keyed = "current";
             return null;
         }
         res = doVrfy(verCore.pubKeyO, buf);
         if (res == null) {
+            keyed = "previous";
             return null;
         }
+        keyed = "failed";
         return res;
     }
 
