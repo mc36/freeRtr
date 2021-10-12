@@ -124,32 +124,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! no single-request",
-        "server http .*! no second-port",
-        "server http .*! host .* nostyle",
-        "server http .*! host .* noredir",
-        "server http .*! host .* noreconn",
-        "server http .*! host .* nologging",
-        "server http .*! host .* nosubconn",
-        "server http .*! host .* notranslate",
-        "server http .*! host .* noimagemap",
-        "server http .*! host .* nowebsock",
-        "server http .*! host .* nomediastream",
-        "server http .*! host .* nostream",
-        "server http .*! host .* nomultiacc",
-        "server http .*! host .* index",
-        "server http .*! host .* nodirlist",
-        "server http .*! host .* nomarkdown",
-        "server http .*! host .* noapi",
-        "server http .*! host .* noscript",
-        "server http .*! host .* noclass",
-        "server http .*! host .* noupload",
-        "server http .*! host .* nobackup",
-        "server http .*! host .* nowebdav",
-        "server http .*! host .* nosstp",
-        "server http .*! host .* noanyconn",
-        "server http .*! host .* noforti",
-        "server http .*! host .* noauthentication"
-    };
+        "server http .*! no second-port",};
 
     /**
      * defaults filter
@@ -270,23 +245,15 @@ public class servHttp extends servGeneric implements prtServS {
                 for (int i = 0; i < ntry.style.size(); i++) {
                     l.add(a + " style " + ntry.style.get(i));
                 }
-            } else {
-                l.add(a + " nostyle");
             }
             if (ntry.redir != null) {
                 l.add(a + " redir " + ntry.redir);
-            } else {
-                l.add(a + " noredir");
             }
             if (ntry.logging) {
                 l.add(a + " logging");
-            } else {
-                l.add(a + " nologging");
             }
             if (ntry.reconnT != null) {
                 l.add(a + " reconn " + ntry.reconnP.name + " " + ntry.reconnT);
-            } else {
-                l.add(a + " noreconn");
             }
             if (ntry.translate != null) {
                 String s = "";
@@ -294,25 +261,15 @@ public class servHttp extends servGeneric implements prtServS {
                     s += " " + ntry.translate.get(i).name;
                 }
                 l.add(a + " translate" + s);
-            } else {
-                l.add(a + " notranslate");
             }
             if (ntry.subconn != 0) {
                 l.add(a + " subconn " + ntry.subconn);
-            } else {
-                l.add(a + " nosubconn");
             }
-            if (ntry.streamT == null) {
-                l.add(a + " nostream");
-            } else {
-                l.add(a + " stream " + ntry.streamM + " " + ntry.streamP.name
-                        + " " + ntry.streamT);
+            if (ntry.streamT != null) {
+                l.add(a + " stream " + ntry.streamM + " " + ntry.streamP.name + " " + ntry.streamT);
             }
-            if (ntry.multiAccT == null) {
-                l.add(a + " nomultiacc");
-            } else {
-                l.add(a + " multiacc " + ntry.multiAccP.name + " "
-                        + ntry.multiAccT);
+            if (ntry.multiAccT != null) {
+                l.add(a + " multiacc " + ntry.multiAccP.name + " " + ntry.multiAccT);
             }
             if (ntry.allowList != 0) {
                 String s = "";
@@ -320,17 +277,11 @@ public class servHttp extends servGeneric implements prtServS {
                     s += " readme";
                 }
                 l.add(a + " dirlist" + s);
-            } else {
-                l.add(a + " nodirlist");
             }
             if (ntry.allowMarkdown) {
                 l.add(a + " markdown");
-            } else {
-                l.add(a + " nomarkdown");
             }
-            if (ntry.autoIndex) {
-                l.add(a + " index");
-            } else {
+            if (!ntry.autoIndex) {
                 l.add(a + " noindex");
             }
             if (ntry.allowScript != 0) {
@@ -342,8 +293,6 @@ public class servHttp extends servGeneric implements prtServS {
                     s += " config";
                 }
                 l.add(a + " script" + s);
-            } else {
-                l.add(a + " noscript");
             }
             if (ntry.allowApi != 0) {
                 String s = "";
@@ -354,63 +303,39 @@ public class servHttp extends servGeneric implements prtServS {
                     s += " config";
                 }
                 l.add(a + " api" + s);
-            } else {
-                l.add(a + " noapi");
             }
             if (ntry.allowImgMap) {
                 l.add(a + " imagemap");
-            } else {
-                l.add(a + " noimagemap");
             }
             if (ntry.allowWebSck) {
                 l.add(a + " websock");
-            } else {
-                l.add(a + " nowebsock");
             }
             if (ntry.allowWebDav) {
                 l.add(a + " webdav");
-            } else {
-                l.add(a + " nowebdav");
             }
             if (ntry.allowMediaStrm) {
                 l.add(a + " mediastream");
-            } else {
-                l.add(a + " nomediastream");
             }
             if (ntry.allowClass != null) {
                 l.add(a + " class");
-            } else {
-                l.add(a + " noclass");
             }
             if (ntry.allowUpload) {
                 l.add(a + " upload");
-            } else {
-                l.add(a + " noupload");
             }
             if (ntry.backupPath != null) {
                 l.add(a + " backup " + ntry.backupCount + " " + ntry.backupPath);
-            } else {
-                l.add(a + " nobackup");
             }
-            if (ntry.allowSstp == null) {
-                l.add(a + " nosstp");
-            } else {
+            if (ntry.allowSstp != null) {
                 l.add(a + " sstp " + ntry.allowSstp.name);
             }
-            if (ntry.allowAnyconn == null) {
-                l.add(a + " noanyconn");
-            } else {
+            if (ntry.allowAnyconn != null) {
                 l.add(a + " anyconn " + ntry.allowAnyconn.name);
             }
-            if (ntry.allowForti == null) {
-                l.add(a + " noforti");
-            } else {
+            if (ntry.allowForti != null) {
                 l.add(a + " forti " + ntry.allowForti.name);
             }
             if (ntry.authenticList != null) {
                 l.add(a + " authentication " + ntry.authenticList.autName);
-            } else {
-                l.add(a + " noauthentication");
             }
         }
     }
@@ -423,24 +348,28 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
-        if (a.equals("delhost")) {
-            servHttpServ ntry = new servHttpServ();
-            ntry.host = cmd.word();
-            if (hosts.del(ntry) == null) {
-                cmd.error("no such server");
-                return false;
-            }
-            return false;
+        boolean negated = false;
+        if (a.equals("no")) {
+            negated = true;
+            a = cmd.word();
         }
         if (a.equals("second-port")) {
+            if (negated) {
+                secondPort = -1;
+                return false;
+            }
             secondPort = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("single-request")) {
-            singleRequest = true;
+            singleRequest = !negated;
             return false;
         }
         if (a.equals("proxy")) {
+            if (negated) {
+                proxy = null;
+                return false;
+            }
             cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
             if (prx == null) {
                 cmd.error("no such proxy");
@@ -451,27 +380,10 @@ public class servHttp extends servGeneric implements prtServS {
         }
         if (a.equals("error")) {
             error = cmd.getRemaining();
-            return false;
-        }
-        if (a.equals("no")) {
-            a = cmd.word();
-            if (a.equals("second-port")) {
-                secondPort = -1;
-                return false;
-            }
-            if (a.equals("single-request")) {
-                singleRequest = false;
-                return false;
-            }
-            if (a.equals("proxy")) {
-                proxy = null;
-                return false;
-            }
-            if (a.equals("error")) {
+            if (negated) {
                 error = null;
                 return false;
             }
-            cmd.badCmd();
             return false;
         }
         if (!a.equals("host")) {
@@ -488,41 +400,42 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("path")) {
+            if (negated) {
+                hosts.del(ntry);
+                return false;
+            }
             ntry.path = "/" + uniResLoc.normalizePath(cmd.word() + "/");
             return false;
         }
-        if (a.equals("nopath")) {
-            ntry.path = "/";
-            return false;
-        }
         if (a.equals("style")) {
+            if (negated) {
+                ntry.style = null;
+                return false;
+            }
             if (ntry.style == null) {
                 ntry.style = new ArrayList<String>();
             }
             ntry.style.add(cmd.getRemaining());
             return false;
         }
-        if (a.equals("nostyle")) {
-            ntry.style = null;
-            return false;
-        }
         if (a.equals("redir")) {
+            if (negated) {
+                ntry.redir = null;
+                return false;
+            }
             ntry.redir = cmd.word();
             return false;
         }
-        if (a.equals("noredir")) {
-            ntry.redir = null;
-            return false;
-        }
         if (a.equals("logging")) {
-            ntry.logging = true;
-            return false;
-        }
-        if (a.equals("nologging")) {
-            ntry.logging = false;
+            ntry.logging = !negated;
             return false;
         }
         if (a.equals("reconn")) {
+            if (negated) {
+                ntry.reconnP = null;
+                ntry.reconnT = null;
+                return false;
+            }
             cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
             if (prx == null) {
                 cmd.error("no such proxy");
@@ -532,12 +445,11 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.reconnT = cmd.word();
             return false;
         }
-        if (a.equals("noreconn")) {
-            ntry.reconnP = null;
-            ntry.reconnT = null;
-            return false;
-        }
         if (a.equals("translate")) {
+            if (negated) {
+                ntry.translate = null;
+                return false;
+            }
             ntry.translate = new ArrayList<cfgTrnsltn>();
             for (;;) {
                 a = cmd.word();
@@ -553,19 +465,26 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("notranslate")) {
-            ntry.translate = null;
-            return false;
-        }
         if (a.equals("subconn")) {
+            if (negated) {
+                ntry.subconn = 0;
+                return false;
+            }
             ntry.subconn = bits.str2num(cmd.word());
             return false;
         }
-        if (a.equals("nosubconn")) {
-            ntry.subconn = 0;
-            return false;
-        }
         if (a.equals("stream")) {
+            if (negated) {
+                ntry.streamP = null;
+                ntry.streamT = null;
+                ntry.streamM = null;
+                if (ntry.streamS == null) {
+                    return false;
+                }
+                ntry.streamS.setClose();
+                ntry.streamS = null;
+                return false;
+            }
             a = cmd.word();
             cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
             if (prx == null) {
@@ -585,18 +504,12 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.streamS = null;
             return false;
         }
-        if (a.equals("nostream")) {
-            ntry.streamP = null;
-            ntry.streamT = null;
-            ntry.streamM = null;
-            if (ntry.streamS == null) {
+        if (a.equals("multiacc")) {
+            if (negated) {
+                ntry.multiAccP = null;
+                ntry.multiAccT = null;
                 return false;
             }
-            ntry.streamS.setClose();
-            ntry.streamS = null;
-            return false;
-        }
-        if (a.equals("multiacc")) {
             cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
             if (prx == null) {
                 cmd.error("no such proxy");
@@ -606,28 +519,19 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.multiAccT = cmd.getRemaining();
             return false;
         }
-        if (a.equals("nomultiacc")) {
-            ntry.multiAccP = null;
-            ntry.multiAccT = null;
-            return false;
-        }
-        if (a.equals("index")) {
-            ntry.autoIndex = true;
-            return false;
-        }
         if (a.equals("noindex")) {
-            ntry.autoIndex = false;
+            ntry.autoIndex = negated;
             return false;
         }
         if (a.equals("markdown")) {
-            ntry.allowMarkdown = true;
-            return false;
-        }
-        if (a.equals("nomarkdown")) {
-            ntry.allowMarkdown = false;
+            ntry.allowMarkdown = !negated;
             return false;
         }
         if (a.equals("dirlist")) {
+            if (negated) {
+                ntry.allowList = 0;
+                return false;
+            }
             ntry.allowList = 1;
             for (;;) {
                 a = cmd.word();
@@ -641,11 +545,11 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("nodirlist")) {
-            ntry.allowList = 0;
-            return false;
-        }
         if (a.equals("api")) {
+            if (negated) {
+                ntry.allowApi = 0;
+                return false;
+            }
             ntry.allowApi = 1;
             for (;;) {
                 a = cmd.word();
@@ -663,11 +567,11 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("noapi")) {
-            ntry.allowApi = 0;
-            return false;
-        }
         if (a.equals("script")) {
+            if (negated) {
+                ntry.allowScript = 0;
+                return false;
+            }
             ntry.allowScript = 1;
             for (;;) {
                 a = cmd.word();
@@ -685,43 +589,27 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("noscript")) {
-            ntry.allowScript = 0;
-            return false;
-        }
         if (a.equals("imagemap")) {
-            ntry.allowImgMap = true;
+            ntry.allowImgMap = !negated;
             return false;
         }
         if (a.equals("websock")) {
-            ntry.allowWebSck = true;
+            ntry.allowWebSck = !negated;
             return false;
         }
         if (a.equals("webdav")) {
-            ntry.allowWebDav = true;
-            return false;
-        }
-        if (a.equals("noimagemap")) {
-            ntry.allowImgMap = false;
-            return false;
-        }
-        if (a.equals("nowebsock")) {
-            ntry.allowWebSck = false;
-            return false;
-        }
-        if (a.equals("nowebdav")) {
-            ntry.allowWebDav = false;
+            ntry.allowWebDav = !negated;
             return false;
         }
         if (a.equals("mediastream")) {
-            ntry.allowMediaStrm = true;
-            return false;
-        }
-        if (a.equals("nomediastream")) {
-            ntry.allowMediaStrm = false;
+            ntry.allowMediaStrm = !negated;
             return false;
         }
         if (a.equals("class")) {
+            if (negated) {
+                ntry.allowClass = null;
+                return false;
+            }
             try {
                 URL url = new URL("file://" + ntry.path);
                 URL[] urls = new URL[1];
@@ -732,29 +620,25 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("noclass")) {
-            ntry.allowClass = null;
-            return false;
-        }
         if (a.equals("upload")) {
-            ntry.allowUpload = true;
-            return false;
-        }
-        if (a.equals("noupload")) {
-            ntry.allowUpload = false;
+            ntry.allowUpload = !negated;
             return false;
         }
         if (a.equals("backup")) {
+            if (negated) {
+                ntry.backupCount = 0;
+                ntry.backupPath = null;
+                return false;
+            }
             ntry.backupCount = bits.str2num(cmd.word());
             ntry.backupPath = "/" + uniResLoc.normalizePath(cmd.word() + "/");
             return false;
         }
-        if (a.equals("nobackup")) {
-            ntry.backupCount = 0;
-            ntry.backupPath = null;
-            return false;
-        }
         if (a.equals("sstp")) {
+            if (negated) {
+                ntry.allowSstp = null;
+                return false;
+            }
             ntry.allowSstp = cfgAll.ifcFind(cmd.word(), false);
             if (ntry.allowSstp == null) {
                 cmd.error("no such interface");
@@ -767,11 +651,11 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("nosstp")) {
-            ntry.allowSstp = null;
-            return false;
-        }
         if (a.equals("anyconn")) {
+            if (negated) {
+                ntry.allowAnyconn = null;
+                return false;
+            }
             ntry.allowAnyconn = cfgAll.ifcFind(cmd.word(), false);
             if (ntry.allowAnyconn == null) {
                 cmd.error("no such interface");
@@ -784,11 +668,11 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("noanyconn")) {
-            ntry.allowAnyconn = null;
-            return false;
-        }
         if (a.equals("forti")) {
+            if (negated) {
+                ntry.allowForti = null;
+                return false;
+            }
             ntry.allowForti = cfgAll.ifcFind(cmd.word(), false);
             if (ntry.allowForti == null) {
                 cmd.error("no such interface");
@@ -801,21 +685,17 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (a.equals("noforti")) {
-            ntry.allowForti = null;
-            return false;
-        }
         if (a.equals("authentication")) {
+            if (negated) {
+                ntry.authenticList = null;
+                return false;
+            }
             cfgAuther lst = cfgAll.autherFind(cmd.word(), null);
             if (lst == null) {
                 cmd.error("no such auth list");
                 return false;
             }
             ntry.authenticList = lst.getAuther();
-            return false;
-        }
-        if (a.equals("noauthentication")) {
-            ntry.authenticList = null;
             return false;
         }
         return true;
@@ -827,8 +707,6 @@ public class servHttp extends servGeneric implements prtServS {
      * @param l list
      */
     public void srvHelp(userHelping l) {
-        l.add("1 2  delhost                        delete one virtual server");
-        l.add("2 .    <name>                       name of server");
         l.add("1 .  single-request                 one request per connection");
         l.add("1 2  proxy                          enable proxy support");
         l.add("2 .    <name>                       proxy profile");
@@ -840,78 +718,52 @@ public class servHttp extends servGeneric implements prtServS {
         l.add("2 3,.  <name>                       name of server, * for any");
         l.add("3 4      path                       set server root");
         l.add("4 .        <name>                   root directory of server");
-        l.add("3 .      nopath                     clear server root");
         l.add("3 4      redir                      set redirect path");
         l.add("4 .        <url>                    url to redirect to");
-        l.add("3 .      noredir                    disable redirect");
         l.add("3 .      logging                    log to syslog");
-        l.add("3 .      nologging                  stop logging to syslog");
         l.add("3 4      reconn                     reconnect to server");
         l.add("4 5        <name>                   proxy profile");
         l.add("5 .          <name>                 server to redirect to");
-        l.add("3 .      noreconn                   disable reconnect");
         l.add("3 4      translate                  translate the url");
         l.add("4 4,.      <num>                    translation rule to use");
-        l.add("3 .      notranslate                disable url translation");
         l.add("3 4      subconn                    reconnect only to the url");
         l.add("4 .        <num>                    bitmask what to revert");
-        l.add("3 .      nosubconn                  allow anything");
         l.add("3 4      stream                     stream from server");
         l.add("4 5        <name>                   content type");
         l.add("5 6          <name>                 proxy profile");
         l.add("6 .            <name>               server to stream from");
-        l.add("3 .      nostream                   disable streaming");
         l.add("3 4      multiacc                   access multiple servers");
         l.add("4 5        <name>                   proxy profile");
         l.add("5 5,.        <name>                 server to access");
-        l.add("3 .      nomultiacc                 disable multiple access");
         l.add("3 .      markdown                   allow markdown conversion");
-        l.add("3 .      nomarkdown                 forbid markdown conversion");
-        l.add("3 .      index                      allow index for directory");
-        l.add("3 .      noindex                    forbit index for directory");
+        l.add("3 .      noindex                    disallow index for directory");
         l.add("3 4,.    dirlist                    allow directory listing");
         l.add("4 4,.      readme                   put readme in front of listing");
-        l.add("3 .      nodirlist                  forbid directory listing");
         l.add("3 4,.    script                     allow script running");
         l.add("4 4,.      exec                     allow exec commands");
         l.add("4 4,.      config                   allow config commands");
-        l.add("3 .      noscript                   forbid script running");
         l.add("3 4,.    api                        allow api calls");
         l.add("4 4,.      exec                     allow exec commands");
         l.add("4 4,.      config                   allow config commands");
-        l.add("3 .      noapi                      forbid api calls");
         l.add("3 .      imagemap                   allow image map processing");
-        l.add("3 .      noimagemap                 forbid image map processing");
         l.add("3 .      websock                    allow websocket processing");
-        l.add("3 .      nowebsock                  forbid websocket processing");
         l.add("3 .      webdav                     allow webdav processing");
-        l.add("3 .      nowebdav                   forbid webdav processing");
         l.add("3 .      mediastream                allow media streaming");
-        l.add("3 .      nomediastream              forbid media streaming");
         l.add("3 .      class                      allow class running");
-        l.add("3 .      noclass                    forbid class running");
         l.add("3 .      upload                     allow upload files");
-        l.add("3 .      noupload                   forbid upload files");
         l.add("3 4      backup                     backup uploaded files");
         l.add("4 5        <num>                    number of backups to keep");
         l.add("5 .          <name>                 root directory of backup");
-        l.add("3 .      nobackup                   overwrite uploaded files");
         l.add("3 4      sstp                       allow sstp clients");
         l.add("4 .        <name>                   name of interface");
-        l.add("3 .      nosstp                     forbid sstp client");
         l.add("3 4      anyconn                    allow anyconnect clients");
         l.add("4 .        <name>                   name of interface");
-        l.add("3 .      noanyconn                  forbid anyconnect clients");
         l.add("3 4      forti                      allow fortinet clients");
         l.add("4 .        <name>                   name of interface");
-        l.add("3 .      noforti                    forbid fortinet clients");
-        l.add("3 .      noconn                     forbid direct connect to server");
         l.add("3 4      authentication             require authentication to access");
         l.add("4 .        <name>                   authentication list");
-        l.add("3 .      noauthentication           disable authentication");
         l.add("3 4      style                      set page style tags");
         l.add("4 4,.      <text>                   text to send");
-        l.add("3 .      nostyle                    clear page style tags");
     }
 
     /**

@@ -267,51 +267,35 @@ public class authLocal extends authGeneric {
      * @param l help
      */
     public void getHelp(userHelping l) {
-        l.add("1 2  deluser             delete one user");
-        l.add("2 .    <name>            name of user");
         l.add("1 2  allowed             allow one command");
-        l.add("2 2,.  <text>            command");
-        l.add("1 2  disallowed          disallow one command");
         l.add("2 2,.  <text>            command");
         l.add("1 2  username            create or update user");
         l.add("2 3,.  <name>            name of user, * for any");
         l.add("3 4      password        set password of user");
         l.add("4 4,.      [text]        password of user");
-        l.add("3 .      nopassword      clear password of user");
         l.add("3 4      secret          set secret of user");
         l.add("4 4,.      [text]        secret of user");
-        l.add("3 .      nosecret        clear secret of user");
         l.add("3 4      otpseed         set seed of user");
         l.add("4 4,.      [text]        seed of user");
-        l.add("3 .      nootpseed       clear seed of user");
         l.add("3 4      otppass         set seed of user");
         l.add("4 5        <num>         length of tokencode");
         l.add("5 5,.        [text]      seed of user");
         l.add("3 4      autocommand     set automatic command");
         l.add("4 4,.      [text]        autocommand of user");
-        l.add("3 .      noautocommand   clear automatic command");
         l.add("3 4      countdown       set counter");
         l.add("4 .        <num>         login counter");
-        l.add("3 .      nocountdown     clear login counter");
         l.add("3 .      anypass         any password will be accepted");
-        l.add("3 .      noanypass       just good password will accepted");
         l.add("3 .      autohangup      disconnect user after autocommand");
-        l.add("3 .      noautohangup    leave user after autocommand");
         l.add("3 4      ipv4addr        specify ipv4 address");
         l.add("4 .        <addr>        address");
-        l.add("3 .      noipv4addr      remove ipv4 address");
         l.add("3 4      ipv4route       specify ipv4 route");
         l.add("4 4,.      [text]        route");
-        l.add("3 .      noipv4route     remove ipv4 routes");
         l.add("3 4      ipv6addr        specify ipv6 address");
         l.add("4 .        <addr>        address");
-        l.add("3 .      noipv6addr      remove ipv6 address");
         l.add("3 4      ipv6ifid        specify ipv6 interface id");
         l.add("4 .        <addr>        address");
-        l.add("3 .      noipv6ifid      remove ipv6 interface id");
         l.add("3 4      ipv6route       specify ipv6 route");
         l.add("4 4,.      [text]        route");
-        l.add("3 .      noipv6route     remove ipv6 routes");
         l.add("3 4      privilege       set privilege level of user");
         l.add("4 .        <priv>        privilege of user");
     }
@@ -324,18 +308,19 @@ public class authLocal extends authGeneric {
      */
     public boolean fromString(cmds cmd) {
         String a = cmd.word();
+        boolean negated = false;
+        if (a.equals("no")) {
+            negated = true;
+            a = cmd.word();
+        }
         if (a.equals("allowed")) {
-            commands.add(cmd.getRemaining().trim());
+            a = cmd.getRemaining().trim();
+            if (negated) {
+                commands.remove(a);
+            } else {
+                commands.add(a);
+            }
             return false;
-        }
-        if (a.equals("disallowed")) {
-            commands.remove(cmd.getRemaining().trim());
-            return false;
-        }
-        if (a.equals("deluser")) {
-            authLocalEntry ntry = new authLocalEntry();
-            ntry.username = cmd.word();
-            return users.del(ntry) == null;
         }
         if (!a.equals("username")) {
             return true;
@@ -350,7 +335,11 @@ public class authLocal extends authGeneric {
         if (old != null) {
             ntry = old;
         }
-        return ntry.fromString(cmd);
+        if (negated && (cmd.size() < 2)) {
+            users.del(ntry);
+            return false;
+        }
+        return ntry.fromString(negated, cmd);
     }
 
     /**
@@ -636,60 +625,38 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         beg += "username " + username;
         lst.add(beg);
         beg += " ";
-        if (password == null) {
-            lst.add(beg + "nopassword");
-        } else {
+        if (password != null) {
             lst.add(beg + "password " + authLocal.passwdEncode(password, (filter & 2) != 0));
         }
-        if (secret == null) {
-            lst.add(beg + "nosecret");
-        } else {
+        if (secret != null) {
             lst.add(beg + "secret " + authLocal.secretEncode(secret, (filter & 2) != 0));
         }
-        if (otpseed == null) {
-            lst.add(beg + "nootpseed");
-        } else {
+        if (otpseed != null) {
             lst.add(beg + "otpseed " + authLocal.passwdEncode(new String(otpseed), (filter & 2) != 0));
         }
         if (autoHangup) {
             lst.add(beg + "autohangup");
-        } else {
-            lst.add(beg + "noautohangup");
         }
         if (countdown >= 0) {
             lst.add(beg + "countdown " + countdown);
-        } else {
-            lst.add(beg + "nocountdown");
         }
         if (anyPass) {
             lst.add(beg + "anypass");
-        } else {
-            lst.add(beg + "noanypass");
         }
         if (ipv4addr != null) {
             lst.add(beg + "ipv4addr " + ipv4addr);
-        } else {
-            lst.add(beg + "noipv4addr");
         }
         if (ipv4route != null) {
             lst.add(beg + "ipv4route " + ipv4route);
-        } else {
-            lst.add(beg + "noipv4route");
         }
         if (ipv6addr != null) {
             lst.add(beg + "ipv6addr " + ipv6addr);
-        } else {
-            lst.add(beg + "noipv6addr");
         }
         if (ipv6ifid != null) {
             lst.add(beg + "ipv6ifid " + ipv6ifid);
-        } else {
-            lst.add(beg + "noipv6ifid");
         }
         if (ipv6route != null) {
             lst.add(beg + "ipv6route " + ipv6route);
-        } else {
-            lst.add(beg + "noipv6route");
         }
         lst.add(beg + "autocommand " + autoCommand);
         lst.add(beg + "privilege " + privilege);
@@ -698,23 +665,36 @@ class authLocalEntry implements Comparator<authLocalEntry> {
     /**
      * parse commands
      *
+     * @param neg negated
      * @param cmd commands
      * @return true if error happened
      */
-    public boolean fromString(cmds cmd) {
+    public boolean fromString(boolean neg, cmds cmd) {
         String s = cmd.word();
         if (s.length() < 1) {
             return false;
         }
         if (s.equals("password")) {
+            if (neg) {
+                password = null;
+                return false;
+            }
             password = authLocal.passwdDecode(cmd.getRemaining());
             return false;
         }
         if (s.equals("secret")) {
+            if (neg) {
+                secret = null;
+                return false;
+            }
             secret = authLocal.secretDecode(cmd.getRemaining());
             return false;
         }
         if (s.equals("otpseed")) {
+            if (neg) {
+                otpseed = null;
+                return false;
+            }
             s = cmd.getRemaining();
             if (s.startsWith(authLocal.passwdBeg)) {
                 otpseed = null;
@@ -731,101 +711,80 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             return false;
         }
         if (s.equals("anypass")) {
-            anyPass = true;
-            return false;
-        }
-        if (s.equals("noanypass")) {
-            anyPass = false;
+            anyPass = !neg;
             return false;
         }
         if (s.equals("countdown")) {
+            if (neg) {
+                countdown = -1;
+                return false;
+            }
             countdown = bits.str2num(cmd.word());
-            return false;
-        }
-        if (s.equals("nocountdown")) {
-            countdown = -1;
             return false;
         }
         if (s.equals("otppass")) {
             byte[] buf1 = new byte[1];
             buf1[0] = (byte) bits.str2num(cmd.word());
-            otpseed = bits.byteConcat(buf1,
-                    cryOtp.androidPass(cmd.getRemaining()));
+            otpseed = bits.byteConcat(buf1, cryOtp.androidPass(cmd.getRemaining()));
             return false;
         }
         if (s.equals("autocommand")) {
+            if (neg) {
+                autoCommand = "";
+                return false;
+            }
             autoCommand = cmd.getRemaining();
             return false;
         }
         if (s.equals("autohangup")) {
-            autoHangup = true;
+            autoHangup = !neg;
             return false;
         }
         if (s.equals("ipv4addr")) {
+            if (neg) {
+                ipv4addr = null;
+                return false;
+            }
             ipv4addr = new addrIPv4();
             ipv4addr.fromString(cmd.word());
             return false;
         }
         if (s.equals("ipv4route")) {
+            if (neg) {
+                ipv4route = null;
+                return false;
+            }
             ipv4route = cmd.getRemaining();
             return false;
         }
         if (s.equals("ipv6addr")) {
+            if (neg) {
+                ipv6addr = null;
+                return false;
+            }
             ipv6addr = new addrIPv6();
             ipv6addr.fromString(cmd.word());
             return false;
         }
         if (s.equals("ipv6ifid")) {
+            if (neg) {
+                ipv6ifid = null;
+                return false;
+            }
             ipv6ifid = new addrEui();
             ipv6ifid.fromString(cmd.word());
             return false;
         }
         if (s.equals("ipv6route")) {
+            if (neg) {
+                ipv6route = null;
+                return false;
+            }
             ipv6route = cmd.getRemaining();
             return false;
         }
         if (s.equals("privilege")) {
             privilege = bits.str2num(cmd.word()) & 0xf;
-            return false;
-        }
-        if (s.equals("noautohangup")) {
-            autoHangup = false;
-            return false;
-        }
-        if (s.equals("noautocommand")) {
-            autoCommand = "";
-            return false;
-        }
-        if (s.equals("nopassword")) {
-            password = null;
-            return false;
-        }
-        if (s.equals("nosecret")) {
-            secret = null;
-            return false;
-        }
-        if (s.equals("nootpseed")) {
-            otpseed = null;
-            return false;
-        }
-        if (s.equals("noipv4addr")) {
-            ipv4addr = null;
-            return false;
-        }
-        if (s.equals("noipv4route")) {
-            ipv4route = null;
-            return false;
-        }
-        if (s.equals("noipv6addr")) {
-            ipv6addr = null;
-            return false;
-        }
-        if (s.equals("noipv6ifid")) {
-            ipv6ifid = null;
-            return false;
-        }
-        if (s.equals("noipv6route")) {
-            ipv6route = null;
             return false;
         }
         return true;

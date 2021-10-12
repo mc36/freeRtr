@@ -143,10 +143,6 @@ public class servDns extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(" 1 2   delzone               delete one zone");
-        l.add(" 2 .     <name>              zone name");
-        l.add(" 1 2   delresolver           delete one resolver");
-        l.add(" 2 .     <name>              zone name");
         l.add(" 1 2   recursion             recursive parameters");
         l.add(" 2 .     enable              allow recursion");
         l.add(" 2 .     disable             forbid recursion");
@@ -223,16 +219,6 @@ public class servDns extends servGeneric implements prtServS {
             s = cmd.word();
         }
         if (s.length() < 1) {
-            return false;
-        }
-        if (s.equals("delzone")) {
-            zones.del(new packDnsZone(cmd.word()));
-            return false;
-        }
-        if (s.equals("delresolver")) {
-            servDnsResolv res = new servDnsResolv(cmd.word());
-            res.fromString(cmd);
-            resolvs.del(res);
             return false;
         }
         if (s.equals("resolver")) {
@@ -336,6 +322,10 @@ public class servDns extends servGeneric implements prtServS {
         }
         if (s.equals("clear")) {
             zon.clear();
+            return false;
+        }
+        if (negated && s.equals("defttl")) {
+            zones.del(new packDnsZone(cmd.word()));
             return false;
         }
         if (negated) {

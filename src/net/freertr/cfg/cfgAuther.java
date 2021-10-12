@@ -72,19 +72,8 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "aaa userlist .*! username .* nopassword",
-        "aaa userlist .*! username .* nosecret",
-        "aaa userlist .*! username .* nootpseed",
-        "aaa userlist .*! username .* noautohangup",
-        "aaa userlist .*! username .* nocountdown",
         "aaa userlist .*! username .* autocommand ",
         "aaa userlist .*! username .* privilege 15",
-        "aaa userlist .*! username .* noanypass",
-        "aaa userlist .*! username .* noipv4addr",
-        "aaa userlist .*! username .* noipv4route",
-        "aaa userlist .*! username .* noipv6addr",
-        "aaa userlist .*! username .* noipv6ifid",
-        "aaa userlist .*! username .* noipv6route",
         "aaa radius .*! no secret",
         "aaa radius .*! privilege 15",
         "aaa tacacs .*! no secret",

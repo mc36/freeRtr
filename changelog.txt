@@ -12352,3 +12352,7 @@ todo: more randomizers
 ---------------------------------- 2021-10-12 03:44:33
 qc pass: lsrp with strict bfd
 qc pass: pvrp with strict bfd
+---------------------------------- 2021-10-12 15:24:42
+no todo: http server should honor no in the beginning for host commands
+---------------------------------- 2021-10-12 15:40:57
+no todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
