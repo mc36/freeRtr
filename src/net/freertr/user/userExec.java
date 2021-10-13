@@ -213,6 +213,8 @@ public class userExec {
         hl.add("3 4        rip                   routing information protocol");
         hl.add("4 5          <num>               process id");
         hl.add("5 .            <addr>            neighbor address");
+        hl.add("3 4        logger                route flap collector");
+        hl.add("4 .          <num>               process id");
     }
 
     private static void getHelpShowIpX(userHelping hl) {

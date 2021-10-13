@@ -545,6 +545,10 @@ public class userClear {
                 doClearIpXrip4();
                 return null;
             }
+            if (a.equals("logger")) {
+                doClearIpXlogger4();
+                return null;
+            }
             cmd.badCmd();
             return null;
         }
@@ -632,6 +636,10 @@ public class userClear {
             }
             if (a.equals("rip")) {
                 doClearIpXrip6();
+                return null;
+            }
+            if (a.equals("logger")) {
+                doClearIpXlogger6();
                 return null;
             }
             cmd.badCmd();
@@ -961,6 +969,24 @@ public class userClear {
             return;
         }
         nei.bfdPeerDown();
+    }
+
+    private void doClearIpXlogger4() {
+        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.logger4, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        r.logger.clearFlapstat();
+    }
+
+    private void doClearIpXlogger6() {
+        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.logger6, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        r.logger.clearFlapstat();
     }
 
 }

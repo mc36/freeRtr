@@ -192,6 +192,13 @@ public class rtrLogger extends ipRtr {
     }
 
     /**
+     * clear flap stats
+     */
+    public void clearFlapstat() {
+        flaps = new tabGen<rtrLoggerFlap>();
+    }
+
+    /**
      * get flap stats
      *
      * @param cnt minimum counter
@@ -200,10 +207,6 @@ public class rtrLogger extends ipRtr {
     public userFormat getFlapstat(int cnt) {
         userFormat l = new userFormat("|", "afi|prefix|count|ago|last");
         if (flaps == null) {
-            return l;
-        }
-        if (cnt == -1) {
-            flaps = new tabGen<rtrLoggerFlap>();
             return l;
         }
         for (int i = 0; i < flaps.size(); i++) {
