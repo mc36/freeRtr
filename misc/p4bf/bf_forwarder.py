@@ -24,7 +24,7 @@ from time import sleep
 
 SDE = os.environ.get("SDE", "~/bf-sde-9.7.0")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
-BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.7/site-packages/tofino/"
+BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.9/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 
 # set our lib path
@@ -308,7 +308,8 @@ class BfIfStatus(Thread):
                                                         {"from-hw": False},
                                                         data_list)
             port = next(port_entry)[0].to_dict()
-            if PORTS_OPER_STATUS.has_key(port_id):
+            #if PORTS_OPER_STATUS.has_key(port_id):
+            if port_id in PORTS_OPER_STATUS:
                 # notify control plane if needed
                 if PORTS_OPER_STATUS[port_id] == port["$PORT_UP"]:
                     logger.debug("%s - PORTS_OPER_STATUS[%s] no state change" % (self.class_name,port_id) )
@@ -489,7 +490,8 @@ class BfIfSnmpClient(Thread):
 
     def updateStats(self):
         for port_id, ifTable in self.ifmibs.items():
-            if ACTIVE_PORTS.has_key(port_id):
+            #if ACTIVE_PORTS.has_key(port_id):
+            if port_id in ACTIVE_PORTS:
                 port_entry = self.bfgc.port_table.entry_get(
                     self.bfgc.target,
                     [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
@@ -516,7 +518,8 @@ class BfIfSnmpClient(Thread):
         try:
             stat = {}
             logger.debug(" SUBIF_COUNTERS[port_id]: %s" % SUBIF_COUNTERS[port_id])
-            if SUBIF_COUNTERS.has_key(port_id):
+            #if SUBIF_COUNTERS.has_key(port_id):
+            if port_id in SUBIF_COUNTERS:
                 stat['$OctetsReceivedinGoodFrames']=SUBIF_COUNTERS[port_id][1]
                 stat['$FramesReceivedOK']=SUBIF_COUNTERS[port_id][0]
                 stat['$FramesDroppedBufferFull']=0
@@ -7752,7 +7755,8 @@ class BfForwarder(Thread):
                 if (self.platform == "wedge100bf32x"):
                     self._setPortAdmStatus(int(splt[1]),int(splt[2]),int(splt[3]),
                                            int(splt[4]),int(splt[5]),int(splt[6]))
-                elif SAL_PORT_ID.has_key(int(splt[1])):
+                #elif SAL_PORT_ID.has_key(int(splt[1])):
+                elif int(splt[1]) in SAL_PORT_ID:
                     self._setPortAdmStatusBF2556X1T(int(splt[1]), int(splt[2]),int(splt[3]),
                                                     int(splt[4]), int(splt[5]),int(splt[6]))
                 else:
@@ -7780,7 +7784,7 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def is_any_thread_alive(threads):
-    return True in [t.isAlive() for t in threads]
+    return True in [t.is_alive() for t in threads]
 
 def graceful_exit(bf_client,sck):
     os._exit(0)
@@ -8060,7 +8064,7 @@ if __name__ == "__main__":
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS
-                         if t is not None and t.isAlive()]
+                         if t is not None and t.is_alive()]
 
     except socket.error as e:
         logger.error("\n%s - control plane not detected ..." % PROGRAM_NAME)
