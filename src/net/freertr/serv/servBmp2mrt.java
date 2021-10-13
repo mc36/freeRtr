@@ -9,7 +9,9 @@ import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.clnt.clntProxy;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -30,6 +32,7 @@ import net.freertr.user.userFilter;
 import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
+import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
@@ -57,6 +60,11 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * header size
      */
     public static final int size = 6;
+
+    /**
+     * relays
+     */
+    protected final tabGen<servBmp2mrtRelay> relays = new tabGen<servBmp2mrtRelay>();
 
     private boolean bulkDown;
 
@@ -151,10 +159,29 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             }
             l.add(beg + "neighbor " + stat.from + " " + stat.peer + " " + stat.getCfg(true));
         }
+        for (int i = 0; i < relays.size(); i++) {
+            servBmp2mrtRelay rly = relays.get(i);
+            if (rly == null) {
+                continue;
+            }
+            l.add(beg + "relay " + rly);
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("relay")) {
+            servBmp2mrtRelay rly = new servBmp2mrtRelay();
+            if (rly.fromString(cmd)) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            if (relays.add(rly) != null) {
+                return false;
+            }
+            rly.startWork();
+            return false;
+        }
         if (s.equals("rate-down")) {
             rateInt = bits.str2num(cmd.word());
             rateNum = bits.str2num(cmd.word());
@@ -247,6 +274,19 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("relay")) {
+            servBmp2mrtRelay rly = new servBmp2mrtRelay();
+            if (rly.fromString(cmd)) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            rly = relays.del(rly);
+            if (rly != null) {
+                return false;
+            }
+            rly.stopWork();
+            return false;
+        }
         if (s.equals("rate-down")) {
             rateInt = 0;
             rateNum = 0;
@@ -330,6 +370,10 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add("2 .      <num>                   packets between backups");
         l.add("1 2    backup                    backup to file");
         l.add("2 2,.    <file>                  name of file");
+        l.add("1 2    relay                     relay messages to bmp");
+        l.add("2 3      <name>                  proxy profile name");
+        l.add("3 4        <addr>                peer address");
+        l.add("4 .          <num>               peer port");
         l.add("1 2    dyneigh                   parse messages from dynamic neighbors");
         l.add("2 3      <name>                  access list on peer name");
         l.add("3 4        rx                    process received packets");
@@ -906,6 +950,9 @@ class servBmp2mrtConn implements Runnable {
             if (pck.pipeRecv(pipe, 0, len, 144) != len) {
                 break;
             }
+            for (int i = 0; i < lower.relays.size(); i++) {
+                lower.relays.get(i).gotMessage(typ, pck);
+            }
             // per = pck.getByte(0); // peer type
             int flg = pck.getByte(1); // flags
             // int rd = pck.msbGetQ(2); // distinguisher
@@ -940,6 +987,110 @@ class servBmp2mrtConn implements Runnable {
         }
         lower.gotState(peer, false);
         logger.error("neighbor " + peer + " down");
+    }
+
+}
+
+class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable {
+
+    public clntProxy proxy;
+
+    public String server;
+
+    public int port;
+
+    private boolean need2run;
+
+    private pipeSide pipe;
+
+    public boolean fromString(cmds cmd) {
+        cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+        if (prx == null) {
+            return true;
+        }
+        proxy = prx.proxy;
+        server = cmd.word();
+        port = bits.str2num(cmd.word());
+        return false;
+    }
+
+    public String toString() {
+        return proxy.name + " " + server + " " + port;
+    }
+
+    public int compare(servBmp2mrtRelay o1, servBmp2mrtRelay o2) {
+        if (o1.port < o2.port) {
+            return -1;
+        }
+        if (o1.port > o2.port) {
+            return +1;
+        }
+        return o1.server.compareTo(o2.server);
+    }
+
+    public void startWork() {
+        need2run = true;
+        new Thread(this).start();
+    }
+
+    public void stopWork() {
+        need2run = false;
+    }
+
+    public void run() {
+        try {
+            for (;;) {
+                doWork();
+                if (!need2run) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+    }
+
+    private void doWork() {
+        bits.sleep(1000);
+        addrIP adr = userTerminal.justResolv(server, proxy.prefer);
+        if (adr == null) {
+            return;
+        }
+        pipe = proxy.doConnect(servGeneric.protoTcp, adr, port, "bmp");
+        if (pipe == null) {
+            return;
+        }
+        packHolder pck = new packHolder(true, true);
+        pck.putByte(0, 3); // version
+        pck.msbPutD(1, servBmp2mrt.size); // length
+        pck.putByte(5, rtrBgpMon.typInit); // type
+        pck.putSkip(servBmp2mrt.size);
+        pck.merge2beg();
+        pck.pipeSend(pipe, 0, pck.dataSize(), 1);
+        for (;;) {
+            if (pipe.isClosed() != 0) {
+                break;
+            }
+            if (!need2run) {
+                break;
+            }
+            bits.sleep(1000);
+        }
+        pipe.setClose();
+        pipe = null;
+    }
+
+    public synchronized void gotMessage(int typ, packHolder pck) {
+        if (pipe == null) {
+            return;
+        }
+        pck = pck.copyBytes(true, true);
+        pck.putByte(0, 3); // version
+        pck.msbPutD(1, servBmp2mrt.size + pck.dataSize()); // length
+        pck.putByte(5, typ); // type
+        pck.putSkip(servBmp2mrt.size);
+        pck.merge2beg();
+        pck.pipeSend(pipe, 0, pck.dataSize(), 1);
     }
 
 }
