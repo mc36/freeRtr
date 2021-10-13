@@ -963,7 +963,7 @@ class servBmp2mrtConn implements Runnable {
                 adr.fromIPv4addr(adr.toIPv4());
             }
             for (int i = 0; i < lower.relays.size(); i++) {
-                lower.relays.get(i).gotMessage(as, adr, peer, typ, pck);
+                lower.relays.get(i).gotMessage(as, peer, adr, typ, pck);
             }
             pck.getSkip(rtrBgpMon.size - servBmp2mrt.size);
             switch (typ) {
@@ -1104,19 +1104,19 @@ class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable {
         pipe = null;
     }
 
-    public synchronized void gotMessage(int as, addrIP adr, addrIP peer, int typ, packHolder pck) {
+    public synchronized void gotMessage(int as, addrIP from, addrIP peer, int typ, packHolder pck) {
         if (pipe == null) {
             return;
         }
+        pck = pck.copyBytes(true, true);
         if (acl != null) {
-            pck.IPsrc.setAddr(adr);
+            pck.IPsrc.setAddr(from);
             pck.IPtrg.setAddr(peer);
             pck.UDPtrg = as;
             if (!acl.matches(false, false, pck)) {
                 return;
             }
         }
-        pck = pck.copyBytes(true, true);
         pck.putByte(0, 3); // version
         pck.msbPutD(1, servBmp2mrt.size + pck.dataSize()); // length
         pck.putByte(5, typ); // type
