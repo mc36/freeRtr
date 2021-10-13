@@ -777,6 +777,7 @@ public class userExec {
         hl.add("2 3      pppoe                   pppoe information");
         hl.add("3 .        <name>                name of interface");
         hl.add("2 .      parser                  parser information");
+        hl.add("2 .      history                 command history");
         hl.add("2 .      scheduler               scheduler information");
         hl.add("2 .      script                  script information");
         hl.add("2 3      vdc                     virtual device context");
@@ -3533,6 +3534,10 @@ public class userExec {
         }
         if (a.equals("spacetab")) {
             pipe.settingsPut(pipeSetting.spacTab, true);
+            return;
+        }
+        if (a.equals("histroy")) {
+            reader.setHistory(bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("length")) {

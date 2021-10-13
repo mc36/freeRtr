@@ -46,6 +46,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! exec timeout 300000",
         ".*! exec width 79",
         ".*! exec height 24",
+        ".*! exec history 64",
         ".*! no exec timestamp",
         ".*! no exec colorized",
         ".*! no exec spacetab",

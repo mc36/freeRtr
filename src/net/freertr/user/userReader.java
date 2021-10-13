@@ -150,10 +150,10 @@ public class userReader implements Comparator<String> {
      */
     public userReader(pipeSide pip, userLine parent) {
         pipe = pip;
-        setHistory(64);
         clip = "";
         filterS = "";
         if (parent == null) {
+            setHistory(64);
             pipe.settingsAdd(pipeSetting.spacTab, false);
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
@@ -165,6 +165,7 @@ public class userReader implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.escape, 65536);
             return;
         }
+        setHistory(parent.execHistory);
         pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
         pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
@@ -217,11 +218,35 @@ public class userReader implements Comparator<String> {
     }
 
     /**
+     * get command history
+     *
+     * @return history
+     */
+    public List<String> getHistory() {
+        List<String> lst = new ArrayList<String>();
+        for (int i = histD.length - 1; i >= 0; i--) {
+            String a = histD[i];
+            if (a == null) {
+                continue;
+            }
+            a = a.trim();
+            if (a.length() < 1) {
+                continue;
+            }
+            lst.add(a);
+        }
+        return lst;
+    }
+
+    /**
      * set size of history buffer
      *
      * @param num size
      */
     public void setHistory(int num) {
+        if (num < 1) {
+            num = 1;
+        }
         String[] d = new String[num];
         for (int i = 0; i < num; i++) {
             d[i] = "";

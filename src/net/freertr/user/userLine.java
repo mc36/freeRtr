@@ -51,6 +51,11 @@ public class userLine {
     public int execHeight = 24;
 
     /**
+     * history size
+     */
+    public int execHistory = 64;
+
+    /**
      * show timestamps
      */
     public boolean execTimes;
@@ -220,6 +225,7 @@ public class userLine {
         lst.add(beg + "exec timeout " + execTimeOut);
         lst.add(beg + "exec width " + execWidth);
         lst.add(beg + "exec height " + execHeight);
+        lst.add(beg + "exec history " + execHistory);
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
         cmds.cfgLine(lst, !execColor, beg, "exec colorized", "");
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
@@ -311,6 +317,10 @@ public class userLine {
             }
             if (s.equals("height")) {
                 execHeight = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.equals("history")) {
+                execHistory = bits.str2num(cmd.word());
                 return false;
             }
             if (s.equals("timestamp")) {

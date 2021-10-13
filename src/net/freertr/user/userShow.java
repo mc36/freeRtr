@@ -126,31 +126,6 @@ public class userShow {
      */
     public cfgGeneric cfg;
 
-    private static int getConfigFilter(int flt, String cmd) {
-        if (cmd.equals("all")) {
-            return flt & ~1;
-        }
-        if (cmd.equals("hide")) {
-            return flt | 2;
-        }
-        return flt;
-    }
-
-    private static int getConfigFilter(String ini, cmds cmd) {
-        int flt = 1;
-        if (ini != null) {
-            flt = getConfigFilter(flt, ini);
-        }
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            flt = getConfigFilter(flt, a);
-        }
-        return flt;
-    }
-
     /**
      * do the work
      *
@@ -189,6 +164,10 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(version.shLogo(0xe0));
+            return null;
+        }
+        if (a.equals("history")) {
+            rdr.putStrArr(rdr.getHistory());
             return null;
         }
         if (a.equals("parser")) {
@@ -4099,6 +4078,31 @@ public class userShow {
             rdr.putStrTab(ses.doShowTalk());
             return;
         }
+    }
+
+    private static int getConfigFilter(int flt, String cmd) {
+        if (cmd.equals("all")) {
+            return flt & ~1;
+        }
+        if (cmd.equals("hide")) {
+            return flt | 2;
+        }
+        return flt;
+    }
+
+    private static int getConfigFilter(String ini, cmds cmd) {
+        int flt = 1;
+        if (ini != null) {
+            flt = getConfigFilter(flt, ini);
+        }
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            flt = getConfigFilter(flt, a);
+        }
+        return flt;
     }
 
 }
