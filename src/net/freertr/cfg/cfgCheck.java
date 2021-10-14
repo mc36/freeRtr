@@ -139,6 +139,11 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     public boolean alternate;
 
     /**
+     * severity
+     */
+    public int severity = packNrpe.coCri;
+
+    /**
      * last hash
      */
     public int lastHash = 1;
@@ -157,6 +162,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         "check .*! no template",
         "check .*! no error-text",
         "check .*! no alternate",
+        "check .*! severity critical",
         "check .*! no error-states",
         "check .*! no error-commands",
         "check .*! no error-hostname",};
@@ -202,6 +208,11 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         l.add("1 2,.    train                    train command to current result");
         l.add("2 2,.      <str>                  text");
         l.add("1 .      alternate                alternate reported state on diff change");
+        l.add("1 2      severity                 severity level");
+        l.add("2 .        critical               critical");
+        l.add("2 .        warning                warning");
+        l.add("2 .        unknown                unknown");
+        l.add("2 .        ok                     ok");
         l.add("1 2      template                 template arameters");
         l.add("2 .        <str>                  name of check");
         l.add("1 2      command                  specify command to execute");
@@ -241,6 +252,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         cmds.cfgLine(l, dsc == null, cmds.tabulator, "description", dsc);
         cmds.cfgLine(l, err == null, cmds.tabulator, "error-text", err);
         cmds.cfgLine(l, !alternate, cmds.tabulator, "alternate", "");
+        l.add(cmds.tabulator + "severity " + packNrpe.code2string(severity));
         cmds.cfgLine(l, !sendCmds, cmds.tabulator, "error-commands", "");
         cmds.cfgLine(l, !sendMyId, cmds.tabulator, "error-hostname", "");
         cmds.cfgLine(l, !noState, cmds.tabulator, "error-states", "");
@@ -330,6 +342,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         }
         if (s.equals("alternate")) {
             alternate = !negated;
+            return;
+        }
+        if (s.equals("severity")) {
+            severity = packNrpe.string2code(cmd.word());
             return;
         }
         if (s.equals("require-regexp")) {
@@ -638,7 +654,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         }
         errNum++;
         errTim = tim;
-        pck.cod = packNrpe.coCri;
+        pck.cod = severity;
         pck.str = getHeadLine(lst).trim();
         for (int i = 0; i < lst.size(); i++) {
             pck.str += new String(pck.sep) + lst.get(i).trim();
@@ -725,6 +741,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.add("command=" + command);
         res.add("error=" + err);
         res.add("alternate=" + alternate);
+        res.add("severity=" + packNrpe.code2string(severity));
         res.add("asked=" + (okNum + errNum) + " times");
         res.add("reply=" + time + " ms");
         res.add("passed=" + okNum + " times, last " + bits.time2str(cfgAll.timeZoneName, okTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(okTim) + " ago)");
@@ -735,7 +752,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.addAll(doCheck());
         packNrpe nrp = new packNrpe();
         getReportNrpe(nrp);
-        res.add("nrpe:" + nrp.cod + " " + nrp.str);
+        res.add("nrpe:" + packNrpe.code2string(nrp.cod) + " " + nrp.str);
         return res;
     }
 

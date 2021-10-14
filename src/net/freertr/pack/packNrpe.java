@@ -73,6 +73,49 @@ public class packNrpe {
     public static final int coOk = 0;
 
     /**
+     * convert code to string
+     *
+     * @param cod code
+     * @return string
+     */
+    public static String code2string(int cod) {
+        switch (cod) {
+            case coOk:
+                return "ok";
+            case coWar:
+                return "warning";
+            case coCri:
+                return "critical";
+            case coUnk:
+                return "unknown";
+            default:
+                return "code=" + cod;
+        }
+    }
+
+    /**
+     * convert string to code
+     *
+     * @param s string
+     * @return code
+     */
+    public static int string2code(String s) {
+        if (s.equals("ok")) {
+            return coOk;
+        }
+        if (s.equals("warning")) {
+            return coWar;
+        }
+        if (s.equals("critical")) {
+            return coCri;
+        }
+        if (s.equals("unknown")) {
+            return coUnk;
+        }
+        return -1;
+    }
+
+    /**
      * version
      */
     public int ver;
@@ -110,7 +153,7 @@ public class packNrpe {
      * @return string
      */
     public String dump() {
-        return "ver=" + ver + " typ=" + typ + " cod=" + cod + " buf=" + str;
+        return "ver=" + ver + " typ=" + typ + " cod=" + code2string(cod) + " buf=" + str;
     }
 
     /**

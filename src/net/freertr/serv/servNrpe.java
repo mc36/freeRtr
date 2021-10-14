@@ -148,11 +148,9 @@ class servNrpeConn implements Runnable {
                     continue;
                 }
                 ntry.getReportNrpe(pck);
-                int i = pck.str.length();
-                if (i > lower.truncState) {
-                    i = lower.truncState;
+                if (pck.str.length() > lower.truncState) {
+                    pck.str = pck.str.substring(0, lower.truncState);
                 }
-                pck.str = pck.str.substring(0, i);
                 pck.sendPack(conn);
                 if (debugger.servNrpeTraf) {
                     logger.debug("tx " + pck.dump());

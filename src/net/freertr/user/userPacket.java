@@ -36,6 +36,7 @@ import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
 import net.freertr.pack.packHolder;
+import net.freertr.pack.packNrpe;
 import net.freertr.pack.packWol;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
@@ -1273,7 +1274,7 @@ public class userPacket {
             ch.server = cmd.word();
             ch.check = cmd.getRemaining();
             boolean b = ch.doCheck();
-            cmd.error("status=" + b + ", code=" + ch.code);
+            cmd.error("status=" + b + ", code=" + packNrpe.code2string(ch.code));
             rdr.putStrArr(ch.text);
             return null;
         }
