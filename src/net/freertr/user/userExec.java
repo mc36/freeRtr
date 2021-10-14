@@ -1533,7 +1533,7 @@ public class userExec {
         hl.add("3 4        <name>                name of interface");
         hl.add("4 .          <addr>              address of host");
         hl.add(".2 3     mrtfilter               filter mrt file using filters of a peer");
-        hl.add(".3 4       <name>                process name");
+        cfgRtr.getRouterList(hl, 1, "");
         hl.add(".4 5         <num>               process number");
         hl.add(".5 6           <addr>            peer address");
         hl.add(".6 7             <file>          source mrt file");
@@ -1541,7 +1541,7 @@ public class userExec {
         hl.add(".8 9                 <addr>      source peer");
         hl.add(".9 .                   <addr>    target peer");
         hl.add(".2 3     mrt2self                replay mrt as if got from a peer");
-        hl.add(".3 4       <name>                process name");
+        cfgRtr.getRouterList(hl, 1, "");
         hl.add(".4 5         <num>               process number");
         hl.add(".5 6           <addr>            peer address");
         hl.add(".6 7             <file>          mrt file");
