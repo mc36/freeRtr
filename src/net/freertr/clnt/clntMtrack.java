@@ -459,13 +459,28 @@ public class clntMtrack implements Runnable, prtServS {
      *
      * @return status strings
      */
-    public List<String> getShStat() {
-        List<String> l = new ArrayList<String>();
-        l.add("name=" + name + ", round=" + rnd + ", group=" + grp);
-        l.add("port=" + port + ", timer=" + interval + "/" + timeout + ", source=" + srcIfc);
-        l.add("changes=" + chngCnt + ", ago=" + bits.timePast(chngTim) + ", at=" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3));
+    public userFormat getShStat() {
+        userFormat l = new userFormat("|", "category|value");
+        l.add("name|" + name);
+        l.add("round|" + rnd);
+        l.add("group|" + grp);
+        l.add("port|" + port);
+        l.add("timer|" + interval + "/" + timeout);
+        l.add("source|" + srcIfc);
+        l.add("changes|" + chngCnt);
+        l.add("ago|" + bits.timePast(chngTim) + ", at=" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3));
+        return l;
+    }
+
+    /**
+     * get detailed status
+     *
+     * @return status strings
+     */
+    public userFormat getShPeer() {
+        userFormat l = new userFormat("|", "number|address|state|changes|ago|at|reports|last");
         for (int i = 0; i < pers.size(); i++) {
-            l.add("peer#" + i + ": " + pers.get(i).getPeerLine());
+            l.add(i + "|" + pers.get(i).getPeerLine());
         }
         return l;
     }
@@ -611,7 +626,7 @@ class clntMtrackPeer implements Comparator<clntMtrackPeer> {
     }
 
     public String getPeerLine() {
-        return "ip=" + adr + ", state=" + getState() + ", changes=" + chngCnt + ", ago=" + bits.timePast(chngTim) + ", at=" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3) + ", reports=" + reports + ", last=" + bits.timePast(lastRx);
+        return adr + "|" + getState() + "|" + chngCnt + "|" + bits.timePast(chngTim) + "|" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3) + "|" + reports + "|" + bits.timePast(lastRx);
     }
 
     public String getState() {

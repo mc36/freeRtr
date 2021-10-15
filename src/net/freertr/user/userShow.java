@@ -1035,7 +1035,8 @@ public class userShow {
                 cmd.error("no such mtracker");
                 return null;
             }
-            rdr.putStrArr(trck.worker.getShStat());
+            rdr.putStrTab(trck.worker.getShStat());
+            rdr.putStrTab(trck.worker.getShPeer());
             rdr.putStrTab(trck.worker.getShMatrix());
             return null;
         }
