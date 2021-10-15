@@ -190,7 +190,7 @@ public class clntMtrack implements Runnable, prtServS {
     }
 
     private void doUnbind() {
-        udp.listenStop(null, port, null, 0);
+        udp.listenStop(ifc, port, null, 0);
         if (grp == null) {
             return;
         }
