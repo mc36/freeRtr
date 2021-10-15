@@ -86,6 +86,11 @@ public class clntMtrack implements Runnable, prtServS {
     public int tim2liv = 255;
 
     /**
+     * flow label value
+     */
+    public int flwLab;
+
+    /**
      * inter packet time
      */
     public int packTim = 10;
@@ -493,6 +498,7 @@ public class clntMtrack implements Runnable, prtServS {
         pipe.setTime(10000);
         id.sendTOS = typOsrv;
         id.sendTTL = tim2liv;
+        id.sendFLW = flwLab;
         new clntMtrackConn(this, pipe, id.peerAddr);
         return false;
     }

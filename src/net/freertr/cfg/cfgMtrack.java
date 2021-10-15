@@ -54,7 +54,8 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         "mtracker .*! packet 10",
         "mtracker .*! port " + packMtrack.port,
         "mtracker .*! tos 0",
-        "mtracker .*! ttl 255"
+        "mtracker .*! ttl 255",
+        "mtracker .*! flow 0",
     };
 
     /**
@@ -84,6 +85,8 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         l.add("1  2      tos                        specify tos");
         l.add("2  .        <num>                    value");
         l.add("1  2      ttl                        specify ttl");
+        l.add("2  .        <num>                    value");
+        l.add("1  2      flow                       specify flow");
         l.add("2  .        <num>                    value");
         l.add("1  2      packet                     inter packet gap");
         l.add("2  .        <num>                    time in ms");
@@ -120,6 +123,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         l.add(cmds.tabulator + "port " + worker.port);
         l.add(cmds.tabulator + "tos " + worker.typOsrv);
         l.add(cmds.tabulator + "ttl " + worker.tim2liv);
+        l.add(cmds.tabulator + "flow " + worker.flwLab);
         l.add(cmds.tabulator + "packet " + worker.packTim);
         if (worker.getWorking()) {
             l.add(cmds.tabulator + "start");
@@ -192,6 +196,10 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         }
         if (a.equals("ttl")) {
             worker.tim2liv = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("flow")) {
+            worker.flwLab = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("packet")) {
