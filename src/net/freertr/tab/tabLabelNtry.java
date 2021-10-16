@@ -72,7 +72,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      * created
      */
     public long created;
-    
+
     /**
      * counter
      */
@@ -256,7 +256,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
     public userFormat getShow() {
         userFormat lst = new userFormat("|", "category|value");
         lst.add("label|" + label);
-        lst.add("created|" + bits.time2str(cfgAll.timeZoneName, created, 3));
+        lst.add("created|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3));
         lst.add("lasted|" + bits.timePast(created));
         String s;
         switch (key) {

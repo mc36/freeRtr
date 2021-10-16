@@ -170,7 +170,7 @@ class servPrometheusConn implements Runnable {
         }
         conn.linePut("HTTP/1.1 " + hdr);
         conn.linePut("Content-Type: text/plain");
-        conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, bits.getTime(), 4));
+        conn.linePut("Date: " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 4));
         if (res == null) {
             conn.linePut("Content-Length: 0");
             conn.linePut("");

@@ -353,7 +353,7 @@ public class userShow {
             userFormat l = new userFormat("|", "name|rerun|last|ago");
             for (int i = 0; i < cfgAll.schedulers.size(); i++) {
                 cfgSched ntry = cfgAll.schedulers.get(i);
-                l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT, 3) + "|" + bits.timePast(ntry.restartT));
+                l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.restartT));
             }
             rdr.putStrTab(l);
             return null;
@@ -362,7 +362,7 @@ public class userShow {
             userFormat l = new userFormat("|", "name|rerun|last|ago");
             for (int i = 0; i < cfgAll.scripts.size(); i++) {
                 cfgScrpt ntry = cfgAll.scripts.get(i);
-                l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT, 3) + "|" + bits.timePast(ntry.restartT));
+                l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.restartT));
             }
             rdr.putStrTab(l);
             return null;
@@ -382,7 +382,7 @@ public class userShow {
                 userFormat l = new userFormat("|", "name|rerun|last|ago");
                 for (int i = 0; i < cfgInit.vdcLst.size(); i++) {
                     cfgVdc ntry = cfgInit.vdcLst.get(i);
-                    l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT, 3) + "|" + bits.timePast(ntry.restartT));
+                    l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.restartT));
                 }
                 rdr.putStrTab(l);
                 return null;
@@ -400,7 +400,7 @@ public class userShow {
                 userFormat l = new userFormat("|", "name|rerun|last|ago");
                 for (int i = 0; i < cfgAll.prcs.size(); i++) {
                     cfgPrcss ntry = cfgAll.prcs.get(i);
-                    l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT, 3) + "|" + bits.timePast(ntry.restartT));
+                    l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.restartT));
                 }
                 rdr.putStrTab(l);
                 return null;

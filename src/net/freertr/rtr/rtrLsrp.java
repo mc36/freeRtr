@@ -394,7 +394,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.neighbor.size() + "|" + ntry.network.size() + "|" + ntry.sequence + "|" + bits.toHexD(ntry.topoSum) + "|" + bits.timeLeft(ntry.time));
                     break;
                 case 2:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.time2str(cfgAll.timeZoneName, ntry.since, 3) + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.time2str(cfgAll.timeZoneName, ntry.since + cfgAll.timeServerOffset, 3) + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
                     break;
                 case 3:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware + "|" + ntry.software);

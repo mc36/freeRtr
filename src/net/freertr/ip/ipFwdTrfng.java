@@ -221,7 +221,7 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         res.add("association|" + asocTyp + " " + asocAdr + " " + asocId + " " + asocGlb);
         res.add("timeout|" + bits.timeDump(timeout / 1000));
         res.add("updated|" + bits.timePast(updated));
-        res.add("created|" + bits.time2str(cfgAll.timeZoneName, created, 3));
+        res.add("created|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3));
         res.add("lasted|" + bits.timePast(created));
         res.add("local|" + srcLoc + " " + trgLoc);
     }

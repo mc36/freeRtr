@@ -228,7 +228,7 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         res.add("source|" + source);
         res.add("group|" + group);
         res.add("rd|" + tabRtrmapN.rd2string(rd));
-        res.add("created|" + bits.time2str(cfgAll.timeZoneName, created, 3));
+        res.add("created|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3));
         res.add("lasted|" + bits.timePast(created));
         res.add("iface|" + iface);
         res.add("upstream|" + upstream);
