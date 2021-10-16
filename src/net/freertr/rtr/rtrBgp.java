@@ -3498,8 +3498,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param prf prefix to find
      * @return list of routes
      */
-    public List<String> getAllRoutes(int safi, tabRouteEntry<addrIP> prf) {
-        List<String> lst = new ArrayList<String>();
+    public userFormat getAllRoutes(int safi, tabRouteEntry<addrIP> prf) {
+        userFormat lst = new userFormat("|", "category|value");
         for (int i = 0; i < neighs.size(); i++) {
             getAllRoutes(lst, neighs.get(i), safi, prf);
         }
@@ -3509,7 +3509,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return lst;
     }
 
-    private void getAllRoutes(List<String> lst, rtrBgpNeigh nei, int safi, tabRouteEntry<addrIP> prf) {
+    private void getAllRoutes(userFormat lst, rtrBgpNeigh nei, int safi, tabRouteEntry<addrIP> prf) {
         if (nei == null) {
             return;
         }
@@ -3521,8 +3521,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (res == null) {
             return;
         }
-        lst.add("*************************** " + nei.peerAddr);
-        lst.addAll(res.fullDump(fwdCore));
+        lst.add("peer|" + nei.peerAddr);
+        lst.add(res.fullDump(fwdCore));
     }
 
     /**

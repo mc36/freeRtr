@@ -474,27 +474,27 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param fwd forwarding core to use
      * @return list describes this prefix
      */
-    public List<String> fullDump(ipFwd fwd) {
-        List<String> l = new ArrayList<String>();
+    public userFormat fullDump(ipFwd fwd) {
+        userFormat l = new userFormat("|", "category|value");
         if (fwd != null) {
-            l.add("vrf = " + fwd.vrfName);
-            l.add("ipver = " + fwd.ipVersion);
+            l.add("vrf|" + fwd.vrfName);
+            l.add("ipver|" + fwd.ipVersion);
         }
-        l.add("rd = " + tabRtrmapN.rd2string(rouDst));
-        l.add("prefix = " + prefix);
-        l.add("prefix network = " + prefix.network);
-        l.add("prefix broadcast = " + prefix.broadcast);
-        l.add("prefix wildcard = " + prefix.wildcard);
-        l.add("prefix netmask = " + prefix.mask);
-        l.add("nlri = " + bits.byteDump(nlri, 0, -1));
-        l.add("alternates = " + alts.size());
+        l.add("rd|" + tabRtrmapN.rd2string(rouDst));
+        l.add("prefix|" + prefix);
+        l.add("prefix network|" + prefix.network);
+        l.add("prefix broadcast|" + prefix.broadcast);
+        l.add("prefix wildcard|" + prefix.wildcard);
+        l.add("prefix netmask|" + prefix.mask);
+        l.add("nlri|" + bits.byteDump(nlri, 0, -1));
+        l.add("alternates|" + alts.size());
         for (int i = 0; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
-            l.add("alternate #" + i + " attributes: ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
+            l.add("alternate #" + i + "|ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
             ntry.fullDump(l);
         }
-        l.add("counter = " + counter.getShStat(cntr));
-        l.add("hardware counter = " + counter.getShStat(hwCntr));
+        l.add("counter|" + counter.getShStat(cntr));
+        l.add("hardware counter|" + counter.getShStat(hwCntr));
         return l;
     }
 

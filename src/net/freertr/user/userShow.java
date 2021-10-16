@@ -3087,7 +3087,7 @@ public class userShow {
                 return;
             }
             ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
-            rdr.putStrArr(r.bgp.getAllRoutes(sfi, ntry));
+            rdr.putStrTab(r.bgp.getAllRoutes(sfi, ntry));
             return;
         }
         if (a.equals("differ")) {
@@ -3127,8 +3127,8 @@ public class userShow {
                 cmd.error("not from neighbor 2");
                 return;
             }
-            List<String> dump1 = ntry1.fullDump(r.bgp.fwdCore);
-            List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore);
+            List<String> dump1 = ntry1.fullDump(r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
+            List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
             differ df = new differ();
             df.calc(dump1, dump2);
             rdr.putStrArr(df.getText(cmd.pipe.settingsGet(pipeSetting.width, 80), 0));
@@ -3855,7 +3855,7 @@ public class userShow {
                 cmd.error("no such prefix");
                 return;
             }
-            rdr.putStrArr(ntry.fullDump(fwd));
+            rdr.putStrTab(ntry.fullDump(fwd));
             return;
         }
         userFormat l;

@@ -5,6 +5,7 @@ import java.util.List;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.ip.ipFwd;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 
 /**
@@ -1211,57 +1212,58 @@ public class tabRouteAttr<T extends addrType> {
      *
      * @param l list to append
      */
-    public void fullDump(List<String> l) {
-        l.add("type = " + rouTyp + " " + protoNum);
-        l.add("source = " + srcRtr);
-        l.add("validity = " + validity);
-        l.add("only to customer = " + bits.num2str(onlyCust));
-        l.add("segment routing index = " + segrouIdx);
-        l.add("segment routing old base = " + segrouOld);
-        l.add("segment routing base = " + segrouBeg);
-        l.add("segment routing size = " + segrouSiz);
-        l.add("segment routing prefix = " + segrouPrf);
-        l.add("bier index = " + bierIdx);
-        l.add("bier old base = " + bierOld);
-        l.add("bier base = " + bierBeg);
-        l.add("bier range = " + bierSiz);
-        l.add("bier size = " + bierHdr + "-" + tabLabelBier.bsl2num(bierHdr));
-        l.add("updated = " + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(time) + " ago)");
-        l.add("version = " + version);
-        l.add("distance = " + distance);
-        l.add("metric = " + metric);
-        l.add("ident = " + ident);
-        l.add("hops = " + hops);
-        l.add("interface = " + iface);
-        l.add("table = " + rouTab);
-        l.add("nexthop = " + nextHop);
-        l.add("original nexthop = " + oldHop);
-        l.add("tag = " + tag);
-        l.add("origin type = " + origin);
-        l.add("local preference = " + locPref);
-        l.add("evpn label*16 = " + evpnLab);
-        l.add("attribute as = " + bits.num2str(attribAs));
-        l.add("attribute value = " + bits.byteDump(attribVal, 0, -1));
-        l.add("tunnel type = " + tunelTyp);
-        l.add("tunnel value = " + bits.byteDump(tunelVal, 0, -1));
-        l.add("link state = " + bits.byteDump(linkStat, 0, -1));
-        l.add("pmsi type = " + pmsiTyp);
-        l.add("pmsi label*16 = " + pmsiLab);
-        l.add("pmsi tunnel = " + bits.byteDump(pmsiTun, 0, -1));
-        l.add("accumulated igp = " + accIgp);
-        l.add("bandwidth = " + bandwidth);
-        l.add("atomic aggregator = " + atomicAggr);
-        l.add("aggregator as = " + bits.num2str(aggrAs));
-        l.add("aggregator router = " + aggrRtr);
-        l.add("originator = " + originator);
-        l.add("cluster list = " + dumpAddrList(clustList));
-        l.add("as path (len=" + asPathLen() + ") = " + asPathStr());
-        l.add("standard community = " + tabRtrmapN.stdComms2string(stdComm));
-        l.add("extended community = " + tabRtrmapN.extComms2string(extComm));
-        l.add("large community = " + tabRtrmapN.lrgComms2string(lrgComm));
-        l.add("internal source = " + rouSrc);
-        l.add("local label = " + labelLoc);
-        l.add("remote label = " + dumpIntList(labelRem, "", ""));
+    public void fullDump(userFormat l) {
+        l.add("type|" + rouTyp + " " + protoNum);
+        l.add("source|" + srcRtr);
+        l.add("validity|" + validity);
+        l.add("only to customer|" + bits.num2str(onlyCust));
+        l.add("segment routing index|" + segrouIdx);
+        l.add("segment routing old base|" + segrouOld);
+        l.add("segment routing base|" + segrouBeg);
+        l.add("segment routing size|" + segrouSiz);
+        l.add("segment routing prefix|" + segrouPrf);
+        l.add("bier index|" + bierIdx);
+        l.add("bier old base|" + bierOld);
+        l.add("bier base|" + bierBeg);
+        l.add("bier range|" + bierSiz);
+        l.add("bier size|" + bierHdr + "-" + tabLabelBier.bsl2num(bierHdr));
+        l.add("updated|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(time) + " ago)");
+        l.add("version|" + version);
+        l.add("distance|" + distance);
+        l.add("metric|" + metric);
+        l.add("ident|" + ident);
+        l.add("hops|" + hops);
+        l.add("interface|" + iface);
+        l.add("table|" + rouTab);
+        l.add("nexthop|" + nextHop);
+        l.add("original nexthop|" + oldHop);
+        l.add("tag|" + tag);
+        l.add("origin type|" + origin);
+        l.add("local preference|" + locPref);
+        l.add("evpn label*16|" + evpnLab);
+        l.add("attribute as|" + bits.num2str(attribAs));
+        l.add("attribute value|" + bits.byteDump(attribVal, 0, -1));
+        l.add("tunnel type|" + tunelTyp);
+        l.add("tunnel value|" + bits.byteDump(tunelVal, 0, -1));
+        l.add("link state|" + bits.byteDump(linkStat, 0, -1));
+        l.add("pmsi type|" + pmsiTyp);
+        l.add("pmsi label*16|" + pmsiLab);
+        l.add("pmsi tunnel|" + bits.byteDump(pmsiTun, 0, -1));
+        l.add("accumulated igp|" + accIgp);
+        l.add("bandwidth|" + bandwidth);
+        l.add("atomic aggregator|" + atomicAggr);
+        l.add("aggregator as|" + bits.num2str(aggrAs));
+        l.add("aggregator router|" + aggrRtr);
+        l.add("originator|" + originator);
+        l.add("cluster list|" + dumpAddrList(clustList));
+        l.add("as path|" + asPathStr());
+        l.add("as path length|" + asPathLen());
+        l.add("standard community|" + tabRtrmapN.stdComms2string(stdComm));
+        l.add("extended community|" + tabRtrmapN.extComms2string(extComm));
+        l.add("large community|" + tabRtrmapN.lrgComms2string(lrgComm));
+        l.add("internal source|" + rouSrc);
+        l.add("local label|" + labelLoc);
+        l.add("remote label|" + dumpIntList(labelRem, "", ""));
     }
 
     /**

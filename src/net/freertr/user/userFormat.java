@@ -127,8 +127,9 @@ public class userFormat {
         separator = "" + sep;
         lines = new ArrayList<userFormatLine>();
         size = new ArrayList<Integer>();
-        header = string2line(head, true);
-        summary = string2line(summ, false);
+        header = string2line(head);
+        summary = string2line(summ);
+        updateSizes(header);
     }
 
     /**
@@ -141,8 +142,9 @@ public class userFormat {
         separator = "" + sep;
         lines = new ArrayList<userFormatLine>();
         size = new ArrayList<Integer>();
-        header = string2line(head, true);
+        header = string2line(head);
         summary = null;
+        updateSizes(header);
     }
 
     /**
@@ -163,7 +165,9 @@ public class userFormat {
      * @param s string to add
      */
     public void add(String s) {
-        lines.add(string2line(s, true));
+        userFormatLine ntry = string2line(s);
+        lines.add(ntry);
+        updateSizes(ntry);
     }
 
     /**
@@ -177,6 +181,19 @@ public class userFormat {
         }
     }
 
+    /**
+     * add body lines
+     *
+     * @param lst lines to add
+     */
+    public void add(userFormat lst) {
+        for (int i = 0; i < lst.lines.size(); i++) {
+            userFormatLine ntry = lst.lines.get(i);
+            lines.add(ntry);
+            updateSizes(ntry);
+        }
+    }
+
     private int getLineSize(userFormatLine dat) {
         int i = dat.cells.size();
         int o = size.size();
@@ -187,19 +204,7 @@ public class userFormat {
         }
     }
 
-    private userFormatLine string2line(String s, boolean upd) {
-        userFormatLine res = new userFormatLine();
-        cmds cmd = new cmds("tab", s);
-        for (;;) {
-            if (cmd.size() < 1) {
-                break;
-            }
-            s = cmd.word(separator);
-            res.cells.add(s.trim());
-        }
-        if (!upd) {
-            return res;
-        }
+    private void updateSizes(userFormatLine res) {
         for (int i = size.size(); i < res.cells.size(); i++) {
             size.add(0);
         }
@@ -209,6 +214,18 @@ public class userFormat {
                 continue;
             }
             size.set(i, o);
+        }
+    }
+
+    private userFormatLine string2line(String s) {
+        userFormatLine res = new userFormatLine();
+        cmds cmd = new cmds("tab", s);
+        for (;;) {
+            if (cmd.size() < 1) {
+                break;
+            }
+            s = cmd.word(separator);
+            res.cells.add(s.trim());
         }
         return res;
     }
