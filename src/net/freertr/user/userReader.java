@@ -392,7 +392,7 @@ public class userReader implements Comparator<String> {
         }
         for (int i = 0; i < sum.size(); i++) {
             long val = sum.get(i);
-            res.add("col" + i + "|" + val + "|" + (val / div));
+            res.add(i + "|" + val + "|" + (val / div));
         }
         return res.formatAll(tabMod);
     }

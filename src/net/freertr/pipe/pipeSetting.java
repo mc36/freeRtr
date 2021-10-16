@@ -1,5 +1,6 @@
 package net.freertr.pipe;
 
+import java.util.Comparator;
 import net.freertr.auth.authResult;
 import net.freertr.user.userFormat;
 
@@ -8,7 +9,7 @@ import net.freertr.user.userFormat;
  *
  * @author matecsaba
  */
-public class pipeSetting {
+public class pipeSetting implements Comparator<pipeSetting> {
 
     /**
      * origin address
@@ -82,6 +83,16 @@ public class pipeSetting {
      */
     public pipeSetting(int nam) {
         name = nam;
+    }
+
+    public int compare(pipeSetting o1, pipeSetting o2) {
+        if (o1.name < o2.name) {
+            return -1;
+        }
+        if (o1.name > o2.name) {
+            return +1;
+        }
+        return 0;
     }
 
     /**

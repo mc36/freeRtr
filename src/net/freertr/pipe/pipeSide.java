@@ -1,7 +1,7 @@
 package net.freertr.pipe;
 
-import java.util.List;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.notifier;
 
@@ -155,7 +155,7 @@ public class pipeSide {
     /**
      * pipeline settings
      */
-    protected List<pipeSetting> settings;
+    protected tabGen<pipeSetting> settings;
 
     private int timeout = 0; // timeout in milliseconds
 
@@ -942,15 +942,6 @@ public class pipeSide {
         return readPacket(new packHolder(true, true), 0, blocking);
     }
 
-    private int settingsFind(int nam) {
-        for (int i = 0; i < settings.size(); i++) {
-            if (nam == settings.get(i).name) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     /**
      * put one setting, overwrite if already exists
      *
@@ -958,18 +949,12 @@ public class pipeSide {
      * @param val value, null to remove
      */
     public void settingsPut(int nam, Object val) {
+        if (val == null) {
+            return;
+        }
         pipeSetting ntry = new pipeSetting(nam);
         ntry.value = val;
-        synchronized (lck) {
-            int i = settingsFind(nam);
-            if (i >= 0) {
-                settings.remove(i);
-            }
-            if (val == null) {
-                return;
-            }
-            settings.add(ntry);
-        }
+        settings.put(ntry);
     }
 
     /**
@@ -984,13 +969,7 @@ public class pipeSide {
         }
         pipeSetting ntry = new pipeSetting(nam);
         ntry.value = val;
-        synchronized (lck) {
-            int i = settingsFind(nam);
-            if (i >= 0) {
-                return;
-            }
-            settings.add(ntry);
-        }
+        settings.add(ntry);
     }
 
     /**
@@ -1004,15 +983,13 @@ public class pipeSide {
     @SuppressWarnings("unchecked")
     public <T extends Object> T settingsGet(int nam, T def) {
         Object res;
-        synchronized (lck) {
-            int i = settingsFind(nam);
-            if (i < 0) {
-                return def;
-            }
-            res = settings.get(i).value;
+        pipeSetting ntry = new pipeSetting(nam);
+        ntry = settings.find(ntry);
+        if (ntry == null) {
+            return def;
         }
         try {
-            T fin = (T) res;
+            T fin = (T) ntry.value;
             return fin;
         } catch (Exception e) {
             return def;
