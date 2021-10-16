@@ -408,7 +408,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sendErr("notNeeded");
             return;
         }
-        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.lower.getMTUsize() + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
+        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.mtu + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
         cmds cmd = recvLn();
         if (cmd == null) {
             cmd = new cmds("", "");
@@ -446,7 +446,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 continue;
             }
         }
-        if (mtu != iface.iface.lower.getMTUsize()) {
+        if (mtu != iface.iface.mtu) {
             logger.info("mtu mismatch with " + peer);
         }
         if (bfd != iface.bfdTrigger) {

@@ -235,6 +235,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         long bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
+        int mtu = 0;
         int segrouAdj = 0;
         int segrouIdx = 0;
         boolean segrouPop = false;
@@ -264,6 +265,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.srlg != srlg) {
                     s += " srlg=" + ntry.srlg;
                     srlg = ntry.srlg;
+                }
+                if (ntry.mtu != mtu) {
+                    s += " mtu=" + ntry.mtu;
+                    mtu = ntry.mtu;
                 }
                 if (ntry.affnty != affinity) {
                     s += " affinity=" + ntry.affnty;
@@ -380,7 +385,6 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         bierLen = 0;
         time = 0;
         uptime = 0;
-        since = 0;
         changesNum = 0;
         changesTim = 0;
         since = bits.getTime();
@@ -394,6 +398,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         long bndwdt = 0;
         int affinity = 0;
         int srlg = 0;
+        int mtu = 0;
         boolean external = false;
         int tag = 0;
         address = new tabGen<rtrLsrpDataAddr>();
@@ -531,6 +536,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 srlg = bits.str2num(s);
                 continue;
             }
+            if (a.equals("mtu")) {
+                mtu = bits.str2num(s);
+                continue;
+            }
             if (a.equals("tag")) {
                 tag = bits.str2num(s);
                 continue;
@@ -586,7 +595,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, segrouAdj, peerAddr, peerIf);
+                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, mtu, segrouAdj, peerAddr, peerIf);
                 continue;
             }
         }
@@ -615,11 +624,12 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param bw bandwidth
      * @param aff affinity
      * @param srl srlg
+     * @param mtu mtu
      * @param adj segrout adjacency
      * @param adr adjacency address
      * @param pif peer interface
      */
-    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int adj, addrIP adr, String pif) {
+    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int mtu, int adj, addrIP adr, String pif) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
@@ -628,6 +638,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         ntry.bndwdt = bw;
         ntry.affnty = aff;
         ntry.srlg = srl;
+        ntry.mtu = mtu;
         ntry.segrou = adj;
         ntry.peer = adr.copyBytes();
         ntry.perif = pif;
@@ -737,6 +748,11 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      * srlg
      */
     public int srlg;
+
+    /**
+     * mtu
+     */
+    public int mtu;
 
     /**
      * bandwidth
