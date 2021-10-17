@@ -8,7 +8,7 @@
 
 
 
-unsigned char *ifaceName;
+char *ifaceName;
 pcap_t *ifacePcap;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
@@ -23,7 +23,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -107,11 +107,11 @@ doer:
 }
 
 int main(int argc, char **argv) {
-    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
+    char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     if (argc < 5) {
         if (argc <= 1) goto help;
-        unsigned char*curr = argv[1];
+        char*curr = argv[1];
         pcap_if_t *pcifcs;
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {

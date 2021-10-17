@@ -1,20 +1,20 @@
-void str2mac(unsigned char *dst, unsigned char *src) {
+void str2mac(unsigned char *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
 }
 
 void mac2str(unsigned char *src, unsigned char *dst) {
-    snprintf(dst, 128, "%02x:%02x:%02x:%02x:%02x:%02x", src[0], src[1], src[2], src[3], src[4], src[5]);
+    snprintf((char*)dst, 128, "%02x:%02x:%02x:%02x:%02x:%02x", src[0], src[1], src[2], src[3], src[4], src[5]);
 }
 
 
-int str2key(unsigned char *str, unsigned char *key) {
+int str2key(char *str, unsigned char *key) {
     unsigned char buf[4];
     int s = 0;
     for (int i=0;;) {
         memmove(&buf, &str[i], 2);
         buf[2] = 0;
         if (str[i] == 0) break;
-        sscanf(buf, "%hhx", &key[s]);
+        sscanf((char*)buf, "%hhx", &key[s]);
         s++;
         i += 2;
     }
@@ -22,7 +22,7 @@ int str2key(unsigned char *str, unsigned char *key) {
 }
 
 
-const EVP_CIPHER* getEncrAlg(unsigned char *buf) {
+const EVP_CIPHER* getEncrAlg(char *buf) {
     if (strcmp(buf, "des") == 0) return EVP_des_cbc();
     if (strcmp(buf, "3des") == 0) return EVP_des_ede3_cbc();
     if (strcmp(buf, "aes128") == 0) return EVP_aes_128_cbc();
@@ -32,7 +32,7 @@ const EVP_CIPHER* getEncrAlg(unsigned char *buf) {
 }
 
 
-const EVP_MD* getHashAlg(unsigned char *buf) {
+const EVP_MD* getHashAlg(char *buf) {
     if (strcmp(buf, "md5") == 0) return EVP_md5();
     if (strcmp(buf, "sha1") == 0) return EVP_sha1();
     if (strcmp(buf, "sha256") == 0) return EVP_sha256();
@@ -41,66 +41,66 @@ const EVP_MD* getHashAlg(unsigned char *buf) {
 }
 
 
-long readRate(unsigned char**arg) {
+long readRate(char**arg) {
     float res = atof(arg[3]) * 100.0 / atof(arg[4]);
     return res;
 }
 
 
-void readAcl4(struct acl4_entry *acl4_ntry, unsigned char**arg) {
+void readAcl4(struct acl4_entry *acl4_ntry, char**arg) {
     unsigned char buf2[1024];
-    acl4_ntry->pri = atoi(arg[3]);
-    acl4_ntry->act = strcmp(arg[4], "permit");
+    acl4_ntry->pri = atoi(arg[2]);
+    acl4_ntry->act = strcmp(arg[3], "permit");
     if (acl4_ntry->act != 0) acl4_ntry->act = 1;
-    acl4_ntry->protV = atoi(arg[5]);
-    acl4_ntry->protM = atoi(arg[6]);
-    inet_pton(AF_INET, arg[7], buf2);
+    acl4_ntry->protV = atoi(arg[4]);
+    acl4_ntry->protM = atoi(arg[5]);
+    inet_pton(AF_INET, arg[6], buf2);
     acl4_ntry->srcAddr = get32msb(buf2, 0);
-    inet_pton(AF_INET, arg[8], buf2);
+    inet_pton(AF_INET, arg[7], buf2);
     acl4_ntry->srcMask = get32msb(buf2, 0);
-    inet_pton(AF_INET, arg[9], buf2);
+    inet_pton(AF_INET, arg[8], buf2);
     acl4_ntry->trgAddr = get32msb(buf2, 0);
-    inet_pton(AF_INET, arg[10], buf2);
+    inet_pton(AF_INET, arg[9], buf2);
     acl4_ntry->trgMask = get32msb(buf2, 0);
-    acl4_ntry->srcPortV = atoi(arg[11]);
-    acl4_ntry->srcPortM = atoi(arg[12]);
-    acl4_ntry->trgPortV = atoi(arg[13]);
-    acl4_ntry->trgPortM = atoi(arg[14]);
+    acl4_ntry->srcPortV = atoi(arg[10]);
+    acl4_ntry->srcPortM = atoi(arg[11]);
+    acl4_ntry->trgPortV = atoi(arg[12]);
+    acl4_ntry->trgPortM = atoi(arg[13]);
 }
 
 
 
-void readAcl6(struct acl6_entry *acl6_ntry, unsigned char**arg) {
+void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
     unsigned char buf2[1024];
-    acl6_ntry->pri = atoi(arg[3]);
-    acl6_ntry->act = strcmp(arg[4], "permit");
+    acl6_ntry->pri = atoi(arg[2]);
+    acl6_ntry->act = strcmp(arg[3], "permit");
     if (acl6_ntry->act != 0) acl6_ntry->act = 1;
-    acl6_ntry->protV = atoi(arg[5]);
-    acl6_ntry->protM = atoi(arg[6]);
-    inet_pton(AF_INET6, arg[7], buf2);
+    acl6_ntry->protV = atoi(arg[4]);
+    acl6_ntry->protM = atoi(arg[5]);
+    inet_pton(AF_INET6, arg[6], buf2);
     acl6_ntry->srcAddr1 = get32msb(buf2, 0);
     acl6_ntry->srcAddr2 = get32msb(buf2, 4);
     acl6_ntry->srcAddr3 = get32msb(buf2, 8);
     acl6_ntry->srcAddr4 = get32msb(buf2, 12);
-    inet_pton(AF_INET6, arg[8], buf2);
+    inet_pton(AF_INET6, arg[7], buf2);
     acl6_ntry->srcMask1 = get32msb(buf2, 0);
     acl6_ntry->srcMask2 = get32msb(buf2, 4);
     acl6_ntry->srcMask3 = get32msb(buf2, 8);
     acl6_ntry->srcMask4 = get32msb(buf2, 12);
-    inet_pton(AF_INET6, arg[9], buf2);
+    inet_pton(AF_INET6, arg[8], buf2);
     acl6_ntry->trgAddr1 = get32msb(buf2, 0);
     acl6_ntry->trgAddr2 = get32msb(buf2, 4);
     acl6_ntry->trgAddr3 = get32msb(buf2, 8);
     acl6_ntry->trgAddr4 = get32msb(buf2, 12);
-    inet_pton(AF_INET6, arg[10], buf2);
+    inet_pton(AF_INET6, arg[9], buf2);
     acl6_ntry->trgMask1 = get32msb(buf2, 0);
     acl6_ntry->trgMask2 = get32msb(buf2, 4);
     acl6_ntry->trgMask3 = get32msb(buf2, 8);
     acl6_ntry->trgMask4 = get32msb(buf2, 12);
-    acl6_ntry->srcPortV = atoi(arg[11]);
-    acl6_ntry->srcPortM = atoi(arg[12]);
-    acl6_ntry->trgPortV = atoi(arg[13]);
-    acl6_ntry->trgPortM = atoi(arg[14]);
+    acl6_ntry->srcPortV = atoi(arg[10]);
+    acl6_ntry->srcPortM = atoi(arg[11]);
+    acl6_ntry->trgPortV = atoi(arg[12]);
+    acl6_ntry->trgPortM = atoi(arg[13]);
 }
 
 
@@ -117,10 +117,10 @@ void readAcl6(struct acl6_entry *acl6_ntry, unsigned char**arg) {
 int doOneCommand(unsigned char* buf) {
 #ifndef basicLoop
     unsigned char buf2[1024];
-    unsigned char* arg[128];
+    char* arg[128];
     int cnt;
     cnt = 0;
-    arg[0] = &buf[0];
+    arg[0] = (char*)&buf[0];
     int i = 0;
     int o = 0;
     for (;;) {
@@ -134,7 +134,7 @@ int doOneCommand(unsigned char* buf) {
         case '_':
             buf[i] = 0;
             cnt++;
-            arg[cnt] = &buf[i + 1];
+            arg[cnt] = (char*)&buf[i + 1];
             break;
         }
         if (o > 0) break;
@@ -732,7 +732,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[0]);
+        readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -742,7 +742,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[0]);
+        readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -753,7 +753,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[1]);
+        readAcl4(&acl4_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -764,7 +764,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[1]);
+        readAcl4(&acl4_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -774,7 +774,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 4;
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[0]);
+        readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -784,7 +784,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 4;
         acls_ntry.port = 0;
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[-1]);
+        readAcl4(&acl4_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -794,7 +794,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[0]);
+        readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -804,7 +804,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[0]);
+        readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -815,7 +815,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[1]);
+        readAcl6(&acl6_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -826,7 +826,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.port = atoi(arg[2]);
         acls_ntry.hop = atoi(arg[3]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[1]);
+        readAcl6(&acl6_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -836,7 +836,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 6;
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[0]);
+        readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -846,7 +846,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.ver = 6;
         acls_ntry.port = 0;
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[-1]);
+        readAcl6(&acl6_ntry, &arg[0]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -956,7 +956,7 @@ int doOneCommand(unsigned char* buf) {
         policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
-        readAcl4(&acl4_ntry, &arg[3]);
+        readAcl4(&acl4_ntry, &arg[4]);
         policer_ntry.meter = acl4_ntry.pri;
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -971,7 +971,7 @@ int doOneCommand(unsigned char* buf) {
         policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
-        readAcl6(&acl6_ntry, &arg[3]);
+        readAcl6(&acl6_ntry, &arg[4]);
         policer_ntry.meter = acl6_ntry.pri;
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -985,7 +985,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         acls_res->cmd = 1;
-        readAcl4(&acl4_ntry, &arg[2]);
+        readAcl4(&acl4_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -996,7 +996,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.port = atoi(arg[2]);
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         acls_res->cmd = 1;
-        readAcl6(&acl6_ntry, &arg[2]);
+        readAcl6(&acl6_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -1008,7 +1008,7 @@ int doOneCommand(unsigned char* buf) {
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
         acls_res->cmd = 2;
         acls_res->vrf = atoi(arg[3]);
-        readAcl4(&acl4_ntry, &arg[2]);
+        readAcl4(&acl4_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -1020,7 +1020,7 @@ int doOneCommand(unsigned char* buf) {
         acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
         acls_res->cmd = 2;
         acls_res->vrf = atoi(arg[3]);
-        readAcl6(&acl6_ntry, &arg[2]);
+        readAcl6(&acl6_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -1033,7 +1033,7 @@ int doOneCommand(unsigned char* buf) {
         acls_res->cmd = 3;
         acls_res->vrf = atoi(arg[3]);
         acls_res->hop = atoi(arg[4]);
-        readAcl4(&acl4_ntry, &arg[2]);
+        readAcl4(&acl4_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -1046,7 +1046,7 @@ int doOneCommand(unsigned char* buf) {
         acls_res->cmd = 3;
         acls_res->vrf = atoi(arg[3]);
         acls_res->hop = atoi(arg[4]);
-        readAcl6(&acl6_ntry, &arg[2]);
+        readAcl6(&acl6_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -1869,13 +1869,13 @@ void doStatRound(FILE *commands, int round) {
         put16msb(buf2, 0, ntry->mac1);
         put32msb(buf2, 2, ntry->mac2);
         mac2str(buf2, buf);
-        fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, &buf, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
+        fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
     for (int i=0; i<route4_table.size; i++) {
         struct route4_entry *ntry = table_get(&route4_table, i);
         put32msb(buf2, 0, ntry->addr);
-        inet_ntop(AF_INET, &buf2[0], &buf[0], sizeof(buf));
-        fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET, &buf2[0], (char*)&buf[0], sizeof(buf));
+        fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
     }
     for (int i=0; i<route6_table.size; i++) {
         struct route6_entry *ntry = table_get(&route6_table, i);
@@ -1883,16 +1883,16 @@ void doStatRound(FILE *commands, int round) {
         put32msb(buf2, 4, ntry->addr2);
         put32msb(buf2, 8, ntry->addr3);
         put32msb(buf2, 12, ntry->addr4);
-        inet_ntop(AF_INET6, &buf2[0], &buf[0], sizeof(buf));
-        fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, &buf, ntry->mask, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET6, &buf2[0], (char*)&buf[0], sizeof(buf));
+        fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
     }
     for (int i=0; i<mroute4_table.size; i++) {
         struct mroute4_entry *ntry = table_get(&mroute4_table, i);
         put32msb(buf, 0, ntry->src);
-        inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->grp);
-        inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "mroute4_cnt %i %s %s %li %li\r\n", ntry->vrf, &buf2, &buf3, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "mroute4_cnt %i %s %s %li %li\r\n", ntry->vrf, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
     }
     for (int i=0; i<mroute6_table.size; i++) {
         struct mroute6_entry *ntry = table_get(&mroute6_table, i);
@@ -1900,21 +1900,21 @@ void doStatRound(FILE *commands, int round) {
         put32msb(buf, 4, ntry->src2);
         put32msb(buf, 8, ntry->src3);
         put32msb(buf, 12, ntry->src4);
-        inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->grp1);
         put32msb(buf, 4, ntry->grp2);
         put32msb(buf, 8, ntry->grp3);
         put32msb(buf, 12, ntry->grp4);
-        inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", ntry->vrf, &buf2, &buf3, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", ntry->vrf, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
     }
     for (int i=0; i<nat4_table.size; i++) {
         struct nat4_entry *ntry = table_get(&nat4_table, i);
         put32msb(buf, 0, ntry->oSrcAddr);
-        inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->oTrgAddr);
-        inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
     for (int i=0; i<nat6_table.size; i++) {
         struct nat6_entry *ntry = table_get(&nat6_table, i);
@@ -1922,21 +1922,21 @@ void doStatRound(FILE *commands, int round) {
         put32msb(buf, 4, ntry->oSrcAddr2);
         put32msb(buf, 8, ntry->oSrcAddr3);
         put32msb(buf, 12, ntry->oSrcAddr4);
-        inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->oTrgAddr1);
         put32msb(buf, 4, ntry->oTrgAddr2);
         put32msb(buf, 8, ntry->oTrgAddr3);
         put32msb(buf, 12, ntry->oTrgAddr4);
-        inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
     for (int i=0; i<tun4_table.size; i++) {
         struct tun4_entry *ntry = table_get(&tun4_table, i);
         put32msb(buf, 0, ntry->srcAddr);
-        inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
+        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->trgAddr);
-        inet_ntop(AF_INET, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "tun4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "tun4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
     for (int i=0; i<tun6_table.size; i++) {
         struct tun6_entry *ntry = table_get(&tun6_table, i);
@@ -1944,13 +1944,13 @@ void doStatRound(FILE *commands, int round) {
         put32msb(buf, 4, ntry->srcAddr2);
         put32msb(buf, 8, ntry->srcAddr3);
         put32msb(buf, 12, ntry->srcAddr4);
-        inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->trgAddr1);
         put32msb(buf, 4, ntry->trgAddr2);
         put32msb(buf, 8, ntry->trgAddr3);
         put32msb(buf, 12, ntry->trgAddr4);
-        inet_ntop(AF_INET6, &buf[0], &buf3[0], sizeof(buf3));
-        fprintf(commands, "tun6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, &buf2, &buf3, ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "tun6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
     for (int i=0; i<macsec_table.size; i++) {
         struct macsec_entry *ntry = table_get(&macsec_table, i);
@@ -1960,35 +1960,35 @@ void doStatRound(FILE *commands, int round) {
         struct acls_entry *ntry1 = table_get(&acls_table, i);
         switch (ntry1->dir) {
         case 1:
-            snprintf(&buf2[0], 128, "inacl%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "inacl%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         case 2:
-            snprintf(&buf2[0], 128, "outacl%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "outacl%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         case 3:
-            snprintf(&buf2[0], 128, "natacl%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "natacl%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         case 4:
-            snprintf(&buf2[0], 128, "coppacl%i_cnt", ntry1->ver);
+            snprintf((char*)&buf2[0], 128, "coppacl%i_cnt", ntry1->ver);
             break;
         case 5:
-            snprintf(&buf2[0], 128, "pbracl%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "pbracl%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         case 6:
-            snprintf(&buf2[0], 128, "inqos%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "inqos%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         case 7:
-            snprintf(&buf2[0], 128, "outqos%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "outqos%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         case 8:
-            snprintf(&buf2[0], 128, "flowspec%i_cnt %i", ntry1->ver, ntry1->port);
+            snprintf((char*)&buf2[0], 128, "flowspec%i_cnt %i", ntry1->ver, ntry1->port);
             break;
         default:
             continue;
         }
         for (int o=0; o<ntry1->aces.size; o++) {
             struct aclH_entry *ntry2 = table_get(&ntry1->aces, o);
-            fprintf(commands, "%s %i %li %li\r\n", &buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
+            fprintf(commands, "%s %i %li %li\r\n", (char*)&buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
         }
     }
 #endif
@@ -2000,8 +2000,10 @@ void doStatRound(FILE *commands, int round) {
 
 
 int doConsoleCommand(unsigned char*buf) {
+#ifndef basicLoop
     unsigned char buf2[1024];
     unsigned char buf3[1024];
+#endif
     switch (buf[0]) {
     case 0:
         break;
@@ -2067,7 +2069,7 @@ int doConsoleCommand(unsigned char*buf) {
             struct neigh_entry *ntry = table_get(&neigh_table, i);
             mac2str(ntry->smac, buf2);
             mac2str(ntry->dmac, buf3);
-            printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, &buf2, &buf3);
+            printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, (char*)&buf2[0], (char*)&buf3[0]);
         }
         break;
     case 'b':
@@ -2078,7 +2080,7 @@ int doConsoleCommand(unsigned char*buf) {
             put16msb(buf2, 0, ntry->mac1);
             put32msb(buf2, 2, ntry->mac2);
             mac2str(buf2, buf);
-            printf("%10i %s %10i %10i\n", ntry->id, buf, ntry->port, ntry->nexthop);
+            printf("%10i %s %10i %10i\n", ntry->id, (char*)&buf[0], ntry->port, ntry->nexthop);
         }
         break;
     case 'q':
@@ -2102,8 +2104,8 @@ int doConsoleCommand(unsigned char*buf) {
         for (int i=0; i<route4_table.size; i++) {
             struct route4_entry *ntry = table_get(&route4_table, i);
             put32msb(buf, 0, ntry->addr);
-            inet_ntop(AF_INET, &buf[0], &buf2[0], sizeof(buf2));
-            printf("%16s %3i %10i %3i %10i %10i %10i\n", &buf2, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+            inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+            printf("%16s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
         }
         break;
     case '6':
@@ -2114,8 +2116,8 @@ int doConsoleCommand(unsigned char*buf) {
             put32msb(buf, 4, ntry->addr2);
             put32msb(buf, 8, ntry->addr3);
             put32msb(buf, 12, ntry->addr4);
-            inet_ntop(AF_INET6, &buf[0], &buf2[0], sizeof(buf2));
-            printf("%40s %3i %10i %3i %10i %10i %10i\n", &buf2, ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+            inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+            printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
         }
         break;
 #endif

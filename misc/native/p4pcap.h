@@ -41,7 +41,7 @@ int ifaceId[maxPorts];
 
 
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -59,7 +59,6 @@ void doIfaceLoop(int * param) {
     const unsigned char *pack;
     int bufS;
     int fail = 0;
-    unsigned int addrLen;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
@@ -98,7 +97,7 @@ void doSockLoop() {
     unsigned char buf[1024];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
-        if (fgets(buf, sizeof(buf), commands) == NULL) break;
+        if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
         if (doOneCommand(&buf[0]) != 0) break;
     }
     err("command thread exited");
@@ -142,7 +141,7 @@ void doMainLoop() {
 
 
 int main(int argc, char **argv) {
-    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
+    char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     ports = 0;
     for (int i = 4; i < argc; i++) {

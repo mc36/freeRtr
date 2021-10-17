@@ -10,7 +10,7 @@ int cpuport = 0;
 int punts = 0;
 int ipids = 0;
 
-unsigned char *ifaceName[maxPorts];
+char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
 long int packRx[maxPorts];
 long int byteTx[maxPorts];
@@ -825,7 +825,7 @@ int mroute6_compare(void *ptr1, void *ptr2) {
 
 
 
-void initIface(int port, unsigned char *name) {
+void initIface(int port, char *name) {
     ifaceName[port] = malloc(1024);
     strcpy(ifaceName[port], name);
     byteRx[port] = 0;

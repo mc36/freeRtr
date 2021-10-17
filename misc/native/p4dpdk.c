@@ -31,7 +31,7 @@ struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 void sendpack(unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool);
     if (mbuf == NULL) rte_exit(EXIT_FAILURE, "error allocating bmuf\n");
-    unsigned char * pack = rte_pktmbuf_append(mbuf, bufS);
+    char * pack = rte_pktmbuf_append(mbuf, bufS);
     memmove(pack, bufD, bufS);
     rte_ring_mp_enqueue(tx_ring[port], mbuf);
 }
@@ -101,7 +101,7 @@ void doSockLoop() {
     unsigned char buf[1024];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
-        if (fgets(buf, sizeof(buf), commands) == NULL) break;
+        if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
         if (doOneCommand(&buf[0]) != 0) break;
     }
     rte_exit(EXIT_FAILURE, "command thread exited\n");
@@ -264,10 +264,10 @@ int main(int argc, char **argv) {
 
     RTE_ETH_FOREACH_DEV(port) {
         unsigned char buf[128];
-        sprintf(buf, "dpdk-port%i", port);
+        sprintf((char*)&buf[0], "dpdk-port%i", port);
         int sock = rte_eth_dev_socket_id(port);
         printf("opening port %i on lcore (rx %i tx %i) on socket %i...\n", port, port2rx[port], port2tx[port], sock);
-        initIface(port, buf);
+        initIface(port, (char*)&buf[0]);
 
         struct rte_eth_conf port_conf = port_conf_default;
         uint16_t nb_rxd = RX_RING_SIZE;
@@ -303,7 +303,7 @@ int main(int argc, char **argv) {
         ret = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
         if (ret != 0) rte_exit(EXIT_FAILURE, "error setting up tx queue\n");
 
-        tx_ring[port] = rte_ring_create(buf, RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        tx_ring[port] = rte_ring_create((char*)&buf[0], RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
         if (tx_ring[port] == NULL) rte_exit(EXIT_FAILURE, "error allocating tx ring\n");
 
         ret = rte_eth_dev_start(port);

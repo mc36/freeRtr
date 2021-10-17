@@ -8,17 +8,17 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-unsigned char *ttyName;
+char *ttyName;
 int addrTty;
 int debug;
 int delay;
 int retry;
-unsigned char* readDat;
+char* readDat;
 int readLen;
 int readStat; // 0=reading, 1=finished
 pthread_t threadRead;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -58,14 +58,14 @@ int wait4line() {
     }
 }
 
-int doOneCmd(unsigned char *cmdFul) {
+int doOneCmd(char *cmdFul) {
     if (debug) printf("cmd: %s\n", cmdFul);
     int cmdNum = 0;
-    unsigned char* cmdPar[32];
-    unsigned char cmdEmp[1];
+    char* cmdPar[32];
+    char cmdEmp[1];
     int i, o;
     cmdEmp[0] = 0;
-    for (i = 0; i < 32; i++) cmdPar[i] = (unsigned char*) &cmdEmp;
+    for (i = 0; i < 32; i++) cmdPar[i] = (char*) &cmdEmp;
     for (i = 0;; i++) {
         if (cmdFul[i] == 0) break;
         if (cmdFul[i] != 32) continue;
@@ -101,7 +101,7 @@ int doOneCmd(unsigned char *cmdFul) {
         FILE *fr;
         fr = fopen(cmdPar[0], "r");
         if (fr == NULL) return 1;
-        unsigned char ln[512];
+        char ln[1024];
         o = 0;
         for (;;) {
             if (fgets((char*) &ln, 512, fr) == NULL) break;
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
 
     int i, o;
     for (i = 2; i < argc; i++) {
-        unsigned char buf[1024];
+        char buf[1024];
         strcpy(buf, argv[i]);
         o = doOneCmd(buf);
         if (o == 0) continue;

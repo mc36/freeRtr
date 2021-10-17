@@ -8,8 +8,8 @@
 
 
 
-unsigned char *iface1name;
-unsigned char *iface2name;
+char *iface1name;
+char *iface2name;
 pcap_t *iface1pcap;
 pcap_t *iface2pcap;
 pthread_t threadIfc1;
@@ -20,7 +20,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -103,11 +103,11 @@ doer:
 }
 
 int main(int argc, char **argv) {
-    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
+    char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     if (argc < 3) {
         if (argc <= 1) goto help;
-        unsigned char*curr = argv[1];
+        char*curr = argv[1];
         pcap_if_t *pcifcs;
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {

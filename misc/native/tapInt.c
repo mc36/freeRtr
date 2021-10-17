@@ -12,7 +12,7 @@
 #include <sys/fcntl.h>
 #include "utils.h"
 
-unsigned char *ifaceName;
+char *ifaceName;
 int ifaceSock;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
@@ -27,7 +27,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -35,7 +35,6 @@ void err(unsigned char*buf) {
 void doTapLoop() {
     unsigned char bufD[16384];
     int bufS;
-    struct sockaddr_in addrTmp;
     for (;;) {
         bufS = sizeof (bufD);
         bufS = read(ifaceSock, bufD, bufS);
@@ -113,7 +112,7 @@ doer:
     goto doer;
 }
 
-void doCmd(unsigned char *cmd) {
+void doCmd(char *cmd) {
     printf("running %s...\n", cmd);
     system(cmd);
 }
@@ -123,7 +122,7 @@ int main(int argc, char **argv) {
 
     if (argc < 6) {
         if (argc <= 1) goto help;
-        unsigned char*curr = argv[1];
+        char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
         case 'V':
@@ -179,7 +178,7 @@ help :
     ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
     if (ioctl(ifaceSock, TUNSETIFF, &ifr) < 0) err("unable to create interface");
 
-    unsigned char buf[1024];
+    char buf[1024];
     sprintf(buf, "ip link set %s address 00:00:%02x:%02x:%02x:%02x mtu 1500", ifaceName, portLoc >> 8, portLoc & 0xff, portRem >> 8, portRem & 0xff);
     doCmd(buf);
     sprintf(buf, "ip link set %s up", ifaceName);

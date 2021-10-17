@@ -9,7 +9,7 @@
 #include <sys/ioctl.h>
 
 
-unsigned char *ttyName;
+char *ttyName;
 int addrTty;
 int portLoc;
 int lstnSock;
@@ -23,7 +23,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
 
     if (argc < 3) {
         if (argc <= 1) goto help;
-        unsigned char*curr = argv[1];
+        char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
         case 'V':

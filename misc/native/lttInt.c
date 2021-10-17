@@ -24,7 +24,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -47,7 +47,6 @@ void doUdpLoop() {
     unsigned char bufD[16384];
     int bufS;
     for (;;) {
-        addrLen = sizeof (addrTmp);
         bufS = sizeof (bufD);
         bufS = recv(commSock, bufD, bufS, 0);
         if (bufS < 0) break;
@@ -114,7 +113,7 @@ int main(int argc, char **argv) {
 
     if (argc < 7) {
         if (argc <= 1) goto help;
-        unsigned char*curr = argv[1];
+        char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
         case 'V':

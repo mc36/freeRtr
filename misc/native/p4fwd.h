@@ -249,7 +249,7 @@ int masks[] = {
 #define putIpv4header(bufP, bufS, ethtyp, proto, sip, dip)      \
     bufP -= 20;                                                 \
     put16msb(bufD, bufP + 0, 0x4500);                           \
-    put16msb(bufD, bufP + 2, bufS - bufP + preBuff);            \
+    put16msb(bufD, bufP + 2, (bufS - bufP + preBuff));          \
     ipids++;                                                    \
     put16msb(bufD, bufP + 4, ipids);                            \
     put16msb(bufD, bufP + 6, 0);                                \
@@ -258,7 +258,8 @@ int masks[] = {
     put16msb(bufD, bufP + 10, 0);                               \
     put32msb(bufD, bufP + 12, sip);                             \
     put32msb(bufD, bufP + 16, dip);                             \
-    put16lsb(bufD, bufP + 10, 0xffff - calcIPsum(bufD, bufP, 20, 0));   \
+    ethtyp = 0xffff - calcIPsum(bufD, bufP, 20, 0);             \
+    put16lsb(bufD, bufP + 10, ethtyp);                          \
     ethtyp = ETHERTYPE_IPV4;                                    \
     bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);
@@ -269,7 +270,7 @@ int masks[] = {
     bufP -= 40;                                                 \
     put16msb(bufD, bufP + 0, 0x6000);                           \
     put16msb(bufD, bufP + 2, 0);                                \
-    put16msb(bufD, bufP + 4, bufS - bufP + preBuff - 40);       \
+    put16msb(bufD, bufP + 4, (bufS - bufP + preBuff - 40));     \
     bufD[bufP + 6] = proto;                                     \
     bufD[bufP + 7] = 0xff;                                      \
     put32msb(bufD, bufP + 8, sip1);                             \
@@ -382,12 +383,12 @@ int masks[] = {
     bufP -= 8;                                                  \
     put16msb(bufD, bufP + 0, sprt);                             \
     put16msb(bufD, bufP + 2, dprt);                             \
-    put16msb(bufD, bufP + 4, bufS - bufP + preBuff);            \
+    put16msb(bufD, bufP + 4, (bufS - bufP + preBuff));          \
     put16msb(bufD, bufP + 6, 0);                                \
-    putPseudoSum(bufH, 16, 17, bufS - bufP + preBuff, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);      \
+    putPseudoSum(bufH, 16, 17, (bufS - bufP + preBuff), sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);    \
     tmp = calcIPsum(bufH, 16, 36, 0);                           \
     tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);    \
-    put16lsb(bufD, bufP + 6, 0xffff - tmp);
+    put16lsb(bufD, bufP + 6, (0xffff - tmp));
 
 
 
@@ -895,7 +896,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct acl6_entry acl6_ntry;
     struct nat4_entry nat4_ntry;
     struct nat6_entry nat6_ntry;
-    struct bundle_entry bundle_ntry;
     struct pppoe_entry pppoe_ntry;
     struct tun4_entry tun4_ntry;
     struct tun6_entry tun6_ntry;
@@ -904,41 +904,40 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct monitor_entry monitor_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
-    struct mpls_entry *mpls_res;
-    struct portvrf_entry *portvrf_res;
-    struct route4_entry *route4_res;
-    struct route6_entry *route6_res;
-    struct neigh_entry *neigh_res;
-    struct vlan_entry *vlan_res;
-    struct bridge_entry *bridge_res;
-    struct acls_entry *acls_res;
-    struct aclH_entry *aceh_res;
-    struct nat4_entry *nat4_res;
-    struct nat6_entry *nat6_res;
-    struct bundle_entry *bundle_res;
-    struct pppoe_entry *pppoe_res;
-    struct tun4_entry *tun4_res;
-    struct tun6_entry *tun6_res;
-    struct macsec_entry *macsec_res;
-    struct policer_entry *policer_res;
-    struct monitor_entry *monitor_res;
-    struct flood_entry *flood_res;
-    struct mroute4_entry *mroute4_res;
-    struct mroute6_entry *mroute6_res;
-    int index;
-    int label;
-    int sum;
-    int ttl;
+    struct mpls_entry *mpls_res = NULL;
+    struct portvrf_entry *portvrf_res = NULL;
+    struct route4_entry *route4_res = NULL;
+    struct route6_entry *route6_res = NULL;
+    struct neigh_entry *neigh_res = NULL;
+    struct vlan_entry *vlan_res = NULL;
+    struct bridge_entry *bridge_res = NULL;
+    struct acls_entry *acls_res = NULL;
+    struct aclH_entry *aceh_res = NULL;
+    struct nat4_entry *nat4_res = NULL;
+    struct nat6_entry *nat6_res = NULL;
+    struct pppoe_entry *pppoe_res = NULL;
+    struct tun4_entry *tun4_res = NULL;
+    struct tun6_entry *tun6_res = NULL;
+    struct macsec_entry *macsec_res = NULL;
+    struct policer_entry *policer_res = NULL;
+    struct monitor_entry *monitor_res = NULL;
+    struct mroute4_entry *mroute4_res = NULL;
+    struct mroute6_entry *mroute6_res = NULL;
+    int index = 0;
+    int label = 0;
+    int sum = 0;
+    int ttl = 0;
     int hash = 0;
-    int bufP;
-    int bufT;
-    int frag;
-    int ethtyp;
+    int bufP = 0;
+    int bufT = 0;
+    int frag = 0;
+    int ethtyp = 0;
     int prt = port;
     int prt2 = port;
-    int tmp;
-    int tmp2;
-    size_t sizt;
+    int tmp = 0;
+    int tmp2 = 0;
+    int i = 0;
+    size_t sizt = 0;
 ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
@@ -1229,7 +1228,7 @@ ipv4_pbred:
             return;
         }
         if (acl4_ntry.protV == 46) goto cpu;
-        for (int i = 32; i >= 0; i--) {
+        for (i = 32; i >= 0; i--) {
             route4_ntry.mask = i;
             route4_ntry.addr &= masks[i];
             index = table_find(&route4_table, &route4_ntry);
@@ -1550,28 +1549,28 @@ ipv6_pbred:
             return;
         }
         if (acl6_ntry.protV == 0) goto cpu;
-        for (int i = 32; i >= 0; i--) {
+        for (i = 32; i >= 0; i--) {
             route6_ntry.mask = 96 + i;
             route6_ntry.addr4 &= masks[i];
             index = table_find(&route6_table, &route6_ntry);
             if (index < 0) continue;
             goto ipv6_hit;
         }
-        for (int i = 32; i >= 0; i--) {
+        for (i = 32; i >= 0; i--) {
             route6_ntry.mask = 64 + i;
             route6_ntry.addr3 &= masks[i];
             index = table_find(&route6_table, &route6_ntry);
             if (index < 0) continue;
             goto ipv6_hit;
         }
-        for (int i = 32; i >= 0; i--) {
+        for (i = 32; i >= 0; i--) {
             route6_ntry.mask = 32 + i;
             route6_ntry.addr2 &= masks[i];
             index = table_find(&route6_table, &route6_ntry);
             if (index < 0) continue;
             goto ipv6_hit;
         }
-        for (int i = 32; i >= 0; i--) {
+        for (i = 32; i >= 0; i--) {
             route6_ntry.mask = i;
             route6_ntry.addr1 &= masks[i];
             index = table_find(&route6_table, &route6_ntry);

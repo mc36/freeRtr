@@ -11,7 +11,7 @@
 
 
 
-unsigned char *ifaceName;
+char *ifaceName;
 int ifaceIndex;
 int ifaceSock;
 struct sockaddr_in addrLoc;
@@ -29,7 +29,7 @@ long int packRx;
 long int byteTx;
 long int packTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
 
     if (argc < 5) {
         if (argc <= 1) goto help;
-        unsigned char*curr = argv[1];
+        char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
         switch (curr[0]) {
         case 'V':

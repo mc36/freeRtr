@@ -16,7 +16,7 @@ struct sockaddr_in addrLoc;
 long int byteRx;
 long int byteTx;
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     fflush(stdout);
     exit(1);
@@ -97,7 +97,7 @@ void doRxLoop() {
 
 int main(int argc, char **argv) {
     if (argc <= 1) goto help;
-    unsigned char*curr = argv[1];
+    char*curr = argv[1];
 
     portLoc = atoi(curr);
     if (portLoc < 1) {

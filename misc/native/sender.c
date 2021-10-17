@@ -4,13 +4,13 @@
 #include <string.h>
 #include <pcap.h>
 
-unsigned char *ifaceName;
+char *ifaceName;
 pcap_t *ifacePcap;
 FILE *fil;
 int packLen;
 unsigned char packBuf[16 * 1024];
 
-void err(unsigned char*buf) {
+void err(char*buf) {
     printf("%s\n", buf);
     exit(1);
 }
@@ -19,7 +19,7 @@ void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, uns
 }
 
 int main(int argc, char **argv) {
-    unsigned char errbuf[PCAP_ERRBUF_SIZE + 1];
+    char errbuf[PCAP_ERRBUF_SIZE + 1];
 
     if (argc < 2) err("using: <iface> <packet>");
 

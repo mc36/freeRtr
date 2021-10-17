@@ -11,7 +11,7 @@ MD="-O3"                                #release
 compileFile()
 {
 echo compiling $1.
-$CC $MD $4 -o../../binTmp/$1.bin $2 $1.c $3
+$CC -Wall $MD $4 -o../../binTmp/$1.bin $2 $1.c $3
 touch -d "2010-01-01 00:00:00" ../../binTmp/$1.bin
 }
 
