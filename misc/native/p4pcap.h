@@ -29,6 +29,13 @@ int getState(int port) {
 
 
 
+void err(char*buf) {
+    printf("%s\n", buf);
+    exit(1);
+}
+
+
+
 
 #include "p4tab.h"
 #include "p4msg.h"
@@ -38,13 +45,6 @@ int getState(int port) {
 pthread_t threadRaw[maxPorts];
 int commandSock;
 int ifaceId[maxPorts];
-
-
-
-void err(char*buf) {
-    printf("%s\n", buf);
-    exit(1);
-}
 
 
 

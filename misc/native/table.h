@@ -14,6 +14,7 @@ void table_init(struct table_head *tab, int reclen, int comparer(void *, void *)
     tab->comparer = comparer;
     tab->size = 0;
     tab->buffer = malloc(reclen);
+    if (tab->buffer == NULL) err("error allocating memory");
 }
 
 
@@ -55,6 +56,7 @@ void table_add(struct table_head *tab, void *ntry) {
         return;
     }
     tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+1));
+    if (tab->buffer == NULL) err("error allocating memory");
     idx = -idx - 1;
     memmove(table_get(tab, idx + 1), table_get(tab, idx), (tab->size - idx) * tab->reclen);
     tab->size++;
