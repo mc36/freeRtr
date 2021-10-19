@@ -10,9 +10,9 @@ import net.freertr.util.bits;
 public class cryHashCrc16 extends cryHashGeneric {
 
     /**
-     * crc16c polynominal: (rfc1662) 16bits x**0 + x**5 + x**12 + x**16
+     * crc16ccitt (rfc1662) polynominal: 16bits x**0 + x**5 + x**12 + x**16
      */
-    public final static int polyCrc16c = 0x1021;
+    public final static cryHashCrc16 polyCrc16c = new cryHashCrc16(0x1021, false);
 
     private final int[] tab;
 
@@ -32,6 +32,16 @@ public class cryHashCrc16 extends cryHashGeneric {
         for (int i = 0; i < 256; i++) {
             tab[i] = mkTabEntry(p, i);
         }
+    }
+
+    /**
+     * create instance
+     *
+     * @param o where to clone from
+     */
+    public cryHashCrc16(cryHashCrc16 o) {
+        tab = o.tab;
+        ord = o.ord;
     }
 
     private int mkTabEntry(int p, int v) {

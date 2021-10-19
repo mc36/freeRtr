@@ -14,13 +14,13 @@ public class cryHashCrc32 extends cryHashGeneric {
      * x**14 + x**18 + x**19 + x**20 + x**22 + x**23 + x**25 + x**26 + x**27 +
      * x**28
      */
-    public final static int polyCrc32c = 0x1edc6f41;
+    public final static cryHashCrc32 polyCrc32c = new cryHashCrc32(0x1edc6f41, false);
 
     /**
-     * crc32i polynominal: 1 + x + x**2 + x**4 + x**5 + x**7 + x**8 + x**10 +
+     * crc32ieee polynominal: 1 + x + x**2 + x**4 + x**5 + x**7 + x**8 + x**10 +
      * x**11 + x**12 + x**16 + x**22 + x**23 + x**26
      */
-    public final static int polyCrc32i = 0x04c11db7;
+    public final static cryHashCrc32 polyCrc32i = new cryHashCrc32(0x04c11db7, true);
 
     private final int[] tab;
 
@@ -40,6 +40,16 @@ public class cryHashCrc32 extends cryHashGeneric {
         for (int i = 0; i < tab.length; i++) {
             tab[i] = mkTabEntry(p, i);
         }
+    }
+
+    /**
+     * create instance
+     *
+     * @param o where to clone from
+     */
+    public cryHashCrc32(cryHashCrc32 o) {
+        tab = o.tab;
+        ord = o.ord;
     }
 
     private int reverse(int b) {

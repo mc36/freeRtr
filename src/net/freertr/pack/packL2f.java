@@ -227,7 +227,7 @@ public class packL2f {
             if (siz < 2) {
                 return true;
             }
-            cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
+            cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c);
             sum.init();
             pck.hashData(sum, 0, siz - 2);
             byte[] cb = sum.finish();
@@ -319,7 +319,7 @@ public class packL2f {
         if (!chksum) {
             return;
         }
-        cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
+        cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c);
         sum.init();
         pck.hashData(sum, 0, pck.dataSize());
         byte[] cb = sum.finish();

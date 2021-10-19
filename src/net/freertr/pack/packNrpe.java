@@ -173,7 +173,7 @@ public class packNrpe {
         cod = pck.msbGetW(8);
         byte[] buf = pck.getCopy();
         bits.byteFill(buf, 4, 4, 0);
-        cryHashGeneric hsh = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
+        cryHashGeneric hsh = new cryHashCrc32(cryHashCrc32.polyCrc32i);
         hsh.init();
         hsh.update(buf);
         switch (ver) {
@@ -250,7 +250,7 @@ public class packNrpe {
         bits.msbPutW(buf, 2, typ);
         bits.msbPutD(buf, 4, 0); // crc
         bits.msbPutW(buf, 8, cod);
-        cryHashGeneric hsh = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
+        cryHashGeneric hsh = new cryHashCrc32(cryHashCrc32.polyCrc32i);
         hsh.init();
         hsh.update(buf);
         hsh.update(pck.getCopy());

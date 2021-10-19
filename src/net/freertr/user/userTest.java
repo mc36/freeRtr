@@ -580,8 +580,8 @@ public class userTest {
             doTestEncr(new cryEncrRc4());
             doTestEncr(new cryEncrChacha20());
             doTestHash(new cryHashHec8());
-            doTestHash(new cryHashCrc16(cryHashCrc16.polyCrc16c, false));
-            doTestHash(new cryHashCrc32(cryHashCrc32.polyCrc32c, false));
+            doTestHash(new cryHashCrc16(cryHashCrc16.polyCrc16c));
+            doTestHash(new cryHashCrc32(cryHashCrc32.polyCrc32c));
             doTestHash(new cryHashMd2());
             doTestHash(new cryHashMd5());
             doTestHash(new cryHashSha1());

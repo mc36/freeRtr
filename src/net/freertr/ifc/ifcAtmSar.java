@@ -213,7 +213,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
         pck.putSkip(i - 4);
         pck.merge2end();
         byte[] buf = pck.getCopy();
-        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
+        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i);
         crc.init();
         crc.update(buf, 0, buf.length);
         buf = crc.finish();
@@ -265,7 +265,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
             return;
         }
         int o = assem.dataSize();
-        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
+        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i);
         crc.init();
         crc.update(assem.getCopy(), 0, o - 4);
         buf1 = crc.finish();

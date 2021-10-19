@@ -178,7 +178,7 @@ public class lineHdlc implements Runnable, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
-        cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
+        cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c);
         sum.init();
         pck.hashData(sum, 0, pck.dataSize());
         byte[] cb = sum.finish();
@@ -261,7 +261,7 @@ public class lineHdlc implements Runnable, ifcDn {
                 cntr.drop(pck, counter.reasons.tooSmall);
                 continue;
             }
-            cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
+            cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c);
             sum.init();
             pck.hashData(sum, 0, siz - 2);
             byte[] cb = sum.finish();

@@ -156,7 +156,7 @@ class pipeSyncTx extends TimerTask {
                 break;
             }
             int siz = pck.dataSize();
-            cryHashCrc16 fcs = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
+            cryHashCrc16 fcs = new cryHashCrc16(cryHashCrc16.polyCrc16c);
             fcs.init();
             pck.hashData(fcs, 0, siz);
             for (int i = 0; i < siz; i++) {
@@ -270,7 +270,7 @@ class pipeSyncRx implements Runnable {
             resBuf.clear();
             return;
         }
-        cryHashCrc16 fcsH = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
+        cryHashCrc16 fcsH = new cryHashCrc16(cryHashCrc16.polyCrc16c);
         fcsH.init();
         resBuf.hashData(fcsH, 0, siz);
         byte[] fcsB = fcsH.finish();

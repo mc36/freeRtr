@@ -81,7 +81,7 @@ public class prtSctp extends prtGen {
         pck.msbPutD(4, pck.TCPflg); // verification tag
         pck.msbPutD(8, 0); // checksum
         if (cfgAll.sctpChecksumTx) {
-            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c, false);
+            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c);
             sum.init();
             pck.hashHead(sum, 0, size);
             pck.hashData(sum, 0, pck.dataSize());
@@ -117,7 +117,7 @@ public class prtSctp extends prtGen {
         }
         pck.TCPflg = pck.msbGetD(4); // verification tag
         if (cfgAll.sctpChecksumRx) {
-            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c, false);
+            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c);
             sum.init();
             pck.hashData(sum, 0, 8);
             sum.update(0);
@@ -157,7 +157,7 @@ public class prtSctp extends prtGen {
         }
         pck.msbPutD(8, 0); // checksum
         if (cfgAll.sctpChecksumTx) {
-            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c, false);
+            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c);
             sum.init();
             pck.hashHead(sum, 0, size);
             pck.hashData(sum, 0, pck.dataSize());
