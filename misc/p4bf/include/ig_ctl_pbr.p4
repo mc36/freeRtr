@@ -23,6 +23,8 @@ control IngressControlPBR(inout headers hdr, inout ingress_metadata_t ig_md,
                           in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
+    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
+    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
 
     action act_normal() {
     }
@@ -63,6 +65,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV4_PBRACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
     table tbl_ipv6_pbr {
@@ -88,6 +91,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV6_PBRACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
     apply {

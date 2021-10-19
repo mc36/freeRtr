@@ -24,6 +24,9 @@ control IngressControlIPv6(inout headers hdr, inout ingress_metadata_t ig_md,
                            inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
+    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) statsH;
+    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) statsR;
+
     action act_ipv6_cpl_set_nexthop() {
         ig_md.nexthop_id = CPU_PORT;
     }
@@ -113,6 +116,7 @@ ig_md.vrf:
         }
         size = IPV6_HOST_TABLE_SIZE;
         const default_action = NoAction();
+        counters = statsH;
     }
 
     table tbl_ipv6_fib_lpm {
@@ -138,6 +142,7 @@ ig_md.vrf:
         }
         size = IPV6_LPM_TABLE_SIZE;
         default_action = NoAction();
+        counters = statsR;
     }
 
     apply {

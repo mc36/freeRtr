@@ -25,6 +25,9 @@ control IngressControlAclIn(inout headers hdr, inout ingress_metadata_t ig_md,
                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
+    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
+    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
+
     action act_deny() {
         ig_dprsr_md.drop_ctl = 1;
     }
@@ -55,6 +58,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV4_INACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
     table tbl_ipv6_acl {
@@ -79,6 +83,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV6_INACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
     apply {
