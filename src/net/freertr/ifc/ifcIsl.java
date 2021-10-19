@@ -295,7 +295,7 @@ class ifcIslEntry implements ifcDn, Comparator<ifcIslEntry> {
         pck.putSkip(addrMac.sizeX2);
         pck.merge2beg();
         pck.ETHvlan = vLan;
-        cryHashCrc32 sum = new cryHashCrc32();
+        cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
         sum.init();
         pck.hashData(sum, 0, pck.dataSize());
         pck.lsbPutD(0, bits.msbGetD(sum.finish(), 0)); // crc

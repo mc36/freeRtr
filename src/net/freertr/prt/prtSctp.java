@@ -2,7 +2,7 @@ package net.freertr.prt;
 
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
-import net.freertr.cry.cryHashCrc32c;
+import net.freertr.cry.cryHashCrc32;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
@@ -81,7 +81,7 @@ public class prtSctp extends prtGen {
         pck.msbPutD(4, pck.TCPflg); // verification tag
         pck.msbPutD(8, 0); // checksum
         if (cfgAll.sctpChecksumTx) {
-            cryHashCrc32c sum = new cryHashCrc32c();
+            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c, false);
             sum.init();
             pck.hashHead(sum, 0, size);
             pck.hashData(sum, 0, pck.dataSize());
@@ -117,7 +117,7 @@ public class prtSctp extends prtGen {
         }
         pck.TCPflg = pck.msbGetD(4); // verification tag
         if (cfgAll.sctpChecksumRx) {
-            cryHashCrc32c sum = new cryHashCrc32c();
+            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c, false);
             sum.init();
             pck.hashData(sum, 0, 8);
             sum.update(0);
@@ -157,7 +157,7 @@ public class prtSctp extends prtGen {
         }
         pck.msbPutD(8, 0); // checksum
         if (cfgAll.sctpChecksumTx) {
-            cryHashCrc32c sum = new cryHashCrc32c();
+            cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32c, false);
             sum.init();
             pck.hashHead(sum, 0, size);
             pck.hashData(sum, 0, pck.dataSize());

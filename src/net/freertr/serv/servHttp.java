@@ -168,7 +168,7 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public static byte[] getGzipTrl(byte[] unc) {
         byte[] res = new byte[8];
-        cryHashCrc32 crc = new cryHashCrc32();
+        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
         crc.init();
         crc.update(unc);
         bits.lsbPutD(res, 0, bits.msbGetD(crc.finish(), 0));

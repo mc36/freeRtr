@@ -427,7 +427,7 @@ public class userVM {
         dataS = getConst(3) + memBound;
         int procS = getConst(3);
         int procB = getConst(3);
-        cryHashCrc32 h = new cryHashCrc32();
+        cryHashCrc32 h = new cryHashCrc32(cryHashCrc32.polyCrc32i, true);
         h.init();
         h.update(codeD, 0, codeD.length - 4);
         byte[] buf = h.finish();
