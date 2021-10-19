@@ -29,7 +29,7 @@ public class cryHashCrc16 extends cryHashGeneric {
     public cryHashCrc16(int p, boolean b) {
         ord = b;
         tab = new int[256];
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < tab.length; i++) {
             tab[i] = mkTabEntry(p, i);
         }
     }
