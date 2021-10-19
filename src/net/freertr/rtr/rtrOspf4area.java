@@ -688,7 +688,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.best.rouSrc == area) {
+            if (ntry.best.aggrAs == area) {
                 continue;
             }
             if (oa.find(ntry.prefix) != null) {
@@ -840,7 +840,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.best.rouSrc == area) {
+            if (ntry.best.aggrAs == area) {
                 continue;
             }
             byte[] buf = new byte[0];
@@ -915,7 +915,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                                 pref.prefix = addrPrefix.ip4toIP(prf4);
                                 pref.best.origin = 109;
                                 pref.best.distance = lower.distantInt;
-                                pref.best.rouSrc = area;
+                                pref.best.aggrAs = area;
                                 spf.addPref(ntry.rtrID, pref, false);
                                 break;
                             default:
@@ -931,7 +931,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     pref.prefix = addrPrefix.ip4toIP(prf4);
                     pref.best.origin = 109;
                     pref.best.distance = lower.distantInt;
-                    pref.best.rouSrc = area;
+                    pref.best.aggrAs = area;
                     spf.addPref(ntry.rtrID, pref, false);
                     pck.getSkip(addrIPv4.size); // netmask
                     for (;;) {
@@ -954,7 +954,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     pref.best.metric = o & 0xffffff;
                     pref.best.origin = 110;
                     pref.best.distance = lower.distantSum;
-                    pref.best.rouSrc = area;
+                    pref.best.aggrAs = area;
                     spf.addPref(ntry.rtrID, pref, false);
                     break;
                 case rtrOspf4lsa.lsaSumAsBr:
@@ -970,7 +970,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     o = pck.msbGetD(4); // metric
                     pref.best.metric = o & 0xffffff;
                     pref.best.distance = lower.distantExt;
-                    pref.best.rouSrc = area;
+                    pref.best.aggrAs = area;
                     pref.best.tag = pck.msbGetD(12); // route tag
                     if ((o & 0x80000000) != 0) {
                         pref.best.origin = 112;

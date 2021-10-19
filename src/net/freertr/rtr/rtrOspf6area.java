@@ -803,7 +803,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.best.rouSrc == area) {
+            if (ntry.best.aggrAs == area) {
                 continue;
             }
             if (oa.find(ntry.prefix) != null) {
@@ -924,7 +924,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.best.rouSrc == area) {
+            if (ntry.best.aggrAs == area) {
                 continue;
             }
             byte[] buf = new byte[0];
@@ -1033,7 +1033,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     pref.best.metric = met;
                     pref.best.origin = 110;
                     pref.best.distance = lower.distantSum;
-                    pref.best.rouSrc = area;
+                    pref.best.aggrAs = area;
                     spf.addPref(src, pref, false);
                     break;
                 case rtrOspf6lsa.lsaLink:
@@ -1047,7 +1047,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pref.prefix = prf6.prefix;
                         pref.best.origin = 109;
                         pref.best.distance = lower.distantSum;
-                        pref.best.rouSrc = area;
+                        pref.best.aggrAs = area;
                         spf.addPref(src, pref, false);
                     }
                     break;
@@ -1062,7 +1062,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pref.prefix = prf6.prefix;
                         pref.best.origin = 109;
                         pref.best.distance = lower.distantSum;
-                        pref.best.rouSrc = area;
+                        pref.best.aggrAs = area;
                         spf.addPref(src, pref, false);
                     }
                     break;
@@ -1080,7 +1080,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     pref.prefix = prf6.prefix;
                     pref.best.metric = o & 0xffffff;
                     pref.best.distance = lower.distantExt;
-                    pref.best.rouSrc = area;
+                    pref.best.aggrAs = area;
                     if ((o & 0x01000000) != 0) {
                         pref.best.tag = pck.msbGetD(0); // route tag
                     }
