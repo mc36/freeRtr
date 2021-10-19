@@ -2385,9 +2385,14 @@ class servP4langConn implements Runnable {
         lower.sendLine("portbridge_add " + (lower.expDynBr1st + lower.expDynBrNxt) + " " + br.br.num);
     }
 
-    private tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou) {
+    private tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
         if (rou == null) {
             return null;
+        }
+        if (nhchk) {
+            if (rou.best.nextHop == null) {
+                return rou;
+            }
         }
         if (rou.best.iface == null) {
             return rou;
@@ -2422,7 +2427,7 @@ class servP4langConn implements Runnable {
 
     private servP4langNei findHop(ipFwd fwd, addrIP adr) {
         tabRouteEntry<addrIP> rou = fwd.actualU.route(adr);
-        rou = convRou(rou);
+        rou = convRou(rou, false);
         if (rou == null) {
             return null;
         }
@@ -2719,7 +2724,7 @@ class servP4langConn implements Runnable {
                 }
             } catch (Exception e) {
             }
-            rou = convRou(rou);
+            rou = convRou(rou, false);
             if (l < 1) {
                 continue;
             }
@@ -3085,7 +3090,7 @@ class servP4langConn implements Runnable {
                 return;
             }
             tabRouteEntry<addrIP> ntry = ofwd.actualU.route(ifc.ifc.xconn.adr);
-            ntry = convRou(ntry);
+            ntry = convRou(ntry, false);
             if (ntry == null) {
                 return;
             }
@@ -4069,7 +4074,7 @@ class servP4langConn implements Runnable {
                 } else {
                     old = ntry.best.rouTab.actualU.route(ntry.best.segrouPrf);
                 }
-                old = convRou(old);
+                old = convRou(old, true);
                 if (old == null) {
                     continue;
                 }
@@ -4101,7 +4106,7 @@ class servP4langConn implements Runnable {
                 }
                 act = "mod";
             }
-            old = convRou(ntry);
+            old = convRou(ntry, true);
             if (old == null) {
                 continue;
             }
@@ -4144,7 +4149,7 @@ class servP4langConn implements Runnable {
                 } else {
                     old = ntry.best.rouTab.actualU.route(ntry.best.segrouPrf);
                 }
-                old = convRou(old);
+                old = convRou(old, true);
                 if (old == null) {
                     continue;
                 }
@@ -4167,7 +4172,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.del(ntry);
-            ntry = convRou(ntry);
+            ntry = convRou(ntry, true);
             if (ntry == null) {
                 continue;
             }
