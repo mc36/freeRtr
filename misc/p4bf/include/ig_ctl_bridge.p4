@@ -23,7 +23,7 @@ control IngressControlBridge(inout headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats;
 
     action act_set_bridge_port() {
         ig_md.bridge_src = 1;

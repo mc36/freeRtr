@@ -26,8 +26,8 @@ control IngressControlAclOut(inout headers hdr, inout ingress_metadata_t ig_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
 
     action act_deny() {
         ig_dprsr_md.drop_ctl = 1;

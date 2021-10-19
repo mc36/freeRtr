@@ -27,8 +27,8 @@ control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md
 
     Meter<SubIntId_t>((IPV4_FLOWSPEC_TABLE_SIZE), MeterType_t.BYTES) policer4;
     Meter<SubIntId_t>((IPV6_FLOWSPEC_TABLE_SIZE), MeterType_t.BYTES) policer6;
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
 
     action act4_deny(SubIntId_t metid) {
     }

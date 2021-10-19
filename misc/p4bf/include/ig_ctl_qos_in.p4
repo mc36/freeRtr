@@ -26,8 +26,8 @@ control IngressControlQosIn(inout headers hdr, inout ingress_metadata_t ig_md,
 {
 
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
 
     action act_deny(SubIntId_t metid) {
     }

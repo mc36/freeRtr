@@ -25,7 +25,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
                            inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
-    Counter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats;
 
     action act_mpls_cpulabel() {
         ig_md.nexthop_id = CPU_PORT;
