@@ -3,48 +3,53 @@ package net.freertr.cry;
 import net.freertr.util.bits;
 
 /**
- * cyclic redundancy check (xmodem) 16bits x**0 + x**5 + x**12 + x**16
+ * cyclic redundancy check
  *
  * @author matecsaba
  */
 public class cryHashCrc16 extends cryHashGeneric {
 
     /**
-     * create instance
+     * crc16c polynominal: (rfc1662) 16bits x**0 + x**5 + x**12 + x**16
      */
-    public cryHashCrc16() {
+    public final static int polyCrc16c = 0x1021;
+
+    private final int[] tab;
+
+    private final boolean ord;
+
+    private int crc;
+
+    /**
+     * create instance
+     *
+     * @param p polynominal
+     * @param b byte order, true=msb, false=lsb
+     */
+    public cryHashCrc16(int p, boolean b) {
+        ord = b;
+        tab = new int[256];
+        for (int i = 0; i < 256; i++) {
+            tab[i] = mkTabEntry(p, i);
+        }
     }
 
-    private static int[] tab = null;
-
-    private int fcs;
-
-    private int mkTabEntry(int v) {
+    private int mkTabEntry(int p, int v) {
         v <<= 8;
         for (int i = 0; i < 8; ++i) {
             v <<= 1;
             if ((v & 0x10000) != 0) {
-                v ^= 0x1021;
+                v ^= p;
             }
         }
         return v & 0xffff;
-    }
-
-    private void makeTab() {
-        tab = new int[256];
-        for (int i = 0; i < 256; i++) {
-            tab[i] = mkTabEntry(i);
-        }
     }
 
     /**
      * initialize
      */
     public void init() {
-        if (tab == null) {
-            makeTab();
-        }
-        fcs = 0xffff;
+        crc = 0xffff;
     }
 
     /**
@@ -53,7 +58,7 @@ public class cryHashCrc16 extends cryHashGeneric {
      * @param i new value
      */
     public void setCrc(int i) {
-        fcs = i;
+        crc = i;
     }
 
     /**
@@ -93,7 +98,7 @@ public class cryHashCrc16 extends cryHashGeneric {
     }
 
     private void updateByte(int i) {
-        fcs = ((fcs << 8) & 0xffff) ^ tab[(fcs >>> 8) ^ (i & 0xff)];
+        crc = ((crc << 8) & 0xffff) ^ tab[(crc >>> 8) ^ (i & 0xff)];
     }
 
     /**
@@ -116,7 +121,11 @@ public class cryHashCrc16 extends cryHashGeneric {
      */
     public byte[] finish() {
         byte[] buf = new byte[2];
-        bits.msbPutW(buf, 0, fcs ^ 0xffff);
+        if (ord) {
+            bits.msbPutW(buf, 0, crc ^ 0xffff);
+        } else {
+            bits.lsbPutW(buf, 0, crc ^ 0xffff);
+        }
         return buf;
     }
 

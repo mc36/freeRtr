@@ -2,7 +2,7 @@ package net.freertr.line;
 
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrType;
-import net.freertr.cry.cryHashFcs16;
+import net.freertr.cry.cryHashCrc16;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
@@ -178,7 +178,7 @@ public class lineHdlc implements Runnable, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
-        cryHashFcs16 sum = new cryHashFcs16();
+        cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
         sum.init();
         pck.hashData(sum, 0, pck.dataSize());
         byte[] cb = sum.finish();
@@ -261,7 +261,7 @@ public class lineHdlc implements Runnable, ifcDn {
                 cntr.drop(pck, counter.reasons.tooSmall);
                 continue;
             }
-            cryHashFcs16 sum = new cryHashFcs16();
+            cryHashCrc16 sum = new cryHashCrc16(cryHashCrc16.polyCrc16c, false);
             sum.init();
             pck.hashData(sum, 0, siz - 2);
             byte[] cb = sum.finish();
