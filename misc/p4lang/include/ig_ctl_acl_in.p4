@@ -21,6 +21,8 @@ control IngressControlAclIn(inout headers hdr,
                             inout ingress_metadata_t ig_md,
                             inout standard_metadata_t ig_intr_md) {
 
+    direct_counter(CounterType.packets_and_bytes) stats;
+
     action act_deny() {
         ig_md.dropping = 1;
     }
@@ -76,6 +78,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV6_INACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats;
     }
 
     apply {

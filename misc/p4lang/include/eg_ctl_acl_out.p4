@@ -21,6 +21,9 @@ control EgressControlAclOut(inout headers hdr,
                             inout ingress_metadata_t eg_md,
                             inout standard_metadata_t eg_intr_md) {
 
+    direct_counter(CounterType.packets_and_bytes) stats4;
+    direct_counter(CounterType.packets_and_bytes) stats6;
+
     action act_deny() {
         eg_md.dropping = 1;
     }
@@ -52,6 +55,7 @@ eg_md.layer4_dstprt:
         }
         size = IPV4_OUTACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
     table tbl_ipv6_acl {
@@ -76,6 +80,7 @@ eg_md.layer4_dstprt:
         }
         size = IPV6_OUTACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
     apply {

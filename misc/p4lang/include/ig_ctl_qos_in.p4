@@ -22,6 +22,8 @@ control IngressControlQosIn(inout headers hdr,
                             inout standard_metadata_t ig_intr_md) {
 
     meter((MAX_PORT+1), MeterType.bytes) policer;
+    direct_counter(CounterType.packets_and_bytes) stats4;
+    direct_counter(CounterType.packets_and_bytes) stats6;
 
     action act_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
@@ -61,6 +63,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV4_INQOS_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
     table tbl_ipv6_qos {
@@ -85,6 +88,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV6_INQOS_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
     apply {

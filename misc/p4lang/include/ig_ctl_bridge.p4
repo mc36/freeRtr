@@ -21,6 +21,7 @@ control IngressControlBridge(inout headers hdr,
                              inout ingress_metadata_t ig_md,
                              inout standard_metadata_t ig_intr_md) {
 
+    direct_counter(CounterType.packets_and_bytes) stats;
 
     action send_to_cpu() {
         ig_md.nexthop_id = CPU_PORT;
@@ -344,6 +345,7 @@ hdr.ethernet.dst_mac_addr:
         }
         size = MAC_TABLE_SIZE;
         default_action = act_bridge_punt();
+        counters = stats;
     }
 
 

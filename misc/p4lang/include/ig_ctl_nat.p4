@@ -21,6 +21,9 @@ control IngressControlNAT(inout headers hdr,
                           inout ingress_metadata_t ig_md,
                           inout standard_metadata_t ig_intr_md) {
 
+    direct_counter(CounterType.packets_and_bytes) stats4;
+    direct_counter(CounterType.packets_and_bytes) stats6;
+
     action act_deny() {
         ig_md.dropping = 0;
     }
@@ -96,6 +99,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV4_NATTRNS_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
     table tbl_ipv6_nat_trns {
@@ -120,6 +124,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV6_NATTRNS_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
     table tbl_ipv4_nat_cfg {

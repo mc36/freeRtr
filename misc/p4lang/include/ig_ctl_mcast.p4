@@ -22,6 +22,8 @@ control IngressControlMcast(inout headers hdr,
                             inout ingress_metadata_t ig_md,
                             inout standard_metadata_t ig_intr_md) {
 
+    direct_counter(CounterType.packets_and_bytes) stats4;
+    direct_counter(CounterType.packets_and_bytes) stats6;
 
     action act_local(SubIntId_t ingr, bit<16> sess) {
         ig_md.clone_session = sess;
@@ -59,6 +61,7 @@ hdr.ipv4.dst_addr:
         }
         size = IPV4_MCAST_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
 
@@ -78,6 +81,7 @@ hdr.ipv6.dst_addr:
         }
         size = IPV6_MCAST_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
 

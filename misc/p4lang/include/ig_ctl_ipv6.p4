@@ -21,6 +21,9 @@ control IngressControlIPv6(inout headers hdr,
                            inout ingress_metadata_t ig_md,
                            inout standard_metadata_t ig_intr_md) {
 
+    direct_counter(CounterType.packets_and_bytes) statsH;
+    direct_counter(CounterType.packets_and_bytes) statsR;
+
     action send_to_cpu() {
         /*
          * Prepend cpu header to pkt sent to controller
@@ -164,6 +167,7 @@ ig_md.vrf:
         }
         size = IPV6_HOST_TABLE_SIZE;
         const default_action = NoAction();
+        counters = statsH;
     }
 
     table tbl_ipv6_fib_lpm {
@@ -187,6 +191,7 @@ ig_md.vrf:
         }
         size = IPV6_LPM_TABLE_SIZE;
         default_action = NoAction();
+        counters = statsR;
     }
 
     apply {

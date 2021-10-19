@@ -21,7 +21,7 @@ control IngressControlMPLS(inout headers hdr,
                            inout ingress_metadata_t ig_md,
                            inout standard_metadata_t ig_intr_md) {
 
-
+    direct_counter(CounterType.packets_and_bytes) stats;
 
     action act_mpls_cpulabel() {
         ig_md.nexthop_id = CPU_PORT;
@@ -248,6 +248,7 @@ hdr.mpls0.label:
         }
         size = MPLS_TABLE_SIZE;
         default_action = NoAction();
+        counters = stats;
     }
 
 

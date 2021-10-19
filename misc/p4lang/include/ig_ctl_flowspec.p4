@@ -23,6 +23,8 @@ control IngressControlFlowspec(inout headers hdr,
 
     meter((IPV4_FLOWSPEC_TABLE_SIZE), MeterType.bytes) policer4;
     meter((IPV6_FLOWSPEC_TABLE_SIZE), MeterType.bytes) policer6;
+    direct_counter(CounterType.packets_and_bytes) stats4;
+    direct_counter(CounterType.packets_and_bytes) stats6;
 
     action act4_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
@@ -77,6 +79,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV4_FLOWSPEC_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats4;
     }
 
     table tbl_ipv6_flowspec {
@@ -101,6 +104,7 @@ ig_md.layer4_dstprt:
         }
         size = IPV6_FLOWSPEC_TABLE_SIZE;
         const default_action = NoAction();
+        counters = stats6;
     }
 
     apply {
