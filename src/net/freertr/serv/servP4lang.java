@@ -2389,9 +2389,6 @@ class servP4langConn implements Runnable {
         if (rou == null) {
             return null;
         }
-        if (rou.best.nextHop == null) {
-            return rou;
-        }
         if (rou.best.iface == null) {
             return rou;
         }
