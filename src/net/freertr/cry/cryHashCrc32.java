@@ -14,31 +14,39 @@ public class cryHashCrc32 extends cryHashGeneric {
      * x**14 + x**18 + x**19 + x**20 + x**22 + x**23 + x**25 + x**26 + x**27 +
      * x**28
      */
-    public final static cryHashCrc32 polyCrc32c = new cryHashCrc32(0x1edc6f41, false);
+    public final static cryHashCrc32 polyCrc32c = new cryHashCrc32(0x1edc6f41, 0xffffffff, 0xffffffff, false);
 
     /**
      * crc32ieee polynominal: 1 + x + x**2 + x**4 + x**5 + x**7 + x**8 + x**10 +
      * x**11 + x**12 + x**16 + x**22 + x**23 + x**26
      */
-    public final static cryHashCrc32 polyCrc32i = new cryHashCrc32(0x04c11db7, true);
+    public final static cryHashCrc32 polyCrc32i = new cryHashCrc32(0x04c11db7, 0xffffffff, 0xffffffff, true);
 
     private final int[] tab;
 
     private final boolean ord;
+
+    private final int ini;
+
+    private final int xor;
 
     private int crc;
 
     /**
      * create instance
      *
-     * @param p polynominal
-     * @param b byte order, true=msb, false=lsb
+     * @param po polynominal
+     * @param in initializer
+     * @param xr xorer
+     * @param or byte order, true=msb, false=lsb
      */
-    public cryHashCrc32(int p, boolean b) {
-        ord = b;
+    public cryHashCrc32(int po, int in, int xr, boolean or) {
+        ord = or;
         tab = new int[256];
+        ini = in;
+        xor = xr;
         for (int i = 0; i < tab.length; i++) {
-            tab[i] = mkTabEntry(p, i);
+            tab[i] = mkTabEntry(po, i);
         }
     }
 
@@ -50,6 +58,8 @@ public class cryHashCrc32 extends cryHashGeneric {
     public cryHashCrc32(cryHashCrc32 o) {
         tab = o.tab;
         ord = o.ord;
+        ini = o.ini;
+        xor = o.xor;
     }
 
     private int reverse(int b) {
@@ -79,7 +89,7 @@ public class cryHashCrc32 extends cryHashGeneric {
      * initialize
      */
     public void init() {
-        crc = 0xffffffff;
+        crc = ini;
     }
 
     /**
@@ -89,6 +99,15 @@ public class cryHashCrc32 extends cryHashGeneric {
      */
     public void setCrc(int i) {
         crc = i;
+    }
+
+    /**
+     * get frame checksum
+     *
+     * @return value
+     */
+    public int getCrc() {
+        return crc;
     }
 
     /**
@@ -152,9 +171,9 @@ public class cryHashCrc32 extends cryHashGeneric {
     public byte[] finish() {
         byte[] buf = new byte[4];
         if (ord) {
-            bits.msbPutD(buf, 0, crc ^ 0xffffffff);
+            bits.msbPutD(buf, 0, crc ^ xor);
         } else {
-            bits.lsbPutD(buf, 0, crc ^ 0xffffffff);
+            bits.lsbPutD(buf, 0, crc ^ xor);
         }
         return buf;
     }

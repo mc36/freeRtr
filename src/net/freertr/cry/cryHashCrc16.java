@@ -12,25 +12,33 @@ public class cryHashCrc16 extends cryHashGeneric {
     /**
      * crc16ccitt (rfc1662) polynominal: 16bits x**0 + x**5 + x**12 + x**16
      */
-    public final static cryHashCrc16 polyCrc16c = new cryHashCrc16(0x1021, false);
+    public final static cryHashCrc16 polyCrc16c = new cryHashCrc16(0x1021, 0xffff, 0xffff, false);
 
     private final int[] tab;
 
     private final boolean ord;
+
+    private final int ini;
+
+    private final int xor;
 
     private int crc;
 
     /**
      * create instance
      *
-     * @param p polynominal
-     * @param b byte order, true=msb, false=lsb
+     * @param po polynominal
+     * @param in initializer
+     * @param xr xorer
+     * @param or byte order, true=msb, false=lsb
      */
-    public cryHashCrc16(int p, boolean b) {
-        ord = b;
+    public cryHashCrc16(int po, int in, int xr, boolean or) {
+        ord = or;
+        ini = in;
+        xor = xr;
         tab = new int[256];
         for (int i = 0; i < tab.length; i++) {
-            tab[i] = mkTabEntry(p, i);
+            tab[i] = mkTabEntry(po, i);
         }
     }
 
@@ -42,6 +50,8 @@ public class cryHashCrc16 extends cryHashGeneric {
     public cryHashCrc16(cryHashCrc16 o) {
         tab = o.tab;
         ord = o.ord;
+        ini = o.ini;
+        xor = o.xor;
     }
 
     private int mkTabEntry(int p, int v) {
@@ -59,7 +69,7 @@ public class cryHashCrc16 extends cryHashGeneric {
      * initialize
      */
     public void init() {
-        crc = 0xffff;
+        crc = ini;
     }
 
     /**
@@ -69,6 +79,15 @@ public class cryHashCrc16 extends cryHashGeneric {
      */
     public void setCrc(int i) {
         crc = i;
+    }
+
+    /**
+     * get frame checksum
+     *
+     * @return value
+     */
+    public int getCrc() {
+        return crc;
     }
 
     /**
@@ -132,9 +151,9 @@ public class cryHashCrc16 extends cryHashGeneric {
     public byte[] finish() {
         byte[] buf = new byte[2];
         if (ord) {
-            bits.msbPutW(buf, 0, crc ^ 0xffff);
+            bits.msbPutW(buf, 0, crc ^ xor);
         } else {
-            bits.lsbPutW(buf, 0, crc ^ 0xffff);
+            bits.lsbPutW(buf, 0, crc ^ xor);
         }
         return buf;
     }
