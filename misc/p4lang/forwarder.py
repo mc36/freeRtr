@@ -1674,6 +1674,56 @@ def writePbrHopRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writePbrLabRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
+    add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_setlabel",
+        priority=65535-pri,
+        action_params={
+            "vrf_id": tvrf,
+            "nexthop_id": thop,
+            "label_val": tlab,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writePbrLabRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
+    add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
+    add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
+        match_fields=matches,
+        action_name="ig_ctl.ig_ctl_pbr.act_setlabel",
+        priority=65535-pri,
+        action_params={
+            "vrf_id": tvrf,
+            "nexthop_id": thop,
+            "label_val": tlab,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeInQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
     matches={"ig_md.source_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
@@ -2726,6 +2776,27 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "pbr6hop_del":
             writePbrHopRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            continue
+
+
+        if splt[0] == "pbr4lab_add":
+            writePbrLabRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "pbr4lab_mod":
+            writePbrLabRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "pbr4lab_del":
+            writePbrLabRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+
+        if splt[0] == "pbr6lab_add":
+            writePbrLabRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "pbr6lab_mod":
+            writePbrLabRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+        if splt[0] == "pbr6lab_del":
+            writePbrLabRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
 
         if splt[0] == "inqos4_add":
