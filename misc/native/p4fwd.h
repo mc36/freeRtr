@@ -1110,6 +1110,8 @@ ipv4_rx:
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff;
         acl4_ntry.protV = bufD[bufP + 9];
+        acl4_ntry.tosV = bufD[bufP + 1];
+        acl4_ntry.flowV = get16msb(bufD, bufP + 4);
         acl4_ntry.srcAddr = mroute4_ntry.src = get32msb(bufD, bufP + 12);
         acl4_ntry.trgAddr = mroute4_ntry.grp =route4_ntry.addr = get32msb(bufD, bufP + 16);
         hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
@@ -1410,6 +1412,8 @@ ipv6_rx:
         bufS = ttl;
         bufT = bufP + 40;
         acl6_ntry.protV = bufD[bufP + 6];
+        acl6_ntry.tosV = (get16msb(bufD, bufP + 0) >> 4) & 0xff;
+        acl6_ntry.flowV = get32msb(bufD, bufP + 0) & 0xfffff;
         if (acl6_ntry.protV == 44) {
             acl6_ntry.protV = bufD[bufT + 0];
             bufT += 8;
