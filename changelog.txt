@@ -12358,3 +12358,8 @@ no todo: http server should honor no in the beginning for host commands
 no todo: lsrp, ospf, isis must list lsas/lsps as reachable or not
 ---------------------------------- 2021-10-12 16:39:43
 no todo: chatscript and authlist to use tablisting and have reindex
+---------------------------------- 2021-10-20 06:22:40
+qc pass: p4lang: autoroute to sr te over mpls
+qc pass: p4lang: autoroute to p2p te over mpls
+qc pass: p4lang: policy routing to sr te over mpls
+qc pass: p4lang: policy routing to p2p te over mpls
