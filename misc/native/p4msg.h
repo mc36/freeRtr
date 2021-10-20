@@ -1051,6 +1051,34 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "pbr4lab") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 4;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl4_entry), &acl4_compare);
+        acls_res->cmd = 4;
+        acls_res->vrf = atoi(arg[3]);
+        acls_res->hop = atoi(arg[4]);
+        acls_res->lab = atoi(arg[5]);
+        readAcl4(&acl4_ntry, &arg[4]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "pbr6lab") == 0) {
+        acls_ntry.dir = 5;
+        acls_ntry.ver = 6;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = table_addinited(&acls_table, &acls_ntry, &acls_ntry.aces, sizeof(struct acl6_entry), &acl6_compare);
+        acls_res->cmd = 4;
+        acls_res->vrf = atoi(arg[3]);
+        acls_res->hop = atoi(arg[4]);
+        acls_res->lab = atoi(arg[5]);
+        readAcl6(&acl6_ntry, &arg[4]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "hairpin") == 0) {
         bundle_ntry.id = atoi(arg[2]);
         bundle_ntry.command = 2;

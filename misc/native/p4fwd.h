@@ -1211,6 +1211,14 @@ ipv4_natted:
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
                 goto ipv4_tx;
+            case 4: // setlab
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                bufP -= 4;
+                label = 0x100 | ttl | (acls_res->lab << 12);
+                put32msb(bufD, bufP, label);
+                route4_ntry.vrf = acls_res->vrf;
+                neigh_ntry.id = acls_res->hop;
+                goto ethtyp_tx;
             default:
                 goto drop;
             }
@@ -1532,6 +1540,14 @@ ipv6_natted:
                 if (index < 0) goto drop;
                 neigh_res = table_get(&neigh_table, index);
                 goto ipv6_tx;
+            case 4: // setlab
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                bufP -= 4;
+                label = 0x100 | ttl | (acls_res->lab << 12);
+                put32msb(bufD, bufP, label);
+                route4_ntry.vrf = acls_res->vrf;
+                neigh_ntry.id = acls_res->hop;
+                goto ethtyp_tx;
             default:
                 goto drop;
             }

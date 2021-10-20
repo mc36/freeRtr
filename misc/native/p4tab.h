@@ -265,9 +265,10 @@ struct acls_entry {
     int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos, 8=flwspc
     int port;
     struct table_head aces;
-    int cmd; // 1=normal, 2=setvrf, 3=sethop
+    int cmd; // 1=normal, 2=setvrf, 3=sethop, 4=setlab
     int vrf;
     int hop;
+    int lab;
 };
 
 struct table_head acls_table;
