@@ -3800,20 +3800,41 @@ class servP4langConn implements Runnable {
                 par = tvrf.id + " 0 ";
             } else {
                 servP4langNei hop;
+                tabRouteEntry<addrIP> rou = null;
                 if (ntry.setIfc != null) {
                     hop = findNei(ntry.setIfc, ntry.setHop);
                 } else {
                     if (ipv4) {
-                        hop = findHop(tvrf.vrf.fwd4, ntry.setHop);
+                        rou = tvrf.vrf.fwd4.actualU.route(ntry.setHop);
                     } else {
-                        hop = findHop(tvrf.vrf.fwd6, ntry.setHop);
+                        rou = tvrf.vrf.fwd6.actualU.route(ntry.setHop);
                     }
+                    rou = convRou(rou, false);
+                    if (rou == null) {
+                        return old;
+                    }
+                    if (rou.best.iface == null) {
+                        return old;
+                    }
+                    addrIP nh = rou.best.nextHop;
+                    if (nh == null) {
+                        nh = ntry.setHop;
+                    }
+                    hop = findNei(rou.best.iface, nh);
                 }
                 if (hop == null) {
                     return old;
                 }
                 cmd = "hop";
                 par = tvrf.id + " " + hop.id + " ";
+                int i = -1;
+                if (rou != null) {
+                    i = getLabel(rou.best.labelRem);
+                }
+                if (i > 0) {
+                    cmd = "lab";
+                    par += i + " ";
+                }
             }
         }
         if (old == need) {
