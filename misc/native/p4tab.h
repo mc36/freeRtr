@@ -268,7 +268,7 @@ struct acls_entry {
     int cmd; // 1=normal, 2=setvrf, 3=sethop, 4=setlab
     int vrf;
     int hop;
-    int lab;
+    int label;
 };
 
 struct table_head acls_table;

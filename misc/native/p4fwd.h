@@ -1214,7 +1214,7 @@ ipv4_natted:
             case 4: // setlab
                 ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
-                label = 0x100 | ttl | (acls_res->lab << 12);
+                label = 0x100 | ttl | (acls_res->label << 12);
                 put32msb(bufD, bufP, label);
                 route4_ntry.vrf = acls_res->vrf;
                 neigh_ntry.id = acls_res->hop;
@@ -1543,9 +1543,9 @@ ipv6_natted:
             case 4: // setlab
                 ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
-                label = 0x100 | ttl | (acls_res->lab << 12);
+                label = 0x100 | ttl | (acls_res->label << 12);
                 put32msb(bufD, bufP, label);
-                route4_ntry.vrf = acls_res->vrf;
+                route6_ntry.vrf = acls_res->vrf;
                 neigh_ntry.id = acls_res->hop;
                 goto ethtyp_tx;
             default:

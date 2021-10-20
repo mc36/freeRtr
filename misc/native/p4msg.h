@@ -1059,7 +1059,7 @@ int doOneCommand(unsigned char* buf) {
         acls_res->cmd = 4;
         acls_res->vrf = atoi(arg[3]);
         acls_res->hop = atoi(arg[4]);
-        acls_res->lab = atoi(arg[5]);
+        acls_res->label = atoi(arg[5]);
         readAcl4(&acl4_ntry, &arg[4]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -1073,7 +1073,7 @@ int doOneCommand(unsigned char* buf) {
         acls_res->cmd = 4;
         acls_res->vrf = atoi(arg[3]);
         acls_res->hop = atoi(arg[4]);
-        acls_res->lab = atoi(arg[5]);
+        acls_res->label = atoi(arg[5]);
         readAcl6(&acl6_ntry, &arg[4]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
