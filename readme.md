@@ -25,4 +25,4 @@ there is no build system in use, but you'll find shell scripts:
 
 ## contributing
 
-feel free to reach us on the mailing lists with your patches, ideas, etc.
+feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc.
