@@ -145,6 +145,10 @@ ig_md.layer4_srcprt:
             ternary;
 ig_md.layer4_dstprt:
             ternary;
+hdr.ipv4.diffserv:
+            ternary;
+hdr.ipv4.identification:
+            ternary;
         }
         actions = {
             act_permit;
@@ -168,6 +172,10 @@ hdr.ipv6.dst_addr:
 ig_md.layer4_srcprt:
             ternary;
 ig_md.layer4_dstprt:
+            ternary;
+hdr.ipv6.traffic_class:
+            ternary;
+hdr.ipv6.flow_label:
             ternary;
         }
         actions = {

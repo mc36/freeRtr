@@ -2516,7 +2516,7 @@ class BfForwarder(Thread):
         )
 
     def writeCopp4Rules(
-        self, op_type, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_copp"
         tbl_name = "%s.tbl_ipv4_copp" % (tbl_global_path)
@@ -2528,6 +2528,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -2546,7 +2548,7 @@ class BfForwarder(Thread):
         )
 
     def writeCopp6Rules(
-        self, op_type, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_copp"
         tbl_name = "%s.tbl_ipv6_copp" % (tbl_global_path)
@@ -2558,6 +2560,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -2580,7 +2584,7 @@ class BfForwarder(Thread):
 
 
     def writeNatCfgRules4(
-        self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.nat == False:
             return
@@ -2595,6 +2599,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -2614,7 +2620,7 @@ class BfForwarder(Thread):
 
 
     def writeNatCfgRules6(
-        self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.nat == False:
             return
@@ -2629,6 +2635,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -2731,7 +2739,7 @@ class BfForwarder(Thread):
 
 
     def writePbrNormRules4(
-        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2746,6 +2754,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -2765,7 +2775,7 @@ class BfForwarder(Thread):
 
 
     def writePbrNormRules6(
-        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2780,6 +2790,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -2802,7 +2814,7 @@ class BfForwarder(Thread):
 
 
     def writePbrVrfRules4(
-        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2817,6 +2829,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = [
             gc.DataTuple("vrf_id", tvrf),
@@ -2839,7 +2853,7 @@ class BfForwarder(Thread):
 
 
     def writePbrVrfRules6(
-        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2854,6 +2868,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = [
             gc.DataTuple("vrf_id", tvrf),
@@ -2879,7 +2895,7 @@ class BfForwarder(Thread):
 
 
     def writePbrHopRules4(
-        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2894,6 +2910,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = [
             gc.DataTuple("vrf_id", tvrf),
@@ -2917,7 +2935,7 @@ class BfForwarder(Thread):
 
 
     def writePbrHopRules6(
-        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2932,6 +2950,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = [
             gc.DataTuple("vrf_id", tvrf),
@@ -2958,7 +2978,7 @@ class BfForwarder(Thread):
 
 
     def writePbrLabRules4(
-        self, op_type, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -2973,6 +2993,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = [
             gc.DataTuple("vrf_id", tvrf),
@@ -2997,7 +3019,7 @@ class BfForwarder(Thread):
 
 
     def writePbrLabRules6(
-        self, op_type, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         if self.pbr == False:
             return
@@ -3012,6 +3034,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = [
             gc.DataTuple("vrf_id", tvrf),
@@ -3934,7 +3958,7 @@ class BfForwarder(Thread):
 
 
     def writeInAcl4Rules(
-        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_acl_in"
         tbl_name = "%s.tbl_ipv4_acl" % (tbl_global_path)
@@ -3947,6 +3971,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -3965,7 +3991,7 @@ class BfForwarder(Thread):
         )
 
     def writeOutAcl4Rules(
-        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_acl_out"
         tbl_name = "%s.tbl_ipv4_acl" % (tbl_global_path)
@@ -3978,6 +4004,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -3996,7 +4024,7 @@ class BfForwarder(Thread):
         )
 
     def writeInAcl6Rules(
-        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_acl_in"
         tbl_name = "%s.tbl_ipv6_acl" % (tbl_global_path)
@@ -4009,6 +4037,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -4027,7 +4057,7 @@ class BfForwarder(Thread):
         )
 
     def writeOutAcl6Rules(
-        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_acl_out"
         tbl_name = "%s.tbl_ipv6_acl" % (tbl_global_path)
@@ -4040,6 +4070,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = []
         key_annotation_fields = {
@@ -4061,7 +4093,7 @@ class BfForwarder(Thread):
 
 
     def writeInQos4Rules(
-        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_qos_in"
         tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
@@ -4074,6 +4106,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4094,7 +4128,7 @@ class BfForwarder(Thread):
         )
 
     def writeOutQos4Rules(
-        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_qos_out"
         tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
@@ -4107,6 +4141,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4127,7 +4163,7 @@ class BfForwarder(Thread):
         )
 
     def writeInQos6Rules(
-        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_qos_in"
         tbl_name = "%s.tbl_ipv6_qos" % (tbl_global_path)
@@ -4140,6 +4176,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4160,7 +4198,7 @@ class BfForwarder(Thread):
         )
 
     def writeOutQos6Rules(
-        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_qos_out"
         tbl_name = "%s.tbl_ipv6_qos" % (tbl_global_path)
@@ -4173,6 +4211,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = [
              gc.DataTuple("metid", meter),
@@ -4221,7 +4261,7 @@ class BfForwarder(Thread):
 
 
     def writeFlowspec4Rules(
-        self, op_type, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_flowspec"
         tbl_name = "%s.tbl_ipv4_flowspec" % (tbl_global_path)
@@ -4234,6 +4274,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv4.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
+            gc.KeyTuple("hdr.ipv4.identification", fl, flm),
         ]
         data_field_list = [
              gc.DataTuple("metid", (meter+1)),
@@ -4263,7 +4305,7 @@ class BfForwarder(Thread):
         )
 
     def writeFlowspec6Rules(
-        self, op_type, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm
+        self, op_type, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
     ):
         tbl_global_path = "ig_ctl.ig_ctl_flowspec"
         tbl_name = "%s.tbl_ipv6_flowspec" % (tbl_global_path)
@@ -4276,6 +4318,8 @@ class BfForwarder(Thread):
             gc.KeyTuple("hdr.ipv6.dst_addr", da, dam),
             gc.KeyTuple("ig_md.layer4_srcprt", sp, spm),
             gc.KeyTuple("ig_md.layer4_dstprt", dp, dpm),
+            gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
+            gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
         ]
         data_field_list = [
              gc.DataTuple("metid", (meter+1)),
@@ -5318,6 +5362,10 @@ class BfForwarder(Thread):
                     int(splt[10]),
                     int(splt[11]),
                     int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
             if splt[0] == "copp4_mod":
@@ -5335,6 +5383,10 @@ class BfForwarder(Thread):
                     int(splt[10]),
                     int(splt[11]),
                     int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
             if splt[0] == "copp4_del":
@@ -5352,6 +5404,10 @@ class BfForwarder(Thread):
                     int(splt[10]),
                     int(splt[11]),
                     int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
 
@@ -5370,6 +5426,10 @@ class BfForwarder(Thread):
                     int(splt[10]),
                     int(splt[11]),
                     int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
             if splt[0] == "copp6_mod":
@@ -5387,6 +5447,10 @@ class BfForwarder(Thread):
                     int(splt[10]),
                     int(splt[11]),
                     int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
             if splt[0] == "copp6_del":
@@ -5404,6 +5468,10 @@ class BfForwarder(Thread):
                     int(splt[10]),
                     int(splt[11]),
                     int(splt[12]),
+                    int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
                 )
                 continue
 
@@ -5424,6 +5492,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "natcfg4_mod":
@@ -5442,6 +5514,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "natcfg4_del":
@@ -5460,6 +5536,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
 
@@ -5479,6 +5559,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "natcfg6_mod":
@@ -5497,6 +5581,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "natcfg6_del":
@@ -5515,6 +5603,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
 
@@ -5633,6 +5725,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr4norm_mod":
@@ -5652,6 +5748,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr4norm_del":
@@ -5671,6 +5771,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
 
@@ -5691,6 +5795,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr6norm_mod":
@@ -5710,6 +5818,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr6norm_del":
@@ -5729,6 +5841,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
 
@@ -5749,6 +5865,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr4vrf_mod":
@@ -5768,6 +5888,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr4vrf_del":
@@ -5787,6 +5911,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
 
@@ -5807,6 +5935,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr6vrf_mod":
@@ -5826,6 +5958,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr6vrf_del":
@@ -5845,6 +5981,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
 
@@ -5865,6 +6005,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr4hop_mod":
@@ -5884,6 +6028,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr4hop_del":
@@ -5903,6 +6051,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
 
@@ -5923,6 +6075,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr6hop_mod":
@@ -5942,6 +6098,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
             if splt[0] == "pbr6hop_del":
@@ -5961,6 +6121,10 @@ class BfForwarder(Thread):
                     int(splt[13]),
                     int(splt[14]),
                     int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
                 )
                 continue
 
@@ -5982,6 +6146,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "pbr4lab_mod":
@@ -6002,6 +6170,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "pbr4lab_del":
@@ -6022,6 +6194,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
 
@@ -6043,6 +6219,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "pbr6lab_mod":
@@ -6063,6 +6243,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "pbr6lab_del":
@@ -6083,6 +6267,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
 
@@ -6632,6 +6820,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "inqos4_mod":
@@ -6651,6 +6843,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "inqos4_del":
@@ -6670,6 +6866,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "outqos4_add":
@@ -6689,6 +6889,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "outqos4_mod":
@@ -6708,6 +6912,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "outqos4_del":
@@ -6727,6 +6935,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "inqos6_add":
@@ -6746,6 +6958,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "inqos6_mod":
@@ -6765,6 +6981,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "inqos6_del":
@@ -6784,6 +7004,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "outqos6_add":
@@ -6803,6 +7027,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "outqos6_mod":
@@ -6822,6 +7050,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
             if splt[0] == "outqos6_del":
@@ -6841,6 +7073,10 @@ class BfForwarder(Thread):
                     int(splt[12]),
                     int(splt[13]),
                     int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
                 )
                 continue
 
@@ -6864,6 +7100,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "flowspec4_mod":
@@ -6885,6 +7125,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "flowspec4_del":
@@ -6906,6 +7150,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "flowspec6_add":
@@ -6927,6 +7175,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "flowspec6_mod":
@@ -6948,6 +7200,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
             if splt[0] == "flowspec6_del":
@@ -6969,6 +7225,10 @@ class BfForwarder(Thread):
                     int(splt[14]),
                     int(splt[15]),
                     int(splt[16]),
+                    int(splt[17]),
+                    int(splt[18]),
+                    int(splt[19]),
+                    int(splt[20]),
                 )
                 continue
 
@@ -6990,6 +7250,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "inacl4_mod":
@@ -7008,6 +7272,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "inacl4_del":
@@ -7026,6 +7294,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "outacl4_add":
@@ -7044,6 +7316,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "outacl4_mod":
@@ -7062,6 +7338,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "outacl4_del":
@@ -7080,6 +7360,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "inacl6_add":
@@ -7098,6 +7382,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "inacl6_mod":
@@ -7116,6 +7404,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "inacl6_del":
@@ -7134,6 +7426,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "outacl6_add":
@@ -7152,6 +7448,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "outacl6_mod":
@@ -7170,6 +7470,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
             if splt[0] == "outacl6_del":
@@ -7188,6 +7492,10 @@ class BfForwarder(Thread):
                     int(splt[11]),
                     int(splt[12]),
                     int(splt[13]),
+                    int(splt[14]),
+                    int(splt[15]),
+                    int(splt[16]),
+                    int(splt[17]),
                 )
                 continue
 
