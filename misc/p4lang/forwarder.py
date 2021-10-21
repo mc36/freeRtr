@@ -1308,13 +1308,15 @@ def add2dictIfNot(dic, key, val, msk, cnd):
     dic[key] = (val,msk)
 
 
-def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_copp.tbl_ipv4_copp",
         match_fields=matches,
@@ -1330,13 +1332,15 @@ def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeCoppRules6(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeCoppRules6(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_copp.tbl_ipv6_copp",
         match_fields=matches,
@@ -1352,13 +1356,15 @@ def writeCoppRules6(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeInAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeInAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.source_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv4_acl",
         match_fields=matches,
@@ -1374,13 +1380,15 @@ def writeInAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.source_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv6_acl",
         match_fields=matches,
@@ -1396,13 +1404,15 @@ def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_acl_out.tbl_ipv4_acl",
         match_fields=matches,
@@ -1418,13 +1428,15 @@ def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_acl_out.tbl_ipv6_acl",
         match_fields=matches,
@@ -1440,13 +1452,15 @@ def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeNatCfgRules4(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeNatCfgRules4(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv4_nat_cfg",
         match_fields=matches,
@@ -1462,13 +1476,15 @@ def writeNatCfgRules4(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm,
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeNatCfgRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeNatCfgRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv6_nat_cfg",
         match_fields=matches,
@@ -1536,13 +1552,15 @@ def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrNormRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrNormRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
@@ -1558,13 +1576,15 @@ def writePbrNormRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrNormRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrNormRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
@@ -1580,13 +1600,15 @@ def writePbrNormRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrVrfRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrVrfRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
@@ -1603,13 +1625,15 @@ def writePbrVrfRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrVrfRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrVrfRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
@@ -1626,13 +1650,15 @@ def writePbrVrfRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrHopRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrHopRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
@@ -1650,13 +1676,15 @@ def writePbrHopRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrHopRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrHopRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
@@ -1674,13 +1702,15 @@ def writePbrHopRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrLabRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrLabRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
         match_fields=matches,
@@ -1699,13 +1729,15 @@ def writePbrLabRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writePbrLabRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writePbrLabRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_pbr.tbl_ipv6_pbr",
         match_fields=matches,
@@ -1724,13 +1756,15 @@ def writePbrLabRules6(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, tlab, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeInQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeInQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.source_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_qos_in.tbl_ipv4_qos",
         match_fields=matches,
@@ -1747,13 +1781,15 @@ def writeInQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.source_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_qos_in.tbl_ipv6_qos",
         match_fields=matches,
@@ -1770,13 +1806,15 @@ def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_qos_out.tbl_ipv4_qos",
         match_fields=matches,
@@ -1793,13 +1831,15 @@ def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"eg_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_qos_out.tbl_ipv6_qos",
         match_fields=matches,
@@ -1829,13 +1869,15 @@ def writeOutQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
 
 
 
-def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_flowspec.tbl_ipv4_flowspec",
         match_fields=matches,
@@ -1855,13 +1897,15 @@ def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, in
         ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
 
-def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm):
+def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
     add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
     add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
+    add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_flowspec.tbl_ipv6_flowspec",
         match_fields=matches,
@@ -2609,83 +2653,83 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "copp4_add":
-            writeCoppRules4(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            writeCoppRules4(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
         if splt[0] == "copp4_mod":
-            writeCoppRules4(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            writeCoppRules4(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
         if splt[0] == "copp4_del":
-            writeCoppRules4(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            writeCoppRules4(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
 
         if splt[0] == "copp6_add":
-            writeCoppRules6(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            writeCoppRules6(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
         if splt[0] == "copp6_mod":
-            writeCoppRules6(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            writeCoppRules6(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
         if splt[0] == "copp6_del":
-            writeCoppRules6(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]))
+            writeCoppRules6(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
             continue
 
         if splt[0] == "inacl4_add":
-            writeInAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeInAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "inacl4_mod":
-            writeInAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeInAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "inacl4_del":
-            writeInAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeInAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if splt[0] == "inacl6_add":
-            writeInAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeInAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "inacl6_mod":
-            writeInAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeInAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "inacl6_del":
-            writeInAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeInAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if splt[0] == "outacl4_add":
-            writeOutAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeOutAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "outacl4_mod":
-            writeOutAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeOutAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "outacl4_del":
-            writeOutAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeOutAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if splt[0] == "outacl6_add":
-            writeOutAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeOutAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "outacl6_mod":
-            writeOutAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeOutAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "outacl6_del":
-            writeOutAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeOutAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if splt[0] == "natcfg4_add":
-            writeNatCfgRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeNatCfgRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "natcfg4_mod":
-            writeNatCfgRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeNatCfgRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "natcfg4_del":
-            writeNatCfgRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeNatCfgRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if splt[0] == "natcfg6_add":
-            writeNatCfgRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeNatCfgRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "natcfg6_mod":
-            writeNatCfgRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeNatCfgRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
         if splt[0] == "natcfg6_del":
-            writeNatCfgRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]))
+            writeNatCfgRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if splt[0] == "nattrns4_add":
@@ -2719,124 +2763,124 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "pbr4norm_add":
-            writePbrNormRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrNormRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr4norm_mod":
-            writePbrNormRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrNormRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr4norm_del":
-            writePbrNormRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrNormRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if splt[0] == "pbr6norm_add":
-            writePbrNormRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrNormRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr6norm_mod":
-            writePbrNormRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrNormRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr6norm_del":
-            writePbrNormRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrNormRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if splt[0] == "pbr4vrf_add":
-            writePbrVrfRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrVrfRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr4vrf_mod":
-            writePbrVrfRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrVrfRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr4vrf_del":
-            writePbrVrfRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrVrfRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if splt[0] == "pbr6vrf_add":
-            writePbrVrfRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrVrfRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr6vrf_mod":
-            writePbrVrfRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrVrfRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr6vrf_del":
-            writePbrVrfRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrVrfRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if splt[0] == "pbr4hop_add":
-            writePbrHopRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrHopRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr4hop_mod":
-            writePbrHopRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrHopRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr4hop_del":
-            writePbrHopRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrHopRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if splt[0] == "pbr6hop_add":
-            writePbrHopRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrHopRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr6hop_mod":
-            writePbrHopRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrHopRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
         if splt[0] == "pbr6hop_del":
-            writePbrHopRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+            writePbrHopRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
 
         if splt[0] == "pbr4lab_add":
-            writePbrLabRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writePbrLabRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "pbr4lab_mod":
-            writePbrLabRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writePbrLabRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "pbr4lab_del":
-            writePbrLabRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writePbrLabRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
 
         if splt[0] == "pbr6lab_add":
-            writePbrLabRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writePbrLabRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "pbr6lab_mod":
-            writePbrLabRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writePbrLabRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "pbr6lab_del":
-            writePbrLabRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writePbrLabRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
 
         if splt[0] == "inqos4_add":
-            writeInQosRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeInQosRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "inqos4_mod":
-            writeInQosRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeInQosRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "inqos4_del":
-            writeInQosRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeInQosRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
 
         if splt[0] == "inqos6_add":
-            writeInQosRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeInQosRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "inqos6_mod":
-            writeInQosRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeInQosRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "inqos6_del":
-            writeInQosRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeInQosRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
 
         if splt[0] == "outqos4_add":
-            writeOutQosRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeOutQosRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "outqos4_mod":
-            writeOutQosRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeOutQosRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "outqos4_del":
-            writeOutQosRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeOutQosRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
 
         if splt[0] == "outqos6_add":
-            writeOutQosRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeOutQosRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "outqos6_mod":
-            writeOutQosRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeOutQosRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
         if splt[0] == "outqos6_del":
-            writeOutQosRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]))
+            writeOutQosRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             continue
 
         if splt[0] == "inqos_add":
@@ -2860,23 +2904,23 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if splt[0] == "flowspec4_add":
-            writeFlowspecRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writeFlowspecRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "flowspec4_mod":
-            writeFlowspecRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writeFlowspecRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "flowspec4_del":
-            writeFlowspecRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writeFlowspecRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
 
         if splt[0] == "flowspec6_add":
-            writeFlowspecRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writeFlowspecRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "flowspec6_mod":
-            writeFlowspecRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writeFlowspecRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
         if splt[0] == "flowspec6_del":
-            writeFlowspecRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            writeFlowspecRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
             continue
 
         if splt[0] == "cpulabel_add":
