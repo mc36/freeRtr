@@ -478,6 +478,10 @@ public class userUpgrade {
         for (i = 0; i < diff.files.size(); i++) {
             userUpgradeNtry ntry = diff.files.get(i);
             a = version.myWorkDir() + ntry.name;
+            if (needStop(justSimu)) {
+                cons.debugStat("should remove " + a);
+                continue;
+            }
             cons.debugStat("removing " + a);
             userFlash.delete(a);
             if (!cfgAll.upgradeBackup) {
