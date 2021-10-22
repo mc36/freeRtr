@@ -78,7 +78,7 @@ public class bits {
      * @return generated number
      */
     public static int randomW() {
-        return random(0, 0x7f00);
+        return random(0, 0x7fff);
     }
 
     /**
