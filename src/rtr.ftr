@@ -2406,13 +2406,13 @@ todo: interactive switch for traceroute to mimic mtr with class util.dampening, 
 todo: http host upload optional different authentication
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
-todo: optimal route reflection
+todo: bgp optimal route reflection
 todo: bgp vpns with sr-policy
 todo: bgp peer autoconfig
 todo: bgp strict bfd mode
+todo: bgp signed path
 todo: temper: web access log
 todo: interface range command
-todo: telnet tls mode
 todo: parse privilege levels from tacacs
 todo: ldap client, server
 todo: trustpoint for certificates
