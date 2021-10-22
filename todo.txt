@@ -4,13 +4,13 @@ interactive switch for traceroute to mimic mtr with class util.dampening, simila
 http host upload optional different authentication
 terminal mode resolve
 hostwatch to execute script on acl match
-optimal route reflection
+bgp optimal route reflection
 bgp vpns with sr-policy
 bgp peer autoconfig
 bgp strict bfd mode
+bgp signed path
 temper: web access log
 interface range command
-telnet tls mode
 parse privilege levels from tacacs
 ldap client, server
 trustpoint for certificates
