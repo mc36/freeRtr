@@ -80,7 +80,7 @@ void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab
         index = table_find(tab, ntry);
     }
     void *res = table_get(tab, index);
-    struct table_head *tab3 = res + ((void*)tab2 - (void*)ntry);
+    struct table_head *tab3 = res + ((char*)tab2 - (char*)ntry);
     if (tab3->reclen == reclen) return res;
     table_init(tab3, reclen, comparer);
     return res;
