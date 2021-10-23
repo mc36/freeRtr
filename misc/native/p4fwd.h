@@ -1095,7 +1095,6 @@ neigh_tx:
         vlan_res->pack++;
         vlan_res->byte += bufS;
         goto ethtyp_rx;
-        return;
     case ETHERTYPE_IPV4: // ipv4
         checkLayer2;
         if (index < 0) goto drop;
