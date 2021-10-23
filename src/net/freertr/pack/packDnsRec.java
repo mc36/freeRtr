@@ -715,14 +715,15 @@ public class packDnsRec implements Comparator<packDnsRec> {
      *
      * @param pck packet to read
      * @param len where to stop
+     * @param rnd round
      * @return pointer
      */
-    public static String getPointer(packHolder pck, int len) {
+    public static String getPointer(packHolder pck, int len, int rnd) {
         int i = pck.msbGetW(0) & 0x3fff;
         pck.getSkip(2);
         int o = pck.dataSize();
         pck.setBytesLeft(len - i);
-        String s = getChain(pck, len);
+        String s = getChain(pck, len, rnd);
         pck.setBytesLeft(o);
         return s;
     }
@@ -746,9 +747,13 @@ public class packDnsRec implements Comparator<packDnsRec> {
      *
      * @param pck packet to read
      * @param len where to stop
+     * @param rnd round
      * @return readed domain name
      */
-    public static String getChain(packHolder pck, int len) {
+    public static String getChain(packHolder pck, int len, int rnd) {
+        if (rnd > 64) {
+            return "";
+        }
         String s = "";
         for (;;) {
             if (pck.dataSize() < 1) {
@@ -756,7 +761,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
             }
             int i = pck.getByte(0);
             if ((i & 0xc0) == 0xc0) {
-                s += "." + getPointer(pck, len);
+                s += "." + getPointer(pck, len, rnd + 1);
                 break;
             }
             String a = getString(pck);
@@ -813,7 +818,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         }
         putString(pck, "");
     }
-    
+
     public String toString() {
         return "name=" + name + " class=" + class2str(clss) + " type=" + type2str(typ) + " ttl=" + ttl;
     }
@@ -922,7 +927,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
         if (pck.dataSize() < 1) {
             return true;
         }
-        name = getChain(pck, len).toLowerCase();
+        name = getChain(pck, len, 0).toLowerCase();
         typ = pck.msbGetW(0); // type
         clss = pck.msbGetW(2); // class
         pck.getSkip(4);
@@ -965,7 +970,7 @@ public class packDnsRec implements Comparator<packDnsRec> {
             res.get(i).createHeader(typ, pck);
         }
     }
-    
+
     public int compare(packDnsRec o1, packDnsRec o2) {
         final int cmp = 0xffff;
         if ((o1.typ & cmp) < (o2.typ & cmp)) {
@@ -976,5 +981,5 @@ public class packDnsRec implements Comparator<packDnsRec> {
         }
         return o1.name.compareTo(o2.name);
     }
-    
+
 }

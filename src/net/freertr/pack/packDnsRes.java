@@ -227,7 +227,7 @@ public class packDnsRes implements Comparator<packDnsRes> {
     public boolean parseHeader(int typ, packHolder pck, int len) {
         switch (typ) {
             case packDnsRec.typeCNAME:
-                target = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
                 return false;
             case packDnsRec.typeHINFO:
                 target = packDnsRec.getString(pck);
@@ -238,25 +238,25 @@ public class packDnsRes implements Comparator<packDnsRes> {
             case packDnsRec.typeMF:
             case packDnsRec.typeMG:
             case packDnsRec.typeMR:
-                target = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
                 return false;
             case packDnsRec.typeMINFO:
             case packDnsRec.typeRP:
-                target = packDnsRec.getChain(pck, len);
-                email = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
+                email = packDnsRec.getChain(pck, len, 0);
                 return false;
             case packDnsRec.typeMX:
                 sequence = pck.msbGetW(0);
                 pck.getSkip(2);
-                target = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
                 return false;
             case packDnsRec.typeNS:
             case packDnsRec.typePTR:
-                target = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
                 return false;
             case packDnsRec.typeSOA:
-                target = packDnsRec.getChain(pck, len);
-                email = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
+                email = packDnsRec.getChain(pck, len, 0);
                 sequence = pck.msbGetD(0);
                 fresh = pck.msbGetD(4);
                 retry = pck.msbGetD(8);
@@ -273,7 +273,7 @@ public class packDnsRes implements Comparator<packDnsRes> {
                 fresh = pck.msbGetW(2);
                 retry = pck.msbGetW(4);
                 pck.getSkip(6);
-                target = packDnsRec.getChain(pck, len);
+                target = packDnsRec.getChain(pck, len, 0);
                 return false;
             case packDnsRec.typeA:
                 addrIPv4 adr4 = new addrIPv4();
