@@ -10,6 +10,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -326,6 +327,8 @@ public class rtrEigrp extends ipRtr implements Runnable {
         tab2.preserveTime(routerComputedU);
         routerComputedU = tab2;
         routerComputedM = tab2;
+        routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwdCore.routerChg(this);
     }
 

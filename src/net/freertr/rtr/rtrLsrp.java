@@ -817,6 +817,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         tab2.preserveTime(routerComputedU);
         routerComputedU = tab2;
         routerComputedM = tab2;
+        routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = segrouUsd;
         fwdCore.routerChg(this);
     }

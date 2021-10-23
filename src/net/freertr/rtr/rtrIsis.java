@@ -1028,6 +1028,7 @@ public class rtrIsis extends ipRtr {
         tab1.preserveTime(routerComputedU);
         routerComputedU = tab1;
         routerComputedM = tab1;
+        routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = tab3;
         fwdCore.routerChg(this);
         tab2.setProto(routerProtoTyp, routerProcNum);

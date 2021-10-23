@@ -13,6 +13,7 @@ import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
@@ -156,6 +157,10 @@ public class rtrMsdp extends ipRtr {
             }
         }
         cache = lst;
+        routerComputedU = new tabRoute<addrIP>("rx");
+        routerComputedM = new tabRoute<addrIP>("rx");
+        routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
     }
 
     /**

@@ -15,6 +15,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -465,6 +466,8 @@ public class rtrBabel extends ipRtr implements prtServP {
         tab.preserveTime(routerComputedU);
         routerComputedU = tab;
         routerComputedM = tab;
+        routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwdCore.routerChg(this);
     }
 

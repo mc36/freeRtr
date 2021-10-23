@@ -925,6 +925,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
         needFull.add(1);
         compRound.add(1);
         routerCreateComputed();

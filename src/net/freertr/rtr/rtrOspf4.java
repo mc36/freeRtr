@@ -212,6 +212,7 @@ public class rtrOspf4 extends ipRtr {
         tab1.preserveTime(routerComputedU);
         routerComputedU = tab1;
         routerComputedM = tab1;
+        routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = tab2;
         fwdCore.routerChg(this);
     }
