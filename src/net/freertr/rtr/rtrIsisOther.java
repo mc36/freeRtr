@@ -6,6 +6,8 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
+import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
@@ -72,6 +74,10 @@ public class rtrIsisOther extends ipRtr {
         parent = p;
         distantExt = 115;
         distantInt = 115;
+        routerComputedU = new tabRoute<addrIP>("rx");
+        routerComputedM = new tabRoute<addrIP>("rx");
+        routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
     }
 
     /**
