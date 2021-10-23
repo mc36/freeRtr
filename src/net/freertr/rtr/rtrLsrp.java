@@ -20,6 +20,7 @@ import net.freertr.pack.packDnsRec;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -731,9 +732,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
             ntry.put2spf(spf, distance);
         }
         spf.doCalc(routerID, null);
-        boolean[] segrouUsd = null;
+        tabGen<tabIndex<addrIP>> segrouUsd = null;
         if (segrouLab != null) {
-            segrouUsd = new boolean[segrouMax];
+            segrouUsd = new tabGen<tabIndex<addrIP>>();
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrLsrpIface ifc = ifaces.get(o);
@@ -745,7 +746,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             if ((segrouUsd != null) && (ifc.segrouIdx > 0)) {
                 segrouLab[ifc.segrouIdx].setFwdCommon(6, fwdCore);
-                segrouUsd[ifc.segrouIdx] = true;
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrLsrpNeigh nei = ifc.neighs.get(i);
@@ -762,10 +763,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (segrouUsd != null) {
             if (segrouIdx > 0) {
                 segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
-                segrouUsd[segrouIdx] = true;
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
-            for (int i = 0; i < segrouUsd.length; i++) {
-                if (segrouUsd[i]) {
+            for (int i = 0; i < segrouLab.length; i++) {
+                if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
                 segrouLab[i].setFwdDrop(6);
@@ -816,6 +817,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         tab2.preserveTime(routerComputedU);
         routerComputedU = tab2;
         routerComputedM = tab2;
+        routerComputedI = segrouUsd;
         fwdCore.routerChg(this);
     }
 

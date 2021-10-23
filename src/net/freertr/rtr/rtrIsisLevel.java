@@ -2,10 +2,12 @@ package net.freertr.rtr;
 
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIsis;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -193,7 +195,7 @@ public class rtrIsisLevel implements Runnable {
     /**
      * segment routing usage
      */
-    protected boolean[] segrouUsd;
+    protected tabGen<tabIndex<addrIP>> segrouUsd;
 
     /**
      * bier results
@@ -715,7 +717,7 @@ public class rtrIsisLevel implements Runnable {
             logger.debug("calculate spf on level" + level);
         }
         if (segrouEna && (lower.segrouLab != null)) {
-            segrouUsd = new boolean[lower.segrouMax];
+            segrouUsd = new tabGen<tabIndex<addrIP>>();
         } else {
             segrouUsd = null;
         }
@@ -820,11 +822,11 @@ public class rtrIsisLevel implements Runnable {
             }
             if (segrouUsd != null) {
                 if (ifc.srIndex > 0) {
-                    segrouUsd[ifc.srIndex] = true;
+                    tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srIndex, new addrPrefix<addrIP>(new addrIP(), 0)));
                     lower.segrouLab[ifc.srIndex].setFwdCommon(7, lower.fwdCore);
                 }
                 if (lower.other.enabled && (ifc.otherEna) && (ifc.srOthIdx > 0)) {
-                    segrouUsd[ifc.srOthIdx] = true;
+                    tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srOthIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
                     lower.segrouLab[ifc.srOthIdx].setFwdCommon(7, lower.other.fwd);
                 }
             }

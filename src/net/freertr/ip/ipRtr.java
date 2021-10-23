@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabelNtry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -86,6 +87,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * the flowspec routes computed from protocol
      */
     public tabRoute<addrIP> routerComputedF = new tabRoute<addrIP>("computed");
+
+    /**
+     * the index to prefix computed from protocol
+     */
+    public tabGen<tabIndex<addrIP>> routerComputedI = new tabGen<tabIndex<addrIP>>();
 
     /**
      * the imported unicast routes

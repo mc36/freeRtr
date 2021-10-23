@@ -16,6 +16,7 @@ import net.freertr.rtr.rtrLdpTrgtd;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabConnect;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelBierN;
@@ -151,6 +152,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * the computed flowspec routing table
      */
     public tabRoute<addrIP> actualF;
+
+    /**
+     * the computed index to prefix table
+     */
+    public tabGen<tabIndex<addrIP>> actualI;
 
     /**
      * list of multicast groups

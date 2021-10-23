@@ -22,6 +22,7 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -982,6 +983,7 @@ public class rtrIsis extends ipRtr {
         }
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("isis");
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("isis");
+        tabGen<tabIndex<addrIP>> tab3 = new tabGen<tabIndex<addrIP>>();
         tab1.mergeFrom(tabRoute.addType.ecmp, level1.routes, null, true, tabRouteAttr.distanLim);
         tab1.mergeFrom(tabRoute.addType.ecmp, level2.routes, null, true, tabRouteAttr.distanLim);
         if (other.enabled) {
@@ -989,17 +991,13 @@ public class rtrIsis extends ipRtr {
             tab2.mergeFrom(tabRoute.addType.ecmp, level2.oroutes, null, true, tabRouteAttr.distanLim);
         }
         if (segrouLab != null) {
+            tabIndex.mergeTable(tab3, level1.segrouUsd);
+            tabIndex.mergeTable(tab3, level2.segrouUsd);
             for (int i = 0; i < segrouLab.length; i++) {
-                boolean b = false;
-                if (level1.segrouUsd != null) {
-                    b |= level1.segrouUsd[i];
+                if (tab3.find(new tabIndex<addrIP>(i, null)) != null) {
+                    continue;
                 }
-                if (level2.segrouUsd != null) {
-                    b |= level2.segrouUsd[i];
-                }
-                if (!b) {
-                    segrouLab[i].setFwdDrop(7);
-                }
+                segrouLab[i].setFwdDrop(7);
             }
         }
         if (bierLab != null) {
@@ -1030,6 +1028,7 @@ public class rtrIsis extends ipRtr {
         tab1.preserveTime(routerComputedU);
         routerComputedU = tab1;
         routerComputedM = tab1;
+        routerComputedI = tab3;
         fwdCore.routerChg(this);
         tab2.setProto(routerProtoTyp, routerProcNum);
         tab2.preserveTime(other.routerComputedU);

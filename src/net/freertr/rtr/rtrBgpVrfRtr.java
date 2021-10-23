@@ -13,6 +13,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipMpls;
 import net.freertr.ip.ipRtr;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPlcmapN;
 import net.freertr.tab.tabQos;
@@ -322,6 +323,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         routerComputedU = tabU;
         routerComputedM = tabM;
         routerComputedF = tabF;
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwd.routerChg(this);
         if (flowInst) {
             fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni)));

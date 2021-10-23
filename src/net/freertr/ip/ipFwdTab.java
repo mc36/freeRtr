@@ -17,7 +17,9 @@ import net.freertr.pack.packRsvp;
 import net.freertr.rtr.rtrBfdNeigh;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrLdpNeigh;
+import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelNtry;
 import net.freertr.tab.tabListing;
@@ -647,6 +649,7 @@ public class ipFwdTab {
         tabU.defDist = 0;
         tabU.defMetr = 1;
         tabU.defRouTyp = tabRouteAttr.routeType.local;
+        tabGen<tabIndex<addrIP>> tabI = new tabGen<tabIndex<addrIP>>();
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (!ifc.ready) {
@@ -720,6 +723,7 @@ public class ipFwdTab {
             tabL.mergeFrom(rtr.getAddMode(), rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
             tabM.mergeFrom(rtr.getAddMode(), rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
             tabF.mergeFrom(rtr.getAddMode(), rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
+            tabIndex.mergeTable(tabI, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabL, 1);
@@ -758,6 +762,7 @@ public class ipFwdTab {
             tabU.mergeFrom(rtr.getAddMode(), rtr.routerComputedU, tabL, true, tabRouteAttr.distanMax);
             tabM.mergeFrom(rtr.getAddMode(), rtr.routerComputedM, tabL, true, tabRouteAttr.distanMax);
             tabF.mergeFrom(rtr.getAddMode(), rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
+            tabIndex.mergeTable(tabI, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 2);
@@ -776,6 +781,7 @@ public class ipFwdTab {
             tabU.mergeFrom(rtr.getAddMode(), rtr.routerComputedU, null, true, tabRouteAttr.distanMax);
             tabM.mergeFrom(rtr.getAddMode(), rtr.routerComputedM, null, true, tabRouteAttr.distanMax);
             tabF.mergeFrom(rtr.getAddMode(), rtr.routerComputedF, null, true, tabRouteAttr.distanMax);
+            tabIndex.mergeTable(tabI, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 3);
@@ -1004,6 +1010,7 @@ public class ipFwdTab {
         lower.actualU = tabU;
         lower.actualM = tabM;
         lower.actualF = tabF;
+        lower.actualI = tabI;
         return true;
     }
 

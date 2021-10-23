@@ -7,6 +7,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -43,7 +44,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     /**
      * segment routing usage
      */
-    protected boolean[] segrouUsd;
+    protected tabGen<tabIndex<addrIP>> segrouUsd;
 
     /**
      * bier results
@@ -1128,7 +1129,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         }
         spf.doCalc(new rtrOspf6areaSpf(lower.routerID, 0), null);
         if (segrouEna && (lower.segrouLab != null)) {
-            segrouUsd = new boolean[lower.segrouMax];
+            segrouUsd = new tabGen<tabIndex<addrIP>>();
         } else {
             segrouUsd = null;
         }
@@ -1144,7 +1145,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             if ((segrouUsd != null) && (ifc.srIndex > 0)) {
-                segrouUsd[ifc.srIndex] = true;
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srIndex, new addrPrefix<addrIP>(new addrIP(), 0)));
                 lower.segrouLab[ifc.srIndex].setFwdCommon(9, lower.fwdCore);
             }
             if (ifc.needDR()) {

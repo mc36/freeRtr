@@ -30,6 +30,7 @@ import net.freertr.prt.prtServS;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
@@ -1658,7 +1659,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (debugger.rtrBgpComp) {
                 logger.debug("round " + compRound + " segrou");
             }
-            boolean[] segrouUsd = new boolean[segrouMax];
+            tabGen<tabIndex<addrIP>> segrouUsd = new tabGen<tabIndex<addrIP>>();
             for (int i = 0; i < nUni.size(); i++) {
                 tabRouteEntry<addrIP> ntry = nUni.get(i);
                 if (ntry == null) {
@@ -1676,16 +1677,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 }
                 List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
                 segrouLab[ntry.best.segrouIdx].setFwdMpls(13, fwdCore, nei.localIfc, nei.peerAddr, lab);
-                segrouUsd[ntry.best.segrouIdx] = true;
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }
-            segrouUsd[segrouIdx] = true;
+            tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             segrouLab[segrouIdx].setFwdCommon(13, fwdCore);
-            for (int i = 0; i < segrouUsd.length; i++) {
-                if (segrouUsd[i]) {
+            for (int i = 0; i < segrouLab.length; i++) {
+                if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
                 segrouLab[i].setFwdDrop(13);
             }
+            routerComputedI = segrouUsd;
         }
         if (bierLab != null) {
             if (debugger.rtrBgpComp) {

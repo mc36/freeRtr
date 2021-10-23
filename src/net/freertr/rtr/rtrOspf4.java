@@ -14,6 +14,7 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -157,30 +158,28 @@ public class rtrOspf4 extends ipRtr {
         if (debugger.rtrOspf4evnt) {
             logger.debug("create table");
         }
-        tabRoute<addrIP> tab = new tabRoute<addrIP>("ospf");
+        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("ospf");
+        tabGen<tabIndex<addrIP>> tab2 = new tabGen<tabIndex<addrIP>>();
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf4area ntry = areas.get(i);
             if (ntry == null) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.ecmp, ntry.routes, null, true, tabRouteAttr.distanLim);
+            tab1.mergeFrom(tabRoute.addType.ecmp, ntry.routes, null, true, tabRouteAttr.distanLim);
         }
         if (segrouLab != null) {
-            for (int o = 0; o < segrouLab.length; o++) {
-                boolean b = false;
-                for (int i = 0; i < areas.size(); i++) {
-                    rtrOspf4area ntry = areas.get(i);
-                    if (ntry == null) {
-                        continue;
-                    }
-                    if (ntry.segrouUsd == null) {
-                        continue;
-                    }
-                    b |= ntry.segrouUsd[o];
+            for (int i = 0; i < areas.size(); i++) {
+                rtrOspf4area ntry = areas.get(i);
+                if (ntry == null) {
+                    continue;
                 }
-                if (!b) {
-                    segrouLab[o].setFwdDrop(8);
+                tabIndex.mergeTable(tab2, ntry.segrouUsd);
+            }
+            for (int i = 0; i < segrouLab.length; i++) {
+                if (tab2.find(new tabIndex<addrIP>(i, null)) != null) {
+                    continue;
                 }
+                segrouLab[i].setFwdDrop(8);
             }
         }
         if (bierLab != null) {
@@ -209,10 +208,11 @@ public class rtrOspf4 extends ipRtr {
                 bierLab[i].setBierMpls(20, fwdCore, res);
             }
         }
-        tab.setProto(routerProtoTyp, routerProcNum);
-        tab.preserveTime(routerComputedU);
-        routerComputedU = tab;
-        routerComputedM = tab;
+        tab1.setProto(routerProtoTyp, routerProcNum);
+        tab1.preserveTime(routerComputedU);
+        routerComputedU = tab1;
+        routerComputedM = tab1;
+        routerComputedI = tab2;
         fwdCore.routerChg(this);
     }
 

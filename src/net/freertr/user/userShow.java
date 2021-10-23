@@ -70,6 +70,7 @@ import net.freertr.serv.servHttp;
 import net.freertr.serv.servNetflow;
 import net.freertr.serv.servStreamingMdt;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelNtry;
@@ -1566,6 +1567,10 @@ public class userShow {
                 doShowRouteSR(4);
                 return null;
             }
+            if (a.equals("srindex")) {
+                doShowSRindex(4);
+                return null;
+            }
             if (a.equals("bier")) {
                 doShowRouteBR(4);
                 return null;
@@ -1827,6 +1832,10 @@ public class userShow {
             }
             if (a.equals("segrout")) {
                 doShowRouteSR(6);
+                return null;
+            }
+            if (a.equals("srindex")) {
+                doShowSRindex(6);
                 return null;
             }
             if (a.equals("bier")) {
@@ -3806,6 +3815,22 @@ public class userShow {
             return;
         }
         doShowRoutes(fwd, fwd.actualU, 7);
+    }
+
+    private void doShowSRindex(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        userFormat lst = new userFormat("|", "index|prefix");
+        for (int i = 0; i < fwd.actualI.size(); i++) {
+            tabIndex<addrIP> prf = fwd.actualI.get(i);
+            if (prf == null) {
+                continue;
+            }
+            lst.add("" + prf);
+        }
+        rdr.putStrTab(lst);
     }
 
     private void doShowRouteBR(int ver) {
