@@ -2426,6 +2426,7 @@ todo: xot, x75 switching
 todo: preallocate qos buffers
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
+todo: rift4, rift6
 todo: l2vpn for isis
 todo: hip (rfc4423)
 todo: ttl handling follow the selected forwarder, reconfigurable if more
