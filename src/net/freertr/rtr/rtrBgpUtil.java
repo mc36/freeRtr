@@ -1370,6 +1370,7 @@ public class rtrBgpUtil {
                 pck.msbPutW(2, i);
                 pck.putSkip(4);
                 pck.putCopy(ntry.prefix.network.getBytes(), 2, 0, i);
+                pck.putSkip(i);
                 return;
             case sfiVpls:
                 pck.msbPutW(0, o + p);

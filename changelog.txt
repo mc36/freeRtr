@@ -12378,3 +12378,7 @@ qc pass: qos egress pps action
 qc pass: qos ingress pps copp
 qc pass: qos egress pps copp
 qc pass: qos pps dapp
+---------------------------------- 2021-10-24 13:37:49
+qc pass: unicast+nsh over bgp
+qc pass: unicast+nsh over bgp with soft-reconfig
+qc pass: unicast+nsh over bgp with additional path
