@@ -12382,3 +12382,8 @@ qc pass: qos pps dapp
 qc pass: unicast+nsh over bgp
 qc pass: unicast+nsh over bgp with soft-reconfig
 qc pass: unicast+nsh over bgp with additional path
+---------------------------------- 2021-10-24 13:58:36
+no todo: bgp nsh sfc
+no todo: bgp vpns with sr-policy
+todo: traffic through bgp sr-policy
+todo: traffic through bgp nsh

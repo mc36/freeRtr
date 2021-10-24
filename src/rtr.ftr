@@ -2415,11 +2415,11 @@ todo: http host upload optional different authentication
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: bgp optimal route reflection
-todo: bgp vpns with sr-policy
-todo: bgp nsh sfc
 todo: bgp peer autoconfig
 todo: bgp strict bfd mode
 todo: bgp signed path
+todo: traffic through bgp sr-policy
+todo: traffic through bgp nsh
 todo: temper: web access log
 todo: interface range command
 todo: parse privilege levels from tacacs
