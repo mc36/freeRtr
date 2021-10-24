@@ -321,7 +321,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
      * stow this neighbor
      */
     protected void stopNow() {
-        logger.error("neighbor l" + level.level + " " + ifcAddr + " down");
+        logger.error("neighbor level" + level.level + " " + ifcAddr + " down");
         iface.iface.bfdDel(ifcAddr, this);
         if (iface.oface != null) {
             iface.oface.bfdDel(ofcAddr, this);
@@ -571,7 +571,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             if (oldAdjSt != statUp) {
                 return;
             }
-            logger.error("neighbor l" + level.level + " " + ifcAddr + " forgot us");
+            logger.error("neighbor level" + level.level + " " + ifcAddr + " forgot us");
             iface.iface.bfdDel(ifcAddr, this);
             if (iface.oface != null) {
                 iface.oface.bfdDel(ofcAddr, this);
@@ -582,7 +582,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             level.schedWork(7);
             return;
         }
-        logger.warn("neighbor l" + level.level + " " + ifcAddr + " up");
+        logger.warn("neighbor level" + level.level + " " + ifcAddr + " up");
         advert.clear();
         if (lower.segrouLab != null) {
             segrouLab = tabLabel.allocate(15);

@@ -382,7 +382,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
                 iface.sendHello(area);
                 return;
             }
-            logger.error("neighbor a" + area.area + " " + peer + " forgot us");
+            logger.error("neighbor area" + area.area + " " + peer + " forgot us");
             iface.iface.bfdDel(peer, this);
             tabLabel.release(segrouLab, 17);
             state = stDown;
@@ -653,7 +653,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
      * stow this neighbor
      */
     protected void stopNow() {
-        logger.error("neighbor a" + area.area + " " + peer + " down");
+        logger.error("neighbor area" + area.area + " " + peer + " down");
         iface.iface.bfdDel(peer, this);
         tabLabel.release(segrouLab, 17);
         state = stDown;
@@ -781,7 +781,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             i = 0;
         }
         if (!(ddMorL | ddMorR)) {
-            logger.warn("neighbor a" + area.area + " " + peer + " up");
+            logger.warn("neighbor area" + area.area + " " + peer + " up");
             if (lower.segrouLab != null) {
                 addrIP per = new addrIP();
                 per.fromIPv6addr(peer);
