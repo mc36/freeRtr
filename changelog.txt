@@ -12372,3 +12372,9 @@ todo: bgp signed path
 todo: bgp nsh sfc
 ---------------------------------- 2021-10-24 05:35:31
 todo: rift4, rift6
+---------------------------------- 2021-10-24 07:08:22
+qc pass: qos ingress pps action
+qc pass: qos egress pps action
+qc pass: qos ingress pps copp
+qc pass: qos egress pps copp
+qc pass: qos pps dapp

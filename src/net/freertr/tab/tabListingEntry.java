@@ -40,6 +40,10 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
          */
         actPolice,
         /**
+         * police to packet rate
+         */
+        actPps,
+        /**
          * shape to rate
          */
         actShaper,

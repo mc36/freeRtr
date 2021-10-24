@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.10.24-cur, done by cs@nop.
--;-;-;2021-10-24 05:48:33, took 00:05:38, with 100 workers, on 2402 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2021-10-24 07:15:22, took 00:06:59, with 100 workers, on 2407 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1416,6 +1416,8 @@ http://sources.nop.hu/cfg/qos-action11.tst;qos-action11.tst;success;qos ingress 
 http://sources.nop.hu/cfg/qos-action12.tst;qos-action12.tst;success;qos egress shaper action
 http://sources.nop.hu/cfg/qos-action13.tst;qos-action13.tst;success;qos ingress hierarchical action
 http://sources.nop.hu/cfg/qos-action14.tst;qos-action14.tst;success;qos egress hierarchical action
+http://sources.nop.hu/cfg/qos-action15.tst;qos-action15.tst;success;qos ingress pps action
+http://sources.nop.hu/cfg/qos-action16.tst;qos-action16.tst;success;qos egress pps action
 http://sources.nop.hu/cfg/qos-copp01.tst;qos-copp01.tst;success;qos ingress transmit copp
 http://sources.nop.hu/cfg/qos-copp02.tst;qos-copp02.tst;success;qos egress transmit copp
 http://sources.nop.hu/cfg/qos-copp03.tst;qos-copp03.tst;success;qos ingress drop copp
@@ -1434,6 +1436,9 @@ http://sources.nop.hu/cfg/qos-copp15.tst;qos-copp15.tst;success;qos transmit oth
 http://sources.nop.hu/cfg/qos-copp16.tst;qos-copp16.tst;success;qos drop otherflowspec
 http://sources.nop.hu/cfg/qos-copp17.tst;qos-copp17.tst;success;qos policer otherflowspec
 http://sources.nop.hu/cfg/qos-copp18.tst;qos-copp18.tst;success;qos priority otherflowspec
+http://sources.nop.hu/cfg/qos-copp19.tst;qos-copp19.tst;success;qos ingress pps copp
+http://sources.nop.hu/cfg/qos-copp20.tst;qos-copp20.tst;success;qos egress pps copp
+http://sources.nop.hu/cfg/qos-copp21.tst;qos-copp21.tst;success;qos pps dapp
 http://sources.nop.hu/cfg/qos-match01.tst;qos-match01.tst;success;qos ingress length matcher
 http://sources.nop.hu/cfg/qos-match02.tst;qos-match02.tst;success;qos egress length matcher
 http://sources.nop.hu/cfg/qos-match03.tst;qos-match03.tst;success;qos ingress tos matcher

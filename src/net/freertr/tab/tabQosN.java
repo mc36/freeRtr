@@ -73,7 +73,11 @@ public class tabQosN {
      * @param add bytes to add
      */
     protected void updateBytes(int add) {
-        bytes += add;
+        if (entry.action == tabListingEntry.actionType.actPps) {
+            bytes++;
+        } else {
+            bytes += add;
+        }
         if (parent == null) {
             return;
         }
@@ -221,6 +225,14 @@ public class tabQosN {
                     return true;
                 }
                 return false;
+            case actPps:
+                if (checkMyBytes(1)) {
+                    return true;
+                }
+                if (checkPrntBytes(1)) {
+                    return true;
+                }
+                return false;
             case actDeny:
             default:
                 return true;
@@ -247,6 +259,16 @@ public class tabQosN {
                     return null;
                 }
                 if (checkPrntBytes(pck.dataSize())) {
+                    return null;
+                }
+                return pck;
+            case actPps:
+                pck = packets.remove(0);
+                if (checkMyBytes(1)) {
+                    packets.clear();
+                    return null;
+                }
+                if (checkPrntBytes(1)) {
                     return null;
                 }
                 return pck;

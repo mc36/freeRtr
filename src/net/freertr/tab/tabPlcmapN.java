@@ -171,6 +171,9 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         if (s.equals("police")) {
             return actionType.actPolice;
         }
+        if (s.equals("pps")) {
+            return actionType.actPps;
+        }
         if (s.equals("shape")) {
             return actionType.actShaper;
         }
@@ -197,6 +200,8 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
                 return "transit";
             case actPolice:
                 return "police";
+            case actPps:
+                return "pps";
             case actShaper:
                 return "shape";
             case actBndwdth:

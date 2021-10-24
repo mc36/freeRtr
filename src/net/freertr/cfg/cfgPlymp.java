@@ -124,6 +124,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add("2 .     drop                drop every packet");
         l.add("2 .     transit             forward every packet");
         l.add("2 .     police              police to rate");
+        l.add("2 .     pps                 police to packet rate");
         l.add("2 .     shape               shape to rate");
         l.add("2 .     bandwidth           bandwidth to rate");
         l.add("2 .     priority            priority to rate");
