@@ -139,6 +139,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> accMdt = new tabRoute<addrIP>("rx");
 
     /**
+     * accepted nsh prefixes
+     */
+    public tabRoute<addrIP> accNsh = new tabRoute<addrIP>("rx");
+
+    /**
      * accepted srte prefixes
      */
     public tabRoute<addrIP> accSrte = new tabRoute<addrIP>("rx");
@@ -244,6 +249,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> wilMdt = new tabRoute<addrIP>("tx");
 
     /**
+     * willing nsh prefixes
+     */
+    public tabRoute<addrIP> wilNsh = new tabRoute<addrIP>("tx");
+
+    /**
      * willing srte prefixes
      */
     public tabRoute<addrIP> wilSrte = new tabRoute<addrIP>("tx");
@@ -347,6 +357,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * changed mdt prefixes
      */
     public tabRoute<addrIP> chgMdt = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed nsh prefixes
+     */
+    public tabRoute<addrIP> chgNsh = new tabRoute<addrIP>("chg");
 
     /**
      * changed srte prefixes
@@ -544,6 +559,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("mspw advertised|" + conn.advMspw.size() + " of " + wilMspw.size() + ", list = " + chgMspw.size() + ", accepted = " + accMspw.size() + " of " + conn.lrnMspw.size());
         l.add("evpn advertised|" + conn.advEvpn.size() + " of " + wilEvpn.size() + ", list = " + chgEvpn.size() + ", accepted = " + accEvpn.size() + " of " + conn.lrnEvpn.size());
         l.add("mdt advertised|" + conn.advMdt.size() + " of " + wilMdt.size() + ", list = " + chgMdt.size() + ", accepted = " + accMdt.size() + " of " + conn.lrnMdt.size());
+        l.add("nsh advertised|" + conn.advNsh.size() + " of " + wilNsh.size() + ", list = " + chgNsh.size() + ", accepted = " + accNsh.size() + " of " + conn.lrnNsh.size());
         l.add("srte advertised|" + conn.advSrte.size() + " of " + wilSrte.size() + ", list = " + chgSrte.size() + ", accepted = " + accSrte.size() + " of " + conn.lrnSrte.size());
         l.add("linkstate advertised|" + conn.advLnks.size() + " of " + wilLnks.size() + ", list = " + chgLnks.size() + ", accepted = " + accLnks.size() + " of " + conn.lrnLnks.size());
         l.add("mvpn advertised|" + conn.advMvpn.size() + " of " + wilMvpn.size() + ", list = " + chgMvpn.size() + ", accepted = " + accMvpn.size() + " of " + conn.lrnMvpn.size());
@@ -815,6 +831,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, conn.advMdt)) {
             return true;
         }
+        if (advertFullTable(lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, conn.advNsh)) {
+            return true;
+        }
         if (advertFullTable(lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, conn.advMvpn)) {
             return true;
         }
@@ -930,6 +949,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, chgMdt, conn.advMdt)) {
             return true;
         }
+        if (advertIncrTable(lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, chgNsh, conn.advNsh)) {
+            return true;
+        }
         if (advertIncrTable(lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, chgMvpn, conn.advMvpn)) {
             return true;
         }
@@ -1012,6 +1034,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         accMspw = new tabRoute<addrIP>("bgp");
         accEvpn = new tabRoute<addrIP>("bgp");
         accMdt = new tabRoute<addrIP>("bgp");
+        accNsh = new tabRoute<addrIP>("bgp");
         accSrte = new tabRoute<addrIP>("bgp");
         accLnks = new tabRoute<addrIP>("bgp");
         accMvpn = new tabRoute<addrIP>("bgp");
@@ -1075,6 +1098,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             accMspw = conn.lrnMspw;
             accEvpn = conn.lrnEvpn;
             accMdt = conn.lrnMdt;
+            accNsh = conn.lrnNsh;
             accSrte = conn.lrnSrte;
             accLnks = conn.lrnLnks;
             accMvpn = conn.lrnMvpn;
@@ -1098,6 +1122,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMspw, remoteAs, accMspw, conn.lrnMspw, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiEvpn, remoteAs, accEvpn, conn.lrnEvpn, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMdt, remoteAs, accMdt, conn.lrnMdt, true, vroumapIn, vroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiNsh, remoteAs, accNsh, conn.lrnNsh, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSrte, remoteAs, accSrte, conn.lrnSrte, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLnks, remoteAs, accLnks, conn.lrnLnks, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpn, remoteAs, accMvpn, conn.lrnMvpn, true, vroumapIn, vroupolIn, null);
@@ -1124,6 +1149,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @param mspw mspw
      * @param evpn evpn
      * @param mdt mdt
+     * @param nsh nsh
      * @param srte srte
      * @param lnks linkstate
      * @param mvpn mvpn
@@ -1134,8 +1160,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             tabRoute<addrIP> vpnU, tabRoute<addrIP> vpnM, tabRoute<addrIP> vpnF,
             tabRoute<addrIP> vpoU, tabRoute<addrIP> vpoM, tabRoute<addrIP> vpoF,
             tabRoute<addrIP> vpls, tabRoute<addrIP> mspw, tabRoute<addrIP> evpn,
-            tabRoute<addrIP> mdt, tabRoute<addrIP> srte, tabRoute<addrIP> lnks,
-            tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo) {
+            tabRoute<addrIP> mdt, tabRoute<addrIP> nsh, tabRoute<addrIP> srte,
+            tabRoute<addrIP> lnks, tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo) {
         uni.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accUni), null, true, tabRouteAttr.distanLim);
         mlt.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMlt), null, true, tabRouteAttr.distanLim);
         otrU.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrU), null, true, tabRouteAttr.distanLim);
@@ -1153,6 +1179,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         mspw.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMspw), null, true, tabRouteAttr.distanLim);
         evpn.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accEvpn), null, true, tabRouteAttr.distanLim);
         mdt.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMdt), null, true, tabRouteAttr.distanLim);
+        nsh.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accNsh), null, true, tabRouteAttr.distanLim);
         srte.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accSrte), null, true, tabRouteAttr.distanLim);
         lnks.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accLnks), null, true, tabRouteAttr.distanLim);
         mvpn.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMvpn), null, true, tabRouteAttr.distanLim);
@@ -1231,6 +1258,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             wilMspw = new tabRoute<addrIP>("tx");
             wilEvpn = new tabRoute<addrIP>("tx");
             wilMdt = new tabRoute<addrIP>("tx");
+            wilNsh = new tabRoute<addrIP>("tx");
             wilSrte = new tabRoute<addrIP>("tx");
             wilLnks = new tabRoute<addrIP>("tx");
             wilMvpn = new tabRoute<addrIP>("tx");
@@ -1252,6 +1280,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgMspw = new tabRoute<addrIP>("chg");
             chgEvpn = new tabRoute<addrIP>("chg");
             chgMdt = new tabRoute<addrIP>("chg");
+            chgNsh = new tabRoute<addrIP>("chg");
             chgSrte = new tabRoute<addrIP>("chg");
             chgLnks = new tabRoute<addrIP>("chg");
             chgMvpn = new tabRoute<addrIP>("chg");
@@ -1275,6 +1304,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             wilMspw = grp.wilMspw;
             wilEvpn = grp.wilEvpn;
             wilMdt = grp.wilMdt;
+            wilNsh = grp.wilNsh;
             wilSrte = grp.wilSrte;
             wilLnks = grp.wilLnks;
             wilMvpn = grp.wilMvpn;
@@ -1296,6 +1326,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgMspw = grp.chgMspw;
             chgEvpn = grp.chgEvpn;
             chgMdt = grp.chgMdt;
+            chgNsh = grp.chgNsh;
             chgSrte = grp.chgSrte;
             chgLnks = grp.chgLnks;
             chgMvpn = grp.chgMvpn;
@@ -1402,6 +1433,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiMdt) {
             return accMdt;
         }
+        if (safi == lower.afiNsh) {
+            return accNsh;
+        }
         if (safi == lower.afiSrte) {
             return accSrte;
         }
@@ -1481,6 +1515,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         if (safi == lower.afiMdt) {
             return wilMdt;
+        }
+        if (safi == lower.afiNsh) {
+            return wilNsh;
         }
         if (safi == lower.afiSrte) {
             return wilSrte;

@@ -80,6 +80,11 @@ public class rtrBgpUtil {
     public final static int afiL2vpn = 0x190000;
 
     /**
+     * nsh address family
+     */
+    public final static int afiNsh = 0x1f0000;
+
+    /**
      * linkstate address family
      */
     public final static int afiLnks = 0x40040000;
@@ -128,6 +133,11 @@ public class rtrBgpUtil {
      * multicast vpls address family
      */
     public final static int sfiMcastVpls = 0x08;
+
+    /**
+     * nsh address family
+     */
+    public final static int sfiNsh = 0x09;
 
     /**
      * l2vpn address family
@@ -273,6 +283,11 @@ public class rtrBgpUtil {
      * ipv6 vpn flowspec address family
      */
     public final static int safiIp6vpnF = afiIpv6 | sfiVpnFlw;
+
+    /**
+     * ipv4 mdt address family
+     */
+    public final static int safiNsh46 = afiNsh | sfiNsh;
 
     /**
      * ipv4 mdt address family
@@ -1116,6 +1131,16 @@ public class rtrBgpUtil {
                 }
                 pck.setBytesLeft(i);
                 return ntry;
+            case sfiNsh:
+                ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+                p = pck.msbGetW(0);
+                i = pck.msbGetW(2);
+                pck.getSkip(4);
+                ntry.prefix.network.getBytes()[0] = (byte) p;
+                ntry.prefix.network.getBytes()[1] = (byte) i;
+                pck.getCopy(ntry.prefix.network.getBytes(), 2, 0, i);
+                pck.getSkip(i);
+                return ntry;
             case sfiVpls:
                 i = pck.msbGetW(0) * 8;
                 pck.getSkip(2);
@@ -1271,6 +1296,7 @@ public class rtrBgpUtil {
                 }
                 break;
             case afiLnks:
+            case afiNsh:
                 buf2 = new byte[0];
                 i = 0;
                 break;
@@ -1336,6 +1362,14 @@ public class rtrBgpUtil {
                 pck.putSkip(2);
                 pck.putCopy(buf1, 0, 0, i);
                 pck.putSkip(i);
+                return;
+            case sfiNsh:
+                o = ntry.prefix.network.getBytes()[0];
+                i = ntry.prefix.network.getBytes()[0];
+                pck.msbPutW(0, o);
+                pck.msbPutW(2, i);
+                pck.putSkip(4);
+                pck.putCopy(ntry.prefix.network.getBytes(), 2, 0, i);
                 return;
             case sfiVpls:
                 pck.msbPutW(0, o + p);
@@ -1573,6 +1607,8 @@ public class rtrBgpUtil {
                 return "ip4vpnF";
             case safiIp6vpnF:
                 return "ip6vpnF";
+            case safiNsh46:
+                return "nsh";
             case safiIp4mdt:
                 return "mdt4";
             case safiIp6mdt:

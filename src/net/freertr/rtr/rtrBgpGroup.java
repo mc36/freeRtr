@@ -121,6 +121,11 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> wilMdt = new tabRoute<addrIP>("tx");
 
     /**
+     * willing nsh prefixes
+     */
+    public tabRoute<addrIP> wilNsh = new tabRoute<addrIP>("tx");
+
+    /**
      * willing srte prefixes
      */
     public tabRoute<addrIP> wilSrte = new tabRoute<addrIP>("tx");
@@ -226,6 +231,11 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> chgMdt = new tabRoute<addrIP>("chg");
 
     /**
+     * changed nsh prefixes
+     */
+    public tabRoute<addrIP> chgNsh = new tabRoute<addrIP>("chg");
+
+    /**
      * changed srte prefixes
      */
     public tabRoute<addrIP> chgSrte = new tabRoute<addrIP>("chg");
@@ -326,6 +336,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("mspw advertise|" + wilMspw.size() + ", list=" + chgMspw.size());
         l.add("evpn advertise|" + wilEvpn.size() + ", list=" + chgEvpn.size());
         l.add("mdt advertise|" + wilMdt.size() + ", list=" + chgMdt.size());
+        l.add("nsh advertise|" + wilNsh.size() + ", list=" + chgNsh.size());
         l.add("srte advertise|" + wilSrte.size() + ", list=" + chgSrte.size());
         l.add("linkstate advertise|" + wilLnks.size() + ", list=" + chgLnks.size());
         l.add("mvpn advertise|" + wilMvpn.size() + ", list=" + chgMvpn.size());
@@ -397,6 +408,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiMdt) {
             return wilMdt;
+        }
+        if (safi == lower.afiNsh) {
+            return wilNsh;
         }
         if (safi == lower.afiSrte) {
             return wilSrte;
@@ -477,6 +491,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiMdt) {
             return chgMdt;
+        }
+        if (safi == lower.afiNsh) {
+            return chgNsh;
         }
         if (safi == lower.afiSrte) {
             return chgSrte;
@@ -909,6 +926,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param cMspw mspw
      * @param cEvpn evpn
      * @param cMdt mdt
+     * @param cNsh nsh
      * @param cSrte srte
      * @param cLnks lnks
      * @param cMvpn mvpn
@@ -919,8 +937,8 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRoute<addrIP> cVpnU, tabRoute<addrIP> cVpnM, tabRoute<addrIP> cVpnF,
             tabRoute<addrIP> cVpoU, tabRoute<addrIP> cVpoM, tabRoute<addrIP> cVpoF,
             tabRoute<addrIP> cVpls, tabRoute<addrIP> cMspw, tabRoute<addrIP> cEvpn,
-            tabRoute<addrIP> cMdt, tabRoute<addrIP> cSrte, tabRoute<addrIP> cLnks,
-            tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo) {
+            tabRoute<addrIP> cMdt, tabRoute<addrIP> cNsh, tabRoute<addrIP> cSrte,
+            tabRoute<addrIP> cLnks, tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo) {
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nOtrU = new tabRoute<addrIP>("bgp");
@@ -938,6 +956,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         tabRoute<addrIP> nMspw = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nEvpn = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMdt = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nNsh = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nSrte = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nLnks = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMvpn = new tabRoute<addrIP>("bgp");
@@ -1039,6 +1058,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiMspw, nMspw, cMspw, vroumapOut, vroupolOut, null);
         importTable(lower.afiEvpn, nEvpn, cEvpn, vroumapOut, vroupolOut, null);
         importTable(lower.afiMdt, nMdt, cMdt, vroumapOut, vroupolOut, null);
+        importTable(lower.afiNsh, nNsh, cNsh, vroumapOut, vroupolOut, null);
         importTable(lower.afiSrte, nSrte, cSrte, vroumapOut, vroupolOut, null);
         importTable(lower.afiLnks, nLnks, cLnks, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpn, nMvpn, cMvpn, vroumapOut, vroupolOut, null);
@@ -1060,6 +1080,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         wilMspw = nMspw;
         wilEvpn = nEvpn;
         wilMdt = nMdt;
+        wilNsh = nNsh;
         wilSrte = nSrte;
         wilLnks = nLnks;
         wilMvpn = nMvpn;
