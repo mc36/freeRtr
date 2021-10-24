@@ -12368,3 +12368,5 @@ no todo: telnet tls mode
 no todo: optimal route reflection
 todo: bgp optimal route reflection
 todo: bgp signed path
+---------------------------------- 2021-10-24 05:20:22
+todo: bgp nsh sfc

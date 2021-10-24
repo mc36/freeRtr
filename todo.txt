@@ -24,6 +24,7 @@ xot, x75 switching
 preallocate qos buffers
 ilnp (rfc6740)
 lisp4, lisp6
+rift4, rift6
 l2vpn for isis
 hip (rfc4423)
 ttl handling follow the selected forwarder, reconfigurable if more

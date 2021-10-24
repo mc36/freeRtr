@@ -2408,6 +2408,7 @@ todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: bgp optimal route reflection
 todo: bgp vpns with sr-policy
+todo: bgp nsh sfc
 todo: bgp peer autoconfig
 todo: bgp strict bfd mode
 todo: bgp signed path
