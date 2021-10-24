@@ -6,6 +6,7 @@ terminal mode resolve
 hostwatch to execute script on acl match
 bgp optimal route reflection
 bgp vpns with sr-policy
+bgp nsh sfc
 bgp peer autoconfig
 bgp strict bfd mode
 bgp signed path
