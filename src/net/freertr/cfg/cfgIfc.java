@@ -1679,8 +1679,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ppp ipxcp open",
         "interface .*! no ppp ecp close",
         "interface .*! no ppp ecp open",
-        "interface .*! no ppp scp close",
-        "interface .*! no ppp scp open",
+        "interface .*! no ppp nshcp close",
+        "interface .*! no ppp nshcp open",
         "interface .*! no ppp authentication",
         // hdlc
         "interface .*! hdlc keepalive 5000",

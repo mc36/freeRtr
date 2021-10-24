@@ -478,7 +478,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add("2 3     ecp                         encryption control protocol");
         l.add("3 .       open                      force to open state");
         l.add("3 .       close                     force to close state");
-        l.add("2 3     scp                         service control protocol");
+        l.add("2 3     nshcp                       service control protocol");
         l.add("3 .       open                      force to open state");
         l.add("3 .       close                     force to close state");
     }
@@ -538,8 +538,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, !ctrlIpx.forced2open(), cmds.tabulator, "ppp ipxcp open", "");
         cmds.cfgLine(l, !ctrlCrypt.forced2close(), cmds.tabulator, "ppp ecp close", "");
         cmds.cfgLine(l, !ctrlCrypt.forced2open(), cmds.tabulator, "ppp ecp open", "");
-        cmds.cfgLine(l, !ctrlNsh.forced2close(), cmds.tabulator, "ppp scp close", "");
-        cmds.cfgLine(l, !ctrlNsh.forced2open(), cmds.tabulator, "ppp scp open", "");
+        cmds.cfgLine(l, !ctrlNsh.forced2close(), cmds.tabulator, "ppp nshcp close", "");
+        cmds.cfgLine(l, !ctrlNsh.forced2open(), cmds.tabulator, "ppp nshcp open", "");
     }
 
     /**
@@ -708,7 +708,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 return;
             }
         }
-        if (a.equals("scp")) {
+        if (a.equals("nshcp")) {
             a = cmd.word();
             if (a.equals("open")) {
                 ctrlNsh.forceOpen(true);
@@ -911,7 +911,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 return;
             }
         }
-        if (a.equals("scp")) {
+        if (a.equals("nshcp")) {
             a = cmd.word();
             if (a.equals("open")) {
                 ctrlNsh.forceOpen(false);
