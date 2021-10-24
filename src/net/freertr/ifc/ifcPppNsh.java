@@ -18,7 +18,7 @@ public class ifcPppNsh extends ifcPppNcp {
     /**
      * ppp name
      */
-    public final static String pppName = "scp";
+    public final static String pppName = "nshcp";
 
     /**
      * ppp data type
