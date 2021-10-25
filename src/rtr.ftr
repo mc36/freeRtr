@@ -1398,6 +1398,8 @@ qc pass: p4lang: autoroute to sr te over mpls
 qc pass: p4lang: autoroute to p2p te over mpls
 qc pass: p4lang: policy routing to sr te over mpls
 qc pass: p4lang: policy routing to p2p te over mpls
+qc pass: p4lang: nsh
+qc pass: p4lang: vlan nsh
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
