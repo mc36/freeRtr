@@ -1217,11 +1217,11 @@ public class tabRouteAttr<T extends addrType> {
         l.add("source|" + srcRtr);
         l.add("validity|" + validity);
         l.add("only to customer|" + bits.num2str(onlyCust));
-        l.add("segment routing index|" + segrouIdx);
-        l.add("segment routing old base|" + segrouOld);
-        l.add("segment routing base|" + segrouBeg);
-        l.add("segment routing size|" + segrouSiz);
-        l.add("segment routing prefix|" + segrouPrf);
+        l.add("segrout index|" + segrouIdx);
+        l.add("segrout old base|" + segrouOld);
+        l.add("segrout base|" + segrouBeg);
+        l.add("segrout size|" + segrouSiz);
+        l.add("segrout prefix|" + segrouPrf);
         l.add("bier index|" + bierIdx);
         l.add("bier old base|" + bierOld);
         l.add("bier base|" + bierBeg);
