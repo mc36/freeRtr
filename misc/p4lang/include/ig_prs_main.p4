@@ -64,6 +64,8 @@ ETHERTYPE_PPPOE_CTRL :
             prs_pppoeCtrl;
 ETHERTYPE_PPPOE_DATA :
             prs_pppoeData;
+ETHERTYPE_NSH :
+            prs_nsh;
 ETHERTYPE_MPLS_UCAST :
             prs_mpls0;
 ETHERTYPE_IPV4:
@@ -94,6 +96,8 @@ ETHERTYPE_PPPOE_CTRL :
             prs_pppoeCtrl;
 ETHERTYPE_PPPOE_DATA :
             prs_pppoeData;
+ETHERTYPE_NSH :
+            prs_nsh;
 ETHERTYPE_MPLS_UCAST :
             prs_mpls0;
 ETHERTYPE_IPV4:
@@ -149,6 +153,21 @@ PPPTYPE_ROUTEDMAC:
     state prs_eth6 {
         pkt.extract(hdr.eth6);
         transition accept;
+    }
+
+    state prs_nsh {
+        ig_md.nsh_valid = 1;
+        pkt.extract(hdr.nsh);
+        transition select(hdr.nsh.next_proto) {
+8w1:
+            prs_ipv4;
+8w2:
+            prs_ipv6;
+8w5:
+            prs_mpls0;
+        default:
+            accept;
+        }
     }
 
     state prs_mpls0 {

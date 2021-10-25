@@ -26,8 +26,10 @@ control IngressControlMPLS(inout headers hdr,
     action act_mpls_cpulabel() {
         ig_md.nexthop_id = CPU_PORT;
         ig_md.mpls_op_type = 0;
+        ig_md.nsh_remove = 0;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
+        ig_md.nsh_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.ipv4_valid = 0;

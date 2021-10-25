@@ -32,6 +32,7 @@
 
 #define NEXTHOP_TABLE_SIZE                     2048
 #define PPPOE_TABLE_SIZE                       2048
+#define NSH_TABLE_SIZE                         2048
 #define IPV4_TUNNEL_TABLE_SIZE                 2048
 #define IPV6_TUNNEL_TABLE_SIZE                 2048
 

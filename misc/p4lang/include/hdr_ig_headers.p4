@@ -33,6 +33,7 @@ struct headers {
     l2tp_t		l2tp2;
     pppbr_t		pppbr;
     ethernet_t		eth4;
+    nsh_t               nsh;
     mpls_t		mpls0;
     mpls_t		mpls1;
     bier_t		bier;

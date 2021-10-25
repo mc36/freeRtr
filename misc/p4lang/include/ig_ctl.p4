@@ -24,6 +24,7 @@ control ig_ctl(inout headers hdr,
 
     IngressControlARP() ig_ctl_arp;
     IngressControlPPPOE() ig_ctl_pppoe;
+    IngressControlNSH() ig_ctl_nsh;
     IngressControlMPLS() ig_ctl_mpls;
     IngressControlBridge() ig_ctl_bridge;
     IngressControlIPv4() ig_ctl_ipv4;
@@ -77,6 +78,7 @@ control ig_ctl(inout headers hdr,
         ig_ctl_vrf.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_llc.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_nsh.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.need_clone == 1) {
             if (hdr.vlan.isValid()) hdr.vlan.setInvalid();

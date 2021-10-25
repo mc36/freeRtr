@@ -101,8 +101,10 @@ hdr.ethernet.src_mac_addr:
     action act_set_bridge_vpls(NextHopId_t port, label_t lab_tun, label_t lab_svc) {
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
+        ig_md.nsh_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
+        ig_md.nsh_remove = 0;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
         ig_md.arp_valid = 0;

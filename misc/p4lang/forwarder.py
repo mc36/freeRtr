@@ -2198,6 +2198,50 @@ def writeCpuMplsRules(delete, p4info_helper, ingress_sw, dst_label):
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeNshFwdRules(delete, p4info_helper, ingress_sw, sp, si, prt, src, dst, tsp, tsi):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_nsh.tbl_nsh",
+        match_fields={
+            "hdr.nsh.sp": (sp),
+            "hdr.nsh.si": (si)
+        },
+        action_name="ig_ctl.ig_ctl_nsh.act_forward",
+        action_params={
+            "port": prt,
+            "src": src,
+            "dst": dst,
+            "sp": tsp,
+            "si": tsi
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeNshLocRules(delete, p4info_helper, ingress_sw, sp, si, vrf):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_nsh.tbl_nsh",
+        match_fields={
+            "hdr.nsh.sp": (sp),
+            "hdr.nsh.si": (si)
+        },
+        action_name="ig_ctl.ig_ctl_nsh.act_route",
+        action_params={
+            "vrf": vrf
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeMySrv4rules(delete, p4info_helper, ingress_sw, glob, dst_addr, vrf):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_host",
@@ -2961,6 +3005,26 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
         if splt[0] == "mylabel4_del":
             writeMyMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if splt[0] == "nshfwd_add":
+            writeNshFwdRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            continue
+        if splt[0] == "nshfwd_mod":
+            writeNshFwdRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            continue
+        if splt[0] == "nshfwd_del":
+            writeNshFwdRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            continue
+
+        if splt[0] == "nshloc_add":
+            writeNshLocRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+        if splt[0] == "nshloc_mod":
+            writeNshLocRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+        if splt[0] == "nshloc_del":
+            writeNshLocRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
 
         if splt[0] == "neigh4_add":
