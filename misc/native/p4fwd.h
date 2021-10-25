@@ -1826,15 +1826,12 @@ ipv6_tx:
             switch (ethtyp) {
             case 5:
                 ethtyp = ETHERTYPE_MPLS_UCAST;
-                put16msb(bufD, bufP - 2, ethtyp);
                 goto mpls_rx;
             case 1:
                 ethtyp = ETHERTYPE_IPV4;
-                put16msb(bufD, bufP - 2, ethtyp);
                 goto ipv4_rx;
             case 2:
                 ethtyp = ETHERTYPE_IPV6;
-                put16msb(bufD, bufP - 2, ethtyp);
                 goto ipv6_rx;
             }
             return;
