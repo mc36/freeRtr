@@ -36,7 +36,7 @@ import net.freertr.cry.cryHashBlake2s;
 import net.freertr.cry.cryHashCrc16;
 import net.freertr.cry.cryHashCrc32;
 import net.freertr.cry.cryHashGeneric;
-import net.freertr.cry.cryHashHec8;
+import net.freertr.cry.cryHashCrc8;
 import net.freertr.cry.cryHashHmac;
 import net.freertr.cry.cryHashMd2;
 import net.freertr.cry.cryHashMd5;
@@ -579,7 +579,7 @@ public class userTest {
             doTestEncr(new cryEncrCBCrc2());
             doTestEncr(new cryEncrRc4());
             doTestEncr(new cryEncrChacha20());
-            doTestHash(new cryHashHec8());
+            doTestHash(new cryHashCrc8(cryHashCrc8.polyCrc8c));
             doTestHash(new cryHashCrc16(cryHashCrc16.polyCrc16c));
             doTestHash(new cryHashCrc32(cryHashCrc32.polyCrc32c));
             doTestHash(new cryHashMd2());

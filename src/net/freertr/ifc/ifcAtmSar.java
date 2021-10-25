@@ -4,7 +4,7 @@ import java.util.List;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrType;
 import net.freertr.cry.cryHashCrc32;
-import net.freertr.cry.cryHashHec8;
+import net.freertr.cry.cryHashCrc8;
 import net.freertr.pack.packHolder;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -183,7 +183,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
         if (last) {
             buf[3] |= 2;
         }
-        cryHashHec8 hec = new cryHashHec8();
+        cryHashCrc8 hec = new cryHashCrc8(cryHashCrc8.polyCrc8c);
         hec.init();
         hec.update(buf);
         pck.putCopy(buf, 0, 0, buf.length);
@@ -240,7 +240,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
         int vpi = pck.msbGetW(0) >>> 4;
         int vci = (pck.msbGetD(0) >>> 4) & 0xffff;
         boolean last = (pck.getByte(3) & 2) != 0;
-        cryHashHec8 hec = new cryHashHec8();
+        cryHashCrc8 hec = new cryHashCrc8(cryHashCrc8.polyCrc8c);
         hec.init();
         for (int i = 0; i < 4; i++) {
             hec.update(pck.getByte(i));
