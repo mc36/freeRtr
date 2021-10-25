@@ -64,6 +64,7 @@ import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabNatTraN;
+import net.freertr.tab.tabNshNtry;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabQosN;
 import net.freertr.tab.tabRoute;
@@ -1213,6 +1214,8 @@ class servP4langConn implements Runnable {
 
     public tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
 
+    public tabGen<tabNshNtry> nshs = new tabGen<tabNshNtry>();
+
     public tabListing<tabAceslstN<addrIP>, addrIP> copp4;
 
     public tabListing<tabAceslstN<addrIP>, addrIP> copp6;
@@ -1722,6 +1725,21 @@ class servP4langConn implements Runnable {
                 ntry.hwCntr.byteRx = bits.str2long(cmd.word());
                 return false;
             }
+            if (s.equals("nsh_cnt")) {
+                int i = bits.str2num(cmd.word());
+                tabNshNtry ntry = new tabNshNtry(i, bits.str2num(cmd.word()));
+                ntry = tabNshNtry.services.find(ntry);
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                ntry.hwCntr = new counter();
+                ntry.hwCntr.packRx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteRx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("tun4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
                 vrf = lower.expVrf.find(vrf);
@@ -1837,6 +1855,12 @@ class servP4langConn implements Runnable {
         }
         for (int i = labels.size() - 1; i >= 0; i--) {
             doLab2(labels.get(i));
+        }
+        for (int i = 0; i < tabNshNtry.services.size(); i++) {
+            doNsh1(tabNshNtry.services.get(i));
+        }
+        for (int i = nshs.size() - 1; i >= 0; i--) {
+            doNsh2(nshs.get(i));
         }
         for (int i = neighs.size() - 1; i >= 0; i--) {
             doNeighs(neighs.get(i));
@@ -2370,6 +2394,57 @@ class servP4langConn implements Runnable {
         } else {
             lower.sendLine("label" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab);
         }
+    }
+
+    private String doNsh3(tabNshNtry ntry, String act) {
+        if (ntry.iface != null) {
+            servP4langIfc ifc = findIfc(ntry.iface);
+            if (ifc == null) {
+                return null;
+            }
+            return "nshfwd_" + act + " " + ntry.sp + " " + ntry.si + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + ntry.target.toEmuStr() + " " + ntry.trgSp + " " + ntry.trgSi;
+        }
+        if (ntry.route4 != null) {
+            servP4langVrf vrf = findVrf(ntry.route4);
+            if (vrf == null) {
+                return null;
+            }
+            return "nshloc_" + act + " " + ntry.sp + " " + ntry.si + " " + vrf.id + "";
+        }
+        return null;
+    }
+
+    private void doNsh2(tabNshNtry ntry) {
+        if (tabNshNtry.services.find(ntry) != null) {
+            return;
+        }
+        nshs.del(ntry);
+        String act = doNsh3(ntry, "del");
+        if (act == null) {
+            return;
+        }
+        lower.sendLine(act);
+    }
+
+    private void doNsh1(tabNshNtry ntry) {
+        if (ntry == null) {
+            return;
+        }
+        ntry = ntry.copyBytes();
+        tabNshNtry old = nshs.find(ntry);
+        String act = "add";
+        if (old != null) {
+            if (!old.differs(ntry)) {
+                return;
+            }
+            act = "mod";
+        }
+        act = doNsh3(ntry, act);
+        if (act == null) {
+            return;
+        }
+        nshs.put(ntry);
+        lower.sendLine(act);
     }
 
     private void addDynBr(servP4langBr br, ifcBridgeIfc ntry, ifcDn ifc) {

@@ -44,6 +44,11 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
     public counter cntr = new counter();
 
     /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    /**
      * target sp
      */
     public int trgSp;
@@ -112,6 +117,70 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
             return +1;
         }
         return 0;
+    }
+
+    /**
+     * copy entry
+     *
+     * @return clone
+     */
+    public tabNshNtry copyBytes() {
+        tabNshNtry n = new tabNshNtry(sp, si);
+        n.cntr = cntr;
+        n.trgSp = trgSp;
+        n.trgSi = trgSi;
+        n.iface = iface;
+        if (target != null) {
+            n.target = target;
+        }
+        n.route4 = route4;
+        n.route6 = route6;
+        n.rawPack = rawPack;
+        n.keepHdr = keepHdr;
+        return n;
+    }
+
+    /**
+     * compare to other entry
+     *
+     * @param o other
+     * @return true if differs, false if equals
+     */
+    public boolean differs(tabNshNtry o) {
+        if (trgSp != o.trgSp) {
+            return true;
+        }
+        if (trgSi != o.trgSi) {
+            return true;
+        }
+        if (iface != o.iface) {
+            return true;
+        }
+        if (target == null) {
+            if (o.target != null) {
+                return true;
+            }
+        } else {
+            if (o.target == null) {
+                return true;
+            }
+            if (target.compare(target, o.target) != 0) {
+                return true;
+            }
+        }
+        if (route4 != o.route4) {
+            return true;
+        }
+        if (route6 != o.route6) {
+            return true;
+        }
+        if (rawPack != o.rawPack) {
+            return true;
+        }
+        if (keepHdr != o.keepHdr) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -256,7 +325,11 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
             if (ntry == null) {
                 continue;
             }
-            lst.add(ntry.sp + "|" + ntry.si + "|" + ntry.getCmd() + "|" + ntry.cntr.byteRx);
+            String a = "";
+            if (ntry.hwCntr != null) {
+                a = "+" + ntry.hwCntr.byteRx;
+            }
+            lst.add(ntry.sp + "|" + ntry.si + "|" + ntry.getCmd() + "|" + ntry.cntr.byteRx + a);
         }
         return lst;
     }
@@ -278,6 +351,7 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
         lst.add("rawpack|" + rawPack);
         lst.add("keephdr|" + keepHdr);
         lst.add("counter|" + cntr.getShStat());
+        lst.add("hardware counter|" + counter.getShStat(hwCntr));
         return lst;
     }
 

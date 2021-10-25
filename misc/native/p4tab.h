@@ -21,6 +21,32 @@ long int packDr[maxPorts];
 
 
 
+struct nsh_entry {
+    int sp;
+    int si;
+    int command;    // 1=swap, 2=vrf
+    int port;
+    int vrf;
+    int trg;
+    unsigned char smac[6];
+    unsigned char dmac[6];
+    long pack;
+    long byte;
+};
+
+struct table_head nsh_table;
+
+int nsh_compare(void *ptr1, void *ptr2) {
+    struct nsh_entry *ntry1 = ptr1;
+    struct nsh_entry *ntry2 = ptr2;
+    if (ntry1->sp < ntry2->sp) return -1;
+    if (ntry1->sp > ntry2->sp) return +1;
+    if (ntry1->si < ntry2->si) return -1;
+    if (ntry1->si > ntry2->si) return +1;
+    return 0;
+}
+
+
 struct mpls_entry {
     int label;
     int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup, 8=bier
@@ -851,6 +877,7 @@ void initIface(int port, char *name) {
 
 
 int initTables() {
+    table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
     table_init(&portvrf_table, sizeof(struct portvrf_entry), &portvrf_compare);
     table_init(&route4_table, sizeof(struct route4_entry), &route4_compare);

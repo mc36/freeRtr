@@ -153,6 +153,8 @@ int doOneCommand(unsigned char* buf) {
     printf("\n");
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
+    struct nsh_entry nsh_ntry;
+    memset(&nsh_ntry, 0, sizeof(nsh_ntry));
     struct mpls_entry *mpls_res;
     struct mpls_entry mpls_ntry;
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
@@ -276,6 +278,27 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.command = 6;
         if (del == 0) table_del(&mpls_table, &mpls_ntry);
         else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "nshfwd") == 0) {
+        nsh_ntry.sp = atoi(arg[2]);
+        nsh_ntry.si = atoi(arg[3]);
+        nsh_ntry.command = 1;
+        nsh_ntry.port = atoi(arg[4]);
+        str2mac(nsh_ntry.smac, arg[5]);
+        str2mac(nsh_ntry.dmac, arg[6]);
+        nsh_ntry.trg = (atoi(arg[7]) << 8) | atoi(arg[8]);
+        if (del == 0) table_del(&nsh_table, &nsh_ntry);
+        else table_add(&nsh_table, &nsh_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "nshloc") == 0) {
+        nsh_ntry.sp = atoi(arg[2]);
+        nsh_ntry.si = atoi(arg[3]);
+        nsh_ntry.command = 2;
+        nsh_ntry.vrf = atoi(arg[4]);
+        if (del == 0) table_del(&nsh_table, &nsh_ntry);
+        else table_add(&nsh_table, &nsh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portvrf") == 0) {
@@ -1892,6 +1915,10 @@ void doStatRound(FILE *commands, int round) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
+    for (int i=0; i<nsh_table.size; i++) {
+        struct nsh_entry *ntry = table_get(&nsh_table, i);
+        fprintf(commands, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
+    }
     for (int i=0; i<mpls_table.size; i++) {
         struct mpls_entry *ntry = table_get(&mpls_table, i);
         fprintf(commands, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);

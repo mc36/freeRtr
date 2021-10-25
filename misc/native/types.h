@@ -2,6 +2,7 @@
 #define ETHERTYPE_ARP               0x0806
 #define ETHERTYPE_VLAN              0x8100
 #define ETHERTYPE_IPV6              0x86dd
+#define ETHERTYPE_NSH               0x894f
 #define ETHERTYPE_MPLS_UCAST        0x8847
 #define ETHERTYPE_MPLS_MCAST        0x8848
 #define ETHERTYPE_LACP              0x8809

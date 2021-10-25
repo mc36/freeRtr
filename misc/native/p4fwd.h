@@ -884,6 +884,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     packRx[port]++;
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
+    struct nsh_entry nsh_ntry;
     struct mpls_entry mpls_ntry;
     struct portvrf_entry portvrf_ntry;
     struct route4_entry route4_ntry;
@@ -904,6 +905,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct monitor_entry monitor_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
+    struct nsh_entry *nsh_res = NULL;
     struct mpls_entry *mpls_res = NULL;
     struct portvrf_entry *portvrf_res = NULL;
     struct route4_entry *route4_res = NULL;
@@ -1791,6 +1793,53 @@ ipv6_tx:
         bufP += 12;
         bufP += 2;
         goto bridgevpls_rx;
+    case ETHERTYPE_NSH: // nsh
+        checkLayer2;
+        ttl = get16msb(bufD, bufP + 0);
+        if ((ttl & 0xe000) != 0) goto drop;
+        if (((ttl >> 6) & 0x3f) <= 1) goto punt;
+        tmp = get32msb(bufD, bufP + 4);
+        ethtyp = bufD[bufP + 3];
+        nsh_ntry.sp = tmp >> 8;
+        nsh_ntry.si = tmp & 0xff;
+        index = table_find(&nsh_table, &nsh_ntry);
+        if (index < 0) goto drop;
+        nsh_res = table_get(&nsh_table, index);
+        nsh_res->pack++;
+        nsh_res->byte += bufS;
+        switch (nsh_res->command) {
+        case 1: // fwd
+            put16msb(bufD, bufP + 0, (ttl - 0x40));
+            put32msb(bufD, bufP + 4, nsh_res->trg);
+            ethtyp = ETHERTYPE_NSH;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            memmove(&bufH[0], &nsh_res->dmac, 6);
+            memmove(&bufH[6], &nsh_res->smac, 6);
+            prt2 = prt = send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp);
+            if (prt2 >= 0) goto ether_rx;
+            return;
+        case 2: // vrf
+            bufP += ((ttl & 0x3f) * 4);
+            route4_ntry.vrf = nsh_res->vrf;
+            route6_ntry.vrf = nsh_res->vrf;
+            switch (ethtyp) {
+            case 5:
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                put16msb(bufD, bufP - 2, ethtyp);
+                goto mpls_rx;
+            case 1:
+                ethtyp = ETHERTYPE_IPV4;
+                put16msb(bufD, bufP - 2, ethtyp);
+                goto ipv4_rx;
+            case 2:
+                ethtyp = ETHERTYPE_IPV6;
+                put16msb(bufD, bufP - 2, ethtyp);
+                goto ipv6_rx;
+            }
+            return;
+        }
+        return;
 xconn_rx:
         memmove(&bufH[0], &bufD[preBuff], 12);
         bufP -= 2;
@@ -1898,6 +1947,12 @@ bridgevpls_rx:
     case ETHERTYPE_MACSEC: // macsec
         checkLayer2;
         goto cpu;
+    case ETHERTYPE_LACP: // lacp
+        checkLayer2;
+        goto cpu;
+    case ETHERTYPE_LLDP: // lldp
+        checkLayer2;
+        goto cpu;
     default:
         checkLayer2;
 punt:
@@ -1916,3 +1971,5 @@ cpu:
 
 
 #endif
+
+
