@@ -1101,6 +1101,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         }
                         o = rtrOspfSr.getBase(tlv);
                         spf.addSegRouB(src, o);
+                        spf.addIdent(src, rtrOspfRi.getHstnam(tlv));
                     }
                     break;
                 case rtrOspf6lsa.lsaEinterPrf:

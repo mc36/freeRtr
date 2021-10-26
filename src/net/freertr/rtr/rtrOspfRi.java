@@ -162,4 +162,17 @@ public class rtrOspfRi {
         tlv.putStr(pck, typHstnam, cfgAll.hostName);
     }
 
+    /**
+     * get hostname
+     *
+     * @param tlv tlv to read
+     * @return hostname, null if nothing
+     */
+    public static String getHstnam(typLenVal tlv) {
+        if (tlv.valTyp != typHstnam) {
+            return null;
+        }
+        return tlv.getStr();
+    }
+
 }

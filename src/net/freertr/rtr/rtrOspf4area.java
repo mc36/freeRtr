@@ -990,6 +990,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                             }
                             o = rtrOspfSr.getBase(tlv);
                             spf.addSegRouB(ntry.rtrID, o);
+                            spf.addIdent(ntry.rtrID, rtrOspfRi.getHstnam(tlv));
                         }
                         continue;
                     }
