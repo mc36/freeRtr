@@ -147,6 +147,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         need2adv = new tabGen<rtrOspf4lsa>();
         routes = new tabRoute<addrIP>("computed");
         notif = new notifier();
+        hostname = true;
     }
 
     public String toString() {

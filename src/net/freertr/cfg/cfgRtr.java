@@ -216,7 +216,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router ospf[4|6] .*! no area .* traffeng",
         "router ospf[4|6] .*! no area .* segrout",
         "router ospf[4|6] .*! no area .* bier",
-        "router ospf[4|6] .*! no area .* hostname",
+        "router ospf[4|6] .*! area .* hostname",
         "router ospf[4|6] .*! no area .* default-originate",
         "router ospf[4|6] .*! no area .* prefix-list-from",
         "router ospf[4|6] .*! no area .* prefix-list-into",
