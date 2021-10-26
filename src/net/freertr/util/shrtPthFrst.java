@@ -1144,7 +1144,7 @@ public class shrtPthFrst<Ta extends addrType> {
         return res;
     }
 
-    private void listNhIncons(tabGen<shrtPthFrstPfx<Ta>> lst, Ta nod, addrPrefix<addrIP> pfx) {
+    private void listNhIncons(tabGen<shrtPthFrstPfx<Ta>> lst, shrtPthFrstNode<Ta> nod, addrPrefix<addrIP> pfx) {
         shrtPthFrstPfx<Ta> ntry = new shrtPthFrstPfx<Ta>(pfx);
         shrtPthFrstPfx<Ta> old = lst.add(ntry);
         if (old != null) {
@@ -1164,16 +1164,16 @@ public class shrtPthFrst<Ta extends addrType> {
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
             for (int i = 0; i < ntry.prfFix.size(); i++) {
-                listNhIncons(lst, ntry.name, ntry.prfFix.get(i).prefix);
+                listNhIncons(lst, ntry, ntry.prfFix.get(i).prefix);
             }
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
-                listNhIncons(lst, ntry.name, ntry.prfAdd.get(i).prefix);
+                listNhIncons(lst, ntry, ntry.prfAdd.get(i).prefix);
             }
             for (int i = 0; i < ntry.othFix.size(); i++) {
-                listNhIncons(lst, ntry.name, ntry.othFix.get(i).prefix);
+                listNhIncons(lst, ntry, ntry.othFix.get(i).prefix);
             }
             for (int i = 0; i < ntry.othAdd.size(); i++) {
-                listNhIncons(lst, ntry.name, ntry.othAdd.get(i).prefix);
+                listNhIncons(lst, ntry, ntry.othAdd.get(i).prefix);
             }
         }
         userFormat res = new userFormat("|", "path|nexthops");

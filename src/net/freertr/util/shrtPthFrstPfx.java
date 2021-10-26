@@ -22,7 +22,7 @@ public class shrtPthFrstPfx<Ta extends addrType> implements Comparator<shrtPthFr
     /**
      * nodes
      */
-    protected final List<Ta> nodes = new ArrayList<Ta>();
+    protected final List<shrtPthFrstNode<Ta>> nodes = new ArrayList<shrtPthFrstNode<Ta>>();
 
     /**
      * create instance
