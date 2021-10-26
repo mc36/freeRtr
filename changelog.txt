@@ -12390,3 +12390,5 @@ todo: traffic through bgp nsh
 ---------------------------------- 2021-10-25 06:07:08
 qc pass: p4lang: nsh
 qc pass: p4lang: vlan nsh
+---------------------------------- 2021-10-26 04:48:37
+todo: bgp layer2 flowspec
