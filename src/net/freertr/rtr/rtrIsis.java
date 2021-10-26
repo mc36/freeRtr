@@ -23,6 +23,7 @@ import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -1986,6 +1987,18 @@ public class rtrIsis extends ipRtr {
     public List<String> showSpfGraph(int level) {
         rtrIsisLevel lev = getLevel(level);
         return lev.lastSpf.listGraphviz();
+    }
+
+    /**
+     * show nh inconsistency
+     *
+     * @param level level number
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNhIncons(int level, tabIntMatcher mtch) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.lastSpf.listNhIncons(mtch);
     }
 
     /**

@@ -21,6 +21,7 @@ import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -583,6 +584,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
      */
     public List<String> showSpfGraph() {
         return lastSpf.listGraphviz();
+    }
+
+    /**
+     * show nh inconsistency
+     *
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNhIncons(tabIntMatcher mtch) {
+        return lastSpf.listNhIncons(mtch);
     }
 
     /**

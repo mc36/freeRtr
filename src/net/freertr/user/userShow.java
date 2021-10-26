@@ -1421,6 +1421,13 @@ public class userShow {
                     rdr.putStrArr(r.ospf4.showSpfGraph(bits.str2num(cmd.word())));
                     return null;
                 }
+                if (a.equals("nhinconsistent")) {
+                    int i = bits.str2num(cmd.word());
+                    tabIntMatcher mtch = new tabIntMatcher();
+                    mtch.fromString(cmd.word());
+                    rdr.putStrTab(r.ospf4.showNhIncons(i, mtch));
+                    return null;
+                }
                 if (a.equals("route")) {
                     doShowRoutes(r.ospf4.fwdCore, r.ospf4.showRoute(bits.str2num(cmd.word())), 1);
                     return null;
@@ -1686,6 +1693,13 @@ public class userShow {
                 }
                 if (a.equals("graph")) {
                     rdr.putStrArr(r.ospf6.showSpfGraph(bits.str2num(cmd.word())));
+                    return null;
+                }
+                if (a.equals("nhinconsistent")) {
+                    int i = bits.str2num(cmd.word());
+                    tabIntMatcher mtch = new tabIntMatcher();
+                    mtch.fromString(cmd.word());
+                    rdr.putStrTab(r.ospf6.showNhIncons(i, mtch));
                     return null;
                 }
                 if (a.equals("route")) {
@@ -2112,6 +2126,12 @@ public class userShow {
             rdr.putStrArr(r.lsrp.showSpfGraph());
             return;
         }
+        if (a.equals("nhinconsistent")) {
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.lsrp.showNhIncons(mtch));
+            return;
+        }
         if (a.equals("route")) {
             doShowRoutes(r.lsrp.fwdCore, r.lsrp.routerComputedU, 1);
             return;
@@ -2222,6 +2242,13 @@ public class userShow {
         }
         if (a.equals("graph")) {
             rdr.putStrArr(r.isis.showSpfGraph(bits.str2num(cmd.word())));
+            return;
+        }
+        if (a.equals("nhinconsistent")) {
+            int i = bits.str2num(cmd.word());
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.isis.showNhIncons(i, mtch));
             return;
         }
         if (a.equals("route")) {

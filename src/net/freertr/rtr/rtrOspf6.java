@@ -16,6 +16,7 @@ import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -967,6 +968,22 @@ public class rtrOspf6 extends ipRtr {
             return new ArrayList<String>();
         }
         return ara.lastSpf.listGraphviz();
+    }
+
+    /**
+     * show nh inconsistency
+     *
+     * @param area area number
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNhIncons(int area, tabIntMatcher mtch) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.lastSpf.listNhIncons(mtch);
     }
 
     /**
