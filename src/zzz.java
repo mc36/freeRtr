@@ -36,7 +36,7 @@ public class zzz {
         for (int i = 0; i < plk.crcMax; i++) {
             log("s" + i + "=" + plk.coeffs[i]);
         }
-        int[] out = new int[]{1, 3, 5, 7, 8, 9};
+        int[] out = new int[]{0, 1, 2, 3};
         byte[] rou = ifcPolka.encodeRouteId(plk.coeffs, out);
         dumpO(ifcPolka.decodeRouteId(plk.coeffs, rou));
         log("r=" + bits.byteDump(rou, 0, -1));
