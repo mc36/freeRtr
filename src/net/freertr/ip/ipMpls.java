@@ -682,9 +682,7 @@ public class ipMpls implements ifcUp {
         cryHashCrc16 crc = new cryHashCrc16(fwdP.hasher);
         crc.init();
         crc.update(pck.BIERbs, 0, pck.BIERbs.length - 2);
-        int id = bits.msbGetW(pck.BIERbs, pck.BIERbs.length - 2);
-        id = id ^ crc.getCrc();
-        id = ifcPolka.decodeRouteId(fwdP.coeffs, pck.BIERbs)[fwdP.localId];/////////////////////
+        int id = bits.msbGetW(pck.BIERbs, pck.BIERbs.length - 2) ^ crc.getCrc();
         if (debugger.ifcPolkaEvnt) {
             logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
         }

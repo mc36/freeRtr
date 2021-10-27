@@ -92,8 +92,7 @@ public class ifcPolka implements ifcUp {
         crcBase = bas;
         crcMax = max;
         coeffs = generateIrreducible(bas, max);
-        int c = coeffs[id].getCoeff().intValue();
-        hasher = new cryHashCrc16(c, 0xffff, 0xffff, false);
+        hasher = new cryHashCrc16(coeffs[id].getCoeff().intValue(), 0, 0, false);
     }
 
     private static boolean checkIrreducible(cryPoly[] s, int o, cryPoly f) {

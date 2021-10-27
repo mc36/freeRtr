@@ -53,7 +53,7 @@ public class cryPoly implements Comparable<cryPoly> {
      * @return degree
      */
     public int getDegree() {
-        return coeff.bitLength();
+        return coeff.bitLength() - 1;
     }
     
     public String toString() {

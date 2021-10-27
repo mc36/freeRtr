@@ -16,7 +16,7 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls enable
- polka enable 1 32768 10
+ polka enable 1 65536 10
  exit
 router bgp4 1
  vrf v1
@@ -73,14 +73,14 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls enable
- polka enable 2 32768 10
+ polka enable 2 65536 10
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  mpls enable
- polka enable 2 32768 10
+ polka enable 2 65536 10
  exit
 router bgp4 1
  vrf v1
@@ -123,14 +123,14 @@ int eth1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  mpls enable
- polka enable 3 32768 10
+ polka enable 3 65536 10
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff::
  mpls enable
- polka enable 3 32768 10
+ polka enable 3 65536 10
  exit
 router bgp4 1
  vrf v1
@@ -172,7 +172,7 @@ int eth1
  ipv4 addr 1.1.1.10 255.255.255.252
  ipv6 addr 1234:3::2 ffff:ffff::
  mpls enable
- polka enable 4 32768 10
+ polka enable 4 65536 10
  exit
 router bgp4 1
  vrf v1
