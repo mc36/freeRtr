@@ -674,6 +674,8 @@ public class ipMpls implements ifcUp {
      * do one polka packet
      *
      * @param fwdP polka forwarder
+     * @param fwd4 ipv4 forwarder
+     * @param fwd6 ipv6 forwarder
      * @param pck packet to read
      */
     public static void gotPolkaPack(ifcPolka fwdP, ipFwd fwd4, ipFwd fwd6, packHolder pck) {

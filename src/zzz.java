@@ -3,7 +3,18 @@ import net.freertr.cry.cryHashCrc16;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.util.bits;
 
+/**
+ * polka tester
+ *
+ * @author matecsaba
+ */
 public class zzz {
+
+    /**
+     * create instance
+     */
+    public zzz() {
+    }
 
     private static void log(String s) {
         System.out.println(s);
@@ -15,6 +26,11 @@ public class zzz {
         }
     }
 
+    /**
+     * this is the main method for the jar file
+     *
+     * @param args command line parameters
+     */
     public static void main(String[] args) {
         ifcPolka plk = new ifcPolka(3, 32768, 10);
         for (int i = 0; i < plk.crcMax; i++) {

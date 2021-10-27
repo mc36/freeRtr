@@ -156,7 +156,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
     /**
      * set polka forwarder
      *
-     * @param m lower layer
+     * @param p lower layer
      */
     public void setPolka(ifcPolka p) {
         polka = p;

@@ -54,13 +54,12 @@ public interface ipIfc {
      * @param pck packet to send
      * @param nexthop next hop ip address
      */
-    public void sendPolka(packHolder pck, addrIP nextHop);
+    public void sendPolka(packHolder pck, addrIP nexthop);
 
     /**
-     * forward polka tagged packet
-     *
-     * @param pck packet to send
-     * @param nexthop next hop ip address
+     * get polka handler
+     * 
+     * @return polka handler
      */
     public ifcPolka getPolka();
 
