@@ -674,6 +674,11 @@ public class debugger {
     public static boolean clntMplsSrTraf = false;
 
     /**
+     * clntPolka traffic
+     */
+    public static boolean clntPolkaTraf = false;
+
+    /**
      * clntMplsBier traffic
      */
     public static boolean clntMplsBierTraf = false;
@@ -914,6 +919,11 @@ public class debugger {
     public static boolean ifcNshEvnt = false;
 
     /**
+     * ifcPolka events
+     */
+    public static boolean ifcPolkaEvnt = false;
+
+    /**
      * ifcMacSec packets
      */
     public static boolean ifcMacSecTraf = false;
@@ -1117,6 +1127,7 @@ public class debugger {
         h.add("3 .        mplste            mpls traffeng tunnel");
         h.add("3 .        mplsbier          mpls bier tunnel");
         h.add("3 .        mplssr            mpls segrout tunnel");
+        h.add("3 .        polka             polka tunnel");
         h.add("3 .        automesh          mpls automesh tunnel");
         h.add("3 .        mplsldp           mpls ldp tunnel");
         h.add("3 .        radius            radius protocol");
@@ -1172,6 +1183,7 @@ public class debugger {
         h.add("3 .        eapolc            eap over lan client");
         h.add("3 .        eapols            eap over lan server");
         h.add("3 .        nsh               nsh encapsulation");
+        h.add("3 .        polka             polka encapsulation");
     }
 
     /**
@@ -1832,6 +1844,10 @@ public class debugger {
                 clntMplsSrTraf = v;
                 return false;
             }
+            if (s.equals("polka")) {
+                clntPolkaTraf = v;
+                return false;
+            }
             if (s.equals("automesh")) {
                 clntMplsAutMsh = v;
                 return false;
@@ -2066,6 +2082,10 @@ public class debugger {
             }
             if (s.equals("nsh")) {
                 ifcNshEvnt = v;
+                return false;
+            }
+            if (s.equals("polka")) {
+                ifcPolkaEvnt = v;
                 return false;
             }
             return true;

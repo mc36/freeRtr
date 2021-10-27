@@ -3,6 +3,7 @@ package net.freertr.tab;
 import java.util.Comparator;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
+import net.freertr.util.counter;
 
 /**
  * one index to prefix entry

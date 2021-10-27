@@ -3,6 +3,7 @@ package net.freertr.ip;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
+import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.user.userFormat;
@@ -48,6 +49,22 @@ public interface ipIfc {
     public void sendMpls(packHolder pck, addrIP nexthop);
 
     /**
+     * forward polka tagged packet
+     *
+     * @param pck packet to send
+     * @param nexthop next hop ip address
+     */
+    public void sendPolka(packHolder pck, addrIP nextHop);
+
+    /**
+     * forward polka tagged packet
+     *
+     * @param pck packet to send
+     * @param nexthop next hop ip address
+     */
+    public ifcPolka getPolka();
+
+    /**
      * send layer2 packet
      *
      * @param l2info layer 2 address
@@ -57,6 +74,7 @@ public interface ipIfc {
 
     /**
      * get local layer2 info
+     *
      * @return local layer2 address
      */
     public addrType getL2info();

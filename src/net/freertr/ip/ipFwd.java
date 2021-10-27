@@ -471,6 +471,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         actualU = new tabRoute<addrIP>("computed");
         actualM = new tabRoute<addrIP>("computed");
         actualF = new tabRoute<addrIP>("computed");
+        actualI = new tabGen<tabIndex<addrIP>>();
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
         natTrns = new tabGen<tabNatTraN>();

@@ -5,14 +5,17 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.clnt.clntNetflow;
+import net.freertr.cry.cryHashCrc16;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNshFwd;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabAceslstN;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelNtry;
@@ -665,6 +668,71 @@ public class ipMpls implements ifcUp {
             }
         }
         gotMplsPack(fwd4, fwd6, fwdE, security, pck);
+    }
+
+    /**
+     * do one polka packet
+     *
+     * @param fwdP polka forwarder
+     * @param pck packet to read
+     */
+    public static void gotPolkaPack(ifcPolka fwdP, ipFwd fwd4, ipFwd fwd6, packHolder pck) {
+        cryHashCrc16 crc = new cryHashCrc16(fwdP.hasher);
+        crc.init();
+        crc.update(pck.BIERbs, 0, pck.BIERbs.length - 2);
+        int id = bits.msbGetW(pck.BIERbs, pck.BIERbs.length - 2);
+        id = id ^ crc.getCrc();
+        id = ifcPolka.decodeRouteId(fwdP.coeffs, pck.BIERbs)[fwdP.localId];/////////////////////
+        if (debugger.ifcPolkaEvnt) {
+            logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
+        }
+        if (id == 0) {
+            pck.ETHtype = pck.IPprt;
+            ipFwd fwd;
+            switch (pck.IPprt) {
+                case ipIfc4.type:
+                    fwd = fwd4;
+                    break;
+                case ipIfc6.type:
+                    fwd = fwd6;
+                    break;
+                case ipMpls.typeU:
+                    gotMplsPack(fwd4, fwd6, null, false, pck);
+                    return;
+                default:
+                    return;
+            }
+            beginMPLSfields(pck, false);
+            fwd.mplsRxPack(fwd4, fwd6, null, fwd.commonLabel, pck);
+            return;
+        }
+        tabIndex<addrIP> idx = new tabIndex<addrIP>(id, null);
+        tabIndex<addrIP> res = null;
+        ipFwd fwd = null;
+        if (fwd4 != null) {
+            res = fwd4.actualI.find(idx);
+            fwd = fwd4;
+        }
+        if ((res == null) && (fwd6 != null)) {
+            res = fwd6.actualI.find(idx);
+            fwd = fwd6;
+        }
+        if (res == null) {
+            logger.info("received invalid index " + id);
+            return;
+        }
+        tabRouteEntry<addrIP> ntry = fwd.actualU.find(res.prefix);
+        if (ntry == null) {
+            logger.info("no route for index " + id);
+            return;
+        }
+        ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
+        pck.NSHttl--;
+        if (pck.NSHttl < 1) {
+            ntry.cntr.drop(pck, counter.reasons.ttlExceed);
+            return;
+        }
+        ifc.lower.sendPolka(pck, ntry.best.nextHop);
     }
 
     /**

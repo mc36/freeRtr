@@ -10,6 +10,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.user.userFormat;
@@ -77,6 +78,8 @@ public class ipIfc6 implements ipIfc, ifcUp {
     private ifcDn lower = new ifcNull();
 
     private ipMpls mpls = null;
+
+    private ifcPolka polka = null;
 
     /**
      * forwarder
@@ -244,6 +247,15 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     /**
+     * set polka forwarder
+     *
+     * @param m lower layer
+     */
+    public void setPolka(ifcPolka p) {
+        polka = p;
+    }
+
+    /**
      * set ip network
      *
      * @param addr address
@@ -317,6 +329,22 @@ public class ipIfc6 implements ipIfc, ifcUp {
             return;
         }
         mpls.send2eth(pck);
+    }
+
+    public void sendPolka(packHolder pck, addrIP nexthop) {
+        if (polka == null) {
+            return;
+        }
+        ifcPolka.createPolkaHeader(pck);
+        if (createETHheader(pck, nexthop, ifcPolka.type)) {
+            cntr.drop(pck, counter.reasons.notInTab);
+            return;
+        }
+        polka.send2eth(pck);
+    }
+
+    public ifcPolka getPolka() {
+        return polka;
     }
 
     public void sendL2info(addrType l2info, addrIP nexthop) {

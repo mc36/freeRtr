@@ -12392,3 +12392,18 @@ qc pass: p4lang: nsh
 qc pass: p4lang: vlan nsh
 ---------------------------------- 2021-10-26 04:48:37
 todo: bgp layer2 flowspec
+---------------------------------- 2021-10-27 20:26:55
+qc pass: polka over ethernet
+qc pass: polka over ethernet vlan
+qc pass: polka over ethernet bridge
+qc pass: polka over hdlc
+qc pass: polka over ppp
+qc pass: polka over framerelay
+qc pass: polka over atmdxi
+qc pass: polka over gre
+qc pass: polka over broadcast subnet
+qc pass: polka over ethernet chain
+qc pass: bgp with polka
+qc pass: isis with polka
+qc pass: lsrp with polka
+qc pass: ospf with polka

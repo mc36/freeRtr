@@ -54,6 +54,23 @@ public class cryHashCrc16 extends cryHashGeneric {
         xor = o.xor;
     }
 
+    /**
+     * reverse bits
+     *
+     * @param b value
+     * @return reversed
+     */
+    public static int reverse(int b) {
+        int r = 0;
+        for (int i = 0; i < 16; i++) {
+            if ((b & 1) != 0) {
+                r |= 1 << (15 - i);
+            }
+            b >>>= 1;
+        }
+        return r;
+    }
+
     private int mkTabEntry(int p, int v) {
         v <<= 8;
         for (int i = 0; i < 8; ++i) {

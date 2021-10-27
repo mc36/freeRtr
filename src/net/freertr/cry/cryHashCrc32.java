@@ -62,7 +62,13 @@ public class cryHashCrc32 extends cryHashGeneric {
         xor = o.xor;
     }
 
-    private int reverse(int b) {
+    /**
+     * reverse bits
+     *
+     * @param b value
+     * @return reversed
+     */
+    public static int reverse(int b) {
         int r = 0;
         for (int i = 0; i < 32; i++) {
             if ((b & 1) != 0) {
