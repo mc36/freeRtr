@@ -2499,10 +2499,10 @@ class servP4langConn implements Runnable {
     }
 
     private tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
-        rou.best.attribAs = 0;
         if (rou == null) {
             return null;
         }
+        rou.best.attribAs = 0;
         if (nhchk) {
             if (rou.best.nextHop == null) {
                 return rou;
