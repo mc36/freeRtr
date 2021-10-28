@@ -950,7 +950,6 @@ ether_rx:
 ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
-etyped_rx:
     macsec_ntry.port = prt;
     index = table_find(&macsec_table, &macsec_ntry);
     if (index >= 0) {
@@ -1001,6 +1000,7 @@ etyped_rx:
             send2subif(monitor_res->target, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE);
         }
     }
+etyped_rx:
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
         checkLayer2;
