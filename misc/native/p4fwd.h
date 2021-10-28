@@ -885,6 +885,8 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
     struct nsh_entry nsh_ntry;
+    struct polkaPoly_entry polkaPoly_ntry;
+    struct polkaIdx_entry polkaIdx_ntry;
     struct mpls_entry mpls_ntry;
     struct portvrf_entry portvrf_ntry;
     struct route4_entry route4_ntry;
@@ -905,6 +907,8 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct monitor_entry monitor_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
+    struct polkaPoly_entry *polkaPoly_res = NULL;
+    struct polkaIdx_entry *polkaIdx_res = NULL;
     struct nsh_entry *nsh_res = NULL;
     struct mpls_entry *mpls_res = NULL;
     struct portvrf_entry *portvrf_res = NULL;
@@ -946,6 +950,7 @@ ether_rx:
 ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
+etyped_rx:
     macsec_ntry.port = prt;
     index = table_find(&macsec_table, &macsec_ntry);
     if (index >= 0) {
@@ -1793,6 +1798,37 @@ ipv6_tx:
         bufP += 12;
         bufP += 2;
         goto bridgevpls_rx;
+    case ETHERTYPE_POLKA: // polka
+        checkLayer2;
+        ttl = get16msb(bufD, bufP + 0);
+        if ((ttl & 0xff00) != 0) goto drop;
+        if ((ttl & 0xff) <= 1) goto punt;
+        polkaPoly_ntry.port = prt;
+        index = table_find(&polkaPoly_table, &polkaPoly_ntry);
+        if (index < 0) goto drop;
+        polkaPoly_res = table_get(&polkaPoly_table, index);
+        polkaPoly_res->pack++;
+        polkaPoly_res->byte += bufS;
+        bufD[bufP + 1] = ttl;
+        tmp = 0;
+        for (i = 0; i < 14; i++) {
+            tmp = ((tmp << 8) & 0xffff) ^ polkaPoly_res->tab[(tmp >> 8) ^ (bufD[bufP + 4 + i] & 0xff)];
+        }
+        tmp ^= get16msb(bufD, bufP + 18);
+        if (tmp == 0) {
+            ethtyp = get16msb(bufD, bufP + 2);
+            bufP += 20;
+            goto etyped_rx;
+        }
+        polkaIdx_ntry.vrf = portvrf_res->vrf;
+        polkaIdx_ntry.index = tmp;
+        index = table_find(&polkaIdx_table, &polkaIdx_ntry);
+        if (index < 0) goto drop;
+        polkaIdx_res = table_get(&polkaIdx_table, index);
+        polkaIdx_res->pack++;
+        polkaIdx_res->byte += bufS;
+        neigh_ntry.id = polkaIdx_res->nexthop;
+        goto ethtyp_tx;
     case ETHERTYPE_NSH: // nsh
         checkLayer2;
         ttl = get16msb(bufD, bufP + 0);
@@ -1968,5 +2004,4 @@ cpu:
 
 
 #endif
-
 

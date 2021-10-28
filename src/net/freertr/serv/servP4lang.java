@@ -1736,6 +1736,31 @@ class servP4langConn implements Runnable {
                 ntry.hwCntr.byteRx = bits.str2long(cmd.word());
                 return false;
             }
+            if (s.equals("polka_cnt")) {
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                tabIndex<addrIP> ntry = new tabIndex<addrIP>(bits.str2num(cmd.word()), null);
+                tabIndex<addrIP> res = vrf.vrf.fwd4.actualI.find(ntry);
+                if (res == null) {
+                    res = vrf.vrf.fwd6.actualI.find(ntry);
+                }
+                if (res == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                res.hwCntr = new counter();
+                res.hwCntr.packRx = bits.str2long(cmd.word());
+                res.hwCntr.byteRx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("nsh_cnt")) {
                 int i = bits.str2num(cmd.word());
                 tabNshNtry ntry = new tabNshNtry(i, bits.str2num(cmd.word()));

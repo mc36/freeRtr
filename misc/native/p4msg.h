@@ -153,6 +153,10 @@ int doOneCommand(unsigned char* buf) {
     printf("\n");
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
+    struct polkaIdx_entry polkaIdx_ntry;
+    memset(&polkaIdx_ntry, 0, sizeof(polkaIdx_ntry));
+    struct polkaPoly_entry polkaPoly_ntry;
+    memset(&polkaPoly_ntry, 0, sizeof(polkaPoly_ntry));
     struct nsh_entry nsh_ntry;
     memset(&nsh_ntry, 0, sizeof(nsh_ntry));
     struct mpls_entry *mpls_res;
@@ -278,6 +282,31 @@ int doOneCommand(unsigned char* buf) {
         mpls_ntry.command = 6;
         if (del == 0) table_del(&mpls_table, &mpls_ntry);
         else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "polkaidx") == 0) {
+        polkaIdx_ntry.index = atoi(arg[2]);
+        polkaIdx_ntry.vrf = atoi(arg[3]);
+        polkaIdx_ntry.nexthop = atoi(arg[4]);
+        if (del == 0) table_del(&polkaIdx_table, &polkaIdx_ntry);
+        else table_add(&polkaIdx_table, &polkaIdx_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "polkapoly") == 0) {
+        polkaPoly_ntry.port = atoi(arg[2]);
+        int p = atoi(arg[3]);
+        for (int o=0; o < 256; o++) {
+            int v = o << 8;
+            for (int i = 0; i < 8; ++i) {
+                v <<= 1;
+                if ((v & 0x10000) != 0) {
+                    v ^= p;
+                }
+            }
+            polkaPoly_ntry.tab[o] = v & 0xffff;
+        }
+        if (del == 0) table_del(&polkaPoly_table, &polkaPoly_ntry);
+        else table_add(&polkaPoly_table, &polkaPoly_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nshfwd") == 0) {
@@ -1915,6 +1944,10 @@ void doStatRound(FILE *commands, int round) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
+    for (int i=0; i<polkaIdx_table.size; i++) {
+        struct polkaIdx_entry *ntry = table_get(&polkaIdx_table, i);
+        fprintf(commands, "polka_cnt %i %i %li %li\r\n", ntry->vrf, ntry->index, ntry->pack, ntry->byte);
+    }
     for (int i=0; i<nsh_table.size; i++) {
         struct nsh_entry *ntry = table_get(&nsh_table, i);
         fprintf(commands, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
