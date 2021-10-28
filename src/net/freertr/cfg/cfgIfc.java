@@ -1698,6 +1698,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ppp ecp open",
         "interface .*! no ppp nshcp close",
         "interface .*! no ppp nshcp open",
+        "interface .*! no ppp polkacp close",
+        "interface .*! no ppp polkacp open",
         "interface .*! no ppp authentication",
         // hdlc
         "interface .*! hdlc keepalive 5000",
@@ -4007,9 +4009,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 lower = tunL2tp3;
                 break;
             case polka:
-                if (tunFQDN == null) {
-                    return true;
-                }
                 tunPolka = new clntPolka();
                 tunPolka.fwdCor = tunVrf.getFwd(tunTrg);
                 tunPolka.fwdIfc = tunSrc.getFwdIfc(tunTrg);

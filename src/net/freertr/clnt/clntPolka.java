@@ -63,19 +63,19 @@ public class clntPolka implements Runnable, ifcDn {
      * counter
      */
     public counter cntr = new counter();
-    
+
     private addrIP[] targets = new addrIP[1];
-    
+
     private addrIP nextHop = new addrIP();
-    
+
     private ipFwdIface nextIfc;
-    
+
     private byte[] routeid = null;
-    
+
     private boolean working = false;
-    
+
     private notifier notif = new notifier();
-    
+
     public String toString() {
         return "polka to " + target;
     }
@@ -176,6 +176,8 @@ public class clntPolka implements Runnable, ifcDn {
         cntr.tx(pck);
         if (ttl >= 0) {
             pck.NSHttl = ttl;
+        } else {
+            pck.NSHttl = pck.IPttl;
         }
         nextIfc.lower.sendPolka(pck, nextHop);
     }
@@ -186,6 +188,9 @@ public class clntPolka implements Runnable, ifcDn {
      * @param s targets
      */
     public void setTargets(String s) {
+        if (s == null) {
+            s = "";
+        }
         List<addrIP> trgs = new ArrayList<addrIP>();
         cmds c = new cmds("adrs", s);
         for (;;) {
@@ -224,6 +229,9 @@ public class clntPolka implements Runnable, ifcDn {
      * @return targets
      */
     public String getTargets() {
+        if (targets.length < 1) {
+            return null;
+        }
         String s = "";
         for (int i = 0; i < targets.length; i++) {
             s += " " + targets[i];
@@ -252,7 +260,7 @@ public class clntPolka implements Runnable, ifcDn {
         working = false;
         clearState();
     }
-    
+
     public void run() {
         for (;;) {
             if (!working) {
@@ -266,12 +274,12 @@ public class clntPolka implements Runnable, ifcDn {
             notif.sleep(5000);
         }
     }
-    
+
     private void clearState() {
         routeid = null;
         upper.setState(state.states.down);
     }
-    
+
     private void workDoer() {
         ipFwdIface ifc = fwdIfc;
         if (ifc == null) {
@@ -322,5 +330,5 @@ public class clntPolka implements Runnable, ifcDn {
         routeid = ifcPolka.encodeRouteId(plk.coeffs, ids);
         upper.setState(state.states.up);
     }
-    
+
 }

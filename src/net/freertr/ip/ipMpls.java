@@ -686,6 +686,10 @@ public class ipMpls implements ifcUp {
         if (debugger.ifcPolkaEvnt) {
             logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
         }
+        pck.NSHttl--;
+        if (pck.NSHttl < 1) {
+            return;
+        }
         if (id == 0) {
             pck.ETHtype = pck.IPprt;
             ipFwd fwd;
@@ -703,6 +707,9 @@ public class ipMpls implements ifcUp {
                     return;
             }
             beginMPLSfields(pck, false);
+            if (fwd.mplsPropTtl) {
+                pck.MPLSttl = pck.NSHttl;
+            }
             fwd.mplsRxPack(fwd4, fwd6, null, fwd.commonLabel, pck);
             return;
         }
@@ -727,11 +734,6 @@ public class ipMpls implements ifcUp {
             return;
         }
         ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
-        pck.NSHttl--;
-        if (pck.NSHttl < 1) {
-            ntry.cntr.drop(pck, counter.reasons.ttlExceed);
-            return;
-        }
         ifc.lower.sendPolka(pck, ntry.best.nextHop);
     }
 
@@ -822,6 +824,9 @@ public class ipMpls implements ifcUp {
                 return;
         }
         beginMPLSfields(pck, false);
+        if (fwd.mplsPropTtl) {
+            pck.MPLSttl = pck.NSHttl;
+        }
         fwd.mplsRxPack(ntry.route4, ntry.route6, null, fwd.commonLabel, pck);
     }
 

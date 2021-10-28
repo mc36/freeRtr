@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v21.10.27-cur, done by cs@nop.
--;-;-;2021-10-27 23:37:42, took 00:06:04, with 100 workers, on 2426 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter v21.10.28-cur, done by cs@nop.
+-;-;-;2021-10-28 05:15:17, took 00:06:36, with 100 workers, on 2428 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1010,6 +1010,8 @@ http://sources.nop.hu/cfg/mpls-polka07.tst;mpls-polka07.tst;success;polka over a
 http://sources.nop.hu/cfg/mpls-polka08.tst;mpls-polka08.tst;success;polka over gre
 http://sources.nop.hu/cfg/mpls-polka09.tst;mpls-polka09.tst;success;polka over broadcast subnet
 http://sources.nop.hu/cfg/mpls-polka10.tst;mpls-polka10.tst;success;polka over ethernet chain
+http://sources.nop.hu/cfg/mpls-polka11.tst;mpls-polka11.tst;success;pwe over polka
+http://sources.nop.hu/cfg/mpls-polka12.tst;mpls-polka12.tst;success;bgp vpns over polka
 http://sources.nop.hu/cfg/mpls-pwe01.tst;mpls-pwe01.tst;success;ppp over mpls
 http://sources.nop.hu/cfg/mpls-pwe02.tst;mpls-pwe02.tst;success;hdlc over mpls
 http://sources.nop.hu/cfg/mpls-pwe03.tst;mpls-pwe03.tst;success;lapb over mpls

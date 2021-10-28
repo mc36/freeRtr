@@ -1006,6 +1006,8 @@ qc pass: polka over atmdxi
 qc pass: polka over gre
 qc pass: polka over broadcast subnet
 qc pass: polka over ethernet chain
+qc pass: pwe over polka
+qc pass: bgp vpns over polka
 qc pass: ppp over mpls
 qc pass: hdlc over mpls
 qc pass: lapb over mpls
