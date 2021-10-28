@@ -995,6 +995,15 @@ public class ipFwdTab {
         if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }
+        for (int i = 0; i < tabI.size(); i++) {
+            tabIndex<addrIP> ntry = tabI.get(i);
+            tabIndex<addrIP> old = lower.actualI.find(ntry);
+            if (old == null) {
+                continue;
+            }
+            ntry.cntr = old.cntr;
+            ntry.hwCntr = old.hwCntr;
+        }
         tabC.optimize4lookup();
         tabL.optimize4lookup();
         tabU.optimize4lookup();

@@ -728,6 +728,7 @@ public class ipMpls implements ifcUp {
             logger.info("received invalid index " + id);
             return;
         }
+        res.cntr.rx(pck);
         tabRouteEntry<addrIP> ntry = fwd.actualU.find(res.prefix);
         if (ntry == null) {
             logger.info("no route for index " + id);

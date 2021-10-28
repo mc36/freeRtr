@@ -26,6 +26,7 @@ import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcP2pOEservSess;
+import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdBier;
@@ -54,6 +55,7 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabConnect;
 import net.freertr.tab.tabConnectEntry;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
@@ -941,6 +943,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
 
+    public tabGen<tabIndex<addrIP>> indexes4 = new tabGen<tabIndex<addrIP>>();
+
+    public tabGen<tabIndex<addrIP>> indexes6 = new tabGen<tabIndex<addrIP>>();
+
     public servP4langVrf(int i) {
         id = i;
     }
@@ -977,6 +983,8 @@ class servP4langVrf implements Comparator<servP4langVrf> {
         udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+        indexes4 = new tabGen<tabIndex<addrIP>>();
+        indexes6 = new tabGen<tabIndex<addrIP>>();
     }
 
 }
@@ -1010,6 +1018,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int sentPppoe;
 
     public int sentLabel;
+
+    public int sentPolka;
 
     public String sentMacsec;
 
@@ -1178,6 +1188,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentState = state.states.close;
         sentMtu = 0;
         sentLabel = -1;
+        sentPolka = -1;
         sentAcl4in1 = null;
         sentAcl4in2 = null;
         sentAcl4inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
@@ -1839,6 +1850,8 @@ class servP4langConn implements Runnable {
             doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
+            doIndexes(true, vrf.id, vrf.vrf.fwd4.actualI, vrf.indexes4, vrf.vrf.fwd4.actualU);
+            doIndexes(false, vrf.id, vrf.vrf.fwd6.actualI, vrf.indexes6, vrf.vrf.fwd6.actualU);
             doMroutes(true, vrf.id, vrf.vrf.fwd4.groups, vrf.mroutes4);
             doMroutes(false, vrf.id, vrf.vrf.fwd6.groups, vrf.mroutes6);
             vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4, vrf.natCfg4f);
@@ -2461,6 +2474,7 @@ class servP4langConn implements Runnable {
     }
 
     private tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
+        rou.best.attribAs = 0;
         if (rou == null) {
             return null;
         }
@@ -2484,17 +2498,26 @@ class servP4langConn implements Runnable {
                 if (ifc.ifc.tunTeP2p == null) {
                     return null;
                 }
+                rou.best.attribAs = ipMpls.typeU;
                 return ifc.ifc.tunTeP2p.getResultRoute(rou);
             case ldpP2p:
                 if (ifc.ifc.tunLdpP2p == null) {
                     return null;
                 }
+                rou.best.attribAs = ipMpls.typeU;
                 return ifc.ifc.tunLdpP2p.getResultRoute(rou);
             case srMpls:
                 if (ifc.ifc.tunSrMpls == null) {
                     return null;
                 }
+                rou.best.attribAs = ipMpls.typeU;
                 return ifc.ifc.tunSrMpls.getResultRoute(rou);
+            case polka:
+                if (ifc.ifc.tunPolka == null) {
+                    return null;
+                }
+                rou.best.attribAs = ifcPolka.type;
+                return ifc.ifc.tunPolka.getResultRoute(rou);
             default:
                 return rou;
         }
@@ -3010,12 +3033,30 @@ class servP4langConn implements Runnable {
             lower.sendLine("mtu " + ifc.id + " " + i);
             ifc.sentMtu = i;
         }
+        i = -1;
+        int o = -1;
+        if (ifc.ifc.polkaPack != null) {
+            i = ifc.ifc.polkaPack.localId;
+            o = ifc.ifc.polkaPack.coeffs[i].getCoeff().intValue();
+        }
+        if (i != ifc.sentPolka) {
+            if (ifc.sentPolka >= 0) {
+                a = "mod";
+            } else {
+                a = "add";
+            }
+            if (i < 0) {
+                a = "del";
+            }
+            lower.sendLine("polkapoly_" + a + " " + ifc.id + " " + o);
+            ifc.sentPolka = i;
+        }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
         if (ifc.ifc.hairpinHed != null) {
-            int o = 0;
+            o = 0;
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
                 if (ntry == ifc) {
@@ -3090,7 +3131,7 @@ class servP4langConn implements Runnable {
                 lower.sendLine("bundlelist_" + a + " " + ifc.id + s);
             }
             if (ifc.sentVlan != vln.size()) {
-                for (int o = 0; o < prt.size(); o++) {
+                for (o = 0; o < prt.size(); o++) {
                     servP4langIfc ntry = prt.get(o);
                     for (i = 0; i < vln.size(); i++) {
                         servP4langIfc sub = vln.get(i);
@@ -4146,6 +4187,42 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private void doIndexes(boolean ipv4, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes) {
+        for (int i = 0; i < need.size(); i++) {
+            tabIndex<addrIP> ntry = need.get(i);
+            ntry = ntry.copyBytes();
+            tabIndex<addrIP> old = done.find(ntry);
+            String act = "add";
+            if (old != null) {
+                if (!ntry.differs(old)) {
+                    continue;
+                }
+                act = "mod";
+            }
+            tabRouteEntry<addrIP> rou = routes.find(ntry.prefix);
+            if (rou == null) {
+                continue;
+            }
+            if (rou.best.nextHop == null) {
+                continue;
+            }
+            servP4langNei hop = findNei(rou.best.iface, rou.best.nextHop);
+            if (hop == null) {
+                continue;
+            }
+            done.put(ntry);
+            lower.sendLine("polkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
+        }
+        for (int i = done.size() - 1; i >= 0; i--) {
+            tabIndex<addrIP> ntry = done.get(i);
+            if (need.find(ntry) != null) {
+                continue;
+            }
+            done.del(ntry);
+            lower.sendLine("polkaidx_del " + ntry.index + " " + vrf + " -1");
+        }
+    }
+
     private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done) {
         String afi;
         if (ipv4) {
@@ -4202,11 +4279,12 @@ class servP4langConn implements Runnable {
                 }
                 act = "mod";
             }
+            done.add(tabRoute.addType.always, ntry, true, true);
             old = convRou(ntry, true);
             if (old == null) {
+                done.del(ntry);
                 continue;
             }
-            done.add(tabRoute.addType.always, ntry, true, true);
             ntry = old;
             String a;
             if (ipv4) {
@@ -4225,6 +4303,10 @@ class servP4langConn implements Runnable {
             }
             servP4langNei hop = findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
+                continue;
+            }
+            if (ntry.best.attribAs == ifcPolka.type) {
+                lower.sendLine("polroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + bits.toHex(ntry.best.attribVal));
                 continue;
             }
             if (ntry.best.labelRem != null) {

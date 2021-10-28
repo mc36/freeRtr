@@ -12,7 +12,10 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
+import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -182,6 +185,22 @@ public class clntPolka implements Runnable, ifcDn {
         nextIfc.lower.sendPolka(pck, nextHop);
     }
 
+
+    /**
+     * get resulting route
+     *
+     * @param src source to use
+     * @return route, null if no suitable
+     */
+    public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
+        src = src.copyBytes(tabRoute.addType.notyet);
+        src.best.nextHop = nextHop.copyBytes();
+        src.best.iface = nextIfc;
+        src.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);
+        src.best.attribVal = routeid;
+        return src;
+    }
+    
     /**
      * set targets
      *

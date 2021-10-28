@@ -3850,7 +3850,7 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        userFormat lst = new userFormat("|", "index|prefix");
+        userFormat lst = new userFormat("|", "index|prefix|bytes");
         for (int i = 0; i < fwd.actualI.size(); i++) {
             tabIndex<addrIP> prf = fwd.actualI.get(i);
             if (prf == null) {

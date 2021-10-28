@@ -24,6 +24,16 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     public final addrPrefix<T> prefix;
 
     /**
+     * counter
+     */
+    public counter cntr = new counter();
+
+    /**
+     * hardware counter
+     */
+    public counter hwCntr = new counter();
+
+    /**
      * create entry
      *
      * @param idx index
@@ -35,7 +45,11 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     }
 
     public String toString() {
-        return index + "|" + prefix;
+        String a = "";
+        if (hwCntr != null) {
+            a = "+" + hwCntr.byteRx;
+        }
+        return index + "|" + prefix + "|" + cntr.byteRx + a;
     }
 
     /**
@@ -46,6 +60,28 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     public tabIndex<T> copyBytes() {
         tabIndex<T> n = new tabIndex<T>(index, prefix.copyBytes());
         return n;
+    }
+
+    /**
+     * compare to entry
+     *
+     * @param o other entry
+     * @return true if differs, false if equals
+     */
+    public boolean differs(tabIndex<T> o) {
+        if (prefix == null) {
+            if (o.prefix != null) {
+                return true;
+            }
+        } else {
+            if (o.prefix == null) {
+                return true;
+            }
+            if (prefix.compare(prefix, o.prefix) != 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int compare(tabIndex<T> o1, tabIndex<T> o2) {
