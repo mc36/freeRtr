@@ -327,7 +327,14 @@ public class clntPolka implements Runnable, ifcDn {
             clearState();
             return;
         }
-        routeid = ifcPolka.encodeRouteId(plk.coeffs, ids);
+        try {
+            routeid = ifcPolka.encodeRouteId(plk.coeffs, ids);
+        } catch (Exception e) {
+            if (debugger.clntPolkaTraf) {
+                logger.debug("error encoding routeid for " + target);
+            }
+            return;
+        }
         upper.setState(state.states.up);
     }
 
