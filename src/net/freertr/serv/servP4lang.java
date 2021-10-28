@@ -4328,6 +4328,7 @@ class servP4langConn implements Runnable {
             }
             servP4langNei hop = findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
+                done.del(ntry);
                 continue;
             }
             if (ntry.best.attribAs == ifcPolka.type) {

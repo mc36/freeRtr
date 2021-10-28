@@ -1404,6 +1404,14 @@ ipv4_tx:
                 bufP += 12;
                 bufP += 2;
                 goto bridgevpls_rx;
+            case 9: // polka
+                bufP -= 20;
+                put16msb(bufD, bufP + 0, ttl);
+                put16msb(bufD, bufP + 2, ethtyp);
+                memmove(&bufD[bufP + 4], route4_res->polka, 16);
+                neigh_ntry.id = route4_res->nexthop;
+                ethtyp = ETHERTYPE_POLKA;
+                goto ethtyp_tx;
             }
         }
         goto punt;
@@ -1763,6 +1771,14 @@ ipv6_tx:
                 bufP += 12;
                 bufP += 2;
                 goto bridgevpls_rx;
+            case 9: // polka
+                bufP -= 20;
+                put16msb(bufD, bufP + 0, ttl);
+                put16msb(bufD, bufP + 2, ethtyp);
+                memmove(&bufD[bufP + 4], route6_res->polka, 16);
+                neigh_ntry.id = route6_res->nexthop;
+                ethtyp = ETHERTYPE_POLKA;
+                goto ethtyp_tx;
             }
         }
         goto punt;
