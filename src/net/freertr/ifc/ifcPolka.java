@@ -197,6 +197,19 @@ public class ifcPolka implements ifcUp {
     /**
      * decode routeid with crc
      *
+     * @param h hasher
+     * @param v routeid
+     * @return next node id
+     */
+    public static int decodeRouteIdCrc(cryHashCrc16 h, byte[] v) {
+        h.init();
+        h.update(v, 0, v.length - 2);
+        return bits.msbGetW(v, v.length - 2) ^ h.getCrc();
+    }
+
+    /**
+     * decode routeid with crc
+     *
      * @param s switch coefficients
      * @param v routeid
      * @return next node id
@@ -205,11 +218,19 @@ public class ifcPolka implements ifcUp {
         int[] o = new int[s.length];
         for (int i = 0; i < s.length; i++) {
             cryHashCrc16 h = new cryHashCrc16(s[i].getCoeff().intValue(), 0, 0, false);
-            h.init();
-            h.update(v, 0, v.length - 2);
-            o[i] = bits.msbGetW(v, v.length - 2) ^ h.getCrc();
+            o[i] = decodeRouteIdCrc(h, v);
         }
         return o;
+    }
+
+    /**
+     * decode routeid
+     *
+     * @param pck packet to decode
+     * @return next node id
+     */
+    public int decodeRouteId(packHolder pck) {
+        return decodeRouteIdCrc(new cryHashCrc16(hasher), pck.BIERbs);
     }
 
     /**

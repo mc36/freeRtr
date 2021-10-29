@@ -2,7 +2,7 @@ package net.freertr.pipe;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import net.freertr.cry.cryHashCrc16;
+import net.freertr.cry.cryHashFcs16;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packRtp;
 import net.freertr.util.bits;
@@ -156,7 +156,7 @@ class pipeSyncTx extends TimerTask {
                 break;
             }
             int siz = pck.dataSize();
-            cryHashCrc16 fcs = new cryHashCrc16(cryHashCrc16.polyCrc16c);
+            cryHashFcs16 fcs = new cryHashFcs16();
             fcs.init();
             pck.hashData(fcs, 0, siz);
             for (int i = 0; i < siz; i++) {
@@ -270,7 +270,7 @@ class pipeSyncRx implements Runnable {
             resBuf.clear();
             return;
         }
-        cryHashCrc16 fcsH = new cryHashCrc16(cryHashCrc16.polyCrc16c);
+        cryHashFcs16 fcsH = new cryHashFcs16();
         fcsH.init();
         resBuf.hashData(fcsH, 0, siz);
         byte[] fcsB = fcsH.finish();

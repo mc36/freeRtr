@@ -5,7 +5,6 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.clnt.clntNetflow;
-import net.freertr.cry.cryHashCrc16;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
@@ -679,10 +678,7 @@ public class ipMpls implements ifcUp {
      * @param pck packet to read
      */
     public static void gotPolkaPack(ifcPolka fwdP, ipFwd fwd4, ipFwd fwd6, packHolder pck) {
-        cryHashCrc16 crc = new cryHashCrc16(fwdP.hasher);
-        crc.init();
-        crc.update(pck.BIERbs, 0, pck.BIERbs.length - 2);
-        int id = bits.msbGetW(pck.BIERbs, pck.BIERbs.length - 2) ^ crc.getCrc();
+        int id = fwdP.decodeRouteId(pck);
         if (debugger.ifcPolkaEvnt) {
             logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
         }
