@@ -1819,13 +1819,14 @@ ipv6_tx:
         ttl = get16msb(bufD, bufP + 0);
         if ((ttl & 0xff00) != 0) goto drop;
         if ((ttl & 0xff) <= 1) goto punt;
+        ttl--;
+        bufD[bufP + 1] = ttl;
         polkaPoly_ntry.port = prt;
         index = table_find(&polkaPoly_table, &polkaPoly_ntry);
         if (index < 0) goto drop;
         polkaPoly_res = table_get(&polkaPoly_table, index);
         polkaPoly_res->pack++;
         polkaPoly_res->byte += bufS;
-        bufD[bufP + 1] = ttl;
         tmp = 0;
         for (i = 0; i < 14; i++) {
             tmp = ((tmp << 8) & 0xffff) ^ polkaPoly_res->tab[(tmp >> 8) ^ (bufD[bufP + 4 + i] & 0xff)];
