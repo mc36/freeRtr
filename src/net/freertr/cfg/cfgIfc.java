@@ -4016,6 +4016,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPolka.setTargets(tunFQDN);
                 tunFQDN = tunPolka.getTargets();
                 tunPolka.ttl = tunTTL;
+                tunPolka.verify = tunSum;
                 tunPolka.setUpper(ethtyp);
                 tunPolka.workStart();
                 lower = tunPolka;

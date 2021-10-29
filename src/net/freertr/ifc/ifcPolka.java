@@ -135,6 +135,20 @@ public class ifcPolka implements ifcUp {
     }
 
     /**
+     * get next value from a route
+     *
+     * @param o switches to visit
+     * @param i switch number
+     * @return next value
+     */
+    public static int routeNextValue(int[] o, int i) {
+        if (i < (o.length - 1)) {
+            return o[i + 1];
+        }
+        return 0;
+    }
+
+    /**
      * encode routeid polynomial
      *
      * @param s switch coefficients
@@ -154,10 +168,7 @@ public class ifcPolka implements ifcUp {
         }
         cryPoly r = new cryPoly(BigInteger.valueOf(0));
         for (int i = 0; i < o.length; i++) {
-            int p = 0;
-            if (i < (o.length - 1)) {
-                p = o[i + 1];
-            }
+            int p = routeNextValue(o, i);
             r = r.add(new cryPoly(p).mul(m[i]).mul(n[i]));
         }
         r = r.div(M)[1];
@@ -167,18 +178,36 @@ public class ifcPolka implements ifcUp {
     }
 
     /**
-     * decode routeid polynomial
+     * decode routeid with polynomial
      *
      * @param s switch coefficients
      * @param v routeid
      * @return next node id
      */
-    public static int[] decodeRouteId(cryPoly[] s, byte[] v) {
+    public static int[] decodeRouteIdPoly(cryPoly[] s, byte[] v) {
         cryPoly r = new cryPoly(new BigInteger(v));
         int[] o = new int[s.length];
         for (int i = 0; i < s.length; i++) {
             cryPoly c = r.div(s[i])[1];
             o[i] = c.getCoeff().intValue();
+        }
+        return o;
+    }
+
+    /**
+     * decode routeid with crc
+     *
+     * @param s switch coefficients
+     * @param v routeid
+     * @return next node id
+     */
+    public static int[] decodeRouteIdCrc(cryPoly[] s, byte[] v) {
+        int[] o = new int[s.length];
+        for (int i = 0; i < s.length; i++) {
+            cryHashCrc16 h = new cryHashCrc16(s[i].getCoeff().intValue(), 0, 0, false);
+            h.init();
+            h.update(v, 0, v.length - 2);
+            o[i] = bits.msbGetW(v, v.length - 2) ^ h.getCrc();
         }
         return o;
     }

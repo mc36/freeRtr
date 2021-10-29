@@ -63,6 +63,11 @@ public class clntPolka implements Runnable, ifcDn {
     public int ttl = 255;
 
     /**
+     * verify encoding
+     */
+    public boolean verify = false;
+
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -185,7 +190,6 @@ public class clntPolka implements Runnable, ifcDn {
         nextIfc.lower.sendPolka(pck, nextHop);
     }
 
-
     /**
      * get resulting route
      *
@@ -200,7 +204,7 @@ public class clntPolka implements Runnable, ifcDn {
         src.best.attribVal = routeid;
         return src;
     }
-    
+
     /**
      * set targets
      *
@@ -355,6 +359,34 @@ public class clntPolka implements Runnable, ifcDn {
             return;
         }
         upper.setState(state.states.up);
+        if (!verify) {
+            return;
+        }
+        try {
+            doOneVerify(ids, ifcPolka.decodeRouteIdPoly(plk.coeffs, routeid), "poly");
+            doOneVerify(ids, ifcPolka.decodeRouteIdCrc(plk.coeffs, routeid), "crc");
+        } catch (Exception e) {
+            if (debugger.clntPolkaTraf) {
+                logger.debug("error decoding routeid for " + target);
+            }
+            return;
+        }
+    }
+
+    private void doOneVerify(int[] ids, int[] dec, String mod) {
+        boolean good = true;
+        for (int i = 0; i < ids.length; i++) {
+            if (dec[ids[i]] != ifcPolka.routeNextValue(ids, i)) {
+                good = false;
+            }
+        }
+        if (good) {
+            return;
+        }
+        if (debugger.clntPolkaTraf) {
+            logger.debug("bad routeid for " + target + " with " + mod);
+        }
+
     }
 
 }

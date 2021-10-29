@@ -325,7 +325,7 @@ interface template1
  ipv6 pim enable
  ipv6 pim bier-tunnel 39
  ipv6 pim join-source loopback0
- polka enable 39 65535 256
+ polka enable 39 70000 256
  mpls enable
  mpls ldp4
  mpls ldp6
