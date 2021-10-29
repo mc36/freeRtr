@@ -59,6 +59,11 @@ public class rtrDownload extends ipRtr {
     protected final int proto;
 
     /**
+     * respawn on termination
+     */
+    public boolean respawn = true;
+
+    /**
      * time between runs
      */
     protected int interval;
@@ -67,6 +72,16 @@ public class rtrDownload extends ipRtr {
      * initial delay
      */
     protected int initial;
+
+    /**
+     * random time between runs
+     */
+    public int randInt;
+
+    /**
+     * random initial delay
+     */
+    public int randIni;
 
     /**
      * url
@@ -158,7 +173,15 @@ public class rtrDownload extends ipRtr {
         working = true;
         keepTimer = new Timer();
         rtrDownloadTimer task = new rtrDownloadTimer(this);
-        keepTimer.schedule(task, initial, interval);
+        int del = initial;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        if (respawn) {
+            keepTimer.schedule(task, del, interval);
+        } else {
+            keepTimer.schedule(task, del);
+        }
     }
 
     /**
@@ -178,6 +201,9 @@ public class rtrDownload extends ipRtr {
         }
         if (logging) {
             logger.info("starting download " + url);
+        }
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
         }
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());
@@ -252,10 +278,15 @@ public class rtrDownload extends ipRtr {
     public void routerGetHelp(userHelping l) {
         l.add("1  2      url                        specify url to download");
         l.add("2  2,.      <cmd>                    exec command to run");
+        l.add("1  .      respawn                    restart on termination");
         l.add("1  2      time                       specify time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      delay                      specify initial delay");
         l.add("2  .        <num>                    milliseconds between start");
+        l.add("1  2      random-time                specify random time between runs");
+        l.add("2  .        <num>                    milliseconds between runs");
+        l.add("1  2      random-delay               specify random initial delay");
+        l.add("2  .        <num>                    milliseconds before start");
         l.add("1  2      range                      specify time range");
         l.add("2  .        <name>                   name of time map");
         l.add("1  .      log                        log actions");
@@ -279,8 +310,11 @@ public class rtrDownload extends ipRtr {
             l.add(beg + "url " + url);
         }
         cmds.cfgLine(l, time == null, beg, "range", "" + time);
+        cmds.cfgLine(l, !respawn, beg, "respawn", "");
         l.add(beg + "delay " + initial);
         l.add(beg + "time " + interval);
+        l.add(beg + "random-time " + randInt);
+        l.add(beg + "random-delay " + randIni);
     }
 
     /**
@@ -303,11 +337,29 @@ public class rtrDownload extends ipRtr {
             }
             return false;
         }
+        if (s.equals("random-time")) {
+            randInt = bits.str2num(cmd.word());
+            if (negated) {
+                randInt = 0;
+            }
+            return false;
+        }
+        if (s.equals("random-delay")) {
+            randIni = bits.str2num(cmd.word());
+            if (negated) {
+                randIni = 0;
+            }
+            return false;
+        }
         if (s.equals("range")) {
             time = cfgAll.timeFind(cmd.word(), false);
             if (negated) {
                 time = null;
             }
+            return false;
+        }
+        if (s.equals("respawn")) {
+            respawn = !negated;
             return false;
         }
         if (s.equals("delay")) {

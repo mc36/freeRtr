@@ -484,6 +484,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router download[4|6] .*! no log",
         "router download[4|6] .*! url ",
         "router download[4|6] .*! no range",
+        "router download[4|6] .*! respawn",
+        "router download[4|6] .*! random-time 0",
+        "router download[4|6] .*! random-delay 0",
         "router download[4|6] .*! delay 0",
         "router download[4|6] .*! time 0",
         // router blackhole

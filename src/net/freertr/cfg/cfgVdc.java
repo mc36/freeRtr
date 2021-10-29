@@ -364,11 +364,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("1  2      time                       specify time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      delay                      specify initial delay");
-        l.add("2  .        <num>                    milliseconds between start");
+        l.add("2  .        <num>                    milliseconds before start");
         l.add("1  2      random-time                specify random time between runs");
         l.add("2  .        <num>                    milliseconds between runs");
         l.add("1  2      random-delay               specify random initial delay");
-        l.add("2  .        <num>                    milliseconds between start");
+        l.add("2  .        <num>                    milliseconds before start");
         l.add("1  .      log                        log actions");
     }
 
