@@ -40,6 +40,9 @@ ig_md.pktlen = 0;
 ig_md.ethertype = 0;
 ig_md.vrf = 0;
 ig_md.saw_rsvp = 0;
+#ifdef HAVE_POLKA
+ig_md.polka_next = 0;
+#endif
 #ifdef HAVE_MPLS
 ig_md.mpls_encap_egress_label = 0;
 ig_md.mpls_encap_svc_label = 0;
@@ -54,9 +57,13 @@ ig_md.checksum_udp_tmp = 0;
 ig_md.mpls_op_type = 0;
 ig_md.srv_op_type = 0;
 ig_md.bier_remove = 0;
+ig_md.polka_remove = 0;
 ig_md.mpls0_remove = 0;
 ig_md.mpls1_remove = 0;
 ig_md.srv_remove = 0;
+#ifdef HAVE_POLKA
+ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
 ig_md.mpls0_valid = 0;
 ig_md.mpls1_valid = 0;

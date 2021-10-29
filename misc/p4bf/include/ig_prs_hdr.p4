@@ -15,6 +15,10 @@ ETHERTYPE_PPPOE_CTRL :
 ETHERTYPE_PPPOE_DATA :
         prs_pppoeData;
 #endif
+#ifdef HAVE_POLKA
+ETHERTYPE_POLKA:
+        prs_polka;
+#endif
 #ifdef HAVE_MPLS
 ETHERTYPE_MPLS_UCAST:
         prs_mpls0;
@@ -52,6 +56,10 @@ ETHERTYPE_PPPOE_CTRL :
         prs_pppoeCtrl;
 ETHERTYPE_PPPOE_DATA :
         prs_pppoeData;
+#endif
+#ifdef HAVE_POLKA
+ETHERTYPE_POLKA:
+        prs_polka;
 #endif
 #ifdef HAVE_MPLS
 ETHERTYPE_MPLS_UCAST:
@@ -118,6 +126,25 @@ state prs_eth6 {
 }
 #endif
 
+
+#ifdef HAVE_POLKA
+state prs_polka {
+    pkt.extract(hdr.polka);
+    ig_md.polka_valid = 1;
+    transition select(hdr.polka.proto) {
+#ifdef HAVE_MPLS
+ETHERTYPE_MPLS_UCAST:
+        prs_mpls0;
+#endif
+ETHERTYPE_IPV4:
+        prs_ipv4;
+ETHERTYPE_IPV6:
+        prs_ipv6;
+    default:
+        accept;
+    }
+}
+#endif
 
 #ifdef HAVE_MPLS
 state prs_mpls0 {

@@ -45,6 +45,9 @@ struct ingress_metadata_t {
     SubIntId_t output_id;
     ethertype_t ethertype;
     switch_vrf_t vrf;
+#ifdef HAVE_POLKA
+    bit<16> polka_next;
+#endif
 #ifdef HAVE_MPLS
     label_t mpls_encap_egress_label;
     label_t mpls_encap_svc_label;
@@ -57,6 +60,7 @@ struct ingress_metadata_t {
     bit <1> srv_remove;
     bit <1> saw_rsvp;
     bit <1> bier_remove;
+    bit <1> polka_remove;
     bit <1> mpls0_remove;
     bit <1> mpls1_remove;
 #ifdef NEED_REPLICA
@@ -81,6 +85,9 @@ struct ingress_metadata_t {
 #ifdef HAVE_MPLS
     bit <1> mpls0_valid;
     bit <1> mpls1_valid;
+#endif
+#ifdef HAVE_POLKA
+    bit <1> polka_valid;
 #endif
     bit <1> arp_valid;
     bit <1> ipv4_valid;

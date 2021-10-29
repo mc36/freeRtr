@@ -36,6 +36,7 @@ on routing only profile we can have this
 #define IPV6_MCAST_TABLE_SIZE                  512
 
 #define MPLS_TABLE_SIZE                        1024
+#define POLKA_TABLE_SIZE                       512
 #define PORT_TABLE_SIZE                        512
 #define MAC_TABLE_SIZE                         512
 #define BUNDLE_TABLE_SIZE                      512

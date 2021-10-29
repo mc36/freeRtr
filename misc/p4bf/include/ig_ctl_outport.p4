@@ -79,6 +79,12 @@ ig_md.nexthop_id:
             tbl_vlan_out.apply();
         } else {
             tbl_nexthop.apply();
+#ifdef HAVE_POLKA
+            if (hdr.polka.isValid()) {
+                if (hdr.polka.ttl < 2) act_set_drop();
+                hdr.polka.ttl = hdr.polka.ttl - 1;
+            } else {
+#endif
 #ifdef HAVE_MPLS
             if (hdr.mpls0.isValid()) {
                 if (hdr.mpls0.ttl < 2) act_set_drop();
@@ -93,6 +99,9 @@ ig_md.nexthop_id:
                     hdr.ipv6.hop_limit = hdr.ipv6.hop_limit - 1;
                 }
 #ifdef HAVE_MPLS
+            }
+#endif
+#ifdef HAVE_POLKA
             }
 #endif
         }

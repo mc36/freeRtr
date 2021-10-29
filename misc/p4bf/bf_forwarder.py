@@ -564,7 +564,7 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -575,6 +575,7 @@ class BfForwarder(Thread):
         self.brdg = brdg
         self.mpls = mpls
         self.srv6 = srv6
+        self.polka = polka
         self.nat = nat
         self.pbr = pbr
         self.tun = tun
@@ -1807,6 +1808,56 @@ class BfForwarder(Thread):
             tbl_action_name_2,
             key_annotation_fields_2,
             data_annotation_fields_2,
+        )
+
+
+    def writePolkaPolyRules(self, op_type, poly):
+        if self.polka == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_polka.hash"
+        tbl_name = "%s.algorithm" % (tbl_global_path)
+        tbl_action_name = "%s.set_default_with_user_defined" % (tbl_global_path)
+        key_fields = [
+        ]
+        data_fields = [
+            gc.DataTuple("polynomial", (poly & 0xffff)),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_fields,
+            data_fields,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+
+    def writePolkaIndexRules(self, op_type, idx, vrf, hop):
+        if self.polka == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_polka"
+        tbl_name = "%s.tbl_polka" % (tbl_global_path)
+        tbl_action_name = "%s.act_forward" % (tbl_global_path)
+        key_fields = [
+            gc.KeyTuple("ig_md.vrf", vrf),
+            gc.KeyTuple("ig_md.polka_next", idx),
+        ]
+        data_fields = [
+            gc.DataTuple("nexthop_id", hop),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_fields,
+            data_fields,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
         )
 
 
@@ -8258,6 +8309,51 @@ class BfForwarder(Thread):
                 continue
 
 
+            if splt[0] == "polkapoly_add":
+                self.writePolkaPolyRules(
+                    1,
+                    int(splt[2]),
+                )
+                continue
+            if splt[0] == "polkapoly_mod":
+                self.writePolkaPolyRules(
+                    2,
+                    int(splt[2]),
+                )
+                continue
+            if splt[0] == "polkapoly_del":
+                self.writePolkaPolyRules(
+                    3,
+                    int(splt[2]),
+                )
+                continue
+
+            if splt[0] == "polkaidx_add":
+                self.writePolkaIndexRules(
+                    1,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "polkaidx_mod":
+                self.writePolkaIndexRules(
+                    2,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+            if splt[0] == "polkaidx_del":
+                self.writePolkaIndexRules(
+                    3,
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                )
+                continue
+
+
 
             if splt[0] == "mtu":
                 self.setPortMTU(int(splt[1]), int(splt[2]))
@@ -8377,6 +8473,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "--srv6",
         help="enable srv6",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        action="store",
+        required=False,
+        default=True,
+    )
+    parser.add_argument(
+        "--polka",
+        help="enable polka",
         type=str2bool,
         nargs='?',
         const=True,
@@ -8544,6 +8650,7 @@ if __name__ == "__main__":
                                args.tun,
                                args.poe,
                                args.mcast,
+                               args.polka,
                                )
 
         bf_forwarder.daemon=True
