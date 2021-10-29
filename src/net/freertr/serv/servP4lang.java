@@ -750,7 +750,8 @@ class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr
         return o1.data.compare(o1.data, o2.data);
     }
 
-    public boolean differs(servP4langStr<T> o) {
+    public boolean differs(tabGen<servP4langStr<T>> l) {
+        servP4langStr<T> o = l.find(this);
         if (o == null) {
             return true;
         }
@@ -4268,7 +4269,7 @@ class servP4langConn implements Runnable {
             tabIndex<addrIP> old = done.find(ntry);
             String act = "add";
             if (old != null) {
-                if (!ntry.differs(old) && !str.differs(store.find(str))) {
+                if (!ntry.differs(old) && !str.differs(store)) {
                     continue;
                 }
                 act = "mod";
@@ -4318,7 +4319,7 @@ class servP4langConn implements Runnable {
                 str.store = hop.id;
                 String act = "add";
                 if (old != null) {
-                    if (!ntry.differs(tabRoute.addType.notyet, old) && !str.differs(store.find(str))) {
+                    if (!ntry.differs(tabRoute.addType.notyet, old) && !str.differs(store)) {
                         continue;
                     }
                     act = "mod";
