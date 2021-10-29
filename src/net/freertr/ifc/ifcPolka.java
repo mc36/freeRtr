@@ -104,6 +104,9 @@ public class ifcPolka implements ifcUp {
             if (r[0] == null) {
                 return true;
             }
+            if (r[1].getCoeff().intValue() > 1) {
+                return true;
+            }
         }
         return false;
     }
