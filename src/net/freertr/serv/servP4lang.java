@@ -736,6 +736,29 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
 }
 
+class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr<T>> {
+
+    public final T data;
+
+    public int store;
+
+    public servP4langStr(T dat) {
+        data = dat;
+    }
+
+    public int compare(servP4langStr<T> o1, servP4langStr<T> o2) {
+        return o1.data.compare(o1.data, o2.data);
+    }
+
+    public boolean differs(servP4langStr<T> o) {
+        if (o == null) {
+            return true;
+        }
+        return store != o.store;
+    }
+
+}
+
 class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
 
     public final int id;
@@ -903,6 +926,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public boolean sentMcast;
 
+    public tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+
+    public tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+
     public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
 
     public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
@@ -943,6 +970,10 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
 
+    public tabGen<servP4langStr<tabIndex<addrIP>>> indexed4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+
+    public tabGen<servP4langStr<tabIndex<addrIP>>> indexed6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+
     public tabGen<tabIndex<addrIP>> indexes4 = new tabGen<tabIndex<addrIP>>();
 
     public tabGen<tabIndex<addrIP>> indexes6 = new tabGen<tabIndex<addrIP>>();
@@ -962,6 +993,8 @@ class servP4langVrf implements Comparator<servP4langVrf> {
     }
 
     public void doClear() {
+        routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+        routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
         routes4 = new tabRoute<addrIP>("sent");
         routes6 = new tabRoute<addrIP>("sent");
         mroutes4 = new tabGen<ipFwdMcast>();
@@ -983,6 +1016,8 @@ class servP4langVrf implements Comparator<servP4langVrf> {
         udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+        indexed4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexed6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
         indexes4 = new tabGen<tabIndex<addrIP>>();
         indexes6 = new tabGen<tabIndex<addrIP>>();
     }
@@ -1873,10 +1908,10 @@ class servP4langConn implements Runnable {
             doSockets(true, vrf.id, vrf.vrf.udp6.getProtoNum(), vrf.vrf.udp6.srvrs, vrf.udp6);
             doSockets(false, vrf.id, vrf.vrf.tcp4.getProtoNum(), vrf.vrf.tcp4.srvrs, vrf.tcp4);
             doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
-            doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4);
-            doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6);
-            doIndexes(true, vrf.id, vrf.vrf.fwd4.actualI, vrf.indexes4, vrf.vrf.fwd4.actualU);
-            doIndexes(false, vrf.id, vrf.vrf.fwd6.actualI, vrf.indexes6, vrf.vrf.fwd6.actualU);
+            doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
+            doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
+            doIndexes(true, vrf.id, vrf.vrf.fwd4.actualI, vrf.indexes4, vrf.vrf.fwd4.actualU, vrf.indexed4);
+            doIndexes(false, vrf.id, vrf.vrf.fwd6.actualI, vrf.indexes6, vrf.vrf.fwd6.actualU, vrf.indexed6);
             doMroutes(true, vrf.id, vrf.vrf.fwd4.groups, vrf.mroutes4);
             doMroutes(false, vrf.id, vrf.vrf.fwd6.groups, vrf.mroutes6);
             vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4, vrf.natCfg4f);
@@ -2502,6 +2537,7 @@ class servP4langConn implements Runnable {
         if (rou == null) {
             return null;
         }
+        rou = rou.copyBytes(tabRoute.addType.notyet);
         rou.best.attribAs = 0;
         if (nhchk) {
             if (rou.best.nextHop == null) {
@@ -4212,18 +4248,10 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private void doIndexes(boolean ipv4, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes) {
+    private void doIndexes(boolean ipv4, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes, tabGen<servP4langStr<tabIndex<addrIP>>> store) {
         for (int i = 0; i < need.size(); i++) {
             tabIndex<addrIP> ntry = need.get(i);
             ntry = ntry.copyBytes();
-            tabIndex<addrIP> old = done.find(ntry);
-            String act = "add";
-            if (old != null) {
-                if (!ntry.differs(old)) {
-                    continue;
-                }
-                act = "mod";
-            }
             tabRouteEntry<addrIP> rou = routes.find(ntry.prefix);
             if (rou == null) {
                 continue;
@@ -4235,7 +4263,18 @@ class servP4langConn implements Runnable {
             if (hop == null) {
                 continue;
             }
+            servP4langStr<tabIndex<addrIP>> str = new servP4langStr<tabIndex<addrIP>>(ntry);
+            str.store = hop.id;
+            tabIndex<addrIP> old = done.find(ntry);
+            String act = "add";
+            if (old != null) {
+                if (!ntry.differs(old) && !str.differs(store.find(str))) {
+                    continue;
+                }
+                act = "mod";
+            }
             done.put(ntry);
+            store.put(str);
             lower.sendLine("polkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
@@ -4244,11 +4283,12 @@ class servP4langConn implements Runnable {
                 continue;
             }
             done.del(ntry);
+            store.del(new servP4langStr<tabIndex<addrIP>>(ntry));
             lower.sendLine("polkaidx_del " + ntry.index + " " + vrf + " -1");
         }
     }
 
-    private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done) {
+    private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store) {
         String afi;
         if (ipv4) {
             afi = "4";
@@ -4260,27 +4300,31 @@ class servP4langConn implements Runnable {
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             tabRouteEntry<addrIP> old = done.find(ntry);
             if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {
+                tabRouteEntry<addrIP> recur;
+                if (ntry.best.segrouPrf == null) {
+                    recur = ntry.best.rouTab.actualU.route(ntry.best.nextHop);
+                } else {
+                    recur = ntry.best.rouTab.actualU.route(ntry.best.segrouPrf);
+                }
+                recur = convRou(recur, true);
+                if (recur == null) {
+                    continue;
+                }
+                servP4langNei hop = findNei(recur.best.iface, recur.best.nextHop);
+                if (hop == null) {
+                    continue;
+                }
+                servP4langStr<tabRouteEntry<addrIP>> str = new servP4langStr<tabRouteEntry<addrIP>>(ntry);
+                str.store = hop.id;
                 String act = "add";
                 if (old != null) {
-                    if (!ntry.differs(tabRoute.addType.notyet, old)) {
+                    if (!ntry.differs(tabRoute.addType.notyet, old) && !str.differs(store.find(str))) {
                         continue;
                     }
                     act = "mod";
                 }
-                if (ntry.best.segrouPrf == null) {
-                    old = ntry.best.rouTab.actualU.route(ntry.best.nextHop);
-                } else {
-                    old = ntry.best.rouTab.actualU.route(ntry.best.segrouPrf);
-                }
-                old = convRou(old, true);
-                if (old == null) {
-                    continue;
-                }
-                servP4langNei hop = findNei(old.best.iface, old.best.nextHop);
-                if (hop == null) {
-                    continue;
-                }
                 done.add(tabRoute.addType.always, ntry, true, true);
+                store.put(str);
                 String a;
                 if (ipv4) {
                     a = "" + addrPrefix.ip2ip4(ntry.prefix);
@@ -4288,7 +4332,7 @@ class servP4langConn implements Runnable {
                     a = "" + addrPrefix.ip2ip6(ntry.prefix);
                 }
                 if (ntry.best.segrouPrf == null) {
-                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + getLabel(old) + " " + getLabel(ntry));
+                    lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + getLabel(recur) + " " + getLabel(ntry));
                 } else {
                     lower.sendLine("srvroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + ntry.best.segrouPrf);
                 }
@@ -4362,6 +4406,7 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 done.del(ntry);
+                store.del(new servP4langStr<tabRouteEntry<addrIP>>(ntry));
                 String a;
                 if (ipv4) {
                     a = "" + addrPrefix.ip2ip4(ntry.prefix);

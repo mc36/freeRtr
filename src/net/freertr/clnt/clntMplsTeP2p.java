@@ -309,7 +309,6 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         if (trfEng.srcLoc != 1) {
             return null;
         }
-        src = src.copyBytes(tabRoute.addType.notyet);
         src.best.nextHop = trfEng.trgHop.copyBytes();
         src.best.iface = trfEng.trgIfc;
         src.best.labelRem = tabLabel.int2labels(trfEng.trgLab);

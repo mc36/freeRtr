@@ -197,7 +197,9 @@ public class clntPolka implements Runnable, ifcDn {
      * @return route, null if no suitable
      */
     public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
-        src = src.copyBytes(tabRoute.addType.notyet);
+        if (routeid == null) {
+            return null;
+        }
         src.best.nextHop = nextHop.copyBytes();
         src.best.iface = nextIfc;
         src.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);

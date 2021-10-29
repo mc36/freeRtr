@@ -234,7 +234,6 @@ public class clntMplsSr implements Runnable, ifcDn {
         if (labs == null) {
             return null;
         }
-        src = src.copyBytes(tabRoute.addType.notyet);
         src.best.nextHop = nextHop.copyBytes();
         src.best.iface = nextIfc;
         src.best.labelRem = tabLabel.int2labels(labs[0]);
