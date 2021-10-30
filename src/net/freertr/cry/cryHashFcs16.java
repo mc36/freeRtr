@@ -32,7 +32,7 @@ public class cryHashFcs16 extends cryHashGeneric {
 
     private void makeTab() {
         tab = new int[256];
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < tab.length; i++) {
             tab[i] = mkTabEntry(i);
         }
     }
