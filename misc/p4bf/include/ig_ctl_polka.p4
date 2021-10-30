@@ -21,20 +21,20 @@
 #ifdef HAVE_POLKA
 
 control IngressControlPOLKA(
-        inout headers hdr,
-        inout ingress_metadata_t ig_md,
-        in ingress_intrinsic_metadata_t ig_intr_md,
-        inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-        inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+    inout headers hdr,
+    inout ingress_metadata_t ig_md,
+    in ingress_intrinsic_metadata_t ig_intr_md,
+    inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
+    inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
     CRCPolynomial<bit<16>>(
-            coeff    = (65539 & 0xffff),
-            reversed = false,
-            msb      = false,
-            extended = false,
-            init     = 16w0x0000,
-            xor      = 16w0x0000) poly;
+                            coeff    = (65539 & 0xffff),
+                            reversed = false,
+                            msb      = false,
+                            extended = false,
+                            init     = 16w0x0000,
+                            xor      = 16w0x0000) poly;
     Hash<bit<16>>(HashAlgorithm_t.CUSTOM, poly) hash;
 
     action act_forward(NextHopId_t nexthop_id) {
@@ -70,7 +70,7 @@ ig_md.polka_next:
             bit<16> diff = (bit<16>) hdr.polka.routeid;
             bit<16> nres = hash.get(ndata);
             ig_md.polka_next = nres ^ diff;
-            tbl_polka.apply();            
+            tbl_polka.apply();
         }
     }
 }

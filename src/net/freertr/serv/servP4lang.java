@@ -4285,7 +4285,7 @@ class servP4langConn implements Runnable {
             }
             done.del(ntry);
             store.del(new servP4langStr<tabIndex<addrIP>>(ntry));
-            lower.sendLine("polkaidx_del " + ntry.index + " " + vrf + " -1");
+            lower.sendLine("polkaidx_del " + ntry.index + " " + vrf + " 0");
         }
     }
 
