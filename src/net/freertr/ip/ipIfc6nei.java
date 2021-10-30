@@ -107,7 +107,7 @@ public class ipIfc6nei implements ifcUp {
         lladdr = adr.toIPv6();
     }
 
-    private void resetTimer(boolean needRun) {
+    private synchronized void resetTimer(boolean needRun) {
         try {
             timer.cancel();
         } catch (Exception e) {

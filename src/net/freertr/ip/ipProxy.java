@@ -84,7 +84,7 @@ public class ipProxy implements ifcUp {
         }
     }
 
-    private void resetTimer(boolean needRun) {
+    private synchronized void resetTimer(boolean needRun) {
         try {
             timer.cancel();
         } catch (Exception e) {

@@ -151,7 +151,7 @@ public class ipIfc4arp implements ifcUp {
         resetTimer(true);
     }
 
-    private void resetTimer(boolean needRun) {
+    private synchronized void resetTimer(boolean needRun) {
         try {
             timer.cancel();
         } catch (Exception e) {
