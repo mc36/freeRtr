@@ -638,8 +638,14 @@ class BfForwarder(Thread):
             # IN/OUT meters cannot be cleared
             if "policer" in table_name_key:
                 continue
+            if "hash" in table_name_key:
+                continue
             # IN/OUT counters cannot be cleared
             if "stats" in table_name_key:
+                continue
+            if "stats4" in table_name_key:
+                continue
+            if "stats6" in table_name_key:
                 continue
             if "ig_ctl" in table_name_key:
                 self._clearOneTable(table_name_key, table_dict)
@@ -1814,25 +1820,21 @@ class BfForwarder(Thread):
     def writePolkaPolyRules(self, op_type, poly):
         if self.polka == False:
             return
-        tbl_global_path = "ig_ctl.ig_ctl_polka.hash"
-        tbl_name = "%s.algorithm" % (tbl_global_path)
-        tbl_action_name = "%s.set_default_with_user_defined" % (tbl_global_path)
-        key_fields = [
-        ]
-        data_fields = [
-            gc.DataTuple("polynomial", (poly & 0xffff)),
-        ]
-        key_annotation_fields = {}
-        data_annotation_fields = {}
-        self._processEntryFromControlPlane(
-            op_type,
-            tbl_name,
-            key_fields,
-            data_fields,
-            tbl_action_name,
-            key_annotation_fields,
-            data_annotation_fields,
-        )
+        try:
+            tbl = self.bfgc.bfrt_info.table_get("ig_ctl.ig_ctl_polka.hash.algorithm")
+            data_field_list = [
+                gc.DataTuple("polynomial", (poly & 0xffff)),
+            ]
+            data_list = tbl.make_data(data_field_list, "user_defined")
+            tbl.default_entry_set(self.bfgc.target, data_list)
+        except gc.BfruntimeRpcException as e:
+            print("Error processing entry from control plane: {}".format(e))
+
+        except grpc.RpcError as e:
+            print(
+                "Grpc channel error "
+                "while processing entry from control plane: {}".format(e)
+            )
 
 
     def writePolkaIndexRules(self, op_type, idx, vrf, hop):
