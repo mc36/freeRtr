@@ -360,6 +360,8 @@ public class userReader implements Comparator<String> {
 
     private List<String> doSummary(List<String> lst) {
         List<Long> sum = new ArrayList<Long>();
+        List<Long> min = new ArrayList<Long>();
+        List<Long> max = new ArrayList<Long>();
         final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
         for (int i = 0; i < lst.size(); i++) {
             String a = lst.get(i).trim();
@@ -382,17 +384,33 @@ public class userReader implements Comparator<String> {
                 if (p >= sum.size()) {
                     sum.add((long) 0);
                 }
-                sum.set(p, sum.get(p) + bits.str2long(a));
+                if (p >= min.size()) {
+                    min.add(Long.MAX_VALUE);
+                }
+                if (p >= max.size()) {
+                    max.add(Long.MIN_VALUE);
+                }
+                long v = bits.str2long(a);
+                if (!a.equals("" + v)) {
+                    continue;
+                }
+                sum.set(p, sum.get(p) + v);
+                if (v < min.get(p)) {
+                    min.set(p, v);
+                }
+                if (v > max.get(p)) {
+                    max.set(p, v);
+                }
             }
         }
-        userFormat res = new userFormat("|", "column|summary|average");
+        userFormat res = new userFormat("|", "column|summary|average|minimum|maximum");
         long div = lst.size() - 1;
         if (div < 1) {
             div = 1;
         }
         for (int i = 0; i < sum.size(); i++) {
             long val = sum.get(i);
-            res.add(i + "|" + val + "|" + (val / div));
+            res.add(i + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
         }
         return res.formatAll(tabMod);
     }
