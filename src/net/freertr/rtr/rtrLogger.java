@@ -118,7 +118,8 @@ public class rtrLogger extends ipRtr {
     public static userFormat prefixLengths(tabRoute<addrIP> tab) {
         int[] res = new int[(addrIP.size * 8) + 1];
         for (int i = 0; i < tab.size(); i++) {
-            res[tab.get(i).prefix.maskLen]++;
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            res[ntry.prefix.maskLen] += ntry.alts.size();
         }
         userFormat lst = new userFormat("|", "len|count");
         for (int i = 0; i < res.length; i++) {
@@ -134,19 +135,22 @@ public class rtrLogger extends ipRtr {
      * @return prefix length report
      */
     public static userFormat outgointInterfaces(tabRoute<addrIP> tab) {
-        tabGen<rtrLoggerIfc> ifcs = new tabGen<rtrLoggerIfc>();
-        for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> ntry = tab.get(i);
-            rtrLoggerIfc ifc = new rtrLoggerIfc((ipFwdIface) ntry.best.iface);
-            rtrLoggerIfc old = ifcs.add(ifc);
-            if (old != null) {
-                ifc = old;
+        tabGen<rtrLoggerIfc> res = new tabGen<rtrLoggerIfc>();
+        for (int o = 0; o < tab.size(); o++) {
+            tabRouteEntry<addrIP> ntry = tab.get(o);
+            for (int i = 0; i < ntry.alts.size(); i++) {
+                tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                rtrLoggerIfc ifc = new rtrLoggerIfc((ipFwdIface) attr.iface);
+                rtrLoggerIfc old = res.add(ifc);
+                if (old != null) {
+                    ifc = old;
+                }
+                ifc.count++;
             }
-            ifc.count++;
         }
         userFormat lst = new userFormat("|", "iface|count");
-        for (int i = 0; i < ifcs.size(); i++) {
-            lst.add("" + ifcs.get(i));
+        for (int i = 0; i < res.size(); i++) {
+            lst.add("" + res.get(i));
         }
         return lst;
     }
