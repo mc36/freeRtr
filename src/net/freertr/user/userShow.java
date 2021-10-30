@@ -1570,6 +1570,10 @@ public class userShow {
                 doShowRouteL(4);
                 return null;
             }
+            if (a.equals("distribution")) {
+                doShowDistrib(4);
+                return null;
+            }
             if (a.equals("segrout")) {
                 doShowRouteSR(4);
                 return null;
@@ -1844,6 +1848,10 @@ public class userShow {
                 doShowRouteL(6);
                 return null;
             }
+            if (a.equals("distribution")) {
+                doShowDistrib(6);
+                return null;
+            }
             if (a.equals("segrout")) {
                 doShowRouteSR(6);
                 return null;
@@ -1954,6 +1962,10 @@ public class userShow {
         }
         if (a.equals("prefix-lengths")) {
             rdr.putStrTab(r.logger.prefixLengths());
+            return;
+        }
+        if (a.equals("interfaces")) {
+            rdr.putStrTab(r.logger.outgoingInterfaces());
             return;
         }
     }
@@ -3835,6 +3847,15 @@ public class userShow {
             return;
         }
         doShowRoutes(fwd, fwd.actualU, 9);
+    }
+
+    private void doShowDistrib(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        rdr.putStrTab(rtrLogger.outgointInterfaces(fwd.actualU));
+        rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU));
     }
 
     private void doShowRouteSR(int ver) {

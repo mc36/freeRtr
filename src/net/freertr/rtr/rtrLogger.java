@@ -9,6 +9,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
+import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
@@ -127,12 +128,45 @@ public class rtrLogger extends ipRtr {
     }
 
     /**
+     * count outgoing interfaces
+     *
+     * @param tab routing table
+     * @return prefix length report
+     */
+    public static userFormat outgointInterfaces(tabRoute<addrIP> tab) {
+        tabGen<rtrLoggerIfc> ifcs = new tabGen<rtrLoggerIfc>();
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            rtrLoggerIfc ifc = new rtrLoggerIfc((ipFwdIface) ntry.best.iface);
+            rtrLoggerIfc old = ifcs.add(ifc);
+            if (old != null) {
+                ifc = old;
+            }
+            ifc.count++;
+        }
+        userFormat lst = new userFormat("|", "iface|count");
+        for (int i = 0; i < ifcs.size(); i++) {
+            lst.add("" + ifcs.get(i));
+        }
+        return lst;
+    }
+
+    /**
      * count prefix lengths
      *
      * @return prefix length report
      */
     public userFormat prefixLengths() {
         return prefixLengths(oldU);
+    }
+
+    /**
+     * count outgoing interfaces
+     *
+     * @return interface report
+     */
+    public userFormat outgoingInterfaces() {
+        return outgointInterfaces(oldU);
     }
 
     /**
@@ -434,6 +468,38 @@ class rtrLoggerFlap implements Comparator<rtrLoggerFlap> {
 
     public String toString() {
         return rtrLogger.afi2str(afi) + "|" + rtrLogger.prf2str(afi, prefix) + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+    }
+
+}
+
+class rtrLoggerIfc implements Comparator<rtrLoggerIfc> {
+
+    public final ipFwdIface iface;
+
+    public int count;
+
+    public rtrLoggerIfc(ipFwdIface ifc) {
+        iface = ifc;
+    }
+
+    public int compare(rtrLoggerIfc o1, rtrLoggerIfc o2) {
+        if (o1.iface == null) {
+            if (o2.iface != null) {
+                return -1;
+            }
+            return 0;
+        }
+        if (o2.iface == null) {
+            if (o1.iface != null) {
+                return +1;
+            }
+            return 0;
+        }
+        return o1.iface.compare(o1.iface, o2.iface);
+    }
+
+    public String toString() {
+        return iface + "|" + count;
     }
 
 }

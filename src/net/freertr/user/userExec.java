@@ -242,6 +242,8 @@ public class userExec {
         hl.add("4 .          <vrf>               name of routing table");
         hl.add("3 4        labels                unicast routing table labels");
         hl.add("4 .          <vrf>               name of routing table");
+        hl.add("3 4        distribution          routing interfaces");
+        hl.add("4 .          <name>              vrf name");
         hl.add("3 4        route                 unicast routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");
         hl.add("5 .            [addr]            prefix to view");
@@ -663,6 +665,7 @@ public class userExec {
         hl.add("3 4        logger                route logger");
         hl.add("4 5          <num>               process id");
         hl.add("5 .            prefix-lengths    list of prefix lengths");
+        hl.add("5 .            interfaces        list of outgoing interface");
         hl.add("5 6,.          unicast           list of database");
         hl.add("6 .              [addr]          entry to view");
         hl.add("5 6,.          multicast         list of database");
