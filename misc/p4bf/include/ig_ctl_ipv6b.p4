@@ -38,6 +38,19 @@ control IngressControlIPv6b(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.nexthop_id = nexthop_id;
     }
 
+#ifdef HAVE_POLKA
+    action act_ipv6_polka_encap_set_nexthop(polka_route_t routeid,
+                                            NextHopId_t nexthop_id) {
+        hdr.polka.setValid();
+        hdr.polka.version = 0;
+        hdr.polka.ttl = hdr.ipv6.hop_limit;
+        hdr.polka.routeid = routeid;
+        hdr.polka.proto = ETHERTYPE_IPV6;
+        ig_md.ethertype = ETHERTYPE_POLKA;
+        ig_md.nexthop_id = nexthop_id;
+    }
+#endif
+
 #ifdef HAVE_MPLS
     action act_ipv6_mpls2_encap_set_nexthop(label_t vpn_label,
                                             label_t egress_label,
@@ -79,6 +92,9 @@ ig_md.vrf:
         actions = {
             act_ipv6_cpl_set_nexthop;
             act_ipv6_set_nexthop;
+#ifdef HAVE_POLKA
+            act_ipv6_polka_encap_set_nexthop;
+#endif
 #ifdef HAVE_MPLS
             act_ipv6_mpls2_encap_set_nexthop;
 #endif
@@ -103,6 +119,9 @@ ig_md.vrf:
         } actions = {
             act_ipv6_cpl_set_nexthop;
             act_ipv6_set_nexthop;
+#ifdef HAVE_POLKA
+            act_ipv6_polka_encap_set_nexthop;
+#endif
 #ifdef HAVE_MPLS
             act_ipv6_mpls2_encap_set_nexthop;
 #endif

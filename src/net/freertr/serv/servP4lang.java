@@ -2923,6 +2923,7 @@ class servP4langConn implements Runnable {
             return;
         }
         vrf.sentMcast = true;
+        lower.sendLine("polkaown_add 0 " + vrf.id);
         lower.sendLine("myaddr4_add 224.0.0.0/4 -1 " + vrf.id);
         lower.sendLine("myaddr4_add 255.255.255.255/32 -1 " + vrf.id);
         lower.sendLine("myaddr6_add ff00::/8 -1 " + vrf.id);

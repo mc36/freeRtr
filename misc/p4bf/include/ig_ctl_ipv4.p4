@@ -36,6 +36,19 @@ control IngressControlIPv4(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.nexthop_id = nexthop_id;
     }
 
+#ifdef HAVE_POLKA
+    action act_ipv4_polka_encap_set_nexthop(polka_route_t routeid,
+                                            NextHopId_t nexthop_id) {
+        hdr.polka.setValid();
+        hdr.polka.version = 0;
+        hdr.polka.ttl = hdr.ipv4.ttl;
+        hdr.polka.routeid = routeid;
+        hdr.polka.proto = ETHERTYPE_IPV4;
+        ig_md.ethertype = ETHERTYPE_POLKA;
+        ig_md.nexthop_id = nexthop_id;
+    }
+#endif
+
 #ifdef HAVE_MPLS
     action act_ipv4_mpls2_encap_set_nexthop(label_t vpn_label,
                                             label_t egress_label,
@@ -77,6 +90,9 @@ ig_md.vrf:
         actions = {
             act_ipv4_cpl_set_nexthop;
             act_ipv4_set_nexthop;
+#ifdef HAVE_POLKA
+            act_ipv4_polka_encap_set_nexthop;
+#endif
 #ifdef HAVE_MPLS
             act_ipv4_mpls2_encap_set_nexthop;
 #endif
@@ -101,6 +117,9 @@ ig_md.vrf:
         } actions = {
             act_ipv4_cpl_set_nexthop;
             act_ipv4_set_nexthop;
+#ifdef HAVE_POLKA
+            act_ipv4_polka_encap_set_nexthop;
+#endif
 #ifdef HAVE_MPLS
             act_ipv4_mpls2_encap_set_nexthop;
 #endif
