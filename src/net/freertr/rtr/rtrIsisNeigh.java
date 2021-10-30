@@ -9,7 +9,7 @@ import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -97,12 +97,12 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     /**
      * segment routing label
      */
-    protected tabLabelNtry segrouLab;
+    protected tabLabelEntry segrouLab;
 
     /**
      * segment routing other label
      */
-    protected tabLabelNtry segrouOth;
+    protected tabLabelEntry segrouOth;
 
     /**
      * the level

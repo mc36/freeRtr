@@ -17,7 +17,7 @@ import net.freertr.sec.secServer;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.user.userUpgrade;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -110,7 +110,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     /**
      * segment routing label
      */
-    protected tabLabelNtry segrouLab;
+    protected tabLabelEntry segrouLab;
 
     /**
      * advertised data

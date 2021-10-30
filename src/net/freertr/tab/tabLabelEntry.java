@@ -16,7 +16,7 @@ import net.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class tabLabelNtry implements Comparator<tabLabelNtry> {
+public class tabLabelEntry implements Comparator<tabLabelEntry> {
 
     /**
      * label value
@@ -103,7 +103,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      *
      * @param lab label value
      */
-    public tabLabelNtry(int lab) {
+    public tabLabelEntry(int lab) {
         label = lab;
         setFwdDrop(key);
         created = bits.getTime();
@@ -132,8 +132,8 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      *
      * @return copy
      */
-    public tabLabelNtry copyBytes() {
-        tabLabelNtry n = new tabLabelNtry(label);
+    public tabLabelEntry copyBytes() {
+        tabLabelEntry n = new tabLabelEntry(label);
         n.key = key;
         n.working = working;
         n.forwarder = forwarder;
@@ -169,7 +169,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
      * @param o other
      * @return false if equals, true if differs
      */
-    public boolean differs(tabLabelNtry o) {
+    public boolean differs(tabLabelEntry o) {
         if (o == null) {
             return true;
         }
@@ -400,7 +400,7 @@ public class tabLabelNtry implements Comparator<tabLabelNtry> {
         return label + "|" + forwarder + "|" + iface + "|" + nextHop + "|" + s + "|" + cntr.byteRx + a;
     }
 
-    public int compare(tabLabelNtry o1, tabLabelNtry o2) {
+    public int compare(tabLabelEntry o1, tabLabelEntry o2) {
         if (o1.label < o2.label) {
             return -1;
         }

@@ -19,7 +19,7 @@ import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -118,12 +118,12 @@ public class rtrOspf6 extends ipRtr {
     /**
      * segment routing labels
      */
-    protected tabLabelNtry[] segrouLab;
+    protected tabLabelEntry[] segrouLab;
 
     /**
      * bier labels
      */
-    protected tabLabelNtry[] bierLab;
+    protected tabLabelEntry[] bierLab;
 
     /**
      * create one ospf process

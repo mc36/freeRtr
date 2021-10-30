@@ -17,9 +17,9 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
-import net.freertr.tab.tabNshNtry;
+import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabSession;
@@ -489,7 +489,7 @@ public class ipMpls implements ifcUp {
      * @param res reason code
      * @return false if succeed, true if error
      */
-    public static boolean createError(packHolder pck, tabLabelNtry lab, counter.reasons res) {
+    public static boolean createError(packHolder pck, tabLabelEntry lab, counter.reasons res) {
         ipFwd fwd = lab.forwarder;
         if (fwd == null) {
             return true;
@@ -579,7 +579,7 @@ public class ipMpls implements ifcUp {
      * @param lab label entry
      * @return false if success, true if error
      */
-    public static boolean putSrv6prefix(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelNtry lab) {
+    public static boolean putSrv6prefix(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelEntry lab) {
         if (ifc == null) {
             return true;
         }
@@ -592,7 +592,7 @@ public class ipMpls implements ifcUp {
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             attr.segrouPrf = adr.copyBytes();
-            attr.labelLoc = new tabLabelNtry(labelImp);
+            attr.labelLoc = new tabLabelEntry(labelImp);
         }
         return false;
     }
@@ -744,8 +744,8 @@ public class ipMpls implements ifcUp {
         if (debugger.ifcNshEvnt) {
             logger.debug("fwd sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
         }
-        tabNshNtry ntry = new tabNshNtry(pck.NSHsp, pck.NSHsi);
-        ntry = tabNshNtry.services.find(ntry);
+        tabNshEntry ntry = new tabNshEntry(pck.NSHsp, pck.NSHsi);
+        ntry = tabNshEntry.services.find(ntry);
         if (ntry == null) {
             logger.info("received invalid service " + pck.NSHsp + " " + pck.NSHsi + " on " + fwdE);
             return;
@@ -808,8 +808,8 @@ public class ipMpls implements ifcUp {
                 if (debugger.ifcNshEvnt) {
                     logger.debug("rx sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
                 }
-                tabNshNtry trg = new tabNshNtry(pck.NSHsp, pck.NSHsi);
-                trg = tabNshNtry.services.find(trg);
+                tabNshEntry trg = new tabNshEntry(pck.NSHsp, pck.NSHsi);
+                trg = tabNshEntry.services.find(trg);
                 if (trg == null) {
                     ntry.cntr.drop(pck, counter.reasons.notInTab);
                     return;
@@ -884,7 +884,7 @@ public class ipMpls implements ifcUp {
                 default:
                     break;
             }
-            tabLabelNtry ntry = tabLabel.find(pck.MPLSlabel);
+            tabLabelEntry ntry = tabLabel.find(pck.MPLSlabel);
             if (ntry == null) {
                 logger.info("received invalid label " + pck.MPLSlabel + " on " + fwdE);
                 return;

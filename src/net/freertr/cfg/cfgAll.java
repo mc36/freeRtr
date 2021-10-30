@@ -89,7 +89,7 @@ import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabNshNtry;
+import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -3394,7 +3394,7 @@ public class cfgAll {
         }
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, iconnects, filter);
-        servGenList.listGetRun(l, tabNshNtry.services, filter);
+        servGenList.listGetRun(l, tabNshEntry.services, filter);
         servGenList.listGetRun(l, checks, filter);
         servGenList.listGetRun(l, sensors, filter);
         servGenList.listGetRun(l, trnsltns, filter);

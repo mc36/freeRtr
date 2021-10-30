@@ -7,7 +7,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 
@@ -36,7 +36,7 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
     /**
      * local label
      */
-    public tabLabelNtry locLab;
+    public tabLabelEntry locLab;
 
     /**
      * source is local

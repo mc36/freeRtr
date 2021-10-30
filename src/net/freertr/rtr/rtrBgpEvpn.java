@@ -19,7 +19,7 @@ import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRtrmapN;
@@ -105,7 +105,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
     /**
      * label
      */
-    protected tabLabelNtry label;
+    protected tabLabelEntry label;
 
     /**
      * cmac receiver
@@ -152,7 +152,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         return null;
     }
 
-    private int convLab(tabLabelNtry label) {
+    private int convLab(tabLabelEntry label) {
         return (label.label << 4) | 1;
     }
 

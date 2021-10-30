@@ -3,7 +3,7 @@ package net.freertr.rtr;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.pack.packHolder;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.typLenVal;
@@ -54,7 +54,7 @@ public class rtrOspfSr {
      * @param pck packet to update
      * @param lab labels
      */
-    public static void putBase(packHolder pck, tabLabelNtry[] lab) {
+    public static void putBase(packHolder pck, tabLabelEntry[] lab) {
         if (lab == null) {
             return;
         }

@@ -30,7 +30,7 @@ import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelDup;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFilter;
@@ -833,7 +833,7 @@ class servOpenflowTx implements Runnable {
         createGroupMcast(pckB, pckT, pckO, n, true, ifcs4);
         createGroupMcast(pckB, pckT, pckO, n, false, ifcs6);
         for (int i = tabLabel.labels.size() - 1; i >= 0; i--) {
-            tabLabelNtry lab = tabLabel.labels.get(i);
+            tabLabelEntry lab = tabLabel.labels.get(i);
             if (lab == null) {
                 continue;
             }
@@ -1388,7 +1388,7 @@ class servOpenflowTx implements Runnable {
         return ntry;
     }
 
-    private void createMplsPunt(packHolder pckB, packOpenflow pckO, tabLabelNtry lab, servOpenflowFlw ntry) {
+    private void createMplsPunt(packHolder pckB, packOpenflow pckO, tabLabelEntry lab, servOpenflowFlw ntry) {
         pckB.clear();
         pckO.createMatchEthTyp(pckB, ipMpls.typeU);
         pckO.createMatchMplsLab(pckB, lab.label);
@@ -1411,7 +1411,7 @@ class servOpenflowTx implements Runnable {
         addTable(n, tabMpls, createMplsPop(pckB, pckO, ipMpls.labelExp4, true, servOpenflow.tabIpv4, ipIfc4.type));
         addTable(n, tabMpls, createMplsPop(pckB, pckO, ipMpls.labelExp6, true, servOpenflow.tabIpv6, ipIfc6.type));
         for (int i = tabLabel.labels.size() - 1; i >= 0; i--) {
-            tabLabelNtry lab = tabLabel.labels.get(i);
+            tabLabelEntry lab = tabLabel.labels.get(i);
             if (lab == null) {
                 continue;
             }

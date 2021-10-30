@@ -17,7 +17,7 @@ import net.freertr.pack.packLdpPwe;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.rtr.rtrLdpTrgtd;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -125,7 +125,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
 
     private rtrLdpNeigh neighL;
 
-    private tabLabelNtry labelL;
+    private tabLabelEntry labelL;
 
     private packLdpPwe pweL;
 

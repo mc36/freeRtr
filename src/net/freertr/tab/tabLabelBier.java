@@ -215,7 +215,7 @@ public class tabLabelBier {
      * @param prnt parent entry
      * @return dump
      */
-    public List<String> getShow(tabLabelNtry prnt) {
+    public List<String> getShow(tabLabelEntry prnt) {
         int bits = bsl2num(bsl);
         int si = prnt.label - base;
         int sis = bits * si;

@@ -61,12 +61,12 @@ import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelBierN;
 import net.freertr.tab.tabLabelDup;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabNatTraN;
-import net.freertr.tab.tabNshNtry;
+import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabQosN;
 import net.freertr.tab.tabRoute;
@@ -1259,9 +1259,9 @@ class servP4langConn implements Runnable {
 
     public tabGen<servP4langNei> neighs = new tabGen<servP4langNei>();
 
-    public tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
+    public tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
 
-    public tabGen<tabNshNtry> nshs = new tabGen<tabNshNtry>();
+    public tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
 
     public tabListing<tabAceslstN<addrIP>, addrIP> copp4;
 
@@ -1759,7 +1759,7 @@ class servP4langConn implements Runnable {
                 return false;
             }
             if (s.equals("mpls_cnt")) {
-                tabLabelNtry ntry = new tabLabelNtry(bits.str2num(cmd.word()));
+                tabLabelEntry ntry = new tabLabelEntry(bits.str2num(cmd.word()));
                 ntry = tabLabel.labels.find(ntry);
                 if (ntry == null) {
                     if (debugger.servP4langErr) {
@@ -1799,8 +1799,8 @@ class servP4langConn implements Runnable {
             }
             if (s.equals("nsh_cnt")) {
                 int i = bits.str2num(cmd.word());
-                tabNshNtry ntry = new tabNshNtry(i, bits.str2num(cmd.word()));
-                ntry = tabNshNtry.services.find(ntry);
+                tabNshEntry ntry = new tabNshEntry(i, bits.str2num(cmd.word()));
+                ntry = tabNshEntry.services.find(ntry);
                 if (ntry == null) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
@@ -1930,8 +1930,8 @@ class servP4langConn implements Runnable {
         for (int i = labels.size() - 1; i >= 0; i--) {
             doLab2(labels.get(i));
         }
-        for (int i = 0; i < tabNshNtry.services.size(); i++) {
-            doNsh1(tabNshNtry.services.get(i));
+        for (int i = 0; i < tabNshEntry.services.size(); i++) {
+            doNsh1(tabNshEntry.services.get(i));
         }
         for (int i = nshs.size() - 1; i >= 0; i--) {
             doNsh2(nshs.get(i));
@@ -2199,7 +2199,7 @@ class servP4langConn implements Runnable {
         return a;
     }
 
-    private void doLab4(ipFwd fwd, tabLabelNtry need, tabLabelNtry done, boolean bef) {
+    private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
         if (done.bier == null) {
             done.bier = new tabLabelBier(0, 0);
         }
@@ -2259,7 +2259,7 @@ class servP4langConn implements Runnable {
         lower.sendLine("bierlabloc" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + a);
     }
 
-    private void doLab3(ipFwd fwd, tabLabelNtry need, tabLabelNtry done, boolean bef) {
+    private void doLab3(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
         if (done.duplicate == null) {
             done.duplicate = new tabGen<tabLabelDup>();
         }
@@ -2317,19 +2317,19 @@ class servP4langConn implements Runnable {
         lower.sendLine("duplabloc" + fwd.ipVersion + "_" + (need.needLocal ? "add " : "del ") + vrf.id + " " + gid + " " + need.label + " " + act);
     }
 
-    private void doLab2(tabLabelNtry ntry) {
+    private void doLab2(tabLabelEntry ntry) {
         if (tabLabel.labels.find(ntry) != null) {
             return;
         }
         labels.del(ntry);
         if (ntry.bier != null) {
-            tabLabelNtry empty = new tabLabelNtry(ntry.label);
+            tabLabelEntry empty = new tabLabelEntry(ntry.label);
             empty.bier = new tabLabelBier(0, 0);
             doLab4(ntry.forwarder, empty, ntry, true);
             return;
         }
         if (ntry.duplicate != null) {
-            tabLabelNtry empty = new tabLabelNtry(ntry.label);
+            tabLabelEntry empty = new tabLabelEntry(ntry.label);
             empty.duplicate = new tabGen<tabLabelDup>();
             doLab3(ntry.forwarder, empty, ntry, true);
             return;
@@ -2373,7 +2373,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private void doLab1(tabLabelNtry ntry) {
+    private void doLab1(tabLabelEntry ntry) {
         if (ntry == null) {
             return;
         }
@@ -2382,7 +2382,7 @@ class servP4langConn implements Runnable {
             return;
         }
         if (ntry.bier != null) {
-            tabLabelNtry old = labels.find(ntry);
+            tabLabelEntry old = labels.find(ntry);
             boolean bef;
             if (old != null) {
                 if (!old.differs(ntry)) {
@@ -2390,7 +2390,7 @@ class servP4langConn implements Runnable {
                 }
                 bef = true;
             } else {
-                old = new tabLabelNtry(ntry.label);
+                old = new tabLabelEntry(ntry.label);
                 bef = false;
             }
             labels.put(ntry);
@@ -2398,7 +2398,7 @@ class servP4langConn implements Runnable {
             return;
         }
         if (ntry.duplicate != null) {
-            tabLabelNtry old = labels.find(ntry);
+            tabLabelEntry old = labels.find(ntry);
             boolean bef;
             if (old != null) {
                 if (!old.differs(ntry)) {
@@ -2406,7 +2406,7 @@ class servP4langConn implements Runnable {
                 }
                 bef = true;
             } else {
-                old = new tabLabelNtry(ntry.label);
+                old = new tabLabelEntry(ntry.label);
                 bef = false;
             }
             labels.put(ntry);
@@ -2418,7 +2418,7 @@ class servP4langConn implements Runnable {
             if (vrf == null) {
                 return;
             }
-            tabLabelNtry old = labels.find(ntry);
+            tabLabelEntry old = labels.find(ntry);
             String act = "add";
             if (old != null) {
                 if (!old.differs(ntry)) {
@@ -2447,7 +2447,7 @@ class servP4langConn implements Runnable {
         if (hop == null) {
             return;
         }
-        tabLabelNtry old = labels.find(ntry);
+        tabLabelEntry old = labels.find(ntry);
         String act = "add";
         if (old != null) {
             if (!old.differs(ntry)) {
@@ -2470,7 +2470,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private String doNsh3(tabNshNtry ntry, String act) {
+    private String doNsh3(tabNshEntry ntry, String act) {
         if (ntry.iface != null) {
             servP4langIfc ifc = findIfc(ntry.iface);
             if (ifc == null) {
@@ -2488,8 +2488,8 @@ class servP4langConn implements Runnable {
         return null;
     }
 
-    private void doNsh2(tabNshNtry ntry) {
-        if (tabNshNtry.services.find(ntry) != null) {
+    private void doNsh2(tabNshEntry ntry) {
+        if (tabNshEntry.services.find(ntry) != null) {
             return;
         }
         nshs.del(ntry);
@@ -2500,12 +2500,12 @@ class servP4langConn implements Runnable {
         lower.sendLine(act);
     }
 
-    private void doNsh1(tabNshNtry ntry) {
+    private void doNsh1(tabNshEntry ntry) {
         if (ntry == null) {
             return;
         }
         ntry = ntry.copyBytes();
-        tabNshNtry old = nshs.find(ntry);
+        tabNshEntry old = nshs.find(ntry);
         String act = "add";
         if (old != null) {
             if (!old.differs(ntry)) {

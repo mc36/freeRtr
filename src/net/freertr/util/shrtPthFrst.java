@@ -19,7 +19,7 @@ import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelBierN;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -1196,7 +1196,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param segrouUsd segment routing usage
      * @return routes
      */
-    public tabRoute<addrIP> getRoutes(ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd) {
+    public tabRoute<addrIP> getRoutes(ipFwd fwdCor, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd) {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
@@ -1235,7 +1235,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param segrouUsd segment routing usage
      * @return routes
      */
-    public tabRoute<addrIP> getOroutes(ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd) {
+    public tabRoute<addrIP> getOroutes(ipFwd fwdCor, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd) {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
@@ -1265,7 +1265,7 @@ public class shrtPthFrst<Ta extends addrType> {
         return tab1;
     }
 
-    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, int fwdKey, tabLabelNtry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop, boolean other) {
+    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop, boolean other) {
         rou.alts.clear();
         boolean srPop = (rou.best.rouSrc & 16) != 0;
         for (int i = 0; i < hop.size(); i++) {

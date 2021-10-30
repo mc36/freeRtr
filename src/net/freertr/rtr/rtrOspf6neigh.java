@@ -8,7 +8,7 @@ import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -139,7 +139,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
     /**
      * segment routing label
      */
-    protected tabLabelNtry segrouLab;
+    protected tabLabelEntry segrouLab;
 
     private final static int lsaPerDescr = 16;
 

@@ -13,7 +13,7 @@ import net.freertr.clnt.clntMplsPwe;
 import net.freertr.pack.packLdpPwe;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRtrmapN;
@@ -62,7 +62,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
 
     private tabGen<rtrBgpVplsPeer> peers = new tabGen<rtrBgpVplsPeer>();
 
-    private tabLabelNtry[] veLab;
+    private tabLabelEntry[] veLab;
 
     /**
      * create new instance

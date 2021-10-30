@@ -7,7 +7,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
@@ -208,7 +208,7 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * @param agrR aggregator router
      * @param agrA aggregator as
      */
-    public void routerDoAggregates(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelNtry lab, addrIPv4 agrR, int agrA) {
+    public void routerDoAggregates(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelEntry lab, addrIPv4 agrR, int agrA) {
         for (int i = 0; i < routerAggregating.size(); i++) {
             ipRtrAgr ntry = routerAggregating.get(i);
             if (ntry == null) {

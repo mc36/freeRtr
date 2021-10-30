@@ -73,10 +73,10 @@ import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
-import net.freertr.tab.tabNshNtry;
+import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRoute;
@@ -1199,12 +1199,12 @@ public class userShow {
             if (a.equals("forwarding")) {
                 int p = bits.str2num(cmd.word());
                 if (p < 1) {
-                    rdr.putStrTab(tabNshNtry.getShFor());
+                    rdr.putStrTab(tabNshEntry.getShFor());
                     return null;
                 }
                 int i = bits.str2num(cmd.word());
-                tabNshNtry ntry = new tabNshNtry(p, i);
-                ntry = tabNshNtry.services.find(ntry);
+                tabNshEntry ntry = new tabNshEntry(p, i);
+                ntry = tabNshEntry.services.find(ntry);
                 if (ntry == null) {
                     cmd.error("no such service");
                     return null;
@@ -1213,7 +1213,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("interfaces")) {
-                rdr.putStrTab(tabNshNtry.getShInt());
+                rdr.putStrTab(tabNshEntry.getShInt());
                 return null;
             }
             cmd.badCmd();
@@ -1227,7 +1227,7 @@ public class userShow {
                     rdr.putStrTab(tabLabel.getShFor());
                     return null;
                 }
-                tabLabelNtry ntry = tabLabel.find(i);
+                tabLabelEntry ntry = tabLabel.find(i);
                 if (ntry == null) {
                     cmd.error("no such label");
                     return null;

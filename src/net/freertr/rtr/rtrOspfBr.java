@@ -3,7 +3,7 @@ package net.freertr.rtr;
 import net.freertr.addr.addrIP;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLabelBier;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.typLenVal;
@@ -36,7 +36,7 @@ public class rtrOspfBr {
      * @param idx index
      * @return bytes generated
      */
-    protected static byte[] putPref(tabLabelNtry[] lab, int bsl, int idx) {
+    protected static byte[] putPref(tabLabelEntry[] lab, int bsl, int idx) {
         if (lab == null) {
             return new byte[0];
         }

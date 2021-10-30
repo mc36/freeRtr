@@ -133,7 +133,7 @@ import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabNatCfgN;
-import net.freertr.tab.tabNshNtry;
+import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -1027,9 +1027,9 @@ public class userConfig {
         if (a.equals("nsh")) {
             int p = bits.str2num(cmd.word());
             int i = bits.str2num(cmd.word());
-            tabNshNtry ntry = new tabNshNtry(p, i);
+            tabNshEntry ntry = new tabNshEntry(p, i);
             ntry.doCfgStr(cmd);
-            tabNshNtry.services.put(ntry);
+            tabNshEntry.services.put(ntry);
             return;
         }
         if (a.equals("router")) {
@@ -1929,8 +1929,8 @@ public class userConfig {
         if (a.equals("nsh")) {
             int p = bits.str2num(cmd.word());
             int i = bits.str2num(cmd.word());
-            tabNshNtry ntry = new tabNshNtry(p, i);
-            if (tabNshNtry.services.del(ntry) == null) {
+            tabNshEntry ntry = new tabNshEntry(p, i);
+            if (tabNshEntry.services.del(ntry) == null) {
                 cmd.error("invalid nsh number");
                 return;
             }

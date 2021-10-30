@@ -35,7 +35,7 @@ import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelBierN;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPlcmapN;
 import net.freertr.tab.tabPrfxlstN;
@@ -100,7 +100,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * segment routing labels
      */
-    protected tabLabelNtry[] segrouLab;
+    protected tabLabelEntry[] segrouLab;
 
     /**
      * bier index
@@ -120,7 +120,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * bier labels
      */
-    protected tabLabelNtry[] bierLab;
+    protected tabLabelEntry[] bierLab;
 
     /**
      * scan time interval
@@ -735,12 +735,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * evpn unicast label
      */
-    protected tabLabelNtry evpnUni;
+    protected tabLabelEntry evpnUni;
 
     /**
      * evpn multicast label
      */
-    protected tabLabelNtry evpnMul;
+    protected tabLabelEntry evpnMul;
 
     /**
      * full compute last

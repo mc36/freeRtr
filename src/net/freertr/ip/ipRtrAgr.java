@@ -7,7 +7,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.tab.tabIntUpdater;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
@@ -96,7 +96,7 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
      * @param rtrT router type
      * @param rtrN router number
      */
-    public void filter(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelNtry lab, addrIPv4 agrR, int agrA, tabRouteAttr.routeType rtrT, int rtrN) {
+    public void filter(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelEntry lab, addrIPv4 agrR, int agrA, tabRouteAttr.routeType rtrT, int rtrN) {
         int cnt = 0;
         List<Integer> pathSet = new ArrayList<Integer>();
         List<Integer> confSet = new ArrayList<Integer>();

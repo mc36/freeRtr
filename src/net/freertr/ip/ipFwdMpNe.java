@@ -2,7 +2,7 @@ package net.freertr.ip;
 
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 
 /**
  * stores one multipoint neighbor
@@ -29,7 +29,7 @@ public class ipFwdMpNe implements Comparator<ipFwdMpNe> {
     /**
      * local label
      */
-    public tabLabelNtry labelL;
+    public tabLabelEntry labelL;
 
     /**
      * create instance

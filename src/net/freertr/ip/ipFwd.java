@@ -21,7 +21,7 @@ import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelBierN;
 import net.freertr.tab.tabLabelDup;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabNatTraN;
@@ -366,7 +366,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     /**
      * common label
      */
-    public tabLabelNtry commonLabel;
+    public tabLabelEntry commonLabel;
 
     /**
      * ip core to use
@@ -1523,7 +1523,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param lab local label
      * @param pck packet to process
      */
-    protected void mplsRxPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, tabLabelNtry lab, packHolder pck) {
+    protected void mplsRxPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, tabLabelEntry lab, packHolder pck) {
         if (debugger.ipFwdTraf) {
             logger.debug("rx label=" + lab.label);
         }

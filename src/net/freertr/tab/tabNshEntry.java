@@ -21,12 +21,12 @@ import net.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
+public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
 
     /**
      * service table
      */
-    public final static tabGen<tabNshNtry> services = new tabGen<tabNshNtry>();
+    public final static tabGen<tabNshEntry> services = new tabGen<tabNshEntry>();
 
     /**
      * service path id
@@ -94,7 +94,7 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
      * @param p path id
      * @param i index
      */
-    public tabNshNtry(int p, int i) {
+    public tabNshEntry(int p, int i) {
         sp = p;
         si = i;
     }
@@ -103,7 +103,7 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
         return sp + " " + si;
     }
 
-    public int compare(tabNshNtry o1, tabNshNtry o2) {
+    public int compare(tabNshEntry o1, tabNshEntry o2) {
         if (o1.sp < o2.sp) {
             return -1;
         }
@@ -124,8 +124,8 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
      *
      * @return clone
      */
-    public tabNshNtry copyBytes() {
-        tabNshNtry n = new tabNshNtry(sp, si);
+    public tabNshEntry copyBytes() {
+        tabNshEntry n = new tabNshEntry(sp, si);
         n.cntr = cntr;
         n.trgSp = trgSp;
         n.trgSi = trgSi;
@@ -146,7 +146,7 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
      * @param o other
      * @return true if differs, false if equals
      */
-    public boolean differs(tabNshNtry o) {
+    public boolean differs(tabNshEntry o) {
         if (trgSp != o.trgSp) {
             return true;
         }
@@ -321,7 +321,7 @@ public class tabNshNtry implements Comparator<tabNshNtry>, cfgGeneric {
     public static userFormat getShFor() {
         userFormat lst = new userFormat("|", "sp|si|target|bytes");
         for (int i = 0; i < services.size(); i++) {
-            tabNshNtry ntry = services.get(i);
+            tabNshEntry ntry = services.get(i);
             if (ntry == null) {
                 continue;
             }

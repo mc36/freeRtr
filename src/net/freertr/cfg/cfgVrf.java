@@ -23,7 +23,7 @@ import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabQos;
@@ -897,8 +897,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         if (a.equals("label4common")) {
             label4comm = bits.str2num(cmd.word());
-            tabLabelNtry[] ntry = tabLabel.allocate(1, label4comm, 1);
-            tabLabelNtry old = fwd4.commonLabel;
+            tabLabelEntry[] ntry = tabLabel.allocate(1, label4comm, 1);
+            tabLabelEntry old = fwd4.commonLabel;
             fwd4.commonLabel = ntry[0];
             fwd4.routerStaticChg();
             tabLabel.release(old, 1);
@@ -906,8 +906,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         if (a.equals("label6common")) {
             label6comm = bits.str2num(cmd.word());
-            tabLabelNtry[] ntry = tabLabel.allocate(1, label6comm, 1);
-            tabLabelNtry old = fwd6.commonLabel;
+            tabLabelEntry[] ntry = tabLabel.allocate(1, label6comm, 1);
+            tabLabelEntry old = fwd6.commonLabel;
             fwd6.commonLabel = ntry[0];
             fwd6.routerStaticChg();
             tabLabel.release(old, 1);

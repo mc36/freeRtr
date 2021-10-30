@@ -21,7 +21,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabNatTraN;
@@ -879,7 +879,7 @@ public class ipFwdTab {
                 ntry.best.labelLoc = lower.commonLabel;
                 continue;
             }
-            tabLabelNtry lab = tabLabel.allocate(2);
+            tabLabelEntry lab = tabLabel.allocate(2);
             for (int o = 0; o < ntry.alts.size(); o++) {
                 ntry.alts.get(o).labelLoc = lab;
             }

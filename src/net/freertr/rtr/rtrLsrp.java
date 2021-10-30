@@ -24,7 +24,7 @@ import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
@@ -174,12 +174,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * segment routing labels
      */
-    protected tabLabelNtry[] segrouLab;
+    protected tabLabelEntry[] segrouLab;
 
     /**
      * bier labels
      */
-    protected tabLabelNtry[] bierLab;
+    protected tabLabelEntry[] bierLab;
 
     /**
      * notified on route change

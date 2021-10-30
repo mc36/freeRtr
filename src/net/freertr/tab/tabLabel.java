@@ -19,7 +19,7 @@ public class tabLabel {
     /**
      * label table
      */
-    public final static tabGen<tabLabelNtry> labels = new tabGen<tabLabelNtry>();
+    public final static tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
 
     private tabLabel() {
     }
@@ -32,7 +32,7 @@ public class tabLabel {
     public static userFormat getShFor() {
         userFormat lst = new userFormat("|", "label|vrf|iface|hop|label|targets|bytes");
         for (int i = 0; i < labels.size(); i++) {
-            tabLabelNtry ntry = labels.get(i);
+            tabLabelEntry ntry = labels.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -68,8 +68,8 @@ public class tabLabel {
      * @param label label to find
      * @return label entry, null if not found
      */
-    public static tabLabelNtry find(int label) {
-        tabLabelNtry ntry = new tabLabelNtry(label);
+    public static tabLabelEntry find(int label) {
+        tabLabelEntry ntry = new tabLabelEntry(label);
         return labels.find(ntry);
     }
 
@@ -79,10 +79,10 @@ public class tabLabel {
      * @param key key to use for deallocation
      * @return label entry, null if nothing
      */
-    public static tabLabelNtry allocate(int key) {
+    public static tabLabelEntry allocate(int key) {
         for (int retry = 0; retry < 16; retry++) {
             int i = bits.random(0x20, 0xffff0);
-            tabLabelNtry ntry = new tabLabelNtry(i);
+            tabLabelEntry ntry = new tabLabelEntry(i);
             if (labels.add(ntry) != null) {
                 continue;
             }
@@ -97,10 +97,10 @@ public class tabLabel {
         return null;
     }
 
-    private static tabLabelNtry[] allocBlock(int key, int beg, int num) {
-        tabLabelNtry[] res = new tabLabelNtry[num];
+    private static tabLabelEntry[] allocBlock(int key, int beg, int num) {
+        tabLabelEntry[] res = new tabLabelEntry[num];
         for (int i = 0; i < num; i++) {
-            tabLabelNtry ntry = new tabLabelNtry(beg + i);
+            tabLabelEntry ntry = new tabLabelEntry(beg + i);
             if (labels.add(ntry) != null) {
                 release(res, key);
                 return null;
@@ -122,13 +122,13 @@ public class tabLabel {
      * @param num number of labels
      * @return label list, null if nothing
      */
-    public static tabLabelNtry[] allocate(int key, int num) {
+    public static tabLabelEntry[] allocate(int key, int num) {
         if (num < 1) {
             return null;
         }
         for (int retry = 0; retry < 32; retry++) {
             int beg = bits.random(0x20, 0xffff0 - num);
-            tabLabelNtry[] res = allocBlock(key, beg, num);
+            tabLabelEntry[] res = allocBlock(key, beg, num);
             if (res != null) {
                 return res;
             }
@@ -145,14 +145,14 @@ public class tabLabel {
      * @param num number of labels
      * @return label list, null if nothing
      */
-    public static tabLabelNtry[] allocate(int key, int beg, int num) {
+    public static tabLabelEntry[] allocate(int key, int beg, int num) {
         if (num < 1) {
             return null;
         }
         if (beg < 1) {
             return allocate(key, num);
         }
-        tabLabelNtry[] res = allocBlock(key, beg, num);
+        tabLabelEntry[] res = allocBlock(key, beg, num);
         if (res != null) {
             return res;
         }
@@ -167,7 +167,7 @@ public class tabLabel {
      * @param key key to use
      * @return label entry, null if nothing
      */
-    public static tabLabelNtry release(tabLabelNtry label, int key) {
+    public static tabLabelEntry release(tabLabelEntry label, int key) {
         if (label == null) {
             return null;
         }
@@ -195,13 +195,13 @@ public class tabLabel {
      * @param key key to use
      * @return label entry, null if nothing
      */
-    public static tabLabelNtry[] release(tabLabelNtry[] label, int key) {
+    public static tabLabelEntry[] release(tabLabelEntry[] label, int key) {
         if (label == null) {
             return null;
         }
-        tabLabelNtry[] res = new tabLabelNtry[label.length];
+        tabLabelEntry[] res = new tabLabelEntry[label.length];
         for (int i = 0; i < label.length; i++) {
-            tabLabelNtry ntry = label[i];
+            tabLabelEntry ntry = label[i];
             ntry = release(ntry, key);
             res[i] = ntry;
         }

@@ -479,7 +479,7 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * local label
      */
-    public tabLabelNtry labelLoc = null;
+    public tabLabelEntry labelLoc = null;
 
     /**
      * remote label

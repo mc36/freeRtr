@@ -7,7 +7,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipMpls;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;
-import net.freertr.tab.tabLabelNtry;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
@@ -518,7 +518,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.nextHop = localAddr.copyBytes();
         }
         ntry.labelRem = new ArrayList<Integer>();
-        tabLabelNtry loc = ntry.labelLoc;
+        tabLabelEntry loc = ntry.labelLoc;
         if (loc == null) {
             ipFwd tab;
             if (ntry.rouTab == null) {
