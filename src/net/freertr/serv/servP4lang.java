@@ -2703,7 +2703,7 @@ class servP4langConn implements Runnable {
             s = s.replaceAll("_mod ", "_del ");
             s += cmd.word();
             cmd.word();
-            lower.sendLine(s + " " + addrMac.getRandom() + " " + cmd.getRemaining());
+            lower.sendLine(s + " " + addrMac.getRandom().toEmuStr() + " " + cmd.getRemaining());
         }
         tabGen<ifcBridgeAdr> seenM = new tabGen<ifcBridgeAdr>();
         for (int i = 0;; i++) {
