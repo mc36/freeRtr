@@ -159,20 +159,20 @@ ETHERTYPE_IPV6:
 #endif
 
 #ifdef HAVE_NSH
-    state prs_nsh {
-        ig_md.nsh_valid = 1;
-        pkt.extract(hdr.nsh);
-        transition select(hdr.nsh.next_proto) {
+state prs_nsh {
+    ig_md.nsh_valid = 1;
+    pkt.extract(hdr.nsh);
+    transition select(hdr.nsh.next_proto) {
 8w1:
-            prs_ipv4;
+        prs_ipv4;
 8w2:
-            prs_ipv6;
+        prs_ipv6;
 8w5:
-            prs_mpls0;
-        default:
-            accept;
-        }
+        prs_mpls0;
+    default:
+        accept;
     }
+}
 #endif
 
 #ifdef HAVE_MPLS

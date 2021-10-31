@@ -25,6 +25,7 @@ const bit<16> ETHERTYPE_ARP               = 0x0806;
 const bit<16> ETHERTYPE_VLAN              = 0x8100;
 const bit<16> ETHERTYPE_IPV6              = 0x86dd;
 const bit<16> ETHERTYPE_NSH               = 0x894f;
+const bit<16> ETHERTYPE_POLKA             = 0x8842;
 const bit<16> ETHERTYPE_MPLS_UCAST        = 0x8847;
 const bit<16> ETHERTYPE_MPLS_MCAST        = 0x8848;
 const bit<16> ETHERTYPE_LACP              = 0x8809;

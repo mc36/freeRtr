@@ -49,7 +49,7 @@ struct headers {
     polka_t polka;
 #endif
 #ifdef HAVE_NSH
-     nsh_t nsh;
+    nsh_t nsh;
 #endif
 #ifdef HAVE_MPLS
     mpls_t mpls0;

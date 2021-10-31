@@ -51,7 +51,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
     IngressControlPOLKA()ig_ctl_polka;
 #endif
 #ifdef HAVE_NSH
-     IngressControlNSH() ig_ctl_nsh;
+    IngressControlNSH() ig_ctl_nsh;
 #endif
 #ifdef HAVE_PPPOE
     IngressControlPPPOE() ig_ctl_pppoe;
@@ -146,7 +146,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_polka.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_NSH
-         ig_ctl_nsh.apply(hdr,ig_md,ig_intr_md);
+            ig_ctl_nsh.apply(hdr,ig_md,ig_intr_md);
 #endif
 #ifdef HAVE_MPLS
             ig_ctl_mpls.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);

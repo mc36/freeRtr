@@ -64,6 +64,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -85,6 +86,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -104,9 +106,11 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.nsh_remove = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
         ig_md.arp_valid = 0;
@@ -133,6 +137,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -161,6 +166,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -208,6 +214,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -252,6 +259,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -293,6 +301,7 @@ hdr.ethernet.src_mac_addr:
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;
@@ -364,6 +373,7 @@ hdr.ethernet.dst_mac_addr:
         }
         ig_md.vrf = 0;
         ig_md.nsh_valid = 0;
+        ig_md.polka_valid = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.arp_valid = 0;

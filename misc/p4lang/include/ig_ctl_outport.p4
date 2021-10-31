@@ -78,6 +78,10 @@ ig_md.nexthop_id:
             hdr.nsh.setInvalid();
         }
 
+        if (ig_md.polka_remove == 1) {
+            hdr.polka.setInvalid();
+        }
+
         if (ig_md.mpls1_remove == 1) {
             hdr.mpls1.setInvalid();
         }
@@ -102,6 +106,10 @@ ig_md.nexthop_id:
         if (hdr.nsh.isValid()) {
             if (hdr.nsh.ttl < 2) act_set_drop();
             hdr.nsh.ttl = hdr.nsh.ttl -1;
+        }
+        if (hdr.polka.isValid()) {
+            if (hdr.polka.ttl < 2) act_set_drop();
+            hdr.polka.ttl = hdr.polka.ttl -1;
         }
         if (hdr.mpls0.isValid()) {
             if (hdr.mpls0.ttl < 2) act_set_drop();

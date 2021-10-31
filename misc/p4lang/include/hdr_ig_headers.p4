@@ -20,7 +20,7 @@
 struct headers {
     cpu_header_t	cpu;
     ethernet_t		ethernet;
-    vlan_t              vlan;
+    vlan_t		vlan;
     pppoe_t		pppoeC;
     pppoe_t		pppoeD;
     pppbr_t		pppoeB;
@@ -33,7 +33,8 @@ struct headers {
     l2tp_t		l2tp2;
     pppbr_t		pppbr;
     ethernet_t		eth4;
-    nsh_t               nsh;
+    polka_t		polka;
+    nsh_t		nsh;
     mpls_t		mpls0;
     mpls_t		mpls1;
     bier_t		bier;
@@ -41,7 +42,7 @@ struct headers {
     ipv6_t		ipv6c;
     ethernet_t		eth2;
     arp_t		arp;
-    llc_t               llc;
+    llc_t		llc;
     ipv4_t		ipv4;
     ipv6_t		ipv6;
     ethernet_t		eth3;
