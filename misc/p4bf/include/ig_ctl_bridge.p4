@@ -64,6 +64,12 @@ hdr.ethernet.src_mac_addr:
         stats.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -103,6 +109,12 @@ hdr.ethernet.src_mac_addr:
         stats.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -150,6 +162,12 @@ hdr.ethernet.src_mac_addr:
         stats.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -194,6 +212,12 @@ hdr.ethernet.src_mac_addr:
         stats.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -236,6 +260,12 @@ hdr.ethernet.src_mac_addr:
         stats.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -311,6 +341,12 @@ hdr.ethernet.dst_mac_addr:
 
         if (ig_md.bridge_id != 0) {
             ig_md.vrf = 0;
+#ifdef HAVE_NSH
+            ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+            ig_md.polka_valid = 0;
+#endif
 #ifdef HAVE_MPLS
             ig_md.mpls0_valid = 0;
             ig_md.mpls1_valid = 0;

@@ -19,6 +19,10 @@ ETHERTYPE_PPPOE_DATA :
 ETHERTYPE_POLKA:
         prs_polka;
 #endif
+#ifdef HAVE_NSH
+ETHERTYPE_NSH:
+        prs_nsh;
+#endif
 #ifdef HAVE_MPLS
 ETHERTYPE_MPLS_UCAST:
         prs_mpls0;
@@ -60,6 +64,10 @@ ETHERTYPE_PPPOE_DATA :
 #ifdef HAVE_POLKA
 ETHERTYPE_POLKA:
         prs_polka;
+#endif
+#ifdef HAVE_NSH
+ETHERTYPE_NSH:
+        prs_nsh;
 #endif
 #ifdef HAVE_MPLS
 ETHERTYPE_MPLS_UCAST:
@@ -136,6 +144,10 @@ state prs_polka {
 ETHERTYPE_MPLS_UCAST:
         prs_mpls0;
 #endif
+#ifdef HAVE_NSH
+ETHERTYPE_NSH:
+        prs_nsh;
+#endif
 ETHERTYPE_IPV4:
         prs_ipv4;
 ETHERTYPE_IPV6:
@@ -144,6 +156,23 @@ ETHERTYPE_IPV6:
         accept;
     }
 }
+#endif
+
+#ifdef HAVE_NSH
+    state prs_nsh {
+        ig_md.nsh_valid = 1;
+        pkt.extract(hdr.nsh);
+        transition select(hdr.nsh.next_proto) {
+8w1:
+            prs_ipv4;
+8w2:
+            prs_ipv6;
+8w5:
+            prs_mpls0;
+        default:
+            accept;
+        }
+    }
 #endif
 
 #ifdef HAVE_MPLS

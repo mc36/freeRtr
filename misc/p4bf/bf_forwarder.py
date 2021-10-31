@@ -564,7 +564,7 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka, nsh):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -576,6 +576,7 @@ class BfForwarder(Thread):
         self.mpls = mpls
         self.srv6 = srv6
         self.polka = polka
+        self.nsh = nsh
         self.nat = nat
         self.pbr = pbr
         self.tun = tun
@@ -2604,6 +2605,60 @@ class BfForwarder(Thread):
             key_annotation_fields_2,
             data_annotation_fields_2,
         )
+
+
+    def writeNshFwdRules(self, op_type, sp, si, prt, src, dst, tsp, tsi):
+        if self.nsh == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_nsh"
+        tbl_name = "%s.tbl_nsh" % (tbl_global_path)
+        tbl_action_name = "%s.act_forward" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.nsh.sp", (sp)),
+            gc.KeyTuple("hdr.nsh.si", (si)),
+        ]
+        data_field_list = [
+            gc.DataTuple("port", prt),
+            gc.DataTuple("src", src),
+            gc.DataTuple("dst", dst),
+            gc.DataTuple("sp", tsp),
+            gc.DataTuple("si", tsi),
+        ]
+        key_annotation_fields = {}
+        data_annotation_fields = {"dst": "mac", "src": "mac"}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
+    def writeNshLocRules(self, op_type, sp, si, vrf):
+        if self.nsh == False:
+            return
+        tbl_global_path = "ig_ctl.ig_ctl_nsh"
+        tbl_name = "%s.tbl_nsh" % (tbl_global_path)
+        tbl_action_name = "%s.act_route" % (tbl_global_path)
+        key_field_list = [
+            gc.KeyTuple("hdr.nsh.sp", (sp)),
+            gc.KeyTuple("hdr.nsh.si", (si)),
+        ]
+        data_field_list = [gc.DataTuple("vrf", vrf)]
+        key_annotation_fields = {}
+        data_annotation_fields = {}
+        self._processEntryFromControlPlane(
+            op_type,
+            tbl_name,
+            key_field_list,
+            data_field_list,
+            tbl_action_name,
+            key_annotation_fields,
+            data_annotation_fields,
+        )
+
 
     def writeMySrv4rules(self, op_type, glob, dst_addr, vrf):
         if self.srv6 == False:
@@ -5205,6 +5260,26 @@ class BfForwarder(Thread):
                 continue
             if splt[0] == "mysrv4_del":
                 self.writeMySrv4rules(3, int(splt[1]), splt[2], int(splt[3]))
+                continue
+
+            if splt[0] == "nshfwd_add":
+                self.writeNshFwdRules(1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+                continue
+            if splt[0] == "nshfwd_mod":
+                self.writeNshFwdRules(2,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+                continue
+            if splt[0] == "nshfwd_del":
+                self.writeNshFwdRules(3,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+                continue
+
+            if splt[0] == "nshloc_add":
+                self.writeNshLocRules(1,int(splt[1]),int(splt[2]),int(splt[3]))
+                continue
+            if splt[0] == "nshloc_mod":
+                self.writeNshLocRules(2,int(splt[1]),int(splt[2]),int(splt[3]))
+                continue
+            if splt[0] == "nshloc_del":
+                self.writeNshLocRules(3,int(splt[1]),int(splt[2]),int(splt[3]))
                 continue
 
             if splt[0] == "neigh4_add":
@@ -8636,6 +8711,16 @@ if __name__ == "__main__":
         default=True,
     )
     parser.add_argument(
+        "--nsh",
+        help="enable nsh",
+        type=str2bool,
+        nargs='?',
+        const=True,
+        action="store",
+        required=False,
+        default=True,
+    )
+    parser.add_argument(
         "--nat",
         help="enable nat",
         type=str2bool,
@@ -8796,6 +8881,7 @@ if __name__ == "__main__":
                                args.poe,
                                args.mcast,
                                args.polka,
+                               args.nsh,
                                )
 
         bf_forwarder.daemon=True

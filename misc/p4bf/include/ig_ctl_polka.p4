@@ -41,6 +41,10 @@ control IngressControlPOLKA(
         ig_md.nexthop_id = nexthop_id;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
     }
 
     action act_route() {

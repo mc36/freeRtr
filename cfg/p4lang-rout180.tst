@@ -44,13 +44,13 @@ int lo1
 router lsrp4 1
  vrf v1
  router 4.4.4.1
- segrout 10 1
+ segrout 10 1 pop
  justadvert lo0
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.1
- segrout 10 1
+ segrout 10 1 pop
  justadvert lo0
  exit
 int sdn1

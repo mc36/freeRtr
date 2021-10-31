@@ -80,9 +80,19 @@ ig_md.nexthop_id:
         } else {
             tbl_nexthop.apply();
 #ifdef HAVE_POLKA
-            if (hdr.polka.isValid()) {
+            if (ig_md.polka_remove == 1) {
+                hdr.polka.setInvalid();
+            } else if (hdr.polka.isValid()) {
                 if (hdr.polka.ttl < 2) act_set_drop();
                 hdr.polka.ttl = hdr.polka.ttl - 1;
+            } else {
+#endif
+#ifdef HAVE_NSH
+            if (ig_md.nsh_remove == 1) {
+                hdr.nsh.setInvalid();
+            } else if (hdr.nsh.isValid()) {
+                if (hdr.nsh.ttl < 2) act_set_drop();
+                //hdr.nsh.ttl = hdr.nsh.ttl - 1;
             } else {
 #endif
 #ifdef HAVE_MPLS
@@ -100,6 +110,9 @@ ig_md.nexthop_id:
                     }
 #ifdef HAVE_MPLS
                 }
+#endif
+#ifdef HAVE_NSH
+            }
 #endif
 #ifdef HAVE_POLKA
             }

@@ -61,6 +61,7 @@ struct ingress_metadata_t {
     bit <1> saw_rsvp;
     bit <1> bier_remove;
     bit <1> polka_remove;
+    bit <1> nsh_remove;
     bit <1> mpls0_remove;
     bit <1> mpls1_remove;
 #ifdef NEED_REPLICA
@@ -88,6 +89,9 @@ struct ingress_metadata_t {
 #endif
 #ifdef HAVE_POLKA
     bit <1> polka_valid;
+#endif
+#ifdef HAVE_NSH
+    bit <1> nsh_valid;
 #endif
     bit <1> arp_valid;
     bit <1> ipv4_valid;

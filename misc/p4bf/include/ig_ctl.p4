@@ -50,6 +50,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_POLKA
     IngressControlPOLKA()ig_ctl_polka;
 #endif
+#ifdef HAVE_NSH
+     IngressControlNSH() ig_ctl_nsh;
+#endif
 #ifdef HAVE_PPPOE
     IngressControlPPPOE() ig_ctl_pppoe;
 #endif
@@ -112,6 +115,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_POLKA
         if (hdr.polka.isValid()) ig_md.pktlen = ig_md.pktlen + 20;
 #endif
+#ifdef HAVE_NSH
+        if (hdr.polka.isValid()) ig_md.pktlen = ig_md.pktlen + 8;
+#endif
 #endif
 
         ig_ctl_vlan_in.apply(hdr, ig_md, ig_intr_md);
@@ -138,6 +144,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_vrf.apply(hdr, ig_md);
 #ifdef HAVE_POLKA
             ig_ctl_polka.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_NSH
+         ig_ctl_nsh.apply(hdr,ig_md,ig_intr_md);
 #endif
 #ifdef HAVE_MPLS
             ig_ctl_mpls.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);

@@ -58,11 +58,15 @@ ig_md.mpls_op_type = 0;
 ig_md.srv_op_type = 0;
 ig_md.bier_remove = 0;
 ig_md.polka_remove = 0;
+ig_md.nsh_remove = 0;
 ig_md.mpls0_remove = 0;
 ig_md.mpls1_remove = 0;
 ig_md.srv_remove = 0;
 #ifdef HAVE_POLKA
 ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_NSH
+ig_md.nsh_valid = 0;
 #endif
 #ifdef HAVE_MPLS
 ig_md.mpls0_valid = 0;

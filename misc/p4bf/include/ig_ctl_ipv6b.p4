@@ -48,6 +48,7 @@ control IngressControlIPv6b(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.polka.proto = ETHERTYPE_IPV6;
         ig_md.ethertype = ETHERTYPE_POLKA;
         ig_md.nexthop_id = nexthop_id;
+        ig_md.polka_remove = 0;
     }
 #endif
 

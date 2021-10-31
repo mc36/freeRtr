@@ -1,6 +1,6 @@
+
 /*
- * Copyright 2021-present Universidade Federal do Espirito Santo (UFES) and
- *                        Instituto Federal do Espirito Santo (IFES)
+ * Copyright 2019-present GT RARE project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,22 @@
  * limitations under the License.
  */
 
-#ifndef _POLKA_P4_
-#define _POLKA_P4_
+#ifndef _NSH_P4_
+#define _NSH_P4_
 
-#ifdef HAVE_POLKA
-header polka_t {
-    bit<8>          version;
-    bit<8>          ttl;
-    bit<16>         proto;
-    polka_route_t   routeid;
+#ifdef HAVE_NSH
+header nsh_t {
+    bit<2>    version;
+    bit<1>    oam;
+    bit<1>    res1;
+    bit<6>    ttl;
+    bit<6>    length;
+    bit<4>    res2;
+    bit<4>    md_type;
+    bit<8>    next_proto;
+    bit<24>   sp;
+    bit<8>    si;
 }
 #endif
 
-#endif // _POLKA_P4_
+#endif // _NSH_P4_

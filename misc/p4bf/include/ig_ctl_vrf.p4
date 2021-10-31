@@ -32,6 +32,12 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
     action act_set_mpls_xconn_encap(NextHopId_t target, label_t tunlab,
                                     label_t svclab) {
         ig_md.vrf = 0;
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
         ig_md.mpls0_remove = 0;
