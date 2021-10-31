@@ -63,6 +63,7 @@ import net.freertr.serv.servNetflow;
 import net.freertr.serv.servNrpe;
 import net.freertr.serv.servNtp;
 import net.freertr.serv.servOpenflow;
+import net.freertr.serv.servPktmux;
 import net.freertr.serv.servP4lang;
 import net.freertr.serv.servPcep;
 import net.freertr.serv.servPckOdtls;
@@ -733,6 +734,7 @@ public class cfgInit implements Runnable {
         servStreamingMdt.defaultF = createFilter(servStreamingMdt.defaultL, srvdefsF);
         servCharGen.defaultF = createFilter(servCharGen.defaultL, srvdefsF);
         servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
+        servPktmux.defaultF = createFilter(servPktmux.defaultL, srvdefsF);
         servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);
         servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);
         servDcp.defaultF = createFilter(servDcp.defaultL, srvdefsF);

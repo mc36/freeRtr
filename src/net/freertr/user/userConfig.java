@@ -101,6 +101,7 @@ import net.freertr.serv.servNetflow;
 import net.freertr.serv.servNrpe;
 import net.freertr.serv.servNtp;
 import net.freertr.serv.servOpenflow;
+import net.freertr.serv.servPktmux;
 import net.freertr.serv.servP4lang;
 import net.freertr.serv.servPcep;
 import net.freertr.serv.servPckOdtls;
@@ -724,7 +725,7 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    chargen                      configure a chargen server");
         l.add("3  .      <name>                     name of server");
-        l.add("2  3    netflow                      configure an netflow server");
+        l.add("2  3    netflow                      configure a netflow server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    udpfwd                       configure an udp forwarder server");
         l.add("3  .      <name>                     name of server");
@@ -734,7 +735,9 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    openflow                     configure an openflow server");
         l.add("3  .      <name>                     name of server");
-        l.add("2  3    p4lang                       configure an p4lang server");
+        l.add("2  3    pktmux                       configure a p4lang emulator server");
+        l.add("3  .      <name>                     name of server");
+        l.add("2  3    p4lang                       configure a p4lang server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    quote                        configure a quote server");
         l.add("3  .      <name>                     name of server");
@@ -782,7 +785,7 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    iscsi                        configure an iscsi server");
         l.add("3  .      <name>                     name of server");
-        l.add("2  3    bmp2mrt                      configure an bmp to mrt server");
+        l.add("2  3    bmp2mrt                      configure a bmp to mrt server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    irc                          configure an irc server");
         l.add("3  .      <name>                     name of server");
@@ -1311,6 +1314,10 @@ public class userConfig {
             }
             if (a.equals("openflow")) {
                 daemonMake(new servOpenflow(), cfgAll.dmnOpenflow);
+                return;
+            }
+            if (a.equals("pktmux")) {
+                daemonMake(new servPktmux(), cfgAll.dmnPktmux);
                 return;
             }
             if (a.equals("p4lang")) {
@@ -2203,6 +2210,10 @@ public class userConfig {
             }
             if (a.equals("openflow")) {
                 daemonErase(new servOpenflow(), cfgAll.dmnOpenflow);
+                return;
+            }
+            if (a.equals("pktmux")) {
+                daemonErase(new servPktmux(), cfgAll.dmnPktmux);
                 return;
             }
             if (a.equals("p4lang")) {

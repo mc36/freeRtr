@@ -58,6 +58,7 @@ import net.freertr.serv.servNetflow;
 import net.freertr.serv.servNrpe;
 import net.freertr.serv.servNtp;
 import net.freertr.serv.servOpenflow;
+import net.freertr.serv.servPktmux;
 import net.freertr.serv.servP4lang;
 import net.freertr.serv.servPcep;
 import net.freertr.serv.servPckOdtls;
@@ -369,6 +370,11 @@ public class cfgAll {
      * openflow daemons
      */
     public static final servGenList<servOpenflow> dmnOpenflow = new servGenList<servOpenflow>();
+
+    /**
+     * pktmux daemons
+     */
+    public static final servGenList<servPktmux> dmnPktmux = new servGenList<servPktmux>();
 
     /**
      * p4lang daemons
@@ -3412,6 +3418,7 @@ public class cfgAll {
         dmnUpnpFwd.getShRun(l, filter);
         dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);
+        dmnPktmux.getShRun(l, filter);
         dmnP4lang.getShRun(l, filter);
         dmnForwarder.getShRun(l, filter);
         dmnSyslog.getShRun(l, filter);
