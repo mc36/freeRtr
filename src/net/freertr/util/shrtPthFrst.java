@@ -7,6 +7,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cry.cryHashCrc32;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
@@ -131,7 +132,7 @@ public class shrtPthFrst<Ta extends addrType> {
         ntry.when = old.tim1;
         ntry.tim = (int) (old.tim3 - old.tim1);
         ntry.unreach = old.listReachablility(false);
-        ntry.topo = old.listTopoSum().hashCode();
+        ntry.topo = old.listTopoHsh();
         log.add(ntry);
         int max = logSize.get();
         for (; log.size() > max;) {
@@ -949,6 +950,18 @@ public class shrtPthFrst<Ta extends addrType> {
      *
      * @return list of topology
      */
+    public int listTopoHsh() {
+        cryHashCrc32 h = new cryHashCrc32(cryHashCrc32.polyCrc32i);
+        h.init();
+        h.update(listTopoSum().getBytes());
+        return h.getCrc();
+    }
+
+    /**
+     * list topology
+     *
+     * @return list of topology
+     */
     public String listTopoSum() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
@@ -1065,9 +1078,8 @@ public class shrtPthFrst<Ta extends addrType> {
         res.add("nosegrou|" + listNoSegRou());
         res.add("bier|" + listBier());
         res.add("nobier|" + listNoBier());
-        String a = listTopoSum();
-        res.add("topostr|" + a);
-        res.add("topoid|" + bits.toHexD(a.hashCode()));
+        res.add("topostr|" + listTopoSum());
+        res.add("topoid|" + bits.toHexD(listTopoHsh()));
         res.add("last|" + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(tim1) + " ago)");
         res.add("fill|" + (tim2 - tim1));
         res.add("calc|" + (tim3 - tim2));

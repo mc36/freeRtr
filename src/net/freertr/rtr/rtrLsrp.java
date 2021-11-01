@@ -684,7 +684,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 dat.mgmtIp = mgmtIf.addr.copyBytes();
             }
         }
-        dat.topoSum = lastSpf.listTopoSum().hashCode();
+        dat.topoSum = lastSpf.listTopoHsh();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
         dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo()).replaceAll(" ", "_");
