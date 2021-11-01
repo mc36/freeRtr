@@ -346,7 +346,11 @@ public class userShow {
             }
             l.add("machine: " + bits.time2str(cfgAll.timeZoneName, tim, 3));
             l.add("email: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
-            l.add("zone: " + cfgAll.timeZoneName + " diff: " + bits.timeDump(cfgAll.timeServerOffset / 1000));
+            int i = (int) (cfgAll.timeServerOffset % 1000);
+            if (i < 0) {
+                i = -i;
+            }
+            l.add("zone: " + cfgAll.timeZoneName + " diff: " + bits.timeDump(cfgAll.timeServerOffset / 1000) + "." + bits.padBeg("" + i, 3, "0"));
             rdr.putStrArr(l);
             return null;
         }

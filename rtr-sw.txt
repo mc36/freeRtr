@@ -851,6 +851,11 @@ server tftp t
  vrf v1
  exit
 !
+server ntp n
+ reference 0.0.0.0
+ vrf v1
+ exit
+!
 server bmp2mrt bmp
  file bmp.log
  bulk-down
@@ -898,6 +903,7 @@ client prefer-ipv6
 client password-stars
 client whois-server whois.ripe.net
 client name-server 10.10.10.10
+client time-server www.mchome.nop.hu
 client time-zone CET
 client mail-server mail.mchome.nop.hu
 !

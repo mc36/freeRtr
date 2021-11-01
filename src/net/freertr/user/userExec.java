@@ -1630,6 +1630,8 @@ public class userExec {
         hl.add("2 3      smtp                    send email message");
         hl.add("3 4,.      <str>                 email address");
         hl.add("4 4,.        <str>               email text");
+        hl.add("2 3      ntp                     check remote time");
+        hl.add("3 .        <str>                 server address");
         hl.add("2 3      nrpe                    check remote status");
         hl.add("3 4        <str>                 server address");
         hl.add("4 4,.        <str>               check name");

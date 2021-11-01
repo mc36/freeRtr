@@ -19,15 +19,24 @@ import net.freertr.util.logger;
 public class clntNtp implements Runnable {
 
     /**
-     * create instance
-     */
-    public clntNtp() {
-    }
-
-    /**
      * name of ntp server
      */
     public String serverName;
+
+    /**
+     * got time
+     */
+    public long tim1;
+
+    /**
+     * got diff
+     */
+    public long tim2;
+
+    /**
+     * new diff
+     */
+    public long tim3;
 
     private boolean need2run;
 
@@ -61,21 +70,23 @@ public class clntNtp implements Runnable {
 
     /**
      * do one poll
+     *
+     * @return false on success, true on error
      */
-    public void doWork() {
+    public boolean doWork() {
         addrIP serverAddr = userTerminal.justResolv(serverName, 0);
         if (serverAddr == null) {
-            return;
+            return true;
         }
         pipeSide pipe = cfgAll.clntConnect(servGeneric.protoUdp, serverAddr, packNtp.port, "ntp");
         if (pipe == null) {
-            return;
+            return true;
         }
         packHolder pckBin = new packHolder(true, true);
         packNtp pckNtp = new packNtp();
         pckNtp.ver = 3;
         pckNtp.mode = packNtp.modClnt;
-        long tim1 = bits.getTime();
+        tim1 = bits.getTime();
         pckNtp.refTime = packNtp.encode(tim1 + cfgAll.timeServerOffset);
         pckNtp.sendTime = packNtp.encode(tim1 + cfgAll.timeServerOffset);
         pckNtp.createPacket(pckBin);
@@ -87,24 +98,31 @@ public class clntNtp implements Runnable {
         pckBin = pipe.readPacket(true);
         pipe.setClose();
         if (pckBin == null) {
-            return;
+            return true;
         }
-        long tim2 = bits.getTime();
+        tim2 = bits.getTime();
         pckNtp = new packNtp();
         if (pckNtp.parsePacket(pckBin)) {
-            return;
+            return true;
         }
         tim1 = packNtp.decode(pckNtp.sendTime) + ((tim2 - tim1) / 2);
         tim2 = tim1 - tim2;
+        tim3 = cfgAll.timeServerOffset - tim2;
         if (debugger.clntNtpTraf) {
             logger.debug("rx " + pckNtp);
-            logger.debug("offsets: old=" + cfgAll.timeServerOffset + " new=" + tim2 + " diff=" + (cfgAll.timeServerOffset - tim2));
+            logger.debug("offsets: old=" + cfgAll.timeServerOffset + " new=" + tim2 + " diff=" + tim3);
         }
-        tim1 = cfgAll.timeServerOffset - tim2;
-        if (tim1 < 0) {
-            tim1 = -tim1;
+        if (tim3 < 0) {
+            tim3 = -tim3;
         }
-        if (tim1 > 1000) {
+        return false;
+    }
+
+    /**
+     * do one sync
+     */
+    public void doSync() {
+        if (tim3 > 1000) {
             logger.info("setting clock to " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + tim2, 3));
         }
         cfgAll.timeServerOffset = tim2;
@@ -120,7 +138,10 @@ public class clntNtp implements Runnable {
                 break;
             }
             try {
-                doWork();
+                if (doWork()) {
+                    continue;
+                }
+                doSync();
             } catch (Exception e) {
                 logger.traceback(e);
             }

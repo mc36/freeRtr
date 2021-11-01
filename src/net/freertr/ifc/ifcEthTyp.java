@@ -308,7 +308,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (lastState == stat) {
             return;
         }
-        cntr.stateChange(stat);
         lastState = stat;
         if (forcedDN != 0) {
             return;
@@ -330,6 +329,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (forcedDN != 0) {
             s = state.states.admin;
         }
+        cntr.stateChange(s);
         if (logStateChg) {
             logger.warn("interface " + name + " change to " + state.conv2string(s));
         }

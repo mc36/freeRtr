@@ -19,6 +19,7 @@ import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntModem;
 import net.freertr.clnt.clntNrpe;
+import net.freertr.clnt.clntNtp;
 import net.freertr.clnt.clntPcep;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntSmtp;
@@ -1267,6 +1268,14 @@ public class userPacket {
             String pwd = cmd.pipe.lineGet(i);
             authResult res = aaa.authUserPass(usr, pwd);
             rdr.putStrTab(res.dump());
+            return null;
+        }
+        if (a.equals("ntp")) {
+            clntNtp t = new clntNtp(cmd.word());
+            if (t.doWork()) {
+                return null;
+            }
+            cmd.error("time=" + bits.time2str(cfgAll.timeZoneName, t.tim1, 3) + " diff=" + t.tim3);
             return null;
         }
         if (a.equals("nrpe")) {
