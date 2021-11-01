@@ -160,16 +160,13 @@ public class ifcPolka implements ifcUp {
         for (int i = 0; i < o.length; i++) {
             M = M.mul(s[o[i]]);
         }
-        cryPoly[] m = new cryPoly[o.length];
-        cryPoly[] n = new cryPoly[o.length];
+        cryPoly r = new cryPoly(0);
         for (int i = 0; i < o.length; i++) {
-            m[i] = M.div(s[o[i]])[0];
-            n[i] = m[i].modInv(s[o[i]])[0];
-        }
-        cryPoly r = new cryPoly(BigInteger.valueOf(0));
-        for (int i = 0; i < o.length; i++) {
+            cryPoly soi = s[o[i]];
+            cryPoly mi = M.div(soi)[0];
+            cryPoly ni = mi.modInv(soi)[0];
             int p = routeNextValue(o, i);
-            r = r.add(new cryPoly(p).mul(m[i]).mul(n[i]));
+            r = r.add(new cryPoly(p).mul(mi).mul(ni));
         }
         r = r.div(M)[1];
         byte[] b = r.getCoeff().toByteArray();
