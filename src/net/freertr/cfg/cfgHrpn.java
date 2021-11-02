@@ -43,9 +43,17 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
     }
 
     /**
-     * close this hairpin
+     * stop this hairpin
      */
-    public void closeUp() {
+    public void stopWork() {
+        hairpinHed.stopWork();
+    }
+
+    /**
+     * start this hairpin
+     */
+    public void startWork() {
+        hairpinHed.startWork();
     }
 
     /**

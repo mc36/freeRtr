@@ -2762,6 +2762,7 @@ public class cfgAll {
         ifc2.hairpinHed = ntry;
         ifc1.initHairpin(true);
         ifc2.initHairpin(false);
+        ntry.startWork();
         return ntry;
     }
 
@@ -2779,7 +2780,7 @@ public class cfgAll {
         }
         ifcDel(ntry.getIntName(true), false);
         ifcDel(ntry.getIntName(false), false);
-        ntry.closeUp();
+        ntry.stopWork();
         return ntry;
     }
 

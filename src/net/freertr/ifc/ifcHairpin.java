@@ -5,9 +5,12 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgInit;
 import net.freertr.pack.packHolder;
+import net.freertr.pipe.pipeLine;
+import net.freertr.pipe.pipeSide;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
+import net.freertr.util.logger;
 import net.freertr.util.state;
 
 /**
@@ -26,14 +29,21 @@ public class ifcHairpin {
 
     private ifcHairpinWorker s2;
 
+    private pipeLine pip;
+
     /**
      * create new instance
      */
     public ifcHairpin() {
         s1 = new ifcHairpinWorker();
         s2 = new ifcHairpinWorker();
-        s1.other = s2;
-        s2.other = s1;
+        s1.parent = this;
+        s2.parent = this;
+        pip = new pipeLine(128 * 1024, true);
+        s1.queueRx = pip.getSide();
+        s2.queueRx = pip.getSide();
+        s1.queueTx = s1.queueRx;
+        s2.queueTx = s2.queueRx;
     }
 
     /**
@@ -52,6 +62,21 @@ public class ifcHairpin {
      */
     public ifcDn getSide2() {
         return s2;
+    }
+
+    /**
+     * stop this hairpin
+     */
+    public void stopWork() {
+        pip.setClose();
+    }
+
+    /**
+     * start this hairpin
+     */
+    public void startWork() {
+        new Thread(s1).start();
+        new Thread(s2).start();
     }
 
     /**
@@ -98,9 +123,13 @@ public class ifcHairpin {
 
 }
 
-class ifcHairpinWorker implements ifcDn {
+class ifcHairpinWorker implements ifcDn, Runnable {
 
-    public ifcHairpinWorker other;
+    public ifcHairpin parent;
+
+    public pipeSide queueRx;
+
+    public pipeSide queueTx;
 
     private counter cntr = new counter();
 
@@ -129,7 +158,6 @@ class ifcHairpinWorker implements ifcDn {
     }
 
     public void closeDn() {
-        upper = null;
     }
 
     public void flapped() {
@@ -139,7 +167,12 @@ class ifcHairpinWorker implements ifcDn {
         if (cfgInit.booting) {
             return;
         }
-        other.upper.recvPack(pck);
+        pck.merge2beg();
+        if (!parent.notEther) {
+            ifcEther.createETHheader(pck, false);
+        }
+        byte[] buf = pck.getCopy();
+        queueTx.blockingPut(buf, 0, buf.length);
     }
 
     public int getMTUsize() {
@@ -148,6 +181,33 @@ class ifcHairpinWorker implements ifcDn {
 
     public long getBandwidth() {
         return 100000000;
+    }
+
+    public void doWork() {
+        packHolder pck = new packHolder(true, true);
+        byte[] buf = new byte[packHolder.maxHead];
+        for (;;) {
+            int i = queueRx.blockingGet(buf, 0, buf.length);
+            if (i < 0) {
+                return;
+            }
+            pck.clear();
+            pck.putCopy(buf, 0, 0, i);
+            pck.putSkip(i);
+            pck.merge2beg();
+            if (!parent.notEther) {
+                ifcEther.parseETHheader(pck, false);
+            }
+            upper.recvPack(pck);
+        }
+    }
+
+    public void run() {
+        try {
+            doWork();
+        } catch (Exception e) {
+            logger.exception(e);
+        }
     }
 
 }
