@@ -172,7 +172,7 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             ifcEther.createETHheader(pck, false);
         }
         byte[] buf = pck.getCopy();
-        queueTx.blockingPut(buf, 0, buf.length);
+        queueTx.nonBlockPut(buf, 0, buf.length);
     }
 
     public int getMTUsize() {

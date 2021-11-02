@@ -146,9 +146,8 @@ public class ifcIsl extends ifcVlan {
         }
         pck.ETHcos = 0;
         pck.ETHvlan = pck.msbGetW(0) >>> 1; // vlan tag
-        pck.getAddr(pck.ETHtrg, 6); // c dst
-        pck.getAddr(pck.ETHsrc, 12); // c src
-        pck.getSkip(size);
+        pck.getSkip(size - addrMac.sizeX2);
+        ifcEther.parseETHheader(pck, false);
         pck.setDataSize(pck.dataSize() - 4);
         if (debugger.ifcIslTraf) {
             logger.debug("rx vlan=" + pck.ETHvlan);
@@ -290,10 +289,7 @@ class ifcIslEntry implements ifcDn, Comparator<ifcIslEntry> {
 
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
-        pck.putAddr(0, pck.ETHtrg);
-        pck.putAddr(addrMac.size, pck.ETHsrc);
-        pck.putSkip(addrMac.sizeX2);
-        pck.merge2beg();
+        ifcEther.createETHheader(pck, false);
         pck.ETHvlan = vLan;
         cryHashCrc32 sum = new cryHashCrc32(cryHashCrc32.polyCrc32i);
         sum.init();

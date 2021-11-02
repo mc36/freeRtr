@@ -282,12 +282,9 @@ public abstract class ifcThread implements ifcDn, Runnable {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
+        pck.merge2beg();
         if (etherEnc) {
-            pck.merge2beg();
-            pck.putAddr(0, pck.ETHtrg);
-            pck.putAddr(addrMac.size, pck.ETHsrc);
-            pck.putSkip(addrMac.sizeX2);
-            pck.merge2beg();
+            ifcEther.createETHheader(pck, false);
             int i = 48 - pck.dataSize();
             if (i > 0) {
                 pck.merge2beg();
