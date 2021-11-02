@@ -23,6 +23,10 @@ public class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
         val = i;
     }
 
+    public String toString() {
+        return "" + val;
+    }
+
     /**
      * get value
      *
