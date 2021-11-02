@@ -1409,6 +1409,10 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showSpfTopo(i, cmd));
                     return null;
                 }
+                if (a.equals("hostnames")) {
+                    rdr.putStrTab(r.ospf4.showHostnames(bits.str2num(cmd.word())));
+                    return null;
+                }
                 if (a.equals("tree")) {
                     rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word())));
                     return null;
@@ -1685,6 +1689,10 @@ public class userShow {
                 if (a.equals("topology")) {
                     int i = bits.str2num(cmd.word());
                     rdr.putStrTab(r.ospf6.showSpfTopo(i, cmd));
+                    return null;
+                }
+                if (a.equals("hostnames")) {
+                    rdr.putStrTab(r.ospf6.showHostnames(bits.str2num(cmd.word())));
                     return null;
                 }
                 if (a.equals("tree")) {
@@ -2126,6 +2134,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showSpfTopo(cmd));
             return;
         }
+        if (a.equals("hostnames")) {
+            rdr.putStrTab(r.lsrp.showHostnames());
+            return;
+        }
         if (a.equals("tree")) {
             rdr.putStrArr(r.lsrp.showSpfTree());
             return;
@@ -2242,6 +2254,10 @@ public class userShow {
         if (a.equals("topology")) {
             int i = bits.str2num(cmd.word());
             rdr.putStrTab(r.isis.showSpfTopo(i, cmd));
+            return;
+        }
+        if (a.equals("hostnames")) {
+            rdr.putStrTab(r.isis.showHostnames(bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("tree")) {

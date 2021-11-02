@@ -1166,6 +1166,20 @@ public class shrtPthFrst<Ta extends addrType> {
     }
 
     /**
+     * hostnames
+     *
+     * @return text
+     */
+    public userFormat listHostnames() {
+        userFormat res = new userFormat("|", "router|name");
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            res.add(ntry.name + "|" + ntry.ident);
+        }
+        return res;
+    }
+
+    /**
      * inconsistent next hops
      *
      * @param mtch matcher

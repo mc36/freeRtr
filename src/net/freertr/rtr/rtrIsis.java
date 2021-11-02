@@ -2002,6 +2002,17 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * show hostnames
+     *
+     * @param level level number
+     * @return names list
+     */
+    public userFormat showHostnames(int level) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.lastSpf.listHostnames();
+    }
+
+    /**
      * get neighbor count
      *
      * @return count

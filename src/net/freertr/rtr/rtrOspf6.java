@@ -987,6 +987,21 @@ public class rtrOspf6 extends ipRtr {
     }
 
     /**
+     * show hostnames
+     *
+     * @param area area number
+     * @return names list
+     */
+    public userFormat showHostnames(int area) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.lastSpf.listHostnames();
+    }
+
+    /**
      * find neighbor
      *
      * @param area area

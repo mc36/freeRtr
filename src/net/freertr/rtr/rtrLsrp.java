@@ -597,6 +597,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * show hostnames
+     *
+     * @return names list
+     */
+    public userFormat showHostnames() {
+        return lastSpf.listHostnames();
+    }
+
+    /**
      * get ip protocol version
      *
      * @return protocol version

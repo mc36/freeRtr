@@ -401,6 +401,7 @@ public class userExec {
         hl.add("5 6,.          database          list of database");
         hl.add("6 .              [addr]          entry to view");
         hl.add("5 .            spf               information about last spf");
+        hl.add("5 .            hostnames         hostnames from database");
         hl.add("5 .            tree              tree about last spf");
         hl.add("5 6            othertree         tree of other node");
         hl.add("6 .              <addr>          other node to view");
@@ -440,6 +441,8 @@ public class userExec {
         hl.add("8 .                  [addr]      entry to view");
         hl.add("5 6            spf               information about last spf");
         hl.add("6 .              <num>           area number");
+        hl.add("5 6            hostnames         hostnames from database");
+        hl.add("6 .              <num>           area number");
         hl.add("5 6            tree              tree about last spf");
         hl.add("6 .              <num>           area number");
         hl.add("5 6            othertree         tree of other node");
@@ -470,6 +473,8 @@ public class userExec {
         hl.add("6 7,.            <num>           level number");
         hl.add("7 .                [addr]        entry to view");
         hl.add("5 6            spf               information about last spf");
+        hl.add("6 .              <num>           level number");
+        hl.add("5 6            hostnames         hostnames from database");
         hl.add("6 .              <num>           level number");
         hl.add("5 6            tree              tree about last spf");
         hl.add("6 .              <num>           level number");
