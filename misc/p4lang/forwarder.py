@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 ###############################################################################
@@ -23,7 +23,7 @@ import argparse, grpc, os, sys, socket
 from time import sleep
 
 # set our lib path
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),'./'))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),'./','/usr/lib/python3.9/site-packages/'))
 # And then we import
 import p4runtime_lib.bmv2
 import p4runtime_lib.helper

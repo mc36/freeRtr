@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from Queue import Queue
+from queue import Queue
 from abc import abstractmethod
 from datetime import datetime
 
@@ -63,7 +63,7 @@ class SwitchConnection(object):
         request.arbitration.election_id.low = 1
 
         if dry_run:
-            print "P4Runtime MasterArbitrationUpdate: ", request
+            print("P4Runtime MasterArbitrationUpdate: ", request)
         else:
             self.requests_stream.put(request)
             for item in self.stream_msg_resp:
@@ -81,7 +81,7 @@ class SwitchConnection(object):
 
         request.action = p4runtime_pb2.SetForwardingPipelineConfigRequest.VERIFY_AND_COMMIT
         if dry_run:
-            print "P4Runtime SetForwardingPipelineConfig:", request
+            print("P4Runtime SetForwardingPipelineConfig:", request)
         else:
             self.client_stub.SetForwardingPipelineConfig(request)
 
@@ -96,7 +96,7 @@ class SwitchConnection(object):
             update.type = p4runtime_pb2.Update.INSERT
         update.entity.table_entry.CopyFrom(table_entry)
         if dry_run:
-            print "P4Runtime Write:", request
+            print("P4Runtime Write:", request)
         else:
             self.client_stub.Write(request)
 
@@ -109,7 +109,7 @@ class SwitchConnection(object):
         update.type = p4runtime_pb2.Update.MODIFY
         update.entity.table_entry.CopyFrom(table_entry)
         if dry_run:
-            print "P4Runtime Modify: ", request
+            print("P4Runtime Modify: ", request)
         else:
             self.client_stub.Write(request)
 
@@ -122,7 +122,7 @@ class SwitchConnection(object):
         update.type = p4runtime_pb2.Update.DELETE
         update.entity.table_entry.CopyFrom(table_entry)
         if dry_run:
-            print "P4Runtime Delete: ", request
+            print("P4Runtime Delete: ", request)
         else:
             self.client_stub.Write(request)
 
@@ -140,7 +140,7 @@ class SwitchConnection(object):
         meter_entry.config.cburst = 1500
         meter_entry.config.pburst = 1500
         if dry_run:
-            print "P4Runtime Write:", request
+            print("P4Runtime Write:", request)
         else:
             self.client_stub.Write(request)
 
@@ -154,7 +154,7 @@ class SwitchConnection(object):
         else:
             table_entry.table_id = 0
         if dry_run:
-            print "P4Runtime Read:", request
+            print("P4Runtime Read:", request)
         else:
             for response in self.client_stub.Read(request):
                 yield response
@@ -171,7 +171,7 @@ class SwitchConnection(object):
         if index is not None:
             counter_entry.index.index = index
         if dry_run:
-            print "P4Runtime Read:", request
+            print("P4Runtime Read:", request)
         else:
             for response in self.client_stub.Read(request):
                 yield response
@@ -184,7 +184,7 @@ class SwitchConnection(object):
         update.type = p4runtime_pb2.Update.INSERT
         update.entity.packet_replication_engine_entry.CopyFrom(pre_entry)
         if dry_run:
-            print "P4Runtime Write:", request
+            print("P4Runtime Write:", request)
         else:
             self.client_stub.Write(request)
 
@@ -196,7 +196,7 @@ class SwitchConnection(object):
         update.type = p4runtime_pb2.Update.MODIFY
         update.entity.packet_replication_engine_entry.CopyFrom(pre_entry)
         if dry_run:
-            print "P4Runtime Write:", request
+            print("P4Runtime Write:", request)
         else:
             self.client_stub.Write(request)
 
@@ -208,7 +208,7 @@ class SwitchConnection(object):
         update.type = p4runtime_pb2.Update.DELETE
         update.entity.packet_replication_engine_entry.CopyFrom(pre_entry)
         if dry_run:
-            print "P4Runtime Write:", request
+            print("P4Runtime Write:", request)
         else:
             self.client_stub.Write(request)
 

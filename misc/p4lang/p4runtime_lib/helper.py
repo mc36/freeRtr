@@ -18,7 +18,7 @@ import google.protobuf.text_format
 from p4.v1 import p4runtime_pb2
 from p4.config.v1 import p4info_pb2
 
-from convert import encode
+from .convert import encode
 
 class P4InfoHelper(object):
     def __init__(self, p4_info_filepath):
@@ -173,7 +173,7 @@ class P4InfoHelper(object):
         if match_fields:
             table_entry.match.extend([
                 self.get_match_field_pb(table_name, match_field_name, value)
-                for match_field_name, value in match_fields.iteritems()
+                for match_field_name, value in match_fields.items()
             ])
 
         if default_action:
@@ -185,7 +185,7 @@ class P4InfoHelper(object):
             if action_params:
                 action.params.extend([
                     self.get_action_param_pb(action_name, field_name, value)
-                    for field_name, value in action_params.iteritems()
+                    for field_name, value in action_params.items()
                 ])
         return table_entry
 

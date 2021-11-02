@@ -1,10 +1,8 @@
 #!/bin/sh
-#deb http://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/ ./
-#wget https://download.opensuse.org/repositories/openSUSE:/Tools/Debian_10/Release.key
-#wget https://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c:/master/Debian_10/Release.key
-#wget https://download.opensuse.org/repositories/home:/frederic-loui:/p4lang:/p4c/Debian_10/Release.key
+#deb http://download.opensuse.org/repositories/home:/rstoyanov/Debian_Testing/ /
+#wget https://download.opensuse.org/repositories/home:rstoyanov/Debian_Testing/Release.key
 #sudo apt-key add ./Release.key
-#sudo apt install p4c bmv2 psmisc iproute2 net-tools tshark iperf gcc telnet
+#sudo apt install p4lang-pi p4lang-p4c p4lang-bmv2 psmisc gpg iproute2 net-tools tshark iperf gcc git telnet
 #git clone git@github.com:frederic-loui/RARE.git
 #gcc -O3 -o cons.bin cons.c
 #cp initd /etc/init.d/rtr
