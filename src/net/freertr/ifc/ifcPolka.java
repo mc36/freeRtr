@@ -156,19 +156,19 @@ public class ifcPolka implements ifcUp {
      * @return routeid
      */
     public static byte[] encodeRouteId(cryPoly[] s, int[] o) {
-        cryPoly M = new cryPoly(1);
+        cryPoly pm = new cryPoly(1);
         for (int i = 0; i < o.length; i++) {
-            M = M.mul(s[o[i]]);
+            pm = pm.mul(s[o[i]]);
         }
         cryPoly r = new cryPoly(0);
         for (int i = 0; i < o.length; i++) {
             cryPoly soi = s[o[i]];
-            cryPoly mi = M.div(soi)[0];
+            cryPoly mi = pm.div(soi)[0];
             cryPoly ni = mi.modInv(soi)[0];
             int p = routeNextValue(o, i);
             r = r.add(new cryPoly(p).mul(mi).mul(ni));
         }
-        r = r.div(M)[1];
+        r = r.div(pm)[1];
         byte[] b = r.getCoeff().toByteArray();
         byte[] p = new byte[16 - b.length];
         return bits.byteConcat(p, b);
