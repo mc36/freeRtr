@@ -987,7 +987,8 @@ public class shrtPthFrst<Ta extends addrType> {
         if (ntry == null) {
             return null;
         }
-        res.add("node|" + ntry);
+        res.add("node|" + ntry.name);
+        res.add("name|" + ntry.ident);
         res.add("reachable|" + ntry.visited);
         res.add("stub|" + (ntry.conn.size() <= 1));
         res.add("uplink|" + ntry.uplink);
