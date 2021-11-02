@@ -1015,7 +1015,8 @@ public class shrtPthFrst<Ta extends addrType> {
         res.add("reachmet|" + ntry.metric);
         res.add("hopmet|" + ntry.nxtMet);
         res.add("connections|" + ntry.conn.size());
-        res.add("segrou|" + ntry.srIdx + " " + ntry.srBeg);
+        res.add("prefixes|" + ntry.prfFix.size() + " " + ntry.prfAdd.size() + " " + ntry.othFix.size() + " " + ntry.othAdd.size());
+        res.add("segrout|" + ntry.srIdx + " " + ntry.srBeg);
         res.add("bier|" + ntry.brIdx + " " + ntry.brBeg);
         String a = "";
         for (int i = 0; i < ntry.brLst.size(); i++) {
