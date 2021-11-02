@@ -258,10 +258,10 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         }
         lastHeard = bits.getTime();
         if ((ack == txSeq) && (txBuf != null)) {
-            txBuf = null;
             txFlg = 0;
             txOpc = 0;
             txSeq++;
+            txBuf = null;
             notif.wakeup();
         }
         if ((flg & flagInit) != 0) {
@@ -393,9 +393,9 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         upTime = bits.getTime();
         new Thread(this).start();
         txSeq = bits.randomW() + 1;
-        txBuf = new packHolder(true, true);
         txFlg = flagInit;
         txOpc = opcUpdate;
+        txBuf = new packHolder(true, true);
     }
 
     /**
@@ -453,10 +453,22 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         if (queryed.size() > 0) {
             tabRouteEntry<addrIP> ntry = queryed.get(0);
             queryed.del(ntry);
-            writeMetric(ntry, false);
-            txBuf = createEntry(ntry);
+            tabRouteEntry<addrIP> ned = iface.need2adv.find(ntry);
+            if (ned == null) {
+                writeMetric(ntry, false);
+                txFlg = 0;
+                txOpc = opcReply;
+                txBuf = createEntry(ntry);
+                return;
+            }
+            ntry = ned.copyBytes(tabRoute.addType.notyet);
+            adverted.add(tabRoute.addType.always, ntry, true, true);
+            if (ntry.best.originator == null) {
+                writeMetric(ntry, true);
+            }
             txFlg = 0;
             txOpc = opcReply;
+            txBuf = createEntry(ntry);
             return;
         }
         for (int i = 0; i < adverted.size(); i++) {
@@ -469,9 +481,9 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             }
             adverted.del(ntry);
             writeMetric(ntry, false);
-            txBuf = createEntry(ntry);
             txFlg = 0;
             txOpc = opcQuery;
+            txBuf = createEntry(ntry);
             return;
         }
         for (int i = 0; i < iface.need2adv.size(); i++) {
@@ -487,9 +499,9 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             if (ntry.best.originator == null) {
                 writeMetric(ntry, true);
             }
-            txBuf = createEntry(ntry);
             txFlg = 0;
             txOpc = opcUpdate;
+            txBuf = createEntry(ntry);
             return;
         }
     }
