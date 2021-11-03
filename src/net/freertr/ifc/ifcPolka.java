@@ -91,11 +91,11 @@ public class ifcPolka implements ifcUp {
         localId = id;
         crcBase = bas;
         crcMax = max;
-        coeffs = generateIrreducible(bas, max);
+        coeffs = generatePolynomial(bas, max);
         hasher = new cryHashCrc16(coeffs[id].getCoeff().intValue(), 0, 0, false);
     }
 
-    private static boolean checkIrreducible(cryPoly[] s, int o, cryPoly f) {
+    private static boolean checkPolynomial(cryPoly[] s, int o, cryPoly f) {
         for (int i = 0; i < o; i++) {
             cryPoly[] r = s[i].modInv(f);
             if (r == null) {
@@ -112,19 +112,19 @@ public class ifcPolka implements ifcUp {
     }
 
     /**
-     * generate irreducible polynominals
+     * generate polynominals
      *
      * @param f first polynominal
      * @param n number of entries
      * @return entries generated
      */
-    public static cryPoly[] generateIrreducible(int f, int n) {
+    public static cryPoly[] generatePolynomial(int f, int n) {
         cryPoly[] s = new cryPoly[n];
         s[0] = new cryPoly(f);
         for (int o = 1; o < s.length; o++) {
             for (;;) {
                 f++;
-                if (checkIrreducible(s, o, new cryPoly(f))) {
+                if (checkPolynomial(s, o, new cryPoly(f))) {
                     continue;
                 }
                 break;
