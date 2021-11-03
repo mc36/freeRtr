@@ -121,15 +121,17 @@ public class ifcPolka implements ifcUp {
     public static cryPoly[] generatePolynomial(int f, int n) {
         cryPoly[] s = new cryPoly[n];
         s[0] = new cryPoly(f);
-        for (int o = 1; o < s.length; o++) {
+        for (int i = 1; i < s.length; i++) {
+            cryPoly p;
             for (;;) {
                 f++;
-                if (checkPolynomial(s, o, new cryPoly(f))) {
+                p = new cryPoly(f);
+                if (checkPolynomial(s, i, p)) {
                     continue;
                 }
                 break;
             }
-            s[o] = new cryPoly(f);
+            s[i] = p;
         }
         return s;
     }
