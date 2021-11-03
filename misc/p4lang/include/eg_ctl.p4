@@ -39,7 +39,7 @@ control eg_ctl(
         }
 
         if (eg_md.need_recir == 1) {
-            recir_headers_t rec_hdr;
+            recir_headers_t rec_hdr = {};
             recirculate<recir_headers_t>(rec_hdr);
             return;
         }
@@ -51,7 +51,7 @@ control eg_ctl(
                 return;
             }
             if (eg_md.need_recir == 1) {
-                recir_headers_t rec_hdr;
+                recir_headers_t rec_hdr = {};
                 recirculate<recir_headers_t>(rec_hdr);
                 return;
             }
@@ -72,7 +72,7 @@ control eg_ctl(
         eg_ctl_hairpin.apply(hdr,eg_md,eg_intr_md);
 
         if (eg_md.need_recir != 0) {
-            recir_headers_t rec_hdr;
+            recir_headers_t rec_hdr = {};
             recirculate<recir_headers_t>(rec_hdr);
             return;
         }
