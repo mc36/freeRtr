@@ -652,6 +652,7 @@ public class userTester {
         userTesterOne lt = new userTesterOne();
         lt.slot = slot + slt;
         lt.config = config;
+        lt.wait = wait;
         lt.reapply = reapply;
         lt.restart = restart;
         lt.cfgarch = cfgarch;
@@ -1119,6 +1120,8 @@ class userTesterOne {
     public int testRes = 1;
 
     public boolean config;
+
+    public boolean wait;
 
     public int reapply;
 
@@ -1839,8 +1842,10 @@ class userTesterOne {
             if (write) {
                 p.putLine("write");
             }
-            p.putLine("reload in 10");
-            p.putLine("y");
+            if (!wait) {
+                p.putLine("reload in 10");
+                p.putLine("y");
+            }
             for (int i = 0; i < reapply; i++) {
                 p.putLine("configure reapply");
             }
