@@ -486,6 +486,7 @@ public class userTester {
         }
         if (paralell > 1) {
             randord = true;
+            wait = false;
         } else {
             paralell = 1;
         }
