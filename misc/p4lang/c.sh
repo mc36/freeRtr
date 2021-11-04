@@ -1,6 +1,6 @@
 #!/bin/sh
-#deb http://download.opensuse.org/repositories/home:/p4lang/Debian_Testing/ /
-#wget https://download.opensuse.org/repositories/home:p4lang/Debian_Testing/Release.key
+#deb http://download.opensuse.org/repositories/home:/rstoyanov/Debian_11/ /
+#wget https://download.opensuse.org/repositories/home:rstoyanov/Debian_11/Release.key
 #sudo apt-key add ./Release.key
 #sudo apt install p4lang-pi p4lang-p4c p4lang-bmv2 psmisc gpg iproute2 net-tools tshark iperf gcc git telnet
 #git clone git@github.com:frederic-loui/RARE.git

@@ -371,17 +371,17 @@ public class ifcMacSec implements Runnable {
         if (debugger.ifcMacSecTraf) {
             logger.debug("master=" + bits.byteDump(buf1, 0, buf1.length));
         }
-        cphrTx = profil.trans.getEncr();
-        cphrRx = profil.trans.getEncr();
+        cryEncrGeneric cphTx = profil.trans.getEncr();
+        cryEncrGeneric cphRx = profil.trans.getEncr();
         byte[] res = buf1;
         buf1 = new byte[profil.trans.getKeyS()];
-        byte[] buf2 = new byte[cphrTx.getBlockSize()];
+        byte[] buf2 = new byte[cphTx.getBlockSize()];
         int pos = buf1.length + buf2.length;
         bits.byteCopy(res, 0, buf1, 0, buf1.length);
         bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
         keyEncr = buf1;
-        cphrTx.init(buf1, buf2, true);
-        cphrRx.init(buf1, buf2, false);
+        cphTx.init(buf1, buf2, true);
+        cphRx.init(buf1, buf2, false);
         cphrSiz = buf2.length;
         hashSiz = profil.trans.getHash().getHashSize();
         buf1 = new byte[hashSiz];
@@ -393,6 +393,8 @@ public class ifcMacSec implements Runnable {
             sequence = new tabWindow(replayCheck);
         }
         seqTx = 0;
+        cphrTx = cphTx;
+        cphrRx = cphRx;
         hashTx = profil.trans.getHmac(buf1);
         hashRx = profil.trans.getHmac(buf2);
         keyHash = buf1;
