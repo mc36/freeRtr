@@ -269,12 +269,12 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         a = cmd.word();
         if (!a.equals("signed")) {
-            sendErr("missSign");
+            sendErr("missingSign");
             return null;
         }
         a = cmd.word();
         List<String> lst = new ArrayList<String>();
-        lst.add("" + seqRx);
+        lst.add(bits.toHexD(seqRx));
         lst.add(signRx);
         lst.add(cmd.getRemaining());
         lst.add(signRx);
@@ -295,7 +295,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         s = s.trim();
         if (signTx != null) {
             List<String> lst = new ArrayList<String>();
-            lst.add("" + seqTx);
+            lst.add(bits.toHexD(seqTx));
             lst.add(signTx);
             lst.add(s);
             lst.add(signTx);
