@@ -13,6 +13,7 @@ import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 
 /**
  * mac security (ieee 802.1ae) protocol
@@ -104,7 +105,7 @@ public class ifcMacSec implements Runnable {
 
     private long lastKex;
 
-    private boolean calcing;
+    private syncInt calcing = new syncInt(0);
 
     private counter keyUsage = new counter();
 
@@ -242,7 +243,7 @@ public class ifcMacSec implements Runnable {
                 break;
             case 0x01: // request
             case 0x02: // reply
-                if (calcing) {
+                if (calcing.set(1) != 0) {
                     return true;
                 }
                 reply = typ == 1;
@@ -308,9 +309,6 @@ public class ifcMacSec implements Runnable {
      * @return packet to send, null if nothing
      */
     public synchronized packHolder doSync() {
-        if (calcing) {
-            return null;
-        }
         if ((hashRx != null) && (!reply)) {
             boolean ned = false;
             if (profil.trans.lifeSec > 0) {
@@ -322,11 +320,15 @@ public class ifcMacSec implements Runnable {
             if (!ned) {
                 return null;
             }
+            if (calcing.set(1) != 0) {
+                return null;
+            }
             if (debugger.ifcMacSecTraf) {
                 logger.debug("restarting kex");
             }
             keygen = profil.trans.getGroup();
             keygen.servXchg();
+            calcing.set(0);
             reply = false;
             hashRx = null;
         }
@@ -350,7 +352,6 @@ public class ifcMacSec implements Runnable {
     }
 
     private void doCalc() {
-        calcing = true;
         if (debugger.ifcMacSecTraf) {
             logger.debug("got kex, reply=" + reply + ", modulus=" + keygen.clntPub);
         }
@@ -395,7 +396,7 @@ public class ifcMacSec implements Runnable {
         hashTx = profil.trans.getHmac(buf1);
         hashRx = profil.trans.getHmac(buf2);
         keyHash = buf1;
-        calcing = false;
+        calcing.set(0);
     }
 
     public void run() {
