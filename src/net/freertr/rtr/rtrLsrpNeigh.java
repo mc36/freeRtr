@@ -316,6 +316,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     protected void sendErr(String s) {
         logger.info("sent error (" + s + ") to " + peer);
         sendLn("error " + s);
+        conn.setClose();
     }
 
     /**
