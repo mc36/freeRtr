@@ -122,6 +122,14 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      */
     protected int sentMet;
 
+    private String signRx;
+
+    private String signTx;
+
+    private int seqRx;
+
+    private int seqTx;
+
     private pipeSide conn;
 
     private boolean need2run;
@@ -245,15 +253,36 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      * @return commands
      */
     protected cmds recvLn() {
+        seqRx++;
         if (conn.isClosed() != 0) {
             return null;
         }
         String a = conn.lineGet(0x11);
+        a = a.trim();
         if (debugger.rtrLsrpTraf) {
             logger.debug(peer + " rx " + a);
         }
         iface.dumpLine(false, a);
-        return new cmds("rx", a);
+        cmds cmd = new cmds("rx", a);
+        if (signRx == null) {
+            return cmd;
+        }
+        a = cmd.word();
+        if (!a.equals("signed")) {
+            sendErr("missSign");
+            return null;
+        }
+        a = cmd.word();
+        List<String> lst = new ArrayList<String>();
+        lst.add("" + seqRx);
+        lst.add(signRx);
+        lst.add(cmd.getRemaining());
+        lst.add(signRx);
+        if (!a.equals(userUpgrade.calcTextHash(lst))) {
+            sendErr("badSign");
+            return null;
+        }
+        return cmd;
     }
 
     /**
@@ -262,11 +291,21 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      * @param s line to send
      */
     protected void sendLn(String s) {
+        seqTx++;
+        s = s.trim();
+        if (signTx != null) {
+            List<String> lst = new ArrayList<String>();
+            lst.add("" + seqTx);
+            lst.add(signTx);
+            lst.add(s);
+            lst.add(signTx);
+            s = "signed " + userUpgrade.calcTextHash(lst) + " " + s;
+        }
         if (debugger.rtrLsrpTraf) {
             logger.debug(peer + " tx " + s);
         }
-        conn.linePut(s);
         iface.dumpLine(true, s);
+        conn.linePut(s);
     }
 
     /**
@@ -403,6 +442,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 sendErr("badPassword");
                 return;
             }
+            signRx = b + c;
+            signTx = c + b;
         }
         if (!need2run) {
             sendErr("notNeeded");
