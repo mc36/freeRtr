@@ -255,7 +255,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         }
         a = cmd.word();
         List<String> lst = new ArrayList<String>();
-        lst.add(bits.toHexD(seqRx));
+        lst.add("" + seqRx);
         lst.add(signRx);
         lst.add(cmd.getRemaining());
         lst.add(signRx);
@@ -276,7 +276,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         s = s.trim();
         if (signTx != null) {
             List<String> lst = new ArrayList<String>();
-            lst.add(bits.toHexD(seqTx));
+            lst.add("" + seqTx);
             lst.add(signTx);
             lst.add(s);
             lst.add(signTx);
