@@ -271,7 +271,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      *
      * @param s line to send
      */
-    protected void sendLn(String s) {
+    protected synchronized void sendLn(String s) {
         seqTx++;
         s = s.trim();
         if (signTx != null) {
