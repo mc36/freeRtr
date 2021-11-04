@@ -19,7 +19,7 @@ import net.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class ifcMacSec {
+public class ifcMacSec implements Runnable {
 
     /**
      * create instance
@@ -103,6 +103,8 @@ public class ifcMacSec {
     private boolean reply;
 
     private long lastKex;
+
+    private boolean calcing;
 
     private counter keyUsage = new counter();
 
@@ -240,54 +242,14 @@ public class ifcMacSec {
                 break;
             case 0x01: // request
             case 0x02: // reply
+                if (calcing) {
+                    return true;
+                }
                 reply = typ == 1;
                 lastKex = bits.getTime();
-                keyUsage = new counter();
-                if (replayCheck > 0) {
-                    sequence = new tabWindow(replayCheck);
-                }
-                seqTx = 0;
                 pck.getSkip(size);
                 keygen.clntPub = new BigInteger(pck.getCopy());
-                if (debugger.ifcMacSecTraf) {
-                    logger.debug("got kex, reply=" + reply + ", modulus=" + keygen.clntPub);
-                }
-                keygen.servKey();
-                if (debugger.ifcMacSecTraf) {
-                    logger.debug("common=" + keygen.common);
-                }
-                byte[] buf1 = new byte[0];
-                for (int i = 0; buf1.length < 1024; i++) {
-                    cryHashGeneric hsh = profil.trans.getHash();
-                    hsh.init();
-                    hsh.update(keygen.common.toByteArray());
-                    hsh.update(profil.preshared.getBytes());
-                    hsh.update(i);
-                    buf1 = bits.byteConcat(buf1, hsh.finish());
-                }
-                if (debugger.ifcMacSecTraf) {
-                    logger.debug("master=" + bits.byteDump(buf1, 0, buf1.length));
-                }
-                cphrTx = profil.trans.getEncr();
-                cphrRx = profil.trans.getEncr();
-                byte[] res = buf1;
-                buf1 = new byte[profil.trans.getKeyS()];
-                byte[] buf2 = new byte[cphrTx.getBlockSize()];
-                int pos = buf1.length + buf2.length;
-                bits.byteCopy(res, 0, buf1, 0, buf1.length);
-                bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
-                keyEncr = buf1;
-                cphrTx.init(buf1, buf2, true);
-                cphrRx.init(buf1, buf2, false);
-                cphrSiz = buf2.length;
-                hashSiz = profil.trans.getHash().getHashSize();
-                buf1 = new byte[hashSiz];
-                buf2 = new byte[hashSiz];
-                bits.byteCopy(res, pos, buf1, 0, buf1.length);
-                bits.byteCopy(res, pos, buf2, 0, buf2.length);
-                hashTx = profil.trans.getHmac(buf1);
-                hashRx = profil.trans.getHmac(buf2);
-                keyHash = buf1;
+                new Thread(this).start();
                 return true;
             default:
                 cntr.drop(pck, counter.reasons.badTyp);
@@ -346,6 +308,9 @@ public class ifcMacSec {
      * @return packet to send, null if nothing
      */
     public synchronized packHolder doSync() {
+        if (calcing) {
+            return null;
+        }
         if ((hashRx != null) && (!reply)) {
             boolean ned = false;
             if (profil.trans.lifeSec > 0) {
@@ -382,6 +347,63 @@ public class ifcMacSec {
         pck.ETHtrg.setAddr(addrMac.getBroadcast());
         reply = false;
         return pck;
+    }
+
+    private void doCalc() {
+        calcing = true;
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("got kex, reply=" + reply + ", modulus=" + keygen.clntPub);
+        }
+        keygen.servKey();
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("common=" + keygen.common);
+        }
+        byte[] buf1 = new byte[0];
+        for (int i = 0; buf1.length < 1024; i++) {
+            cryHashGeneric hsh = profil.trans.getHash();
+            hsh.init();
+            hsh.update(keygen.common.toByteArray());
+            hsh.update(profil.preshared.getBytes());
+            hsh.update(i);
+            buf1 = bits.byteConcat(buf1, hsh.finish());
+        }
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("master=" + bits.byteDump(buf1, 0, buf1.length));
+        }
+        cphrTx = profil.trans.getEncr();
+        cphrRx = profil.trans.getEncr();
+        byte[] res = buf1;
+        buf1 = new byte[profil.trans.getKeyS()];
+        byte[] buf2 = new byte[cphrTx.getBlockSize()];
+        int pos = buf1.length + buf2.length;
+        bits.byteCopy(res, 0, buf1, 0, buf1.length);
+        bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
+        keyEncr = buf1;
+        cphrTx.init(buf1, buf2, true);
+        cphrRx.init(buf1, buf2, false);
+        cphrSiz = buf2.length;
+        hashSiz = profil.trans.getHash().getHashSize();
+        buf1 = new byte[hashSiz];
+        buf2 = new byte[hashSiz];
+        bits.byteCopy(res, pos, buf1, 0, buf1.length);
+        bits.byteCopy(res, pos, buf2, 0, buf2.length);
+        keyUsage = new counter();
+        if (replayCheck > 0) {
+            sequence = new tabWindow(replayCheck);
+        }
+        seqTx = 0;
+        hashTx = profil.trans.getHmac(buf1);
+        hashRx = profil.trans.getHmac(buf2);
+        keyHash = buf1;
+        calcing = false;
+    }
+
+    public void run() {
+        try {
+            doCalc();
+        } catch (Exception e) {
+            logger.exception(e);
+        }
     }
 
 }
