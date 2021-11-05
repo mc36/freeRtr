@@ -1206,22 +1206,54 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * list graphviz
      *
+     * @param nocli no cli
+     * @param nonets no nets
+     * @param noints no ints
      * @return list
      */
-    public List<String> listGraphviz() {
+    public List<String> listGraphviz(boolean nocli, boolean nonets, boolean noints) {
         List<String> res = new ArrayList<String>();
-        res.add(graphBeg1);
-        res.add(graphBeg2);
+        if (!nocli) {
+            res.add(graphBeg1);
+            res.add(graphBeg2);
+        }
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "] [taillabel=\"" + cur.ident + "\"]");
+                String a;
+                if (noints) {
+                    a = "";
+                } else {
+                    a = " [taillabel=\"" + cur.ident + "\"]";
+                }
+                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "]" + a);
+            }
+            if (nonets) {
+                continue;
+            }
+            for (int i = 0; i < ntry.prfAdd.size(); i++) {
+                tabRouteEntry<addrIP> cur = ntry.prfAdd.get(i);
+                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+            }
+            for (int i = 0; i < ntry.prfFix.size(); i++) {
+                tabRouteEntry<addrIP> cur = ntry.prfFix.get(i);
+                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+            }
+            for (int i = 0; i < ntry.othAdd.size(); i++) {
+                tabRouteEntry<addrIP> cur = ntry.othAdd.get(i);
+                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+            }
+            for (int i = 0; i < ntry.othFix.size(); i++) {
+                tabRouteEntry<addrIP> cur = ntry.othFix.get(i);
+                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
             }
         }
-        res.add(graphEnd1);
-        res.add(graphEnd2);
+        if (!nocli) {
+            res.add(graphEnd1);
+            res.add(graphEnd2);
+        }
         return res;
     }
 

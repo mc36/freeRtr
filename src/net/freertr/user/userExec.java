@@ -408,7 +408,10 @@ public class userExec {
         hl.add("5 6            othertopology     topology of other node");
         hl.add("6 7,.            <addr>          other node to view");
         hl.add("7 .                [addr]        node to view");
-        hl.add("5 .            graph             graph about last spf");
+        hl.add("5 6,.          graph             graph about last spf");
+        hl.add("6 6,.            nocli           skip cli commands");
+        hl.add("6 6,.            nonets          skip connected networks");
+        hl.add("6 6,.            noints          skip connected interfaces");
         hl.add("5 6,.          nhinconsistent    inconsistent advertisements of next hops");
         hl.add("6 .              [str]           int matcher");
         hl.add("5 6,.          topology          topology about last spf");
@@ -453,7 +456,10 @@ public class userExec {
         hl.add("7 8,.              <addr>        other node to view");
         hl.add("8 .                  [addr]      node to view");
         hl.add("5 6            graph             graph about last spf");
-        hl.add("6 .              <num>           area number");
+        hl.add("6 7,.            <num>           area number");
+        hl.add("7 7,.              nocli         skip cli commands");
+        hl.add("7 7,.              nonets        skip connected networks");
+        hl.add("7 7,.              noints        skip connected interfaces");
         hl.add("5 6            nhinconsistent    inconsistent advertisements of next hops");
         hl.add("6 7,.            <num>           area number");
         hl.add("7 .                [str]         int matcher");
@@ -486,7 +492,10 @@ public class userExec {
         hl.add("7 8,.              <addr>        other node to view");
         hl.add("8 .                  [addr]      node to view");
         hl.add("5 6            graph             graph about last spf");
-        hl.add("6 .              <num>           level number");
+        hl.add("6 7,.            <num>           level number");
+        hl.add("7 7,.              nocli         skip cli commands");
+        hl.add("7 7,.              nonets        skip connected networks");
+        hl.add("7 7,.              noints        skip connected interfaces");
         hl.add("5 6            nhinconsistent    inconsistent advertisements of next hops");
         hl.add("6 7,.            <num>           level number");
         hl.add("7 .                [str]         int matcher");
