@@ -10,12 +10,14 @@ router ospf4 1
  vrf v1
  router 4.4.4.1
  area 0 ena
+ no area 0 host
  red conn
  exit
 router ospf6 1
  vrf v1
  router 6.6.6.1
  area 0 ena
+ no area 0 host
  red conn
  exit
 int eth1

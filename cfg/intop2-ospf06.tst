@@ -17,6 +17,7 @@ router ospf6 1
  router 6.6.6.1
  area 1 ena
  area 1 nssa
+ no area 1 host
  exit
 int eth1
  vrf for v1

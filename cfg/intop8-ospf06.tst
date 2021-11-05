@@ -10,12 +10,14 @@ router ospf4 1
  vrf v1
  router 4.4.4.1
  area 1 ena
+ no area 1 host
  area 1 nssa
  exit
 router ospf6 1
  vrf v1
  router 6.6.6.1
  area 1 ena
+ no area 1 host
 ! area 1 nssa
  exit
 int eth1
