@@ -1739,6 +1739,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     private void forwardPacket(int from, ipFwdIface rxIfc, addrIP hop, packHolder pck) {
         cntrT.rx(pck);
+        pck.INTsent++;
+        if (pck.INTsent > ifcEthTyp.loopMax) {
+            ifcEthTyp.loopDrops++;
+            cntrT.drop(pck, counter.reasons.tooLong);
+            return;
+        }
         if (rxIfc == null) {
             cntrT.drop(pck, counter.reasons.noIface);
             return;

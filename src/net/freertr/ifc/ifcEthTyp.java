@@ -219,7 +219,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
     /**
      * looped packets dropped
      */
-    protected static int loopDrops;
+    public static int loopDrops;
+    
+    /**
+     * looped packets depth
+     */
+    public static final int loopMax = 64;
 
     /**
      * get history handler
@@ -695,7 +700,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             return;
         }
         pck.INTsent++;
-        if (pck.INTsent > 64) {
+        if (pck.INTsent > loopMax) {
             loopDrops++;
             cntr.drop(pck, counter.reasons.tooLong);
             return;
