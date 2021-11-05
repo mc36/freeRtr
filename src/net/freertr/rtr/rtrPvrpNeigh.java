@@ -297,7 +297,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     protected void sendErr(String s) {
         logger.info("sent error (" + s + ") to " + peer);
         sendLn("error " + s);
-        conn.setClose();
+        stopWork();
     }
 
     /**
