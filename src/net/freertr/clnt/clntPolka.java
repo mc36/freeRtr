@@ -404,7 +404,7 @@ public class clntPolka implements Runnable, ifcDn {
             return null;
         }
         userFormat l = new userFormat("|", "mode|routeid");
-        l.add("hex|" + bits.toHex(routeid));
+        l.add("hex|" + bits.byteDump(routeid, 0, -1));
         l.add("poly|" + new cryPoly(new BigInteger(routeid)));
         return l;
     }
