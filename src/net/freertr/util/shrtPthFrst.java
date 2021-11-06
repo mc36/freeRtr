@@ -486,15 +486,15 @@ public class shrtPthFrst<Ta extends addrType> {
             tabRouteEntry<addrIP> cr = cl.get(i);
             tabRouteEntry<addrIP> or = ol.find(cr);
             if (or == null) {
-                logger.info("prefix " + cr + " appeared at " + nod);
+                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " appeared at " + nod);
                 continue;
             }
             if (cr.best.metric != or.best.metric) {
-                logger.info("prefix " + cr + " metric changed from " + or.best.metric + " to " + cr.best.metric + " at " + nod);
+                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " metric changed from " + or.best.metric + " to " + cr.best.metric + " at " + nod);
                 continue;
             }
             if (cr.best.tag != or.best.tag) {
-                logger.info("prefix " + cr + " tag changed from " + or.best.tag + " to " + cr.best.tag + " at " + nod);
+                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " tag changed from " + or.best.tag + " to " + cr.best.tag + " at " + nod);
                 continue;
             }
         }
@@ -502,7 +502,7 @@ public class shrtPthFrst<Ta extends addrType> {
             tabRouteEntry<addrIP> or = ol.get(i);
             tabRouteEntry<addrIP> cr = cl.find(or);
             if (cr == null) {
-                logger.info("prefix " + or + " lost at " + nod);
+                logger.info("prefix " + addrPrefix.ip2str(or.prefix) + " lost at " + nod);
                 continue;
             }
         }
@@ -1039,28 +1039,28 @@ public class shrtPthFrst<Ta extends addrType> {
             if (rou == null) {
                 continue;
             }
-            res.add("fixprefix|" + rou.prefix + "=" + rou.best.metric);
+            res.add("fixprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
         }
         for (int i = 0; i < ntry.prfAdd.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.prfAdd.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("addprefix|" + rou.prefix + "=" + rou.best.metric);
+            res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
         }
         for (int i = 0; i < ntry.othFix.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.othFix.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("fixprefix|" + rou.prefix + "=" + rou.best.metric);
+            res.add("fixprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
         }
         for (int i = 0; i < ntry.othAdd.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.othAdd.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("addprefix|" + rou.prefix + "=" + rou.best.metric);
+            res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
         }
         return res;
     }
@@ -1103,28 +1103,28 @@ public class shrtPthFrst<Ta extends addrType> {
                 if (rou == null) {
                     continue;
                 }
-                a += rou.prefix + "=" + rou.best.metric + " ";
+                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
             }
             for (int o = 0; o < ntry.prfAdd.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.prfAdd.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += rou.prefix + "=" + rou.best.metric + " ";
+                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
             }
             for (int o = 0; o < ntry.othFix.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.othFix.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += rou.prefix + "=" + rou.best.metric + " ";
+                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
             }
             for (int o = 0; o < ntry.othAdd.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.othAdd.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += rou.prefix + "=" + rou.best.metric + " ";
+                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
             }
             res.add(a);
         }
@@ -1235,19 +1235,19 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.prfAdd.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.prfFix.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
             for (int i = 0; i < ntry.othAdd.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.othAdd.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
             for (int i = 0; i < ntry.othFix.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.othFix.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + cur.prefix + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
         }
         if (!nocli) {

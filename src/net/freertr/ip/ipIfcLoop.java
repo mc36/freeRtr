@@ -121,6 +121,10 @@ public class ipIfcLoop implements ipIfc {
         return null;
     }
 
+    public String toString() {
+        return "<loop>";
+    }
+
     public void updateL2info(int mod, addrType mac, addrIP nexthop) {
     }
 

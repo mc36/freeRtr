@@ -38,7 +38,7 @@ public class shrtPthFrstPfx<Ta extends addrType> implements Comparator<shrtPthFr
         for (int i = 0; i < nodes.size(); i++) {
             a += " " + nodes.get(i);
         }
-        return prefix + "|" + a;
+        return addrPrefix.ip2str(prefix) + "|" + a;
     }
 
     public int compare(shrtPthFrstPfx<Ta> o1, shrtPthFrstPfx<Ta> o2) {
