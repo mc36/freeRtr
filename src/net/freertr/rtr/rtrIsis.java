@@ -985,11 +985,11 @@ public class rtrIsis extends ipRtr {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("isis");
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("isis");
         tabGen<tabIndex<addrIP>> tab3 = new tabGen<tabIndex<addrIP>>();
-        tab1.mergeFrom(tabRoute.addType.ecmp, level1.routes, null, true, tabRouteAttr.distanLim);
-        tab1.mergeFrom(tabRoute.addType.ecmp, level2.routes, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.ecmp, level1.routes, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.ecmp, level2.routes, tabRouteAttr.distanLim);
         if (other.enabled) {
-            tab2.mergeFrom(tabRoute.addType.ecmp, level1.oroutes, null, true, tabRouteAttr.distanLim);
-            tab2.mergeFrom(tabRoute.addType.ecmp, level2.oroutes, null, true, tabRouteAttr.distanLim);
+            tab2.mergeFrom(tabRoute.addType.ecmp, level1.oroutes, tabRouteAttr.distanLim);
+            tab2.mergeFrom(tabRoute.addType.ecmp, level2.oroutes, tabRouteAttr.distanLim);
         }
         if (segrouLab != null) {
             tabIndex.mergeTable(tab3, level1.segrouUsd);
@@ -2061,6 +2061,15 @@ public class rtrIsis extends ipRtr {
      */
     public int routerIfaceCount() {
         return ifaces.size();
+    }
+
+    /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return 1;
     }
 
     /**

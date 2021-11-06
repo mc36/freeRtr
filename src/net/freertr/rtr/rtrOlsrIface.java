@@ -635,11 +635,11 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
                 tab1.add(tabRoute.addType.better, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
             }
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, tabRouteAttr.distanLim);
         if (splitHorizon) {
             tab1.delIface(conn.iface);
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, tabRouteAttr.distanLim);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         advert = tab2;

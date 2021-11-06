@@ -2038,6 +2038,8 @@ qc pass: unicast+nsh over bgp
 qc pass: unicast+nsh over bgp with soft-reconfig
 qc pass: unicast+nsh over bgp with additional path
 qc pass: bgp with polka
+qc pass: bgp without recursion
+qc pass: bgp with recursion
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -2467,4 +2469,3 @@ todo: more randomizers
 todo: x25
 todo: default vrf for show commands
 todo: shame texts in cmd.err
-todo: consider bgp neigh recursive-nexthop knob with proper limiters

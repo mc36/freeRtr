@@ -284,6 +284,13 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     public abstract int routerIfaceCount();
 
     /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public abstract int routerRecursions();
+
+    /**
      * get list of link states
      *
      * @param tab table to update
@@ -292,5 +299,5 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * @param adv advertiser
      */
     public abstract void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv);
-
+    
 }

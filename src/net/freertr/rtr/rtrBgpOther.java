@@ -325,6 +325,15 @@ public class rtrBgpOther extends ipRtr {
     }
 
     /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return parent.recursion;
+    }
+
+    /**
      * get list of link states
      *
      * @param tab table to update

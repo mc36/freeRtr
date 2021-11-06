@@ -37,4 +37,3 @@ more randomizers
 x25
 default vrf for show commands
 shame texts in cmd.err
-consider bgp neigh recursive-nexthop knob with proper limiters

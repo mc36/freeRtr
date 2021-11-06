@@ -558,7 +558,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
         if (defOrigin) {
             tab1.add(tabRoute.addType.better, addrPrefix.ip4toIP(addrPrefix.defaultRoute4()), new addrIP());
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerComputedU, tabRouteAttr.distanLim);
         if (splitHorizon) {
             if (poisonReverse) {
                 for (int i = 0; i < tab1.size(); i++) {
@@ -572,7 +572,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
                 tab1.delIface(conn.iface);
             }
         }
-        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.better, lower.routerRedistedU, tabRouteAttr.distanLim);
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         if (debugger.rtrRip4traf) {

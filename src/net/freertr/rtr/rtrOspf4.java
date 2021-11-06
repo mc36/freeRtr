@@ -166,7 +166,7 @@ public class rtrOspf4 extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            tab1.mergeFrom(tabRoute.addType.ecmp, ntry.routes, null, true, tabRouteAttr.distanLim);
+            tab1.mergeFrom(tabRoute.addType.ecmp, ntry.routes, tabRouteAttr.distanLim);
         }
         if (segrouLab != null) {
             for (int i = 0; i < areas.size(); i++) {
@@ -1076,6 +1076,15 @@ public class rtrOspf4 extends ipRtr {
      */
     public int routerIfaceCount() {
         return ifaces.size();
+    }
+
+    /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return 1;
     }
 
     /**

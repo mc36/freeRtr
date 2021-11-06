@@ -271,6 +271,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! distance 20 200 200",
         "router bgp[4|6].*! scantime 1000",
         "router bgp[4|6].*! scandelay 1000",
+        "router bgp[4|6].*! nexthop recursion 1",
         "router bgp[4|6].*! incremental 1000",
         "router bgp[4|6].*! no conquer",
         "router bgp[4|6].*! no flapstat",

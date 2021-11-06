@@ -133,6 +133,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int scanDelay;
 
     /**
+     * recursion depth
+     */
+    public int recursion;
+
+    /**
      * restart time
      */
     public int restartTime;
@@ -934,6 +939,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         flaps = null;
         scanTime = 1000;
         scanDelay = 1000;
+        recursion = 1;
         restartTime = 60 * 1000;
         distantExt = 20;
         distantInt = 200;
@@ -1600,7 +1606,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         computedRpki = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < rpkis.size(); i++) {
-            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, null, true, tabRouteAttr.distanLim);
+            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, tabRouteAttr.distanLim);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -2327,6 +2333,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 3     <name>                    name of template");
         rtrBgpParam.getParamHelp(l);
         l.add("1 2   nexthop                     specify next hop tracking parameter");
+        l.add("2 3     recursion                 specify recursion depth");
+        l.add("3 .       <num>                   maximum rounds");
         l.add("2 3     route-map                 filter next hops");
         l.add("3 .       <name>                  name of route map");
         l.add("2 3     route-policy              filter next hops");
@@ -2463,6 +2471,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, nhtRoumap == null, beg, "nexthop route-map", "" + nhtRoumap);
         cmds.cfgLine(l, nhtRouplc == null, beg, "nexthop route-policy", "" + nhtRouplc);
         cmds.cfgLine(l, nhtPfxlst == null, beg, "nexthop prefix-list", "" + nhtPfxlst);
+        l.add(beg + "nexthop recursion " + recursion);
         String a = "";
         if (segrouBase != 0) {
             a += " base " + segrouBase;
@@ -2627,9 +2636,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("nexthop")) {
             s = cmd.word();
+            if (s.equals("recursion")) {
+                recursion = bits.str2num(cmd.word());
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
             if (s.equals("route-map")) {
                 if (negated) {
                     nhtRoumap = null;
+                    needFull.add(1);
+                    compute.wakeup();
                     return false;
                 }
                 cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
@@ -2638,11 +2655,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     return false;
                 }
                 nhtRoumap = ntry.roumap;
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             if (s.equals("route-policy")) {
                 if (negated) {
                     nhtRouplc = null;
+                    needFull.add(1);
+                    compute.wakeup();
                     return false;
                 }
                 cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
@@ -2651,11 +2672,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     return false;
                 }
                 nhtRouplc = ntry.rouplc;
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             if (s.equals("prefix-list")) {
                 if (negated) {
                     nhtPfxlst = null;
+                    needFull.add(1);
+                    compute.wakeup();
                     return false;
                 }
                 cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
@@ -2664,6 +2689,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     return false;
                 }
                 nhtPfxlst = ntry.prflst;
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             return true;
@@ -3525,6 +3552,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public int routerIfaceCount() {
         return 0;
+    }
+
+    /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return recursion;
     }
 
     /**

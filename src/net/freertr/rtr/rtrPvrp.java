@@ -285,13 +285,13 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
+                tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, tabRouteAttr.distanLim);
             }
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, tab1, tab1, fwdCore.commonLabel, null, 0);
         tabRoute<addrIP> tab2 = tab1;
         tab1 = new tabRoute<addrIP>("ned2adv");
-        tab1.mergeFrom(tabRoute.addType.ecmp, tab2, null, true, tabRouteAttr.distanLim);
+        tab1.mergeFrom(tabRoute.addType.ecmp, tab2, tabRouteAttr.distanLim);
         for (int i = 0; i < routerRedistedU.size(); i++) {
             ntry = routerRedistedU.get(i);
             if (ntry == null) {
@@ -524,6 +524,15 @@ public class rtrPvrp extends ipRtr implements Runnable {
      */
     public int routerIfaceCount() {
         return ifaces.size();
+    }
+
+    /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return 1;
     }
 
     /**

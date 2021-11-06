@@ -427,6 +427,15 @@ public class rtrDownload extends ipRtr {
     }
 
     /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return 1;
+    }
+
+    /**
      * get list of link states
      *
      * @param tab table to update

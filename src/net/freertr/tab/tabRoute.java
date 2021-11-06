@@ -541,11 +541,9 @@ public class tabRoute<T extends addrType> {
      *
      * @param mod mode to use
      * @param other table to import
-     * @param nexthops table where look up nexthops, null means not check
-     * @param copy copy entries
      * @param distan highest allowed distance
      */
-    public void mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, boolean copy, int distan) {
+    public void mergeFrom(addType mod, tabRoute<T> other, int distan) {
         for (int i = 0; i < other.prefixes.size(); i++) {
             tabRouteEntry<T> imp = other.prefixes.get(i);
             if (imp == null) {
@@ -554,17 +552,36 @@ public class tabRoute<T extends addrType> {
             if (imp.best.distance >= distan) {
                 continue;
             }
-            if (copy) {
-                imp = imp.copyBytes(mod);
-            }
-            if (nexthops == null) {
-                add(mod, imp, false, false);
+            imp = imp.copyBytes(mod);
+            add(mod, imp, false, false);
+        }
+        if (debugger.tabRouteEvnt) {
+            logger.debug("merged prefixes from " + other.defRouTyp);
+        }
+    }
+
+    /**
+     * import all the entries from another table
+     *
+     * @param mod mode to use
+     * @param other table to import
+     * @param nexthops table where look up nexthops
+     * @param recur maximum recursion depth
+     * @param distan highest allowed distance
+     */
+    public void mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, int recur, int distan) {
+        for (int i = 0; i < other.prefixes.size(); i++) {
+            tabRouteEntry<T> imp = other.prefixes.get(i);
+            if (imp == null) {
                 continue;
             }
-            imp = imp.copyBytes(addType.lnkEcmp);
+            if (imp.best.distance >= distan) {
+                continue;
+            }
+            imp = imp.copyBytes(mod);
             for (int o = imp.alts.size() - 1; o >= 0; o--) {
                 tabRouteAttr<T> attr = imp.alts.get(o);
-                if (!doNexthopFix(attr, nexthops)) {
+                if (!doNexthopFix(attr, other, recur, nexthops)) {
                     continue;
                 }
                 imp.delAlt(o);
@@ -581,20 +598,35 @@ public class tabRoute<T extends addrType> {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> nexthops) {
-        if (attr.nextHop == null) {
+    private boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> recurs, int recurn, tabRoute<T> nexthops) {
+        T hop = attr.nextHop;
+        T orig = hop;
+        if (hop == null) {
             return true;
         }
-        tabRouteEntry<T> nh = nexthops.route(attr.nextHop);
-        if (nh == null) {
-            return true;
+        for (int i = 0; i < recurn; i++) {
+            tabRouteEntry<T> nhr = nexthops.route(hop);
+            if (nhr == null) {
+                nhr = recurs.route(hop);
+                if (nhr == null) {
+                    return true;
+                }
+                hop = nhr.best.nextHop;
+                if (hop == null) {
+                    return true;
+                }
+                attr.oldHop = orig;
+                attr.nextHop = (T) hop.copyBytes();
+                continue;
+            }
+            if (nhr.best.nextHop != null) {
+                attr.oldHop = orig;
+                attr.nextHop = (T) nhr.best.nextHop.copyBytes();
+            }
+            attr.iface = nhr.best.iface;
+            return false;
         }
-        if (nh.best.nextHop != null) {
-            attr.oldHop = attr.nextHop;
-            attr.nextHop = (T) nh.best.nextHop.copyBytes();
-        }
-        attr.iface = nh.best.iface;
-        return false;
+        return true;
     }
 
     /**

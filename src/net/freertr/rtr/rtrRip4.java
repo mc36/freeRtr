@@ -144,6 +144,15 @@ public class rtrRip4 extends ipRtr implements prtServP {
     }
 
     /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return 1;
+    }
+
+    /**
      * get list of link states
      *
      * @param tab table to update
@@ -379,7 +388,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
             if (nei.iface.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.ecmp, nei.learned, null, true, tabRouteAttr.distanLim);
+            tab.mergeFrom(tabRoute.addType.ecmp, nei.learned, tabRouteAttr.distanLim);
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, tab, tab, fwdCore.commonLabel, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);
