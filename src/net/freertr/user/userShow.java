@@ -1200,7 +1200,7 @@ public class userShow {
         }
         if (a.equals("polka")) {
             a = cmd.word();
-            if (a.equals("forwarding")) {
+            if (a.equals("routeid")) {
                 a = cmd.word();
                 cfgIfc ntry = cfgAll.ifcFind(a, false);
                 if (ntry == null) {

@@ -1071,7 +1071,7 @@ public class userExec {
         hl.add("5 .            <num>             index to view");
         hl.add("3 .        interfaces            nsh interface table");
         hl.add("2 3      polka                   polynomial key architecture");
-        hl.add("3 4        forwarding            polka forwarding information");
+        hl.add("3 4        routeid               polka routeid information");
         hl.add("4 .          <name>              interface to see");
         hl.add("3 4,.      interfaces            polka interface table");
         hl.add("4 .          [name]              interface to see");
