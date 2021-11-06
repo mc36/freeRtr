@@ -1218,10 +1218,10 @@ public class userShow {
             if (a.equals("interfaces")) {
                 a = cmd.word();
                 if (a.length() < 1) {
-                    userFormat lst = new userFormat("|", "interface|packet");
+                    userFormat lst = new userFormat("|", "interface|packet|headend");
                     for (int i = 0; i < cfgAll.ifaces.size(); i++) {
                         cfgIfc ntry = cfgAll.ifaces.get(i);
-                        lst.add(ntry.name + "|" + (ntry.polkaPack != null));
+                        lst.add(ntry.name + "|" + (ntry.polkaPack != null) + "|" + (ntry.tunPolka != null));
                     }
                     rdr.putStrTab(lst);
                     return null;
