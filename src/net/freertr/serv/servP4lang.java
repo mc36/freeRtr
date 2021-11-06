@@ -3100,7 +3100,7 @@ class servP4langConn implements Runnable {
         int o = -1;
         if (ifc.ifc.polkaPack != null) {
             i = ifc.ifc.polkaPack.localId;
-            o = ifc.ifc.polkaPack.coeffs[i].getCoeff().intValue();
+            o = ifc.ifc.polkaPack.coeffs[i].intCoeff();
         }
         if (i != ifc.sentPolka) {
             if (ifc.sentPolka >= 0) {

@@ -7,6 +7,7 @@ import net.freertr.cry.cryPoly;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -92,7 +93,7 @@ public class ifcPolka implements ifcUp {
         crcBase = bas;
         crcMax = max;
         coeffs = generatePolynomial(bas, max);
-        hasher = new cryHashCrc16(coeffs[id].getCoeff().intValue(), 0, 0, false);
+        hasher = new cryHashCrc16(coeffs[id].intCoeff(), 0, 0, false);
     }
 
     private static boolean checkPolynomial(cryPoly[] s, int o, cryPoly f) {
@@ -104,7 +105,7 @@ public class ifcPolka implements ifcUp {
             if (r[0] == null) {
                 return true;
             }
-            if (r[1].getCoeff().intValue() > 1) {
+            if (r[1].intCoeff() > 1) {
                 return true;
             }
         }
@@ -188,7 +189,7 @@ public class ifcPolka implements ifcUp {
         int[] o = new int[s.length];
         for (int i = 0; i < s.length; i++) {
             cryPoly c = r.div(s[i])[1];
-            o[i] = c.getCoeff().intValue();
+            o[i] = c.intCoeff();
         }
         return o;
     }
@@ -216,7 +217,7 @@ public class ifcPolka implements ifcUp {
     public static int[] decodeRouteIdCrc(cryPoly[] s, byte[] v) {
         int[] o = new int[s.length];
         for (int i = 0; i < s.length; i++) {
-            cryHashCrc16 h = new cryHashCrc16(s[i].getCoeff().intValue(), 0, 0, false);
+            cryHashCrc16 h = new cryHashCrc16(s[i].intCoeff(), 0, 0, false);
             o[i] = decodeRouteIdCrc(h, v);
         }
         return o;
@@ -315,6 +316,19 @@ public class ifcPolka implements ifcUp {
             logger.debug("tx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
         }
         lower.sendPack(pck);
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShow() {
+        userFormat l = new userFormat("|", "index|deg|coeff|poly");
+        for (int i = 0; i < coeffs.length; i++) {
+            l.add(i + "|" + coeffs[i].getDegree() + "|" + bits.toHexD(coeffs[i].intCoeff()) + "|" + coeffs[i]);
+        }
+        return l;
     }
 
 }

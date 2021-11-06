@@ -1,10 +1,12 @@
 package net.freertr.clnt;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
+import net.freertr.cry.cryPoly;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcPolka;
@@ -15,8 +17,9 @@ import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.user.userFormat;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -389,6 +392,40 @@ public class clntPolka implements Runnable, ifcDn {
             logger.debug("bad routeid for " + target + " with " + mod);
         }
 
+    }
+
+    /**
+     * get routeid show
+     *
+     * @return show
+     */
+    public userFormat getShRoute() {
+        if (routeid == null) {
+            return null;
+        }
+        userFormat l = new userFormat("|", "mode|routeid");
+        l.add("hex|" + bits.toHex(routeid));
+        l.add("poly|" + new cryPoly(new BigInteger(routeid)));
+        return l;
+    }
+
+    /**
+     * get decoded show
+     *
+     * @return show
+     */
+    public userFormat getShDecode() {
+        if (routeid == null) {
+            return null;
+        }
+        userFormat l = new userFormat("|", "index|coeff|poly|crc|equal");
+        ifcPolka plk = nextIfc.lower.getPolka();
+        int[] pol = ifcPolka.decodeRouteIdPoly(plk.coeffs, routeid);
+        int[] crc = ifcPolka.decodeRouteIdCrc(plk.coeffs, routeid);
+        for (int i = 0; i < plk.coeffs.length; i++) {
+            l.add(i + "|" + bits.toHexD(plk.coeffs[i].intCoeff()) + "|" + pol[i] + "|" + crc[i] + "|" + (pol[i] == crc[i]));
+        }
+        return l;
     }
 
 }

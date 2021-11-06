@@ -37,7 +37,7 @@ public class cryPoly implements Comparable<cryPoly> {
     public cryPoly(String c) {
         coeff = new BigInteger(c, 2);
     }
-    
+
     /**
      * get coefficient
      *
@@ -48,6 +48,15 @@ public class cryPoly implements Comparable<cryPoly> {
     }
 
     /**
+     * get coefficient
+     *
+     * @return coefficient
+     */
+    public int intCoeff() {
+        return coeff.intValue();
+    }
+
+    /**
      * get degree
      *
      * @return degree
@@ -55,7 +64,7 @@ public class cryPoly implements Comparable<cryPoly> {
     public int getDegree() {
         return coeff.bitLength() - 1;
     }
-    
+
     public String toString() {
         return coeff.toString(2);
     }

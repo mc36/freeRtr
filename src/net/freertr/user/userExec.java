@@ -1070,6 +1070,11 @@ public class userExec {
         hl.add("4 5          [num]               path to view");
         hl.add("5 .            <num>             index to view");
         hl.add("3 .        interfaces            nsh interface table");
+        hl.add("2 3      polka                   polynomial key architecture");
+        hl.add("3 4        forwarding            polka forwarding information");
+        hl.add("4 .          <name>              interface to see");
+        hl.add("3 4,.      interfaces            polka interface table");
+        hl.add("4 .          [name]              interface to see");
         hl.add("2 3      ipx                     ipx information");
         hl.add("3 4        route                 routing table entries");
         hl.add("4 5,.        <vrf>               name of routing table");

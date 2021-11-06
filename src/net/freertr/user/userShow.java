@@ -1198,6 +1198,48 @@ public class userShow {
             doShowHistory(a, ifc.ethtyp.getHistory());
             return null;
         }
+        if (a.equals("polka")) {
+            a = cmd.word();
+            if (a.equals("forwarding")) {
+                a = cmd.word();
+                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                if (ntry == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ntry.tunPolka == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                rdr.putStrTab(ntry.tunPolka.getShRoute());
+                rdr.putStrTab(ntry.tunPolka.getShDecode());
+                return null;
+            }
+            if (a.equals("interfaces")) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    userFormat lst = new userFormat("|", "interface|packet");
+                    for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+                        cfgIfc ntry = cfgAll.ifaces.get(i);
+                        lst.add(ntry.name + "|" + (ntry.polkaPack != null));
+                    }
+                    rdr.putStrTab(lst);
+                    return null;
+                }
+                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                if (ntry == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ntry.polkaPack == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                rdr.putStrTab(ntry.polkaPack.getShow());
+                return null;
+            }
+            return null;
+        }
         if (a.equals("nsh")) {
             a = cmd.word();
             if (a.equals("forwarding")) {
