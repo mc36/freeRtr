@@ -969,7 +969,7 @@ public class shrtPthFrst<Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            s += " " + ntry + "," + ntry.visited + "," + ntry.conn.size();
+            s += " " + ntry + "," + ntry.visited + "," + ntry.conn.size() + "," + (ntry.prfFix.size() + ntry.prfAdd.size() + ntry.othFix.size() + ntry.othAdd.size());
         }
         return s;
     }
