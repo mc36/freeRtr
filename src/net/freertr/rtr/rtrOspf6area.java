@@ -1047,6 +1047,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
+                        pref.best.metric = prf6.metric;
                         pref.best.origin = 109;
                         pref.best.distance = lower.distantSum;
                         pref.best.aggrAs = area;
@@ -1062,6 +1063,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(prefixRead(pck, 0, prf6));
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
+                        pref.best.metric = prf6.metric;
                         pref.best.origin = 109;
                         pref.best.distance = lower.distantSum;
                         pref.best.aggrAs = area;

@@ -915,6 +915,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                                 prf4 = new addrPrefix<addrIPv4>(l.linkID, l.linkDat.toNetmask());
                                 pref = new tabRouteEntry<addrIP>();
                                 pref.prefix = addrPrefix.ip4toIP(prf4);
+                                pref.best.metric = l.metric;
                                 pref.best.origin = 109;
                                 pref.best.distance = lower.distantInt;
                                 pref.best.aggrAs = area;
