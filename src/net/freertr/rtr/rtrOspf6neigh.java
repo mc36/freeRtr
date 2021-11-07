@@ -486,6 +486,9 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
                     return;
                 }
                 doDescrList(pck);
+                if (seq != ddSeq) {
+                    return;
+                }
                 pck.clear();
                 int i;
                 if (ddMst) {

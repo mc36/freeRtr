@@ -482,6 +482,9 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
                     return;
                 }
                 doDescrList(pck);
+                if (seq != ddSeq) {
+                    return;
+                }
                 pck.clear();
                 int i;
                 if (ddMst) {
