@@ -333,6 +333,10 @@ public class userTester {
                 jvn = "/usr/lib/jvm/java-" + s.substring(7, s.length()) + "-openjdk-amd64/bin/java";
                 continue;
             }
+            if (s.startsWith("java")) {
+                jvn = cmd.word();
+                continue;
+            }
             if (s.equals("ikvm")) {
                 jvn = "/usr/bin/ikvm";
                 mem = 0;
