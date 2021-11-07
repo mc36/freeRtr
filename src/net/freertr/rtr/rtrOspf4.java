@@ -747,7 +747,7 @@ public class rtrOspf4 extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.state + "|" + bits.timePast(nei.upTime));
+                l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
             }
         }
         return l;

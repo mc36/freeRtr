@@ -1771,7 +1771,7 @@ public class rtrIsis extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + nei.peerAdjState + "|" + bits.timePast(nei.upTime));
+                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
             }
         }
         return l;

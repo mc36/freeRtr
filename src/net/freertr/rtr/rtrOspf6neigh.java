@@ -192,6 +192,27 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
     }
 
     /**
+     * convert status to string
+     *
+     * @param i status
+     * @return string
+     */
+    public static String status2string(int i) {
+        switch (i) {
+            case stDown:
+                return "down";
+            case stInit:
+                return "init";
+            case stXchg:
+                return "xchg";
+            case stFull:
+                return "full";
+            default:
+                return "unknown=" + i;
+        }
+    }
+
+    /**
      * create one instance
      *
      * @param parent the ospf protocol

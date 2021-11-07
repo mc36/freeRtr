@@ -217,6 +217,25 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     }
 
     /**
+     * convert status to string
+     *
+     * @param i status
+     * @return string
+     */
+    public static String status2string(int i) {
+        switch (i) {
+            case statDown:
+                return "down";
+            case statInit:
+                return "init";
+            case statUp:
+                return "up";
+            default:
+                return "unknown=" + i;
+        }
+    }
+
+    /**
      * convert message type to level
      *
      * @param i message type
