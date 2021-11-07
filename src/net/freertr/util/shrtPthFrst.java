@@ -1215,8 +1215,8 @@ public class shrtPthFrst<Ta extends addrType> {
         List<String> res = new ArrayList<String>();
         if (!nocli) {
             res.add(graphBeg1);
-            res.add(graphBeg2);
         }
+        res.add(graphBeg2);
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
@@ -1250,8 +1250,8 @@ public class shrtPthFrst<Ta extends addrType> {
                 res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
         }
+        res.add(graphEnd1);
         if (!nocli) {
-            res.add(graphEnd1);
             res.add(graphEnd2);
         }
         return res;
