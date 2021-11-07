@@ -31,7 +31,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     /**
      * hardware counter
      */
-    public counter hwCntr = new counter();
+    public counter hwCntr;
 
     /**
      * create entry
@@ -45,11 +45,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     }
 
     public String toString() {
-        String a = "";
-        if (hwCntr != null) {
-            a = "+" + hwCntr.byteRx;
-        }
-        return index + "|" + prefix + "|" + cntr.byteRx + a;
+        return index + " " + prefix;
     }
 
     /**

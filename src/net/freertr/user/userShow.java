@@ -4026,7 +4026,11 @@ public class userShow {
             if (prf == null) {
                 continue;
             }
-            lst.add("" + prf);
+            String a = "";
+            if (prf.hwCntr != null) {
+                a = "+" + prf.hwCntr.byteRx;
+            }
+            lst.add(prf.index + "|" + addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.byteRx + a);
         }
         rdr.putStrTab(lst);
     }
