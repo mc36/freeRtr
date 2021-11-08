@@ -328,6 +328,46 @@ public abstract class rtrBgpParam {
     public int advertIntRx;
 
     /**
+     * dampening prefixes
+     */
+    public tabGen<rtrBgpDamp> dampenPfxs;
+
+    /**
+     * dampening withdarw penalty
+     */
+    public int dampenWthd;
+
+    /**
+     * dampening announce penalty
+     */
+    public int dampenAnno;
+
+    /**
+     * dampening minimum penalty
+     */
+    public int dampenMinp;
+
+    /**
+     * dampening maximum penalty
+     */
+    public int dampenMaxp;
+
+    /**
+     * dampening suppress threshold
+     */
+    public int dampenSupp;
+
+    /**
+     * dampening reuse threshold
+     */
+    public int dampenReus;
+
+    /**
+     * dampening half life time
+     */
+    public int dampenHalf;
+
+    /**
      * max prefix count
      */
     public int maxPrefixCnt;
@@ -936,6 +976,20 @@ public abstract class rtrBgpParam {
         advertIntTx = src.advertIntTx;
         advertIntRx = src.advertIntRx;
         serverClnt = src.serverClnt;
+        dampenWthd = src.dampenWthd;
+        dampenAnno = src.dampenAnno;
+        dampenMinp = src.dampenMinp;
+        dampenMaxp = src.dampenMaxp;
+        dampenSupp = src.dampenSupp;
+        dampenReus = src.dampenReus;
+        dampenHalf = src.dampenHalf;
+        if (src.dampenPfxs == null) {
+            dampenPfxs = null;
+        } else {
+            if (dampenPfxs == null) {
+                dampenPfxs = new tabGen<rtrBgpDamp>();
+            }
+        }
         maxPrefixCnt = src.maxPrefixCnt;
         maxPrefixPrc = src.maxPrefixPrc;
         enforceFirst = src.enforceFirst;
@@ -1195,158 +1249,166 @@ public abstract class rtrBgpParam {
      * @param l list to append
      */
     public static void getParamHelp(userHelping l) {
-        l.add("3 4       remote-as                   remote as number");
-        l.add("4 5,.       <num>                     autonomous system number");
-        l.add("5 .           shutdown                connection disabled for this peer");
-        l.add("3 4       password                    set session password");
-        l.add("4 .         <text>                    password to use");
-        l.add("3 .       shutdown                    connection disabled for this peer");
-        l.add("3 4       description                 describe this neighbor");
-        l.add("4 4,.       <name>                    description of neighbor");
-        l.add("3 4       update-source               connection source for this peer");
-        l.add("4 .         <name>                    name of interface");
-        l.add("3 4       address-family              specify address families");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       monitor                     bgp monitor protocol for this peer");
-        l.add("4 .         <name>                    name of bmp");
-        l.add("3 4       other-address               address of peer in the other afi");
-        l.add("4 .         <addr>                    other address");
-        l.add("3 4       dump                        bgp dump for this peer");
-        l.add("4 .         <name>                    name of mrt");
-        l.add("3 4       buffer-size                 size of buffer");
-        l.add("4 .         <num>                     bytes in buffer");
-        l.add("3 4       ttl-security                sending ttl value");
-        l.add("4 .         <num>                     ttl value");
-        l.add("3 4       egress-engineering          set egress engineering");
-        l.add("4 .         <num>                     index value");
-        l.add("3 4       role                        leak prevention role");
-        l.add("4 5,.       disabled                  disable processing");
-        l.add("4 5,.       attrib                    only send otc attribute");
-        l.add("4 5,.       provider                  provider");
-        l.add("4 5,.       ix-server                 route server");
-        l.add("4 5,.       ix-client                 route server client");
-        l.add("4 5,.       customer                  customer");
-        l.add("4 5,.       peer                      peer");
-        l.add("5 .           enforce                 enforce negotiation");
-        l.add("3 .       capability-negotiation      perform capability negosiation");
-        l.add("3 .       track-next-hop              perform next hop tracking");
-        l.add("3 4       connection-mode             connection mode allowed");
-        l.add("4 .         active                    this router will initiate session");
-        l.add("4 .         passive                   remote router will initiate session");
-        l.add("4 .         both                      both modes allowed");
-        l.add("3 4       compression                 compression mode allowed");
-        l.add("4 .         none                      not allowed");
-        l.add("4 .         receive                   receive direction");
-        l.add("4 .         transmit                  transmit direction");
-        l.add("4 .         both                      both directions");
-        l.add("3 4       additional-path-rx          additional path receive mode");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       additional-path-tx          additional path transmit mode");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 .       route-reflector-client      reflect routes to this client");
-        l.add("3 .       confederation-peer          confederation peer");
-        l.add("3 .       default-originate           send default route to peer");
-        l.add("3 .       other-default-originate     send other default route to peer");
-        l.add("3 .       aigp                        send accumulated igp attribute");
-        l.add("3 .       traffeng                    send traffic engineering attribute");
-        l.add("3 .       pmsitun                     send provider multicast service interface tunnel attribute");
-        l.add("3 .       tunenc                      send tunnel encapsulation attribute");
-        l.add("3 .       linkstate                   send link state attribute");
-        l.add("3 .       attribset                   send attribute set attribute");
-        l.add("3 .       label-pop                   advertise pop label");
-        l.add("3 .       segrout                     send segment routing attribute");
-        l.add("3 .       bier                        send bier attribute");
-        l.add("3 .       internal-vpn-client         preserve attributes from peer");
-        l.add("3 .       allow-as-in                 allow my as to relearn from peer");
-        l.add("3 .       allow-as-out                allow peer as to advertised out");
-        l.add("3 .       enforce-first-as            discard unprepended aspath from peer");
-        l.add("3 .       route-server-client         unmodified attributes to this client");
-        l.add("3 .       remove-private-as-out       remove private as to peer");
-        l.add("3 .       ungroup-remoteas            consider remote asn while grouping peers");
-        l.add("3 .       remove-private-as-in        remove private as from peer");
-        l.add("3 .       override-peer-as-out        replace peer as to peer");
-        l.add("3 .       override-peer-as-in         replace peer as from peer");
-        l.add("3 .       next-hop-unchanged          send next hop unchanged to peer");
-        l.add("3 .       next-hop-self               send next hop myself to peer");
-        l.add("3 .       next-hop-peer               set next hop to peer address");
-        l.add("3 .       bfd                         enable bfd triggered down");
-        l.add("3 4       multiple-labels             advertise multiple labels capability");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       graceful-restart            advertise graceful restart capability");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       extended-nexthop-current    advertise extended nexthop capability");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4       extended-nexthop-other      advertise extended nexthop capability");
-        getAfiList(l, "4 4,.", "use", true);
-        l.add("3 4,.     hostname                    advertise hostname capability");
-        l.add("4 .         domain                    advertise domain too");
-        l.add("3 .       extended-open               send open in extended format");
-        l.add("3 .       extended-update             advertise extended update capability");
-        l.add("3 .       unidirection                not advertise when receiving");
-        l.add("3 .       fall-over                   track outgoing interface");
-        l.add("3 .       soft-reconfiguration        enable soft reconfiguration");
-        l.add("3 4       maximum-prefix              maximum number of accepted prefixes");
-        l.add("4 5         <num>                     prefix count");
-        l.add("5 .           <num>                   warning percent");
-        l.add("3 4       send-community              send community to peer");
-        l.add("4 4,.       standard                  send standard community");
-        l.add("4 4,.       extended                  send extended community");
-        l.add("4 4,.       large                     send large community");
-        l.add("4 4,.       both                      send std+ext communities");
-        l.add("4 4,.       all                       send std+ext+lrg communities");
-        l.add("4 4,.       none                      send no community");
-        l.add("3 4       local-as                    local as number");
-        l.add("4 .         <num>                     autonomous system number");
-        l.add("3 4       advertisement-interval-tx   time between sending updates");
-        l.add("3 4       advertisement-interval-rx   time between receiving updates");
-        l.add("4 .         <num>                     interval in ms");
-        l.add("3 4       dmz-link-bw                 set dmz link bandwidth");
-        l.add("4 .         <num>                     link bandwidth in kb");
-        l.add("3 4       timer                       neighbor keepalive times");
-        l.add("4 5         <num>                     keepalive in ms");
-        l.add("5 .           <num>                   hold time in ms");
-        l.add("3 4       distance                    administrative distance of routes");
-        l.add("4 .         <num>                     set administrative distance");
-        l.add("3 4       route-map-in                process prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       route-map-out               process prefixes in egress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       route-policy-in             process prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       route-policy-out            process prefixes in egress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       prefix-list-in              filter prefixes in ingress updates");
-        l.add("4 .         <name>                    name of prefix list");
-        l.add("3 4       prefix-list-out             filter prefixes in egress updates");
-        l.add("4 .         <name>                    name of prefix list");
-        l.add("3 4       other-route-map-in          process other prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       other-route-map-out         process other prefixes in egress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       other-route-policy-in       process other prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       other-route-policy-out      process other prefixes in egress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       other-prefix-list-in        filter other prefixes in ingress updates");
-        l.add("4 .         <name>                    name of prefix list");
-        l.add("3 4       other-prefix-list-out       filter other prefixes in egress updates");
-        l.add("4 .         <name>                    name of prefix list");
-        l.add("3 4       vpn-route-map-in            process vpn prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       vpn-route-map-out           process vpn prefixes in egress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       vpn-route-policy-in         process vpn prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       vpn-route-policy-out        process vpn prefixes in egress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       ovpn-route-map-in           process other vpn prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       ovpn-route-map-out          process other vpn prefixes in egress updates");
-        l.add("4 .         <name>                    name of route map");
-        l.add("3 4       ovpn-route-policy-in        process other vpn prefixes in ingress updates");
-        l.add("4 .         <name>                    name of route policy");
-        l.add("3 4       ovpn-route-policy-out       process other vpn prefixes in egress updates");
-        l.add("4 .         <name>                    name of route policy");
+        l.add("3  4       remote-as                   remote as number");
+        l.add("4  5,.       <num>                     autonomous system number");
+        l.add("5  .           shutdown                connection disabled for this peer");
+        l.add("3  4       password                    set session password");
+        l.add("4  .         <text>                    password to use");
+        l.add("3  .       shutdown                    connection disabled for this peer");
+        l.add("3  4       description                 describe this neighbor");
+        l.add("4  4,.       <name>                    description of neighbor");
+        l.add("3  4       update-source               connection source for this peer");
+        l.add("4  .         <name>                    name of interface");
+        l.add("3  4       address-family              specify address families");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  4       monitor                     bgp monitor protocol for this peer");
+        l.add("4  .         <name>                    name of bmp");
+        l.add("3  4       other-address               address of peer in the other afi");
+        l.add("4  .         <addr>                    other address");
+        l.add("3  4       dump                        bgp dump for this peer");
+        l.add("4  .         <name>                    name of mrt");
+        l.add("3  4       buffer-size                 size of buffer");
+        l.add("4  .         <num>                     bytes in buffer");
+        l.add("3  4       ttl-security                sending ttl value");
+        l.add("4  .         <num>                     ttl value");
+        l.add("3  4       egress-engineering          set egress engineering");
+        l.add("4  .         <num>                     index value");
+        l.add("3  4       role                        leak prevention role");
+        l.add("4  5,.       disabled                  disable processing");
+        l.add("4  5,.       attrib                    only send otc attribute");
+        l.add("4  5,.       provider                  provider");
+        l.add("4  5,.       ix-server                 route server");
+        l.add("4  5,.       ix-client                 route server client");
+        l.add("4  5,.       customer                  customer");
+        l.add("4  5,.       peer                      peer");
+        l.add("5  .           enforce                 enforce negotiation");
+        l.add("3  .       capability-negotiation      perform capability negosiation");
+        l.add("3  .       track-next-hop              perform next hop tracking");
+        l.add("3  4       connection-mode             connection mode allowed");
+        l.add("4  .         active                    this router will initiate session");
+        l.add("4  .         passive                   remote router will initiate session");
+        l.add("4  .         both                      both modes allowed");
+        l.add("3  4       compression                 compression mode allowed");
+        l.add("4  .         none                      not allowed");
+        l.add("4  .         receive                   receive direction");
+        l.add("4  .         transmit                  transmit direction");
+        l.add("4  .         both                      both directions");
+        l.add("3  4       additional-path-rx          additional path receive mode");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  4       additional-path-tx          additional path transmit mode");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  .       route-reflector-client      reflect routes to this client");
+        l.add("3  .       confederation-peer          confederation peer");
+        l.add("3  .       default-originate           send default route to peer");
+        l.add("3  .       other-default-originate     send other default route to peer");
+        l.add("3  .       aigp                        send accumulated igp attribute");
+        l.add("3  .       traffeng                    send traffic engineering attribute");
+        l.add("3  .       pmsitun                     send provider multicast service interface tunnel attribute");
+        l.add("3  .       tunenc                      send tunnel encapsulation attribute");
+        l.add("3  .       linkstate                   send link state attribute");
+        l.add("3  .       attribset                   send attribute set attribute");
+        l.add("3  .       label-pop                   advertise pop label");
+        l.add("3  .       segrout                     send segment routing attribute");
+        l.add("3  .       bier                        send bier attribute");
+        l.add("3  .       internal-vpn-client         preserve attributes from peer");
+        l.add("3  .       allow-as-in                 allow my as to relearn from peer");
+        l.add("3  .       allow-as-out                allow peer as to advertised out");
+        l.add("3  .       enforce-first-as            discard unprepended aspath from peer");
+        l.add("3  .       route-server-client         unmodified attributes to this client");
+        l.add("3  .       remove-private-as-out       remove private as to peer");
+        l.add("3  .       ungroup-remoteas            consider remote asn while grouping peers");
+        l.add("3  .       remove-private-as-in        remove private as from peer");
+        l.add("3  .       override-peer-as-out        replace peer as to peer");
+        l.add("3  .       override-peer-as-in         replace peer as from peer");
+        l.add("3  .       next-hop-unchanged          send next hop unchanged to peer");
+        l.add("3  .       next-hop-self               send next hop myself to peer");
+        l.add("3  .       next-hop-peer               set next hop to peer address");
+        l.add("3  .       bfd                         enable bfd triggered down");
+        l.add("3  4       multiple-labels             advertise multiple labels capability");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  4       graceful-restart            advertise graceful restart capability");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  4       extended-nexthop-current    advertise extended nexthop capability");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  4       extended-nexthop-other      advertise extended nexthop capability");
+        getAfiList(l, "4  4,.", "use", true);
+        l.add("3  4,.     hostname                    advertise hostname capability");
+        l.add("4  .         domain                    advertise domain too");
+        l.add("3  .       extended-open               send open in extended format");
+        l.add("3  .       extended-update             advertise extended update capability");
+        l.add("3  .       unidirection                not advertise when receiving");
+        l.add("3  .       fall-over                   track outgoing interface");
+        l.add("3  .       soft-reconfiguration        enable soft reconfiguration");
+        l.add("3  4       maximum-prefix              maximum number of accepted prefixes");
+        l.add("4  5         <num>                     prefix count");
+        l.add("5  .           <num>                   warning percent");
+        l.add("3  4       dampening                   route flap dampening of prefixes");
+        l.add("4  5         <num>                     withdraw penalty");
+        l.add("5  6           <num>                   announce penalty");
+        l.add("6  7             <num>                 minimum penalty");
+        l.add("7  8               <num>               maximum penalty");
+        l.add("8  9                 <num>             suppress threshold");
+        l.add("9  10                  <num>           reuse threshold");
+        l.add("10 .                     <num>         half life time in ms");
+        l.add("3  4       send-community              send community to peer");
+        l.add("4  4,.       standard                  send standard community");
+        l.add("4  4,.       extended                  send extended community");
+        l.add("4  4,.       large                     send large community");
+        l.add("4  4,.       both                      send std+ext communities");
+        l.add("4  4,.       all                       send std+ext+lrg communities");
+        l.add("4  4,.       none                      send no community");
+        l.add("3  4       local-as                    local as number");
+        l.add("4  .         <num>                     autonomous system number");
+        l.add("3  4       advertisement-interval-tx   time between sending updates");
+        l.add("3  4       advertisement-interval-rx   time between receiving updates");
+        l.add("4  .         <num>                     interval in ms");
+        l.add("3  4       dmz-link-bw                 set dmz link bandwidth");
+        l.add("4  .         <num>                     link bandwidth in kb");
+        l.add("3  4       timer                       neighbor keepalive times");
+        l.add("4  5         <num>                     keepalive in ms");
+        l.add("5  .           <num>                   hold time in ms");
+        l.add("3  4       distance                    administrative distance of routes");
+        l.add("4  .         <num>                     set administrative distance");
+        l.add("3  4       route-map-in                process prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       route-map-out               process prefixes in egress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       route-policy-in             process prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       route-policy-out            process prefixes in egress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       prefix-list-in              filter prefixes in ingress updates");
+        l.add("4  .         <name>                    name of prefix list");
+        l.add("3  4       prefix-list-out             filter prefixes in egress updates");
+        l.add("4  .         <name>                    name of prefix list");
+        l.add("3  4       other-route-map-in          process other prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       other-route-map-out         process other prefixes in egress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       other-route-policy-in       process other prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       other-route-policy-out      process other prefixes in egress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       other-prefix-list-in        filter other prefixes in ingress updates");
+        l.add("4  .         <name>                    name of prefix list");
+        l.add("3  4       other-prefix-list-out       filter other prefixes in egress updates");
+        l.add("4  .         <name>                    name of prefix list");
+        l.add("3  4       vpn-route-map-in            process vpn prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       vpn-route-map-out           process vpn prefixes in egress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       vpn-route-policy-in         process vpn prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       vpn-route-policy-out        process vpn prefixes in egress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       ovpn-route-map-in           process other vpn prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       ovpn-route-map-out          process other vpn prefixes in egress updates");
+        l.add("4  .         <name>                    name of route map");
+        l.add("3  4       ovpn-route-policy-in        process other vpn prefixes in ingress updates");
+        l.add("4  .         <name>                    name of route policy");
+        l.add("3  4       ovpn-route-policy-out       process other vpn prefixes in egress updates");
+        l.add("4  .         <name>                    name of route policy");
     }
 
     /**
@@ -1446,6 +1508,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !allowAsOut, beg, nei + "allow-as-out", "");
         cmds.cfgLine(l, !enforceFirst, beg, nei + "enforce-first-as", "");
         cmds.cfgLine(l, maxPrefixCnt < 1, beg, nei + "maximum-prefix", maxPrefixCnt + " " + maxPrefixPrc);
+        cmds.cfgLine(l, (dampenWthd + dampenAnno) < 1, beg, nei + "dampening", dampenWthd + " " + dampenAnno + " " + dampenMinp + " " + dampenMaxp + " " + dampenSupp + " " + dampenReus + " " + dampenHalf);
         cmds.cfgLine(l, !serverClnt, beg, nei + "route-server-client", "");
         cmds.cfgLine(l, !removePrivAsOut, beg, nei + "remove-private-as-out", "");
         cmds.cfgLine(l, !removePrivAsIn, beg, nei + "remove-private-as-in", "");
@@ -1846,6 +1909,28 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("enforce-first-as")) {
             enforceFirst = !negated;
+            return false;
+        }
+        if (s.equals("dampening")) {
+            dampenWthd = bits.str2num(cmd.word());
+            dampenAnno = bits.str2num(cmd.word());
+            dampenMinp = bits.str2num(cmd.word());
+            dampenMaxp = bits.str2num(cmd.word());
+            dampenSupp = bits.str2num(cmd.word());
+            dampenReus = bits.str2num(cmd.word());
+            dampenHalf = bits.str2num(cmd.word());
+            dampenPfxs = new tabGen<rtrBgpDamp>();
+            if (!negated) {
+                return false;
+            }
+            dampenWthd = 0;
+            dampenAnno = 0;
+            dampenMinp = 0;
+            dampenMaxp = 0;
+            dampenSupp = 0;
+            dampenReus = 0;
+            dampenHalf = 0;
+            dampenPfxs = null;
             return false;
         }
         if (s.equals("maximum-prefix")) {

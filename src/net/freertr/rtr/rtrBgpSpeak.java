@@ -9,6 +9,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
+import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -1162,6 +1163,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accLnks = new tabRoute<addrIP>("rx");
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
+        if (neigh.dampenPfxs != null) {
+            neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
+        }
         ready2adv = true;
         if (debugger.rtrBgpFull) {
             logger.debug("neighbor up");
@@ -2121,6 +2125,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (parent.flaps != null) {
             parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
         }
+        if (neigh.dampenPfxs != null) {
+            neigh.prefixDampen(safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
+        }
         if (!neigh.softReconfig) {
             tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, roumap, roupol, prflst);
             if (res == null) {
@@ -2235,6 +2242,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (parent.flaps != null) {
             parent.prefixFlapped(safi, ntry.rouDst, ntry.prefix, "gone");
+        }
+        if (neigh.dampenPfxs != null) {
+            neigh.prefixDampen(safi, ntry.rouDst, ntry.prefix, neigh.dampenWthd);
         }
         tabRoute<addrIP> learned = getLearned(safi);
         if (learned == null) {

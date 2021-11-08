@@ -354,6 +354,11 @@ public class debugger {
     public static boolean rtrBgpTraf = false;
 
     /**
+     * rtrBgp dampening
+     */
+    public static boolean rtrBgpDamp = false;
+
+    /**
      * rtrBgp error
      */
     public static boolean rtrBgpError = false;
@@ -1041,6 +1046,7 @@ public class debugger {
         h.add("3 4        bgp               border gateway protocol");
         h.add("4 .          computation     computation events");
         h.add("4 .          incremental     incremental events");
+        h.add("4 .          dampening       dampening events");
         h.add("4 .          event           table events");
         h.add("4 .          full            full events");
         h.add("4 .          error           error events");
@@ -1560,6 +1566,10 @@ public class debugger {
                 }
                 if (s.equals("traffic")) {
                     rtrBgpTraf = v;
+                    return false;
+                }
+                if (s.equals("dampening")) {
+                    rtrBgpDamp = v;
                     return false;
                 }
                 return true;

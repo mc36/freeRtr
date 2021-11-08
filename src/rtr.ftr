@@ -2040,6 +2040,7 @@ qc pass: unicast+nsh over bgp with additional path
 qc pass: bgp with polka
 qc pass: bgp without recursion
 qc pass: bgp with recursion
+qc pass: bgp with route flap dampening
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

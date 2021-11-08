@@ -542,6 +542,8 @@ public class userExec {
         hl.add("7 .                config        peer configuration");
         hl.add("5 6            neighbor          information about neighbor");
         hl.add("6 7              <addr>          neighbor address");
+        hl.add("7 8                dampening     route flap dampening");
+        hl.add("8 .                  <str>       penalty matcher");
         hl.add("7 .                config        peer configuration");
         hl.add("7 .                status        peer status");
         rtrBgpParam.getAfiList(hl, "7 8", "show", false);

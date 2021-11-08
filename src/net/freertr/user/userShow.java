@@ -3166,6 +3166,12 @@ public class userShow {
                 rdr.putStrArr(l);
                 return;
             }
+            if (a.equals("dampening")) {
+                tabIntMatcher mtch = new tabIntMatcher();
+                mtch.fromString(cmd.word());
+                rdr.putStrTab(nei.getDampening(mtch));
+                return;
+            }
             if (a.equals("status")) {
                 rdr.putStrTab(nei.getStatus());
                 return;

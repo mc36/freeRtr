@@ -3,6 +3,7 @@ package net.freertr.rtr;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
 import net.freertr.ip.ipFwdIface;
@@ -11,9 +12,11 @@ import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplc;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -496,6 +499,30 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     }
 
     /**
+     * get dampening of peer
+     *
+     * @param mtch matcher
+     * @return dampening
+     */
+    public userFormat getDampening(tabIntMatcher mtch) {
+        if (dampenPfxs == null) {
+            return null;
+        }
+        userFormat l = new userFormat("|", "afi|prefix|penalty|dampened|ago|last");
+        for (int i = 0; i < dampenPfxs.size(); i++) {
+            rtrBgpDamp ntry = dampenPfxs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (!mtch.matches(ntry.penalty)) {
+                continue;
+            }
+            l.add("" + ntry);
+        }
+        return l;
+    }
+
+    /**
      * get status of peer
      *
      * @return status
@@ -651,6 +678,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     conn.sendKeepAlive();
                 }
                 lastKeep = tim - 1;
+                prefixDampen();
             }
             if (!need2run) {
                 return;
@@ -1127,6 +1155,26 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLnks, remoteAs, accLnks, conn.lrnLnks, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpn, remoteAs, accMvpn, conn.lrnMvpn, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, wroumapIn, wroupolIn, null);
+        if (dampenPfxs == null) {
+            return;
+        }
+        for (int i = 0; i < dampenPfxs.size(); i++) {
+            rtrBgpDamp ntry = dampenPfxs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (!ntry.dampened) {
+                continue;
+            }
+            tabRoute<addrIP> lst = getAccepted(ntry.afi);
+            if (lst == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> prf = new tabRouteEntry<addrIP>();
+            prf.rouDst = ntry.rd;
+            prf.prefix = ntry.prefix;
+            lst.del(prf);
+        }
     }
 
     /**
@@ -1366,6 +1414,69 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         int i = conn.adversion.get();
         if (i < grp.minversion) {
             grp.minversion = i;
+        }
+    }
+
+    /**
+     * update dampening statistics
+     *
+     * @param afi afi
+     * @param rd rd
+     * @param prf prefix
+     * @param pnlt penalty
+     */
+    protected void prefixDampen(int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
+        rtrBgpDamp ntry = new rtrBgpDamp();
+        ntry.afi = afi;
+        ntry.rd = rd;
+        ntry.prefix = prf.copyBytes();
+        rtrBgpDamp old = dampenPfxs.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.penalty += pnlt;
+        if (ntry.penalty > dampenMaxp) {
+            ntry.penalty = dampenMaxp;
+        }
+        if (!ntry.dampened && (ntry.penalty > dampenSupp)) {
+            ntry.dampened = true;
+            if (debugger.rtrBgpDamp) {
+                logger.debug("suppressing " + tabRtrmapN.rd2string(ntry.rd) + " " + ntry.prefix);
+            }
+        }
+        ntry.last = bits.getTime();
+    }
+
+    /**
+     * update dampening statistics
+     */
+    protected void prefixDampen() {
+        if (dampenPfxs == null) {
+            return;
+        }
+        long tim = bits.getTime();
+        for (int i = dampenPfxs.size() - 1; i >= 0; i--) {
+            rtrBgpDamp ntry = dampenPfxs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.last > (tim - dampenHalf)) {
+                continue;
+            }
+            ntry.last = tim;
+            ntry.penalty = ntry.penalty / 2;
+            if (ntry.dampened && (ntry.penalty < dampenReus)) {
+                ntry.dampened = false;
+                if (debugger.rtrBgpDamp) {
+                    logger.debug("unsuppressing " + tabRtrmapN.rd2string(ntry.rd) + " " + ntry.prefix);
+                }
+            }
+            if (ntry.penalty < dampenMinp) {
+                dampenPfxs.del(ntry);
+                if (debugger.rtrBgpDamp) {
+                    logger.debug("forgetting " + tabRtrmapN.rd2string(ntry.rd) + " " + ntry.prefix);
+                }
+            }
         }
     }
 
