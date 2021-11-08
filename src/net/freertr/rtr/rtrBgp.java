@@ -2350,7 +2350,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("2 3     <num>                     bitstring length");
         l.add("3 4       <num>                   maximum index");
         l.add("4 .         <num>                 this node index");
-        l.add("1 2   linkstate                   specify link state parameter");
+        l.add("1 2   afi-links                   specify link state parameter");
         cfgRtr.getRouterList(l, 0, " to advertise");
         l.add("3 4       <num>                   process id");
         l.add("4 .         <num>                 area/level number");
@@ -2478,12 +2478,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
-        cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
-        cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
-        for (int i = 0; i < linkStates.size(); i++) {
-            rtrBgpLnkst ls = linkStates.get(i);
-            l.add(beg + "linkstate " + ls.rtr.routerGetName() + " " + ls.par);
-        }
         for (int i = 0; i < mons.size(); i++) {
             mons.get(i).getConfig(l, beg);
         }
@@ -2521,6 +2515,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).getConfig(l, beg);
         }
+        for (int i = 0; i < linkStates.size(); i++) {
+            rtrBgpLnkst ls = linkStates.get(i);
+            l.add(beg + "afi-links " + ls.rtr.routerGetName() + " " + ls.par);
+        }
+        cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
+        cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
     }
 
     /**
@@ -2695,7 +2695,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return true;
         }
-        if (s.equals("linkstate")) {
+        if (s.equals("afi-links")) {
             rtrBgpLnkst ls = new rtrBgpLnkst();
             tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
             if (rt == null) {

@@ -44,7 +44,7 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 linkstate
- linkstate isis4 1 2
+ afi-link isis4 1 2
  justadvert lo2
  exit
 router bgp6 1
@@ -54,7 +54,7 @@ router bgp6 1
  router-id 6.6.6.1
  neigh 1234::2 remote-as 2
  neigh 1234::2 linkstate
- linkstate isis6 1 2
+ afi-link isis6 1 2
  justadvert lo2
  exit
 !
@@ -103,7 +103,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 linkstate
- linkstate isis4 1 2
+ afi-link isis4 1 2
  justadvert lo2
  exit
 router bgp6 1
@@ -113,7 +113,7 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234::1 remote-as 1
  neigh 1234::1 linkstate
- linkstate isis6 1 2
+ afi-link isis6 1 2
  justadvert lo2
  exit
 !
