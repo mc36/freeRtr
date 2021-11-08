@@ -12421,3 +12421,10 @@ qc pass: bgp with recursion
 no todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 ---------------------------------- 2021-11-08 10:43:58
 qc pass: bgp with route flap dampening
+---------------------------------- 2021-11-08 16:39:31
+qc pass: isis default address suppression
+qc pass: integrated isis default address suppression
+qc pass: isis address unsuppression
+qc pass: integrated isis address unsuppression
+qc pass: ospf default address suppression
+qc pass: ospf address unsuppression

@@ -108,6 +108,16 @@ public class rtrIsisLevel implements Runnable {
     public boolean bierEna;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr;
+
+    /**
+     * other suppress interface addresses
+     */
+    public boolean osuppressAddr;
+
+    /**
      * lsp password
      */
     public String lspPassword;
@@ -582,7 +592,7 @@ public class rtrIsisLevel implements Runnable {
             if (lower.other.enabled && ifc.otherEna && (!ifc.othSuppInt)) {
                 advertiseTlv(pck, lower.putAddrIface(true, ifc.oface.addr));
             }
-            if (!ifc.suppressAddr) {
+            if (!((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr))) {
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = ifc.iface.network.copyBytes();
                 ntry.best.distance = tabRouteAttr.distanIfc;
@@ -601,7 +611,7 @@ public class rtrIsisLevel implements Runnable {
                 }
                 rs.add(tabRoute.addType.better, ntry, false, false);
             }
-            if (lower.other.enabled && ifc.otherEna && (!ifc.othSuppAddr)) {
+            if (lower.other.enabled && ifc.otherEna && !((osuppressAddr || ifc.othSuppAddr) && (!ifc.othUnsuppAddr))) {
                 tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = ifc.oface.network.copyBytes();
                 ntry.best.distance = tabRouteAttr.distanIfc;

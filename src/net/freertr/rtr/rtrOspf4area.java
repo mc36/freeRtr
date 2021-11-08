@@ -86,6 +86,11 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
     public boolean bierEna;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr;
+
+    /**
      * advertise default route
      */
     public boolean defOrigin;
@@ -427,7 +432,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 }
                 putLink2rtrLsa(pck, rtrOspf4lsa.lnkP2p, nei.rtrID, ifc.iface.addr.toIPv4(), ifc.metric);
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             if (ifc.areas.get(0).area != area) {
@@ -670,7 +675,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {

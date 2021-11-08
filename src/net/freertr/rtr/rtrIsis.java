@@ -1110,6 +1110,7 @@ public class rtrIsis extends ipRtr {
         l.add("2 .     traffeng                  configure for traffic engineering");
         l.add("2 .     segrout                   configure for segment routing");
         l.add("2 .     bier                      configure for bier");
+        l.add("2 .     suppress-prefix           do not advertise interfaces");
         l.add("2 .     hostname                  advertise hostname");
         l.add("2 .     inter-level               advertise inter-level routes");
         l.add("2 .     default-originate         advertise default route");
@@ -1125,6 +1126,7 @@ public class rtrIsis extends ipRtr {
         l.add("3 .       <name>                  name of prefix list");
         l.add("2 3     prefix-list-into          filter prefixes into this level");
         l.add("3 .       <name>                  name of prefix list");
+        l.add("2 .     other-suppress-prefix     do not advertise interfaces");
         l.add("2 .     other-default-originate   advertise default route");
         l.add("2 3     other-route-map-from      process prefixes from this level");
         l.add("3 .       <name>                  name of route map");
@@ -1346,6 +1348,8 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.traffEng, beg, s + "traffeng", "");
         cmds.cfgLine(l, !lev.segrouEna, beg, s + "segrout", "");
         cmds.cfgLine(l, !lev.bierEna, beg, s + "bier", "");
+        cmds.cfgLine(l, !lev.suppressAddr, beg, s + "suppress-prefix", "");
+        cmds.cfgLine(l, !lev.osuppressAddr, beg, s + "other-suppress-prefix", "");
         cmds.cfgLine(l, !lev.hostname, beg, s + "hostname", "");
         cmds.cfgLine(l, !lev.interLevels, beg, s + "inter-level", "");
         cmds.cfgLine(l, !lev.defOrigin, beg, s + "default-originate", "");
@@ -1476,6 +1480,16 @@ public class rtrIsis extends ipRtr {
         }
         if (s.equals("bier")) {
             lev.bierEna = !negated;
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            lev.suppressAddr = !negated;
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("other-suppress-prefix")) {
+            lev.osuppressAddr = !negated;
             lev.schedWork(3);
             return false;
         }

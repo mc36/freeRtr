@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.11.8-cur, done by cs@nop.
--;-;-;2021-11-08 11:05:57, took 00:06:24, with 100 workers, on 2433 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2021-11-08 16:46:01, took 00:06:30, with 100 workers, on 2439 cases, 0 failed, 2 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -2068,104 +2068,108 @@ http://sources.nop.hu/cfg/rout-eigrp20.tst;rout-eigrp20.tst;success;eigrp triang
 http://sources.nop.hu/cfg/rout-eigrp21.tst;rout-eigrp21.tst;success;eigrp autoroute
 http://sources.nop.hu/cfg/rout-eigrp22.tst;rout-eigrp22.tst;success;eigrp over point2point ethernet
 http://sources.nop.hu/cfg/rout-eigrp23.tst;rout-eigrp23.tst;success;eigrp ecmp connection
-http://sources.nop.hu/cfg/rout-isis01.tst;rout-isis01.tst;success;isis over ethernet
-http://sources.nop.hu/cfg/rout-isis02.tst;rout-isis02.tst;success;isis over ethernet vlan
-http://sources.nop.hu/cfg/rout-isis03.tst;rout-isis03.tst;success;isis over ethernet bridge
-http://sources.nop.hu/cfg/rout-isis04.tst;rout-isis04.tst;success;isis over hdlc
-http://sources.nop.hu/cfg/rout-isis05.tst;rout-isis05.tst;success;isis over ppp
-http://sources.nop.hu/cfg/rout-isis06.tst;rout-isis06.tst;success;isis over framerelay
-http://sources.nop.hu/cfg/rout-isis07.tst;rout-isis07.tst;success;isis over atmdxi
-http://sources.nop.hu/cfg/rout-isis08.tst;rout-isis08.tst;success;isis over gre
-http://sources.nop.hu/cfg/rout-isis09.tst;rout-isis09.tst;success;isis narrow metric
-http://sources.nop.hu/cfg/rout-isis10.tst;rout-isis10.tst;success;isis overload
-http://sources.nop.hu/cfg/rout-isis11.tst;rout-isis11.tst;success;isis attached
-http://sources.nop.hu/cfg/rout-isis12.tst;rout-isis12.tst;success;isis chain of broadcast nets
-http://sources.nop.hu/cfg/rout-isis13.tst;rout-isis13.tst;success;isis broadcast subnet
-http://sources.nop.hu/cfg/rout-isis14.tst;rout-isis14.tst;success;isis updown bit
-http://sources.nop.hu/cfg/rout-isis15.tst;rout-isis15.tst;success;isis updown bit with narrow metric
-http://sources.nop.hu/cfg/rout-isis16.tst;rout-isis16.tst;success;isis address suppression
-http://sources.nop.hu/cfg/rout-isis17.tst;rout-isis17.tst;success;isis inter-level routes
-http://sources.nop.hu/cfg/rout-isis18.tst;rout-isis18.tst;success;isis authentication
-http://sources.nop.hu/cfg/rout-isis19.tst;rout-isis19.tst;success;isis intra level metric
-http://sources.nop.hu/cfg/rout-isis20.tst;rout-isis20.tst;success;isis external metric
-http://sources.nop.hu/cfg/rout-isis21.tst;rout-isis21.tst;success;isis external narrow metric
-http://sources.nop.hu/cfg/rout-isis22.tst;rout-isis22.tst;success;isis external metric vs intra level metric
-http://sources.nop.hu/cfg/rout-isis23.tst;rout-isis23.tst;success;isis inter level ingress filtering with prefixlist
-http://sources.nop.hu/cfg/rout-isis24.tst;rout-isis24.tst;success;isis inter level egress filtering with prefixlist
-http://sources.nop.hu/cfg/rout-isis25.tst;rout-isis25.tst;success;isis inter level ingress filtering with routemap
-http://sources.nop.hu/cfg/rout-isis26.tst;rout-isis26.tst;success;isis inter level egress filtering with routemap
-http://sources.nop.hu/cfg/rout-isis27.tst;rout-isis27.tst;success;isis inter level ingress filtering with routepolicy
-http://sources.nop.hu/cfg/rout-isis28.tst;rout-isis28.tst;success;isis inter level egress filtering with routepolicy
-http://sources.nop.hu/cfg/rout-isis29.tst;rout-isis29.tst;success;isis default route
-http://sources.nop.hu/cfg/rout-isis30.tst;rout-isis30.tst;success;isis with bfd
-http://sources.nop.hu/cfg/rout-isis31.tst;rout-isis31.tst;success;isis with te
-http://sources.nop.hu/cfg/rout-isis32.tst;rout-isis32.tst;success;isis peer template
-http://sources.nop.hu/cfg/rout-isis33.tst;rout-isis33.tst;success;isis chain of broadcast nets with narrow metric
-http://sources.nop.hu/cfg/rout-isis34.tst;rout-isis34.tst;success;isis broadcast subnet with narrow metric
-http://sources.nop.hu/cfg/rout-isis35.tst;rout-isis35.tst;success;isis multi-topology
-http://sources.nop.hu/cfg/rout-isis36.tst;rout-isis36.tst;success;isis updown bit with multi-topology
-http://sources.nop.hu/cfg/rout-isis37.tst;rout-isis37.tst;success;isis external multi-topology
-http://sources.nop.hu/cfg/rout-isis38.tst;rout-isis38.tst;success;isis multi-topology with te
-http://sources.nop.hu/cfg/rout-isis39.tst;rout-isis39.tst;success;isis chain of broadcast nets with multi-topology
-http://sources.nop.hu/cfg/rout-isis40.tst;rout-isis40.tst;success;isis broadcast subnet with multi-topology
-http://sources.nop.hu/cfg/rout-isis41.tst;rout-isis41.tst;success;isis with sr
-http://sources.nop.hu/cfg/rout-isis42.tst;rout-isis42.tst;success;isis inter-level with sr
-http://sources.nop.hu/cfg/rout-isis43.tst;rout-isis43.tst;success;isis multi-topology with sr
-http://sources.nop.hu/cfg/rout-isis44.tst;rout-isis44.tst;success;isis prefix withdraw
-http://sources.nop.hu/cfg/rout-isis45.tst;rout-isis45.tst;success;isis change in metric
-http://sources.nop.hu/cfg/rout-isis46.tst;rout-isis46.tst;success;isis aggregate
-http://sources.nop.hu/cfg/rout-isis47.tst;rout-isis47.tst;success;isis auto mesh tunnel
-http://sources.nop.hu/cfg/rout-isis48.tst;rout-isis48.tst;success;isis triangle connection
-http://sources.nop.hu/cfg/rout-isis49.tst;rout-isis49.tst;success;isis prefix movement
-http://sources.nop.hu/cfg/rout-isis50.tst;rout-isis50.tst;success;isis with bier
-http://sources.nop.hu/cfg/rout-isis51.tst;rout-isis51.tst;success;isis inter-level with bier
-http://sources.nop.hu/cfg/rout-isis52.tst;rout-isis52.tst;success;isis multi-topology with bier
-http://sources.nop.hu/cfg/rout-isis53.tst;rout-isis53.tst;success;isis autoroute
-http://sources.nop.hu/cfg/rout-isis54.tst;rout-isis54.tst;success;isis lsp authentication
-http://sources.nop.hu/cfg/rout-isis55.tst;rout-isis55.tst;success;isis change in tag
-http://sources.nop.hu/cfg/rout-isis56.tst;rout-isis56.tst;success;isis multi-topology change in tag
-http://sources.nop.hu/cfg/rout-isis57.tst;rout-isis57.tst;success;isis with php sr
-http://sources.nop.hu/cfg/rout-isis58.tst;rout-isis58.tst;success;isis with srgb sr
-http://sources.nop.hu/cfg/rout-isis59.tst;rout-isis59.tst;success;isis over point2point ethernet
-http://sources.nop.hu/cfg/rout-isis60.tst;rout-isis60.tst;success;isis with bidir check
-http://sources.nop.hu/cfg/rout-isis61.tst;rout-isis61.tst;success;isis narrow metric with bidir check
-http://sources.nop.hu/cfg/rout-isis62.tst;rout-isis62.tst;success;isis chain of broadcast nets with bidir check
-http://sources.nop.hu/cfg/rout-isis63.tst;rout-isis63.tst;success;isis multi-topology with bidir check
-http://sources.nop.hu/cfg/rout-isis64.tst;rout-isis64.tst;success;isis ecmp connection
-http://sources.nop.hu/cfg/rout-isis65.tst;rout-isis65.tst;success;isis with bgp linkstate
-http://sources.nop.hu/cfg/rout-isis66.tst;rout-isis66.tst;success;integrated isis over ethernet
-http://sources.nop.hu/cfg/rout-isis67.tst;rout-isis67.tst;success;integrated isis over hdlc
-http://sources.nop.hu/cfg/rout-isis68.tst;rout-isis68.tst;success;integrated isis over gre
-http://sources.nop.hu/cfg/rout-isis69.tst;rout-isis69.tst;success;integrated isis narrow metric
-http://sources.nop.hu/cfg/rout-isis70.tst;rout-isis70.tst;success;integrated isis attached
-http://sources.nop.hu/cfg/rout-isis71.tst;rout-isis71.tst;success;integrated isis chain of broadcast nets
-http://sources.nop.hu/cfg/rout-isis72.tst;rout-isis72.tst;success;integrated isis broadcast subnet
-http://sources.nop.hu/cfg/rout-isis73.tst;rout-isis73.tst;success;integrated isis address suppression
-http://sources.nop.hu/cfg/rout-isis74.tst;rout-isis74.tst;success;integrated isis inter-level routes
-http://sources.nop.hu/cfg/rout-isis75.tst;rout-isis75.tst;success;integrated isis inter level ingress filtering with prefixlist
-http://sources.nop.hu/cfg/rout-isis76.tst;rout-isis76.tst;success;integrated isis inter level egress filtering with prefixlist
-http://sources.nop.hu/cfg/rout-isis77.tst;rout-isis77.tst;success;integrated isis inter level ingress filtering with routemap
-http://sources.nop.hu/cfg/rout-isis78.tst;rout-isis78.tst;success;integrated isis inter level egress filtering with routemap
-http://sources.nop.hu/cfg/rout-isis79.tst;rout-isis79.tst;success;integrated isis inter level ingress filtering with routepolicy
-http://sources.nop.hu/cfg/rout-isis80.tst;rout-isis80.tst;success;integrated isis inter level egress filtering with routepolicy
-http://sources.nop.hu/cfg/rout-isis81.tst;rout-isis81.tst;success;integrated isis default route
-http://sources.nop.hu/cfg/rout-isis82.tst;rout-isis82.tst;success;integrated isis multi-topology
-http://sources.nop.hu/cfg/rout-isis83.tst;rout-isis83.tst;success;integrated isis with sr
-http://sources.nop.hu/cfg/rout-isis84.tst;rout-isis84.tst;success;integrated isis inter-level with sr
-http://sources.nop.hu/cfg/rout-isis85.tst;rout-isis85.tst;success;integrated isis multi-topology with sr
-http://sources.nop.hu/cfg/rout-isis86.tst;rout-isis86.tst;success;integrated isis prefix withdraw
-http://sources.nop.hu/cfg/rout-isis87.tst;rout-isis87.tst;success;integrated isis change in metric
-http://sources.nop.hu/cfg/rout-isis88.tst;rout-isis88.tst;success;integrated isis aggregate
-http://sources.nop.hu/cfg/rout-isis89.tst;rout-isis89.tst;success;integrated isis prefix movement
-http://sources.nop.hu/cfg/rout-isis90.tst;rout-isis90.tst;success;integrated isis with bier
-http://sources.nop.hu/cfg/rout-isis91.tst;rout-isis91.tst;success;integrated isis inter-level with bier
-http://sources.nop.hu/cfg/rout-isis92.tst;rout-isis92.tst;success;integrated isis multi-topology with bier
-http://sources.nop.hu/cfg/rout-isis93.tst;rout-isis93.tst;success;integrated isis change in tag
-http://sources.nop.hu/cfg/rout-isis94.tst;rout-isis94.tst;success;integrated isis with php sr
-http://sources.nop.hu/cfg/rout-isis95.tst;rout-isis95.tst;success;integrated isis over point2point ethernet
-http://sources.nop.hu/cfg/rout-isis96.tst;rout-isis96.tst;success;integrated isis ecmp connection
-http://sources.nop.hu/cfg/rout-isis97.tst;rout-isis97.tst;success;asymmetric integrated isis
-http://sources.nop.hu/cfg/rout-isis98.tst;rout-isis98.tst;success;isis with polka
+http://sources.nop.hu/cfg/rout-isis001.tst;rout-isis001.tst;success;isis over ethernet
+http://sources.nop.hu/cfg/rout-isis002.tst;rout-isis002.tst;success;isis over ethernet vlan
+http://sources.nop.hu/cfg/rout-isis003.tst;rout-isis003.tst;success;isis over ethernet bridge
+http://sources.nop.hu/cfg/rout-isis004.tst;rout-isis004.tst;success;isis over hdlc
+http://sources.nop.hu/cfg/rout-isis005.tst;rout-isis005.tst;success;isis over ppp
+http://sources.nop.hu/cfg/rout-isis006.tst;rout-isis006.tst;success;isis over framerelay
+http://sources.nop.hu/cfg/rout-isis007.tst;rout-isis007.tst;success;isis over atmdxi
+http://sources.nop.hu/cfg/rout-isis008.tst;rout-isis008.tst;success;isis over gre
+http://sources.nop.hu/cfg/rout-isis009.tst;rout-isis009.tst;success;isis narrow metric
+http://sources.nop.hu/cfg/rout-isis010.tst;rout-isis010.tst;success;isis overload
+http://sources.nop.hu/cfg/rout-isis011.tst;rout-isis011.tst;success;isis attached
+http://sources.nop.hu/cfg/rout-isis012.tst;rout-isis012.tst;success;isis chain of broadcast nets
+http://sources.nop.hu/cfg/rout-isis013.tst;rout-isis013.tst;success;isis broadcast subnet
+http://sources.nop.hu/cfg/rout-isis014.tst;rout-isis014.tst;success;isis updown bit
+http://sources.nop.hu/cfg/rout-isis015.tst;rout-isis015.tst;success;isis updown bit with narrow metric
+http://sources.nop.hu/cfg/rout-isis016.tst;rout-isis016.tst;success;isis address suppression
+http://sources.nop.hu/cfg/rout-isis017.tst;rout-isis017.tst;success;isis inter-level routes
+http://sources.nop.hu/cfg/rout-isis018.tst;rout-isis018.tst;success;isis authentication
+http://sources.nop.hu/cfg/rout-isis019.tst;rout-isis019.tst;success;isis intra level metric
+http://sources.nop.hu/cfg/rout-isis020.tst;rout-isis020.tst;success;isis external metric
+http://sources.nop.hu/cfg/rout-isis021.tst;rout-isis021.tst;success;isis external narrow metric
+http://sources.nop.hu/cfg/rout-isis022.tst;rout-isis022.tst;success;isis external metric vs intra level metric
+http://sources.nop.hu/cfg/rout-isis023.tst;rout-isis023.tst;success;isis inter level ingress filtering with prefixlist
+http://sources.nop.hu/cfg/rout-isis024.tst;rout-isis024.tst;success;isis inter level egress filtering with prefixlist
+http://sources.nop.hu/cfg/rout-isis025.tst;rout-isis025.tst;success;isis inter level ingress filtering with routemap
+http://sources.nop.hu/cfg/rout-isis026.tst;rout-isis026.tst;success;isis inter level egress filtering with routemap
+http://sources.nop.hu/cfg/rout-isis027.tst;rout-isis027.tst;success;isis inter level ingress filtering with routepolicy
+http://sources.nop.hu/cfg/rout-isis028.tst;rout-isis028.tst;success;isis inter level egress filtering with routepolicy
+http://sources.nop.hu/cfg/rout-isis029.tst;rout-isis029.tst;success;isis default route
+http://sources.nop.hu/cfg/rout-isis030.tst;rout-isis030.tst;success;isis with bfd
+http://sources.nop.hu/cfg/rout-isis031.tst;rout-isis031.tst;success;isis with te
+http://sources.nop.hu/cfg/rout-isis032.tst;rout-isis032.tst;success;isis peer template
+http://sources.nop.hu/cfg/rout-isis033.tst;rout-isis033.tst;success;isis chain of broadcast nets with narrow metric
+http://sources.nop.hu/cfg/rout-isis034.tst;rout-isis034.tst;success;isis broadcast subnet with narrow metric
+http://sources.nop.hu/cfg/rout-isis035.tst;rout-isis035.tst;success;isis multi-topology
+http://sources.nop.hu/cfg/rout-isis036.tst;rout-isis036.tst;success;isis updown bit with multi-topology
+http://sources.nop.hu/cfg/rout-isis037.tst;rout-isis037.tst;success;isis external multi-topology
+http://sources.nop.hu/cfg/rout-isis038.tst;rout-isis038.tst;success;isis multi-topology with te
+http://sources.nop.hu/cfg/rout-isis039.tst;rout-isis039.tst;success;isis chain of broadcast nets with multi-topology
+http://sources.nop.hu/cfg/rout-isis040.tst;rout-isis040.tst;success;isis broadcast subnet with multi-topology
+http://sources.nop.hu/cfg/rout-isis041.tst;rout-isis041.tst;success;isis with sr
+http://sources.nop.hu/cfg/rout-isis042.tst;rout-isis042.tst;success;isis inter-level with sr
+http://sources.nop.hu/cfg/rout-isis043.tst;rout-isis043.tst;success;isis multi-topology with sr
+http://sources.nop.hu/cfg/rout-isis044.tst;rout-isis044.tst;success;isis prefix withdraw
+http://sources.nop.hu/cfg/rout-isis045.tst;rout-isis045.tst;success;isis change in metric
+http://sources.nop.hu/cfg/rout-isis046.tst;rout-isis046.tst;success;isis aggregate
+http://sources.nop.hu/cfg/rout-isis047.tst;rout-isis047.tst;success;isis auto mesh tunnel
+http://sources.nop.hu/cfg/rout-isis048.tst;rout-isis048.tst;success;isis triangle connection
+http://sources.nop.hu/cfg/rout-isis049.tst;rout-isis049.tst;success;isis prefix movement
+http://sources.nop.hu/cfg/rout-isis050.tst;rout-isis050.tst;success;isis with bier
+http://sources.nop.hu/cfg/rout-isis051.tst;rout-isis051.tst;success;isis inter-level with bier
+http://sources.nop.hu/cfg/rout-isis052.tst;rout-isis052.tst;success;isis multi-topology with bier
+http://sources.nop.hu/cfg/rout-isis053.tst;rout-isis053.tst;success;isis autoroute
+http://sources.nop.hu/cfg/rout-isis054.tst;rout-isis054.tst;success;isis lsp authentication
+http://sources.nop.hu/cfg/rout-isis055.tst;rout-isis055.tst;success;isis change in tag
+http://sources.nop.hu/cfg/rout-isis056.tst;rout-isis056.tst;success;isis multi-topology change in tag
+http://sources.nop.hu/cfg/rout-isis057.tst;rout-isis057.tst;success;isis with php sr
+http://sources.nop.hu/cfg/rout-isis058.tst;rout-isis058.tst;success;isis with srgb sr
+http://sources.nop.hu/cfg/rout-isis059.tst;rout-isis059.tst;success;isis over point2point ethernet
+http://sources.nop.hu/cfg/rout-isis060.tst;rout-isis060.tst;success;isis with bidir check
+http://sources.nop.hu/cfg/rout-isis061.tst;rout-isis061.tst;success;isis narrow metric with bidir check
+http://sources.nop.hu/cfg/rout-isis062.tst;rout-isis062.tst;success;isis chain of broadcast nets with bidir check
+http://sources.nop.hu/cfg/rout-isis063.tst;rout-isis063.tst;success;isis multi-topology with bidir check
+http://sources.nop.hu/cfg/rout-isis064.tst;rout-isis064.tst;success;isis ecmp connection
+http://sources.nop.hu/cfg/rout-isis065.tst;rout-isis065.tst;success;isis with bgp linkstate
+http://sources.nop.hu/cfg/rout-isis066.tst;rout-isis066.tst;success;integrated isis over ethernet
+http://sources.nop.hu/cfg/rout-isis067.tst;rout-isis067.tst;success;integrated isis over hdlc
+http://sources.nop.hu/cfg/rout-isis068.tst;rout-isis068.tst;success;integrated isis over gre
+http://sources.nop.hu/cfg/rout-isis069.tst;rout-isis069.tst;success;integrated isis narrow metric
+http://sources.nop.hu/cfg/rout-isis070.tst;rout-isis070.tst;success;integrated isis attached
+http://sources.nop.hu/cfg/rout-isis071.tst;rout-isis071.tst;success;integrated isis chain of broadcast nets
+http://sources.nop.hu/cfg/rout-isis072.tst;rout-isis072.tst;success;integrated isis broadcast subnet
+http://sources.nop.hu/cfg/rout-isis073.tst;rout-isis073.tst;success;integrated isis address suppression
+http://sources.nop.hu/cfg/rout-isis074.tst;rout-isis074.tst;success;integrated isis inter-level routes
+http://sources.nop.hu/cfg/rout-isis075.tst;rout-isis075.tst;success;integrated isis inter level ingress filtering with prefixlist
+http://sources.nop.hu/cfg/rout-isis076.tst;rout-isis076.tst;success;integrated isis inter level egress filtering with prefixlist
+http://sources.nop.hu/cfg/rout-isis077.tst;rout-isis077.tst;success;integrated isis inter level ingress filtering with routemap
+http://sources.nop.hu/cfg/rout-isis078.tst;rout-isis078.tst;success;integrated isis inter level egress filtering with routemap
+http://sources.nop.hu/cfg/rout-isis079.tst;rout-isis079.tst;success;integrated isis inter level ingress filtering with routepolicy
+http://sources.nop.hu/cfg/rout-isis080.tst;rout-isis080.tst;success;integrated isis inter level egress filtering with routepolicy
+http://sources.nop.hu/cfg/rout-isis081.tst;rout-isis081.tst;success;integrated isis default route
+http://sources.nop.hu/cfg/rout-isis082.tst;rout-isis082.tst;success;integrated isis multi-topology
+http://sources.nop.hu/cfg/rout-isis083.tst;rout-isis083.tst;success;integrated isis with sr
+http://sources.nop.hu/cfg/rout-isis084.tst;rout-isis084.tst;success;integrated isis inter-level with sr
+http://sources.nop.hu/cfg/rout-isis085.tst;rout-isis085.tst;success;integrated isis multi-topology with sr
+http://sources.nop.hu/cfg/rout-isis086.tst;rout-isis086.tst;success;integrated isis prefix withdraw
+http://sources.nop.hu/cfg/rout-isis087.tst;rout-isis087.tst;success;integrated isis change in metric
+http://sources.nop.hu/cfg/rout-isis088.tst;rout-isis088.tst;success;integrated isis aggregate
+http://sources.nop.hu/cfg/rout-isis089.tst;rout-isis089.tst;success;integrated isis prefix movement
+http://sources.nop.hu/cfg/rout-isis090.tst;rout-isis090.tst;success;integrated isis with bier
+http://sources.nop.hu/cfg/rout-isis091.tst;rout-isis091.tst;success;integrated isis inter-level with bier
+http://sources.nop.hu/cfg/rout-isis092.tst;rout-isis092.tst;success;integrated isis multi-topology with bier
+http://sources.nop.hu/cfg/rout-isis093.tst;rout-isis093.tst;success;integrated isis change in tag
+http://sources.nop.hu/cfg/rout-isis094.tst;rout-isis094.tst;success;integrated isis with php sr
+http://sources.nop.hu/cfg/rout-isis095.tst;rout-isis095.tst;success;integrated isis over point2point ethernet
+http://sources.nop.hu/cfg/rout-isis096.tst;rout-isis096.tst;success;integrated isis ecmp connection
+http://sources.nop.hu/cfg/rout-isis097.tst;rout-isis097.tst;success;asymmetric integrated isis
+http://sources.nop.hu/cfg/rout-isis098.tst;rout-isis098.tst;success;isis with polka
+http://sources.nop.hu/cfg/rout-isis099.tst;rout-isis099.tst;success;isis default address suppression
+http://sources.nop.hu/cfg/rout-isis100.tst;rout-isis100.tst;success;integrated isis default address suppression
+http://sources.nop.hu/cfg/rout-isis101.tst;rout-isis101.tst;success;isis address unsuppression
+http://sources.nop.hu/cfg/rout-isis102.tst;rout-isis102.tst;success;integrated isis address unsuppression
 http://sources.nop.hu/cfg/rout-lsrp01.tst;rout-lsrp01.tst;success;lsrp point2point connection
 http://sources.nop.hu/cfg/rout-lsrp02.tst;rout-lsrp02.tst;success;lsrp point2multipoint connection
 http://sources.nop.hu/cfg/rout-lsrp03.tst;rout-lsrp03.tst;success;lsrp point2point chain
@@ -2301,6 +2305,8 @@ http://sources.nop.hu/cfg/rout-ospf47.tst;rout-ospf47.tst;success;ospf broadcast
 http://sources.nop.hu/cfg/rout-ospf48.tst;rout-ospf48.tst;success;ospf ecmp connection
 http://sources.nop.hu/cfg/rout-ospf49.tst;rout-ospf49.tst;success;ospf with bgp linkstate
 http://sources.nop.hu/cfg/rout-ospf50.tst;rout-ospf50.tst;success;ospf with polka
+http://sources.nop.hu/cfg/rout-ospf51.tst;rout-ospf51.tst;success;ospf default address suppression
+http://sources.nop.hu/cfg/rout-ospf52.tst;rout-ospf52.tst;success;ospf address unsuppression
 http://sources.nop.hu/cfg/rout-pbr01.tst;rout-pbr01.tst;success;policy routing with nexthop
 http://sources.nop.hu/cfg/rout-pbr02.tst;rout-pbr02.tst;success;policy routing with interface and nexthop between vrfs
 http://sources.nop.hu/cfg/rout-pbr03.tst;rout-pbr03.tst;success;policy routing with interface and nexthop

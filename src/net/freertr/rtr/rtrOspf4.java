@@ -262,6 +262,7 @@ public class rtrOspf4 extends ipRtr {
         l.add("3 .       traffeng                configure for traffic engineering");
         l.add("3 .       segrout                 configure for segment routing");
         l.add("3 .       bier                    configure for bier");
+        l.add("3 .       suppress-prefix         do not advertise interfaces");
         l.add("3 .       hostname                advertise hostname");
         l.add("3 .       default-originate       advertise default route");
         l.add("3 4       route-map-from          process prefixes from this area");
@@ -313,6 +314,7 @@ public class rtrOspf4 extends ipRtr {
             cmds.cfgLine(l, !ntry.segrouEna, beg, s + "segrout", "");
             cmds.cfgLine(l, !ntry.bierEna, beg, s + "bier", "");
             cmds.cfgLine(l, !ntry.hostname, beg, s + "hostname", "");
+            cmds.cfgLine(l, !ntry.suppressAddr, beg, s + "suppress-prefix", "");
             cmds.cfgLine(l, !ntry.defOrigin, beg, s + "default-originate", "");
             cmds.cfgLine(l, ntry.prflstFrom == null, beg, s + "prefix-list-from", "" + ntry.prflstFrom);
             cmds.cfgLine(l, ntry.prflstInto == null, beg, s + "prefix-list-into", "" + ntry.prflstInto);
@@ -439,6 +441,11 @@ public class rtrOspf4 extends ipRtr {
             }
             if (s.equals("bier")) {
                 dat.bierEna = true;
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("suppress-prefix")) {
+                dat.suppressAddr = true;
                 dat.schedWork(3);
                 return false;
             }
@@ -593,6 +600,11 @@ public class rtrOspf4 extends ipRtr {
             }
             if (s.equals("bier")) {
                 dat.bierEna = false;
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("suppress-prefix")) {
+                dat.suppressAddr = false;
                 dat.schedWork(3);
                 return false;
             }

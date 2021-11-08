@@ -2162,6 +2162,10 @@ qc pass: integrated isis over point2point ethernet
 qc pass: integrated isis ecmp connection
 qc pass: asymmetric integrated isis
 qc pass: isis with polka
+qc pass: isis default address suppression
+qc pass: integrated isis default address suppression
+qc pass: isis address unsuppression
+qc pass: integrated isis address unsuppression
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -2297,6 +2301,8 @@ qc pass: ospf broadcast chain with bidir check
 qc pass: ospf ecmp connection
 qc pass: ospf with bgp linkstate
 qc pass: ospf with polka
+qc pass: ospf default address suppression
+qc pass: ospf address unsuppression
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop

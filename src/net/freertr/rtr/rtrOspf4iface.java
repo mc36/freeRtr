@@ -61,9 +61,14 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     public boolean suppressAddr;
 
     /**
+     * unsuppress interface address
+     */
+    public boolean unsuppressAddr;
+
+    /**
      * check neighbor address is connected
      */
-    public boolean connectedCheck = true;
+    public boolean connectedCheck;
 
     /**
      * passive interface
@@ -225,6 +230,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         setDefaultTimers();
         neighs = new tabGen<rtrOspf4neigh>();
         cntr = new counter();
+        connectedCheck = true;
         drPriority = 0;
         metric = 1;
         teMetric = 1;
@@ -285,6 +291,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(cmds.tabulator + beg + "network " + a);
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "instance " + instance);
@@ -418,6 +425,11 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             schedWork(1);
             return;
         }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = true;
+            schedWork(1);
+            return;
+        }
         if (a.equals("verify-source")) {
             connectedCheck = true;
             return;
@@ -548,6 +560,11 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             schedWork(1);
             return;
         }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = false;
+            schedWork(1);
+            return;
+        }
         if (a.equals("verify-source")) {
             connectedCheck = false;
             return;
@@ -618,6 +635,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add("4 .         passive                 do not process packets");
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         suppress-prefix         do not advertise interface");
+        l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 .         verify-source           check source address of updates");
         l.add("4 5         instance                interface instance");
         l.add("5 .           <num>                 instance");

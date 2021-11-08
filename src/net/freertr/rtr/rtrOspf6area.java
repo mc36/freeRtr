@@ -87,6 +87,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     public boolean bierEna;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr;
+
+    /**
      * advertise default route
      */
     public boolean defOrigin;
@@ -736,7 +741,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             if (ifc.areas.get(0).area != area) {
@@ -785,7 +790,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             if (ifc.iface.lower.getState() != state.states.up) {

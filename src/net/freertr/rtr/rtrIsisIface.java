@@ -95,9 +95,19 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public boolean suppressAddr;
 
     /**
+     * unsuppress interface address
+     */
+    public boolean unsuppressAddr;
+
+    /**
      * suppress interface address
      */
     public boolean suppressInt;
+
+    /**
+     * other unsuppress interface address
+     */
+    public boolean othUnsuppAddr;
 
     /**
      * other suppress interface address
@@ -107,7 +117,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     /**
      * check neighbor address is connected
      */
-    public boolean connectedCheck = true;
+    public boolean connectedCheck;
 
     /**
      * other suppress interface address
@@ -249,6 +259,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         metric = 10;
         suppressInt = true;
         othSuppInt = true;
+        connectedCheck = true;
         neighs = new tabGen<rtrIsisNeigh>();
         hwaddr = new addrMac();
         lev1disA = new addrIsis();
@@ -296,8 +307,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !suppressInt, cmds.tabulator, beg + "suppress-address", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, !othSuppInt, cmds.tabulator, beg + "other-suppress-address", "");
         cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
+        cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         l.add(cmds.tabulator + beg + "metric " + metric);
@@ -396,6 +409,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             lower.genLsps(1);
             return;
         }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = true;
+            lower.genLsps(1);
+            return;
+        }
         if (a.equals("suppress-address")) {
             suppressInt = true;
             lower.genLsps(1);
@@ -403,6 +421,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         if (a.equals("other-suppress-prefix")) {
             othSuppAddr = true;
+            lower.genLsps(1);
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = true;
             lower.genLsps(1);
             return;
         }
@@ -545,6 +568,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             lower.genLsps(1);
             return;
         }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = false;
+            lower.genLsps(1);
+            return;
+        }
         if (a.equals("suppress-address")) {
             suppressInt = false;
             lower.genLsps(1);
@@ -557,6 +585,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         if (a.equals("other-suppress-prefix")) {
             othSuppAddr = false;
+            lower.genLsps(1);
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = false;
             lower.genLsps(1);
             return;
         }
@@ -632,57 +665,59 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param l list to update
      */
     public static void routerGetHelp(userHelping l) {
-        l.add("4 .         enable                  enable protocol processing");
-        l.add("4 .         other-enable            enable other protocol processing");
-        l.add("4 5         circuit                 set circuit type");
-        l.add("5 .           level1                level-1 circuit");
-        l.add("5 .           level2                level-2 circuit");
-        l.add("5 .           both                  level-1 and level-2 circuit");
-        l.add("4 5         network                 set network type");
-        l.add("5 .           point2point           point to point");
-        l.add("5 .           broadcast             broadcast");
-        l.add("4 .         passive                 do not process packets");
-        l.add("4 .         bfd                     enable bfd triggered down");
-        l.add("4 .         raw-encapsulation       use non-llc encapsulation");
-        l.add("4 .         suppress-prefix         do not advertise interface");
-        l.add("4 .         suppress-address        do not advertise interface");
-        l.add("4 5         metric                  interface metric");
-        l.add("5 .           <num>                 metric");
-        l.add("4 .         other-suppress-prefix   do not advertise other interface");
-        l.add("4 .         other-suppress-address  do not advertise other interface");
-        l.add("4 .         verify-source           check source address of updates");
-        l.add("4 5         priority                router priority");
-        l.add("5 .           <num>                 priority 0=disable");
-        l.add("4 5         hello-time              time between hellos");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         dead-time               time before neighbor down");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         retransmit-time         time before retarnsmitting");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         password                password for authentication");
-        l.add("5 .           <text>                set password");
-        l.add("4 5         traffeng                traffic engineering parameters");
-        l.add("5 .           suppress              do not advertise interface");
-        l.add("5 6           metric                set metric");
-        l.add("6 .             <num>               cost");
-        l.add("5 6           bandwidth             set bandwidth");
-        l.add("6 .             <num>               bandwidth");
-        l.add("5 6           affinity              set affinity");
-        l.add("6 .             <num>               affinity");
-        l.add("5 6           srlg                  set srlg");
-        l.add("6 .             <num>               affinity");
-        l.add("4 5         segrout                 segment routing parameters");
-        l.add("5 6           index                 set index");
-        l.add("6 .             <num>               index");
-        l.add("5 6           other-index           set other index");
-        l.add("6 .             <num>               index");
-        l.add("5 .           node                  set node flag");
-        l.add("5 .           pop                   request php");
-        l.add("4 5         bier                    bier parameters");
-        l.add("5 6           index                 set index");
-        l.add("6 .             <num>               index");
-        l.add("5 6           other-index           set other index");
-        l.add("6 .             <num>               index");
+        l.add("4 .         enable                    enable protocol processing");
+        l.add("4 .         other-enable              enable other protocol processing");
+        l.add("4 5         circuit                   set circuit type");
+        l.add("5 .           level1                  level-1 circuit");
+        l.add("5 .           level2                  level-2 circuit");
+        l.add("5 .           both                    level-1 and level-2 circuit");
+        l.add("4 5         network                   set network type");
+        l.add("5 .           point2point             point to point");
+        l.add("5 .           broadcast               broadcast");
+        l.add("4 .         passive                   do not process packets");
+        l.add("4 .         bfd                       enable bfd triggered down");
+        l.add("4 .         raw-encapsulation         use non-llc encapsulation");
+        l.add("4 .         suppress-prefix           do not advertise interface");
+        l.add("4 .         unsuppress-prefix         do advertise interface");
+        l.add("4 .         suppress-address          do not advertise interface");
+        l.add("4 5         metric                    interface metric");
+        l.add("5 .           <num>                   metric");
+        l.add("4 .         other-suppress-prefix     do not advertise other interface");
+        l.add("4 .         other-unsuppress-prefix   do advertise other interface");
+        l.add("4 .         other-suppress-address    do not advertise other interface");
+        l.add("4 .         verify-source             check source address of updates");
+        l.add("4 5         priority                  router priority");
+        l.add("5 .           <num>                   priority 0=disable");
+        l.add("4 5         hello-time                time between hellos");
+        l.add("5 .           <num>                   time in ms");
+        l.add("4 5         dead-time                 time before neighbor down");
+        l.add("5 .           <num>                   time in ms");
+        l.add("4 5         retransmit-time           time before retarnsmitting");
+        l.add("5 .           <num>                   time in ms");
+        l.add("4 5         password                  password for authentication");
+        l.add("5 .           <text>                  set password");
+        l.add("4 5         traffeng                  traffic engineering parameters");
+        l.add("5 .           suppress                do not advertise interface");
+        l.add("5 6           metric                  set metric");
+        l.add("6 .             <num>                 cost");
+        l.add("5 6           bandwidth               set bandwidth");
+        l.add("6 .             <num>                 bandwidth");
+        l.add("5 6           affinity                set affinity");
+        l.add("6 .             <num>                 affinity");
+        l.add("5 6           srlg                    set srlg");
+        l.add("6 .             <num>                 affinity");
+        l.add("4 5         segrout                   segment routing parameters");
+        l.add("5 6           index                   set index");
+        l.add("6 .             <num>                 index");
+        l.add("5 6           other-index             set other index");
+        l.add("6 .             <num>                 index");
+        l.add("5 .           node                    set node flag");
+        l.add("5 .           pop                     request php");
+        l.add("4 5         bier                      bier parameters");
+        l.add("5 6           index                   set index");
+        l.add("6 .             <num>                 index");
+        l.add("5 6           other-index             set other index");
+        l.add("6 .             <num>                 index");
     }
 
     /**
