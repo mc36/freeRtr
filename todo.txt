@@ -1,6 +1,5 @@
 nat and pbr config to have reindex
 bridge security from dhcp, slaac, whatever server
-interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 http host upload optional different authentication
 terminal mode resolve
 hostwatch to execute script on acl match

@@ -1238,6 +1238,7 @@ public class userExec {
         hl.add("1 2,.  tclsh                     run tcl shell");
         hl.add("2 .      [file]                  name of script");
         hl.add("1 2    traceroute                trace route to target");
+        hl.add("1 2    mtr                       trace route to target");
         hl.add("2 3,.    <host>                  name of host");
         hl.add("3 3,.      /ipv4                 specify ipv4 to use");
         hl.add("3 3,.      /ipv6                 specify ipv6 to use");
@@ -1902,6 +1903,10 @@ public class userExec {
         }
         if (a.equals("traceroute")) {
             doTraceroute();
+            return cmdRes.command;
+        }
+        if (a.equals("mtr")) {
+            doMtr();
             return cmdRes.command;
         }
         if (a.equals("ping")) {
@@ -2599,6 +2604,191 @@ public class userExec {
         } else {
             return ipCor6.size + ipIcmp6.size;
         }
+    }
+
+    private void doMtr() {
+        String rem = cmd.word();
+        cfgVrf vrf = cfgAll.getClntVrf();
+        cfgIfc ifc = cfgAll.getClntIfc();
+        int timeout = 1000;
+        int tos = 0;
+        int flow = 0;
+        int len = 64;
+        int ipver = 0;
+        int port = 33440;
+        int proto = 0;
+        boolean resolv = false;
+        ipRtr rtr = null;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("/vrf")) {
+                vrf = cfgAll.vrfFind(cmd.word(), false);
+                ifc = null;
+                continue;
+            }
+            if (a.equals("/interface")) {
+                ifc = cfgAll.ifcFind(cmd.word(), false);
+                continue;
+            }
+            if (a.equals("/timeout")) {
+                timeout = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/port")) {
+                port = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/protocol")) {
+                proto = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/ipv4")) {
+                ipver = 4;
+                continue;
+            }
+            if (a.equals("/ipv6")) {
+                ipver = 6;
+                continue;
+            }
+            if (a.equals("/tos")) {
+                tos = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/flow")) {
+                flow = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/size")) {
+                len = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/router")) {
+                tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
+                if (typ == null) {
+                    continue;
+                }
+                cfgRtr cfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
+                if (cfg == null) {
+                    continue;
+                }
+                rtr = cfg.getRouter();
+                continue;
+            }
+            if (a.equals("/lookup")) {
+                resolv = true;
+                continue;
+            }
+        }
+        if (vrf == null) {
+            cmd.error("vrf not specified");
+            return;
+        }
+        addrIP trg = userTerminal.justResolv(rem, ipver);
+        if (trg == null) {
+            cmd.error("bad host");
+            return;
+        }
+        if (timeout < 1) {
+            timeout = 1;
+        }
+        clntTrace trc = new clntTrace();
+        trc.vrf = vrf;
+        trc.ifc = ifc;
+        trc.trg = trg;
+        trc.port = port;
+        trc.proto = proto;
+        if (trc.register2ip()) {
+            cmd.error("bind error");
+            return;
+        }
+        addrIP src = null;
+        if (ifc != null) {
+            src = ifc.getLocAddr(trg);
+        }
+        pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", flow=" + flow + ", len=" + len);
+        len -= adjustSize(trg);
+        int none = 0;
+        int ttl = 0;
+        reader.keyFlush();
+        List<String> lst = new ArrayList<String>();
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#trace " + trg, pipe.settingsGet(pipeSetting.times, false));
+        int request[] = new int[256];
+        int reply[] = new int[256];
+        int timeCur[] = new int[256];
+        int timeMin[] = new int[256];
+        int timeMax[] = new int[256];
+        int timeSum[] = new int[256];
+        int label[] = new int[256];
+        addrIP reportA[] = new addrIP[256];
+        String reportN[] = new String[256];
+        String path[] = new String[256];
+        for (int i = 0; i < request.length; i++) {
+            timeMin[i] = Integer.MAX_VALUE;
+            timeMax[i] = Integer.MIN_VALUE;
+        }
+        for (;;) {
+            userFormat res = new userFormat("|", "hop|req|rep|los|addr|name|tim|min|avg|max|mpls|path");
+            for (int i = 1; i < request.length; i++) {
+                int o = reply[i];
+                if (o < 1) {
+                    o = 1;
+                }
+                res.add(i + "|" + request[i] + "|" + reply[i] + "|" + (request[i] - reply[i]) + "|" + reportA[i] + "|" + reportN[i] + "|" + timeCur[i] + "|" + timeMin[i] + "|" + (timeSum[i] / o) + "|" + timeMax[i] + "|" + label[i] + "|" + path[i]);
+            }
+            lst.clear();
+            lst.addAll(res.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)));
+            ttl++;
+            if (ttl >= 255) {
+                none = 0;
+                ttl = 1;
+            }
+            if (none > 8) {
+                none = 0;
+                ttl = 1;
+            }
+            trc.doRound(ttl, tos, flow, 0, len);
+            if (edtr.doTimed(timeout, false)) {
+                break;
+            }
+            request[ttl]++;
+            if (trc.errRtr == null) {
+                none++;
+                continue;
+            }
+            none = 0;
+            reply[ttl]++;
+            timeCur[ttl] = trc.errTim;
+            timeSum[ttl] += trc.errTim;
+            if (timeMin[ttl] > trc.errTim) {
+                timeMin[ttl] = trc.errTim;
+            }
+            if (timeMax[ttl] < trc.errTim) {
+                timeMax[ttl] = trc.errTim;
+            }
+            label[ttl] = trc.errLab;
+            reportA[ttl] = trc.errRtr.copyBytes();
+            if (rtr != null) {
+                tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
+                if (ntry != null) {
+                    path[ttl] = ntry.best.asPathStr();
+                }
+            }
+            if (resolv) {
+                clntDns clnt = new clntDns();
+                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(trc.errRtr), false, packDnsRec.typePTR);
+                String nam = clnt.getPTR();
+                reportN[ttl] = nam;
+            }
+            if (trg.compare(trg, trc.errRtr) == 0) {
+                ttl = 0;
+            }
+        }
+        trc.unregister2ip();
+        edtr.doClear();
+        reader.keyFlush();
     }
 
     private void doTraceroute() {

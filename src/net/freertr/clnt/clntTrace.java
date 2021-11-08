@@ -176,7 +176,9 @@ public class clntTrace implements prtServP, ipPrt {
         } else {
             con.send2net(pck);
         }
-        notif.misleep(tim);
+        if (tim > 0) {
+            notif.misleep(tim);
+        }
         return errRtr == null;
     }
 
