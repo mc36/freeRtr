@@ -234,6 +234,12 @@ public class cfgInit implements Runnable {
         "aaa .*"
     };
 
+    private final static String[] needIface = {
+        "interface .*! vrf forwarding .*",
+        "interface .*! ipv4 address .*",
+        "interface .*! ipv6 address .*"
+    };
+
     private final static String[] jvmMagic = {
         "java.net.preferIPv4Stack=true",
         "java.net.preferIPv6Addresses=false"
@@ -808,19 +814,33 @@ public class cfgInit implements Runnable {
         for (i = 0; i < needInit.length; i++) {
             inis.addAll(userFilter.getSecList(secs, needInit[i], cmds.tabulator + cmds.finish));
         }
-        List<String> defs = new ArrayList<String>();
+        List<String> ints = userFilter.section2text(userFilter.filter2text(secs, createFilter(needIface)), true);
+        List<String> hdefs = new ArrayList<String>();
         List<String> inhs = new ArrayList<String>();
+        logger.info("initializing hardware");
         try {
-            logger.info("initializing hardware");
-            executeHWcommands(hw, defs, inhs);
+            executeHWcommands(hw, hdefs, inhs);
         } catch (Exception e) {
             logger.exception(e);
         }
+        logger.info("applying defaults");
         try {
-            logger.info("applying defaults");
             executeSWcommands(sdefs, false);
-            executeSWcommands(defs, false);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        try {
+            executeSWcommands(hdefs, false);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        try {
             executeSWcommands(inis, true);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        try {
+            executeSWcommands(ints, true);
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -844,7 +864,7 @@ public class cfgInit implements Runnable {
             cfgVdc ntry = cfgAll.vdcs.get(i).copyBytes();
             vdcLst.add(ntry);
             int o = (i * step) + vdcPortBeg;
-            ntry.startNow(defs, inhs, o, o + step);
+            ntry.startNow(hdefs, inhs, o, o + step);
         }
         try {
             prtRedun.doInit(cons);

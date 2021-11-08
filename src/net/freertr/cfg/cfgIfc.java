@@ -1962,13 +1962,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public int compare(cfgIfc o1, cfgIfc o2) {
         String s1 = o1.name.toLowerCase();
         String s2 = o2.name.toLowerCase();
-        boolean l1 = s1.startsWith("loopback");
-        boolean l2 = s2.startsWith("loopback");
+        boolean l1 = s1.startsWith("template");
+        boolean l2 = s2.startsWith("template");
         if (l1 != l2) {
             return l1 ? -1 : +1;
         }
-        l1 = s1.startsWith("template");
-        l2 = s2.startsWith("template");
+        l1 = s1.startsWith("loopback");
+        l2 = s2.startsWith("loopback");
         if (l1 != l2) {
             return l1 ? -1 : +1;
         }

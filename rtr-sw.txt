@@ -225,6 +225,7 @@ router lsrp4 1
  spf-log 500
  spf-bidir
  spf-ecmp
+ suppress-prefix
  segrout 300 39
  bier 256 300 39
  justadvert loopback0
@@ -239,6 +240,7 @@ router lsrp6 1
  spf-log 500
  spf-bidir
  spf-ecmp
+ suppress-prefix
  segrout 300 39
  bier 256 300 39
  justadvert loopback0
@@ -267,33 +269,6 @@ router logger6 65535
  vrf v1
  flapstat
  redistribute bgp6 65535
- exit
-!
-interface loopback0
- description management
- vrf forwarding v1
- ipv4 address 10.10.10.227 255.255.255.255
- ipv6 address 2001:db8:1101::227:227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- template template1
- no shutdown
- exit
-!
-interface loopback42
- description dn42.net
- vrf forwarding dn42
- ipv4 address 172.23.199.109 255.255.255.255
- ipv6 address fd40:cc1e:c0de::fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- no shutdown
- no log-link-change
- exit
-!
-interface loopback65535
- no description
- vrf forwarding vpn
- ipv4 address 172.16.27.4 255.255.255.255
- ipv6 address fd42:1234::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- no shutdown
- no log-link-change
  exit
 !
 interface template1
@@ -340,6 +315,33 @@ interface template1
  router lsrp6 1 accept-metric
  router lsrp6 1 bfd
  shutdown
+ no log-link-change
+ exit
+!
+interface loopback0
+ description management
+ vrf forwarding v1
+ ipv4 address 10.10.10.227 255.255.255.255
+ ipv6 address 2001:db8:1101::227:227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ template template1
+ no shutdown
+ exit
+!
+interface loopback42
+ description dn42.net
+ vrf forwarding dn42
+ ipv4 address 172.23.199.109 255.255.255.255
+ ipv6 address fd40:cc1e:c0de::fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ no shutdown
+ no log-link-change
+ exit
+!
+interface loopback65535
+ no description
+ vrf forwarding vpn
+ ipv4 address 172.16.27.4 255.255.255.255
+ ipv6 address fd42:1234::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ no shutdown
  no log-link-change
  exit
 !

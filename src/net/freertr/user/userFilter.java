@@ -337,6 +337,25 @@ public class userFilter implements Comparator<userFilter> {
     }
 
     /**
+     * filter text
+     *
+     * @param src text to filter
+     * @param flt filter to use
+     * @return filtered text
+     */
+    public static List<userFilter> filter2text(List<userFilter> src, tabGen<userFilter> flt) {
+        List<userFilter> res = new ArrayList<userFilter>();
+        for (int i = 0; i < src.size(); i++) {
+            userFilter l = src.get(i);
+            if (findFilter(l, flt) == null) {
+                continue;
+            }
+            res.add(l);
+        }
+        return res;
+    }
+
+    /**
      * set usage flags
      *
      * @param lst list to update
