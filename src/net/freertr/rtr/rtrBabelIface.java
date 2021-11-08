@@ -81,6 +81,11 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
     public boolean suppressAddr = false;
 
     /**
+     * unsuppress interface address
+     */
+    public boolean unsuppressAddr = false;
+
+    /**
      * check neighbor address is connected
      */
     public boolean connectedCheck = true;
@@ -205,6 +210,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         l.add(cmds.tabulator + beg + "distance " + distance);
         l.add(cmds.tabulator + beg + "metric-in " + metricIn);
@@ -236,6 +242,10 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
+            return;
+        }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = true;
             return;
         }
         if (a.equals("verify-source")) {
@@ -342,6 +352,10 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
             suppressAddr = false;
             return;
         }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = false;
+            return;
+        }
         if (a.equals("verify-source")) {
             connectedCheck = false;
             return;
@@ -387,6 +401,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         l.add("4 .         bfd                     enable bfd triggered down");
         l.add("4 .         default-originate       send default route to peer");
         l.add("4 .         suppress-prefix         do not advertise interface");
+        l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 .         verify-source           check source address of updates");
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 5         distance                administrative distance of routes");

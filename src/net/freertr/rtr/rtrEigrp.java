@@ -97,6 +97,11 @@ public class rtrEigrp extends ipRtr implements Runnable {
     public int as;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrEigrpIface> ifaces;
@@ -272,7 +277,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
@@ -372,6 +377,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
+        l.add("1 .   suppress-prefix             do not advertise interfaces");
         l.add("1 2   kvals                       specify k values");
         l.add("2 3     <num>                     k1");
         l.add("3 4       <num>                   k2");
@@ -399,6 +405,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "as " + as);
+        cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
         String a = "";
         if ((stub & 0x01) != 0) {
             a += " conn";
@@ -440,6 +447,11 @@ public class rtrEigrp extends ipRtr implements Runnable {
             if (negated) {
                 routerID = new addrIPv4();
             }
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            suppressAddr = !negated;
+            notif.wakeup();
             return false;
         }
         if (s.equals("kvals")) {

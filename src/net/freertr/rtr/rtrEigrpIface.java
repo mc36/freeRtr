@@ -88,6 +88,11 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
     public boolean suppressAddr = false;
 
     /**
+     * unsuppress interface address
+     */
+    public boolean unsuppressAddr = false;
+
+    /**
      * check neighbor address is connected
      */
     public boolean connectedCheck = true;
@@ -217,6 +222,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
+        cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         l.add(cmds.tabulator + beg + "delay-in " + delayIn);
         l.add(cmds.tabulator + beg + "delay-out " + delayOut);
@@ -243,6 +249,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         l.add("4 .         split-horizon           dont advertise back on rx interface");
         l.add("4 .         passive                 do not form neighborship");
         l.add("4 .         suppress-prefix         do not advertise interface");
+        l.add("4 .         unsuppress-prefix       do advertise interface");
         l.add("4 .         verify-source           check source address of updates");
         l.add("4 5         delay-in                ingress delay of routes");
         l.add("5 .           <num>                 set delay");
@@ -323,6 +330,11 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = true;
             lower.notif.wakeup();
             return;
         }
@@ -443,6 +455,11 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         }
         if (a.equals("suppress-prefix")) {
             suppressAddr = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("unsuppress-prefix")) {
+            unsuppressAddr = false;
             lower.notif.wakeup();
             return;
         }

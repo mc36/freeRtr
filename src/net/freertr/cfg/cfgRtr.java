@@ -202,6 +202,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router eigrp
         "router eigrp[4|6] .*! kvals 1 0 1 0 0",
         "router eigrp[4|6] .*! stub",
+        "router eigrp[4|6] .*! no suppress-prefix",
+        // router babel
+        "router babel[4|6] .*! no suppress-prefix",
+        // router olsr
+        "router olsr[4|6] .*! no suppress-prefix",
+        // router rip
+        "router rip[4|6] .*! no suppress-prefix",
         // router ospf
         "router ospf[4|6] .*! distance 110 110 110",
         "router ospf[4|6] .*! no segrout",

@@ -1509,6 +1509,8 @@ qc pass: babel triangle connection
 qc pass: babel autoroute
 qc pass: babel over point2point ethernet
 qc pass: babel ecmp connection
+qc pass: babel default address suppression
+qc pass: babel address unsuppression
 qc pass: ebgp in chain
 qc pass: confed bgp in chain
 qc pass: ibgp in chain
@@ -2064,6 +2066,8 @@ qc pass: eigrp triangle connection
 qc pass: eigrp autoroute
 qc pass: eigrp over point2point ethernet
 qc pass: eigrp ecmp connection
+qc pass: eigrp default address suppression
+qc pass: eigrp address unsuppression
 qc pass: isis over ethernet
 qc pass: isis over ethernet vlan
 qc pass: isis over ethernet bridge
@@ -2251,6 +2255,8 @@ qc pass: olsr triangle connection
 qc pass: olsr autoroute
 qc pass: olsr over point2point ethernet
 qc pass: olsr ecmp connection
+qc pass: olsr default address suppression
+qc pass: olsr address unsuppression
 qc pass: ospf point2point connection
 qc pass: ospf point2multipoint connection
 qc pass: ospf point2multipoint nonbroadcast connection
@@ -2411,6 +2417,8 @@ qc pass: rip triangle connection
 qc pass: rip autoroute
 qc pass: rip over point2point ethernet
 qc pass: rip ecmp connection
+qc pass: rip default address suppression
+qc pass: rip address unsuppression
 qc pass: static routing
 qc pass: static routing with distance
 qc pass: static routing with icmp tracker

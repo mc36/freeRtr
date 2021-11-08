@@ -127,6 +127,11 @@ public class rtrBabel extends ipRtr implements prtServP {
     public addrEui routerID = new addrEui();
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr;
+
+    /**
      * neighbors
      */
     protected tabGen<rtrBabelNeigh> neighs;
@@ -452,7 +457,7 @@ public class rtrBabel extends ipRtr implements prtServP {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             ntry = tab.add(tabRoute.addType.better, ifc.iface.network, null);
@@ -526,6 +531,7 @@ public class rtrBabel extends ipRtr implements prtServP {
     public void routerGetHelp(userHelping l) {
         l.add("1 2   router-id                   specify router id");
         l.add("2 .     <addr>                    router id");
+        l.add("1 .   suppress-prefix             do not advertise interfaces");
     }
 
     /**
@@ -537,6 +543,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "router-id " + routerID);
+        cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
     }
 
     /**
@@ -557,6 +564,10 @@ public class rtrBabel extends ipRtr implements prtServP {
             if (negated) {
                 routerID = new addrEui();
             }
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            suppressAddr = !negated;
             return false;
         }
         return true;

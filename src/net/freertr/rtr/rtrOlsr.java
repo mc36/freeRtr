@@ -80,6 +80,11 @@ public class rtrOlsr extends ipRtr implements prtServP {
     public final ipFwd fwdCore;
 
     /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr;
+
+    /**
      * neighbors
      */
     protected tabGen<rtrOlsrNeigh> neighs;
@@ -457,7 +462,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            if (ifc.suppressAddr) {
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
             ntry = tab.add(tabRoute.addType.better, ifc.iface.network, null);
@@ -529,6 +534,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
+        l.add("1 .   suppress-prefix             do not advertise interfaces");
     }
 
     /**
@@ -539,6 +545,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
+        cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
     }
 
     /**
@@ -548,6 +555,16 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @return false if success, true if error
      */
     public boolean routerConfigure(cmds cmd) {
+        String s = cmd.word();
+        boolean negated = false;
+        if (s.equals("no")) {
+            s = cmd.word();
+            negated = true;
+        }
+        if (s.equals("suppress-prefix")) {
+            suppressAddr = !negated;
+            return false;
+        }
         return true;
     }
 
