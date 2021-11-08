@@ -2432,7 +2432,6 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server
-todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
 todo: http host upload optional different authentication
 todo: terminal mode resolve
 todo: hostwatch to execute script on acl match

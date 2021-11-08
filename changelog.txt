@@ -12417,3 +12417,5 @@ qc pass: p4lang: vlan polka
 no todo: consider bgp neigh recursive-nexthop knob with proper limiters
 qc pass: bgp without recursion
 qc pass: bgp with recursion
+---------------------------------- 2021-11-08 04:21:51
+no todo: interactive switch for traceroute to mimic mtr with class util.dampening, similar to mtr - display traceroute with the same parameters or so
