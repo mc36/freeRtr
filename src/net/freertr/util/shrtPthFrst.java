@@ -646,12 +646,6 @@ public class shrtPthFrst<Ta extends addrType> {
                 logger.warn("new node " + cn + " appeared");
                 continue;
             }
-            if (on.visited && !cn.visited) {
-                logger.warn("node " + cn + " became unreachable");
-            }
-            if (!on.visited && cn.visited) {
-                logger.warn("node " + cn + " became reachable");
-            }
             for (int i = 0; i < cn.conn.size(); i++) {
                 shrtPthFrstConn<Ta> cc = cn.conn.get(i);
                 if (cc == null) {
@@ -676,6 +670,12 @@ public class shrtPthFrst<Ta extends addrType> {
                     logger.warn("node " + on + " lost connection to " + oc.target);
                     continue;
                 }
+            }
+            if (on.visited && !cn.visited) {
+                logger.warn("node " + cn + " became unreachable");
+            }
+            if (!on.visited && cn.visited) {
+                logger.warn("node " + cn + " became reachable");
             }
             diffPrefix(cn, cn.prfAdd, on.prfAdd);
             diffPrefix(cn, cn.prfFix, on.prfFix);
