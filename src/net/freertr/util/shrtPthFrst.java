@@ -517,49 +517,6 @@ public class shrtPthFrst<Ta extends addrType> {
      */
     public boolean doCalc(Ta from, Ta to) {
         tim2 = bits.getTime();
-        if (prev != null) {
-            for (int o = 0; o < nodes.size(); o++) {
-                shrtPthFrstNode<Ta> cn = nodes.get(o);
-                if (cn == null) {
-                    continue;
-                }
-                shrtPthFrstNode<Ta> on = prev.nodes.find(cn);
-                if (on == null) {
-                    logger.warn("new node " + cn + " appeared");
-                    continue;
-                }
-                for (int i = 0; i < cn.conn.size(); i++) {
-                    shrtPthFrstConn<Ta> cc = cn.conn.get(i);
-                    if (cc == null) {
-                        continue;
-                    }
-                    shrtPthFrstConn<Ta> oc = on.findConn(cc.target, cc.metric);
-                    if (oc == null) {
-                        logger.warn("node " + cn + " established connection to " + cc.target);
-                        continue;
-                    }
-                    if (cc.metric != oc.metric) {
-                        logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " toward " + cc.target);
-                    }
-                }
-                for (int i = 0; i < on.conn.size(); i++) {
-                    shrtPthFrstConn<Ta> oc = on.conn.get(i);
-                    if (oc == null) {
-                        continue;
-                    }
-                    shrtPthFrstConn<Ta> cc = cn.findConn(oc.target, oc.metric);
-                    if (cc == null) {
-                        logger.warn("node " + on + " lost connection to " + oc.target);
-                        continue;
-                    }
-                }
-                diffPrefix(cn, cn.prfAdd, on.prfAdd);
-                diffPrefix(cn, cn.prfFix, on.prfFix);
-                diffPrefix(cn, cn.othAdd, on.othAdd);
-                diffPrefix(cn, cn.othFix, on.othFix);
-            }
-            prev = null;
-        }
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
@@ -585,10 +542,11 @@ public class shrtPthFrst<Ta extends addrType> {
         boolean bid = bidir.get() != 0;
         boolean ecm = ecmp.get() != 0;
         boolean hps = hops.get() != 0;
+        boolean res;
         for (;;) {
             if (lst.size() < 1) {
-                tim3 = bits.getTime();
-                return true;
+                res = true;
+                break;
             }
             ntry = lst.get(0);
             for (int i = 1; i < lst.size(); i++) {
@@ -599,8 +557,8 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             if (to != null) {
                 if (to.compare(to, ntry.name) == 0) {
-                    tim3 = bits.getTime();
-                    return false;
+                    res = false;
+                    break;
                 }
             }
             lst.del(ntry);
@@ -661,6 +619,69 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             frst = false;
         }
+        tim3 = bits.getTime();
+        if (prev == null) {
+            return res;
+        }
+        for (int o = 0; o < prev.nodes.size(); o++) {
+            shrtPthFrstNode<Ta> cn = prev.nodes.get(o);
+            if (cn == null) {
+                continue;
+            }
+            shrtPthFrstNode<Ta> on = nodes.find(cn);
+            if (on == null) {
+                logger.warn("old node " + cn + " disappeared");
+                continue;
+            }
+        }
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> cn = nodes.get(o);
+            if (cn == null) {
+                continue;
+            }
+            shrtPthFrstNode<Ta> on = prev.nodes.find(cn);
+            if (on == null) {
+                logger.warn("new node " + cn + " appeared");
+                continue;
+            }
+            if (on.visited && !cn.visited) {
+                logger.warn("node " + cn + " became unreachable");
+            }
+            if (!on.visited && cn.visited) {
+                logger.warn("node " + cn + " became reachable");
+            }
+            for (int i = 0; i < cn.conn.size(); i++) {
+                shrtPthFrstConn<Ta> cc = cn.conn.get(i);
+                if (cc == null) {
+                    continue;
+                }
+                shrtPthFrstConn<Ta> oc = on.findConn(cc.target, cc.metric);
+                if (oc == null) {
+                    logger.warn("node " + cn + " established connection to " + cc.target);
+                    continue;
+                }
+                if (cc.metric != oc.metric) {
+                    logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " toward " + cc.target);
+                }
+            }
+            for (int i = 0; i < on.conn.size(); i++) {
+                shrtPthFrstConn<Ta> oc = on.conn.get(i);
+                if (oc == null) {
+                    continue;
+                }
+                shrtPthFrstConn<Ta> cc = cn.findConn(oc.target, oc.metric);
+                if (cc == null) {
+                    logger.warn("node " + on + " lost connection to " + oc.target);
+                    continue;
+                }
+            }
+            diffPrefix(cn, cn.prfAdd, on.prfAdd);
+            diffPrefix(cn, cn.prfFix, on.prfFix);
+            diffPrefix(cn, cn.othAdd, on.othAdd);
+            diffPrefix(cn, cn.othFix, on.othFix);
+        }
+        prev = null;
+        return res;
     }
 
     /**
