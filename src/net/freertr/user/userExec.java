@@ -1040,6 +1040,10 @@ public class userExec {
         hl.add("3 .        <name>                server name");
         hl.add("2 3      smtp                    smtp protocol information");
         hl.add("3 .        <name>                server name");
+        hl.add("2 3      dhcp4                   dhcp4 protocol information");
+        hl.add("3 .        <name>                server name");
+        hl.add("2 3      dhcp6                   dhcp6 protocol information");
+        hl.add("3 .        <name>                server name");
         hl.add("2 3,.    check                   check information");
         hl.add("3 .          <name>              check name");
         hl.add("2 3,.    sensor                  sensor information");

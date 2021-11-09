@@ -18,6 +18,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -519,6 +520,20 @@ public class servDhcp6 extends servGeneric implements prtServS {
                 bindings.remove(i);
             }
         }
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "mac|ip|last");
+        for (int i = 0; i < bindings.size(); i++) {
+            servDhcp6bind ntry = bindings.get(i);
+            res.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.reqd));
+        }
+        return res;
     }
 
 }

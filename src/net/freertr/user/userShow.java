@@ -65,6 +65,8 @@ import net.freertr.rtr.rtrPvrpNeigh;
 import net.freertr.rtr.rtrRip4neigh;
 import net.freertr.rtr.rtrRip6neigh;
 import net.freertr.serv.servBmp2mrt;
+import net.freertr.serv.servDhcp4;
+import net.freertr.serv.servDhcp6;
 import net.freertr.serv.servDns;
 import net.freertr.serv.servHttp;
 import net.freertr.serv.servNetflow;
@@ -594,6 +596,24 @@ public class userShow {
         }
         if (a.equals("smtp")) {
             servSmtp srv = cfgAll.srvrFind(new servSmtp(), cfgAll.dmnSmtp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("dhcp4")) {
+            servDhcp4 srv = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("dhcp6")) {
+            servDhcp6 srv = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
