@@ -2447,7 +2447,6 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server
-todo: hostwatch to execute script on acl match
 todo: bgp optimal route reflection
 todo: bgp peer autoconfig
 todo: bgp layer2 flowspec
