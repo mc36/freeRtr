@@ -12437,3 +12437,12 @@ qc pass: olsr default address suppression
 qc pass: olsr address unsuppression
 qc pass: rip default address suppression
 qc pass: rip address unsuppression
+---------------------------------- 2021-11-09 09:49:46
+no todo: ttl handling follow the selected forwarder, reconfigurable if more
+no todo: interface name tabbing
+no todo: vdc name tabbing
+no todo: interface range command
+no todo: temper: web access log
+no todo: terminal mode resolve
+no todo: http host upload optional different authentication
+todo: name tabbing

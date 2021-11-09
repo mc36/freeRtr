@@ -492,7 +492,13 @@ public class ipFwdIface extends tabRouteIface {
         l.add("2 3     host-static                 set static next hop cache entry");
         l.add("3 4       <addr>                    ip address");
         l.add("4 .         <addr>                  mac address");
-        l.add("2 .     host-watch                  monitor next hop changes");
+        l.add("2 3,.   host-watch                  monitor next hop changes");
+        l.add("3 4       appear                    script on appearance");
+        l.add("4 3,.       <name>                  name of script");
+        l.add("3 4       change                    script on mac change");
+        l.add("4 3,.       <name>                  name of script");
+        l.add("3 4       disappear                 script on disappearance");
+        l.add("4 3,.       <name>                  name of script");
         l.add("2 3     multicast                   multicast configuration options");
         l.add("3 .       mldp-enable               enable mdlp processing");
         l.add("3 .       host-enable               enable igmp/mld processing");
@@ -651,7 +657,7 @@ public class ipFwdIface extends tabRouteIface {
             a += " exclude-match";
         }
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
-        cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "");
+        cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         l.add(cmds.tabulator + beg + "host-retry " + lower.getCacheRetry());
         lower.getL2info(l, cmds.tabulator + beg + "host-static ");
@@ -803,7 +809,28 @@ public class ipFwdIface extends tabRouteIface {
             return false;
         }
         if (a.equals("host-watch")) {
+            if (hostWatch != null) {
+                hostWatch.stopWork();
+            }
             hostWatch = new ipHostWatch(lower);
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("appear")) {
+                    hostWatch.nodeOn = cfgAll.scrptFind(cmd.word(), false);
+                    continue;
+                }
+                if (a.equals("change")) {
+                    hostWatch.nodeChg = cfgAll.scrptFind(cmd.word(), false);
+                    continue;
+                }
+                if (a.equals("disappear")) {
+                    hostWatch.nodeOff = cfgAll.scrptFind(cmd.word(), false);
+                    continue;
+                }
+            }
             return false;
         }
         if (a.equals("host-static")) {

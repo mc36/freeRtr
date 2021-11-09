@@ -2447,8 +2447,6 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server
-todo: http host upload optional different authentication
-todo: terminal mode resolve
 todo: hostwatch to execute script on acl match
 todo: bgp optimal route reflection
 todo: bgp peer autoconfig
@@ -2457,13 +2455,10 @@ todo: bgp strict bfd mode
 todo: bgp signed path
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
-todo: temper: web access log
-todo: interface range command
 todo: parse privilege levels from tacacs
 todo: ldap client, server
 todo: trustpoint for certificates
-todo: vdc name tabbing
-todo: interface name tabbing
+todo: name tabbing
 todo: int eth1/int eth2
 todo: dhcp relay support
 todo: tcp selective ack
@@ -2474,7 +2469,6 @@ todo: lisp4, lisp6
 todo: rift4, rift6
 todo: l2vpn for isis
 todo: hip (rfc4423)
-todo: ttl handling follow the selected forwarder, reconfigurable if more
 todo: more show commands
 todo: more clear commands
 todo: more interactive tools

@@ -3380,6 +3380,8 @@ public class cfgAll {
         servGenList.listGetRun(l, hairpins, filter);
         servGenList.listGetRun(l, sessns, filter);
         servGenList.listGetRun(l, menus, filter);
+        servGenList.listGetRun(l, schedulers, filter);
+        servGenList.listGetRun(l, scripts, filter);
         servGenList.listGetRun(l, vrfs, filter);
         for (int i = 0; i < routers.size(); i++) {
             l.addAll(routers.get(i).getShRun1(filter));
@@ -3394,8 +3396,6 @@ public class cfgAll {
         servGenList.listGetRun(l, trackers, filter);
         servGenList.listGetRun(l, mtrackers, filter);
         servGenList.listGetRun(l, tlmtrydst, filter);
-        servGenList.listGetRun(l, schedulers, filter);
-        servGenList.listGetRun(l, scripts, filter);
         for (int i = 0; i < vrfs.size(); i++) {
             l.addAll(vrfs.get(i).getShRun2(filter));
         }

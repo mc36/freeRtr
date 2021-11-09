@@ -454,7 +454,7 @@ public class userUpgrade {
             if (cfgAll.upgradeScript != null) {
                 cons.debugRes("running upgrade script");
                 try {
-                    cfgAll.upgradeScript.doRound();
+                    cfgAll.upgradeScript.doRound(null);
                 } catch (Exception e) {
                     logger.traceback(e);
                 }

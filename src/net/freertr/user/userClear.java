@@ -421,7 +421,7 @@ public class userClear {
                 cmd.error("no such script");
                 return null;
             }
-            sch.doRound();
+            sch.doRound(null);
             return null;
         }
         if (a.equals("name-cache")) {

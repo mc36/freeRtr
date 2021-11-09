@@ -3,18 +3,17 @@ package net.freertr.serv;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgScrpt;
 import net.freertr.clnt.clntDns;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeLine;
-import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
-import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
-import net.freertr.user.userReader;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
 
@@ -36,9 +35,9 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public static final int port = 22;
 
     /**
-     * command to run
+     * script to run
      */
-    public String command;
+    public cfgScrpt script;
 
     /**
      * resolve addresses
@@ -51,7 +50,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server honeypot .*! port " + port,
         "server honeypot .*! protocol " + proto2string(protoAllStrm),
-        "server honeypot .*! no command",
+        "server honeypot .*! no script",
         "server honeypot .*! no resolve"
     };
 
@@ -85,14 +84,18 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        cmds.cfgLine(lst, command == null, beg, "command", command);
+        if (script == null) {
+            lst.add(beg + "no script");
+        } else {
+            lst.add(beg + "script " + script.name);
+        }
         cmds.cfgLine(lst, !resolve, beg, "resolve", "");
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        if (s.equals("command")) {
-            command = cmd.getRemaining();
+        if (s.equals("script")) {
+            script = cfgAll.scrptFind(cmd.word(), false);
             return false;
         }
         if (s.equals("resolve")) {
@@ -103,8 +106,8 @@ public class servHoneyPot extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
-        if (s.equals("command")) {
-            command = null;
+        if (s.equals("script")) {
+            script = null;
             return false;
         }
         if (s.equals("resolve")) {
@@ -115,8 +118,8 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  command                      command to execute");
-        l.add("2 2,.  <name>                     exec command");
+        l.add("1 2  script                       script to execute");
+        l.add("2 .    <name>                     script name");
         l.add("1 .  resolve                      resolve addresses");
     }
 
@@ -159,22 +162,10 @@ class servHoneyPotConn implements Runnable {
         pipe.linePut("you (" + s + ") have been logged!");
         pipe.setClose();
         logger.info("honeypot hit from " + s);
-        if (lower.command == null) {
+        if (lower.script == null) {
             return;
         }
-        pipeLine pl = new pipeLine(32768, false);
-        pipeSide pip = pl.getSide();
-        pip.lineTx = pipeSide.modTyp.modeCRLF;
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.height, 0);
-        userExec exe = new userExec(pip, rdr);
-        exe.privileged = true;
-        pip.setTime(60000);
-        String a = exe.repairCommand(lower.command + " " + addr);
-        exe.executeCommand(a);
-        pip = pl.getSide();
-        pl.setClose();
+        lower.script.doRound(bits.str2lst("set remote " + addr));
     }
 
 }

@@ -231,7 +231,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("runnow")) {
-            doRound();
+            doRound(null);
             return;
         }
         if (a.equals("sequence")) {
@@ -350,8 +350,10 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
 
     /**
      * do one timer round
+     *
+     * @param beg extra commands
      */
-    public synchronized void doRound() {
+    public synchronized void doRound(List<String> beg) {
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
                 return;
@@ -375,6 +377,9 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         userScript s = new userScript(pip, "");
         s.allowExec = true;
         s.allowConfig = true;
+        if (beg != null) {
+            s.addLines(beg);
+        }
         s.addLines(getText());
         s.cmdAll();
         pl.setClose();
@@ -423,7 +428,7 @@ class cfgScrptTimer extends TimerTask {
 
     public void run() {
         try {
-            lower.doRound();
+            lower.doRound(null);
         } catch (Exception e) {
             logger.traceback(e);
         }

@@ -117,6 +117,11 @@ session upl
  dropped
  exit
 !
+script logger
+ sequence 10 exec "test logging info someone from $remote hit the script"
+ stop
+ exit
+!
 vrf definition bvi
  rd 65535:2
  label-mode per-prefix
@@ -283,7 +288,7 @@ interface template1
  carrier-delay 123
  vrf forwarding v1
  ipv4 address dynamic 255.255.255.252
- ipv4 host-watch
+ ipv4 host-watch appear logger change logger disappear logger
  ipv4 srh enable
  ipv4 ptp enable
  ipv4 ptp receive
@@ -292,7 +297,7 @@ interface template1
  ipv4 pim bier-tunnel 39
  ipv4 pim join-source loopback0
  ipv6 address dynamic ffff:ffff:ffff:ffff::
- ipv6 host-watch
+ ipv6 host-watch appear logger change logger disappear logger
  ipv6 srh enable
  ipv6 ptp enable
  ipv6 ptp receive
@@ -875,6 +880,12 @@ server dns ns
  zone sid.mchome.nop.hu rr *.sid.mchome.nop.hu cname sid.mchome.nop.hu
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu soa ns0.sid.mchome.nop.hu cs.sid.mchome.nop.hu 20210309 60000 120000 6000000 600
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip6a 2001:db8:1101::227:227
+ vrf v1
+ exit
+!
+server honeypot hp
+ port 666
+ script logger
  vrf v1
  exit
 !
