@@ -72,6 +72,8 @@ public class shrtPthFrst<Ta extends addrType> {
 
     private long tim3;
 
+    private long tim4;
+
     private shrtPthFrstNode<Ta> spfRoot;
 
     private shrtPthFrst<Ta> prev;
@@ -107,8 +109,8 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param old old spf
      */
     public shrtPthFrst(shrtPthFrst<Ta> old) {
-        nodes = new tabGen<shrtPthFrstNode<Ta>>();
         tim1 = bits.getTime();
+        nodes = new tabGen<shrtPthFrstNode<Ta>>();
         if (old == null) {
             count = 1;
             logSize = new syncInt(0);
@@ -130,7 +132,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         shrtPthFrstLog ntry = new shrtPthFrstLog();
         ntry.when = old.tim1;
-        ntry.tim = (int) (old.tim3 - old.tim1);
+        ntry.tim = (int) (old.tim4 - old.tim1);
         ntry.unreach = old.listReachablility(false);
         ntry.topo = old.listTopoHsh();
         log.add(ntry);
@@ -531,6 +533,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(from));
         if (ntry == null) {
+            prev = null;
             return true;
         }
         spfRoot = ntry;
@@ -542,10 +545,9 @@ public class shrtPthFrst<Ta extends addrType> {
         boolean bid = bidir.get() != 0;
         boolean ecm = ecmp.get() != 0;
         boolean hps = hops.get() != 0;
-        boolean res;
+        boolean res = true;
         for (;;) {
             if (lst.size() < 1) {
-                res = true;
                 break;
             }
             ntry = lst.get(0);
@@ -821,6 +823,7 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             res.peers.add(per);
         }
+        tim4 = bits.getTime();
         return res;
     }
 
@@ -1173,6 +1176,7 @@ public class shrtPthFrst<Ta extends addrType> {
         res.add("last|" + bits.time2str(cfgAll.timeZoneName, tim1 + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(tim1) + " ago)");
         res.add("fill|" + (tim2 - tim1));
         res.add("calc|" + (tim3 - tim2));
+        res.add("table|" + (tim4 - tim3));
         res.add("run|" + count);
         return res;
     }
@@ -1371,6 +1375,7 @@ public class shrtPthFrst<Ta extends addrType> {
                 populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, false);
             }
         }
+        tim4 = bits.getTime();
         return tab1;
     }
 
@@ -1410,6 +1415,7 @@ public class shrtPthFrst<Ta extends addrType> {
                 populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, true);
             }
         }
+        tim4 = bits.getTime();
         return tab1;
     }
 
