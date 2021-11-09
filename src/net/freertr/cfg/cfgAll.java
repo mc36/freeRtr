@@ -3365,6 +3365,10 @@ public class cfgAll {
         servGenList.listGetRun(l, ipsecs, filter);
         servGenList.listGetRun(l, authers, filter);
         servGenList.listGetRun(l, chats, filter);
+        servGenList.listGetRun(l, sessns, filter);
+        servGenList.listGetRun(l, menus, filter);
+        servGenList.listGetRun(l, schedulers, filter);
+        servGenList.listGetRun(l, scripts, filter);
         servGenList.listGetRun(l, ip4pool, filter);
         servGenList.listGetRun(l, ip6pool, filter);
         servGenList.listGetRun(l, eventmgrs, filter);
@@ -3378,10 +3382,6 @@ public class cfgAll {
         servGenList.listGetRun(l, bundles, filter);
         servGenList.listGetRun(l, bridges, filter);
         servGenList.listGetRun(l, hairpins, filter);
-        servGenList.listGetRun(l, sessns, filter);
-        servGenList.listGetRun(l, menus, filter);
-        servGenList.listGetRun(l, schedulers, filter);
-        servGenList.listGetRun(l, scripts, filter);
         servGenList.listGetRun(l, vrfs, filter);
         for (int i = 0; i < routers.size(); i++) {
             l.addAll(routers.get(i).getShRun1(filter));
