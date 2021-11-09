@@ -22,6 +22,7 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
@@ -329,7 +330,24 @@ public class servSmtp extends servGeneric implements prtServS {
 
     public boolean srvDeinit() {
         return genericStop(0);
+    }
 
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "email|hit|last");
+        for (int i = 0; i < locals.size(); i++) {
+            servSmtpLoc ntry = locals.get(i);
+            res.add(ntry.email + "|" + ntry.askNum + "|" + bits.timePast(ntry.askTim));
+        }
+        for (int i = 0; i < forwards.size(); i++) {
+            servSmtpFwd ntry = forwards.get(i);
+            res.add(ntry.email + "|" + ntry.askNum + "|" + bits.timePast(ntry.askTim));
+        }
+        return res;
     }
 
 }
@@ -342,6 +360,11 @@ class servSmtpFwd implements Comparator<servSmtpFwd> {
 
     public String bcc;
 
+    public int askNum;
+
+    public long askTim;
+
+    ;
     public String toString() {
         return (remote + " " + email + " " + bcc).trim();
     }
@@ -372,6 +395,10 @@ class servSmtpLoc implements Comparator<servSmtpLoc> {
     public String user;
 
     public String bcc;
+
+    public int askNum;
+
+    public long askTim;
 
     public String toString() {
         return (user + " " + email + " " + bcc).trim();
@@ -512,13 +539,25 @@ class servSmtpDoer implements Runnable {
     public servSmtpLoc findLocal(String s) {
         servSmtpLoc ntry = new servSmtpLoc();
         ntry.email = uniResLoc.fromEmail(s).toLowerCase();
-        return lower.locals.find(ntry);
+        ntry = lower.locals.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.askNum++;
+        ntry.askTim = bits.getTime();
+        return ntry;
     }
 
     public servSmtpFwd findForward(String s) {
         servSmtpFwd ntry = new servSmtpFwd();
         ntry.email = uniResLoc.fromEmail(s).toLowerCase();
-        return lower.forwards.find(ntry);
+        ntry = lower.forwards.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.askNum++;
+        ntry.askTim = bits.getTime();
+        return ntry;
     }
 
     public void doLine(String s) {

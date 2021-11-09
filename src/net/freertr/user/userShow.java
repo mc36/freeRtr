@@ -68,6 +68,7 @@ import net.freertr.serv.servBmp2mrt;
 import net.freertr.serv.servDns;
 import net.freertr.serv.servHttp;
 import net.freertr.serv.servNetflow;
+import net.freertr.serv.servSmtp;
 import net.freertr.serv.servStreamingMdt;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
@@ -584,6 +585,15 @@ public class userShow {
         }
         if (a.equals("http")) {
             servHttp srv = cfgAll.srvrFind(new servHttp(), cfgAll.dmnHttp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("smtp")) {
+            servSmtp srv = cfgAll.srvrFind(new servSmtp(), cfgAll.dmnSmtp, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
