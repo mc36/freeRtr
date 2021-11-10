@@ -1089,6 +1089,14 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(1));
                 return null;
             }
+            if (a.equals("hwbwmon")) {
+                rdr.putStrArr(cfgAll.getShIntTxt(22));
+                return null;
+            }
+            if (a.equals("swbwmon")) {
+                rdr.putStrArr(cfgAll.getShIntTxt(21));
+                return null;
+            }
             if (a.equals("summary")) {
                 rdr.putStrTab(cfgAll.getShIntTab(2));
                 return null;

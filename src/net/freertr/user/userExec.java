@@ -856,6 +856,8 @@ public class userExec {
         hl.add("2 3,.    interfaces              interface status and configuration");
         hl.add("3 .        full                  full listing");
         hl.add("3 .        description           description listing");
+        hl.add("3 .        hwbwmon               hardware bandwidth monitor listing");
+        hl.add("3 .        swbwmon               software bandwidth monitor listing");
         hl.add("3 .        summary               summary listing");
         hl.add("3 .        hwsummary             hardware summary listing");
         hl.add("3 .        swsummary             software summary listing");

@@ -95,15 +95,19 @@ public class history {
      * generate show output
      *
      * @param mod mode, 1=bothbyte, 2=rxbyte, 3=txbyte, 4=drbyte 5=bothpack,
-     * 6=rxpack, 7=txpack 8=drpack, 9=realtime
+     * 6=rxpack, 7=txpack 8=drpack, 9=realtime, 10=bwmon
      * @return show output
      */
     public List<String> show(int mod) {
         List<String> res = new ArrayList<String>();
-        if (mod == 9) {
-            show(res, secs, secs, 0x10001);
-            show(res, secs, secs, 0x10005);
-            return res;
+        switch (mod) {
+            case 9:
+                show(res, secs, secs, 0x10001);
+                show(res, secs, secs, 0x10005);
+                return res;
+            case 10:
+                show(res, secs, secs, 0x10001);
+                return res;
         }
         show(res, secs, secs, mod | 0x10000);
         show(res, mina, minm, mod | 0x20000);
