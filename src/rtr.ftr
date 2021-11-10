@@ -2309,6 +2309,7 @@ qc pass: ospf with bgp linkstate
 qc pass: ospf with polka
 qc pass: ospf default address suppression
 qc pass: ospf address unsuppression
+qc pass: ospf maximum metric
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
