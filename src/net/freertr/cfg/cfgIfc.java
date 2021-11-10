@@ -5150,7 +5150,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (ethtyp.hwHstry == null) {
                     return l;
                 }
-                l.addAll(ethtyp.hwHstry.show(mode - 14));
+                l.addAll(ethtyp.hwHstry.show(mode - 17));
                 break;
         }
         return l;
