@@ -1158,6 +1158,12 @@ public class userExec {
         getHelpShow(hl, privileged);
         hl.add("1 .    logout                    close this exec session");
         hl.add("1 .    exit                      close this exec session");
+        hl.add("1 2,.  bwmon                     start bandwidth monitor session");
+        hl.add("2 2,.    software                use software counters");
+        hl.add("2 2,.    hardware                use hardware counters");
+        hl.add("2 2,.    seconds                 use seconds counters");
+        hl.add("2 2,.    minutes                 use minutes counters");
+        hl.add("2 2,.    hours                   use hours counters");
         hl.add("1 2,.  netconf                   start netconf session");
         hl.add("2 2,.    format                  format response");
         hl.add("2 2,.    echo                    echo user input");
@@ -1970,6 +1976,10 @@ public class userExec {
             reader.keyFlush();
             return cmdRes.command;
         }
+        if (a.equals("bwmon")) {
+            doBwmon();
+            return cmdRes.command;
+        }
         if (a.equals("tclsh")) {
             doTclsh();
             return cmdRes.command;
@@ -2614,6 +2624,50 @@ public class userExec {
         } else {
             return ipCor6.size + ipIcmp6.size;
         }
+    }
+
+    private void doBwmon() {
+        int interval = 1;
+        int mode = 1;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("software")) {
+                mode = 1;
+                continue;
+            }
+            if (a.equals("hardware")) {
+                mode = 2;
+                continue;
+            }
+            if (a.equals("seconds")) {
+                interval = 1;
+                continue;
+            }
+            if (a.equals("minutes")) {
+                interval = 2;
+                continue;
+            }
+            if (a.equals("hours")) {
+                interval = 3;
+                continue;
+            }
+        }
+        mode = (mode * 3) + interval + 17;
+        reader.keyFlush();
+        List<String> lst = new ArrayList<String>();
+        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#bwmon", pipe.settingsGet(pipeSetting.times, false));
+        for (;;) {
+            lst.clear();
+            lst.addAll(cfgAll.getShIntTxt(mode));
+            if (edtr.doTimed(1000, false)) {
+                break;
+            }
+        }
+        edtr.doClear();
+        reader.keyFlush();
     }
 
     private void doMtr() {
