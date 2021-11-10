@@ -218,6 +218,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router ospf[4|6] .*! no area .* spf-bidir",
         "router ospf[4|6] .*! no area .* spf-hops",
         "router ospf[4|6] .*! no area .* spf-ecmp",
+        "router ospf[4|6] .*! no area .* max-metric",
         "router ospf[4|6] .*! no area .* stub",
         "router ospf[4|6] .*! no area .* nssa",
         "router ospf[4|6] .*! no area .* traffeng",

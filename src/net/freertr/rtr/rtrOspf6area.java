@@ -57,6 +57,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     protected final tabRoute<addrIP> routes;
 
     /**
+     * maximum metric area
+     */
+    public boolean maxMetric;
+
+    /**
      * stub area
      */
     public boolean stub;
@@ -451,11 +456,15 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
+            int met = ifc.metric;
+            if (maxMetric) {
+                met = 0xffff;
+            }
             if (ifc.needDR()) {
                 if (ifc.drAddr.isEmpty()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf6lsa.lnkTrns, ifc.iface.ifwNum, ifc.DRintId(), ifc.drAddr, ifc.metric);
+                putLink2rtrLsa(pck, rtrOspf6lsa.lnkTrns, ifc.iface.ifwNum, ifc.DRintId(), ifc.drAddr, met);
                 continue;
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
@@ -469,7 +478,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 if (!nei.isFull()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, ifc.metric);
+                putLink2rtrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, met);
             }
         }
         advertiseLsa(rtrOspf6lsa.lsaRouter, 0, pck);
@@ -1001,10 +1010,10 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         pck.getSkip(16);
                         switch (typ) {
                             case rtrOspf6lsa.lnkP2p:
-                                spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, false, "" + lnk);
+                                spf.addConn(src, new rtrOspf6areaSpf(adr, 0), met, true, met >= 0xffff, "" + lnk);
                                 break;
                             case rtrOspf6lsa.lnkTrns:
-                                spf.addConn(src, new rtrOspf6areaSpf(adr, lnk), met, false, false, null);
+                                spf.addConn(src, new rtrOspf6areaSpf(adr, lnk), met, false, met >= 0xffff, null);
                                 break;
                             default:
                                 break;

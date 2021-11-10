@@ -657,7 +657,13 @@ public class shrtPthFrst<Ta extends addrType> {
                     continue;
                 }
                 if (cc.metric != oc.metric) {
-                    logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " toward " + cc.target);
+                    logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " to " + cc.target);
+                }
+                if (cc.stub && !oc.stub) {
+                    logger.warn("node " + cn + " unwilling to forward to " + cc.target);
+                }
+                if (!cc.stub && oc.stub) {
+                    logger.warn("node " + cn + " willing to forward to " + cc.target);
                 }
             }
             for (int i = 0; i < on.conn.size(); i++) {

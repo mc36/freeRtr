@@ -56,6 +56,11 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
     protected final tabRoute<addrIP> routes;
 
     /**
+     * maximum metric area
+     */
+    public boolean maxMetric;
+
+    /**
      * stub area
      */
     public boolean stub;
@@ -366,21 +371,6 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         pck.putSkip(12);
     }
 
-    private rtrOspf4areaLink getLink2rtrLsa(packHolder pck) {
-        if (pck.dataSize() < 12) {
-            return null;
-        }
-        rtrOspf4areaLink l = new rtrOspf4areaLink();
-        pck.getAddr(l.linkID, 0); // link id
-        pck.getAddr(l.linkDat, 4); // link data
-        l.type = pck.getByte(8); // type
-        int tos = pck.getByte(9); // number of tos
-        l.metric = pck.msbGetW(10); // metrick
-        pck.getSkip(12);
-        pck.getSkip(tos * 4); // additional tos values
-        return l;
-    }
-
     private static int prefixSize(addrPrefix<addrIPv4> prf) {
         return ((prf.maskLen + 31) / 32) * 4;
     }
@@ -412,11 +402,15 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
+            int met = ifc.metric;
+            if (maxMetric) {
+                met = 0xffff;
+            }
             if (ifc.needDR()) {
                 if (ifc.drAddr.isEmpty()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf4lsa.lnkTrns, ifc.drAddr, ifc.iface.addr.toIPv4(), ifc.metric);
+                putLink2rtrLsa(pck, rtrOspf4lsa.lnkTrns, ifc.drAddr, ifc.iface.addr.toIPv4(), met);
                 continue;
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
@@ -430,7 +424,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 if (!nei.isFull()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf4lsa.lnkP2p, nei.rtrID, ifc.iface.addr.toIPv4(), ifc.metric);
+                putLink2rtrLsa(pck, rtrOspf4lsa.lnkP2p, nei.rtrID, ifc.iface.addr.toIPv4(), met);
             }
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
@@ -905,22 +899,30 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     int o = pck.msbGetW(2); // number of links
                     pck.getSkip(4);
                     for (int p = 0; p < o; p++) {
-                        rtrOspf4areaLink l = getLink2rtrLsa(pck);
-                        if (l == null) {
-                            continue;
+                        if (pck.dataSize() < 12) {
+                            break;
                         }
-                        switch (l.type) {
+                        addrIPv4 lnkId = new addrIPv4();
+                        addrIPv4 lnkDt = new addrIPv4();
+                        pck.getAddr(lnkId, 0); // link id
+                        pck.getAddr(lnkDt, 4); // link data
+                        int typ = pck.getByte(8); // type
+                        int tos = pck.getByte(9); // number of tos
+                        int met = pck.msbGetW(10); // metrick
+                        pck.getSkip(12);
+                        pck.getSkip(tos * 4); // additional tos values
+                        switch (typ) {
                             case rtrOspf4lsa.lnkP2p:
-                                spf.addConn(ntry.rtrID, l.linkID, l.metric, true, false, "" + l.linkDat);
+                                spf.addConn(ntry.rtrID, lnkId, met, true, met >= 0xffff, "" + lnkDt);
                                 break;
                             case rtrOspf4lsa.lnkTrns:
-                                spf.addConn(ntry.rtrID, l.linkID, l.metric, false, false, "" + l.linkDat);
+                                spf.addConn(ntry.rtrID, lnkId, met, false, met >= 0xffff, "" + lnkDt);
                                 break;
                             case rtrOspf4lsa.lnkStub:
-                                prf4 = new addrPrefix<addrIPv4>(l.linkID, l.linkDat.toNetmask());
+                                prf4 = new addrPrefix<addrIPv4>(lnkId, lnkDt.toNetmask());
                                 pref = new tabRouteEntry<addrIP>();
                                 pref.prefix = addrPrefix.ip4toIP(prf4);
-                                pref.best.metric = l.metric;
+                                pref.best.metric = met;
                                 pref.best.origin = 109;
                                 pref.best.distance = lower.distantInt;
                                 pref.best.aggrAs = area;
@@ -1145,17 +1147,5 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
     public void stopNow() {
         todo.and(2);
     }
-
-}
-
-class rtrOspf4areaLink {
-
-    protected addrIPv4 linkID = new addrIPv4();
-
-    protected addrIPv4 linkDat = new addrIPv4();
-
-    protected int type;
-
-    protected int metric;
 
 }
