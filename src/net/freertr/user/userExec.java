@@ -2632,6 +2632,9 @@ public class userExec {
         int interval = 0;
         int counter = 0;
         int mode = 0;
+        if (cfgAll.moreInterfaces(7) > 0) {
+            mode = 1;
+        }
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {

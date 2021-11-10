@@ -3196,9 +3196,11 @@ public class cfgAll {
      * do things with more interfaces
      *
      * @param what what to do: 1=tunnelDest, 2=clearSwCntr, 3=autoBw, 4=flwTrc,
-     * 5=clearHwCntr, 6=clearAllCntr
+     * 5=clearHwCntr, 6=clearAllCntr, 7=countHwCntr
+     * @return value
      */
-    public static void moreInterfaces(int what) {
+    public static int moreInterfaces(int what) {
+        int res = 0;
         for (int i = 0; i < ifaces.size(); i++) {
             cfgIfc ifc = ifaces.get(i);
             if (ifc == null) {
@@ -3224,8 +3226,14 @@ public class cfgAll {
                     ifc.ethtyp.clearSwCounter();
                     ifc.ethtyp.clearHwCounter();
                     break;
+                case 7:
+                    if (ifc.ethtyp.hwCntr != null) {
+                        res++;
+                    }
+                    break;
             }
         }
+        return res;
     }
 
     private static List<String> getGlobalRunBeg(int filter) {
