@@ -222,8 +222,8 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         cntr = new counter();
         connectedCheck = true;
         drPriority = 0;
-        metric = 1;
-        teMetric = 1;
+        metric = 10;
+        teMetric = 10;
         if (iface != null) {
             teBandwidth = iface.lower.getBandwidth();
         }
