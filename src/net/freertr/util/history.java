@@ -96,7 +96,7 @@ public class history {
      *
      * @param mod mode, 1=bothbyte, 2=rxbyte, 3=txbyte, 4=drbyte 5=bothpack,
      * 6=rxpack, 7=txpack 8=drpack, 9=realtime, 10=bothbyte-sec, 11=bothbyte-min
-     * 12=bothbyte-hour
+     * 12=bothbyte-hour, 13=bothpack-sec, 14=bothpack-min, 15=bothpack-hour
      * @return show output
      */
     public List<String> show(int mod) {
@@ -114,6 +114,15 @@ public class history {
                 return res;
             case 12:
                 show(res, hora, horm, 0x30001);
+                return res;
+            case 13:
+                show(res, secs, secs, 0x10005);
+                return res;
+            case 14:
+                show(res, mina, minm, 0x20005);
+                return res;
+            case 15:
+                show(res, hora, horm, 0x30005);
                 return res;
         }
         show(res, secs, secs, mod | 0x10000);

@@ -1161,6 +1161,8 @@ public class userExec {
         hl.add("1 2,.  bwmon                     start bandwidth monitor session");
         hl.add("2 2,.    software                use software counters");
         hl.add("2 2,.    hardware                use hardware counters");
+        hl.add("2 2,.    packets                 use packets counters");
+        hl.add("2 2,.    bytes                   use bytes counters");
         hl.add("2 2,.    seconds                 use seconds counters");
         hl.add("2 2,.    minutes                 use minutes counters");
         hl.add("2 2,.    hours                   use hours counters");
@@ -2627,35 +2629,44 @@ public class userExec {
     }
 
     private void doBwmon() {
-        int interval = 1;
-        int mode = 1;
+        int interval = 0;
+        int counter = 0;
+        int mode = 0;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
             if (a.equals("software")) {
-                mode = 1;
+                mode = 0;
                 continue;
             }
             if (a.equals("hardware")) {
-                mode = 2;
+                mode = 1;
+                continue;
+            }
+            if (a.equals("bytes")) {
+                counter = 0;
+                continue;
+            }
+            if (a.equals("packets")) {
+                counter = 1;
                 continue;
             }
             if (a.equals("seconds")) {
-                interval = 1;
+                interval = 0;
                 continue;
             }
             if (a.equals("minutes")) {
-                interval = 2;
+                interval = 1;
                 continue;
             }
             if (a.equals("hours")) {
-                interval = 3;
+                interval = 2;
                 continue;
             }
         }
-        mode = (mode * 3) + interval + 17;
+        mode = (mode * 6) + (counter * 3) + interval + 21;
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
         userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#bwmon", pipe.settingsGet(pipeSetting.times, false));

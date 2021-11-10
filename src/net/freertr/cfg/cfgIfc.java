@@ -5066,7 +5066,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * get interface statistics
      *
      * @param mode mode to use: 1=counters, 2..10=history, 11=hwcounters,
-     * 12..20=hwhistory, 21..23-swbwmon, 24..26-hwbwmon
+     * 12..20=hwhistory, 21..26-swbwmon, 27..32-hwbwmon
      * @return string list
      */
     public List<String> getShIntTxt(int mode) {
@@ -5134,12 +5134,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case 21:
             case 22:
             case 23:
-                l.add(name + " - " + description);
-                l.addAll(ethtyp.getHistory().show(mode - 11));
-                break;
             case 24:
             case 25:
             case 26:
+                l.add(name + " - " + description);
+                l.addAll(ethtyp.getHistory().show(mode - 11));
+                break;
+            case 27:
+            case 28:
+            case 29:
+            case 30:
+            case 31:
+            case 32:
                 l.add(name + " - " + description);
                 if (ethtyp.hwHstry == null) {
                     return l;

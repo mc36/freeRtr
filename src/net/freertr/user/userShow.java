@@ -1090,7 +1090,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("hwbwmon")) {
-                rdr.putStrArr(cfgAll.getShIntTxt(24));
+                rdr.putStrArr(cfgAll.getShIntTxt(27));
                 return null;
             }
             if (a.equals("swbwmon")) {
