@@ -85,6 +85,7 @@ import net.freertr.serv.servTftp;
 import net.freertr.serv.servTime;
 import net.freertr.serv.servUdpFwd;
 import net.freertr.serv.servUdptn;
+import net.freertr.serv.servUni2multi;
 import net.freertr.serv.servUpnpFwd;
 import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
@@ -640,6 +641,11 @@ public class cfgAll {
      * amt daemons
      */
     public static final servGenList<servAmt> dmnAmt = new servGenList<servAmt>();
+
+    /**
+     * uni2multi daemons
+     */
+    public static final servGenList<servUni2multi> dmnUni2mul = new servGenList<servUni2multi>();
 
     /**
      * gtp daemons
@@ -3478,6 +3484,7 @@ public class cfgAll {
         dmnMplsUdp.getShRun(l, filter);
         dmnMplsOam.getShRun(l, filter);
         dmnAmt.getShRun(l, filter);
+        dmnUni2mul.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);
         dmnRadius.getShRun(l, filter);

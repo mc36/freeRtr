@@ -128,6 +128,7 @@ import net.freertr.serv.servTftp;
 import net.freertr.serv.servTime;
 import net.freertr.serv.servUdpFwd;
 import net.freertr.serv.servUdptn;
+import net.freertr.serv.servUni2multi;
 import net.freertr.serv.servUpnpFwd;
 import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
@@ -837,6 +838,8 @@ public class userConfig {
         l.add("3  .      <name>                     name of server");
         l.add("2  3    amt                          configure an amt server");
         l.add("3  .      <name>                     name of server");
+        l.add("2  3    uni2multi                    configure an uni2multi server");
+        l.add("3  .      <name>                     name of server");
         l.add("2  3    pckoudp                      configure a pckoudp server");
         l.add("3  .      <name>                     name of server");
         l.add("2  3    pckodtls                     configure a pckodtls server");
@@ -1530,6 +1533,10 @@ public class userConfig {
             }
             if (a.equals("amt")) {
                 daemonMake(new servAmt(), cfgAll.dmnAmt);
+                return;
+            }
+            if (a.equals("uni2multi")) {
+                daemonMake(new servUni2multi(), cfgAll.dmnUni2mul);
                 return;
             }
             if (a.equals("gtp")) {
@@ -2426,6 +2433,10 @@ public class userConfig {
             }
             if (a.equals("amt")) {
                 daemonErase(new servAmt(), cfgAll.dmnAmt);
+                return;
+            }
+            if (a.equals("uni2multi")) {
+                daemonErase(new servUni2multi(), cfgAll.dmnUni2mul);
                 return;
             }
             if (a.equals("gtp")) {

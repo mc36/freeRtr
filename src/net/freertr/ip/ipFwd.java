@@ -1772,7 +1772,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.ETHcos = (pck.IPtos >>> 5) & 7;
         pck.MPLSexp = pck.ETHcos;
-        if (natCfg.size() > 0) {
+        if ((natTrns.size() > 0) || (natCfg.size() > 0)) {
             if (pck.IPmf) {
                 doDrop(pck, rxIfc, counter.reasons.denied);
                 return;
@@ -1790,6 +1790,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 natT.reverse.lastUsed = tim;
                 natT.updatePack(pck);
                 natCfg.packUpdate(pck);
+                ipCore.testIPaddress(pck, pck.IPtrg);
             } else {
                 tabNatCfgN natC = natCfg.find(pck);
                 if (natC != null) {
