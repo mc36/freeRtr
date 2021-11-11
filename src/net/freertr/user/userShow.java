@@ -3505,8 +3505,21 @@ public class userShow {
             return;
         }
         if (a.equals("wireformat")) {
+            a = cmd.word();
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = addrPrefix.str2ip(cmd.word());
+            ntry.prefix = addrPrefix.str2ip(a);
+            if (ntry.prefix == null) {
+                addrIP adr = new addrIP();
+                if (adr.fromString(a)) {
+                    cmd.error("bad prefix");
+                    return;
+                }
+                ntry = tab.route(adr);
+                if (ntry == null) {
+                    cmd.error("no such route");
+                    return;
+                }
+            }
             ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
             ntry = tab.find(ntry);
             if (ntry == null) {

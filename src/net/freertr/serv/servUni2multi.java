@@ -7,13 +7,12 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgScrpt;
 import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
-import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
-import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabNatTraN;
@@ -79,6 +78,11 @@ public class servUni2multi extends servGeneric implements prtServP {
     public boolean logging;
 
     /**
+     * script to execute
+     */
+    public cfgScrpt script;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
@@ -87,6 +91,7 @@ public class servUni2multi extends servGeneric implements prtServP {
         "server uni2multi .*! source port 12345",
         "server uni2multi .*! target port 1234",
         "server uni2multi .*! no logging",
+        "server uni2multi .*! no script",
         "server uni2multi .*! timeout 60000"
     };
 
@@ -115,6 +120,11 @@ public class servUni2multi extends servGeneric implements prtServP {
             l.add(beg + "no target ipv6");
         } else {
             l.add(beg + "target ipv6 " + addrPrefix.ip2str(target6));
+        }
+        if (script == null) {
+            l.add(beg + "no script");
+        } else {
+            l.add(beg + "script " + script.name);
         }
         l.add(beg + "target port " + targetP);
         l.add(beg + "timeout " + timeout);
@@ -190,6 +200,18 @@ public class servUni2multi extends servGeneric implements prtServP {
             }
             return true;
         }
+        if (s.equals("script")) {
+            if (negated) {
+                script = null;
+                return false;
+            }
+            script = cfgAll.scrptFind(cmd.word(), false);
+            if (script == null) {
+                cmd.error("no such script");
+                return false;
+            }
+            return false;
+        }
         return true;
     }
 
@@ -209,6 +231,8 @@ public class servUni2multi extends servGeneric implements prtServP {
         l.add("2 3    ipv6                       ipv6 range");
         l.add("3 .      <addr>                   prefix");
         l.add("1 .  logging                      log translations");
+        l.add("1 2  script                       script to invoke");
+        l.add("2 .    <name>                     name of script");
     }
 
     public String srvName() {
@@ -280,6 +304,9 @@ public class servUni2multi extends servGeneric implements prtServP {
         fwd.tableChanger();
         if (logging) {
             logger.info("created translation " + natT);
+        }
+        if (script != null) {
+            script.doRound(bits.str2lst("set remote " + trg));
         }
         return false;
     }

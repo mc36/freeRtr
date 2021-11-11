@@ -199,49 +199,53 @@ public class uniResLoc {
         if (s == null) {
             return true;
         }
-        int i = s.indexOf(":");
-        if (i < 0) {
-            filPath = s;
+        if (s.startsWith("/")) {
+            filPath = s.substring(1, s.length());
         } else {
-            proto = s.substring(0, i);
-            server = s.substring(i + 1, s.length());
-        }
-        if (server.indexOf("//") == 0) {
-            server = server.substring(2, server.length());
-        }
-        i = server.indexOf("/");
-        if (i >= 0) {
-            filPath = server.substring(i + 1, server.length());
-            server = server.substring(0, i);
-        }
-        i = server.indexOf("@");
-        if (i >= 0) {
-            username = server.substring(0, i);
-            server = server.substring(i + 1, server.length());
-            i = username.indexOf(":");
-            if (i >= 0) {
-                password = username.substring(i + 1, username.length());
-                username = username.substring(0, i);
+            int i = s.indexOf(":");
+            if (i < 0) {
+                filPath = s;
+            } else {
+                proto = s.substring(0, i);
+                server = s.substring(i + 1, s.length());
             }
-        }
-        i = server.indexOf("[");
-        int o = server.indexOf("]");
-        if ((i >= 0) && (o > i)) {
-            s = server.substring(o + 1, server.length());
-            server = server.substring(i + 1, o);
-        } else {
-            s = "";
-            i = server.indexOf(":");
+            if (server.indexOf("//") == 0) {
+                server = server.substring(2, server.length());
+            }
+            i = server.indexOf("/");
             if (i >= 0) {
-                s = server.substring(i, server.length());
+                filPath = server.substring(i + 1, server.length());
                 server = server.substring(0, i);
             }
+            i = server.indexOf("@");
+            if (i >= 0) {
+                username = server.substring(0, i);
+                server = server.substring(i + 1, server.length());
+                i = username.indexOf(":");
+                if (i >= 0) {
+                    password = username.substring(i + 1, username.length());
+                    username = username.substring(0, i);
+                }
+            }
+            i = server.indexOf("[");
+            int o = server.indexOf("]");
+            if ((i >= 0) && (o > i)) {
+                s = server.substring(o + 1, server.length());
+                server = server.substring(i + 1, o);
+            } else {
+                s = "";
+                i = server.indexOf(":");
+                if (i >= 0) {
+                    s = server.substring(i, server.length());
+                    server = server.substring(0, i);
+                }
+            }
+            i = s.indexOf(":");
+            if (i >= 0) {
+                port = bits.str2num(s.substring(i + 1, s.length()).trim());
+            }
         }
-        i = s.indexOf(":");
-        if (i >= 0) {
-            port = bits.str2num(s.substring(i + 1, s.length()).trim());
-        }
-        i = filPath.indexOf("?");
+        int i = filPath.indexOf("?");
         String pars = "";
         if (i >= 0) {
             pars = filPath.substring(i + 1, filPath.length());
