@@ -1346,13 +1346,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.dump.gotMessage(true, typ, neigh, pck.getCopy());
         }
         cntr.tx(pck);
-        for (int i = 0; i < 16; i++) {
-            pck.putByte(i, 0xff);
-        }
-        pck.msbPutW(16, pck.dataSize() + sizeU);
-        pck.putByte(18, typ);
-        pck.putSkip(sizeU);
-        pck.merge2beg();
+        rtrBgpUtil.createHeader(pck, typ);
         pck.pipeSend(pipe, 0, pck.dataSize(), 2);
     }
 

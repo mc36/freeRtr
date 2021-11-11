@@ -47,6 +47,7 @@ import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipFwdTrfng;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsZone;
+import net.freertr.pack.packHolder;
 import net.freertr.pack.packLdpMp;
 import net.freertr.pack.packLdpPwe;
 import net.freertr.pipe.pipeSetting;
@@ -57,6 +58,7 @@ import net.freertr.rtr.rtrBgpGroup;
 import net.freertr.rtr.rtrBgpNeigh;
 import net.freertr.rtr.rtrBgpParam;
 import net.freertr.rtr.rtrBgpTemp;
+import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrEigrpNeigh;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.rtr.rtrLogger;
@@ -3500,6 +3502,24 @@ public class userShow {
         }
         tabRoute<addrIP> tab = r.bgp.getDatabase(sfi);
         if (tab == null) {
+            return;
+        }
+        if (a.equals("wireformat")) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = addrPrefix.str2ip(cmd.word());
+            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry = tab.find(ntry);
+            if (ntry == null) {
+                cmd.error("no such prefix");
+                return;
+            }
+            ntry = ntry.copyBytes(tabRoute.addType.better);
+            packHolder pck = new packHolder(true, true);
+            List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+            lst.add(ntry);
+            rtrBgpUtil.createReachable(pck, new packHolder(true, true), sfi, false, true, lst, null);
+            rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
+            cmd.error(bits.byteDump(pck.getCopy(), 0, -1));
             return;
         }
         if (a.equals("database")) {

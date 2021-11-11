@@ -2382,6 +2382,22 @@ public class rtrBgpUtil {
     }
 
     /**
+     * create message header
+     *
+     * @param pck packet to update
+     * @param typ message type
+     */
+    public static void createHeader(packHolder pck, int typ) {
+        for (int i = 0; i < 16; i++) {
+            pck.putByte(i, 0xff);
+        }
+        pck.msbPutW(16, pck.dataSize() + rtrBgpSpeak.sizeU);
+        pck.putByte(18, typ);
+        pck.putSkip(rtrBgpSpeak.sizeU);
+        pck.merge2beg();
+    }
+
+    /**
      * create reachable message
      *
      * @param pck packet to update

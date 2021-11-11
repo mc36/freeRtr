@@ -576,6 +576,9 @@ public class userExec {
         hl.add("6 7,.            database        list of routes in database");
         hl.add("7 8,.              [addr]        prefix to view");
         hl.add("8 .                  [rd]        route distinguisher");
+        hl.add("6 7              wireformat      dump a route from database");
+        hl.add("7 8,.              <addr>        prefix to view");
+        hl.add("8 .                  [rd]        route distinguisher");
         hl.add("6 .              privateas       list of routes with private asn");
         hl.add("6 .              nostdcomm       list of routes without community");
         hl.add("6 7              stdcomm         list of routes with community");
