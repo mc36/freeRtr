@@ -3527,6 +3527,9 @@ public class userShow {
                 return;
             }
             ntry = ntry.copyBytes(tabRoute.addType.better);
+            if (ntry.best.nextHop == null) {
+                ntry.best.nextHop = new addrIP();
+            }
             packHolder pck = new packHolder(true, true);
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
