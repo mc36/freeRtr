@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrIpx;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authGeneric;
@@ -3529,6 +3531,11 @@ public class userShow {
             ntry = ntry.copyBytes(tabRoute.addType.better);
             if (ntry.best.nextHop == null) {
                 ntry.best.nextHop = new addrIP();
+                if (r.bgp.fwdCore.ipVersion == 4) {
+                    ntry.best.nextHop.fromIPv4addr(new addrIPv4());
+                } else {
+                    ntry.best.nextHop.fromIPv6addr(new addrIPv6());
+                }
             }
             packHolder pck = new packHolder(true, true);
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
