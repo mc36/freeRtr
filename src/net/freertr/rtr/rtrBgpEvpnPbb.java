@@ -72,11 +72,10 @@ public class rtrBgpEvpnPbb implements ifcUp {
         pck.getSkip(4);
         ifcEther.parseETHheader(pck, false);
         addrMac src = pck.ETHsrc.copyBytes();
-        if (ifcDot1ah.parseHeader(pck)) {
+        if (new ifcDot1ah().parseHeader(pck)) {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        pck.getSkip(ifcDot1ah.size);
         rtrBgpEvpn evpn = new rtrBgpEvpn(null);
         evpn.id = pck.ETHvlan;
         evpn = parent.evpn.find(evpn);

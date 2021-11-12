@@ -168,32 +168,38 @@ public class tabQos {
                 return true;
             case ifcDot1q.type:
                 pck.getSkip(-2);
-                ifcDot1q.parseHeader(pck);
+                new ifcDot1q().parseHeader(pck);
+                pck.getSkip(-ifcDot1q.size);
                 pck.getSkip(2);
                 return true;
             case ifcDot1ah.type:
                 pck.getSkip(-2);
-                ifcDot1ah.parseHeader(pck);
+                new ifcDot1ah().parseHeader(pck);
+                pck.getSkip(-ifcDot1ah.size);
                 pck.getSkip(2);
                 return true;
             case ifcDot1ad.type:
                 pck.getSkip(-2);
-                ifcDot1ad.parseHeader(pck);
+                new ifcDot1ad().parseHeader(pck);
+                pck.getSkip(-ifcDot1ad.size);
                 pck.getSkip(2);
                 return true;
             case ifcQinq1.type:
                 pck.getSkip(-2);
-                ifcQinq1.parseHeader(pck);
+                new ifcQinq1().parseHeader(pck);
+                pck.getSkip(-ifcQinq1.size);
                 pck.getSkip(2);
                 return true;
             case ifcQinq2.type:
                 pck.getSkip(-2);
-                ifcQinq2.parseHeader(pck);
+                new ifcQinq2().parseHeader(pck);
+                pck.getSkip(-ifcQinq2.size);
                 pck.getSkip(2);
                 return true;
             case ifcQinq3.type:
                 pck.getSkip(-2);
-                ifcQinq3.parseHeader(pck);
+                new ifcQinq3().parseHeader(pck);
+                pck.getSkip(-ifcQinq3.size);
                 pck.getSkip(2);
                 return true;
             default:
@@ -318,7 +324,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(ifcDot1q.size);
-                ifcDot1q.createHeader(pck);
+                new ifcDot1q().createHeader(pck);
                 return;
             case ifcDot1ah.type:
                 i = pck.ETHcos;
@@ -327,7 +333,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(ifcDot1ah.size);
-                ifcDot1ah.createHeader(pck);
+                new ifcDot1ah().createHeader(pck);
                 return;
             case ifcDot1ad.type:
                 i = pck.ETHcos;
@@ -336,7 +342,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(ifcDot1ad.size);
-                ifcDot1ad.createHeader(pck);
+                new ifcDot1ad().createHeader(pck);
                 return;
             case ifcQinq1.type:
                 i = pck.ETHcos;
@@ -345,7 +351,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(ifcQinq1.size);
-                ifcQinq1.createHeader(pck);
+                new ifcQinq1().createHeader(pck);
                 return;
             case ifcQinq2.type:
                 i = pck.ETHcos;
@@ -354,7 +360,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(ifcQinq2.size);
-                ifcQinq2.createHeader(pck);
+                new ifcQinq2().createHeader(pck);
                 return;
             case ifcQinq3.type:
                 i = pck.ETHcos;
@@ -363,7 +369,7 @@ public class tabQos {
                     return;
                 }
                 pck.getSkip(ifcQinq3.size);
-                ifcQinq3.createHeader(pck);
+                new ifcQinq3().createHeader(pck);
                 return;
             default:
                 return;

@@ -1,7 +1,13 @@
 package net.freertr.ifc;
 
+import java.util.List;
+import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabGen;
+import net.freertr.user.userHelping;
+import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.state;
 
@@ -17,6 +23,11 @@ public abstract class ifcVlan implements ifcUp {
      */
     public ifcVlan() {
     }
+
+    /**
+     * subinterfaces use different macs
+     */
+    public boolean subMacs;
 
     /**
      * state of lower
@@ -37,6 +48,58 @@ public abstract class ifcVlan implements ifcUp {
      * packet counter
      */
     protected counter cntr = new counter();
+
+    /**
+     * vlan subinterfaces
+     */
+    protected tabGen<ifcSub> vLans = new tabGen<ifcSub>();
+
+    /**
+     * get help text
+     *
+     * @param l storage
+     */
+    public static void vlnGetHelp(userHelping l) {
+        l.add("2 .     subif-macs                  assign different macs to subinterfaces");
+    }
+
+    /**
+     * get configuration
+     *
+     * @param l storage
+     * @param beg beginning
+     */
+    public void vlnGetConfig(List<String> l, String beg) {
+        cmds.cfgLine(l, !subMacs, beg, "vlan subif-macs", "");
+    }
+
+    /**
+     * do configuration
+     *
+     * @param cmd command
+     */
+    public void vlnDoConfig(cmds cmd) {
+        String a = cmd.word();
+        if (a.equals("subif-macs")) {
+            subMacs = true;
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    /**
+     * do configuration
+     *
+     * @param cmd command
+     */
+    public void vlnUnConfig(cmds cmd) {
+        String a = cmd.word();
+        if (a.equals("subif-macs")) {
+            subMacs = false;
+            return;
+        }
+        cmd.badCmd();
+    }
 
     /**
      * get counter
@@ -71,38 +134,48 @@ public abstract class ifcVlan implements ifcUp {
     public abstract void unreg2ethTyp(ifcEthTyp ethtyp);
 
     /**
-     * add one vlan handler
+     * get size of mtu
      *
-     * @param vl vlan id
-     * @param ifc interface handler that should be notified when packet arrives
-     * @return vlan handler
+     * @return mtu size
      */
-    public abstract ifcDn addVlan(int vl, ifcUp ifc);
+    public abstract int remainingMtu();
 
     /**
-     * update one vlan handler
+     * parse header
      *
-     * @param vl vlan id
-     * @param ifc interface handler that should be notified when packet arrives
-     * @return vlan handler
+     * @param pck packet to parse
+     * @return false on success, true on error
      */
-    public abstract ifcDn updateVlan(int vl, ifcUp ifc);
+    public abstract boolean parseHeader(packHolder pck);
 
     /**
-     * delete vlan handler
+     * create header
      *
-     * @param vl vlan id
-     * @return true if error happened
+     * @param pck packet to update
      */
-    public abstract ifcUp delVlan(int vl);
+    public abstract void createHeader(packHolder pck);
 
     /**
      * get hardware address
      *
+     * @param vlan vlan id
      * @return hw address
      */
-    protected addrType vlnHwAddr() {
-        return lower.getHwAddr();
+    protected addrType vlnHwAddr(int vlan) {
+        addrType ifa = lower.getHwAddr();
+        if (!subMacs) {
+            return ifa;
+        }
+        addrMac ifm;
+        try {
+            ifm = (addrMac) ifa;
+        } catch (Exception e) {
+            return ifa;
+        }
+        addrMac adr = new addrMac();
+        bits.msbPutD(adr.getBytes(), 2, vlan);
+        adr.setXor(adr, ifm);
+        return adr;
     }
 
     /**
@@ -135,6 +208,139 @@ public abstract class ifcVlan implements ifcUp {
             return;
         }
         lower.sendPack(pck);
+    }
+
+    /**
+     * set state
+     *
+     * @param stat state
+     */
+    public void setState(state.states stat) {
+        if (lastState == stat) {
+            return;
+        }
+        lastState = stat;
+        for (int i = 0; i < vLans.size(); i++) {
+            ifcSub ntry = vLans.get(i);
+            ntry.upper.setState(stat);
+        }
+        cntr.stateChange(stat);
+    }
+
+    /**
+     * close this interface
+     */
+    public void closeUp() {
+        lastState = state.states.close;
+        for (int i = 0; i < vLans.size(); i++) {
+            ifcSub ntry = vLans.get(i);
+            try {
+                ntry.upper.closeUp();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    /**
+     * set filter criteria
+     *
+     * @param promisc need all packet (promiscous mode)
+     */
+    public void setFilter(boolean promisc) {
+        promisc = false;
+        for (int i = 0; i < vLans.size(); i++) {
+            promisc |= vLans.get(i).promiscous;
+        }
+        if (promiscous == promisc) {
+            return;
+        }
+        promiscous = promisc;
+        lower.setFilter(promisc);
+    }
+
+    /**
+     * this interface got a packet for processing
+     *
+     * @param pck packet needs to parsed
+     */
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
+        if (lastState != state.states.up) {
+            cntr.drop(pck, counter.reasons.notUp);
+            return;
+        }
+        if (parseHeader(pck)) {
+            cntr.drop(pck, counter.reasons.badEthTyp);
+            return;
+        }
+        ifcSub ntry = new ifcSub(null, null);
+        ntry.vLan = pck.ETHvlan;
+        ntry = vLans.find(ntry);
+        if (ntry == null) {
+            cntr.drop(pck, counter.reasons.badVlan);
+            return;
+        }
+        ntry.cntr.rx(pck);
+        ntry.upper.recvPack(pck);
+    }
+
+    /**
+     * add vlan
+     *
+     * @param vl vlan id
+     * @param ifc interface
+     * @return handler
+     */
+    public ifcSub addVlan(int vl, ifcUp ifc) {
+        ifcSub ntry = new ifcSub(this, ifc);
+        ntry.vLan = vl;
+        ifcSub old = vLans.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        ifc.setParent(ntry);
+        setFilter(false);
+        return ntry;
+    }
+
+    /**
+     * update vlan
+     *
+     * @param vl vlan id
+     * @param ifc interface
+     * @return handler
+     */
+    public ifcSub updateVlan(int vl, ifcUp ifc) {
+        ifcSub ntry = new ifcSub(this, ifc);
+        ntry.vLan = vl;
+        ntry = vLans.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.upper = ifc;
+        ifc.setParent(ntry);
+        return ntry;
+    }
+
+    /**
+     * delete vlan
+     *
+     * @param vl vlan id
+     * @return interface
+     */
+    public ifcUp delVlan(int vl) {
+        ifcSub ntry = new ifcSub(null, null);
+        ntry.vLan = vl;
+        ntry = vLans.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        try {
+            ntry.upper.closeUp();
+        } catch (Exception e) {
+        }
+        setFilter(false);
+        return ntry.upper;
     }
 
 }

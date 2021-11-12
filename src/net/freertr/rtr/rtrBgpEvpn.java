@@ -591,7 +591,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         switch (encap) {
             case pbb:
                 pck.ETHvlan = id;
-                ifcDot1ah.createHeader(pck);
+                new ifcDot1ah().createHeader(pck);
                 pck.ETHsrc.setAddr(bbmac);
                 if (pck.ETHtrg.isFloodable()) {
                     pck.ETHtrg.setAddr(bcmac);

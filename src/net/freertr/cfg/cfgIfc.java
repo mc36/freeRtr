@@ -1663,6 +1663,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router isis[4|6] .* segrout pop",
         "interface .*! no router isis[4|6] .* bier index",
         "interface .*! no router isis[4|6] .* bier other-index",
+        // vlan
+        "interface .*! no vlan subif-macs",
         // qinqx
         "interface .*! qinqx ethertype fa52",
         // sep
@@ -3192,6 +3194,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
 
     private synchronized void initVlan(ifcVlan vlan) {
         if (vlanHed != null) {
+            vlan.subMacs = vlanHed.subMacs;
             vlanHed.unreg2ethTyp(ethtyp);
         }
         vlanHed = vlan;
@@ -5493,6 +5496,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (sep != null) {
             sep.getConfig(l, cmds.tabulator + "sep ");
         }
+        if (vlanHed != null) {
+            vlanHed.vlnGetConfig(l, cmds.tabulator);
+        }
         if (qinqx != null) {
             qinqx.getConfig(l, cmds.tabulator + "qinqx ");
         }
@@ -5853,6 +5859,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         ifcSep.getHelp(l);
         l.add("1 2   qinqx                         qinqx parameters on the interface");
         ifcQinqX.getHelp(l);
+        l.add("1 2   vlan                          vlan parameters on the interface");
+        ifcVlan.vlnGetHelp(l);
         l.add("1 2   p2poe                         pppoe parameters on the interface");
         l.add("2 3     client                      start pppoe client");
         l.add("3 .       <name>                    name of dialer interface");
@@ -6435,6 +6443,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             qinqx = new ifcQinqX(qinqx);
             qinqx.doConfig(cmd);
             initVlan(qinqx);
+            return;
+        }
+        if (a.equals("vlan")) {
+            if (vlanHed == null) {
+                initVlan();
+            }
+            vlanHed.vlnDoConfig(cmd);
             return;
         }
         if (a.equals("lapb")) {
@@ -7037,6 +7052,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+        }
+        if (a.equals("vlan")) {
+            if (vlanHed == null) {
+                initVlan();
+            }
+            vlanHed.vlnUnConfig(cmd);
+            return;
         }
         if (a.equals("ppp")) {
             if (ppp == null) {
