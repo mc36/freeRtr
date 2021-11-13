@@ -1115,31 +1115,31 @@ public class rtrIsis extends ipRtr {
         l.add(null, "2 .     inter-level               advertise inter-level routes");
         l.add(null, "2 .     default-originate         advertise default route");
         l.add(null, "2 3     route-map-from            process prefixes from this level");
-        l.add(null, "3 .       <name>                  name of route map");
+        l.add(null, "3 .       <name:rm>               name of route map");
         l.add(null, "2 3     route-map-into            process prefixes into this level");
-        l.add(null, "3 .       <name>                  name of route map");
+        l.add(null, "3 .       <name:rm>               name of route map");
         l.add(null, "2 3     route-policy-from         process prefixes from this level");
-        l.add(null, "3 .       <name>                  name of route policy");
+        l.add(null, "3 .       <name:rpl>              name of route policy");
         l.add(null, "2 3     route-policy-into         process prefixes into this level");
-        l.add(null, "3 .       <name>                  name of route policy");
+        l.add(null, "3 .       <name:rpl>              name of route policy");
         l.add(null, "2 3     prefix-list-from          filter prefixes from this level");
-        l.add(null, "3 .       <name>                  name of prefix list");
+        l.add(null, "3 .       <name:pl>               name of prefix list");
         l.add(null, "2 3     prefix-list-into          filter prefixes into this level");
-        l.add(null, "3 .       <name>                  name of prefix list");
+        l.add(null, "3 .       <name:pl>               name of prefix list");
         l.add(null, "2 .     other-suppress-prefix     do not advertise interfaces");
         l.add(null, "2 .     other-default-originate   advertise default route");
         l.add(null, "2 3     other-route-map-from      process prefixes from this level");
-        l.add(null, "3 .       <name>                  name of route map");
+        l.add(null, "3 .       <name:rm>               name of route map");
         l.add(null, "2 3     other-route-map-into      process prefixes into this level");
-        l.add(null, "3 .       <name>                  name of route map");
+        l.add(null, "3 .       <name:rm>               name of route map");
         l.add(null, "2 3     other-route-policy-from   process prefixes from this level");
-        l.add(null, "3 .       <name>                  name of route policy");
+        l.add(null, "3 .       <name:rpl>              name of route policy");
         l.add(null, "2 3     other-route-policy-into   process prefixes into this level");
-        l.add(null, "3 .       <name>                  name of route policy");
+        l.add(null, "3 .       <name:rpl>              name of route policy");
         l.add(null, "2 3     other-prefix-list-from    filter prefixes from this level");
-        l.add(null, "3 .       <name>                  name of prefix list");
+        l.add(null, "3 .       <name:pl>               name of prefix list");
         l.add(null, "2 3     other-prefix-list-into    filter prefixes into this level");
-        l.add(null, "3 .       <name>                  name of prefix list");
+        l.add(null, "3 .       <name:pl>               name of prefix list");
     }
 
     /**

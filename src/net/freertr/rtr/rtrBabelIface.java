@@ -415,17 +415,17 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         l.add(null, "4 5         update-timer            time between updates");
         l.add(null, "5 .           <num>                 time in ms");
         l.add(null, "4 5         route-map-in            process prefixes in ingress updates");
-        l.add(null, "5 .           <name>                name of route map");
+        l.add(null, "5 .           <name:rm>             name of route map");
         l.add(null, "4 5         route-map-out           process prefixes in egress updates");
-        l.add(null, "5 .           <name>                name of route map");
+        l.add(null, "5 .           <name:rm>             name of route map");
         l.add(null, "4 5         route-policy-in         process prefixes in ingress updates");
-        l.add(null, "5 .           <name>                name of route policy");
+        l.add(null, "5 .           <name:rpl>            name of route policy");
         l.add(null, "4 5         route-policy-out        process prefixes in egress updates");
-        l.add(null, "5 .           <name>                name of route policy");
+        l.add(null, "5 .           <name:rpl>            name of route policy");
         l.add(null, "4 5         prefix-list-in          filter prefixes in ingress updates");
-        l.add(null, "5 .           <name>                name of prefix list");
+        l.add(null, "5 .           <name:pl>             name of prefix list");
         l.add(null, "4 5         prefix-list-out         filter prefixes in egress updates");
-        l.add(null, "5 .           <name>                name of prefix list");
+        l.add(null, "5 .           <name:pl>             name of prefix list");
     }
 
     private void createBabelHeader(packHolder pck) {

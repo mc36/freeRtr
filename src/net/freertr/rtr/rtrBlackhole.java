@@ -146,7 +146,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         l.add(null, "1  2      penalty                    specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds before aging");
         l.add(null, "1  2      whitelist                  specify whitelist");
-        l.add(null, "2  .        <name>                   name of prefix list");
+        l.add(null, "2  .        <name:pl>                name of prefix list");
     }
 
     /**

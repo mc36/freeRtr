@@ -194,11 +194,11 @@ public class rtrMsdp extends ipRtr {
         l.add(null, "2 3     <addr>                    address of peer");
         l.add(null, "3 .       enable                  enable this peer");
         l.add(null, "3 4       description             describe this neighbor");
-        l.add(null, "4 .         <name>                description of neighbor");
+        l.add(null, "4 4,.       <text>                description of neighbor");
         l.add(null, "3 4       password                set session password");
         l.add(null, "4 .         <text>                tcp password");
         l.add(null, "3 4       update-source           connection source for this peer");
-        l.add(null, "4 .         <name>                name of interface");
+        l.add(null, "4 .         <name:ifc>            name of interface");
         l.add(null, "3 4       timer                   neighbor keepalive times");
         l.add(null, "4 5         <num>                 keepalive in ms");
         l.add(null, "5 6           <num>               hold time in ms");

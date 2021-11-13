@@ -41,11 +41,11 @@ access-list test4a
 access-list test6a
  permit 58 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
  exit
-access-list test4
+access-list test4b
  evaluate deny test4a
  permit all any all any all
  exit
-access-list test6
+access-list test6b
  evaluate deny test6a
  permit all any all any all
  exit
@@ -72,8 +72,8 @@ int sdn4
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
- ipv4 access-group-out test4
- ipv6 access-group-out test6
+ ipv4 access-group-out test4b
+ ipv6 access-group-out test6b
  exit
 server p4lang p4
  interconnect eth2

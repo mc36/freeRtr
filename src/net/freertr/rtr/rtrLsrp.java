@@ -890,11 +890,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(null, "2 .     <num>                     distance");
         l.add(null, "1 .   default-originate           advertise default route");
         l.add(null, "1 2   route-map                   process prefixes");
-        l.add(null, "2 .     <name>                    name of route map");
+        l.add(null, "2 .     <name:rm>                 name of route map");
         l.add(null, "1 2   route-policy                process prefixes");
-        l.add(null, "2 .     <name>                    name of route policy");
+        l.add(null, "2 .     <name:rpl>                name of route policy");
         l.add(null, "1 2   prefix-list                 filter prefixes");
-        l.add(null, "2 .     <name>                    name of prefix list");
+        l.add(null, "2 .     <name:pl>                 name of prefix list");
         l.add(null, "1 2   database-password           database password");
         l.add(null, "2 .     <str>                     password");
         l.add(null, "1 2   refresh                     data refresh time");
