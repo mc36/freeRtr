@@ -538,7 +538,7 @@ public class userExec {
         hl.add("5 .            rpkitab           list of prefixes");
         hl.add("5 .            summary           list of neighbors");
         hl.add("5 6            template          information about template");
-        hl.add("6 7              <nam>           template name");
+        hl.add("6 7              <name>          template name");
         hl.add("7 .                config        peer configuration");
         hl.add("5 6            neighbor          information about neighbor");
         hl.add("6 7              <addr>          neighbor address");
