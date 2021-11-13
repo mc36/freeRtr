@@ -139,9 +139,9 @@ public class servSocks extends servGeneric implements prtServS {
         l.add(null, "2 .    <num>                      timeout in ms");
         l.add(null, "1 2  target                       set session target");
         l.add(null, "2 3    vrf                        set source vrf");
-        l.add(null, "3 .      <name>                   name of vrf");
+        l.add(null, "3 .      <name:vrf>               name of vrf");
         l.add(null, "2 3    interface                  set source interface");
-        l.add(null, "3 .      <name>                   name of interface");
+        l.add(null, "3 .      <name:ifc>               name of interface");
     }
 
     public String srvName() {

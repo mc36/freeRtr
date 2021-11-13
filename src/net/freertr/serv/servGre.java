@@ -112,7 +112,7 @@ public class servGre extends servGeneric implements ipPrt {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  clone                        set interface to clone");
-        l.add(null, "2 .    <name>                     name of interface");
+        l.add(null, "2 .    <name:ifc>                 name of interface");
         l.add(null, "1 2  timeout                      timeout of client");
         l.add(null, "2 .    <num>                      milliseconds");
     }

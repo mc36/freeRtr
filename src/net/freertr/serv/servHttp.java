@@ -709,11 +709,11 @@ public class servHttp extends servGeneric implements prtServS {
     public void srvHelp(userHelping l) {
         l.add(null, "1 .  single-request                 one request per connection");
         l.add(null, "1 2  proxy                          enable proxy support");
-        l.add(null, "2 .    <name>                       proxy profile");
+        l.add(null, "2 .    <name:prx>                   proxy profile");
         l.add(null, "1 2  second-port                    enable dual binding");
         l.add(null, "2 .    <num>                        secure port");
         l.add(null, "1 2  error                          set error message");
-        l.add(null, "2 2,.  <name>                       error message");
+        l.add(null, "2 2,.  <str>                        error message");
         l.add(null, "1 2  host                           define one virtual server");
         l.add(null, "2 3,.  <name>                       name of server, * for any");
         l.add(null, "3 4      path                       set server root");
@@ -722,18 +722,18 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 .        <url>                    url to redirect to");
         l.add(null, "3 .      logging                    log to syslog");
         l.add(null, "3 4      reconn                     reconnect to server");
-        l.add(null, "4 5        <name>                   proxy profile");
+        l.add(null, "4 5        <name:prx>               proxy profile");
         l.add(null, "5 .          <name>                 server to redirect to");
         l.add(null, "3 4      translate                  translate the url");
-        l.add(null, "4 4,.      <num>                    translation rule to use");
+        l.add(null, "4 4,.      <num:trn>                translation rule to use");
         l.add(null, "3 4      subconn                    reconnect only to the url");
         l.add(null, "4 .        <num>                    bitmask what to revert");
         l.add(null, "3 4      stream                     stream from server");
         l.add(null, "4 5        <name>                   content type");
-        l.add(null, "5 6          <name>                 proxy profile");
+        l.add(null, "5 6          <name:prx>             proxy profile");
         l.add(null, "6 .            <name>               server to stream from");
         l.add(null, "3 4      multiacc                   access multiple servers");
-        l.add(null, "4 5        <name>                   proxy profile");
+        l.add(null, "4 5        <name:prx>               proxy profile");
         l.add(null, "5 5,.        <name>                 server to access");
         l.add(null, "3 .      markdown                   allow markdown conversion");
         l.add(null, "3 .      noindex                    disallow index for directory");
@@ -755,13 +755,13 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 5        <num>                    number of backups to keep");
         l.add(null, "5 .          <name>                 root directory of backup");
         l.add(null, "3 4      sstp                       allow sstp clients");
-        l.add(null, "4 .        <name>                   name of interface");
+        l.add(null, "4 .        <name:ifc>               name of interface");
         l.add(null, "3 4      anyconn                    allow anyconnect clients");
-        l.add(null, "4 .        <name>                   name of interface");
+        l.add(null, "4 .        <name:ifc>               name of interface");
         l.add(null, "3 4      forti                      allow fortinet clients");
-        l.add(null, "4 .        <name>                   name of interface");
+        l.add(null, "4 .        <name:ifc>               name of interface");
         l.add(null, "3 4      authentication             require authentication to access");
-        l.add(null, "4 .        <name>                   authentication list");
+        l.add(null, "4 .        <name:aaa>               authentication list");
         l.add(null, "3 4      style                      set page style tags");
         l.add(null, "4 4,.      <text>                   text to send");
     }

@@ -143,9 +143,9 @@ public class servVoice extends servGeneric implements prtServS {
         l.add(null, "2 .    alaw                         g711 a law");
         l.add(null, "2 .    ulaw                         g711 u law");
         l.add(null, "1 2  voice-script                   set tcl script to run on incoming call");
-        l.add(null, "2 .    <name>                       file name");
+        l.add(null, "2 .    <file>                       file name");
         l.add(null, "1 2  message-script                 set tcl script to run on incoming message");
-        l.add(null, "2 .    <name>                       file name");
+        l.add(null, "2 .    <file>                       file name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

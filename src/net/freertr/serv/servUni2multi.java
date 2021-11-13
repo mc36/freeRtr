@@ -220,7 +220,7 @@ public class servUni2multi extends servGeneric implements prtServP {
         l.add(null, "2 .    <num>                      milliseconds");
         l.add(null, "1 2  source                       specify translated source");
         l.add(null, "2 3    interface                  interface to use");
-        l.add(null, "3 .      <name>                   name of interface");
+        l.add(null, "3 .      <name:ifc>               name of interface");
         l.add(null, "2 3    port                       port number");
         l.add(null, "3 .      <num>                    number");
         l.add(null, "1 2  target                       specify translated target");
@@ -232,7 +232,7 @@ public class servUni2multi extends servGeneric implements prtServP {
         l.add(null, "3 .      <addr>                   prefix");
         l.add(null, "1 .  logging                      log translations");
         l.add(null, "1 2  script                       script to invoke");
-        l.add(null, "2 .    <name>                     name of script");
+        l.add(null, "2 .    <name:scr>                 name of script");
     }
 
     public String srvName() {

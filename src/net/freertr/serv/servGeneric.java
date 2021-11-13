@@ -1255,20 +1255,20 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      */
     public void getHelp(userHelping l) {
         l.add(null, "1 2  vrf                    set vrf to use");
-        l.add(null, "2 .    <name>               name of vrf");
+        l.add(null, "2 .    <name:vrf>           name of vrf");
         l.add(null, "1 2  port                   set port to listen on");
         l.add(null, "2 .    <num>                port number to use");
         l.add(null, "1 2  access-class           set access list");
-        l.add(null, "2 .    <name>               access list name");
+        l.add(null, "2 .    <name:acl>           access list name");
         l.add(null, "1 2  access-prefix          set prefix list");
-        l.add(null, "2 .    <name>               prefix list name");
+        l.add(null, "2 .    <name:pl>            prefix list name");
         l.add(null, "1 2  access-rate            access rate for this server");
         l.add(null, "2 3    <num>                new sessions per interval");
         l.add(null, "3 .      <num>              interval");
         l.add(null, "1 2  access-map             set route map");
-        l.add(null, "2 .    <name>               route map name");
+        l.add(null, "2 .    <name:rm>            route map name");
         l.add(null, "1 2  access-policy          set route policy");
-        l.add(null, "2 .    <name>               route policy name");
+        l.add(null, "2 .    <name:rpl>           route policy name");
         l.add(null, "1 2  access-total           session limit for this server");
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-startup         initial downtime for this server");
@@ -1291,7 +1291,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 2,.  dccp                 use dccp transport");
         l.add(null, "2 2,.  sctp                 use sctp transport");
         l.add(null, "1 2  interface              interface to bind to");
-        l.add(null, "2 .    <name>               name of interface");
+        l.add(null, "2 .    <name:ifc>           name of interface");
         l.add(null, "1 2  security               set security parameters");
         l.add(null, "2 3    protocol             set lower protocol to use");
         l.add(null, "3 .      ssh                select secure shell");
@@ -1299,19 +1299,19 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "3 .      dtls               select datagram transport layer security");
         l.add(null, "3 .      telnet             select telnet protocol");
         l.add(null, "2 3    authentication       set authentication");
-        l.add(null, "3 .      <name>             name of authentication list");
+        l.add(null, "3 .      <name:aaa>         name of authentication list");
         l.add(null, "2 3    rsakey               set rsa key");
-        l.add(null, "3 .      <name>             name of key");
+        l.add(null, "3 .      <name:rsa>         name of key");
         l.add(null, "2 3    dsakey               set dsa key");
-        l.add(null, "3 .      <name>             name of key");
+        l.add(null, "3 .      <name:rsa>         name of key");
         l.add(null, "2 3    ecdsakey             set ecdsa key");
-        l.add(null, "3 .      <name>             name of key");
+        l.add(null, "3 .      <name:rsa>         name of key");
         l.add(null, "2 3    rsacert              set rsa certificate");
-        l.add(null, "3 .      <name>             name of certificate");
+        l.add(null, "3 .      <name:crt>         name of certificate");
         l.add(null, "2 3    dsacert              set dsa certificate");
-        l.add(null, "3 .      <name>             name of certificate");
+        l.add(null, "3 .      <name:crt>         name of certificate");
         l.add(null, "2 3    ecdsacert            set ecdsa certificate");
-        l.add(null, "3 .      <name>             name of certificate");
+        l.add(null, "3 .      <name:crt>         name of certificate");
         srvHelp(l);
     }
 

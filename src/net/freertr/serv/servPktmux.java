@@ -137,9 +137,9 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  cpuport                   specify port to for packetin");
-        l.add(null, "2 .    <name>                  interface name");
+        l.add(null, "2 .    <name:ifc>              interface name");
         l.add(null, "1 2  dataport                  specify port to for packetout");
-        l.add(null, "2 3    <name>                  interface name");
+        l.add(null, "2 3    <name:ifc>              interface name");
         l.add(null, "3 .      <num>                 interface number");
     }
 

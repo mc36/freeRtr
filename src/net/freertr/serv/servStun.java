@@ -110,7 +110,7 @@ public class servStun extends servGeneric implements prtServS {
         l.add(null, "1 2  group                        set group number");
         l.add(null, "2 .    <num>                      group number");
         l.add(null, "1 2  clone                        set interface to clone");
-        l.add(null, "2 .    <name>                     name of interface");
+        l.add(null, "2 .    <name:ifc>                 name of interface");
     }
 
     public String srvName() {

@@ -161,7 +161,7 @@ public class servGeneve extends servGeneric implements prtServP {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  bridge                       set interface to clone");
-        l.add(null, "2 .    <name>                     name of interface");
+        l.add(null, "2 .    <num>                      number of bridge");
         l.add(null, "1 2  vni                          set virtual network id");
         l.add(null, "2 .    <num>                      net id");
         l.add(null, "1 .  physical-interface           adding as physical to bridge");

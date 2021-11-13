@@ -148,7 +148,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, " 2 .     disable             forbid recursion");
         l.add(null, " 2 .     access-all          clear access list");
         l.add(null, " 2 3     access-class        set access list");
-        l.add(null, " 3 .       <name>            port number to use");
+        l.add(null, " 3 .       <name:acl>        access list to use");
         l.add(null, " 2 3     6to4prefix          setup 6to4 prefix");
         l.add(null, " 3 .       <addr>            address to prepend");
         l.add(null, " 2 .     6to4nothing         clear 6to4 prefix");
@@ -206,9 +206,9 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, " 4 5   ip6a                  specify an ip6 address");
         l.add(null, " 5 .     <addr>              address of server");
         l.add(null, " 4 5   ip4i                  specify an ip4 interface");
-        l.add(null, " 5 .     <name>              address of interface");
+        l.add(null, " 5 .     <name:ifc>          address of interface");
         l.add(null, " 4 5   ip6i                  specify an ip6 interface");
-        l.add(null, " 5 .     <name>              address of interface");
+        l.add(null, " 5 .     <name:ifc>          address of interface");
     }
 
     public boolean srvCfgStr(cmds cmd) {

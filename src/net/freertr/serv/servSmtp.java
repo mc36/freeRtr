@@ -289,9 +289,9 @@ public class servSmtp extends servGeneric implements prtServS {
         l.add(null, "1 2  recursion                    recursive parameters");
         l.add(null, "2 .    enable                     allow recursion");
         l.add(null, "2 3    access-class               set access list");
-        l.add(null, "3 .      <name>                   port number to use");
+        l.add(null, "3 .      <name:acl>               port number to use");
         l.add(null, "2 3    authentication             set authentication");
-        l.add(null, "3 .      <name>                   name of authentication list");
+        l.add(null, "3 .      <name:aaa>               name of authentication list");
         l.add(null, "1 2  bcc                          set bcc user");
         l.add(null, "2 .    <user>                     name of user");
         l.add(null, "1 2  local                        set local email address");

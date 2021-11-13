@@ -139,7 +139,7 @@ public class servPrometheus extends servGeneric implements prtServS {
         l.add(null, "1 2  all-metrics                  configure whole exporter");
         l.add(null, "2 .    <name>                     name to use");
         l.add(null, "1 2  sensor                       configure one metric");
-        l.add(null, "2 .    <name>                     name of metric");
+        l.add(null, "2 .    <name:sns>                 name of metric");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

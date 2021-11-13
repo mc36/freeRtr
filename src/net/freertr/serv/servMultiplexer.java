@@ -184,8 +184,8 @@ public class servMultiplexer extends servGeneric implements prtServS {
         l.add(null, "2 .    <num>                      buffer in bytes");
         l.add(null, "1 2  target                       name of server");
         l.add(null, "2 3    <num>                      number of target");
-        l.add(null, "3 4      <name>                   name of vrf");
-        l.add(null, "4 5        <name>                 name of interface");
+        l.add(null, "3 4      <name:vrf>               name of vrf");
+        l.add(null, "4 5        <name:ifc>             name of interface");
         l.add(null, "5 6          <addr>               address of target");
         l.add(null, "6 7,.          <port>             port on target");
         l.add(null, "7 7,.            rx               only rx");

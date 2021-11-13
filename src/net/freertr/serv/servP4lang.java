@@ -520,7 +520,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  export-vrf                specify vrf to export");
-        l.add(null, "2 3    <name>                  vrf name");
+        l.add(null, "2 3    <name:vrf>              vrf name");
         l.add(null, "3 .      <num>                 p4lang vrf number");
         l.add(null, "1 2  export-dynbr              specify dynamic bridge port range");
         l.add(null, "2 3    <num>                   first id");
@@ -531,25 +531,25 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add(null, "1 2  export-bridge             specify bridge to export");
         l.add(null, "2 .    <num>                   bridge number");
         l.add(null, "1 2  export-port               specify port to export");
-        l.add(null, "2 3    <name>                  interface name");
+        l.add(null, "2 3    <name:ifc>              interface name");
         l.add(null, "3 4,.    <num>                 port number");
         l.add(null, "4 5,.      <num>               speed in gbps");
         l.add(null, "5 6,.        <num>             fec, see hw vendor manual");
         l.add(null, "6 7,.          <num>           autoneg, see hw vendor manual");
         l.add(null, "7 .              <num>         flowctrl, see hw vendor manual");
         l.add(null, "1 2  export-srv6               specify srv6 to export");
-        l.add(null, "2 .    <name>                  interface name");
+        l.add(null, "2 .    <name:ifc>              interface name");
         l.add(null, "1 2  export-copp4              specify copp acl to export");
-        l.add(null, "2 .    <name>                  acl name");
+        l.add(null, "2 .    <name:acl>              acl name");
         l.add(null, "1 2  export-copp6              specify copp acl to export");
-        l.add(null, "2 .    <name>                  acl name");
+        l.add(null, "2 .    <name:acl>              acl name");
         l.add(null, "1 2  export-interval           specify export interval");
         l.add(null, "2 .    <num>                   time in ms");
         l.add(null, "1 2  downlink                  specify downlink for packetin");
         l.add(null, "2 3    <num>                   port number");
-        l.add(null, "3 .      <name>                interface name");
+        l.add(null, "3 .      <name:ifc>            interface name");
         l.add(null, "1 2  interconnect              specify port to for packetin");
-        l.add(null, "2 .    <name>                  interface name");
+        l.add(null, "2 .    <name:ifc>              interface name");
     }
 
     public String srvName() {

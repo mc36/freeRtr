@@ -97,7 +97,7 @@ public class servPckOdtls extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  clone                        set interface to clone");
-        l.add(null, "2 .    <name>                     name of interface");
+        l.add(null, "2 .    <name:ifc>                 name of interface");
     }
 
     public String srvName() {

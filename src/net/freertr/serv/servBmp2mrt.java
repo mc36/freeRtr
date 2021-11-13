@@ -371,12 +371,12 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add(null, "1 2    backup                    backup to file");
         l.add(null, "2 2,.    <file>                  name of file");
         l.add(null, "1 2    relay                     relay messages to bmp");
-        l.add(null, "2 3      <name>                  proxy profile name");
+        l.add(null, "2 3      <name:prx>              proxy profile name");
         l.add(null, "3 4        <addr>                peer address");
         l.add(null, "4 5,.        <num>               peer port");
-        l.add(null, "5 .            <name>            access list name");
+        l.add(null, "5 .            <name:acl>        access list name");
         l.add(null, "1 2    dyneigh                   parse messages from dynamic neighbors");
-        l.add(null, "2 3      <name>                  access list on peer name");
+        l.add(null, "2 3      <name:acl>              access list on peer name");
         l.add(null, "3 4        rx                    process received packets");
         l.add(null, "3 4        tx                    process transmitted packets");
         cfgRtr.getRouterList(l, 2, "");
