@@ -85,7 +85,7 @@ public class ifcHairpin {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add("1 .  ethernet                       specify type of hairpin");
+        l.add(null, "1 .  ethernet                       specify type of hairpin");
     }
 
     /**

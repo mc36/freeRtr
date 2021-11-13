@@ -155,21 +155,21 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         trans.getHelp(l);
-        l.add("1 3,. description        specify description");
-        l.add("3 3,.   <str>            text");
-        l.add("1 2  key                 set preshared key");
-        l.add("2 .    <text>            key");
-        l.add("1 2  protected           set protected protocol");
-        l.add("2 .    ipv4              ipv4");
-        l.add("2 .    ipv6              ipv6");
-        l.add("1 2  role                set role in session");
-        l.add("2 .    initiator         initiate the session");
-        l.add("2 .    responder         respond to the initiator");
-        l.add("2 .    static            static tunnel");
-        l.add("1 2  isakmp              set isakmp version to use");
-        l.add("2 .    <num>             version");
-        l.add("1 2  replay              set replay window size");
-        l.add("2 .    <num>             size in packets");
+        l.add(null, "1 3,. description        specify description");
+        l.add(null, "3 3,.   <str>            text");
+        l.add(null, "1 2  key                 set preshared key");
+        l.add(null, "2 .    <text>            key");
+        l.add(null, "1 2  protected           set protected protocol");
+        l.add(null, "2 .    ipv4              ipv4");
+        l.add(null, "2 .    ipv6              ipv6");
+        l.add(null, "1 2  role                set role in session");
+        l.add(null, "2 .    initiator         initiate the session");
+        l.add(null, "2 .    responder         respond to the initiator");
+        l.add(null, "2 .    static            static tunnel");
+        l.add(null, "1 2  isakmp              set isakmp version to use");
+        l.add(null, "2 .    <num>             version");
+        l.add(null, "1 2  replay              set replay window size");
+        l.add(null, "2 .    <num>             size in packets");
     }
 
     public void doCfgStr(cmds cmd) {

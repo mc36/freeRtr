@@ -112,38 +112,38 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 2   sequence              sequence number of an entry");
-        l.add("2 1,.   <num>               sequence number");
-        l.add("1 3,. description           specify description");
-        l.add("3 3,.   <str>               text");
-        l.add("1 2,. reindex               reindex route map");
-        l.add("2 3,.   [num]               initial number to start with");
-        l.add("3 4,.     [num]             increment number");
-        l.add("1 2   action                set action to do");
-        l.add("2 .     deny                specify to forbid");
-        l.add("2 .     permit              specify to allow");
-        l.add("1 2   match                 match values");
-        l.add("2 3     year                match year");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
-        l.add("2 3     month               match month");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
-        l.add("2 3     day                 match day");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
-        l.add("2 3     dow                 match day of week");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
-        l.add("2 3     hour                match hour");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
-        l.add("2 3     minute              match minute");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
-        l.add("2 3     second              match second");
-        l.add("3 .       <num>             value");
-        l.add("3 .       all               any value");
+        l.add(null, "1 2   sequence              sequence number of an entry");
+        l.add(null, "2 1,.   <num>               sequence number");
+        l.add(null, "1 3,. description           specify description");
+        l.add(null, "3 3,.   <str>               text");
+        l.add(null, "1 2,. reindex               reindex route map");
+        l.add(null, "2 3,.   [num]               initial number to start with");
+        l.add(null, "3 4,.     [num]             increment number");
+        l.add(null, "1 2   action                set action to do");
+        l.add(null, "2 .     deny                specify to forbid");
+        l.add(null, "2 .     permit              specify to allow");
+        l.add(null, "1 2   match                 match values");
+        l.add(null, "2 3     year                match year");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     month               match month");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     day                 match day");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     dow                 match day of week");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     hour                match hour");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     minute              match minute");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     second              match second");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
     }
 
     public synchronized void doCfgStr(cmds cmd) {

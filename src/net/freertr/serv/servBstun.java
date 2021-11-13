@@ -73,8 +73,8 @@ public class servBstun extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         lin.getHelp(l);
-        l.add("1 2  group                        set group number");
-        l.add("2 .    <num>                      group number");
+        l.add(null, "1 2  group                        set group number");
+        l.add(null, "2 .    <num>                      group number");
     }
 
     public String srvName() {

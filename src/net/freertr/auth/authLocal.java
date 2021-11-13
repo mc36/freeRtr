@@ -267,37 +267,41 @@ public class authLocal extends authGeneric {
      * @param l help
      */
     public void getHelp(userHelping l) {
-        l.add("1 2  allowed             allow one command");
-        l.add("2 2,.  <text>            command");
-        l.add("1 2  username            create or update user");
-        l.add("2 3,.  <name>            name of user, * for any");
-        l.add("3 4      password        set password of user");
-        l.add("4 4,.      [text]        password of user");
-        l.add("3 4      secret          set secret of user");
-        l.add("4 4,.      [text]        secret of user");
-        l.add("3 4      otpseed         set seed of user");
-        l.add("4 4,.      [text]        seed of user");
-        l.add("3 4      otppass         set seed of user");
-        l.add("4 5        <num>         length of tokencode");
-        l.add("5 5,.        [text]      seed of user");
-        l.add("3 4      autocommand     set automatic command");
-        l.add("4 4,.      [text]        autocommand of user");
-        l.add("3 4      countdown       set counter");
-        l.add("4 .        <num>         login counter");
-        l.add("3 .      anypass         any password will be accepted");
-        l.add("3 .      autohangup      disconnect user after autocommand");
-        l.add("3 4      ipv4addr        specify ipv4 address");
-        l.add("4 .        <addr>        address");
-        l.add("3 4      ipv4route       specify ipv4 route");
-        l.add("4 4,.      [text]        route");
-        l.add("3 4      ipv6addr        specify ipv6 address");
-        l.add("4 .        <addr>        address");
-        l.add("3 4      ipv6ifid        specify ipv6 interface id");
-        l.add("4 .        <addr>        address");
-        l.add("3 4      ipv6route       specify ipv6 route");
-        l.add("4 4,.      [text]        route");
-        l.add("3 4      privilege       set privilege level of user");
-        l.add("4 .        <priv>        privilege of user");
+        l.add(null, "1 2  allowed             allow one command");
+        l.add(null, "2 2,.  <text>            command");
+        l.add(null, "1 2  username            create or update user");
+        List<String> lst = new ArrayList<String>();
+        for (int i = 0; i < users.size(); i++) {
+            lst.add(users.get(i).username);
+        }
+        l.add(lst, "2 3,.  <name:loc>        name of user, * for any");
+        l.add(null, "3 4      password        set password of user");
+        l.add(null, "4 4,.      [text]        password of user");
+        l.add(null, "3 4      secret          set secret of user");
+        l.add(null, "4 4,.      [text]        secret of user");
+        l.add(null, "3 4      otpseed         set seed of user");
+        l.add(null, "4 4,.      [text]        seed of user");
+        l.add(null, "3 4      otppass         set seed of user");
+        l.add(null, "4 5        <num>         length of tokencode");
+        l.add(null, "5 5,.        [text]      seed of user");
+        l.add(null, "3 4      autocommand     set automatic command");
+        l.add(null, "4 4,.      [text]        autocommand of user");
+        l.add(null, "3 4      countdown       set counter");
+        l.add(null, "4 .        <num>         login counter");
+        l.add(null, "3 .      anypass         any password will be accepted");
+        l.add(null, "3 .      autohangup      disconnect user after autocommand");
+        l.add(null, "3 4      ipv4addr        specify ipv4 address");
+        l.add(null, "4 .        <addr>        address");
+        l.add(null, "3 4      ipv4route       specify ipv4 route");
+        l.add(null, "4 4,.      [text]        route");
+        l.add(null, "3 4      ipv6addr        specify ipv6 address");
+        l.add(null, "4 .        <addr>        address");
+        l.add(null, "3 4      ipv6ifid        specify ipv6 interface id");
+        l.add(null, "4 .        <addr>        address");
+        l.add(null, "3 4      ipv6route       specify ipv6 route");
+        l.add(null, "4 4,.      [text]        route");
+        l.add(null, "3 4      privilege       set privilege level of user");
+        l.add(null, "4 .        <priv>        privilege of user");
     }
 
     /**

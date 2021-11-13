@@ -160,19 +160,19 @@ public class servRadius extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  authentication               set user list to use");
-        l.add("2 .    <name>                     name of list");
-        l.add("1 2  secret                       set shared secret");
-        l.add("2 .    <name>                     secret");
-        l.add("1 2  success                      set success message");
-        l.add("2 .    <text>                     message");
-        l.add("1 2  failure                      set failure message");
-        l.add("2 .    <text>                     message");
-        l.add("1 2  vendor                       set failure message");
-        l.add("2 3    <num>                      vendor id");
-        l.add("3 4      <num>                    vendor type");
-        l.add("4 4,.      <num>                  data byte");
-        l.add("1 .  logging                      set logging of actions");
+        l.add(null, "1 2  authentication               set user list to use");
+        l.add(null, "2 .    <name>                     name of list");
+        l.add(null, "1 2  secret                       set shared secret");
+        l.add(null, "2 .    <name>                     secret");
+        l.add(null, "1 2  success                      set success message");
+        l.add(null, "2 .    <text>                     message");
+        l.add(null, "1 2  failure                      set failure message");
+        l.add(null, "2 .    <text>                     message");
+        l.add(null, "1 2  vendor                       set failure message");
+        l.add(null, "2 3    <num>                      vendor id");
+        l.add(null, "3 4      <num>                    vendor type");
+        l.add(null, "4 4,.      <num>                  data byte");
+        l.add(null, "1 .  logging                      set logging of actions");
     }
 
     public String srvName() {

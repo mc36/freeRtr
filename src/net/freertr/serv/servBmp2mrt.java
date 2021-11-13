@@ -355,41 +355,41 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 .    bulk-down                 down peers on speaker loss");
-        l.add("1 2    rate-down                 down peers on inactivity");
-        l.add("2 3      <num>                   ms between checks");
-        l.add("3 .        <num>                 packets between checks");
-        l.add("1 2    file                      log to file");
-        l.add("2 2,.    <file>                  name of file");
-        l.add("1 .    local                     log to syslog");
-        l.add("1 2    max-time                  maximum time");
-        l.add("2 .      <num>                   ms between backups");
-        l.add("1 2    max-byte                  maximum bytes");
-        l.add("2 .      <num>                   bytes between backups");
-        l.add("1 2    max-pack                  maximum packets");
-        l.add("2 .      <num>                   packets between backups");
-        l.add("1 2    backup                    backup to file");
-        l.add("2 2,.    <file>                  name of file");
-        l.add("1 2    relay                     relay messages to bmp");
-        l.add("2 3      <name>                  proxy profile name");
-        l.add("3 4        <addr>                peer address");
-        l.add("4 5,.        <num>               peer port");
-        l.add("5 .            <name>            access list name");
-        l.add("1 2    dyneigh                   parse messages from dynamic neighbors");
-        l.add("2 3      <name>                  access list on peer name");
-        l.add("3 4        rx                    process received packets");
-        l.add("3 4        tx                    process transmitted packets");
+        l.add(null, "1 .    bulk-down                 down peers on speaker loss");
+        l.add(null, "1 2    rate-down                 down peers on inactivity");
+        l.add(null, "2 3      <num>                   ms between checks");
+        l.add(null, "3 .        <num>                 packets between checks");
+        l.add(null, "1 2    file                      log to file");
+        l.add(null, "2 2,.    <file>                  name of file");
+        l.add(null, "1 .    local                     log to syslog");
+        l.add(null, "1 2    max-time                  maximum time");
+        l.add(null, "2 .      <num>                   ms between backups");
+        l.add(null, "1 2    max-byte                  maximum bytes");
+        l.add(null, "2 .      <num>                   bytes between backups");
+        l.add(null, "1 2    max-pack                  maximum packets");
+        l.add(null, "2 .      <num>                   packets between backups");
+        l.add(null, "1 2    backup                    backup to file");
+        l.add(null, "2 2,.    <file>                  name of file");
+        l.add(null, "1 2    relay                     relay messages to bmp");
+        l.add(null, "2 3      <name>                  proxy profile name");
+        l.add(null, "3 4        <addr>                peer address");
+        l.add(null, "4 5,.        <num>               peer port");
+        l.add(null, "5 .            <name>            access list name");
+        l.add(null, "1 2    dyneigh                   parse messages from dynamic neighbors");
+        l.add(null, "2 3      <name>                  access list on peer name");
+        l.add(null, "3 4        rx                    process received packets");
+        l.add(null, "3 4        tx                    process transmitted packets");
         cfgRtr.getRouterList(l, 2, "");
-        l.add("5 6            <num>             process number");
-        l.add("6 .              <name>          template name");
-        l.add("1 2    neighbor                  parse messages from neighbor");
-        l.add("2 3      <addr>                  info source");
-        l.add("3 4        <addr>                reported address");
-        l.add("4 5          rx                  process received packets");
-        l.add("4 5          tx                  process transmitted packets");
+        l.add(null, "5 6            <num>             process number");
+        l.add(null, "6 .              <name>          template name");
+        l.add(null, "1 2    neighbor                  parse messages from neighbor");
+        l.add(null, "2 3      <addr>                  info source");
+        l.add(null, "3 4        <addr>                reported address");
+        l.add(null, "4 5          rx                  process received packets");
+        l.add(null, "4 5          tx                  process transmitted packets");
         cfgRtr.getRouterList(l, 3, "");
-        l.add("6 7              <num>           process number");
-        l.add("7 .                <addr>        peer address");
+        l.add(null, "6 7              <num>           process number");
+        l.add(null, "7 .                <addr>        peer address");
     }
 
     public String srvName() {

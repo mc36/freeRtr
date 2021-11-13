@@ -207,10 +207,10 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 .    log-failure         log failure");
-        l.add("1 .    log-success         log success");
-        l.add("1 .    log-error           log error");
-        l.add("1 .    log-password        log password");
+        l.add(null, "1 .    log-failure         log failure");
+        l.add(null, "1 .    log-success         log success");
+        l.add(null, "1 .    log-error           log error");
+        l.add(null, "1 .    log-password        log password");
         authGeneric aut = getAuther();
         if (aut != null) {
             aut.getHelp(l);

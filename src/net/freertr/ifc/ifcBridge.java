@@ -336,40 +336,40 @@ public class ifcBridge implements ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add("1 2,.   description                 description of this vrf");
-        l.add("2 2,.     [text]                    text describing this vrf");
-        l.add("1 2     rd                          specify route distinguisher");
-        l.add("2 .       <rd>                      rd in ASnum:IDnum format");
-        l.add("1 2     rt-import                   specify route target import");
-        l.add("2 .       <rt>                      rt in ASnum:IDnum format");
-        l.add("1 2     rt-export                   specify route target export");
-        l.add("2 .       <rt>                      rt in ASnum:IDnum format");
-        l.add("1 2     rt-both                     specify route target");
-        l.add("2 .       <rt>                      rt in ASnum:IDnum format");
-        l.add("1 .     mac-learn                   enable mac address learning");
-        l.add("1 2,.   inspect                     enable session inspection");
-        l.add("2 2,.     mac                       enable mac logging");
-        l.add("2 2,.     before                    log on session start");
-        l.add("2 2,.     after                     log on session stop");
-        l.add("1 .     mac-move                    enable mac move logging");
-        l.add("1 .     private-bridge              disable peer communication");
-        l.add("1 .     block-unicast               block unknown destination unicast");
-        l.add("1 .     block-multicast             block unwanted destination multicast");
-        l.add("1 .     padup-small                 pad up small packets");
-        l.add("1 2     mac-age                     set mac aging time");
-        l.add("2 .       <num>                     time in ms");
-        l.add("1 2     stp-mode                    set spantree mode");
-        l.add("2 .       ieee                      ieee");
-        l.add("2 .       none                      pass through");
-        l.add("2 .       drop                      drop");
-        l.add("1 2     stp-time                    set spantree timers");
-        l.add("2 3       <num>                     hello in ms");
-        l.add("3 4         <num>                   maxage in ms");
-        l.add("4 .           <num>                 forward delay in ms");
-        l.add("1 2     stp-priority                set spantree priority");
-        l.add("2 .       <num>                     priority in 1024 increments");
-        l.add("1 2     mac-address                 set mac address");
-        l.add("2 .       <addr>                    mac address");
+        l.add(null, "1 2,.   description                 description of this vrf");
+        l.add(null, "2 2,.     [text]                    text describing this vrf");
+        l.add(null, "1 2     rd                          specify route distinguisher");
+        l.add(null, "2 .       <rd>                      rd in ASnum:IDnum format");
+        l.add(null, "1 2     rt-import                   specify route target import");
+        l.add(null, "2 .       <rt>                      rt in ASnum:IDnum format");
+        l.add(null, "1 2     rt-export                   specify route target export");
+        l.add(null, "2 .       <rt>                      rt in ASnum:IDnum format");
+        l.add(null, "1 2     rt-both                     specify route target");
+        l.add(null, "2 .       <rt>                      rt in ASnum:IDnum format");
+        l.add(null, "1 .     mac-learn                   enable mac address learning");
+        l.add(null, "1 2,.   inspect                     enable session inspection");
+        l.add(null, "2 2,.     mac                       enable mac logging");
+        l.add(null, "2 2,.     before                    log on session start");
+        l.add(null, "2 2,.     after                     log on session stop");
+        l.add(null, "1 .     mac-move                    enable mac move logging");
+        l.add(null, "1 .     private-bridge              disable peer communication");
+        l.add(null, "1 .     block-unicast               block unknown destination unicast");
+        l.add(null, "1 .     block-multicast             block unwanted destination multicast");
+        l.add(null, "1 .     padup-small                 pad up small packets");
+        l.add(null, "1 2     mac-age                     set mac aging time");
+        l.add(null, "2 .       <num>                     time in ms");
+        l.add(null, "1 2     stp-mode                    set spantree mode");
+        l.add(null, "2 .       ieee                      ieee");
+        l.add(null, "2 .       none                      pass through");
+        l.add(null, "2 .       drop                      drop");
+        l.add(null, "1 2     stp-time                    set spantree timers");
+        l.add(null, "2 3       <num>                     hello in ms");
+        l.add(null, "3 4         <num>                   maxage in ms");
+        l.add(null, "4 .           <num>                 forward delay in ms");
+        l.add(null, "1 2     stp-priority                set spantree priority");
+        l.add(null, "2 .       <num>                     priority in 1024 increments");
+        l.add(null, "1 2     mac-address                 set mac address");
+        l.add(null, "2 .       <addr>                    mac address");
     }
 
     /**

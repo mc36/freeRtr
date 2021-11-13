@@ -79,21 +79,21 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 3,. description                   specify description");
-        l.add("3 3,.   <str>                       text");
-        l.add("1 2  mtu                            specify vc mtu");
-        l.add("2 .    <num>                        mtu");
-        l.add("1 2  type                           type of pseudowire");
-        l.add("2 .    ethernet                     ethernet mode");
-        l.add("2 .    ip                           ip mode");
-        l.add("2 .    vlan                         vlan mode");
-        l.add("2 .    hdlc                         hdlc mode");
-        l.add("2 .    ppp                          ppp mode");
-        l.add("2 .    fr-dlci                      fr dlci mode");
-        l.add("2 .    atm-aal5                     atm aal5 mode");
-        l.add("1 2  side1                          specify first side of connection");
+        l.add(null, "1 3,. description                   specify description");
+        l.add(null, "3 3,.   <str>                       text");
+        l.add(null, "1 2  mtu                            specify vc mtu");
+        l.add(null, "2 .    <num>                        mtu");
+        l.add(null, "1 2  type                           type of pseudowire");
+        l.add(null, "2 .    ethernet                     ethernet mode");
+        l.add(null, "2 .    ip                           ip mode");
+        l.add(null, "2 .    vlan                         vlan mode");
+        l.add(null, "2 .    hdlc                         hdlc mode");
+        l.add(null, "2 .    ppp                          ppp mode");
+        l.add(null, "2 .    fr-dlci                      fr dlci mode");
+        l.add(null, "2 .    atm-aal5                     atm aal5 mode");
+        l.add(null, "1 2  side1                          specify first side of connection");
         cfgXconnSide.getHelp(l, 2);
-        l.add("1 2  side2                          specify seconds side of connection");
+        l.add(null, "1 2  side2                          specify seconds side of connection");
         cfgXconnSide.getHelp(l, 2);
     }
 

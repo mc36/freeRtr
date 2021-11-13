@@ -884,41 +884,41 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   router-id                   specify router id");
-        l.add("2 .     <addr>                    router id");
-        l.add("1 2   distance                    specify default distance");
-        l.add("2 .     <num>                     distance");
-        l.add("1 .   default-originate           advertise default route");
-        l.add("1 2   route-map                   process prefixes");
-        l.add("2 .     <name>                    name of route map");
-        l.add("1 2   route-policy                process prefixes");
-        l.add("2 .     <name>                    name of route policy");
-        l.add("1 2   prefix-list                 filter prefixes");
-        l.add("2 .     <name>                    name of prefix list");
-        l.add("1 2   database-password           database password");
-        l.add("2 .     <str>                     password");
-        l.add("1 2   refresh                     data refresh time");
-        l.add("2 .     <num>                     age in ms");
-        l.add("1 2   lifetime                    data life time");
-        l.add("2 .     <num>                     age in ms");
-        l.add("1 .   spf-bidir                   spf bidir check");
-        l.add("1 .   spf-topolog                 spf topology logging");
-        l.add("1 .   spf-hops                    spf hops disallow");
-        l.add("1 .   spf-ecmp                    spf ecmp allow");
-        l.add("1 2   spf-log                     spf log size");
-        l.add("2 .     <num>                     number of entries");
-        l.add("1 .   stub                        stub router");
-        l.add("1 .   suppress-prefix             do not advertise interfaces");
-        l.add("1 2   segrout                     segment routing parameters");
-        l.add("2 3     <num>                     maximum index");
-        l.add("3 4,.     <num>                   this node index");
-        l.add("4 4,.       pop                   advertise php");
-        l.add("4 5         base                  specify base");
-        l.add("5 4,.         <num>               label base");
-        l.add("1 2   bier                        bier parameters");
-        l.add("2 3     <num>                     bitstring length");
-        l.add("3 4       <num>                   maximum index");
-        l.add("4 .         <num>                 this node index");
+        l.add(null, "1 2   router-id                   specify router id");
+        l.add(null, "2 .     <addr>                    router id");
+        l.add(null, "1 2   distance                    specify default distance");
+        l.add(null, "2 .     <num>                     distance");
+        l.add(null, "1 .   default-originate           advertise default route");
+        l.add(null, "1 2   route-map                   process prefixes");
+        l.add(null, "2 .     <name>                    name of route map");
+        l.add(null, "1 2   route-policy                process prefixes");
+        l.add(null, "2 .     <name>                    name of route policy");
+        l.add(null, "1 2   prefix-list                 filter prefixes");
+        l.add(null, "2 .     <name>                    name of prefix list");
+        l.add(null, "1 2   database-password           database password");
+        l.add(null, "2 .     <str>                     password");
+        l.add(null, "1 2   refresh                     data refresh time");
+        l.add(null, "2 .     <num>                     age in ms");
+        l.add(null, "1 2   lifetime                    data life time");
+        l.add(null, "2 .     <num>                     age in ms");
+        l.add(null, "1 .   spf-bidir                   spf bidir check");
+        l.add(null, "1 .   spf-topolog                 spf topology logging");
+        l.add(null, "1 .   spf-hops                    spf hops disallow");
+        l.add(null, "1 .   spf-ecmp                    spf ecmp allow");
+        l.add(null, "1 2   spf-log                     spf log size");
+        l.add(null, "2 .     <num>                     number of entries");
+        l.add(null, "1 .   stub                        stub router");
+        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
+        l.add(null, "1 2   segrout                     segment routing parameters");
+        l.add(null, "2 3     <num>                     maximum index");
+        l.add(null, "3 4,.     <num>                   this node index");
+        l.add(null, "4 4,.       pop                   advertise php");
+        l.add(null, "4 5         base                  specify base");
+        l.add(null, "5 4,.         <num>               label base");
+        l.add(null, "1 2   bier                        bier parameters");
+        l.add(null, "2 3     <num>                     bitstring length");
+        l.add(null, "3 4       <num>                   maximum index");
+        l.add(null, "4 .         <num>                 this node index");
     }
 
     /**

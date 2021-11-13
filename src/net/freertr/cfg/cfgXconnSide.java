@@ -202,31 +202,31 @@ public class cfgXconnSide {
      * @param p initial position
      */
     public static void getHelp(userHelping l, int p) {
-        l.add((p + 0) + " " + (p + 1) + "     <name>                      vrf to use");
-        l.add((p + 1) + " " + (p + 2) + "       <name>                    source interface to use");
-        l.add((p + 2) + " " + (p + 3) + "         pckoudp                 pckoudp encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         pptp                    pptp encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         greppp                  ppp over gre encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         ax25                    ax25 encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         l2f                     l2f encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         l2tp2                   l2tp v2 encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         l2tp3                   l2tp v3 encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         pweompls                pwe over mpls encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         erspan                  erspan encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         dlsw                    dlsw encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         etherip                 etherip encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         sreth                   sreth encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         gretap                  gretap encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         uti                     uti encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
-        l.add((p + 2) + " " + (p + 3) + "         geneve                  geneve encapsulation");
-        l.add((p + 3) + " " + (p + 4) + "           <addr>                address of target");
-        l.add((p + 4) + " " + (p + 5) + ",.           <num>               vc id");
-        l.add((p + 5) + " " + (p + 5) + ",.             control-word      use control word");
-        l.add((p + 5) + " " + (p + 5) + ",.             inbound           inbound direction");
-        l.add((p + 5) + " " + (p + 5) + ",.             outbound          outbound direction");
-        l.add((p + 5) + " " + (p + 5) + ",.             vlan              use vlan pw type");
+        l.add(null, (p + 0) + " " + (p + 1) + "     <name>                      vrf to use");
+        l.add(null, (p + 1) + " " + (p + 2) + "       <name>                    source interface to use");
+        l.add(null, (p + 2) + " " + (p + 3) + "         pckoudp                 pckoudp encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         pptp                    pptp encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         greppp                  ppp over gre encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         ax25                    ax25 encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         l2f                     l2f encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         l2tp2                   l2tp v2 encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         l2tp3                   l2tp v3 encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         pweompls                pwe over mpls encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         erspan                  erspan encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         dlsw                    dlsw encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         etherip                 etherip encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         sreth                   sreth encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         gretap                  gretap encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         uti                     uti encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         geneve                  geneve encapsulation");
+        l.add(null, (p + 3) + " " + (p + 4) + "           <addr>                address of target");
+        l.add(null, (p + 4) + " " + (p + 5) + ",.           <num>               vc id");
+        l.add(null, (p + 5) + " " + (p + 5) + ",.             control-word      use control word");
+        l.add(null, (p + 5) + " " + (p + 5) + ",.             inbound           inbound direction");
+        l.add(null, (p + 5) + " " + (p + 5) + ",.             outbound          outbound direction");
+        l.add(null, (p + 5) + " " + (p + 5) + ",.             vlan              use vlan pw type");
     }
 
     /**

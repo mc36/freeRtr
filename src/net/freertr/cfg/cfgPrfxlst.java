@@ -53,25 +53,25 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 2   sequence              sequence number of an entry");
-        l.add("2 1     <num>               sequence number");
-        l.add("1 3,. description           specify description");
-        l.add("3 3,.   <str>               text");
-        l.add("1 3   evaluate              evaluate another list");
-        l.add("3 4     permit              specify list to allow");
-        l.add("3 4     deny                specify list to forbid");
-        l.add("4 .       <name>            name of list");
-        l.add("1 3   permit                specify networks to allow");
-        l.add("1 3   deny                  specify networks to forbid");
-        l.add("3 4,.   <net/mask>          network in perfix/mask format");
-        l.add("4 5       ge                minimum prefix length to be matched");
-        l.add("5 4,.       <num>           minimum prefix length");
-        l.add("4 5       le                maximum prefix length to be matched");
-        l.add("5 4,.       <num>           maximum prefix length");
-        l.add("4 4,.     log               set logging on match");
-        l.add("1 2,. reindex               reindex prefix list");
-        l.add("2 3,.   [num]               initial number to start with");
-        l.add("3 4,.     [num]             increment number");
+        l.add(null, "1 2   sequence              sequence number of an entry");
+        l.add(null, "2 1     <num>               sequence number");
+        l.add(null, "1 3,. description           specify description");
+        l.add(null, "3 3,.   <str>               text");
+        l.add(null, "1 3   evaluate              evaluate another list");
+        l.add(null, "3 4     permit              specify list to allow");
+        l.add(null, "3 4     deny                specify list to forbid");
+        l.add(null, "4 .       <name>            name of list");
+        l.add(null, "1 3   permit                specify networks to allow");
+        l.add(null, "1 3   deny                  specify networks to forbid");
+        l.add(null, "3 4,.   <net/mask>          network in perfix/mask format");
+        l.add(null, "4 5       ge                minimum prefix length to be matched");
+        l.add(null, "5 4,.       <num>           minimum prefix length");
+        l.add(null, "4 5       le                maximum prefix length to be matched");
+        l.add(null, "5 4,.       <num>           maximum prefix length");
+        l.add(null, "4 4,.     log               set logging on match");
+        l.add(null, "1 2,. reindex               reindex prefix list");
+        l.add(null, "2 3,.   [num]               initial number to start with");
+        l.add(null, "3 4,.     [num]             increment number");
     }
 
     public synchronized void doCfgStr(cmds cmd) {

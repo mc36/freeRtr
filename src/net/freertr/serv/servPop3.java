@@ -132,10 +132,10 @@ public class servPop3 extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  authentication               set authentication");
-        l.add("2 .    <name>                     name of authentication list");
-        l.add("1 2  path                         set root folder");
-        l.add("2 .    <path>                     name of root folder");
+        l.add(null, "1 2  authentication               set authentication");
+        l.add(null, "2 .    <name>                     name of authentication list");
+        l.add(null, "1 2  path                         set root folder");
+        l.add(null, "2 .    <path>                     name of root folder");
     }
 
     public String srvName() {

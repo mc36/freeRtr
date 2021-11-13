@@ -243,36 +243,36 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
      * @param l list to update
      */
     public static void routerGetHelp(userHelping l) {
-        l.add("4 .         enable                  enable protocol processing");
-        l.add("4 .         bfd                     enable bfd triggered down");
-        l.add("4 .         default-originate       send default route to peer");
-        l.add("4 .         split-horizon           dont advertise back on rx interface");
-        l.add("4 .         passive                 do not form neighborship");
-        l.add("4 .         suppress-prefix         do not advertise interface");
-        l.add("4 .         unsuppress-prefix       do advertise interface");
-        l.add("4 .         verify-source           check source address of updates");
-        l.add("4 5         delay-in                ingress delay of routes");
-        l.add("5 .           <num>                 set delay");
-        l.add("4 5         delay-out               egress delay of routes");
-        l.add("5 .           <num>                 set delay");
-        l.add("4 5         distance                administrative distance of routes");
-        l.add("5 .           <num>                 set administrative distance");
-        l.add("4 5         hello-time              time between hellos");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         dead-time               time before neighbor down");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         route-map-in            process prefixes in ingress updates");
-        l.add("5 .           <name>                name of route map");
-        l.add("4 5         route-map-out           process prefixes in egress updates");
-        l.add("5 .           <name>                name of route map");
-        l.add("4 5         route-policy-in         process prefixes in ingress updates");
-        l.add("5 .           <name>                name of route policy");
-        l.add("4 5         route-policy-out        process prefixes in egress updates");
-        l.add("5 .           <name>                name of route policy");
-        l.add("4 5         prefix-list-in          filter prefixes in ingress updates");
-        l.add("5 .           <name>                name of prefix list");
-        l.add("4 5         prefix-list-out         filter prefixes in egress updates");
-        l.add("5 .           <name>                name of prefix list");
+        l.add(null, "4 .         enable                  enable protocol processing");
+        l.add(null, "4 .         bfd                     enable bfd triggered down");
+        l.add(null, "4 .         default-originate       send default route to peer");
+        l.add(null, "4 .         split-horizon           dont advertise back on rx interface");
+        l.add(null, "4 .         passive                 do not form neighborship");
+        l.add(null, "4 .         suppress-prefix         do not advertise interface");
+        l.add(null, "4 .         unsuppress-prefix       do advertise interface");
+        l.add(null, "4 .         verify-source           check source address of updates");
+        l.add(null, "4 5         delay-in                ingress delay of routes");
+        l.add(null, "5 .           <num>                 set delay");
+        l.add(null, "4 5         delay-out               egress delay of routes");
+        l.add(null, "5 .           <num>                 set delay");
+        l.add(null, "4 5         distance                administrative distance of routes");
+        l.add(null, "5 .           <num>                 set administrative distance");
+        l.add(null, "4 5         hello-time              time between hellos");
+        l.add(null, "5 .           <num>                 time in ms");
+        l.add(null, "4 5         dead-time               time before neighbor down");
+        l.add(null, "5 .           <num>                 time in ms");
+        l.add(null, "4 5         route-map-in            process prefixes in ingress updates");
+        l.add(null, "5 .           <name>                name of route map");
+        l.add(null, "4 5         route-map-out           process prefixes in egress updates");
+        l.add(null, "5 .           <name>                name of route map");
+        l.add(null, "4 5         route-policy-in         process prefixes in ingress updates");
+        l.add(null, "5 .           <name>                name of route policy");
+        l.add(null, "4 5         route-policy-out        process prefixes in egress updates");
+        l.add(null, "5 .           <name>                name of route policy");
+        l.add(null, "4 5         prefix-list-in          filter prefixes in ingress updates");
+        l.add(null, "5 .           <name>                name of prefix list");
+        l.add(null, "4 5         prefix-list-out         filter prefixes in egress updates");
+        l.add(null, "5 .           <name>                name of prefix list");
     }
 
     /**

@@ -253,35 +253,35 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 .  logging                      set logging");
-        l.add("1 2  timeout                      set timeout on connection");
-        l.add("2 .    <num>                      timeout in ms");
-        l.add("1 2  buffer                       set buffer size on connection");
-        l.add("2 .    <num>                      buffer in bytes");
-        l.add("1 2  target                       set session target");
-        l.add("2 3    vrf                        set source vrf");
-        l.add("3 .      <name>                   name of vrf");
-        l.add("2 3    interface                  set source interface");
-        l.add("3 .      <name>                   name of interface");
-        l.add("2 3    address                    set target address");
-        l.add("3 .      <addr>                   remote address");
-        l.add("2 3    port                       set target port");
-        l.add("3 .      <num>                    remote port");
-        l.add("2 3    protocol                   set lower protocol to use");
-        l.add("3 .      tcp                      use tcp transport");
-        l.add("3 .      udp                      use udp transport");
-        l.add("3 .      ludp                     use ludp transport");
-        l.add("3 .      dccp                     use dccp transport");
-        l.add("3 .      sctp                     use sctp transport");
-        l.add("2 3    security                   set security protocol");
-        l.add("3 .      ssh                      use secure shell");
-        l.add("3 .      tls                      use transport layer security");
-        l.add("3 .      dtls                     use datagram transport layer security");
-        l.add("3 .      telnet                   use telnet protocol");
-        l.add("2 3    username                   set username");
-        l.add("3 .      <text>                   username");
-        l.add("2 3    password                   set password");
-        l.add("3 .      <text>                   username");
+        l.add(null, "1 .  logging                      set logging");
+        l.add(null, "1 2  timeout                      set timeout on connection");
+        l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 2  buffer                       set buffer size on connection");
+        l.add(null, "2 .    <num>                      buffer in bytes");
+        l.add(null, "1 2  target                       set session target");
+        l.add(null, "2 3    vrf                        set source vrf");
+        l.add(null, "3 .      <name>                   name of vrf");
+        l.add(null, "2 3    interface                  set source interface");
+        l.add(null, "3 .      <name>                   name of interface");
+        l.add(null, "2 3    address                    set target address");
+        l.add(null, "3 .      <addr>                   remote address");
+        l.add(null, "2 3    port                       set target port");
+        l.add(null, "3 .      <num>                    remote port");
+        l.add(null, "2 3    protocol                   set lower protocol to use");
+        l.add(null, "3 .      tcp                      use tcp transport");
+        l.add(null, "3 .      udp                      use udp transport");
+        l.add(null, "3 .      ludp                     use ludp transport");
+        l.add(null, "3 .      dccp                     use dccp transport");
+        l.add(null, "3 .      sctp                     use sctp transport");
+        l.add(null, "2 3    security                   set security protocol");
+        l.add(null, "3 .      ssh                      use secure shell");
+        l.add(null, "3 .      tls                      use transport layer security");
+        l.add(null, "3 .      dtls                     use datagram transport layer security");
+        l.add(null, "3 .      telnet                   use telnet protocol");
+        l.add(null, "2 3    username                   set username");
+        l.add(null, "3 .      <text>                   username");
+        l.add(null, "2 3    password                   set password");
+        l.add(null, "3 .      <text>                   username");
     }
 
     public String srvName() {

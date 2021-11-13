@@ -150,10 +150,10 @@ public class rtrFlowspec extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   distance                    specify default distance");
-        l.add("2 .     <num>                     distance");
-        l.add("1 2   add                         specify bytes to add");
-        l.add("2 2,.   <num>                     byte");
+        l.add(null, "1 2   distance                    specify default distance");
+        l.add(null, "2 .     <num>                     distance");
+        l.add(null, "1 2   add                         specify bytes to add");
+        l.add(null, "2 2,.   <num>                     byte");
     }
 
     /**

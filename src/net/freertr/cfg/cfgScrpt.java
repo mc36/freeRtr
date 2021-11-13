@@ -137,30 +137,30 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1  2,.    description                description of this script");
-        l.add("2  2,.      [text]                   text describing this script");
-        l.add("1  .      respawn                    restart on termination");
-        l.add("1  2      time                       specify time between runs");
-        l.add("2  .        <num>                    milliseconds between runs");
-        l.add("1  2      delay                      specify initial delay");
-        l.add("2  .        <num>                    milliseconds before start");
-        l.add("1  2      random-time                specify random time between runs");
-        l.add("2  .        <num>                    milliseconds between runs");
-        l.add("1  2      random-delay               specify random initial delay");
-        l.add("2  .        <num>                    milliseconds before start");
-        l.add("1  2      range                      specify time range");
-        l.add("2  .        <name>                   name of time map");
-        l.add("1  .      log                        log actions");
-        l.add("1  2      sequence                   sequence number of an entry");
-        l.add("2  3,.      <num>                    sequence number");
-        l.add("3  3,.        <str>                  tcl commands");
-        l.add("1  2,.    reindex                    reindex route map");
-        l.add("2  3,.      [num]                    initial number to start with");
-        l.add("3  4,.        [num]                  increment number");
-        l.add("1  .      stop                       stop working");
-        l.add("1  .      start                      start working");
-        l.add("1  .      runnow                     run one round now");
-        l.add("1  .      editor                     edit this script");
+        l.add(null, "1  2,.    description                description of this script");
+        l.add(null, "2  2,.      [text]                   text describing this script");
+        l.add(null, "1  .      respawn                    restart on termination");
+        l.add(null, "1  2      time                       specify time between runs");
+        l.add(null, "2  .        <num>                    milliseconds between runs");
+        l.add(null, "1  2      delay                      specify initial delay");
+        l.add(null, "2  .        <num>                    milliseconds before start");
+        l.add(null, "1  2      random-time                specify random time between runs");
+        l.add(null, "2  .        <num>                    milliseconds between runs");
+        l.add(null, "1  2      random-delay               specify random initial delay");
+        l.add(null, "2  .        <num>                    milliseconds before start");
+        l.add(null, "1  2      range                      specify time range");
+        l.add(null, "2  .        <name>                   name of time map");
+        l.add(null, "1  .      log                        log actions");
+        l.add(null, "1  2      sequence                   sequence number of an entry");
+        l.add(null, "2  3,.      <num>                    sequence number");
+        l.add(null, "3  3,.        <str>                  tcl commands");
+        l.add(null, "1  2,.    reindex                    reindex route map");
+        l.add(null, "2  3,.      [num]                    initial number to start with");
+        l.add(null, "3  4,.        [num]                  increment number");
+        l.add(null, "1  .      stop                       stop working");
+        l.add(null, "1  .      start                      start working");
+        l.add(null, "1  .      runnow                     run one round now");
+        l.add(null, "1  .      editor                     edit this script");
     }
 
     public List<String> getShRun(int filter) {

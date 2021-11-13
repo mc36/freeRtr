@@ -116,11 +116,11 @@ public class servGopher extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  path                         set root folder");
-        l.add("2 .    <path>                     name of root folder");
-        l.add("1 2  server                       set domain name");
-        l.add("2 .    <name>                     domain name of server");
-        l.add("1 .  dirlist                      allow directory listing");
+        l.add(null, "1 2  path                         set root folder");
+        l.add(null, "2 .    <path>                     name of root folder");
+        l.add(null, "1 2  server                       set domain name");
+        l.add(null, "2 .    <name>                     domain name of server");
+        l.add(null, "1 .  dirlist                      allow directory listing");
     }
 
     public String srvName() {

@@ -41,7 +41,7 @@ public class userChat implements Runnable {
         new Thread(this).start();
         for (;;) {
             userHelping hl = new userHelping();
-            hl.add("1 1,.   <text>                      chat line");
+            hl.add(null, "1 1,.   <text>                      chat line");
             read.setContext(hl, "you:");
             String a = read.readLine("/exit");
             if (a == null) {

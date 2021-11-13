@@ -62,20 +62,20 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1  2,.    description              specify description");
-        l.add("2  2,.      <str>                  text");
-        l.add("1  2      target                   specify target address");
-        l.add("2  2,.      <str>                  name");
-        l.add("1  2      port                     specify target port");
-        l.add("2  .        <num>                  lines to skip");
-        l.add("1  2      sensor                   specify sensor to export");
-        l.add("2  .        <str>                  lines to skip");
-        l.add("1  2      interval                 specify interval");
-        l.add("2  .        <num>                  time in ms");
-        l.add("1  2      proxy                    specify proxy profile to use");
-        l.add("2  .        <str>                  name of profile");
-        l.add("1  .      start                    start exporting");
-        l.add("1  .      stop                     stop exporting");
+        l.add(null, "1  2,.    description              specify description");
+        l.add(null, "2  2,.      <str>                  text");
+        l.add(null, "1  2      target                   specify target address");
+        l.add(null, "2  2,.      <str>                  name");
+        l.add(null, "1  2      port                     specify target port");
+        l.add(null, "2  .        <num>                  lines to skip");
+        l.add(null, "1  2      sensor                   specify sensor to export");
+        l.add(null, "2  .        <str>                  lines to skip");
+        l.add(null, "1  2      interval                 specify interval");
+        l.add(null, "2  .        <num>                  time in ms");
+        l.add(null, "1  2      proxy                    specify proxy profile to use");
+        l.add(null, "2  .        <str>                  name of profile");
+        l.add(null, "1  .      start                    start exporting");
+        l.add(null, "1  .      stop                     stop exporting");
     }
 
     public List<String> getShRun(int filter) {

@@ -102,8 +102,8 @@ public class servQuote extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  tagline                      add tagline");
-        l.add("2 2,.  <text>                     line to add");
+        l.add(null, "1 2  tagline                      add tagline");
+        l.add(null, "2 2,.  <text>                     line to add");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

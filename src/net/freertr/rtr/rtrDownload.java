@@ -276,22 +276,22 @@ public class rtrDownload extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1  2      url                        specify url to download");
-        l.add("2  2,.      <cmd>                    exec command to run");
-        l.add("1  .      respawn                    restart on termination");
-        l.add("1  2      time                       specify time between runs");
-        l.add("2  .        <num>                    milliseconds between runs");
-        l.add("1  2      delay                      specify initial delay");
-        l.add("2  .        <num>                    milliseconds between start");
-        l.add("1  2      random-time                specify random time between runs");
-        l.add("2  .        <num>                    milliseconds between runs");
-        l.add("1  2      random-delay               specify random initial delay");
-        l.add("2  .        <num>                    milliseconds before start");
-        l.add("1  2      range                      specify time range");
-        l.add("2  .        <name>                   name of time map");
-        l.add("1  .      log                        log actions");
-        l.add("1  .      runnow                     run one round now");
-        l.add("1  .      hidden                     hide command");
+        l.add(null, "1  2      url                        specify url to download");
+        l.add(null, "2  2,.      <cmd>                    exec command to run");
+        l.add(null, "1  .      respawn                    restart on termination");
+        l.add(null, "1  2      time                       specify time between runs");
+        l.add(null, "2  .        <num>                    milliseconds between runs");
+        l.add(null, "1  2      delay                      specify initial delay");
+        l.add(null, "2  .        <num>                    milliseconds between start");
+        l.add(null, "1  2      random-time                specify random time between runs");
+        l.add(null, "2  .        <num>                    milliseconds between runs");
+        l.add(null, "1  2      random-delay               specify random initial delay");
+        l.add(null, "2  .        <num>                    milliseconds before start");
+        l.add(null, "1  2      range                      specify time range");
+        l.add(null, "2  .        <name>                   name of time map");
+        l.add(null, "1  .      log                        log actions");
+        l.add(null, "1  .      runnow                     run one round now");
+        l.add(null, "1  .      hidden                     hide command");
     }
 
     /**

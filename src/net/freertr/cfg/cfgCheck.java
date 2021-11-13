@@ -200,42 +200,42 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 2      resolve                  resolve the regexp group a to hostname");
-        l.add("2 2,.      <str>                  text to resolv");
-        l.add("1 2      replace                  replace from one string to another");
-        l.add("2 3        <str>                  source string");
-        l.add("3 3,.        <str>                target string");
-        l.add("1 2,.    train                    train command to current result");
-        l.add("2 2,.      <str>                  text");
-        l.add("1 .      alternate                alternate reported state on diff change");
-        l.add("1 2      severity                 severity level");
-        l.add("2 .        critical               critical");
-        l.add("2 .        warning                warning");
-        l.add("2 .        unknown                unknown");
-        l.add("2 .        ok                     ok");
-        l.add("1 2      template                 template arameters");
-        l.add("2 .        <str>                  name of check");
-        l.add("1 2      command                  specify command to execute");
-        l.add("2 2,.      <str>                  command");
-        l.add("1 2      description              specify description");
-        l.add("2 2,.      <str>                  description");
-        l.add("1 2      error-text               specify error text");
-        l.add("2 2,.      <str>                  description");
-        l.add("1 .      error-states             remove state of messages");
-        l.add("1 .      error-commands           include commands in states");
-        l.add("1 .      error-hostname           include local hostname in states");
-        l.add("1 2      require-regexp           require one regexp line");
-        l.add("2 2,.      <str>                  text");
-        l.add("1 2      ignore-regexp            ignore one regexp line");
-        l.add("2 2,.      <str>                  text");
-        l.add("1 2      ignorall-regexp          ignore all regexp line");
-        l.add("2 2,.      <str>                  text");
-        l.add("1 2      require-text             require one text line");
-        l.add("2 2,.      <str>                  text");
-        l.add("1 2      ignore-text              ignore one text line");
-        l.add("2 2,.      <str>                  text");
-        l.add("1 2      ignorall-text            ignore all text line");
-        l.add("2 2,.      <str>                  text");
+        l.add(null, "1 2      resolve                  resolve the regexp group a to hostname");
+        l.add(null, "2 2,.      <str>                  text to resolv");
+        l.add(null, "1 2      replace                  replace from one string to another");
+        l.add(null, "2 3        <str>                  source string");
+        l.add(null, "3 3,.        <str>                target string");
+        l.add(null, "1 2,.    train                    train command to current result");
+        l.add(null, "2 2,.      <str>                  text");
+        l.add(null, "1 .      alternate                alternate reported state on diff change");
+        l.add(null, "1 2      severity                 severity level");
+        l.add(null, "2 .        critical               critical");
+        l.add(null, "2 .        warning                warning");
+        l.add(null, "2 .        unknown                unknown");
+        l.add(null, "2 .        ok                     ok");
+        l.add(null, "1 2      template                 template arameters");
+        l.add(null, "2 .        <str>                  name of check");
+        l.add(null, "1 2      command                  specify command to execute");
+        l.add(null, "2 2,.      <str>                  command");
+        l.add(null, "1 2      description              specify description");
+        l.add(null, "2 2,.      <str>                  description");
+        l.add(null, "1 2      error-text               specify error text");
+        l.add(null, "2 2,.      <str>                  description");
+        l.add(null, "1 .      error-states             remove state of messages");
+        l.add(null, "1 .      error-commands           include commands in states");
+        l.add(null, "1 .      error-hostname           include local hostname in states");
+        l.add(null, "1 2      require-regexp           require one regexp line");
+        l.add(null, "2 2,.      <str>                  text");
+        l.add(null, "1 2      ignore-regexp            ignore one regexp line");
+        l.add(null, "2 2,.      <str>                  text");
+        l.add(null, "1 2      ignorall-regexp          ignore all regexp line");
+        l.add(null, "2 2,.      <str>                  text");
+        l.add(null, "1 2      require-text             require one text line");
+        l.add(null, "2 2,.      <str>                  text");
+        l.add(null, "1 2      ignore-text              ignore one text line");
+        l.add(null, "2 2,.      <str>                  text");
+        l.add(null, "1 2      ignorall-text            ignore all text line");
+        l.add(null, "2 2,.      <str>                  text");
     }
 
     public List<String> getShRun(int filter) {

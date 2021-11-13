@@ -174,16 +174,16 @@ public class servUdpFwd extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 .  logging                      set logging");
-        l.add("1 2  target                       set session target");
-        l.add("2 3    vrf                        set source vrf");
-        l.add("3 .      <name>                   name of vrf");
-        l.add("2 3    interface                  set source interface");
-        l.add("3 .      <name>                   name of interface");
-        l.add("2 3    address                    set target address");
-        l.add("3 .      <addr>                   remote address");
-        l.add("2 3    port                       set target port");
-        l.add("3 .      <num>                    remote port");
+        l.add(null, "1 .  logging                      set logging");
+        l.add(null, "1 2  target                       set session target");
+        l.add(null, "2 3    vrf                        set source vrf");
+        l.add(null, "3 .      <name>                   name of vrf");
+        l.add(null, "2 3    interface                  set source interface");
+        l.add(null, "3 .      <name>                   name of interface");
+        l.add(null, "2 3    address                    set target address");
+        l.add(null, "3 .      <addr>                   remote address");
+        l.add(null, "2 3    port                       set target port");
+        l.add(null, "3 .      <num>                    remote port");
     }
 
     public String srvName() {

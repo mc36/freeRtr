@@ -139,14 +139,14 @@ public class servRpki extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  prefix4                      set ipv4 prefix");
-        l.add("2 3    <net/mask>                 network in perfix/mask format");
-        l.add("3 4      <num>                    maximum prefix length");
-        l.add("4 .        <num>                  as number");
-        l.add("1 2  prefix6                      set ipv6 prefix");
-        l.add("2 3    <net/mask>                 network in perfix/mask format");
-        l.add("3 4      <num>                    maximum prefix length");
-        l.add("4 .        <num>                  as number");
+        l.add(null, "1 2  prefix4                      set ipv4 prefix");
+        l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
+        l.add(null, "3 4      <num>                    maximum prefix length");
+        l.add(null, "4 .        <num>                  as number");
+        l.add(null, "1 2  prefix6                      set ipv6 prefix");
+        l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
+        l.add(null, "3 4      <num>                    maximum prefix length");
+        l.add(null, "4 .        <num>                  as number");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

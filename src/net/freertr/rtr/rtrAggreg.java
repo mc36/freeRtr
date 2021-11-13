@@ -162,12 +162,12 @@ public class rtrAggreg extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   distance                    specify default distance");
-        l.add("2 .     <num>                     distance");
-        l.add("1 2   nexthop                     specify default nexthop");
-        l.add("2 .     <addr>                    nexthop");
-        l.add("1 2   netmask                     specify netmask to use");
-        l.add("2 .     <num>                     mask bits");
+        l.add(null, "1 2   distance                    specify default distance");
+        l.add(null, "2 .     <num>                     distance");
+        l.add(null, "1 2   nexthop                     specify default nexthop");
+        l.add(null, "2 .     <addr>                    nexthop");
+        l.add(null, "1 2   netmask                     specify netmask to use");
+        l.add(null, "2 .     <num>                     mask bits");
     }
 
     /**

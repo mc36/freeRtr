@@ -356,8 +356,8 @@ public class rtrLogger extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 .   flapstat                    count flap statistics");
-        l.add("1 .   logging                     log events");
+        l.add(null, "1 .   flapstat                    count flap statistics");
+        l.add(null, "1 .   logging                     log events");
     }
 
     /**

@@ -44,14 +44,14 @@ public class cfgObjprt implements Comparator<cfgObjprt>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1  2   sequence              sequence number of an entry");
-        l.add("2  1     <num>               sequence number");
-        l.add("1  3,. description           specify description");
-        l.add("3  3,.   <str>               text");
-        l.add("1  .       <port>            port");
-        l.add("1  2,. reindex               reindex access list");
-        l.add("2  3,.   [num]               initial number to start with");
-        l.add("3  4,.     [num]             increment number");
+        l.add(null, "1  2   sequence              sequence number of an entry");
+        l.add(null, "2  1     <num>               sequence number");
+        l.add(null, "1  3,. description           specify description");
+        l.add(null, "3  3,.   <str>               text");
+        l.add(null, "1  .       <port>            port");
+        l.add(null, "1  2,. reindex               reindex access list");
+        l.add(null, "2  3,.   [num]               initial number to start with");
+        l.add(null, "3  4,.     [num]             increment number");
     }
 
     public List<String> getShRun(int filter) {

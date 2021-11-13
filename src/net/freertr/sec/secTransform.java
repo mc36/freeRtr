@@ -905,37 +905,37 @@ public class secTransform {
     /**
      * get help text
      *
-     * @param lst list to append
+     * @param l list to append
      */
-    public void getHelp(userHelping lst) {
-        lst.add("1 2  group               select diffie-hellman group");
-        lst.add("2 .    01                768 bit group");
-        lst.add("2 .    02                1024 bit group");
-        lst.add("2 .    05                1536 bit group");
-        lst.add("2 .    14                2048 bit group");
-        lst.add("2 .    15                3072 bit group");
-        lst.add("2 .    16                4096 bit group");
-        lst.add("2 .    17                6144 bit group");
-        lst.add("2 .    18                8192 bit group");
-        lst.add("2 .    22                1024 bit group");
-        lst.add("2 .    23                2048 bit group");
-        lst.add("2 .    24                2048 bit group");
-        lst.add("1 2  seconds             sa lifetime in time");
-        lst.add("2 .    <num>             number of seconds");
-        lst.add("1 2  bytes               sa lifetime in traffic amount");
-        lst.add("2 .    <num>             number of bytes");
-        lst.add("1 2  hash                select hash algorithm");
-        lst.add("2 .    md5               message digest 5 algorithm");
-        lst.add("2 .    sha1              secure hash algorithm 1");
-        lst.add("2 .    sha256            secure hash algorithm 256");
-        lst.add("2 .    sha512            secure hash algorithm 512");
-        lst.add("1 2  cipher              select cipher algorithm");
-        lst.add("2 .    des               des algorithm");
-        lst.add("2 .    blowfish          blowfish algorithm");
-        lst.add("2 .    3des              triple des algorithm");
-        lst.add("2 .    aes128            128bit aes algorithm");
-        lst.add("2 .    aes192            192bit aes algorithm");
-        lst.add("2 .    aes256            256bit aes algorithm");
+    public void getHelp(userHelping l) {
+        l.add(null, "1 2  group               select diffie-hellman group");
+        l.add(null, "2 .    01                768 bit group");
+        l.add(null, "2 .    02                1024 bit group");
+        l.add(null, "2 .    05                1536 bit group");
+        l.add(null, "2 .    14                2048 bit group");
+        l.add(null, "2 .    15                3072 bit group");
+        l.add(null, "2 .    16                4096 bit group");
+        l.add(null, "2 .    17                6144 bit group");
+        l.add(null, "2 .    18                8192 bit group");
+        l.add(null, "2 .    22                1024 bit group");
+        l.add(null, "2 .    23                2048 bit group");
+        l.add(null, "2 .    24                2048 bit group");
+        l.add(null, "1 2  seconds             sa lifetime in time");
+        l.add(null, "2 .    <num>             number of seconds");
+        l.add(null, "1 2  bytes               sa lifetime in traffic amount");
+        l.add(null, "2 .    <num>             number of bytes");
+        l.add(null, "1 2  hash                select hash algorithm");
+        l.add(null, "2 .    md5               message digest 5 algorithm");
+        l.add(null, "2 .    sha1              secure hash algorithm 1");
+        l.add(null, "2 .    sha256            secure hash algorithm 256");
+        l.add(null, "2 .    sha512            secure hash algorithm 512");
+        l.add(null, "1 2  cipher              select cipher algorithm");
+        l.add(null, "2 .    des               des algorithm");
+        l.add(null, "2 .    blowfish          blowfish algorithm");
+        l.add(null, "2 .    3des              triple des algorithm");
+        l.add(null, "2 .    aes128            128bit aes algorithm");
+        l.add(null, "2 .    aes192            192bit aes algorithm");
+        l.add(null, "2 .    aes256            256bit aes algorithm");
     }
 
     /**

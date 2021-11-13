@@ -135,13 +135,13 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  timeout                      set timeout on connection");
-        l.add("2 .    <num>                      timeout in ms");
-        l.add("1 2  target                       set session target");
-        l.add("2 3    vrf                        set source vrf");
-        l.add("3 .      <name>                   name of vrf");
-        l.add("2 3    interface                  set source interface");
-        l.add("3 .      <name>                   name of interface");
+        l.add(null, "1 2  timeout                      set timeout on connection");
+        l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 2  target                       set session target");
+        l.add(null, "2 3    vrf                        set source vrf");
+        l.add(null, "3 .      <name>                   name of vrf");
+        l.add(null, "2 3    interface                  set source interface");
+        l.add(null, "3 .      <name>                   name of interface");
     }
 
     public String srvName() {

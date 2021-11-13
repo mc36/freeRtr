@@ -405,11 +405,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   router-id                   specify router id");
-        l.add("2 .     <addr>                    router id");
-        l.add("1 .   labels                      specify label mode");
-        l.add("1 .   stub                        stub router");
-        l.add("1 .   suppress-prefix             do not advertise interfaces");
+        l.add(null, "1 2   router-id                   specify router id");
+        l.add(null, "2 .     <addr>                    router id");
+        l.add(null, "1 .   labels                      specify label mode");
+        l.add(null, "1 .   stub                        stub router");
+        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
     }
 
     /**

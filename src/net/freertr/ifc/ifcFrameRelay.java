@@ -255,21 +255,21 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in ms");
-        l.add("2 3     mode                        my line mode");
-        l.add("3 .       dce                       this side is dce");
-        l.add("3 .       dte                       this side is dte");
-        l.add("2 3     lmi                         lmi type");
-        l.add("3 .       ansi                      set to ansi");
-        l.add("3 .       cisco                     set to cisco");
-        l.add("3 .       q933a                     set to itu q933a");
-        l.add("2 3     dlci                        set dlci number");
-        l.add("3 .       <num>                     dlci number");
-        l.add("2 3     fragment                    set end2end payload size");
-        l.add("3 .       <num>                     number of bytes");
-        l.add("2 3     frgap                       inter fragment gap");
-        l.add("3 .       <num>                     milliseconds");
+        l.add(null, "2 3     keepalive                   keepalive timer");
+        l.add(null, "3 .       <num>                     time in ms");
+        l.add(null, "2 3     mode                        my line mode");
+        l.add(null, "3 .       dce                       this side is dce");
+        l.add(null, "3 .       dte                       this side is dte");
+        l.add(null, "2 3     lmi                         lmi type");
+        l.add(null, "3 .       ansi                      set to ansi");
+        l.add(null, "3 .       cisco                     set to cisco");
+        l.add(null, "3 .       q933a                     set to itu q933a");
+        l.add(null, "2 3     dlci                        set dlci number");
+        l.add(null, "3 .       <num>                     dlci number");
+        l.add(null, "2 3     fragment                    set end2end payload size");
+        l.add(null, "3 .       <num>                     number of bytes");
+        l.add(null, "2 3     frgap                       inter fragment gap");
+        l.add(null, "3 .       <num>                     milliseconds");
     }
 
     /**

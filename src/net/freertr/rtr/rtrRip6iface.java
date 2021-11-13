@@ -439,42 +439,42 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
      * @param l list to update
      */
     public static void routerGetHelp(userHelping l) {
-        l.add("4 .         enable                  enable/disable rip updates");
-        l.add("4 .         allow-rx                suppress processing routing updates");
-        l.add("4 .         allow-tx                suppress sending routing updates");
-        l.add("4 .         bfd                     enable bfd triggered down");
-        l.add("4 .         default-originate       send default route to peer");
-        l.add("4 .         suppress-prefix         do not advertise interface");
-        l.add("4 .         unsuppress-prefix       do advertise interface");
-        l.add("4 .         verify-source           check source address of updates");
-        l.add("4 .         poison-reverse          advertise back best routes");
-        l.add("4 .         split-horizon           dont advertise back on rx interface");
-        l.add("4 5         distance                administrative distance of routes");
-        l.add("5 .           <num>                 set administrative distance");
-        l.add("4 5         metric-out              metric of outgoing routes");
-        l.add("5 .           <num>                 set metric");
-        l.add("4 5         metric-in               metric of incoming routes");
-        l.add("5 .           <num>                 set metric");
-        l.add("4 5         packet-timer            inter packet gap time");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         update-timer            time between updates");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         hold-time               hold prefixes in routing table");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         flush-time              flush prefix after inactivity");
-        l.add("5 .           <num>                 time in ms");
-        l.add("4 5         route-map-in            process prefixes in ingress updates");
-        l.add("5 .           <name>                name of route map");
-        l.add("4 5         route-map-out           process prefixes in egress updates");
-        l.add("5 .           <name>                name of route map");
-        l.add("4 5         route-policy-in         process prefixes in ingress updates");
-        l.add("5 .           <name>                name of route policy");
-        l.add("4 5         route-policy-out        process prefixes in egress updates");
-        l.add("5 .           <name>                name of route policy");
-        l.add("4 5         prefix-list-in          filter prefixes in ingress updates");
-        l.add("5 .           <name>                name of prefix list");
-        l.add("4 5         prefix-list-out         filter prefixes in egress updates");
-        l.add("5 .           <name>                name of prefix list");
+        l.add(null, "4 .         enable                  enable/disable rip updates");
+        l.add(null, "4 .         allow-rx                suppress processing routing updates");
+        l.add(null, "4 .         allow-tx                suppress sending routing updates");
+        l.add(null, "4 .         bfd                     enable bfd triggered down");
+        l.add(null, "4 .         default-originate       send default route to peer");
+        l.add(null, "4 .         suppress-prefix         do not advertise interface");
+        l.add(null, "4 .         unsuppress-prefix       do advertise interface");
+        l.add(null, "4 .         verify-source           check source address of updates");
+        l.add(null, "4 .         poison-reverse          advertise back best routes");
+        l.add(null, "4 .         split-horizon           dont advertise back on rx interface");
+        l.add(null, "4 5         distance                administrative distance of routes");
+        l.add(null, "5 .           <num>                 set administrative distance");
+        l.add(null, "4 5         metric-out              metric of outgoing routes");
+        l.add(null, "5 .           <num>                 set metric");
+        l.add(null, "4 5         metric-in               metric of incoming routes");
+        l.add(null, "5 .           <num>                 set metric");
+        l.add(null, "4 5         packet-timer            inter packet gap time");
+        l.add(null, "5 .           <num>                 time in ms");
+        l.add(null, "4 5         update-timer            time between updates");
+        l.add(null, "5 .           <num>                 time in ms");
+        l.add(null, "4 5         hold-time               hold prefixes in routing table");
+        l.add(null, "5 .           <num>                 time in ms");
+        l.add(null, "4 5         flush-time              flush prefix after inactivity");
+        l.add(null, "5 .           <num>                 time in ms");
+        l.add(null, "4 5         route-map-in            process prefixes in ingress updates");
+        l.add(null, "5 .           <name>                name of route map");
+        l.add(null, "4 5         route-map-out           process prefixes in egress updates");
+        l.add(null, "5 .           <name>                name of route map");
+        l.add(null, "4 5         route-policy-in         process prefixes in ingress updates");
+        l.add(null, "5 .           <name>                name of route policy");
+        l.add(null, "4 5         route-policy-out        process prefixes in egress updates");
+        l.add(null, "5 .           <name>                name of route policy");
+        l.add(null, "4 5         prefix-list-in          filter prefixes in ingress updates");
+        l.add(null, "5 .           <name>                name of prefix list");
+        l.add(null, "4 5         prefix-list-out         filter prefixes in egress updates");
+        l.add(null, "5 .           <name>                name of prefix list");
     }
 
     private void createRIPheader(int cmd, packHolder pck) {

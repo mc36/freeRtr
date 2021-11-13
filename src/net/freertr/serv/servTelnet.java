@@ -90,8 +90,8 @@ public class servTelnet extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  second-port                    enable dual binding");
-        l.add("2 .    <num>                        secure port");
+        l.add(null, "1 2  second-port                    enable dual binding");
+        l.add(null, "2 .    <num>                        secure port");
         lin.getHelp(l);
     }
 

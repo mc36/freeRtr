@@ -297,29 +297,29 @@ public class servDhcp6 extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  gateway                gateway address to delegate");
-        l.add("2 .    <addr>               address of gateway");
-        l.add("1 2  dns-server             address(es) of name server(s) to delegate");
-        l.add("2 3,.  <addr>               dns#1 server address");
-        l.add("3 .      <addr>             dns#2 server address");
-        l.add("1 2  boot-url               url to boot file");
-        l.add("2 .    <name>               url");
-        l.add("1 2  domain-name            domain name to delegate");
-        l.add("2 .    <name>               domain name");
-        l.add("1 2  lease                  lease time to delegate");
-        l.add("2 .    <sec>                lease time in ms");
-        l.add("1 2  renew                  renew time to delegate");
-        l.add("2 .    <sec>                renew time in ms");
-        l.add("1 2  netmask                network to delegate");
-        l.add("2 .    <mask>               netmask to delegate");
-        l.add("1 2  preference             server preference value");
-        l.add("2 .    <num>                preference value");
-        l.add("1 2  static                 address pool to use");
-        l.add("2 3    <addr>               mac address of client");
-        l.add("3 .      <addr>             ip address of client");
-        l.add("1 2  option                 specify custom option");
-        l.add("2 3,.  <num>                type of option");
-        l.add("3 3,.    <num>              data byte");
+        l.add(null, "1 2  gateway                gateway address to delegate");
+        l.add(null, "2 .    <addr>               address of gateway");
+        l.add(null, "1 2  dns-server             address(es) of name server(s) to delegate");
+        l.add(null, "2 3,.  <addr>               dns#1 server address");
+        l.add(null, "3 .      <addr>             dns#2 server address");
+        l.add(null, "1 2  boot-url               url to boot file");
+        l.add(null, "2 .    <name>               url");
+        l.add(null, "1 2  domain-name            domain name to delegate");
+        l.add(null, "2 .    <name>               domain name");
+        l.add(null, "1 2  lease                  lease time to delegate");
+        l.add(null, "2 .    <sec>                lease time in ms");
+        l.add(null, "1 2  renew                  renew time to delegate");
+        l.add(null, "2 .    <sec>                renew time in ms");
+        l.add(null, "1 2  netmask                network to delegate");
+        l.add(null, "2 .    <mask>               netmask to delegate");
+        l.add(null, "1 2  preference             server preference value");
+        l.add(null, "2 .    <num>                preference value");
+        l.add(null, "1 2  static                 address pool to use");
+        l.add(null, "2 3    <addr>               mac address of client");
+        l.add(null, "3 .      <addr>             ip address of client");
+        l.add(null, "1 2  option                 specify custom option");
+        l.add(null, "2 3,.  <num>                type of option");
+        l.add(null, "3 3,.    <num>              data byte");
     }
 
     public String srvName() {

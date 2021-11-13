@@ -107,10 +107,10 @@ public class servStun extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  group                        set group number");
-        l.add("2 .    <num>                      group number");
-        l.add("1 2  clone                        set interface to clone");
-        l.add("2 .    <name>                     name of interface");
+        l.add(null, "1 2  group                        set group number");
+        l.add(null, "2 .    <num>                      group number");
+        l.add(null, "1 2  clone                        set interface to clone");
+        l.add(null, "2 .    <name>                     name of interface");
     }
 
     public String srvName() {

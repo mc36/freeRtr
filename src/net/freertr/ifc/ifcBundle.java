@@ -296,28 +296,28 @@ public class ifcBundle implements Runnable, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add("1 .  ethernet                       specify type of bundle");
-        l.add("1 .  replicate                      specify replicator mode");
-        l.add("1 .  logging                        enable logging");
-        l.add("1 2  backup                         specify backup mode");
-        l.add("2 .    <num>                        timeout in ms");
-        l.add("1 2  sequence                       specify sequence mode");
-        l.add("2 .    <num>                        window in packets");
-        l.add("1 2  dejitter                       specify dejitter timer");
-        l.add("2 .    <num>                        dejitter in ms");
-        l.add("1 2  reporter                       specify reporter timer");
-        l.add("2 .    <num>                        reports in ms");
-        l.add("1 2  dynamic                        specify quota dynamically");
-        l.add("2 .    <num>                        reports to average");
-        l.add("1 2  peering                        specify peering interface");
-        l.add("2 3    <int>                        name of interface");
-        l.add("3 .      <num>                      local priority");
-        l.add("1 2  loadbalance                    specify load balance method");
-        l.add("2 .    layer2                       xor source and destination mac");
-        l.add("2 .    layer3                       xor source and destination ip");
-        l.add("2 .    layer4                       xor source and destination port");
-        l.add("2 .    addr                         xor addresses");
-        l.add("2 .    all                          xor everything");
+        l.add(null, "1 .  ethernet                       specify type of bundle");
+        l.add(null, "1 .  replicate                      specify replicator mode");
+        l.add(null, "1 .  logging                        enable logging");
+        l.add(null, "1 2  backup                         specify backup mode");
+        l.add(null, "2 .    <num>                        timeout in ms");
+        l.add(null, "1 2  sequence                       specify sequence mode");
+        l.add(null, "2 .    <num>                        window in packets");
+        l.add(null, "1 2  dejitter                       specify dejitter timer");
+        l.add(null, "2 .    <num>                        dejitter in ms");
+        l.add(null, "1 2  reporter                       specify reporter timer");
+        l.add(null, "2 .    <num>                        reports in ms");
+        l.add(null, "1 2  dynamic                        specify quota dynamically");
+        l.add(null, "2 .    <num>                        reports to average");
+        l.add(null, "1 2  peering                        specify peering interface");
+        l.add(null, "2 3    <int>                        name of interface");
+        l.add(null, "3 .      <num>                      local priority");
+        l.add(null, "1 2  loadbalance                    specify load balance method");
+        l.add(null, "2 .    layer2                       xor source and destination mac");
+        l.add(null, "2 .    layer3                       xor source and destination ip");
+        l.add(null, "2 .    layer4                       xor source and destination port");
+        l.add(null, "2 .    addr                         xor addresses");
+        l.add(null, "2 .    all                          xor everything");
     }
 
     /**

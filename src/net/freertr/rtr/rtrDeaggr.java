@@ -171,12 +171,12 @@ public class rtrDeaggr extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   distance                    specify default distance");
-        l.add("2 3     <num>                     lower half distance");
-        l.add("3 .       <num>                   upper half distance");
-        l.add("1 2   nexthop                     specify default nexthop");
-        l.add("2 3     <addr>                    lower half nexthop");
-        l.add("3 .       <addr>                  upper half nexthop");
+        l.add(null, "1 2   distance                    specify default distance");
+        l.add(null, "2 3     <num>                     lower half distance");
+        l.add(null, "3 .       <num>                   upper half distance");
+        l.add(null, "1 2   nexthop                     specify default nexthop");
+        l.add(null, "2 3     <addr>                    lower half nexthop");
+        l.add(null, "3 .       <addr>                  upper half nexthop");
     }
 
     /**

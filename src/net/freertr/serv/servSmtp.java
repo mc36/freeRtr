@@ -286,30 +286,30 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  recursion                    recursive parameters");
-        l.add("2 .    enable                     allow recursion");
-        l.add("2 3    access-class               set access list");
-        l.add("3 .      <name>                   port number to use");
-        l.add("2 3    authentication             set authentication");
-        l.add("3 .      <name>                   name of authentication list");
-        l.add("1 2  bcc                          set bcc user");
-        l.add("2 .    <user>                     name of user");
-        l.add("1 2  local                        set local email address");
-        l.add("2 3    <user>                     name of local user");
-        l.add("3 4,.    <addr>                   local email address");
-        l.add("4 .        <user>                 name of bcc user");
-        l.add("1 2  forward                      set forward email address");
-        l.add("2 3    <user>                     remote email address");
-        l.add("3 4,.    <addr>                   local email address");
-        l.add("4 .        <user>                 name of bcc user");
-        l.add("1 2  path                         set root folder");
-        l.add("2 .    <path>                     name of root folder");
-        l.add("1 2  rbl-server                   set rbl server");
-        l.add("2 .    <path>                     name of server");
-        l.add("1 2  rbl-threshold                set rbl threshold");
-        l.add("2 .    <num>                      number of servers");
-        l.add("1 2  rbl-timeout                  set rbl timeout");
-        l.add("2 .    <num>                      number of servers");
+        l.add(null, "1 2  recursion                    recursive parameters");
+        l.add(null, "2 .    enable                     allow recursion");
+        l.add(null, "2 3    access-class               set access list");
+        l.add(null, "3 .      <name>                   port number to use");
+        l.add(null, "2 3    authentication             set authentication");
+        l.add(null, "3 .      <name>                   name of authentication list");
+        l.add(null, "1 2  bcc                          set bcc user");
+        l.add(null, "2 .    <user>                     name of user");
+        l.add(null, "1 2  local                        set local email address");
+        l.add(null, "2 3    <user>                     name of local user");
+        l.add(null, "3 4,.    <addr>                   local email address");
+        l.add(null, "4 .        <user>                 name of bcc user");
+        l.add(null, "1 2  forward                      set forward email address");
+        l.add(null, "2 3    <user>                     remote email address");
+        l.add(null, "3 4,.    <addr>                   local email address");
+        l.add(null, "4 .        <user>                 name of bcc user");
+        l.add(null, "1 2  path                         set root folder");
+        l.add(null, "2 .    <path>                     name of root folder");
+        l.add(null, "1 2  rbl-server                   set rbl server");
+        l.add(null, "2 .    <path>                     name of server");
+        l.add(null, "1 2  rbl-threshold                set rbl threshold");
+        l.add(null, "2 .    <num>                      number of servers");
+        l.add(null, "1 2  rbl-timeout                  set rbl timeout");
+        l.add(null, "2 .    <num>                      number of servers");
     }
 
     public String srvName() {

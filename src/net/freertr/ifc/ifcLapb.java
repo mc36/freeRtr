@@ -244,15 +244,15 @@ public class ifcLapb implements ifcUp, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in ms");
-        l.add("2 3     mode                        my line mode");
-        l.add("3 .       dce                       this side is dce");
-        l.add("3 .       dte                       this side is dte");
-        l.add("2 3     modulus                     modulus");
-        l.add("3 .       8                         use 3 bit modulus");
-        l.add("3 .       128                       use 7 bit modulus");
-        l.add("3 .       32768                     use 15 bit modulus");
+        l.add(null, "2 3     keepalive                   keepalive timer");
+        l.add(null, "3 .       <num>                     time in ms");
+        l.add(null, "2 3     mode                        my line mode");
+        l.add(null, "3 .       dce                       this side is dce");
+        l.add(null, "3 .       dte                       this side is dte");
+        l.add(null, "2 3     modulus                     modulus");
+        l.add(null, "3 .       8                         use 3 bit modulus");
+        l.add(null, "3 .       128                       use 7 bit modulus");
+        l.add(null, "3 .       32768                     use 15 bit modulus");
     }
 
     /**

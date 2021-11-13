@@ -375,24 +375,24 @@ public class rtrEigrp extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   router-id                   specify router id");
-        l.add("2 .     <addr>                    router id");
-        l.add("1 .   suppress-prefix             do not advertise interfaces");
-        l.add("1 2   kvals                       specify k values");
-        l.add("2 3     <num>                     k1");
-        l.add("3 4       <num>                   k2");
-        l.add("4 5         <num>                 k3");
-        l.add("5 6           <num>               k4");
-        l.add("6 .             <num>             k5");
-        l.add("1 2   stub                        specify stub");
-        l.add("2 2,.   conn                      connected");
-        l.add("2 2,.   stat                      static");
-        l.add("2 2,.   sum                       summary");
-        l.add("2 2,.   red                       redistribute");
-        l.add("2 2,.   leak                      leak map");
-        l.add("2 2,.   rx                        receive only");
-        l.add("1 2   as                          specify as number");
-        l.add("2 .     <num>                     as");
+        l.add(null, "1 2   router-id                   specify router id");
+        l.add(null, "2 .     <addr>                    router id");
+        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
+        l.add(null, "1 2   kvals                       specify k values");
+        l.add(null, "2 3     <num>                     k1");
+        l.add(null, "3 4       <num>                   k2");
+        l.add(null, "4 5         <num>                 k3");
+        l.add(null, "5 6           <num>               k4");
+        l.add(null, "6 .             <num>             k5");
+        l.add(null, "1 2   stub                        specify stub");
+        l.add(null, "2 2,.   conn                      connected");
+        l.add(null, "2 2,.   stat                      static");
+        l.add(null, "2 2,.   sum                       summary");
+        l.add(null, "2 2,.   red                       redistribute");
+        l.add(null, "2 2,.   leak                      leak map");
+        l.add(null, "2 2,.   rx                        receive only");
+        l.add(null, "1 2   as                          specify as number");
+        l.add(null, "2 .     <num>                     as");
     }
 
     /**

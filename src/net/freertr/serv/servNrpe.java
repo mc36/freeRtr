@@ -92,8 +92,8 @@ public class servNrpe extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  truncate                     truncate first line");
-        l.add("2 .    <num>                      upper limit in characters");
+        l.add(null, "1 2  truncate                     truncate first line");
+        l.add(null, "2 .    <num>                      upper limit in characters");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

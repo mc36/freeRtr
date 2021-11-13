@@ -73,12 +73,12 @@ public class userHelping {
      * @param l help text
      */
     protected static void getCfgGen(userHelping l) {
-        l.add("1 .    exit                go back to previous mode");
-        l.add("1 2,.  end                 close this config session");
-        l.add("2 2,.    <cmd>             parameters");
-        l.add("1 2    do                  execute one exec command");
-        l.add("2 2,.    <cmd>             exec command");
-        l.add("1 1    no                  negate a command");
+        l.add(null, "1 .    exit                go back to previous mode");
+        l.add(null, "1 2,.  end                 close this config session");
+        l.add(null, "2 2,.    <cmd>             parameters");
+        l.add(null, "1 2    do                  execute one exec command");
+        l.add(null, "2 2,.    <cmd>             exec command");
+        l.add(null, "1 1    no                  negate a command");
     }
 
     /**
@@ -87,7 +87,7 @@ public class userHelping {
      * @param l help text
      */
     protected static void getCfgHelp(userHelping l) {
-        l.add("1 2    show                running system information");
+        l.add(null, "1 2    show                running system information");
         userExec.getHelpShow(l, true);
         userExec.getHelpPipes(l, 110, true);
     }
@@ -139,9 +139,10 @@ public class userHelping {
     /**
      * add one menu line
      *
+     * @param loc local list
      * @param s string to add
      */
-    public void add(String s) {
+    public void add(List<String> loc, String s) {
         userHelpingData d = new userHelpingData();
         d.set(s);
         lines.add(d);
@@ -597,6 +598,17 @@ public class userHelping {
             }
             return;
         }
+        if (a.equals("loc")) {
+            if (loc == null) {
+                return;
+            }
+            for (i = 0; i < loc.size(); i++) {
+                userHelpingData res = d.copyBytes();
+                res.command = loc.get(i);
+                lines.add(res);
+            }
+            return;
+        }
     }
 
     /**
@@ -824,10 +836,11 @@ public class userHelping {
      * create a list of lines to a command string
      *
      * @param s command string to process
+     * @param ext extend if possible
      * @return line numbers over wich i get to the command level set to a last
      * one, or error from matchStr
      */
-    private userHelpingList whereAm(String s) {
+    private userHelpingList whereAm(String s, boolean ext) {
         s = s.trim();
         userHelpingList res = new userHelpingList();
         res.level = -1;
@@ -859,7 +872,10 @@ public class userHelping {
             i = lns.val(sel.level);
             res.add(i);
             if (lines.get(i).variable) {
-                String c = matchLong(lns, a);
+                String c = null;
+                if (ext) {
+                    c = matchLong(lns, a);
+                }
                 if (c == null) {
                     b += a + " ";
                 } else {
@@ -888,7 +904,7 @@ public class userHelping {
         if (a == null) {
             return "";
         }
-        userHelpingList d = whereAm(a);
+        userHelpingList d = whereAm(a, false);
         if (d.level < 0) {
             return "";
         }
@@ -902,7 +918,7 @@ public class userHelping {
      * @return guessed line, variables preserved, null if no guess
      */
     public String guessLine(String a) {
-        userHelpingList d = whereAm(a);
+        userHelpingList d = whereAm(a, true);
         return d.str;
     }
 
@@ -913,7 +929,7 @@ public class userHelping {
      * @return false if valid command, true if an invalid command
      */
     public boolean endOfCmd(String s) {
-        userHelpingList d = whereAm(s);
+        userHelpingList d = whereAm(s, false);
         if (d.level < 0) {
             return true;
         }
@@ -1101,7 +1117,7 @@ public class userHelping {
      * @return array of strings that user should read
      */
     public List<String> getHelp(String s, boolean oneLine) {
-        userHelpingList d = whereAm(s);
+        userHelpingList d = whereAm(s, true);
         String cmd = "";
         for (int i = 0; i < d.num(); i++) {
             cmd += " " + lines.get(d.val(i)).command;
@@ -1110,7 +1126,7 @@ public class userHelping {
             cmd = cmd.substring(1, cmd.length());
         }
         if (d.level == -2) {
-            d = whereAm(cmd);
+            d = whereAm(cmd, true);
             s = s.trim();
             int i = s.lastIndexOf(" ") + 1;
             if (i < 1) {
@@ -1143,7 +1159,7 @@ public class userHelping {
             if (i < 1) {
                 i = 0;
             }
-            d = whereAm(s.substring(0, i - 1));
+            d = whereAm(s.substring(0, i - 1), true);
             s = s.substring(i, s.length());
             List<String> lst = formatHelp(d.level);
             lst = startsWith(lst, "  " + s);

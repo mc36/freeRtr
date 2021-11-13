@@ -296,12 +296,12 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             a = "execute " + command;
         }
         a = lev + " " + s + " " + name + " " + a;
-        l.add(a);
+        l.add(null, a);
         if (parameter == paraMode.never) {
             return;
         }
         s = "" + (lev + 1);
-        l.add(s + " " + s + ",. <text>   parameter");
+        l.add(null, s + " " + s + ",. <text>   parameter");
     }
 
     /**

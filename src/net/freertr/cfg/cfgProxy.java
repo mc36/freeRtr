@@ -77,37 +77,37 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 3,. description                   specify description");
-        l.add("3 3,.   <str>                       text");
-        l.add("1 2  protocol                       specify protocol to use");
-        l.add("2 .    local                        select local vrf");
-        l.add("2 .    socks4                       select socks v4");
-        l.add("2 .    socks5                       select socks v5");
-        l.add("2 .    http                         select http connect");
-        l.add("2 .    hostos                       select host os stack");
-        l.add("1 2  security                       select security protocol");
-        l.add("2 .    ssh                          use secure shell");
-        l.add("2 .    tls                          use transport layer security");
-        l.add("2 .    dtls                         use datagram transport layer security");
-        l.add("2 .    telnet                       use telnet protocol");
-        l.add("1 2  username                       username to send");
-        l.add("2 .    <name>                       username");
-        l.add("1 2  password                       password to send");
-        l.add("2 .    <name>                       username");
-        l.add("1 2  recursive                      name of profile to use");
-        l.add("2 .    <name>                       profile name");
-        l.add("1 2  vrf                            name of vrf to find target in");
-        l.add("2 .    <name>                       vrf name");
-        l.add("1 2  source                         name of source interface");
-        l.add("2 .    <name>                       interface name");
-        l.add("1 2  target                         specify address of proxy");
-        l.add("2 .    <name>                       name or address");
-        l.add("1 2  port                           specify port of proxy");
-        l.add("2 .    <num>                        port number");
-        l.add("1 2  prefer                         prefer ip protocol");
-        l.add("2 .    none                         default");
-        l.add("2 .    ipv4                         ipv4");
-        l.add("2 .    ipv6                         ipv6");
+        l.add(null, "1 3,. description                   specify description");
+        l.add(null, "3 3,.   <str>                       text");
+        l.add(null, "1 2  protocol                       specify protocol to use");
+        l.add(null, "2 .    local                        select local vrf");
+        l.add(null, "2 .    socks4                       select socks v4");
+        l.add(null, "2 .    socks5                       select socks v5");
+        l.add(null, "2 .    http                         select http connect");
+        l.add(null, "2 .    hostos                       select host os stack");
+        l.add(null, "1 2  security                       select security protocol");
+        l.add(null, "2 .    ssh                          use secure shell");
+        l.add(null, "2 .    tls                          use transport layer security");
+        l.add(null, "2 .    dtls                         use datagram transport layer security");
+        l.add(null, "2 .    telnet                       use telnet protocol");
+        l.add(null, "1 2  username                       username to send");
+        l.add(null, "2 .    <name>                       username");
+        l.add(null, "1 2  password                       password to send");
+        l.add(null, "2 .    <name>                       username");
+        l.add(null, "1 2  recursive                      name of profile to use");
+        l.add(null, "2 .    <name>                       profile name");
+        l.add(null, "1 2  vrf                            name of vrf to find target in");
+        l.add(null, "2 .    <name>                       vrf name");
+        l.add(null, "1 2  source                         name of source interface");
+        l.add(null, "2 .    <name>                       interface name");
+        l.add(null, "1 2  target                         specify address of proxy");
+        l.add(null, "2 .    <name>                       name or address");
+        l.add(null, "1 2  port                           specify port of proxy");
+        l.add(null, "2 .    <num>                        port number");
+        l.add(null, "1 2  prefer                         prefer ip protocol");
+        l.add(null, "2 .    none                         default");
+        l.add(null, "2 .    ipv4                         ipv4");
+        l.add(null, "2 .    ipv6                         ipv6");
     }
 
     public String getPrompt() {

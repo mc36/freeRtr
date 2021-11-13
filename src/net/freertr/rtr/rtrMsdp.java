@@ -190,22 +190,22 @@ public class rtrMsdp extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add("1 2   neighbor                    specify neighbor parameters");
-        l.add("2 3     <addr>                    address of peer");
-        l.add("3 .       enable                  enable this peer");
-        l.add("3 4       description             describe this neighbor");
-        l.add("4 .         <name>                description of neighbor");
-        l.add("3 4       password                set session password");
-        l.add("4 .         <text>                tcp password");
-        l.add("3 4       update-source           connection source for this peer");
-        l.add("4 .         <name>                name of interface");
-        l.add("3 4       timer                   neighbor keepalive times");
-        l.add("4 5         <num>                 keepalive in ms");
-        l.add("5 6           <num>               hold time in ms");
-        l.add("6 7             <num>             refresh time in ms");
-        l.add("7 .               <num>           flush time in ms");
-        l.add("3 .       shutdown                connection disabled for this peer");
-        l.add("3 .       bfd                     enable bfd triggered down");
+        l.add(null, "1 2   neighbor                    specify neighbor parameters");
+        l.add(null, "2 3     <addr>                    address of peer");
+        l.add(null, "3 .       enable                  enable this peer");
+        l.add(null, "3 4       description             describe this neighbor");
+        l.add(null, "4 .         <name>                description of neighbor");
+        l.add(null, "3 4       password                set session password");
+        l.add(null, "4 .         <text>                tcp password");
+        l.add(null, "3 4       update-source           connection source for this peer");
+        l.add(null, "4 .         <name>                name of interface");
+        l.add(null, "3 4       timer                   neighbor keepalive times");
+        l.add(null, "4 5         <num>                 keepalive in ms");
+        l.add(null, "5 6           <num>               hold time in ms");
+        l.add(null, "6 7             <num>             refresh time in ms");
+        l.add(null, "7 .               <num>           flush time in ms");
+        l.add(null, "3 .       shutdown                connection disabled for this peer");
+        l.add(null, "3 .       bfd                     enable bfd triggered down");
     }
 
     /**

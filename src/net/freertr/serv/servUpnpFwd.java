@@ -98,8 +98,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  target                 hub address to forward");
-        l.add("2 .    <addr>               address of hub");
+        l.add(null, "1 2  target                 hub address to forward");
+        l.add(null, "2 .    <addr>               address of hub");
     }
 
     public String srvName() {

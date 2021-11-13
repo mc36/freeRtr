@@ -177,22 +177,22 @@ public class servMultiplexer extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 .  logging                      set logging");
-        l.add("1 2  timeout                      set timeout on connection");
-        l.add("2 .    <num>                      timeout in ms");
-        l.add("1 2  buffer                       set buffer size on connection");
-        l.add("2 .    <num>                      buffer in bytes");
-        l.add("1 2  target                       name of server");
-        l.add("2 3    <num>                      number of target");
-        l.add("3 4      <name>                   name of vrf");
-        l.add("4 5        <name>                 name of interface");
-        l.add("5 6          <addr>               address of target");
-        l.add("6 7,.          <port>             port on target");
-        l.add("7 7,.            rx               only rx");
-        l.add("7 7,.            tx               only tx");
-        l.add("7 7,.            logging          set logging");
-        l.add("7 7,.            clear            clear clients on disconnect");
-        l.add("7 7,.            nowait           use nonblocking send");
+        l.add(null, "1 .  logging                      set logging");
+        l.add(null, "1 2  timeout                      set timeout on connection");
+        l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 2  buffer                       set buffer size on connection");
+        l.add(null, "2 .    <num>                      buffer in bytes");
+        l.add(null, "1 2  target                       name of server");
+        l.add(null, "2 3    <num>                      number of target");
+        l.add(null, "3 4      <name>                   name of vrf");
+        l.add(null, "4 5        <name>                 name of interface");
+        l.add(null, "5 6          <addr>               address of target");
+        l.add(null, "6 7,.          <port>             port on target");
+        l.add(null, "7 7,.            rx               only rx");
+        l.add(null, "7 7,.            tx               only tx");
+        l.add(null, "7 7,.            logging          set logging");
+        l.add(null, "7 7,.            clear            clear clients on disconnect");
+        l.add(null, "7 7,.            nowait           use nonblocking send");
     }
 
     public String srvName() {

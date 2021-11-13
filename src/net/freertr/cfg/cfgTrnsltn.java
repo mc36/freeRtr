@@ -143,27 +143,27 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 3,. description          specify description");
-        l.add("3 3,.   <str>              text");
-        l.add("1 2    remove              remove string");
-        l.add("2 2,.    <str>             regular expression");
-        l.add("1 2    track               consider tracker");
-        l.add("2 .      <name>            name of tracker");
-        l.add("1 2    time                consider time");
-        l.add("2 .      <name>            name of time map");
-        l.add("1 2    match               match string");
-        l.add("2 2,.    <str>             regular expression");
-        l.add("1 2    replace             replace string");
-        l.add("2 3      <str>             regular expression");
-        l.add("3 .        <str>           new string");
-        l.add("1 2    text                place text");
-        l.add("2 2,.    <str>             text");
-        l.add("1 2    variable            place variable from match");
-        l.add("2 2,.    <str>             variable name");
-        l.add("1 2    character           place character");
-        l.add("2 2,.    <str>             variable name");
-        l.add("1 .    log                 log translations");
-        l.add("1 .    last                stop after translation");
+        l.add(null, "1 3,. description          specify description");
+        l.add(null, "3 3,.   <str>              text");
+        l.add(null, "1 2    remove              remove string");
+        l.add(null, "2 2,.    <str>             regular expression");
+        l.add(null, "1 2    track               consider tracker");
+        l.add(null, "2 .      <name>            name of tracker");
+        l.add(null, "1 2    time                consider time");
+        l.add(null, "2 .      <name>            name of time map");
+        l.add(null, "1 2    match               match string");
+        l.add(null, "2 2,.    <str>             regular expression");
+        l.add(null, "1 2    replace             replace string");
+        l.add(null, "2 3      <str>             regular expression");
+        l.add(null, "3 .        <str>           new string");
+        l.add(null, "1 2    text                place text");
+        l.add(null, "2 2,.    <str>             text");
+        l.add(null, "1 2    variable            place variable from match");
+        l.add(null, "2 2,.    <str>             variable name");
+        l.add(null, "1 2    character           place character");
+        l.add(null, "2 2,.    <str>             variable name");
+        l.add(null, "1 .    log                 log translations");
+        l.add(null, "1 .    last                stop after translation");
     }
 
     public void doCfgStr(cmds cmd) {

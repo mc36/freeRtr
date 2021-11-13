@@ -69,11 +69,11 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 2  timeout                      set timeout");
-        l.add("2 .    <num>                      timeout in ms");
-        l.add("1 .  before                       log on session start");
-        l.add("1 .  after                        log on session stop");
-        l.add("1 .  dropped                      log on session stop");
+        l.add(null, "1 2  timeout                      set timeout");
+        l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 .  before                       log on session start");
+        l.add(null, "1 .  after                        log on session stop");
+        l.add(null, "1 .  dropped                      log on session stop");
     }
 
     public String getPrompt() {

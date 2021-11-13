@@ -60,7 +60,7 @@ public abstract class ifcVlan implements ifcUp {
      * @param l storage
      */
     public static void vlnGetHelp(userHelping l) {
-        l.add("2 .     subif-macs                  assign different macs to subinterfaces");
+        l.add(null, "2 .     subif-macs                  assign different macs to subinterfaces");
     }
 
     /**

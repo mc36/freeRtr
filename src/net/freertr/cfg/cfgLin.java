@@ -162,16 +162,16 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         line.getHelp(l);
-        l.add("1 .  log-monitor                    set as monitoring line");
-        l.add("1 .  dedicated                      set as dedicated line");
-        l.add("1 .  disabled                       set as disabled line");
-        l.add("1 2  script                         set scripts to use");
-        l.add("2 3    init                         script to run on before activation");
-        l.add("3 .      <name>                     name of script");
-        l.add("2 3    activate                     script to run on after activation");
-        l.add("3 .      <name>                     name of script");
-        l.add("2 3    hangup                       script to run on after session");
-        l.add("3 .      <name>                     name of script");
+        l.add(null, "1 .  log-monitor                    set as monitoring line");
+        l.add(null, "1 .  dedicated                      set as dedicated line");
+        l.add(null, "1 .  disabled                       set as disabled line");
+        l.add(null, "1 2  script                         set scripts to use");
+        l.add(null, "2 3    init                         script to run on before activation");
+        l.add(null, "3 .      <name>                     name of script");
+        l.add(null, "2 3    activate                     script to run on after activation");
+        l.add(null, "3 .      <name>                     name of script");
+        l.add(null, "2 3    hangup                       script to run on after session");
+        l.add(null, "3 .      <name>                     name of script");
     }
 
     public synchronized void doCfgStr(cmds cmd) {

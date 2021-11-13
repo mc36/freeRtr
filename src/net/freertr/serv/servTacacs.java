@@ -180,21 +180,21 @@ public class servTacacs extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  authentication               set user list to use");
-        l.add("2 .    <name>                     name of list");
-        l.add("1 2  authorization                set user list to use");
-        l.add("2 .    <name>                     name of list");
-        l.add("1 2  secret                       set shared secret");
-        l.add("2 .    <name>                     secret");
-        l.add("1 2  username                     set username message");
-        l.add("2 .    <text>                     message");
-        l.add("1 2  password                     set password message");
-        l.add("2 .    <text>                     message");
-        l.add("1 2  success                      set success message");
-        l.add("2 .    <text>                     message");
-        l.add("1 2  failure                      set failure message");
-        l.add("2 .    <text>                     message");
-        l.add("1 .  logging                      set logging of actions");
+        l.add(null, "1 2  authentication               set user list to use");
+        l.add(null, "2 .    <name>                     name of list");
+        l.add(null, "1 2  authorization                set user list to use");
+        l.add(null, "2 .    <name>                     name of list");
+        l.add(null, "1 2  secret                       set shared secret");
+        l.add(null, "2 .    <name>                     secret");
+        l.add(null, "1 2  username                     set username message");
+        l.add(null, "2 .    <text>                     message");
+        l.add(null, "1 2  password                     set password message");
+        l.add(null, "2 .    <text>                     message");
+        l.add(null, "1 2  success                      set success message");
+        l.add(null, "2 .    <text>                     message");
+        l.add(null, "1 2  failure                      set failure message");
+        l.add(null, "2 .    <text>                     message");
+        l.add(null, "1 .  logging                      set logging of actions");
     }
 
     public String srvName() {

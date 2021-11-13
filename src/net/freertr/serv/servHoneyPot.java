@@ -118,9 +118,9 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  script                       script to execute");
-        l.add("2 .    <name>                     script name");
-        l.add("1 .  resolve                      resolve addresses");
+        l.add(null, "1 2  script                       script to execute");
+        l.add(null, "2 .    <name>                     script name");
+        l.add(null, "1 .  resolve                      resolve addresses");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

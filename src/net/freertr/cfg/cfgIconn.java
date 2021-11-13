@@ -67,15 +67,15 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     }
 
     private void getSideHelp(userHelping l) {
-        l.add("2 .     <name>                      name of interface");
+        l.add(null, "2 .     <name>                      name of interface");
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 3,. description                   specify description");
-        l.add("3 3,.   <str>                       text");
-        l.add("1 2  side1                          specify first side of connection");
+        l.add(null, "1 3,. description                   specify description");
+        l.add(null, "3 3,.   <str>                       text");
+        l.add(null, "1 2  side1                          specify first side of connection");
         getSideHelp(l);
-        l.add("1 2  side2                          specify seconds side of connection");
+        l.add(null, "1 2  side2                          specify seconds side of connection");
         getSideHelp(l);
     }
 

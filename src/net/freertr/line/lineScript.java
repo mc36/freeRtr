@@ -85,31 +85,31 @@ public class lineScript {
      * @param l where to write
      */
     public void getHelp(userHelping l) {
-        l.add("1 2  sequence            set sequence number");
-        l.add("2 1    <num>             sequence number");
-        l.add("1 2  tcl                 execute tcl commands");
-        l.add("2 2,.  <text>            tcl command");
-        l.add("1 2  sleep               wait some time");
-        l.add("2 .    <num>             ms to wait");
-        l.add("1 .  success             exit with success");
-        l.add("1 .  failure             exit with failure");
-        l.add("1 .  disconnect          disconnect session");
-        l.add("1 2  onerror             go to sequence on error");
-        l.add("2 .    <num>             ms to wait");
-        l.add("1 2  goto                go to sequence");
-        l.add("2 .    <num>             ms to wait");
-        l.add("1 2  send                send text to line");
-        l.add("2 2,.  <text>            text to send");
-        l.add("1 2  password            send text to line");
-        l.add("2 2,.  <text>            text to send");
-        l.add("1 2  recv                wait for text to arrive");
-        l.add("2 3    <time>            timeout in ms");
-        l.add("3 3,.    <text>          regexp to wait");
-        l.add("1 2  binsend             send binary to line");
-        l.add("2 2,.  <text>            ascii code");
-        l.add("1 2  binrecv             wait for binary to arrive");
-        l.add("2 3    <time>            timeout in ms");
-        l.add("3 3,.    <text>          regexp to wait");
+        l.add(null, "1 2  sequence            set sequence number");
+        l.add(null, "2 1    <num>             sequence number");
+        l.add(null, "1 2  tcl                 execute tcl commands");
+        l.add(null, "2 2,.  <text>            tcl command");
+        l.add(null, "1 2  sleep               wait some time");
+        l.add(null, "2 .    <num>             ms to wait");
+        l.add(null, "1 .  success             exit with success");
+        l.add(null, "1 .  failure             exit with failure");
+        l.add(null, "1 .  disconnect          disconnect session");
+        l.add(null, "1 2  onerror             go to sequence on error");
+        l.add(null, "2 .    <num>             ms to wait");
+        l.add(null, "1 2  goto                go to sequence");
+        l.add(null, "2 .    <num>             ms to wait");
+        l.add(null, "1 2  send                send text to line");
+        l.add(null, "2 2,.  <text>            text to send");
+        l.add(null, "1 2  password            send text to line");
+        l.add(null, "2 2,.  <text>            text to send");
+        l.add(null, "1 2  recv                wait for text to arrive");
+        l.add(null, "2 3    <time>            timeout in ms");
+        l.add(null, "3 3,.    <text>          regexp to wait");
+        l.add(null, "1 2  binsend             send binary to line");
+        l.add(null, "2 2,.  <text>            ascii code");
+        l.add(null, "1 2  binrecv             wait for binary to arrive");
+        l.add(null, "2 3    <time>            timeout in ms");
+        l.add(null, "3 3,.    <text>          regexp to wait");
     }
 
     /**

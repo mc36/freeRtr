@@ -207,11 +207,11 @@ public class ifcIsdn implements ifcUp, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add("2 3     keepalive                   keepalive timer");
-        l.add("3 .       <num>                     time in ms");
-        l.add("2 3     mode                        my line mode");
-        l.add("3 .       dce                       this side is dce");
-        l.add("3 .       dte                       this side is dte");
+        l.add(null, "2 3     keepalive                   keepalive timer");
+        l.add(null, "3 .       <num>                     time in ms");
+        l.add(null, "2 3     mode                        my line mode");
+        l.add(null, "3 .       dce                       this side is dce");
+        l.add(null, "3 .       dte                       this side is dte");
     }
 
     /**

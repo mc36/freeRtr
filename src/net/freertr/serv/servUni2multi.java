@@ -216,23 +216,23 @@ public class servUni2multi extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  timeout                      timeout of client");
-        l.add("2 .    <num>                      milliseconds");
-        l.add("1 2  source                       specify translated source");
-        l.add("2 3    interface                  interface to use");
-        l.add("3 .      <name>                   name of interface");
-        l.add("2 3    port                       port number");
-        l.add("3 .      <num>                    number");
-        l.add("1 2  target                       specify translated target");
-        l.add("2 3    port                       port number");
-        l.add("3 .      <num>                    number");
-        l.add("2 3    ipv4                       ipv4 range");
-        l.add("3 .      <addr>                   prefix");
-        l.add("2 3    ipv6                       ipv6 range");
-        l.add("3 .      <addr>                   prefix");
-        l.add("1 .  logging                      log translations");
-        l.add("1 2  script                       script to invoke");
-        l.add("2 .    <name>                     name of script");
+        l.add(null, "1 2  timeout                      timeout of client");
+        l.add(null, "2 .    <num>                      milliseconds");
+        l.add(null, "1 2  source                       specify translated source");
+        l.add(null, "2 3    interface                  interface to use");
+        l.add(null, "3 .      <name>                   name of interface");
+        l.add(null, "2 3    port                       port number");
+        l.add(null, "3 .      <num>                    number");
+        l.add(null, "1 2  target                       specify translated target");
+        l.add(null, "2 3    port                       port number");
+        l.add(null, "3 .      <num>                    number");
+        l.add(null, "2 3    ipv4                       ipv4 range");
+        l.add(null, "3 .      <addr>                   prefix");
+        l.add(null, "2 3    ipv6                       ipv6 range");
+        l.add(null, "3 .      <addr>                   prefix");
+        l.add(null, "1 .  logging                      log translations");
+        l.add(null, "1 2  script                       script to invoke");
+        l.add(null, "2 .    <name>                     name of script");
     }
 
     public String srvName() {

@@ -153,9 +153,9 @@ public class servSyslog extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  file                         set log file");
-        l.add("2 .    <file>                     log file");
-        l.add("1 .  local                        set local logging");
+        l.add(null, "1 2  file                         set log file");
+        l.add(null, "2 .    <file>                     log file");
+        l.add(null, "1 .  local                        set local logging");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

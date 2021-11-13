@@ -133,12 +133,12 @@ public class servModem extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add("1 2  codec                          set codec to use");
-        l.add("2 .    alaw                         g711 a law");
-        l.add("2 .    ulaw                         g711 u law");
-        l.add("1 2  mode                           set mode to use");
-        l.add("2 .    answer                       answer");
-        l.add("2 .    originate                    originate");
+        l.add(null, "1 2  codec                          set codec to use");
+        l.add(null, "2 .    alaw                         g711 a law");
+        l.add(null, "2 .    ulaw                         g711 u law");
+        l.add(null, "1 2  mode                           set mode to use");
+        l.add(null, "2 .    answer                       answer");
+        l.add(null, "2 .    originate                    originate");
         lin.getHelp(l);
     }
 

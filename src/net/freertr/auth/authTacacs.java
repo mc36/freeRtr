@@ -48,12 +48,12 @@ public class authTacacs extends authGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add("1 2  server              specify server");
-        l.add("2 .    <name>            name of server");
-        l.add("1 2  secret              specify secret");
-        l.add("2 .    <text>            shared secret");
-        l.add("1 2  privilege           set default privilege");
-        l.add("2 .    <num>             privilege of terminal");
+        l.add(null, "1 2  server              specify server");
+        l.add(null, "2 .    <name>            name of server");
+        l.add(null, "1 2  secret              specify secret");
+        l.add(null, "2 .    <text>            shared secret");
+        l.add(null, "1 2  privilege           set default privilege");
+        l.add(null, "2 .    <num>             privilege of terminal");
     }
 
     public boolean fromString(cmds cmd) {
