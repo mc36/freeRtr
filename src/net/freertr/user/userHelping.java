@@ -2,6 +2,8 @@ package net.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.extMrkLng;
@@ -104,6 +106,26 @@ public class userHelping {
         userHelpingData d = new userHelpingData();
         d.set(s);
         lines.add(d);
+        int i = d.command.indexOf(":");
+        if (i < 0) {
+            return;
+        }
+        String a = d.command.substring(i + 1, d.command.length());
+        if (d.variable) {
+            a = a.substring(0, a.length() - 1);
+        }
+        if (a.equals("ifc")) {
+            for (i = 0; i < cfgAll.ifaces.size(); i++) {
+                cfgIfc ntry = cfgAll.ifaces.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
     }
 
     /**

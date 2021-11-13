@@ -880,7 +880,7 @@ public class userExec {
         hl.add("3 .        hwptraffic            hardware packet traffic listing");
         hl.add("3 .        swptraffic            software packet traffic listing");
         hl.add("3 .        vrf                   vrf listing");
-        hl.add("3 4,.      [name]                name of (sub)interface");
+        hl.add("3 4,.      [name:ifc]            name of (sub)interface");
         hl.add("4 .          full                full listing");
         hl.add("4 .          rates               traffic rates");
         hl.add("4 .          realtime            realtime counters");
