@@ -735,15 +735,18 @@ public class userHelping {
     private userHelpingList matchStr(userHelpingList lns, String s, boolean ext) {
         byte[] b1 = s.trim().toLowerCase().getBytes();
         userHelpingList d = new userHelpingList();
+        userHelpingList l = new userHelpingList();
         for (int o = 0; o < lns.num(); o++) {
             int i = lns.val(o);
             if (i < 0) {
                 d.add(0);
+                l.add(0);
                 continue;
             }
             userHelpingData dat = lines.get(i);
             if (dat.variable) {
                 d.add(-1);
+                l.add(-1);
                 continue;
             }
             byte[] b2 = dat.command.toLowerCase().getBytes();
@@ -759,6 +762,7 @@ public class userHelping {
                 }
             }
             d.add(i);
+            l.add(b2.length);
         }
         int num = -4;
         int max = -1;
@@ -779,13 +783,18 @@ public class userHelping {
             max = cur;
             num = i;
         }
+        if (num >= 0) {
+            if (max == l.val(num)) {
+                ext = false;
+            }
+        }
         if (max != b1.length) {
             num = -3;
         }
         if ((num < 0) && (vld >= 0)) {
             num = vld;
         }
-        if (!ext && (vld >= 0)) {
+        if (ext && (vld >= 0)) {
             num = vld;
         }
         d.level = num;
@@ -860,7 +869,7 @@ public class userHelping {
                 a = s.substring(0, i).trim();
                 s = s.substring(i, s.length()).trim();
             }
-            userHelpingList sel = matchStr(lns, a, ext);
+            userHelpingList sel = matchStr(lns, a, !ext);
             if (sel.level < 0) {
                 res.level = sel.level;
                 if (s.length() > 0) {
