@@ -2397,7 +2397,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("3 .       <name>                  name of policy map");
         cfgRtr.getRedistHelp(l, 1);
         l.add("1 2   afi-vrf                     select vrf to advertise");
-        l.add("2 3     <vrf>                     name of routing table");
+        l.add("2 3     <name:vrf>                name of routing table");
         l.add("3 .       enable                  enable processing");
         l.add("3 4       mvpn                    mvpn advertisement");
         l.add("4 .         <name>                select source to advertise");
@@ -2411,7 +2411,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("4 .         <name>                name of policy map");
         cfgRtr.getRedistHelp(l, 2);
         l.add("1 2   afi-ovrf                    select other vrf to advertise");
-        l.add("2 3     <vrf>                     name of routing table");
+        l.add("2 3     <name:vrf>                name of routing table");
         l.add("3 .       enable                  enable processing");
         l.add("3 4       mvpn                    mvpn advertisement");
         l.add("4 .         <name>                select source to advertise");

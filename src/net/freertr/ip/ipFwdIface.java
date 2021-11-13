@@ -583,7 +583,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("3 4      sequence                   sequence number");
         l.add("4 5        <num>                    number");
         l.add("5 6          <name>                 access list name");
-        l.add("6 7,.          <vrf>                target vrf");
+        l.add("6 7,.          <name:vrf>           target vrf");
         l.add("7 8              interface          set target interface");
         l.add("8 7,.              <name>           interface name");
         l.add("7 8              nexthop            set target address");

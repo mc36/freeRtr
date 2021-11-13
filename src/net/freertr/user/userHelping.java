@@ -2,17 +2,26 @@ package net.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
+import net.freertr.cfg.cfgCert;
 import net.freertr.cfg.cfgChat;
 import net.freertr.cfg.cfgCheck;
+import net.freertr.cfg.cfgEvntmgr;
+import net.freertr.cfg.cfgIconn;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgIpsec;
+import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgLin;
 import net.freertr.cfg.cfgMenu;
 import net.freertr.cfg.cfgMtrack;
 import net.freertr.cfg.cfgObjnet;
 import net.freertr.cfg.cfgObjprt;
+import net.freertr.cfg.cfgPlymp;
+import net.freertr.cfg.cfgPool;
 import net.freertr.cfg.cfgPrcss;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgProxy;
@@ -22,12 +31,17 @@ import net.freertr.cfg.cfgSched;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgSensor;
 import net.freertr.cfg.cfgSessn;
+import net.freertr.cfg.cfgTime;
 import net.freertr.cfg.cfgTlmtry;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.cfg.cfgXconn;
+import net.freertr.cry.cryKeyDSA;
+import net.freertr.cry.cryKeyECDSA;
+import net.freertr.cry.cryKeyRSA;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.extMrkLng;
@@ -247,6 +261,90 @@ public class userHelping {
             }
             return;
         }
+        if (a.equals("pm")) {
+            for (i = 0; i < cfgAll.policymaps.size(); i++) {
+                cfgPlymp ntry = cfgAll.policymaps.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("tm")) {
+            for (i = 0; i < cfgAll.timemaps.size(); i++) {
+                cfgTime ntry = cfgAll.timemaps.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("ips")) {
+            for (i = 0; i < cfgAll.ipsecs.size(); i++) {
+                cfgIpsec ntry = cfgAll.ipsecs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("rsa")) {
+            for (i = 0; i < cfgAll.rsakeys.size(); i++) {
+                cfgKey<cryKeyRSA> ntry = cfgAll.rsakeys.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("dsa")) {
+            for (i = 0; i < cfgAll.dsakeys.size(); i++) {
+                cfgKey<cryKeyDSA> ntry = cfgAll.dsakeys.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("ecd")) {
+            for (i = 0; i < cfgAll.ecdsakeys.size(); i++) {
+                cfgKey<cryKeyECDSA> ntry = cfgAll.ecdsakeys.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("crt")) {
+            for (i = 0; i < cfgAll.certs.size(); i++) {
+                cfgCert ntry = cfgAll.certs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
         if (a.equals("ses")) {
             for (i = 0; i < cfgAll.sessns.size(); i++) {
                 cfgSessn ntry = cfgAll.sessns.get(i);
@@ -286,6 +384,18 @@ public class userHelping {
         if (a.equals("tlm")) {
             for (i = 0; i < cfgAll.tlmtrydst.size(); i++) {
                 cfgTlmtry ntry = cfgAll.tlmtrydst.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("eem")) {
+            for (i = 0; i < cfgAll.eventmgrs.size(); i++) {
+                cfgEvntmgr ntry = cfgAll.eventmgrs.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -343,6 +453,30 @@ public class userHelping {
             }
             return;
         }
+        if (a.equals("pl4")) {
+            for (i = 0; i < cfgAll.ip4pool.size(); i++) {
+                cfgPool<addrIPv4> ntry = cfgAll.ip4pool.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("pl6")) {
+            for (i = 0; i < cfgAll.ip4pool.size(); i++) {
+                cfgPool<addrIPv6> ntry = cfgAll.ip6pool.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
         if (a.equals("scr")) {
             for (i = 0; i < cfgAll.scripts.size(); i++) {
                 cfgScrpt ntry = cfgAll.scripts.get(i);
@@ -358,6 +492,30 @@ public class userHelping {
         if (a.equals("vpd")) {
             for (i = 0; i < cfgAll.vpdns.size(); i++) {
                 cfgVpdn ntry = cfgAll.vpdns.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("xcn")) {
+            for (i = 0; i < cfgAll.xconnects.size(); i++) {
+                cfgXconn ntry = cfgAll.xconnects.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("cnn")) {
+            for (i = 0; i < cfgAll.iconnects.size(); i++) {
+                cfgIconn ntry = cfgAll.iconnects.get(i);
                 if (ntry == null) {
                     continue;
                 }

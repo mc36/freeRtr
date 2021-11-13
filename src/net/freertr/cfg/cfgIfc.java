@@ -5956,7 +5956,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add("3 .       <name>                    name of address pool");
         l.add("1 2   tunnel                        protocol-over-protocol tunneling");
         l.add("2 3     vrf                         set encapsulated vrf membership");
-        l.add("3 .       <vrf>                     name of vrf where encapsulated packets");
+        l.add("3 .       <name:vrf>                name of vrf where encapsulated packets");
         l.add("2 3     mode                        set encapsulation method");
         l.add("3 .       gre                       generic route encapsulation protocol");
         l.add("3 .       udpgre                    generic route encapsulation in udp");
