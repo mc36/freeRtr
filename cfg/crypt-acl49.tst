@@ -11,11 +11,11 @@ access-list test6a
  permit all any all 4321::102 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
  permit all any all 4321::202 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all
  exit
-access-list test4
+access-list test4b
  evaluate deny test4a
  permit all any all any all
  exit
-access-list test6
+access-list test6b
  evaluate deny test6a
  permit all any all any all
  exit
@@ -36,8 +36,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234::1 ffff:ffff::
- ipv4 access-group-in test4
- ipv6 access-group-in test6
+ ipv4 access-group-in test4b
+ ipv6 access-group-in test6b
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
 ipv6 route v1 :: :: 1234::2

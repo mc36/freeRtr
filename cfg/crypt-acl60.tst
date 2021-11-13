@@ -9,11 +9,11 @@ access-list test4a
 access-list test6a
  permit all any 123 any all
  exit
-access-list test4
+access-list test4b
  evaluate deny test4a
  permit all any all any all
  exit
-access-list test6
+access-list test6b
  evaluate deny test6a
  permit all any all any all
  exit
@@ -24,8 +24,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234::1 ffff:ffff::
- ipv4 access-group-out test4
- ipv6 access-group-out test6
+ ipv4 access-group-out test4b
+ ipv6 access-group-out test6b
  exit
 int tun1
  tun vrf v1

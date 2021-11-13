@@ -58,11 +58,11 @@ prefix-list p4a
 prefix-list p6a
  sequence 10 permit 4321::10/124 le 128
  exit
-prefix-list p4
+prefix-list p4b
  sequence 10 evaluate deny p4a
  sequence 20 permit 0.0.0.0/0 le 32
  exit
-prefix-list p6
+prefix-list p6b
  sequence 10 evaluate deny p6a
  sequence 20 permit ::/0 le 128
  exit
@@ -70,29 +70,29 @@ router isis4 1
  vrf v1
  net 48.4444.1111.2222.00
  is-type level2
- red conn prefix-list p4
- red isis4 2 prefix-list p4
+ red conn prefix-list p4b
+ red isis4 2 prefix-list p4b
  exit
 router isis6 1
  vrf v1
  net 48.6666.1111.2222.00
  is-type level2
- red conn prefix-list p6
- red isis6 2 prefix-list p6
+ red conn prefix-list p6b
+ red isis6 2 prefix-list p6b
  exit
 router isis4 2
  vrf v1
  net 48.4444.2222.2222.00
  is-type level2
- red conn prefix-list p4
- red isis4 1 prefix-list p4
+ red conn prefix-list p4b
+ red isis4 1 prefix-list p4b
  exit
 router isis6 2
  vrf v1
  net 48.6666.2222.2222.00
  is-type level2
- red conn prefix-list p6
- red isis6 1 prefix-list p6
+ red conn prefix-list p6b
+ red isis6 1 prefix-list p6b
  exit
 int lo1
  vrf for v1
