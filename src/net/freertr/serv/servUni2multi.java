@@ -55,7 +55,7 @@ public class servUni2multi extends servGeneric implements prtServP {
     /**
      * source port
      */
-    public int sourceP = 12345;
+    public int sourceP = -1;
 
     /**
      * target ipv4 range
@@ -88,7 +88,7 @@ public class servUni2multi extends servGeneric implements prtServP {
     public final static String[] defaultL = {
         "server uni2multi .*! port " + portNum,
         "server uni2multi .*! protocol " + proto2string(protoAllDgrm),
-        "server uni2multi .*! source port 12345",
+        "server uni2multi .*! source port -1",
         "server uni2multi .*! target port 1234",
         "server uni2multi .*! no logging",
         "server uni2multi .*! no script",
@@ -290,7 +290,12 @@ public class servUni2multi extends servGeneric implements prtServP {
         tabNatCfgN natC = new tabNatCfgN();
         tabNatTraN natT = natC.createEntry(pck, fwd.icmpCore);
         natT.newSrcAddr = src.copyBytes();
-        natT.newSrcPort = sourceP;
+        if (sourceP == -1) {
+            natT.newSrcPort = bits.random(0xe000, 0xf000);
+        }
+        if (sourceP > 0) {
+            natT.newSrcPort = sourceP;
+        }
         addrIP trg = new addrIP();
         trg.fillRandom();
         trg.setAnd(trg, pfx.wildcard);
