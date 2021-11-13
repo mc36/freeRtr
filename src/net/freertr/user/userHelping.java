@@ -826,7 +826,7 @@ public class userHelping {
                 m = dat.command;
                 continue;
             }
-            String a = dat.command.toLowerCase();
+            String a = dat.command;
             for (i = 0;; i++) {
                 if (i >= m.length()) {
                     break;
@@ -834,7 +834,7 @@ public class userHelping {
                 if (i >= a.length()) {
                     break;
                 }
-                if (a.substring(i, i + 1).equals(m.substring(i, i + 1))) {
+                if (a.substring(i, i + 1).toLowerCase().equals(m.substring(i, i + 1).toLowerCase())) {
                     continue;
                 }
                 m = a.substring(0, i);
