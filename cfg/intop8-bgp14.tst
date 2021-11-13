@@ -1,5 +1,7 @@
 description interop8: bgp with php labels
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
@@ -80,6 +82,8 @@ interface ens4
  ipv6 address 1234:2::2/64
  no shutdown
  exit
+route-map all permit 10
+ exit
 router bgp 2
  neighbor 1.1.1.1 remote-as 1
  neighbor 1234:1::1 remote-as 1
@@ -92,11 +96,19 @@ router bgp 2
   no neighbor 1234:2::1 activate
  address-family ipv4 label
   neighbor 1.1.1.1 activate
+  neighbor 1.1.1.1 route-map all in
+  neighbor 1.1.1.1 route-map all out
   neighbor 1.1.2.1 activate
+  neighbor 1.1.2.1 route-map all in
+  neighbor 1.1.2.1 route-map all out
   redistribute connected
  address-family ipv6 label
   neighbor 1234:1::1 activate
+  neighbor 1234:1::1 route-map all in
+  neighbor 1234:1::1 route-map all out
   neighbor 1234:2::1 activate
+  neighbor 1234:2::1 route-map all in
+  neighbor 1234:2::1 route-map all out
   redistribute connected
  exit
 !

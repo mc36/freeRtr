@@ -1,5 +1,7 @@
 description interop8: ospf nssa area
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
@@ -18,7 +20,7 @@ router ospf6 1
  router 6.6.6.1
  area 1 ena
  no area 1 host
-! area 1 nssa
+ area 1 nssa
  exit
 int eth1
  vrf for v1
@@ -45,7 +47,7 @@ router ospf
  area 1 nssa
  exit
 router ospf6
-! area 1 nssa
+ area 1 nssa
  interface ens3 area 0.0.0.1
  interface lo area 0.0.0.1
  exit

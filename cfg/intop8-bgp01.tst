@@ -48,16 +48,22 @@ interface ens3
  ipv6 address 1234::2/64
  no shutdown
  exit
+route-map all permit 10
+ exit
 router bgp 2
  neighbor 1.1.1.1 remote-as 1
  neighbor 1234::1 remote-as 1
  address-family ipv4 unicast
   neighbor 1.1.1.1 activate
+  neighbor 1.1.1.1 route-map all in
+  neighbor 1.1.1.1 route-map all out
   no neighbor 1234::1 activate
   redistribute connected
  address-family ipv6 unicast
   no neighbor 1.1.1.1 activate
   neighbor 1234::1 activate
+  neighbor 1234::1 route-map all in
+  neighbor 1234::1 route-map all out
   redistribute connected
  exit
 !

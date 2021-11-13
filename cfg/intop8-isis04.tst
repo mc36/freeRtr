@@ -1,5 +1,7 @@
 description interop8: isis narrow metric
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.3333 $2a$ $2b$
