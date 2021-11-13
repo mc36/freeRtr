@@ -75,9 +75,9 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         l.add(null, "1  2      target                     specify target address");
         l.add(null, "2  2,.      <addr>                   address of target");
         l.add(null, "1  2      vrf                        specify vrf of test");
-        l.add(null, "2  .        <name>                   vrf to use");
+        l.add(null, "2  .        <name:vrf>               vrf to use");
         l.add(null, "1  2      source                     specify source of test");
-        l.add(null, "2  .        <name>                   interface to use");
+        l.add(null, "2  .        <name:ifc>               interface to use");
         l.add(null, "1  2      interval                   specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      timeout                    timeout of peer");

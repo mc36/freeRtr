@@ -313,12 +313,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  2      rename                     rename this vdc");
         l.add(null, "2  .        <name>                   set new name of vdc");
         l.add(null, "1  2      interface                  add interface to this vdc");
-        l.add(null, "2  .        <name>                   name of interface");
+        l.add(null, "2  .        <name:ifc>               name of interface");
         l.add(null, "1  2      connect                    add connection to other vdc");
-        l.add(null, "2  3        <name>                   name of interface");
-        l.add(null, "3  .          <name>                 name of peer vdc");
+        l.add(null, "2  3        <name:ifc>               name of interface");
+        l.add(null, "3  .          <name:vdc>             name of peer vdc");
         l.add(null, "1  2      local                      add connection to this vdc");
-        l.add(null, "2  3,.      <name>                   name of interface");
+        l.add(null, "2  3,.      <name:ifc>               name of interface");
         l.add(null, "3  .          redundancy             flagged for redundancy");
         l.add(null, "1  2      config                     set config file to use");
         l.add(null, "2  2,.      <name>                   name of image");

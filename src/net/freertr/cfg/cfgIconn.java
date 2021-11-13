@@ -67,7 +67,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     }
 
     private void getSideHelp(userHelping l) {
-        l.add(null, "2 .     <name>                      name of interface");
+        l.add(null, "2 .     <name:ifc>                  name of interface");
     }
 
     public void getHelp(userHelping l) {

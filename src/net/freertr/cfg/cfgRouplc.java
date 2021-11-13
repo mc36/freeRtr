@@ -165,13 +165,13 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 .     nolrgcomm           match empty large community");
         l.add(null, "2 .     privateas           match private asn");
         l.add(null, "2 3     tracker             match tracker state");
-        l.add(null, "3 .       <name>            name of tracker");
+        l.add(null, "3 .       <name:trk>        name of tracker");
         l.add(null, "2 3     prefix-list         match prefix list");
-        l.add(null, "3 .       <name>            name of prefix list");
+        l.add(null, "3 .       <name:pl>         name of prefix list");
         l.add(null, "2 3     route-map           match route map");
-        l.add(null, "3 .       <name>            name of route map");
+        l.add(null, "3 .       <name:rm>         name of route map");
         l.add(null, "2 3     route-policy        match route policy");
-        l.add(null, "3 .       <name>            name of route policy");
+        l.add(null, "3 .       <name:rpl>        name of route policy");
         l.add(null, "1 .   enif                  end if statement");
         l.add(null, "1 .   else                  begin else statement");
         l.add(null, "1 .   pass                  permit the prefix");
@@ -274,9 +274,9 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "3 4       sub               substract value to current value");
         l.add(null, "4 .         <num>           value");
         l.add(null, "2 3     route-map           set route map");
-        l.add(null, "3 .       <name>            name of route map");
+        l.add(null, "3 .       <name:rm>         name of route map");
         l.add(null, "2 3     route-policy        set route policy");
-        l.add(null, "3 .       <name>            name of route policy");
+        l.add(null, "3 .       <name:rpl>        name of route policy");
     }
 
     private void doIfStr(cmds cmd, tabRtrplcN ntry) {

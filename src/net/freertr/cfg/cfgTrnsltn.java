@@ -148,9 +148,9 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         l.add(null, "1 2    remove              remove string");
         l.add(null, "2 2,.    <str>             regular expression");
         l.add(null, "1 2    track               consider tracker");
-        l.add(null, "2 .      <name>            name of tracker");
+        l.add(null, "2 .      <name:trk>        name of tracker");
         l.add(null, "1 2    time                consider time");
-        l.add(null, "2 .      <name>            name of time map");
+        l.add(null, "2 .      <name:tm>         name of time map");
         l.add(null, "1 2    match               match string");
         l.add(null, "2 2,.    <str>             regular expression");
         l.add(null, "1 2    replace             replace string");

@@ -141,7 +141,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "3 .       <num>             value to match");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     access-group        match by access list");
-        l.add(null, "3 .       <name>            name of access list");
+        l.add(null, "3 .       <name:acl>        name of access list");
         l.add(null, "2 3     precedence          match precedence value");
         l.add(null, "3 .       <num>             value to match");
         l.add(null, "3 .       all               any value");
@@ -237,7 +237,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "1 2   exceed-rate           set exceed rate of traffic");
         l.add(null, "2 .     <num>               bits per second");
         l.add(null, "1 2   service-policy        apply service policy to this traffic");
-        l.add(null, "2 .     <name>              name of policy map");
+        l.add(null, "2 .     <name:pm>           name of policy map");
         l.add(null, "1 2   queue-limit           specify queue limit");
         l.add(null, "2 .     <num>               number of packets");
         l.add(null, "1 2   time-interval         specify time interval");

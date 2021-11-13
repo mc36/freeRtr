@@ -60,7 +60,7 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         l.add(null, "1 3   evaluate              evaluate another list");
         l.add(null, "3 4     permit              specify list to allow");
         l.add(null, "3 4     deny                specify list to forbid");
-        l.add(null, "4 .       <name>            name of list");
+        l.add(null, "4 .       <name:pl>         name of list");
         l.add(null, "1 3   permit                specify networks to allow");
         l.add(null, "1 3   deny                  specify networks to forbid");
         l.add(null, "3 4,.   <net/mask>          network in perfix/mask format");

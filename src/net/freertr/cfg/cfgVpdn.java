@@ -666,15 +666,15 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    incoming                     act as incoming call");
         l.add(null, "2 .    outgoing                     act as outgoing call");
         l.add(null, "1 2  proxy                          proxy profile to use");
-        l.add(null, "2 .    <name>                       proxy name");
+        l.add(null, "2 .    <name:prx>                   proxy name");
         l.add(null, "1 2  script                         name of chat script to use");
-        l.add(null, "2 .    <name>                       script name");
+        l.add(null, "2 .    <name:scr>                   script name");
         l.add(null, "1 2  target                         specify target of tunnel");
         l.add(null, "2 .    <name>                       name or address of target");
         l.add(null, "1 2  description                    specify description");
         l.add(null, "2 2,.  <str>                        description");
         l.add(null, "1 2  interface                      name of interface to serve");
-        l.add(null, "2 .    <name>                       interface name");
+        l.add(null, "2 .    <name:ifc>                   interface name");
         l.add(null, "1 2  bridge-group                   name of bridge group to serve");
         l.add(null, "2 .    <name>                       bridge group number");
         l.add(null, "1 2  called                         specify called number");

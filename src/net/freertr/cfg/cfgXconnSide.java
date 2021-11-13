@@ -202,8 +202,8 @@ public class cfgXconnSide {
      * @param p initial position
      */
     public static void getHelp(userHelping l, int p) {
-        l.add(null, (p + 0) + " " + (p + 1) + "     <name>                      vrf to use");
-        l.add(null, (p + 1) + " " + (p + 2) + "       <name>                    source interface to use");
+        l.add(null, (p + 0) + " " + (p + 1) + "     <name:vrf>                  vrf to use");
+        l.add(null, (p + 1) + " " + (p + 2) + "       <name:ifc>                source interface to use");
         l.add(null, (p + 2) + " " + (p + 3) + "         pckoudp                 pckoudp encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         pptp                    pptp encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         greppp                  ppp over gre encapsulation");

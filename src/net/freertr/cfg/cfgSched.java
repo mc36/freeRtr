@@ -156,7 +156,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add(null, "1  2      random-delay               specify random initial delay");
         l.add(null, "2  .        <num>                    milliseconds before start");
         l.add(null, "1  2      range                      specify time range");
-        l.add(null, "2  .        <name>                   name of time map");
+        l.add(null, "2  .        <name:tm>                name of time map");
         l.add(null, "1  .      log                        log actions");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");

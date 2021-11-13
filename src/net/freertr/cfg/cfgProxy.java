@@ -95,11 +95,11 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "1 2  password                       password to send");
         l.add(null, "2 .    <name>                       username");
         l.add(null, "1 2  recursive                      name of profile to use");
-        l.add(null, "2 .    <name>                       profile name");
+        l.add(null, "2 .    <name:prx>                   profile name");
         l.add(null, "1 2  vrf                            name of vrf to find target in");
-        l.add(null, "2 .    <name>                       vrf name");
+        l.add(null, "2 .    <name:vrf>                   vrf name");
         l.add(null, "1 2  source                         name of source interface");
-        l.add(null, "2 .    <name>                       interface name");
+        l.add(null, "2 .    <name:ifc>                   interface name");
         l.add(null, "1 2  target                         specify address of proxy");
         l.add(null, "2 .    <name>                       name or address");
         l.add(null, "1 2  port                           specify port of proxy");

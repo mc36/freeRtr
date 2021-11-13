@@ -75,10 +75,10 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add(null, "1  3   evaluate                      evaluate another list");
         l.add(null, "3  4     permit                      specify list to allow");
         l.add(null, "3  4     deny                        specify list to forbid");
-        l.add(null, "4  .       <name>                    name of list");
+        l.add(null, "4  .       <name:acl>                name of list");
         l.add(null, "1  3   reflect                       create forward entry on match");
-        l.add(null, "3  4     <name>                      name of forward list");
-        l.add(null, "4  5       <name>                    name of reverse list");
+        l.add(null, "3  4     <name:acl>                  name of forward list");
+        l.add(null, "4  5       <name:acl>                name of reverse list");
         l.add(null, "5  .         <num>                   timeout");
         l.add(null, "1  3   permit                        specify networks to allow");
         l.add(null, "1  3   deny                          specify networks to forbid");

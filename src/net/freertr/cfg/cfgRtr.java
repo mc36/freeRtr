@@ -1678,11 +1678,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 3) + " " + (p + 4) + ",.     <num>               process id");
         l.add(null, (p + 4) + " " + (p + 4) + ",.       ecmp              process ecmp alternatives also");
         l.add(null, (p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name>          name of route map");
+        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:rm>       name of route map");
         l.add(null, (p + 4) + " " + (p + 5) + "         route-policy      process prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name>          name of route policy");
+        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:rpl>      name of route policy");
         l.add(null, (p + 4) + " " + (p + 5) + "         prefix-list       filter prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name>          name of prefix list");
+        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:pl>       name of prefix list");
         l.add(null, (p + 4) + " " + (p + 5) + "         metric            set metric");
         l.add(null, (p + 5) + " " + (p + 6) + "           set             set value to a specific value");
         l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
@@ -1694,9 +1694,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
         l.add(null, (p + 3) + " " + (p + 3) + ",.     ecmp                process ecmp alternatives also");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of route map");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rm>         name of route map");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of route policy");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
         l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
         l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
@@ -1705,11 +1705,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 4) + " " + (p + 5) + "         sub               substract value to current value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add(null, (p + 1) + " " + (p + 2) + "   justadvert              advertise interface");
-        l.add(null, (p + 2) + " " + (p + 3) + ",.   <name>                name of interface");
+        l.add(null, (p + 2) + " " + (p + 3) + ",.   <name:ifc>            name of interface");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of route map");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rm>         name of route map");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of route policy");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
         l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
         l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
@@ -1720,11 +1720,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 1) + " " + (p + 2) + "   aggregate               aggregate more prefixes");
         l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of route map");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rm>         name of route map");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of route policy");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
         l.add(null, (p + 3) + " " + (p + 4) + "       prefix-list         filter prefixes for aggregation");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name>            name of prefix list");
+        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:pl>         name of prefix list");
         l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
         l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
@@ -1738,9 +1738,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         l.add(null, "1 2   vrf                     specify vrf to use");
-        l.add(null, "2 .     <name>                name of table");
+        l.add(null, "2 .     <name:vrf>            name of table");
         l.add(null, "1 2   automesh                specify auto mesh te tunnels");
-        l.add(null, "2 .     <name>                name of prefix list");
+        l.add(null, "2 .     <name:pl>             name of prefix list");
         getRedistHelp(l, 0);
         ipRtr rtr = getRouter();
         if (rtr != null) {
