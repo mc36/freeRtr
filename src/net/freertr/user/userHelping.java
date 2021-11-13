@@ -138,6 +138,7 @@ public class userHelping {
     /**
      * collect menu lines in one direction
      *
+     * @param d list to update
      * @param lin starting line number
      * @param skip skip current level
      * @param dir direction, + or - 1
@@ -146,16 +147,15 @@ public class userHelping {
      * @param levReq required level to collect
      * @return line numbers meets requirements
      */
-    private userHelpingList collectDirection(int lin, boolean skip, int dir, int levMin, int levMax, int levReq) {
-        userHelpingList d = new userHelpingList();
+    private void collectDirection(userHelpingList d, int lin, boolean skip, int dir, int levMin, int levMax, int levReq) {
         if (skip) {
             int cur = lines.get(lin).level;
             for (;; lin += dir) {
                 if (lin >= lines.size()) {
-                    return d;
+                    return;
                 }
                 if (lin < 0) {
-                    return d;
+                    return;
                 }
                 if (lines.get(lin).level != cur) {
                     break;
@@ -164,10 +164,10 @@ public class userHelping {
         }
         for (;; lin += dir) {
             if (lin >= lines.size()) {
-                return d;
+                return;
             }
             if (lin < 0) {
-                return d;
+                return;
             }
             int lv = lines.get(lin).level;
             if (lv == levReq) {
@@ -175,10 +175,10 @@ public class userHelping {
                 continue;
             }
             if (lv < levMin) {
-                return d;
+                return;
             }
             if (lv > levMax) {
-                return d;
+                return;
             }
         }
     }
@@ -192,7 +192,7 @@ public class userHelping {
     private userHelpingList nextWords(int lin) {
         userHelpingList d = new userHelpingList();
         if (lin < 0) {
-            d = collectDirection(0, false, 1, -maxVal, maxVal, 1);
+            collectDirection(d, 0, false, 1, -maxVal, maxVal, 1);
             return d;
         }
         userHelpingList curNxt = lines.get(lin).after;
@@ -204,15 +204,15 @@ public class userHelping {
                 continue;
             }
             if (req > 100) {
-                d.addMore(collectDirection(lin, false, 1, 0, maxVal, req));
+                collectDirection(d, lin, false, 1, 0, maxVal, req);
                 continue;
             }
             if (req > curLvl) {
-                d.addMore(collectDirection(lin, true, 1, curLvl + 1, maxVal, req));
+                collectDirection(d, lin, true, 1, curLvl + 1, maxVal, req);
                 continue;
             }
-            d.addMore(collectDirection(lin, false, -1, req, maxVal, req));
-            d.addMore(collectDirection(lin + 1, false, 1, req, maxVal, req));
+            collectDirection(d, lin, false, -1, req, maxVal, req);
+            collectDirection(d, lin + 1, false, 1, req, maxVal, req);
         }
         return d;
     }
@@ -290,7 +290,7 @@ public class userHelping {
      * @param s string to match
      * @return string
      */
-    public String matchLong(userHelpingList lns, String s) {
+    private String matchLong(userHelpingList lns, String s) {
         s = s.trim().toLowerCase();
         String m = null;
         for (int o = 0; o < lns.num(); o++) {
@@ -430,7 +430,7 @@ public class userHelping {
      * @param lin line number to generate help for
      * @return array of strings that user should read
      */
-    public List<String> formatHelp(int lin) {
+    private List<String> formatHelp(int lin) {
         final String begin = "  ";
         final String enter = "<cr>";
         userHelpingList d = nextWords(lin);
