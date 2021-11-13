@@ -262,7 +262,7 @@ public class userHelping {
                 d.add(-1);
                 continue;
             }
-            byte[] b2 = dat.command.trim().toLowerCase().getBytes();
+            byte[] b2 = dat.command.getBytes();
             for (i = 0;; i++) {
                 if (i >= b1.length) {
                     break;
@@ -324,14 +324,14 @@ public class userHelping {
             if (dat.variable) {
                 continue;
             }
-            if (!dat.command.trim().toLowerCase().startsWith(s)) {
+            if (!dat.command.startsWith(s)) {
                 continue;
             }
             if (m == null) {
-                m = dat.command.trim().toLowerCase();
+                m = dat.command;
                 continue;
             }
-            String a = dat.command.trim().toLowerCase();
+            String a = dat.command;
             for (i = 0;; i++) {
                 if (i >= m.length()) {
                     break;
@@ -388,7 +388,16 @@ public class userHelping {
             i = lns.val(sel.level);
             res.add(i);
             if (lines.get(i).variable) {
-                b += a + " ";
+                String c = matchLong(lns, a);
+                if (c == null) {
+                    b += a + " ";
+                } else {
+                    if ((c.length() >= a.length()) && (s.length() < 1)) {
+                        b += c;
+                    } else {
+                        b += a + " ";
+                    }
+                }
             } else {
                 b += lines.get(i).command + " ";
             }
@@ -655,7 +664,22 @@ public class userHelping {
                 return formatHelp(d.level);
             }
             userHelpingData r = lines.get(d.level);
-            return bits.str2lst("type " + r.command + " to " + r.description);
+            if (!r.variable) {
+                return bits.str2lst("type " + r.command + " to " + r.description);
+            }
+            s = s.trim();
+            int i = s.lastIndexOf(" ") + 1;
+            if (i < 1) {
+                i = 0;
+            }
+            d = whereAm(s.substring(0, i - 1));
+            s = s.substring(i, s.length());
+            List<String> lst = formatHelp(d.level);
+            lst = startsWith(lst, "  " + s);
+            if (lst.size() <= 1) {
+                return bits.str2lst("type " + r.command + " to " + r.description);
+            }
+            return lst;
         }
         return bits.str2lst("invalid, try " + cmd + " ?");
     }
