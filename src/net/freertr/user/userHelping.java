@@ -150,10 +150,13 @@ public class userHelping {
         if (i < 0) {
             return;
         }
+        d = d.copyBytes();
         String a = d.command.substring(i + 1, d.command.length());
         if (d.variable) {
             a = a.substring(0, a.length() - 1);
         }
+        d.complete = true;
+        d.variable = false;
         if (a.equals("ifc")) {
             for (i = 0; i < cfgAll.ifaces.size(); i++) {
                 cfgIfc ntry = cfgAll.ifaces.get(i);
@@ -727,26 +730,27 @@ public class userHelping {
      *
      * @param lns list of lines
      * @param s string to match
-     * @param ext consider extensions
+     * @param ncm consider completes
      * @return match probability for lines level set to best one or a negative
      * error code of the following: -2 more best matches, have to type more
      * chars -3 string does not match to any of lines -4 generic error
      */
-    private userHelpingList matchStr(userHelpingList lns, String s, boolean ext) {
+    private userHelpingList matchStr(userHelpingList lns, String s, boolean ncm) {
         byte[] b1 = s.trim().toLowerCase().getBytes();
         userHelpingList d = new userHelpingList();
-        userHelpingList l = new userHelpingList();
         for (int o = 0; o < lns.num(); o++) {
             int i = lns.val(o);
             if (i < 0) {
                 d.add(0);
-                l.add(0);
                 continue;
             }
             userHelpingData dat = lines.get(i);
+            if (ncm && dat.complete) {
+                d.add(-2);
+                continue;
+            }
             if (dat.variable) {
                 d.add(-1);
-                l.add(-1);
                 continue;
             }
             byte[] b2 = dat.command.toLowerCase().getBytes();
@@ -762,14 +766,13 @@ public class userHelping {
                 }
             }
             d.add(i);
-            l.add(b2.length);
         }
         int num = -4;
         int max = -1;
         int vld = -1;
         for (int i = 0; i < d.num(); i++) {
             int cur = d.val(i);
-            if (cur < 0) {
+            if (cur == -1) {
                 vld = i;
                 continue;
             }
@@ -783,18 +786,10 @@ public class userHelping {
             max = cur;
             num = i;
         }
-        if (num >= 0) {
-            if (max == l.val(num)) {
-                ext = false;
-            }
-        }
         if (max != b1.length) {
             num = -3;
         }
         if ((num < 0) && (vld >= 0)) {
-            num = vld;
-        }
-        if (ext && (vld >= 0)) {
             num = vld;
         }
         d.level = num;
@@ -1341,6 +1336,8 @@ class userHelpingData {
 
     protected boolean variable;
 
+    protected boolean complete;
+
     public void set(String s) {
         boolean hidden = false;
         s = s.trim();
@@ -1385,6 +1382,8 @@ class userHelpingData {
         n.after = after.copyBytes();
         n.command = command;
         n.description = description;
+        n.complete = complete;
+        n.variable = variable;
         return n;
     }
 
