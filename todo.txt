@@ -10,8 +10,6 @@ traffic through bgp nsh
 parse privilege levels from tacacs
 ldap client, server
 trustpoint for certificates
-name tabbing
-int eth1/int eth2
 dhcp relay support
 tcp selective ack
 xot, x75 switching

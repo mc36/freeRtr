@@ -2,8 +2,32 @@ package net.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgAuther;
+import net.freertr.cfg.cfgChat;
+import net.freertr.cfg.cfgCheck;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgLin;
+import net.freertr.cfg.cfgMenu;
+import net.freertr.cfg.cfgMtrack;
+import net.freertr.cfg.cfgObjnet;
+import net.freertr.cfg.cfgObjprt;
+import net.freertr.cfg.cfgPrcss;
+import net.freertr.cfg.cfgPrfxlst;
+import net.freertr.cfg.cfgProxy;
+import net.freertr.cfg.cfgRoump;
+import net.freertr.cfg.cfgRouplc;
+import net.freertr.cfg.cfgSched;
+import net.freertr.cfg.cfgScrpt;
+import net.freertr.cfg.cfgSensor;
+import net.freertr.cfg.cfgSessn;
+import net.freertr.cfg.cfgTlmtry;
+import net.freertr.cfg.cfgTrack;
+import net.freertr.cfg.cfgTrnsltn;
+import net.freertr.cfg.cfgVdc;
+import net.freertr.cfg.cfgVpdn;
+import net.freertr.cfg.cfgVrf;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.extMrkLng;
@@ -62,10 +86,11 @@ public class userHelping {
      * @return list of lines starting with s
      */
     public static List<String> startsWith(List<String> l, String s) {
+        s = s.toLowerCase();
         List<String> r = new ArrayList<String>();
         for (int i = 0; i < l.size(); i++) {
             String a = l.get(i);
-            if (a.startsWith(s)) {
+            if (a.toLowerCase().startsWith(s)) {
                 r.add(a);
             }
         }
@@ -117,6 +142,294 @@ public class userHelping {
         if (a.equals("ifc")) {
             for (i = 0; i < cfgAll.ifaces.size(); i++) {
                 cfgIfc ntry = cfgAll.ifaces.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("lin")) {
+            for (i = 0; i < cfgAll.lines.size(); i++) {
+                cfgLin ntry = cfgAll.lines.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("vrf")) {
+            for (i = 0; i < cfgAll.vrfs.size(); i++) {
+                cfgVrf ntry = cfgAll.vrfs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("rm")) {
+            for (i = 0; i < cfgAll.routemaps.size(); i++) {
+                cfgRoump ntry = cfgAll.routemaps.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("rpl")) {
+            for (i = 0; i < cfgAll.routeplcs.size(); i++) {
+                cfgRouplc ntry = cfgAll.routeplcs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("pl")) {
+            for (i = 0; i < cfgAll.prefixlsts.size(); i++) {
+                cfgPrfxlst ntry = cfgAll.prefixlsts.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("ogn")) {
+            for (i = 0; i < cfgAll.objgrpnets.size(); i++) {
+                cfgObjnet ntry = cfgAll.objgrpnets.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("ogp")) {
+            for (i = 0; i < cfgAll.objgrpprts.size(); i++) {
+                cfgObjprt ntry = cfgAll.objgrpprts.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("acl")) {
+            for (i = 0; i < cfgAll.accesslsts.size(); i++) {
+                cfgAceslst ntry = cfgAll.accesslsts.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("ses")) {
+            for (i = 0; i < cfgAll.sessns.size(); i++) {
+                cfgSessn ntry = cfgAll.sessns.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("chk")) {
+            for (i = 0; i < cfgAll.checks.size(); i++) {
+                cfgCheck ntry = cfgAll.checks.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("sns")) {
+            for (i = 0; i < cfgAll.sensors.size(); i++) {
+                cfgSensor ntry = cfgAll.sensors.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("tlm")) {
+            for (i = 0; i < cfgAll.tlmtrydst.size(); i++) {
+                cfgTlmtry ntry = cfgAll.tlmtrydst.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("prx")) {
+            for (i = 0; i < cfgAll.proxys.size(); i++) {
+                cfgProxy ntry = cfgAll.proxys.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("cht")) {
+            for (i = 0; i < cfgAll.chats.size(); i++) {
+                cfgChat ntry = cfgAll.chats.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("mnu")) {
+            for (i = 0; i < cfgAll.menus.size(); i++) {
+                cfgMenu ntry = cfgAll.menus.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("sch")) {
+            for (i = 0; i < cfgAll.schedulers.size(); i++) {
+                cfgSched ntry = cfgAll.schedulers.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("scr")) {
+            for (i = 0; i < cfgAll.scripts.size(); i++) {
+                cfgScrpt ntry = cfgAll.scripts.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("vpd")) {
+            for (i = 0; i < cfgAll.vpdns.size(); i++) {
+                cfgVpdn ntry = cfgAll.vpdns.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("vdc")) {
+            for (i = 0; i < cfgAll.vdcs.size(); i++) {
+                cfgVdc ntry = cfgAll.vdcs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("prc")) {
+            for (i = 0; i < cfgAll.prcs.size(); i++) {
+                cfgPrcss ntry = cfgAll.prcs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("trn")) {
+            for (i = 0; i < cfgAll.trnsltns.size(); i++) {
+                cfgTrnsltn ntry = cfgAll.trnsltns.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("trk")) {
+            for (i = 0; i < cfgAll.trackers.size(); i++) {
+                cfgTrack ntry = cfgAll.trackers.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("mtr")) {
+            for (i = 0; i < cfgAll.mtrackers.size(); i++) {
+                cfgMtrack ntry = cfgAll.mtrackers.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("aaa")) {
+            for (i = 0; i < cfgAll.authers.size(); i++) {
+                cfgAuther ntry = cfgAll.authers.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -262,7 +575,7 @@ public class userHelping {
                 d.add(-1);
                 continue;
             }
-            byte[] b2 = dat.command.getBytes();
+            byte[] b2 = dat.command.toLowerCase().getBytes();
             for (i = 0;; i++) {
                 if (i >= b1.length) {
                     break;
@@ -324,14 +637,14 @@ public class userHelping {
             if (dat.variable) {
                 continue;
             }
-            if (!dat.command.startsWith(s)) {
+            if (!dat.command.toLowerCase().startsWith(s)) {
                 continue;
             }
             if (m == null) {
                 m = dat.command;
                 continue;
             }
-            String a = dat.command;
+            String a = dat.command.toLowerCase();
             for (i = 0;; i++) {
                 if (i >= m.length()) {
                     break;
