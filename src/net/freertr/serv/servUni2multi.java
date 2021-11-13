@@ -301,7 +301,12 @@ public class servUni2multi extends servGeneric implements prtServP {
         trg.setAnd(trg, pfx.wildcard);
         trg.setOr(trg, pfx.network);
         natT.newTrgAddr = trg;
-        natT.newTrgPort = targetP;
+        if (targetP == -1) {
+            natT.newTrgPort = bits.random(0x1000, 0xf000);
+        }
+        if (targetP > 0) {
+            natT.newTrgPort = targetP;
+        }
         natT.logEnd = logging;
         natT.timeout = timeout;
         natT.reverse = natT;
