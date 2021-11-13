@@ -1256,7 +1256,7 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <text>                    password to use");
         l.add(null, "3  .       shutdown                    connection disabled for this peer");
         l.add(null, "3  4       description                 describe this neighbor");
-        l.add(null, "4  4,.       <name>                    description of neighbor");
+        l.add(null, "4  4,.       <str>                     description of neighbor");
         l.add(null, "3  4       update-source               connection source for this peer");
         l.add(null, "4  .         <name:ifc>                name of interface");
         l.add(null, "3  4       address-family              specify address families");

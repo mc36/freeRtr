@@ -52,6 +52,19 @@ public class packDnsZone implements Comparator<packDnsZone> {
     }
 
     /**
+     * list subdomains
+     *
+     * @return list
+     */
+    public List<String> subDomains() {
+        List<String> lst = new ArrayList<String>();
+        for (int i = 0; i < recs.size(); i++) {
+            lst.add(recs.get(i).name);
+        }
+        return lst;
+    }
+
+    /**
      * clear all records
      */
     public void clear() {

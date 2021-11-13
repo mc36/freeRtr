@@ -2313,6 +2313,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
+        List<String> tmps = new ArrayList<String>();
+        for (int i = 0; i < temps.size(); i++) {
+            tmps.add(temps.get(i).tempName);
+        }
         l.add(null, "1 2   address-family              specify address families");
         rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);
         l.add(null, "1 2   local-as                    specify local as number");
@@ -2330,7 +2334,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   graceful-restart            graceful restart interval");
         l.add(null, "2 .     <num>                     ms to recover");
         l.add(null, "1 2   template                    specify template parameters");
-        l.add(null, "2 3     <name>                    name of template");
+        l.add(tmps, "2 3     <name:loc>                name of template");
         rtrBgpParam.getParamHelp(l);
         l.add(null, "1 2   nexthop                     specify next hop tracking parameter");
         l.add(null, "2 3     recursion                 specify recursion depth");
@@ -2360,7 +2364,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   neighbor                    specify neighbor parameters");
         l.add(null, "2 3     <addr>                    address of peer");
         l.add(null, "3 4       template                get configuration from template");
-        l.add(null, "4 5,.       <name>                name of source template");
+        l.add(tmps, "4 5,.       <name:loc>            name of source template");
         l.add(null, "5 .           shutdown            connection disabled for this peer");
         rtrBgpParam.getParamHelp(l);
         l.add(null, "1 2   distance                    specify default distance");
@@ -2369,7 +2373,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "4 .         <num>                 locally generated distance");
         l.add(null, "1 2   listen                      passively listen for clients");
         l.add(null, "2 3     <name:acl>                access list name");
-        l.add(null, "3 .       <name>                  template name");
+        l.add(tmps, "3 .       <name:loc>              template name");
         l.add(null, "1 2   dump                        setup bgp dump file");
         l.add(null, "2 3     <name>                    name of mrt");
         l.add(null, "3 4,.     <file>                  name of file");
@@ -2381,7 +2385,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "4 5         <name>                hostname");
         l.add(null, "5 .           <num>               port number");
         l.add(null, "1 2   rpki                        setup resource public key infrastructure server");
-        l.add(null, "2 3     <name>                    name of bmp");
+        l.add(null, "2 3     <name>                    name of rpki");
         l.add(null, "3 4       <name:prx>              proxy profile");
         l.add(null, "4 5         <name>                hostname");
         l.add(null, "5 .           <num>               port number");
@@ -2427,7 +2431,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   afi-vpls                    select vpls to advertise");
         l.add(null, "2 3     <id>                      vpls id in ASnum:IDnum format");
         l.add(null, "3 4       bridge-group            enable processing");
-        l.add(null, "4 .         <name>                bridge group number");
+        l.add(null, "4 .         <num>                 bridge group number");
         l.add(null, "3 4       update-source           select source to advertise");
         l.add(null, "4 .         <name:ifc>            name of interface");
         l.add(null, "3 4       ve-id                   specify ve id");
@@ -2436,7 +2440,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   afi-evpn                    select evpn to advertise");
         l.add(null, "2 3     <id>                      evpn id");
         l.add(null, "3 4       bridge-group            enable processing");
-        l.add(null, "4 .         <name>                bridge group number");
+        l.add(null, "4 .         <num>                 bridge group number");
         l.add(null, "3 4       srv6                    srv6 advertisement");
         l.add(null, "4 .         <name:ifc>            select source to advertise");
         l.add(null, "3 4       bmac                    set backbone mac");

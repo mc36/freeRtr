@@ -715,7 +715,11 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "1 2  error                          set error message");
         l.add(null, "2 2,.  <str>                        error message");
         l.add(null, "1 2  host                           define one virtual server");
-        l.add(null, "2 3,.  <name>                       name of server, * for any");
+        List<String> lst = new ArrayList<String>();
+        for (int i = 0; i < hosts.size(); i++) {
+            lst.add(hosts.get(i).host);
+        }
+        l.add(lst, "2 3,.  <name:loc>                   name of server, * for any");
         l.add(null, "3 4      path                       set server root");
         l.add(null, "4 .        <name>                   root directory of server");
         l.add(null, "3 4      redir                      set redirect path");
