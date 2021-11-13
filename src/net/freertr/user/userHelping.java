@@ -150,11 +150,15 @@ public class userHelping {
         if (i < 0) {
             return;
         }
-        d = d.copyBytes();
         String a = d.command.substring(i + 1, d.command.length());
+        s = d.command.substring(0, i);
         if (d.variable) {
             a = a.substring(0, a.length() - 1);
+            i = d.command.length();
+            s += d.command.subSequence(i - 1, i);
         }
+        d.command = s;
+        d = d.copyBytes();
         d.complete = true;
         d.variable = false;
         if (a.equals("ifc")) {
