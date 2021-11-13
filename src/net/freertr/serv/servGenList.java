@@ -1,5 +1,6 @@
 package net.freertr.serv;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.freertr.cfg.cfgGeneric;
 import net.freertr.tab.tabGen;
@@ -106,6 +107,20 @@ public class servGenList<T extends servGeneric> {
             T ntry = lst.get(i);
             cfg.addAll(ntry.getShRun(filter));
         }
+    }
+
+    /**
+     * get list of servers
+     *
+     * @return list
+     */
+    public List<String> listServers() {
+        List<String> l = new ArrayList<String>();
+        for (int i = 0; i < lst.size(); i++) {
+            T ntry = lst.get(i);
+            l.add(ntry.srvName);
+        }
+        return l;
     }
 
     /**

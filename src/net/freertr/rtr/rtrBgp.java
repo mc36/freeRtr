@@ -2315,7 +2315,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public void routerGetHelp(userHelping l) {
         List<String> tmps = new ArrayList<String>();
         for (int i = 0; i < temps.size(); i++) {
-            tmps.add(temps.get(i).tempName);
+            rtrBgpTemp ntry = temps.get(i);
+            tmps.add(ntry.tempName);
         }
         l.add(null, "1 2   address-family              specify address families");
         rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);

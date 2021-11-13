@@ -727,11 +727,12 @@ public class userHelping {
      *
      * @param lns list of lines
      * @param s string to match
+     * @param ext consider extensions
      * @return match probability for lines level set to best one or a negative
      * error code of the following: -2 more best matches, have to type more
      * chars -3 string does not match to any of lines -4 generic error
      */
-    private userHelpingList matchStr(userHelpingList lns, String s) {
+    private userHelpingList matchStr(userHelpingList lns, String s, boolean ext) {
         byte[] b1 = s.trim().toLowerCase().getBytes();
         userHelpingList d = new userHelpingList();
         for (int o = 0; o < lns.num(); o++) {
@@ -782,6 +783,9 @@ public class userHelping {
             num = -3;
         }
         if ((num < 0) && (vld >= 0)) {
+            num = vld;
+        }
+        if (!ext && (vld >= 0)) {
             num = vld;
         }
         d.level = num;
@@ -836,10 +840,11 @@ public class userHelping {
      * create a list of lines to a command string
      *
      * @param s command string to process
+     * @param ext consider extensions
      * @return line numbers over wich i get to the command level set to a last
      * one, or error from matchStr
      */
-    private userHelpingList whereAm(String s) {
+    private userHelpingList whereAm(String s, boolean ext) {
         s = s.trim();
         userHelpingList res = new userHelpingList();
         res.level = -1;
@@ -855,7 +860,7 @@ public class userHelping {
                 a = s.substring(0, i).trim();
                 s = s.substring(i, s.length()).trim();
             }
-            userHelpingList sel = matchStr(lns, a);
+            userHelpingList sel = matchStr(lns, a, ext);
             if (sel.level < 0) {
                 res.level = sel.level;
                 if (s.length() > 0) {
@@ -871,7 +876,10 @@ public class userHelping {
             i = lns.val(sel.level);
             res.add(i);
             if (lines.get(i).variable) {
-                String c = matchLong(lns, a);
+                String c = null;
+                if (ext) {
+                    c = matchLong(lns, a);
+                }
                 if (c == null) {
                     b += a + " ";
                 } else {
@@ -900,7 +908,7 @@ public class userHelping {
         if (a == null) {
             return "";
         }
-        userHelpingList d = whereAm(a);
+        userHelpingList d = whereAm(a, false);
         if (d.level < 0) {
             return "";
         }
@@ -914,7 +922,7 @@ public class userHelping {
      * @return guessed line, variables preserved, null if no guess
      */
     public String guessLine(String a) {
-        userHelpingList d = whereAm(a);
+        userHelpingList d = whereAm(a, true);
         return d.str;
     }
 
@@ -925,7 +933,7 @@ public class userHelping {
      * @return false if valid command, true if an invalid command
      */
     public boolean endOfCmd(String s) {
-        userHelpingList d = whereAm(s);
+        userHelpingList d = whereAm(s, false);
         if (d.level < 0) {
             return true;
         }
@@ -1113,7 +1121,7 @@ public class userHelping {
      * @return array of strings that user should read
      */
     public List<String> getHelp(String s, boolean oneLine) {
-        userHelpingList d = whereAm(s);
+        userHelpingList d = whereAm(s, true);
         String cmd = "";
         for (int i = 0; i < d.num(); i++) {
             cmd += " " + lines.get(d.val(i)).command;
@@ -1122,7 +1130,7 @@ public class userHelping {
             cmd = cmd.substring(1, cmd.length());
         }
         if (d.level == -2) {
-            d = whereAm(cmd);
+            d = whereAm(cmd, true);
             s = s.trim();
             int i = s.lastIndexOf(" ") + 1;
             if (i < 1) {
@@ -1155,7 +1163,7 @@ public class userHelping {
             if (i < 1) {
                 i = 0;
             }
-            d = whereAm(s.substring(0, i - 1));
+            d = whereAm(s.substring(0, i - 1), true);
             s = s.substring(i, s.length());
             List<String> lst = formatHelp(d.level);
             lst = startsWith(lst, "  " + s);
