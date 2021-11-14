@@ -403,14 +403,15 @@ public class userReader implements Comparator<String> {
                 }
             }
         }
-        userFormat res = new userFormat("|", "column|summary|average|minimum|maximum");
+        userFormat res = new userFormat("|", "col|name|summary|average|minimum|maximum");
         long div = lst.size() - 1;
         if (div < 1) {
             div = 1;
         }
+        cmds cmd = new cmds("row", lst.get(0));
         for (int i = 0; i < sum.size(); i++) {
             long val = sum.get(i);
-            res.add(i + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
+            res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
         }
         return res.formatAll(tabMod);
     }
@@ -464,7 +465,9 @@ public class userReader implements Comparator<String> {
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
+                String a = lst.remove(0);
                 Collections.sort(lst, this);
+                lst.add(0, a);
                 return doSecond(lst);
             case padsort:
                 findColumn(lst);
@@ -472,7 +475,7 @@ public class userReader implements Comparator<String> {
                     return bits.str2lst("no such column");
                 }
                 for (int i = 0; i < lst.size(); i++) {
-                    String a = lst.get(i);
+                    a = lst.get(i);
                     int o = a.length();
                     if (o < columnB) {
                         continue;
@@ -488,7 +491,9 @@ public class userReader implements Comparator<String> {
                     a = bits.padBeg(a, columnE - columnB, " ");
                     lst.set(i, b + a + " " + c);
                 }
+                a = lst.remove(0);
                 Collections.sort(lst, this);
+                lst.add(0, a);
                 return doSecond(lst);
             case uniq:
                 findColumn(lst);
@@ -498,7 +503,7 @@ public class userReader implements Comparator<String> {
                 res = new ArrayList<String>();
                 List<String> tab = new ArrayList<String>();
                 for (int i = 0; i < lst.size(); i++) {
-                    String a = lst.get(i);
+                    a = lst.get(i);
                     String b = getColText(a);
                     if (tab.contains(b)) {
                         continue;
