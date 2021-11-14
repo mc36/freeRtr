@@ -136,6 +136,7 @@ public class ipCor6 implements ipCor {
                 break;
             case exthdrFragment:
                 pck.IPfrg = pck.msbGetW(pck.IPsiz + 2);
+                pck.IPid = pck.msbGetD(pck.IPsiz + 4);
                 pck.IPmf = (pck.IPfrg & 1) != 0;
                 pck.IPfrg = (pck.IPfrg >>> 3) * 8;
                 skipExtHeader(pck);

@@ -13,7 +13,6 @@ trustpoint for certificates
 dhcp relay support
 tcp selective ack
 xot, x75 switching
-preallocate qos buffers
 ilnp (rfc6740)
 lisp4, lisp6
 rift4, rift6

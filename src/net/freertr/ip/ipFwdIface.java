@@ -15,6 +15,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.pack.packHolder;
 import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBfdClnt;
 import net.freertr.rtr.rtrBfdIface;
@@ -179,6 +180,16 @@ public class ipFwdIface extends tabRouteIface {
      * routemap through gateway
      */
     public tabListing<tabRtrmapN, addrIP> gateRtmp;
+
+    /**
+     * reassembly buffer
+     */
+    public List<packHolder> reasmBuf;
+
+    /**
+     * reassembly position
+     */
+    public int reasmNxt;
 
     /**
      * ingress acl
@@ -421,6 +432,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "4 .         <mask>                  subnet mask of address");
         l.add(null, "2 3     secondary-address           set up an additional ip address");
         l.add(null, "3 .       <addr>                    address of interface");
+        l.add(null, "2 3     reassembly                  set up a reassembly buffer");
+        l.add(null, "3 .       <num>                     number of packets");
         l.add(null, "2 .     netflow-rx                  netflow received packets");
         l.add(null, "2 .     netflow-tx                  netflow transmitted packets");
         l.add(null, "2 .     propagate-ttl-always        enable ttl propagation to mpls");
@@ -634,6 +647,11 @@ public class ipFwdIface extends tabRouteIface {
             }
             l.add(cmds.tabulator + beg + "secondary-address " + adr.ip);
         }
+        if (reasmBuf == null) {
+            l.add(cmds.tabulator + "no " + beg + "reassembly");
+        } else {
+            l.add(cmds.tabulator + beg + "reassembly " + reasmBuf.size());
+        }
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
@@ -778,6 +796,14 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             adrAdd(adr, (addrMac) lower.getL2info(), true);
+            return false;
+        }
+        if (a.equals("reassembly")) {
+            int o = bits.str2num(cmd.word());
+            reasmBuf = new ArrayList<packHolder>();
+            for (int i = 0; i < o; i++) {
+                reasmBuf.add(new packHolder(true, true));
+            }
             return false;
         }
         if (a.equals("netflow-rx")) {
@@ -1361,6 +1387,10 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             adrDel(adr);
+            return false;
+        }
+        if (a.equals("reassembly")) {
+            reasmBuf = null;
             return false;
         }
         if (a.equals("netflow-rx")) {

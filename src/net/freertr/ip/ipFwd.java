@@ -1248,12 +1248,49 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     private void protoSend(ipFwdIface lower, packHolder pck) {
         cntrL.rx(pck);
         if ((pck.IPmf) || (pck.IPfrg != 0)) {
-            if (ruinPmtuD) {
-                doDrop(pck, lower, counter.reasons.fragment);
-            } else {
-                lower.cntr.drop(pck, counter.reasons.fragment);
+            if (lower.reasmBuf == null) {
+                if (ruinPmtuD) {
+                    doDrop(pck, lower, counter.reasons.fragment);
+                } else {
+                    lower.cntr.drop(pck, counter.reasons.fragment);
+                }
+                return;
             }
-            return;
+            if ((pck.IPfrg + pck.dataSize()) >= packHolder.maxData) {
+                return;
+            }
+            int o = -1;
+            for (int i = 0; i < lower.reasmBuf.size(); i++) {
+                if (lower.reasmBuf.get(i).IPid == pck.IPid) {
+                    o = i;
+                    break;
+                }
+            }
+            if (o < 0) {
+                pck.getSkip(pck.IPsiz);
+                lower.reasmNxt = (lower.reasmNxt + 1) % lower.reasmBuf.size();
+                lower.reasmBuf.get(lower.reasmNxt).copyFrom(pck, true, true);
+                return;
+            }
+            packHolder asm = lower.reasmBuf.get(o);
+            byte[] buf = pck.getCopy();
+            asm.putCopy(buf, pck.IPsiz, 0, buf.length - pck.IPsiz);
+            asm.putSkip(buf.length - pck.IPsiz);
+            asm.getSkip(pck.IPfrg);
+            asm.merge2end();
+            asm.setDataSize(0);
+            asm.getSkip(-pck.IPfrg);
+            if (pck.IPmf) {
+                return;
+            }
+            asm.putCopy(buf, 0, 0, pck.IPsiz);
+            asm.putSkip(pck.IPsiz);
+            asm.merge2beg();
+            asm.setDataSize(pck.IPfrg + buf.length);
+            pck.copyFrom(asm, true, true);
+            pck.IPmf = false;
+            pck.IPfrg = 0;
+            asm.clear();
         }
         if (coppIn != null) {
             if (coppIn.checkPacket(bits.getTime(), pck)) {

@@ -2461,7 +2461,6 @@ todo: trustpoint for certificates
 todo: dhcp relay support
 todo: tcp selective ack
 todo: xot, x75 switching
-todo: preallocate qos buffers
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: rift4, rift6

@@ -680,7 +680,7 @@ public class ipMpls implements ifcUp {
     public static void gotPolkaPack(ifcPolka fwdP, ipFwd fwd4, ipFwd fwd6, packHolder pck) {
         int id = fwdP.decodeRouteId(pck);
         if (debugger.ifcPolkaEvnt) {
-            logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
+            logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.NSHmdv, 0, -1));
         }
         pck.NSHttl--;
         if (pck.NSHttl < 1) {

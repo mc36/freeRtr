@@ -230,7 +230,7 @@ public class ifcPolka implements ifcUp {
      * @return next node id
      */
     public int decodeRouteId(packHolder pck) {
-        return decodeRouteIdCrc(new cryHashCrc16(hasher), pck.BIERbs);
+        return decodeRouteIdCrc(new cryHashCrc16(hasher), pck.NSHmdv);
     }
 
     /**
@@ -248,8 +248,8 @@ public class ifcPolka implements ifcUp {
         }
         pck.NSHttl = pck.getByte(1); // ttl
         pck.IPprt = pck.msbGetW(2); // protocol
-        pck.BIERbs = new byte[16];
-        pck.getCopy(pck.BIERbs, 0, 4, pck.BIERbs.length);
+        pck.NSHmdv = new byte[16];
+        pck.getCopy(pck.NSHmdv, 0, 4, pck.NSHmdv.length);
         pck.getSkip(size);
         return false;
     }
@@ -263,7 +263,7 @@ public class ifcPolka implements ifcUp {
         pck.putByte(0, 0); // version
         pck.putByte(1, pck.NSHttl); // ttl
         pck.msbPutW(2, pck.IPprt); // protocol
-        pck.putCopy(pck.BIERbs, 0, 4, pck.BIERbs.length);
+        pck.putCopy(pck.NSHmdv, 0, 4, pck.NSHmdv.length);
         pck.putSkip(size);
         pck.merge2beg();
     }
@@ -301,7 +301,7 @@ public class ifcPolka implements ifcUp {
             return;
         }
         if (debugger.ifcPolkaEvnt) {
-            logger.debug("rx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
+            logger.debug("rx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.NSHmdv, 0, -1));
         }
         ipMpls.gotPolkaPack(this, fwd4, fwd6, pck);
     }
@@ -313,7 +313,7 @@ public class ifcPolka implements ifcUp {
      */
     public void send2eth(packHolder pck) {
         if (debugger.ifcPolkaEvnt) {
-            logger.debug("tx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.BIERbs, 0, -1));
+            logger.debug("tx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.NSHmdv, 0, -1));
         }
         lower.sendPack(pck);
     }

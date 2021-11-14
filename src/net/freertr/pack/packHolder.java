@@ -412,7 +412,11 @@ public class packHolder {
         MPLSttl = src.MPLSttl;
         MPLSrnd = src.MPLSrnd;
         MPLSbottom = src.MPLSbottom;
-        BIERbs = src.BIERbs;
+        if (src.BIERbs == null) {
+            BIERbs = null;
+        } else {
+            BIERbs = bits.byteConcat(src.BIERbs, new byte[0]);
+        }
         BIERoam = src.BIERoam;
         BIERsi = src.BIERsi;
         BIERid = src.BIERid;
@@ -533,7 +537,7 @@ public class packHolder {
     }
 
     /**
-     * set number of remaining bytes sets the end pointer (trunacetes)
+     * set number of remaining bytes sets the end pointer (truncates)
      *
      * @param i number of bytes
      */

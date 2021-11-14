@@ -181,7 +181,7 @@ public class clntPolka implements Runnable, ifcDn {
         if (routeid == null) {
             return;
         }
-        pck.BIERbs = routeid;
+        pck.NSHmdv = routeid;
         pck.IPprt = pck.msbGetW(0);
         pck.getSkip(2);
         cntr.tx(pck);
