@@ -1261,15 +1261,27 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             int o = -1;
             for (int i = 0; i < lower.reasmBuf.size(); i++) {
-                if (lower.reasmBuf.get(i).IPid == pck.IPid) {
-                    o = i;
-                    break;
+                packHolder asm = lower.reasmBuf.get(i);
+                if (asm.IPid != pck.IPid) {
+                    continue;
                 }
+                if (asm.IPsrc.compare(asm.IPsrc, pck.IPsrc) != 0) {
+                    continue;
+                }
+                if (asm.IPsrc.compare(asm.IPtrg, pck.IPtrg) != 0) {
+                    continue;
+                }
+                o = i;
+                break;
             }
             if (o < 0) {
-                pck.getSkip(pck.IPsiz);
                 lower.reasmNxt = (lower.reasmNxt + 1) % lower.reasmBuf.size();
-                lower.reasmBuf.get(lower.reasmNxt).copyFrom(pck, true, true);
+                packHolder asm = lower.reasmBuf.get(lower.reasmNxt);
+                asm.copyFrom(pck, true, true);
+                asm.getSkip(pck.IPsiz);
+                asm.putSkip(pck.IPfrg);
+                asm.merge2beg();
+                asm.setDataSize(0);
                 return;
             }
             packHolder asm = lower.reasmBuf.get(o);
@@ -1277,8 +1289,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             asm.putCopy(buf, pck.IPsiz, 0, buf.length - pck.IPsiz);
             asm.putSkip(buf.length - pck.IPsiz);
             asm.getSkip(pck.IPfrg);
-            asm.merge2end();
             asm.setDataSize(0);
+            asm.merge2end();
             asm.getSkip(-pck.IPfrg);
             if (pck.IPmf) {
                 return;
