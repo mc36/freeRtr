@@ -15,7 +15,6 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packRsvp;
 import net.freertr.rtr.rtrBfdNeigh;
-import net.freertr.rtr.rtrBgp;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.tab.tabGen;

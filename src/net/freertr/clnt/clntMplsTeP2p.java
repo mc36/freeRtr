@@ -17,7 +17,6 @@ import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabLabel;
-import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;

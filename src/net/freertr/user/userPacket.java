@@ -507,6 +507,10 @@ public class userPacket {
             }
             if (strm == null) {
                 cmd.error("failed");
+                try {
+                    fs.close();
+                } catch (Exception e) {
+                }
                 return null;
             }
             cmd.error("sending safi=" + rtrBgpUtil.safi2string(safi) + " as=" + las + " open");

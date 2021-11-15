@@ -1,6 +1,5 @@
 package net.freertr.ifc;
 
-import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;

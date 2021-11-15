@@ -8,7 +8,6 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
-import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
