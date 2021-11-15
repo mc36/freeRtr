@@ -1,6 +1,8 @@
 package net.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
@@ -689,7 +691,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @return value
      */
     protected String calcPass(String pwd) {
-        return userUpgrade.calcTextHash(bits.str2lst(pwd + " " + dump(dmpCsum)));
+        List<String> lst = new ArrayList<String>();
+        lst.add(pwd);
+        lst.add(dump(dmpCsum));
+        lst.add(pwd);
+        return userUpgrade.calcTextHash(lst);
     }
 
 }
