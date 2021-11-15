@@ -30,7 +30,7 @@ public class pipeImage {
     /**
      * current pipe
      */
-    protected final pipeSide pipe;
+    public final pipeSide pipe;
 
     private final byte[][][] font;
 

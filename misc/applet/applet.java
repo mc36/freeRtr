@@ -27,7 +27,7 @@ public class applet extends java.applet.Applet {
 
     public void init() {
         img = cfgInit.doApplet(getParameter("config"));
-        BufferedImage img3 = pipeWindow.createImage(img);
+        img3 = pipeWindow.createImage(img);
         new appletDoer(this);
         setBackground(pipeWindow.getBckgrd());
         addKeyListener(pipeWindow.getKeyLstnr(img.pipe));
