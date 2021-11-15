@@ -274,8 +274,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         a = cmd.word();
         List<String> lst = new ArrayList<String>();
-        lst.add("" + seqRx);
         lst.add(signRx);
+        lst.add("" + seqRx);
         lst.add(cmd.getRemaining());
         lst.add(signRx);
         if (!a.equals(userUpgrade.calcTextHash(lst))) {
@@ -295,8 +295,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         s = s.trim();
         if (signTx != null) {
             List<String> lst = new ArrayList<String>();
-            lst.add("" + seqTx);
             lst.add(signTx);
+            lst.add("" + seqTx);
             lst.add(s);
             lst.add(signTx);
             s = "signed " + userUpgrade.calcTextHash(lst) + " " + s;
@@ -443,8 +443,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 sendErr("badPassword");
                 return;
             }
-            signRx = b + c;
-            signTx = c + b;
+            signRx = b + iface.authentication + c;
+            signTx = c + iface.authentication + b;
         }
         if (!need2run) {
             sendErr("notNeeded");
