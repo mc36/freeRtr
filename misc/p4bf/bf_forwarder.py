@@ -24,7 +24,7 @@ from time import sleep
 
 SDE = os.environ.get("SDE", "~/bf-sde-9.7.0")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
-BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.8/site-packages/tofino/"
+BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.9/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 
 # set our lib path
