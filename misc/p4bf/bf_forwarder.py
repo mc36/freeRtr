@@ -24,7 +24,7 @@ from time import sleep
 
 SDE = os.environ.get("SDE", "~/bf-sde-9.7.0")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
-BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.9/site-packages/tofino/"
+BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.8/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 
 # set our lib path
@@ -8845,7 +8845,8 @@ if __name__ == "__main__":
         sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sck.connect((args.freerouter_address,
                      args.freerouter_port))
-        sck_file = sck.makefile("rw")
+        sckrw_file = sck.makefile("rw")
+        sckw_file = sck.makefile("w")
 
 
         bf_client = BfRuntimeGrpcClient(args.bfruntime_address,
@@ -8871,7 +8872,7 @@ if __name__ == "__main__":
                                args.platform,
                                bf_client,
                                sal_client,
-                               sck_file,
+                               sckrw_file,
                                args.brdg,
                                args.mpls,
                                args.srv6,
@@ -8890,7 +8891,7 @@ if __name__ == "__main__":
         bf_if_status = BfIfStatus(3,
                                 "bf_if_status",
                                 bf_client,
-                                sck_file,
+                                sckw_file,
                                 1)
 
         bf_if_status.daemon=True
@@ -8899,7 +8900,7 @@ if __name__ == "__main__":
         bf_if_counter = BfSubIfCounter(4,
                                 "bf_if_counter",
                                 bf_client,
-                                sck_file,
+                                sckw_file,
                                 args.pipe_name,
                                 5)
 
