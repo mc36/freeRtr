@@ -447,7 +447,7 @@ public class userTester {
             String a = persistD.remove(0);
             int i = bits.str2num(persistD.remove(0));
             int o = bits.str2num(persistD.remove(0));
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + o + ",threads=1,sockets=1 -hda " + a + " -m " + i;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + o + ",threads=1,sockets=1 -drive file=" + a + " -m " + i;
             a = persistD.remove(0);
             for (i = 0; i < 8; i++) {
                 int rp = persistP + ((i + 1) * 4);
@@ -1618,7 +1618,7 @@ class userTesterOne {
                 f = "vmdk";
             }
             pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + ",backing_fmt=" + f + " " + s, null, true);
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -hda " + s + " -m " + img.otherM;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -drive file=" + s + ",format=qcow2,cache=unsafe -m " + img.otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);
                 cmd = new cmds("hw", a);
