@@ -3873,7 +3873,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
-            res.add(addrPrefix.ip2str(ntry.prefix) + " " + tabRtrmapN.rd2string(ntry.rd) + "|" + ntry.getPaths());
+            res.add("" + ntry.toIncons());
         }
         return res;
     }
@@ -3926,7 +3926,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
-            res.add(addrPrefix.ip2str(ntry.prefix) + " " + tabRtrmapN.rd2string(ntry.rd) + "|" + ntry.getPaths());
+            res.add("" + ntry.toIncons());
         }
         return res;
     }

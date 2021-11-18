@@ -72,6 +72,15 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     }
 
     /**
+     * get inconsistency paths
+     *
+     * @return paths
+     */
+    public String toIncons() {
+        return addrPrefix.ip2str(prefix) + " " + tabRtrmapN.rd2string(rd) + "|" + getPaths();
+    }
+
+    /**
      * get all the paths
      *
      * @return paths

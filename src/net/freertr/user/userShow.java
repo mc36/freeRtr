@@ -3547,6 +3547,47 @@ public class userShow {
             rdr.putStrArr(l);
             return;
         }
+        if (a.equals("wireunformat")) {
+            a = cmd.word();
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = addrPrefix.str2ip(a);
+            if (ntry.prefix == null) {
+                addrIP adr = new addrIP();
+                if (adr.fromString(a)) {
+                    cmd.error("bad prefix");
+                    return;
+                }
+                ntry = tab.route(adr);
+                if (ntry == null) {
+                    cmd.error("no such route");
+                    return;
+                }
+            }
+            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry = tab.find(ntry);
+            if (ntry == null) {
+                cmd.error("no such prefix");
+                return;
+            }
+            ntry = ntry.copyBytes(tabRoute.addType.better);
+            if (ntry.best.nextHop == null) {
+                ntry.best.nextHop = new addrIP();
+                if (r.bgp.fwdCore.ipVersion == 4) {
+                    ntry.best.nextHop.fromIPv4addr(new addrIPv4());
+                } else {
+                    ntry.best.nextHop.fromIPv6addr(new addrIPv6());
+                }
+            }
+            packHolder pck = new packHolder(true, true);
+            List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+            lst.add(ntry);
+            rtrBgpUtil.createWithdraw(pck, new packHolder(true, true), sfi, false, lst);
+            rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
+            List<String> l = new ArrayList<String>();
+            userFlash.buf2hex(l, pck.getCopy(), 0);
+            rdr.putStrArr(l);
+            return;
+        }
         if (a.equals("database")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;

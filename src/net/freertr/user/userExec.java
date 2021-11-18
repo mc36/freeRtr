@@ -576,7 +576,10 @@ public class userExec {
         hl.add(null, "6 7,.            database           list of routes in database");
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
-        hl.add(null, "6 7              wireformat         dump a route from database");
+        hl.add(null, "6 7              wireformat         encode a route reachable from database");
+        hl.add(null, "7 8,.              <addr>           prefix to view");
+        hl.add(null, "8 .                  [rd]           route distinguisher");
+        hl.add(null, "6 7              wireunformat       encode a route unreachable from database");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 .              privateas          list of routes with private asn");
