@@ -285,13 +285,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
-        for (int i = 0; i < 16; i++) {
-            pck.putByte(i, 0xff);
-        }
-        pck.msbPutW(16, pck.dataSize() + rtrBgpSpeak.sizeU);
-        pck.putByte(18, typ);
-        pck.putSkip(rtrBgpSpeak.sizeU);
-        pck.merge2beg();
+        rtrBgpUtil.createHeader(pck, typ);
         doSend(pipe, pck, dir, typMon, spk, nei);
     }
 
