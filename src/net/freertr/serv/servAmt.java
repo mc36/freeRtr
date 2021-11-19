@@ -38,7 +38,7 @@ public class servAmt extends servGeneric implements prtServP {
     /**
      * timeout
      */
-    public int timeout = 60000;
+    public int timeout = 120000;
 
     /**
      * list of connections
@@ -51,7 +51,7 @@ public class servAmt extends servGeneric implements prtServP {
     public final static String[] defaultL = {
         "server amt .*! port " + clntAmt.portNum,
         "server amt .*! protocol " + proto2string(protoAllDgrm),
-        "server amt .*! timeout 60000"
+        "server amt .*! timeout 120000"
     };
 
     /**
