@@ -57,6 +57,11 @@ public class servAmtConn implements ifcDn, Comparator<servAmtConn> {
      */
     public int nonce;
 
+    /**
+     * response mac
+     */
+    public addrMac respmc = addrMac.getRandom();
+    
     public int compare(servAmtConn o1, servAmtConn o2) {
         return o1.conn.compare(o1.conn, o2.conn);
     }
@@ -191,8 +196,7 @@ public class servAmtConn implements ifcDn, Comparator<servAmtConn> {
         pck.getSkip(2); // ethertype
         if ((pck.IPprt == ipMhost4.protoNum) || (pck.IPprt == ipIcmp6.protoNum)) {
             pck.msbPutW(0, 0x0400);
-            pck.msbPutW(2, bits.randomW());
-            pck.msbPutD(4, bits.randomD());
+            pck.putAddr(2, respmc);
             pck.msbPutD(8, nonce);
             pck.putSkip(12);
         } else {
