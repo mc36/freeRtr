@@ -438,6 +438,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         if (dynCfg == null) {
             return res;
         }
+        if (res.nei != null) {
+            return res;
+        }
         packHolder pck = new packHolder(true, true);
         pck.IPsrc.setAddr(from);
         pck.IPtrg.setAddr(peer);
