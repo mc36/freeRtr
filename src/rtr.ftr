@@ -2431,6 +2431,8 @@ qc pass: static routing over point2point ethernet
 qc pass: recursive static routing
 qc pass: recursive static routing with labels
 qc pass: static routing with ecmp
+qc pass: static bmp peer
+qc pass: dynamic bmp peer
 qc pass: authoritative dns server
 qc pass: recursive dns server
 qc pass: relaying dns server

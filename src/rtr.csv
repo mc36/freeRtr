@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.11.20-cur, done by cs@nop.
--;-;-;2021-11-20 06:16:42, took 00:06:15, with 100 workers, on 2448 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2021-11-20 07:31:49, took 00:05:55, with 100 workers, on 2450 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -2435,6 +2435,8 @@ http://sources.nop.hu/cfg/rout-static08.tst;rout-static08.tst;success;static rou
 http://sources.nop.hu/cfg/rout-static09.tst;rout-static09.tst;success;recursive static routing
 http://sources.nop.hu/cfg/rout-static10.tst;rout-static10.tst;success;recursive static routing with labels
 http://sources.nop.hu/cfg/rout-static11.tst;rout-static11.tst;success;static routing with ecmp
+http://sources.nop.hu/cfg/serv-bmp01.tst;serv-bmp01.tst;success;static bmp peer
+http://sources.nop.hu/cfg/serv-bmp02.tst;serv-bmp02.tst;success;dynamic bmp peer
 http://sources.nop.hu/cfg/serv-dns01.tst;serv-dns01.tst;success;authoritative dns server
 http://sources.nop.hu/cfg/serv-dns02.tst;serv-dns02.tst;success;recursive dns server
 http://sources.nop.hu/cfg/serv-dns03.tst;serv-dns03.tst;success;relaying dns server

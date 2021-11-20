@@ -201,7 +201,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         if (s.equals("dyneigh")) {
             cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
             if (acl == null) {
-                cmd.error("no such route map");
+                cmd.error("no such access list");
                 return false;
             }
             dynCfg = new servBmp2mrtStat();
@@ -428,12 +428,13 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         }
         servBmp2mrtStat old = stats.add(res);
         if (old != null) {
+            res = old;
             if (as != 0) {
-                old.as = as;
+                res.as = as;
             }
-            return old;
+        } else {
+            res.state = crt == 1;
         }
-        res.state = crt == 1;
         if (dynCfg == null) {
             return res;
         }
