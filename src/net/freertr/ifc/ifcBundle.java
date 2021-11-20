@@ -310,7 +310,7 @@ public class ifcBundle implements Runnable, ifcDn {
         l.add(null, "1 2  dynamic                        specify quota dynamically");
         l.add(null, "2 .    <num>                        reports to average");
         l.add(null, "1 2  peering                        specify peering interface");
-        l.add(null, "2 3    <int>                        name of interface");
+        l.add(null, "2 3    <name:ifc>                   name of interface");
         l.add(null, "3 .      <num>                      local priority");
         l.add(null, "1 2  loadbalance                    specify load balance method");
         l.add(null, "2 .    layer2                       xor source and destination mac");

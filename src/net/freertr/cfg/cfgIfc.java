@@ -6008,7 +6008,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       p2mpldp                   point to multipoint mpls ldp tunnel");
         l.add(null, "3 .       mp2mpldp                  multipoint to multipoint mpls ldp tunnel");
         l.add(null, "2 3     source                      source of encapsulated packets");
-        l.add(null, "3 .       <int>                     name of interface where from send");
+        l.add(null, "3 .       <name:ifc>                name of interface where from send");
         l.add(null, "2 3     destination                 destination of encapsulated packets");
         l.add(null, "3 .       <addr>                    ip address where to send");
         l.add(null, "2 3     domain-name                 destination of encapsulated packets");
