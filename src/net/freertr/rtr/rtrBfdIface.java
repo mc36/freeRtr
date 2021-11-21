@@ -290,7 +290,6 @@ public class rtrBfdIface implements prtServP {
         }
         rtrBfdNeigh nei = neighs.find(new rtrBfdNeigh(this, id.peerAddr));
         if (nei == null) {
-            id.setClosing();
             return false;
         }
         nei.stopNow();

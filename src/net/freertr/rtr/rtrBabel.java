@@ -412,7 +412,6 @@ public class rtrBabel extends ipRtr implements prtServP {
         rtrBabelNeigh ntry = new rtrBabelNeigh(id);
         ntry = neighs.find(ntry);
         if (ntry == null) {
-            id.setClosing();
             return false;
         }
         ntry.bfdPeerDown();

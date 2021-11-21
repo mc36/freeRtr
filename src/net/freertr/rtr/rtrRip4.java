@@ -329,7 +329,6 @@ public class rtrRip4 extends ipRtr implements prtServP {
         rtrRip4neigh ntry = new rtrRip4neigh(id);
         ntry = neighs.find(ntry);
         if (ntry == null) {
-            id.setClosing();
             return false;
         }
         ntry.bfdPeerDown();

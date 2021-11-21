@@ -417,7 +417,6 @@ public class rtrOlsr extends ipRtr implements prtServP {
         rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
         ntry = neighs.find(ntry);
         if (ntry == null) {
-            id.setClosing();
             return false;
         }
         ntry.bfdPeerDown();
