@@ -953,7 +953,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             ntry = new ipFwdIface(nextIfaceNumber + 10000, lower);
             ntry.addr = new addrIP();
             ntry.network = new addrPrefix<addrIP>(ntry.addr, ntry.addr.maxBits());
-            ntry.ready = true;
+            ntry.ready = lower.getState() == state.states.up;
             ntry.mtu = lower.getMTUsize() - ipCore.getHeaderSize();
             ntry.bandwidth = lower.getBandwidth();
             if (ifaces.add(ntry) == null) {

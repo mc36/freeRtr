@@ -3386,6 +3386,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ethtyp.addET(ipIfc4arp.type, "arp4", arp);
                 ethtyp.updateET(ipIfc4arp.type, arp);
             }
+            ethtyp.propagateState();
             vrfFor.fwd4.routerStaticChg();
         }
         if (ip6 && (addr6 != null)) {
@@ -3399,6 +3400,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ad.fromIPv6addr(addr6);
                 ipIf6.setLinkLocalAddr(ad);
             }
+            ethtyp.propagateState();
             vrfFor.fwd6.routerStaticChg();
         }
         if (ipx && (ipxAddr != null)) {
