@@ -104,6 +104,9 @@ public class tabGenV2<T extends Comparator<? super T>> {
             begD[0] = 0;
             sizD[0] = 0;
             lstB = 0;
+            for (int i = 1; i < valD.length; i++) {
+                valD[i] = null;
+            }
             if (valD.length < thrsBlkD) {
                 return;
             }
