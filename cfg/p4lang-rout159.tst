@@ -395,19 +395,19 @@ ipv6 multi v1 join ff06::1 4321::106
 !
 
 
-r1 tping 100 10 9.9.9.2 /vrf v2
-r3 tping 100 10 9.9.9.1 /vrf v2
+r1 tping 100 30 9.9.9.2 /vrf v2
+r3 tping 100 30 9.9.9.1 /vrf v2
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234:1::2 /vrf v1
-r1 tping 100 10 1.1.2.2 /vrf v1
-r1 tping 100 10 1234:2::2 /vrf v1
-r1 tping 100 10 1.1.3.2 /vrf v1
-r1 tping 100 10 1234:3::2 /vrf v1
-r1 tping 100 10 1.1.4.2 /vrf v1
-r1 tping 100 10 1234:4::2 /vrf v1
-r1 tping 100 10 1.1.5.2 /vrf v1
-r1 tping 100 10 1234:5::2 /vrf v1
+r1 tping 100 30 1.1.1.2 /vrf v1
+r1 tping 100 30 1234:1::2 /vrf v1
+r1 tping 100 30 1.1.2.2 /vrf v1
+r1 tping 100 30 1234:2::2 /vrf v1
+r1 tping 100 30 1.1.3.2 /vrf v1
+r1 tping 100 30 1234:3::2 /vrf v1
+r1 tping 100 30 1.1.4.2 /vrf v1
+r1 tping 100 30 1234:4::2 /vrf v1
+r1 tping 100 30 1.1.5.2 /vrf v1
+r1 tping 100 30 1234:5::2 /vrf v1
 
 r3 tping 100 10 1.1.1.2 /vrf v1
 r3 tping 100 10 1234:1::2 /vrf v1
