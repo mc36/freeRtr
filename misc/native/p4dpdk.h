@@ -199,7 +199,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 }
                 rte_pktmbuf_free(bufs[i]);
                 if (port == cpuport) processCpuPack(&bufD[0], bufS);
-                else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
+                else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
             }
             pkts += num;
         }

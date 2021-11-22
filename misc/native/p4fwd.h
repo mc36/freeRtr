@@ -1,4 +1,4 @@
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
+void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 
 
 
@@ -46,7 +46,7 @@ void processCpuPack(unsigned char* bufD, int bufS) {
 #ifdef basicLoop
 
 
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     struct vlan_entry vlan_ntry;
     struct vlan_entry *vlan_res;
     int index;
@@ -764,7 +764,7 @@ drop:
 
 
 
-void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int label) {
+void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int label, int port) {
     struct neigh_entry neigh_ntry;
     struct neigh_entry *neigh_res;
     struct flood_entry *flood_res;
@@ -857,7 +857,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         }
         if (tmp < 0) continue;
         if (bufA == NULL) continue;
-        processDataPacket(NULL, bufA, bufB, bufC, tmp2, tmp, encrCtx, hashCtx);
+        processDataPacket(NULL, bufA, bufB, bufC, tmp2, port, tmp, encrCtx, hashCtx);
     }
 }
 
@@ -880,7 +880,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
 
 
 
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
@@ -938,7 +938,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     int bufT = 0;
     int frag = 0;
     int ethtyp = 0;
-    int prt = port;
     int prt2 = port;
     int tmp = 0;
     int tmp2 = 0;
@@ -1074,13 +1073,13 @@ neigh_tx:
         case 6: // punt
             goto cpu;
         case 7: // dup
-            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl);
+            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl, port);
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
             if ((label & 0x100) == 0) goto drop;
             if (bufD[bufP] != 0x50) goto drop;
-            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl);
+            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl, port);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
             if (tmp2 == 0) return;
             bufP += 8;
@@ -1239,7 +1238,7 @@ ipv4_pbred:
             if (mroute4_res->ingr != prt) goto drop;
             mroute4_res->pack++;
             mroute4_res->byte += bufS;
-            doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl);
+            doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
             if (mroute4_res->local != 0) goto cpu;
             return;
         }
@@ -1578,7 +1577,7 @@ ipv6_pbred:
             if (mroute6_res->ingr != prt) goto drop;
             mroute6_res->pack++;
             mroute6_res->byte += bufS;
-            doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl);
+            doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
             if (mroute6_res->local != 0) goto cpu;
             return;
         }

@@ -82,7 +82,7 @@ void doIfaceLoop(int * param) {
             bufS = head.caplen;
             if (bufS < 1) continue;
             memmove(&bufD[preBuff], pack, bufS);
-            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, encrCtx, hashCtx);
+            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
             fail = 0;
         }
     }
