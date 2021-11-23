@@ -104,10 +104,11 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 continue;
             }
-            if (ifc.mask >= best.mask) {
-                best = ifc;
-                seen = true;
+            if (ifc.mask < best.mask) {
+                continue;
             }
+            best = ifc;
+            seen = true;
         }
         if (!seen) {
             return null;
