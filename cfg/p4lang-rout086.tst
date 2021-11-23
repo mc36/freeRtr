@@ -202,20 +202,20 @@ r1 tping 100 30 1234:1::2 /vrf v1
 r3 tping 100 30 1.1.1.1 /vrf v1
 r3 tping 100 30 1234:1::1 /vrf v1
 
-r4 tping 100 10 1.1.2.5 /vrf v1
-r4 tping 100 10 1234:2::5 /vrf v1
-r4 tping 100 10 1.1.2.6 /vrf v1
-r4 tping 100 10 1234:2::6 /vrf v1
+r4 tping 100 30 1.1.2.5 /vrf v1
+r4 tping 100 30 1234:2::5 /vrf v1
+r4 tping 100 30 1.1.2.6 /vrf v1
+r4 tping 100 30 1234:2::6 /vrf v1
 
-r5 tping 100 10 1.1.2.4 /vrf v1
-r5 tping 100 10 1234:2::4 /vrf v1
-r5 tping 100 10 1.1.2.6 /vrf v1
-r5 tping 100 10 1234:2::6 /vrf v1
+r5 tping 100 30 1.1.2.4 /vrf v1
+r5 tping 100 30 1234:2::4 /vrf v1
+r5 tping 100 30 1.1.2.6 /vrf v1
+r5 tping 100 30 1234:2::6 /vrf v1
 
-r6 tping 100 10 1.1.2.4 /vrf v1
-r6 tping 100 10 1234:2::4 /vrf v1
-r6 tping 100 10 1.1.2.5 /vrf v1
-r6 tping 100 10 1234:2::5 /vrf v1
+r6 tping 100 30 1.1.2.4 /vrf v1
+r6 tping 100 30 1234:2::4 /vrf v1
+r6 tping 100 30 1.1.2.5 /vrf v1
+r6 tping 100 30 1234:2::5 /vrf v1
 
 r1 tping 100 10 2.2.2.101 /vrf v1 /int lo0
 r1 tping 100 10 4321::101 /vrf v1 /int lo0
