@@ -46,27 +46,6 @@ public class ipFwdTab {
     }
 
     /**
-     * convert interface number to name
-     *
-     * @param fwd forwarding core to use
-     * @param iface interface number
-     * @return interface name
-     */
-    public static String iface2name(ipFwd fwd, int iface) {
-        if (iface == 0) {
-            return "null";
-        }
-        if (fwd == null) {
-            return "#" + iface;
-        }
-        ipFwdIface ifc = fwd.ifaces.find(new ipFwdIface(iface, null));
-        if (ifc == null) {
-            return "!" + iface;
-        }
-        return "" + ifc;
-    }
-
-    /**
      * find originating interface to address
      *
      * @param lower forwarder
@@ -120,6 +99,9 @@ public class ipFwdTab {
         for (int i = lower.ifaces.size() - 1; i >= 0; i--) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (ifc == null) {
+                continue;
+            }
+            if (!ifc.ready) {
                 continue;
             }
             if (ifc.mask >= best.mask) {
@@ -652,6 +634,9 @@ public class ipFwdTab {
         tabGen<tabIndex<addrIP>> tabI = new tabGen<tabIndex<addrIP>>();
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             if (!ifc.ready) {
                 continue;
             }
@@ -734,6 +719,9 @@ public class ipFwdTab {
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             if (!ifc.ready) {
                 continue;
             }
@@ -795,6 +783,9 @@ public class ipFwdTab {
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             if (!ifc.ready) {
                 continue;
             }
