@@ -196,11 +196,11 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::5
 
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234:1::2 /vrf v1
+r1 tping 100 30 1.1.1.2 /vrf v1
+r1 tping 100 30 1234:1::2 /vrf v1
 
-r3 tping 100 10 1.1.1.1 /vrf v1
-r3 tping 100 10 1234:1::1 /vrf v1
+r3 tping 100 30 1.1.1.1 /vrf v1
+r3 tping 100 30 1234:1::1 /vrf v1
 
 r4 tping 100 10 1.1.2.5 /vrf v1
 r4 tping 100 10 1234:2::5 /vrf v1
