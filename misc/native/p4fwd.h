@@ -856,7 +856,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             continue;
         }
         if (tmp < 0) continue;
-        if (bufA == NULL) continue;
+        if (bufB == NULL) continue;
         processDataPacket(NULL, bufA, bufB, bufC, tmp2, port, tmp, encrCtx, hashCtx);
     }
 }
