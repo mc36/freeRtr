@@ -879,6 +879,120 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
     goto drop;
 
 
+#define doTunneled(tun_res)                                         \
+    switch (tun_res->command) {                                     \
+    case 1:                                                         \
+        bufP = bufT + 2;                                            \
+        break;                                                      \
+    case 2:                                                         \
+        bufP = bufT + 8;                                            \
+        if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;         \
+        bufP += 8;                                                  \
+        bufP += 2;                                                  \
+        ethtyp = get16msb(bufD, bufP);                              \
+        if ((ethtyp & 0x8000) != 0) goto cpu;                       \
+        ppptyp2ethtyp;                                              \
+        put16msb(bufD, bufP, ethtyp);                               \
+        break;                                                      \
+    case 3:                                                         \
+        bufP = bufT + 8;                                            \
+        bufP += 8;                                                  \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
+        break;                                                      \
+    case 4:                                                         \
+        bufP = bufT - 2;                                            \
+        put16msb(bufD, bufP, ETHERTYPE_IPV4);                       \
+        break;                                                      \
+    case 5:                                                         \
+        bufP = bufT - 2;                                            \
+        put16msb(bufD, bufP, ETHERTYPE_IPV6);                       \
+        break;                                                      \
+    case 6:                                                         \
+        decapEsp(tun_res);                                          \
+        break;                                                      \
+    case 7:                                                         \
+        bufP = bufT + 8;                                            \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
+        break;                                                      \
+    case 8:                                                         \
+        decapOpenvpn(tun_res);                                      \
+        break;                                                      \
+    case 9:                                                         \
+        decapWireguard(tun_res);                                    \
+        break;                                                      \
+    case 10:                                                        \
+        bufP = bufT + 8;                                            \
+        if (bufD[bufP] != 6) goto cpu;                              \
+        bufP += 2;                                                  \
+        guessEthtyp;                                                \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ethtyp);                               \
+        break;                                                      \
+    default:                                                        \
+        goto drop;                                                  \
+    }                                                               \
+    bufP -= 12;                                                     \
+    memset(&bufD[bufP], 0, 12);                                     \
+    tun_res->pack++;                                                \
+    tun_res->byte += bufS;                                          \
+    bufS = bufS - bufP + preBuff;                                   \
+    memmove(&bufD[preBuff], &bufD[bufP], bufS);                     \
+    prt2 = prt = tun_res->aclport;                                  \
+    goto ether_rx;                                                  \
+
+
+#define doRouted(route_res, proto)                                  \
+    case 3:                                                         \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                              \
+        bufP -= 4;                                                  \
+        label = 0x100 | ttl | (route_res->label1 << 12);            \
+        put32msb(bufD, bufP, label);                                \
+        neigh_ntry.id = route_res->nexthop;                         \
+        goto ethtyp_tx;                                             \
+    case 4:                                                         \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                              \
+        bufP -= 4;                                                  \
+        label = 0x100 | ttl | (route_res->label2 << 12);            \
+        put32msb(bufD, bufP, label);                                \
+        bufP -= 4;                                                  \
+        label = ttl | (route_res->label1 << 12);                    \
+        put32msb(bufD, bufP, label);                                \
+        neigh_ntry.id = route_res->nexthop;                         \
+        goto ethtyp_tx;                                             \
+    case 5:                                                         \
+        putIpv6header(bufP, bufS, ethtyp, proto, route_res->srv1, route_res->srv2, route_res->srv3, route_res->srv4, route_res->srv1, route_res->srv2, route_res->srv3, route_res->srv4);   \
+        neigh_ntry.id = route_res->nexthop;                         \
+        goto nethtyp_tx;                                            \
+    case 6:                                                         \
+        route4_ntry.vrf = route_res->srv1;                          \
+        bufP = bufT;                                                \
+        ethtyp = ETHERTYPE_IPV4;                                    \
+        goto ipv4_rx;                                               \
+    case 7:                                                         \
+        route6_ntry.vrf = route_res->srv1;                          \
+        bufP = bufT;                                                \
+        ethtyp = ETHERTYPE_IPV6;                                    \
+        goto ipv6_rx;                                               \
+    case 8:                                                         \
+        bridge_ntry.id = route_res->srv1;                           \
+        bufP = bufT;                                                \
+        memmove(&bufH[0], &bufD[bufP], 12);                         \
+        bufP += 12;                                                 \
+        bufP += 2;                                                  \
+        goto bridgevpls_rx;                                         \
+    case 9:                                                         \
+        bufP -= 20;                                                 \
+        put16msb(bufD, bufP + 0, ttl);                              \
+        put16msb(bufD, bufP + 2, ethtyp);                           \
+        memmove(&bufD[bufP + 4], route_res->polka, 16);             \
+        neigh_ntry.id = route_res->nexthop;                         \
+        ethtyp = ETHERTYPE_POLKA;                                   \
+        goto ethtyp_tx;                                             \
+
+
+
 
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
@@ -938,7 +1052,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     int bufT = 0;
     int frag = 0;
     int ethtyp = 0;
-    int prt2 = port;
+    int prt2 = prt;
     int tmp = 0;
     int tmp2 = 0;
     int i = 0;
@@ -1294,67 +1408,7 @@ ipv4_tx:
                 if (index >= 0) {
                     if (frag != 0) goto punt;
                     tun4_res = table_get(&tun4_table, index);
-                    switch (tun4_res->command) {
-                    case 1: // gre
-                        bufP = bufT + 2; // gre header
-                        break;
-                    case 2: // l2tp
-                        bufP = bufT + 8; // udp header
-                        if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;
-                        bufP += 8; // l2tp header
-                        bufP += 2; // ppp flags
-                        ethtyp = get16msb(bufD, bufP);
-                        if ((ethtyp & 0x8000) != 0) goto cpu;
-                        ppptyp2ethtyp;
-                        put16msb(bufD, bufP, ethtyp);
-                        break;
-                    case 3: // vxlan
-                        bufP = bufT + 8; // udp header
-                        bufP += 8; // vxlan header
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
-                        break;
-                    case 4: // ip4ip
-                        bufP = bufT - 2; // ipip header
-                        put16msb(bufD, bufP, ETHERTYPE_IPV4);
-                        break;
-                    case 5: // ip6ip
-                        bufP = bufT - 2; // ipip header
-                        put16msb(bufD, bufP, ETHERTYPE_IPV6);
-                        break;
-                    case 6: // esp
-                        decapEsp(tun4_res);
-                        break;
-                    case 7: // pckoudp
-                        bufP = bufT + 8; // udp header
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
-                        break;
-                    case 8: // openvpn
-                        decapOpenvpn(tun4_res);
-                        break;
-                    case 9: // wireguard
-                        decapWireguard(tun4_res);
-                        break;
-                    case 10: // amt
-                        bufP = bufT + 8; // udp header
-                        if (bufD[bufP] != 6) goto cpu;
-                        bufP += 2; // amt header
-                        guessEthtyp;
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ethtyp);
-                        break;
-                    default:
-                        goto drop;
-                    }
-                    bufP -= 12;
-                    memset(&bufD[bufP], 0, 12);
-                    tun4_res->pack++;
-                    tun4_res->byte += bufS;
-                    bufS = bufS - bufP + preBuff;
-                    memmove(&bufD[preBuff], &bufD[bufP], bufS);
-                    prt2 = prt = tun4_res->aclport;
-                    goto ether_rx;
+                    doTunneled(tun4_res);
                 }
                 acls_ntry.dir = 4;
                 acls_ntry.port = 0;
@@ -1365,52 +1419,7 @@ ipv4_tx:
                     if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto drop;
                 }
                 goto cpu;
-            case 3: // mpls1
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                label = 0x100 | ttl | (route4_res->label1 << 12);
-                put32msb(bufD, bufP, label);
-                neigh_ntry.id = route4_res->nexthop;
-                goto ethtyp_tx;
-            case 4: // mpls2
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                label = 0x100 | ttl | (route4_res->label2 << 12);
-                put32msb(bufD, bufP, label);
-                bufP -= 4;
-                label = ttl | (route4_res->label1 << 12);
-                put32msb(bufD, bufP, label);
-                neigh_ntry.id = route4_res->nexthop;
-                goto ethtyp_tx;
-            case 5: // srv6
-                putIpv6header(bufP, bufS, ethtyp, 4, route4_res->srv1, route4_res->srv2, route4_res->srv3, route4_res->srv4, route4_res->srv1, route4_res->srv2, route4_res->srv3, route4_res->srv4);
-                neigh_ntry.id = route4_res->nexthop;
-                goto nethtyp_tx;
-            case 6: // mysrv4
-                route4_ntry.vrf = route4_res->srv1;
-                bufP = bufT;
-                ethtyp = ETHERTYPE_IPV4;
-                goto ipv4_rx;
-            case 7: // mysrv6
-                route6_ntry.vrf = route4_res->srv1;
-                bufP = bufT;
-                ethtyp = ETHERTYPE_IPV6;
-                goto ipv6_rx;
-            case 8: // brsrv
-                bridge_ntry.id = route4_res->srv1;
-                bufP = bufT;
-                memmove(&bufH[0], &bufD[bufP], 12);
-                bufP += 12;
-                bufP += 2;
-                goto bridgevpls_rx;
-            case 9: // polka
-                bufP -= 20;
-                put16msb(bufD, bufP + 0, ttl);
-                put16msb(bufD, bufP + 2, ethtyp);
-                memmove(&bufD[bufP + 4], route4_res->polka, 16);
-                neigh_ntry.id = route4_res->nexthop;
-                ethtyp = ETHERTYPE_POLKA;
-                goto ethtyp_tx;
+            doRouted(route4_res, 4);
             }
         }
         goto punt;
@@ -1661,67 +1670,7 @@ ipv6_tx:
                 if (index >= 0) {
                     if (frag != 0) goto punt;
                     tun6_res = table_get(&tun6_table, index);
-                    switch (tun6_res->command) {
-                    case 1: // gre
-                        bufP = bufT + 2; // gre header
-                        break;
-                    case 2: // l2tp
-                        bufP = bufT + 8; // udp header
-                        if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;
-                        bufP += 8; // l2tp header
-                        bufP += 2; // ppp flags
-                        ethtyp = get16msb(bufD, bufP);
-                        if ((ethtyp & 0x8000) != 0) goto cpu;
-                        ppptyp2ethtyp;
-                        put16msb(bufD, bufP, ethtyp);
-                        break;
-                    case 3: // vxlan
-                        bufP = bufT + 8; // udp header
-                        bufP += 8; // vxlan header
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
-                        break;
-                    case 4: // ip4ip
-                        bufP = bufT - 2; // ipip header
-                        put16msb(bufD, bufP, ETHERTYPE_IPV4);
-                        break;
-                    case 5: // ip6ip
-                        bufP = bufT - 2; // ipip header
-                        put16msb(bufD, bufP, ETHERTYPE_IPV6);
-                        break;
-                    case 6: // esp
-                        decapEsp(tun6_res);
-                        break;
-                    case 7: // pckoudp
-                        bufP = bufT + 8; // udp header
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
-                        break;
-                    case 8: // openvpn
-                        decapOpenvpn(tun6_res);
-                        break;
-                    case 9: // wireguard
-                        decapWireguard(tun6_res);
-                        break;
-                    case 10: // amt
-                        bufP = bufT + 8; // udp header
-                        if (bufD[bufP] != 6) goto cpu;
-                        bufP += 2; // amt header
-                        guessEthtyp;
-                        bufP -= 2;
-                        put16msb(bufD, bufP, ethtyp);
-                        break;
-                    default:
-                        goto drop;
-                    }
-                    bufP -= 12;
-                    memset(&bufD[bufP], 0, 12);
-                    tun6_res->pack++;
-                    tun6_res->byte += bufS;
-                    bufS = bufS - bufP + preBuff;
-                    memmove(&bufD[preBuff], &bufD[bufP], bufS);
-                    prt2 = prt = tun6_res->aclport;
-                    goto ether_rx;
+                    doTunneled(tun6_res);
                 }
                 acls_ntry.dir = 4;
                 acls_ntry.port = 0;
@@ -1732,52 +1681,7 @@ ipv6_tx:
                     if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto drop;
                 }
                 goto cpu;
-            case 3: // mpls1
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                label = 0x100 | ttl | (route6_res->label1 << 12);
-                put32msb(bufD, bufP, label);
-                neigh_ntry.id = route6_res->nexthop;
-                goto ethtyp_tx;
-            case 4: // mpls2
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                label = 0x100 | ttl | (route6_res->label2 << 12);
-                put32msb(bufD, bufP, label);
-                bufP -= 4;
-                label = ttl | (route6_res->label1 << 12);
-                put32msb(bufD, bufP, label);
-                neigh_ntry.id = route6_res->nexthop;
-                goto ethtyp_tx;
-            case 5: // srv6
-                putIpv6header(bufP, bufS, ethtyp, 41, route6_res->srv1, route6_res->srv2, route6_res->srv3, route6_res->srv4, route6_res->srv1, route6_res->srv2, route6_res->srv3, route6_res->srv4);
-                neigh_ntry.id = route6_res->nexthop;
-                goto nethtyp_tx;
-            case 6: // mysrv4
-                route4_ntry.vrf = route6_res->srv1;
-                bufP = bufT;
-                ethtyp = ETHERTYPE_IPV4;
-                goto ipv4_rx;
-            case 7: // mysrv6
-                route6_ntry.vrf = route6_res->srv1;
-                bufP = bufT;
-                ethtyp = ETHERTYPE_IPV6;
-                goto ipv6_rx;
-            case 8: // brsrv
-                bridge_ntry.id = route6_res->srv1;
-                bufP = bufT;
-                memmove(&bufH[0], &bufD[bufP], 12);
-                bufP += 12;
-                bufP += 2;
-                goto bridgevpls_rx;
-            case 9: // polka
-                bufP -= 20;
-                put16msb(bufD, bufP + 0, ttl);
-                put16msb(bufD, bufP + 2, ethtyp);
-                memmove(&bufD[bufP + 4], route6_res->polka, 16);
-                neigh_ntry.id = route6_res->nexthop;
-                ethtyp = ETHERTYPE_POLKA;
-                goto ethtyp_tx;
+            doRouted(route6_res, 41);
             }
         }
         goto punt;
