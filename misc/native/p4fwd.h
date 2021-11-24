@@ -5,7 +5,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
 void send2port(unsigned char *bufD, int bufS, int port) {
     if (port < 0) return;
     if (port >= ports) return;
-    sendpack(bufD, bufS, port);
+    sendPack(bufD, bufS, port);
     packTx[port]++;
     byteTx[port] += bufS;
 }

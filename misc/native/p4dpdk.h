@@ -26,7 +26,7 @@ struct rte_mempool *mbuf_pool;
 
 struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
-void sendpack(unsigned char *bufD, int bufS, int port) {
+void sendPack(unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool);
     if (mbuf == NULL) return;
     char * pack = rte_pktmbuf_append(mbuf, bufS);
