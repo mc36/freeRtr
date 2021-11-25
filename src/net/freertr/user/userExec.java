@@ -1607,7 +1607,7 @@ public class userExec {
         hl.add(null, "2 3      mrt2pcap                convert mrt to pcap");
         hl.add(null, "3 4        <file>                name of mrt file");
         hl.add(null, "4 .          <file>              name of pcap file");
-        hl.add(null, ".2 3     mrtplay                 run mrt prefix sender");
+        hl.add(null, ".2 3     mrt2bgp                 run mrt prefix sender");
         hl.add(null, ".3 4       <name:vrf>            vrf name");
         hl.add(null, ".4 5         <name:ifc>          source interface name");
         hl.add(null, ".5 6           <addr>            target address");
@@ -1616,6 +1616,14 @@ public class userExec {
         hl.add(null, ".8 9                 <addr>      source peer");
         hl.add(null, ".9 10,.                <addr>    target peer");
         hl.add(null, ".10 .                    [num]   safi number");
+        hl.add(null, "2 3     mrt2bmp                  run mrt prefix sender");
+        hl.add(null, "3 4       <name:vrf>             vrf name");
+        hl.add(null, "4 5         <name:ifc>           source interface name");
+        hl.add(null, "5 6           <addr>             target address");
+        hl.add(null, "6 7             <port>           target port");
+        hl.add(null, "7 8               <file>         mrt file");
+        hl.add(null, "8 9                 <addr>       source peer");
+        hl.add(null, "9 .                   <addr>     target peer");
         hl.add(null, ".2 3     random                  run random packet generator");
         hl.add(null, ".3 4       <name:ifc>            name of interface");
         hl.add(null, ".4 4,.       [byte]              byte in hex");

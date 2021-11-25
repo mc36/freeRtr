@@ -3,6 +3,7 @@ package net.freertr.rtr;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntProxy;
 import net.freertr.pack.packHolder;
@@ -222,16 +223,24 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pipe = null;
     }
 
-    private static void doSend(pipeSide pip, packHolder pck, boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei) {
-        if (pip == null) {
-            return;
-        }
+    /**
+     * create header
+     *
+     * @param pck packet to update
+     * @param tim timestamp
+     * @param dir direction: false=rx, true=tx
+     * @param typ message type
+     * @param per peer address
+     * @param asn as number
+     * @param rid router id
+     */
+    public static void createHeader(packHolder pck, long tim, boolean dir, int typ, addrIP per, int asn, addrIPv4 rid) {
         pck.putByte(0, 3); // version
         pck.msbPutD(1, pck.dataSize() + size); // length
         pck.putByte(5, typ); // type
         pck.putByte(6, 0); // peer type
         int i = 0;
-        if (!nei.peerAddr.isIPv4()) {
+        if (!per.isIPv4()) {
             i |= 0x80;
         }
         if (dir) {
@@ -239,14 +248,20 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         }
         pck.putByte(7, i); // peer flags
         pck.msbPutQ(8, 0); // peer distinguisher
-        pck.putAddr(16, nei.peerAddr); // address
-        pck.msbPutD(32, nei.remoteAs); // as
-        pck.putAddr(36, spk.peerRouterID); // routerid
-        long l = bits.getTime() + cfgAll.timeServerOffset;
-        pck.msbPutD(40, (int) (l / 1000)); // seconds
-        pck.msbPutD(44, (int) (l % 1000)); // microsecs
+        pck.putAddr(16, per); // address
+        pck.msbPutD(32, asn); // as
+        pck.putAddr(36, rid); // routerid
+        pck.msbPutD(40, (int) (tim / 1000)); // seconds
+        pck.msbPutD(44, (int) (tim % 1000)); // microsecs
         pck.putSkip(size);
         pck.merge2beg();
+    }
+
+    private static void doSend(pipeSide pip, packHolder pck, boolean dir, int typ, rtrBgpSpeak spk, rtrBgpNeigh nei) {
+        if (pip == null) {
+            return;
+        }
+        createHeader(pck, bits.getTime() + cfgAll.timeServerOffset, dir, typ, nei.peerAddr, nei.remoteAs, spk.peerRouterID);
         pck.pipeSend(pip, 0, pck.dataSize(), 1);
     }
 

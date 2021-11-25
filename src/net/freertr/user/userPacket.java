@@ -49,6 +49,7 @@ import net.freertr.prt.prtSctp;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBgp;
+import net.freertr.rtr.rtrBgpMon;
 import net.freertr.rtr.rtrBgpMrt;
 import net.freertr.rtr.rtrBgpNeigh;
 import net.freertr.rtr.rtrBgpSpeak;
@@ -456,7 +457,77 @@ public class userPacket {
             cmd.error("sent " + snt + " of " + tot + " updates");
             return null;
         }
-        if (a.equals("mrtplay")) {
+        if (a.equals("mrt2bmp")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                return null;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            if (ifc == null) {
+                return null;
+            }
+            addrIP trg = new addrIP();
+            if (trg.fromString(cmd.word())) {
+                return null;
+            }
+            int prt = bits.str2num(cmd.word());
+            RandomAccessFile fs;
+            try {
+                a = cmd.word();
+                cmd.error("opening " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+                return null;
+            }
+            addrIP sip = new addrIP();
+            sip.fromString(cmd.word());
+            addrIP tip = new addrIP();
+            tip.fromString(cmd.word());
+            pipeSide strm = null;
+            cmd.error("connecting " + trg + " " + prt);
+            clntProxy prx = clntProxy.makeTemp(vrf, ifc);
+            strm = prx.doConnect(servGeneric.protoTcp, trg, prt, "mrt2bmp");
+            if (strm == null) {
+                cmd.error("failed");
+                return null;
+            }
+            cmd.error("sending updates as it was from " + sip + " to " + tip);
+            packHolder pck = new packHolder(true, true);
+            int snt = 0;
+            int tot = 0;
+            for (;;) {
+                int i = readMrt(pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                tot++;
+                if (sip.compare(sip, pck.IPsrc) != 0) {
+                    continue;
+                }
+                if (tip.compare(tip, pck.IPtrg) != 0) {
+                    continue;
+                }
+                rtrBgpMon.createHeader(pck, pck.INTtime, false, rtrBgpMon.typMon, sip, 1, tip.toIPv4());
+                pck.pipeSend(strm, 0, pck.dataSize(), 3);
+                cmd.pipe.strPut(".");
+                if (need2stop()) {
+                    break;
+                }
+                snt++;
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
+            cmd.error("sent " + snt + " of " + tot + " updates");
+            strm.setClose();
+            cmd.error("finished");
+            return null;
+        }
+        if (a.equals("mrt2bgp")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
                 return null;
@@ -496,7 +567,7 @@ public class userPacket {
             for (;;) {
                 cmd.error("connecting " + trg);
                 clntProxy prx = clntProxy.makeTemp(vrf, ifc);
-                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "mrtplay");
+                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "mrt2bgp");
                 if (strm != null) {
                     break;
                 }
