@@ -7,6 +7,7 @@ import net.freertr.auth.authLocal;
 import net.freertr.clnt.clntAnyconn;
 import net.freertr.clnt.clntAx25;
 import net.freertr.clnt.clntBstun;
+import net.freertr.clnt.clntCapwap;
 import net.freertr.clnt.clntDlsw;
 import net.freertr.clnt.clntErspan;
 import net.freertr.clnt.clntEtherIp;
@@ -18,6 +19,7 @@ import net.freertr.clnt.clntGtp;
 import net.freertr.clnt.clntL2f;
 import net.freertr.clnt.clntL2tp2;
 import net.freertr.clnt.clntL2tp3;
+import net.freertr.clnt.clntLwapp;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntNvGre;
 import net.freertr.clnt.clntPckOdtls;
@@ -287,7 +289,15 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         /**
          * geneve
          */
-        prGeneve
+        prGeneve,
+        /**
+         * capwap
+         */
+        prCapwap,
+        /**
+         * lwapp
+         */
+        prLwapp
 
     }
 
@@ -332,6 +342,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntVxlan vxl;
 
     private clntGeneve gnv;
+
+    private clntCapwap cpw;
+
+    private clntLwapp lwp;
 
     private clntMplsPwe pwom;
 
@@ -453,6 +467,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "vxlan";
             case prGeneve:
                 return "geneve";
+            case prCapwap:
+                return "capwap";
+            case prLwapp:
+                return "lwapp";
             default:
                 return null;
         }
@@ -558,6 +576,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (s.equals("geneve")) {
             return protocolType.prGeneve;
         }
+        if (s.equals("capwap")) {
+            return protocolType.prCapwap;
+        }
+        if (s.equals("lwapp")) {
+            return protocolType.prLwapp;
+        }
         return null;
     }
 
@@ -658,6 +682,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    nvgre                        select nvgre");
         l.add(null, "2 .    vxlan                        select vxlan");
         l.add(null, "2 .    geneve                       select geneve");
+        l.add(null, "2 .    capwap                       select capwap");
+        l.add(null, "2 .    lwapp                        select lwapp");
         l.add(null, "1 2  prefer                         prefer ip protocol");
         l.add(null, "2 .    none                         default");
         l.add(null, "2 .    ipv4                         ipv4");
@@ -1047,6 +1073,14 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (gnv != null) {
             gnv.workStop();
             gnv = null;
+        }
+        if (cpw != null) {
+            cpw.workStop();
+            cpw = null;
+        }
+        if (lwp != null) {
+            lwp.workStop();
+            lwp = null;
         }
         lower = new ifcNull();
         running = false;
@@ -1546,6 +1580,34 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gnv.setUpper(brdgIfc);
                 gnv.workStart();
                 lower = gnv;
+                break;
+            case prCapwap:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                cpw = new clntCapwap();
+                cpw.target = target;
+                cpw.prefer = prefer;
+                cpw.vrf = proxy.vrf;
+                cpw.srcIfc = proxy.srcIfc;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
+                cpw.setUpper(brdgIfc);
+                cpw.workStart();
+                lower = cpw;
+                break;
+            case prLwapp:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                lwp = new clntLwapp();
+                lwp.target = target;
+                lwp.prefer = prefer;
+                lwp.vrf = proxy.vrf;
+                lwp.srcIfc = proxy.srcIfc;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
+                lwp.setUpper(brdgIfc);
+                lwp.workStart();
+                lower = lwp;
                 break;
             default:
                 lower = new ifcNull();

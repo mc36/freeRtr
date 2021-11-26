@@ -2,6 +2,7 @@ package net.freertr.cfg;
 
 import net.freertr.addr.addrIP;
 import net.freertr.clnt.clntAx25;
+import net.freertr.clnt.clntCapwap;
 import net.freertr.clnt.clntDlsw;
 import net.freertr.clnt.clntErspan;
 import net.freertr.clnt.clntEtherIp;
@@ -11,6 +12,7 @@ import net.freertr.clnt.clntGreTap;
 import net.freertr.clnt.clntL2f;
 import net.freertr.clnt.clntL2tp2;
 import net.freertr.clnt.clntL2tp3;
+import net.freertr.clnt.clntLwapp;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntNvGre;
 import net.freertr.clnt.clntPckOudp;
@@ -141,6 +143,16 @@ public class cfgXconnSide {
     public clntGeneve gnv;
 
     /**
+     * capwap
+     */
+    public clntCapwap cpw;
+
+    /**
+     * lwapp
+     */
+    public clntLwapp lwp;
+
+    /**
      * pptp
      */
     public clntPptp pptp;
@@ -221,6 +233,8 @@ public class cfgXconnSide {
         l.add(null, (p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         geneve                  geneve encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         capwap                  capwap encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         lwapp                   lwapp encapsulation");
         l.add(null, (p + 3) + " " + (p + 4) + "           <addr>                address of target");
         l.add(null, (p + 4) + " " + (p + 5) + ",.           <num>               vc id");
         l.add(null, (p + 5) + " " + (p + 5) + ",.             control-word      use control word");
@@ -265,6 +279,14 @@ public class cfgXconnSide {
         if (gnv != null) {
             gnv.workStop();
             gnv = null;
+        }
+        if (cpw != null) {
+            cpw.workStop();
+            cpw = null;
+        }
+        if (lwp != null) {
+            lwp.workStop();
+            lwp = null;
         }
         if (pptp != null) {
             pptp.workStop();
@@ -414,6 +436,24 @@ public class cfgXconnSide {
                 gnv.setUpper(upper);
                 gnv.workStart();
                 lower = gnv;
+                break;
+            case prCapwap:
+                cpw = new clntCapwap();
+                cpw.target = "" + adr;
+                cpw.vrf = vrf;
+                cpw.srcIfc = ifc;
+                cpw.setUpper(upper);
+                cpw.workStart();
+                lower = cpw;
+                break;
+            case prLwapp:
+                lwp = new clntLwapp();
+                lwp.target = "" + adr;
+                lwp.vrf = vrf;
+                lwp.srcIfc = ifc;
+                lwp.setUpper(upper);
+                lwp.workStart();
+                lower = lwp;
                 break;
             case prPptp:
                 pptp = new clntPptp();

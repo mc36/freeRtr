@@ -10,6 +10,7 @@ import net.freertr.addr.addrIpx;
 import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.clnt.clntAmt;
+import net.freertr.clnt.clntCapwap;
 import net.freertr.clnt.clntDhcp4;
 import net.freertr.clnt.clntDhcp6;
 import net.freertr.clnt.clntDlsw;
@@ -18,6 +19,7 @@ import net.freertr.clnt.clntEtherIp;
 import net.freertr.clnt.clntGeneve;
 import net.freertr.clnt.clntL2tp3;
 import net.freertr.clnt.clntLisp;
+import net.freertr.clnt.clntLwapp;
 import net.freertr.clnt.clntMplsBier;
 import net.freertr.clnt.clntMplsExp;
 import net.freertr.clnt.clntMplsLdpP2mp;
@@ -736,6 +738,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntGeneve tunGeneve;
 
     /**
+     * capwap tunnel handler
+     */
+    public clntCapwap tunCapwap;
+
+    /**
+     * lwapp tunnel handler
+     */
+    public clntLwapp tunLwapp;
+
+    /**
      * erspan tunnel handler
      */
     public clntErspan tunErspan;
@@ -1245,6 +1257,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * geneve tunnel interface
          */
         geneve,
+        /**
+         * capwap tunnel interface
+         */
+        capwap,
+        /**
+         * lwapp tunnel interface
+         */
+        lwapp,
         /**
          * erspan tunnel interface
          */
@@ -2071,6 +2091,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "vxlan";
             case geneve:
                 return "geneve";
+            case capwap:
+                return "capwap";
+            case lwapp:
+                return "lwapp";
             case erspan:
                 return "erspan";
             case dlsw:
@@ -2212,6 +2236,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("geneve")) {
             return tunnelType.geneve;
+        }
+        if (s.equals("capwap")) {
+            return tunnelType.capwap;
+        }
+        if (s.equals("lwapp")) {
+            return tunnelType.lwapp;
         }
         if (s.equals("erspan")) {
             return tunnelType.erspan;
@@ -3589,6 +3619,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunGeneve.workStop();
             tunGeneve = null;
         }
+        if (tunCapwap != null) {
+            tunCapwap.workStop();
+            tunCapwap = null;
+        }
+        if (tunLwapp != null) {
+            tunLwapp.workStop();
+            tunLwapp = null;
+        }
         if (tunErspan != null) {
             tunErspan.workStop();
             tunErspan = null;
@@ -4271,6 +4309,30 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunGeneve.setUpper(ethtyp);
                 tunGeneve.workStart();
                 lower = tunGeneve;
+                break;
+            case capwap:
+                tunCapwap = new clntCapwap();
+                tunCapwap.target = "" + tunTrg;
+                tunCapwap.vrf = tunVrf;
+                tunCapwap.srcIfc = tunSrc;
+                tunCapwap.sendingTOS = tunTOS;
+                tunCapwap.sendingFLW = tunFLW;
+                tunCapwap.sendingTTL = tunTTL;
+                tunCapwap.setUpper(ethtyp);
+                tunCapwap.workStart();
+                lower = tunCapwap;
+                break;
+            case lwapp:
+                tunLwapp = new clntLwapp();
+                tunLwapp.target = "" + tunTrg;
+                tunLwapp.vrf = tunVrf;
+                tunLwapp.srcIfc = tunSrc;
+                tunLwapp.sendingTOS = tunTOS;
+                tunLwapp.sendingFLW = tunFLW;
+                tunLwapp.sendingTTL = tunTTL;
+                tunLwapp.setUpper(ethtyp);
+                tunLwapp.workStart();
+                lower = tunLwapp;
                 break;
             case erspan:
                 if (tunKey < 1) {
@@ -5982,6 +6044,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       l2tp3                     l2tp v3 encapsulation");
         l.add(null, "3 .       vxlan                     vxlan encapsulation");
         l.add(null, "3 .       geneve                    geneve encapsulation");
+        l.add(null, "3 .       capwap                    capwap encapsulation");
+        l.add(null, "3 .       lwapp                     lwapp encapsulation");
         l.add(null, "3 .       erspan                    erspan encapsulation");
         l.add(null, "3 .       dlsw                      dlsw encapsulation");
         l.add(null, "3 .       etherip                   etherip encapsulation");
