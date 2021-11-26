@@ -9,6 +9,7 @@ import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwdIface;
+import net.freertr.pack.packCapwap;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
@@ -31,21 +32,6 @@ public class clntCapwap implements Runnable, prtServP, ifcDn {
      */
     public clntCapwap() {
     }
-
-    /**
-     * port to use
-     */
-    public static final int port = 5247;
-
-    /**
-     * header size
-     */
-    public static final int size = 8;
-
-    /**
-     * header magic
-     */
-    public static final int magic = 0x100000;
 
     /**
      * upper layer
@@ -187,10 +173,8 @@ public class clntCapwap implements Runnable, prtServP, ifcDn {
             return;
         }
         cntr.tx(pck);
-        pck.msbPutD(0, magic); // preamble
-        pck.msbPutD(4, 0); // fragment
-        pck.putSkip(size);
-        pck.merge2beg();
+        packCapwap cpw = new packCapwap();
+        cpw.createHeader(pck);
         pck.putDefaults();
         conn.send2net(pck);
     }
@@ -236,7 +220,7 @@ public class clntCapwap implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, port, trg, port, "capwap", null, -1);
+        conn = udp.packetConnect(this, fwdIfc, packCapwap.port, trg, packCapwap.port, "capwap", null, -1);
         if (conn == null) {
             return;
         }
@@ -337,17 +321,11 @@ public class clntCapwap implements Runnable, prtServP, ifcDn {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
-        int i = pck.msbGetD(0); // magic
-        if (i != magic) {
-            cntr.drop(pck, counter.reasons.badCod);
+        packCapwap cpw = new packCapwap();
+        if (cpw.parseHeader(pck)) {
+            cntr.drop(pck, counter.reasons.badHdr);
             return false;
         }
-        i = pck.msbGetD(4); // fragment
-        if (i != 0) {
-            cntr.drop(pck, counter.reasons.badFlag);
-            return false;
-        }
-        pck.getSkip(size);
         upper.recvPack(pck);
         return false;
     }

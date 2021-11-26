@@ -10,6 +10,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
+import net.freertr.pack.packLwapp;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtUdp;
@@ -20,7 +21,7 @@ import net.freertr.util.logger;
 import net.freertr.util.state;
 
 /**
- * lightweigh access point protocol (rfc5412) client
+ * lightweight access point protocol (rfc5412) client
  *
  * @author matecsaba
  */
@@ -31,16 +32,6 @@ public class clntLwapp implements Runnable, prtServP, ifcDn {
      */
     public clntLwapp() {
     }
-
-    /**
-     * port to use
-     */
-    public static final int port = 12222;
-
-    /**
-     * header size
-     */
-    public static final int size = 6;
 
     /**
      * upper layer
@@ -182,11 +173,8 @@ public class clntLwapp implements Runnable, prtServP, ifcDn {
             return;
         }
         cntr.tx(pck);
-        pck.msbPutW(0, 0); // flags
-        pck.msbPutW(2, pck.dataSize()); // length
-        pck.msbPutW(4, 0); // status
-        pck.putSkip(size);
-        pck.merge2beg();
+        packLwapp lwp = new packLwapp();
+        lwp.createHeader(pck);
         pck.putDefaults();
         conn.send2net(pck);
     }
@@ -232,7 +220,7 @@ public class clntLwapp implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, port, trg, port, "lwapp", null, -1);
+        conn = udp.packetConnect(this, fwdIfc, packLwapp.port, trg, packLwapp.port, "lwapp", null, -1);
         if (conn == null) {
             return;
         }
@@ -333,18 +321,11 @@ public class clntLwapp implements Runnable, prtServP, ifcDn {
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
-        int i = pck.msbGetW(0); // flags
-        if (i != 0) {
-            cntr.drop(pck, counter.reasons.badCod);
+        packLwapp lwp = new packLwapp();
+        if (lwp.parseHeader(pck)) {
+            cntr.drop(pck, counter.reasons.badHdr);
             return false;
         }
-        i = pck.msbGetW(2); // length
-        pck.getSkip(size);
-        if (pck.dataSize() < i) {
-            cntr.drop(pck, counter.reasons.badLen);
-            return false;
-        }
-        pck.setDataSize(i);
         upper.recvPack(pck);
         return false;
     }
