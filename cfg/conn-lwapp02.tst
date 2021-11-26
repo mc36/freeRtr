@@ -20,7 +20,6 @@ vpdn vx
  bridge-group 1
  proxy p1
  target 1234::2
- vcid 123
  protocol lwapp
  exit
 int bvi1
@@ -50,7 +49,6 @@ vpdn vx
  bridge-group 1
  proxy p1
  target 1234::1
- vcid 123
  protocol lwapp
  exit
 int bvi1
