@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.11.26-cur, done by cs@nop.
--;-;-;2021-11-26 03:46:17, took 00:06:51, with 100 workers, on 2450 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2021-11-26 06:20:56, took 00:05:59, with 100 workers, on 2476 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -44,6 +44,19 @@ http://sources.nop.hu/cfg/conn-bundle09.tst;conn-bundle09.tst;success;dejitterin
 http://sources.nop.hu/cfg/conn-bundle10.tst;conn-bundle10.tst;success;loadbalancing bundle
 http://sources.nop.hu/cfg/conn-bundle11.tst;conn-bundle11.tst;success;multichassis bundle
 http://sources.nop.hu/cfg/conn-bundle12.tst;conn-bundle12.tst;success;backup bundle
+http://sources.nop.hu/cfg/conn-capwap01.tst;conn-capwap01.tst;success;capwap over ipv4
+http://sources.nop.hu/cfg/conn-capwap02.tst;conn-capwap02.tst;success;capwap over ipv6
+http://sources.nop.hu/cfg/conn-capwap03.tst;conn-capwap03.tst;success;capwap over loopback
+http://sources.nop.hu/cfg/conn-capwap04.tst;conn-capwap04.tst;success;hdlc tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap05.tst;conn-capwap05.tst;success;ppp tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap06.tst;conn-capwap06.tst;success;lapb tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap07.tst;conn-capwap07.tst;success;framerelay tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap08.tst;conn-capwap08.tst;success;atmdxi tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap09.tst;conn-capwap09.tst;success;isdn tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap10.tst;conn-capwap10.tst;success;sep tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap11.tst;conn-capwap11.tst;success;ethernet tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap12.tst;conn-capwap12.tst;success;vlan tunneling with capwap
+http://sources.nop.hu/cfg/conn-capwap13.tst;conn-capwap13.tst;success;tunnel interface with capwap
 http://sources.nop.hu/cfg/conn-dhcp.tst;conn-dhcp.tst;success;dhcp
 http://sources.nop.hu/cfg/conn-dlsw01.tst;conn-dlsw01.tst;success;dlsw over ipv4
 http://sources.nop.hu/cfg/conn-dlsw02.tst;conn-dlsw02.tst;success;dlsw over ipv6
@@ -203,6 +216,19 @@ http://sources.nop.hu/cfg/conn-lisp02.tst;conn-lisp02.tst;success;lisp over ipv6
 http://sources.nop.hu/cfg/conn-lisp03.tst;conn-lisp03.tst;success;lisp over lisp
 http://sources.nop.hu/cfg/conn-lisp04.tst;conn-lisp04.tst;success;lisp over loopback
 http://sources.nop.hu/cfg/conn-lisp05.tst;conn-lisp05.tst;success;lisp over asymmetric ports
+http://sources.nop.hu/cfg/conn-lwapp01.tst;conn-lwapp01.tst;success;lwapp over ipv4
+http://sources.nop.hu/cfg/conn-lwapp02.tst;conn-lwapp02.tst;success;lwapp over ipv6
+http://sources.nop.hu/cfg/conn-lwapp03.tst;conn-lwapp03.tst;success;lwapp over loopback
+http://sources.nop.hu/cfg/conn-lwapp04.tst;conn-lwapp04.tst;success;hdlc tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp05.tst;conn-lwapp05.tst;success;ppp tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp06.tst;conn-lwapp06.tst;success;lapb tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp07.tst;conn-lwapp07.tst;success;framerelay tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp08.tst;conn-lwapp08.tst;success;atmdxi tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp09.tst;conn-lwapp09.tst;success;isdn tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp10.tst;conn-lwapp10.tst;success;sep tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp11.tst;conn-lwapp11.tst;success;ethernet tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp12.tst;conn-lwapp12.tst;success;vlan tunneling with lwapp
+http://sources.nop.hu/cfg/conn-lwapp13.tst;conn-lwapp13.tst;success;tunnel interface with lwapp
 http://sources.nop.hu/cfg/conn-minenc01.tst;conn-minenc01.tst;success;minenc over ipv4
 http://sources.nop.hu/cfg/conn-minenc02.tst;conn-minenc02.tst;success;minenc over ipv6
 http://sources.nop.hu/cfg/conn-minenc03.tst;conn-minenc03.tst;success;minenc over minenc

@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v21.11.26-cur, done by cs@nop.<br/>
-tested: 2021-11-26 03:46:17, took 00:06:51, with 100 workers, on 2450 cases, 0 failed, 0 traces, 0 retries<br/>
+tested: 2021-11-26 06:20:56, took 00:05:59, with 100 workers, on 2476 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -57,6 +57,19 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bundle10.tst">conn-bundle10.tst</a></td><td>success</td><td>loadbalancing bundle</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bundle11.tst">conn-bundle11.tst</a></td><td>success</td><td>multichassis bundle</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-bundle12.tst">conn-bundle12.tst</a></td><td>success</td><td>backup bundle</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap01.tst">conn-capwap01.tst</a></td><td>success</td><td>capwap over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap02.tst">conn-capwap02.tst</a></td><td>success</td><td>capwap over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap03.tst">conn-capwap03.tst</a></td><td>success</td><td>capwap over loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap04.tst">conn-capwap04.tst</a></td><td>success</td><td>hdlc tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap05.tst">conn-capwap05.tst</a></td><td>success</td><td>ppp tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap06.tst">conn-capwap06.tst</a></td><td>success</td><td>lapb tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap07.tst">conn-capwap07.tst</a></td><td>success</td><td>framerelay tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap08.tst">conn-capwap08.tst</a></td><td>success</td><td>atmdxi tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap09.tst">conn-capwap09.tst</a></td><td>success</td><td>isdn tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap10.tst">conn-capwap10.tst</a></td><td>success</td><td>sep tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap11.tst">conn-capwap11.tst</a></td><td>success</td><td>ethernet tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap12.tst">conn-capwap12.tst</a></td><td>success</td><td>vlan tunneling with capwap</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-capwap13.tst">conn-capwap13.tst</a></td><td>success</td><td>tunnel interface with capwap</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-dhcp.tst">conn-dhcp.tst</a></td><td>success</td><td>dhcp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-dlsw01.tst">conn-dlsw01.tst</a></td><td>success</td><td>dlsw over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-dlsw02.tst">conn-dlsw02.tst</a></td><td>success</td><td>dlsw over ipv6</td></tr>
@@ -216,6 +229,19 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-lisp03.tst">conn-lisp03.tst</a></td><td>success</td><td>lisp over lisp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-lisp04.tst">conn-lisp04.tst</a></td><td>success</td><td>lisp over loopback</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-lisp05.tst">conn-lisp05.tst</a></td><td>success</td><td>lisp over asymmetric ports</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp01.tst">conn-lwapp01.tst</a></td><td>success</td><td>lwapp over ipv4</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp02.tst">conn-lwapp02.tst</a></td><td>success</td><td>lwapp over ipv6</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp03.tst">conn-lwapp03.tst</a></td><td>success</td><td>lwapp over loopback</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp04.tst">conn-lwapp04.tst</a></td><td>success</td><td>hdlc tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp05.tst">conn-lwapp05.tst</a></td><td>success</td><td>ppp tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp06.tst">conn-lwapp06.tst</a></td><td>success</td><td>lapb tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp07.tst">conn-lwapp07.tst</a></td><td>success</td><td>framerelay tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp08.tst">conn-lwapp08.tst</a></td><td>success</td><td>atmdxi tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp09.tst">conn-lwapp09.tst</a></td><td>success</td><td>isdn tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp10.tst">conn-lwapp10.tst</a></td><td>success</td><td>sep tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp11.tst">conn-lwapp11.tst</a></td><td>success</td><td>ethernet tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp12.tst">conn-lwapp12.tst</a></td><td>success</td><td>vlan tunneling with lwapp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-lwapp13.tst">conn-lwapp13.tst</a></td><td>success</td><td>tunnel interface with lwapp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-minenc01.tst">conn-minenc01.tst</a></td><td>success</td><td>minenc over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-minenc02.tst">conn-minenc02.tst</a></td><td>success</td><td>minenc over ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-minenc03.tst">conn-minenc03.tst</a></td><td>success</td><td>minenc over minenc</td></tr>

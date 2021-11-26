@@ -40,6 +40,19 @@ qc pass: dejittering bundle
 qc pass: loadbalancing bundle
 qc pass: multichassis bundle
 qc pass: backup bundle
+qc pass: capwap over ipv4
+qc pass: capwap over ipv6
+qc pass: capwap over loopback
+qc pass: hdlc tunneling with capwap
+qc pass: ppp tunneling with capwap
+qc pass: lapb tunneling with capwap
+qc pass: framerelay tunneling with capwap
+qc pass: atmdxi tunneling with capwap
+qc pass: isdn tunneling with capwap
+qc pass: sep tunneling with capwap
+qc pass: ethernet tunneling with capwap
+qc pass: vlan tunneling with capwap
+qc pass: tunnel interface with capwap
 qc pass: dhcp
 qc pass: dlsw over ipv4
 qc pass: dlsw over ipv6
@@ -199,6 +212,19 @@ qc pass: lisp over ipv6
 qc pass: lisp over lisp
 qc pass: lisp over loopback
 qc pass: lisp over asymmetric ports
+qc pass: lwapp over ipv4
+qc pass: lwapp over ipv6
+qc pass: lwapp over loopback
+qc pass: hdlc tunneling with lwapp
+qc pass: ppp tunneling with lwapp
+qc pass: lapb tunneling with lwapp
+qc pass: framerelay tunneling with lwapp
+qc pass: atmdxi tunneling with lwapp
+qc pass: isdn tunneling with lwapp
+qc pass: sep tunneling with lwapp
+qc pass: ethernet tunneling with lwapp
+qc pass: vlan tunneling with lwapp
+qc pass: tunnel interface with lwapp
 qc pass: minenc over ipv4
 qc pass: minenc over ipv6
 qc pass: minenc over minenc
