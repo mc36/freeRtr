@@ -11,6 +11,8 @@ int eth7 eth 0000.0000.7777 $7a$ $7b$
 int eth8 eth 0000.0000.8888 $8a$ $8b$
 int eth9 eth 0000.0000.9999 $9a$ $9b$
 int eth10 eth 0000.0000.aaaa $10a$ $10b$
+int eth11 eth 0000.0000.bbbb $11a$ $11b$
+int eth12 eth 0000.0000.cccc $12a$ $12b$
 !
 vrf def v1
  rd 1:1
@@ -164,6 +166,28 @@ vpdn dlsw
  tar 1.1.1.38
  vcid 1234
  prot dlsw
+ exit
+int eth11
+ vrf for v1
+ ipv4 addr 1.1.1.41 255.255.255.252
+ ipv6 addr 1234:11::1 ffff:ffff::
+ exit
+vpdn capwap
+ bridge-gr 1
+ proxy p1
+ tar 1.1.1.42
+ prot capwap
+ exit
+int eth12
+ vrf for v1
+ ipv4 addr 1.1.1.45 255.255.255.252
+ ipv6 addr 1234:12::1 ffff:ffff::
+ exit
+vpdn lwapp
+ bridge-gr 1
+ proxy p1
+ tar 1.1.1.46
+ prot lwapp
  exit
 !
 
@@ -479,7 +503,66 @@ vpdn uti
  exit
 !
 
+addrouter r12
+int eth1 eth 0000.0000.cccc $11b$ $11a$
+!
+vrf def v1
+ rd 1:1
+ exit
+proxy-profile p1
+ vrf v1
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 1.1.1.42 255.255.255.252
+ ipv6 addr 1234:11::2 ffff:ffff::
+ exit
+bridge 1
+ exit
+int bvi1
+ vrf for v1
+ ipv4 addr 2.2.2.12 255.255.255.0
+ ipv6 addr 4321::12 ffff:ffff::
+ exit
+vpdn uti
+ bridge-gr 1
+ proxy p1
+ tar 1.1.1.41
+ prot capwap
+ exit
+!
 
+addrouter r13
+int eth1 eth 0000.0000.dddd $12b$ $12a$
+!
+vrf def v1
+ rd 1:1
+ exit
+proxy-profile p1
+ vrf v1
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 1.1.1.46 255.255.255.252
+ ipv6 addr 1234:12::2 ffff:ffff::
+ exit
+bridge 1
+ exit
+int bvi1
+ vrf for v1
+ ipv4 addr 2.2.2.13 255.255.255.0
+ ipv6 addr 4321::13 ffff:ffff::
+ exit
+vpdn uti
+ bridge-gr 1
+ proxy p1
+ tar 1.1.1.45
+ prot lwapp
+ exit
+!
+
+
+r1 tping 100 10 2.2.2.1 /vrf v1
 r1 tping 100 10 2.2.2.2 /vrf v1
 r1 tping 100 10 2.2.2.3 /vrf v1
 r1 tping 100 10 2.2.2.4 /vrf v1
@@ -490,6 +573,9 @@ r1 tping 100 10 2.2.2.8 /vrf v1
 r1 tping 100 10 2.2.2.9 /vrf v1
 r1 tping 100 10 2.2.2.10 /vrf v1
 r1 tping 100 10 2.2.2.11 /vrf v1
+r1 tping 100 10 2.2.2.12 /vrf v1
+r1 tping 100 10 2.2.2.13 /vrf v1
+r1 tping 100 10 4321::1 /vrf v1
 r1 tping 100 10 4321::2 /vrf v1
 r1 tping 100 10 4321::3 /vrf v1
 r1 tping 100 10 4321::4 /vrf v1
@@ -500,3 +586,5 @@ r1 tping 100 10 4321::8 /vrf v1
 r1 tping 100 10 4321::9 /vrf v1
 r1 tping 100 10 4321::10 /vrf v1
 r1 tping 100 10 4321::11 /vrf v1
+r1 tping 100 10 4321::12 /vrf v1
+r1 tping 100 10 4321::13 /vrf v1
