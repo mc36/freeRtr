@@ -50,7 +50,7 @@ int getState(int port) {
 
 
 void err(char*buf) {
-    rte_exit(EXIT_FAILURE, buf);
+    rte_exit(EXIT_FAILURE, "%s\n", buf);
     exit(1);
 }
 
@@ -101,28 +101,28 @@ struct lcore_conf lcore_conf[RTE_MAX_LCORE];
 
 void doSockLoop() {
     FILE *commands = fdopen(commandSock, "r");
-    if (commands == NULL) err("failed to open file\n");
+    if (commands == NULL) err("failed to open file");
     unsigned char buf[1024];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
         if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
         if (doOneCommand(&buf[0]) != 0) break;
     }
-    err("command thread exited\n");
+    err("command thread exited");
 }
 
 
 
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
-    if (commands == NULL) err("failed to open file\n");
+    if (commands == NULL) err("failed to open file");
     int rnd = 0;
     for (;;) {
         doStatRound(commands, rnd);
         rnd++;
         usleep(100000);
     }
-    err("stat thread exited\n");
+    err("stat thread exited");
 }
 
 
@@ -142,7 +142,7 @@ void doMainLoop() {
         if (doConsoleCommand(&buf[0]) != 0) break;
         printf("\n");
     }
-    err("main thread exited\n");
+    err("main thread exited");
 }
 
 
@@ -205,7 +205,7 @@ static int doPacketLoop(__rte_unused void *arg) {
         }
         if (pkts < 1) usleep(BURST_PAUSE);
     }
-    err("packet thread exited\n");
+    err("packet thread exited");
     return 0;
 }
 
@@ -218,27 +218,27 @@ static int doPacketLoop(__rte_unused void *arg) {
 int main(int argc, char **argv) {
 
     int ret = rte_eal_init(argc, argv);
-    if (ret < 0) err("error with eal initialization\n");
+    if (ret < 0) err("error with eal initialization");
 
     argc -= ret;
     argv += ret;
 
     ports = rte_eth_dev_count_avail();
-    if (ports < 2) err("at least 2 ports needed\n");
+    if (ports < 2) err("at least 2 ports needed");
 
-    if (argc < 4) err("using: dp <host> <rport> <cpuport> [port rxlcore txlcore] ...\n");
+    if (argc < 4) err("using: dp <host> <rport> <cpuport> [port rxlcore txlcore] ...");
     printf("dpdk version: %s\n", rte_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));
-    if (inet_aton(argv[1], &addr.sin_addr) == 0) err("bad addr address\n");
+    if (inet_aton(argv[1], &addr.sin_addr) == 0) err("bad addr address");
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     printf("connecting %s %i.\n", inet_ntoa(addr.sin_addr), port);
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
-    if (commandSock < 0) err("unable to open socket\n");
-    if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket\n");
+    if (commandSock < 0) err("unable to open socket");
+    if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
     cpuport = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuport, ports);
 
@@ -264,7 +264,7 @@ int main(int argc, char **argv) {
     }
 
     mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
-    if (mbuf_pool == NULL) err("cannot create mbuf pool\n");
+    if (mbuf_pool == NULL) err("cannot create mbuf pool");
 
     RTE_ETH_FOREACH_DEV(port) {
         unsigned char buf[128];
@@ -279,10 +279,10 @@ int main(int argc, char **argv) {
         struct rte_eth_dev_info dev_info;
         struct rte_eth_txconf txconf;
 
-        if (!rte_eth_dev_is_valid_port(port)) err("not valid port\n");
+        if (!rte_eth_dev_is_valid_port(port)) err("not valid port");
 
         ret = rte_eth_dev_info_get(port, &dev_info);
-        if (ret != 0) err("error getting device info\n");
+        if (ret != 0) err("error getting device info");
 
         if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
@@ -294,37 +294,37 @@ int main(int argc, char **argv) {
         }
 
         ret = rte_eth_dev_configure(port, 1, 1, &port_conf);
-        if (ret != 0) err("error configuring port\n");
+        if (ret != 0) err("error configuring port");
 
         ret = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
-        if (ret != 0) err("error adjusting descriptors\n");
+        if (ret != 0) err("error adjusting descriptors");
 
         ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool);
-        if (ret != 0) err("error setting up rx queue\n");
+        if (ret != 0) err("error setting up rx queue");
 
         txconf = dev_info.default_txconf;
         txconf.offloads = port_conf.txmode.offloads;
         ret = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
-        if (ret != 0) err("error setting up tx queue\n");
+        if (ret != 0) err("error setting up tx queue");
 
         tx_ring[port] = rte_ring_create((char*)&buf[0], RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
-        if (tx_ring[port] == NULL) err("error allocating tx ring\n");
+        if (tx_ring[port] == NULL) err("error allocating tx ring");
 
         ret = rte_eth_dev_start(port);
-        if (ret != 0) err("error starting port\n");
+        if (ret != 0) err("error starting port");
 
         struct rte_ether_addr addr;
         ret = rte_eth_macaddr_get(port, &addr);
-        if (ret != 0) err("error getting mac\n");
+        if (ret != 0) err("error getting mac");
 
         ret = rte_eth_promiscuous_enable(port);
-        if (ret != 0) err("error setting promiscuous mode\n");
+        if (ret != 0) err("error setting promiscuous mode");
     }
 
     pthread_t threadSock;
-    if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread\n");
+    if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
     pthread_t threadStat;
-    if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread\n");
+    if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
     rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MAIN);
 
