@@ -1,7 +1,7 @@
 #!/bin/sh
 CC="tcc"                                #tcc
-CC="clang"                              #clang
 CC="gcc"                                #gcc
+CC="clang"                              #clang
 
 MD="-g"                                 #debug
 MD="-O3"                                #release
