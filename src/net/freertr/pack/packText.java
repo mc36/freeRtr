@@ -48,7 +48,7 @@ public class packText {
         if (pipe.isClosed() != 0) {
             return null;
         }
-        String s = pipe.lineGet(0x41);
+        String s = pipe.lineGet(1);
         if (s.equals(".")) {
             return null;
         }
@@ -142,7 +142,7 @@ public class packText {
      */
     public String codedRecv() {
         for (;;) {
-            String s = pipe.lineGet(0x41);
+            String s = pipe.lineGet(1);
             if (s.length() < 1) {
                 if (pipe.isClosed() != 0) {
                     return null;
