@@ -263,7 +263,29 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " translate" + s);
             }
             if (ntry.subconn != 0) {
-                l.add(a + " subconn " + ntry.subconn);
+                String s = "";
+                if ((ntry.subconn & 0x1) != 0) {
+                    s += " strip-path";
+                }
+                if ((ntry.subconn & 0x2) != 0) {
+                    s += " strip-name";
+                }
+                if ((ntry.subconn & 0x4) != 0) {
+                    s += " strip-ext";
+                }
+                if ((ntry.subconn & 0x8) != 0) {
+                    s += " strip-param";
+                }
+                if ((ntry.subconn & 0x10) != 0) {
+                    s += " keep-cred";
+                }
+                if ((ntry.subconn & 0x20) != 0) {
+                    s += " keep-host";
+                }
+                if ((ntry.subconn & 0x40) != 0) {
+                    s += " keep-path";
+                }
+                l.add(a + " subconn" + s);
             }
             if (ntry.streamT != null) {
                 l.add(a + " stream " + ntry.streamM + " " + ntry.streamP.name + " " + ntry.streamT);
@@ -466,11 +488,44 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("subconn")) {
+            ntry.subconn = 0;
             if (negated) {
-                ntry.subconn = 0;
                 return false;
             }
-            ntry.subconn = bits.str2num(cmd.word());
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("strip-path")) {
+                    ntry.subconn |= 0x1;
+                    continue;
+                }
+                if (a.equals("strip-name")) {
+                    ntry.subconn |= 0x2;
+                    continue;
+                }
+                if (a.equals("strip-ext")) {
+                    ntry.subconn |= 0x4;
+                    continue;
+                }
+                if (a.equals("strip-param")) {
+                    ntry.subconn |= 0x8;
+                    continue;
+                }
+                if (a.equals("keep-cred")) {
+                    ntry.subconn |= 0x10;
+                    continue;
+                }
+                if (a.equals("keep-host")) {
+                    ntry.subconn |= 0x20;
+                    continue;
+                }
+                if (a.equals("keep-path")) {
+                    ntry.subconn |= 0x40;
+                    continue;
+                }
+            }
             return false;
         }
         if (a.equals("stream")) {
@@ -731,7 +786,13 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 4      translate                  translate the url");
         l.add(null, "4 4,.      <num:trn>                translation rule to use");
         l.add(null, "3 4      subconn                    reconnect only to the url");
-        l.add(null, "4 .        <num>                    bitmask what to revert");
+        l.add(null, "4 4,.      strip-path               strip path");
+        l.add(null, "4 4,.      strip-name               strip filename");
+        l.add(null, "4 4,.      strip-ext                strip extension");
+        l.add(null, "4 4,.      strip-param              strip parameters");
+        l.add(null, "4 4,.      keep-cred                keep credentinals");
+        l.add(null, "4 4,.      keep-host                keep hostname");
+        l.add(null, "4 4,.      keep-path                append path");
         l.add(null, "3 4      stream                     stream from server");
         l.add(null, "4 5        <name>                   content type");
         l.add(null, "5 6          <name:prx>             proxy profile");
