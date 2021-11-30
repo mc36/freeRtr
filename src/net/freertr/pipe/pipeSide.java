@@ -870,10 +870,10 @@ public class pipeSide {
             }
             if ((editing & 0x40) == 0) {
                 if (chr < 32) {
-                    continue;
+                    chr = 32;
                 }
                 if (chr > 127) {
-                    continue;
+                    chr = 32;
                 }
             }
             s += (char) chr;
