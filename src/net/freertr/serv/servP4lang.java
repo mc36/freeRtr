@@ -4464,7 +4464,7 @@ class servP4langConn implements Runnable {
         if (mat.rangeMin == mat.rangeMax) {
             return mat.rangeMin + " " + max;
         }
-        return "0 0";
+        return mat.rangeMin + " " + (max - mat.rangeMax + mat.rangeMin);
     }
 
     public String ip2str(boolean ipv4, addrIP adr) {
