@@ -897,7 +897,11 @@ public class pipeSide {
         switch (lineRx) {
             case modeCRLF:
             case modeLFCR:
-                s = s.substring(0, s.length() - 1);
+                int i = s.length() - 1;
+                if (i < 0) {
+                    i = 0;
+                }
+                s = s.substring(0, i);
                 break;
             default:
                 break;
