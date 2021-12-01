@@ -224,8 +224,8 @@ public class packSshInit {
      * exchange version string
      */
     public void exchangeVersion() {
-        lower.pipe.lineTx = pipeSide.modTyp.modeLF;
-        lower.pipe.lineRx = pipeSide.modTyp.modeLF;
+        lower.pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        lower.pipe.lineRx = pipeSide.modTyp.modeCRLF;
         lower.pipe.linePut(getLocalVersion());
         String s = "";
         for (;;) {

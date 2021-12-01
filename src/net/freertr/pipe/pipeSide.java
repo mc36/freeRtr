@@ -834,7 +834,6 @@ public class pipeSide {
         pipeSide.modTyp last = null;
         for (;;) {
             byte[] buf = new byte[4];
-            pipeSide.modTyp curr = null;
             int i = blockingGet(buf, 0, 1);
             if (i == pipeLine.tryLater) {
                 continue;
@@ -842,9 +841,8 @@ public class pipeSide {
             if (i != 1) {
                 break;
             }
-            last = curr;
             int chr = buf[0] & 0xff;
-            curr = getType(chr, modTyp.modeNone);
+            pipeSide.modTyp curr = getType(chr, modTyp.modeNone);
             if ((curr == modTyp.modeBS) && ((editing & 0x10) != 0)) {
                 i = s.length() - 1;
                 if (i < 0) {
@@ -868,6 +866,7 @@ public class pipeSide {
             if (gotOneChar(last, curr)) {
                 break;
             }
+            last = curr;
             if ((editing & 0x40) == 0) {
                 if (chr < 32) {
                     chr = 32;
