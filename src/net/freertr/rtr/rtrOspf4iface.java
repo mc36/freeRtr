@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.auth.authLocal;
+import net.freertr.cry.cryHashMd5;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipPrt;
 import net.freertr.pack.packHolder;
@@ -156,6 +157,16 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     public String authentication;
 
     /**
+     * authentication mode: 1=cleartext, 2=md5
+     */
+    public int authenMode;
+
+    /**
+     * authentication id
+     */
+    public int authenKey;
+
+    /**
      * interface metric
      */
     public int metric;
@@ -168,7 +179,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     /**
      * interface instance
      */
-    public int instance = 0;
+    public int instance;
 
     /**
      * point to point
@@ -232,6 +243,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         cntr = new counter();
         connectedCheck = true;
         drPriority = 0;
+        authenMode = 1;
         metric = 10;
         teMetric = 10;
         if (iface != null) {
@@ -294,6 +306,22 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
+        switch (authenMode) {
+            case 0:
+                a = "null";
+                break;
+            case 1:
+                a = "clear";
+                break;
+            case 2:
+                a = "md5";
+                break;
+            default:
+                a = "unknown=" + authenMode;
+                break;
+        }
+        l.add(cmds.tabulator + beg + "authen-type " + a);
+        l.add(cmds.tabulator + beg + "authen-id " + authenKey);
         l.add(cmds.tabulator + beg + "instance " + instance);
         l.add(cmds.tabulator + beg + "cost " + metric);
         l.add(cmds.tabulator + beg + "priority " + drPriority);
@@ -464,6 +492,27 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             authentication = authLocal.passwdDecode(cmd.word());
             return;
         }
+        if (a.equals("authen-id")) {
+            authenKey = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("authen-type")) {
+            authenMode = 0;
+            a = cmd.word();
+            if (a.equals("null")) {
+                authenMode = 0;
+                return;
+            }
+            if (a.equals("clear")) {
+                authenMode = 1;
+                return;
+            }
+            if (a.equals("md5")) {
+                authenMode = 2;
+                return;
+            }
+            return;
+        }
         if (a.equals("traffeng")) {
             a = cmd.word();
             if (a.equals("suppress")) {
@@ -569,6 +618,14 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             connectedCheck = false;
             return;
         }
+        if (a.equals("authen-id")) {
+            authenKey = 0;
+            return;
+        }
+        if (a.equals("authen-type")) {
+            authenMode = 1;
+            return;
+        }
         if (a.equals("password")) {
             authentication = null;
             return;
@@ -653,6 +710,12 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(null, "5 .           <addr>                address of peer interface");
         l.add(null, "4 5         password                password for authentication");
         l.add(null, "5 .           <text>                set password");
+        l.add(null, "4 5         authen-type             mode for authentication");
+        l.add(null, "5 .           null                  use nothing");
+        l.add(null, "5 .           clear                 use cleartext");
+        l.add(null, "5 .           md5                   use md5");
+        l.add(null, "4 5         authen-id               id for authentication");
+        l.add(null, "5 .           <num>                 key id");
         l.add(null, "4 5         traffeng                traffic engineering parameters");
         l.add(null, "5 .           suppress              do not advertise interface");
         l.add(null, "5 6           metric                set metric");
@@ -859,13 +922,31 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     /**
      * get authentication data
      *
+     * @param rx true if received, false if sending
      * @return bytes in header
      */
-    protected byte[] getAuthData() {
+    protected byte[] getAuthData1(boolean rx) {
         final int len = 8;
         byte[] buf = new byte[2 + len];
         bits.byteFill(buf, 0, buf.length, 0);
         buf[0] = (byte) instance;
+        buf[1] = (byte) authenMode;
+        switch (authenMode) {
+            case 0: // null
+                return buf;
+            case 1: // text
+                break;
+            case 2: // md5
+                buf[4] = (byte) authenKey;
+                buf[5] = 16; // length
+                bits.msbPutD(buf, 6, (int) bits.getTime());
+                if (!rx) {
+                    return buf;
+                }
+                byte[] buf2 = new byte[buf.length - 4];
+                bits.byteCopy(buf, 0, buf2, 0, buf2.length);
+                return buf2;
+        }
         if (authentication == null) {
             return buf;
         }
@@ -877,6 +958,30 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         }
         bits.byteCopy(pwd, 0, buf, 2, i);
         return buf;
+    }
+
+    /**
+     * get authentication data
+     *
+     * @param pck packet to check
+     * @return bytes in header
+     */
+    protected byte[] getAuthData2(packHolder pck) {
+        if (authenMode != 2) {
+            return new byte[0];
+        }
+        if (authentication == null) {
+            return new byte[0];
+        }
+        cryHashMd5 h = new cryHashMd5();
+        h.init();
+        pck.hashData(h, 0, pck.dataSize());
+        byte[] buf = authentication.getBytes();
+        h.update(buf);
+        for (int i = buf.length; i < 16; i++) {
+            h.update(0);
+        }
+        return h.finish();
     }
 
     /**
@@ -911,13 +1016,20 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         pck.putAddr(4, lower.routerID); // router id
         pck.msbPutD(8, area.area); // area id
         pck.msbPutW(12, 0); // checksum
-        byte[] buf = getAuthData();
+        byte[] buf = getAuthData1(false);
         pck.putCopy(buf, 0, 14, buf.length);
         int i = pck.putIPsum(0, rtrOspf4.sizeHead - 8, 0);
         i = pck.getIPsum(0, pck.dataSize(), i);
-        pck.lsbPutW(12, 0xffff - i); // checksum
+        buf = getAuthData2(pck);
+        if (buf.length < 1) {
+            pck.lsbPutW(12, 0xffff - i); // checksum
+        }
         pck.putSkip(rtrOspf4.sizeHead);
         pck.merge2beg();
+        buf = getAuthData2(pck);
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2end();
     }
 
     /**

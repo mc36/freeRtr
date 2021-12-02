@@ -1566,6 +1566,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router ospf[4|6] .* unsuppress-prefix",
         "interface .*! router ospf[4|6] .* verify-source",
         "interface .*! no router ospf[4|6] .* password",
+        "interface .*! router ospf[4|6] .* authen-type clear",
+        "interface .*! router ospf[4|6] .* authen-id 0",
         "interface .*! router ospf[4|6] .* instance 0",
         "interface .*! router ospf[4|6] .* cost 10",
         "interface .*! router ospf[4|6] .* priority 0",

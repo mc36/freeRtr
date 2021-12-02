@@ -329,7 +329,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             iface.cntr.drop(pck, counter.reasons.badID);
             return;
         }
-        byte[] buf1 = iface.getAuthData();
+        byte[] buf1 = iface.getAuthData1(true);
         byte[] buf2 = new byte[buf1.length];
         pck.getCopy(buf2, 0, 14, buf2.length);
         if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {
@@ -337,9 +337,17 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             iface.cntr.drop(pck, counter.reasons.badKey);
             return;
         }
+        buf1 = iface.getAuthData2(pck);
+        buf2 = new byte[buf1.length];
+        pck.getCopy(buf2, 0, pck.dataSize(), buf2.length);
+        if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {
+            logger.info("got bad authentication from " + peer);
+            iface.cntr.drop(pck, counter.reasons.badKey);
+            return;
+        }
         i = pck.getIPsum(0, rtrOspf4.sizeHead - 8, 0);
         i = pck.getIPsum(rtrOspf4.sizeHead, pck.dataSize() - rtrOspf4.sizeHead, i);
-        if (i != 0xffff) {
+        if ((buf1.length < 1) && (i != 0xffff)) {
             logger.info("got bad checksum from " + peer);
             iface.cntr.drop(pck, counter.reasons.badSum);
             return;
