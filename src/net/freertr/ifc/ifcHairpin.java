@@ -8,6 +8,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
@@ -25,6 +26,11 @@ public class ifcHairpin {
      */
     public boolean notEther;
 
+    /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+
     private ifcHairpinWorker s1;
 
     private ifcHairpinWorker s2;
@@ -39,7 +45,7 @@ public class ifcHairpin {
         s2 = new ifcHairpinWorker();
         s1.parent = this;
         s2.parent = this;
-        pip = new pipeLine(128 * 1024, true);
+        pip = new pipeLine(64 * 1024, true);
         s1.queueRx = pip.getSide();
         s2.queueRx = pip.getSide();
         s1.queueTx = s1.queueRx;
@@ -68,6 +74,8 @@ public class ifcHairpin {
      * stop this hairpin
      */
     public void stopWork() {
+        s1.need2work = false;
+        s2.need2work = false;
         pip.setClose();
     }
 
@@ -86,6 +94,8 @@ public class ifcHairpin {
      */
     public static void getHelp(userHelping l) {
         l.add(null, "1 .  ethernet                       specify type of hairpin");
+        l.add(null, "1 2  buffer                         specify buffer size");
+        l.add(null, "2 .    <num>                        buffer size in bytes");
     }
 
     /**
@@ -96,6 +106,7 @@ public class ifcHairpin {
      */
     public void getConfig(List<String> l, String beg) {
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
+        l.add(beg + "buffer " + bufSiz);
     }
 
     /**
@@ -107,6 +118,17 @@ public class ifcHairpin {
         String s = cmd.word();
         if (s.equals("ethernet")) {
             notEther = false;
+            return;
+        }
+        if (s.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
+            pipeLine old = pip;
+            pip = new pipeLine(bufSiz, true);
+            s1.queueRx = pip.getSide();
+            s2.queueRx = pip.getSide();
+            s1.queueTx = s1.queueRx;
+            s2.queueTx = s2.queueRx;
+            old.setClose();
             return;
         }
         if (!s.equals("no")) {
@@ -124,6 +146,8 @@ public class ifcHairpin {
 }
 
 class ifcHairpinWorker implements ifcDn, Runnable {
+
+    public boolean need2work = true;
 
     public ifcHairpin parent;
 
@@ -187,9 +211,12 @@ class ifcHairpinWorker implements ifcDn, Runnable {
         packHolder pck = new packHolder(true, true);
         byte[] buf = new byte[packHolder.maxHead];
         for (;;) {
+            if (!need2work) {
+                break;
+            }
             int i = queueRx.blockingGet(buf, 0, buf.length);
             if (i < 0) {
-                return;
+                continue;
             }
             pck.clear();
             pck.putCopy(buf, 0, 0, i);
