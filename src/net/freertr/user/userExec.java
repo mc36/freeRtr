@@ -3271,17 +3271,30 @@ public class userExec {
                 bits.sleep(delay);
             }
             if (need2stop()) {
+                if (detail) {
+                    pipe.strPut("aborted ");
+                    break;
+                }
                 pipe.strPut("*");
                 break;
             }
             sent++;
             ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, flow, data, multi);
             if (ping == null) {
+                lost++;
+                if (detail) {
+                    pipe.strPut("noroute ");
+                    continue;
+                }
                 pipe.strPut("N");
                 continue;
             }
             if (timeout < 1) {
                 lost++;
+                if (detail) {
+                    pipe.strPut("miss ");
+                    continue;
+                }
                 pipe.strPut(".");
                 continue;
             }
@@ -3294,11 +3307,19 @@ public class userExec {
             }
             if (ping.notif.totalNotifies() < 1) {
                 lost++;
+                if (detail) {
+                    pipe.strPut("missed ");
+                    continue;
+                }
                 pipe.strPut(".");
                 continue;
             }
             if (ping.res.size() < 1) {
                 lost++;
+                if (detail) {
+                    pipe.strPut("timeout ");
+                    continue;
+                }
                 pipe.strPut(".");
                 continue;
             }
@@ -3349,7 +3370,7 @@ public class userExec {
                     tiMax = res.tim;
                 }
                 if (detail) {
-                    pipe.strPut(res.tim + "ms" + "@" + res.rtr + " ");
+                    pipe.strPut(res.tim + "ms," + res.ttl + "ttl," + res.tos + "tos@" + res.rtr + " ");
                     continue;
                 }
                 pipe.strPut("!");
