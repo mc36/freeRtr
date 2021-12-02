@@ -1974,9 +1974,11 @@ public class userExec {
                 i = 0x31;
             }
             a = cmd.pipe.lineGet(i);
-            if (!authLocal.secretTest(cfgAll.enaPass, a)) {
-                privileged = true;
+            if (authLocal.secretTest(cfgAll.enaPass, a)) {
+                cmd.error("invalid password");
+                return cmdRes.command;
             }
+            privileged = true;
             return cmdRes.command;
         }
         if (a.equals("disable")) {
