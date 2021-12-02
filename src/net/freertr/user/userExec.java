@@ -3154,7 +3154,6 @@ public class userExec {
     }
 
     private void doPing() {
-        long beg = bits.getTime();
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
         cfgIfc ifc = cfgAll.getClntIfc();
@@ -3258,9 +3257,13 @@ public class userExec {
         int recv = 0;
         int lost = 0;
         int errs = 0;
-        int tiMin = timeout * 10;
-        int tiMax = 0;
-        int tiSum = 0;
+        int timMin = timeout * 10;
+        int timMax = 0;
+        int timSum = 0;
+        int ttlMin = 256;
+        int ttlMax = 0;
+        int ttlSum = 0;
+        long timBeg = bits.getTime();
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi + ", detail=" + detail);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
@@ -3362,12 +3365,19 @@ public class userExec {
                     continue;
                 }
                 recv++;
-                tiSum += res.tim;
-                if (res.tim < tiMin) {
-                    tiMin = res.tim;
+                timSum += res.tim;
+                if (res.tim < timMin) {
+                    timMin = res.tim;
                 }
-                if (res.tim > tiMax) {
-                    tiMax = res.tim;
+                if (res.tim > timMax) {
+                    timMax = res.tim;
+                }
+                ttlSum += res.ttl;
+                if (res.ttl < ttlMin) {
+                    ttlMin = res.ttl;
+                }
+                if (res.ttl > ttlMax) {
+                    ttlMax = res.ttl;
                 }
                 if (detail) {
                     pipe.strPut(res.tim + "ms," + res.ttl + "ttl," + res.tos + "tos@" + res.rtr + " ");
@@ -3382,14 +3392,13 @@ public class userExec {
         pipe.linePut("");
         int perc = 0;
         if (recv > 0) {
-            tiSum /= recv;
+            timSum /= recv;
+            ttlSum /= recv;
         }
         if (sent > 0) {
             perc = (recv * 100) / sent;
         }
-        pipe.linePut("result=" + perc + "%, recv/sent/lost/err=" + recv + "/"
-                + sent + "/" + lost + "/" + errs + ", rtt min/avg/max/total="
-                + tiMin + "/" + tiSum + "/" + tiMax + "/" + (bits.getTime() - beg));
+        pipe.linePut("result=" + perc + "%, recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", rtt min/avg/max/sum=" + timMin + "/" + timSum + "/" + timMax + "/" + (bits.getTime() - timBeg) + ", ttl min/avg/max=" + ttlMin + "/" + ttlSum + "/" + ttlMax);
     }
 
     private void doListen() {
