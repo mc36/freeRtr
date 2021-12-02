@@ -85,15 +85,15 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     }
 
     public List<String> getShRun(int filter) {
-        List<String> lst = new ArrayList<String>();
-        lst.add("session " + name);
-        connects.getConfig(lst, cmds.tabulator);
-        lst.add(cmds.tabulator + cmds.finish);
-        lst.add(cmds.comment);
+        List<String> l = new ArrayList<String>();
+        l.add("session " + name);
+        connects.getConfig(l, cmds.tabulator);
+        l.add(cmds.tabulator + cmds.finish);
+        l.add(cmds.comment);
         if ((filter & 1) == 0) {
-            return lst;
+            return l;
         }
-        return userFilter.filterText(lst, defaultF);
+        return userFilter.filterText(l, defaultF);
     }
 
 }

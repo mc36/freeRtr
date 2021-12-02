@@ -76,17 +76,17 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
     }
 
     public List<String> getShRun(int filter) {
-        List<String> lst = new ArrayList<String>();
+        List<String> l = new ArrayList<String>();
         if (filNam == null) {
-            lst.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr(), (filter & 2) != 0));
+            l.add("crypto certificate " + name + " import " + key.algName() + " " + key.keyName + " " + authLocal.passwdEncode(cert.pemWriteStr(), (filter & 2) != 0));
         } else {
-            lst.add("crypto certificate " + name + " external " + key.algName() + " " + key.keyName + " " + filNam);
+            l.add("crypto certificate " + name + " external " + key.algName() + " " + key.keyName + " " + filNam);
         }
-        lst.add(cmds.comment);
+        l.add(cmds.comment);
         if ((filter & 1) == 0) {
-            return lst;
+            return l;
         }
-        return userFilter.filterText(lst, defaultF);
+        return userFilter.filterText(l, defaultF);
     }
 
 }
