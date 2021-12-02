@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.auth.authLocal;
+import net.freertr.tab.tabGen;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -204,6 +205,16 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         return type2string(type) + "|" + name + "|" + command;
     }
 
+    /**
+     * defaults text
+     */
+    public final static String[] defaultL = {};
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
+
     public int compare(cfgAlias o1, cfgAlias o2) {
         int i = o1.type.compareTo(o2.type);
         if (i != 0) {
@@ -244,7 +255,8 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if ((filter & 1) == 0) {
             return l;
         }
-        return userFilter.filterText(l, cfgAll.defaultF);
+        l = userFilter.filterText(l, cfgAll.defaultF);
+        return userFilter.filterText(l, defaultF);
     }
 
     public void doCfgStr(cmds cmd) {

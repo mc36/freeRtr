@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -40,6 +42,16 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         prflst = new tabListing<tabPrfxlstN, addrIP>();
     }
 
+    /**
+     * defaults text
+     */
+    public final static String[] defaultL = {};
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
+
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("prefix-list " + name);
@@ -49,7 +61,10 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         l.addAll(prflst.dump(cmds.tabulator));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        return l;
+        if ((filter & 1) == 0) {
+            return l;
+        }
+        return userFilter.filterText(l, defaultF);
     }
 
     public void getHelp(userHelping l) {

@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.auth.authLocal;
 import net.freertr.cry.cryKeyGeneric;
+import net.freertr.tab.tabGen;
+import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
@@ -41,6 +43,16 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
         return name;
     }
 
+    /**
+     * defaults text
+     */
+    public final static String[] defaultL = {};
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
+
     public int compare(cfgKey<T> o1, cfgKey<T> o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
@@ -63,7 +75,10 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
             lst.add("crypto " + key.algName() + "key " + name + " external " + filNam);
         }
         lst.add(cmds.comment);
-        return lst;
+        if ((filter & 1) == 0) {
+            return lst;
+        }
+        return userFilter.filterText(lst, defaultF);
     }
 
 }

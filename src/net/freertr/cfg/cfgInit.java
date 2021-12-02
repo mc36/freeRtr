@@ -710,6 +710,15 @@ public class cfgInit implements Runnable {
         cfgVdc.defaultF = createFilter(cfgVdc.defaultL);
         cfgPrcss.defaultF = createFilter(cfgPrcss.defaultL);
         cfgVrf.defaultF = createFilter(cfgVrf.defaultL);
+        cfgAlias.defaultF = createFilter(cfgAlias.defaultL);
+        cfgCert.defaultF = createFilter(cfgCert.defaultL);
+        cfgChat.defaultF = createFilter(cfgChat.defaultL);
+        cfgHrpn.defaultF = createFilter(cfgHrpn.defaultL);
+        cfgKey.defaultF = createFilter(cfgKey.defaultL);
+        cfgAceslst.defaultF = createFilter(cfgAceslst.defaultL);
+        cfgObjnet.defaultF = createFilter(cfgObjnet.defaultL);
+        cfgObjprt.defaultF = createFilter(cfgObjprt.defaultL);
+        cfgPrfxlst.defaultF = createFilter(cfgPrfxlst.defaultL);
         cfgBndl.defaultF = createFilter(cfgBndl.defaultL);
         cfgBrdg.defaultF = createFilter(cfgBrdg.defaultL);
         cfgTrnsltn.defaultF = createFilter(cfgTrnsltn.defaultL);
@@ -718,6 +727,7 @@ public class cfgInit implements Runnable {
         cfgCheck.defaultF = createFilter(cfgCheck.defaultL);
         cfgSensor.defaultF = createFilter(cfgSensor.defaultL);
         cfgRoump.defaultF = createFilter(cfgRoump.defaultL);
+        cfgRouplc.defaultF = createFilter(cfgRouplc.defaultL);
         cfgTime.defaultF = createFilter(cfgTime.defaultL);
         cfgPlymp.defaultF = createFilter(cfgPlymp.defaultL);
         cfgRtr.defaultF = createFilter(cfgRtr.defaultL);

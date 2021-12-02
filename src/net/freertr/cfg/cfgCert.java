@@ -6,6 +6,8 @@ import java.util.List;
 import net.freertr.auth.authLocal;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyGeneric;
+import net.freertr.tab.tabGen;
+import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
@@ -35,6 +37,16 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
      * key
      */
     public cryKeyGeneric key;
+
+    /**
+     * defaults text
+     */
+    public final static String[] defaultL = {};
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
 
     public int compare(cfgCert o1, cfgCert o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
@@ -71,7 +83,10 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
             lst.add("crypto certificate " + name + " external " + key.algName() + " " + key.keyName + " " + filNam);
         }
         lst.add(cmds.comment);
-        return lst;
+        if ((filter & 1) == 0) {
+            return lst;
+        }
+        return userFilter.filterText(lst, defaultF);
     }
 
 }

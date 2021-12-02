@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.ifc.ifcHairpin;
+import net.freertr.tab.tabGen;
+import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -32,6 +34,19 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
     public String toString() {
         return "hrpn " + name;
     }
+
+    /**
+     * defaults text
+     */
+    public final static String[] defaultL = {
+        "hairpin .*! ethernet",
+        "hairpin .*! buffer 65536"
+    };
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
 
     /**
      * create new hairpin instance
@@ -72,7 +87,10 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
         hairpinHed.getConfig(l, cmds.tabulator);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        return l;
+        if ((filter & 1) == 0) {
+            return l;
+        }
+        return userFilter.filterText(l, defaultF);
     }
 
     public void getHelp(userHelping l) {

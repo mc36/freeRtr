@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.line.lineScript;
+import net.freertr.tab.tabGen;
+import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
@@ -33,6 +35,16 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
     }
 
     /**
+     * defaults text
+     */
+    public final static String[] defaultL = {};
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
+
+    /**
      * create new profile
      *
      * @param nam name of interface
@@ -53,7 +65,10 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
         l.addAll(script.getCfg(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
-        return l;
+        if ((filter & 1) == 0) {
+            return l;
+        }
+        return userFilter.filterText(l, defaultF);
     }
 
     public void doCfgStr(cmds cmd) {
