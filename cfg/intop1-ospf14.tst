@@ -1,4 +1,4 @@
-description interop1: ospf text authentication
+description interop1: ospf md5 authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -24,6 +24,8 @@ int eth1
  ipv6 addr fe80::1 ffff::
  router ospf4 1 ena
  router ospf4 1 password tester
+ router ospf4 1 authen-id 123
+ router ospf4 1 authen-type md5
  router ospf6 1 ena
  exit
 int lo0
@@ -52,8 +54,8 @@ interface gigabit1
  ip address 1.1.1.2 255.255.255.0
  ipv6 enable
  ip ospf network point-to-point
- ip ospf authentication
- ip ospf authentication-key tester
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 123 md5 tester
  ip ospf 1 area 0
  ipv6 ospf network point-to-point
  ipv6 ospf 1 area 0

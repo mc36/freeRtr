@@ -1,4 +1,4 @@
-description interop2: ospf authentication
+description interop2: ospf text authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$

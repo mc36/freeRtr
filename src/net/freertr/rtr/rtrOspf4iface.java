@@ -930,13 +930,26 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         byte[] buf = new byte[2 + len];
         bits.byteFill(buf, 0, buf.length, 0);
         buf[0] = (byte) instance;
-        buf[1] = (byte) authenMode;
         switch (authenMode) {
             case 0: // null
                 return buf;
             case 1: // text
-                break;
+                if (authentication == null) {
+                    return buf;
+                }
+                buf[1] = 1;
+                byte[] pwd = authentication.getBytes();
+                int i = pwd.length;
+                if (i > len) {
+                    i = len;
+                }
+                bits.byteCopy(pwd, 0, buf, 2, i);
+                return buf;
             case 2: // md5
+                if (authentication == null) {
+                    return buf;
+                }
+                buf[1] = 2;
                 buf[4] = (byte) authenKey;
                 buf[5] = 16; // length
                 bits.msbPutD(buf, 6, (int) bits.getTime());
@@ -946,18 +959,9 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
                 byte[] buf2 = new byte[buf.length - 4];
                 bits.byteCopy(buf, 0, buf2, 0, buf2.length);
                 return buf2;
+            default:
+                return buf;
         }
-        if (authentication == null) {
-            return buf;
-        }
-        buf[1] = 1;
-        byte[] pwd = authentication.getBytes();
-        int i = pwd.length;
-        if (i > len) {
-            i = len;
-        }
-        bits.byteCopy(pwd, 0, buf, 2, i);
-        return buf;
     }
 
     /**

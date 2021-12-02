@@ -1,4 +1,4 @@
-description ospf text authentication
+description ospf md5 authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -29,6 +29,8 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  router ospf4 1 ena
  router ospf4 1 password tester
+ router ospf4 1 authen-id 123
+ router ospf4 1 authen-type md5
  router ospf6 1 ena
  exit
 !
@@ -62,6 +64,8 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  router ospf4 1 ena
  router ospf4 1 password tester
+ router ospf4 1 authen-id 123
+ router ospf4 1 authen-type md5
  router ospf6 1 ena
  exit
 !

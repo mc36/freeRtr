@@ -1,4 +1,6 @@
-description interop1: ospf text authentication
+description interop2: ospf md5 authentication
+
+exit
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -24,6 +26,8 @@ int eth1
  ipv6 addr fe80::1 ffff::
  router ospf4 1 ena
  router ospf4 1 password tester
+ router ospf4 1 authen-id 123
+ router ospf4 1 authen-type md5
  router ospf6 1 ena
  exit
 int lo0
@@ -36,29 +40,26 @@ int lo0
 addpersist r2
 int eth1 eth 0000.0000.2222 $per1$
 !
-ip routing
-ipv6 unicast-routing
 interface loopback0
- ip addr 2.2.2.2 255.255.255.255
+ ipv4 addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2/128
  exit
-router ospf 1
- redistribute connected subnets
- exit
-ipv6 router ospf 1
- redistribute connected
- exit
-interface gigabit1
- ip address 1.1.1.2 255.255.255.0
+interface gigabit0/0/0/0
+ ipv4 address 1.1.1.2 255.255.255.0
  ipv6 enable
- ip ospf network point-to-point
- ip ospf authentication
- ip ospf authentication-key tester
- ip ospf 1 area 0
- ipv6 ospf network point-to-point
- ipv6 ospf 1 area 0
  no shutdown
  exit
+router ospf 1
+ redistribute connected
+ area 0 interface gigabit0/0/0/0
+  authentication message-digest
+  message-digest-key 123 md5 clear tester
+  network point-to-point
+router ospfv3 1
+ redistribute connected
+ area 0 interface gigabit0/0/0/0 network point-to-point
+root
+commit
 !
 
 

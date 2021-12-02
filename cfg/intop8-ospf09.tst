@@ -1,7 +1,7 @@
-description interop1: ospf text authentication
+description interop8: ospf md5 authentication
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $per1$
+int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
 vrf def v1
  rd 1:1
@@ -10,12 +10,14 @@ router ospf4 1
  vrf v1
  router 4.4.4.1
  area 0 ena
+ no area 0 host
  red conn
  exit
 router ospf6 1
  vrf v1
  router 6.6.6.1
  area 0 ena
+ no area 0 host
  red conn
  exit
 int eth1
@@ -24,6 +26,8 @@ int eth1
  ipv6 addr fe80::1 ffff::
  router ospf4 1 ena
  router ospf4 1 password tester
+ router ospf4 1 authen-id 123
+ router ospf4 1 authen-type md5
  router ospf6 1 ena
  exit
 int lo0
@@ -33,30 +37,29 @@ int lo0
  exit
 !
 
-addpersist r2
-int eth1 eth 0000.0000.2222 $per1$
+addother r2
+int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
-ip routing
-ipv6 unicast-routing
-interface loopback0
- ip addr 2.2.2.2 255.255.255.255
+ip forwarding
+ipv6 forwarding
+interface lo
+ ip addr 2.2.2.2/32
  ipv6 addr 4321::2/128
  exit
-router ospf 1
- redistribute connected subnets
- exit
-ipv6 router ospf 1
+router ospf
  redistribute connected
  exit
-interface gigabit1
- ip address 1.1.1.2 255.255.255.0
- ipv6 enable
+router ospf6
+ redistribute connected
+ interface ens3 area 0.0.0.0
+ exit
+interface ens3
+ ip address 1.1.1.2/24
+ ip ospf area 0
  ip ospf network point-to-point
- ip ospf authentication
- ip ospf authentication-key tester
- ip ospf 1 area 0
- ipv6 ospf network point-to-point
- ipv6 ospf 1 area 0
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 123 md5 tester
+ ipv6 ospf6 network point-to-point
  no shutdown
  exit
 !
