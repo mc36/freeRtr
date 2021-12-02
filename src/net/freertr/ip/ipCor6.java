@@ -184,6 +184,17 @@ public class ipCor6 implements ipCor {
             pck.IPsiz += 8;
             oldPrt = exthdrHopByHop;
         }
+        if (pck.IPmf || (pck.IPfrg > 0)) {
+            pck.msbPutW(pck.IPsiz + 0, oldPrt << 8);
+            int i = pck.IPfrg & 0xfff8;
+            if (pck.IPmf) {
+                i |= 1;
+            }
+            pck.msbPutW(pck.IPsiz + 2, i);
+            pck.msbPutD(pck.IPsiz + 4, pck.IPid);
+            pck.IPsiz += 8;
+            oldPrt = exthdrFragment;
+        }
         pck.msbPutW(0, 0x6000 | ((pck.IPtos & 0xff) << 4)); // version:4 tos:8 reserved:4
         pck.msbPutW(2, pck.IPid); // flow label
         pck.msbPutW(4, pck.dataSize() + pck.IPsiz - size); // total length

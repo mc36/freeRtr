@@ -158,11 +158,12 @@ public class ipCor4 implements ipCor {
         pck.putByte(1, pck.IPtos); // type of service
         pck.msbPutW(2, pck.dataSize() + pck.IPsiz); // total length
         pck.msbPutW(4, pck.IPid); // identification
-        int i;
+        int i = (pck.IPfrg >>> 3) & 0x1fff;
         if (pck.IPdf) {
-            i = 0x4000;
-        } else {
-            i = 0;
+            i |= 0x4000;
+        }
+        if (pck.IPmf) {
+            i |= 0x2000;
         }
         pck.msbPutW(6, i); // res:1 DF:1 MF:1 fragOff:13
         pck.putByte(8, pck.IPttl); // time to live

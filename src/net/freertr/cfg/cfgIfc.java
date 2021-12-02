@@ -1408,6 +1408,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] address",
         "interface .*! no ipv[4|6] enable",
         "interface .*! no ipv[4|6] reassembly",
+        "interface .*! no ipv[4|6] fragmentation",
         "interface .*! no ipv[4|6] redirection",
         "interface .*! ipv[4|6] unreachables",
         "interface .*! no ipv[4|6] unreach-source",

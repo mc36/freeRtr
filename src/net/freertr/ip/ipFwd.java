@@ -1428,20 +1428,58 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.INTiface = iface.ifwNum;
         pck.INTupper = pck.IPprt;
+        pck.IPfrg = 0;
+        pck.IPmf = false;
         pck.merge2beg();
-        ipCore.createIPheader(pck);
-        if (coppOut != null) {
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
-                cntrL.drop(pck, counter.reasons.noBuffer);
-                return;
-            }
-        }
         if (debugger.ipFwdTraf) {
             logger.debug("snd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
-        ipCore.testIPaddress(pck, pck.IPtrg);
-        ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
-        forwardPacket(4, iface, hop, pck);
+        if ((iface.fragments < 1) || (pck.dataSize() <= iface.fragments)) {
+            ipCore.createIPheader(pck);
+            if (coppOut != null) {
+                if (coppOut.checkPacket(bits.getTime(), pck)) {
+                    cntrL.drop(pck, counter.reasons.noBuffer);
+                    return;
+                }
+            }
+            ipCore.testIPaddress(pck, pck.IPtrg);
+            ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
+            forwardPacket(4, iface, hop, pck);
+            return;
+        }
+        packHolder snd = new packHolder(true, true);
+        byte[] buf = new byte[iface.fragments];
+        int idn = bits.randomW();
+        int ofs = 0;
+        for (;;) {
+            int len = pck.dataSize() - ofs;
+            if (len < 1) {
+                break;
+            }
+            if (len > iface.fragments) {
+                len = iface.fragments;
+            }
+            pck.getCopy(buf, 0, ofs, len);
+            snd.copyFrom(pck, false, false);
+            snd.setDataSize(0);
+            snd.putCopy(buf, 0, 0, len);
+            snd.putSkip(len);
+            snd.merge2beg();
+            snd.IPfrg = ofs;
+            ofs += len;
+            snd.IPmf = ofs < pck.dataSize();
+            snd.IPid = idn;
+            ipCore.createIPheader(snd);
+            if (coppOut != null) {
+                if (coppOut.checkPacket(bits.getTime(), snd)) {
+                    cntrL.drop(snd, counter.reasons.noBuffer);
+                    return;
+                }
+            }
+            ipCore.testIPaddress(snd, snd.IPtrg);
+            ipMpls.beginMPLSfields(snd, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
+            forwardPacket(4, iface, hop, snd);
+        }
     }
 
     /**

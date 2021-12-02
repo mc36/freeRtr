@@ -182,6 +182,11 @@ public class ipFwdIface extends tabRouteIface {
     public tabListing<tabRtrmapN, addrIP> gateRtmp;
 
     /**
+     * fragmentation payload size
+     */
+    public int fragments;
+
+    /**
      * reassembly buffer
      */
     public List<packHolder> reasmBuf;
@@ -434,6 +439,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       <addr>                    address of interface");
         l.add(null, "2 3     reassembly                  set up a reassembly buffer");
         l.add(null, "3 .       <num>                     number of packets");
+        l.add(null, "2 3     fragmentation               set up fragmentation");
+        l.add(null, "3 .       <num>                     maximum payload size");
         l.add(null, "2 .     netflow-rx                  netflow received packets");
         l.add(null, "2 .     netflow-tx                  netflow transmitted packets");
         l.add(null, "2 .     propagate-ttl-always        enable ttl propagation to mpls");
@@ -652,6 +659,7 @@ public class ipFwdIface extends tabRouteIface {
         } else {
             l.add(cmds.tabulator + beg + "reassembly " + reasmBuf.size());
         }
+        cmds.cfgLine(l, fragments < 1, cmds.tabulator, beg + "fragmentation", "" + fragments);
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
@@ -796,6 +804,10 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             adrAdd(adr, (addrMac) lower.getL2info(), true);
+            return false;
+        }
+        if (a.equals("fragmentation")) {
+            fragments = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("reassembly")) {
@@ -1387,6 +1399,10 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             adrDel(adr);
+            return false;
+        }
+        if (a.equals("fragmentation")) {
+            fragments = 0;
             return false;
         }
         if (a.equals("reassembly")) {
