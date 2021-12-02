@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.12.2-cur, done by cs@nop.
--;-;-;2021-12-02 17:17:35, took 00:06:54, with 100 workers, on 2476 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2021-12-02 18:52:13, took 00:07:14, with 100 workers, on 2480 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -780,11 +780,12 @@ http://sources.nop.hu/cfg/intop1-ospf05.tst;intop1-ospf05.tst;success;interop1: 
 http://sources.nop.hu/cfg/intop1-ospf06.tst;intop1-ospf06.tst;success;interop1: ospf nssa area
 http://sources.nop.hu/cfg/intop1-ospf07.tst;intop1-ospf07.tst;success;interop1: ospf te
 http://sources.nop.hu/cfg/intop1-ospf08.tst;intop1-ospf08.tst;success;interop1: ospf prefix withdraw
-http://sources.nop.hu/cfg/intop1-ospf09.tst;intop1-ospf09.tst;success;interop1: ospf authentication
+http://sources.nop.hu/cfg/intop1-ospf09.tst;intop1-ospf09.tst;success;interop1: ospf text authentication
 http://sources.nop.hu/cfg/intop1-ospf10.tst;intop1-ospf10.tst;success;interop1: ospf p2mp te
 http://sources.nop.hu/cfg/intop1-ospf11.tst;intop1-ospf11.tst;success;interop1: ospf sr
 http://sources.nop.hu/cfg/intop1-ospf12.tst;intop1-ospf12.tst;success;interop1: ospf php sr
 http://sources.nop.hu/cfg/intop1-ospf13.tst;intop1-ospf13.tst;success;interop1: ospf te with pcep
+http://sources.nop.hu/cfg/intop1-ospf14.tst;intop1-ospf14.tst;success;interop1: ospf md5 authentication
 http://sources.nop.hu/cfg/intop1-pppoe01.tst;intop1-pppoe01.tst;success;interop1: pppoe client
 http://sources.nop.hu/cfg/intop1-pppoe02.tst;intop1-pppoe02.tst;success;interop1: pppoe server
 http://sources.nop.hu/cfg/intop1-pppoe03.tst;intop1-pppoe03.tst;success;interop1: pppoe with pap
@@ -862,12 +863,13 @@ http://sources.nop.hu/cfg/intop2-ospf05.tst;intop2-ospf05.tst;success;interop2: 
 http://sources.nop.hu/cfg/intop2-ospf06.tst;intop2-ospf06.tst;success;interop2: ospf nssa area
 http://sources.nop.hu/cfg/intop2-ospf07.tst;intop2-ospf07.tst;success;interop2: ospf te
 http://sources.nop.hu/cfg/intop2-ospf08.tst;intop2-ospf08.tst;success;interop2: ospf prefix withdraw
-http://sources.nop.hu/cfg/intop2-ospf09.tst;intop2-ospf09.tst;success;interop2: ospf authentication
+http://sources.nop.hu/cfg/intop2-ospf09.tst;intop2-ospf09.tst;success;interop2: ospf text authentication
 http://sources.nop.hu/cfg/intop2-ospf10.tst;intop2-ospf10.tst;success;interop2: ospf p2mp te
 http://sources.nop.hu/cfg/intop2-ospf11.tst;intop2-ospf11.tst;success;interop2: ospf sr
 http://sources.nop.hu/cfg/intop2-ospf12.tst;intop2-ospf12.tst;success;interop2: ospf php sr
 http://sources.nop.hu/cfg/intop2-ospf13.tst;intop2-ospf13.tst;success;interop2: ospf te with pcep
 http://sources.nop.hu/cfg/intop2-ospf14.tst;intop2-ospf14.tst;success;interop2: ospf bidir te
+http://sources.nop.hu/cfg/intop2-ospf15.tst;intop2-ospf15.tst;success;interop2: ospf md5 authentication
 http://sources.nop.hu/cfg/intop2-pppoe01.tst;intop2-pppoe01.tst;success;interop2: pppoe with pap
 http://sources.nop.hu/cfg/intop2-pppoe02.tst;intop2-pppoe02.tst;success;interop2: pppoe with chap
 http://sources.nop.hu/cfg/intop2-rip01.tst;intop2-rip01.tst;success;interop2: rip
@@ -906,7 +908,8 @@ http://sources.nop.hu/cfg/intop8-ospf04.tst;intop8-ospf04.tst;success;interop8: 
 http://sources.nop.hu/cfg/intop8-ospf05.tst;intop8-ospf05.tst;success;interop8: ospf stub area
 http://sources.nop.hu/cfg/intop8-ospf06.tst;intop8-ospf06.tst;success;interop8: ospf nssa area
 http://sources.nop.hu/cfg/intop8-ospf07.tst;intop8-ospf07.tst;success;interop8: ospf prefix withdraw
-http://sources.nop.hu/cfg/intop8-ospf08.tst;intop8-ospf08.tst;success;interop8: ospf authentication
+http://sources.nop.hu/cfg/intop8-ospf08.tst;intop8-ospf08.tst;success;interop8: ospf text authentication
+http://sources.nop.hu/cfg/intop8-ospf09.tst;intop8-ospf09.tst;success;interop8: ospf md5 authentication
 http://sources.nop.hu/cfg/intop8-rip01.tst;intop8-rip01.tst;success;interop8: rip
 http://sources.nop.hu/cfg/intop9-bgp01.tst;intop9-bgp01.tst;success;interop9: ebgp
 http://sources.nop.hu/cfg/intop9-bgp02.tst;intop9-bgp02.tst;success;interop9: ibgp
@@ -2304,7 +2307,7 @@ http://sources.nop.hu/cfg/rout-ospf14.tst;rout-ospf14.tst;success;ospf external1
 http://sources.nop.hu/cfg/rout-ospf15.tst;rout-ospf15.tst;success;ospf external1 metric
 http://sources.nop.hu/cfg/rout-ospf16.tst;rout-ospf16.tst;success;ospf external2 metric
 http://sources.nop.hu/cfg/rout-ospf17.tst;rout-ospf17.tst;success;ospf address suppression
-http://sources.nop.hu/cfg/rout-ospf18.tst;rout-ospf18.tst;success;ospf authentication
+http://sources.nop.hu/cfg/rout-ospf18.tst;rout-ospf18.tst;success;ospf text authentication
 http://sources.nop.hu/cfg/rout-ospf19.tst;rout-ospf19.tst;success;ospf inter area ingress filtering with prefixlist
 http://sources.nop.hu/cfg/rout-ospf20.tst;rout-ospf20.tst;success;ospf inter area ingress filtering with routemap
 http://sources.nop.hu/cfg/rout-ospf21.tst;rout-ospf21.tst;success;ospf inter area egress filtering with prefixlist
@@ -2340,6 +2343,7 @@ http://sources.nop.hu/cfg/rout-ospf50.tst;rout-ospf50.tst;success;ospf with polk
 http://sources.nop.hu/cfg/rout-ospf51.tst;rout-ospf51.tst;success;ospf default address suppression
 http://sources.nop.hu/cfg/rout-ospf52.tst;rout-ospf52.tst;success;ospf address unsuppression
 http://sources.nop.hu/cfg/rout-ospf53.tst;rout-ospf53.tst;success;ospf maximum metric
+http://sources.nop.hu/cfg/rout-ospf54.tst;rout-ospf54.tst;success;ospf md5 authentication
 http://sources.nop.hu/cfg/rout-pbr01.tst;rout-pbr01.tst;success;policy routing with nexthop
 http://sources.nop.hu/cfg/rout-pbr02.tst;rout-pbr02.tst;success;policy routing with interface and nexthop between vrfs
 http://sources.nop.hu/cfg/rout-pbr03.tst;rout-pbr03.tst;success;policy routing with interface and nexthop

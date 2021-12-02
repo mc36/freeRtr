@@ -776,11 +776,12 @@ qc pass: interop1: ospf stub area
 qc pass: interop1: ospf nssa area
 qc pass: interop1: ospf te
 qc pass: interop1: ospf prefix withdraw
-qc pass: interop1: ospf authentication
+qc pass: interop1: ospf text authentication
 qc pass: interop1: ospf p2mp te
 qc pass: interop1: ospf sr
 qc pass: interop1: ospf php sr
 qc pass: interop1: ospf te with pcep
+qc pass: interop1: ospf md5 authentication
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap
@@ -858,12 +859,13 @@ qc pass: interop2: ospf stub area
 qc pass: interop2: ospf nssa area
 qc pass: interop2: ospf te
 qc pass: interop2: ospf prefix withdraw
-qc pass: interop2: ospf authentication
+qc pass: interop2: ospf text authentication
 qc pass: interop2: ospf p2mp te
 qc pass: interop2: ospf sr
 qc pass: interop2: ospf php sr
 qc pass: interop2: ospf te with pcep
 qc pass: interop2: ospf bidir te
+qc pass: interop2: ospf md5 authentication
 qc pass: interop2: pppoe with pap
 qc pass: interop2: pppoe with chap
 qc pass: interop2: rip
@@ -902,7 +904,8 @@ qc pass: interop8: ospf transit area
 qc pass: interop8: ospf stub area
 qc pass: interop8: ospf nssa area
 qc pass: interop8: ospf prefix withdraw
-qc pass: interop8: ospf authentication
+qc pass: interop8: ospf text authentication
+qc pass: interop8: ospf md5 authentication
 qc pass: interop8: rip
 qc pass: interop9: ebgp
 qc pass: interop9: ibgp
@@ -2300,7 +2303,7 @@ qc pass: ospf external1 vs external2
 qc pass: ospf external1 metric
 qc pass: ospf external2 metric
 qc pass: ospf address suppression
-qc pass: ospf authentication
+qc pass: ospf text authentication
 qc pass: ospf inter area ingress filtering with prefixlist
 qc pass: ospf inter area ingress filtering with routemap
 qc pass: ospf inter area egress filtering with prefixlist
@@ -2336,6 +2339,7 @@ qc pass: ospf with polka
 qc pass: ospf default address suppression
 qc pass: ospf address unsuppression
 qc pass: ospf maximum metric
+qc pass: ospf md5 authentication
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop

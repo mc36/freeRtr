@@ -12485,3 +12485,16 @@ qc pass: sep tunneling with lwapp
 qc pass: ethernet tunneling with lwapp
 qc pass: vlan tunneling with lwapp
 qc pass: tunnel interface with lwapp
+---------------------------------- 2021-12-02 18:44:59
+no qc pass: ospf authentication
+no qc pass: interop8: ospf authentication
+no qc pass: interop2: ospf authentication
+no qc pass: interop1: ospf authentication
+qc pass: interop1: ospf text authentication
+qc pass: interop1: ospf md5 authentication
+qc pass: interop2: ospf text authentication
+qc pass: interop2: ospf md5 authentication
+qc pass: interop8: ospf text authentication
+qc pass: interop8: ospf md5 authentication
+qc pass: ospf text authentication
+qc pass: ospf md5 authentication
