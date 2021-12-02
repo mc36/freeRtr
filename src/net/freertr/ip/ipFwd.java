@@ -2163,6 +2163,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         res.err = null;
         res.rtr = pck.IPsrc.copyBytes();
         res.lab = -1;
+        res.ttl = pck.IPttl;
+        res.tos = pck.IPtos;
         ntry.res.add(res);
         ntry.notif.wakeup();
     }
@@ -2196,6 +2198,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         res.err = err;
         res.rtr = rtr.copyBytes();
         res.lab = ipFwdEcho.getMplsExt(pck);
+        res.ttl = pck.IPttl;
+        res.tos = pck.IPtos;
         ntry.res.add(res);
         ntry.notif.wakeup();
     }

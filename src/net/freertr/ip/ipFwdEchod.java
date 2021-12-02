@@ -30,6 +30,16 @@ public class ipFwdEchod {
      * reported label
      */
     public int lab;
+    
+    /**
+     * received ttl
+     */
+    public int ttl;
+    
+    /**
+     * received tos
+     */
+    public int tos;
 
     /**
      * time elapsed
