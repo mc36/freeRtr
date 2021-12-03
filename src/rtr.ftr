@@ -119,6 +119,8 @@ qc pass: vlan tunneling with etherip
 qc pass: tunnel interface with etherip
 qc pass: etherip server
 qc pass: ppp over forti
+qc pass: fragmentation and reassembly
+qc pass: no fragmentation nor reassembly
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933

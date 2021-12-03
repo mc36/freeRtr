@@ -12538,3 +12538,6 @@ qc pass: interop9: ospf text authentication
 qc pass: interop9: ospf md5 authentication
 ---------------------------------- 2021-12-03 16:29:47
 qc pass: hdlc
+---------------------------------- 2021-12-03 17:29:16
+qc pass: fragmentation and reassembly
+qc pass: no fragmentation nor reassembly
