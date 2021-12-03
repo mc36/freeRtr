@@ -1,4 +1,4 @@
-description interop9: isis lsp text authentication
+description interop9: isis md5 authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -10,13 +10,11 @@ vrf def v1
 router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
- both lsp-pass tester
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
- both lsp-pass tester
  red conn
  exit
 int eth1
@@ -24,12 +22,14 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  router isis4 1 ena
  router isis4 1 password tester
+ router isis4 1 authen-type md5
  exit
 int eth2
  vrf for v1
  ipv6 addr fe80::1 ffff::
  router isis6 1 ena
  router isis6 1 password tester
+ router isis6 1 authen-type md5
  exit
 int lo0
  vrf for v1
@@ -49,10 +49,14 @@ set interfaces ge-0/0/1.0 family iso
 set interfaces lo0.0 family inet address 2.2.2.2/32
 set interfaces lo0.0 family inet6 address 4321::2/128
 set interfaces lo0.0 family iso address 48.0000.0000.1234.00
-set protocols isis level 1 authentication-key tester
-set protocols isis level 1 authentication-type simple
-set protocols isis level 2 authentication-key tester
-set protocols isis level 2 authentication-type simple
+set protocols isis interface ge-0/0/0.0 level 1 hello-authentication-key tester
+set protocols isis interface ge-0/0/0.0 level 2 hello-authentication-key tester
+set protocols isis interface ge-0/0/1.0 level 1 hello-authentication-key tester
+set protocols isis interface ge-0/0/1.0 level 2 hello-authentication-key tester
+set protocols isis interface ge-0/0/0.0 level 1 hello-authentication-type md5
+set protocols isis interface ge-0/0/0.0 level 2 hello-authentication-type md5
+set protocols isis interface ge-0/0/1.0 level 1 hello-authentication-type md5
+set protocols isis interface ge-0/0/1.0 level 2 hello-authentication-type md5
 set protocols isis interface ge-0/0/0.0 point-to-point
 set protocols isis interface ge-0/0/1.0 point-to-point
 set protocols isis interface lo0.0

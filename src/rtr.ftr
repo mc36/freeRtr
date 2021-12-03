@@ -845,8 +845,8 @@ qc pass: interop2: isis php sr
 qc pass: interop2: isis te with pcep
 qc pass: interop2: integrated isis
 qc pass: interop2: isis bidir te
-qc pass: interop2: isis text authentication
-qc pass: interop2: isis lsp text authentication
+qc pass: interop2: isis md5 authentication
+qc pass: interop2: isis lsp md5 authentication
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -899,6 +899,10 @@ qc pass: interop8: isis narrow metric
 qc pass: interop8: isis prefix withdraw
 qc pass: interop8: isis text authentication
 qc pass: interop8: integrated isis
+qc pass: interop8: isis lsp text authentication
+qc pass: interop8: isis lsp md5 authentication
+qc pass: interop8: isis text authentication
+qc pass: interop8: isis md5 authentication
 qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
 qc pass: interop8: point2point ospf
@@ -942,6 +946,9 @@ qc pass: interop9: isis lsp text authentication
 qc pass: interop9: isis php sr
 qc pass: interop9: integrated isis
 qc pass: interop9: isis bier
+qc pass: interop9: isis lsp md5 authentication
+qc pass: interop9: isis text authentication
+qc pass: interop9: isis md5 authentication
 qc pass: interop9: ldp lsp
 qc pass: interop9: ethernet over mpls
 qc pass: interop9: ldp p2mp lsp
@@ -959,6 +966,8 @@ qc pass: interop9: ospf p2mp te
 qc pass: interop9: ospf sr
 qc pass: interop9: ospf php sr
 qc pass: interop9: ospf bier
+qc pass: interop9: ospf text authentication
+qc pass: interop9: ospf md5 authentication
 qc pass: interop9: pppoe client
 qc pass: interop9: pppoe server
 qc pass: interop9: mpls over pppoe

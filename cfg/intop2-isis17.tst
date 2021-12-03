@@ -1,4 +1,4 @@
-description interop2: isis lsp text authentication
+description interop2: isis lsp md5 authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
