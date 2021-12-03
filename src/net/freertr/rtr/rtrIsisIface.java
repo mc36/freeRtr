@@ -7,6 +7,8 @@ import java.util.TimerTask;
 import net.freertr.addr.addrIsis;
 import net.freertr.addr.addrMac;
 import net.freertr.auth.authLocal;
+import net.freertr.cry.cryHashHmac;
+import net.freertr.cry.cryHashMd5;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcNull;
@@ -90,6 +92,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     protected counter cntr = new counter();
 
     /**
+     * send csnp
+     */
+    public boolean sendCsnp;
+
+    /**
      * suppress interface address
      */
     public boolean suppressAddr;
@@ -163,6 +170,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * authentication password
      */
     public String authentication;
+
+    /**
+     * authentication mode: 1=cleartext, 2=md5
+     */
+    public int authenMode;
 
     /**
      * traffic eng suppression
@@ -256,6 +268,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         deadTimer = 30000;
         retransTimer = 3000;
         disPriority = 64;
+        authenMode = 1;
         metric = 10;
         suppressInt = true;
         othSuppInt = true;
@@ -305,6 +318,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         l.add(cmds.tabulator + beg + "network " + s);
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
+        cmds.cfgLine(l, !sendCsnp, cmds.tabulator, beg + "send-csnp", "");
         cmds.cfgLine(l, !suppressInt, cmds.tabulator, beg + "suppress-address", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
@@ -313,6 +327,22 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
+        String a;
+        switch (authenMode) {
+            case 0:
+                a = "null";
+                break;
+            case 1:
+                a = "clear";
+                break;
+            case 2:
+                a = "md5";
+                break;
+            default:
+                a = "unknown=" + authenMode;
+                break;
+        }
+        l.add(cmds.tabulator + beg + "authen-type " + a);
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "priority " + disPriority);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
@@ -404,6 +434,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             bfdTrigger = true;
             return;
         }
+        if (a.equals("send-csnp")) {
+            sendCsnp = true;
+            return;
+        }
         if (a.equals("suppress-prefix")) {
             suppressAddr = true;
             lower.genLsps(1);
@@ -467,6 +501,23 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         if (a.equals("password")) {
             authentication = authLocal.passwdDecode(cmd.word());
+            return;
+        }
+        if (a.equals("authen-type")) {
+            authenMode = 0;
+            a = cmd.word();
+            if (a.equals("null")) {
+                authenMode = 0;
+                return;
+            }
+            if (a.equals("clear")) {
+                authenMode = 1;
+                return;
+            }
+            if (a.equals("md5")) {
+                authenMode = 2;
+                return;
+            }
             return;
         }
         if (a.equals("traffeng")) {
@@ -557,6 +608,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             bfdTrigger = false;
             return;
         }
+        if (a.equals("send-csnp")) {
+            sendCsnp = false;
+            return;
+        }
         if (a.equals("raw-encapsulation")) {
             rawEncap = false;
             unregister2eth();
@@ -604,6 +659,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         if (a.equals("password")) {
             authentication = null;
+            return;
+        }
+        if (a.equals("authen-type")) {
+            authenMode = 1;
             return;
         }
         if (a.equals("traffeng")) {
@@ -680,6 +739,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add(null, "4 .         suppress-prefix           do not advertise interface");
         l.add(null, "4 .         unsuppress-prefix         do advertise interface");
         l.add(null, "4 .         suppress-address          do not advertise interface");
+        l.add(null, "4 .         send-csnp                 always send csnp");
         l.add(null, "4 5         metric                    interface metric");
         l.add(null, "5 .           <num>                   metric");
         l.add(null, "4 .         other-suppress-prefix     do not advertise other interface");
@@ -696,6 +756,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add(null, "5 .           <num>                   time in ms");
         l.add(null, "4 5         password                  password for authentication");
         l.add(null, "5 .           <text>                  set password");
+        l.add(null, "4 5         authen-type               mode for authentication");
+        l.add(null, "5 .           null                    use nothing");
+        l.add(null, "5 .           clear                   use cleartext");
+        l.add(null, "5 .           md5                     use md5");
         l.add(null, "4 5         traffeng                  traffic engineering parameters");
         l.add(null, "5 .           suppress                do not advertise interface");
         l.add(null, "5 6           metric                  set metric");
@@ -835,17 +899,47 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     /**
      * get authentication data
      *
+     * @param pck packet
+     * @param typ message type
+     * @param ofs offset of tlv
      * @return bytes in header
      */
-    protected byte[] getAuthData() {
-        if (authentication == null) {
-            return null;
+    protected byte[] getAuthData(packHolder pck, int typ, int ofs) {
+        ofs += 3;
+        switch (authenMode) {
+            case 1:
+                if (authentication == null) {
+                    return null;
+                }
+                byte[] buf = (" " + authentication).getBytes();
+                buf[0] = 1;
+                return buf;
+            case 2:
+                if (authentication == null) {
+                    return null;
+                }
+                cryHashHmac h = new cryHashHmac(new cryHashMd5(), authentication.getBytes());
+                h.init();
+                int hshSiz = h.getHashSize();
+                h.update(rtrIsis.protDist);
+                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
+                h.update(1);
+                h.update(0);
+                h.update(typ);
+                h.update(1);
+                h.update(0);
+                h.update(lower.getMaxAreaAddr());
+                pck = pck.copyBytes(true, true);
+                pck.merge2beg();
+                pck.hashData(h, 0, ofs);
+                h.update(new byte[hshSiz]);
+                if ((ofs + hshSiz) < pck.dataSize()) {
+                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
+                }
+                return bits.byteConcat(new byte[]{54}, h.finish());
+            default:
+                return null;
         }
-        byte[] b1 = authentication.getBytes();
-        byte[] b2 = new byte[b1.length + 1];
-        bits.byteCopy(b1, 0, b2, 1, b1.length);
-        b2[0] = 1;
-        return b2;
     }
 
     /**
@@ -1100,19 +1194,22 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param l list of lsps
      * @param lev level
      */
-    protected void sendPsnpPack(tabGen<rtrIsisLsp> l, int lev) {
+    protected void sendPsnpPack(tabGen<rtrIsisLsp> l, rtrIsisLevel lev) {
         packHolder pck = new packHolder(true, true);
         writeLspList(pck, l);
         pck.merge2beg();
-        pck.msbPutW(0, pck.dataSize() + rtrIsisNeigh.msgTyp2headSiz(rtrIsisNeigh.msgTypL1psnp)); // pdu length
+        pck.msbPutW(0, getAuthLen(lev) + pck.dataSize() + rtrIsisNeigh.msgTyp2headSiz(rtrIsisNeigh.msgTypL1psnp)); // pdu length
         pck.putAddr(2, lower.routerID); // source id
         pck.putByte(8, 0); // circuit id
         pck.putSkip(9);
-        if (lev == 1) {
-            sendPack(pck, rtrIsisNeigh.msgTypL1psnp);
+        int typ;
+        if (lev.level == 1) {
+            typ = rtrIsisNeigh.msgTypL1psnp;
         } else {
-            sendPack(pck, rtrIsisNeigh.msgTypL2psnp);
+            typ = rtrIsisNeigh.msgTypL2psnp;
         }
+        writeAuthen(pck, lev, typ);
+        sendPack(pck, typ);
     }
 
     /**
@@ -1123,21 +1220,46 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param l list of lsps
      * @param lev level
      */
-    protected void sendCsnpPack(rtrIsisLsp a, rtrIsisLsp b, tabGen<rtrIsisLsp> l, int lev) {
+    protected void sendCsnpPack(rtrIsisLsp a, rtrIsisLsp b, tabGen<rtrIsisLsp> l, rtrIsisLevel lev) {
         packHolder pck = new packHolder(true, true);
         writeLspList(pck, l);
         pck.merge2beg();
-        pck.msbPutW(0, pck.dataSize() + rtrIsisNeigh.msgTyp2headSiz(rtrIsisNeigh.msgTypL1csnp)); // pdu length
+        pck.msbPutW(0, getAuthLen(lev) + pck.dataSize() + rtrIsisNeigh.msgTyp2headSiz(rtrIsisNeigh.msgTypL1csnp)); // pdu length
         pck.putAddr(2, lower.routerID); // source id
         pck.putByte(8, 0); // circuit id
         a.writeId(pck, 9); // start lsp id
         b.writeId(pck, 17); // stop lsp id
         pck.putSkip(25);
-        if (lev == 1) {
-            sendPack(pck, rtrIsisNeigh.msgTypL1csnp);
+        int typ;
+        if (lev.level == 1) {
+            typ = rtrIsisNeigh.msgTypL1csnp;
         } else {
-            sendPack(pck, rtrIsisNeigh.msgTypL2csnp);
+            typ = rtrIsisNeigh.msgTypL2csnp;
         }
+        writeAuthen(pck, lev, typ);
+        sendPack(pck, typ);
+    }
+
+    private int getAuthLen(rtrIsisLevel lev) {
+        byte[] buf = lev.getAuthen(new packHolder(true, true), 0, 0);
+        if (buf == null) {
+            return 0;
+        }
+        return buf.length + 2;
+    }
+
+    private void writeAuthen(packHolder pck, rtrIsisLevel lev, int typ) {
+        byte[] buf = lev.getAuthen(new packHolder(true, true), 0, 0);
+        if (buf == null) {
+            return;
+        }
+        typLenVal tlv = rtrIsis.getTlv();
+        int siz = pck.headSize();
+        tlv.putBytes(pck, rtrIsisLsp.tlvAuthen, buf);
+        buf = lev.getAuthen(pck, typ, siz);
+        int len = pck.headSize() - siz;
+        pck.putSkip(-len);
+        tlv.putBytes(pck, rtrIsisLsp.tlvAuthen, buf);
     }
 
     private void writeLspList(packHolder pck, tabGen<rtrIsisLsp> l) {
@@ -1169,11 +1291,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param lsp lsp to send
      * @param lev level
      */
-    protected void sendLspPack(rtrIsisLsp lsp, int lev) {
+    protected void sendLspPack(rtrIsisLsp lsp, rtrIsisLevel lev) {
         packHolder pck = new packHolder(true, true);
         pck.putSkip(lsp.writeData(pck, 0));
         pck.merge2beg();
-        if (lev == 1) {
+        if (lev.level == 1) {
             sendPack(pck, rtrIsisNeigh.msgTypL1lsp);
         } else {
             sendPack(pck, rtrIsisNeigh.msgTypL2lsp);
@@ -1186,7 +1308,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param lsp lsp to send
      * @param lev level
      */
-    protected void sendCsnpPack(rtrIsisLsp lsp, int lev) {
+    protected void sendCsnpPack(rtrIsisLsp lsp, rtrIsisLevel lev) {
         tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
         l.add(lsp);
         sendCsnpPack(lsp, lsp, l, lev);
@@ -1198,7 +1320,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param lsp lsp to send
      * @param lev level
      */
-    protected void sendPsnpPack(rtrIsisLsp lsp, int lev) {
+    protected void sendPsnpPack(rtrIsisLsp lsp, rtrIsisLevel lev) {
         tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
         l.add(lsp);
         sendPsnpPack(l, lev);
@@ -1237,7 +1359,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         adr.toBuffer(tlv.valDat, 5); // neighbor system id
         bits.msbPutD(tlv.valDat, 11, crc); // neighbor circuit id
         tlv.putBytes(pck, rtrIsisLsp.tlvHandshake, 15, tlv.valDat);
-        writeHelloTlvs(pck);
+        writeHelloTlvs(pck, rtrIsisNeigh.msgTypP2Phello);
         i = pck.headSize();
         pck.msbPutW(9 - i, i + 8); // pdu length
         sendPack(pck, rtrIsisNeigh.msgTypP2Phello);
@@ -1272,7 +1394,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             i += addrMac.size;
         }
         tlv.putBytes(pck, rtrIsisLsp.tlvLanNeigh, i, tlv.valDat);
-        writeHelloTlvs(pck);
+        writeHelloTlvs(pck, rtrIsisNeigh.msgTypL1hello);
         i = pck.headSize();
         pck.msbPutW(9 - i, i + 8); // pdu length
         if (lev == 1) {
@@ -1282,7 +1404,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
     }
 
-    private void writeHelloTlvs(packHolder pck) {
+    private void writeHelloTlvs(packHolder pck, int typ) {
         typLenVal tlv = rtrIsis.getTlv();
         tlv.putBytes(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst(otherEna));
         if (lower.multiTopo) {
@@ -1293,14 +1415,21 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (otherEna) {
             lower.putAddrIface(true, oface.addr).putThis(pck);
         }
-        if (authentication == null) {
+        byte[] buf = getAuthData(pck, typ, 0);
+        if (buf == null) {
             return;
         }
-        tlv.putBytes(pck, rtrIsisLsp.tlvAuthen, getAuthData());
+        int ofs = pck.headSize();
+        tlv.putBytes(pck, rtrIsisLsp.tlvAuthen, buf);
+        int i = pck.headSize();
+        pck.msbPutW(9 - i, i + 8); // pdu length
+        buf = getAuthData(pck, typ, ofs);
+        pck.putSkip(ofs - i);
+        tlv.putBytes(pck, rtrIsisLsp.tlvAuthen, buf);
     }
 
     private int sendLevCsnp(rtrIsisLevel lev, int frstSeq) {
-        if (!amIdis(lev.level)) {
+        if (!sendCsnp && !amIdis(lev.level)) {
             return frstSeq;
         }
         if (frstSeq >= lev.lsps.size()) {
@@ -1327,7 +1456,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         } else {
             lastID = l.get(l.size() - 1);
         }
-        sendCsnpPack(frstID, lastID, l, lev.level);
+        sendCsnpPack(frstID, lastID, l, lev);
         return lastSeq;
     }
 
@@ -1340,6 +1469,12 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         if (netPnt2pnt) {
             sendHelloP2p();
+            if ((circuitLevel & 1) != 0) {
+                lev1csnp = sendLevCsnp(lower.level1, lev1csnp);
+            }
+            if ((circuitLevel & 2) != 0) {
+                lev2csnp = sendLevCsnp(lower.level2, lev2csnp);
+            }
             return;
         }
         if ((circuitLevel & 1) != 0) {

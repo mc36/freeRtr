@@ -11,12 +11,14 @@ router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
  both lsp-pass tester
+ both authen-type md5
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
  both lsp-pass tester
+ both authen-type md5
  multi-topology
  red conn
  exit
@@ -55,7 +57,7 @@ interface gigabit0/0/0/1
  exit
 router isis 1
  net 48.0000.0000.1234.00
- lsp-password text clear tester
+ lsp-password hmac-md5 clear tester
  address-family ipv4 unicast
   metric-style wide
   redistribute connected

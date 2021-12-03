@@ -1,4 +1,4 @@
-description isis lsp text authentication
+description isis lsp md5 authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,12 +11,14 @@ router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
  both lsp-pass tester
+ both authen-type md5
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
  both lsp-pass tester
+ both authen-type md5
  red conn
  exit
 int lo1
@@ -47,12 +49,14 @@ router isis4 1
  vrf v1
  net 48.4444.0000.2222.00
  both lsp-pass tester
+ both authen-type md5
  red conn
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.2222.00
  both lsp-pass tester
+ both authen-type md5
  red conn
  exit
 int lo1

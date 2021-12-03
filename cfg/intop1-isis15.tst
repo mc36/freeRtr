@@ -1,8 +1,8 @@
-description interop8: isis text authentication
+description interop1: isis md5 authentication
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
-int eth2 eth 0000.0000.3333 $2a$ $2b$
+int eth1 eth 0000.0000.1111 $per1$
+int eth2 eth 0000.0000.3333 $per2$
 !
 vrf def v1
  rd 1:1
@@ -22,12 +22,14 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  router isis4 1 ena
  router isis4 1 password tester
+ router isis4 1 authen-type md5
  exit
 int eth2
  vrf for v1
  ipv6 addr fe80::1 ffff::
  router isis6 1 ena
  router isis6 1 password tester
+ router isis6 1 authen-type md5
  exit
 int lo0
  vrf for v1
@@ -36,33 +38,41 @@ int lo0
  exit
 !
 
-addother r2
-int eth1 eth 0000.0000.2211 $1b$ $1a$
-int eth2 eth 0000.0000.2222 $2b$ $2a$
+addpersist r2
+int eth1 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2211 $per2$
 !
-ip forwarding
-ipv6 forwarding
-interface lo
- ip addr 2.2.2.2/32
+ip routing
+ipv6 unicast-routing
+interface loopback0
+ ip addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2/128
  exit
-router isis 1
+router isis
  net 48.0000.0000.1234.00
  metric-style wide
- redistribute ipv4 connected level-2
- redistribute ipv6 connected level-2
+ redistribute connected
+ address-family ipv6
+  redistribute connected
  exit
-interface ens3
- ip address 1.1.1.2/24
- ip router isis 1
+key chain kc
+ key 0
+  key-string tester
+ exit
+interface gigabit1
+ ip address 1.1.1.2 255.255.255.0
  isis network point-to-point
- isis password clear tester
+ isis authentication key-chain kc
+ isis authentication mode md5
+ ip router isis
  no shutdown
  exit
-interface ens4
- ipv6 router isis 1
+interface gigabit2
+ ipv6 enable
  isis network point-to-point
- isis password clear tester
+ isis authentication key-chain kc
+ isis authentication mode md5
+ ipv6 router isis
  no shutdown
  exit
 !

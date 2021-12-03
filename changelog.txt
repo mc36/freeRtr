@@ -12498,3 +12498,26 @@ qc pass: interop8: ospf text authentication
 qc pass: interop8: ospf md5 authentication
 qc pass: ospf text authentication
 qc pass: ospf md5 authentication
+---------------------------------- 2021-12-03 11:05:40
+no qc pass: isis lsp authentication
+no qc pass: isis authentication
+no qc pass: interop9: isis lsp authentication
+no qc pass: interop8: isis authentication
+no qc pass: interop2: isis lsp authentication
+no qc pass: interop2: isis authentication
+no qc pass: interop1: isis lsp authentication
+no qc pass: interop1: isis authentication
+qc pass: interop1: isis text authentication
+qc pass: interop1: isis lsp text authentication
+qc pass: interop1: isis md5 authentication
+qc pass: interop1: isis lsp md5 authentication
+qc pass: interop2: isis text authentication
+qc pass: interop2: isis lsp text authentication
+qc pass: interop2: isis text authentication
+qc pass: interop2: isis lsp text authentication
+qc pass: interop8: isis text authentication
+qc pass: interop9: isis lsp text authentication
+qc pass: isis text authentication
+qc pass: isis lsp text authentication
+qc pass: isis md5 authentication
+qc pass: isis lsp md5 authentication

@@ -1,4 +1,4 @@
-description interop1: isis authentication
+description interop1: isis text authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$

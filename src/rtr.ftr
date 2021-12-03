@@ -747,13 +747,15 @@ qc pass: interop1: isis narrow metric
 qc pass: interop1: isis te
 qc pass: interop1: isis multi-topology
 qc pass: interop1: isis prefix withdraw
-qc pass: interop1: isis authentication
+qc pass: interop1: isis text authentication
 qc pass: interop1: isis p2mp te
 qc pass: interop1: isis sr
-qc pass: interop1: isis lsp authentication
+qc pass: interop1: isis lsp text authentication
 qc pass: interop1: isis php sr
 qc pass: interop1: isis te with pcep
 qc pass: interop1: integrated isis
+qc pass: interop1: isis md5 authentication
+qc pass: interop1: isis lsp md5 authentication
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -835,14 +837,16 @@ qc pass: interop2: isis narrow metric
 qc pass: interop2: isis te
 qc pass: interop2: isis multi-topology
 qc pass: interop2: isis prefix withdraw
-qc pass: interop2: isis authentication
+qc pass: interop2: isis text authentication
 qc pass: interop2: isis p2mp te
 qc pass: interop2: isis sr
-qc pass: interop2: isis lsp authentication
+qc pass: interop2: isis lsp text authentication
 qc pass: interop2: isis php sr
 qc pass: interop2: isis te with pcep
 qc pass: interop2: integrated isis
 qc pass: interop2: isis bidir te
+qc pass: interop2: isis text authentication
+qc pass: interop2: isis lsp text authentication
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -893,7 +897,7 @@ qc pass: interop8: isis dis
 qc pass: interop8: isis nondis
 qc pass: interop8: isis narrow metric
 qc pass: interop8: isis prefix withdraw
-qc pass: interop8: isis authentication
+qc pass: interop8: isis text authentication
 qc pass: interop8: integrated isis
 qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
@@ -934,7 +938,7 @@ qc pass: interop9: isis te
 qc pass: interop9: isis prefix withdraw
 qc pass: interop9: isis p2mp te
 qc pass: interop9: isis sr
-qc pass: interop9: isis lsp authentication
+qc pass: interop9: isis lsp text authentication
 qc pass: interop9: isis php sr
 qc pass: interop9: integrated isis
 qc pass: interop9: isis bier
@@ -2114,7 +2118,7 @@ qc pass: isis updown bit
 qc pass: isis updown bit with narrow metric
 qc pass: isis address suppression
 qc pass: isis inter-level routes
-qc pass: isis authentication
+qc pass: isis text authentication
 qc pass: isis intra level metric
 qc pass: isis external metric
 qc pass: isis external narrow metric
@@ -2150,7 +2154,7 @@ qc pass: isis with bier
 qc pass: isis inter-level with bier
 qc pass: isis multi-topology with bier
 qc pass: isis autoroute
-qc pass: isis lsp authentication
+qc pass: isis lsp text authentication
 qc pass: isis change in tag
 qc pass: isis multi-topology change in tag
 qc pass: isis with php sr
@@ -2199,6 +2203,8 @@ qc pass: isis default address suppression
 qc pass: integrated isis default address suppression
 qc pass: isis address unsuppression
 qc pass: integrated isis address unsuppression
+qc pass: isis md5 authentication
+qc pass: isis lsp md5 authentication
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain

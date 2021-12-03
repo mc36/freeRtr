@@ -400,7 +400,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                 break;
             case msgTypL1lsp:
             case msgTypL2lsp:
-                recvLsp(pck);
+                recvLsp(typ, pck);
                 break;
             case msgTypL1csnp:
             case msgTypL2csnp:
@@ -434,7 +434,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         pck.setDataSize(i);
         peerCirc = pck.getByte(11); // circuit id
         pck.getSkip(12);
-        readHelloTlvs(pck);
+        readHelloTlvs(pck, msgTypP2Phello);
     }
 
     private void recvHelloLan(packHolder pck) {
@@ -456,10 +456,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         pck.getAddr(peerDisA, 12); // dis address
         peerDisI = pck.getByte(18); // dis circuit
         pck.getSkip(19);
-        readHelloTlvs(pck);
+        readHelloTlvs(pck, msgTypL2hello);
     }
 
-    private void readHelloTlvs(packHolder pck) {
+    private void readHelloTlvs(packHolder pck, int typ) {
+        int hdrSiz = msgTyp2headSiz(typ) - 8;
         typLenVal tlv = rtrIsis.getTlv();
         int oldAdjSt = peerAdjState;
         peerAdjState = statDown;
@@ -472,7 +473,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         boolean areaAddr = false;
         boolean seenOwn = false;
         byte[] remAuth = null;
+        int authOfs = 0;
+        int packSiz = pck.dataSize();
         for (;;) {
+            int ofs = pck.dataSize();
             if (tlv.getBytes(pck)) {
                 break;
             }
@@ -492,6 +496,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                     break;
                 case rtrIsisLsp.tlvAuthen:
                     remAuth = tlv.copyBytes();
+                    authOfs = packSiz - ofs;
                     break;
                 case rtrIsisLsp.tlvAreaAddr:
                     for (int i = 0; i < tlv.valSiz;) {
@@ -519,6 +524,8 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                     break;
             }
         }
+        pck.setBytesLeft(packSiz);
+        pck.getSkip(-hdrSiz);
         if (!iface.netPnt2pnt) {
             if (seenOwn) {
                 peerAdjState = statUp;
@@ -527,7 +534,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             }
         }
         int i = 1;
-        byte[] locAuth = iface.getAuthData();
+        byte[] locAuth = iface.getAuthData(pck, typ, authOfs + hdrSiz);
         if (locAuth == null) {
             if (remAuth == null) {
                 i = 0;
@@ -653,7 +660,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         return l;
     }
 
-    private void recvLsp(packHolder pck) {
+    private void recvLsp(int typ, packHolder pck) {
         if (peerAdjState != statUp) {
             return;
         }
@@ -663,24 +670,38 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             iface.cntr.drop(pck, counter.reasons.badSum);
             return;
         }
-        if (level.lspPassword != null) {
-            boolean authed = false;
-            byte[] pwd = level.getAuthen();
+        byte[] buf = level.getAuthen(new packHolder(true, true), 0, 0);
+        if (buf != null) {
+            byte[] got = new byte[0];
             typLenVal tlv = rtrIsis.getTlv();
-            packHolder p = lsp.getPayload();
+            packHolder p = new packHolder(true, true);
+            int siz = lsp.writeData(p, 0);
+            p.msbPutW(2, 0); // lifetime
+            p.msbPutW(16, 0); // checksum
+            p.putSkip(siz);
+            p.merge2end();
+            p.getSkip(rtrIsisLsp.headSize);
+            int pos = rtrIsisLsp.headSize;
             for (;;) {
+                int ofs = p.dataSize();
                 if (tlv.getBytes(p)) {
                     break;
                 }
                 if (tlv.valTyp != rtrIsisLsp.tlvAuthen) {
                     continue;
                 }
-                if (tlv.valSiz != pwd.length) {
+                if (tlv.valSiz != buf.length) {
                     continue;
                 }
-                if (bits.byteComp(tlv.valDat, 0, pwd, 0, pwd.length) == 0) {
-                    authed = true;
-                }
+                pos = siz - ofs;
+                got = new byte[tlv.valSiz];
+                bits.byteCopy(tlv.valDat, 0, got, 0, got.length);
+            }
+            p.setBytesLeft(siz);
+            buf = level.getAuthen(p, typ, pos);
+            boolean authed = got.length == buf.length;
+            if (authed) {
+                authed = bits.byteComp(got, 0, buf, 0, buf.length) == 0;
             }
             if (!authed) {
                 logger.info("got bad authentication from l" + level.level + " " + ethAddr + " on " + lsp);
@@ -693,7 +714,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         request.del(lsp);
         pending.del(lsp);
         if (iface.shouldIanswer(level.level, rtrID)) {
-            iface.sendPsnpPack(lsp, level.level);
+            iface.sendPsnpPack(lsp, level);
         }
         rtrIsisLsp old = level.lsps.add(lsp);
         if (old == null) {
@@ -854,7 +875,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                 if (pending.find(lsp) == null) {
                     pending.add(lsp.copyBytes(false));
                     lsp.sequence = 0;
-                    iface.sendPsnpPack(lsp, level.level);
+                    iface.sendPsnpPack(lsp, level);
                 }
             }
         }
@@ -886,7 +907,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                 continue;
             }
             pending.add(lsp.copyBytes(false));
-            iface.sendLspPack(lsp, level.level);
+            iface.sendLspPack(lsp, level);
             if (debugger.rtrIsisTraf) {
                 logger.debug("lsp " + lsp);
             }

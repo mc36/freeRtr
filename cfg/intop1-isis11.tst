@@ -1,4 +1,4 @@
-description interop1: isis lsp authentication
+description interop1: isis lsp text authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$

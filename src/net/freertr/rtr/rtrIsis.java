@@ -1099,6 +1099,10 @@ public class rtrIsis extends ipRtr {
         l.add(null, "3 .       <num>                   size of lsp in bytes");
         l.add(null, "2 3     lsp-password              lsp authentication");
         l.add(null, "3 .       <text>                  text to use");
+        l.add(null, "2 3     authen-type               mode for authentication");
+        l.add(null, "3 .       null                    use nothing");
+        l.add(null, "3 .       clear                   use cleartext");
+        l.add(null, "3 .       md5                     use md5");
         l.add(null, "2 3     lsp-refresh               lsp refresh time");
         l.add(null, "3 .       <num>                   age in ms");
         l.add(null, "2 3     lsp-lifetime              lsp life time");
@@ -1356,6 +1360,22 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.odefOrigin, beg, s + "other-default-originate", "");
         l.add(beg + s + "lsp-mtu " + lev.maxLspSize);
         cmds.cfgLine(l, lev.lspPassword == null, beg, s + "lsp-password", authLocal.passwdEncode(lev.lspPassword, (filter & 2) != 0));
+        String a;
+        switch (lev.authenMode) {
+            case 0:
+                a = "null";
+                break;
+            case 1:
+                a = "clear";
+                break;
+            case 2:
+                a = "md5";
+                break;
+            default:
+                a = "unknown=" + lev.authenMode;
+                break;
+        }
+        l.add(beg + s + "authen-type " + a);
         l.add(beg + s + "lsp-refresh " + lev.lspRefresh);
         l.add(beg + s + "lsp-lifetime " + lev.lspLifetime);
         cmds.cfgLine(l, lev.prflstFrom == null, beg, s + "prefix-list-from", "" + lev.prflstFrom);
@@ -1454,6 +1474,32 @@ public class rtrIsis extends ipRtr {
                 lev.lspPassword = null;
             } else {
                 lev.lspPassword = authLocal.passwdDecode(cmd.word());
+            }
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("authen-type")) {
+            if (negated) {
+                lev.authenMode = 1;
+                lev.schedWork(3);
+                return false;
+            }
+            lev.authenMode = 0;
+            s = cmd.word();
+            if (s.equals("null")) {
+                lev.authenMode = 0;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("clear")) {
+                lev.authenMode = 1;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("md5")) {
+                lev.authenMode = 2;
+                lev.schedWork(3);
+                return false;
             }
             lev.schedWork(3);
             return false;

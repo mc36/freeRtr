@@ -4,6 +4,8 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIsis;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cry.cryHashHmac;
+import net.freertr.cry.cryHashMd5;
 import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
@@ -123,6 +125,11 @@ public class rtrIsisLevel implements Runnable {
     public String lspPassword;
 
     /**
+     * authentication mode: 1=cleartext, 2=md5
+     */
+    public int authenMode;
+
+    /**
      * max lsp size
      */
     public int maxLspSize;
@@ -235,6 +242,7 @@ public class rtrIsisLevel implements Runnable {
         oroutes = new tabRoute<addrIP>("computed");
         need2adv = new tabGen<rtrIsisLsp>();
         notif = new notifier();
+        authenMode = 1;
         attachedClr = level == 2;
         attachedAlw = level == 1;
         interLevels = true;
@@ -294,6 +302,40 @@ public class rtrIsisLevel implements Runnable {
             lsp.sequence = 1;
         } else {
             lsp.sequence = old.sequence + 1;
+        }
+        byte[] buf = getAuthen(new packHolder(true, true), 0, 0);
+        if (buf != null) {
+            typLenVal tlv = rtrIsis.getTlv();
+            packHolder pck = new packHolder(true, true);
+            int siz = lsp.writeData(pck, 0);
+            pck.msbPutW(2, 0); // lifetime
+            pck.msbPutW(16, 0); // checksum
+            pck.putSkip(siz);
+            pck.merge2end();
+            pck.getSkip(rtrIsisLsp.headSize);
+            int pos = rtrIsisLsp.headSize;
+            for (;;) {
+                int ofs = pck.dataSize();
+                if (tlv.getBytes(pck)) {
+                    break;
+                }
+                if (tlv.valTyp != rtrIsisLsp.tlvAuthen) {
+                    continue;
+                }
+                pos = siz - ofs;
+            }
+            pck.setBytesLeft(siz);
+            int typ;
+            if (level == 1) {
+                typ = rtrIsisNeigh.msgTypL1lsp;
+            } else {
+                typ = rtrIsisNeigh.msgTypL2lsp;
+            }
+            buf = getAuthen(pck, typ, pos);
+            pos -= rtrIsisLsp.headSize;
+            if ((pos + buf.length) <= lsp.bufDat.length) {
+                bits.byteCopy(buf, 0, lsp.bufDat, pos + 2, buf.length);
+            }
         }
         if (debugger.rtrIsisEvnt) {
             logger.debug("generate lsp " + lsp);
@@ -425,15 +467,47 @@ public class rtrIsisLevel implements Runnable {
     /**
      * get authentication data
      *
+     * @param pck packet
+     * @param typ message type
+     * @param ofs offset of tlv
      * @return binary data, null if disabled
      */
-    protected byte[] getAuthen() {
-        if (lspPassword == null) {
-            return new byte[0];
+    protected byte[] getAuthen(packHolder pck, int typ, int ofs) {
+        ofs += 3;
+        switch (authenMode) {
+            case 1:
+                if (lspPassword == null) {
+                    return null;
+                }
+                byte[] buf = (" " + lspPassword).getBytes();
+                buf[0] = 1;
+                return buf;
+            case 2:
+                if (lspPassword == null) {
+                    return null;
+                }
+                cryHashHmac h = new cryHashHmac(new cryHashMd5(), lspPassword.getBytes());
+                h.init();
+                int hshSiz = h.getHashSize();
+                h.update(rtrIsis.protDist);
+                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
+                h.update(1);
+                h.update(0);
+                h.update(typ);
+                h.update(1);
+                h.update(0);
+                h.update(lower.getMaxAreaAddr());
+                pck = pck.copyBytes(true, true);
+                pck.merge2beg();
+                pck.hashData(h, 0, ofs);
+                h.update(new byte[hshSiz]);
+                if ((ofs + hshSiz) < pck.dataSize()) {
+                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
+                }
+                return bits.byteConcat(new byte[]{54}, h.finish());
+            default:
+                return null;
         }
-        byte[] buf = (" " + lspPassword).getBytes();
-        buf[0] = 1;
-        return buf;
     }
 
     private void advertiseTlv(packHolder pck, typLenVal tlv) {
@@ -441,8 +515,9 @@ public class rtrIsisLevel implements Runnable {
             advertiseLsp(pck);
             pck.setDataSize(0);
             pck.RTPtyp++;
-            if (lspPassword != null) {
-                advertiseTlv(pck, rtrIsisLsp.tlvAuthen, getAuthen());
+            byte[] buf = getAuthen(new packHolder(true, true), 0, 0);
+            if (buf != null) {
+                advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
             }
         }
         tlv.putThis(pck);
@@ -508,8 +583,9 @@ public class rtrIsisLevel implements Runnable {
         }
         packHolder p = new packHolder(true, true);
         p.RTPsrc = ifc.circuitID;
-        if (lspPassword != null) {
-            advertiseTlv(p, rtrIsisLsp.tlvAuthen, getAuthen());
+        buf = getAuthen(new packHolder(true, true), 0, 0);
+        if (buf != null) {
+            advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
         }
         advertiseTlv(p, lower.putISneigh(lower.routerID, 0, 0, new byte[0]));
         createNeighs(p, ifc, false);
@@ -680,8 +756,9 @@ public class rtrIsisLevel implements Runnable {
         }
         need2adv.clear();
         packHolder pck = new packHolder(true, true);
-        if (lspPassword != null) {
-            advertiseTlv(pck, rtrIsisLsp.tlvAuthen, getAuthen());
+        byte[] buf = getAuthen(new packHolder(true, true), 0, 0);
+        if (buf != null) {
+            advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
         }
         advertiseTlv(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst(lower.other.enabled));
         if (lower.multiTopo) {
@@ -693,7 +770,7 @@ public class rtrIsisLevel implements Runnable {
             if ((i & rtrIsisLsp.flgAttach) != 0) {
                 o |= 0x40;
             }
-            byte[] buf = lower.getMTopoLst(lower.other.enabled, o);
+            buf = lower.getMTopoLst(lower.other.enabled, o);
             advertiseTlv(pck, rtrIsisLsp.tlvMultiTopo, buf);
         }
         advertiseTlv(pck, rtrIsisLsp.tlvAreaAddr, lower.areaID.getAddrDat(true));
@@ -704,7 +781,7 @@ public class rtrIsisLevel implements Runnable {
             advertiseTlv(pck, rtrIsisSr.putBase(lower));
         }
         if (hostname) {
-            byte[] buf = cfgAll.hostName.getBytes();
+            buf = cfgAll.hostName.getBytes();
             advertiseTlv(pck, rtrIsisLsp.tlvHostName, buf);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
