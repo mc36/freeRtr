@@ -2164,15 +2164,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.IPtos = tos;
         pck.IPid = id;
         pck.INTupper = -1;
-        ipCore.createIPheader(pck);
-        if (coppOut != null) {
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
-                cntrL.drop(pck, counter.reasons.noBuffer);
-                return ntry;
-            }
-        }
-        ipMpls.beginMPLSfields(pck, (mplsPropTtl | ifc.mplsPropTtlAlways) & ifc.mplsPropTtlAllow);
-        forwardPacket(4, ifc, null, pck);
+        protoPack(ifc, null, pck);
         return ntry;
     }
 
