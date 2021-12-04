@@ -1,6 +1,16 @@
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 
+#ifdef debugging
 
+#define doDropper {printf("dropping at %s:%i\n", __FILE__, __LINE__);goto drop;}
+#define doPunter {printf("punting at %s:%i\n", __FILE__, __LINE__);goto cpu;}
+
+#else
+
+#define doDropper goto drop;
+#define doPunter goto cpu;
+
+#endif
 
 void send2port(unsigned char *bufD, int bufS, int port) {
     if (port < 0) return;
@@ -199,7 +209,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
         ethtyp = PPPTYPE_ROUTEDMAC;                             \
         break;                                                  \
     default:                                                    \
-        goto drop;                                              \
+        doDropper;                                              \
     }
 
 
@@ -224,7 +234,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
         bufP += 2;                                              \
         break;                                                  \
     default:                                                    \
-        goto drop;                                              \
+        doDropper;                                              \
     }
 
 
@@ -302,7 +312,7 @@ int masks[] = {
         ethtyp = 41;                                            \
         break;                                                  \
     default:                                                    \
-        goto drop;                                              \
+        doDropper;                                              \
     }                                                           \
     bufP += 2;
 
@@ -316,7 +326,7 @@ int masks[] = {
             ethtyp = ETHERTYPE_IPV6;                            \
             break;                                              \
     default:                                                    \
-        goto drop;                                              \
+        doDropper;                                              \
     }
 
 
@@ -335,40 +345,40 @@ int masks[] = {
     bufP -= neigh_res->encrBlkLen;                              \
     RAND_bytes(&bufD[bufP], neigh_res->encrBlkLen);             \
     tmp += neigh_res->encrBlkLen;                               \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) goto drop;    \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;    \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
     bufP -= 8;                                                  \
     put32msb(bufD, bufP + 0, neigh_res->spi);                   \
     put32msb(bufD, bufP + 4, neigh_res->seq);                   \
     tmp += 8;                                                   \
-    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
-    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) goto drop;   \
-    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
-    if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) goto drop; \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
+    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) doDropper;   \
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+    if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) doDropper; \
     bufS += neigh_res->hashBlkLen;                              \
     neigh_res->seq++;
 
 
 #define decapEsp(tun_res)                                       \
     bufP = bufT;                                                \
-    if (get32msb(bufD, bufP + 0) != tun_res->spi) goto drop;    \
+    if (get32msb(bufD, bufP + 0) != tun_res->spi) doDropper;    \
     tun_res->seq = get32msb(bufD, bufP + 4);                    \
     tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
-    if (tmp < 1) goto drop;                                     \
-    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
-    if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
-    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
-    if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) goto drop;      \
-    if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) goto drop;   \
+    if (tmp < 1) doDropper;                                     \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
+    if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+    if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
+    if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
     bufS -= tun_res->hashBlkLen;                                \
     bufP += 8;                                                  \
     tmp -= 8;                                                   \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) goto drop;   \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
     bufP += tun_res->encrBlkLen;                                \
     tmp -= tun_res->encrBlkLen;                                 \
     ethtyp = bufD[bufP + tmp - 1];                              \
@@ -430,15 +440,15 @@ int masks[] = {
     bufP -= neigh_res->encrBlkLen;                              \
     RAND_bytes(&bufD[bufP], neigh_res->encrBlkLen);             \
     tmp += neigh_res->encrBlkLen;                               \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) goto drop;    \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
-    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
-    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) goto drop;   \
-    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;    \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
+    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) doDropper;   \
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
     bufP -= neigh_res->hashBlkLen;                              \
-    if (EVP_DigestSignFinal(hashCtx, &bufD[bufP], &sizt) != 1) goto drop; \
+    if (EVP_DigestSignFinal(hashCtx, &bufD[bufP], &sizt) != 1) doDropper; \
     neigh_res->seq++;
 
 
@@ -451,7 +461,7 @@ int masks[] = {
             ethtyp = ETHERTYPE_IPV6;                            \
             break;                                              \
     default:                                                    \
-        goto drop;                                              \
+        doDropper;                                              \
     }
 
 
@@ -459,16 +469,16 @@ int masks[] = {
     bufP = bufT + 8;                                            \
     bufP += tun_res->hashBlkLen;                                \
     tmp = bufS - bufP + preBuff;                                \
-    if (tmp < 1) goto drop;                                     \
-    if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;              \
-    if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) goto drop; \
-    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;    \
-    if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) goto drop;      \
-    if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) goto drop;    \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) goto drop;   \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
+    if (tmp < 1) doDropper;                                     \
+    if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
+    if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+    if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
+    if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
     bufP += tun_res->encrBlkLen;                                \
     tmp -= tun_res->encrBlkLen;                                 \
     bufP += 8;                                                  \
@@ -489,12 +499,12 @@ int masks[] = {
     put32lsb(bufH, 16, 0);                                      \
     put32lsb(bufH, 20, neigh_res->seq);                         \
     put32lsb(bufH, 24, 0);                                      \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufH[16]) != 1) goto drop;   \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
-    if (EVP_EncryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) goto drop; \
-    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[bufP + tmp]) != 1) goto drop; \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufH[16]) != 1) doDropper;   \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+    if (EVP_EncryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper; \
+    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
     tmp += 16;                                                  \
     bufS += 16;                                                 \
     bufP -= 16;                                                 \
@@ -507,19 +517,19 @@ int masks[] = {
 
 #define decapWireguard(tun_res)                                 \
     bufP = bufT + 8;                                            \
-    if (get32lsb(bufD, bufP) != 4) goto cpu;                    \
+    if (get32lsb(bufD, bufP) != 4) doPunter;                    \
     tmp = bufS - bufP + preBuff;                                \
-    if (tmp < 32) goto drop;                                    \
+    if (tmp < 32) doDropper;                                    \
     put32msb(bufD, bufP + 4, 0);                                \
     bufP += 16;                                                 \
     bufS -= 16;                                                 \
     tmp -= 32;                                                  \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;          \
-    if (EVP_DecryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) goto drop;  \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop; \
-    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) goto drop; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;   \
-    if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) goto drop; \
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+    if (EVP_DecryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) doDropper;  \
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
+    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+    if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper; \
     guessEthtyp;                                                \
     bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);
@@ -641,7 +651,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
     memmove(&bufH[0], &neigh_res->dmac, 6);
     memmove(&bufH[6], &neigh_res->smac, 6);
     if (neigh_res->aclport != prt) {
-        if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp) != 0) goto drop;
+        if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp) != 0) doDropper;
     }
     switch (neigh_res->command) {
     case 1: // raw ip
@@ -727,7 +737,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     default:
-        goto drop;
+        doDropper;
     }
     return send2subif(prt, encrCtx, hashCtx, hash, &*bufD, &*bufP, &*bufS, bufH, &*ethtyp);
 drop:
@@ -876,7 +886,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         ethtyp = 0;                                                 \
         break;                                                      \
     }                                                               \
-    goto drop;
+    doDropper;
 
 
 #define doTunneled(tun_res)                                         \
@@ -886,11 +896,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         break;                                                      \
     case 2:                                                         \
         bufP = bufT + 8;                                            \
-        if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;         \
+        if ((get16msb(bufD, bufP) & 0x8000) != 0) doPunter;         \
         bufP += 8;                                                  \
         bufP += 2;                                                  \
         ethtyp = get16msb(bufD, bufP);                              \
-        if ((ethtyp & 0x8000) != 0) goto cpu;                       \
+        if ((ethtyp & 0x8000) != 0) doPunter;                       \
         ppptyp2ethtyp;                                              \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
@@ -924,14 +934,14 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         break;                                                      \
     case 10:                                                        \
         bufP = bufT + 8;                                            \
-        if (bufD[bufP] != 6) goto cpu;                              \
+        if (bufD[bufP] != 6) doPunter;                              \
         bufP += 2;                                                  \
         guessEthtyp;                                                \
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
     default:                                                        \
-        goto drop;                                                  \
+        doDropper;                                                  \
     }                                                               \
     bufP -= 12;                                                     \
     memset(&bufD[bufP], 0, 12);                                     \
@@ -1069,27 +1079,27 @@ ethtyp_rx:
         macsec_res = table_get(&macsec_table, index);
         macsec_res->packRx++;
         macsec_res->byteRx += bufS;
-        if (ethtyp != macsec_res->ethtyp) goto drop;
-        if (bufD[bufP] != 0x08) goto cpu;
+        if (ethtyp != macsec_res->ethtyp) doDropper;
+        if (bufD[bufP] != 0x08) doPunter;
         macsec_res->seqRx = get32msb(bufD, bufP + 2);
         bufP += 6;
         tmp = bufS - bufP + preBuff - macsec_res->hashBlkLen;
-        if (tmp < 1) goto drop;
-        if ((tmp % macsec_res->encrBlkLen) != 0) goto drop;
-        if (EVP_MD_CTX_reset(hashCtx) != 1) goto drop;
-        if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) goto drop;
+        if (tmp < 1) doDropper;
+        if ((tmp % macsec_res->encrBlkLen) != 0) doDropper;
+        if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;
+        if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) doDropper;
         if (macsec_res->needMacs != 0) {
-            if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 6], 6) != 1) goto drop;
-            if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) goto drop;
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 6], 6) != 1) doDropper;
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) doDropper;
         }
-        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) goto drop;
-        if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) goto drop;
-        if (memcmp(&bufH[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) goto drop;
+        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;
+        if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;
+        if (memcmp(&bufH[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) doDropper;
         bufS -= macsec_res->hashBlkLen;
-        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) goto drop;
-        if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) goto drop;
-        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) goto drop;
-        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) goto drop;
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
+        if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) doDropper;
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
+        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
         bufP += macsec_res->encrBlkLen;
         tmp -= macsec_res->encrBlkLen;
         memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
@@ -1125,7 +1135,7 @@ mpls_rx:
         mpls_ntry.label = (label >> 12) & 0xfffff;
         hash ^= mpls_ntry.label;
         index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         mpls_res = table_get(&mpls_table, index);
         mpls_res->pack++;
         mpls_res->byte += bufS;
@@ -1154,7 +1164,7 @@ mpls_rou:
                 ethtyp = 0;
                 break;
             }
-            goto drop;
+            doDropper;
         case 3: // swap
             bufP -= 4;
             label = (label & 0xf00) | ttl | (mpls_res->swap << 12);
@@ -1165,7 +1175,7 @@ ethtyp_tx:
             put16msb(bufD, bufP, ethtyp);
 nethtyp_tx:
             index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) goto drop;
+            if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
             prt2 = prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp);
@@ -1185,14 +1195,14 @@ neigh_tx:
             bridge_ntry.id = mpls_res->bridge;
             goto bridgevpls_rx;
         case 6: // punt
-            goto cpu;
+            doPunter;
         case 7: // dup
             doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl, port);
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
-            if ((label & 0x100) == 0) goto drop;
-            if (bufD[bufP] != 0x50) goto drop;
+            if ((label & 0x100) == 0) doDropper;
+            if (bufD[bufP] != 0x50) doDropper;
             doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl, port);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
             if (tmp2 == 0) return;
@@ -1209,7 +1219,7 @@ neigh_tx:
         vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
         index = table_find(&vlanin_table, &vlan_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         vlan_res = table_get(&vlanin_table, index);
         prt = vlan_res->id;
         vlan_res->pack++;
@@ -1217,14 +1227,14 @@ neigh_tx:
         goto ethtyp_rx;
     case ETHERTYPE_IPV4: // ipv4
         checkLayer2;
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         route4_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
-        if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
+        if ((bufD[bufP + 0] & 0xf0) != 0x40) doDropper;
         bufT = bufD[bufP + 0] & 0xf;
-        if (bufT < 5) goto drop;
+        if (bufT < 5) doDropper;
         ttl = get16msb(bufD, bufP + 2) + bufP - preBuff;
-        if (ttl > bufS) goto drop;
+        if (ttl > bufS) doDropper;
         bufS = ttl;
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff;
@@ -1258,9 +1268,9 @@ ipv4_rx:
             policer_ntry.meter = acls_res->hop;
             policer_ntry.dir = 1;
             index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) goto drop;
+            if (index < 0) doDropper;
             policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) goto drop;
+            if (policer_res->avail < 1) doDropper;
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv4_qosed:
@@ -1276,9 +1286,9 @@ ipv4_qosed:
             policer_ntry.meter = aceh_res->pri;
             policer_ntry.dir = 3;
             index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) goto drop;
+            if (index < 0) doDropper;
             policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) goto drop;
+            if (policer_res->avail < 1) doDropper;
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv4_flwed:
@@ -1309,7 +1319,7 @@ ipv4_flwed:
             if (index < 0) goto ipv4_natted;
             if (frag != 0) goto ipv4_natted;
             acls_res = table_get(&acls_table, index);
-            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) goto cpu;
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doPunter;
         }
 ipv4_natted:
         acls_ntry.dir = 5;
@@ -1329,7 +1339,7 @@ ipv4_natted:
                 route4_ntry.vrf = acls_res->vrf;
                 neigh_ntry.id = acls_res->hop;
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) goto drop;
+                if (index < 0) doDropper;
                 neigh_res = table_get(&neigh_table, index);
                 goto ipv4_tx;
             case 4: // setlab
@@ -1341,7 +1351,7 @@ ipv4_natted:
                 neigh_ntry.id = acls_res->hop;
                 goto ethtyp_tx;
             default:
-                goto drop;
+                doDropper;
             }
         }
 ipv4_pbred:
@@ -1349,14 +1359,14 @@ ipv4_pbred:
         index = table_find(&mroute4_table, &mroute4_ntry);
         if (index >= 0) {
             mroute4_res = table_get(&mroute4_table, index);
-            if (mroute4_res->ingr != prt) goto drop;
+            if (mroute4_res->ingr != prt) doDropper;
             mroute4_res->pack++;
             mroute4_res->byte += bufS;
             doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
-            if (mroute4_res->local != 0) goto cpu;
+            if (mroute4_res->local != 0) doPunter;
             return;
         }
-        if (acl4_ntry.protV == 46) goto cpu;
+        if (acl4_ntry.protV == 46) doPunter;
         for (i = 32; i >= 0; i--) {
             route4_ntry.mask = i;
             route4_ntry.addr &= masks[i];
@@ -1369,7 +1379,7 @@ ipv4_pbred:
             case 1: // route
                 neigh_ntry.id = route4_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) goto drop;
+                if (index < 0) doDropper;
                 neigh_res = table_get(&neigh_table, index);
 ipv4_tx:
                 acls_ntry.dir = 2;
@@ -1392,9 +1402,9 @@ ipv4_tx:
                 policer_ntry.meter = acls_res->hop;
                 policer_ntry.dir = 2;
                 index = table_find(&policer_table, &policer_ntry);
-                if (index < 0) goto drop;
+                if (index < 0) doDropper;
                 policer_res = table_get(&policer_table, index);
-                if (policer_res->avail < 1) goto drop;
+                if (policer_res->avail < 1) doDropper;
                 policer_res->avail -= bufS - bufP + preBuff;
                 goto neigh_tx;
             case 2: // punt
@@ -1416,21 +1426,21 @@ ipv4_tx:
                 if (index >= 0) {
                     if (frag != 0) goto punt;
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto drop;
+                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
                 }
-                goto cpu;
+                doPunter;
             doRouted(route4_res, 4);
             }
         }
         goto punt;
     case ETHERTYPE_IPV6: // ipv6
         checkLayer2;
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
-        if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
+        if ((bufD[bufP + 0] & 0xf0) != 0x60) doDropper;
         ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff;
-        if (ttl > bufS) goto drop;
+        if (ttl > bufS) doDropper;
         bufS = ttl;
         bufT = bufP + 40;
         acl6_ntry.protV = bufD[bufP + 6];
@@ -1475,9 +1485,9 @@ ipv6_rx:
             policer_ntry.meter = acls_res->hop;
             policer_ntry.dir = 1;
             index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) goto drop;
+            if (index < 0) doDropper;
             policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) goto drop;
+            if (policer_res->avail < 1) doDropper;
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv6_qosed:
@@ -1493,9 +1503,9 @@ ipv6_qosed:
             policer_ntry.meter = aceh_res->pri;
             policer_ntry.dir = 4;
             index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) goto drop;
+            if (index < 0) doDropper;
             policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) goto drop;
+            if (policer_res->avail < 1) doDropper;
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv6_flwed:
@@ -1543,7 +1553,7 @@ ipv6_flwed:
             if (index < 0) goto ipv6_natted;
             if (frag != 0) goto ipv6_natted;
             acls_res = table_get(&acls_table, index);
-            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) goto cpu;
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doPunter;
         }
 ipv6_natted:
         acls_ntry.dir = 5;
@@ -1563,7 +1573,7 @@ ipv6_natted:
                 route6_ntry.vrf = acls_res->vrf;
                 neigh_ntry.id = acls_res->hop;
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) goto drop;
+                if (index < 0) doDropper;
                 neigh_res = table_get(&neigh_table, index);
                 goto ipv6_tx;
             case 4: // setlab
@@ -1575,7 +1585,7 @@ ipv6_natted:
                 neigh_ntry.id = acls_res->hop;
                 goto ethtyp_tx;
             default:
-                goto drop;
+                doDropper;
             }
         }
 ipv6_pbred:
@@ -1583,14 +1593,14 @@ ipv6_pbred:
         index = table_find(&mroute6_table, &mroute6_ntry);
         if (index >= 0) {
             mroute6_res = table_get(&mroute6_table, index);
-            if (mroute6_res->ingr != prt) goto drop;
+            if (mroute6_res->ingr != prt) doDropper;
             mroute6_res->pack++;
             mroute6_res->byte += bufS;
             doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
-            if (mroute6_res->local != 0) goto cpu;
+            if (mroute6_res->local != 0) doPunter;
             return;
         }
-        if (acl6_ntry.protV == 0) goto cpu;
+        if (acl6_ntry.protV == 0) doPunter;
         for (i = 32; i >= 0; i--) {
             route6_ntry.mask = 96 + i;
             route6_ntry.addr4 &= masks[i];
@@ -1625,7 +1635,7 @@ ipv6_hit:
             case 1: // route
                 neigh_ntry.id = route6_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) goto drop;
+                if (index < 0) doDropper;
                 neigh_res = table_get(&neigh_table, index);
 ipv6_tx:
                 acls_ntry.dir = 2;
@@ -1648,9 +1658,9 @@ ipv6_tx:
                 policer_ntry.meter = acls_res->hop;
                 policer_ntry.dir = 2;
                 index = table_find(&policer_table, &policer_ntry);
-                if (index < 0) goto drop;
+                if (index < 0) doDropper;
                 policer_res = table_get(&policer_table, index);
-                if (policer_res->avail < 1) goto drop;
+                if (policer_res->avail < 1) doDropper;
                 policer_res->avail -= bufS - bufP + preBuff;
                 goto neigh_tx;
             case 2: // punt
@@ -1678,9 +1688,9 @@ ipv6_tx:
                 if (index >= 0) {
                     if (frag != 0) goto punt;
                     acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto drop;
+                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
                 }
-                goto cpu;
+                doPunter;
             doRouted(route6_res, 41);
             }
         }
@@ -1690,14 +1700,14 @@ ipv6_tx:
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         index = table_find(&pppoe_table, &pppoe_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         pppoe_res = table_get(&pppoe_table, index);
         pppoe_res->pack++;
         pppoe_res->byte += bufS;
         prt = pppoe_res->aclport;
         bufP += 6;
         ethtyp = get16msb(bufD, bufP);
-        if ((ethtyp & 0x8000) != 0) goto cpu;
+        if ((ethtyp & 0x8000) != 0) doPunter;
         ppptyp2ethtyp;
         put16msb(bufD, bufP, ethtyp);
         bufP -= 12;
@@ -1709,9 +1719,9 @@ ipv6_tx:
     case ETHERTYPE_ROUTEDMAC: // routed bridge
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         portvrf_res = table_get(&portvrf_table, index);
-        if (portvrf_res->command != 2) goto drop;
+        if (portvrf_res->command != 2) doDropper;
         bridge_ntry.id = portvrf_res->bridge;
         memmove(&bufH[0], &bufD[bufP], 12);
         bufP += 12;
@@ -1720,13 +1730,13 @@ ipv6_tx:
     case ETHERTYPE_POLKA: // polka
         checkLayer2;
         ttl = get16msb(bufD, bufP + 0);
-        if ((ttl & 0xff00) != 0) goto drop;
+        if ((ttl & 0xff00) != 0) doDropper;
         if ((ttl & 0xff) <= 1) goto punt;
         ttl--;
         bufD[bufP + 1] = ttl;
         polkaPoly_ntry.port = prt;
         index = table_find(&polkaPoly_table, &polkaPoly_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         polkaPoly_res = table_get(&polkaPoly_table, index);
         polkaPoly_res->pack++;
         polkaPoly_res->byte += bufS;
@@ -1743,7 +1753,7 @@ ipv6_tx:
         polkaIdx_ntry.vrf = portvrf_res->vrf;
         polkaIdx_ntry.index = tmp;
         index = table_find(&polkaIdx_table, &polkaIdx_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         polkaIdx_res = table_get(&polkaIdx_table, index);
         polkaIdx_res->pack++;
         polkaIdx_res->byte += bufS;
@@ -1752,14 +1762,14 @@ ipv6_tx:
     case ETHERTYPE_NSH: // nsh
         checkLayer2;
         ttl = get16msb(bufD, bufP + 0);
-        if ((ttl & 0xe000) != 0) goto drop;
+        if ((ttl & 0xe000) != 0) doDropper;
         if (((ttl >> 6) & 0x3f) <= 1) goto punt;
         tmp = get32msb(bufD, bufP + 4);
         ethtyp = bufD[bufP + 3];
         nsh_ntry.sp = tmp >> 8;
         nsh_ntry.si = tmp & 0xff;
         index = table_find(&nsh_table, &nsh_ntry);
-        if (index < 0) goto drop;
+        if (index < 0) doDropper;
         nsh_res = table_get(&nsh_table, index);
         nsh_res->pack++;
         nsh_res->byte += bufS;
@@ -1816,7 +1826,7 @@ bridgevpls_rx:
         bridge_ntry.mac2 = get32msb(bufH, 8);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) goto cpu;
+        if (index < 0) doPunter;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packRx++;
         bridge_res->byteRx += bufS;
@@ -1824,7 +1834,7 @@ bridgevpls_rx:
         bridge_ntry.mac2 = get32msb(bufH, 2);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) goto cpu;
+        if (index < 0) doPunter;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packTx++;
         bridge_res->byteTx += bufS;
@@ -1893,19 +1903,19 @@ bridgevpls_rx:
         return;
     case ETHERTYPE_ARP: // arp
         checkLayer2;
-        goto cpu;
+        doPunter;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
         checkLayer2;
-        goto cpu;
+        doPunter;
     case ETHERTYPE_MACSEC: // macsec
         checkLayer2;
-        goto cpu;
+        doPunter;
     case ETHERTYPE_LACP: // lacp
         checkLayer2;
-        goto cpu;
+        doPunter;
     case ETHERTYPE_LLDP: // lldp
         checkLayer2;
-        goto cpu;
+        doPunter;
     default:
         checkLayer2;
 punt:
