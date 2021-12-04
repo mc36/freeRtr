@@ -743,6 +743,11 @@ public class userExec {
         hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");
         hl.add(null, (beg + 4) + " .            count           count entities");
         hl.add(null, (beg + 4) + " .            summary         summary entities");
+        hl.add(null, (beg + 1) + " " + (beg + 2) + "    hide                  hide columns after");
+        hl.add(null, (beg + 2) + " " + (beg + 3) + ",.    <text>              column name");
+        hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");
+        hl.add(null, (beg + 4) + " .            count           count entities");
+        hl.add(null, (beg + 4) + " .            summary         summary entities");
         hl.add(null, (beg + 1) + " " + (beg + 2) + "    section               only sections that match");
         hl.add(null, (beg + 2) + " " + (beg + 3) + ",.    <text>              filter text");
         hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");

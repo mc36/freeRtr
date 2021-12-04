@@ -104,6 +104,10 @@ public class userReader implements Comparator<String> {
          */
         uniq,
         /**
+         * hide columns
+         */
+        hide,
+        /**
          * redirection
          */
         redirect,
@@ -495,6 +499,20 @@ public class userReader implements Comparator<String> {
                 Collections.sort(lst, this);
                 lst.add(0, a);
                 return doSecond(lst);
+            case hide:
+                findColumn(lst);
+                if (columnB < 0) {
+                    return bits.str2lst("no such column");
+                }
+                res = new ArrayList<String>();
+                for (int i = 0; i < lst.size(); i++) {
+                    a = lst.get(i);
+                    if (a.length() > columnB) {
+                        a = a.substring(0, columnB);
+                    }
+                    res.add(a);
+                }
+                return doSecond(res);
             case uniq:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -1264,6 +1282,10 @@ public class userReader implements Comparator<String> {
         }
         if (a.equals("uniq")) {
             filterM = mode.uniq;
+            return cmd;
+        }
+        if (a.equals("hide")) {
+            filterM = mode.hide;
             return cmd;
         }
         if (a.equals("section")) {
