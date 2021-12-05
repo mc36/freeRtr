@@ -25,4 +25,3 @@ more features with clean implementation
 more randomizers
 x25
 default vrf for show commands
-shame texts in cmd.err
