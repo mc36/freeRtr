@@ -617,7 +617,18 @@ class prtSctpConn {
     public byte[] txBuf;
 
     public String toString() {
-        return state + " " + bits.timePast(lastRx);
+        switch (state) {
+            case 1:
+                return "accpt";
+            case 2:
+                return "estab";
+            case 3:
+                return "term";
+            case 4:
+                return "init";
+            default:
+                return "unknown=" + state;
+        }
     }
 
 }

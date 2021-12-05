@@ -1157,7 +1157,22 @@ class prtTcpConn {
     protected pipeSide netBufTx;
 
     public String toString() {
-        return "" + state;
+        switch (state) {
+            case stDelete:
+                return "del";
+            case stGotSyn:
+                return "accpt";
+            case stConReq:
+                return "init";
+            case stClrReq:
+                return "term";
+            case stGotFin:
+                return "stop";
+            case stOpened:
+                return "estab";
+            default:
+                return "unknown=" + state;
+        }
     }
 
 }
