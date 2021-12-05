@@ -220,7 +220,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * looped packets dropped
      */
     public static int loopDrops;
-    
+
     /**
      * looped packets depth
      */
@@ -686,7 +686,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             pck.merge2end();
         }
         if (mtuCheckTx) {
-            if (pck.dataSize() > getMTUsize()) {
+            if ((pck.dataSize() - 2) > getMTUsize()) {
                 cntr.drop(pck, counter.reasons.fragment);
                 return;
             }
@@ -762,7 +762,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     private void doRxWork(packHolder pck, boolean fromDp) {
         cntr.rx(pck);
         if (mtuCheckRx) {
-            if (pck.dataSize() > getMTUsize()) {
+            if ((pck.dataSize() - 2) > getMTUsize()) {
                 cntr.drop(pck, counter.reasons.fragment);
                 return;
             }
