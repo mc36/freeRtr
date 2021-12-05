@@ -291,7 +291,8 @@ public class prtSctp extends prtGen {
                 sendMyPack(clnt, pck.getCopy(), prtSctpConn.opcInitAck);
                 break;
             case 2:
-                if (pr.txBuf == null) {
+                byte[] buf = pr.txBuf;
+                if (buf == null) {
                     break;
                 }
                 pck.msbPutD(0, pr.seqLoc); // tsn
@@ -299,13 +300,13 @@ public class prtSctp extends prtGen {
                 pck.msbPutW(6, pr.stream); // stream seq
                 pck.msbPutD(8, 0); // app id
                 pck.putSkip(12);
-                pck.putCopy(pr.txBuf, 0, 0, pr.txBuf.length);
-                pck.putSkip(pr.txBuf.length);
+                pck.putCopy(buf, 0, 0, buf.length);
+                pck.putSkip(buf.length);
                 pck.merge2beg();
                 sendMyPack(clnt, pck.getCopy(), prtSctpConn.opcData | 3);
                 break;
             case 3:
-                byte[] buf = new byte[4];
+                buf = new byte[4];
                 bits.msbPutD(buf, 0, pr.seqRem);
                 sendMyPack(clnt, buf, prtSctpConn.opcShutReq);
                 break;
