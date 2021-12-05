@@ -19,6 +19,11 @@ public class debugger {
     public static boolean userConfigEvnt = false;
 
     /**
+     * userExec commands
+     */
+    public static boolean userExecEvnt = false;
+
+    /**
      * userReader commands
      */
     public static boolean userReaderEvnt = false;
@@ -971,6 +976,7 @@ public class debugger {
     public static void getHelping(userHelping l) {
         l.add(null, "2 3      line                line specific protocols");
         l.add(null, "3 .        config            configuration commands");
+        l.add(null, "3 .        exec              exec commands");
         l.add(null, "3 .        reader            command line reader events");
         l.add(null, "3 .        screen            terminal screen events");
         l.add(null, "3 .        netconf           netconf events");
@@ -1220,6 +1226,10 @@ public class debugger {
             s = cmd.word();
             if (s.equals("config")) {
                 userConfigEvnt = v;
+                return false;
+            }
+            if (s.equals("exec")) {
+                userExecEvnt = v;
                 return false;
             }
             if (s.equals("reader")) {

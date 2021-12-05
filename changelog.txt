@@ -12551,3 +12551,5 @@ no qc pass: olab bgp ingress route filtering with routemap
 no qc pass: labels bgp ingress route filtering with routemap
 no qc pass: interop8: isis text authentication
 qc pass: precise mtu enforcement
+---------------------------------- 2021-12-05 08:55:38
+no todo: shame texts in cmd.err

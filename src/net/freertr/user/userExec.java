@@ -1822,13 +1822,6 @@ public class userExec {
             if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
             }
-            if (authorization != null) {
-                authResult ntry = authorization.authUserCommand(username, s);
-                if (ntry.result != authResult.authSuccessful) {
-                    pipe.linePut("% not authorized to execute that");
-                    continue;
-                }
-            }
             cmdRes i = executeCommand(s);
             if (i != cmdRes.command) {
                 return i;
@@ -1860,6 +1853,16 @@ public class userExec {
         }
         cmd = new cmds("exec", a);
         cmd.pipe = pipe;
+        if (authorization != null) {
+            authResult ntry = authorization.authUserCommand(username, a);
+            if (ntry.result != authResult.authSuccessful) {
+                cmd.error("not authorized to execute that");
+                return cmdRes.command;
+            }
+        }
+        if (debugger.userExecEvnt) {
+            logger.debug(cmd.getOriginal());
+        }
         a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.exec, false);
         if (alias != null) {
