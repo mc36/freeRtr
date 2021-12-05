@@ -148,7 +148,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "1  2      delay-down                 number of failures before down");
         l.add(null, "2  .        <num>                    value");
         l.add(null, "1  2      wake-vrf                   wake vrf on state change");
-        l.add(null, "2  .        <str>                    name of vrf");
+        l.add(null, "2  .        <name:vrf>               name of vrf");
         l.add(null, "1  2      exec-up                    exec command to execute on up");
         l.add(null, "2  2,.      <cmd>                    value");
         l.add(null, "1  2      exec-down                  exec command to execute on down");

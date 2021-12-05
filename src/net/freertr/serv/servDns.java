@@ -183,7 +183,7 @@ public class servDns extends servGeneric implements prtServS {
         }
         l.add(lst, "3  4     <name:loc>              domain name");
         l.add(null, "4  5       soa                   specify a start of authority");
-        l.add(null, "5  6         <str>               name server");
+        l.add(lst, "5  6         <name:loc>          name server");
         l.add(null, "6  7           <str>             email of author");
         l.add(null, "7  8             <num>           sequence number");
         l.add(null, "8  9               <num>         refresh interval");
@@ -196,7 +196,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "4  5       cname                 specify a canonical name");
         l.add(lst, "5  .         <name:loc>          name of host");
         l.add(null, "4  5       rp                    specify a responsible person");
-        l.add(null, "5  6         <str>               mail server");
+        l.add(lst, "5  6         <name:loc>          mail server");
         l.add(null, "6  .           <str>             email of author");
         l.add(null, "4  5       srv                   specify a responsible person");
         l.add(null, "5  6         <num>               priority");

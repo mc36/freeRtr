@@ -214,13 +214,13 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         l.add(null, "2 .        unknown                unknown");
         l.add(null, "2 .        ok                     ok");
         l.add(null, "1 2      template                 template arameters");
-        l.add(null, "2 .        <str>                  name of check");
+        l.add(null, "2 .        <name:chk>             name of check");
         l.add(null, "1 2      command                  specify command to execute");
         l.add(null, "2 2,.      <str>                  command");
         l.add(null, "1 2      description              specify description");
         l.add(null, "2 2,.      <str>                  description");
         l.add(null, "1 2      error-text               specify error text");
-        l.add(null, "2 2,.      <str>                  description");
+        l.add(null, "2 2,.      <str>                  text");
         l.add(null, "1 .      error-states             remove state of messages");
         l.add(null, "1 .      error-commands           include commands in states");
         l.add(null, "1 .      error-hostname           include local hostname in states");

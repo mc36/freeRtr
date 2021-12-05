@@ -178,7 +178,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     lrgcomm             match large community");
         l.add(null, "3 3,.     <str>             community");
         l.add(null, "2 3     interface           match interface");
-        l.add(null, "3 .       <str>             interface");
+        l.add(null, "3 .       <name:ifc>        interface");
         l.add(null, "2 3     nexthop             match next hop");
         l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     peerasn             match peer asn");

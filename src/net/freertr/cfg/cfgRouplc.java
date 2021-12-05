@@ -110,7 +110,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 .     always              match always");
         l.add(null, "2 .     never               match never");
         l.add(null, "2 3     interface           match interface");
-        l.add(null, "3 .       <str>             interface");
+        l.add(null, "3 .       <name:ifc>        interface");
         l.add(null, "2 3     nexthop             match next hop");
         l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     aspath              match as path");

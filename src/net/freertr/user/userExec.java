@@ -1696,7 +1696,7 @@ public class userExec {
         hl.add(null, "3 .        <str:aaa>             aaa list");
         hl.add(null, "2 3      pcep                    get a path from pcep");
         hl.add(null, "3 4        <str>                 server address");
-        hl.add(null, "4 5          <str>               vrf to use");
+        hl.add(null, "4 5          <name:vrf>          vrf to use");
         hl.add(null, "5 6            <str>             interface to use");
         hl.add(null, "6 7              te              traffic engineering");
         hl.add(null, "6 7              sr              segment routing");

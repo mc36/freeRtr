@@ -69,11 +69,11 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         l.add(null, "1  2      port                     specify target port");
         l.add(null, "2  .        <num>                  lines to skip");
         l.add(null, "1  2      sensor                   specify sensor to export");
-        l.add(null, "2  .        <str>                  lines to skip");
+        l.add(null, "2  .        <name:sns>             name of sensor");
         l.add(null, "1  2      interval                 specify interval");
         l.add(null, "2  .        <num>                  time in ms");
         l.add(null, "1  2      proxy                    specify proxy profile to use");
-        l.add(null, "2  .        <str>                  name of profile");
+        l.add(null, "2  .        <name:prx>             name of profile");
         l.add(null, "1  .      start                    start exporting");
         l.add(null, "1  .      stop                     stop exporting");
     }
