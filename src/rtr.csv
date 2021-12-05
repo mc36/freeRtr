@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.12.5-cur, done by cs@nop.
--;-;-;2021-12-05 05:30:11, took 00:07:10, with 100 workers, on 2498 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2021-12-05 06:44:09, took 00:06:16, with 100 workers, on 2502 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -717,6 +717,7 @@ http://sources.nop.hu/cfg/intop1-eth03.tst;intop1-eth03.tst;success;interop1: sp
 http://sources.nop.hu/cfg/intop1-eth04.tst;intop1-eth04.tst;success;interop1: spantree root
 http://sources.nop.hu/cfg/intop1-eth05.tst;intop1-eth05.tst;success;interop1: point2point ethernet encapsulation
 http://sources.nop.hu/cfg/intop1-eth06.tst;intop1-eth06.tst;success;interop1: lacp
+http://sources.nop.hu/cfg/intop1-eth07.tst;intop1-eth07.tst;success;interop1: fragmentation and reassembly
 http://sources.nop.hu/cfg/intop1-ike101.tst;intop1-ike101.tst;success;interop1: ike1 with ipv4
 http://sources.nop.hu/cfg/intop1-ike102.tst;intop1-ike102.tst;success;interop1: ike1 with ipv6
 http://sources.nop.hu/cfg/intop1-ike103.tst;intop1-ike103.tst;success;interop1: ike1 with 3des
@@ -837,6 +838,7 @@ http://sources.nop.hu/cfg/intop2-eth02.tst;intop2-eth02.tst;success;interop2: do
 http://sources.nop.hu/cfg/intop2-eth03.tst;intop2-eth03.tst;success;interop2: dot1ad encapsulation
 http://sources.nop.hu/cfg/intop2-eth04.tst;intop2-eth04.tst;success;interop2: point2point ethernet encapsulation
 http://sources.nop.hu/cfg/intop2-eth05.tst;intop2-eth05.tst;success;interop2: lacp
+http://sources.nop.hu/cfg/intop2-eth06.tst;intop2-eth06.tst;success;interop2: fragmentation and reassembly
 http://sources.nop.hu/cfg/intop2-isis01.tst;intop2-isis01.tst;success;interop2: point2point isis
 http://sources.nop.hu/cfg/intop2-isis02.tst;intop2-isis02.tst;success;interop2: isis dis
 http://sources.nop.hu/cfg/intop2-isis03.tst;intop2-isis03.tst;success;interop2: isis nondis
@@ -899,6 +901,7 @@ http://sources.nop.hu/cfg/intop8-bgp12.tst;intop8-bgp12.tst;success;interop8: bg
 http://sources.nop.hu/cfg/intop8-bgp13.tst;intop8-bgp13.tst;success;interop8: bgp large community
 http://sources.nop.hu/cfg/intop8-bgp14.tst;intop8-bgp14.tst;success;interop8: bgp with php labels
 http://sources.nop.hu/cfg/intop8-eigrp01.tst;intop8-eigrp01.tst;success;interop8: eigrp
+http://sources.nop.hu/cfg/intop8-eth01.tst;intop8-eth01.tst;success;interop8: fragmentation and reassembly
 http://sources.nop.hu/cfg/intop8-isis01.tst;intop8-isis01.tst;success;interop8: point2point isis
 http://sources.nop.hu/cfg/intop8-isis02.tst;intop8-isis02.tst;success;interop8: isis dis
 http://sources.nop.hu/cfg/intop8-isis03.tst;intop8-isis03.tst;success;interop8: isis nondis
@@ -942,6 +945,7 @@ http://sources.nop.hu/cfg/intop9-bgp17.tst;intop9-bgp17.tst;success;interop9: bg
 http://sources.nop.hu/cfg/intop9-bgp18.tst;intop9-bgp18.tst;success;interop9: bgp with php labels
 http://sources.nop.hu/cfg/intop9-eth01.tst;intop9-eth01.tst;success;interop9: ethernet encapsulation
 http://sources.nop.hu/cfg/intop9-eth02.tst;intop9-eth02.tst;success;interop9: dot1q encapsulation
+http://sources.nop.hu/cfg/intop9-eth03.tst;intop9-eth03.tst;success;interop9: fragmentation and reassembly
 http://sources.nop.hu/cfg/intop9-isis01.tst;intop9-isis01.tst;success;interop9: point2point isis
 http://sources.nop.hu/cfg/intop9-isis02.tst;intop9-isis02.tst;success;interop9: isis dis
 http://sources.nop.hu/cfg/intop9-isis03.tst;intop9-isis03.tst;success;interop9: isis nondis

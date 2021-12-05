@@ -12541,3 +12541,8 @@ qc pass: hdlc
 ---------------------------------- 2021-12-03 17:29:16
 qc pass: fragmentation and reassembly
 qc pass: no fragmentation nor reassembly
+---------------------------------- 2021-12-05 06:37:53
+qc pass: interop1: fragmentation and reassembly
+qc pass: interop2: fragmentation and reassembly
+qc pass: interop8: fragmentation and reassembly
+qc pass: interop9: fragmentation and reassembly
