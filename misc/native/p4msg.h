@@ -221,6 +221,14 @@ int doOneCommand(unsigned char* buf) {
         setState(i, o);
         return 0;
     }
+    if (strcmp(arg[0], "mtu") == 0) {
+        i = atoi(arg[1]);
+        o = atoi(arg[2]);
+        if (i < 0) return 0;
+        if (i >= ports) return 0;
+        setMtu(i, o);
+        return 0;
+    }
     if (strcmp(arg[0], "mylabel4") == 0) {
         mpls_ntry.label = atoi(arg[2]);
         mpls_ntry.vrf = atoi(arg[3]);

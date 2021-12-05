@@ -20,6 +20,9 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     pcap_sendpacket(ifacePcap[port], bufD, bufS);
 }
 
+void setMtu(int port, int mtu) {
+}
+
 void setState(int port, int sta) {
 }
 

@@ -35,6 +35,11 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
 }
 
 
+void setMtu(int port, int mtu) {
+    rte_eth_dev_set_mtu(port, mtu);
+}
+
+
 void setState(int port, int sta) {
     if (sta == 1) rte_eth_dev_set_link_up(port);
     else rte_eth_dev_set_link_down(port);
@@ -278,6 +283,7 @@ int main(int argc, char **argv) {
         uint16_t nb_txd = TX_RING_SIZE;
         struct rte_eth_dev_info dev_info;
         struct rte_eth_txconf txconf;
+        struct rte_ether_addr macaddr;
 
         if (!rte_eth_dev_is_valid_port(port)) err("not valid port");
 
@@ -313,8 +319,7 @@ int main(int argc, char **argv) {
         ret = rte_eth_dev_start(port);
         if (ret != 0) err("error starting port");
 
-        struct rte_ether_addr addr;
-        ret = rte_eth_macaddr_get(port, &addr);
+        ret = rte_eth_macaddr_get(port, &macaddr);
         if (ret != 0) err("error getting mac");
 
         ret = rte_eth_promiscuous_enable(port);
