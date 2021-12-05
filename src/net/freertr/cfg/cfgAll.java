@@ -933,6 +933,11 @@ public class cfgAll {
     public static boolean sctpChecksumRx = true;
 
     /**
+     * shame texts
+     */
+    public static servQuote clientShamer;
+
+    /**
      * name of config server
      */
     public static String configServer;
@@ -990,6 +995,7 @@ public class cfgAll {
         "!no enable",
         // client
         "!client redundancy 500 2500 5000",
+        "!no client bullying",
         "!no client proxy",
         "!no client domain-name",
         "!no client name-proxy",
@@ -3287,6 +3293,11 @@ public class cfgAll {
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
+        if (clientShamer == null) {
+            l.add("no client bullying");
+        } else {
+            l.add("client bullying " + clientShamer.srvName);
+        }
         if (clientProxy == null) {
             l.add("no client proxy");
         } else {

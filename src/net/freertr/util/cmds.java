@@ -1,6 +1,7 @@
 package net.freertr.util;
 
 import java.util.List;
+import net.freertr.cfg.cfgAll;
 import net.freertr.pipe.pipeSide;
 
 /**
@@ -187,6 +188,9 @@ public class cmds {
     public void error(String s) {
         if (pipe == null) {
             return;
+        }
+        if (cfgAll.clientShamer != null) {
+            s = cfgAll.clientShamer.getOneLine() + " (" + s + ")";
         }
         pipe.linePut("% " + s);
     }

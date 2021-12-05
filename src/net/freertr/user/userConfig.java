@@ -161,7 +161,7 @@ public class userConfig {
      * authorization list
      */
     public authGeneric authorization;
-
+    
     private pipeSide pipe; // pipe to use
 
     private userReader reader; // reader of the user
@@ -171,13 +171,13 @@ public class userConfig {
     private modes modeV; // mode value
 
     private servGeneric modeDserver;
-
+    
     private cfgGeneric modeDconfig;
-
+    
     private enum modes {
-
+        
         global, server, config
-
+        
     }
 
     /**
@@ -370,7 +370,7 @@ public class userConfig {
         }
         return executeCommand(s);
     }
-
+    
     private void getHelpGlobal(userHelping l) {
         l.add(null, "1  2  hostname                       set name of system");
         l.add(null, "2  .    <name>                       name of system");
@@ -505,6 +505,8 @@ public class userConfig {
         l.add(null, "5  .          <num>                  init time in ms");
         l.add(null, "2  3    proxy                        specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
+        l.add(null, "2  3    bullying                     specify shame quote source");
+        l.add(cfgAll.dmnQuote.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    domain-name                  specify domain name");
         l.add(null, "3  .      <name>                     name of domain");
         l.add(null, "2  3    name-proxy                   specify proxy profile");
@@ -883,12 +885,12 @@ public class userConfig {
         l.add(null, "2  3    tacacs                       configure a tacacs server");
         l.add(cfgAll.dmnTacacs.listServers(), "3  .      <name:loc>                 name of server");
     }
-
+    
     private byte[] cmdGetRem() {
         return bits.byteConcat(cmd.getRemaining().getBytes(),
                 pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
     }
-
+    
     private void doGlobal() {
         String a = cmd.word();
         if (a.equals("hostname")) {
@@ -1586,6 +1588,17 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("bullying")) {
+                servQuote ntry = new servQuote();
+                ntry.srvName = cmd.word();
+                ntry = cfgAll.dmnQuote.find(ntry, false);
+                if (ntry == null) {
+                    cmd.error("no such server");
+                    return;
+                }
+                cfgAll.clientShamer = ntry;
+                return;
+            }
             if (a.equals("redundancy")) {
                 cfgAll.redundancyKeep = bits.str2num(cmd.word());
                 cfgAll.redundancyHold = bits.str2num(cmd.word());
@@ -2486,6 +2499,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("bullying")) {
+                cfgAll.clientShamer = null;
+                return;
+            }
             if (a.equals("whois-server")) {
                 cfgAll.whoisServer = null;
                 return;
@@ -2618,7 +2635,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private int parseUpRxtx() {
         String a = cmd.word();
         if (a.equals("receive")) {
@@ -2635,7 +2652,7 @@ public class userConfig {
         }
         return 3;
     }
-
+    
     private void parseUpMcast(int p, boolean b) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -2673,7 +2690,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private cfgVrf parseUpPbr(int p, tabPbrN ntry) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -2693,7 +2710,7 @@ public class userConfig {
         ntry.matcher.copyCores(fwd.pbrCfg);
         return vrf;
     }
-
+    
     private cfgVrf parseUpNat(int p, tabNatCfgN ntry) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -2728,7 +2745,7 @@ public class userConfig {
         old.fromString(s);
         return null;
     }
-
+    
     private void parseUpFlow(int ver, boolean create) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -2774,7 +2791,7 @@ public class userConfig {
         flw.startTimer();
         fwd.netflow = flw;
     }
-
+    
     private void parseUpPool(int ver, boolean create) {
         String nam = cmd.word();
         addrIPv4 net4 = new addrIPv4();
@@ -2817,7 +2834,7 @@ public class userConfig {
             pool.name = nam;
         }
     }
-
+    
     private void getHelpIpX(userHelping l) {
         l.add(null, "2  3    multicast                          configure multicast parameters");
         l.add(null, "3  4      <name:vrf>                       name of routing table");
@@ -2972,7 +2989,7 @@ public class userConfig {
         l.add(null, "7  8                route-policy           set parameters from route policy");
         l.add(null, "8  7,.                <name:rpl>           name of route policy");
     }
-
+    
     private void doCmdIpx() {
         String a = cmd.word();
         if (a.equals("route")) {
@@ -2989,7 +3006,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdNoIpx() {
         String a = cmd.word();
         if (a.equals("route")) {
@@ -3006,7 +3023,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdIp4() {
         String a = cmd.word();
         if (a.equals("multicast")) {
@@ -3070,7 +3087,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdNoIp4() {
         String a = cmd.word();
         if (a.equals("multicast")) {
@@ -3131,7 +3148,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdIp6() {
         String a = cmd.word();
         if (a.equals("multicast")) {
@@ -3195,7 +3212,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdNoIp6() {
         String a = cmd.word();
         if (a.equals("multicast")) {
@@ -3256,7 +3273,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdNoLogging() {
         String s = cmd.word();
         if (s.equals("milliseconds")) {
@@ -3299,7 +3316,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdLogging() {
         String s = cmd.word();
         if (s.equals("milliseconds")) {
@@ -3359,7 +3376,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private <T extends cryKeyGeneric> void cryptoDoKey(tabGen<cfgKey<T>> lst, T key) {
         String nam = cmd.word();
         String a = cmd.word();
@@ -3436,7 +3453,7 @@ public class userConfig {
             return;
         }
     }
-
+    
     private cryKeyGeneric findKey() {
         cryKeyGeneric k = null;
         String t = cmd.word();
@@ -3463,7 +3480,7 @@ public class userConfig {
         }
         return k;
     }
-
+    
     private void doCmdCrypto() {
         String a = cmd.word();
         if (a.equals("rsakey")) {
@@ -3587,7 +3604,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private void doCmdNoCrypto() {
         String a = cmd.word();
         if (a.equals("ipsec")) {
@@ -3596,7 +3613,7 @@ public class userConfig {
         }
         cmd.badCmd();
     }
-
+    
     private <T extends servGeneric> void daemonMake(T srv, servGenList<T> lst) {
         srv.rename(cmd.word());
         modeDserver = lst.find(srv, true);
@@ -3607,7 +3624,7 @@ public class userConfig {
         modeV = modes.server;
         return;
     }
-
+    
     private <T extends servGeneric> void daemonErase(T srv, servGenList<T> lst) {
         srv.rename(cmd.word());
         if (lst.del(srv) == null) {
@@ -3615,5 +3632,5 @@ public class userConfig {
             return;
         }
     }
-
+    
 }

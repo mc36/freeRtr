@@ -114,6 +114,19 @@ public class servQuote extends servGeneric implements prtServS {
         return false;
     }
 
+    /**
+     * get one line
+     *
+     * @return line
+     */
+    public String getOneLine() {
+        servQuoteLine ntry = lines.get(bits.random(0, lines.size()));
+        if (ntry == null) {
+            return "n/a";
+        }
+        return ntry.line;
+    }
+
 }
 
 class servQuoteLine implements Comparator<servQuoteLine> {
@@ -143,10 +156,7 @@ class servQuoteConn implements Runnable {
     }
 
     public void run() {
-        servQuoteLine ntry = lower.lines.get(bits.random(0, lower.lines.size()));
-        if (ntry != null) {
-            pipe.linePut(ntry.line);
-        }
+        pipe.linePut(lower.getOneLine());
         pipe.setClose();
     }
 
