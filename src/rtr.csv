@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.12.5-cur, done by cs@nop.
--;-;-;2021-12-05 06:51:17, took 00:06:04, with 100 workers, on 2502 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2021-12-05 07:08:39, took 00:06:22, with 100 workers, on 2500 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -125,6 +125,7 @@ http://sources.nop.hu/cfg/conn-etherip14.tst;conn-etherip14.tst;success;etherip 
 http://sources.nop.hu/cfg/conn-forti.tst;conn-forti.tst;success;ppp over forti
 http://sources.nop.hu/cfg/conn-frag01.tst;conn-frag01.tst;success;fragmentation and reassembly
 http://sources.nop.hu/cfg/conn-frag02.tst;conn-frag02.tst;success;no fragmentation nor reassembly
+http://sources.nop.hu/cfg/conn-frag03.tst;conn-frag03.tst;success;precise mtu enforcement
 http://sources.nop.hu/cfg/conn-framerelay01.tst;conn-framerelay01.tst;success;framerelay ansi
 http://sources.nop.hu/cfg/conn-framerelay02.tst;conn-framerelay02.tst;success;framerelay cisco
 http://sources.nop.hu/cfg/conn-framerelay03.tst;conn-framerelay03.tst;success;framerelay q933
@@ -911,8 +912,7 @@ http://sources.nop.hu/cfg/intop8-isis06.tst;intop8-isis06.tst;success;interop8: 
 http://sources.nop.hu/cfg/intop8-isis07.tst;intop8-isis07.tst;success;interop8: integrated isis
 http://sources.nop.hu/cfg/intop8-isis08.tst;intop8-isis08.tst;success;interop8: isis lsp text authentication
 http://sources.nop.hu/cfg/intop8-isis09.tst;intop8-isis09.tst;success;interop8: isis lsp md5 authentication
-http://sources.nop.hu/cfg/intop8-isis10.tst;intop8-isis10.tst;success;interop8: isis text authentication
-http://sources.nop.hu/cfg/intop8-isis11.tst;intop8-isis11.tst;success;interop8: isis md5 authentication
+http://sources.nop.hu/cfg/intop8-isis10.tst;intop8-isis10.tst;success;interop8: isis md5 authentication
 http://sources.nop.hu/cfg/intop8-ldp01.tst;intop8-ldp01.tst;success;interop8: ldp lsp
 http://sources.nop.hu/cfg/intop8-ldp02.tst;intop8-ldp02.tst;success;interop8: ldp php lsp
 http://sources.nop.hu/cfg/intop8-ospf01.tst;intop8-ospf01.tst;success;interop8: point2point ospf
@@ -2043,59 +2043,57 @@ http://sources.nop.hu/cfg/rout-bgp476.tst;rout-bgp476.tst;success;othervpns egre
 http://sources.nop.hu/cfg/rout-bgp477.tst;rout-bgp477.tst;success;labels bgp ingress route filtering with prefixlist
 http://sources.nop.hu/cfg/rout-bgp478.tst;rout-bgp478.tst;success;labels bgp egress route filtering with prefixlist
 http://sources.nop.hu/cfg/rout-bgp479.tst;rout-bgp479.tst;success;labels bgp ingress route filtering with routemap
-http://sources.nop.hu/cfg/rout-bgp480.tst;rout-bgp480.tst;success;labels bgp ingress route filtering with routemap
-http://sources.nop.hu/cfg/rout-bgp481.tst;rout-bgp481.tst;success;labels bgp egress route filtering with routemap
-http://sources.nop.hu/cfg/rout-bgp482.tst;rout-bgp482.tst;success;labels bgp ingress route filtering with prefixlist with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp483.tst;rout-bgp483.tst;success;labels bgp egress route filtering with prefixlist with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp484.tst;rout-bgp484.tst;success;labels bgp ingress route filtering with routemap with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp485.tst;rout-bgp485.tst;success;labels bgp egress route filtering with routemap with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp486.tst;rout-bgp486.tst;success;labels bgp ingress route filtering with routepolicy
-http://sources.nop.hu/cfg/rout-bgp487.tst;rout-bgp487.tst;success;labels bgp egress route filtering with routepolicy
-http://sources.nop.hu/cfg/rout-bgp488.tst;rout-bgp488.tst;success;labels bgp ingress route filtering with routepolicy with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp489.tst;rout-bgp489.tst;success;labels bgp egress route filtering with routepolicy with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp490.tst;rout-bgp490.tst;success;labels bgp default route
-http://sources.nop.hu/cfg/rout-bgp491.tst;rout-bgp491.tst;success;olab bgp ingress route filtering with prefixlist
-http://sources.nop.hu/cfg/rout-bgp492.tst;rout-bgp492.tst;success;olab bgp egress route filtering with prefixlist
-http://sources.nop.hu/cfg/rout-bgp493.tst;rout-bgp493.tst;success;olab bgp ingress route filtering with routemap
-http://sources.nop.hu/cfg/rout-bgp494.tst;rout-bgp494.tst;success;olab bgp ingress route filtering with routemap
-http://sources.nop.hu/cfg/rout-bgp495.tst;rout-bgp495.tst;success;olab bgp egress route filtering with routemap
-http://sources.nop.hu/cfg/rout-bgp496.tst;rout-bgp496.tst;success;olab bgp ingress route filtering with prefixlist with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp497.tst;rout-bgp497.tst;success;olab bgp egress route filtering with prefixlist with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp498.tst;rout-bgp498.tst;success;olab bgp ingress route filtering with routemap with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp499.tst;rout-bgp499.tst;success;olab bgp egress route filtering with routemap with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp500.tst;rout-bgp500.tst;success;olab bgp ingress route filtering with routepolicy
-http://sources.nop.hu/cfg/rout-bgp501.tst;rout-bgp501.tst;success;olab bgp egress route filtering with routepolicy
-http://sources.nop.hu/cfg/rout-bgp502.tst;rout-bgp502.tst;success;olab bgp ingress route filtering with routepolicy with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp503.tst;rout-bgp503.tst;success;olab bgp egress route filtering with routepolicy with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp504.tst;rout-bgp504.tst;success;labels bgp aggregation
-http://sources.nop.hu/cfg/rout-bgp505.tst;rout-bgp505.tst;success;olab bgp aggregation
-http://sources.nop.hu/cfg/rout-bgp506.tst;rout-bgp506.tst;success;ouni bgp aggregation
-http://sources.nop.hu/cfg/rout-bgp507.tst;rout-bgp507.tst;success;bgp vpns aggregation
-http://sources.nop.hu/cfg/rout-bgp508.tst;rout-bgp508.tst;success;bgp othervpns aggregation
-http://sources.nop.hu/cfg/rout-bgp509.tst;rout-bgp509.tst;success;bgp routemap clearing with standard community
-http://sources.nop.hu/cfg/rout-bgp510.tst;rout-bgp510.tst;success;bgp routemap clearing with extended community
-http://sources.nop.hu/cfg/rout-bgp511.tst;rout-bgp511.tst;success;bgp routemap clearing with large community
-http://sources.nop.hu/cfg/rout-bgp512.tst;rout-bgp512.tst;success;bgp routepolicy clearing with standard community
-http://sources.nop.hu/cfg/rout-bgp513.tst;rout-bgp513.tst;success;bgp routepolicy clearing with extended community
-http://sources.nop.hu/cfg/rout-bgp514.tst;rout-bgp514.tst;success;bgp routepolicy clearing with large community
-http://sources.nop.hu/cfg/rout-bgp515.tst;rout-bgp515.tst;success;bgp routemap clearing with aspath
-http://sources.nop.hu/cfg/rout-bgp516.tst;rout-bgp516.tst;success;bgp routepolicy clearing with aspath
-http://sources.nop.hu/cfg/rout-bgp517.tst;rout-bgp517.tst;success;bgp autoroute
-http://sources.nop.hu/cfg/rout-bgp518.tst;rout-bgp518.tst;success;bgp extended open
-http://sources.nop.hu/cfg/rout-bgp519.tst;rout-bgp519.tst;success;bgp extended update
-http://sources.nop.hu/cfg/rout-bgp520.tst;rout-bgp520.tst;success;bgp multiple labels
-http://sources.nop.hu/cfg/rout-bgp521.tst;rout-bgp521.tst;success;bgp graceful restart
-http://sources.nop.hu/cfg/rout-bgp522.tst;rout-bgp522.tst;success;bgp extended nexthop
-http://sources.nop.hu/cfg/rout-bgp523.tst;rout-bgp523.tst;success;bgp leak prevention with customer provider
-http://sources.nop.hu/cfg/rout-bgp524.tst;rout-bgp524.tst;success;bgp leak prevention with route server
-http://sources.nop.hu/cfg/rout-bgp525.tst;rout-bgp525.tst;success;bgp leak prevention with peer
-http://sources.nop.hu/cfg/rout-bgp526.tst;rout-bgp526.tst;success;unicast+nsh over bgp
-http://sources.nop.hu/cfg/rout-bgp527.tst;rout-bgp527.tst;success;unicast+nsh over bgp with soft-reconfig
-http://sources.nop.hu/cfg/rout-bgp528.tst;rout-bgp528.tst;success;unicast+nsh over bgp with additional path
-http://sources.nop.hu/cfg/rout-bgp529.tst;rout-bgp529.tst;success;bgp with polka
-http://sources.nop.hu/cfg/rout-bgp530.tst;rout-bgp530.tst;success;bgp without recursion
-http://sources.nop.hu/cfg/rout-bgp531.tst;rout-bgp531.tst;success;bgp with recursion
-http://sources.nop.hu/cfg/rout-bgp532.tst;rout-bgp532.tst;success;bgp with route flap dampening
+http://sources.nop.hu/cfg/rout-bgp480.tst;rout-bgp480.tst;success;labels bgp egress route filtering with routemap
+http://sources.nop.hu/cfg/rout-bgp481.tst;rout-bgp481.tst;success;labels bgp ingress route filtering with prefixlist with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp482.tst;rout-bgp482.tst;success;labels bgp egress route filtering with prefixlist with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp483.tst;rout-bgp483.tst;success;labels bgp ingress route filtering with routemap with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp484.tst;rout-bgp484.tst;success;labels bgp egress route filtering with routemap with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp485.tst;rout-bgp485.tst;success;labels bgp ingress route filtering with routepolicy
+http://sources.nop.hu/cfg/rout-bgp486.tst;rout-bgp486.tst;success;labels bgp egress route filtering with routepolicy
+http://sources.nop.hu/cfg/rout-bgp487.tst;rout-bgp487.tst;success;labels bgp ingress route filtering with routepolicy with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp488.tst;rout-bgp488.tst;success;labels bgp egress route filtering with routepolicy with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp489.tst;rout-bgp489.tst;success;labels bgp default route
+http://sources.nop.hu/cfg/rout-bgp490.tst;rout-bgp490.tst;success;olab bgp ingress route filtering with prefixlist
+http://sources.nop.hu/cfg/rout-bgp491.tst;rout-bgp491.tst;success;olab bgp egress route filtering with prefixlist
+http://sources.nop.hu/cfg/rout-bgp492.tst;rout-bgp492.tst;success;olab bgp ingress route filtering with routemap
+http://sources.nop.hu/cfg/rout-bgp493.tst;rout-bgp493.tst;success;olab bgp egress route filtering with routemap
+http://sources.nop.hu/cfg/rout-bgp494.tst;rout-bgp494.tst;success;olab bgp ingress route filtering with prefixlist with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp495.tst;rout-bgp495.tst;success;olab bgp egress route filtering with prefixlist with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp496.tst;rout-bgp496.tst;success;olab bgp ingress route filtering with routemap with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp497.tst;rout-bgp497.tst;success;olab bgp egress route filtering with routemap with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp498.tst;rout-bgp498.tst;success;olab bgp ingress route filtering with routepolicy
+http://sources.nop.hu/cfg/rout-bgp499.tst;rout-bgp499.tst;success;olab bgp egress route filtering with routepolicy
+http://sources.nop.hu/cfg/rout-bgp500.tst;rout-bgp500.tst;success;olab bgp ingress route filtering with routepolicy with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp501.tst;rout-bgp501.tst;success;olab bgp egress route filtering with routepolicy with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp502.tst;rout-bgp502.tst;success;labels bgp aggregation
+http://sources.nop.hu/cfg/rout-bgp503.tst;rout-bgp503.tst;success;olab bgp aggregation
+http://sources.nop.hu/cfg/rout-bgp504.tst;rout-bgp504.tst;success;ouni bgp aggregation
+http://sources.nop.hu/cfg/rout-bgp505.tst;rout-bgp505.tst;success;bgp vpns aggregation
+http://sources.nop.hu/cfg/rout-bgp506.tst;rout-bgp506.tst;success;bgp othervpns aggregation
+http://sources.nop.hu/cfg/rout-bgp507.tst;rout-bgp507.tst;success;bgp routemap clearing with standard community
+http://sources.nop.hu/cfg/rout-bgp508.tst;rout-bgp508.tst;success;bgp routemap clearing with extended community
+http://sources.nop.hu/cfg/rout-bgp509.tst;rout-bgp509.tst;success;bgp routemap clearing with large community
+http://sources.nop.hu/cfg/rout-bgp510.tst;rout-bgp510.tst;success;bgp routepolicy clearing with standard community
+http://sources.nop.hu/cfg/rout-bgp511.tst;rout-bgp511.tst;success;bgp routepolicy clearing with extended community
+http://sources.nop.hu/cfg/rout-bgp512.tst;rout-bgp512.tst;success;bgp routepolicy clearing with large community
+http://sources.nop.hu/cfg/rout-bgp513.tst;rout-bgp513.tst;success;bgp routemap clearing with aspath
+http://sources.nop.hu/cfg/rout-bgp514.tst;rout-bgp514.tst;success;bgp routepolicy clearing with aspath
+http://sources.nop.hu/cfg/rout-bgp515.tst;rout-bgp515.tst;success;bgp autoroute
+http://sources.nop.hu/cfg/rout-bgp516.tst;rout-bgp516.tst;success;bgp extended open
+http://sources.nop.hu/cfg/rout-bgp517.tst;rout-bgp517.tst;success;bgp extended update
+http://sources.nop.hu/cfg/rout-bgp518.tst;rout-bgp518.tst;success;bgp multiple labels
+http://sources.nop.hu/cfg/rout-bgp519.tst;rout-bgp519.tst;success;bgp graceful restart
+http://sources.nop.hu/cfg/rout-bgp520.tst;rout-bgp520.tst;success;bgp extended nexthop
+http://sources.nop.hu/cfg/rout-bgp521.tst;rout-bgp521.tst;success;bgp leak prevention with customer provider
+http://sources.nop.hu/cfg/rout-bgp522.tst;rout-bgp522.tst;success;bgp leak prevention with route server
+http://sources.nop.hu/cfg/rout-bgp523.tst;rout-bgp523.tst;success;bgp leak prevention with peer
+http://sources.nop.hu/cfg/rout-bgp524.tst;rout-bgp524.tst;success;unicast+nsh over bgp
+http://sources.nop.hu/cfg/rout-bgp525.tst;rout-bgp525.tst;success;unicast+nsh over bgp with soft-reconfig
+http://sources.nop.hu/cfg/rout-bgp526.tst;rout-bgp526.tst;success;unicast+nsh over bgp with additional path
+http://sources.nop.hu/cfg/rout-bgp527.tst;rout-bgp527.tst;success;bgp with polka
+http://sources.nop.hu/cfg/rout-bgp528.tst;rout-bgp528.tst;success;bgp without recursion
+http://sources.nop.hu/cfg/rout-bgp529.tst;rout-bgp529.tst;success;bgp with recursion
+http://sources.nop.hu/cfg/rout-bgp530.tst;rout-bgp530.tst;success;bgp with route flap dampening
 http://sources.nop.hu/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.nop.hu/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.nop.hu/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

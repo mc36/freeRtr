@@ -121,6 +121,7 @@ qc pass: etherip server
 qc pass: ppp over forti
 qc pass: fragmentation and reassembly
 qc pass: no fragmentation nor reassembly
+qc pass: precise mtu enforcement
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
@@ -907,7 +908,6 @@ qc pass: interop8: isis text authentication
 qc pass: interop8: integrated isis
 qc pass: interop8: isis lsp text authentication
 qc pass: interop8: isis lsp md5 authentication
-qc pass: interop8: isis text authentication
 qc pass: interop8: isis md5 authentication
 qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
@@ -2039,7 +2039,6 @@ qc pass: othervpns egress route filtering with routepolicy with soft-reconfig
 qc pass: labels bgp ingress route filtering with prefixlist
 qc pass: labels bgp egress route filtering with prefixlist
 qc pass: labels bgp ingress route filtering with routemap
-qc pass: labels bgp ingress route filtering with routemap
 qc pass: labels bgp egress route filtering with routemap
 qc pass: labels bgp ingress route filtering with prefixlist with soft-reconfig
 qc pass: labels bgp egress route filtering with prefixlist with soft-reconfig
@@ -2052,7 +2051,6 @@ qc pass: labels bgp egress route filtering with routepolicy with soft-reconfig
 qc pass: labels bgp default route
 qc pass: olab bgp ingress route filtering with prefixlist
 qc pass: olab bgp egress route filtering with prefixlist
-qc pass: olab bgp ingress route filtering with routemap
 qc pass: olab bgp ingress route filtering with routemap
 qc pass: olab bgp egress route filtering with routemap
 qc pass: olab bgp ingress route filtering with prefixlist with soft-reconfig

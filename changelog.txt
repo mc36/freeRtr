@@ -12546,3 +12546,8 @@ qc pass: interop1: fragmentation and reassembly
 qc pass: interop2: fragmentation and reassembly
 qc pass: interop8: fragmentation and reassembly
 qc pass: interop9: fragmentation and reassembly
+---------------------------------- 2021-12-05 07:02:17
+no qc pass: olab bgp ingress route filtering with routemap
+no qc pass: labels bgp ingress route filtering with routemap
+no qc pass: interop8: isis text authentication
+qc pass: precise mtu enforcement

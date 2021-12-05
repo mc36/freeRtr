@@ -1,4 +1,4 @@
-description exact mtu enforcement
+description precise mtu enforcement
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
