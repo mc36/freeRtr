@@ -1,4 +1,4 @@
-description bgp routemap clearing with extended community
+description bgp routepolicy clearing with standard community
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -26,8 +26,9 @@ int bvi1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
-route-map rm1
- clear extcomm
+route-policy rm1
+ clear stdcomm
+ pass
  exit
 router bgp4 1
  vrf v1
@@ -37,11 +38,11 @@ router bgp4 1
  neigh 1.1.1.2 remote-as 1
  neigh 1.1.1.2 route-reflect
  neigh 1.1.1.2 send-comm both
- neigh 1.1.1.2 route-map-in rm1
+ neigh 1.1.1.2 route-policy-in rm1
  neigh 1.1.1.3 remote-as 1
  neigh 1.1.1.3 route-reflect
  neigh 1.1.1.3 send-comm both
- neigh 1.1.1.3 route-map-in rm1
+ neigh 1.1.1.3 route-policy-in rm1
  red conn
  exit
 router bgp6 1
@@ -52,11 +53,11 @@ router bgp6 1
  neigh 1234:1::2 remote-as 1
  neigh 1234:1::2 route-reflect
  neigh 1234:1::2 send-comm both
- neigh 1234:1::2 route-map-in rm1
+ neigh 1234:1::2 route-policy-in rm1
  neigh 1234:1::3 remote-as 1
  neigh 1234:1::3 route-reflect
  neigh 1234:1::3 send-comm both
- neigh 1234:1::3 route-map-in rm1
+ neigh 1234:1::3 route-policy-in rm1
  red conn
  exit
 !
@@ -78,7 +79,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-map rm1
- set extcomm 1:1234:4321
+ set stdcomm 1234:4321
  exit
 router bgp4 1
  vrf v1
@@ -118,7 +119,7 @@ int eth1
  exit
 route-map rm1
  sequence 10 act deny
-  match extcomm 1:1234:4321
+  match stdcomm 1234:4321
  sequence 20 act permit
  exit
 router bgp4 1

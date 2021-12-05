@@ -1,4 +1,4 @@
-description bgp routepolicy clearing with extended community
+description bgp routemap clearing with aspath
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -26,9 +26,8 @@ int bvi1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
-route-policy rm1
- clear extcomm
- pass
+route-map rm1
+ clear exact 1234
  exit
 router bgp4 1
  vrf v1
@@ -37,12 +36,10 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 1
  neigh 1.1.1.2 route-reflect
- neigh 1.1.1.2 send-comm both
- neigh 1.1.1.2 route-policy-in rm1
+ neigh 1.1.1.2 route-map-in rm1
  neigh 1.1.1.3 remote-as 1
  neigh 1.1.1.3 route-reflect
- neigh 1.1.1.3 send-comm both
- neigh 1.1.1.3 route-policy-in rm1
+ neigh 1.1.1.3 route-map-in rm1
  red conn
  exit
 router bgp6 1
@@ -52,12 +49,10 @@ router bgp6 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 1
  neigh 1234:1::2 route-reflect
- neigh 1234:1::2 send-comm both
- neigh 1234:1::2 route-policy-in rm1
+ neigh 1234:1::2 route-map-in rm1
  neigh 1234:1::3 remote-as 1
  neigh 1234:1::3 route-reflect
- neigh 1234:1::3 send-comm both
- neigh 1234:1::3 route-policy-in rm1
+ neigh 1234:1::3 route-map-in rm1
  red conn
  exit
 !
@@ -79,7 +74,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-map rm1
- set extcomm 1:1234:4321
+ set aspath 1234
  exit
 router bgp4 1
  vrf v1
@@ -87,7 +82,6 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 send-comm both
  red conn route-map rm1
  exit
 router bgp6 1
@@ -96,7 +90,6 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 send-comm both
  red conn route-map rm1
  exit
 !
@@ -119,7 +112,7 @@ int eth1
  exit
 route-map rm1
  sequence 10 act deny
-  match extcomm 1:1234:4321
+  match aspath 1234
  sequence 20 act permit
  exit
 router bgp4 1
@@ -128,7 +121,6 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.3
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 send-comm both
  neigh 1.1.1.1 route-map-in rm1
  red conn
  exit
@@ -138,7 +130,6 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.3
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 send-comm both
  neigh 1234:1::1 route-map-in rm1
  red conn
  exit

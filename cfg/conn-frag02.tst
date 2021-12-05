@@ -39,13 +39,3 @@ r1 tping 0 15 1.1.1.2 /vrf v1 /siz 2222
 r2 tping 0 15 1.1.1.1 /vrf v1 /siz 2222
 r1 tping 0 15 1234::2 /vrf v1 /siz 2222
 r2 tping 0 15 1234::1 /vrf v1 /siz 2222
-
-r1 tping 100 15 1.1.1.2 /vrf v1 /siz 1500
-r2 tping 100 15 1.1.1.1 /vrf v1 /siz 1500
-r1 tping 100 15 1234::2 /vrf v1 /siz 1500
-r2 tping 100 15 1234::1 /vrf v1 /siz 1500
-
-r1 tping 0 15 1.1.1.2 /vrf v1 /siz 1501
-r2 tping 0 15 1.1.1.1 /vrf v1 /siz 1501
-r1 tping 0 15 1234::2 /vrf v1 /siz 1501
-r2 tping 0 15 1234::1 /vrf v1 /siz 1501

@@ -1,131 +1,63 @@
-description bgp othervpns aggregation
+description bgp routemap clearing with extended community
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
+int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
- label-mode per-prefix
  exit
-vrf def v2
- rd 1:2
- rt-both 1:2
- exit
-vrf def v3
- rd 1:3
- rt-both 1:3
- exit
-vrf def v4
- rd 1:4
- rt-both 1:4
+bridge 1
+ mac-learn
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.255
  ipv6 addr 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo21
- vrf for v2
- ipv4 addr 9.9.2.1 255.255.255.255
- ipv6 addr 9992::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo22
- vrf for v2
- ipv4 addr 9.9.2.11 255.255.255.255
- ipv6 addr 9992::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo23
- vrf for v2
- ipv4 addr 9.9.2.111 255.255.255.255
- ipv6 addr 9992::111 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo31
- vrf for v3
- ipv4 addr 9.9.3.1 255.255.255.255
- ipv6 addr 9993::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo32
- vrf for v3
- ipv4 addr 9.9.3.11 255.255.255.255
- ipv6 addr 9993::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo33
- vrf for v3
- ipv4 addr 9.9.3.111 255.255.255.255
- ipv6 addr 9993::111 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo41
- vrf for v4
- ipv4 addr 9.9.4.1 255.255.255.255
- ipv6 addr 9994::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo42
- vrf for v4
- ipv4 addr 9.9.4.11 255.255.255.255
- ipv6 addr 9994::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo43
- vrf for v4
- ipv4 addr 9.9.4.111 255.255.255.255
- ipv6 addr 9994::111 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 int eth1
+ bridge-gr 1
+ exit
+int eth2
+ bridge-gr 1
+ exit
+int bvi1
  vrf for v1
- ipv4 addr 1.1.1.1 255.255.255.252
+ ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
  exit
-ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
-ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
-route-map p4
- sequence 10 act perm
-  match network 9.9.2.0/24
- sequence 20 act perm
-  match network 9.9.3.0/24
- sequence 30 act perm
-  match network 9.9.4.0/24
- exit
-route-map p6
- sequence 10 act perm
-  match network 9992::/32
- sequence 20 act perm
-  match network 9993::/32
- sequence 30 act perm
-  match network 9994::/32
+route-map rm1
+ clear extcomm
  exit
 router bgp4 1
  vrf v1
- address ovpnuni
+ address uni
  local-as 1
  router-id 4.4.4.1
- neigh 2.2.2.2 remote-as 2
- neigh 2.2.2.2 update lo0
- neigh 2.2.2.2 send-comm both
- neigh 2.2.2.2 ovpn-route-map-in p6
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
+ neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 route-reflect
+ neigh 1.1.1.2 send-comm both
+ neigh 1.1.1.2 route-map-in rm1
+ neigh 1.1.1.3 remote-as 1
+ neigh 1.1.1.3 route-reflect
+ neigh 1.1.1.3 send-comm both
+ neigh 1.1.1.3 route-map-in rm1
+ red conn
  exit
 router bgp6 1
  vrf v1
- address ovpnuni
+ address uni
  local-as 1
  router-id 6.6.6.1
- neigh 4321::2 remote-as 2
- neigh 4321::2 update lo0
- neigh 4321::2 send-comm both
- neigh 4321::2 ovpn-route-map-in p4
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
+ neigh 1234:1::2 remote-as 1
+ neigh 1234:1::2 route-reflect
+ neigh 1234:1::2 send-comm both
+ neigh 1234:1::2 route-map-in rm1
+ neigh 1234:1::3 remote-as 1
+ neigh 1234:1::3 route-reflect
+ neigh 1234:1::3 send-comm both
+ neigh 1234:1::3 route-map-in rm1
+ red conn
  exit
 !
 
@@ -134,169 +66,95 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
- label-mode per-prefix
- exit
-vrf def v2
- rd 1:2
- rt-both 1:2
- exit
-vrf def v3
- rd 1:3
- rt-both 1:3
- exit
-vrf def v4
- rd 1:4
- rt-both 1:4
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo21
- vrf for v2
- ipv4 addr 9.9.2.2 255.255.255.255
- ipv6 addr 9992::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo22
- vrf for v2
- ipv4 addr 9.9.2.22 255.255.255.255
- ipv6 addr 9992::22 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo23
- vrf for v2
- ipv4 addr 9.9.2.222 255.255.255.255
- ipv6 addr 9992::222 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo31
- vrf for v3
- ipv4 addr 9.9.3.2 255.255.255.255
- ipv6 addr 9993::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo32
- vrf for v3
- ipv4 addr 9.9.3.22 255.255.255.255
- ipv6 addr 9993::22 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo33
- vrf for v3
- ipv4 addr 9.9.3.222 255.255.255.255
- ipv6 addr 9993::222 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo41
- vrf for v4
- ipv4 addr 9.9.4.2 255.255.255.255
- ipv6 addr 9994::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo42
- vrf for v4
- ipv4 addr 9.9.4.22 255.255.255.255
- ipv6 addr 9994::22 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
-int lo43
- vrf for v4
- ipv4 addr 9.9.4.222 255.255.255.255
- ipv6 addr 9994::222 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.252
+ ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
  exit
-ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
-ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+route-map rm1
+ set extcomm 1:1234:4321
+ exit
 router bgp4 1
  vrf v1
- address ovpnuni
- local-as 2
+ address uni
+ local-as 1
  router-id 4.4.4.2
- neigh 2.2.2.1 remote-as 1
- neigh 2.2.2.1 update lo0
- neigh 2.2.2.1 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 aggregate 9992::/32
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 aggregate 9993::/32
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 aggregate 9994::/32
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 send-comm both
+ red conn route-map rm1
  exit
 router bgp6 1
  vrf v1
- address ovpnuni
- local-as 2
+ address uni
+ local-as 1
  router-id 6.6.6.2
- neigh 4321::1 remote-as 1
- neigh 4321::1 update lo0
- neigh 4321::1 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 aggregate 9.9.2.0/24
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 aggregate 9.9.3.0/24
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 aggregate 9.9.4.0/24
+ neigh 1234:1::1 remote-as 1
+ neigh 1234:1::1 send-comm both
+ red conn route-map rm1
+ exit
+!
+
+addrouter r3
+int eth1 eth 0000.0000.3333 $2b$ $2a$
+!
+vrf def v1
+ rd 1:1
+ exit
+int lo0
+ vrf for v1
+ ipv4 addr 2.2.2.3 255.255.255.255
+ ipv6 addr 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 1.1.1.3 255.255.255.0
+ ipv6 addr 1234:1::3 ffff:ffff::
+ exit
+route-map rm1
+ sequence 10 act deny
+  match extcomm 1:1234:4321
+ sequence 20 act permit
+ exit
+router bgp4 1
+ vrf v1
+ address uni
+ local-as 1
+ router-id 4.4.4.3
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 route-map-in rm1
+ red conn
+ exit
+router bgp6 1
+ vrf v1
+ address uni
+ local-as 1
+ router-id 6.6.6.3
+ neigh 1234:1::1 remote-as 1
+ neigh 1234:1::1 send-comm both
+ neigh 1234:1::1 route-map-in rm1
+ red conn
  exit
 !
 
 
+r1 tping 100 60 2.2.2.2 /vrf v1
+r1 tping 100 60 4321::2 /vrf v1
+r1 tping 100 60 2.2.2.3 /vrf v1
+r1 tping 100 60 4321::3 /vrf v1
 
+r2 tping 100 60 2.2.2.1 /vrf v1
+r2 tping 100 60 4321::1 /vrf v1
+r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 100 60 4321::3 /vrf v1
 
-
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
-
-r2 tping 100 60 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 60 4321::1 /vrf v1 /int lo0
-
-r1 tping 100 60 9.9.2.2 /vrf v2
-r2 tping 100 60 9.9.2.1 /vrf v2
-r1 tping 100 60 9992::2 /vrf v2
-r2 tping 100 60 9992::1 /vrf v2
-
-r1 tping 100 60 9.9.3.2 /vrf v3
-r2 tping 100 60 9.9.3.1 /vrf v3
-r1 tping 100 60 9993::2 /vrf v3
-r2 tping 100 60 9993::1 /vrf v3
-
-r1 tping 100 60 9.9.4.2 /vrf v4
-r2 tping 100 60 9.9.4.1 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-
-r1 tping 100 60 9.9.2.22 /vrf v2
-r2 tping 100 60 9.9.2.11 /vrf v2
-r1 tping 100 60 9992::22 /vrf v2
-r2 tping 100 60 9992::11 /vrf v2
-
-r1 tping 100 60 9.9.3.22 /vrf v3
-r2 tping 100 60 9.9.3.11 /vrf v3
-r1 tping 100 60 9993::22 /vrf v3
-r2 tping 100 60 9993::11 /vrf v3
-
-r1 tping 100 60 9.9.4.22 /vrf v4
-r2 tping 100 60 9.9.4.11 /vrf v4
-r1 tping 100 60 9994::22 /vrf v4
-r2 tping 100 60 9994::11 /vrf v4
-
-r1 tping 100 60 9.9.2.222 /vrf v2
-r2 tping 100 60 9.9.2.111 /vrf v2
-r1 tping 100 60 9992::222 /vrf v2
-r2 tping 100 60 9992::111 /vrf v2
-
-r1 tping 100 60 9.9.3.222 /vrf v3
-r2 tping 100 60 9.9.3.111 /vrf v3
-r1 tping 100 60 9993::222 /vrf v3
-r2 tping 100 60 9993::111 /vrf v3
-
-r1 tping 100 60 9.9.4.222 /vrf v4
-r2 tping 100 60 9.9.4.111 /vrf v4
-r1 tping 100 60 9994::222 /vrf v4
-r2 tping 100 60 9994::111 /vrf v4
+r3 tping 100 60 2.2.2.1 /vrf v1
+r3 tping 100 60 4321::1 /vrf v1
+r3 tping 100 60 2.2.2.2 /vrf v1
+r3 tping 100 60 4321::2 /vrf v1

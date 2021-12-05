@@ -1,4 +1,4 @@
-description olab bgp ingress route filtering with routepolicy with soft-reconfig
+description labels bgp aggregation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -27,41 +27,35 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls enable
  exit
-route-policy p4
- if network 2.2.2.12/32
-  drop
- else
-  pass
- enif
+route-map p4
+ sequence 10 act deny
+  match network 2.2.2.12/32
+ sequence 20 act perm
+  match network 0.0.0.0/0 le 32
  exit
-route-policy p6
- if network 4321::12/128
-  drop
- else
-  pass
- enif
+route-map p6
+ sequence 10 act deny
+  match network 4321::12/128
+ sequence 20 act perm
+  match network ::/0 le 128
  exit
 router bgp4 1
  vrf v1
- address olab
+ address lab
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 soft-reconfig
- neigh 1.1.1.2 other-route-policy-in p6
- afi-other ena
- afi-other red conn
+ neigh 1.1.1.2 route-map-in p4
+ red conn
  exit
 router bgp6 1
  vrf v1
- address olab
+ address lab
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 soft-reconfig
- neigh 1234:1::2 other-route-policy-in p4
- afi-other ena
- afi-other red conn
+ neigh 1234:1::2 route-map-in p6
+ red conn
  exit
 !
 
@@ -94,31 +88,29 @@ int eth1
  exit
 router bgp4 1
  vrf v1
- address olab
+ address lab
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 soft-reconfig
- afi-other ena
- afi-other red conn
+ aggregate 2.2.2.0/24
+ red conn
  exit
 router bgp6 1
  vrf v1
- address olab
+ address lab
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 soft-reconfig
- afi-other ena
- afi-other red conn
+ aggregate 4321::/32
+ red conn
  exit
 !
 
 
 r1 tping 100 60 2.2.2.2 /vrf v1
 r1 tping 100 60 4321::2 /vrf v1
-r1 tping 0 60 2.2.2.12 /vrf v1
-r1 tping 0 60 4321::12 /vrf v1
+r1 tping 100 60 2.2.2.12 /vrf v1
+r1 tping 100 60 4321::12 /vrf v1
 r1 tping 100 60 2.2.2.22 /vrf v1
 r1 tping 100 60 4321::22 /vrf v1
 

@@ -1,4 +1,4 @@
-description bgp without recursion
+description bgp with route flap dampening
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -21,7 +21,7 @@ router bgp4 1
  address uni
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 remote-as 2
  red conn
  exit
 router bgp6 1
@@ -29,7 +29,7 @@ router bgp6 1
  address uni
  local-as 1
  router-id 6.6.6.1
- neigh 1234:1::2 remote-as 1
+ neigh 1234:1::2 remote-as 2
  red conn
  exit
 !
@@ -59,23 +59,19 @@ int eth2
 router bgp4 1
  vrf v1
  address uni
- local-as 1
+ local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 route-reflect
- neigh 1.1.1.6 remote-as 1
- neigh 1.1.1.6 route-reflect
+ neigh 1.1.1.6 remote-as 3
  red conn
  exit
 router bgp6 1
  vrf v1
  address uni
- local-as 1
+ local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 route-reflect
- neigh 1234:2::2 remote-as 1
- neigh 1234:2::2 route-reflect
+ neigh 1234:2::2 remote-as 3
  red conn
  exit
 !
@@ -105,23 +101,23 @@ int eth2
 router bgp4 1
  vrf v1
  address uni
- local-as 1
+ local-as 3
  router-id 4.4.4.3
- neigh 1.1.1.5 remote-as 1
- neigh 1.1.1.5 route-reflect
- neigh 1.1.1.10 remote-as 1
- neigh 1.1.1.10 route-reflect
+ neigh 1.1.1.5 remote-as 2
+ neigh 1.1.1.5 soft-reconfig
+ neigh 1.1.1.5 dampen 500 1000 500 10000 3000 700 900000
+ neigh 1.1.1.10 remote-as 4
  red conn
  exit
 router bgp6 1
  vrf v1
  address uni
- local-as 1
+ local-as 3
  router-id 6.6.6.3
- neigh 1234:2::1 remote-as 1
- neigh 1234:2::1 route-reflect
- neigh 1234:3::2 remote-as 1
- neigh 1234:3::2 route-reflect
+ neigh 1234:2::1 remote-as 2
+ neigh 1234:2::1 soft-reconfig
+ neigh 1234:2::1 dampen 500 1000 500 10000 3000 700 900000
+ neigh 1234:3::2 remote-as 4
  red conn
  exit
 !
@@ -145,34 +141,70 @@ int eth1
 router bgp4 1
  vrf v1
  address uni
- local-as 1
+ local-as 4
  router-id 4.4.4.4
- neigh 1.1.1.9 remote-as 1
+ neigh 1.1.1.9 remote-as 3
  red conn
  exit
 router bgp6 1
  vrf v1
  address uni
- local-as 1
+ local-as 4
  router-id 6.6.6.4
- neigh 1234:3::1 remote-as 1
+ neigh 1234:3::1 remote-as 3
  red conn
  exit
 !
 
 r1 tping 100 60 2.2.2.2 /vrf v1
 r1 tping 100 60 4321::2 /vrf v1
-r1 tping 0 60 2.2.2.3 /vrf v1
-r1 tping 0 60 4321::3 /vrf v1
-r1 tping 0 60 2.2.2.4 /vrf v1
-r1 tping 0 60 4321::4 /vrf v1
+r1 tping 100 60 2.2.2.3 /vrf v1
+r1 tping 100 60 4321::3 /vrf v1
+r1 tping 100 60 2.2.2.4 /vrf v1
+r1 tping 100 60 4321::4 /vrf v1
 
 r2 tping 100 60 2.2.2.1 /vrf v1
 r2 tping 100 60 4321::1 /vrf v1
 r2 tping 100 60 2.2.2.3 /vrf v1
 r2 tping 100 60 4321::3 /vrf v1
-r2 tping 0 60 2.2.2.4 /vrf v1
-r2 tping 0 60 4321::4 /vrf v1
+r2 tping 100 60 2.2.2.4 /vrf v1
+r2 tping 100 60 4321::4 /vrf v1
+
+r3 tping 100 60 2.2.2.1 /vrf v1
+r3 tping 100 60 4321::1 /vrf v1
+r3 tping 100 60 2.2.2.2 /vrf v1
+r3 tping 100 60 4321::2 /vrf v1
+r3 tping 100 60 2.2.2.4 /vrf v1
+r3 tping 100 60 4321::4 /vrf v1
+
+r4 tping 100 60 2.2.2.1 /vrf v1
+r4 tping 100 60 4321::1 /vrf v1
+r4 tping 100 60 2.2.2.2 /vrf v1
+r4 tping 100 60 4321::2 /vrf v1
+r4 tping 100 60 2.2.2.3 /vrf v1
+r4 tping 100 60 4321::3 /vrf v1
+
+r1 send conf t
+r1 send router bgp4 1
+r1 send no red conn
+r1 send exit
+r1 send router bgp6 1
+r1 send no red conn
+r1 send end
+
+r1 tping 100 60 2.2.2.2 /vrf v1
+r1 tping 100 60 4321::2 /vrf v1
+r1 tping 100 60 2.2.2.3 /vrf v1
+r1 tping 100 60 4321::3 /vrf v1
+r1 tping 100 60 2.2.2.4 /vrf v1
+r1 tping 100 60 4321::4 /vrf v1
+
+r2 tping 0 60 2.2.2.1 /vrf v1
+r2 tping 0 60 4321::1 /vrf v1
+r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 100 60 4321::3 /vrf v1
+r2 tping 100 60 2.2.2.4 /vrf v1
+r2 tping 100 60 4321::4 /vrf v1
 
 r3 tping 0 60 2.2.2.1 /vrf v1
 r3 tping 0 60 4321::1 /vrf v1
@@ -183,7 +215,115 @@ r3 tping 100 60 4321::4 /vrf v1
 
 r4 tping 0 60 2.2.2.1 /vrf v1
 r4 tping 0 60 4321::1 /vrf v1
-r4 tping 0 60 2.2.2.2 /vrf v1
-r4 tping 0 60 4321::2 /vrf v1
+r4 tping 100 60 2.2.2.2 /vrf v1
+r4 tping 100 60 4321::2 /vrf v1
+r4 tping 100 60 2.2.2.3 /vrf v1
+r4 tping 100 60 4321::3 /vrf v1
+
+r1 send conf t
+r1 send router bgp4 1
+r1 send red conn
+r1 send exit
+r1 send router bgp6 1
+r1 send red conn
+r1 send end
+
+r1 tping 100 60 2.2.2.2 /vrf v1
+r1 tping 100 60 4321::2 /vrf v1
+r1 tping 100 60 2.2.2.3 /vrf v1
+r1 tping 100 60 4321::3 /vrf v1
+r1 tping 100 60 2.2.2.4 /vrf v1
+r1 tping 100 60 4321::4 /vrf v1
+
+r2 tping 100 60 2.2.2.1 /vrf v1
+r2 tping 100 60 4321::1 /vrf v1
+r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 100 60 4321::3 /vrf v1
+r2 tping 100 60 2.2.2.4 /vrf v1
+r2 tping 100 60 4321::4 /vrf v1
+
+r3 tping 100 60 2.2.2.1 /vrf v1
+r3 tping 100 60 4321::1 /vrf v1
+r3 tping 100 60 2.2.2.2 /vrf v1
+r3 tping 100 60 4321::2 /vrf v1
+r3 tping 100 60 2.2.2.4 /vrf v1
+r3 tping 100 60 4321::4 /vrf v1
+
+r4 tping 100 60 2.2.2.1 /vrf v1
+r4 tping 100 60 4321::1 /vrf v1
+r4 tping 100 60 2.2.2.2 /vrf v1
+r4 tping 100 60 4321::2 /vrf v1
+r4 tping 100 60 2.2.2.3 /vrf v1
+r4 tping 100 60 4321::3 /vrf v1
+
+r1 send conf t
+r1 send router bgp4 1
+r1 send no red conn
+r1 send exit
+r1 send router bgp6 1
+r1 send no red conn
+r1 send end
+
+r1 tping 100 60 2.2.2.2 /vrf v1
+r1 tping 100 60 4321::2 /vrf v1
+r1 tping 100 60 2.2.2.3 /vrf v1
+r1 tping 100 60 4321::3 /vrf v1
+r1 tping 100 60 2.2.2.4 /vrf v1
+r1 tping 100 60 4321::4 /vrf v1
+
+r2 tping 0 60 2.2.2.1 /vrf v1
+r2 tping 0 60 4321::1 /vrf v1
+r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 100 60 4321::3 /vrf v1
+r2 tping 100 60 2.2.2.4 /vrf v1
+r2 tping 100 60 4321::4 /vrf v1
+
+r3 tping 0 60 2.2.2.1 /vrf v1
+r3 tping 0 60 4321::1 /vrf v1
+r3 tping 100 60 2.2.2.2 /vrf v1
+r3 tping 100 60 4321::2 /vrf v1
+r3 tping 100 60 2.2.2.4 /vrf v1
+r3 tping 100 60 4321::4 /vrf v1
+
+r4 tping 0 60 2.2.2.1 /vrf v1
+r4 tping 0 60 4321::1 /vrf v1
+r4 tping 100 60 2.2.2.2 /vrf v1
+r4 tping 100 60 4321::2 /vrf v1
+r4 tping 100 60 2.2.2.3 /vrf v1
+r4 tping 100 60 4321::3 /vrf v1
+
+r1 send conf t
+r1 send router bgp4 1
+r1 send red conn
+r1 send exit
+r1 send router bgp6 1
+r1 send red conn
+r1 send end
+
+r1 tping 100 60 2.2.2.2 /vrf v1
+r1 tping 100 60 4321::2 /vrf v1
+r1 tping 100 60 2.2.2.3 /vrf v1
+r1 tping 100 60 4321::3 /vrf v1
+r1 tping 100 60 2.2.2.4 /vrf v1
+r1 tping 100 60 4321::4 /vrf v1
+
+r2 tping 100 60 2.2.2.1 /vrf v1
+r2 tping 100 60 4321::1 /vrf v1
+r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 100 60 4321::3 /vrf v1
+r2 tping 100 60 2.2.2.4 /vrf v1
+r2 tping 100 60 4321::4 /vrf v1
+
+r3 tping 0 60 2.2.2.1 /vrf v1
+r3 tping 0 60 4321::1 /vrf v1
+r3 tping 100 60 2.2.2.2 /vrf v1
+r3 tping 100 60 4321::2 /vrf v1
+r3 tping 100 60 2.2.2.4 /vrf v1
+r3 tping 100 60 4321::4 /vrf v1
+
+r4 tping 0 60 2.2.2.1 /vrf v1
+r4 tping 0 60 4321::1 /vrf v1
+r4 tping 100 60 2.2.2.2 /vrf v1
+r4 tping 100 60 4321::2 /vrf v1
 r4 tping 100 60 2.2.2.3 /vrf v1
 r4 tping 100 60 4321::3 /vrf v1

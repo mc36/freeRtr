@@ -1,4 +1,4 @@
-description olab bgp egress route filtering with routemap with soft-reconfig
+description olab bgp egress route filtering with routepolicy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -27,17 +27,19 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls enable
  exit
-route-map p4
- sequence 10 act deny
-  match network 2.2.2.11/32
- sequence 20 act perm
-  match network 0.0.0.0/0 le 32
+route-policy p4
+ if network 2.2.2.11/32
+  drop
+ else
+  pass
+ enif
  exit
-route-map p6
- sequence 10 act deny
-  match network 4321::11/128
- sequence 20 act perm
-  match network ::/0 le 128
+route-policy p6
+ if network 4321::11/128
+  drop
+ else
+  pass
+ enif
  exit
 router bgp4 1
  vrf v1
@@ -45,8 +47,7 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 soft-reconfig
- neigh 1.1.1.2 other-route-map-out p6
+ neigh 1.1.1.2 other-route-policy-out p6
  afi-other ena
  afi-other red conn
  exit
@@ -56,8 +57,7 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 soft-reconfig
- neigh 1234:1::2 other-route-map-out p4
+ neigh 1234:1::2 other-route-policy-out p4
  afi-other ena
  afi-other red conn
  exit
@@ -96,7 +96,6 @@ router bgp4 1
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 soft-reconfig
  afi-other ena
  afi-other red conn
  exit
@@ -106,7 +105,6 @@ router bgp6 1
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 soft-reconfig
  afi-other ena
  afi-other red conn
  exit

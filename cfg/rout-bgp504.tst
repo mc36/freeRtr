@@ -1,4 +1,4 @@
-description labels bgp aggregation
+description ouni bgp aggregation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -25,7 +25,6 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
- mpls enable
  exit
 route-map p4
  sequence 10 act deny
@@ -41,21 +40,25 @@ route-map p6
  exit
 router bgp4 1
  vrf v1
- address lab
+ address ouni
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 route-map-in p4
- red conn
+ neigh 1.1.1.2 route-map-in p6
+ afi-other ena
+ no afi-other vpn
+ afi-other red conn
  exit
 router bgp6 1
  vrf v1
- address lab
+ address ouni
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 route-map-in p6
- red conn
+ neigh 1234:1::2 route-map-in p4
+ afi-other ena
+ no afi-other vpn
+ afi-other red conn
  exit
 !
 
@@ -84,25 +87,28 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff::
- mpls enable
  exit
 router bgp4 1
  vrf v1
- address lab
+ address ouni
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  aggregate 2.2.2.0/24
- red conn
+ afi-other ena
+ no afi-other vpn
+ afi-other red conn
  exit
 router bgp6 1
  vrf v1
- address lab
+ address ouni
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  aggregate 4321::/32
- red conn
+ afi-other ena
+ no afi-other vpn
+ afi-other red conn
  exit
 !
 

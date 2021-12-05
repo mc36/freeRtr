@@ -1,4 +1,4 @@
-description bgp leak prevention with customer provider
+description bgp leak prevention with peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -66,7 +66,7 @@ router bgp4 1
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 role cust
  neigh 1.1.1.6 remote-as 3
- neigh 1.1.1.6 role prov
+ neigh 1.1.1.6 role peer
  red conn
  exit
 router bgp6 1
@@ -77,7 +77,7 @@ router bgp6 1
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 role cust
  neigh 1234:2::2 remote-as 3
- neigh 1234:2::2 role prov
+ neigh 1234:2::2 role peer
  red conn
  exit
 !
@@ -110,9 +110,9 @@ router bgp4 1
  local-as 3
  router-id 4.4.4.3
  neigh 1.1.1.5 remote-as 2
- neigh 1.1.1.5 role cust
+ neigh 1.1.1.5 role peer
  neigh 1.1.1.10 remote-as 4
- neigh 1.1.1.10 role cust
+ neigh 1.1.1.10 role peer
  red conn
  exit
 router bgp6 1
@@ -121,9 +121,9 @@ router bgp6 1
  local-as 3
  router-id 6.6.6.3
  neigh 1234:2::1 remote-as 2
- neigh 1234:2::1 role cust
+ neigh 1234:2::1 role peer
  neigh 1234:3::2 remote-as 4
- neigh 1234:3::2 role cust
+ neigh 1234:3::2 role peer
  red conn
  exit
 !
@@ -150,7 +150,7 @@ router bgp4 1
  local-as 4
  router-id 4.4.4.4
  neigh 1.1.1.9 remote-as 3
- neigh 1.1.1.9 role prov
+ neigh 1.1.1.9 role peer
  red conn
  exit
 router bgp6 1
@@ -159,7 +159,7 @@ router bgp6 1
  local-as 4
  router-id 6.6.6.4
  neigh 1234:3::1 remote-as 3
- neigh 1234:3::1 role prov
+ neigh 1234:3::1 role peer
  red conn
  exit
 !
@@ -168,15 +168,15 @@ r1 tping 100 60 2.2.2.2 /vrf v1
 r1 tping 100 60 4321::2 /vrf v1
 r1 tping 100 60 2.2.2.3 /vrf v1
 r1 tping 100 60 4321::3 /vrf v1
-r1 tping 100 60 2.2.2.4 /vrf v1
-r1 tping 100 60 4321::4 /vrf v1
+r1 tping 0 60 2.2.2.4 /vrf v1
+r1 tping 0 60 4321::4 /vrf v1
 
 r2 tping 100 60 2.2.2.1 /vrf v1
 r2 tping 100 60 4321::1 /vrf v1
 r2 tping 100 60 2.2.2.3 /vrf v1
 r2 tping 100 60 4321::3 /vrf v1
-r2 tping 100 60 2.2.2.4 /vrf v1
-r2 tping 100 60 4321::4 /vrf v1
+r2 tping 0 60 2.2.2.4 /vrf v1
+r2 tping 0 60 4321::4 /vrf v1
 
 r3 tping 100 60 2.2.2.1 /vrf v1
 r3 tping 100 60 4321::1 /vrf v1
@@ -185,9 +185,9 @@ r3 tping 100 60 4321::2 /vrf v1
 r3 tping 100 60 2.2.2.4 /vrf v1
 r3 tping 100 60 4321::4 /vrf v1
 
-r4 tping 100 60 2.2.2.1 /vrf v1
-r4 tping 100 60 4321::1 /vrf v1
-r4 tping 100 60 2.2.2.2 /vrf v1
-r4 tping 100 60 4321::2 /vrf v1
+r4 tping 0 60 2.2.2.1 /vrf v1
+r4 tping 0 60 4321::1 /vrf v1
+r4 tping 0 60 2.2.2.2 /vrf v1
+r4 tping 0 60 4321::2 /vrf v1
 r4 tping 100 60 2.2.2.3 /vrf v1
 r4 tping 100 60 4321::3 /vrf v1

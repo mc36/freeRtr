@@ -1,4 +1,4 @@
-description olab bgp ingress route filtering with routemap
+description olab bgp ingress route filtering with prefixlist with soft-reconfig
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -27,17 +27,13 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls enable
  exit
-route-map p4
- sequence 10 act deny
-  match network 2.2.2.12/32
- sequence 20 act perm
-  match network 0.0.0.0/0 le 32
+prefix-list p4
+ sequence 10 deny 2.2.2.12/32
+ sequence 20 permit 0.0.0.0/0 le 32
  exit
-route-map p6
- sequence 10 act deny
-  match network 4321::12/128
- sequence 20 act perm
-  match network ::/0 le 128
+prefix-list p6
+ sequence 10 deny 4321::12/128
+ sequence 20 permit ::/0 le 128
  exit
 router bgp4 1
  vrf v1
@@ -45,7 +41,8 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 other-route-map-in p6
+ neigh 1.1.1.2 soft-reconfig
+ neigh 1.1.1.2 other-prefix-list-in p6
  afi-other ena
  afi-other red conn
  exit
@@ -55,7 +52,8 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 other-route-map-in p4
+ neigh 1234:1::2 soft-reconfig
+ neigh 1234:1::2 other-prefix-list-in p4
  afi-other ena
  afi-other red conn
  exit
@@ -94,6 +92,7 @@ router bgp4 1
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 soft-reconfig
  afi-other ena
  afi-other red conn
  exit
@@ -103,6 +102,7 @@ router bgp6 1
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
+ neigh 1234:1::1 soft-reconfig
  afi-other ena
  afi-other red conn
  exit
