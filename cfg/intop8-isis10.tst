@@ -1,4 +1,4 @@
-description interop8: isis text authentication
+description interop8: isis md5 authentication
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -22,12 +22,14 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  router isis4 1 ena
  router isis4 1 password tester
+ router isis4 1 authen-type md5
  exit
 int eth2
  vrf for v1
  ipv6 addr fe80::1 ffff::
  router isis6 1 ena
  router isis6 1 password tester
+ router isis6 1 authen-type md5
  exit
 int lo0
  vrf for v1
@@ -56,13 +58,13 @@ interface ens3
  ip address 1.1.1.2/24
  ip router isis 1
  isis network point-to-point
- isis password clear tester
+ isis password md5 tester
  no shutdown
  exit
 interface ens4
  ipv6 router isis 1
  isis network point-to-point
- isis password clear tester
+ isis password md5 tester
  no shutdown
  exit
 !
