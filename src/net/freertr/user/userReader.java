@@ -46,6 +46,10 @@ public class userReader implements Comparator<String> {
 
     private mode filterF; // filter final mode
 
+    private int columnN; // column number
+
+    private String columnS; // column separator
+
     private int columnB; // beginning of column
 
     private int columnE; // ending of column
@@ -290,6 +294,8 @@ public class userReader implements Comparator<String> {
 
     private void findColumn(List<String> lst) {
         String s = lst.get(0);
+        columnN = 0;
+        columnS = " ";
         columnB = s.indexOf(filterS);
         columnE = columnB + filterS.length();
         if (columnB < 0) {
@@ -301,6 +307,11 @@ public class userReader implements Comparator<String> {
                 columnE--;
                 break;
             }
+        }
+        if (columnB > 0) {
+            columnS = s.substring(columnB - 1, columnB);
+            String a = s.substring(0, columnB);
+            columnN = a.length() - a.replaceAll(columnS, "").length();
         }
         if (columnE < s.length()) {
             return;
@@ -505,12 +516,28 @@ public class userReader implements Comparator<String> {
                     return bits.str2lst("no such column");
                 }
                 res = new ArrayList<String>();
-                for (int i = 0; i < lst.size(); i++) {
-                    a = lst.get(i);
-                    if (a.length() > columnB) {
-                        a = a.substring(0, columnB);
+                if (columnS.equals(" ")) {
+                    for (int i = 0; i < lst.size(); i++) {
+                        a = lst.get(i);
+                        if (a.length() > columnB) {
+                            a = a.substring(0, columnB);
+                        }
+                        res.add(a);
                     }
-                    res.add(a);
+                } else {
+                    for (int i = 0; i < lst.size(); i++) {
+                        a = lst.get(i);
+                        String b = "";
+                        for (int o = 0; o < columnN; o++) {
+                            int p = a.indexOf(columnS);
+                            if (p < 0) {
+                                break;
+                            }
+                            b += a.substring(0, p + 1);
+                            a = a.substring(p + 1, a.length());
+                        }
+                        res.add(b);
+                    }
                 }
                 return doSecond(res);
             case uniq:
