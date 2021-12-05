@@ -1146,7 +1146,7 @@ public class userHelping {
             }
             s = s.substring(i, s.length());
             if (oneLine) {
-                return bits.str2lst("ambigous, try " + s + "?");
+                return getBarkBack("ambigous command, try " + s + "?");
             }
             List<String> lst = formatHelp(d.level);
             lst = startsWith(lst, "  " + s);
@@ -1154,7 +1154,7 @@ public class userHelping {
         }
         if (d.level >= -1) {
             if (oneLine) {
-                return bits.str2lst("incomplete, try " + cmd + " ?");
+                return getBarkBack("incomplete command, try " + cmd + " ?");
             }
             if (d.level == -1) {
                 return formatHelp(d.level);
@@ -1164,7 +1164,7 @@ public class userHelping {
             }
             userHelpingData r = lines.get(d.level);
             if (!r.variable) {
-                return bits.str2lst("type " + r.command + " to " + r.description);
+                return getBarkBack("type " + r.command + " to " + r.description);
             }
             s = s.trim();
             int i = s.lastIndexOf(" ") + 1;
@@ -1176,11 +1176,18 @@ public class userHelping {
             List<String> lst = formatHelp(d.level);
             lst = startsWith(lst, "  " + s);
             if (lst.size() <= 1) {
-                return bits.str2lst("type " + r.command + " to " + r.description);
+                return getBarkBack("type " + r.command + " to " + r.description);
             }
             return lst;
         }
-        return bits.str2lst("invalid, try " + cmd + " ?");
+        return getBarkBack("invalid command, try " + cmd + " ?");
+    }
+
+    private List<String> getBarkBack(String s) {
+        if (cfgAll.clientShamer == null) {
+            return bits.str2lst(s);
+        }
+        return bits.str2lst(cfgAll.clientShamer.getOneLine() + " (" + s + ")");
     }
 
     /**
