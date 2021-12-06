@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.12.6-cur, done by cs@nop.
--;-;-;2021-12-06 05:15:23, took 00:06:23, with 100 workers, on 2500 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2021-12-06 09:30:58, took 00:05:55, with 100 workers, on 2502 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1286,6 +1286,8 @@ http://sources.nop.hu/cfg/p4lang-crypt65.tst;p4lang-crypt65.tst;success;p4lang: 
 http://sources.nop.hu/cfg/p4lang-crypt66.tst;p4lang-crypt66.tst;success;p4lang: wireguard with egress access list
 http://sources.nop.hu/cfg/p4lang-crypt67.tst;p4lang-crypt67.tst;success;p4lang: multicast routing over macsec
 http://sources.nop.hu/cfg/p4lang-crypt68.tst;p4lang-crypt68.tst;success;p4lang: multicast routing over vlan macsec
+http://sources.nop.hu/cfg/p4lang-crypt69.tst;p4lang-crypt69.tst;success;p4lang: replay window with openvpn
+http://sources.nop.hu/cfg/p4lang-crypt70.tst;p4lang-crypt70.tst;success;p4lang: replay window with wireguard
 http://sources.nop.hu/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.nop.hu/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.nop.hu/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

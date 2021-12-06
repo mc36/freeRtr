@@ -12553,3 +12553,6 @@ no qc pass: interop8: isis text authentication
 qc pass: precise mtu enforcement
 ---------------------------------- 2021-12-05 08:55:38
 no todo: shame texts in cmd.err
+---------------------------------- 2021-12-06 09:25:02
+qc pass: p4lang: replay window with openvpn
+qc pass: p4lang: replay window with wireguard
