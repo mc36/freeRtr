@@ -418,7 +418,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                     return false;
                 }
             }
-            if (ntry.speed == -42) {
+            if (ntry.speed == -1) {
                 switch (ifc.type) {
                     case hairpin:
                     case bundle:
