@@ -32,28 +32,6 @@ void send2cpu(unsigned char *bufD, int bufS, int port) {
 
 
 
-void processCpuPack(unsigned char* bufD, int bufS) {
-    struct vlan_entry vlan_ntry;
-    struct vlan_entry *vlan_res;
-    int index;
-    int prt;
-    packRx[cpuport]++;
-    byteRx[cpuport] += bufS;
-    prt = get16msb(bufD, preBuff);
-    send2port(&bufD[preBuff + 2], bufS - 2, prt);
-    if (get16msb(bufD, preBuff + 14) != ETHERTYPE_VLAN) return;
-    vlan_ntry.port = prt;
-    vlan_ntry.vlan = get16msb(bufD, preBuff + 16) & 0xfff;
-    index = table_find(&vlanin_table, &vlan_ntry);
-    if (index < 0) return;
-    vlan_res = table_get(&vlanin_table, index);
-    index = table_find(&vlanout_table, vlan_res);
-    if (index < 0) return;
-    vlan_res = table_get(&vlanout_table, index);
-    vlan_res->pack++;
-    vlan_res->byte += bufS;
-}
-
 
 #ifdef basicLoop
 
@@ -71,6 +49,29 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     index = table_find(&vlanin_table, &vlan_ntry);
     if (index < 0) return;
     vlan_res = table_get(&vlanin_table, index);
+    vlan_res->pack++;
+    vlan_res->byte += bufS;
+}
+
+
+void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+    struct vlan_entry vlan_ntry;
+    struct vlan_entry *vlan_res;
+    int index;
+    int prt;
+    packRx[cpuport]++;
+    byteRx[cpuport] += bufS;
+    prt = get16msb(bufD, preBuff);
+    send2port(&bufD[preBuff + 2], bufS - 2, prt);
+    if (get16msb(bufD, preBuff + 14) != ETHERTYPE_VLAN) return;
+    vlan_ntry.port = prt;
+    vlan_ntry.vlan = get16msb(bufD, preBuff + 16) & 0xfff;
+    index = table_find(&vlanin_table, &vlan_ntry);
+    if (index < 0) return;
+    vlan_res = table_get(&vlanin_table, index);
+    index = table_find(&vlanout_table, vlan_res);
+    if (index < 0) return;
+    vlan_res = table_get(&vlanout_table, index);
     vlan_res->pack++;
     vlan_res->byte += bufS;
 }
@@ -1935,5 +1936,20 @@ cpu:
 }
 
 
+void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+    packRx[cpuport]++;
+    byteRx[cpuport] += bufS;
+    int prt = get16msb(bufD, preBuff + 0);
+    int hash = get32msb(bufD, preBuff + 2) ^ get32msb(bufD, preBuff + 6) ^ get32msb(bufD, preBuff + 10);
+    int ethtyp = get16msb(bufD, preBuff + 14);
+    int bufP = preBuff + 14;
+    memmove(&bufC[0], &bufD[preBuff + 2], 12);
+    prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufC, &ethtyp);
+    if (prt < 0) return;
+    processDataPacket(bufA, bufB, bufC, bufD, bufS, cpuport, prt, encrCtx, hashCtx);
+}
+
+
 #endif
+
 

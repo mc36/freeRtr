@@ -203,7 +203,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                     memmove(&bufD[preBuff], bufP, bufS);
                 }
                 rte_pktmbuf_free(bufs[i]);
-                if (port == cpuport) processCpuPack(&bufD[0], bufS);
+                if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
                 else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
             }
             pkts += num;

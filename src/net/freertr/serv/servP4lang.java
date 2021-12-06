@@ -414,10 +414,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                     }
                 }
                 if (ntry.master == null) {
-                    cmd.error("carrier not exported");
+                    cmd.error("main interface not exported");
                     return false;
                 }
             }
+            need |= ntry.speed == -42;
             if (need) {
                 ntry.setUpper(ifc.ethtyp);
             }
