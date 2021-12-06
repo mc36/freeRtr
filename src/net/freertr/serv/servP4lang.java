@@ -418,7 +418,17 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                     return false;
                 }
             }
-            need |= ntry.speed == -42;
+            if (ntry.speed == -42) {
+                switch (ifc.type) {
+                    case hairpin:
+                    case bundle:
+                    case sdn:
+                        need = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
             if (need) {
                 ntry.setUpper(ifc.ethtyp);
             }
