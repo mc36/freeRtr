@@ -558,6 +558,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     struct macsec_entry macsec_ntry;
     struct macsec_entry *macsec_res;
     size_t sizt;
+    if (encrCtx == NULL) return 0;
     macsec_ntry.port = prt;
     int index = table_find(&macsec_table, &macsec_ntry);
     if (index < 0) return 0;
@@ -1944,7 +1945,7 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
     int ethtyp = get16msb(bufD, preBuff + 14);
     int bufP = preBuff + 14;
     memmove(&bufC[0], &bufD[preBuff + 2], 12);
-    prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufC, &ethtyp);
+    prt = send2subif(prt, NULL, NULL, hash, bufD, &bufP, &bufS, bufC, &ethtyp);
     if (prt < 0) return;
     processDataPacket(bufA, bufB, bufC, bufD, bufS, cpuport, prt, encrCtx, hashCtx);
 }
