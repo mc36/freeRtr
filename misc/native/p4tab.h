@@ -17,6 +17,22 @@ long int byteTx[maxPorts];
 long int packTx[maxPorts];
 long int byteDr[maxPorts];
 long int packDr[maxPorts];
+long int byteMpls[maxPorts];
+long int packMpls[maxPorts];
+long int byteVlan[maxPorts];
+long int packVlan[maxPorts];
+long int byteIpv4[maxPorts];
+long int packIpv4[maxPorts];
+long int byteIpv6[maxPorts];
+long int packIpv6[maxPorts];
+long int bytePppoe[maxPorts];
+long int packPppoe[maxPorts];
+long int byteBridge[maxPorts];
+long int packBridge[maxPorts];
+long int bytePolka[maxPorts];
+long int packPolka[maxPorts];
+long int byteNsh[maxPorts];
+long int packNsh[maxPorts];
 
 
 

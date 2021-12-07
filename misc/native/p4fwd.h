@@ -37,45 +37,22 @@ void send2cpu(unsigned char *bufD, int bufS, int port) {
 
 
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
-    struct vlan_entry vlan_ntry;
-    struct vlan_entry *vlan_res;
-    int index;
     packRx[port]++;
     byteRx[port] += bufS;
+    packTx[cpuport]++;
+    byteTx[cpuport] += bufS;
     send2cpu(bufD, bufS, port);
-    if (get16msb(bufD, preBuff + 12) != ETHERTYPE_VLAN) return;
-    vlan_ntry.port = port;
-    vlan_ntry.vlan = get16msb(bufD, preBuff + 14) & 0xfff;
-    index = table_find(&vlanin_table, &vlan_ntry);
-    if (index < 0) return;
-    vlan_res = table_get(&vlanin_table, index);
-    vlan_res->pack++;
-    vlan_res->byte += bufS;
 }
 
 
 void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
-    struct vlan_entry vlan_ntry;
-    struct vlan_entry *vlan_res;
-    int index;
-    int prt;
     packRx[cpuport]++;
     byteRx[cpuport] += bufS;
-    prt = get16msb(bufD, preBuff);
+    int prt = get16msb(bufD, preBuff);
+    packTx[prt]++;
+    byteTx[prt] += bufS;
     send2port(&bufD[preBuff + 2], bufS - 2, prt);
-    if (get16msb(bufD, preBuff + 14) != ETHERTYPE_VLAN) return;
-    vlan_ntry.port = prt;
-    vlan_ntry.vlan = get16msb(bufD, preBuff + 16) & 0xfff;
-    index = table_find(&vlanin_table, &vlan_ntry);
-    if (index < 0) return;
-    vlan_res = table_get(&vlanin_table, index);
-    index = table_find(&vlanout_table, vlan_res);
-    if (index < 0) return;
-    vlan_res = table_get(&vlanout_table, index);
-    vlan_res->pack++;
-    vlan_res->byte += bufS;
 }
-
 
 
 #else
@@ -1131,6 +1108,9 @@ etyped_rx:
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
         checkLayer2;
+        if (index < 0) doDropper;
+        packMpls[port]++;
+        byteMpls[port] += bufS;
 mpls_rx:
         label = get32msb(bufD, bufP);
         ttl = (label & 0xff) - 1;
@@ -1219,6 +1199,8 @@ neigh_tx:
         return;
     case ETHERTYPE_VLAN: // dot1q
         checkLayer2;
+        packVlan[port]++;
+        byteVlan[port] += bufS;
         vlan_ntry.port = prt;
         vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
@@ -1232,6 +1214,8 @@ neigh_tx:
     case ETHERTYPE_IPV4: // ipv4
         checkLayer2;
         if (index < 0) doDropper;
+        packIpv4[port]++;
+        byteIpv4[port] += bufS;
         route4_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
         if ((bufD[bufP + 0] & 0xf0) != 0x40) doDropper;
@@ -1440,6 +1424,8 @@ ipv4_tx:
     case ETHERTYPE_IPV6: // ipv6
         checkLayer2;
         if (index < 0) doDropper;
+        packIpv6[port]++;
+        byteIpv6[port] += bufS;
         route6_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
         if ((bufD[bufP + 0] & 0xf0) != 0x60) doDropper;
@@ -1701,6 +1687,8 @@ ipv6_tx:
         goto punt;
     case ETHERTYPE_PPPOE_DATA: // pppoe
         checkLayer2;
+        packPppoe[port]++;
+        bytePppoe[port] += bufS;
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         index = table_find(&pppoe_table, &pppoe_ntry);
@@ -1721,6 +1709,8 @@ ipv6_tx:
         prt2 = prt;
         goto ether_rx;
     case ETHERTYPE_ROUTEDMAC: // routed bridge
+        packBridge[port]++;
+        byteBridge[port] += bufS;
         portvrf_ntry.port = prt;
         index = table_find(&portvrf_table, &portvrf_ntry);
         if (index < 0) doDropper;
@@ -1733,6 +1723,9 @@ ipv6_tx:
         goto bridgevpls_rx;
     case ETHERTYPE_POLKA: // polka
         checkLayer2;
+        if (index < 0) doDropper;
+        packPolka[port]++;
+        bytePolka[port] += bufS;
         ttl = get16msb(bufD, bufP + 0);
         if ((ttl & 0xff00) != 0) doDropper;
         if ((ttl & 0xff) <= 1) goto punt;
@@ -1765,6 +1758,9 @@ ipv6_tx:
         goto ethtyp_tx;
     case ETHERTYPE_NSH: // nsh
         checkLayer2;
+        if (index < 0) doDropper;
+        packNsh[port]++;
+        byteNsh[port] += bufS;
         ttl = get16msb(bufD, bufP + 0);
         if ((ttl & 0xe000) != 0) doDropper;
         if (((ttl >> 6) & 0x3f) <= 1) goto punt;

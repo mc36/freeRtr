@@ -2264,6 +2264,7 @@ qc pass: lsrp no authentication
 qc pass: lsrp database authentication
 qc pass: lsrp with strict bfd
 qc pass: lsrp with polka
+qc pass: lsrp dynamic metric
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -2411,6 +2412,7 @@ qc pass: pvrp peer metric
 qc pass: pvrp ecmp connection
 qc pass: pvrp no authentication
 qc pass: pvrp with strict bfd
+qc pass: pvrp dynamic metric
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

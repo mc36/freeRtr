@@ -1979,6 +1979,16 @@ void doStatRound(FILE *commands, int round) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
+    for (int i = 0; i < ports; i++) {
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
+    }
     for (int i=0; i<polkaIdx_table.size; i++) {
         struct polkaIdx_entry *ntry = table_get(&polkaIdx_table, i);
         fprintf(commands, "polka_cnt %i %i %li %li\r\n", ntry->vrf, ntry->index, ntry->pack, ntry->byte);
@@ -2258,3 +2268,4 @@ int doConsoleCommand(unsigned char*buf) {
     }
     return 0;
 }
+

@@ -12556,3 +12556,6 @@ no todo: shame texts in cmd.err
 ---------------------------------- 2021-12-06 09:25:02
 qc pass: p4lang: replay window with openvpn
 qc pass: p4lang: replay window with wireguard
+---------------------------------- 2021-12-07 07:42:31
+qc pass: lsrp dynamic metric
+qc pass: pvrp dynamic metric
