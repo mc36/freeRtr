@@ -37,7 +37,7 @@ public class tabAverage {
      *
      * @param val value
      */
-    public void addValue(int val) {
+    public synchronized void addValue(int val) {
         vals.add(val);
         for (; vals.size() > max;) {
             vals.remove(0);
@@ -49,7 +49,7 @@ public class tabAverage {
      *
      * @return result
      */
-    public int getAverage() {
+    public synchronized int getAverage() {
         if (vals.size() < 1) {
             return Integer.MAX_VALUE / 2;
         }
@@ -66,7 +66,7 @@ public class tabAverage {
      *
      * @return result
      */
-    public int getMinimum() {
+    public synchronized int getMinimum() {
         int res = Integer.MAX_VALUE;
         for (int i = 0; i < vals.size(); i++) {
             int cur = vals.get(i);
@@ -82,7 +82,7 @@ public class tabAverage {
      *
      * @return result
      */
-    public int getMaximum() {
+    public synchronized int getMaximum() {
         int res = Integer.MIN_VALUE;
         for (int i = 0; i < vals.size(); i++) {
             int cur = vals.get(i);
