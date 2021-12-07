@@ -30,7 +30,7 @@ public class tabAverage {
         for (int i = 0; i < vals.size(); i++) {
             a += " " + vals.get(i);
         }
-        return a.trim();
+        return a;
     }
 
     /**

@@ -84,7 +84,8 @@ public class shrtPthFrst<Ta extends addrType> {
     public final syncInt logSize;
 
     /**
-     * log topology changes
+     * log topology changes: 0x1=(dis)appear, 0x2=connect, 0x4=forward,
+     * 0x8=(un)reachable, 0x10=metric, 0x20=prefix
      */
     public final syncInt topoLog;
 
@@ -140,6 +141,75 @@ public class shrtPthFrst<Ta extends addrType> {
         for (; log.size() > max;) {
             log.remove(0);
         }
+    }
+
+    /**
+     * get log mode
+     *
+     * @return mode
+     */
+    public String getTopoLogMode() {
+        String a = "";
+        int mod = topoLog.get();
+        if ((mod & 0x1) == 0) {
+            a += "noappear";
+        }
+        if ((mod & 0x2) == 0) {
+            a += "noconnect";
+        }
+        if ((mod & 0x4) == 0) {
+            a += "noforward";
+        }
+        if ((mod & 0x8) == 0) {
+            a += "noreachable";
+        }
+        if ((mod & 0x10) == 0) {
+            a += "nometric";
+        }
+        if ((mod & 0x20) == 0) {
+            a += "noprefix";
+        }
+        return a;
+    }
+
+    /**
+     * get log mode
+     *
+     * @param cmd commands
+     */
+    public void setTopoLogMode(cmds cmd) {
+        int mod = 0xffff;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("noappear")) {
+                mod &= ~0x1;
+                continue;
+            }
+            if (a.equals("noconnect")) {
+                mod &= ~0x2;
+                continue;
+            }
+            if (a.equals("noforward")) {
+                mod &= ~0x4;
+                continue;
+            }
+            if (a.equals("noreachable")) {
+                mod &= ~0x8;
+                continue;
+            }
+            if (a.equals("nometric")) {
+                mod &= ~0x10;
+                continue;
+            }
+            if (a.equals("noprefix")) {
+                mod &= ~0x20;
+                continue;
+            }
+        }
+        topoLog.set(mod);
     }
 
     /**
@@ -625,6 +695,7 @@ public class shrtPthFrst<Ta extends addrType> {
         if (prev == null) {
             return res;
         }
+        int mode = topoLog.get();
         for (int o = 0; o < prev.nodes.size(); o++) {
             shrtPthFrstNode<Ta> cn = prev.nodes.get(o);
             if (cn == null) {
@@ -632,7 +703,9 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             shrtPthFrstNode<Ta> on = nodes.find(cn);
             if (on == null) {
-                logger.warn("old node " + cn + " disappeared");
+                if ((mode & 0x1) != 0) {
+                    logger.warn("old node " + cn + " disappeared");
+                }
                 continue;
             }
         }
@@ -643,7 +716,9 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             shrtPthFrstNode<Ta> on = prev.nodes.find(cn);
             if (on == null) {
-                logger.warn("new node " + cn + " appeared");
+                if ((mode & 0x1) != 0) {
+                    logger.warn("new node " + cn + " appeared");
+                }
                 continue;
             }
             for (int i = 0; i < cn.conn.size(); i++) {
@@ -653,17 +728,25 @@ public class shrtPthFrst<Ta extends addrType> {
                 }
                 shrtPthFrstConn<Ta> oc = on.findConn(cc.target, cc.metric);
                 if (oc == null) {
-                    logger.warn("node " + cn + " established connection to " + cc.target);
+                    if ((mode & 0x2) != 0) {
+                        logger.warn("node " + cn + " established connection to " + cc.target);
+                    }
                     continue;
                 }
                 if (cc.metric != oc.metric) {
-                    logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " to " + cc.target);
+                    if ((mode & 0x10) != 0) {
+                        logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " to " + cc.target);
+                    }
                 }
                 if (cc.stub && !oc.stub) {
-                    logger.warn("node " + cn + " unwilling to forward to " + cc.target);
+                    if ((mode & 0x4) != 0) {
+                        logger.warn("node " + cn + " unwilling to forward to " + cc.target);
+                    }
                 }
                 if (!cc.stub && oc.stub) {
-                    logger.warn("node " + cn + " willing to forward to " + cc.target);
+                    if ((mode & 0x4) != 0) {
+                        logger.warn("node " + cn + " willing to forward to " + cc.target);
+                    }
                 }
             }
             for (int i = 0; i < on.conn.size(); i++) {
@@ -673,20 +756,28 @@ public class shrtPthFrst<Ta extends addrType> {
                 }
                 shrtPthFrstConn<Ta> cc = cn.findConn(oc.target, oc.metric);
                 if (cc == null) {
-                    logger.warn("node " + on + " lost connection to " + oc.target);
+                    if ((mode & 0x2) != 0) {
+                        logger.warn("node " + on + " lost connection to " + oc.target);
+                    }
                     continue;
                 }
             }
             if (on.visited && !cn.visited) {
-                logger.warn("node " + cn + " became unreachable");
+                if ((mode & 0x8) != 0) {
+                    logger.warn("node " + cn + " became unreachable");
+                }
             }
             if (!on.visited && cn.visited) {
-                logger.warn("node " + cn + " became reachable");
+                if ((mode & 0x8) != 0) {
+                    logger.warn("node " + cn + " became reachable");
+                }
             }
-            diffPrefix(cn, cn.prfAdd, on.prfAdd);
-            diffPrefix(cn, cn.prfFix, on.prfFix);
-            diffPrefix(cn, cn.othAdd, on.othAdd);
-            diffPrefix(cn, cn.othFix, on.othFix);
+            if ((mode & 0x20) != 0) {
+                diffPrefix(cn, cn.prfAdd, on.prfAdd);
+                diffPrefix(cn, cn.prfFix, on.prfFix);
+                diffPrefix(cn, cn.othAdd, on.othAdd);
+                diffPrefix(cn, cn.othFix, on.othFix);
+            }
         }
         prev = null;
         return res;

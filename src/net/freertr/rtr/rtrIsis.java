@@ -1090,7 +1090,13 @@ public class rtrIsis extends ipRtr {
         l.add(null, "1 2   level2                      change level2 parameters");
         l.add(null, "1 2   both                        change l1 and l2 parameters");
         l.add(null, "2 .     spf-bidir                 spf bidir check");
-        l.add(null, "2 .     spf-topolog               spf topology logging");
+        l.add(null, "2 3,.   spf-topolog               spf topology logging");
+        l.add(null, "3 3,.     noappear                exclude node (dis)appearance");
+        l.add(null, "3 3,.     noconnect               exclude link (dis)connection");
+        l.add(null, "3 3,.     noforward               exclude forward (un)willingness");
+        l.add(null, "3 3,.     noreachable             exclude node (un)reachable");
+        l.add(null, "3 3,.     nometric                exclude link metric change");
+        l.add(null, "3 3,.     noprefix                exclude prefix change");
         l.add(null, "2 .     spf-hops                  spf hops disallow");
         l.add(null, "2 .     spf-ecmp                  spf ecmp allow");
         l.add(null, "2 3     spf-log                   spf log size");
@@ -1341,7 +1347,7 @@ public class rtrIsis extends ipRtr {
     public void getConfig(rtrIsisLevel lev, List<String> l, String beg, int filter) {
         String s = "level" + lev.level + " ";
         l.add(beg + s + "spf-log " + lev.lastSpf.logSize);
-        cmds.cfgLine(l, lev.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", "");
+        cmds.cfgLine(l, lev.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", lev.lastSpf.getTopoLogMode());
         cmds.cfgLine(l, lev.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
         cmds.cfgLine(l, lev.lastSpf.hops.get() == 0, beg, s + "spf-hops", "");
         cmds.cfgLine(l, lev.lastSpf.ecmp.get() == 0, beg, s + "spf-ecmp", "");
@@ -1412,9 +1418,9 @@ public class rtrIsis extends ipRtr {
         if (s.equals("spf-topolog")) {
             if (negated) {
                 lev.lastSpf.topoLog.set(0);
-            } else {
-                lev.lastSpf.topoLog.set(1);
+                return false;
             }
+            lev.lastSpf.setTopoLogMode(cmd);
             return false;
         }
         if (s.equals("spf-bidir")) {

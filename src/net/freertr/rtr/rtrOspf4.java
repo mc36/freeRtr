@@ -252,7 +252,13 @@ public class rtrOspf4 extends ipRtr {
         l.add(null, "2 3     <num>                     area number");
         l.add(null, "3 .       enable                  create this area");
         l.add(null, "3 .       spf-bidir               spf bidir check");
-        l.add(null, "3 .       spf-topolog             spf topology logging");
+        l.add(null, "3 4,.     spf-topolog             spf topology logging");
+        l.add(null, "4 4,.       noappear              exclude node (dis)appearance");
+        l.add(null, "4 4,.       noconnect             exclude link (dis)connection");
+        l.add(null, "4 4,.       noforward             exclude forward (un)willingness");
+        l.add(null, "4 4,.       noreachable           exclude node (un)reachable");
+        l.add(null, "4 4,.       nometric              exclude link metric change");
+        l.add(null, "4 4,.       noprefix              exclude prefix change");
         l.add(null, "3 .       spf-hops                spf hops disallow");
         l.add(null, "3 .       spf-ecmp                spf ecmp allow");
         l.add(null, "3 4       spf-log                 spf log size");
@@ -305,7 +311,7 @@ public class rtrOspf4 extends ipRtr {
             String s = "area " + ntry.area + " ";
             l.add(beg + s + "enable");
             l.add(beg + s + "spf-log " + ntry.lastSpf.logSize);
-            cmds.cfgLine(l, ntry.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", "");
+            cmds.cfgLine(l, ntry.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", ntry.lastSpf.getTopoLogMode());
             cmds.cfgLine(l, ntry.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
             cmds.cfgLine(l, ntry.lastSpf.hops.get() == 0, beg, s + "spf-hops", "");
             cmds.cfgLine(l, ntry.lastSpf.ecmp.get() == 0, beg, s + "spf-ecmp", "");
@@ -401,7 +407,7 @@ public class rtrOspf4 extends ipRtr {
                 return false;
             }
             if (s.equals("spf-topolog")) {
-                dat.lastSpf.topoLog.set(1);
+                dat.lastSpf.setTopoLogMode(cmd);
                 return false;
             }
             if (s.equals("spf-bidir")) {
