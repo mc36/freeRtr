@@ -60,6 +60,31 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     public int echoTimer = 60000;
 
     /**
+     * echo bucket
+     */
+    public int echoSize = 8;
+
+    /**
+     * echo minimum
+     */
+    public int echoMinimum = 1;
+
+    /**
+     * echo minimum
+     */
+    public int echoMaximum = 65536;
+
+    /**
+     * echo divisor
+     */
+    public int echoDivisor = 1;
+
+    /**
+     * echo mode
+     */
+    public int echoMode = 2;
+
+    /**
      * default distance
      */
     public int distance = 80;
@@ -453,6 +478,28 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         l.add(cmds.tabulator + beg + "dynamic-time " + echoTimer);
+        l.add(cmds.tabulator + beg + "dynamic-size " + echoSize);
+        l.add(cmds.tabulator + beg + "dynamic-minimum " + echoMinimum);
+        l.add(cmds.tabulator + beg + "dynamic-maximum " + echoMaximum);
+        l.add(cmds.tabulator + beg + "dynamic-divisor " + echoDivisor);
+        switch (echoMode) {
+            case 0:
+                a = "none";
+                break;
+            case 1:
+                a = "minimum";
+                break;
+            case 2:
+                a = "average";
+                break;
+            case 3:
+                a = "maximum";
+                break;
+            default:
+                a = "unknown=" + echoMode;
+                break;
+        }
+        l.add(cmds.tabulator + beg + "dynamic-mode " + a);
         cmds.cfgLine(l, labelIn == null, cmds.tabulator, beg + "label-in", "" + labelIn);
         cmds.cfgLine(l, labelOut == null, cmds.tabulator, beg + "label-out", "" + labelOut);
         cmds.cfgLine(l, prflstIn == null, cmds.tabulator, beg + "prefix-list-in", "" + prflstIn);
@@ -511,6 +558,19 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dynamic-time                measurement interval");
         l.add(null, "5 .           <num>                     time in ms");
+        l.add(null, "4 5         dynamic-size                number of measurement");
+        l.add(null, "5 .           <num>                     number of values");
+        l.add(null, "4 5         dynamic-minimum             lowest result");
+        l.add(null, "5 .           <num>                     minimum");
+        l.add(null, "4 5         dynamic-maximum             highest result");
+        l.add(null, "5 .           <num>                     maximum");
+        l.add(null, "4 5         dynamic-divisor             divide result");
+        l.add(null, "5 .           <num>                     divisor");
+        l.add(null, "4 5         dynamic-mode                calculation to do");
+        l.add(null, "5 .           none                      nothing");
+        l.add(null, "5 .           minimum                   take lowest");
+        l.add(null, "5 .           average                   take average");
+        l.add(null, "5 .           maximum                   take highest");
         l.add(null, "4 5         route-map-in                process prefixes in ingress updates");
         l.add(null, "5 .           <name:rm>                 name of route map");
         l.add(null, "4 5         route-map-out               process prefixes in egress updates");
@@ -652,6 +712,43 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("dynamic-time")) {
             echoTimer = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-size")) {
+            echoSize = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-minimum")) {
+            echoMinimum = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-maximum")) {
+            echoMaximum = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-divisor")) {
+            echoDivisor = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-mode")) {
+            a = cmd.word();
+            echoMode = 0;
+            if (a.equals("none")) {
+                echoMode = 0;
+                return;
+            }
+            if (a.equals("minimum")) {
+                echoMode = 1;
+                return;
+            }
+            if (a.equals("average")) {
+                echoMode = 2;
+                return;
+            }
+            if (a.equals("maximum")) {
+                echoMode = 3;
+                return;
+            }
             return;
         }
         if (a.equals("metric-in")) {

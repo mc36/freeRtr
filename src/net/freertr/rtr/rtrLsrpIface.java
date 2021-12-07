@@ -52,6 +52,31 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public int echoTimer = 60000;
 
     /**
+     * echo bucket
+     */
+    public int echoSize = 8;
+
+    /**
+     * echo minimum
+     */
+    public int echoMinimum = 1;
+
+    /**
+     * echo minimum
+     */
+    public int echoMaximum = 65536;
+
+    /**
+     * echo divisor
+     */
+    public int echoDivisor = 1;
+
+    /**
+     * echo mode
+     */
+    public int echoMode = 2;
+
+    /**
      * default metric
      */
     public int metric = 10;
@@ -415,6 +440,28 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         l.add(cmds.tabulator + beg + "dynamic-time " + echoTimer);
+        l.add(cmds.tabulator + beg + "dynamic-size " + echoSize);
+        l.add(cmds.tabulator + beg + "dynamic-minimum " + echoMinimum);
+        l.add(cmds.tabulator + beg + "dynamic-maximum " + echoMaximum);
+        l.add(cmds.tabulator + beg + "dynamic-divisor " + echoDivisor);
+        switch (echoMode) {
+            case 0:
+                a = "none";
+                break;
+            case 1:
+                a = "minimum";
+                break;
+            case 2:
+                a = "average";
+                break;
+            case 3:
+                a = "maximum";
+                break;
+            default:
+                a = "unknown=" + echoMode;
+                break;
+        }
+        l.add(cmds.tabulator + beg + "dynamic-mode " + a);
     }
 
     /**
@@ -469,6 +516,19 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dynamic-time                measurement interval");
         l.add(null, "5 .           <num>                     time in ms");
+        l.add(null, "4 5         dynamic-size                number of measurement");
+        l.add(null, "5 .           <num>                     number of values");
+        l.add(null, "4 5         dynamic-minimum             lowest result");
+        l.add(null, "5 .           <num>                     minimum");
+        l.add(null, "4 5         dynamic-maximum             highest result");
+        l.add(null, "5 .           <num>                     maximum");
+        l.add(null, "4 5         dynamic-divisor             divide result");
+        l.add(null, "5 .           <num>                     divisor");
+        l.add(null, "4 5         dynamic-mode                calculation to do");
+        l.add(null, "5 .           none                      nothing");
+        l.add(null, "5 .           minimum                   take lowest");
+        l.add(null, "5 .           average                   take average");
+        l.add(null, "5 .           maximum                   take highest");
     }
 
     /**
@@ -618,6 +678,43 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("dynamic-time")) {
             echoTimer = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-size")) {
+            echoSize = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-minimum")) {
+            echoMinimum = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-maximum")) {
+            echoMaximum = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-divisor")) {
+            echoDivisor = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-mode")) {
+            a = cmd.word();
+            echoMode = 0;
+            if (a.equals("none")) {
+                echoMode = 0;
+                return;
+            }
+            if (a.equals("minimum")) {
+                echoMode = 1;
+                return;
+            }
+            if (a.equals("average")) {
+                echoMode = 2;
+                return;
+            }
+            if (a.equals("maximum")) {
+                echoMode = 3;
+                return;
+            }
             return;
         }
         if (a.equals("metric")) {

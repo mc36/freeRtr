@@ -15,6 +15,7 @@ import net.freertr.prt.prtAccept;
 import net.freertr.sec.secClient;
 import net.freertr.sec.secServer;
 import net.freertr.serv.servGeneric;
+import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelEntry;
@@ -70,7 +71,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     /**
      * calculated echo
      */
-    public int echoCalc;
+    public tabAverage echoCalc = new tabAverage();
 
     /**
      * time last heard
@@ -225,7 +226,24 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             met = gotMetric;
         }
         if (iface.dynamicMetric) {
-            met = echoCalc;
+            switch (iface.echoMode) {
+                case 1:
+                    met = echoCalc.getMinimum();
+                    break;
+                case 2:
+                    met = echoCalc.getAverage();
+                    break;
+                case 3:
+                    met = echoCalc.getMaximum();
+                    break;
+            }
+            if (met < iface.echoMinimum) {
+                met = iface.echoMinimum;
+            }
+            if (met > iface.echoMaximum) {
+                met = iface.echoMaximum;
+            }
+            met /= iface.echoDivisor;
         }
         if (met < 1) {
             met = 1;
@@ -645,7 +663,8 @@ class rtrLsrpNeighRcvr implements Runnable {
                 if (lower.echoData != bits.str2num(cmd.word())) {
                     continue;
                 }
-                lower.echoCalc = (int) (bits.getTime() - lower.echoTime);
+                lower.echoCalc.max = lower.iface.echoSize;
+                lower.echoCalc.addValue((int) (bits.getTime() - lower.echoTime));
                 continue;
             }
             if (a.equals("echo")) {
