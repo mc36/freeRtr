@@ -559,12 +559,13 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     }
 
     private void doAdvert() {
-        if (sentMet != iface.metricIn) {
-            sentMet = iface.metricIn;
+        int i = getMetric();
+        if (sentMet != i) {
+            sentMet = i;
             sendLn("metric " + sentMet);
         }
         int sent = 0;
-        for (int i = 0; i < adverted.size(); i++) {
+        for (i = 0; i < adverted.size(); i++) {
             tabRouteEntry<addrIP> ntry = adverted.get(i);
             if (ntry == null) {
                 continue;
@@ -578,7 +579,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             sendUpdate(ntry, false);
             sent++;
         }
-        for (int i = 0; i < iface.need2adv.size(); i++) {
+        for (i = 0; i < iface.need2adv.size(); i++) {
             tabRouteEntry<addrIP> ntry = iface.need2adv.get(i);
             if (ntry == null) {
                 continue;

@@ -567,11 +567,12 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     }
 
     private void doAdvert() {
-        if (sentMet != iface.metric) {
-            sentMet = iface.metric;
+        int i = getMetric();
+        if (sentMet != i) {
+            sentMet = i;
             sendLn("metric " + sentMet);
         }
-        for (int i = 0; i < advert.size(); i++) {
+        for (i = 0; i < advert.size(); i++) {
             rtrLsrpData ntry = advert.get(i);
             if (ntry == null) {
                 continue;
@@ -582,7 +583,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             }
         }
         int sent = 0;
-        for (int i = 0; i < lower.database.size(); i++) {
+        for (i = 0; i < lower.database.size(); i++) {
             rtrLsrpData ntry = lower.database.get(i);
             if (ntry == null) {
                 continue;
