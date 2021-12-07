@@ -21,7 +21,6 @@ public class tabAverage {
      * create instance
      */
     public tabAverage() {
-        max = 8;
         vals = new ArrayList<Integer>();
     }
 

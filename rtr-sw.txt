@@ -44,6 +44,15 @@ aaa tacacs tac
  server 10.10.10.227
  exit
 !
+session upl
+ dropped
+ exit
+!
+script logger
+ sequence 10 exec "test logging info someone from $remote hit the script"
+ stop
+ exit
+!
 prefix-list all
  sequence 10 permit 0.0.0.0/0 ge 0 le 32
  sequence 20 permit ::/0 ge 0 le 128
@@ -111,15 +120,6 @@ bridge 4
  rt-export 65535:2
  mac-learn
  private-bridge
- exit
-!
-session upl
- dropped
- exit
-!
-script logger
- sequence 10 exec "test logging info someone from $remote hit the script"
- stop
  exit
 !
 vrf definition bvi
@@ -314,10 +314,12 @@ interface template1
  router lsrp4 1 enable
  router lsrp4 1 dump lsrp4.log
  router lsrp4 1 accept-metric
+ router lsrp4 1 dynamic-metric
  router lsrp4 1 bfd
  router lsrp6 1 enable
  router lsrp6 1 dump lsrp6.log
  router lsrp6 1 accept-metric
+ router lsrp6 1 dynamic-metric
  router lsrp6 1 bfd
  shutdown
  no log-link-change

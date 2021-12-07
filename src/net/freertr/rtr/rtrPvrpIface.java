@@ -62,7 +62,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * echo bucket
      */
-    public int echoSize = 8;
+    public int echoSize = 5;
 
     /**
      * echo minimum
