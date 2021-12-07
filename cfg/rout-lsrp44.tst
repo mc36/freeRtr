@@ -10,13 +10,11 @@ vrf def v1
 router lsrp4 1
  vrf v1
  router 4.4.4.1
- segrout 10 1
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.1
- segrout 10 1
  red conn
  exit
 int lo1
@@ -37,7 +35,6 @@ int eth2
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1235::1 ffff::
- mpls enable
  router lsrp4 1 ena
  router lsrp4 1 metric 1
  router lsrp6 1 ena
@@ -55,13 +52,11 @@ vrf def v1
 router lsrp4 1
  vrf v1
  router 4.4.4.2
- segrout 10 2
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.2
- segrout 10 2
  red conn
  exit
 int lo1
@@ -73,7 +68,6 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
- mpls enable
  router lsrp4 1 ena
  router lsrp4 1 metric 2
  router lsrp4 1 dynamic-met
@@ -85,7 +79,6 @@ int eth2
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1235::2 ffff::
- mpls enable
  router lsrp4 1 ena
  router lsrp4 1 metric 200
  router lsrp4 1 dynamic-met
@@ -110,5 +103,3 @@ r2 output show ipv4 lsrp 1 tre
 r2 output show ipv6 lsrp 1 tre
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1
-r2 output show ipv4 segrou v1
-r2 output show ipv6 segrou v1
