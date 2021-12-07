@@ -1298,6 +1298,24 @@ public class ifcEthTyp implements Runnable, ifcUp {
         return hwCntr.plus(hwSub);
     }
 
+    /**
+     * put hw ethertype counters
+     *
+     * @param typ ethertype
+     * @param cnt counter
+     * @return false on success, true on error
+     */
+    public boolean putHwEthTyp(int typ, counter cnt) {
+        ifcEthTypET et = new ifcEthTypET(this, null);
+        et.ethTyp = typ;
+        et = etTyps.find(et);
+        if (et == null) {
+            return true;
+        }
+        et.hwCntr = cnt;
+        return false;
+    }
+
 }
 
 class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
@@ -1311,6 +1329,8 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
     public boolean promiscous;
 
     public counter cntr = new counter();
+
+    public counter hwCntr;
 
     private ifcEthTyp lower;
 
@@ -1336,7 +1356,7 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
     }
 
     public String dump() {
-        return "ethtyp|" + bits.toHexW(ethTyp) + "|" + name + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
+        return "ethtyp|" + bits.toHexW(ethTyp) + "|" + name + "|" + cntr.getShHwPsum(hwCntr) + "|" + cntr.getShHwBsum(hwCntr);
     }
 
     public String toString() {

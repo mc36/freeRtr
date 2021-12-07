@@ -1502,6 +1502,21 @@ class servP4langConn implements Runnable {
                 ntry.ifc.ethtyp.hwCntr = ntry.ifc.ethtyp.hwCntr.minus(ntry.ifc.ethtyp.hwSub);
                 return false;
             }
+            if (s.equals("ethertype")) {
+                servP4langIfc ntry = findIfc(bits.str2num(cmd.word()));
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                int i = bits.str2num(cmd.word());
+                counter c = new counter();
+                c.packRx = bits.str2long(cmd.word());
+                c.byteRx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.putHwEthTyp(i, c);
+                return false;
+            }
             if (s.equals("nattrns4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
                 vrf = lower.expVrf.find(vrf);
