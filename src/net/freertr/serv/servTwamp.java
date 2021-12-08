@@ -229,9 +229,11 @@ class servTwampConn implements Comparator<servTwampConn> {
     }
 
     public void doRecv(packHolder pck) {
-        seq++;
         packTwamp twm = new packTwamp();
-        twm.parseHeader(pck);
+        if (twm.parseHeader(pck)) {
+            return;
+        }
+        seq++;
         twm.seqTx = twm.sequence;
         twm.timesTx = twm.timestmp;
         twm.errTx = twm.errEst;
