@@ -725,20 +725,18 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             echoMode = 0;
             if (a.equals("none")) {
                 echoMode = 0;
-                return;
             }
             if (a.equals("minimum")) {
                 echoMode = 1;
-                return;
             }
             if (a.equals("average")) {
                 echoMode = 2;
-                return;
             }
             if (a.equals("maximum")) {
                 echoMode = 3;
-                return;
             }
+            lower.todo.set(0);
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("metric")) {
