@@ -72,6 +72,16 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public int echoDivisor = 1;
 
     /**
+     * echo multiplier
+     */
+    public int echoMultiply = 1;
+
+    /**
+     * echo relaxer
+     */
+    public int echoIgnorer = 0;
+
+    /**
      * echo mode
      */
     public int echoMode = 1;
@@ -444,6 +454,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "dynamic-minimum " + echoMinimum);
         l.add(cmds.tabulator + beg + "dynamic-maximum " + echoMaximum);
         l.add(cmds.tabulator + beg + "dynamic-divisor " + echoDivisor);
+        l.add(cmds.tabulator + beg + "dynamic-multiply " + echoMultiply);
+        l.add(cmds.tabulator + beg + "dynamic-ignore " + echoIgnorer);
         switch (echoMode) {
             case 0:
                 a = "none";
@@ -524,6 +536,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     maximum");
         l.add(null, "4 5         dynamic-divisor             divide result");
         l.add(null, "5 .           <num>                     divisor");
+        l.add(null, "4 5         dynamic-multiply            multiply result");
+        l.add(null, "5 .           <num>                     multiplier");
+        l.add(null, "4 5         dynamic-ignore              ignore small differences");
+        l.add(null, "5 .           <num>                     maximum unreported change");
         l.add(null, "4 5         dynamic-mode                calculation to do");
         l.add(null, "5 .           none                      nothing");
         l.add(null, "5 .           minimum                   take lowest");
@@ -694,6 +710,14 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("dynamic-divisor")) {
             echoDivisor = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-multiply")) {
+            echoMultiply = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-ignore")) {
+            echoIgnorer = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("dynamic-mode")) {

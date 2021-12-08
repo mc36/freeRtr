@@ -74,6 +74,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     public tabAverage echoCalc = new tabAverage();
 
     /**
+     * last report
+     */
+    public int echoLast = 655360;
+
+    /**
      * time last heard
      */
     public long lastHeard;
@@ -225,29 +230,39 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (iface.acceptMetric) {
             met = gotMetric;
         }
-        if (iface.dynamicMetric) {
-            switch (iface.echoMode) {
-                case 1:
-                    met = echoCalc.getMinimum();
-                    break;
-                case 2:
-                    met = echoCalc.getAverage();
-                    break;
-                case 3:
-                    met = echoCalc.getMaximum();
-                    break;
-            }
-            if (met < iface.echoMinimum) {
-                met = iface.echoMinimum;
-            }
-            if (met > iface.echoMaximum) {
-                met = iface.echoMaximum;
-            }
-            met /= iface.echoDivisor;
-        }
         if (met < 1) {
             met = 1;
         }
+        if (!iface.dynamicMetric) {
+            return met;
+        }
+        switch (iface.echoMode) {
+            case 1:
+                met = echoCalc.getMinimum();
+                break;
+            case 2:
+                met = echoCalc.getAverage();
+                break;
+            case 3:
+                met = echoCalc.getMaximum();
+                break;
+        }
+        met *= iface.echoMultiply;
+        met /= iface.echoDivisor;
+        if (met < iface.echoMinimum) {
+            met = iface.echoMinimum;
+        }
+        if (met > iface.echoMaximum) {
+            met = iface.echoMaximum;
+        }
+        int i = met - echoLast;
+        if (i < 0) {
+            i = -i;
+        }
+        if (i < iface.echoIgnorer) {
+            return echoLast;
+        }
+        echoLast = met;
         return met;
     }
 

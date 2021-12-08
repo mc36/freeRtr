@@ -1610,6 +1610,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router pvrp[4|6] .* dynamic-minimum 1",
         "interface .*! router pvrp[4|6] .* dynamic-maximum 65536",
         "interface .*! router pvrp[4|6] .* dynamic-divisor 1",
+        "interface .*! router pvrp[4|6] .* dynamic-multiply 1",
+        "interface .*! router pvrp[4|6] .* dynamic-ignore 0",
         "interface .*! router pvrp[4|6] .* dynamic-mode minimum",
         "interface .*! no router pvrp[4|6] .* label-in",
         "interface .*! no router pvrp[4|6] .* label-out",
@@ -1647,6 +1649,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router lsrp[4|6] .* dynamic-minimum 1",
         "interface .*! router lsrp[4|6] .* dynamic-maximum 65536",
         "interface .*! router lsrp[4|6] .* dynamic-divisor 1",
+        "interface .*! router lsrp[4|6] .* dynamic-multiply 1",
+        "interface .*! router lsrp[4|6] .* dynamic-ignore 0",
         "interface .*! router lsrp[4|6] .* dynamic-mode minimum",
         // eigrp
         "interface .*! router eigrp[4|6] .* split-horizon",
