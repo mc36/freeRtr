@@ -316,11 +316,15 @@ interface template1
  router lsrp4 1 accept-metric
  router lsrp4 1 dynamic-metric
  router lsrp4 1 bfd
+ router lsrp4 1 dynamic-size 4
+ router lsrp4 1 dynamic-ignore 2
  router lsrp6 1 enable
  router lsrp6 1 dump lsrp6.log
  router lsrp6 1 accept-metric
  router lsrp6 1 dynamic-metric
  router lsrp6 1 bfd
+ router lsrp6 1 dynamic-size 4
+ router lsrp6 1 dynamic-ignore 2
  shutdown
  no log-link-change
  exit
