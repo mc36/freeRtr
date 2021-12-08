@@ -8,6 +8,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authConstant;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntPing;
 import net.freertr.cry.cryBase64;
 import net.freertr.ip.ipMpls;
 import net.freertr.pipe.pipeLine;
@@ -526,9 +527,17 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                     case 1:
                         echoData = bits.randomD();
                         sendLn("echo " + echoData);
-                        echoTime = tim - 1;
+                        break;
+                    case 2:
+                        clntPing png = new clntPing();
+                        png.meas = echoCalc;
+                        png.fwd = lower.fwdCore;
+                        png.src = iface.iface;
+                        png.trg = peer;
+                        png.doWork();
                         break;
                 }
+                echoTime = tim - 1;
             }
             if ((lastKeep + iface.helloTimer) < tim) {
                 sendLn("keepalive " + iface.deadTimer);
