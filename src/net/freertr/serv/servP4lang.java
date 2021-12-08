@@ -4531,16 +4531,16 @@ class servP4langConn implements Runnable {
     }
 
     public String numat2str(tabIntMatcher mat, int max) {
-        if (mat.action == tabIntMatcher.actionType.xact) {
-            return mat.rangeMin + " " + max;
+        switch (mat.action) {
+            case xact:
+                return mat.rangeMin + " " + max;
+            case range:
+                return mat.rangeMin + " " + (max - mat.rangeMax + mat.rangeMin);
+            case mask:
+                return mat.rangeMin + " " + mat.rangeMax;
+            default:
+                return "0 0";
         }
-        if (mat.action != tabIntMatcher.actionType.range) {
-            return "0 0";
-        }
-        if (mat.rangeMin == mat.rangeMax) {
-            return mat.rangeMin + " " + max;
-        }
-        return mat.rangeMin + " " + (max - mat.rangeMax + mat.rangeMin);
     }
 
     public String ip2str(boolean ipv4, addrIP adr) {

@@ -24,7 +24,6 @@ public class tabIntMatcher {
      * list of match criterias
      */
     public enum actionType {
-
         /**
          * always
          */
@@ -36,7 +35,11 @@ public class tabIntMatcher {
         /**
          * range
          */
-        range
+        range,
+        /**
+         * mask
+         */
+        mask
     }
 
     /**
@@ -63,6 +66,8 @@ public class tabIntMatcher {
                 return (i == rangeMin);
             case range:
                 return ((i >= rangeMin) && (i <= rangeMax));
+            case mask:
+                return (i & rangeMax) == rangeMin;
             default:
                 return false;
         }
@@ -96,6 +101,13 @@ public class tabIntMatcher {
             rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
             return false;
         }
+        i = s.indexOf("&");
+        if (i >= 0) {
+            action = actionType.mask;
+            rangeMin = bits.str2num(s.substring(0, i).trim());
+            rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
+            return false;
+        }
         action = actionType.xact;
         rangeMin = bits.str2num(s);
         rangeMax = rangeMin;
@@ -121,6 +133,8 @@ public class tabIntMatcher {
                 return "" + rangeMin;
             case range:
                 return rangeMin + "-" + rangeMax;
+            case mask:
+                return rangeMin + "&" + rangeMax;
             default:
                 return "unknown";
         }
