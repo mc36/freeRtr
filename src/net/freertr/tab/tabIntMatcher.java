@@ -106,6 +106,7 @@ public class tabIntMatcher {
             action = actionType.mask;
             rangeMin = bits.str2num(s.substring(0, i).trim());
             rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
+            rangeMin &= rangeMax;
             return false;
         }
         action = actionType.xact;
