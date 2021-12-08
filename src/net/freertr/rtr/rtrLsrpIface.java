@@ -74,7 +74,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     /**
      * echo mode
      */
-    public int echoMode = 0;
+    public int echoMode = 1;
 
     /**
      * default metric

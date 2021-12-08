@@ -82,7 +82,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * echo mode
      */
-    public int echoMode = 0;
+    public int echoMode = 1;
 
     /**
      * default distance
