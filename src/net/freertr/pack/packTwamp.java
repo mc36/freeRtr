@@ -8,6 +8,12 @@ package net.freertr.pack;
 public class packTwamp {
 
     /**
+     * create instance
+     */
+    public packTwamp() {
+    }
+
+    /**
      * port number
      */
     public static final int port = 862;

@@ -18,6 +18,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.serv.servGeneric;
+import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
@@ -52,39 +53,9 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public int echoTimer = 60000;
 
     /**
-     * echo bucket
+     * echo parameters
      */
-    public int echoSize = 1;
-
-    /**
-     * echo minimum
-     */
-    public int echoMinimum = 1;
-
-    /**
-     * echo minimum
-     */
-    public int echoMaximum = 65536;
-
-    /**
-     * echo divisor
-     */
-    public int echoDivisor = 1;
-
-    /**
-     * echo multiplier
-     */
-    public int echoMultiply = 1;
-
-    /**
-     * echo relaxer
-     */
-    public int echoIgnorer = 0;
-
-    /**
-     * echo mode
-     */
-    public int echoMode = 1;
+    public tabAverage echoParam = new tabAverage(1, 100000);
 
     /**
      * default metric
@@ -142,9 +113,9 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public boolean acceptMetric = false;
 
     /**
-     * accept metric
+     * dynamic metric
      */
-    public boolean dynamicMetric = false;
+    public int dynamicMetric = 0;
 
     /**
      * suppress interface address
@@ -430,7 +401,26 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
-        cmds.cfgLine(l, !dynamicMetric, cmds.tabulator, beg + "dynamic-metric", "");
+        switch (dynamicMetric) {
+            case 0:
+                a = "disabled";
+                break;
+            case 1:
+                a = "inband";
+                break;
+            case 2:
+                a = "icmpecho";
+                break;
+            case 3:
+                a = "udpecho";
+                break;
+            case 4:
+                a = "twamp";
+                break;
+            default:
+                a = "unknown=" + dynamicMetric;
+        }
+        cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric", a);
         a = "";
         if (bfdTrigger == 2) {
             a = "strict";
@@ -450,13 +440,13 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         l.add(cmds.tabulator + beg + "dynamic-time " + echoTimer);
-        l.add(cmds.tabulator + beg + "dynamic-size " + echoSize);
-        l.add(cmds.tabulator + beg + "dynamic-minimum " + echoMinimum);
-        l.add(cmds.tabulator + beg + "dynamic-maximum " + echoMaximum);
-        l.add(cmds.tabulator + beg + "dynamic-divisor " + echoDivisor);
-        l.add(cmds.tabulator + beg + "dynamic-multiply " + echoMultiply);
-        l.add(cmds.tabulator + beg + "dynamic-ignore " + echoIgnorer);
-        switch (echoMode) {
+        l.add(cmds.tabulator + beg + "dynamic-size " + echoParam.buckets);
+        l.add(cmds.tabulator + beg + "dynamic-minimum " + echoParam.minimum);
+        l.add(cmds.tabulator + beg + "dynamic-maximum " + echoParam.maximum);
+        l.add(cmds.tabulator + beg + "dynamic-divisor " + echoParam.divisor);
+        l.add(cmds.tabulator + beg + "dynamic-multiply " + echoParam.multiply);
+        l.add(cmds.tabulator + beg + "dynamic-ignore " + echoParam.ignorer);
+        switch (echoParam.algorithm) {
             case 0:
                 a = "none";
                 break;
@@ -470,10 +460,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
                 a = "maximum";
                 break;
             default:
-                a = "unknown=" + echoMode;
+                a = "unknown=" + echoParam.algorithm;
                 break;
         }
-        l.add(cmds.tabulator + beg + "dynamic-mode " + a);
+        l.add(cmds.tabulator + beg + "dynamic-algo " + a);
     }
 
     /**
@@ -489,7 +479,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 .           strict                    enable strict mode");
         l.add(null, "4 .         passive                     do not form neighborship");
         l.add(null, "4 .         accept-metric               accept peer metric");
-        l.add(null, "4 .         dynamic-metric              dynamic peer metric");
+        l.add(null, "4 5         dynamic-metric              dynamic peer metric");
+        l.add(null, "5 .           disabled                  forbid echo requests");
+        l.add(null, "5 .           inband                    inband echo requests");
+        l.add(null, "5 .           icmpecho                  icmp echo requests");
+        l.add(null, "5 .           udpecho                   udp echo requests");
+        l.add(null, "5 .           twamp                     twamp echo requests");
         l.add(null, "4 .         stub                        do not route traffic");
         l.add(null, "4 .         unstub                      do route traffic");
         l.add(null, "4 5         segrout                     set segment routing parameters");
@@ -540,7 +535,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     multiplier");
         l.add(null, "4 5         dynamic-ignore              ignore small differences");
         l.add(null, "5 .           <num>                     maximum unreported change");
-        l.add(null, "4 5         dynamic-mode                calculation to do");
+        l.add(null, "4 5         dynamic-algo                calculation to do");
         l.add(null, "5 .           none                      nothing");
         l.add(null, "5 .           minimum                   take lowest");
         l.add(null, "5 .           average                   take average");
@@ -675,7 +670,23 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("dynamic-metric")) {
-            dynamicMetric = true;
+            a = cmd.word();
+            dynamicMetric = 0;
+            if (a.equals("disabled")) {
+                dynamicMetric = 0;
+            }
+            if (a.equals("inband")) {
+                dynamicMetric = 1;
+            }
+            if (a.equals("icmpecho")) {
+                dynamicMetric = 2;
+            }
+            if (a.equals("udpecho")) {
+                dynamicMetric = 3;
+            }
+            if (a.equals("twamp")) {
+                dynamicMetric = 4;
+            }
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
@@ -697,43 +708,43 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("dynamic-size")) {
-            echoSize = bits.str2num(cmd.word());
+            echoParam.buckets = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("dynamic-minimum")) {
-            echoMinimum = bits.str2num(cmd.word());
+            echoParam.minimum = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("dynamic-maximum")) {
-            echoMaximum = bits.str2num(cmd.word());
+            echoParam.maximum = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("dynamic-divisor")) {
-            echoDivisor = bits.str2num(cmd.word());
+            echoParam.divisor = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("dynamic-multiply")) {
-            echoMultiply = bits.str2num(cmd.word());
+            echoParam.multiply = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("dynamic-ignore")) {
-            echoIgnorer = bits.str2num(cmd.word());
+            echoParam.ignorer = bits.str2num(cmd.word());
             return;
         }
-        if (a.equals("dynamic-mode")) {
+        if (a.equals("dynamic-algo")) {
             a = cmd.word();
-            echoMode = 0;
+            echoParam.algorithm = 0;
             if (a.equals("none")) {
-                echoMode = 0;
+                echoParam.algorithm = 0;
             }
             if (a.equals("minimum")) {
-                echoMode = 1;
+                echoParam.algorithm = 1;
             }
             if (a.equals("average")) {
-                echoMode = 2;
+                echoParam.algorithm = 2;
             }
             if (a.equals("maximum")) {
-                echoMode = 3;
+                echoParam.algorithm = 3;
             }
             lower.todo.set(0);
             lower.notif.wakeup();
@@ -842,7 +853,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("dynamic-metric")) {
-            dynamicMetric = false;
+            dynamicMetric = 0;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

@@ -71,12 +71,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     /**
      * calculated echo
      */
-    public tabAverage echoCalc = new tabAverage();
-
-    /**
-     * last report
-     */
-    public int echoLast = 655360;
+    public tabAverage echoCalc = new tabAverage(1, 1);
 
     /**
      * time last heard
@@ -233,37 +228,10 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (met < 1) {
             met = 1;
         }
-        if (!iface.dynamicMetric) {
+        if (iface.dynamicMetric < 1) {
             return met;
         }
-        switch (iface.echoMode) {
-            case 1:
-                met = echoCalc.getMinimum();
-                break;
-            case 2:
-                met = echoCalc.getAverage();
-                break;
-            case 3:
-                met = echoCalc.getMaximum();
-                break;
-        }
-        met *= iface.echoMultiply;
-        met /= iface.echoDivisor;
-        if (met < iface.echoMinimum) {
-            met = iface.echoMinimum;
-        }
-        if (met > iface.echoMaximum) {
-            met = iface.echoMaximum;
-        }
-        int i = met - echoLast;
-        if (i < 0) {
-            i = -i;
-        }
-        if (i < iface.echoIgnorer) {
-            return echoLast;
-        }
-        echoLast = met;
-        return met;
+        return echoCalc.getResult(met);
     }
 
     public void run() {
@@ -562,9 +530,13 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             notif.misleep(iface.helloTimer);
             long tim = bits.getTime();
             if ((echoTime + iface.echoTimer) < tim) {
-                echoData = bits.randomD();
-                sendLn("echo " + echoData);
-                echoTime = tim - 1;
+                switch (iface.dynamicMetric) {
+                    case 1:
+                        echoData = bits.randomD();
+                        sendLn("echo " + echoData);
+                        echoTime = tim - 1;
+                        break;
+                }
             }
             if ((lastKeep + iface.helloTimer) < tim) {
                 sendLn("keepalive " + iface.deadTimer);
@@ -679,7 +651,7 @@ class rtrLsrpNeighRcvr implements Runnable {
                 if (lower.echoData != bits.str2num(cmd.word())) {
                     continue;
                 }
-                lower.echoCalc.max = lower.iface.echoSize;
+                lower.echoCalc.updateFrom(lower.iface.echoParam);
                 lower.echoCalc.addValue((int) (bits.getTime() - lower.echoTime));
                 continue;
             }
