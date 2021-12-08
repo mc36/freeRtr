@@ -1,4 +1,4 @@
-description pvrp dynamic inband metric
+description pvrp dynamic udp metric
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,6 +6,9 @@ int eth2 eth 0000.0000.1111 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
+ exit
+server echo e
+ vrf v1
  exit
 router pvrp4 1
  vrf v1
@@ -70,10 +73,10 @@ int eth1
  ipv6 addr 1234::2 ffff::
  router pvrp4 1 ena
  router pvrp4 1 metric-in 2
- router pvrp4 1 dynamic-met inb
+ router pvrp4 1 dynamic-met udp
  router pvrp6 1 ena
  router pvrp6 1 metric-in 2
- router pvrp6 1 dynamic-met inb
+ router pvrp6 1 dynamic-met udp
  exit
 int eth2
  vrf for v1
@@ -81,10 +84,10 @@ int eth2
  ipv6 addr 1235::2 ffff::
  router pvrp4 1 ena
  router pvrp4 1 metric-in 200
- router pvrp4 1 dynamic-met inb
+ router pvrp4 1 dynamic-met udp
  router pvrp6 1 ena
  router pvrp6 1 metric-in 200
- router pvrp6 1 dynamic-met inb
+ router pvrp6 1 dynamic-met udp
  exit
 !
 

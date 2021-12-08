@@ -1,4 +1,4 @@
-description lsrp dynamic metric
+description lsrp dynamic inband metric
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -70,10 +70,10 @@ int eth1
  ipv6 addr 1234::2 ffff::
  router lsrp4 1 ena
  router lsrp4 1 metric 2
- router lsrp4 1 dynamic-met
+ router lsrp4 1 dynamic-met inb
  router lsrp6 1 ena
  router lsrp6 1 metric 2
- router lsrp6 1 dynamic-met
+ router lsrp6 1 dynamic-met inb
  exit
 int eth2
  vrf for v1
@@ -81,10 +81,10 @@ int eth2
  ipv6 addr 1235::2 ffff::
  router lsrp4 1 ena
  router lsrp4 1 metric 200
- router lsrp4 1 dynamic-met
+ router lsrp4 1 dynamic-met inb
  router lsrp6 1 ena
  router lsrp6 1 metric 200
- router lsrp6 1 dynamic-met
+ router lsrp6 1 dynamic-met inb
  exit
 !
 
