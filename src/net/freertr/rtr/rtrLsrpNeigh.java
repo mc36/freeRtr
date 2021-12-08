@@ -679,7 +679,6 @@ class rtrLsrpNeighRcvr implements Runnable {
                 if (lower.echoData != bits.str2num(cmd.word())) {
                     continue;
                 }
-                lower.echoCalc.updateFrom(lower.iface.echoParam);
                 lower.echoCalc.addValue((int) (bits.getTime() - lower.echoTime));
                 continue;
             }

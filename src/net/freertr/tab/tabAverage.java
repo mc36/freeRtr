@@ -18,7 +18,7 @@ public class tabAverage {
     /**
      * number of bucket
      */
-    public int buckets = 1;
+    public int buckets = 5;
 
     /**
      * echo minimum
