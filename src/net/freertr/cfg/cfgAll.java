@@ -83,6 +83,7 @@ import net.freertr.serv.servTacacs;
 import net.freertr.serv.servTelnet;
 import net.freertr.serv.servTftp;
 import net.freertr.serv.servTime;
+import net.freertr.serv.servTwamp;
 import net.freertr.serv.servUdpFwd;
 import net.freertr.serv.servUdptn;
 import net.freertr.serv.servUni2multi;
@@ -636,6 +637,11 @@ public class cfgAll {
      * mplsoam daemons
      */
     public static final servGenList<servMplsOam> dmnMplsOam = new servGenList<servMplsOam>();
+
+    /**
+     * twamp daemons
+     */
+    public static final servGenList<servTwamp> dmnTwamp = new servGenList<servTwamp>();
 
     /**
      * amt daemons
@@ -3494,6 +3500,7 @@ public class cfgAll {
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
         dmnMplsOam.getShRun(l, filter);
+        dmnTwamp.getShRun(l, filter);
         dmnAmt.getShRun(l, filter);
         dmnUni2mul.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);

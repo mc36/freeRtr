@@ -88,6 +88,7 @@ import net.freertr.serv.servTacacs;
 import net.freertr.serv.servTelnet;
 import net.freertr.serv.servTftp;
 import net.freertr.serv.servTime;
+import net.freertr.serv.servTwamp;
 import net.freertr.serv.servUdpFwd;
 import net.freertr.serv.servUdptn;
 import net.freertr.serv.servUni2multi;
@@ -785,6 +786,7 @@ public class cfgInit implements Runnable {
         servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
         servMplsUdp.defaultF = createFilter(servMplsUdp.defaultL, srvdefsF);
         servMplsOam.defaultF = createFilter(servMplsOam.defaultL, srvdefsF);
+        servTwamp.defaultF = createFilter(servTwamp.defaultL, srvdefsF);
         servAmt.defaultF = createFilter(servAmt.defaultL, srvdefsF);
         servUni2multi.defaultF = createFilter(servUni2multi.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);

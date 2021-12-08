@@ -126,6 +126,7 @@ import net.freertr.serv.servTacacs;
 import net.freertr.serv.servTelnet;
 import net.freertr.serv.servTftp;
 import net.freertr.serv.servTime;
+import net.freertr.serv.servTwamp;
 import net.freertr.serv.servUdpFwd;
 import net.freertr.serv.servUdptn;
 import net.freertr.serv.servUni2multi;
@@ -864,6 +865,8 @@ public class userConfig {
         l.add(cfgAll.dmnMplsUdp.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    mplsoam                      configure a mplsoam server");
         l.add(cfgAll.dmnMplsOam.listServers(), "3  .      <name:loc>                 name of server");
+        l.add(null, "2  3    twamp                        configure a twamp server");
+        l.add(cfgAll.dmnTwamp.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    amt                          configure an amt server");
         l.add(cfgAll.dmnAmt.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    uni2multi                    configure an uni2multi server");
@@ -1557,6 +1560,10 @@ public class userConfig {
             }
             if (a.equals("mplsoam")) {
                 daemonMake(new servMplsOam(), cfgAll.dmnMplsOam);
+                return;
+            }
+            if (a.equals("twamp")) {
+                daemonMake(new servTwamp(), cfgAll.dmnTwamp);
                 return;
             }
             if (a.equals("amt")) {
@@ -2468,6 +2475,10 @@ public class userConfig {
             }
             if (a.equals("mplsoam")) {
                 daemonErase(new servMplsOam(), cfgAll.dmnMplsOam);
+                return;
+            }
+            if (a.equals("twamp")) {
+                daemonErase(new servTwamp(), cfgAll.dmnTwamp);
                 return;
             }
             if (a.equals("amt")) {
