@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.12.8-cur, done by cs@nop.
--;-;-;2021-12-08 12:10:22, took 00:06:40, with 100 workers, on 2504 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2021-12-08 16:46:40, took 00:06:31, with 100 workers, on 2510 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -2268,7 +2268,10 @@ http://sources.nop.hu/cfg/rout-lsrp40.tst;rout-lsrp40.tst;success;lsrp no authen
 http://sources.nop.hu/cfg/rout-lsrp41.tst;rout-lsrp41.tst;success;lsrp database authentication
 http://sources.nop.hu/cfg/rout-lsrp42.tst;rout-lsrp42.tst;success;lsrp with strict bfd
 http://sources.nop.hu/cfg/rout-lsrp43.tst;rout-lsrp43.tst;success;lsrp with polka
-http://sources.nop.hu/cfg/rout-lsrp44.tst;rout-lsrp44.tst;success;lsrp dynamic metric
+http://sources.nop.hu/cfg/rout-lsrp44.tst;rout-lsrp44.tst;success;lsrp dynamic inband metric
+http://sources.nop.hu/cfg/rout-lsrp45.tst;rout-lsrp45.tst;success;lsrp dynamic icmp metric
+http://sources.nop.hu/cfg/rout-lsrp46.tst;rout-lsrp46.tst;success;lsrp dynamic udp metric
+http://sources.nop.hu/cfg/rout-lsrp47.tst;rout-lsrp47.tst;success;lsrp dynamic twamp metric
 http://sources.nop.hu/cfg/rout-mcast01.tst;rout-mcast01.tst;success;multicast routing with static flooding
 http://sources.nop.hu/cfg/rout-mcast02.tst;rout-mcast02.tst;success;multicast routing with pim ssm
 http://sources.nop.hu/cfg/rout-mcast03.tst;rout-mcast03.tst;success;multicast routing with igmp/mld
@@ -2416,7 +2419,10 @@ http://sources.nop.hu/cfg/rout-pvrp40.tst;rout-pvrp40.tst;success;pvrp peer metr
 http://sources.nop.hu/cfg/rout-pvrp41.tst;rout-pvrp41.tst;success;pvrp ecmp connection
 http://sources.nop.hu/cfg/rout-pvrp42.tst;rout-pvrp42.tst;success;pvrp no authentication
 http://sources.nop.hu/cfg/rout-pvrp43.tst;rout-pvrp43.tst;success;pvrp with strict bfd
-http://sources.nop.hu/cfg/rout-pvrp44.tst;rout-pvrp44.tst;success;pvrp dynamic metric
+http://sources.nop.hu/cfg/rout-pvrp44.tst;rout-pvrp44.tst;success;pvrp dynamic inband metric
+http://sources.nop.hu/cfg/rout-pvrp45.tst;rout-pvrp45.tst;success;pvrp dynamic icmp metric
+http://sources.nop.hu/cfg/rout-pvrp46.tst;rout-pvrp46.tst;success;pvrp dynamic udp metric
+http://sources.nop.hu/cfg/rout-pvrp47.tst;rout-pvrp47.tst;success;pvrp dynamic twamp metric
 http://sources.nop.hu/cfg/rout-redist01.tst;rout-redist01.tst;success;redistribution with isis
 http://sources.nop.hu/cfg/rout-redist02.tst;rout-redist02.tst;success;redistribution with ospf
 http://sources.nop.hu/cfg/rout-redist03.tst;rout-redist03.tst;success;redistribution with rip

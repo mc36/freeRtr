@@ -12559,3 +12559,14 @@ qc pass: p4lang: replay window with wireguard
 ---------------------------------- 2021-12-07 07:42:31
 qc pass: lsrp dynamic metric
 qc pass: pvrp dynamic metric
+---------------------------------- 2021-12-08 16:40:08
+no qc pass: pvrp dynamic metric
+no qc pass: lsrp dynamic metric
+qc pass: lsrp dynamic inband metric
+qc pass: lsrp dynamic icmp metric
+qc pass: lsrp dynamic udp metric
+qc pass: lsrp dynamic twamp metric
+qc pass: pvrp dynamic inband metric
+qc pass: pvrp dynamic icmp metric
+qc pass: pvrp dynamic udp metric
+qc pass: pvrp dynamic twamp metric
