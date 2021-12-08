@@ -562,11 +562,11 @@ public class shrtPthFrst<Ta extends addrType> {
                 continue;
             }
             if (cr.best.metric != or.best.metric) {
-                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " metric changed from " + or.best.metric + " to " + cr.best.metric + " at " + nod);
+                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " metric changed at " + nod + " from " + or.best.metric + " to " + cr.best.metric);
                 continue;
             }
             if (cr.best.tag != or.best.tag) {
-                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " tag changed from " + or.best.tag + " to " + cr.best.tag + " at " + nod);
+                logger.info("prefix " + addrPrefix.ip2str(cr.prefix) + " tag changed at " + nod + " from " + or.best.tag + " to " + cr.best.tag);
                 continue;
             }
         }
@@ -735,7 +735,7 @@ public class shrtPthFrst<Ta extends addrType> {
                 }
                 if (cc.metric != oc.metric) {
                     if ((mode & 0x10) != 0) {
-                        logger.warn("metric changed from " + oc.metric + " to " + cc.metric + " on node " + cn + " to " + cc.target);
+                        logger.warn("metric changed on node " + cn + " toward " + cc.target + " from " + oc.metric + " to " + cc.metric);
                     }
                 }
                 if (cc.stub && !oc.stub) {
