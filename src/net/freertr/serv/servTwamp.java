@@ -237,7 +237,7 @@ class servTwampConn implements Comparator<servTwampConn> {
         twm.errTx = twm.errEst;
         twm.sequence = seq;
         twm.timestmp = packNtp.encode(bits.getTime() + cfgAll.timeServerOffset);
-        twm.errEst = 0x3fff;
+        twm.errEst = packTwamp.errMag;
         twm.timesRx = twm.timestmp;
         twm.createHeader(pck);
         conn.sendTTL = twm.ttlTx;

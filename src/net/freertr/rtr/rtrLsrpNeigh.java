@@ -9,6 +9,7 @@ import net.freertr.auth.authConstant;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntEcho;
 import net.freertr.clnt.clntPing;
+import net.freertr.clnt.clntTwamp;
 import net.freertr.cry.cryBase64;
 import net.freertr.ip.ipMpls;
 import net.freertr.pipe.pipeLine;
@@ -532,6 +533,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             notif.misleep(iface.helloTimer);
             long tim = bits.getTime();
             if ((echoTime + iface.echoTimer) < tim) {
+                echoCalc.updateFrom(iface.echoParam);
                 switch (iface.dynamicMetric) {
                     case 1:
                         echoData = bits.randomD();
@@ -552,6 +554,14 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                         ech.src = iface.iface;
                         ech.trg = peer;
                         ech.doWork();
+                        break;
+                    case 4:
+                        clntTwamp twm = new clntTwamp();
+                        twm.meas = echoCalc;
+                        twm.udp = lower.udpCore;
+                        twm.src = iface.iface;
+                        twm.trg = peer;
+                        twm.doWork();
                         break;
                 }
                 echoTime = tim - 1;

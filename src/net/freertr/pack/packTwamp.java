@@ -24,6 +24,11 @@ public class packTwamp {
     public static final int size = 41;
 
     /**
+     * error magic
+     */
+    public static final int errMag = 0x3fff;
+
+    /**
      * sequence number
      */
     public int sequence;
