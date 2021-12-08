@@ -7,6 +7,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.auth.authConstant;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntEcho;
 import net.freertr.clnt.clntPing;
 import net.freertr.cry.cryBase64;
 import net.freertr.ip.ipMpls;
@@ -543,6 +544,14 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                         png.src = iface.iface;
                         png.trg = peer;
                         png.doWork();
+                        break;
+                    case 3:
+                        clntEcho ech = new clntEcho();
+                        ech.meas = echoCalc;
+                        ech.udp = lower.udpCore;
+                        ech.src = iface.iface;
+                        ech.trg = peer;
+                        ech.doWork();
                         break;
                 }
                 echoTime = tim - 1;

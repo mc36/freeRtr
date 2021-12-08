@@ -9,7 +9,7 @@ import net.freertr.tab.tabAverage;
 import net.freertr.util.logger;
 
 /**
- * ping measurements
+ * ping client
  *
  * @author matecsaba
  */
