@@ -1437,6 +1437,39 @@ public class shrtPthFrst<Ta extends addrType> {
     }
 
     /**
+     * inconsistent metrics
+     *
+     * @param mtch matcher
+     * @return text
+     */
+    public userFormat listMetIncons(tabIntMatcher mtch) {
+        userFormat res = new userFormat("|", "source|target|diff");
+        for (int o = 0; o < nodes.size(); o++) {
+            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            for (int i = 0; i < ntry.conn.size(); i++) {
+                shrtPthFrstConn<Ta> cn = ntry.conn.get(i);
+                shrtPthFrstConn<Ta> co = cn.target.findConn(ntry, cn.metric);
+                if (co == null) {
+                    res.add(ntry + "|" + cn.target + "|missing");
+                    continue;
+                }
+                int p = cn.metric - co.metric;
+                if (p < 0) {
+                    p = -p;
+                }
+                if (p < 1) {
+                    continue;
+                }
+                if (!mtch.matches(p)) {
+                    continue;
+                }
+                res.add(ntry + "|" + cn.target + "|" + p);
+            }
+        }
+        return res;
+    }
+
+    /**
      * get routes
      *
      * @param fwdCor forwarding core

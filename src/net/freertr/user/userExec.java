@@ -412,6 +412,8 @@ public class userExec {
         hl.add(null, "6 6,.            nocli              skip cli commands");
         hl.add(null, "6 6,.            nonets             skip connected networks");
         hl.add(null, "6 6,.            noints             skip connected interfaces");
+        hl.add(null, "5 6,.          lnkinconsistent      inconsistent advertisements of metrics");
+        hl.add(null, "6 .              [str]              int matcher");
         hl.add(null, "5 6,.          nhinconsistent       inconsistent advertisements of next hops");
         hl.add(null, "6 .              [str]              int matcher");
         hl.add(null, "5 6,.          topology             topology about last spf");
@@ -460,6 +462,9 @@ public class userExec {
         hl.add(null, "7 7,.              nocli            skip cli commands");
         hl.add(null, "7 7,.              nonets           skip connected networks");
         hl.add(null, "7 7,.              noints           skip connected interfaces");
+        hl.add(null, "5 6            lnkinconsistent      inconsistent advertisements of metrics");
+        hl.add(null, "6 7,.            <num>              area number");
+        hl.add(null, "7 .                [str]            int matcher");
         hl.add(null, "5 6            nhinconsistent       inconsistent advertisements of next hops");
         hl.add(null, "6 7,.            <num>              area number");
         hl.add(null, "7 .                [str]            int matcher");
@@ -496,6 +501,9 @@ public class userExec {
         hl.add(null, "7 7,.              nocli            skip cli commands");
         hl.add(null, "7 7,.              nonets           skip connected networks");
         hl.add(null, "7 7,.              noints           skip connected interfaces");
+        hl.add(null, "5 6            lnkinconsistent      inconsistent advertisements of metrics");
+        hl.add(null, "6 7,.            <num>              level number");
+        hl.add(null, "7 .                [str]            int matcher");
         hl.add(null, "5 6            nhinconsistent       inconsistent advertisements of next hops");
         hl.add(null, "6 7,.            <num>              level number");
         hl.add(null, "7 .                [str]            int matcher");

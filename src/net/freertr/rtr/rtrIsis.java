@@ -2071,6 +2071,18 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * show met inconsistency
+     *
+     * @param level level number
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showMetIncons(int level, tabIntMatcher mtch) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.lastSpf.listMetIncons(mtch);
+    }
+
+    /**
      * show hostnames
      *
      * @param level level number

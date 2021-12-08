@@ -1020,6 +1020,22 @@ public class rtrOspf6 extends ipRtr {
     }
 
     /**
+     * show met inconsistency
+     *
+     * @param area area number
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showMetIncons(int area, tabIntMatcher mtch) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.lastSpf.listMetIncons(mtch);
+    }
+
+    /**
      * show hostnames
      *
      * @param area area number

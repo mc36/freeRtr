@@ -128,6 +128,7 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
      */
     protected shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer, int met) {
         shrtPthFrstConn<Ta> best = null;
+        int diff = Integer.MAX_VALUE;
         for (int i = 0; i < conn.size(); i++) {
             shrtPthFrstConn<Ta> ntry = conn.get(i);
             if (peer.compare(peer, ntry.target) != 0) {
@@ -139,14 +140,15 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
             if (met == ntry.metric) {
                 return ntry;
             }
-            if (best == null) {
-                best = ntry;
-                continue;
+            int o = ntry.metric - met;
+            if (o < 0) {
+                o = -o;
             }
-            if (ntry.metric >= best.metric) {
+            if (o > diff) {
                 continue;
             }
             best = ntry;
+            diff = o;
         }
         return best;
     }

@@ -1542,6 +1542,13 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showNhIncons(i, mtch));
                     return null;
                 }
+                if (a.equals("lnkinconsistent")) {
+                    int i = bits.str2num(cmd.word());
+                    tabIntMatcher mtch = new tabIntMatcher();
+                    mtch.fromString(cmd.word());
+                    rdr.putStrTab(r.ospf4.showMetIncons(i, mtch));
+                    return null;
+                }
                 if (a.equals("route")) {
                     doShowRoutes(r.ospf4.fwdCore, r.ospf4.showRoute(bits.str2num(cmd.word())), 1);
                     return null;
@@ -1844,6 +1851,13 @@ public class userShow {
                     tabIntMatcher mtch = new tabIntMatcher();
                     mtch.fromString(cmd.word());
                     rdr.putStrTab(r.ospf6.showNhIncons(i, mtch));
+                    return null;
+                }
+                if (a.equals("lnkinconsistent")) {
+                    int i = bits.str2num(cmd.word());
+                    tabIntMatcher mtch = new tabIntMatcher();
+                    mtch.fromString(cmd.word());
+                    rdr.putStrTab(r.ospf6.showMetIncons(i, mtch));
                     return null;
                 }
                 if (a.equals("route")) {
@@ -2309,6 +2323,12 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showNhIncons(mtch));
             return;
         }
+        if (a.equals("lnkinconsistent")) {
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.lsrp.showMetIncons(mtch));
+            return;
+        }
         if (a.equals("route")) {
             doShowRoutes(r.lsrp.fwdCore, r.lsrp.routerComputedU, 1);
             return;
@@ -2452,6 +2472,13 @@ public class userShow {
             tabIntMatcher mtch = new tabIntMatcher();
             mtch.fromString(cmd.word());
             rdr.putStrTab(r.isis.showNhIncons(i, mtch));
+            return;
+        }
+        if (a.equals("lnkinconsistent")) {
+            int i = bits.str2num(cmd.word());
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.isis.showMetIncons(i, mtch));
             return;
         }
         if (a.equals("route")) {

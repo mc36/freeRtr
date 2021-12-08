@@ -600,6 +600,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * show met inconsistency
+     *
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showMetIncons(tabIntMatcher mtch) {
+        return lastSpf.listMetIncons(mtch);
+    }
+
+    /**
      * show hostnames
      *
      * @return names list
