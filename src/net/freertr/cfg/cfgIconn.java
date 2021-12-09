@@ -73,6 +73,8 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
+        l.add(null, "1 2   rename                        rename this connect");
+        l.add(null, "2 .     <name>                      set new name");
         l.add(null, "1 2  side1                          specify first side of connection");
         getSideHelp(l);
         l.add(null, "1 2  side2                          specify seconds side of connection");
@@ -98,6 +100,16 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgIconn v = cfgAll.iconFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
             return;
         }
         if (s.equals("side1")) {

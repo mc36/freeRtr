@@ -24,7 +24,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     /**
      * name of connection map
      */
-    public final String name;
+    public String name;
 
     /**
      * description of access list
@@ -79,6 +79,8 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
+        l.add(null, "1 2   rename                        rename this proxy");
+        l.add(null, "2 .     <name>                      set new name");
         l.add(null, "1 2  protocol                       specify protocol to use");
         l.add(null, "2 .    local                        select local vrf");
         l.add(null, "2 .    socks4                       select socks v4");
@@ -158,6 +160,17 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgPrfxlst v = cfgAll.prfxFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
+            proxy.name = s;
             return;
         }
         if (s.equals("protocol")) {

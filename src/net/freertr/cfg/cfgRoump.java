@@ -159,6 +159,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 .     permit              specify to allow");
         l.add(null, "1 2,. description           description of this route map");
         l.add(null, "2 2,.   [text]              text describing this route map");
+        l.add(null, "1 2   rename                rename this route map");
+        l.add(null, "2 .     <name>              set new name");
         l.add(null, "1 2   tcladd                add tcl line");
         l.add(null, "2 2,.   <str>               script");
         l.add(null, "1 .   tcldel                delete tcl script");
@@ -360,6 +362,17 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("description")) {
             tabRtrmapN ntry = getCurr();
             ntry.description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgRoump v = cfgAll.rtmpFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            roumap.listName = a;
             return;
         }
         if (a.equals("tcldel")) {

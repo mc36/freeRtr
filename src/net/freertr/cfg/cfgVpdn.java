@@ -699,6 +699,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    <name>                       name or address of target");
         l.add(null, "1 2  description                    specify description");
         l.add(null, "2 2,.  <str>                        description");
+        l.add(null, "1 2  rename                         rename this vpdn");
+        l.add(null, "2 .    <name>                       set new name");
         l.add(null, "1 2  interface                      name of interface to serve");
         l.add(null, "2 .    <name:ifc>                   interface name");
         l.add(null, "1 2  bridge-group                   name of bridge group to serve");
@@ -770,6 +772,16 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgVpdn v = cfgAll.vpdnFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
             return;
         }
         if (s.equals("proxy")) {

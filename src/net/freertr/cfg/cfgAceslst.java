@@ -86,6 +86,8 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add(null, "2  1     <num>                       sequence number");
         l.add(null, "1  3,. description                   specify description");
         l.add(null, "3  3,.   <str>                       text");
+        l.add(null, "1  2   rename                        rename this access list");
+        l.add(null, "2  .     <name>                      set new name");
         l.add(null, "1  .   hidden                        hide the entries");
         l.add(null, "1  3   evaluate                      evaluate another list");
         l.add(null, "3  4     permit                      specify list to allow");
@@ -167,6 +169,17 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgAceslst v = cfgAll.aclsFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            aceslst.listName = a;
             return;
         }
         if (a.equals("description")) {

@@ -64,6 +64,8 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1  2,.    description              specify description");
         l.add(null, "2  2,.      <str>                  text");
+        l.add(null, "1  2      rename                   rename this exporter");
+        l.add(null, "2  .        <name>                 set new name");
         l.add(null, "1  2      target                   specify target address");
         l.add(null, "2  2,.      <str>                  name");
         l.add(null, "1  2      port                     specify target port");
@@ -114,6 +116,16 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
             if (negated) {
                 description = null;
             }
+            return;
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgTlmtry v = cfgAll.tlmdsFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
             return;
         }
         if (s.equals("target")) {

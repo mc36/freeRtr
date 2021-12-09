@@ -72,6 +72,8 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         l.add(null, "2 1     <num>               sequence number");
         l.add(null, "1 3,. description           specify description");
         l.add(null, "3 3,.   <str>               text");
+        l.add(null, "1 2   rename                rename this prefix list");
+        l.add(null, "2 .     <name>              set new name");
         l.add(null, "1 3   evaluate              evaluate another list");
         l.add(null, "3 4     permit              specify list to allow");
         l.add(null, "3 4     deny                specify list to forbid");
@@ -111,6 +113,17 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         }
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgPrfxlst v = cfgAll.prfxFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            prflst.listName = a;
             return;
         }
         if (a.equals("reindex")) {

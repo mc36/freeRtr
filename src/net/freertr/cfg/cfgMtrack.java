@@ -68,8 +68,10 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1  3,. description                   specify description");
-        l.add(null, "3  3,.   <str>                       text");
+        l.add(null, "1  3,.    description                specify description");
+        l.add(null, "3  3,.      <str>                    text");
+        l.add(null, "1  2      rename                     rename this mtracker");
+        l.add(null, "2  .        <name>                   set new name");
         l.add(null, "1  2      group                      specify group address");
         l.add(null, "2  2,.      <addr>                   address of group");
         l.add(null, "1  2      target                     specify target address");
@@ -142,6 +144,16 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return false;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgMtrack v = cfgAll.mtrackFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return true;
+            }
+            name = a;
             return false;
         }
         if (a.equals("logging")) {

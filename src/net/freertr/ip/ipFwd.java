@@ -383,13 +383,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public final ipMhost mhostCore;
 
+    /**
+     * next interface number
+     */
+    public int nextIfaceNumber = bits.randomD();
+
     private notifier triggerUpdate;
 
     private static int nextVrfNumber = bits.randomD();
 
     private static int nextRouterNumber = bits.randomD();
-
-    private int nextIfaceNumber = bits.randomD();
 
     private int nextEchoNumber = bits.randomD();
 

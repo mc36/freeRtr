@@ -24,7 +24,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
     /**
      * name of this user list
      */
-    public final String name;
+    public String name;
 
     /**
      * method type
@@ -207,6 +207,8 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
+        l.add(null, "1 2    rename              rename this authenticator");
+        l.add(null, "2 .      <name>            set new name");
         l.add(null, "1 .    log-failure         log failure");
         l.add(null, "1 .    log-success         log success");
         l.add(null, "1 .    log-error           log error");
@@ -228,6 +230,17 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         }
         if (aut == null) {
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgAuther v = cfgAll.autherFind(a, null);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            aut.autName = a;
             return;
         }
         if (a.equals("log-failure")) {

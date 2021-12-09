@@ -139,6 +139,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1  2,.    description                description of this script");
         l.add(null, "2  2,.      [text]                   text describing this script");
+        l.add(null, "1  2      rename                     rename this script");
+        l.add(null, "2  .        <name>                   set new name");
         l.add(null, "1  .      respawn                    restart on termination");
         l.add(null, "1  2      time                       specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds between runs");
@@ -192,6 +194,16 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgScrpt v = cfgAll.scrptFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
             return;
         }
         if (a.equals("random-time")) {

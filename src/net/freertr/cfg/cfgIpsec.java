@@ -41,7 +41,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
     /**
      * name of profile
      */
-    public final String name;
+    public String name;
 
     /**
      * description
@@ -157,6 +157,8 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         trans.getHelp(l);
         l.add(null, "1 3,. description        specify description");
         l.add(null, "3 3,.   <str>            text");
+        l.add(null, "1 2   rename             rename this ipsec");
+        l.add(null, "2 .     <name>           set new name");
         l.add(null, "1 2  key                 set preshared key");
         l.add(null, "2 .    <text>            key");
         l.add(null, "1 2  protected           set protected protocol");
@@ -179,6 +181,16 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgIpsec v = cfgAll.ipsecFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
             return;
         }
         if (s.equals("key")) {

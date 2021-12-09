@@ -105,6 +105,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "1 .   next                  no operation");
         l.add(null, "1 2,. description           description of this route policy");
         l.add(null, "2 2,.   [text]              text describing this route policy");
+        l.add(null, "1 2   rename                rename this route policy");
+        l.add(null, "2 .     <name>              set new name");
         l.add(null, "1 2   if                    match values from source routing protocol");
         l.add(null, "1 2   elsif                 match values from source routing protocol");
         l.add(null, "2 .     always              match always");
@@ -553,6 +555,17 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             ntry.doMode = tabRtrplcN.doType.description;
             indent();
             ntry.description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgRouplc v = cfgAll.rtplFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            rouplc.listName = a;
             return;
         }
         if (a.equals("if")) {

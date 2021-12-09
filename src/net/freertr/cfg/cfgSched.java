@@ -144,6 +144,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1  2,.    description                description of this scheduler");
         l.add(null, "2  2,.      [text]                   text describing this scheduler");
+        l.add(null, "1  2      rename                     rename this scheduler");
+        l.add(null, "2  .        <name>                   set new name");
         l.add(null, "1  .      respawn                    restart on termination");
         l.add(null, "1  2      command                    specify command to run");
         l.add(null, "2  2,.      <cmd>                    exec command to run");
@@ -198,6 +200,16 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgSched v = cfgAll.schedFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
             return;
         }
         if (a.equals("respawn")) {

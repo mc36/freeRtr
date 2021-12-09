@@ -130,6 +130,8 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "2 .     priority            priority to rate");
         l.add(null, "1 2,. description           description of this policy map");
         l.add(null, "2 2,.   [text]              text describing this policy map");
+        l.add(null, "1 2   rename                rename this policy map");
+        l.add(null, "2 .     <name>              set new name");
         l.add(null, "1 2   match                 match values from packet");
         l.add(null, "2 3     length              match length value");
         l.add(null, "3 .       <num>             value to match");
@@ -280,6 +282,17 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         if (a.equals("description")) {
             tabPlcmapN ntry = getCurr();
             ntry.description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgPlymp v = cfgAll.plmpFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            plcmap.listName = a;
             return;
         }
         if (a.equals("access-rate")) {

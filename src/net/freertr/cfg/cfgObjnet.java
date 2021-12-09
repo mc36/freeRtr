@@ -60,8 +60,10 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         l.add(null, "2  1     <num>               sequence number");
         l.add(null, "1  3,. description           specify description");
         l.add(null, "3  3,.   <str>               text");
-        l.add(null, "1  3       <addr>            address of network");
-        l.add(null, "3  .         <mask>          mask of network");
+        l.add(null, "1  2   rename                rename this object group");
+        l.add(null, "2  .     <name>              set new name");
+        l.add(null, "1  3   <addr>                address of network");
+        l.add(null, "3  .     <mask>              mask of network");
         l.add(null, "1  2,. reindex               reindex access list");
         l.add(null, "2  3,.   [num]               initial number to start with");
         l.add(null, "3  4,.     [num]             increment number");
@@ -104,6 +106,17 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         }
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgObjnet v = cfgAll.objnetFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            objgrp.listName = a;
             return;
         }
         if (a.equals("reindex")) {

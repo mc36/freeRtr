@@ -222,6 +222,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public int label6comm = 0;
 
     /**
+     * ipv4 interface value
+     */
+    public int iface4start = 0;
+
+    /**
+     * ipv6 interface value
+     */
+    public int iface6start = 0;
+
+    /**
      * ipv4 import list
      */
     public cfgPrfxlst import4list = null;
@@ -350,6 +360,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no label6filter",
         "vrf definition .*! label4common 0",
         "vrf definition .*! label6common 0",
+        "vrf definition .*! iface4start 0",
+        "vrf definition .*! iface6start 0",
         "vrf definition .*! no import4list",
         "vrf definition .*! no import6list",
         "vrf definition .*! no export4list",
@@ -645,6 +657,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 s = "per-vrf";
                 break;
         }
+        l.add(cmds.tabulator + "iface4start " + iface4start);
+        l.add(cmds.tabulator + "iface6start " + iface6start);
         l.add(cmds.tabulator + "label-mode " + s);
         l.add(cmds.tabulator + "label4common " + label4comm);
         l.add(cmds.tabulator + "label6common " + label6comm);
@@ -753,6 +767,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 .    <num>             label value");
         l.add(null, "1 2  label6common        specify ipv6 common label");
         l.add(null, "2 .    <num>             label value");
+        l.add(null, "1 2  iface4start         specify ipv4 interface index");
+        l.add(null, "2 .    <num>             start index");
+        l.add(null, "1 2  iface6start         specify ipv6 interface index");
+        l.add(null, "2 .    <num>             start index");
         l.add(null, "1 2  import4list         specify ipv4 import filter");
         l.add(null, "2 .    <name:pl>         name of prefix list");
         l.add(null, "1 2  import6list         specify ipv6 import filter");
@@ -893,6 +911,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.prefixMode = labelMode;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("iface4start")) {
+            iface4start = bits.str2num(cmd.word());
+            fwd4.nextIfaceNumber = iface4start;
+            return;
+        }
+        if (a.equals("iface6start")) {
+            iface6start = bits.str2num(cmd.word());
+            fwd6.nextIfaceNumber = iface6start;
             return;
         }
         if (a.equals("label4common")) {
@@ -1267,6 +1295,14 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             label6fltr = null;
             fwd6.labelFilter = null;
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("iface4start")) {
+            iface4start = 0;
+            return;
+        }
+        if (a.equals("iface6start")) {
+            iface6start = 0;
             return;
         }
         if (a.equals("label4common")) {

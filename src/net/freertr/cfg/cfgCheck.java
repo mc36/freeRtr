@@ -31,7 +31,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     /**
      * name of check
      */
-    public final String name;
+    public String name;
 
     /**
      * time to answer
@@ -200,6 +200,8 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
+        l.add(null, "1 2      rename                   rename this check");
+        l.add(null, "2 .        <name>                 set new name");
         l.add(null, "1 2      resolve                  resolve the regexp group a to hostname");
         l.add(null, "2 2,.      <str>                  text to resolv");
         l.add(null, "1 2      replace                  replace from one string to another");
@@ -287,6 +289,16 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         boolean negated = s.equals("no");
         if (negated) {
             s = cmd.word();
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgCheck v = cfgAll.checkFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
+            return;
         }
         if (s.equals("resolve")) {
             s = cmd.getRemaining();

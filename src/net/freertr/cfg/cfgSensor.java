@@ -32,7 +32,7 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     /**
      * name of sensor
      */
-    public final String name;
+    public String name;
 
     /**
      * hidden sensor
@@ -179,6 +179,8 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
+        l.add(null, "1 2      rename                   rename this sensor");
+        l.add(null, "2 .        <name>                 set new name");
         l.add(null, "1 2      command                  specify command to execute");
         l.add(null, "2 2,.      <str>                  command");
         l.add(null, "1 2      prepend                  specify prepend");
@@ -294,6 +296,16 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         boolean negated = s.equals("no");
         if (negated) {
             s = cmd.word();
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgSensor v = cfgAll.sensorFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
+            return;
         }
         if (s.equals("command")) {
             command = cmd.getRemaining();

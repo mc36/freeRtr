@@ -97,8 +97,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
      * @param l help text
      */
     public void getHelp(userHelping l) {
-        l.add(null, "1  3,. description                   specify description");
-        l.add(null, "3  3,.   <str>                       text");
+        l.add(null, "1  3,.    description                specify description");
+        l.add(null, "3  3,.      <str>                    text");
+        l.add(null, "1  2      rename                     rename this tracker");
+        l.add(null, "2  .        <name>                   set new name");
         l.add(null, "1  2      mode                       specify mode of runs");
         l.add(null, "2  .        icmp                     icmp echo request");
         l.add(null, "2  .        nrpe                     nrpe remote check");
@@ -236,6 +238,17 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgTrack v = cfgAll.trackFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            worker.name = a;
             return;
         }
         if (a.equals("script")) {

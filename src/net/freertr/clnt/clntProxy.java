@@ -32,7 +32,7 @@ public class clntProxy {
     /**
      * name of this proxy
      */
-    public final String name;
+    public String name;
 
     /**
      * prefer ip protocol 0=default, 4=ip4, 6=ip6

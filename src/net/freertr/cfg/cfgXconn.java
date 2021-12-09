@@ -81,6 +81,8 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
+        l.add(null, "1 2  rename                         rename this xconnect");
+        l.add(null, "2 .    <name>                       set new name");
         l.add(null, "1 2  mtu                            specify vc mtu");
         l.add(null, "2 .    <num>                        mtu");
         l.add(null, "1 2  type                           type of pseudowire");
@@ -118,6 +120,16 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgXconn v = cfgAll.xconFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = s;
             return;
         }
         if (s.equals("type")) {

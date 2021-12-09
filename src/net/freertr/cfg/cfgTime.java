@@ -116,6 +116,8 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "2 1,.   <num>               sequence number");
         l.add(null, "1 3,. description           specify description");
         l.add(null, "3 3,.   <str>               text");
+        l.add(null, "1 2   rename                rename this time map");
+        l.add(null, "2 .     <name>              set new name");
         l.add(null, "1 2,. reindex               reindex route map");
         l.add(null, "2 3,.   [num]               initial number to start with");
         l.add(null, "3 4,.     [num]             increment number");
@@ -150,6 +152,16 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgTime v = cfgAll.timeFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
             return;
         }
         if (a.equals("sequence")) {
