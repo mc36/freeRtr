@@ -3328,7 +3328,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of neighbors
      */
     public userFormat showNeighs(int safi) {
-        userFormat l = new userFormat("|", "as|learn|accept|will|done|neighbor|uptime");
+        userFormat l = new userFormat("|", "neighbor|as|learn|accept|will|done|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh ntry = neighs.get(i);
             if (ntry == null) {
@@ -3358,46 +3358,46 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat l = null;
         switch (mod) {
             case 1:
-                l = new userFormat("|", "as|open|norem|noloc|neighbor");
+                l = new userFormat("|", "neighbor|as|open|norem|noloc");
                 break;
             case 2:
-                l = new userFormat("|", "as|group|neighbor|uptime");
+                l = new userFormat("|", "neighbor|as|group|uptime");
                 break;
             case 3:
-                l = new userFormat("|", "as|reach|chg|num|neighbor|uptime");
+                l = new userFormat("|", "neighbor|as|reach|chg|num|uptime");
                 break;
             case 4:
-                l = new userFormat("|", "as|rx|tx|neighbor");
+                l = new userFormat("|", "neighbor|as|rx|tx");
                 break;
             case 5:
-                l = new userFormat("|", "as|rx|tx|rx|tx|rx|tx|neighbor", "1|2open|2norem|2noloc|1");
+                l = new userFormat("|", "neighbor|as|rx|tx|rx|tx|rx|tx", "2|2open|2norem|2noloc");
                 break;
             case 6:
-                l = new userFormat("|", "as|router|wideas|refresh|extop|extup|type|role|neighbor");
+                l = new userFormat("|", "neighbor|as|router|wideas|refresh|extop|extup|type|role");
                 break;
             case 7:
-                l = new userFormat("|", "as|buffer|over|ver|incr|full|need|neighbor");
+                l = new userFormat("|", "neighbor|as|buffer|over|ver|incr|full|need");
                 break;
             case 8:
-                l = new userFormat("|", "as|neighbor|description");
+                l = new userFormat("|", "neighbor|as|description");
                 break;
             case 9:
-                l = new userFormat("|", "as|neighbor|hostname|domain");
+                l = new userFormat("|", "neighbor|as|hostname|domain");
                 break;
             case 10:
-                l = new userFormat("|", "as|rx|tx|rx|tx|neighbor", "1|2operate|2ratio|1");
+                l = new userFormat("|", "neighbor|as|rx|tx|rx|tx", "2|2operate|2ratio");
                 break;
             case 11:
-                l = new userFormat("|", "as|rx|tx|rx|tx|rx|tx|neighbor", "1|2update|2byte|2refresh|1");
+                l = new userFormat("|", "neighbor|as|rx|tx|rx|tx|rx|tx", "2|2update|2byte|2refresh");
                 break;
             case 12:
-                l = new userFormat("|", "as|neighbor|domain");
+                l = new userFormat("|", "neighbor|as|domain");
                 break;
             case 13:
-                l = new userFormat("|", "as|learn|sent|ready|neighbor|uptime");
+                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptime");
                 break;
             case 14:
-                l = new userFormat("|", "as|rx|tx|neighbor");
+                l = new userFormat("|", "neighbor|as|rx|tx");
                 break;
             default:
                 return null;
