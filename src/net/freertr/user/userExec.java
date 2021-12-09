@@ -439,6 +439,7 @@ public class userExec {
         hl.add(null, "3 4        ospf                     open shortest path first protocol");
         hl.add(null, "4 5          <num>                  process id");
         hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 6            database             list of lsas in area");
         hl.add(null, "6 7,.            <num>              area number");
@@ -479,6 +480,7 @@ public class userExec {
         hl.add(null, "3 4        isis                     intermediate system intermediate system protocol");
         hl.add(null, "4 5          <num>                  process id");
         hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 6            database             list of lsas in area");
         hl.add(null, "6 7,.            <num>              level number");

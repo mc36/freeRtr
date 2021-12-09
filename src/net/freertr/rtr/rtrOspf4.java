@@ -13,6 +13,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
+import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -105,6 +106,11 @@ public class rtrOspf4 extends ipRtr {
     public final ipFwd fwdCore;
 
     /**
+     * udp core
+     */
+    public final prtUdp udpCore;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrOspf4iface> ifaces;
@@ -128,10 +134,12 @@ public class rtrOspf4 extends ipRtr {
      * create one ospf process
      *
      * @param forwarder the ip protocol
+     * @param udp the udp protocol
      * @param id process id
      */
-    public rtrOspf4(ipFwd forwarder, int id) {
+    public rtrOspf4(ipFwd forwarder, prtUdp udp, int id) {
         fwdCore = forwarder;
+        udpCore = udp;
         ifaces = new tabGen<rtrOspf4iface>();
         areas = new tabGen<rtrOspf4area>();
         routerID = new addrIPv4();
@@ -778,6 +786,29 @@ public class rtrOspf4 extends ipRtr {
                     continue;
                 }
                 l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
+            }
+        }
+        return l;
+    }
+
+    /**
+     * list of neighbors
+     *
+     * @return list
+     */
+    public userFormat showMetrics() {
+        userFormat l = new userFormat("|", "interface|area|address|routerid|metric|delay");
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrOspf4iface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            for (int i = 0; i < ifc.neighs.size(); i++) {
+                rtrOspf4neigh nei = ifc.neighs.get(i);
+                if (nei == null) {
+                    continue;
+                }
+                l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.getMetric() + "|" + nei.echoCalc);
             }
         }
         return l;

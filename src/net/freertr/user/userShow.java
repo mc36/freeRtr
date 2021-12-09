@@ -1469,6 +1469,10 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showNeighs());
                     return null;
                 }
+                if (a.equals("metric")) {
+                    rdr.putStrTab(r.ospf4.showMetrics());
+                    return null;
+                }
                 if (a.equals("interface")) {
                     rdr.putStrTab(r.ospf4.showIfaces());
                     return null;
@@ -1778,6 +1782,10 @@ public class userShow {
                 a = cmd.word();
                 if (a.equals("neighbor")) {
                     rdr.putStrTab(r.ospf6.showNeighs());
+                    return null;
+                }
+                if (a.equals("metric")) {
+                    rdr.putStrTab(r.ospf6.showMetrics());
                     return null;
                 }
                 if (a.equals("interface")) {
@@ -2399,6 +2407,10 @@ public class userShow {
         String a = cmd.word();
         if (a.equals("neighbor")) {
             rdr.putStrTab(r.isis.showNeighs());
+            return;
+        }
+        if (a.equals("metric")) {
+            rdr.putStrTab(r.isis.showMetrics());
             return;
         }
         if (a.equals("interface")) {

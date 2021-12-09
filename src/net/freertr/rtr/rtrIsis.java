@@ -21,6 +21,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
+import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -139,6 +140,11 @@ public class rtrIsis extends ipRtr {
     public final ipFwd fwdCore;
 
     /**
+     * udp core
+     */
+    public final prtUdp udpCore;
+
+    /**
      * other afi router
      */
     public final rtrIsisOther other;
@@ -183,11 +189,13 @@ public class rtrIsis extends ipRtr {
      *
      * @param forwarder the ip protocol
      * @param otherfwd the other ip protocol
+     * @param udp the udp protocol
      * @param id process id
      */
-    public rtrIsis(ipFwd forwarder, ipFwd otherfwd, int id) {
+    public rtrIsis(ipFwd forwarder, ipFwd otherfwd, prtUdp udp, int id) {
         netEntTit.fromString("00.0000.0000.0000.00");
         fwdCore = forwarder;
+        udpCore = udp;
         distantExt = 115;
         distantInt = 115;
         operateLevel = 2;
@@ -1838,6 +1846,29 @@ public class rtrIsis extends ipRtr {
                     continue;
                 }
                 l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
+            }
+        }
+        return l;
+    }
+
+    /**
+     * list of neighbors
+     *
+     * @return list
+     */
+    public userFormat showMetrics() {
+        userFormat l = new userFormat("|", "interface|mac address|level|routerid|metric|delay");
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrIsisIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            for (int i = 0; i < ifc.neighs.size(); i++) {
+                rtrIsisNeigh nei = ifc.neighs.get(i);
+                if (nei == null) {
+                    continue;
+                }
+                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.getMetric() + "|" + nei.echoCalc);
             }
         }
         return l;

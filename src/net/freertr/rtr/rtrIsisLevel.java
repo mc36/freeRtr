@@ -554,7 +554,7 @@ public class rtrIsisLevel implements Runnable {
                 if (nei.segrouOth != null) {
                     buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.label));
                 }
-                advertiseTlv(pck, lower.putISneigh(nei.rtrID, 0, ifc.metric, buf));
+                advertiseTlv(pck, lower.putISneigh(nei.rtrID, 0, nei.getMetric(), buf));
                 if (subs) {
                     advertiseTlv(pck, rtrIsisTe.putSrlg(lower, nei.rtrID, 0, ifc.iface.addr, nei.ifcAddr, ifc.teSrlg));
                 }
@@ -928,7 +928,7 @@ public class rtrIsisLevel implements Runnable {
                 if (nei.level.level != level) {
                     continue;
                 }
-                spf.addNextHop(ifc.metric, new rtrIsisLevelSpf(nei.rtrID, 0), nei.ifcAddr, ifc.iface, nei.ofcAddr, ifc.oface);
+                spf.addNextHop(nei.getMetric(), new rtrIsisLevelSpf(nei.rtrID, 0), nei.ifcAddr, ifc.iface, nei.ofcAddr, ifc.oface);
             }
         }
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
@@ -971,14 +971,17 @@ public class rtrIsisLevel implements Runnable {
             logger.debug("started level" + level);
         }
         todo.or(2);
-        for (;;) {
+        for (int rnd = 0;; rnd++) {
             try {
-                notif.misleep(30000);
+                notif.misleep(10000);
                 int ver = todo.ver();
                 int val = todo.get();
                 todo.andIf(0xf, ver);
                 if ((val & 1) == 0) {
                     break;
+                }
+                if ((rnd % 6) == 0) {
+                    val |= 0x30;
                 }
                 if ((val & 0x10) != 0) {
                     generateLsps();

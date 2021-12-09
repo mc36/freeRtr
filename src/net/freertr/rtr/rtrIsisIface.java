@@ -15,6 +15,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -232,6 +233,21 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public int brOthIdx;
 
     /**
+     * echo interval
+     */
+    public int echoTimer;
+
+    /**
+     * echo parameters
+     */
+    public tabAverage echoParam;
+
+    /**
+     * dynamic metric
+     */
+    public int dynamicMetric;
+
+    /**
      * neighbors
      */
     protected tabGen<rtrIsisNeigh> neighs;
@@ -270,6 +286,8 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         disPriority = 64;
         authenMode = 1;
         metric = 10;
+        echoTimer = 60000;
+        echoParam = new tabAverage(1, 16777210);
         suppressInt = true;
         othSuppInt = true;
         connectedCheck = true;
@@ -389,6 +407,31 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmds.cfgLine(l, brIndex < 1, cmds.tabulator, s + "index", "" + brIndex);
             cmds.cfgLine(l, brOthIdx < 1, cmds.tabulator, s + "other-index", "" + brOthIdx);
         }
+        switch (dynamicMetric) {
+            case 0:
+                a = "disabled";
+                break;
+            case 1:
+                a = "icmpecho";
+                break;
+            case 2:
+                a = "udpecho";
+                break;
+            case 3:
+                a = "twamp";
+                break;
+            default:
+                a = "unknown=" + dynamicMetric;
+        }
+        cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric", a);
+        l.add(cmds.tabulator + beg + "dynamic-time " + echoTimer);
+        l.add(cmds.tabulator + beg + "dynamic-size " + echoParam.buckets);
+        l.add(cmds.tabulator + beg + "dynamic-minimum " + echoParam.minimum);
+        l.add(cmds.tabulator + beg + "dynamic-maximum " + echoParam.maximum);
+        l.add(cmds.tabulator + beg + "dynamic-divisor " + echoParam.divisor);
+        l.add(cmds.tabulator + beg + "dynamic-multiply " + echoParam.multiply);
+        l.add(cmds.tabulator + beg + "dynamic-ignore " + echoParam.ignorer);
+        l.add(cmds.tabulator + beg + "dynamic-algo " + echoParam.getAlgoName());
     }
 
     /**
@@ -590,6 +633,57 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmd.badCmd();
             return;
         }
+        if (a.equals("dynamic-metric")) {
+            a = cmd.word();
+            dynamicMetric = 0;
+            if (a.equals("disabled")) {
+                dynamicMetric = 0;
+            }
+            if (a.equals("icmpecho")) {
+                dynamicMetric = 1;
+            }
+            if (a.equals("udpecho")) {
+                dynamicMetric = 2;
+            }
+            if (a.equals("twamp")) {
+                dynamicMetric = 3;
+            }
+            lower.genLsps(3);
+            return;
+        }
+        if (a.equals("dynamic-time")) {
+            echoTimer = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-size")) {
+            echoParam.buckets = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-minimum")) {
+            echoParam.minimum = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-maximum")) {
+            echoParam.maximum = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-divisor")) {
+            echoParam.divisor = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-multiply")) {
+            echoParam.multiply = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-ignore")) {
+            echoParam.ignorer = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-algo")) {
+            echoParam.string2algo(cmd.word());
+            lower.genLsps(3);
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -715,6 +809,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmd.badCmd();
             return;
         }
+        if (a.equals("dynamic-metric")) {
+            dynamicMetric = 0;
+            lower.genLsps(3);
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -782,6 +881,30 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add(null, "6 .             <num>                 index");
         l.add(null, "5 6           other-index             set other index");
         l.add(null, "6 .             <num>                 index");
+        l.add(null, "4 5         dynamic-metric            dynamic peer metric");
+        l.add(null, "5 .           disabled                forbid echo requests");
+        l.add(null, "5 .           icmpecho                icmp echo requests");
+        l.add(null, "5 .           udpecho                 udp echo requests");
+        l.add(null, "5 .           twamp                   twamp echo requests");
+        l.add(null, "4 5         dynamic-time              measurement interval");
+        l.add(null, "5 .           <num>                   time in ms");
+        l.add(null, "4 5         dynamic-size              number of measurement");
+        l.add(null, "5 .           <num>                   number of values");
+        l.add(null, "4 5         dynamic-minimum           lowest result");
+        l.add(null, "5 .           <num>                   minimum");
+        l.add(null, "4 5         dynamic-maximum           highest result");
+        l.add(null, "5 .           <num>                   maximum");
+        l.add(null, "4 5         dynamic-divisor           divide result");
+        l.add(null, "5 .           <num>                   divisor");
+        l.add(null, "4 5         dynamic-multiply          multiply result");
+        l.add(null, "5 .           <num>                   multiplier");
+        l.add(null, "4 5         dynamic-ignore            ignore small differences");
+        l.add(null, "5 .           <num>                   maximum unreported change");
+        l.add(null, "4 5         dynamic-algo              calculation to do");
+        l.add(null, "5 .           none                    nothing");
+        l.add(null, "5 .           minimum                 take lowest");
+        l.add(null, "5 .           average                 take average");
+        l.add(null, "5 .           maximum                 take highest");
     }
 
     /**

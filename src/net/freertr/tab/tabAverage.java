@@ -71,6 +71,51 @@ public class tabAverage {
     }
 
     /**
+     * get algorithm name
+     *
+     * @return name
+     */
+    public String getAlgoName() {
+        switch (algorithm) {
+            case 0:
+                return "none";
+            case 1:
+                return "minimum";
+            case 2:
+                return "average";
+            case 3:
+                return "maximum";
+            default:
+                return "unknown=" + algorithm;
+        }
+    }
+
+    /**
+     * set algorithm name
+     *
+     * @param a name
+     */
+    public void string2algo(String a) {
+        if (a.equals("none")) {
+            algorithm = 0;
+            return;
+        }
+        if (a.equals("minimum")) {
+            algorithm = 1;
+            return;
+        }
+        if (a.equals("average")) {
+            algorithm = 2;
+            return;
+        }
+        if (a.equals("maximum")) {
+            algorithm = 3;
+            return;
+        }
+        algorithm = 0;
+    }
+
+    /**
      * add value
      *
      * @param val value
@@ -85,7 +130,7 @@ public class tabAverage {
     }
 
     /**
-      * update parameters
+     * update parameters
      *
      * @param src source
      */

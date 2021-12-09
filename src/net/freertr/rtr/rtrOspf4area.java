@@ -424,7 +424,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 if (!nei.isFull()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf4lsa.lnkP2p, nei.rtrID, ifc.iface.addr.toIPv4(), met);
+                putLink2rtrLsa(pck, rtrOspf4lsa.lnkP2p, nei.rtrID, ifc.iface.addr.toIPv4(), nei.getMetric());
             }
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
@@ -1066,7 +1066,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 }
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(nei.peer);
-                spf.addNextHop(ifc.metric, nei.rtrID, adr, ifc.iface, null, null);
+                spf.addNextHop(nei.getMetric(), nei.rtrID, adr, ifc.iface, null, null);
             }
         }
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 8, lower.segrouLab, segrouUsd);
@@ -1101,14 +1101,17 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             logger.debug("started area " + area);
         }
         todo.or(2);
-        for (;;) {
+        for (int rnd = 0;; rnd++) {
             try {
-                notif.misleep(30000);
+                notif.misleep(10000);
                 int ver = todo.ver();
                 int val = todo.get();
                 todo.andIf(0xf, ver);
                 if ((val & 1) == 0) {
                     break;
+                }
+                if ((rnd % 6) == 0) {
+                    val |= 0x30;
                 }
                 if ((val & 0x10) != 0) {
                     generateLsas();

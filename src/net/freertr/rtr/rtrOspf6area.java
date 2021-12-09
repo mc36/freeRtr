@@ -478,7 +478,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 if (!nei.isFull()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, met);
+                putLink2rtrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, nei.getMetric());
             }
         }
         advertiseLsa(rtrOspf6lsa.lsaRouter, 0, pck);
@@ -648,7 +648,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 if (nei.segrouLab != null) {
                     buf = rtrOspfSr.putAdj(nei.segrouLab.label);
                 }
-                putLink2ertrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, ifc.metric, buf);
+                putLink2ertrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, nei.getMetric(), buf);
             }
         }
         advertiseLsa(rtrOspf6lsa.lsaErouter, 0, pck);
@@ -1185,7 +1185,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 }
                 addrIP adr = new addrIP();
                 adr.fromIPv6addr(nei.peer);
-                spf.addNextHop(ifc.metric, new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface, null, null);
+                spf.addNextHop(nei.getMetric(), new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface, null, null);
             }
         }
         tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 9, lower.segrouLab, segrouUsd);
@@ -1220,14 +1220,17 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             logger.debug("started area " + area);
         }
         todo.or(2);
-        for (;;) {
+        for (int rnd = 0;; rnd++) {
             try {
-                notif.misleep(30000);
+                notif.misleep(10000);
                 int ver = todo.ver();
                 int val = todo.get();
                 todo.andIf(0xf, ver);
                 if ((val & 1) == 0) {
                     break;
+                }
+                if ((rnd % 6) == 0) {
+                    val |= 0x30;
                 }
                 if ((val & 0x10) != 0) {
                     generateLsas();

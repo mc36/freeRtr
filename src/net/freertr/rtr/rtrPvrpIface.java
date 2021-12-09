@@ -485,24 +485,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "dynamic-divisor " + echoParam.divisor);
         l.add(cmds.tabulator + beg + "dynamic-multiply " + echoParam.multiply);
         l.add(cmds.tabulator + beg + "dynamic-ignore " + echoParam.ignorer);
-        switch (echoParam.algorithm) {
-            case 0:
-                a = "none";
-                break;
-            case 1:
-                a = "minimum";
-                break;
-            case 2:
-                a = "average";
-                break;
-            case 3:
-                a = "maximum";
-                break;
-            default:
-                a = "unknown=" + echoParam.algorithm;
-                break;
-        }
-        l.add(cmds.tabulator + beg + "dynamic-algo " + a);
+        l.add(cmds.tabulator + beg + "dynamic-algo " + echoParam.getAlgoName());
         cmds.cfgLine(l, labelIn == null, cmds.tabulator, beg + "label-in", "" + labelIn);
         cmds.cfgLine(l, labelOut == null, cmds.tabulator, beg + "label-out", "" + labelOut);
         cmds.cfgLine(l, prflstIn == null, cmds.tabulator, beg + "prefix-list-in", "" + prflstIn);
@@ -767,20 +750,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("dynamic-algo")) {
-            a = cmd.word();
-            echoParam.algorithm = 0;
-            if (a.equals("none")) {
-                echoParam.algorithm = 0;
-            }
-            if (a.equals("minimum")) {
-                echoParam.algorithm = 1;
-            }
-            if (a.equals("average")) {
-                echoParam.algorithm = 2;
-            }
-            if (a.equals("maximum")) {
-                echoParam.algorithm = 3;
-            }
+            echoParam.string2algo(cmd.word());
             lower.notif.wakeup();
             return;
         }

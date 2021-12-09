@@ -114,16 +114,28 @@ class BfRuntimeGrpcClient:
         logger.warning("P4_NAME: %s" % self.p4_name)
         logger.warning("CLIENT_ID: %s" % self.client_id)
 
-        try:
-            self.interface = gc.ClientInterface(
-                self.grpc_addr, client_id=self.client_id, device_id=0
-            )
-        except Exception as e:
-            logger.error("[setUp error]: %s" % e)
-            logger.error(
-                "RuntimeError: Cannot connect grpc server: Is bf_switch running ?"
-            )
-            sys.exit(1)
+        while True:
+            try:
+                self.interface = gc.ClientInterface(
+                    self.grpc_addr, client_id=self.client_id, device_id=0
+                )
+            except Exception as e:
+                logger.error("Failed to connect to grpc server: %s, retrying" % e)
+                ## Note: there appears to be a race condition inside
+                ## gc.ClientInterface that can cause the call to throw
+                ## an exception when in fact the socket was connected
+                ## successfully.  In that case, this loop never
+                ## terminates, because bf_switchd signals to the
+                ## caller that a client is already connected (with
+                ## this client being ourselves). This behaviour was
+                ## seen when using a sleep duration of 2 seconds
+                ## here. 4 seconds appears to be safe. This should be
+                ## reported to Intel as a bug.
+                sleep(4)
+                continue
+            else:
+                logger.warning("Connected to grcp server")
+                break
 
         self.bfrt_info = self.interface.bfrt_info_get(self.p4_name)
         self.port_table = self.bfrt_info.table_get("$PORT")
@@ -154,7 +166,7 @@ class BfSubIfCounter(Thread):
             while not self.die:
                 logger.debug("%s - loop" % (self.class_name))
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warning("%s - No active ports" % (self.class_name))
+                    logger.debug("%s - No active ports" % (self.class_name))
                 else:
                     logger.debug("%s - ACTIVE_PORTS%s" % (self.class_name, ACTIVE_PORTS.keys()))
                     self.getReadSwitchSubIfCounter()
@@ -287,7 +299,7 @@ class BfIfStatus(Thread):
                 logger.debug("%s - %s" % (self.class_name,self.getAllActivePorts()))
                 self.getAllActivePorts()
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warning("%s - No active ports" %(self.class_name))
+                    logger.debug("%s - No active ports" %(self.class_name))
                 else:
                     self.getActiveSwitchOperStatus()
 
@@ -365,7 +377,7 @@ class BfIfSnmpClient(Thread):
             shutil.copy("%s.init" % self.ifindex,self.ifindex)
             while not self.die:
                 if len(ACTIVE_PORTS.keys())==0:
-                    logger.warning("%s - No active ports" % (self.class_name))
+                    logger.debug("%s - No active ports" % (self.class_name))
                 else:
                     for port in ACTIVE_PORTS.keys():
                         if port not in self.snmp_ports:
@@ -564,7 +576,7 @@ class BfIfSnmpClient(Thread):
         self.die=True
 
 class BfForwarder(Thread):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka, nsh):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka, nsh, no_log_keepalive):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -582,6 +594,7 @@ class BfForwarder(Thread):
         self.tun = tun
         self.poe = poe
         self.mcast = mcast
+        self.no_log_keepalive = no_log_keepalive
         self.die=False
         self.hairpins = []
         self.mcast_nid = []
@@ -5064,7 +5077,7 @@ class BfForwarder(Thread):
             if len(ACTIVE_PORTS.keys())==0:
                 logger.debug("BfForwarder - No active ports")
             else:
-                logger.debug("BfForwarder - Actie ports %s" % ACTIVE_PORTS.keys())
+                logger.debug("BfForwarder - Active ports %s" % ACTIVE_PORTS.keys())
 
             # message loop from control plane
 
@@ -5083,7 +5096,8 @@ class BfForwarder(Thread):
 
             splt = line.split(" ")
             if not ("portbundle_" in splt[0]):
-                logger.warning("rx: %s", splt)
+                if splt[0] != "keepalive" or not self.no_log_keepalive:
+                    logger.warning("rx: %s", splt)
             else:
                 continue
             if splt[0] == "route4_add":
@@ -8579,11 +8593,7 @@ class BfForwarder(Thread):
                 self.setPortMTU(int(splt[1]), int(splt[2]))
                 continue
             if splt[0] == "state":
-                if (self.platform == "wedge100bf32x"):
-                    self._setPortAdmStatus(int(splt[1]),int(splt[2]),int(splt[3]),
-                                           int(splt[4]),int(splt[5]),int(splt[6]))
-                #elif SAL_PORT_ID.has_key(int(splt[1])):
-                elif int(splt[1]) in SAL_PORT_ID:
+                if (self.platform == "stordis_bf2556x_1t" and int(splt[1]) in SAL_PORT_ID):
                     self._setPortAdmStatusBF2556X1T(int(splt[1]), int(splt[2]),int(splt[3]),
                                                     int(splt[4]), int(splt[5]),int(splt[6]))
                 else:
@@ -8806,11 +8816,11 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--platform",
-        help="Platform used: wedge100bf32x, bf2556x1t ",
+        help="Platform used: accton_wedge100bf_32x, accton_wedge100bf_32qs, accton_wedge100bf_65x, stordis_bf2556x_1t, stordis_bf6064x_t",
         type=str,
         action="store",
         required=False,
-        default="wedge100bf32x",
+        default="accton_wedge100bf_32x",
     )
     parser.add_argument(
         "--sal-grpc-server-address",
@@ -8819,6 +8829,13 @@ if __name__ == "__main__":
         action="store",
         required=False,
         default="127.0.0.1:50054",
+    )
+    parser.add_argument(
+        "--no-log-keepalive",
+        help="Whether to suppress logging of keepalive messages",
+        action="store_true",
+        required=False,
+        default=False
     )
     args = parser.parse_args()
 
@@ -8829,7 +8846,7 @@ if __name__ == "__main__":
         SUBIF_COUNTERS = {}
         SUBIF_COUNTERS_IN = {}
         SUBIF_COUNTERS_OUT = {}
-        if (args.platform=="bf2556x1t"):
+        if (args.platform=="stordis_bf2556x_1t"):
             # start TOFINO via SAL GRPC client
             logger.warning('Starting TOFINO via SAL')
             sal_client = SalGrpcClient(args.sal_grpc_server_address)
@@ -8843,8 +8860,18 @@ if __name__ == "__main__":
         logger.warning("%s running on: %s" % (PROGRAM_NAME,args.platform.upper()))
 
         sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sck.connect((args.freerouter_address,
-                     args.freerouter_port))
+        while True:
+            try:
+                sck.connect((args.freerouter_address,
+                             args.freerouter_port))
+            except socket.error as e:
+                logger.error("Failed to connect to control plane process: %s, retrying" % e)
+                sleep(2)
+                continue
+            else:
+                logger.warning("Connected to control plane %s:%s" % (args.freerouter_address, args.freerouter_port))
+                break
+
         sckrw_file = sck.makefile("rw")
         sckw_file = sck.makefile("w")
 
@@ -8883,6 +8910,7 @@ if __name__ == "__main__":
                                args.mcast,
                                args.polka,
                                args.nsh,
+                               args.no_log_keepalive
                                )
 
         bf_forwarder.daemon=True
@@ -8916,10 +8944,6 @@ if __name__ == "__main__":
             [t.join(1) for t in ALL_THREADS
                          if t is not None and t.is_alive()]
 
-    except socket.error as e:
-        logger.error("\n%s - control plane not detected ..." % PROGRAM_NAME)
-        logger.error("%s - Is control plane started ?" % PROGRAM_NAME)
-        sys.exit(1)
     except KeyboardInterrupt:
         logger.warning("\n%s - Received signal 2 ..." % PROGRAM_NAME)
         for t in ALL_THREADS:

@@ -1440,16 +1440,16 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 olsr = new rtrOlsr(vrf.fwd6, vrf.udp6, number);
                 break;
             case ospf4:
-                ospf4 = new rtrOspf4(vrf.fwd4, number);
+                ospf4 = new rtrOspf4(vrf.fwd4, vrf.udp4, number);
                 break;
             case ospf6:
-                ospf6 = new rtrOspf6(vrf.fwd6, number);
+                ospf6 = new rtrOspf6(vrf.fwd6, vrf.udp6, number);
                 break;
             case isis4:
-                isis = new rtrIsis(vrf.fwd4, vrf.fwd6, number);
+                isis = new rtrIsis(vrf.fwd4, vrf.fwd6, vrf.udp4, number);
                 break;
             case isis6:
-                isis = new rtrIsis(vrf.fwd6, vrf.fwd4, number);
+                isis = new rtrIsis(vrf.fwd6, vrf.fwd4, vrf.udp6, number);
                 break;
             case pvrp4:
                 pvrp = new rtrPvrp(vrf.fwd4, vrf.udp4, vrf.tcp4, number);

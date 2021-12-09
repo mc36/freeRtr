@@ -5,8 +5,12 @@ import net.freertr.addr.addrClns;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIsis;
 import net.freertr.addr.addrMac;
+import net.freertr.clnt.clntEcho;
+import net.freertr.clnt.clntPing;
+import net.freertr.clnt.clntTwamp;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelEntry;
@@ -43,6 +47,16 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
      * peer interface other address
      */
     protected addrIP ofcAddr;
+
+    /**
+     * time echo sent
+     */
+    protected long echoTime;
+
+    /**
+     * calculated echo
+     */
+    protected tabAverage echoCalc = new tabAverage(1, 1);
 
     /**
      * hold time
@@ -353,6 +367,19 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         iface.neighs.del(this);
         notif.wakeup();
         iface.doRetrans();
+    }
+
+    /**
+     * get peer metric
+     *
+     * @return metric
+     */
+    public int getMetric() {
+        int met = iface.metric;
+        if (iface.dynamicMetric < 1) {
+            return met;
+        }
+        return echoCalc.getResult(met);
     }
 
     /**
@@ -859,13 +886,44 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
      * do retransmit work
      */
     protected synchronized void doRetrans() {
-        if ((bits.getTime() - lastHeard) > holdTime) {
+        long tim = bits.getTime();
+        if ((tim - lastHeard) > holdTime) {
             stopNow();
             level.schedWork(7);
             return;
         }
         if (peerAdjState != statUp) {
             return;
+        }
+        if ((echoTime + iface.echoTimer) < tim) {
+            echoCalc.updateFrom(iface.echoParam);
+            switch (iface.dynamicMetric) {
+                case 1:
+                    clntPing png = new clntPing();
+                    png.meas = echoCalc;
+                    png.fwd = lower.fwdCore;
+                    png.src = iface.iface;
+                    png.trg = ifcAddr;
+                    png.doWork();
+                    break;
+                case 2:
+                    clntEcho ech = new clntEcho();
+                    ech.meas = echoCalc;
+                    ech.udp = lower.udpCore;
+                    ech.src = iface.iface;
+                    ech.trg = ifcAddr;
+                    ech.doWork();
+                    break;
+                case 3:
+                    clntTwamp twm = new clntTwamp();
+                    twm.meas = echoCalc;
+                    twm.udp = lower.udpCore;
+                    twm.src = iface.iface;
+                    twm.trg = ifcAddr;
+                    twm.doWork();
+                    break;
+            }
+            echoTime = tim - 1;
         }
         int i = request.size();
         if (i > 0) {

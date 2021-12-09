@@ -4,8 +4,12 @@ import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.clnt.clntEcho;
+import net.freertr.clnt.clntPing;
+import net.freertr.clnt.clntTwamp;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelEntry;
@@ -95,6 +99,16 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
      * peer router id
      */
     protected addrIPv4 rtrID;
+
+    /**
+     * time echo sent
+     */
+    protected long echoTime;
+
+    /**
+     * calculated echo
+     */
+    protected tabAverage echoCalc = new tabAverage(1, 1);
 
     /**
      * peer priority
@@ -699,6 +713,22 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
     }
 
     /**
+     * get peer metric
+     *
+     * @return metric
+     */
+    public int getMetric() {
+        if (area.maxMetric) {
+            return 0xffff;
+        }
+        int met = iface.metric;
+        if (iface.dynamicMetric < 1) {
+            return met;
+        }
+        return echoCalc.getResult(met);
+    }
+
+    /**
      * stop work
      */
     public void bfdPeerDown() {
@@ -742,10 +772,44 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
      * check timeout
      */
     protected void checkTimeout() {
-        if ((bits.getTime() - lastHeard) > deadInt) {
+        long tim = bits.getTime();
+        if ((tim - lastHeard) > deadInt) {
             stopNow();
             area.schedWork(7);
             return;
+        }
+        if ((echoTime + iface.echoTimer) < tim) {
+            echoCalc.updateFrom(iface.echoParam);
+            switch (iface.dynamicMetric) {
+                case 1:
+                    clntPing png = new clntPing();
+                    png.meas = echoCalc;
+                    png.fwd = lower.fwdCore;
+                    png.src = iface.iface;
+                    png.trg = new addrIP();
+                    png.trg.fromIPv6addr(peer);
+                    png.doWork();
+                    break;
+                case 2:
+                    clntEcho ech = new clntEcho();
+                    ech.meas = echoCalc;
+                    ech.udp = lower.udpCore;
+                    ech.src = iface.iface;
+                    ech.trg = new addrIP();
+                    ech.trg.fromIPv6addr(peer);
+                    ech.doWork();
+                    break;
+                case 3:
+                    clntTwamp twm = new clntTwamp();
+                    twm.meas = echoCalc;
+                    twm.udp = lower.udpCore;
+                    twm.src = iface.iface;
+                    twm.trg = new addrIP();
+                    twm.trg.fromIPv6addr(peer);
+                    twm.doWork();
+                    break;
+            }
+            echoTime = tim - 1;
         }
     }
 
