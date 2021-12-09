@@ -9,6 +9,9 @@ int eth4 eth 0000.0000.1111 $4a$ $4b$
 vrf def v1
  rd 1:1
  exit
+server echo e
+ vrf v1
+ exit
 router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
