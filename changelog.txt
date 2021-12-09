@@ -12570,3 +12570,10 @@ qc pass: pvrp dynamic inband metric
 qc pass: pvrp dynamic icmp metric
 qc pass: pvrp dynamic udp metric
 qc pass: pvrp dynamic twamp metric
+---------------------------------- 2021-12-09 10:45:49
+qc pass: isis dynamic icmp metric
+qc pass: isis dynamic udp metric
+qc pass: isis dynamic twamp metric
+qc pass: ospf dynamic icmp cost
+qc pass: ospf dynamic udp cost
+qc pass: ospf dynamic twamp cost

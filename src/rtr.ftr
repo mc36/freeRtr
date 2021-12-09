@@ -2221,6 +2221,9 @@ qc pass: isis address unsuppression
 qc pass: integrated isis address unsuppression
 qc pass: isis md5 authentication
 qc pass: isis lsp md5 authentication
+qc pass: isis dynamic icmp metric
+qc pass: isis dynamic udp metric
+qc pass: isis dynamic twamp metric
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -2366,6 +2369,9 @@ qc pass: ospf default address suppression
 qc pass: ospf address unsuppression
 qc pass: ospf maximum metric
 qc pass: ospf md5 authentication
+qc pass: ospf dynamic icmp cost
+qc pass: ospf dynamic udp cost
+qc pass: ospf dynamic twamp cost
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
