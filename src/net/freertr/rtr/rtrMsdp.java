@@ -337,13 +337,13 @@ public class rtrMsdp extends ipRtr {
      * @return list of neighbors
      */
     public userFormat getNeighShow() {
-        userFormat l = new userFormat("|", "learned|address|uptime");
+        userFormat l = new userFormat("|", "address|learned|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrMsdpNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.learned.size() + "|" + ntry.peer + "|" + bits.timePast(ntry.upTime));
+            l.add(ntry.peer + "|" + ntry.learned.size() + "|" + bits.timePast(ntry.upTime));
         }
         return l;
     }
