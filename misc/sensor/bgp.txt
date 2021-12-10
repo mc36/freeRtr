@@ -4,13 +4,13 @@ prefix freertr-bgp4peer
 key name bgp4/peer
 command sho ipv4 bgp 65535 summ
 prepend bgp4_peer_
-name 4 peer=
+name 0 peer=
 replace \. _
-column 1 name learn
-column 2 name advert
-column 3 name state
-column 3 replace false 0
-column 3 replace true 1
+column 2 name state
+column 2 replace false 0
+column 2 replace true 1
+column 3 name learn
+column 4 name advert
 .
 exit
 
@@ -31,13 +31,13 @@ prefix freertr-bgp6peer
 key name bgp6/peer
 command sho ipv6 bgp 65535 summ
 prepend bgp6_peer_
-name 4 peer=
+name 0 peer=
 replace \: _
-column 1 name learn
-column 2 name advert
-column 3 name state
-column 3 replace false 0
-column 3 replace true 1
+column 2 name state
+column 2 replace false 0
+column 2 replace true 1
+column 3 name learn
+column 3 name advert
 .
 exit
 
