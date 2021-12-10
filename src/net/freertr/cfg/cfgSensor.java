@@ -654,6 +654,9 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
             doMetricNetConf(res, beg + path + "/" + cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
         }
         int i = keyP.lastIndexOf("/");
+        if (i < 0) {
+            i = keyP.length();
+        }
         res.data.add(new extMrkLngEntry(null, beg + keyP.substring(0, i), "", ""));
     }
 
