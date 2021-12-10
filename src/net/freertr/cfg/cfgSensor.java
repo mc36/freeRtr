@@ -18,6 +18,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.extMrkLng;
 import net.freertr.util.extMrkLngEntry;
+import net.freertr.util.logger;
 import net.freertr.util.protoBuf;
 import net.freertr.util.protoBufEntry;
 import net.freertr.util.verCore;
@@ -27,7 +28,7 @@ import net.freertr.util.verCore;
  *
  * @author matecsaba
  */
-public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
+public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
 
     /**
      * name of sensor
@@ -130,6 +131,36 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     public int cnt;
 
     /**
+     * collection interval
+     */
+    public int locInt;
+
+    /**
+     * collection memory
+     */
+    public boolean locMem;
+
+    /**
+     * collection file
+     */
+    public String locFil;
+
+    /**
+     * collection backup
+     */
+    public String locBak;
+
+    /**
+     * collection bytes
+     */
+    public int locByt;
+
+    /**
+     * collection time
+     */
+    public int locTim;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
@@ -192,8 +223,8 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         l.add(null, "1 2      labels                   static labels");
         l.add(null, "2 .        <str>                  name");
         l.add(null, "1 2      key                      key column number");
-        l.add(null, "2 3          <str>                name");
-        l.add(null, "3 .            <str>              path");
+        l.add(null, "2 3        <str>                  name");
+        l.add(null, "3 .          <str>                path");
         l.add(null, "1 2      name                     name column number");
         l.add(null, "2 3,.      <num>                  column number");
         l.add(null, "3 .          <str>                label");
@@ -233,6 +264,18 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         l.add(null, "4 5            <str>              delimiter");
         l.add(null, "5 6              <str>            first label");
         l.add(null, "6 .                <str>          second label");
+        l.add(null, "1 2      local                    local collection options");
+        l.add(null, "2 3        interval               collection interval");
+        l.add(null, "3 .          <num>                time in ms");
+        l.add(null, "2 .        memory                 collect to memory");
+        l.add(null, "2 3        file                   collect to file");
+        l.add(null, "3 .          <str>                file name");
+        l.add(null, "2 3        max-byte               maximum bytes");
+        l.add(null, "3 .          <num>                bytes");
+        l.add(null, "2 3        max-time               maximum time");
+        l.add(null, "3 .          <num>                time in ms");
+        l.add(null, "2 3        backup                 backup to file");
+        l.add(null, "3 .          <str>                file name");
     }
 
     public List<String> getShRun(int filter) {
@@ -305,6 +348,56 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
                 return;
             }
             name = s;
+            return;
+        }
+        if (s.equals("local")) {
+            s = cmd.word();
+            if (s.equals("interval")) {
+                if (negated) {
+                    locInt = 0;
+                    return;
+                }
+                locInt = bits.str2num(cmd.word());
+                new Thread(this).start();
+                return;
+            }
+            if (s.equals("memory")) {
+                locMem = !negated;
+                return;
+            }
+            if (s.equals("file")) {
+                locFil = cmd.word();
+                if (negated) {
+                    locFil = null;
+                    return;
+                }
+                return;
+            }
+            if (s.equals("backup")) {
+                locBak = cmd.word();
+                if (negated) {
+                    locBak = null;
+                    return;
+                }
+                return;
+            }
+            if (s.equals("max-byte")) {
+                locByt = bits.str2num(cmd.word());
+                if (negated) {
+                    locByt = 0;
+                    return;
+                }
+                return;
+            }
+            if (s.equals("max-time")) {
+                locTim = bits.str2num(cmd.word());
+                if (negated) {
+                    locTim = 0;
+                    return;
+                }
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         if (s.equals("command")) {
@@ -619,6 +712,43 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         return pck3;
     }
 
+    private String doLineCsv(String a) {
+        List<String> cl = doSplitLine(a);
+        int cls = cl.size();
+        if (namC >= cls) {
+            return null;
+        }
+        protoBuf pb = new protoBuf();
+        a = cl.get(namC);
+        if ((acol >= 0) && (acol < cls)) {
+            a = asep;
+            if (asep.equals("*")) {
+                a = "";
+            }
+            a = a + cl.get(acol);
+        }
+        String beg = prepend + doReplaces(a, reps);
+        for (int o = 0; o < cols.size(); o++) {
+            cfgSensorCol cc = cols.get(o);
+            if (cl.size() <= cc.num) {
+                continue;
+            }
+            a = doReplaces(cl.get(cc.num), cc.reps);
+            if (cc.splS == null) {
+                beg += ";" + a;
+                continue;
+            }
+            int i = a.indexOf(cc.splS);
+            if (i < 0) {
+                beg += ";" + a;
+                continue;
+            }
+            beg += ";" + a.substring(0, i);
+            beg += ";" + a.substring(i + cc.splS.length(), a.length());
+        }
+        return beg;
+    }
+
     private void doLineNetConf(extMrkLng res, String beg, String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
@@ -817,6 +947,33 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
     }
 
     /**
+     * generate report
+     *
+     * @return report
+     */
+    public List<String> getReportCsv() {
+        last = bits.getTime();
+        cnt++;
+        List<String> lst = new ArrayList<String>();
+        List<String> res = getResult();
+        for (int i = 0; i < skip; i++) {
+            if (res.size() < 1) {
+                break;
+            }
+            res.remove(0);
+        }
+        for (int p = 0; p < res.size(); p++) {
+            String a = doLineCsv(res.get(p));
+            if (a == null) {
+                continue;
+            }
+            lst.add(a);
+        }
+        time = (int) (bits.getTime() - last);
+        return lst;
+    }
+
+    /**
      * get yang
      *
      * @return result
@@ -900,6 +1057,8 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         res.addAll(getYang());
         res.add("prometheus:");
         res.addAll(getReportProm());
+        res.add("csv:");
+        res.addAll(getReportCsv());
         res.add("netconf:");
         extMrkLng x = new extMrkLng();
         getReportNetConf(x, "/");
@@ -908,58 +1067,83 @@ public class cfgSensor implements Comparator<cfgSensor>, cfgGeneric {
         return res;
     }
 
-}
-
-class cfgSensorRep implements Comparator<cfgSensorRep> {
-
-    public final String src;
-
-    public String trg;
-
-    public cfgSensorRep(String n) {
-        src = n;
+    /**
+     * stop collection
+     */
+    public void stopWork() {
+        locInt = -1;
     }
 
-    public int compare(cfgSensorRep o1, cfgSensorRep o2) {
-        return o1.src.compareTo(o2.src);
+    private void doLocalCollect() {
+        /////////////
     }
 
-}
-
-class cfgSensorCol implements Comparator<cfgSensorCol> {
-
-    public final int num;
-
-    public String nam;
-
-    public String hlp;
-
-    public String lab;
-
-    public String splS;
-
-    public String splL;
-
-    public String splR;
-
-    public int typ = servStreamingMdt.fnUint64;
-
-    public String sty = "gauge";
-
-    public tabGen<cfgSensorRep> reps = new tabGen<cfgSensorRep>();
-
-    public cfgSensorCol(int n) {
-        num = n;
-    }
-
-    public int compare(cfgSensorCol o1, cfgSensorCol o2) {
-        if (o1.num < o2.num) {
-            return -1;
+    public void run() {
+        for (;;) {
+            if (locInt < 1) {
+                break;
+            }
+            bits.sleep(locInt);
+            try {
+                doLocalCollect();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
         }
-        if (o1.num > o2.num) {
-            return +1;
-        }
-        return 0;
+
     }
 
+    class cfgSensorRep implements Comparator<cfgSensorRep> {
+
+        public final String src;
+
+        public String trg;
+
+        public cfgSensorRep(String n) {
+            src = n;
+        }
+
+        public int compare(cfgSensorRep o1, cfgSensorRep o2) {
+            return o1.src.compareTo(o2.src);
+        }
+
+    }
+
+    class cfgSensorCol implements Comparator<cfgSensorCol> {
+
+        public final int num;
+
+        public String nam;
+
+        public String hlp;
+
+        public String lab;
+
+        public String splS;
+
+        public String splL;
+
+        public String splR;
+
+        public int typ = servStreamingMdt.fnUint64;
+
+        public String sty = "gauge";
+
+        public tabGen<cfgSensorRep> reps = new tabGen<cfgSensorRep>();
+
+        public cfgSensorCol(int n) {
+            num = n;
+        }
+
+        public int compare(cfgSensorCol o1, cfgSensorCol o2) {
+            if (o1.num < o2.num) {
+                return -1;
+            }
+            if (o1.num > o2.num) {
+                return +1;
+            }
+            return 0;
+        }
+
+    }
 }

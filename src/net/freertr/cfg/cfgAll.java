@@ -3018,6 +3018,7 @@ public class cfgAll {
         if (ntry == null) {
             return null;
         }
+        ntry.stopWork();
         return ntry;
     }
 
