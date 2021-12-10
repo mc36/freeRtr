@@ -70,7 +70,7 @@ systemctl set-default multi-user.target
 rm /etc/netplan/*
 rm /usr/lib/systemd/network/*
 rm /etc/NetworkManager/system-connections/*
-SVC="network-manager NetworkManager ModemManager netplan connman systemd-network-generator systemd-networkd systemd-networkd-wait-online systemd-resolved hostapd wpa_supplicant serial-getty@ttyS0 serial-getty@ttyS1"
+SVC="network-manager NetworkManager ModemManager netplan connman wicd systemd-network-generator systemd-networkd systemd-networkd-wait-online systemd-resolved hostapd wpa_supplicant serial-getty@ttyS0 serial-getty@ttyS1"
 systemctl disable $SVC
 systemctl mask $SVC
 
