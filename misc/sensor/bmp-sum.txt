@@ -1,10 +1,10 @@
 sensor bmp-rtr1vh
 path bmp-rtr1vh/bmp-rtr1vh
 prefix freertr-bmp-nodesum
+key name bmp/bmp-rtr1vh
 prepend bmp_nodesum
 command sho bmp bmp 195.111.97.108 | include rep\s|\sin|\sout
 name 0 data=
-key name bmp-rtr1vh
 labels node="rtr1vh"
 replace \s _
 column 1 name val
