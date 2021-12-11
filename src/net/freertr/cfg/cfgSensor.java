@@ -1,5 +1,6 @@
 package net.freertr.cfg;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -11,13 +12,16 @@ import net.freertr.serv.servStreamingMdt;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.user.userReader;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.counter;
 import net.freertr.util.extMrkLng;
 import net.freertr.util.extMrkLngEntry;
+import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.protoBuf;
 import net.freertr.util.protoBufEntry;
@@ -138,7 +142,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     /**
      * collection memory
      */
-    public boolean locMem;
+    public tabGen<cfgSensorMem> locMem;
 
     /**
      * collection file
@@ -159,6 +163,11 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
      * collection time
      */
     public int locTim;
+
+    /**
+     * collection start
+     */
+    public long locStr;
 
     /**
      * defaults text
@@ -333,7 +342,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             }
         }
         cmds.cfgLine(l, locInt < 1, cmds.tabulator, "local interval", "" + locInt);
-        cmds.cfgLine(l, !locMem, cmds.tabulator, "local memory", "");
+        cmds.cfgLine(l, locMem == null, cmds.tabulator, "local memory", "");
         cmds.cfgLine(l, locFil == null, cmds.tabulator, "local file", "" + locFil);
         cmds.cfgLine(l, locBak == null, cmds.tabulator, "local backup", "" + locBak);
         cmds.cfgLine(l, locByt < 1, cmds.tabulator, "local max-byte", "" + locByt);
@@ -374,10 +383,15 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 return;
             }
             if (s.equals("memory")) {
-                locMem = !negated;
+                if (negated) {
+                    locMem = null;
+                    return;
+                }
+                locMem = new tabGen<cfgSensorMem>();
                 return;
             }
             if (s.equals("file")) {
+                locStr = bits.getTime();
                 locFil = cmd.word();
                 if (negated) {
                     locFil = null;
@@ -730,7 +744,6 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         if (namC >= cls) {
             return null;
         }
-        protoBuf pb = new protoBuf();
         a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
             a = asep;
@@ -759,6 +772,58 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             beg += ";" + a.substring(i + cc.splS.length(), a.length());
         }
         return beg;
+    }
+
+    private void doLineMem(tabGen<cfgSensorMem> tab, String beg, int col, String val) {
+        cfgSensorMem ntry = new cfgSensorMem(beg, col);
+        cfgSensorMem old = tab.add(ntry);
+        if (old != null) {
+            ntry = old;
+        } else {
+            ntry.hist = new history();
+            ntry.cntr = new counter();
+        }
+        counter cntr = new counter();
+        cntr.packRx = bits.str2long(val);
+        cntr.packTx = bits.str2long(val);
+        cntr = cntr.plus(ntry.cntr);
+        ntry.hist.update(cntr);
+        ntry.cntr = cntr;
+    }
+
+    private void doLineMem(tabGen<cfgSensorMem> tab, String a) {
+        List<String> cl = doSplitLine(a);
+        int cls = cl.size();
+        if (namC >= cls) {
+            return;
+        }
+        a = cl.get(namC);
+        if ((acol >= 0) && (acol < cls)) {
+            a = asep;
+            if (asep.equals("*")) {
+                a = "";
+            }
+            a = a + cl.get(acol);
+        }
+        String beg = doReplaces(a, reps);
+        for (int o = 0; o < cols.size(); o++) {
+            cfgSensorCol cc = cols.get(o);
+            if (cl.size() <= cc.num) {
+                continue;
+            }
+            a = doReplaces(cl.get(cc.num), cc.reps);
+            if (cc.splS == null) {
+                doLineMem(tab, beg, cc.num, a);
+                continue;
+            }
+            int i = a.indexOf(cc.splS);
+            if (i < 0) {
+                doLineMem(tab, beg, cc.num, a);
+                continue;
+            }
+            doLineMem(tab, beg, cc.num, a.substring(0, i));
+            doLineMem(tab, beg, cc.num, a.substring(i + cc.splS.length(), a.length()));
+        }
     }
 
     private void doLineNetConf(extMrkLng res, String beg, String a) {
@@ -986,6 +1051,48 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     }
 
     /**
+     * generate report
+     *
+     * @param tab table to update
+     */
+    public void getReportMem(tabGen<cfgSensorMem> tab) {
+        if (tab == null) {
+            return;
+        }
+        last = bits.getTime();
+        cnt++;
+        List<String> lst = new ArrayList<String>();
+        List<String> res = getResult();
+        for (int i = 0; i < skip; i++) {
+            if (res.size() < 1) {
+                break;
+            }
+            res.remove(0);
+        }
+        for (int p = 0; p < res.size(); p++) {
+            doLineMem(tab, res.get(p));
+        }
+        time = (int) (bits.getTime() - last);
+    }
+
+    /**
+     * generate report
+     *
+     * @param tab table to update
+     * @return result
+     */
+    public List<String> showReportMem(tabGen<cfgSensorMem> tab) {
+        List<String> lst = new ArrayList<String>();
+        if (tab == null) {
+            return lst;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tab.get(i).dump(lst);
+        }
+        return lst;
+    }
+
+    /**
      * get yang
      *
      * @return result
@@ -1076,6 +1183,8 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         getReportNetConf(x, "/");
         res.addAll(x.show());
         res.add("kvgpb:" + getReportKvGpb().dump());
+        res.add("memory:");
+        res.addAll(showReportMem(locMem));
         return res;
     }
 
@@ -1087,7 +1196,27 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     }
 
     private void doLocalCollect() {
-        /////////////
+        getReportMem(locMem);
+        if (locFil == null) {
+            return;
+        }
+        bits.buf2txt(false, getReportCsv(), locFil);
+        if (locBak == null) {
+            return;
+        }
+        boolean ned = false;
+        long tim = bits.getTime();
+        if (locTim > 0) {
+            ned |= (tim - locStr) > locTim;
+        }
+        if (locByt > 0) {
+            ned |= new File(locFil).length() > locByt;
+        }
+        if (!ned) {
+            return;
+        }
+        userFlash.rename(locFil, locBak, true, false);
+        locStr = tim;
     }
 
     public void run() {
@@ -1158,4 +1287,36 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         }
 
     }
+}
+
+class cfgSensorMem implements Comparator<cfgSensorMem> {
+
+    public final String key;
+
+    public final int col;
+
+    public counter cntr;
+
+    public history hist;
+
+    public cfgSensorMem(String k, int c) {
+        key = k;
+        col = c;
+    }
+
+    public int compare(cfgSensorMem o1, cfgSensorMem o2) {
+        if (o1.col < o2.col) {
+            return -1;
+        }
+        if (o1.col > o2.col) {
+            return +1;
+        }
+        return o1.key.compareTo(o2.key);
+    }
+
+    public void dump(List<String> lst) {
+        lst.add(key + " column " + col + ":");
+        lst.addAll(hist.show(5));
+    }
+
 }
