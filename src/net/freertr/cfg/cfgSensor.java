@@ -1316,7 +1316,7 @@ class cfgSensorMem implements Comparator<cfgSensorMem> {
 
     public void dump(List<String> lst) {
         lst.add(key + " column " + col + ":");
-        lst.addAll(hist.show(5));
+        lst.addAll(hist.show(6));
     }
 
 }
