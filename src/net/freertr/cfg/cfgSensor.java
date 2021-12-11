@@ -173,7 +173,13 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         "sensor .*! column .* style gauge",
         "sensor .*! column .* type uint64",
         "sensor .*! column .* split null null null",
-        "sensor .*! column .* help null",};
+        "sensor .*! column .* help null",
+        "sensor .*! no local interval",
+        "sensor .*! no local memory",
+        "sensor .*! no local file",
+        "sensor .*! no local backup",
+        "sensor .*! no local max-byte",
+        "sensor .*! no local max-time",};
 
     /**
      * defaults filter
@@ -326,6 +332,12 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 l.add(cn + " replace " + rep.src + " " + rep.trg);
             }
         }
+        cmds.cfgLine(l, locInt < 1, cmds.tabulator, "local interval", "" + locInt);
+        cmds.cfgLine(l, !locMem, cmds.tabulator, "local memory", "");
+        cmds.cfgLine(l, locFil == null, cmds.tabulator, "local file", "" + locFil);
+        cmds.cfgLine(l, locBak == null, cmds.tabulator, "local backup", "" + locBak);
+        cmds.cfgLine(l, locByt < 1, cmds.tabulator, "local max-byte", "" + locByt);
+        cmds.cfgLine(l, locTim < 1, cmds.tabulator, "local max-time", "" + locTim);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -967,7 +979,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             if (a == null) {
                 continue;
             }
-            lst.add(a);
+            lst.add(last + ";" + a);
         }
         time = (int) (bits.getTime() - last);
         return lst;
