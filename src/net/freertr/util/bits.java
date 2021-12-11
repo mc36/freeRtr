@@ -874,7 +874,15 @@ public class bits {
             return num + "g";
         }
         num /= 1000;
-        return num + "t";
+        if (num < 10000) {
+            return num + "t";
+        }
+        num /= 1000;
+        if (num < 10000) {
+            return num + "p";
+        }
+        num /= 1000;
+        return num + "e";
     }
 
     /**
