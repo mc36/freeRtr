@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
 import net.freertr.ifc.ifcUdpInt;
 import net.freertr.pipe.pipeConnect;
@@ -360,7 +361,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  2      tcp2vrf                    pass host port in");
         l.add(null, "2  3        <num>                    host port");
         l.add(null, "3  4          <name>                 vdc vrf");
-        l.add(null, "4  .            <num>                vdc port");
+        l.add(null, "4  5,.          <num>                vdc port");
+        l.add(null, "5  .              <addr>             host ip to bind to");
         l.add(null, "1  2      time                       specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      delay                      specify initial delay");
@@ -602,6 +604,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             dev.portH = bits.str2num(cmd.word());
             dev.vrf = cmd.word();
             dev.portV = bits.str2num(cmd.word());
+            if (cmd.size() > 1) {
+                dev.adr = new addrIP();
+                dev.adr.fromString(cmd.word());
+            }
             tcps.add(dev);
             return;
         }
@@ -1020,6 +1026,8 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
 
     public int portV;
 
+    public addrIP adr;
+
     public int compare(cfgVdcTcp o1, cfgVdcTcp o2) {
         if (o1.portH < o2.portH) {
             return -1;
@@ -1031,7 +1039,11 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
     }
 
     public String toString() {
-        return portH + " " + vrf + " " + portV;
+        String a = portH + " " + vrf + " " + portV;
+        if (adr == null) {
+            return a;
+        }
+        return a + " " + adr;
     }
 
 }

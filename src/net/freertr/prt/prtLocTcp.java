@@ -40,13 +40,12 @@ public class prtLocTcp implements Runnable {
      */
     public prtLocTcp(int local, prtGen prt, int remote, String bind) throws Exception {
         InetAddress addr = null;
-        InetSocketAddress sadr = new InetSocketAddress(local);
-        if (bind.length() > 0) {
-            try {
-                addr = InetAddress.getByName(bind);
-                sadr = new InetSocketAddress(addr, local);
-            } catch (Exception e) {
-            }
+        InetSocketAddress sadr = null;
+        if (bind.length() < 1) {
+            sadr = new InetSocketAddress(local);
+        } else {
+            addr = InetAddress.getByName(bind);
+            sadr = new InetSocketAddress(addr, local);
         }
         socket = new ServerSocket();
         socket.setReuseAddress(true);

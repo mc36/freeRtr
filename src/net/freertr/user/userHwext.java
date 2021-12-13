@@ -188,7 +188,7 @@ public class userHwext {
             default:
                 return;
         }
-        hwc.add("tcp2vrf 2323 " + dpv + " 23");
+        hwc.add("tcp2vrf 2323 " + dpv + " 23 127.0.0.1");
         swc.add(cmds.comment);
         swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
@@ -220,7 +220,7 @@ public class userHwext {
                 for (i = 0; i < ifp.size(); i++) {
                     hwd.add("ovs-vsctl add-port sw " + ifp.get(i));
                 }
-                hwc.add("tcp2vrf " + packOpenflow.port + " " + dpv + " " + packOpenflow.port);
+                hwc.add("tcp2vrf " + packOpenflow.port + " " + dpv + " " + packOpenflow.port + " 127.0.0.1");
                 swc.add("server openflow " + dpv);
                 swc.add(cmds.tabulator + "export-vrf " + vrf.get(0));
                 for (i = 0; i < ifr.size(); i++) {
@@ -232,7 +232,7 @@ public class userHwext {
             case p4emu:
             case p4dpdk:
             case p4sw:
-                hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port);
+                hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port + " 127.0.0.1");
                 swc.add("interface ethernet0");
                 swc.add(cmds.tabulator + "description p4 cpu port");
                 swc.add(cmds.tabulator + "no shutdown");
