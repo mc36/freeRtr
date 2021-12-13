@@ -1705,6 +1705,12 @@ public class ipFwdIface extends tabRouteIface {
                 hsrpCfg.bfdTrigger = false;
                 return false;
             }
+            if (a.equals("group")) {
+                hsrpCfg.group = 0;
+                hsrpCfg.mac = hsrpCfg.genPackHolder().genMacAddr();
+                hsrpCfg.resetState();
+                return false;
+            }
             if (a.equals("mac-address")) {
                 hsrpCfg.mac = hsrpCfg.genPackHolder().genMacAddr();
                 return false;
@@ -1737,6 +1743,12 @@ public class ipFwdIface extends tabRouteIface {
             }
             if (a.equals("bfd")) {
                 vrrpCfg.bfdTrigger = false;
+                return false;
+            }
+            if (a.equals("group")) {
+                vrrpCfg.group = 0;
+                vrrpCfg.mac = vrrpCfg.genPackHolder().genMacAddr();
+                vrrpCfg.resetState();
                 return false;
             }
             if (a.equals("mac-address")) {
