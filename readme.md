@@ -4,9 +4,9 @@ more about the project at [www.freertr.net](http://www.freertr.net/)
 
 ## dependencies
 
-you'll need an up to date debian sid with a jdk installed
+you'll need an up to date debian sid with a jdk installed.
 
-for native binaries, you'll need gcc, dpdk, libpcap and libcrypto
+for native binaries, you'll need gcc, dpdk, libpcap and libcrypto.
 
 ## directory structure
 
@@ -30,4 +30,4 @@ there is no build system in use, but you'll find shell scripts:
 
 ## contributing
 
-feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc
+feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc.
