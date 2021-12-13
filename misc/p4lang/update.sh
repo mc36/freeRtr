@@ -6,7 +6,7 @@ sudo apt autoremove
 sudo apt clean
 cd ~
 mkdir a
-wget -O a/rtr.zip http://src.mchome.nop.hu/rtr.zip
+wget -O a/rtr.zip src.mchome.nop.hu/rtr.zip
 unzip a/rtr.zip -d a/
 cd ~/a/misc/p4lang
 ./c.sh

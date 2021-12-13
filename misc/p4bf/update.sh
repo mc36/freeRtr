@@ -6,7 +6,7 @@ sudo apt autoremove
 sudo apt clean
 cd ~
 mkdir a
-wget -O a/rtr.zip http://src.mchome.nop.hu/rtr.zip
+wget -O a/rtr.zip src.mchome.nop.hu/rtr.zip
 unzip a/rtr.zip -d a/
 mv ~/a/misc/p4bf/*.p4 ~/rare/p4src/
 mv ~/a/misc/p4bf/include/*.p4 ~/rare/p4src/include/
