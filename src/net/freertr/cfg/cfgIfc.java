@@ -1442,7 +1442,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[4|6] netflow-rx",
         "interface .*! no ipv[4|6] netflow-tx",
         "interface .*! ipv[4|6] hsrp group 0",
-        "interface .*! ipv[4|6] hsrp password $v10$Y2lzY28=",
+        "interface .*! ipv[4|6] hsrp password \\$v10\\$Y2lzY28=",
         "interface .*! ipv4 hsrp mac-address 0000.0c9f.f000",
         "interface .*! ipv6 hsrp mac-address 0005.73a0.0000",
         "interface .*! ipv[4|6] hsrp version 2",
