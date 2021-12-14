@@ -86,7 +86,6 @@ public class packDnsZone implements Comparator<packDnsZone> {
         if (zon == null) {
             return 0;
         }
-        long tim = bits.getTime();
         int add = 0;
         for (int i = 0; i < zon.size(); i++) {
             packDnsRec ntry = zon.get(i);
@@ -110,7 +109,6 @@ public class packDnsZone implements Comparator<packDnsZone> {
         if (zon == null) {
             return 0;
         }
-        long tim = bits.getTime();
         int add = 0;
         for (int i = 0; i < zon.recs.size(); i++) {
             packDnsRec ntry = zon.recs.get(i);

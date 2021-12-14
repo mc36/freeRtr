@@ -389,6 +389,10 @@ public class userReader implements Comparator<String> {
                 case table:
                     a = a.replaceAll("\\|", " ").trim();
                     break;
+                case html:
+                case normal:
+                case setdel:
+                    break;
             }
             cmds cmd = new cmds("row", a);
             for (int p = 0;; p++) {

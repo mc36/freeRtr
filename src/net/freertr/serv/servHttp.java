@@ -2445,7 +2445,7 @@ class servHttpConn implements Runnable {
                     break;
                 }
             }
-            servHttpForti ntry = new servHttpForti(pipe, this);
+            servHttpForti ntry = new servHttpForti(pipe);
             ntry.ifc = gotHost.allowForti.cloneStart(ntry);
             ntry.doStart();
             gotKeep = false;
@@ -3177,10 +3177,7 @@ class servHttpForti implements Runnable, ifcDn {
 
     private ifcUp upper = new ifcNull();
 
-    private servHttpConn lower;
-
-    public servHttpForti(pipeSide conn, servHttpConn parent) {
-        lower = parent;
+    public servHttpForti(pipeSide conn) {
         pipe = conn;
     }
 

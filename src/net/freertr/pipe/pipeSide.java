@@ -985,7 +985,6 @@ public class pipeSide {
      */
     @SuppressWarnings("unchecked")
     public <T extends Object> T settingsGet(int nam, T def) {
-        Object res;
         pipeSetting ntry = new pipeSetting(nam);
         ntry = settings.find(ntry);
         if (ntry == null) {

@@ -489,6 +489,10 @@ public class userPacket {
             strm = prx.doConnect(servGeneric.protoTcp, trg, prt, "mrt2bmp");
             if (strm == null) {
                 cmd.error("failed");
+                try {
+                    fs.close();
+                } catch (Exception e) {
+                }
                 return null;
             }
             cmd.error("sending updates as it was from " + sip + " to " + tip);

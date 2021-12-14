@@ -214,6 +214,8 @@ public class rtrBgpFlow {
                 break;
             case always:
                 break;
+            case mask:
+                break;
         }
         pck.merge2end();
     }

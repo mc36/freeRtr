@@ -93,8 +93,6 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
 
     private ifcUp upper = new ifcNull();
 
-    private addrIP remote = new addrIP();
-
     private counter cntr = new counter();
 
     private boolean working = true;

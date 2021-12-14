@@ -2868,7 +2868,6 @@ public class rtrBgpUtil {
      */
     public static void placePrefSid(int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         int afi = safi & afiMask;
-        int sfi = safi & sfiMask;
         hlp.clear();
         typLenVal tlv = getPrefSidTlv();
         if (ntry.best.segrouIdx != 0) {

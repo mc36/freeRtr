@@ -12,7 +12,6 @@ import net.freertr.tab.tabSession;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
-import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
 
@@ -173,7 +172,6 @@ public class servNetflow extends servGeneric implements prtServS {
      */
     protected void gotPack(packHolder pckB, packNetflow pckF) {
         List<tabSessionEntry> lst = pckF.parsePacket(pckB);
-        long tim = bits.getTime();
         for (int i = 0; i < lst.size(); i++) {
             tabSessionEntry ntry = lst.get(i);
             tabSessionEntry old = connects.doSess(ntry, null, true);

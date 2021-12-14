@@ -1061,7 +1061,6 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         }
         last = bits.getTime();
         cnt++;
-        List<String> lst = new ArrayList<String>();
         List<String> res = getResult();
         for (int i = 0; i < skip; i++) {
             if (res.size() < 1) {

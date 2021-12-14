@@ -16,7 +16,6 @@ import net.freertr.ip.ipIcmp6;
 import net.freertr.ip.ipMhost4;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
-import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.state;
 

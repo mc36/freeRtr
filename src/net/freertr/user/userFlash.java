@@ -462,6 +462,7 @@ public class userFlash {
                 buf2hex(l, buf, (int) pos);
                 pos += buf.length;
             }
+            fs.close();
             return l;
         } catch (Exception e) {
             return null;

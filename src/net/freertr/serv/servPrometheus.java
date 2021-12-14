@@ -249,7 +249,6 @@ class servPrometheusConn implements Runnable {
         gotUrl.fromString(s);
         cfgSensor ntry = cfgAll.sensorFind(gotUrl.filName, false);
         if (ntry != null) {
-            long tim = bits.getTime();
             List<String> res = ntry.getReportProm();
             sendReply("200 ok", res);
             return false;

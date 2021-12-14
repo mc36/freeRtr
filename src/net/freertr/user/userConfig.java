@@ -305,6 +305,8 @@ public class userConfig {
                 case config:
                     shw.cfg = modeDconfig;
                     break;
+                case global:
+                    break;
             }
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
@@ -2736,7 +2738,6 @@ public class userConfig {
         }
         String s = cmd.getRemaining();
         ntry.sequence = fwd.natCfg.nextseq();
-        int ot = ntry.timeout;
         int res = ntry.fromString(s);
         switch (res) {
             case 0: // entry
