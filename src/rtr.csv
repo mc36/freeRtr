@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v21.12.17-cur, done by cs@nop.
--;-;-;2021-12-17 05:32:07, took 00:06:35, with 100 workers, on 2516 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v21.12.18-cur, done by cs@nop.
+-;-;-;2021-12-18 04:55:08, took 00:06:05, with 100 workers, on 2516 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
