@@ -1,5 +1,6 @@
 #!/bin/sh
 CC="tcc"                                #tcc
+CC="llc"                                #llc
 CC="gcc"                                #gcc
 CC="clang"                              #clang
 
