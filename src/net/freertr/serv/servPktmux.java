@@ -22,7 +22,7 @@ import net.freertr.util.counter;
 import net.freertr.util.state;
 
 /**
- * p4lang emulator
+ * pktmux server
  *
  * @author matecsaba
  */
@@ -105,7 +105,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
             }
             servPktmuxPort ntry = new servPktmuxPort(this, bits.str2num(cmd.word()));
             ntry.ifc = ifc.ethtyp;
-            ntry.ifc.addET(-1, "p4lang", ntry);
+            ntry.ifc.addET(-1, "pktmux", ntry);
             ntry.ifc.updateET(-1, ntry);
             ports.add(ntry);
             return false;

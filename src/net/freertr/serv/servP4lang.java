@@ -84,7 +84,7 @@ import net.freertr.util.notifier;
 import net.freertr.util.state;
 
 /**
- * p4lang
+ * p4lang server
  *
  * @author matecsaba
  */
