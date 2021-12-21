@@ -138,6 +138,8 @@ struct portvrf_entry {
     int label2;
     int tcpmss4;
     int tcpmss6;
+    int mpls;
+    int nsh;
 };
 
 struct table_head portvrf_table;

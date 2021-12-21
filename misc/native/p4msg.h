@@ -362,6 +362,22 @@ int doOneCommand(unsigned char* buf) {
         portvrf_res->tcpmss6 = atoi(arg[3]);
         return 0;
     }
+    if (strcmp(arg[0], "mplspack") == 0) {
+        portvrf_ntry.port = atoi(arg[2]);
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) return 0;
+        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res->mpls = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "nshpack") == 0) {
+        portvrf_ntry.port = atoi(arg[2]);
+        index = table_find(&portvrf_table, &portvrf_ntry);
+        if (index < 0) return 0;
+        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res->nsh = atoi(arg[3]);
+        return 0;
+    }
     if (strcmp(arg[0], "xconnect") == 0) {
         portvrf_ntry.command = 3;
         portvrf_ntry.port = atoi(arg[2]);

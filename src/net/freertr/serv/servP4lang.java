@@ -3179,22 +3179,6 @@ class servP4langConn implements Runnable {
             lower.sendLine("polkapoly_" + a + " " + ifc.id + " " + o);
             ifc.sentPolka = i;
         }
-        i = 0;
-        if (ifc.ifc.mplsPack != null) {
-            i = 1;
-        }
-        if (i != ifc.sentMpls) {
-            lower.sendLine("mplsenable_mod" + ifc.id + " " + i);
-            ifc.sentMpls = i;
-        }
-        i = 0;
-        if (ifc.ifc.nshPack != null) {
-            i = 1;
-        }
-        if (i != ifc.sentNsh) {
-            lower.sendLine("nshenable_mod" + ifc.id + " " + i);
-            ifc.sentNsh = i;
-        }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
             ifc.sentVlan = ifc.ifc.vlanNum;
@@ -3406,19 +3390,34 @@ class servP4langConn implements Runnable {
                 sendAcl(0, "outacl6_add " + ifc.id + " ", "", "", "", false, false, ifc.sentAcl6out1, ifc.sentAcl6out2, ifc.sentAcl6outF);
             }
         }
-        if (vrf.id == ifc.sentVrf) {
-            return;
+        if (vrf.id != ifc.sentVrf) {
+            lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
+            if (ifc.ifc.fwdIf4 != null) {
+                lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssIn);
+                lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssOut);
+            }
+            if (ifc.ifc.fwdIf6 != null) {
+                lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssIn);
+                lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssOut);
+            }
+            ifc.sentVrf = vrf.id;
         }
-        lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
-        if (ifc.ifc.fwdIf4 != null) {
-            lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssIn);
-            lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssOut);
+        i = 0;
+        if (ifc.ifc.mplsPack != null) {
+            i = 1;
         }
-        if (ifc.ifc.fwdIf6 != null) {
-            lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssIn);
-            lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssOut);
+        if (i != ifc.sentMpls) {
+            lower.sendLine("mplspack_" + a + " " + ifc.id + " " + i);
+            ifc.sentMpls = i;
         }
-        ifc.sentVrf = vrf.id;
+        i = 0;
+        if (ifc.ifc.nshPack != null) {
+            i = 1;
+        }
+        if (i != ifc.sentNsh) {
+            lower.sendLine("nshpack_" + a + " " + ifc.id + " " + i);
+            ifc.sentNsh = i;
+        }
     }
 
     private void doNeighs(servP4langNei ntry) {
