@@ -1062,6 +1062,10 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentPolka;
 
+    public int sentMpls;
+
+    public int sentNsh;
+
     public String sentMacsec;
 
     public state.states sentState = state.states.close;
@@ -1230,6 +1234,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentMtu = 0;
         sentLabel = -1;
         sentPolka = -1;
+        sentMpls = 0;
+        sentNsh = 0;
         sentAcl4in1 = null;
         sentAcl4in2 = null;
         sentAcl4inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
@@ -3172,6 +3178,22 @@ class servP4langConn implements Runnable {
             }
             lower.sendLine("polkapoly_" + a + " " + ifc.id + " " + o);
             ifc.sentPolka = i;
+        }
+        i = 0;
+        if (ifc.ifc.mplsPack != null) {
+            i = 1;
+        }
+        if (i != ifc.sentMpls) {
+            lower.sendLine("mplsenable_mod" + ifc.id + " " + i);
+            ifc.sentMpls = i;
+        }
+        i = 0;
+        if (ifc.ifc.nshPack != null) {
+            i = 1;
+        }
+        if (i != ifc.sentNsh) {
+            lower.sendLine("nshenable_mod" + ifc.id + " " + i);
+            ifc.sentNsh = i;
         }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
