@@ -1062,6 +1062,14 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentPolka;
 
+    public int sentMss4in;
+
+    public int sentMss4out;
+
+    public int sentMss6in;
+
+    public int sentMss6out;
+
     public int sentMpls;
 
     public int sentNsh;
@@ -1234,6 +1242,10 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentMtu = 0;
         sentLabel = -1;
         sentPolka = -1;
+        sentMss4in = 0;
+        sentMss4out = 0;
+        sentMss6in = 0;
+        sentMss6out = 0;
         sentMpls = 0;
         sentNsh = 0;
         sentAcl4in1 = null;
@@ -3392,15 +3404,35 @@ class servP4langConn implements Runnable {
         }
         if (vrf.id != ifc.sentVrf) {
             lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
-            if (ifc.ifc.fwdIf4 != null) {
-                lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssIn);
-                lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf4.tcpMssOut);
-            }
-            if (ifc.ifc.fwdIf6 != null) {
-                lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssIn);
-                lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + ifc.ifc.fwdIf6.tcpMssOut);
-            }
             ifc.sentVrf = vrf.id;
+        }
+        i = 0;
+        o = 0;
+        if (ifc.ifc.fwdIf4 != null) {
+            i = ifc.ifc.fwdIf4.tcpMssIn;
+            o = ifc.ifc.fwdIf4.tcpMssOut;
+        }
+        if (i != ifc.sentMss4in) {
+            lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + i);
+            ifc.sentMss4in = i;
+        }
+        if (o != ifc.sentMss4out) {
+            lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + o);
+            ifc.sentMss4out = o;
+        }
+        i = 0;
+        o = 0;
+        if (ifc.ifc.fwdIf6 != null) {
+            i = ifc.ifc.fwdIf6.tcpMssIn;
+            o = ifc.ifc.fwdIf6.tcpMssOut;
+        }
+        if (i != ifc.sentMss6in) {
+            lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + i);
+            ifc.sentMss6in = i;
+        }
+        if (o != ifc.sentMss6out) {
+            lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + o);
+            ifc.sentMss6out = o;
         }
         i = 0;
         if (ifc.ifc.mplsPack != null) {
