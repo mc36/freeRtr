@@ -21,29 +21,39 @@ public class tabAverage {
     public int buckets = 5;
 
     /**
-     * echo minimum
+     * minimum result
      */
     public int minimum;
 
     /**
-     * echo minimum
+     * maximum result
      */
     public int maximum;
 
     /**
-     * echo divisor
+     * divide result
      */
     public int divisor = 1;
 
     /**
-     * echo multiplier
+     * multiply result
      */
     public int multiply = 1;
 
     /**
-     * echo relaxer
+     * relaxer changes
      */
     public int ignorer = 0;
+
+    /**
+     * discard smallest values
+     */
+    public int discardLo = 0;
+
+    /**
+     * discard highest values
+     */
+    public int discardHi = 0;
 
     private int lastReported;
 
@@ -160,12 +170,57 @@ public class tabAverage {
         if (pastValues.size() < 1) {
             return met;
         }
+        List<Integer> vals = pastValues;
+        for (int o = 0; o < discardLo; o++) {
+            List<Integer> v = new ArrayList<Integer>();
+            synchronized (vals) {
+                for (int i = 0; i < vals.size(); i++) {
+                    v.add(vals.get(i));
+                }
+            }
+            int val = Integer.MAX_VALUE;
+            int seq = -1;
+            for (int i = 0; i < v.size(); i++) {
+                int cur = v.get(i);
+                if (cur < val) {
+                    val = cur;
+                    seq = i;
+                }
+            }
+            if (seq < 0) {
+                return met;
+            }
+            v.remove(seq);
+            vals = v;
+        }
+        for (int o = 0; o < discardHi; o++) {
+            List<Integer> v = new ArrayList<Integer>();
+            synchronized (vals) {
+                for (int i = 0; i < vals.size(); i++) {
+                    v.add(vals.get(i));
+                }
+            }
+            int val = Integer.MIN_VALUE;
+            int seq = -1;
+            for (int i = 0; i < v.size(); i++) {
+                int cur = v.get(i);
+                if (cur > val) {
+                    val = cur;
+                    seq = i;
+                }
+            }
+            if (seq < 0) {
+                return met;
+            }
+            v.remove(seq);
+            vals = v;
+        }
         switch (algorithm) {
             case 1:
                 met = Integer.MAX_VALUE;
-                synchronized (pastValues) {
-                    for (int i = 0; i < pastValues.size(); i++) {
-                        int cur = pastValues.get(i);
+                synchronized (vals) {
+                    for (int i = 0; i < vals.size(); i++) {
+                        int cur = vals.get(i);
                         if (cur < met) {
                             met = cur;
                         }
@@ -174,19 +229,19 @@ public class tabAverage {
                 break;
             case 2:
                 met = 0;
-                synchronized (pastValues) {
-                    for (int i = 0; i < pastValues.size(); i++) {
-                        int cur = pastValues.get(i);
+                synchronized (vals) {
+                    for (int i = 0; i < vals.size(); i++) {
+                        int cur = vals.get(i);
                         met += cur;
                     }
-                    met /= pastValues.size();
+                    met /= vals.size();
                 }
                 break;
             case 3:
                 met = Integer.MIN_VALUE;
-                synchronized (pastValues) {
-                    for (int i = 0; i < pastValues.size(); i++) {
-                        int cur = pastValues.get(i);
+                synchronized (vals) {
+                    for (int i = 0; i < vals.size(); i++) {
+                        int cur = vals.get(i);
                         if (cur > met) {
                             met = cur;
                         }
@@ -194,11 +249,11 @@ public class tabAverage {
                 }
                 break;
             case 4:
-                synchronized (pastValues) {
+                synchronized (vals) {
                     met = 0;
-                    int prv = pastValues.get(0);
-                    for (int i = 1; i < pastValues.size(); i++) {
-                        int cur = pastValues.get(i);
+                    int prv = vals.get(0);
+                    for (int i = 1; i < vals.size(); i++) {
+                        int cur = vals.get(i);
                         int dif = prv - cur;
                         prv = cur;
                         if (dif < 0) {

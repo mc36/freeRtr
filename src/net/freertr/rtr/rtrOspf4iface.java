@@ -388,6 +388,8 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(cmds.tabulator + beg + "dynamic-divisor " + echoParam.divisor);
         l.add(cmds.tabulator + beg + "dynamic-multiply " + echoParam.multiply);
         l.add(cmds.tabulator + beg + "dynamic-ignore " + echoParam.ignorer);
+        l.add(cmds.tabulator + beg + "dynamic-skip-min " + echoParam.discardLo);
+        l.add(cmds.tabulator + beg + "dynamic-skip-max " + echoParam.discardHi);
         l.add(cmds.tabulator + beg + "dynamic-algo " + echoParam.getAlgoName());
         for (int i = 0; i < neighs.size(); i++) {
             rtrOspf4neigh ntry = neighs.get(i);
@@ -662,6 +664,14 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             echoParam.ignorer = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("dynamic-skip-min")) {
+            echoParam.discardLo = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dynamic-skip-max")) {
+            echoParam.discardHi = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("dynamic-algo")) {
             echoParam.string2algo(cmd.word());
             schedWork(3);
@@ -852,6 +862,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(null, "5 .           <num>                 multiplier");
         l.add(null, "4 5         dynamic-ignore          ignore small differences");
         l.add(null, "5 .           <num>                 maximum unreported change");
+        l.add(null, "4 5         dynamic-skip-min        discard small measures");
+        l.add(null, "5 .           <num>                 number of values");
+        l.add(null, "4 5         dynamic-skip-max        discard big measures");
+        l.add(null, "5 .           <num>                 number of values");
         l.add(null, "4 5         dynamic-algo            calculation to do");
         l.add(null, "5 .           none                  nothing");
         l.add(null, "5 .           minimum               take lowest");

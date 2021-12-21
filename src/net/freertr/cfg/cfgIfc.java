@@ -1591,6 +1591,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router ospf[4|6] .* dynamic-divisor 1",
         "interface .*! router ospf[4|6] .* dynamic-multiply 1",
         "interface .*! router ospf[4|6] .* dynamic-ignore 0",
+        "interface .*! router ospf[4|6] .* dynamic-skip-min 0",
+        "interface .*! router ospf[4|6] .* dynamic-skip-max 0",
         "interface .*! router ospf[4|6] .* dynamic-algo minimum",
         // pvrp
         "interface .*! router pvrp[4|6] .* split-horizon",
@@ -1621,6 +1623,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router pvrp[4|6] .* dynamic-divisor 1",
         "interface .*! router pvrp[4|6] .* dynamic-multiply 1",
         "interface .*! router pvrp[4|6] .* dynamic-ignore 0",
+        "interface .*! router pvrp[4|6] .* dynamic-skip-min 0",
+        "interface .*! router pvrp[4|6] .* dynamic-skip-max 0",
         "interface .*! router pvrp[4|6] .* dynamic-algo minimum",
         "interface .*! no router pvrp[4|6] .* label-in",
         "interface .*! no router pvrp[4|6] .* label-out",
@@ -1660,6 +1664,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router lsrp[4|6] .* dynamic-divisor 1",
         "interface .*! router lsrp[4|6] .* dynamic-multiply 1",
         "interface .*! router lsrp[4|6] .* dynamic-ignore 0",
+        "interface .*! router lsrp[4|6] .* dynamic-skip-min 0",
+        "interface .*! router lsrp[4|6] .* dynamic-skip-max 0",
         "interface .*! router lsrp[4|6] .* dynamic-algo minimum",
         // eigrp
         "interface .*! router eigrp[4|6] .* split-horizon",
@@ -1720,6 +1726,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router isis[4|6] .* dynamic-divisor 1",
         "interface .*! router isis[4|6] .* dynamic-multiply 1",
         "interface .*! router isis[4|6] .* dynamic-ignore 0",
+        "interface .*! router isis[4|6] .* dynamic-skip-min 0",
+        "interface .*! router isis[4|6] .* dynamic-skip-max 0",
         "interface .*! router isis[4|6] .* dynamic-algo minimum",
         // vlan
         "interface .*! no vlan subif-macs",
