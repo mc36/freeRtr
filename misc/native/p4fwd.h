@@ -4,12 +4,12 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
 #ifdef debugging
 
 #define doDropper {printf("dropping at %s:%i\n", __FILE__, __LINE__);goto drop;}
-#define doPunter {printf("punting at %s:%i\n", __FILE__, __LINE__);goto cpu;}
+#define doCpuing {printf("punting at %s:%i\n", __FILE__, __LINE__);goto cpu;}
 
 #else
 
 #define doDropper goto drop;
-#define doPunter goto cpu;
+#define doCpuing goto cpu;
 
 #endif
 
@@ -497,7 +497,7 @@ int masks[] = {
 
 #define decapWireguard(tun_res)                                 \
     bufP = bufT + 8;                                            \
-    if (get32lsb(bufD, bufP) != 4) doPunter;                    \
+    if (get32lsb(bufD, bufP) != 4) doCpuing;                    \
     tmp = bufS - bufP + preBuff;                                \
     if (tmp < 32) doDropper;                                    \
     put32msb(bufD, bufP + 4, 0);                                \
@@ -877,11 +877,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         break;                                                      \
     case 2:                                                         \
         bufP = bufT + 8;                                            \
-        if ((get16msb(bufD, bufP) & 0x8000) != 0) doPunter;         \
+        if ((get16msb(bufD, bufP) & 0x8000) != 0) doCpuing;         \
         bufP += 8;                                                  \
         bufP += 2;                                                  \
         ethtyp = get16msb(bufD, bufP);                              \
-        if ((ethtyp & 0x8000) != 0) doPunter;                       \
+        if ((ethtyp & 0x8000) != 0) doCpuing;                       \
         ppptyp2ethtyp;                                              \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
@@ -915,7 +915,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         break;                                                      \
     case 10:                                                        \
         bufP = bufT + 8;                                            \
-        if (bufD[bufP] != 6) doPunter;                              \
+        if (bufD[bufP] != 6) doCpuing;                              \
         bufP += 2;                                                  \
         guessEthtyp;                                                \
         bufP -= 2;                                                  \
@@ -1061,7 +1061,7 @@ ethtyp_rx:
         macsec_res->packRx++;
         macsec_res->byteRx += bufS;
         if (ethtyp != macsec_res->ethtyp) doDropper;
-        if (bufD[bufP] != 0x08) doPunter;
+        if (bufD[bufP] != 0x08) doCpuing;
         macsec_res->seqRx = get32msb(bufD, bufP + 2);
         bufP += 6;
         tmp = bufS - bufP + preBuff - macsec_res->hashBlkLen;
@@ -1179,7 +1179,7 @@ neigh_tx:
             bridge_ntry.id = mpls_res->bridge;
             goto bridgevpls_rx;
         case 6: // punt
-            doPunter;
+            doCpuing;
         case 7: // dup
             doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, (label & 0xf00) | ttl, port);
             if (mpls_res->swap != 0) goto mpls_rou;
@@ -1307,7 +1307,7 @@ ipv4_flwed:
             if (index < 0) goto ipv4_natted;
             if (frag != 0) goto ipv4_natted;
             acls_res = table_get(&acls_table, index);
-            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doPunter;
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
         }
 ipv4_natted:
         acls_ntry.dir = 5;
@@ -1351,10 +1351,10 @@ ipv4_pbred:
             mroute4_res->pack++;
             mroute4_res->byte += bufS;
             doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
-            if (mroute4_res->local != 0) doPunter;
+            if (mroute4_res->local != 0) doCpuing;
             return;
         }
-        if (acl4_ntry.protV == 46) doPunter;
+        if (acl4_ntry.protV == 46) doCpuing;
         for (i = 32; i >= 0; i--) {
             route4_ntry.mask = i;
             route4_ntry.addr &= masks[i];
@@ -1416,7 +1416,7 @@ ipv4_tx:
                     acls_res = table_get(&acls_table, index);
                     if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
                 }
-                doPunter;
+                doCpuing;
             doRouted(route4_res, 4);
             }
         }
@@ -1543,7 +1543,7 @@ ipv6_flwed:
             if (index < 0) goto ipv6_natted;
             if (frag != 0) goto ipv6_natted;
             acls_res = table_get(&acls_table, index);
-            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doPunter;
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
         }
 ipv6_natted:
         acls_ntry.dir = 5;
@@ -1587,10 +1587,10 @@ ipv6_pbred:
             mroute6_res->pack++;
             mroute6_res->byte += bufS;
             doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
-            if (mroute6_res->local != 0) doPunter;
+            if (mroute6_res->local != 0) doCpuing;
             return;
         }
-        if (acl6_ntry.protV == 0) doPunter;
+        if (acl6_ntry.protV == 0) doCpuing;
         for (i = 32; i >= 0; i--) {
             route6_ntry.mask = 96 + i;
             route6_ntry.addr4 &= masks[i];
@@ -1680,7 +1680,7 @@ ipv6_tx:
                     acls_res = table_get(&acls_table, index);
                     if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
                 }
-                doPunter;
+                doCpuing;
             doRouted(route6_res, 41);
             }
         }
@@ -1699,7 +1699,7 @@ ipv6_tx:
         prt = pppoe_res->aclport;
         bufP += 6;
         ethtyp = get16msb(bufD, bufP);
-        if ((ethtyp & 0x8000) != 0) doPunter;
+        if ((ethtyp & 0x8000) != 0) doCpuing;
         ppptyp2ethtyp;
         put16msb(bufD, bufP, ethtyp);
         bufP -= 12;
@@ -1826,7 +1826,7 @@ bridgevpls_rx:
         bridge_ntry.mac2 = get32msb(bufH, 8);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) doPunter;
+        if (index < 0) doCpuing;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packRx++;
         bridge_res->byteRx += bufS;
@@ -1834,7 +1834,7 @@ bridgevpls_rx:
         bridge_ntry.mac2 = get32msb(bufH, 2);
         hash ^= bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) doPunter;
+        if (index < 0) doCpuing;
         bridge_res = table_get(&bridge_table, index);
         bridge_res->packTx++;
         bridge_res->byteTx += bufS;
@@ -1903,19 +1903,19 @@ bridgevpls_rx:
         return;
     case ETHERTYPE_ARP: // arp
         checkLayer2;
-        doPunter;
+        doCpuing;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
         checkLayer2;
-        doPunter;
+        doCpuing;
     case ETHERTYPE_MACSEC: // macsec
         checkLayer2;
-        doPunter;
+        doCpuing;
     case ETHERTYPE_LACP: // lacp
         checkLayer2;
-        doPunter;
+        doCpuing;
     case ETHERTYPE_LLDP: // lldp
         checkLayer2;
-        doPunter;
+        doCpuing;
     default:
         checkLayer2;
 punt:
