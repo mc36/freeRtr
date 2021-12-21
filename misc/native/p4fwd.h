@@ -1111,7 +1111,7 @@ etyped_rx:
     case ETHERTYPE_MPLS_UCAST: // mpls
         checkLayer2;
         if (index < 0) doDropper;
-        if (portvrf_res->mpls == 0) doPunting;
+        if (portvrf_res->mpls == 0) doDropper;
         packMpls[port]++;
         byteMpls[port] += bufS;
 mpls_rx:
@@ -1762,7 +1762,7 @@ ipv6_tx:
     case ETHERTYPE_NSH: // nsh
         checkLayer2;
         if (index < 0) doDropper;
-        if (portvrf_res->nsh == 0) doPunting;
+        if (portvrf_res->nsh == 0) doDropper;
         packNsh[port]++;
         byteNsh[port] += bufS;
         ttl = get16msb(bufD, bufP + 0);
