@@ -3405,6 +3405,12 @@ class servP4langConn implements Runnable {
         if (vrf.id != ifc.sentVrf) {
             lower.sendLine("portvrf_" + a + " " + ifc.id + " " + vrf.id);
             ifc.sentVrf = vrf.id;
+            ifc.sentMss4in = -1;
+            ifc.sentMss4out = -1;
+            ifc.sentMss6in = -1;
+            ifc.sentMss6out = -1;
+            ifc.sentMpls = -1;
+            ifc.sentNsh = -1;
         }
         i = 0;
         o = 0;
