@@ -11,7 +11,8 @@ import java.util.List;
 public class tabAverage {
 
     /**
-     * mode, 0=none, 1=min, 2=avg, 3=max, 4=diff
+     * mode, 0=none, 1=min, 2=avg, 3=max, 4=sum, 5=dif-min, 6=dif-avg,
+     * 7=dig-max, 8=dif-sum
      */
     public int algorithm = 1;
 
@@ -96,7 +97,15 @@ public class tabAverage {
             case 3:
                 return "maximum";
             case 4:
-                return "differs";
+                return "summary";
+            case 5:
+                return "dif-min";
+            case 6:
+                return "dif-avg";
+            case 7:
+                return "dif-max";
+            case 8:
+                return "dif-sum";
             default:
                 return "unknown=" + algorithm;
         }
@@ -124,8 +133,24 @@ public class tabAverage {
             algorithm = 3;
             return;
         }
-        if (a.equals("differs")) {
+        if (a.equals("summary")) {
             algorithm = 4;
+            return;
+        }
+        if (a.equals("dif-min")) {
+            algorithm = 5;
+            return;
+        }
+        if (a.equals("dif-avg")) {
+            algorithm = 6;
+            return;
+        }
+        if (a.equals("dif-max")) {
+            algorithm = 7;
+            return;
+        }
+        if (a.equals("dif-sum")) {
+            algorithm = 8;
             return;
         }
         algorithm = 0;
@@ -245,8 +270,67 @@ public class tabAverage {
                 }
                 break;
             case 4:
+                met = 0;
                 synchronized (vals) {
-                    met = 0;
+                    for (int i = 0; i < vals.size(); i++) {
+                        int cur = vals.get(i);
+                        met += cur;
+                    }
+                }
+                break;
+            case 5:
+                met = Integer.MAX_VALUE;
+                synchronized (vals) {
+                    int prv = vals.get(0);
+                    for (int i = 1; i < vals.size(); i++) {
+                        int cur = vals.get(i);
+                        int dif = prv - cur;
+                        prv = cur;
+                        if (dif < 0) {
+                            dif = -dif;
+                        }
+                        if (dif < met) {
+                            met = dif;
+                        }
+                    }
+                }
+                break;
+            case 6:
+                met = 0;
+                synchronized (vals) {
+                    int prv = vals.get(0);
+                    for (int i = 1; i < vals.size(); i++) {
+                        int cur = vals.get(i);
+                        int dif = prv - cur;
+                        prv = cur;
+                        if (dif < 0) {
+                            dif = -dif;
+                        }
+                        met += dif;
+                    }
+                    met /= vals.size();
+                }
+                break;
+            case 7:
+                met = Integer.MIN_VALUE;
+                synchronized (vals) {
+                    int prv = vals.get(0);
+                    for (int i = 1; i < vals.size(); i++) {
+                        int cur = vals.get(i);
+                        int dif = prv - cur;
+                        prv = cur;
+                        if (dif < 0) {
+                            dif = -dif;
+                        }
+                        if (dif > met) {
+                            met = dif;
+                        }
+                    }
+                }
+                break;
+            case 8:
+                met = 0;
+                synchronized (vals) {
                     int prv = vals.get(0);
                     for (int i = 1; i < vals.size(); i++) {
                         int cur = vals.get(i);

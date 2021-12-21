@@ -572,7 +572,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "5 .           minimum                   take lowest");
         l.add(null, "5 .           average                   take average");
         l.add(null, "5 .           maximum                   take highest");
-        l.add(null, "5 .           differs                   take differences");
+        l.add(null, "5 .           summary                   take summary");
+        l.add(null, "5 .           dif-min                   take lowest of differences");
+        l.add(null, "5 .           dif-avg                   take average of differences");
+        l.add(null, "5 .           dif-max                   take highest of differences");
+        l.add(null, "5 .           dif-sum                   take summary of differences");
         l.add(null, "4 5         route-map-in                process prefixes in ingress updates");
         l.add(null, "5 .           <name:rm>                 name of route map");
         l.add(null, "4 5         route-map-out               process prefixes in egress updates");
