@@ -58,9 +58,13 @@ int sdn2
  exit
 int sdn3
  bundle-gr 1
+ vrf for v1
+ mpls enable
  exit
 int sdn4
  bundle-gr 1
+ vrf for v1
+ mpls enable
  exit
 int bun1
  vrf for v1
