@@ -302,8 +302,15 @@ public abstract class addrType implements Comparator<addrType> {
      * @param a2 address 2
      */
     public void setAdd(addrType a1, addrType a2) {
-        for (int i = 0; i < addr.length; i++) {
-            addr[i] = (byte) ((a1.addr[i] & 0xff) + (a2.addr[i] & 0xff));
+        int o = 0;
+        for (int i = addr.length - 1; i >= 0; i--) {
+            o = (a1.addr[i] & 0xff) + (a2.addr[i] & 0xff) + o;
+            addr[i] = (byte) o;
+            if (o > 0xff) {
+                o = 1;
+            } else {
+                o = 0;
+            }
         }
     }
 
@@ -314,8 +321,15 @@ public abstract class addrType implements Comparator<addrType> {
      * @param a2 address 2
      */
     public void setSub(addrType a1, addrType a2) {
-        for (int i = 0; i < addr.length; i++) {
-            addr[i] = (byte) ((a1.addr[i] & 0xff) - (a2.addr[i] & 0xff));
+        int o = 0;
+        for (int i = addr.length - 1; i >= 0; i--) {
+            o = (a1.addr[i] & 0xff) - (a2.addr[i] & 0xff) + o;
+            addr[i] = (byte) o;
+            if (o < 0) {
+                o = -1;
+            } else {
+                o = 0;
+            }
         }
     }
 
