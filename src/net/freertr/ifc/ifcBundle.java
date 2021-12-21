@@ -81,6 +81,11 @@ public class ifcBundle implements Runnable, ifcDn {
     public int dynamic;
 
     /**
+     * load balance algorithm
+     */
+    public int loadBalance;
+
+    /**
      * last promiscous state
      */
     protected boolean promiscous;
@@ -109,8 +114,6 @@ public class ifcBundle implements Runnable, ifcDn {
     private Timer timer2;
 
     private notifier notif = new notifier();
-
-    private int loadbalance;
 
     private boolean need2run = true;
 
@@ -318,6 +321,7 @@ public class ifcBundle implements Runnable, ifcDn {
         l.add(null, "2 .    layer4                       xor source and destination port");
         l.add(null, "2 .    addr                         xor addresses");
         l.add(null, "2 .    all                          xor everything");
+        l.add(null, "2 .    random                       randomize");
     }
 
     /**
@@ -336,17 +340,26 @@ public class ifcBundle implements Runnable, ifcDn {
         cmds.cfgLine(l, reporter < 1, beg, "reporter", "" + reporter);
         cmds.cfgLine(l, dynamic < 1, beg, "dynamic", "" + dynamic);
         String a;
-        switch (loadbalance) {
+        switch (loadBalance) {
+            case 2:
+            case 3:
+            case 4:
+                a = "layer" + loadBalance;
+                break;
             case 5:
                 a = "addr";
                 break;
             case 7:
                 a = "all";
                 break;
+            case 8:
+                a = "random";
+                break;
             default:
-                a = "layer" + loadbalance;
+                a = "unknown=" + loadBalance;
+                break;
         }
-        cmds.cfgLine(l, loadbalance < 1, beg, "loadbalance", a);
+        cmds.cfgLine(l, loadBalance < 1, beg, "loadbalance", a);
         cmds.cfgLine(l, peering == null, beg, "peering", "" + peering);
     }
 
@@ -378,13 +391,17 @@ public class ifcBundle implements Runnable, ifcDn {
         }
         if (s.equals("loadbalance")) {
             s = cmd.word();
+            if (s.equals("random")) {
+                loadBalance = 8;
+                return;
+            }
             if (s.equals("addr")) {
                 s = "layer5";
             }
             if (s.equals("all")) {
                 s = "layer7";
             }
-            loadbalance = bits.str2num(s.substring(5, s.length()));
+            loadBalance = bits.str2num(s.substring(5, s.length()));
             return;
         }
         if (s.equals("replicate")) {
@@ -447,7 +464,7 @@ public class ifcBundle implements Runnable, ifcDn {
             return;
         }
         if (s.equals("loadbalance")) {
-            loadbalance = 0;
+            loadBalance = 0;
             return;
         }
         if (s.equals("replicate")) {
@@ -550,9 +567,11 @@ public class ifcBundle implements Runnable, ifcDn {
             ifc.lastRx = bits.getTime();
             ifcBundleIfc sel = ifaces.get(selected);
             if (sel == null) {
+                cntr.drop(pck, counter.reasons.noIface);
                 return;
             }
             if (ifc.ifcNum != sel.ifcNum) {
+                cntr.drop(pck, counter.reasons.notInTab);
                 return;
             }
         }
@@ -635,8 +654,8 @@ public class ifcBundle implements Runnable, ifcDn {
      * @param pck packet to send
      */
     protected void doTxNext(packHolder pck) {
-        if (loadbalance > 0) {
-            switch (loadbalance) {
+        if (loadBalance > 0) {
+            switch (loadBalance) {
                 case 2:
                     nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB();
                     break;
@@ -651,6 +670,9 @@ public class ifcBundle implements Runnable, ifcDn {
                     break;
                 case 7:
                     nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB() ^ getHash(pck.UDPsrc ^ pck.UDPtrg);
+                    break;
+                case 8:
+                    nextSender = bits.randomB();
                     break;
             }
             nextSender %= ifaces.size();
@@ -743,6 +765,13 @@ public class ifcBundle implements Runnable, ifcDn {
 
     public int getMTUsize() {
         int p = 1500;
+        if (backup > 0) {
+            ifcBundleIfc ifc = ifaces.get(selected);
+            if (ifc == null) {
+                return p;
+            }
+            return ifc.lowerIf.getMTUsize();
+        }
         for (int i = 0; i < ifaces.size(); i++) {
             ifcBundleIfc ifc = ifaces.get(i);
             if (ifc == null) {
@@ -761,6 +790,13 @@ public class ifcBundle implements Runnable, ifcDn {
 
     public long getBandwidth() {
         long p = 100000000;
+        if (backup > 0) {
+            ifcBundleIfc ifc = ifaces.get(selected);
+            if (ifc == null) {
+                return p;
+            }
+            return ifc.lowerIf.getBandwidth();
+        }
         for (int i = 0; i < ifaces.size(); i++) {
             ifcBundleIfc ifc = ifaces.get(i);
             if (ifc == null) {

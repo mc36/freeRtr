@@ -3414,9 +3414,9 @@ class servP4langConn implements Runnable {
         }
         i = 0;
         o = 0;
-        if (ifc.ifc.fwdIf4 != null) {
-            i = ifc.ifc.fwdIf4.tcpMssIn;
-            o = ifc.ifc.fwdIf4.tcpMssOut;
+        if (mstr.ifc.fwdIf4 != null) {
+            i = mstr.ifc.fwdIf4.tcpMssIn;
+            o = mstr.ifc.fwdIf4.tcpMssOut;
         }
         if (i != ifc.sentMss4in) {
             lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + i);
@@ -3428,9 +3428,9 @@ class servP4langConn implements Runnable {
         }
         i = 0;
         o = 0;
-        if (ifc.ifc.fwdIf6 != null) {
-            i = ifc.ifc.fwdIf6.tcpMssIn;
-            o = ifc.ifc.fwdIf6.tcpMssOut;
+        if (mstr.ifc.fwdIf6 != null) {
+            i = mstr.ifc.fwdIf6.tcpMssIn;
+            o = mstr.ifc.fwdIf6.tcpMssOut;
         }
         if (i != ifc.sentMss6in) {
             lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + i);
@@ -3441,7 +3441,7 @@ class servP4langConn implements Runnable {
             ifc.sentMss6out = o;
         }
         i = 0;
-        if (ifc.ifc.mplsPack != null) {
+        if (mstr.ifc.mplsPack != null) {
             i = 1;
         }
         if (i != ifc.sentMpls) {
@@ -3449,7 +3449,7 @@ class servP4langConn implements Runnable {
             ifc.sentMpls = i;
         }
         i = 0;
-        if (ifc.ifc.nshPack != null) {
+        if (mstr.ifc.nshPack != null) {
             i = 1;
         }
         if (i != ifc.sentNsh) {
