@@ -1063,7 +1063,8 @@ public class userPacket {
                 cmd.error("no such interface");
                 return null;
             }
-            ifcEthTyp old = ifc.ethtyp.monSes;
+            ifcEthTyp oldS = ifc.ethtyp.monSes;
+            boolean oldH = ifc.ethtyp.monHdr;
             a = cmd.word();
             if (a.length() > 0) {
                 cfgIfc trg = cfgAll.ifcFind(a, false);
@@ -1071,6 +1072,7 @@ public class userPacket {
                     cmd.error("no such interface");
                     return null;
                 }
+                ifc.ethtyp.monHdr = trg.ifaceNeedMacs();
                 ifc.ethtyp.monSes = trg.ethtyp;
             }
             cmd.error("       rxpps       rxbps       txpps       txbps");
@@ -1083,7 +1085,8 @@ public class userPacket {
                 cntr = ifc.ethtyp.getCounter().copyBytes().minus(cntr);
                 cmd.error(bits.padBeg(bits.toUser(cntr.packRx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteRx * 8), 12, " ") + bits.padBeg(bits.toUser(cntr.packTx), 12, " ") + bits.padBeg(bits.toUser(cntr.byteTx * 8), 12, " "));
             }
-            ifc.ethtyp.monSes = old;
+            ifc.ethtyp.monHdr = oldH;
+            ifc.ethtyp.monSes = oldS;
             return null;
         }
         if (a.equals("buffer")) {

@@ -6406,6 +6406,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmd.error("no such interface");
                 return;
             }
+            ethtyp.monHdr = ifc.ifaceNeedMacs();
             ethtyp.monSes = ifc.ethtyp;
             return;
         }
@@ -7100,6 +7101,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("monitor-session")) {
             ethtyp.monSes = null;
+            ethtyp.monHdr = false;
             return;
         }
         if (a.equals("follow-tracker")) {
