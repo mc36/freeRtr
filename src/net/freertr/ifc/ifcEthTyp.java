@@ -137,7 +137,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcEthTyp monSes = null;
 
     /**
-     * monitor buffer headers
+     * monitor session headers
      */
     public boolean monHdr;
 
@@ -165,39 +165,39 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * ipv6 core
      */
     public ipCor ip6cor;
-    
+
     private final notifier notif;
-    
+
     private int need2run;
-    
+
     private state.states lastState;
-    
+
     private ifcDn lower;
-    
+
     private ifcEthTypET defUpper;
-    
+
     private final tabGen<ifcEthTypET> etTyps;
-    
+
     private final tabGen<ifcEthTypLLC> llcTyps;
-    
+
     private final tabGen<ifcEthTypSNAP> snapTyps;
-    
+
     private boolean promiscous;
-    
+
     private counter totCntr;
-    
+
     private final counter cntr;
-    
+
     private final counter[] sizes;
-    
+
     private final counter[] protos;
-    
+
     private final counter[] clsCos;
-    
+
     private final counter[] clsExp;
-    
+
     private final counter[] clsPrc;
-    
+
     private final history hstry;
 
     /**
@@ -214,11 +214,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * hardware history
      */
     public history hwHstry;
-    
+
     private final String name;
-    
+
     private final cfgIfc cfger;
-    
+
     private RandomAccessFile logFile = null;
 
     /**
@@ -239,7 +239,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public history getHistory() {
         return hstry;
     }
-    
+
     public counter getCounter() {
         return cntr;
     }
@@ -282,7 +282,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         return lower.getHwAddr();
     }
-    
+
     public String toString() {
         return name;
     }
@@ -312,7 +312,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         return lastState;
     }
-    
+
     public void setState(state.states stat) {
         stat = state.toUsable(stat);
         if (lastState == stat) {
@@ -408,7 +408,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         need2run |= 2;
         new Thread(this).start();
     }
-    
+
     public void run() {
         long sec = 0;
         for (;;) {
@@ -544,7 +544,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         llcTyps = new tabGen<ifcEthTypLLC>();
         snapTyps = new tabGen<ifcEthTypSNAP>();
     }
-    
+
     private packHolder applyMonitor(packHolder pck, int dir, boolean copy) {
         if ((dir & monDir) == 0) {
             return null;
@@ -594,7 +594,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         pck.setDataSize(monTrnc);
         return pck;
     }
-    
+
     private void doRxPack(packHolder pck) {
         int typ = pck.msbGetW(0); // ether type
         pck.ETHtype = typ;
@@ -753,7 +753,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         qosOut.enqueuePack(pck);
         notif.wakeup();
     }
-    
+
     public void recvPack(packHolder pck) {
         doRxWork(pck, false);
     }
@@ -766,7 +766,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public void gotFromDataplane(packHolder pck) {
         doRxWork(pck, true);
     }
-    
+
     private void doRxWork(packHolder pck, boolean fromDp) {
         cntr.rx(pck);
         if (mtuCheckRx) {
@@ -1077,7 +1077,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         return lower.getBandwidth();
     }
-    
+
     private int pktsiz2bucket(int siz) {
         int i = (siz & 0xffffff) >>> 8;
         if (i > 7) {
@@ -1085,7 +1085,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         return i;
     }
-    
+
     private void pktAccount(packHolder pck) {
         cntr.tx(pck);
         sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
@@ -1121,7 +1121,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         return l;
     }
-    
+
     private String getShClasses(counter cos, counter exp, counter prc) {
         return cos.packTx + "|" + exp.packTx + "|" + prc.packTx + "|" + cos.byteTx + "|" + exp.byteTx + "|" + prc.byteTx;
     }
@@ -1227,7 +1227,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         return monBufD.length;
     }
-    
+
     private synchronized void putMonBufPck(byte[] pck) {
         byte[] trg = monBufD;
         if (trg == null) {
@@ -1326,25 +1326,25 @@ public class ifcEthTyp implements Runnable, ifcUp {
         et.hwCntr = cnt;
         return false;
     }
-    
+
 }
 
 class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
-    
+
     public int ethTyp;
-    
+
     public String name;
-    
+
     public ifcUp upper;
-    
+
     public boolean promiscous;
-    
+
     public counter cntr = new counter();
-    
+
     public counter hwCntr;
-    
+
     private ifcEthTyp lower;
-    
+
     public ifcEthTypET(ifcEthTyp parent, ifcUp server) {
         lower = parent;
         if (server != null) {
@@ -1355,7 +1355,7 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
         nul.getCounter().dropper = parent.getCounter();
         upper = nul;
     }
-    
+
     public int compare(ifcEthTypET v1, ifcEthTypET v2) {
         if (v1.ethTyp < v2.ethTyp) {
             return -1;
@@ -1365,52 +1365,52 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
         }
         return 0;
     }
-    
+
     public String dump() {
         return "ethtyp|" + bits.toHexW(ethTyp) + "|" + name + "|" + cntr.getShHwPsum(hwCntr) + "|" + cntr.getShHwBsum(hwCntr);
     }
-    
+
     public String toString() {
         return "" + lower;
     }
-    
+
     public counter getCounter() {
         return cntr;
     }
-    
+
     public addrType getHwAddr() {
         return lower.getHwAddr();
     }
-    
+
     public state.states getState() {
         return lower.getState();
     }
-    
+
     public void flapped() {
     }
-    
+
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
-    
+
     public void setFilter(boolean promisc) {
         promiscous = promisc;
         lower.setFilter(promisc);
     }
-    
+
     public long getBandwidth() {
         return lower.getBandwidth();
     }
-    
+
     public int getMTUsize() {
         return lower.getMTUsize();
     }
-    
+
     public void closeDn() {
         lower.delET(ethTyp);
     }
-    
+
     public void sendPack(packHolder pck) {
         if (debugger.ifcEthTypTraf) {
             logger.debug("tx type=" + bits.toHexW(ethTyp));
@@ -1419,33 +1419,33 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
         pck.ETHtype = ethTyp;
         lower.doTxPack(pck);
     }
-    
+
     public void doRxPack(packHolder pck) {
         cntr.rx(pck);
         upper.recvPack(pck);
     }
-    
+
 }
 
 class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
-    
+
     public int llcTyp;
-    
+
     public String name;
-    
+
     public ifcUp upper = new ifcNull();
-    
+
     public boolean promiscous;
-    
+
     public counter cntr = new counter();
-    
+
     private ifcEthTyp lower;
-    
+
     public ifcEthTypLLC(ifcEthTyp parent, ifcUp server) {
         lower = parent;
         upper = server;
     }
-    
+
     public int compare(ifcEthTypLLC v1, ifcEthTypLLC v2) {
         if (v1.llcTyp < v2.llcTyp) {
             return -1;
@@ -1455,44 +1455,44 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
         }
         return 0;
     }
-    
+
     public String dump() {
         return "llc|" + bits.toHexW(llcTyp) + "|" + name + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
     }
-    
+
     public String toString() {
         return "" + lower;
     }
-    
+
     public counter getCounter() {
         return cntr;
     }
-    
+
     public addrType getHwAddr() {
         return lower.getHwAddr();
     }
-    
+
     public state.states getState() {
         return lower.getState();
     }
-    
+
     public void flapped() {
     }
-    
+
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
-    
+
     public void setFilter(boolean promisc) {
         promiscous = promisc;
         lower.setFilter(promisc);
     }
-    
+
     public long getBandwidth() {
         return lower.getBandwidth();
     }
-    
+
     public int getMTUsize() {
         int i = lower.getMTUsize();
         if (i > 1497) {
@@ -1500,11 +1500,11 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
         }
         return i;
     }
-    
+
     public void closeDn() {
         lower.delLLC(llcTyp);
     }
-    
+
     public void sendPack(packHolder pck) {
         if (debugger.ifcEthTypTraf) {
             logger.debug("tx llc=" + bits.toHexW(llcTyp));
@@ -1519,7 +1519,7 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
         pck.ETHtype = llcTyp;
         lower.doTxPack(pck);
     }
-    
+
     public void doRxPack(packHolder pck) {
         pck.getSkip(5);
         cntr.rx(pck);
@@ -1532,28 +1532,28 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
         pck.merge2beg();
         upper.recvPack(pck);
     }
-    
+
 }
 
 class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
-    
+
     public int snapTyp;
-    
+
     public String name;
-    
+
     public ifcUp upper = new ifcNull();
-    
+
     public boolean promiscous;
-    
+
     public counter cntr = new counter();
-    
+
     private ifcEthTyp lower;
-    
+
     public ifcEthTypSNAP(ifcEthTyp parent, ifcUp server) {
         lower = parent;
         upper = server;
     }
-    
+
     public int compare(ifcEthTypSNAP v1, ifcEthTypSNAP v2) {
         if (v1.snapTyp < v2.snapTyp) {
             return -1;
@@ -1563,44 +1563,44 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
         }
         return 0;
     }
-    
+
     public String dump() {
         return "snap|" + bits.toHexD(snapTyp) + "|" + name + "|" + cntr.getShPsum() + "|" + cntr.getShBsum();
     }
-    
+
     public String toString() {
         return "" + lower;
     }
-    
+
     public counter getCounter() {
         return cntr;
     }
-    
+
     public addrType getHwAddr() {
         return lower.getHwAddr();
     }
-    
+
     public state.states getState() {
         return lower.getState();
     }
-    
+
     public void flapped() {
     }
-    
+
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
-    
+
     public void setFilter(boolean promisc) {
         promiscous = promisc;
         lower.setFilter(promisc);
     }
-    
+
     public long getBandwidth() {
         return lower.getBandwidth();
     }
-    
+
     public int getMTUsize() {
         int i = lower.getMTUsize();
         if (i > 1494) {
@@ -1608,11 +1608,11 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
         }
         return i;
     }
-    
+
     public void closeDn() {
         lower.delSNAP(snapTyp);
     }
-    
+
     public void sendPack(packHolder pck) {
         if (debugger.ifcEthTypTraf) {
             logger.debug("tx snap=" + bits.toHexD(snapTyp));
@@ -1627,7 +1627,7 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
         pck.ETHtype = snapTyp;
         lower.doTxPack(pck);
     }
-    
+
     public void doRxPack(packHolder pck) {
         pck.getSkip(8);
         cntr.rx(pck);
@@ -1637,5 +1637,5 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
         }
         upper.recvPack(pck);
     }
-    
+
 }
