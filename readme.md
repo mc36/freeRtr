@@ -16,6 +16,7 @@ the following directories could be found here:
 * misc contains some smaller related subprojects
 * binDwn packages used for vm creation
 * binDsk rootfs used for vm creation
+* binMnt rootfs mounted for vm creation
 * binImg outcome of vm creation
 * binOut output of compilation
 * binTmp output of testing
