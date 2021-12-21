@@ -1111,7 +1111,7 @@ etyped_rx:
     case ETHERTYPE_MPLS_UCAST: // mpls
         checkLayer2;
         if (index < 0) doDropper;
-        if (portvrf_res->mpls == 0) doPunting;
+////        if (portvrf_res->mpls == 0) doPunting;
         packMpls[port]++;
         byteMpls[port] += bufS;
 mpls_rx:
