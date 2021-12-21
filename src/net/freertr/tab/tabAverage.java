@@ -11,7 +11,7 @@ import java.util.List;
 public class tabAverage {
 
     /**
-     * mode, 0=none, 1=min, 2=avg, 3=max
+     * mode, 0=none, 1=min, 2=avg, 3=max, 4=diff
      */
     public int algorithm = 1;
 
@@ -85,6 +85,8 @@ public class tabAverage {
                 return "average";
             case 3:
                 return "maximum";
+            case 4:
+                return "differs";
             default:
                 return "unknown=" + algorithm;
         }
@@ -110,6 +112,10 @@ public class tabAverage {
         }
         if (a.equals("maximum")) {
             algorithm = 3;
+            return;
+        }
+        if (a.equals("differs")) {
+            algorithm = 4;
             return;
         }
         algorithm = 0;
@@ -174,8 +180,8 @@ public class tabAverage {
                         met += cur;
                     }
                     met /= pastValues.size();
-                    break;
                 }
+                break;
             case 3:
                 met = Integer.MIN_VALUE;
                 synchronized (pastValues) {
@@ -185,8 +191,23 @@ public class tabAverage {
                             met = cur;
                         }
                     }
-                    break;
                 }
+                break;
+            case 4:
+                synchronized (pastValues) {
+                    met = 0;
+                    int prv = pastValues.get(0);
+                    for (int i = 1; i < pastValues.size(); i++) {
+                        int cur = pastValues.get(i);
+                        int dif = prv - cur;
+                        prv = cur;
+                        if (dif < 0) {
+                            dif = -dif;
+                        }
+                        met += dif;
+                    }
+                }
+                break;
             default:
                 return met;
         }

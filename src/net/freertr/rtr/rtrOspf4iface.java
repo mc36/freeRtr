@@ -857,6 +857,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(null, "5 .           minimum               take lowest");
         l.add(null, "5 .           average               take average");
         l.add(null, "5 .           maximum               take highest");
+        l.add(null, "5 .           differs               take differences");
     }
 
     /**
