@@ -167,16 +167,11 @@ public class tabAverage {
      * @return result
      */
     public int getResult(int met) {
-        if (pastValues.size() < 1) {
-            return met;
-        }
         List<Integer> vals = pastValues;
         for (int o = 0; o < discardLo; o++) {
             List<Integer> v = new ArrayList<Integer>();
             synchronized (vals) {
-                for (int i = 0; i < vals.size(); i++) {
-                    v.add(vals.get(i));
-                }
+                v.addAll(vals);
             }
             int val = Integer.MAX_VALUE;
             int seq = -1;
@@ -196,9 +191,7 @@ public class tabAverage {
         for (int o = 0; o < discardHi; o++) {
             List<Integer> v = new ArrayList<Integer>();
             synchronized (vals) {
-                for (int i = 0; i < vals.size(); i++) {
-                    v.add(vals.get(i));
-                }
+                v.addAll(vals);
             }
             int val = Integer.MIN_VALUE;
             int seq = -1;
@@ -214,6 +207,9 @@ public class tabAverage {
             }
             v.remove(seq);
             vals = v;
+        }
+        if (pastValues.size() < 1) {
+            return met;
         }
         switch (algorithm) {
             case 1:
