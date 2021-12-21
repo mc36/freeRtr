@@ -486,6 +486,8 @@ qc pass: ingress flow matching common access list
 qc pass: egress flow matching common access list
 qc pass: ingress flow matching hierarchical access list
 qc pass: egress flow matching hierarchical access list
+qc pass: ingress mask matching access list
+qc pass: egress mask matching access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6

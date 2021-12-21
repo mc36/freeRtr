@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v21.12.21-cur, done by cs@nop.
--;-;-;2021-12-21 21:20:22, took 00:06:42, with 100 workers, on 2518 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2021-12-21 21:33:41, took 00:06:05, with 100 workers, on 2520 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -490,6 +490,8 @@ http://sources.nop.hu/cfg/crypt-acl70.tst;crypt-acl70.tst;success;ingress flow m
 http://sources.nop.hu/cfg/crypt-acl71.tst;crypt-acl71.tst;success;egress flow matching common access list
 http://sources.nop.hu/cfg/crypt-acl72.tst;crypt-acl72.tst;success;ingress flow matching hierarchical access list
 http://sources.nop.hu/cfg/crypt-acl73.tst;crypt-acl73.tst;success;egress flow matching hierarchical access list
+http://sources.nop.hu/cfg/crypt-acl74.tst;crypt-acl74.tst;success;ingress mask matching access list
+http://sources.nop.hu/cfg/crypt-acl75.tst;crypt-acl75.tst;success;egress mask matching access list
 http://sources.nop.hu/cfg/crypt-dtls.tst;crypt-dtls.tst;success;dtls test
 http://sources.nop.hu/cfg/crypt-esp101.tst;crypt-esp101.tst;success;ipv4 in esp over ipv4
 http://sources.nop.hu/cfg/crypt-esp102.tst;crypt-esp102.tst;success;ipv4 in esp over ipv6
