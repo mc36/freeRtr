@@ -104,6 +104,8 @@ qc pass: monitor session sampled
 qc pass: monitor session truncated
 qc pass: secondary addresses over ethernet
 qc pass: secondary addresses over dot1q vlan
+qc pass: monitor session over tunnel
+qc pass: monitor session over pwhe
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback

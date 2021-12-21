@@ -12577,3 +12577,6 @@ qc pass: isis dynamic twamp metric
 qc pass: ospf dynamic icmp cost
 qc pass: ospf dynamic udp cost
 qc pass: ospf dynamic twamp cost
+---------------------------------- 2021-12-21 21:13:40
+qc pass: monitor session over tunnel
+qc pass: monitor session over pwhe
