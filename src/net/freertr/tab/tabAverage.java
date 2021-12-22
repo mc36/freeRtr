@@ -233,7 +233,7 @@ public class tabAverage {
             v.remove(seq);
             vals = v;
         }
-        if (pastValues.size() < 1) {
+        if (vals.size() < 1) {
             return met;
         }
         switch (algorithm) {
