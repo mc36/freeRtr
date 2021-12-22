@@ -1,5 +1,6 @@
 #!/bin/sh
 #sudo apt install psmisc iproute2 net-tools socat tshark iperf gcc git telnet
+#sudo $SDE/p4studio/install-p4studio-dependencies.sh
 #$SDE/p4studio/p4studio interactive
 #rm -rf $SDE/build
 #rm -rf $SDE/p4studio/dependencies
@@ -25,7 +26,7 @@
 #fallocate -d p4bf.img
 #
 cd /home/mc36/rare/p4src
-export SDE=/home/mc36/bf-sde-9.7.0
+export SDE=/home/mc36/bf-sde-9.7.1
 export SDE_INSTALL=$SDE/install
 $SDE/install/bin/bf-p4c -I. $@ bf_router.p4
 rm -rf $SDE/install/bf_router.tofino
