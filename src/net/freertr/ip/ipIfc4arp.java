@@ -299,9 +299,22 @@ public class ipIfc4arp implements ifcUp {
         } else {
             rep |= upper.ifcHdr.answerDefReqs;
         }
-        if (rep) {
-            sendArpPack(pck, opcodeARPrep, gotSH, gotSP, hwaddr, gotTP);
+        if (!rep) {
+            return;
         }
+        if (upper.ifcHdr.answerFilter != null) {
+            packHolder flt = new packHolder(true, true);
+            adr = new addrIP();
+            adr.fromIPv4addr(gotSP);
+            flt.IPsrc.setAddr(adr);
+            adr = new addrIP();
+            adr.fromIPv4addr(gotTP);
+            flt.IPtrg.setAddr(adr);
+            if (!upper.ifcHdr.answerFilter.matches(false, false, flt)) {
+                return;
+            }
+        }
+        sendArpPack(pck, opcodeARPrep, gotSH, gotSP, hwaddr, gotTP);
     }
 
     private void addEntry(ipIfc4arpEntry ntry) {

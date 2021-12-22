@@ -1436,6 +1436,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! ipv[4|6] host-retry 180000",
         "interface .*! no ipv[4|6] proxy-remote",
         "interface .*! no ipv[4|6] proxy-local",
+        "interface .*! no ipv[4|6] proxy-filter",
         "interface .*! no ipv[4|6] tcp-mss-in",
         "interface .*! no ipv[4|6] tcp-mss-out",
         "interface .*! no ipv[4|6] hsrp address",

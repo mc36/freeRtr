@@ -423,6 +423,14 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 if (!rep) {
                     break;
                 }
+                if (rxIfc.answerFilter != null) {
+                    packHolder flt = new packHolder(true, true);
+                    flt.IPsrc.setAddr(pck.IPsrc);
+                    flt.IPtrg.setAddr(adr);
+                    if (!rxIfc.answerFilter.matches(false, false, flt)) {
+                        break;
+                    }
+                }
                 mac = ifc.getHWaddr();
                 createNeighAdv(mac, pck, pck.IPsrc.toIPv6(), adr.toIPv6(), true);
                 ifc.sendProto(pck, pck.IPtrg);

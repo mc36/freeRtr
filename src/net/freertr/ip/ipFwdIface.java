@@ -127,6 +127,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean answerNetReqs = false;
 
     /**
+     * set true if have to filter answers
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> answerFilter;
+
+    /**
      * inspection information
      */
     public tabSession inspect = null;
@@ -536,6 +541,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "5 .           <addr>                source address");
         l.add(null, "2 .     proxy-remote                reply to remote networks");
         l.add(null, "2 .     proxy-local                 reply to link address");
+        l.add(null, "2 3     proxy-filter                access list to filter replies");
+        l.add(null, "3 .       <name:acl>                name of access list");
         l.add(null, "2 3     autoroute                   point routes from routing protocol");
         cfgRtr.getRouterList(l, 1, "");
         l.add(null, "4  5        <num>                   process id");
@@ -644,6 +651,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !verifySource, cmds.tabulator, beg + "verify-source", a);
         cmds.cfgLine(l, !answerNetReqs, cmds.tabulator, beg + "proxy-local", "");
         cmds.cfgLine(l, !answerDefReqs, cmds.tabulator, beg + "proxy-remote", "");
+        cmds.cfgLine(l, answerFilter == null, cmds.tabulator, beg + "proxy-filter", "" + answerFilter);
         for (int i = 0; i < adrs.size(); i++) {
             ipFwdIfaceAddr adr = adrs.get(i);
             if (adr == null) {
@@ -844,6 +852,15 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("proxy-local")) {
             answerNetReqs = true;
+            return false;
+        }
+        if (a.equals("proxy-filter")) {
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return false;
+            }
+            answerFilter = ntry.aceslst;
             return false;
         }
         if (a.equals("host-watch")) {
@@ -1435,6 +1452,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("proxy-local")) {
             answerNetReqs = false;
+            return false;
+        }
+        if (a.equals("proxy-filter")) {
+            answerFilter = null;
             return false;
         }
         if (a.equals("host-watch")) {
