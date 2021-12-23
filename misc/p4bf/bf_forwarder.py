@@ -1841,6 +1841,8 @@ class BfForwarder(Thread):
             ]
             data_list = tbl.make_data(data_field_list, "user_defined")
             tbl.default_entry_set(self.bfgc.target, data_list)
+        except KeyError as e:
+            print("Error preparing entry from control plane: {}".format(e))
         except gc.BfruntimeRpcException as e:
             print("Error processing entry from control plane: {}".format(e))
 
