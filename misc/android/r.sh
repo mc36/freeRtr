@@ -1,2 +1,2 @@
 #!/bin/sh
-dalvikvm -cp rtr.dex router routerc rtr-
+dalvikvm -cp rtr.dex net.freertr.router routerc rtr-
