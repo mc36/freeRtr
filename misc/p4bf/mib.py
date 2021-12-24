@@ -67,7 +67,7 @@ class octetstr_t(SMIv2):
         super(octetstr_t, self).__init__(mib, offset)
 
     def set(self, value):
-        assert(isinstance(value, str))
+        assert(isinstance(value, bytes))
         length = min(len(value), self.size-2)
         struct.pack_into("@H", self.mib.map, self.offset, length)
         struct.pack_into("{0:d}s".format(length),
@@ -142,10 +142,10 @@ class ifmib(MIB):
     def __init__(self, file, properties):
         super(ifmib, self).__init__(file)
         p = properties
-        self.register('ifDescr', 'OctetStr', p['ifDescr'].encode('ascii'),
+        self.register('ifDescr', 'OctetStr', p['ifDescr'].encode(),
                       octet_str_len = 255)
-        self.register('ifName', 'OctetStr', p['ifName'], octet_str_len = 255)
-        self.register('ifAlias', 'OctetStr', p['ifAlias'],
+        self.register('ifName', 'OctetStr', p['ifName'].encode(), octet_str_len = 255)
+        self.register('ifAlias', 'OctetStr', p['ifAlias'].encode(),
                       octet_str_len = 64 ) # interface description
         self.register('ifType', 'Integer32', 6 ) # ethernetCsmacd
         self.register('ifMtu', 'Integer32', p['ifMtu'])
@@ -154,7 +154,7 @@ class ifmib(MIB):
             self.register('ifSpeed', 'Gauge32', 4294967295) # RFC3635 sec. 3.2.8
         else:
             self.register('ifSpeed', 'Gauge32', p['speed'])
-        self.register('ifHighSpeed', 'Gauge32', p['speed'] / 1000000)
+        self.register('ifHighSpeed', 'Gauge32', int(p['speed'] / 1000000))
 
         self.register('ifPhysAddress', 'OctetStr', octet_str_len = 0)
         self.register('ifAdminStatus', 'Integer32', 2) # down
