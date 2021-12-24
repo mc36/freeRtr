@@ -107,19 +107,29 @@ public class userFlash {
         }
         if (a.equals("binviewer")) {
             a = cmd.getRemaining();
-            List<String> b = userFlash.binRead(a);
+            List<String> b = binRead(a);
             userEditor v = new userEditor(new userScreen(pip), b, a, false);
             v.doView();
             return null;
         }
         if (a.equals("receive")) {
             a = cmd.word();
-            userFlash.doReceive(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            doReceive(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
             return null;
         }
         if (a.equals("transmit")) {
             a = cmd.word();
-            userFlash.doSend(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            doSend(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            return null;
+        }
+        if (a.equals("archive")) {
+            a = cmd.word();
+            cmd.error(userExec.doneFail(archive(a, cmd.word(), false)));
+            return null;
+        }
+        if (a.equals("extract")) {
+            a = cmd.word();
+            cmd.error(userExec.doneFail(extract(a, cmd.word())));
             return null;
         }
         if (a.equals("hash")) {
@@ -192,33 +202,368 @@ public class userFlash {
             return null;
         }
         if (a.equals("bintype")) {
-            rdr.putStrArr(userFlash.binRead(cmd.getRemaining()));
+            rdr.putStrArr(binRead(cmd.getRemaining()));
             return null;
         }
         if (a.equals("copy")) {
-            String s = cmd.word();
-            cmd.error(userExec.doneFail(userFlash.copy(s, cmd.word(), false)));
+            a = cmd.word();
+            cmd.error(userExec.doneFail(copy(a, cmd.word(), false)));
             return null;
         }
         if (a.equals("rename")) {
-            String s = cmd.word();
-            cmd.error(userExec.doneFail(userFlash.rename(s, cmd.word(), false, false)));
+            a = cmd.word();
+            cmd.error(userExec.doneFail(rename(a, cmd.word(), false, false)));
             return null;
         }
         if (a.equals("delete")) {
-            cmd.error(userExec.doneFail(userFlash.delete(cmd.getRemaining())));
+            cmd.error(userExec.doneFail(delete(cmd.getRemaining())));
             return null;
         }
         if (a.equals("mkdir")) {
-            cmd.error(userExec.doneFail(userFlash.mkdir(cmd.word())));
+            cmd.error(userExec.doneFail(mkdir(cmd.word())));
             return null;
         }
         if (a.equals("list")) {
-            rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(cmd.getRemaining())));
+            rdr.putStrTab(dir2txt(dirList(cmd.getRemaining())));
             return null;
         }
         cmd.badCmd();
         return null;
+    }
+
+    private static int archiveChecksum(byte[] buf, boolean pad) {
+        if (pad) {
+            byte[] res = new byte[buf.length];
+            bits.byteCopy(buf, 0, res, 0, res.length);
+            for (int i = 0; i < 8; i++) {
+                res[148 + i] = 32;
+            }
+            buf = res;
+        }
+        int o = 0;
+        for (int i = 0; i < buf.length; i++) {
+            o += buf[i] & 0xff;
+        }
+        return o;
+    }
+
+    private static byte[] toOctal(long l, int s) {
+        return bits.padBeg(Long.toString(l, 8), s, "0").getBytes();
+    }
+
+    private static long fromOctal(byte[] buf, int pos) {
+        int o = 0;
+        for (;;) {
+            if (buf[pos + o] == 0) {
+                break;
+            }
+            o++;
+        }
+        try {
+            return Long.parseLong(new String(buf, pos, o), 8);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    private static byte[] archiveHeader(String nam, File fil) {
+        boolean dir = fil.isDirectory();
+        long siz = fil.length();
+        byte[] buf = new byte[512];
+        byte[] tmp = nam.getBytes();
+        bits.byteCopy(tmp, 0, buf, 0, tmp.length); // name
+        int i = 0;
+        if (fil.canExecute()) {
+            i |= 1 << 6;
+        }
+        if (fil.canWrite()) {
+            i |= 2 << 6;
+        }
+        if (fil.canRead()) {
+            i |= 4 << 6;
+        }
+        if (dir) {
+            siz = 0;
+        }
+        tmp = toOctal(i, 7);
+        bits.byteCopy(tmp, 0, buf, 100, tmp.length); // mode
+        tmp = toOctal(1000, 7);
+        bits.byteCopy(tmp, 0, buf, 108, tmp.length); // uid
+        bits.byteCopy(tmp, 0, buf, 116, tmp.length); // gid
+        tmp = toOctal(siz, 11);
+        bits.byteCopy(tmp, 0, buf, 124, tmp.length); // size
+        tmp = toOctal(fil.lastModified() / 1000, 11);
+        bits.byteCopy(tmp, 0, buf, 136, tmp.length); // mtime
+        if (dir) {
+            tmp = " 5".getBytes();
+        } else {
+            tmp = " 0".getBytes();
+        }
+        bits.byteCopy(tmp, 0, buf, 155, tmp.length); // type
+        tmp = "ustar  ".getBytes();
+        bits.byteCopy(tmp, 0, buf, 257, tmp.length); // magic
+        tmp = "rtr".getBytes();
+        bits.byteCopy(tmp, 0, buf, 265, tmp.length); // uname
+        bits.byteCopy(tmp, 0, buf, 297, tmp.length); // gname
+        i = archiveChecksum(buf, true);
+        tmp = toOctal(i, 6);
+        bits.byteCopy(tmp, 0, buf, 148, tmp.length); // checksum
+        return buf;
+    }
+
+    private boolean doArchiveFile(RandomAccessFile ft, String dir, String beg) {
+        pip.linePut("adding " + beg);
+        RandomAccessFile fs;
+        long siz;
+        try {
+            File f = new File(dir);
+            fs = new RandomAccessFile(f, "r");
+            siz = fs.length();
+            ft.write(archiveHeader(beg, f));
+        } catch (Exception e) {
+            return true;
+        }
+        boolean res = doCopy(fs, ft, siz);
+        try {
+            int i = (int) (siz % 512);
+            if (i > 0) {
+                ft.write(new byte[512 - i]);
+            }
+            fs.close();
+        } catch (Exception e) {
+            return true;
+        }
+        return res;
+    }
+
+    private boolean doArchiveDir(RandomAccessFile ft, String dir, String beg) {
+        pip.linePut("adding " + beg);
+        File[] fl;
+        try {
+            File f = new File(dir);
+            fl = f.listFiles();
+            if (beg.length() > 0) {
+                ft.write(archiveHeader(beg, f));
+            }
+        } catch (Exception e) {
+            return true;
+        }
+        if (fl == null) {
+            return true;
+        }
+        for (int i = 0; i < fl.length; i++) {
+            File f = fl[i];
+            String a = f.getName();
+            if (a.equals(".")) {
+                continue;
+            }
+            if (a.equals("..")) {
+                continue;
+            }
+            boolean r;
+            if (f.isDirectory()) {
+                r = doArchiveDir(ft, dir + a + "/", beg + a + "/");
+            } else {
+                r = doArchiveFile(ft, dir + a, beg + a);
+            }
+            if (r) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * create archive file
+     *
+     * @param arc archive file
+     * @param dir directory
+     * @param overwrite delete target before
+     * @return result code
+     */
+    public boolean archive(String arc, String dir, boolean overwrite) {
+        if (!dir.endsWith("/")) {
+            dir = dir + "/";
+        }
+        pip.linePut("creating " + arc + " from " + dir);
+        if (overwrite) {
+            delete(arc);
+        }
+        RandomAccessFile ft;
+        try {
+            new File(arc).createNewFile();
+        } catch (Exception e) {
+            return true;
+        }
+        try {
+            ft = new RandomAccessFile(new File(arc), "rw");
+            long siz = ft.length() - 1024;
+            if (siz < 0) {
+                siz = 0;
+            }
+            ft.setLength(siz);
+            ft.seek(siz);
+        } catch (Exception e) {
+            return true;
+        }
+        boolean res = doArchiveDir(ft, dir, "");
+        try {
+            ft.write(new byte[1024]);
+        } catch (Exception ex) {
+            res = true;
+        }
+        try {
+            ft.close();
+        } catch (Exception e) {
+            res = true;
+        }
+        return res;
+    }
+
+    /**
+     * extract archive file
+     *
+     * @param arc archive file
+     * @param dir directory
+     * @return result code
+     */
+    public boolean extract(String arc, String dir) {
+        if (!dir.endsWith("/")) {
+            dir = dir + "/";
+        }
+        pip.linePut("extracting " + arc + " to " + dir);
+        RandomAccessFile fs;
+        try {
+            File f = new File(arc);
+            fs = new RandomAccessFile(f, "r");
+        } catch (Exception e) {
+            return true;
+        }
+        boolean res = true;
+        for (;;) {
+            byte[] buf = new byte[512];
+            int i;
+            try {
+                i = fs.read(buf);
+            } catch (Exception e) {
+                return true;
+            }
+            if (i != buf.length) {
+                pip.linePut("error reading header");
+                return true;
+            }
+            i = archiveChecksum(buf, false);
+            if (i < 1) {
+                res = false;
+                break;
+            }
+            i = archiveChecksum(buf, true);
+            if (fromOctal(buf, 148) != i) {
+                pip.linePut("invalid header checksum");
+                break;
+            }
+            int o = 0;
+            for (i = 0; i < 100; i++) {
+                if (buf[i] != 0) {
+                    continue;
+                }
+                o = i;
+                break;
+            }
+            arc = new String(buf, 0, o);
+            pip.linePut("extracting " + arc);
+            switch (buf[156]) {
+                case '0':
+                    break;
+                case '5':
+                    mkdir(dir + arc);
+                    continue;
+                default:
+                    continue;
+            }
+            long siz = fromOctal(buf, 124);
+            arc = dir + arc;
+            delete(arc);
+            RandomAccessFile ft;
+            try {
+                new File(arc).createNewFile();
+            } catch (Exception e) {
+                pip.linePut("error creating file");
+                break;
+            }
+            File fil = new File(arc);
+            try {
+                ft = new RandomAccessFile(fil, "rw");
+                ft.setLength(0);
+            } catch (Exception e) {
+                pip.linePut("error opening file");
+                break;
+            }
+            boolean ress = doCopy(fs, ft, siz);
+            try {
+                ft.close();
+            } catch (Exception e) {
+                pip.linePut("error closing file");
+                break;
+            }
+            if (ress) {
+                pip.linePut("error extracting file");
+                break;
+            }
+            i = (int) fromOctal(buf, 100);
+            try {
+                i = i >>> 6;
+                fil.setExecutable((i & 1) != 0);
+                fil.setWritable((i & 2) != 0);
+                fil.setReadable((i & 4) != 0);
+                fil.setLastModified(1000 * fromOctal(buf, 136));
+            } catch (Exception e) {
+                pip.linePut("error setting rights");
+                break;
+            }
+            i = (int) (siz % 512);
+            if (i < 1) {
+                continue;
+            }
+            i = 512 - i;
+            try {
+                fs.seek(fs.getFilePointer() + i);
+            } catch (Exception e) {
+                pip.linePut("error skipping padding");
+                break;
+            }
+        }
+        try {
+            fs.close();
+        } catch (Exception e) {
+            return true;
+        }
+        return res;
+    }
+
+    private static boolean doCopy(RandomAccessFile fs, RandomAccessFile ft, long siz) {
+        long pos = 0;
+        for (; pos < siz;) {
+            final int max = 64 * 1024;
+            long rndl = siz - pos;
+            if (rndl > max) {
+                rndl = max;
+            }
+            int rndi = (int) rndl;
+            byte[] buf = new byte[rndi];
+            try {
+                rndi = fs.read(buf, 0, rndi);
+            } catch (Exception e) {
+                return true;
+            }
+            try {
+                ft.write(buf, 0, rndi);
+            } catch (Exception ex) {
+                return true;
+            }
+            pos += rndi;
+        }
+        return false;
     }
 
     /**
@@ -230,6 +575,9 @@ public class userFlash {
      * @return result code
      */
     public static boolean copy(String src, String trg, boolean overwrite) {
+        if (overwrite) {
+            delete(trg);
+        }
         RandomAccessFile fs;
         RandomAccessFile ft;
         try {
@@ -238,9 +586,6 @@ public class userFlash {
             }
         } catch (Exception e) {
             return true;
-        }
-        if (overwrite) {
-            delete(trg);
         }
         try {
             new File(trg).createNewFile();
@@ -256,27 +601,7 @@ public class userFlash {
         } catch (Exception e) {
             return true;
         }
-        long pos = 0;
-        for (; pos < siz;) {
-            final int max = 8192;
-            long rndl = siz - pos;
-            if (rndl > max) {
-                rndl = max;
-            }
-            pos += rndl;
-            int rndi = (int) rndl;
-            byte[] buf = new byte[rndi];
-            try {
-                fs.read(buf, 0, rndi);
-            } catch (Exception e) {
-                return true;
-            }
-            try {
-                ft.write(buf, 0, rndi);
-            } catch (Exception ex) {
-                return true;
-            }
-        }
+        boolean res = doCopy(fs, ft, siz);
         try {
             fs.close();
         } catch (Exception e) {
@@ -285,7 +610,7 @@ public class userFlash {
             ft.close();
         } catch (Exception e) {
         }
-        return false;
+        return res;
     }
 
     /**
