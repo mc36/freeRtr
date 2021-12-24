@@ -1,7 +1,8 @@
 #!/bin/sh
 echo packing
 TRG=../binOut/
-#jar cfm0 rtr.jar manifest.txt -C $TRG .
+#jar -c -0 -f rtr.jar -e net.freertr.router -C $TRG .
+#jar -c -0 -f rtr.jar -m manifest.txt -C $TRG .
 mkdir -p $TRG/META-INF
 cp manifest.txt $TRG/META-INF/MANIFEST.MF
 CWD=`pwd`
