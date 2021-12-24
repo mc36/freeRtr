@@ -472,14 +472,9 @@ public class userFlash {
             }
             arc = new String(buf, 0, o);
             pip.linePut("extracting " + arc);
-            switch (buf[156]) {
-                case '0':
-                    break;
-                case '5':
-                    mkdir(dir + arc);
-                    continue;
-                default:
-                    continue;
+            if (buf[156] == '5') {
+                mkdir(dir + arc);
+                continue;
             }
             long siz = fromOctal(buf, 124);
             arc = dir + arc;
