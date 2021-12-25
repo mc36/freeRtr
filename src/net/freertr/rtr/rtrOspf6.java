@@ -7,6 +7,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
@@ -117,6 +118,11 @@ public class rtrOspf6 extends ipRtr {
     protected tabGen<rtrOspf6iface> ifaces;
 
     /**
+     * list of srv6 advertisements
+     */
+    protected tabGen<cfgIfc> srv6;
+
+    /**
      * list of areas
      */
     protected tabGen<rtrOspf6area> areas;
@@ -142,6 +148,7 @@ public class rtrOspf6 extends ipRtr {
         fwdCore = forwarder;
         udpCore = udp;
         ifaces = new tabGen<rtrOspf6iface>();
+        srv6 = new tabGen<cfgIfc>();
         areas = new tabGen<rtrOspf6area>();
         routerID = new addrIPv4();
         traffEngID = new addrIPv6();
@@ -250,6 +257,8 @@ public class rtrOspf6 extends ipRtr {
         l.add(null, "2 .     <addr>                    router id");
         l.add(null, "1 2   traffeng-id                 specify traffic engineering id");
         l.add(null, "2 .     <addr>                    te id");
+        l.add(null, "1 2   srv6                        advertise srv6 locator");
+        l.add(null, "2 .     <name:ifc>                name of interface");
         l.add(null, "1 2   segrout                     segment routing parameters");
         l.add(null, "2 3,.   <num>                     maximum index");
         l.add(null, "3 4       base                    specify base");
@@ -277,6 +286,7 @@ public class rtrOspf6 extends ipRtr {
         l.add(null, "3 .       nssa                    configure as nssa");
         l.add(null, "3 .       traffeng                configure for traffic engineering");
         l.add(null, "3 .       segrout                 configure for segment routing");
+        l.add(null, "3 .       srv6                    configure for segment routing v6");
         l.add(null, "3 .       bier                    configure for bier");
         l.add(null, "3 .       suppress-prefix         do not advertise interfaces");
         l.add(null, "3 .       hostname                advertise hostname");
@@ -329,6 +339,7 @@ public class rtrOspf6 extends ipRtr {
             cmds.cfgLine(l, !ntry.nssa, beg, s + "nssa", "");
             cmds.cfgLine(l, !ntry.traffEng, beg, s + "traffeng", "");
             cmds.cfgLine(l, !ntry.segrouEna, beg, s + "segrout", "");
+            cmds.cfgLine(l, !ntry.srv6ena, beg, s + "srv6", "");
             cmds.cfgLine(l, !ntry.bierEna, beg, s + "bier", "");
             cmds.cfgLine(l, !ntry.suppressAddr, beg, s + "suppress-prefix", "");
             cmds.cfgLine(l, !ntry.hostname, beg, s + "hostname", "");
@@ -339,6 +350,9 @@ public class rtrOspf6 extends ipRtr {
             cmds.cfgLine(l, ntry.roumapInto == null, beg, s + "route-map-into", "" + ntry.roumapInto);
             cmds.cfgLine(l, ntry.roupolFrom == null, beg, s + "route-policy-from", "" + ntry.roupolFrom);
             cmds.cfgLine(l, ntry.roupolInto == null, beg, s + "route-policy-into", "" + ntry.roupolInto);
+        }
+        for (int i = 0; i < srv6.size(); i++) {
+            l.add(beg + "srv6 " + srv6.get(i).name);
         }
         l.add(beg + "distance " + distantInt + " " + distantSum + " " + distantExt);
     }
@@ -358,6 +372,16 @@ public class rtrOspf6 extends ipRtr {
         }
         if (s.equals("traffeng-id")) {
             traffEngID.fromString(cmd.word());
+            genLsas(3);
+            return false;
+        }
+        if (s.equals("srv6")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            srv6.put(ntry);
             genLsas(3);
             return false;
         }
@@ -461,6 +485,11 @@ public class rtrOspf6 extends ipRtr {
                 dat.schedWork(3);
                 return false;
             }
+            if (s.equals("srv6")) {
+                dat.srv6ena = true;
+                dat.schedWork(3);
+                return false;
+            }
             if (s.equals("bier")) {
                 dat.bierEna = true;
                 dat.schedWork(3);
@@ -547,6 +576,16 @@ public class rtrOspf6 extends ipRtr {
             return true;
         }
         s = cmd.word();
+        if (s.equals("srv6")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            srv6.del(ntry);
+            genLsas(3);
+            return false;
+        }
         if (s.equals("segrout")) {
             tabLabel.release(segrouLab, 9);
             segrouLab = null;
@@ -622,6 +661,11 @@ public class rtrOspf6 extends ipRtr {
             }
             if (s.equals("segrout")) {
                 dat.segrouEna = false;
+                dat.schedWork(3);
+                return false;
+            }
+            if (s.equals("srv6")) {
+                dat.srv6ena = false;
                 dat.schedWork(3);
                 return false;
             }

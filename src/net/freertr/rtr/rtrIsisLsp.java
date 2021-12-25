@@ -143,6 +143,11 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
     public static final int tlvBundleMember = 25;
 
     /**
+     * segment routing v6
+     */
+    public static final int tlvSegRoutV6 = 27;
+
+    /**
      * ipv4 internal reachability
      */
     public static final int tlvIpv4intReach = 128;

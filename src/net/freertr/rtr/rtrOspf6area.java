@@ -87,6 +87,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     public boolean segrouEna;
 
     /**
+     * segment routing v6 enabled
+     */
+    public boolean srv6ena;
+
+    /**
      * bier enabled
      */
     public boolean bierEna;
@@ -957,6 +962,20 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         }
     }
 
+    private void createSrv6lsas() {
+        if (!srv6ena) {
+            return;
+        }
+        int seq = 1;
+        for (int i = 0; i < lower.srv6.size(); i++) {
+            packHolder pck = rtrOspfSr.srv6loc(lower.srv6.get(i), 0);
+            if (pck == null) {
+                continue;
+            }
+            advertiseLsa(rtrOspf6lsa.lsaSegRoutV6, i, pck);
+        }
+    }
+
     private void generateLsas() {
         if (debugger.rtrOspf6evnt) {
             logger.debug("generate lsas in area " + area);
@@ -972,6 +991,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         createRiLsa();
         createErtrLsa();
         createEprfLsas();
+        createSrv6lsas();
         advertiseLsas();
     }
 

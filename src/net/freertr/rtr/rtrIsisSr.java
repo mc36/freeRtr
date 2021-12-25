@@ -1,6 +1,7 @@
 package net.freertr.rtr;
 
 import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabRouteEntry;
@@ -46,6 +47,16 @@ public class rtrIsisSr {
      * segment routing capability
      */
     public static final int typSrCapa = 2;
+
+    /**
+     * end segment id
+     */
+    public static final int typEndSid = 5;
+
+    /**
+     * segment routing v6 capability
+     */
+    public static final int typSrv6capa = 25;
 
     /**
      * create sr base
@@ -175,6 +186,72 @@ public class rtrIsisSr {
         tlv.putThis(pck);
         pck.merge2beg();
         return pck.getCopy();
+    }
+
+    /**
+     * generate srv6 base
+     *
+     * @param ifc interface
+     * @param met metric
+     * @return tlv generated
+     */
+    protected static typLenVal srv6base(rtrIsis lower) {
+        typLenVal tlv = rtrIsis.getTlv();
+        lower.traffEngID.toIPv4().toBuffer(tlv.valDat, 0); // addr
+        tlv.valDat[4] = 0; // flags
+        tlv.valDat[5] = typSrv6capa; // subtlv type
+        tlv.valDat[6] = 2; // subtlv length
+        bits.msbPutW(tlv.valDat, 7, 0); // flags
+        tlv.valTyp = rtrIsisLsp.tlvRouterCapa;
+        tlv.valSiz = 9;
+        return tlv;
+    }
+
+    /**
+     * generate srv6 locator
+     *
+     * @param ifc interface
+     * @param met metric
+     * @return tlv generated
+     */
+    protected static typLenVal srv6loc(cfgIfc ifc, int met) {
+        if (ifc == null) {
+            return null;
+        }
+        if (ifc.addr6 == null) {
+            return null;
+        }
+        typLenVal tlv = rtrIsis.getTlv();
+        tlv.valTyp = rtrIsisLsp.tlvSegRoutV6;
+        bits.msbPutW(tlv.valDat, 0, 0); // mtid
+        bits.msbPutD(tlv.valDat, 2, met); // metric
+        tlv.valDat[6] = 0; // flags
+        tlv.valDat[7] = 0; // algo
+        int len = ifc.mask6.toNetmask();
+        tlv.valDat[8] = (byte) len; // loc len
+        ifc.addr6.toBuffer(tlv.valDat, 9); // locator
+        tlv.valSiz = (len + 7) / 8;
+        tlv.valSiz += 9;
+        tlv.valDat[tlv.valSiz] = 31; // subtlv len
+        tlv.valSiz += 1;
+        tlv.valDat[tlv.valSiz + 0] = 4; // subtlv type
+        tlv.valDat[tlv.valSiz + 1] = 1; // subtlv length
+        tlv.valDat[tlv.valSiz + 2] = 0; // flags
+        tlv.valSiz += 3;
+        tlv.valDat[tlv.valSiz + 0] = typEndSid; // subtlv type
+        tlv.valDat[tlv.valSiz + 1] = 26; // subtlv length
+        tlv.valDat[tlv.valSiz + 2] = 0; // flags
+        bits.msbPutW(tlv.valDat, tlv.valSiz + 3, 29); // behavior
+        ifc.addr6.toBuffer(tlv.valDat, tlv.valSiz + 5); // sid
+        tlv.valDat[tlv.valSiz + 21] = 6; // subsubtlvs len
+        tlv.valDat[tlv.valSiz + 22] = 1; // subsubtlv type
+        tlv.valDat[tlv.valSiz + 23] = 4; // subsubtlv length
+        tlv.valDat[tlv.valSiz + 24] = 40; // locator block length
+        tlv.valDat[tlv.valSiz + 25] = 24; // locator node length
+        tlv.valDat[tlv.valSiz + 26] = 16; // locator function length
+        tlv.valDat[tlv.valSiz + 27] = 0; // locator arguments length
+        tlv.valSiz += 28;
+        return tlv;
     }
 
 }

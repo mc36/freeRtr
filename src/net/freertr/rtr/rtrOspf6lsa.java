@@ -128,6 +128,11 @@ public class rtrOspf6lsa implements Comparator<rtrOspf6lsa> {
     public static final int lsaEprefix = 0xa029;
 
     /**
+     * segment routing v6 lsa
+     */
+    public static final int lsaSegRoutV6 = 0xa666;
+
+    /**
      * point to point link
      */
     public static final int lnkP2p = 1;
@@ -311,6 +316,8 @@ public class rtrOspf6lsa implements Comparator<rtrOspf6lsa> {
                 return "ext-link";
             case lsaEprefix:
                 return "ext-prefix";
+            case lsaSegRoutV6:
+                return "srv6";
             default:
                 return "unknown=" + i;
         }

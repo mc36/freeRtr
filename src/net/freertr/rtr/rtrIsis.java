@@ -10,6 +10,7 @@ import net.freertr.addr.addrIsis;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
@@ -165,6 +166,11 @@ public class rtrIsis extends ipRtr {
     protected tabGen<rtrIsisIface> ifaces;
 
     /**
+     * list of srv6 advertisements
+     */
+    protected tabGen<cfgIfc> srv6;
+
+    /**
      * level1 information
      */
     protected rtrIsisLevel level1;
@@ -202,6 +208,7 @@ public class rtrIsis extends ipRtr {
         maxAreaAddr = 3;
         metricWide = true;
         ifaces = new tabGen<rtrIsisIface>();
+        srv6 = new tabGen<cfgIfc>();
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
@@ -1087,6 +1094,8 @@ public class rtrIsis extends ipRtr {
         l.add(null, "3 .       <num>                   external distance");
         l.add(null, "1 .   metric-wide                 advertise wide metrics");
         l.add(null, "1 .   multi-topology              advertise multi topology");
+        l.add(null, "1 2   srv6                        advertise srv6 locator");
+        l.add(null, "2 .     <name:ifc>                name of interface");
         l.add(null, "1 2   segrout                     segment routing parameters");
         l.add(null, "2 3,.   <num>                     maximum index");
         l.add(null, "3 4       base                    specify base");
@@ -1127,6 +1136,7 @@ public class rtrIsis extends ipRtr {
         l.add(null, "2 .     clear-attached            never signal that route all packets");
         l.add(null, "2 .     traffeng                  configure for traffic engineering");
         l.add(null, "2 .     segrout                   configure for segment routing");
+        l.add(null, "2 .     srv6                      configure for segment routing v6");
         l.add(null, "2 .     bier                      configure for bier");
         l.add(null, "2 .     suppress-prefix           do not advertise interfaces");
         l.add(null, "2 .     hostname                  advertise hostname");
@@ -1184,6 +1194,9 @@ public class rtrIsis extends ipRtr {
         getConfig(level2, l, beg, filter);
         getConfig(level1, l, beg, filter);
         other.getConfig(l, beg + "afi-other ");
+        for (int i = 0; i < srv6.size(); i++) {
+            l.add(beg + "srv6 " + srv6.get(i).name);
+        }
     }
 
     /**
@@ -1228,6 +1241,16 @@ public class rtrIsis extends ipRtr {
         if (s.equals("multi-topology")) {
             multiTopo = true;
             metricWide = true;
+            genLsps(3);
+            return false;
+        }
+        if (s.equals("srv6")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            srv6.put(ntry);
             genLsps(3);
             return false;
         }
@@ -1301,6 +1324,16 @@ public class rtrIsis extends ipRtr {
             genLsps(3);
             return false;
         }
+        if (s.equals("srv6")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            srv6.del(ntry);
+            genLsps(3);
+            return false;
+        }
         if (s.equals("segrout")) {
             tabLabel.release(segrouLab, 7);
             segrouLab = null;
@@ -1365,6 +1398,7 @@ public class rtrIsis extends ipRtr {
         cmds.cfgLine(l, !lev.attachedAlw, beg, s + "allow-attached", "");
         cmds.cfgLine(l, !lev.traffEng, beg, s + "traffeng", "");
         cmds.cfgLine(l, !lev.segrouEna, beg, s + "segrout", "");
+        cmds.cfgLine(l, !lev.srv6ena, beg, s + "srv6", "");
         cmds.cfgLine(l, !lev.bierEna, beg, s + "bier", "");
         cmds.cfgLine(l, !lev.suppressAddr, beg, s + "suppress-prefix", "");
         cmds.cfgLine(l, !lev.osuppressAddr, beg, s + "other-suppress-prefix", "");
@@ -1535,6 +1569,11 @@ public class rtrIsis extends ipRtr {
         }
         if (s.equals("segrout")) {
             lev.segrouEna = !negated;
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("srv6")) {
+            lev.srv6ena = !negated;
             lev.schedWork(3);
             return false;
         }

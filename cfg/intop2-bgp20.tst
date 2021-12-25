@@ -125,8 +125,8 @@ interface loopback3
 segment-routing srv6 locators locator a prefix 1111:1111:1111:1111::/64
 router bgp 1
  segment-routing srv6 locator a
- address-family vpnv4 unicast
- address-family vpnv6 unicast
+ address-family vpnv4 unicast segment-routing srv6 locator a
+ address-family vpnv6 unicast segment-routing srv6 locator a
  neighbor 2.2.2.1
   remote-as 1
   update-source loopback0

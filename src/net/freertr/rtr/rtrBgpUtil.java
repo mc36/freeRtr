@@ -2905,13 +2905,21 @@ public class rtrBgpUtil {
             }
             tlv.valDat[0] = 0; // reserved
             tlv.valDat[1] = 1; // subtlv type
-            bits.msbPutW(tlv.valDat, 2, 21); // size
+            bits.msbPutW(tlv.valDat, 2, 30); // size
             tlv.valDat[4] = 0; // reserved
             ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 5);
             tlv.valDat[21] = 0; // sid flags
             bits.msbPutW(tlv.valDat, 22, i); // behavior
             tlv.valDat[24] = 0; // reserved
-            tlv.putBytes(hlp, o, 25, tlv.valDat);
+            tlv.valDat[25] = 1; // sid structure
+            bits.msbPutW(tlv.valDat, 26, 6); // subsubtlv length
+            tlv.valDat[28] = 40; // locator block length
+            tlv.valDat[29] = 24; // locator node length
+            tlv.valDat[30] = 16; // locator function length
+            tlv.valDat[31] = 0; // locator argument length
+            tlv.valDat[32] = 0; // transposition length
+            tlv.valDat[33] = 108; // transposition offset
+            tlv.putBytes(hlp, o, 34, tlv.valDat);
         }
         if (hlp.headSize() < 1) {
             return;

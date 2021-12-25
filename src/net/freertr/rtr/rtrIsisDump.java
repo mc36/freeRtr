@@ -302,6 +302,20 @@ public class rtrIsisDump {
                     l.add("router capability: id=" + adr4);
                     dumpRtrCapa(l, tlv, 5);
                     break;
+                case rtrIsisLsp.tlvSegRoutV6:
+                    l.add("srv6: mtid=" + bits.msbGetW(tlv.valDat, 0));
+                    for (int i = 2; i < tlv.valSiz;) {
+                        int len = tlv.valDat[i + 6] & 0xff;
+                        adr6 = new addrIPv6();
+                        adr6.fromBuf(tlv.valDat, i + 7);
+                        addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr6, len);
+                        l.add("  locator: " + prf + " metric=" + bits.msbGetD(tlv.valDat, i) + " flag=" + (tlv.valDat[i + 4] & 0xff) + " algo=" + (tlv.valDat[i + 5] & 0xff));
+                        i += 7;
+                        i += (len + 7) / 8;
+                        i += tlv.valDat[i + 0] & 0xff;
+                        i += 1;
+                    }
+                    break;
                 default:
                     l.add("unknown: " + tlv.dump());
                     break;

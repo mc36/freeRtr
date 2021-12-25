@@ -2,6 +2,7 @@ package net.freertr.rtr;
 
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
@@ -177,6 +178,37 @@ public class rtrOspfSr {
         tlv.putThis(pck);
         pck.merge2beg();
         return pck.getCopy();
+    }
+
+    /**
+     * generate srv6 locator
+     *
+     * @param ifc interface
+     * @param met metric
+     * @return lsa generated
+     */
+    protected static packHolder srv6loc(cfgIfc ifc, int met) {
+        if (ifc == null) {
+            return null;
+        }
+        if (ifc.addr6 == null) {
+            return null;
+        }
+        packHolder pck = new packHolder(true, true);
+        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        tlv.valTyp = 1;
+        tlv.valDat[0] = 1; // route type
+        tlv.valDat[1] = 0; // algo
+        int len = ifc.mask6.toNetmask();
+        tlv.valDat[2] = (byte) len; // loc len
+        tlv.valDat[3] = 0; // flags
+        bits.msbPutD(tlv.valDat, 4, met); // metric
+        ifc.addr6.toBuffer(tlv.valDat, 8); // locator
+        tlv.valSiz = (len + 7) / 8;
+        tlv.valSiz += 8;
+        tlv.putThis(pck);
+        pck.merge2beg();
+        return pck;
     }
 
 }

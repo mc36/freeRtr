@@ -105,6 +105,11 @@ public class rtrIsisLevel implements Runnable {
     public boolean segrouEna;
 
     /**
+     * segment routing v6 enabled
+     */
+    public boolean srv6ena;
+
+    /**
      * bier enabled
      */
     public boolean bierEna;
@@ -779,6 +784,16 @@ public class rtrIsisLevel implements Runnable {
         }
         if (segrouEna && (lower.segrouLab != null)) {
             advertiseTlv(pck, rtrIsisSr.putBase(lower));
+        }
+        if (srv6ena) {
+            advertiseTlv(pck, rtrIsisSr.srv6base(lower));
+            for (int i = 0; i < lower.srv6.size(); i++) {
+                typLenVal tlv = rtrIsisSr.srv6loc(lower.srv6.get(i), 0);
+                if (tlv == null) {
+                    continue;
+                }
+                advertiseTlv(pck, tlv);
+            }
         }
         if (hostname) {
             buf = cfgAll.hostName.getBytes();

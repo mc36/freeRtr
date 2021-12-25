@@ -265,6 +265,23 @@ public class rtrOspfDump {
                 pck.getSkip(12);
                 dumpElsa(l, pck);
                 break;
+            case rtrOspf6lsa.lsaSegRoutV6:
+                typLenVal tlv = rtrOspfTe.getTlvHandler();
+                for (;;) {
+                    if (tlv.getBytes(pck)) {
+                        break;
+                    }
+                    if (tlv.valTyp != 1) {
+                        l.add("unknown: " + tlv.dump());
+                        continue;
+                    }
+                    int len = tlv.valDat[2] & 0xff;
+                    adr6 = new addrIPv6();
+                    adr6.fromBuf(tlv.valDat, 8);
+                    addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr6, len);
+                    l.add("locator: " + prf + " rout=" + (tlv.valDat[0] & 0xff) + " algo=" + (tlv.valDat[1] & 0xff) + " flag=" + (tlv.valDat[3] & 0xff) + " metric=" + bits.msbGetD(tlv.valDat, 4));
+                }
+                break;
             default:
                 break;
         }
