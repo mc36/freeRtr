@@ -206,9 +206,6 @@ public class findSongs {
             }
             String b = a.substring(o + 1, a.length()).trim();
             a = a.substring(0, o).toLowerCase().trim();
-            if (a.equals("stream")) {
-                break;
-            }
             if (a.equals("artist")) {
                 art = b;
                 continue;
@@ -224,6 +221,14 @@ public class findSongs {
             if (a.equals("title")) {
                 tit = b;
                 continue;
+            }
+            o = a.indexOf(" ");
+            if (o < 0) {
+                continue;
+            }
+            a = a.substring(0, o);
+            if (a.equals("stream")) {
+                break;
             }
         }
         if (art == null) {
