@@ -191,8 +191,7 @@ public class rtrIsisSr {
     /**
      * generate srv6 base
      *
-     * @param ifc interface
-     * @param met metric
+     * @param lower lower layer to use
      * @return tlv generated
      */
     protected static typLenVal srv6base(rtrIsis lower) {
