@@ -1,6 +1,7 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,6 +63,8 @@ public class findSongs {
         if (args.length > 1) {
             s = args[1];
         }
+        playerUtil.put("writing " + s);
+        fs.doSort();
         playerUtil.saveas(playerSong.pls2txt(fs.lst), s);
     }
 
@@ -88,12 +91,18 @@ public class findSongs {
         if (fl == null) {
             return;
         }
+        List<File> fa = new ArrayList<File>();
         for (int i = 0; i < fl.length; i++) {
-            String a = fl[i].getName();
+            fa.add(fl[i]);
+        }
+        Collections.sort(fa);
+        for (int i = 0; i < fa.size(); i++) {
+            File f = fa.get(i);
+            String a = f.getName();
             if (a.startsWith(".")) {
                 continue;
             }
-            if (fl[i].isDirectory()) {
+            if (f.isDirectory()) {
                 doFind(s + "/" + a);
                 continue;
             }
@@ -198,18 +207,30 @@ public class findSongs {
             String b = a.substring(o + 1, a.length()).trim();
             a = a.substring(0, o).toLowerCase().trim();
             if (a.equals("artist")) {
+                if (art != null) {
+                    continue;
+                }
                 art = b;
                 continue;
             }
             if (a.equals("album")) {
+                if (alb != null) {
+                    continue;
+                }
                 alb = b;
                 continue;
             }
             if (a.equals("date")) {
+                if (dat != null) {
+                    continue;
+                }
                 dat = b;
                 continue;
             }
             if (a.equals("title")) {
+                if (tit != null) {
+                    continue;
+                }
                 tit = b;
                 continue;
             }
