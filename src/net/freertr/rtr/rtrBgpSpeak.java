@@ -6,6 +6,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
@@ -2167,6 +2168,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             attr.best.nextHop = pref.best.nextHop;
             attr.best.labelRem = pref.best.labelRem;
             attr.best.evpnLab = pref.best.evpnLab;
+            if ((attr.best.segrouPrf != null) && (attr.best.labelRem != null) && (attr.best.segrouSiz > 0)) {
+                addrIPv6 adr6 = new addrIPv6();
+                bits.msbPutD(adr6.getBytes(), 12, attr.best.labelRem.get(0) & ((1 << attr.best.segrouSiz) - 1));
+                adr6.setShl(adr6, attr.best.segrouOfs - attr.best.segrouSiz - 4);
+                adr6.setOr(attr.best.segrouPrf, adr6);
+                attr.best.segrouPrf.fromIPv6addr(adr6);
+            }
             attr.best.copyBytes(pref.best, false);
             addAttribed(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
         }

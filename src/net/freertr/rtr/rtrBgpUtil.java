@@ -1953,6 +1953,11 @@ public class rtrBgpUtil {
                     ntry.best.segrouPrf = new addrIP();
                     adr6.fromBuf(tlv.valDat, 5);
                     ntry.best.segrouPrf.fromIPv6addr(adr6);
+                    if (tlv.valDat[25] != 1) { // sid structure
+                        break;
+                    }
+                    ntry.best.segrouSiz = tlv.valDat[32] & 0xff; // transposition length
+                    ntry.best.segrouOfs = tlv.valDat[33] & 0xff; // transposition offset
                     break;
             }
         }
@@ -2917,8 +2922,8 @@ public class rtrBgpUtil {
             tlv.valDat[29] = 24; // locator node length
             tlv.valDat[30] = 16; // locator function length
             tlv.valDat[31] = 0; // locator argument length
-            tlv.valDat[32] = 0; // transposition length
-            tlv.valDat[33] = 108; // transposition offset
+            tlv.valDat[32] = (byte) ntry.best.segrouSiz; // transposition length
+            tlv.valDat[33] = (byte) ntry.best.segrouOfs; // transposition offset
             tlv.putBytes(hlp, o, 34, tlv.valDat);
         }
         if (hlp.headSize() < 1) {

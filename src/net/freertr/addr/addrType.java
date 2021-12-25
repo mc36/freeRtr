@@ -296,6 +296,27 @@ public abstract class addrType implements Comparator<addrType> {
     }
 
     /**
+     * set from not a1
+     *
+     * @param a1 address
+     * @param sh shift
+     */
+    public void setShl(addrType a1, int shf) {
+        int shb = shf / 8;
+        shf &= 7;
+        for (int i = 0; i < (addr.length - shb); i++) {
+            int p = (a1.addr[i + shb] & 0xff) << shf;
+            if ((i + shb + 1) < addr.length) {
+                p |= (a1.addr[i + shb + 1] & 0xff) >>> (8 - shf);
+            }
+            addr[i] = (byte) p;
+        }
+        for (int i = 0; i < (shb - 1); i++) {
+            addr[addr.length - i - 1] = 0;
+        }
+    }
+
+    /**
      * set from a1 + a2
      *
      * @param a1 address 1

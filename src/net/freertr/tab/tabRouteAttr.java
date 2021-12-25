@@ -277,6 +277,11 @@ public class tabRouteAttr<T extends addrType> {
     public int segrouSiz;
 
     /**
+     * segment routing label block offset
+     */
+    public int segrouOfs;
+
+    /**
      * segment routing prefix sid
      */
     public T segrouPrf;
@@ -626,6 +631,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.onlyCust = onlyCust;
         atr.segrouIdx = segrouIdx;
         atr.segrouSiz = segrouSiz;
+        atr.segrouOfs = segrouOfs;
         atr.segrouBeg = segrouBeg;
         atr.segrouOld = segrouOld;
         atr.bierIdx = bierIdx;
@@ -811,6 +817,9 @@ public class tabRouteAttr<T extends addrType> {
             return true;
         }
         if (segrouSiz != other.segrouSiz) {
+            return true;
+        }
+        if (segrouOfs != other.segrouOfs) {
             return true;
         }
         if (bierIdx != other.bierIdx) {
@@ -1221,6 +1230,7 @@ public class tabRouteAttr<T extends addrType> {
         l.add("segrout old base|" + segrouOld);
         l.add("segrout base|" + segrouBeg);
         l.add("segrout size|" + segrouSiz);
+        l.add("segrout offset|" + segrouOfs);
         l.add("segrout prefix|" + segrouPrf);
         l.add("bier index|" + bierIdx);
         l.add("bier old base|" + bierOld);
