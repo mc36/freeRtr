@@ -206,31 +206,22 @@ public class findSongs {
             }
             String b = a.substring(o + 1, a.length()).trim();
             a = a.substring(0, o).toLowerCase().trim();
+            if (a.equals("stream")) {
+                break;
+            }
             if (a.equals("artist")) {
-                if (art != null) {
-                    continue;
-                }
                 art = b;
                 continue;
             }
             if (a.equals("album")) {
-                if (alb != null) {
-                    continue;
-                }
                 alb = b;
                 continue;
             }
             if (a.equals("date")) {
-                if (dat != null) {
-                    continue;
-                }
                 dat = b;
                 continue;
             }
             if (a.equals("title")) {
-                if (tit != null) {
-                    continue;
-                }
                 tit = b;
                 continue;
             }
