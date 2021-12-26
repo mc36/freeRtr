@@ -231,25 +231,8 @@ public class rtrIsisSr {
         ifc.addr6.toBuffer(tlv.valDat, 9); // locator
         tlv.valSiz = (len + 7) / 8;
         tlv.valSiz += 9;
-        tlv.valDat[tlv.valSiz] = 31; // subtlv len
+        tlv.valDat[tlv.valSiz] = 0; // subtlv len
         tlv.valSiz += 1;
-        tlv.valDat[tlv.valSiz + 0] = 4; // subtlv type
-        tlv.valDat[tlv.valSiz + 1] = 1; // subtlv length
-        tlv.valDat[tlv.valSiz + 2] = 0; // flags
-        tlv.valSiz += 3;
-        tlv.valDat[tlv.valSiz + 0] = typEndSid; // subtlv type
-        tlv.valDat[tlv.valSiz + 1] = 26; // subtlv length
-        tlv.valDat[tlv.valSiz + 2] = 0; // flags
-        bits.msbPutW(tlv.valDat, tlv.valSiz + 3, 29); // behavior
-        ifc.addr6.toBuffer(tlv.valDat, tlv.valSiz + 5); // sid
-        tlv.valDat[tlv.valSiz + 21] = 6; // subsubtlvs len
-        tlv.valDat[tlv.valSiz + 22] = 1; // subsubtlv type
-        tlv.valDat[tlv.valSiz + 23] = 4; // subsubtlv length
-        tlv.valDat[tlv.valSiz + 24] = 40; // locator block length
-        tlv.valDat[tlv.valSiz + 25] = 24; // locator node length
-        tlv.valDat[tlv.valSiz + 26] = 16; // locator function length
-        tlv.valDat[tlv.valSiz + 27] = 0; // locator arguments length
-        tlv.valSiz += 28;
         return tlv;
     }
 
