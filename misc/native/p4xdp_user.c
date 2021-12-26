@@ -34,6 +34,7 @@ int vrf_port_fd;
 int neighs_fd;
 int route4_fd;
 int route6_fd;
+int labels_fd;
 
 
 #include "p4xdp_msg.h"
@@ -53,6 +54,17 @@ void doSockLoop() {
 
 
 
+void doStatLoop() {
+    FILE *commands = fdopen(commandSock, "w");
+    if (commands == NULL) err("failed to open file");
+    int rnd = 0;
+    for (;;) {
+        doStatRound(commands, rnd);
+        rnd++;
+        usleep(100000);
+    }
+    err("stat thread exited");
+}
 
 
 
@@ -133,6 +145,8 @@ int main(int argc, char **argv) {
     if (vrf_port_fd < 0) err("error finding table");
     route6_fd = bpf_object__find_map_fd_by_name(bpf_obj, "routes6");
     if (route6_fd < 0) err("error finding table");
+    labels_fd = bpf_object__find_map_fd_by_name(bpf_obj, "labels");
+    if (labels_fd < 0) err("error finding table");
     for (int i = 0; i < ports; i++) {
         printf("opening index %i...\n", ifaces[i]);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);
@@ -160,6 +174,8 @@ int main(int argc, char **argv) {
 
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
+    pthread_t threadStat;
+    if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
     doMainLoop();
 }

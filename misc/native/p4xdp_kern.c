@@ -35,7 +35,7 @@ struct {
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, struct neigh_key);
+    __type(key, int);
     __type(value, struct neigh_res);
     __uint(max_entries, MAX_NEIGHS);
 } neighs SEC(".maps");
@@ -56,13 +56,112 @@ struct {
     __uint(map_flags, BPF_F_NO_PREALLOC);
 } routes6 SEC(".maps");
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, int);
+    __type(value, struct label_res);
+    __uint(max_entries, MAX_NEIGHS);
+} labels SEC(".maps");
+
 
 
 
 #define revalidatePacket(size)                  \
     bufE = (unsigned char*)(long)ctx->data_end; \
-    bufP = (unsigned char*)(long)ctx->data;     \
-    if ((size + bufP) > bufE) goto drop;
+    bufD = (unsigned char*)(long)ctx->data;     \
+    if ((size + bufD) > bufE) goto drop;
+
+
+
+
+#define update_chksum(ofs, val)                                 \
+    int sum = get16lsb(bufD, ofs);                              \
+    sum -= val;                                                 \
+    sum = (sum & 0xffff) + (sum >> 16);                         \
+    put16lsb(bufD, ofs, sum);
+
+
+
+#define doRouted(res)                                               \
+    switch (res->cmd) {                                             \
+    case 1:                                                         \
+        neik = res->hop;                                            \
+        goto ethtyp_tx;                                             \
+    case 2:                                                         \
+        goto cpu;                                                   \
+    case 3:                                                         \
+        bufP -= 4;                                                  \
+        put32msb(bufD, bufP, ((res->label1 << 12) | 0x100 | ttl));  \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                              \
+        neik = res->hop;                                            \
+        goto ethtyp_tx;                                             \
+    case 4:                                                         \
+        bufP -= 4;                                                  \
+        put32msb(bufD, bufP, ((res->label2 << 12) | 0x100 | ttl));  \
+        bufP -= 4;                                                  \
+        put32msb(bufD, bufP, ((res->label1 << 12) | ttl));          \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                              \
+        neik = res->hop;                                            \
+        goto ethtyp_tx;                                             \
+    default:                                                        \
+        goto drop;                                                  \
+    }
+
+
+
+#define readMpls()                                                  \
+    label = get32msb(bufD, bufP);                                   \
+    ttl = (label & 0xff) - 1;                                       \
+    if (ttl <= 1) goto punt;                                        \
+    port = label & 0xf00;                                           \
+    label = (label >> 12) & 0xfffff;                                \
+    bufP += 4;                                                      \
+    resm = bpf_map_lookup_elem(&labels, &label);                    \
+    if (resm == NULL) goto drop;
+
+
+
+#define routeMpls()                                                 \
+    vrfp->vrf = resm->vrf;                                          \
+    switch (resm->ver) {                                            \
+    case 4:                                                         \
+        ethtyp = ETHERTYPE_IPV4;                                    \
+        goto ipv4_rx;                                               \
+    case 6:                                                         \
+        ethtyp = ETHERTYPE_IPV6;                                    \
+        goto ipv6_rx;                                               \
+    default:                                                        \
+        goto drop;                                                  \
+    }
+
+
+
+#define switchMpls()                                                \
+    case 2:                                                         \
+        neik = resm->hop;                                           \
+        if ((port & 0x100) == 0) {                                  \
+            bufD[bufP + 3] = ttl;                                   \
+            goto ethtyp_tx;                                         \
+        }                                                           \
+        switch (resm->ver) {                                        \
+        case 4:                                                     \
+            ethtyp = ETHERTYPE_IPV4;                                \
+            goto ethtyp_tx;                                         \
+        case 6:                                                     \
+            ethtyp = ETHERTYPE_IPV6;                                \
+            goto ethtyp_tx;                                         \
+        default:                                                    \
+            goto drop;                                              \
+        }                                                           \
+    case 3:                                                         \
+        bufP -= 4;                                                  \
+        label = (port & 0xf00) | ttl | (resm->swap << 12);          \
+        put32msb(bufD, bufP, label);                                \
+        neik = resm->hop;                                           \
+        goto ethtyp_tx;                                             \
+    default:                                                        \
+        goto drop;
+
 
 
 
@@ -70,10 +169,10 @@ SEC("p4xdp_router")
 int xdp_packet(struct xdp_md *ctx) {
 
     unsigned char* bufE;
-    unsigned char* bufP;
+    unsigned char* bufD;
     revalidatePacket(18);
     unsigned char macaddr[6 + 6];
-    __builtin_memcpy(macaddr, &bufP[0], sizeof(macaddr));
+    __builtin_memcpy(macaddr, &bufD[0], sizeof(macaddr));
 
     int i = 0;
     int* cpuport = bpf_map_lookup_elem(&cpu_port, &i);
@@ -83,87 +182,110 @@ int xdp_packet(struct xdp_md *ctx) {
     struct port_entry* rxport = bpf_map_lookup_elem(&rx_ports, &port);
     if (rxport == NULL) goto drop;
     rxport->packs++;
-    rxport->bytes += bufE - bufP;
+    rxport->bytes += bufE - bufD;
     if (port == *cpuport) {
-        port = get16msb(bufP, 0);
+        port = get16msb(bufD, 0);
         struct port_entry* txport = bpf_map_lookup_elem(&tx_ports, &port);
         if (txport == NULL) goto drop;
         txport->packs++;
-        txport->bytes += bufE - bufP;
+        txport->bytes += bufE - bufD;
         if (bpf_xdp_adjust_head(ctx, 2) != 0) goto drop;
         return bpf_redirect(txport->idx, 0);
     }
     port = rxport->idx;
 
-    int ethtyp = get16msb(bufP, sizeof(macaddr));
-    int bufO = sizeof(macaddr) + 2;
+    int ethtyp = get16msb(bufD, sizeof(macaddr));
+    int bufP = sizeof(macaddr) + 2;
 
     /////// vlan in
 
     struct vrfp_entry* vrfp = bpf_map_lookup_elem(&vrf_port, &port);
     if (vrfp == NULL) goto drop;
 
-    struct neigh_key neik;
+    int neik;
+    int ttl;
     switch (ethtyp) {
+    case ETHERTYPE_MPLS_UCAST:
+        revalidatePacket(bufP + 12);
+        int label;
+        struct label_res* resm;
+        readMpls();
+        switch (resm->cmd) {
+        case 1:
+            if ((port & 0x100) == 0) {
+                bufD[bufP + 3] = ttl + 1;
+                readMpls();
+                switch (resm->cmd) {
+                case 1:
+                    routeMpls();
+                    switchMpls();
+                }
+            }
+            routeMpls();
+            switchMpls();
+        }
+        goto drop;
     case ETHERTYPE_IPV4:
-        revalidatePacket(bufO + 20);
+ipv4_rx:
+        revalidatePacket(bufP + 20);
+        if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
+        if ((bufD[bufP + 0] & 0xf) < 5) goto drop;
+        ttl = bufD[bufP + 8] - 1;
+        if (ttl <= 1) goto punt;
+        if (bufD[bufP + 9] == 46) goto cpu;
+        bufD[bufP + 8] = ttl;
+        update_chksum(bufP + 10, -1);
         struct route4_key rou4;
         rou4.bits = (sizeof(rou4) * 8) - routes_bits;
-        neik.vrf = rou4.vrf = vrfp->vrf;
-        __builtin_memcpy(rou4.addr, &bufP[bufO + 16], sizeof(rou4.addr));
+        rou4.vrf = vrfp->vrf;
+        __builtin_memcpy(rou4.addr, &bufD[bufP + 16], sizeof(rou4.addr));
         struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
         if (res4 == NULL) goto punt;
-        neik.id = res4->hop;
-        port = res4->cmd;
-        goto route;
+        doRouted(res4);
     case ETHERTYPE_IPV6:
-        revalidatePacket(bufO + 40);
+ipv6_rx:
+        revalidatePacket(bufP + 40);
+        if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
+        ttl = bufD[bufP + 7] - 1;
+        if (ttl <= 1) goto punt;
+        if (bufD[bufP + 6] == 0) goto cpu;
+        bufD[bufP + 7] = ttl;
         struct route6_key rou6;
         rou6.bits = (sizeof(rou6) * 8) - routes_bits;
-        neik.vrf = rou6.vrf = vrfp->vrf;
-        __builtin_memcpy(rou6.addr, &bufP[bufO + 24], sizeof(rou6.addr));
+        rou6.vrf = vrfp->vrf;
+        __builtin_memcpy(rou6.addr, &bufD[bufP + 24], sizeof(rou6.addr));
         struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
         if (res6 == NULL) goto punt;
-        neik.id = res6->hop;
-        port = res6->cmd;
-        goto route;
+        doRouted(res6);
     case ETHERTYPE_ARP:
         goto cpu;
     default:
         goto punt;
     }
 
-route:
-    switch (port) {
-    case 1:
-        goto neigh;
-    case 2:
-        goto cpu;
-    default:
-        goto drop;
-    }
 
-neigh:
-    {
-        struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
-        if (neir == NULL) goto punt;
-        __builtin_memcpy(&macaddr[0], neir->dmac, sizeof(neir->dmac));
-        __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
-        port = neir->port;
-    }
+ethtyp_tx:
+    bufP -= 2;
+    put16msb(bufD, bufP, ethtyp);
+
+    struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
+    if (neir == NULL) goto punt;
+    __builtin_memcpy(&macaddr[0], neir->dmac, sizeof(neir->dmac));
+    __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
+    port = neir->port;
 
     //// vlan out
 
-    bufO -= sizeof(macaddr) + 2;
-    if (bpf_xdp_adjust_head(ctx, bufO) != 0) goto drop;
-    revalidatePacket(bufO + 2 + sizeof(macaddr));
-    __builtin_memcpy(bufP + bufO, &macaddr, sizeof(macaddr));
-    put16msb(bufP, bufO + sizeof(macaddr), ethtyp);
+    bufP -= sizeof(macaddr);
+    if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+    bufP = 0;
+    revalidatePacket(sizeof(macaddr));
+    __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
 
     struct port_entry* txport = bpf_map_lookup_elem(&tx_ports, &port);
     if (txport == NULL) goto drop;
     txport->packs++;
-    txport->bytes += bufE - bufP;
+    txport->bytes += bufE - bufD;
     return bpf_redirect(txport->idx, 0);
 
 punt:
@@ -176,7 +298,7 @@ cpu:
     port = 0;
     if (bpf_xdp_adjust_head(ctx, -2) != 0) goto drop;
     revalidatePacket(2);
-    put16msb(bufP, 0, rxport->idx);
+    put16msb(bufD, 0, rxport->idx);
     return bpf_redirect(*cpuport, 0);
 drop:
     return XDP_DROP;
