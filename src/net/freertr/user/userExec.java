@@ -3130,7 +3130,7 @@ public class userExec {
             if (need2stop()) {
                 break;
             }
-            pipe.strPut("" + strt);
+            pipe.strPut(strt + "    ");
             byte[] buf = new byte[1];
             buf[0] = 13;
             pipe.blockingPut(buf, 0, buf.length);
