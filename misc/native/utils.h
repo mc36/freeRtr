@@ -13,11 +13,3 @@
 #define put32lsb(buf, ofs, val) buf[ofs+3] = val >> 24; buf[ofs+2] = val >> 16; buf[ofs+1] = val >> 8; buf[ofs+0] = val & 0xff;
 
 #define get32lsb(buf, ofs) ((buf[ofs+3] << 24) | (buf[ofs+2] << 16) | (buf[ofs+1] << 8) | buf[ofs+0])
-
-void hexDump(unsigned char *buf, int pos, int len) {
-    printf("buffer: ");
-    for (int i=0; i < len; i++) {
-        printf(" %02x", buf[pos + i]);
-    }
-    printf("\n");
-}

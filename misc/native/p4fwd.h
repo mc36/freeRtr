@@ -1420,7 +1420,7 @@ ipv4_tx:
                     if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
                 }
                 doCpuing;
-            doRouted(route4_res, 4);
+                doRouted(route4_res, 4);
             }
         }
         doPunting;
@@ -1684,7 +1684,7 @@ ipv6_tx:
                     if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
                 }
                 doCpuing;
-            doRouted(route6_res, 41);
+                doRouted(route6_res, 41);
             }
         }
         doPunting;
