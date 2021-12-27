@@ -52,6 +52,10 @@ int doOneCommand(unsigned char* buf) {
     memset(&rour, 0, sizeof(rour));
     struct label_res labr;
     memset(&labr, 0, sizeof(labr));
+    struct bridge_key brdk;
+    memset(&brdk, 0, sizeof(brdk));
+    struct bridge_res brdr;
+    memset(&brdr, 0, sizeof(brdr));
     if (strcmp(arg[0], "portvrf") == 0) {
         i = atoi(arg[2]);
         vrfp.cmd = 1;
@@ -78,6 +82,30 @@ int doOneCommand(unsigned char* buf) {
         } else {
             if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(labels_fd, &o, &labr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "portbridge") == 0) {
+        vrfp.cmd = 2;
+        i = atoi(arg[2]);
+        vrfp.brdg = atoi(arg[3]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgemac") == 0) {
+        brdk.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        memcpy(brdk.mac, buf2, sizeof(brdk.mac));
+        brdr.port = atoi(arg[4]);
+        brdr.cmd = 1;
+        if (del == 0) {
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }

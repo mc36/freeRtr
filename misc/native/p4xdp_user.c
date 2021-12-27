@@ -39,6 +39,7 @@ int bundles_fd;
 int vlan_in_fd;
 int vlan_out_fd;
 int pppoes_fd;
+int bridges_fd;
 
 
 #include "p4xdp_msg.h"
@@ -161,6 +162,8 @@ int main(int argc, char **argv) {
     if (vlan_out_fd < 0) err("error finding table");
     pppoes_fd = bpf_object__find_map_fd_by_name(bpf_obj, "pppoes");
     if (pppoes_fd < 0) err("error finding table");
+    bridges_fd = bpf_object__find_map_fd_by_name(bpf_obj, "bridges");
+    if (bridges_fd < 0) err("error finding table");
 
     for (int i = 0; i < ports; i++) {
         printf("opening index %i...\n", ifaces[i]);

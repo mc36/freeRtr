@@ -9,6 +9,7 @@ struct port_res {
 struct vrfp_res {
     int cmd; // 1=route, 2=bridge, 3=xconn
     int vrf;
+    int brdg;
     int hop;
     int label1;
     int label2;
@@ -50,7 +51,7 @@ struct neigh_res {
 };
 
 struct label_res {
-    int cmd; // 1=route, 2=pop, 3=swap, 4=xconn
+    int cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls
     int ver;
     int hop;
     int vrf;
@@ -81,4 +82,23 @@ struct vlan_res {
 struct pppoe_key {
     int port;
     int sess;
+};
+
+struct bridge_key {
+    int id;
+    unsigned char mac[6];
+    unsigned char pad1;
+    unsigned char pad2;
+};
+
+struct bridge_res {
+    int cmd; // 1=port, 2=vpls
+    int port;
+    int hop;
+    int label1;
+    int label2;
+    long packRx;
+    long byteRx;
+    long packTx;
+    long byteTx;
 };

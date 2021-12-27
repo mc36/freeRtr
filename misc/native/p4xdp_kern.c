@@ -84,7 +84,7 @@ struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, struct vlan_key);
     __type(value, int);
-    __uint(max_entries, 256);
+    __uint(max_entries, 512);
 } vlan_in SEC(".maps");
 
 
@@ -92,7 +92,7 @@ struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, int);
     __type(value, struct vlan_res);
-    __uint(max_entries, 256);
+    __uint(max_entries, 512);
 } vlan_out SEC(".maps");
 
 
@@ -100,8 +100,16 @@ struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, struct pppoe_key);
     __type(value, int);
-    __uint(max_entries, 256);
+    __uint(max_entries, 128);
 } pppoes SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct bridge_key);
+    __type(value, struct bridge_res);
+    __uint(max_entries, 1024);
+} bridges SEC(".maps");
 
 
 
@@ -303,7 +311,9 @@ int xdp_router(struct xdp_md *ctx) {
     switch (vrfp->cmd) {
     case 1:
         break;
-    ///// layer2
+    case 2:
+        tmp = vrfp->brdg;
+        goto bridge_rx;
     case 3:
         bufP -= 2;
         bufP -= 12;
@@ -311,7 +321,7 @@ int xdp_router(struct xdp_md *ctx) {
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
         bufP = 2 * sizeof(macaddr);
         revalidatePacket(3 * sizeof(macaddr));
-        __builtin_memmove(&bufD[bufP], &macaddr[0], 12);
+        __builtin_memcpy(&bufD[bufP], &macaddr[0], 12);
         ethtyp = ETHERTYPE_MPLS_UCAST;
         bufP -= 4;
         ttl = 0x1ff | (vrfp->label2 << 12);
@@ -398,6 +408,31 @@ ipv6_rx:
         goto punt;
     }
 
+bridge_rx:
+    {}
+    struct bridge_key brdk;
+    __builtin_memcpy(brdk.mac, &macaddr[6], sizeof(brdk.mac));
+    brdk.id = tmp;
+    brdk.pad1 = 0;
+    brdk.pad2 = 0;
+    struct bridge_res* brdr = bpf_map_lookup_elem(&bridges, &brdk);
+    if (brdr == NULL) goto cpu;
+    brdr->packRx++;
+    brdr->byteRx += bufE - bufD;
+    __builtin_memcpy(brdk.mac, &macaddr[0], sizeof(brdk.mac));
+    brdr = bpf_map_lookup_elem(&bridges, &brdk);
+    if (brdr == NULL) goto cpu;
+    brdr->packTx++;
+    brdr->byteTx += bufE - bufD;
+    switch (brdr->cmd) {
+        case 1:
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            prt = brdr->port;
+            goto subif_tx;
+        default:
+            goto drop;
+    }
 
 ethtyp_tx:
     bufP -= 2;
