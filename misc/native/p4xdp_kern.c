@@ -113,19 +113,19 @@ struct {
 
 
 
-#define revalidatePacket(size)                  \
-    bufE = (unsigned char*)(long)ctx->data_end; \
-    bufD = (unsigned char*)(long)ctx->data;     \
+#define revalidatePacket(size)                                      \
+    bufE = (unsigned char*)(long)ctx->data_end;                     \
+    bufD = (unsigned char*)(long)ctx->data;                         \
     if ((size + bufD) > bufE) goto drop;
 
 
 
 
-#define update_chksum(ofs, val)                                 \
-    int sum = get16lsb(bufD, ofs);                              \
-    sum -= val;                                                 \
-    sum = (sum & 0xffff) + (sum >> 16);                         \
-    put16lsb(bufD, ofs, sum);
+#define update_chksum(ofs, val)                                     \
+    tmp = get16lsb(bufD, ofs);                                      \
+    tmp -= val;                                                     \
+    tmp = (tmp & 0xffff) + (tmp >> 16);                             \
+    put16lsb(bufD, ofs, tmp);
 
 
 
