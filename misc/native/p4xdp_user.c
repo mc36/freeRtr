@@ -35,6 +35,7 @@ int neighs_fd;
 int route4_fd;
 int route6_fd;
 int labels_fd;
+int bundles_fd;
 
 
 #include "p4xdp_msg.h"
@@ -147,6 +148,8 @@ int main(int argc, char **argv) {
     if (route6_fd < 0) err("error finding table");
     labels_fd = bpf_object__find_map_fd_by_name(bpf_obj, "labels");
     if (labels_fd < 0) err("error finding table");
+    bundles_fd = bpf_object__find_map_fd_by_name(bpf_obj, "bundles");
+    if (bundles_fd < 0) err("error finding table");
     for (int i = 0; i < ports; i++) {
         printf("opening index %i...\n", ifaces[i]);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);

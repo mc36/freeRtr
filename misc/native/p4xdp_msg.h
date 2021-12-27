@@ -291,6 +291,21 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "portbundle") == 0) {
+        int p = atoi(arg[2]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(bundles_fd, &p) != 0) warn("error removing entry");
+            return 0;
+        }
+        struct bundle_res bunn;
+        memset(&bunn, 0, sizeof(bunn));
+        struct bundle_res* bunr = &bunn;
+        bpf_map_update_elem(bundles_fd, &p, &bunn, BPF_NOEXIST);
+        if (bpf_map_lookup_elem(bundles_fd, &p, bunr) != 0) err("error getting entry");
+        i = atoi(arg[3]);
+        bunr->out[i] = atoi(arg[4]);
+        if (bpf_map_update_elem(bundles_fd, &p, bunr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
     return 0;
 }
-

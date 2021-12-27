@@ -2,13 +2,15 @@
 
 struct port_res {
     int idx;
-    long bytes;
-    long packs;
+    long byte;
+    long pack;
 };
 
 struct vrfp_res {
     int cmd; // 1=route
     int vrf;
+    long pack;
+    long byte;
 };
 
 #define routes_bits (sizeof(__u32) * 8)
@@ -30,12 +32,16 @@ struct routes_res {
     int hop;
     int label1;
     int label2;
+    long pack;
+    long byte;
 };
 
 struct neigh_res {
     unsigned char dmac[6];
     unsigned char smac[6];
     int port;
+    long pack;
+    long byte;
 };
 
 struct label_res {
@@ -44,4 +50,12 @@ struct label_res {
     int hop;
     int vrf;
     int swap;
+    long pack;
+    long byte;
+};
+
+struct bundle_res {
+    int out[16];
+    long pack;
+    long byte;
 };
