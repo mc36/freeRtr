@@ -13,6 +13,7 @@ struct vrfp_res {
     int hop;
     int label1;
     int label2;
+    int mpls;
     long pack;
     long byte;
 };

@@ -345,6 +345,7 @@ int xdp_router(struct xdp_md *ctx) {
 
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST:
+        if (vrfp->mpls == 0) goto drop;
         revalidatePacket(bufP + 12);
         int label;
         struct label_res* resm;

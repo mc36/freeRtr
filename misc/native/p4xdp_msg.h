@@ -7,6 +7,44 @@ void doStatRound(FILE *commands, int round) {
     int i = 1;
     int o = 10;
     if (bpf_map_update_elem(cpu_port_fd, &i, &o, BPF_ANY) != 0) err("error setting cpuport");
+    if ((round % 10) != 0) return;
+    struct port_res prt1;
+    struct port_res prt2;
+    i = -1;
+    for (;;) {
+        if (bpf_map_get_next_key(tx_ports_fd, &i, &o) != 0) break;
+        i = o;
+        struct port_res* prtp = &prt2;
+        if (bpf_map_lookup_elem(tx_ports_fd, &i, prtp) != 0) continue;
+        i = prt2.idx;
+        prtp = &prt1;
+        if (bpf_map_lookup_elem(rx_ports_fd, &i, prtp) != 0) continue;
+        i = o;
+        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", i, prt1.pack, prt1.byte, prt2.pack, prt2.byte);
+    }
+    struct bundle_res bunr;
+    i = -1;
+    for (;;) {
+        if (bpf_map_get_next_key(bundles_fd, &i, &o) != 0) break;
+        i = o;
+        struct bundle_res* bunp = &bunr;
+        if (bpf_map_lookup_elem(bundles_fd, &i, bunp) != 0) continue;
+        fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", i, bunp->pack, bunp->byte);
+    }
+    if ((round % 150) != 0) {
+        fflush(commands);
+        return;
+    }
+    struct label_res labr;
+    i = -1;
+    for (;;) {
+        if (bpf_map_get_next_key(labels_fd, &i, &o) != 0) break;
+        i = o;
+        struct label_res* labp = &labr;
+        if (bpf_map_lookup_elem(labels_fd, &i, labp) != 0) continue;
+        fprintf(commands, "mpls_cnt %i %li %li\r\n", i, labp->pack, labp->byte);
+    }
+    fflush(commands);
 }
 
 
@@ -65,6 +103,14 @@ int doOneCommand(unsigned char* buf) {
         } else {
             if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
         }
+        return 0;
+    }
+    if (strcmp(arg[0], "mplspack") == 0) {
+        i = atoi(arg[2]);
+        struct vrfp_res* vrfr = &vrfp;
+        if (bpf_map_lookup_elem(vrf_port_fd, &i, vrfr) != 0) return 0;
+        vrfr->mpls = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {
