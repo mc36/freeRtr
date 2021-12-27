@@ -23,7 +23,7 @@ public class userHwext {
     }
 
     private enum dpTyp {
-        opnflw, p4emu, p4dpdk, p4sw
+        opnflw, p4emu, p4xdp, p4dpdk, p4sw
     }
 
     private String pref = "./rtr-";
@@ -58,6 +58,10 @@ public class userHwext {
                 }
                 if (s.equals("p4emu")) {
                     dpt = dpTyp.p4emu;
+                    continue;
+                }
+                if (s.equals("p4xdp")) {
+                    dpt = dpTyp.p4xdp;
                     continue;
                 }
                 if (s.equals("p4dpdk")) {
@@ -182,6 +186,7 @@ public class userHwext {
                 break;
             case p4dpdk:
             case p4emu:
+            case p4xdp:
             case p4sw:
                 dpv = "p4";
                 break;
@@ -230,6 +235,7 @@ public class userHwext {
                 swc.add(cmds.tabulator + cmds.finish);
                 break;
             case p4emu:
+            case p4xdp:
             case p4dpdk:
             case p4sw:
                 hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port + " 127.0.0.1");
@@ -272,6 +278,17 @@ public class userHwext {
                             a += " " + ifp.get(i);
                         }
                         hwc.add("proc p4emu " + path + "p4emu.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        break;
+                    case p4xdp:
+                        ifn = "veth0a";
+                        hwd.add("ip link add veth0a type veth peer name veth0b");
+                        userHwdet.setupIface(hwd, "veth0a", 8192);
+                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            a += " " + ifp.get(i);
+                        }
+                        hwc.add("proc p4emu " + path + "p4xdp_user.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         break;
                     case p4sw:
                         ifn = "ens1";
