@@ -1,6 +1,5 @@
 #include <linux/bpf.h>
 #include <bpf/bpf_helpers.h>
-#include <bpf/bpf_endian.h>
 #include "utils.h"
 #include "types.h"
 #include "p4xdp_tab.h"
