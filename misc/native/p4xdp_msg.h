@@ -51,15 +51,15 @@ int doOneCommand(unsigned char* buf) {
     struct label_res labr;
     memset(&labr, 0, sizeof(labr));
     if (strcmp(arg[0], "portvrf") == 0) {
-        struct vrfp_res ntry;
-        memset(&ntry, 0, sizeof(ntry));
+        struct vrfp_res vrf;
+        memset(&vrf, 0, sizeof(vrf));
         i = atoi(arg[2]);
-        ntry.cmd = 1;
-        ntry.vrf = atoi(arg[3]);
+        vrf.cmd = 1;
+        vrf.vrf = atoi(arg[3]);
         if (del == 0) {
             if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(vrf_port_fd, &i, &ntry, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(vrf_port_fd, &i, &vrf, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
@@ -311,7 +311,9 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "portvlan") == 0) {
         struct vlan_key vlnk;
+        memset(&vlnk, 0, sizeof(vlnk));
         struct vlan_res vlnr;
+        memset(&vlnr, 0, sizeof(vlnr));
         i = atoi(arg[2]);
         o = atoi(arg[3]);
         vlnk.vlan = vlnr.vlan = atoi(arg[4]);
@@ -328,6 +330,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "bundlevlan") == 0) {
         struct vlan_key vlnk;
+        memset(&vlnk, 0, sizeof(vlnk));
         i = atoi(arg[4]);
         o = atoi(arg[2]);
         vlnk.vlan = atoi(arg[3]);
@@ -341,6 +344,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "pppoe") == 0) {
         struct pppoe_key pppoe;
+        memset(&pppoe, 0, sizeof(pppoe));
         i = atoi(arg[2]);
         pppoe.port = atoi(arg[3]);
         pppoe.sess = atoi(arg[6]);
