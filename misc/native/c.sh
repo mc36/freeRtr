@@ -29,7 +29,7 @@ for fn in p4emu p4pkt; do
   done
 
 for fn in p4dpdk p4dpdkPkt; do
-  compileFile $fn "-I /usr/include/dpdk/ -I /usr/include/x86_64-linux-gnu/dpdk" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev" "-march=corei7"
+  compileFile $fn "-I /usr/include/dpdk/ -I /usr/include/`uname -m`-linux-gnu/dpdk" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev" "-march=corei7"
   done
 
 for fn in pcapInt pcap2pcap sender; do
