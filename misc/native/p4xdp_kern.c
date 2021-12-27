@@ -3,7 +3,7 @@
 #include <bpf/bpf_endian.h>
 #include "utils.h"
 #include "types.h"
-#include "p4xdp_str.h"
+#include "p4xdp_tab.h"
 
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY);
@@ -15,36 +15,36 @@ struct {
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, int);
-    __type(value, struct port_entry);
-    __uint(max_entries, MAX_PORTS);
+    __type(value, struct port_res);
+    __uint(max_entries, maxPorts);
 } tx_ports SEC(".maps");
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, int);
-    __type(value, struct port_entry);
-    __uint(max_entries, MAX_PORTS);
+    __type(value, struct port_res);
+    __uint(max_entries, maxPorts);
 } rx_ports SEC(".maps");
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, int);
-    __type(value, struct vrfp_entry);
-    __uint(max_entries, MAX_PORTS);
+    __type(value, struct vrfp_res);
+    __uint(max_entries, maxPorts);
 } vrf_port SEC(".maps");
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, int);
     __type(value, struct neigh_res);
-    __uint(max_entries, MAX_NEIGHS);
+    __uint(max_entries, 512);
 } neighs SEC(".maps");
 
 struct {
     __uint(type, BPF_MAP_TYPE_LPM_TRIE);
     __type(key, struct route4_key);
     __type(value, struct routes_res);
-    __uint(max_entries, MAX_ROUTES4);
+    __uint(max_entries, 2048);
     __uint(map_flags, BPF_F_NO_PREALLOC);
 } routes4 SEC(".maps");
 
@@ -52,7 +52,7 @@ struct {
     __uint(type, BPF_MAP_TYPE_LPM_TRIE);
     __type(key, struct route6_key);
     __type(value, struct routes_res);
-    __uint(max_entries, MAX_ROUTES6);
+    __uint(max_entries, 2048);
     __uint(map_flags, BPF_F_NO_PREALLOC);
 } routes6 SEC(".maps");
 
@@ -60,7 +60,7 @@ struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, int);
     __type(value, struct label_res);
-    __uint(max_entries, MAX_NEIGHS);
+    __uint(max_entries, 1024);
 } labels SEC(".maps");
 
 
@@ -113,7 +113,7 @@ struct {
     label = get32msb(bufD, bufP);                                   \
     ttl = (label & 0xff) - 1;                                       \
     if (ttl <= 1) goto punt;                                        \
-    port = label & 0xf00;                                           \
+    tmp = label & 0xf00;                                            \
     label = (label >> 12) & 0xfffff;                                \
     bufP += 4;                                                      \
     resm = bpf_map_lookup_elem(&labels, &label);                    \
@@ -139,7 +139,7 @@ struct {
 #define switchMpls()                                                \
     case 2:                                                         \
         neik = resm->hop;                                           \
-        if ((port & 0x100) == 0) {                                  \
+        if ((tmp & 0x100) == 0) {                                   \
             bufD[bufP + 3] = ttl;                                   \
             goto ethtyp_tx;                                         \
         }                                                           \
@@ -155,7 +155,7 @@ struct {
         }                                                           \
     case 3:                                                         \
         bufP -= 4;                                                  \
-        label = (port & 0xf00) | ttl | (resm->swap << 12);          \
+        label = (tmp & 0xf00) | ttl | (resm->swap << 12);           \
         put32msb(bufD, bufP, label);                                \
         neik = resm->hop;                                           \
         goto ethtyp_tx;                                             \
@@ -174,32 +174,32 @@ int xdp_packet(struct xdp_md *ctx) {
     unsigned char macaddr[6 + 6];
     __builtin_memcpy(macaddr, &bufD[0], sizeof(macaddr));
 
-    int i = 0;
-    int* cpuport = bpf_map_lookup_elem(&cpu_port, &i);
+    int tmp = 0;
+    int* cpuport = bpf_map_lookup_elem(&cpu_port, &tmp);
     if (cpuport == NULL) goto drop;
 
-    int port = ctx->ingress_ifindex;
-    struct port_entry* rxport = bpf_map_lookup_elem(&rx_ports, &port);
+    int prt = ctx->ingress_ifindex;
+    struct port_res* rxport = bpf_map_lookup_elem(&rx_ports, &prt);
     if (rxport == NULL) goto drop;
     rxport->packs++;
     rxport->bytes += bufE - bufD;
-    if (port == *cpuport) {
-        port = get16msb(bufD, 0);
-        struct port_entry* txport = bpf_map_lookup_elem(&tx_ports, &port);
+    if (prt == *cpuport) {
+        prt = get16msb(bufD, 0);
+        struct port_res* txport = bpf_map_lookup_elem(&tx_ports, &prt);
         if (txport == NULL) goto drop;
         txport->packs++;
         txport->bytes += bufE - bufD;
         if (bpf_xdp_adjust_head(ctx, 2) != 0) goto drop;
         return bpf_redirect(txport->idx, 0);
     }
-    port = rxport->idx;
+    prt = rxport->idx;
 
     int ethtyp = get16msb(bufD, sizeof(macaddr));
     int bufP = sizeof(macaddr) + 2;
 
     /////// vlan in
 
-    struct vrfp_entry* vrfp = bpf_map_lookup_elem(&vrf_port, &port);
+    struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
     if (vrfp == NULL) goto drop;
 
     int neik;
@@ -212,7 +212,7 @@ int xdp_packet(struct xdp_md *ctx) {
         readMpls();
         switch (resm->cmd) {
         case 1:
-            if ((port & 0x100) == 0) {
+            if ((tmp & 0x100) == 0) {
                 bufD[bufP + 3] = ttl + 1;
                 readMpls();
                 switch (resm->cmd) {
@@ -272,7 +272,7 @@ ethtyp_tx:
     if (neir == NULL) goto punt;
     __builtin_memcpy(&macaddr[0], neir->dmac, sizeof(neir->dmac));
     __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
-    port = neir->port;
+    prt = neir->port;
 
     //// vlan out
 
@@ -282,20 +282,20 @@ ethtyp_tx:
     revalidatePacket(sizeof(macaddr));
     __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
 
-    struct port_entry* txport = bpf_map_lookup_elem(&tx_ports, &port);
+    struct port_res* txport = bpf_map_lookup_elem(&tx_ports, &prt);
     if (txport == NULL) goto drop;
     txport->packs++;
     txport->bytes += bufE - bufD;
     return bpf_redirect(txport->idx, 0);
 
 punt:
-    port = 1;
-    int* remain = bpf_map_lookup_elem(&cpu_port, &port);
+    tmp = 1;
+    int* remain = bpf_map_lookup_elem(&cpu_port, &tmp);
     if (remain == NULL) goto drop;
     (*remain)--;
     if (*remain < 1) goto drop;
 cpu:
-    port = 0;
+    prt = 0;
     if (bpf_xdp_adjust_head(ctx, -2) != 0) goto drop;
     revalidatePacket(2);
     put16msb(bufD, 0, rxport->idx);

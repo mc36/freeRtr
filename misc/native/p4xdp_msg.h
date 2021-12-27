@@ -51,7 +51,7 @@ int doOneCommand(unsigned char* buf) {
     struct label_res labr;
     memset(&labr, 0, sizeof(labr));
     if (strcmp(arg[0], "portvrf") == 0) {
-        struct vrfp_entry ntry;
+        struct vrfp_res ntry;
         memset(&ntry, 0, sizeof(ntry));
         i = atoi(arg[2]);
         ntry.cmd = 1;

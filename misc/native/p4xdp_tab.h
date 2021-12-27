@@ -1,16 +1,12 @@
-#define MAX_PORTS 128
-#define MAX_ROUTES4 2048
-#define MAX_ROUTES6 2048
-#define MAX_NEIGHS 512
-#define MAX_LABELS 1024
+#define maxPorts 128
 
-struct port_entry {
+struct port_res {
     int idx;
     long bytes;
     long packs;
 };
 
-struct vrfp_entry {
+struct vrfp_res {
     int cmd; // 1=route
     int vrf;
 };

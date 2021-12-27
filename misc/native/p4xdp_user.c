@@ -9,7 +9,7 @@
 #include <linux/if_link.h>
 #include <bpf/bpf.h>
 #include <bpf/libbpf.h>
-#include "p4xdp_str.h"
+#include "p4xdp_tab.h"
 
 
 void err(char*buf) {
@@ -23,9 +23,9 @@ void warn(char*buf) {
 
 
 int commandSock;
-int ifaces[MAX_PORTS];
+int ifaces[maxPorts];
 int ports;
-int prog_id_list[MAX_PORTS];
+int prog_id_list[maxPorts];
 int prog_fd;
 int cpu_port_fd;
 int rx_ports_fd;
@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
     if (bpf_map_update_elem(cpu_port_fd, &o, &p, BPF_ANY) != 0) err("error setting cpuport");
     for (int i = 0; i < ports; i++) {
         printf("initializing index %i...\n", ifaces[i]);
-        struct port_entry ntry;
+        struct port_res ntry;
         memset(&ntry, 0, sizeof(ntry));
         ntry.idx = ifaces[i];
         if (bpf_map_update_elem(tx_ports_fd, &i, &ntry, BPF_ANY) != 0) err("error setting txport");
