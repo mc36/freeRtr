@@ -59,3 +59,15 @@ struct bundle_res {
     long pack;
     long byte;
 };
+
+struct vlan_key {
+    int port;
+    int vlan;
+};
+
+struct vlan_res {
+    int port;
+    int vlan;
+    long pack;
+    long byte;
+};

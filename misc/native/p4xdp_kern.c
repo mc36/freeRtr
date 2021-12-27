@@ -80,6 +80,22 @@ struct {
 } bundles SEC(".maps");
 
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct vlan_key);
+    __type(value, int);
+    __uint(max_entries, 256);
+} vlan_in SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, int);
+    __type(value, struct vlan_res);
+    __uint(max_entries, 256);
+} vlan_out SEC(".maps");
+
+
 
 
 #define revalidatePacket(size)                  \
@@ -221,7 +237,17 @@ int xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
 
-    /////// vlan in
+    if (ethtyp == ETHERTYPE_VLAN) {
+        struct vlan_key vlnk;
+        vlnk.port = prt;
+        vlnk.vlan = get16msb(bufD, bufP) & 0xfff;
+        bufP += 2;
+        ethtyp = get16msb(bufD, bufP);
+        bufP += 2;
+        int *res = bpf_map_lookup_elem(&vlan_in, &vlnk);
+        if (res == NULL) goto drop;
+        prt = *res;
+    }
 
     struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
     if (vrfp == NULL) goto drop;
@@ -320,7 +346,18 @@ ethtyp_tx:
     __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
     prt = neir->port;
 
-    //// vlan out
+    struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
+    if (vlnr != NULL) {
+        hash ^= vlnr->vlan;
+        bufP -= 2;
+        put16msb(bufD, bufP, vlnr->vlan);
+        bufP -= 2;
+        put16msb(bufD, bufP, ETHERTYPE_VLAN);
+        prt = vlnr->port;
+        vlnr->pack++;
+        vlnr->byte += bufE - bufD;
+        ethtyp = ETHERTYPE_VLAN;
+    }
 
     struct bundle_res* bunr = bpf_map_lookup_elem(&bundles, &prt);
     if (bunr != NULL) {

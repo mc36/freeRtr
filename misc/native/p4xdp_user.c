@@ -36,6 +36,8 @@ int route4_fd;
 int route6_fd;
 int labels_fd;
 int bundles_fd;
+int vlan_in_fd;
+int vlan_out_fd;
 
 
 #include "p4xdp_msg.h"
@@ -150,6 +152,10 @@ int main(int argc, char **argv) {
     if (labels_fd < 0) err("error finding table");
     bundles_fd = bpf_object__find_map_fd_by_name(bpf_obj, "bundles");
     if (bundles_fd < 0) err("error finding table");
+    vlan_in_fd = bpf_object__find_map_fd_by_name(bpf_obj, "vlan_in");
+    if (vlan_in_fd < 0) err("error finding table");
+    vlan_out_fd = bpf_object__find_map_fd_by_name(bpf_obj, "vlan_out");
+    if (vlan_out_fd < 0) err("error finding table");
     for (int i = 0; i < ports; i++) {
         printf("opening index %i...\n", ifaces[i]);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);
