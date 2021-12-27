@@ -40,6 +40,8 @@ int doOneCommand(unsigned char* buf) {
     printf("\n");
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
+    struct vrfp_res vrfp;
+    memset(&vrfp, 0, sizeof(vrfp));
     struct neigh_res neir;
     memset(&neir, 0, sizeof(neir));
     struct route4_key rou4;
@@ -51,15 +53,31 @@ int doOneCommand(unsigned char* buf) {
     struct label_res labr;
     memset(&labr, 0, sizeof(labr));
     if (strcmp(arg[0], "portvrf") == 0) {
-        struct vrfp_res vrf;
-        memset(&vrf, 0, sizeof(vrf));
         i = atoi(arg[2]);
-        vrf.cmd = 1;
-        vrf.vrf = atoi(arg[3]);
+        vrfp.cmd = 1;
+        vrfp.vrf = atoi(arg[3]);
         if (del == 0) {
             if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(vrf_port_fd, &i, &vrf, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "xconnect") == 0) {
+        vrfp.cmd = 3;
+        i = atoi(arg[2]);
+        vrfp.hop = atoi(arg[4]);
+        vrfp.label1 = atoi(arg[5]);
+        vrfp.label2 = atoi(arg[7]);
+        o = atoi(arg[6]);
+        labr.port = i;
+        labr.cmd= 4;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(labels_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(labels_fd, &o, &labr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }

@@ -7,8 +7,11 @@ struct port_res {
 };
 
 struct vrfp_res {
-    int cmd; // 1=route
+    int cmd; // 1=route, 2=bridge, 3=xconn
     int vrf;
+    int hop;
+    int label1;
+    int label2;
     long pack;
     long byte;
 };
@@ -47,11 +50,12 @@ struct neigh_res {
 };
 
 struct label_res {
-    int cmd; // 1=route, 2=pop, 3=swap
+    int cmd; // 1=route, 2=pop, 3=swap, 4=xconn
     int ver;
     int hop;
     int vrf;
     int swap;
+    int port;
     long pack;
     long byte;
 };

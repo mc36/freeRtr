@@ -204,6 +204,12 @@ struct {
         put32msb(bufD, bufP, label);                                \
         neik = resm->hop;                                           \
         goto ethtyp_tx;                                             \
+    case 4:                                                         \
+        revalidatePacket(bufP + 14);                                \
+        __builtin_memcpy(&macaddr[0], &bufD[bufP], 12);             \
+        bufP += 12;                                                 \
+        prt = resm->port;                                           \
+        goto subif_tx;                                              \
     default:                                                        \
         goto drop;
 
@@ -291,11 +297,34 @@ int xdp_router(struct xdp_md *ctx) {
     if (vrfp == NULL) goto drop;
     vrfp->pack++;
     vrfp->byte += bufE - bufD;
-
-    ///// layer2
-
     int neik = 0;
     int ttl = 0;
+
+    switch (vrfp->cmd) {
+    case 1:
+        break;
+    ///// layer2
+    case 3:
+        bufP -= 2;
+        bufP -= 12;
+        bufP -= 2 * sizeof(macaddr);
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+        bufP = 2 * sizeof(macaddr);
+        revalidatePacket(3 * sizeof(macaddr));
+        __builtin_memmove(&bufD[bufP], &macaddr[0], 12);
+        ethtyp = ETHERTYPE_MPLS_UCAST;
+        bufP -= 4;
+        ttl = 0x1ff | (vrfp->label2 << 12);
+        put32msb(bufD, bufP, ttl);
+        bufP -= 4;
+        ttl = 0xff | (vrfp->label1 << 12);
+        put32msb(bufD, bufP, ttl);
+        neik = vrfp->hop;
+        goto ethtyp_tx;
+    default:
+        goto drop;
+    }
+
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST:
         revalidatePacket(bufP + 12);
@@ -382,40 +411,42 @@ ethtyp_tx:
     __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
     prt = neir->port;
     switch (neir->cmd) {
-        case 1:
+    case 1:
+        break;
+    case 2:
+        switch (ethtyp) {
+        case ETHERTYPE_MPLS_UCAST:
+            ethtyp = PPPTYPE_MPLS_UCAST;
             break;
-        case 2:
-            switch (ethtyp) {
-            case ETHERTYPE_MPLS_UCAST:
-                ethtyp = PPPTYPE_MPLS_UCAST;
-                break;
-            case ETHERTYPE_IPV4:
-                ethtyp = PPPTYPE_IPV4;
-                break;
-            case ETHERTYPE_IPV6:
-                ethtyp = PPPTYPE_IPV6;
-                break;
-            default:
-                goto drop;
-            }
-            tmp = (bufE - bufD) - bufP;
-            put16msb(bufD, bufP, ethtyp);
-            bufP -= sizeof(macaddr);
-            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr);
-            revalidatePacket(sizeof(macaddr));
-            bufP -= 6;
-            put16msb(bufD, bufP + 0, 0x1100);
-            put16msb(bufD, bufP + 2, neir->sess);
-            put16msb(bufD, bufP + 4, tmp);
-            ethtyp = ETHERTYPE_PPPOE_DATA;
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
+        case ETHERTYPE_IPV4:
+            ethtyp = PPPTYPE_IPV4;
+            break;
+        case ETHERTYPE_IPV6:
+            ethtyp = PPPTYPE_IPV6;
             break;
         default:
             goto drop;
+        }
+        tmp = (bufE - bufD) - bufP;
+        put16msb(bufD, bufP, ethtyp);
+        bufP -= sizeof(macaddr);
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+        bufP = sizeof(macaddr);
+        revalidatePacket(sizeof(macaddr));
+        bufP -= 6;
+        put16msb(bufD, bufP + 0, 0x1100);
+        put16msb(bufD, bufP + 2, neir->sess);
+        put16msb(bufD, bufP + 4, tmp);
+        ethtyp = ETHERTYPE_PPPOE_DATA;
+        bufP -= 2;
+        put16msb(bufD, bufP, ethtyp);
+        break;
+    default:
+        goto drop;
     }
 
+subif_tx:
+    {}
     struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
     if (vlnr != NULL) {
         hash ^= vlnr->vlan;
@@ -436,23 +467,57 @@ ethtyp_tx:
         hash = ((hash >> 4) ^ hash) & 0xf;
         //prt = bunr->out[hash];
         switch (hash) {
-            case 0: prt = bunr->out[0];break;
-            case 1: prt = bunr->out[1];break;
-            case 2: prt = bunr->out[2];break;
-            case 3: prt = bunr->out[3];break;
-            case 4: prt = bunr->out[4];break;
-            case 5: prt = bunr->out[5];break;
-            case 6: prt = bunr->out[6];break;
-            case 7: prt = bunr->out[7];break;
-            case 8: prt = bunr->out[8];break;
-            case 9: prt = bunr->out[9];break;
-            case 10: prt = bunr->out[10];break;
-            case 11: prt = bunr->out[11];break;
-            case 12: prt = bunr->out[12];break;
-            case 13: prt = bunr->out[13];break;
-            case 14: prt = bunr->out[14];break;
-            case 15: prt = bunr->out[15];break;
-            default: prt = bunr->out[0];break;
+        case 0:
+            prt = bunr->out[0];
+            break;
+        case 1:
+            prt = bunr->out[1];
+            break;
+        case 2:
+            prt = bunr->out[2];
+            break;
+        case 3:
+            prt = bunr->out[3];
+            break;
+        case 4:
+            prt = bunr->out[4];
+            break;
+        case 5:
+            prt = bunr->out[5];
+            break;
+        case 6:
+            prt = bunr->out[6];
+            break;
+        case 7:
+            prt = bunr->out[7];
+            break;
+        case 8:
+            prt = bunr->out[8];
+            break;
+        case 9:
+            prt = bunr->out[9];
+            break;
+        case 10:
+            prt = bunr->out[10];
+            break;
+        case 11:
+            prt = bunr->out[11];
+            break;
+        case 12:
+            prt = bunr->out[12];
+            break;
+        case 13:
+            prt = bunr->out[13];
+            break;
+        case 14:
+            prt = bunr->out[14];
+            break;
+        case 15:
+            prt = bunr->out[15];
+            break;
+        default:
+            prt = bunr->out[0];
+            break;
         }
         bunr->pack++;
         bunr->byte += bufE - bufD;
@@ -485,3 +550,4 @@ cpu:
 drop:
     return XDP_DROP;
 }
+
