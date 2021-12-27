@@ -56,6 +56,7 @@ struct label_res {
     int hop;
     int vrf;
     int swap;
+    int brdg;
     int port;
     long pack;
     long byte;

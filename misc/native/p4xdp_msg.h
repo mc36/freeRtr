@@ -109,6 +109,32 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "bridgevpls") == 0) {
+        brdk.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        memcpy(brdk.mac, buf2, sizeof(brdk.mac));
+        brdr.hop = atoi(arg[5]);
+        brdr.label1 = atoi(arg[6]);
+        brdr.label2 = atoi(arg[7]);
+        brdr.cmd = 2;
+        if (del == 0) {
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgelabel") == 0) {
+        i = atoi(arg[3]);
+        labr.brdg = atoi(arg[2]);
+        labr.cmd = 5;
+        if (del == 0) {
+            if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(labels_fd, &i, &labr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "neigh4") == 0) {
         inet_pton(AF_INET, arg[3], buf2);
         rou4.vrf = atoi(arg[5]);

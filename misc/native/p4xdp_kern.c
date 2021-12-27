@@ -214,10 +214,18 @@ struct {
         goto ethtyp_tx;                                             \
     case 4:                                                         \
         revalidatePacket(bufP + 14);                                \
-        __builtin_memcpy(&macaddr[0], &bufD[bufP], 12);             \
+        __builtin_memcpy(&macaddr[0], &bufD[bufP], sizeof(macaddr));\
         bufP += 12;                                                 \
         prt = resm->port;                                           \
         goto subif_tx;                                              \
+    case 5:                                                         \
+        revalidatePacket(bufP + 14);                                \
+        __builtin_memcpy(&macaddr[0], &bufD[bufP], sizeof(macaddr));\
+        bufP += 12;                                                 \
+        ethtyp = get16msb(bufD, bufP);                              \
+        bufP += 2;                                                  \
+        tmp = resm->brdg;                                           \
+        goto bridge_rx;                                             \
     default:                                                        \
         goto drop;
 
@@ -321,7 +329,7 @@ int xdp_router(struct xdp_md *ctx) {
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
         bufP = 2 * sizeof(macaddr);
         revalidatePacket(3 * sizeof(macaddr));
-        __builtin_memcpy(&bufD[bufP], &macaddr[0], 12);
+        __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
         ethtyp = ETHERTYPE_MPLS_UCAST;
         bufP -= 4;
         ttl = 0x1ff | (vrfp->label2 << 12);
@@ -425,13 +433,31 @@ bridge_rx:
     brdr->packTx++;
     brdr->byteTx += bufE - bufD;
     switch (brdr->cmd) {
-        case 1:
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
-            prt = brdr->port;
-            goto subif_tx;
-        default:
-            goto drop;
+    case 1:
+        bufP -= 2;
+        put16msb(bufD, bufP, ethtyp);
+        prt = brdr->port;
+        goto subif_tx;
+    case 2:
+        bufP -= 2;
+        put16msb(bufD, bufP, ethtyp);
+        bufP -= 12;
+        bufP -= 2 * sizeof(macaddr);
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+        bufP = 2 * sizeof(macaddr);
+        revalidatePacket(3 * sizeof(macaddr));
+        __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+        ethtyp = ETHERTYPE_MPLS_UCAST;
+        bufP -= 4;
+        tmp = 0x1ff | (brdr->label2 << 12);
+        put32msb(bufD, bufP, tmp);
+        bufP -= 4;
+        tmp = 0xff | (brdr->label1 << 12);
+        put32msb(bufD, bufP, tmp);
+        neik = brdr->hop;
+        goto ethtyp_tx;
+    default:
+        goto drop;
     }
 
 ethtyp_tx:
