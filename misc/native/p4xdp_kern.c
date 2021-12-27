@@ -96,6 +96,14 @@ struct {
 } vlan_out SEC(".maps");
 
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct pppoe_key);
+    __type(value, int);
+    __uint(max_entries, 256);
+} pppoes SEC(".maps");
+
+
 
 
 #define revalidatePacket(size)                  \
@@ -244,9 +252,39 @@ int xdp_router(struct xdp_md *ctx) {
         bufP += 2;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
-        int *res = bpf_map_lookup_elem(&vlan_in, &vlnk);
+        int* res = bpf_map_lookup_elem(&vlan_in, &vlnk);
         if (res == NULL) goto drop;
         prt = *res;
+    }
+
+    switch (ethtyp) {
+    case ETHERTYPE_PPPOE_DATA:
+        revalidatePacket(bufP + 12);
+        struct pppoe_key pppk;
+        pppk.port = prt;
+        pppk.sess = get16msb(bufD, bufP + 2);
+        int* res = bpf_map_lookup_elem(&pppoes, &pppk);
+        if (res == NULL) goto drop;
+        prt = *res;
+        ethtyp = get16msb(bufD, bufP + 6);
+        if ((ethtyp & 0x8000) != 0) goto cpu;
+        bufP += 8;
+        switch (ethtyp) {
+        case PPPTYPE_MPLS_UCAST:
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            break;
+        case PPPTYPE_IPV4:
+            ethtyp = ETHERTYPE_IPV4;
+            break;
+        case PPPTYPE_IPV6:
+            ethtyp = ETHERTYPE_IPV6;
+            break;
+        default:
+            goto drop;
+        }
+        break;
+    case ETHERTYPE_PPPOE_CTRL:
+        goto cpu;
     }
 
     struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
@@ -255,8 +293,6 @@ int xdp_router(struct xdp_md *ctx) {
     vrfp->byte += bufE - bufD;
 
     ///// layer2
-
-    ///// pppoe
 
     int neik = 0;
     int ttl = 0;
@@ -345,6 +381,40 @@ ethtyp_tx:
     __builtin_memcpy(&macaddr[0], neir->dmac, sizeof(neir->dmac));
     __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
     prt = neir->port;
+    switch (neir->cmd) {
+        case 1:
+            break;
+        case 2:
+            switch (ethtyp) {
+            case ETHERTYPE_MPLS_UCAST:
+                ethtyp = PPPTYPE_MPLS_UCAST;
+                break;
+            case ETHERTYPE_IPV4:
+                ethtyp = PPPTYPE_IPV4;
+                break;
+            case ETHERTYPE_IPV6:
+                ethtyp = PPPTYPE_IPV6;
+                break;
+            default:
+                goto drop;
+            }
+            tmp = (bufE - bufD) - bufP;
+            put16msb(bufD, bufP, ethtyp);
+            bufP -= sizeof(macaddr);
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr);
+            revalidatePacket(sizeof(macaddr));
+            bufP -= 6;
+            put16msb(bufD, bufP + 0, 0x1100);
+            put16msb(bufD, bufP + 2, neir->sess);
+            put16msb(bufD, bufP + 4, tmp);
+            ethtyp = ETHERTYPE_PPPOE_DATA;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        default:
+            goto drop;
+    }
 
     struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
     if (vlnr != NULL) {

@@ -37,9 +37,11 @@ struct routes_res {
 };
 
 struct neigh_res {
+    int cmd; // 1=rawip, 2=pppoe
     unsigned char dmac[6];
     unsigned char smac[6];
     int port;
+    int sess;
     long pack;
     long byte;
 };
@@ -70,4 +72,9 @@ struct vlan_res {
     int vlan;
     long pack;
     long byte;
+};
+
+struct pppoe_key {
+    int port;
+    int sess;
 };

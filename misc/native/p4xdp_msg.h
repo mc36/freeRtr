@@ -73,6 +73,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(neir.dmac, arg[4]);
         str2mac(neir.smac, arg[6]);
         neir.port = atoi(arg[7]);
+        neir.cmd = 1;
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
@@ -92,6 +93,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(neir.dmac, arg[4]);
         str2mac(neir.smac, arg[6]);
         neir.port = atoi(arg[7]);
+        neir.cmd = 1;
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
@@ -334,6 +336,26 @@ int doOneCommand(unsigned char* buf) {
             if (bpf_map_delete_elem(vlan_in_fd, &vlnk) != 0) warn("error removing entry");
         } else {
             if (bpf_map_update_elem(vlan_in_fd, &vlnk, &i, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "pppoe") == 0) {
+        struct pppoe_key pppoe;
+        i = atoi(arg[2]);
+        pppoe.port = atoi(arg[3]);
+        pppoe.sess = atoi(arg[6]);
+        o = atoi(arg[4]);
+        neir.port = pppoe.port;
+        neir.sess = pppoe.sess;
+        neir.cmd = 2;
+        str2mac(neir.dmac, arg[7]);
+        str2mac(neir.smac, arg[8]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(pppoes_fd, &pppoe) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(pppoes_fd, &pppoe, &i, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }

@@ -38,6 +38,7 @@ int labels_fd;
 int bundles_fd;
 int vlan_in_fd;
 int vlan_out_fd;
+int pppoes_fd;
 
 
 #include "p4xdp_msg.h"
@@ -126,6 +127,7 @@ int main(int argc, char **argv) {
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
     int cpuport = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuport, ports);
+
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
     printf("loading %s...\n", argv[0]);
     struct bpf_prog_load_attr prog_load_attr = {
@@ -134,6 +136,7 @@ int main(int argc, char **argv) {
     };
     struct bpf_object *bpf_obj;
     if (bpf_prog_load_xattr(&prog_load_attr, &bpf_obj, &prog_fd)) err("error loading code");
+
     cpu_port_fd = bpf_object__find_map_fd_by_name(bpf_obj, "cpu_port");
     if (cpu_port_fd < 0) err("error finding table");
     rx_ports_fd = bpf_object__find_map_fd_by_name(bpf_obj, "rx_ports");
@@ -156,6 +159,9 @@ int main(int argc, char **argv) {
     if (vlan_in_fd < 0) err("error finding table");
     vlan_out_fd = bpf_object__find_map_fd_by_name(bpf_obj, "vlan_out");
     if (vlan_out_fd < 0) err("error finding table");
+    pppoes_fd = bpf_object__find_map_fd_by_name(bpf_obj, "pppoes");
+    if (pppoes_fd < 0) err("error finding table");
+
     for (int i = 0; i < ports; i++) {
         printf("opening index %i...\n", ifaces[i]);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);
