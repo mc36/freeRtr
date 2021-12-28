@@ -356,6 +356,7 @@ int xdp_router(struct xdp_md *ctx) {
                 readMpls();
                 switch (resm->cmd) {
                 case 1:
+                    if ((tmp & 0x100) == 0) goto drop;
                     routeMpls();
                     switchMpls();
                 }
