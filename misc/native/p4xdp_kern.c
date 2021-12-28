@@ -611,4 +611,3 @@ cpu:
 drop:
     return XDP_DROP;
 }
-

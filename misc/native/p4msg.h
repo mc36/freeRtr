@@ -2284,4 +2284,3 @@ int doConsoleCommand(unsigned char*buf) {
     }
     return 0;
 }
-
