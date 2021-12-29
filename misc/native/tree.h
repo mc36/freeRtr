@@ -62,9 +62,11 @@ void* tree_add(struct tree_head *tab, void *ntry) {
     for (int p = 0;; p++) {
         if (p >= msk) {
             void* old = cur->value;
-            if (cur->value == NULL) {
+            if (old == NULL) {
                 cur->value = malloc(tab->reclen);
                 if (cur->value == NULL) err("error allocating memory");
+            } else {
+                free(old);
             }
             memcpy(cur->value, ntry, tab->reclen);
             return old;

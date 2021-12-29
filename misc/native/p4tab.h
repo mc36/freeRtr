@@ -193,7 +193,7 @@ int route4_masker(void *ptr) {
 int route4_bitter(void *ptr, int pos) {
     struct route4_entry *ntry = ptr;
     if (pos < 16) {
-        return ntry->mask & bitVals[pos];
+        return ntry->mask & bitVals[16 + pos];
     }
     pos -= 16;
     return ntry->addr & bitVals[pos];
@@ -249,7 +249,7 @@ int route6_masker(void *ptr) {
 int route6_bitter(void *ptr, int pos) {
     struct route6_entry *ntry = ptr;
     if (pos < 16) {
-        return ntry->mask & bitVals[pos];
+        return ntry->mask & bitVals[16 + pos];
     }
     pos -= 16;
     if (pos < 32) return ntry->addr1 & bitVals[pos];
