@@ -49,15 +49,24 @@ public class findSongs {
         playerUtil.put("scanning " + s);
         findSongs fs = new findSongs();
         fs.doFind(s);
+        playerUtil.put("sorting");
         fs.doSort();
         if (args.length > 2) {
-            playerUtil.put("diffing");
-            List<playerSong> old = playerSong.txt2pls(null, playerUtil.readup(args[2]));
-            fs.doMerge(old);
+            playerUtil.put("reading");
+            findSongs old = new findSongs();
+            old.lst = playerSong.txt2pls(null, playerUtil.readup(args[2]));
+            playerUtil.put("sorting");
+            old.doSort();
             findSongs frs = new findSongs();
-            frs.lst.addAll(fs.lst);
-            frs.lst.removeAll(old);
+            playerUtil.put("diffing");
+            frs.doMerge(fs.lst, old.lst);
+            playerUtil.put(frs.lst.size() + " new");
             frs.doTitle();
+            if (args.length > 3) {
+                String a = args[3];
+                playerUtil.put("writing " + a);
+                playerUtil.saveas(playerSong.pls2txt(frs.lst), a);
+            }
         }
         s = s.replaceAll("/", "-");
         if (args.length > 1) {
@@ -124,17 +133,19 @@ public class findSongs {
     /**
      * merge from old
      *
-     * @param src old list
+     * @param src source list
+     * @param old old list
      */
-    protected void doMerge(List<playerSong> src) {
+    protected void doMerge(List<playerSong> src, List<playerSong> old) {
         for (int i = 0; i < src.size(); i++) {
             playerSong ntry = src.get(i);
-            int o = playerSong.find(lst, ntry);
+            int o = playerSong.find(old, ntry);
             if (o < 0) {
+                lst.add(ntry);
                 continue;
             }
-            lst.remove(o);
-            lst.add(ntry);
+            playerSong res = old.get(o);
+            res.title = ntry.title;
         }
     }
 

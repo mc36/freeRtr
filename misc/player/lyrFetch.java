@@ -15,7 +15,7 @@ public class lyrFetch {
      * @param args arguments
      */
     public static void main(String[] args) {
-        List<playerSong> need = playerSong.txt2pls(null, playerUtil.readup("need.pls"));
+        List<playerSong> need = playerSong.txt2pls(null, playerUtil.readup("lyr-need.pls"));
         List<playerSong> done = new ArrayList<playerSong>();
         List<playerSong> fail = new ArrayList<playerSong>();
         List<playerSong> skip = new ArrayList<playerSong>();
@@ -38,11 +38,12 @@ public class lyrFetch {
         }
         need.removeAll(skip);
         need.removeAll(done);
+        need.removeAll(fail);
         playerUtil.put("--> need=" + need.size() + " skip=" + skip.size() + " done=" + done.size() + " fail=" + fail.size());
-        playerUtil.saveas(playerSong.pls2txt(need), "need.pls");
-        playerUtil.saveas(playerSong.pls2txt(done), "done.pls");
-        playerUtil.saveas(playerSong.pls2txt(fail), "fail.pls");
-        playerUtil.saveas(playerSong.pls2txt(skip), "skip.pls");
+        playerUtil.saveas(playerSong.pls2txt(need), "lyr-needed.pls");
+        playerUtil.saveas(playerSong.pls2txt(done), "lyr-done.pls");
+        playerUtil.saveas(playerSong.pls2txt(fail), "lyr-fail.pls");
+        playerUtil.saveas(playerSong.pls2txt(skip), "lyr-skip.pls");
     }
 
     /**

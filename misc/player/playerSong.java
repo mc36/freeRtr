@@ -247,18 +247,27 @@ public class playerSong implements Comparator<playerSong> {
     /**
      * find entry
      *
-     * @param trg where to find
-     * @param ntry entry to find
-     * @return index, -1 on error
+     * @param lst sorted list where to find
+     * @param val entry to find
+     * @return index, negative on error
      */
-    public static int find(List<playerSong> trg, playerSong ntry) {
-        for (int i = 0; i < trg.size(); i++) {
-            if (ntry.compare(ntry, trg.get(i)) != 0) {
+    public static int find(List<playerSong> lst, playerSong val) {
+        int lower = 0;
+        int upper = lst.size() - 1;
+        while (lower <= upper) {
+            int mid = (lower + upper) >>> 1;
+            int cmp = val.compare(lst.get(mid), val);
+            if (cmp < 0) {
+                lower = mid + 1;
                 continue;
             }
-            return i;
+            if (cmp > 0) {
+                upper = mid - 1;
+                continue;
+            }
+            return mid;
         }
-        return -1;
+        return -lower - 1;
     }
 
 }
