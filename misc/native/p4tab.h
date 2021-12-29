@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "table.h"
+#include "tree.h"
 #include "types.h"
 
 
@@ -170,7 +171,7 @@ struct route4_entry {
     long byte;
 };
 
-struct table_head route4_table;
+struct tree_head route4_table;
 
 int route4_compare(void *ptr1, void *ptr2) {
     struct route4_entry *ntry1 = ptr1;
@@ -182,6 +183,20 @@ int route4_compare(void *ptr1, void *ptr2) {
     if (ntry1->addr < ntry2->addr) return -1;
     if (ntry1->addr > ntry2->addr) return +1;
     return 0;
+}
+
+int route4_masker(void *ptr) {
+    struct route4_entry *ntry = ptr;
+    return 16 + ntry->mask;
+}
+
+int route4_bitter(void *ptr, int pos) {
+    struct route4_entry *ntry = ptr;
+    if (pos < 16) {
+        return ntry->mask & bitVals[pos];
+    }
+    pos -= 16;
+    return ntry->addr & bitVals[pos];
 }
 
 
@@ -206,7 +221,7 @@ struct route6_entry {
     long byte;
 };
 
-struct table_head route6_table;
+struct tree_head route6_table;
 
 int route6_compare(void *ptr1, void *ptr2) {
     struct route6_entry *ntry1 = ptr1;
@@ -224,6 +239,26 @@ int route6_compare(void *ptr1, void *ptr2) {
     if (ntry1->addr4 < ntry2->addr4) return -1;
     if (ntry1->addr4 > ntry2->addr4) return +1;
     return 0;
+}
+
+int route6_masker(void *ptr) {
+    struct route6_entry *ntry = ptr;
+    return 16 + ntry->mask;
+}
+
+int route6_bitter(void *ptr, int pos) {
+    struct route6_entry *ntry = ptr;
+    if (pos < 16) {
+        return ntry->mask & bitVals[pos];
+    }
+    pos -= 16;
+    if (pos < 32) return ntry->addr1 & bitVals[pos];
+    pos -= 32;
+    if (pos < 32) return ntry->addr2 & bitVals[pos];
+    pos -= 32;
+    if (pos < 32) return ntry->addr3 & bitVals[pos];
+    pos -= 32;
+    return ntry->addr4 & bitVals[pos];
 }
 
 
@@ -941,8 +976,8 @@ int initTables() {
     table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
     table_init(&portvrf_table, sizeof(struct portvrf_entry), &portvrf_compare);
-    table_init(&route4_table, sizeof(struct route4_entry), &route4_compare);
-    table_init(&route6_table, sizeof(struct route6_entry), &route6_compare);
+    tree_init(&route4_table, sizeof(struct route4_entry), &route4_masker, &route4_bitter);
+    tree_init(&route6_table, sizeof(struct route6_entry), &route6_masker, &route6_bitter);
     table_init(&neigh_table, sizeof(struct neigh_entry), &neigh_compare);
     table_init(&vlanin_table, sizeof(struct vlan_entry), &vlanin_compare);
     table_init(&vlanout_table, sizeof(struct vlan_entry), &vlanout_compare);

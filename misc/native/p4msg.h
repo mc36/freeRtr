@@ -595,8 +595,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.vrf = atoi(arg[5]);
         route4_ntry.command = 2;
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "route4") == 0) {
@@ -606,8 +606,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.nexthop = atoi(arg[4]);
         route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.command = 1;
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "labroute4") == 0) {
@@ -618,8 +618,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.label1 = atoi(arg[7]);
         route4_ntry.command = 3;
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnroute4") == 0) {
@@ -631,8 +631,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.label1 = atoi(arg[7]);
         route4_ntry.label2 = atoi(arg[8]);
         route4_ntry.command = 4;
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "srvroute4") == 0) {
@@ -647,8 +647,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.srv3 = get32msb(buf2, 8);
         route4_ntry.srv4 = get32msb(buf2, 12);
         route4_ntry.command = 5;
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "polroute4") == 0) {
@@ -659,8 +659,8 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.vrf = atoi(arg[6]);
         str2key(arg[7], route4_ntry.polka);
         route4_ntry.command = 9;
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "neigh4") == 0) {
@@ -676,8 +676,8 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
-        if (del == 0) table_del(&route4_table, &route4_ntry);
-        else table_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&route4_table, &route4_ntry);
+        else tree_add(&route4_table, &route4_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
@@ -691,8 +691,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.vrf = atoi(arg[5]);
         route6_ntry.command = 2;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "route6") == 0) {
@@ -705,8 +705,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.nexthop = atoi(arg[4]);
         route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.command = 1;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "labroute6") == 0) {
@@ -720,8 +720,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.label1 = atoi(arg[7]);
         route6_ntry.command = 3;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnroute6") == 0) {
@@ -736,8 +736,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.label1 = atoi(arg[7]);
         route6_ntry.label2 = atoi(arg[8]);
         route6_ntry.command = 4;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "srvroute6") == 0) {
@@ -755,8 +755,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.srv3 = get32msb(buf2, 8);
         route6_ntry.srv4 = get32msb(buf2, 12);
         route6_ntry.command = 5;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "polroute6") == 0) {
@@ -770,8 +770,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[6]);
         str2key(arg[7], route6_ntry.polka);
         route6_ntry.command = 9;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "neigh6") == 0) {
@@ -790,8 +790,8 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
@@ -806,8 +806,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[2]);
         route6_ntry.srv1 = atoi(arg[4]);
         route6_ntry.command = 6;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mysrv6") == 0) {
@@ -820,8 +820,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[2]);
         route6_ntry.srv1 = atoi(arg[4]);
         route6_ntry.command = 7;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgesrv") == 0) {
@@ -834,8 +834,8 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.vrf = atoi(arg[3]);
         route6_ntry.srv1 = atoi(arg[2]);
         route6_ntry.command = 8;
-        if (del == 0) table_del(&route6_table, &route6_ntry);
-        else table_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&route6_table, &route6_ntry);
+        else tree_add(&route6_table, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inacl4") == 0) {
@@ -1951,6 +1951,28 @@ int doOneCommand(unsigned char* buf) {
 
 
 
+void doStatRound_ipv4(void* buffer, void* param) {
+    struct route4_entry *ntry = buffer;
+    FILE *commands = param;
+    unsigned char buf[128];
+    unsigned char buf2[32];
+    put32msb(buf2, 0, ntry->addr);
+    inet_ntop(AF_INET, &buf2[0], (char*)&buf[0], sizeof(buf));
+    fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+}
+
+void doStatRound_ipv6(void* buffer, void* param) {
+    struct route6_entry *ntry = buffer;
+    FILE *commands = param;
+    unsigned char buf[128];
+    unsigned char buf2[32];
+    put32msb(buf2, 0, ntry->addr1);
+    put32msb(buf2, 4, ntry->addr2);
+    put32msb(buf2, 8, ntry->addr3);
+    put32msb(buf2, 12, ntry->addr4);
+    inet_ntop(AF_INET6, &buf2[0], (char*)&buf[0], sizeof(buf));
+    fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+}
 
 void doStatRound(FILE *commands, int round) {
     punts = 10;
@@ -2028,21 +2050,8 @@ void doStatRound(FILE *commands, int round) {
         mac2str(buf2, buf);
         fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
-    for (int i=0; i<route4_table.size; i++) {
-        struct route4_entry *ntry = table_get(&route4_table, i);
-        put32msb(buf2, 0, ntry->addr);
-        inet_ntop(AF_INET, &buf2[0], (char*)&buf[0], sizeof(buf));
-        fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<route6_table.size; i++) {
-        struct route6_entry *ntry = table_get(&route6_table, i);
-        put32msb(buf2, 0, ntry->addr1);
-        put32msb(buf2, 4, ntry->addr2);
-        put32msb(buf2, 8, ntry->addr3);
-        put32msb(buf2, 12, ntry->addr4);
-        inet_ntop(AF_INET6, &buf2[0], (char*)&buf[0], sizeof(buf));
-        fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
-    }
+    tree_walk(&route4_table, &doStatRound_ipv4, commands);
+    tree_walk(&route6_table, &doStatRound_ipv6, commands);
     for (int i=0; i<mroute4_table.size; i++) {
         struct mroute4_entry *ntry = table_get(&mroute4_table, i);
         put32msb(buf, 0, ntry->src);
@@ -2156,6 +2165,27 @@ void doStatRound(FILE *commands, int round) {
 
 
 
+void doConsoleCommand_ipv4(void* buffer, void* param) {
+    struct route4_entry *ntry = buffer;
+    unsigned char buf[32];
+    unsigned char buf2[128];
+    put32msb(buf, 0, ntry->addr);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    printf("%16s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+}
+
+void doConsoleCommand_ipv6(void* buffer, void* param) {
+    struct route6_entry *ntry = buffer;
+    unsigned char buf[32];
+    unsigned char buf2[128];
+    put32msb(buf, 0, ntry->addr1);
+    put32msb(buf, 4, ntry->addr2);
+    put32msb(buf, 8, ntry->addr3);
+    put32msb(buf, 12, ntry->addr4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+}
+
 int doConsoleCommand(unsigned char*buf) {
 #ifndef basicLoop
     unsigned char buf2[1024];
@@ -2258,24 +2288,11 @@ int doConsoleCommand(unsigned char*buf) {
         break;
     case '4':
         printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
-        for (int i=0; i<route4_table.size; i++) {
-            struct route4_entry *ntry = table_get(&route4_table, i);
-            put32msb(buf, 0, ntry->addr);
-            inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-            printf("%16s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
-        }
+        tree_walk(&route4_table, &doConsoleCommand_ipv4, NULL);
         break;
     case '6':
         printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
-        for (int i=0; i<route6_table.size; i++) {
-            struct route6_entry *ntry = table_get(&route6_table, i);
-            put32msb(buf, 0, ntry->addr1);
-            put32msb(buf, 4, ntry->addr2);
-            put32msb(buf, 8, ntry->addr3);
-            put32msb(buf, 12, ntry->addr4);
-            inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-            printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
-        }
+        tree_walk(&route6_table, &doConsoleCommand_ipv6, NULL);
         break;
 #endif
     default:

@@ -222,19 +222,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-int masks[] = {
-    0x00000000,
-    0x80000000, 0xc0000000, 0xe0000000, 0xf0000000,
-    0xf8000000, 0xfc000000, 0xfe000000, 0xff000000,
-    0xff800000, 0xffc00000, 0xffe00000, 0xfff00000,
-    0xfff80000, 0xfffc0000, 0xfffe0000, 0xffff0000,
-    0xffff8000, 0xffffc000, 0xffffe000, 0xfffff000,
-    0xfffff800, 0xfffffc00, 0xfffffe00, 0xffffff00,
-    0xffffff80, 0xffffffc0, 0xffffffe0, 0xfffffff0,
-    0xfffffff8, 0xfffffffc, 0xfffffffe, 0xffffffff
-};
-
-
 
 
 
@@ -1358,72 +1345,67 @@ ipv4_pbred:
             return;
         }
         if (acl4_ntry.protV == 46) doCpuing;
-        for (i = 32; i >= 0; i--) {
-            route4_ntry.mask = i;
-            route4_ntry.addr &= masks[i];
-            index = table_find(&route4_table, &route4_ntry);
-            if (index < 0) continue;
-            route4_res = table_get(&route4_table, index);
-            route4_res->pack++;
-            route4_res->byte += bufS;
-            switch (route4_res->command) {
-            case 1: // route
-                neigh_ntry.id = route4_res->nexthop;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doDropper;
-                neigh_res = table_get(&neigh_table, index);
+        route4_ntry.mask = 32;
+        route4_res = tree_find(&route4_table, &route4_ntry);
+        if (route4_res == NULL) doPunting;
+        route4_res->pack++;
+        route4_res->byte += bufS;
+        switch (route4_res->command) {
+        case 1: // route
+            neigh_ntry.id = route4_res->nexthop;
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) doDropper;
+            neigh_res = table_get(&neigh_table, index);
 ipv4_tx:
-                acls_ntry.dir = 2;
-                acls_ntry.port = neigh_res->aclport;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index >= 0) {
-                    if (frag != 0) doPunting;
-                    acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
-                }
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
-                acls_ntry.dir = 7;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index < 0) goto neigh_tx;
+            acls_ntry.dir = 2;
+            acls_ntry.port = neigh_res->aclport;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
                 if (frag != 0) doPunting;
                 acls_res = table_get(&acls_table, index);
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
-                policer_ntry.vrf = 0;
-                policer_ntry.meter = acls_res->hop;
-                policer_ntry.dir = 2;
-                index = table_find(&policer_table, &policer_ntry);
-                if (index < 0) doDropper;
-                policer_res = table_get(&policer_table, index);
-                if (policer_res->avail < 1) doDropper;
-                policer_res->avail -= bufS - bufP + preBuff;
-                goto neigh_tx;
-            case 2: // punt
-                tun4_ntry.vrf = route4_ntry.vrf;
-                tun4_ntry.prot = acl4_ntry.protV;
-                tun4_ntry.srcAddr = acl4_ntry.srcAddr;
-                tun4_ntry.trgAddr = acl4_ntry.trgAddr;
-                tun4_ntry.srcPort = acl4_ntry.srcPortV;
-                tun4_ntry.trgPort = acl4_ntry.trgPortV;
-                index = table_find(&tun4_table, &tun4_ntry);
-                if (index >= 0) {
-                    if (frag != 0) doPunting;
-                    tun4_res = table_get(&tun4_table, index);
-                    doTunneled(tun4_res);
-                }
-                acls_ntry.dir = 4;
-                acls_ntry.port = 0;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index >= 0) {
-                    if (frag != 0) doPunting;
-                    acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
-                }
-                doCpuing;
-                doRouted(route4_res, 4);
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
             }
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            acls_ntry.dir = 7;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index < 0) goto neigh_tx;
+            if (frag != 0) doPunting;
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
+            policer_ntry.vrf = 0;
+            policer_ntry.meter = acls_res->hop;
+            policer_ntry.dir = 2;
+            index = table_find(&policer_table, &policer_ntry);
+            if (index < 0) doDropper;
+            policer_res = table_get(&policer_table, index);
+            if (policer_res->avail < 1) doDropper;
+            policer_res->avail -= bufS - bufP + preBuff;
+            goto neigh_tx;
+        case 2: // punt
+            tun4_ntry.vrf = route4_ntry.vrf;
+            tun4_ntry.prot = acl4_ntry.protV;
+            tun4_ntry.srcAddr = acl4_ntry.srcAddr;
+            tun4_ntry.trgAddr = acl4_ntry.trgAddr;
+            tun4_ntry.srcPort = acl4_ntry.srcPortV;
+            tun4_ntry.trgPort = acl4_ntry.trgPortV;
+            index = table_find(&tun4_table, &tun4_ntry);
+            if (index >= 0) {
+                if (frag != 0) doPunting;
+                tun4_res = table_get(&tun4_table, index);
+                doTunneled(tun4_res);
+            }
+            acls_ntry.dir = 4;
+            acls_ntry.port = 0;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
+                if (frag != 0) doPunting;
+                acls_res = table_get(&acls_table, index);
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
+            }
+            doCpuing;
+            doRouted(route4_res, 4);
         }
-        doPunting;
     case ETHERTYPE_IPV6: // ipv6
         checkLayer2;
         if (index < 0) doDropper;
@@ -1594,100 +1576,73 @@ ipv6_pbred:
             return;
         }
         if (acl6_ntry.protV == 0) doCpuing;
-        for (i = 32; i >= 0; i--) {
-            route6_ntry.mask = 96 + i;
-            route6_ntry.addr4 &= masks[i];
-            index = table_find(&route6_table, &route6_ntry);
-            if (index < 0) continue;
-            goto ipv6_hit;
-        }
-        for (i = 32; i >= 0; i--) {
-            route6_ntry.mask = 64 + i;
-            route6_ntry.addr3 &= masks[i];
-            index = table_find(&route6_table, &route6_ntry);
-            if (index < 0) continue;
-            goto ipv6_hit;
-        }
-        for (i = 32; i >= 0; i--) {
-            route6_ntry.mask = 32 + i;
-            route6_ntry.addr2 &= masks[i];
-            index = table_find(&route6_table, &route6_ntry);
-            if (index < 0) continue;
-            goto ipv6_hit;
-        }
-        for (i = 32; i >= 0; i--) {
-            route6_ntry.mask = i;
-            route6_ntry.addr1 &= masks[i];
-            index = table_find(&route6_table, &route6_ntry);
-            if (index < 0) continue;
-ipv6_hit:
-            route6_res = table_get(&route6_table, index);
-            route6_res->pack++;
-            route6_res->byte += bufS;
-            switch (route6_res->command) {
-            case 1: // route
-                neigh_ntry.id = route6_res->nexthop;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doDropper;
-                neigh_res = table_get(&neigh_table, index);
+        route6_ntry.mask = 128;
+        route6_res = tree_find(&route6_table, &route6_ntry);
+        if (route6_res == NULL) doPunting;
+        route6_res->pack++;
+        route6_res->byte += bufS;
+        switch (route6_res->command) {
+        case 1: // route
+            neigh_ntry.id = route6_res->nexthop;
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) doDropper;
+            neigh_res = table_get(&neigh_table, index);
 ipv6_tx:
-                acls_ntry.dir = 2;
-                acls_ntry.port = neigh_res->aclport;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index >= 0) {
-                    if (frag != 0) doPunting;
-                    acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
-                }
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
-                acls_ntry.dir = 7;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index < 0) goto neigh_tx;
+            acls_ntry.dir = 2;
+            acls_ntry.port = neigh_res->aclport;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
                 if (frag != 0) doPunting;
                 acls_res = table_get(&acls_table, index);
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
-                policer_ntry.vrf = 0;
-                policer_ntry.meter = acls_res->hop;
-                policer_ntry.dir = 2;
-                index = table_find(&policer_table, &policer_ntry);
-                if (index < 0) doDropper;
-                policer_res = table_get(&policer_table, index);
-                if (policer_res->avail < 1) doDropper;
-                policer_res->avail -= bufS - bufP + preBuff;
-                goto neigh_tx;
-            case 2: // punt
-                tun6_ntry.vrf = route6_ntry.vrf;
-                tun6_ntry.prot = acl6_ntry.protV;
-                tun6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
-                tun6_ntry.srcAddr2 = acl6_ntry.srcAddr2;
-                tun6_ntry.srcAddr3 = acl6_ntry.srcAddr3;
-                tun6_ntry.srcAddr4 = acl6_ntry.srcAddr4;
-                tun6_ntry.trgAddr1 = acl6_ntry.trgAddr1;
-                tun6_ntry.trgAddr2 = acl6_ntry.trgAddr2;
-                tun6_ntry.trgAddr3 = acl6_ntry.trgAddr3;
-                tun6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
-                tun6_ntry.srcPort = acl6_ntry.srcPortV;
-                tun6_ntry.trgPort = acl6_ntry.trgPortV;
-                index = table_find(&tun6_table, &tun6_ntry);
-                if (index >= 0) {
-                    if (frag != 0) doPunting;
-                    tun6_res = table_get(&tun6_table, index);
-                    doTunneled(tun6_res);
-                }
-                acls_ntry.dir = 4;
-                acls_ntry.port = 0;
-                index = table_find(&acls_table, &acls_ntry);
-                if (index >= 0) {
-                    if (frag != 0) doPunting;
-                    acls_res = table_get(&acls_table, index);
-                    if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
-                }
-                doCpuing;
-                doRouted(route6_res, 41);
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
             }
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            acls_ntry.dir = 7;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index < 0) goto neigh_tx;
+            if (frag != 0) doPunting;
+            acls_res = table_get(&acls_table, index);
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) goto neigh_tx;
+            policer_ntry.vrf = 0;
+            policer_ntry.meter = acls_res->hop;
+            policer_ntry.dir = 2;
+            index = table_find(&policer_table, &policer_ntry);
+            if (index < 0) doDropper;
+            policer_res = table_get(&policer_table, index);
+            if (policer_res->avail < 1) doDropper;
+            policer_res->avail -= bufS - bufP + preBuff;
+            goto neigh_tx;
+        case 2: // punt
+            tun6_ntry.vrf = route6_ntry.vrf;
+            tun6_ntry.prot = acl6_ntry.protV;
+            tun6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
+            tun6_ntry.srcAddr2 = acl6_ntry.srcAddr2;
+            tun6_ntry.srcAddr3 = acl6_ntry.srcAddr3;
+            tun6_ntry.srcAddr4 = acl6_ntry.srcAddr4;
+            tun6_ntry.trgAddr1 = acl6_ntry.trgAddr1;
+            tun6_ntry.trgAddr2 = acl6_ntry.trgAddr2;
+            tun6_ntry.trgAddr3 = acl6_ntry.trgAddr3;
+            tun6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
+            tun6_ntry.srcPort = acl6_ntry.srcPortV;
+            tun6_ntry.trgPort = acl6_ntry.trgPortV;
+            index = table_find(&tun6_table, &tun6_ntry);
+            if (index >= 0) {
+                if (frag != 0) doPunting;
+                tun6_res = table_get(&tun6_table, index);
+                doTunneled(tun6_res);
+            }
+            acls_ntry.dir = 4;
+            acls_ntry.port = 0;
+            index = table_find(&acls_table, &acls_ntry);
+            if (index >= 0) {
+                if (frag != 0) doPunting;
+                acls_res = table_get(&acls_table, index);
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
+            }
+            doCpuing;
+            doRouted(route6_res, 41);
         }
-        doPunting;
     case ETHERTYPE_PPPOE_DATA: // pppoe
         checkLayer2;
         packPppoe[port]++;
@@ -1952,3 +1907,4 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
 
 
 #endif
+

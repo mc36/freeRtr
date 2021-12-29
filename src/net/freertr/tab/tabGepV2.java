@@ -10,13 +10,13 @@ import net.freertr.addr.addrType;
  */
 public class tabGepV2<T extends addrType> {
 
-    private tabGepV2nod<T> rot;
+    private tabGepV2nod<T> root;
 
     /**
      * create one generic tree
      */
     public tabGepV2() {
-        rot = new tabGepV2nod<T>();
+        root = new tabGepV2nod<T>();
     }
 
     /**
@@ -26,7 +26,7 @@ public class tabGepV2<T extends addrType> {
      * @return old value, null if freshly added
      */
     public tabRouteEntry<T> add(tabRouteEntry<T> val) {
-        tabGepV2nod<T> cur = rot;
+        tabGepV2nod<T> cur = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
                 tabRouteEntry<T> old = cur.val;
@@ -54,7 +54,7 @@ public class tabGepV2<T extends addrType> {
      * @return removed value, null if not found
      */
     public tabRouteEntry<T> del(tabRouteEntry<T> val) {
-        tabGepV2nod<T> cur = rot;
+        tabGepV2nod<T> cur = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
                 tabRouteEntry<T> old = cur.val;
@@ -82,7 +82,7 @@ public class tabGepV2<T extends addrType> {
      * @return found value
      */
     public tabRouteEntry<T> search(tabRouteEntry<T> val) {
-        tabGepV2nod<T> cur = rot;
+        tabGepV2nod<T> cur = root;
         tabRouteEntry<T> lst = null;
         for (int p = 0;; p++) {
             if (cur.val != null) {
