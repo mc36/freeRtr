@@ -81,6 +81,8 @@ public class tabRoute<T extends addrType> {
      */
     protected final tabGen<tabRouteEntry<T>> prefixes;
 
+    private tabGep<T> lookupTrie = null;
+
     /**
      * version of this table
      */
@@ -123,7 +125,11 @@ public class tabRoute<T extends addrType> {
      * optimize for lookup
      */
     public void optimize4lookup() {
-        prefixes.optimize4lookup();
+        tabGep<T> res = new tabGep<T>();
+        for (int i = 0; i < prefixes.size(); i++) {
+            res.add(prefixes.get(i));
+        }
+        lookupTrie = res;
     }
 
     /**
@@ -638,6 +644,9 @@ public class tabRoute<T extends addrType> {
     public tabRouteEntry<T> route(T addr) {
         tabRouteEntry<T> prf = new tabRouteEntry<T>();
         prf.prefix = new addrPrefix<T>(addr, addr.maxBits());
+        if (lookupTrie != null) {
+            return lookupTrie.search(prf);
+        }
         for (int o = prf.prefix.maskLen; o >= 0; o--) {
             prf.prefix.setMask(o);
             tabRouteEntry<T> res = prefixes.find(prf);

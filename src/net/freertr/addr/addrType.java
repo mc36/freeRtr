@@ -296,10 +296,10 @@ public abstract class addrType implements Comparator<addrType> {
     }
 
     /**
-     * set from not a1
+     * set from shifted a1
      *
      * @param a1 address
-     * @param sh shift
+     * @param shf shift
      */
     public void setShl(addrType a1, int shf) {
         int shb = shf / 8;
