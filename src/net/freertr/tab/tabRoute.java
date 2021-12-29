@@ -125,6 +125,7 @@ public class tabRoute<T extends addrType> {
      * optimize for lookup
      */
     public void optimize4lookup() {
+        prefixes.optimize4lookup();
         tabGep<T> res = new tabGep<T>();
         for (int i = 0; i < prefixes.size(); i++) {
             res.add(prefixes.get(i));
