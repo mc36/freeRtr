@@ -39,7 +39,7 @@ public class findSongs {
     /**
      * extensions
      */
-    public static final String audioExt = ".mp3.m4a.opus.ogg.flac.wav.wma.ape.";
+    public static final String audioExt = ".mp3.m4a.opus.ogg.flac.mpc.wav.wma.ape.ra.au.";
 
     /**
      * the main

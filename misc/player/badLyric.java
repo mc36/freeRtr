@@ -59,7 +59,7 @@ public class badLyric {
                 delFile(s + "/" + a, false);
                 continue;
             }
-            if (".mp4.avi.mov.flv.mkv.ini.torrent.url.pdf.rtf.doc.docx.ppt.pptx.exe.db.iso.log.txt.m3u.m3u8.pls.log.jpg.jpeg.png.gif.tif.nfo.sfv.tags.".indexOf(b) >= 0) {
+            if (".mp4.avi.mov.mpg.flv.viv.mkv.vob.wmv.ini.torrent.url.pdf.rtf.doc.docx.mobi.epub.ppt.pptx.html.htm.mht.exe.db.iso.log.md5.ffp.txt.xml.m3u.m3u8.pls.log.jpg.jpeg.png.gif.bmp.jfif.tif.nfo.sfv.tab.ffp.ncd.nra.accurip.!ut.dctmp.tags.".indexOf(b) >= 0) {
                 delFile(s + "/" + a, true);
                 continue;
             }
