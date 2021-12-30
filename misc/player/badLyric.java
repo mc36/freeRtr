@@ -64,6 +64,9 @@ public class badLyric {
                 continue;
             }
             if (!b.equals(".lyric.")) {
+                if (findSongs.audioExt.indexOf(b) < 0) {
+                    delFile(s + "/" + a, false);
+                }
                 q++;
                 continue;
             }

@@ -37,6 +37,11 @@ public class findSongs {
     protected String tit;
 
     /**
+     * extensions
+     */
+    public static final String audioExt = ".mp3.m4a.opus.ogg.flac.wav.wma.ape.";
+
+    /**
      * the main
      *
      * @param args arguments
@@ -120,7 +125,7 @@ public class findSongs {
                 continue;
             }
             String b = a.substring(o, a.length()).toLowerCase() + ".";
-            if (".mp3.m4a.opus.ogg.flac.wav.wma.".indexOf(b) < 0) {
+            if (audioExt.indexOf(b) < 0) {
                 continue;
             }
             playerSong sng = new playerSong();
