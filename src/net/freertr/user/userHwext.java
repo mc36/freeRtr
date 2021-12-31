@@ -284,6 +284,7 @@ public class userHwext {
                         hwd.add("ip link add veth0a type veth peer name veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
+                        hwd.add("ip link set veth0b xdp obj p4xdp_pass.bin sec p4xdp_pass");
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
@@ -293,12 +294,14 @@ public class userHwext {
                     case p4sw:
                         ifn = "ens1";
                         userHwdet.setupIface(hwd, ifn, 8192);
+                        hwc.add("proc bfswd " + path + "start_bfswd.sh");
+                        hwc.add("proc bffwd " + path + "bf_forwarder.py");
                         break;
                     default:
                         return;
                 }
                 hwc.add("int eth0 eth - 127.0.0.1 19999 127.0.0.1 19998");
-                hwc.add("proc veth0 " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
+                hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                 break;
             default:
                 return;
