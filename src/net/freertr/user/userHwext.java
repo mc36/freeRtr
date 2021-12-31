@@ -281,10 +281,11 @@ public class userHwext {
                         break;
                     case p4xdp:
                         ifn = "veth0a";
+                        hwd.add("ulimit -l unlimited");
                         hwd.add("ip link add veth0a type veth peer name veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
-                        hwd.add("ip link set veth0b xdp obj p4xdp_pass.bin sec p4xdp_pass");
+                        userHwdet.setupIface(hwd, "veth0a", 2048);
+                        userHwdet.setupIface(hwd, "veth0b", 2048);
+                        hwd.add("ip link set " + ifn + " xdp obj p4xdp_pass.bin sec p4xdp_pass");
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
