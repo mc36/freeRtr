@@ -93,7 +93,12 @@ public class ifcBundle implements Runnable, ifcDn {
     /**
      * list of interfaces
      */
-    protected tabGen<ifcBundleIfc> ifaces;
+    public tabGen<ifcBundleIfc> ifaces;
+
+    /**
+     * selected interface
+     */
+    public int selected = -2;
 
     private ifcUp upper = new ifcNull();
 
@@ -104,8 +109,6 @@ public class ifcBundle implements Runnable, ifcDn {
     private int nextSender;
 
     private int currSender;
-
-    private int selected = -2;
 
     private int seqTx;
 

@@ -21,6 +21,7 @@ import net.freertr.clnt.clntVxlan;
 import net.freertr.ifc.ifcBridge;
 import net.freertr.ifc.ifcBridgeAdr;
 import net.freertr.ifc.ifcBridgeIfc;
+import net.freertr.ifc.ifcBundleIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
@@ -3225,18 +3226,35 @@ class servP4langConn implements Runnable {
         }
         if ((ifc.ifc.bundleHed != null) && (ifc.ifc.bundleIfc == null)) {
             List<servP4langIfc> prt = new ArrayList<servP4langIfc>();
-            for (i = 0; i < lower.expIfc.size(); i++) {
-                servP4langIfc ntry = lower.expIfc.get(i);
-                if (ntry == ifc) {
-                    continue;
+            if (ifc.ifc.bundleHed.bundleHed.backup > 0) {
+                ifcBundleIfc sel = ifc.ifc.bundleHed.bundleHed.ifaces.get(ifc.ifc.bundleHed.bundleHed.selected);
+                for (i = 0; i < lower.expIfc.size(); i++) {
+                    servP4langIfc ntry = lower.expIfc.get(i);
+                    if (ntry == ifc) {
+                        continue;
+                    }
+                    if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
+                        continue;
+                    }
+                    if (ntry.ifc.bundleIfc != sel) {
+                        continue;
+                    }
+                    prt.add(ntry);
                 }
-                if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
-                    continue;
+            } else {
+                for (i = 0; i < lower.expIfc.size(); i++) {
+                    servP4langIfc ntry = lower.expIfc.get(i);
+                    if (ntry == ifc) {
+                        continue;
+                    }
+                    if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
+                        continue;
+                    }
+                    if (ntry.ifc.ethtyp.getState() != state.states.up) {
+                        continue;
+                    }
+                    prt.add(ntry);
                 }
-                if (ntry.ifc.ethtyp.getState() != state.states.up) {
-                    continue;
-                }
-                prt.add(ntry);
             }
             ifc.members = prt;
             List<servP4langIfc> vln = new ArrayList<servP4langIfc>();
@@ -3250,14 +3268,18 @@ class servP4langConn implements Runnable {
                 }
                 vln.add(ntry);
             }
+            o = 0;
+            for (i = 0; i < prt.size(); i++) {
+                o += prt.get(i).id;
+            }
             if (prt.size() != ifc.sentBundle) {
                 if (ifc.sentBundle < 1) {
                     a = "add";
                 } else {
                     a = "mod";
                 }
-                ifc.sentBundle = prt.size();
-                if (prt.size() < 1) {
+                ifc.sentBundle = o;
+                if (o < 1) {
                     a = "del";
                     prt.add(new servP4langIfc(0));
                 }
