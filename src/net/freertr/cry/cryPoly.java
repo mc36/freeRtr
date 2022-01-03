@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @author matecsaba
  */
-public class cryPoly implements Comparable<cryPoly> {
+public class cryPoly {
 
     private final BigInteger coeff;
 
@@ -67,10 +67,6 @@ public class cryPoly implements Comparable<cryPoly> {
 
     public String toString() {
         return coeff.toString(2);
-    }
-
-    public int compareTo(cryPoly o) {
-        return coeff.compareTo(o.coeff);
     }
 
     private static BigInteger mul(BigInteger c, BigInteger a) {

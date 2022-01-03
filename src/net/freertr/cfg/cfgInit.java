@@ -295,6 +295,7 @@ public class cfgInit implements Runnable {
             while (rd.ready()) {
                 res.add(rd.readLine());
             }
+            rd.close();
             strm.close();
             return res;
         } catch (Exception e) {

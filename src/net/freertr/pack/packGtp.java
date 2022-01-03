@@ -1832,7 +1832,6 @@ public class packGtp {
         }
         if (valIMEI != null) {
             tlv.valSiz = createNumber(valIMEI); // imei
-            tlv.valSiz = 8;
             tlv.valTyp = tlvIMEI;
             createTlv(pck);
         }

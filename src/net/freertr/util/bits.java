@@ -1165,6 +1165,7 @@ public class bits {
                 ln.add(rd.readLine());
             }
             rd.close();
+            in.close();
         } catch (Exception e) {
             return null;
         }

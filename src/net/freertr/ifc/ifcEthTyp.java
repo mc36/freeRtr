@@ -480,7 +480,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @param promisc need all packet (promiscous mode)
      */
     public void setFilter(boolean promisc) {
-        promisc = defUpper.promiscous;
+        promisc |= defUpper.promiscous;
         for (int i = 0; i < etTyps.size(); i++) {
             promisc |= etTyps.get(i).promiscous;
         }

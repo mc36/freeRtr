@@ -313,7 +313,7 @@ public class secTelnet {
         buf[2] = (byte) opt;
         lower.blockingPut(buf, 0, buf.length);
         for (int o = 0; o < val.length; o++) {
-            int i = val[o];
+            int i = val[o] & 0xff;
             if (i != cmdIAC) {
                 lower.blockingPut(val, o, 1);
                 continue;

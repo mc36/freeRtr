@@ -247,7 +247,6 @@ public abstract class ifcVlan implements ifcUp {
      * @param promisc need all packet (promiscous mode)
      */
     public void setFilter(boolean promisc) {
-        promisc = false;
         for (int i = 0; i < vLans.size(); i++) {
             promisc |= vLans.get(i).promiscous;
         }

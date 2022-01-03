@@ -59,7 +59,7 @@ public class prtSrv6 implements ifcDn {
         prf = new addrPrefix<addrIP>(adr, addrIP.size * 4);
         ethtyp = et;
         fwd4 = f4;
-        fwd4 = f6;
+        fwd6 = f6;
         ip6 = new ipCor6();
     }
 

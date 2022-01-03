@@ -638,10 +638,12 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 h.update(hi);
                 h.update(tmp1);
                 hi = h.finish();
-                if (bits.msbGetQ(tmp2, 0) <= lasTim) {
+                long tim = bits.msbGetQ(tmp2, 0);
+                if (tim <= lasTim) {
                     logger.info("got replayed handshake from " + target);
                     return false;
                 }
+                lasTim = tim;
                 idxTx = ridx;
                 initDH();
                 if (debugger.clntWireguardTraf) {

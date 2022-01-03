@@ -1449,8 +1449,7 @@ class servOpenflowTx implements Runnable {
                 bits.msbPutD(ntry.match, 1, lab.label);
                 ntry = tabGroup.find(ntry);
                 if (ntry == null) {
-                    createMplsPunt(pckB, pckO, lab, ntry);
-                    addTable(n, tabMpls, ntry);
+                    continue;
                 }
                 int cook = ntry.cookie;
                 ntry = new servOpenflowFlw();

@@ -140,9 +140,9 @@ public class ipMhost6 extends ipMhost {
         addrIPv6 sa = null;
         if (source != null) {
             sa = source.toIPv6();
-        }
-        if (sa.isEmpty()) {
-            sa = null;
+            if (sa.isEmpty()) {
+                sa = null;
+            }
         }
         pck.putByte(0, need ^ (sa == null) ? 1 : 2); // type
         pck.putByte(1, 0); // aux size

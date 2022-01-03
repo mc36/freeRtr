@@ -191,9 +191,9 @@ public class ipMhost4 extends ipMhost {
         addrIPv4 sa = null;
         if (source != null) {
             sa = source.toIPv4();
-        }
-        if (sa.isEmpty()) {
-            sa = null;
+            if (sa.isEmpty()) {
+                sa = null;
+            }
         }
         pck.putByte(0, typReport3); // type
         pck.putByte(1, 0); // reserved

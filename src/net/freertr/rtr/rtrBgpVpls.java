@@ -108,10 +108,10 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         if (id == 0) {
             return;
         }
-        if (bridge.bridgeHed.rd == 0) {
+        if (bridge == null) {
             return;
         }
-        if (bridge == null) {
+        if (bridge.bridgeHed.rd == 0) {
             return;
         }
         if (iface == null) {
