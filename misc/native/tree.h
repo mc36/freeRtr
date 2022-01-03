@@ -40,7 +40,7 @@ void tree_deinit(struct tree_head *tab) {
     tab->root = NULL;
 }
 
-void* tree_find(struct tree_head *tab, void *ntry) {
+void* tree_lpm(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     void* lst = NULL;
     int msk = tab->masker(ntry);

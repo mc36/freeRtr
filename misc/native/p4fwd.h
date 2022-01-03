@@ -1346,7 +1346,7 @@ ipv4_pbred:
         }
         if (acl4_ntry.protV == 46) doCpuing;
         route4_ntry.mask = 32;
-        route4_res = tree_find(&route4_table, &route4_ntry);
+        route4_res = tree_lpm(&route4_table, &route4_ntry);
         if (route4_res == NULL) doPunting;
         route4_res->pack++;
         route4_res->byte += bufS;
@@ -1577,7 +1577,7 @@ ipv6_pbred:
         }
         if (acl6_ntry.protV == 0) doCpuing;
         route6_ntry.mask = 128;
-        route6_res = tree_find(&route6_table, &route6_ntry);
+        route6_res = tree_lpm(&route6_table, &route6_ntry);
         if (route6_res == NULL) doPunting;
         route6_res->pack++;
         route6_res->byte += bufS;
