@@ -25,7 +25,6 @@ void warn(char*buf) {
 int commandSock;
 int ifaces[maxPorts];
 int ports;
-int prog_id_list[maxPorts];
 int prog_fd;
 int cpu_port_fd;
 int rx_ports_fd;
@@ -169,11 +168,7 @@ int main(int argc, char **argv) {
         printf("opening index %i...\n", ifaces[i]);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_SKB_MODE);
-        if (bpf_set_link_xdp_fd(ifaces[i], prog_fd, XDP_FLAGS_DRV_MODE) < 0) err("error linking code");
-        struct bpf_prog_info info_dat = {};
-        __u32 info_len = sizeof(info_dat);
-        if (bpf_obj_get_info_by_fd(prog_fd, &info_dat, &info_len) != 0) err("error getting fd");
-        prog_id_list[i] = info_dat.id;
+        if (bpf_set_link_xdp_fd(ifaces[i], prog_fd, XDP_FLAGS_DRV_MODE) < 0) err("error attaching code");
     }
 
     int o = 0;
