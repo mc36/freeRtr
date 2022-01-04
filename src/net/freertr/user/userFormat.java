@@ -106,6 +106,63 @@ public class userFormat {
         return null;
     }
 
+    /**
+     * color modes
+     */
+    public enum colorMode {
+        /**
+         * normal
+         */
+        normal,
+        /**
+         * header
+         */
+        header,
+        /**
+         * rainbow
+         */
+        rainbow
+
+    }
+
+    /**
+     * convert string to color mode
+     *
+     * @param a string
+     * @return color mode
+     */
+    public static colorMode str2colmod(String a) {
+        if (a.equals("normal")) {
+            return colorMode.normal;
+        }
+        if (a.equals("header")) {
+            return colorMode.header;
+        }
+        if (a.equals("rainbow")) {
+            return colorMode.rainbow;
+        }
+        return colorMode.normal;
+    }
+
+    /**
+     * convert color mode to string
+     *
+     * @param mod table mode
+     * @return string
+     */
+    public static String colmod2str(colorMode mod) {
+        switch (mod) {
+            case normal:
+                return "normal";
+            case header:
+                return "header";
+            case rainbow:
+                return "rainbow";
+            default:
+                return "unknown";
+        }
+    }
+
     private String separator;
 
     private List<userFormatLine> lines;

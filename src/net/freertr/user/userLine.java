@@ -63,7 +63,7 @@ public class userLine {
     /**
      * colorize
      */
-    public boolean execColor;
+    public userFormat.colorMode execColor = userFormat.colorMode.normal;
 
     /**
      * space as tab
@@ -227,8 +227,8 @@ public class userLine {
         lst.add(beg + "exec height " + execHeight);
         lst.add(beg + "exec history " + execHistory);
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
-        cmds.cfgLine(lst, !execColor, beg, "exec colorized", "");
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
+        lst.add(beg + "exec colorize " + userFormat.colmod2str(execColor));
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
@@ -327,8 +327,8 @@ public class userLine {
                 execTimes = true;
                 return false;
             }
-            if (s.equals("colorized")) {
-                execColor = true;
+            if (s.equals("colorize")) {
+                execColor = userFormat.str2colmod(cmd.word());
                 return false;
             }
             if (s.equals("spacetab")) {
@@ -479,10 +479,6 @@ public class userLine {
                 execTimes = false;
                 return false;
             }
-            if (s.equals("colorized")) {
-                execColor = false;
-                return false;
-            }
             if (s.equals("spacetab")) {
                 execSpace = false;
                 return false;
@@ -551,7 +547,10 @@ public class userLine {
         l.add(null, "3 .      <name>                     name of interface");
         l.add(null, "2 .    logging                      enable logging");
         l.add(null, "2 .    timestamp                    enable timestamps");
-        l.add(null, "2 .    colorized                    enable colorization");
+        l.add(null, "2 3    colorize                     enable colorization");
+        l.add(null, "3 .      normal                     select normal mode");
+        l.add(null, "3 .      header                     select header mode");
+        l.add(null, "3 .      rainbow                    select rainbow mode");
         l.add(null, "2 .    spacetab                     enable space as tab");
         l.add(null, "2 3    tablemode                    set table mode");
         l.add(null, "3 .      csv                        select csv mode");

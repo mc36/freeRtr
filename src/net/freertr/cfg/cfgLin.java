@@ -48,7 +48,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! exec height 24",
         ".*! exec history 64",
         ".*! no exec timestamp",
-        ".*! no exec colorized",
+        ".*! exec colorize normal",
         ".*! no exec spacetab",
         ".*! exec tablemode normal",
         ".*! exec welcome welcome",

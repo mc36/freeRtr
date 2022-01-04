@@ -1211,7 +1211,10 @@ public class userExec {
         hl.add(null, "3 .        <num>                 ascii code");
         hl.add(null, "2 .      monitor                 log to this terminal");
         hl.add(null, "2 .      timestamps              put time before each executed command");
-        hl.add(null, "2 .      colorized               sending to ansi terminal");
+        hl.add(null, "2 3      colorize                sending to ansi terminal");
+        hl.add(null, "3 .        normal                select normal mode");
+        hl.add(null, "3 .        header                select header mode");
+        hl.add(null, "3 .        rainbow               select rainbow mode");
         hl.add(null, "2 .      spacetab                treat space as tabulator");
         hl.add(null, "2 3      tablemode               select table formatting mode");
         hl.add(null, "3 .        normal                select normal mode");
@@ -3902,8 +3905,8 @@ public class userExec {
             pipe.settingsPut(pipeSetting.times, true);
             return;
         }
-        if (a.equals("colorized")) {
-            pipe.settingsPut(pipeSetting.colors, true);
+        if (a.equals("colorize")) {
+            pipe.settingsPut(pipeSetting.colors, userFormat.str2colmod(cmd.word()));
             return;
         }
         if (a.equals("spacetab")) {
@@ -3941,10 +3944,6 @@ public class userExec {
         }
         if (a.equals("timestamps")) {
             pipe.settingsPut(pipeSetting.times, false);
-            return;
-        }
-        if (a.equals("colorized")) {
-            pipe.settingsPut(pipeSetting.colors, false);
             return;
         }
         if (a.equals("spacetab")) {
@@ -4023,7 +4022,11 @@ public class userExec {
         pip.settingsPut(pipeSetting.height, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
-        pip.settingsPut(pipeSetting.colors, pipe.settingsGet(pipeSetting.colors, false) & col);
+        if (col) {
+            pip.settingsPut(pipeSetting.colors, pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        } else {
+            pip.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
+        }
         userExec exe = new userExec(pip, rdr);
         exe.privileged = privileged;
         pip.setTime(60000);
@@ -4047,7 +4050,7 @@ public class userExec {
 
     private void doWatch() {
         reader.keyFlush();
-        final boolean color = pipe.settingsGet(pipeSetting.colors, false);
+        boolean color = pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal) != userFormat.colorMode.normal;
         for (;;) {
             if (pipe.isClosed() != 0) {
                 break;

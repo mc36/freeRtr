@@ -105,12 +105,12 @@ public class pipeSetting implements Comparator<pipeSetting> {
         userFormat l = new userFormat("|", "category|value");
         l.add("authenticate|" + pip.settingsGet(pipeSetting.authed, new authResult()));
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
-        l.add("colorized|" + pip.settingsGet(pipeSetting.colors, false));
-        l.add("space tab|" + pip.settingsGet(pipeSetting.spacTab, false));
+        l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        l.add("spacetab|" + pip.settingsGet(pipeSetting.spacTab, false));
         l.add("timestamps|" + pip.settingsGet(pipeSetting.times, false));
         l.add("deactivate|" + pip.settingsGet(pipeSetting.deactive, 65536));
         l.add("escape|" + pip.settingsGet(pipeSetting.escape, 65536));
-        l.add("table mode|" + pip.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+        l.add("table|" + pip.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         l.add("height|" + pip.settingsGet(pipeSetting.height, 25));
         l.add("width|" + pip.settingsGet(pipeSetting.width, 80));
         l.add("origin|" + pip.settingsGet(pipeSetting.origin, "?"));

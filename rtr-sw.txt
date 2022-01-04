@@ -796,7 +796,7 @@ server telnet tel
  access-blackhole6 1
  second-port 22
  exec timestamp
- exec colorized
+ exec colorize header
  exec tablemode table
  no exec authorization
  login authentication access
