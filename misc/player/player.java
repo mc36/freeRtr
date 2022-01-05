@@ -500,9 +500,8 @@ public class player implements Runnable {
                 buf.write(res.get(i).getBytes());
             }
         } else {
-            Random rnd = new Random();
             for (int i = 0; i < max; i++) {
-                buf.write(res.get(rnd.nextInt(res.size())).getBytes());
+                buf.write(res.get(rndSeed.nextInt(res.size())).getBytes());
             }
             buf.write(("and " + (res.size() - max) + " more!<br/>").getBytes());
         }
@@ -831,7 +830,7 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=pendrive\">!pendrive!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=resync&song=" + new Random().nextInt() + "\">!resync!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=resync&song=" + rndSeed.nextInt() + "\">!resync!</a><br/>";
             buf.write(a.getBytes());
             a = "<br/><form action=\"" + urlR + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
             buf.write(a.getBytes());
