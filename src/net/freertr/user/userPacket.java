@@ -1372,13 +1372,13 @@ public class userPacket {
         if (a.equals("smtp")) {
             clntSmtp sm = new clntSmtp(cmd.pipe);
             a = cmd.word();
-            sm.rcpt = a;
-            sm.putHead("test@" + cfgAll.getFqdn(), a, "test message");
-            a = cmd.getRemaining().trim();
-            if (a.length() < 1) {
-                a = "right now it worked fine";
+            String s = cmd.getRemaining().trim();
+            if (s.length() < 1) {
+                s = "test message";
             }
-            sm.putText(bits.str2lst(a));
+            sm.rcpt = a;
+            sm.putHead("test@" + cfgAll.getFqdn(), a, s);
+            sm.putText(bits.str2lst(s));
             sm.putFinish();
             cmd.error("result=" + sm.doSend(1));
             sm.cleanUp();
