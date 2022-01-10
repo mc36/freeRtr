@@ -374,6 +374,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no import6policy",
         "vrf definition .*! no export4policy",
         "vrf definition .*! no export6policy",
+        "vrf definition .*! no route4limit",
+        "vrf definition .*! no route6limit",
         "vrf definition .*! no dapp4",
         "vrf definition .*! no dapp6",
         "vrf definition .*! no copp4in",
@@ -680,6 +682,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, import6pol == null, cmds.tabulator, "import6policy", "" + import6pol);
         cmds.cfgLine(l, export4pol == null, cmds.tabulator, "export4policy", "" + export4pol);
         cmds.cfgLine(l, export6pol == null, cmds.tabulator, "export6policy", "" + export6pol);
+        cmds.cfgLine(l, fwd4.routeLimit < 1, cmds.tabulator, "route4limit", "" + fwd4.routeLimit);
+        cmds.cfgLine(l, fwd6.routeLimit < 1, cmds.tabulator, "route6limit", "" + fwd6.routeLimit);
         cmds.cfgLine(l, dapp4 == null, cmds.tabulator, "dapp4", "" + dapp4);
         cmds.cfgLine(l, dapp6 == null, cmds.tabulator, "dapp6", "" + dapp6);
         cmds.cfgLine(l, copp4in == null, cmds.tabulator, "copp4in", "" + copp4in);
@@ -759,6 +763,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, ".1 . punish-pmtud        send back mtu exceeded if needed");
         l.add(null, "1 2  unreach-interval    rate limit icmp generation");
         l.add(null, "2 .    <num>             millisecs between them");
+        l.add(null, "1 2  route4limit         maximum ipv4 routes allowed");
+        l.add(null, "2 .    <num>             number of routes");
+        l.add(null, "1 2  route6limit         maximum ipv6 routes allowed");
+        l.add(null, "2 .    <num>             number of routes");
         l.add(null, "1 2  label4filter        specify ipv4 label filter");
         l.add(null, "2 .    <name:pl>         name of prefix list");
         l.add(null, "1 2  label6filter        specify ipv6 label filter");
@@ -857,6 +865,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 }
                 rtImp.add(tabRtrmapN.string2rd(a));
             }
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-export")) {
@@ -868,6 +878,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 }
                 rtExp.add(tabRtrmapN.string2rd(a));
             }
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-both")) {
@@ -881,16 +893,30 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 rtImp.add(tabRtrmapN.string2rd(a));
                 rtExp.add(tabRtrmapN.string2rd(a));
             }
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("route4limit")) {
+            fwd4.routeLimit = bits.str2num(cmd.word());
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("route6limit")) {
+            fwd6.routeLimit = bits.str2num(cmd.word());
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("mdt4")) {
             mdt4 = true;
             fwd4.mdt = true;
+            fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
             mdt6 = true;
             fwd6.mdt = true;
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("label-mode")) {
@@ -1218,6 +1244,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 return;
             }
             fwd4.counterMap = counter4map.roumap;
+            fwd4.routerStaticChg();
             return;
         }
         if (a.equals("counter6map")) {
@@ -1227,6 +1254,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 return;
             }
             fwd6.counterMap = counter6map.roumap;
+            fwd6.routerStaticChg();
             return;
         }
         if (!a.equals("no")) {
@@ -1236,15 +1264,31 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         a = cmd.word();
         if (a.equals("rt-import")) {
             rtImp = new ArrayList<Long>();
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-export")) {
             rtExp = new ArrayList<Long>();
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-both")) {
             rtImp = new ArrayList<Long>();
             rtExp = new ArrayList<Long>();
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("route4limit")) {
+            fwd4.routeLimit = 0;
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("route6limit")) {
+            fwd6.routeLimit = 0;
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("description")) {
@@ -1254,11 +1298,13 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("mdt4")) {
             mdt4 = false;
             fwd4.mdt = false;
+            fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
             mdt6 = false;
             fwd6.mdt = false;
+            fwd6.routerStaticChg();
             return;
         }
         if (a.equals("unreach-interval")) {
@@ -1428,11 +1474,13 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("counter4map")) {
             counter4map = null;
             fwd4.counterMap = null;
+            fwd4.routerStaticChg();
             return;
         }
         if (a.equals("counter6map")) {
             counter6map = null;
             fwd6.counterMap = null;
+            fwd6.routerStaticChg();
             return;
         }
         cmd.badCmd();

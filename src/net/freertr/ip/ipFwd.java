@@ -104,6 +104,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public boolean mdt;
 
     /**
+     * route limit
+     */
+    public int routeLimit;
+
+    /**
      * current list of routers
      */
     public final tabGen<ipRtr> routers;

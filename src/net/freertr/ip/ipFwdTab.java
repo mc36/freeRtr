@@ -988,6 +988,12 @@ public class ipFwdTab {
                 logger.debug("starting " + clnt);
             }
         }
+        if (lower.routeLimit > 0) {
+            for (int i = tabU.size() - 1; i > lower.routeLimit; i--) {
+                tabRouteEntry<addrIP> ntry = tabU.get(i);
+                tabU.del(ntry);
+            }
+        }
         if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }
