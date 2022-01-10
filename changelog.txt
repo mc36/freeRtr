@@ -12583,3 +12583,5 @@ qc pass: monitor session over pwhe
 ---------------------------------- 2021-12-21 21:27:35
 qc pass: ingress mask matching access list
 qc pass: egress mask matching access list
+---------------------------------- 2022-01-10 14:14:43
+qc pass: vrf route limit
