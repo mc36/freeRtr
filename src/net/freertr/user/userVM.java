@@ -21,7 +21,7 @@ import net.freertr.util.version;
  */
 public class userVM {
 
-    private static final String rootDir = "/rtr/vm";
+    private static final String rootDir = "../vm";
 
     private static final int reg_a = 1;
 
