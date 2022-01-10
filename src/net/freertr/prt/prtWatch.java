@@ -200,7 +200,7 @@ public class prtWatch implements Runnable {
         bits.sleep(15000);
         sendDogUp();
         doCheck(prt);
-        doExec("/rtr/modeswitch.sh", true);
+        doExec("./modeswitch.sh", true);
         bits.sleep(15000);
         doCheck(prt);
         doExec("/bin/mdev -s", true);
@@ -231,7 +231,7 @@ public class prtWatch implements Runnable {
         }
         names[prt] = s;
         int p = (prt * 2) + 20051;
-        procs[prt] = doExec("/rtr/modem.sh " + s + " /rtr/modem.ser" + prt
+        procs[prt] = doExec("./modem.sh " + s + " ./modem.ser" + prt
                 + " " + (p + 1) + " " + p, false);
     }
 
