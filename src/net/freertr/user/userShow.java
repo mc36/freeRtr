@@ -391,10 +391,10 @@ public class userShow {
                 return null;
             }
             if (a.equals("device")) {
-                userFormat l = new userFormat("|", "name|rerun|last|ago");
+                userFormat l = new userFormat("|", "name|rerun|pid|cpu|last|ago");
                 for (int i = 0; i < cfgInit.vdcLst.size(); i++) {
                     cfgVdc ntry = cfgInit.vdcLst.get(i);
-                    l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.restartT));
+                    l.add(ntry.getShow());
                 }
                 rdr.putStrTab(l);
                 return null;
@@ -409,10 +409,10 @@ public class userShow {
                 return null;
             }
             if (a.equals("external")) {
-                userFormat l = new userFormat("|", "name|rerun|last|ago");
+                userFormat l = new userFormat("|", "name|rerun|pid|cpu|last|ago");
                 for (int i = 0; i < cfgAll.prcs.size(); i++) {
                     cfgPrcss ntry = cfgAll.prcs.get(i);
-                    l.add(ntry.name + "|" + ntry.restartC + "|" + bits.time2str(cfgAll.timeZoneName, ntry.restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.restartT));
+                    l.add(ntry.getShow());
                 }
                 rdr.putStrTab(l);
                 return null;

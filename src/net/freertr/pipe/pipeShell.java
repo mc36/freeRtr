@@ -2,6 +2,7 @@ package net.freertr.pipe;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.util.bits;
@@ -199,6 +200,42 @@ public class pipeShell {
             }
             bits.sleep(100);
         }
+    }
+
+    /**
+     * get information
+     *
+     * @return return info
+     */
+    public String info() {
+        String a = "";
+        String b = "";
+        ProcessHandle hnd = null;
+        try {
+            hnd = process.toHandle();
+            a = "" + hnd.pid();
+        } catch (Exception e) {
+        }
+        try {
+            ProcessHandle.Info nfo = hnd.info();
+            Duration dur = nfo.totalCpuDuration().get();
+            b = dur.getSeconds() + "." + dur.getNano();
+        } catch (Exception e) {
+        }
+        return a + "|" + b;
+    }
+
+    /**
+     * get information
+     *
+     * @param p process
+     * @return return info
+     */
+    public static String info(pipeShell p) {
+        if (p == null) {
+            return "|";
+        }
+        return p.info();
     }
 
 }

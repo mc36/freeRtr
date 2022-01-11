@@ -404,4 +404,13 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
     }
 
+    /**
+     * get info
+     *
+     * @return info
+     */
+    public String getShow() {
+        return name + "|" + restartC + "|" + pipeShell.info(proc) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(restartT);
+    }
+
 }

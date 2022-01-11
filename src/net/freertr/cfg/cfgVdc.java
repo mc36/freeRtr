@@ -1016,6 +1016,15 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         new Thread(this).start();
     }
 
+    /**
+     * get info
+     *
+     * @return info
+     */
+    public String getShow() {
+        return name + "|" + restartC + "|" + pipeShell.info(proc) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(restartT);
+    }
+
 }
 
 class cfgVdcTcp implements Comparator<cfgVdcTcp> {
