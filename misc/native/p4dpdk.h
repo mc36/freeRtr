@@ -30,8 +30,10 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool);
     if (mbuf == NULL) return;
     char * pack = rte_pktmbuf_append(mbuf, bufS);
+    if (pack == NULL) return;
     memmove(pack, bufD, bufS);
-    rte_ring_mp_enqueue(tx_ring[port], mbuf);
+    if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return;
+    rte_pktmbuf_free(mbuf);
 }
 
 
