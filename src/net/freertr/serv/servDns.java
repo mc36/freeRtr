@@ -599,7 +599,7 @@ class servDnsDoer implements Runnable {
         pckD.servers.clear();
         packDnsRec req = pckD.queries.get(0);
         if (parent.logging) {
-            logger.info("got query " + req);
+            logger.info(conn.peerAddr + " queried " + req);
         }
         switch (req.typ) {
             case packDnsRec.typeAXFR:
