@@ -56,6 +56,11 @@ public class servDns extends servGeneric implements prtServS {
     public String lastZone = "";
 
     /**
+     * logging
+     */
+    public boolean logging;
+
+    /**
      * recursion available
      */
     protected boolean recursEna = false;
@@ -78,7 +83,8 @@ public class servDns extends servGeneric implements prtServS {
         "server dns .*! protocol " + proto2string(protoAll),
         "server dns .*! recursion access-all",
         "server dns .*! recursion 6to4nothing",
-        "server dns .*! recursion disable"
+        "server dns .*! recursion disable",
+        "server dns .*! no logging"
     };
 
     /**
@@ -118,6 +124,7 @@ public class servDns extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        cmds.cfgLine(lst, !logging, beg, "logging", "");
         if (recursAcl != null) {
             lst.add(beg + "recursion access-class " + recursAcl.listName);
         } else {
@@ -144,6 +151,7 @@ public class servDns extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1  .   logging                   log queries");
         l.add(null, "1  2   recursion                 recursive parameters");
         l.add(null, "2  .     enable                  allow recursion");
         l.add(null, "2  .     disable                 forbid recursion");
@@ -230,6 +238,10 @@ public class servDns extends servGeneric implements prtServS {
             s = cmd.word();
         }
         if (s.length() < 1) {
+            return false;
+        }
+        if (s.equals("logging")) {
+            logging = !negated;
             return false;
         }
         if (s.equals("resolver")) {
@@ -573,7 +585,6 @@ class servDnsDoer implements Runnable {
         pckD.result = packDns.resultSupport;
         pckD.response = true;
         pckD.recAvail = recurse;
-        packDnsRec req = new packDnsRec();
         if (i != packDns.opcodeQuery) {
             sendReply(pckD);
             return false;
@@ -586,7 +597,10 @@ class servDnsDoer implements Runnable {
         pckD.addition.clear();
         pckD.answers.clear();
         pckD.servers.clear();
-        req = pckD.queries.get(0);
+        packDnsRec req = pckD.queries.get(0);
+        if (parent.logging) {
+            logger.info("got query " + req);
+        }
         switch (req.typ) {
             case packDnsRec.typeAXFR:
                 packDnsZone zon = parent.zones.find(new packDnsZone(req.name));

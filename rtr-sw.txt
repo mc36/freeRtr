@@ -876,8 +876,9 @@ server bmp2mrt bmp
  exit
 !
 server dns ns
+ logging
  recursion enable
- zone sid.mchome.nop.hu defttl 600
+ zone sid.mchome.nop.hu defttl 60
  zone sid.mchome.nop.hu axfr enable
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip4a 10.10.10.227
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ns ns1.sid.mchome.nop.hu
