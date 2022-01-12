@@ -62,6 +62,11 @@ public class servSmtp extends servGeneric implements prtServS {
     public boolean recursEna = false;
 
     /**
+     * notification available
+     */
+    public boolean dsnEna = false;
+
+    /**
      * access list to use
      */
     protected tabListing<tabAceslstN<addrIP>, addrIP> recursAcl;
@@ -110,6 +115,7 @@ public class servSmtp extends servGeneric implements prtServS {
         "server smtp .*! no recursion access-class",
         "server smtp .*! no recursion authentication",
         "server smtp .*! no recursion enable",
+        "server smtp .*! no dsn",
         "server smtp .*! no bcc",
         "server smtp .*! rbl-threshold 0",
         "server smtp .*! rbl-timeout 5000"
@@ -148,6 +154,7 @@ public class servSmtp extends servGeneric implements prtServS {
         } else {
             lst.add(beg + "recursion authentication " + recursAut.autName);
         }
+        cmds.cfgLine(lst, !dsnEna, beg, "dsn", "");
         cmds.cfgLine(lst, !recursEna, beg, "recursion enable", "");
         cmds.cfgLine(lst, bccUser == null, beg, "bcc", "" + bccUser);
         lst.add(beg + "path " + mailFolders);
@@ -161,6 +168,10 @@ public class servSmtp extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("dsn")) {
+            dsnEna = true;
+            return false;
+        }
         if (s.equals("recursion")) {
             s = cmd.word();
             if (s.equals("enable")) {
@@ -232,6 +243,10 @@ public class servSmtp extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("dsn")) {
+            dsnEna = false;
+            return false;
+        }
         if (s.equals("recursion")) {
             s = cmd.word();
             if (s.equals("enable")) {
@@ -286,6 +301,7 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 .  dsn                          allow delivery notification");
         l.add(null, "1 2  recursion                    recursive parameters");
         l.add(null, "2 .    enable                     allow recursion");
         l.add(null, "2 3    access-class               set access list");
@@ -655,12 +671,16 @@ class servSmtpDoer implements Runnable {
             helo = cmd.word();
             doLine("250-" + cfgAll.getFqdn() + " hello [" + conn.peerAddr + " " + conn.portRem + "]");
             doLine("250-SIZE 10240000");
-            doLine("250-PIPELINING");
-            doLine("250-AUTH PLAIN");
+            if (lower.recursAut != null) {
+                doLine("250-AUTH PLAIN");
+            }
             if (!lower.noneSecKeys()) {
                 doLine("250-STARTTLS");
             }
-            doLine("250 DSN");
+            if (lower.dsnEna) {
+                doLine("250-DSN");
+            }
+            doLine("250 PIPELINING");
             return false;
         }
         if (a.equals("noop")) {
@@ -786,6 +806,7 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("data")) {
+            dsn &= lower.dsnEna;
             if ((trgL.size() + trgR.size()) < 1) {
                 doLine("503 target not specified");
                 return false;
