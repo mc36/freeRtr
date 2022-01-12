@@ -689,7 +689,7 @@ public class userShow {
                 userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
                 for (int i = 0; i < cfgAll.checks.size(); i++) {
                     cfgCheck ntry = cfgAll.checks.get(i);
-                    l.add(ntry.name + "|" + (ntry.doCheck().size() < 1) + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.time + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
+                    l.add(ntry.name + "|" + ntry.doCheckBinary() + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.time + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
                 }
                 rdr.putStrTab(l);
                 return null;

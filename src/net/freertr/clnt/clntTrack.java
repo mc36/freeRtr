@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgCheck;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
@@ -86,6 +87,10 @@ public class clntTrack implements rtrBfdClnt {
          * other
          */
         other,
+        /**
+         * check
+         */
+        check,
 
     }
 
@@ -329,6 +334,8 @@ public class clntTrack implements rtrBfdClnt {
                 return "nrpe";
             case other:
                 return "other";
+            case check:
+                return "check";
             case tcp:
                 return "tcp";
             case bfd:
@@ -567,6 +574,18 @@ public class clntTrack implements rtrBfdClnt {
                     return;
                 }
                 haveResult(other.worker.getStatus(), false);
+                return;
+            case check:
+                if (target == null) {
+                    haveResult(false, false);
+                    return;
+                }
+                cfgCheck check = cfgAll.checkFind(target, false);
+                if (check == null) {
+                    haveResult(false, false);
+                    return;
+                }
+                haveResult(check.doCheckBinary(), false);
                 return;
             case nrpe:
                 if (target == null) {

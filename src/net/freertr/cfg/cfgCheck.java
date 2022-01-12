@@ -625,9 +625,19 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     /**
      * do the checking
      *
+     * @return true if up, false if down
+     */
+    public boolean doCheckBinary() {
+        return doCheckText().size() < 1;
+    }
+
+    /**
+     * do the checking
+     *
      * @return result
      */
-    public List<String> doCheck() {
+    public List<String> doCheckText() {
+        long tim = bits.getTime();
         List<String> lst = getResult();
         List<String> res = new ArrayList<String>();
         delIgn(lst);
@@ -637,6 +647,14 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         }
         doCheckMiss(lst, res);
         doCheckExtra(lst, res);
+        time = (int) (bits.getTime() - tim);
+        if (res.size() < 1) {
+            okNum++;
+            okTim = tim;
+        } else {
+            errNum++;
+            errTim = tim;
+        }
         return res;
     }
 
@@ -647,12 +665,8 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
      */
     public void getReportNrpe(packNrpe pck) {
         pck.typ = packNrpe.tyRep;
-        long tim = bits.getTime();
-        List<String> lst = doCheck();
-        time = (int) (bits.getTime() - tim);
+        List<String> lst = doCheckText();
         if (lst.size() < 1) {
-            okNum++;
-            okTim = tim;
             pck.cod = packNrpe.coOk;
             pck.str = "OK";
             if (dsc != null) {
@@ -664,8 +678,6 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             }
             return;
         }
-        errNum++;
-        errTim = tim;
         pck.cod = severity;
         pck.str = getHeadLine(lst).trim();
         for (int i = 0; i < lst.size(); i++) {
@@ -761,7 +773,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.add("output:");
         res.addAll(getResult());
         res.add("result:");
-        res.addAll(doCheck());
+        res.addAll(doCheckText());
         packNrpe nrp = new packNrpe();
         getReportNrpe(nrp);
         res.add("nrpe:" + packNrpe.code2string(nrp.cod) + " " + nrp.str);

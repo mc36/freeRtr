@@ -105,6 +105,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "2  .        icmp                     icmp echo request");
         l.add(null, "2  .        nrpe                     nrpe remote check");
         l.add(null, "2  .        other                    other tracker");
+        l.add(null, "2  .        check                    local check");
         l.add(null, "2  .        tcp                      tcp connection");
         l.add(null, "2  .        bfd                      bidirectional forwarding detection");
         l.add(null, "2  .        interface                interface state");
@@ -300,6 +301,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             }
             if (a.equals("other")) {
                 worker.mode = clntTrack.operMod.other;
+                return;
+            }
+            if (a.equals("check")) {
+                worker.mode = clntTrack.operMod.check;
                 return;
             }
             cmd.badCmd();
