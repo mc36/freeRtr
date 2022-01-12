@@ -1,4 +1,4 @@
-description static routing with tcp tracker
+description static routing with udp tracker
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -23,14 +23,13 @@ int eth2
  ipv4 addr 1.1.2.1 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
-server tel tel
+server echo e
  vrf v1
  exit
 tracker t1
  vrf v1
  targ 1.1.2.2
- siz 23
- mod tcp
+ mod udp
  inter 1000
  time 500
  start
@@ -38,8 +37,7 @@ tracker t1
 tracker t2
  vrf v1
  targ 1234:2::2
- siz 23
- mod tcp
+ mod udp
  inter 1000
  time 500
  start
@@ -72,14 +70,13 @@ int eth2
  ipv4 addr 1.1.2.2 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
-server tel tel
+server echo e
  vrf v1
  exit
 tracker t1
  vrf v1
  targ 1.1.2.1
- siz 23
- mod tcp
+ mod udp
  inter 1000
  time 500
  start
@@ -87,8 +84,7 @@ tracker t1
 tracker t2
  vrf v1
  targ 1234:2::1
- siz 23
- mod tcp
+ mod udp
  inter 1000
  time 500
  start

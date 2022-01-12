@@ -16,6 +16,7 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
+ shut
  exit
 int eth2
  vrf for v1
@@ -99,6 +100,9 @@ r2 output show ipv4 route v1
 r2 output show ipv6 route v1
 
 r1 send conf t
+r1 send int eth1
+r1 send no shut
+r1 send exit
 r1 send int eth2
 r1 send shut
 r1 send end
