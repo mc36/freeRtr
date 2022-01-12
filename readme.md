@@ -6,7 +6,7 @@ more about the project at [www.freertr.net](http://www.freertr.net/)
 
 you'll need an up to date debian sid with a jdk installed.
 
-for native binaries, you'll need gcc, dpdk, libpcap, libbpf and libcrypto.
+for native binaries, you'll need clang, dpdk, libpcap, libbpf and libcrypto.
 
 ## directory structure
 
