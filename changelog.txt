@@ -12585,3 +12585,11 @@ qc pass: ingress mask matching access list
 qc pass: egress mask matching access list
 ---------------------------------- 2022-01-10 14:14:43
 qc pass: vrf route limit
+---------------------------------- 2022-01-12 09:09:57
+qc pass: static routing with udp tracker
+qc pass: static routing with twamp tracker
+qc pass: static routing with interface tracker
+qc pass: static routing with prefix tracker
+qc pass: static routing with other tracker
+qc pass: static routing with check tracker
+qc pass: static routing with nrpe tracker
