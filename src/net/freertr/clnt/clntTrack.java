@@ -21,6 +21,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGen;
+import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBfdClnt;
 import net.freertr.rtr.rtrBfdNeigh;
 import net.freertr.sec.secClient;
@@ -31,6 +32,7 @@ import net.freertr.user.userScript;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 import net.freertr.util.state;
 
 /**
@@ -91,6 +93,14 @@ public class clntTrack implements rtrBfdClnt {
          * check
          */
         check,
+        /**
+         * udp echo tester
+         */
+        udp,
+        /**
+         * twamp tester
+         */
+        twamp,
 
     }
 
@@ -338,6 +348,10 @@ public class clntTrack implements rtrBfdClnt {
                 return "check";
             case tcp:
                 return "tcp";
+            case udp:
+                return "udp";
+            case twamp:
+                return "twamp";
             case bfd:
                 return "bfd";
             case iface:
@@ -634,6 +648,7 @@ public class clntTrack implements rtrBfdClnt {
             return;
         }
         ipFwd fwdCor = vrf.getFwd(fwdTrg);
+        prtUdp udpCor = vrf.getUdp(fwdTrg);
         ipFwdIface fwdIfc = null;
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(fwdTrg);
@@ -692,6 +707,34 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(!chats.doScript(pipe), false);
                 }
                 pipe.setClose();
+                break;
+            case udp:
+                clntEcho ech = new clntEcho();
+                ech.notif = new notifier();
+                ech.udp = udpCor;
+                ech.src = fwdIfc;
+                ech.trg = fwdTrg;
+                ech.doWork();
+                ech.notif.sleep(timeout);
+                if (ech.notif.totalNotifies() < 1) {
+                    haveResult(false, false);
+                    break;
+                }
+                haveResult(true, false);
+                break;
+            case twamp:
+                clntTwamp twm = new clntTwamp();
+                twm.notif = new notifier();
+                twm.udp = udpCor;
+                twm.src = fwdIfc;
+                twm.trg = fwdTrg;
+                twm.doWork();
+                twm.notif.sleep(timeout);
+                if (twm.notif.totalNotifies() < 1) {
+                    haveResult(false, false);
+                    break;
+                }
+                haveResult(true, false);
                 break;
             case bfd:
                 fwdIfc.bfdAdd(fwdTrg, this, "tracker");

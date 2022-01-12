@@ -9,6 +9,7 @@ import net.freertr.serv.servEchoS;
 import net.freertr.tab.tabAverage;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 
 /**
  * echo (rfc862) client
@@ -27,6 +28,11 @@ public class clntEcho implements Runnable {
      * measurement
      */
     public tabAverage meas;
+
+    /**
+     * notifier
+     */
+    public notifier notif;
 
     /**
      * udp
@@ -88,7 +94,12 @@ public class clntEcho implements Runnable {
             if (len != buf.length) {
                 return;
             }
-            meas.addValue((int) beg);
+            if (meas != null) {
+                meas.addValue((int) beg);
+            }
+            if (notif != null) {
+                notif.wakeup();
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

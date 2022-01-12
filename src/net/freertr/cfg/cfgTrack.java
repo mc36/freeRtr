@@ -107,6 +107,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "2  .        other                    other tracker");
         l.add(null, "2  .        check                    local check");
         l.add(null, "2  .        tcp                      tcp connection");
+        l.add(null, "2  .        udp                      udp connection");
+        l.add(null, "2  .        twamp                    twamp connection");
         l.add(null, "2  .        bfd                      bidirectional forwarding detection");
         l.add(null, "2  .        interface                interface state");
         l.add(null, "2  .        route                    any route table entry for address");
@@ -273,6 +275,14 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             }
             if (a.equals("tcp")) {
                 worker.mode = clntTrack.operMod.tcp;
+                return;
+            }
+            if (a.equals("udp")) {
+                worker.mode = clntTrack.operMod.udp;
+                return;
+            }
+            if (a.equals("twamp")) {
+                worker.mode = clntTrack.operMod.twamp;
                 return;
             }
             if (a.equals("bfd")) {

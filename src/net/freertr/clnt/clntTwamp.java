@@ -12,6 +12,7 @@ import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabAverage;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 
 /**
  * two way measurement protocol (rfc5357) client
@@ -30,6 +31,11 @@ public class clntTwamp implements Runnable {
      * measurement
      */
     public tabAverage meas;
+
+    /**
+     * notifier
+     */
+    public notifier notif;
 
     /**
      * udp
@@ -101,7 +107,12 @@ public class clntTwamp implements Runnable {
             if (pck.dataSize() != size) {
                 return;
             }
-            meas.addValue((int) beg);
+            if (meas != null) {
+                meas.addValue((int) beg);
+            }
+            if (notif != null) {
+                notif.wakeup();
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
