@@ -14,7 +14,8 @@ the following directories could be found here:
 * src contains the main sources
 * cfg contains the self tests
 * misc contains some smaller related subprojects
-* img contains the dataplane/interop/whatever vm images used fot testing
+* misc/native contains the packet processing engines
+* img dataplane/interop/etc vm images used by tests
 * binDwn packages used for vm creation
 * binDsk rootfs used for vm creation
 * binMnt rootfs mounted for vm creation

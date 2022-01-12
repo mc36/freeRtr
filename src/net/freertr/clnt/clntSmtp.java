@@ -43,6 +43,16 @@ public class clntSmtp implements Runnable {
      */
     public String rcpt = "";
 
+    /**
+     * envelope id
+     */
+    public String envid = "";
+
+    /**
+     * delivery notification
+     */
+    public boolean notify = false;
+
     private String serv;
 
     private String lastR;
@@ -156,6 +166,19 @@ public class clntSmtp implements Runnable {
     }
 
     /**
+     * write text
+     *
+     * @param txt lines to write
+     */
+    public void putRep(List<String> txt) {
+        body.add("--" + boundary);
+        body.add("Content-Type: message/delivery-status; charset=us-ascii");
+        body.add("Content-Transfer-Encoding: 7bit");
+        body.add("");
+        body.addAll(txt);
+    }
+
+    /**
      * write message
      *
      * @param txt lines of message
@@ -226,11 +249,56 @@ public class clntSmtp implements Runnable {
      *
      * @return false on success, true on error
      */
+    public boolean conv2rep() {
+        String of = from;
+        String oe = envid;
+        from = "";
+        rcpt = of;
+        envid = "";
+        notify = false;
+        List<String> ob = body;
+        body = new ArrayList<String>();
+        putHead("report@" + cfgAll.getFqdn(), of, "delivery notification");
+        List<String> l = new ArrayList<String>();
+        l.add("hi " + of + "!");
+        l.add("");
+        l.add("this message was automatically generated at");
+        l.add(cfgAll.getFqdn() + " because you requested it!");
+        l.add("");
+        l.add("this is the original header:");
+        for (int i = 0; i < ob.size(); i++) {
+            String s = ob.get(i);
+            if (s.length() < 1) {
+                break;
+            }
+            l.add(s);
+        }
+        l.add("");
+        l.add("have a nice day!");
+        putText(l);
+        l = new ArrayList<String>();
+        l.add("Reporting-MTA: dns; " + cfgAll.getFqdn());
+        l.add("Original-Envelope-ID: " + oe);
+        l.add("");
+        l.add("Action: delivered");
+        l.add("Status: 2.0.0");
+        putRep(l);
+        putFinish();
+        return of.length() < 1;
+    }
+
+    /**
+     * create error message
+     *
+     * @return false on success, true on error
+     */
     public boolean conv2err() {
         String of = from;
         String ot = rcpt;
         from = "";
         rcpt = of;
+        envid = "";
+        notify = false;
         List<String> ob = body;
         body = new ArrayList<String>();
         putHead("error@" + cfgAll.getFqdn(), of, "failure notice");
@@ -297,7 +365,7 @@ public class clntSmtp implements Runnable {
         if (getRes(100) != 2) {
             return "failed to receive greeting message";
         }
-        sendLine("helo " + cfgAll.getFqdn());
+        sendLine("HELO " + cfgAll.getFqdn());
         if (getRes(100) != 2) {
             return "failed to exchange hostname";
         }
@@ -307,7 +375,7 @@ public class clntSmtp implements Runnable {
             byte[] buf = bits.byteConcat(zero, cfgAll.mailServerUser.getBytes());
             buf = bits.byteConcat(buf, zero);
             buf = bits.byteConcat(buf, cfgAll.mailServerPass.getBytes());
-            sendLine("auth plain");
+            sendLine("AUTH PLAIN");
             if (getRes(100) != 3) {
                 return "failed to start authentication";
             }
@@ -316,16 +384,24 @@ public class clntSmtp implements Runnable {
                 return "failed to finish authentication";
             }
         }
-        sendLine("mail from:<" + from + ">");
+        String a = "";
+        if (notify) {
+            a += " RET=HDRS ENVID=" + envid;
+        }
+        sendLine("MAIL FROM:<" + from + ">" + a);
         if (getRes(100) != 2) {
             return "failed to set sender";
         }
         cons.debugStat("sending recipients");
-        sendLine("rcpt to:<" + rcpt + ">");
+        a = "";
+        if (notify) {
+            a += " NOTIFY=SUCCESS,FAILURE,DELAY";
+        }
+        sendLine("RCPT TO:<" + rcpt + ">" + a);
         if (getRes(100) != 2) {
             return "failed to set recipients";
         }
-        sendLine("data");
+        sendLine("DATA");
         if (getRes(100) != 3) {
             return "failed to start transfer";
         }

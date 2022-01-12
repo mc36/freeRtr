@@ -515,6 +515,10 @@ class servSmtpDoer implements Runnable {
 
     private String src = "";
 
+    private boolean dsn = false;
+
+    private String env = "";
+
     private tabGen<servSmtpLoc> trgL = new tabGen<servSmtpLoc>();
 
     private List<String> trgR = new ArrayList<String>();
@@ -652,10 +656,11 @@ class servSmtpDoer implements Runnable {
             doLine("250-" + cfgAll.getFqdn() + " hello [" + conn.peerAddr + " " + conn.portRem + "]");
             doLine("250-SIZE 10240000");
             doLine("250-PIPELINING");
+            doLine("250-AUTH PLAIN");
             if (!lower.noneSecKeys()) {
                 doLine("250-STARTTLS");
             }
-            doLine("250 ok");
+            doLine("250 DSN");
             return false;
         }
         if (a.equals("noop")) {
@@ -673,6 +678,16 @@ class servSmtpDoer implements Runnable {
                     break;
                 }
                 int i = a.indexOf(":");
+                int o = a.indexOf("=");
+                if (i < 0) {
+                    i = o;
+                }
+                if (o < 0) {
+                    o = i;
+                }
+                if (o < i) {
+                    i = o;
+                }
                 s = "";
                 if (i >= 0) {
                     s = a.substring(i + 1, a.length()).trim();
@@ -681,6 +696,11 @@ class servSmtpDoer implements Runnable {
                 a = a.toLowerCase();
                 if (a.equals("from")) {
                     src = s;
+                    continue;
+                }
+                if (a.equals("envid")) {
+                    env = s;
+                    continue;
                 }
             }
             src = uniResLoc.fromEmail(src);
@@ -695,6 +715,16 @@ class servSmtpDoer implements Runnable {
                     break;
                 }
                 int i = a.indexOf(":");
+                int o = a.indexOf("=");
+                if (i < 0) {
+                    i = o;
+                }
+                if (o < 0) {
+                    o = i;
+                }
+                if (o < i) {
+                    i = o;
+                }
                 s = "";
                 if (i >= 0) {
                     s = a.substring(i + 1, a.length()).trim();
@@ -703,6 +733,11 @@ class servSmtpDoer implements Runnable {
                 a = a.toLowerCase();
                 if (a.equals("to")) {
                     last = s;
+                    continue;
+                }
+                if (a.equals("notify")) {
+                    dsn |= !s.toLowerCase().equals("never");
+                    continue;
                 }
             }
             last = uniResLoc.fromEmail(last);
@@ -742,6 +777,8 @@ class servSmtpDoer implements Runnable {
         }
         if (a.equals("rset")) {
             src = "";
+            dsn = false;
+            String env = "";
             trgS = "";
             trgL.clear();
             trgR.clear();
@@ -779,11 +816,24 @@ class servSmtpDoer implements Runnable {
                 clntSmtp sm = new clntSmtp(null);
                 sm.rcpt = trgR.get(i);
                 sm.from = src;
+                sm.notify = dsn;
+                sm.envid = env;
                 sm.putBody(txt);
                 sm.startSend();
             }
             doLine("250 mail saved in " + o + " local and " + trgR.size() + " remote mailbox(es)");
+            if (dsn) {
+                clntSmtp sm = new clntSmtp(null);
+                sm.from = src;
+                sm.envid = env;
+                sm.putBody(txt);
+                if (!sm.conv2rep()) {
+                    sm.startSend();
+                }
+            }
             src = "";
+            dsn = false;
+            String env = "";
             trgS = "";
             trgL.clear();
             trgR.clear();
