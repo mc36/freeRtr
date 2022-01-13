@@ -251,6 +251,7 @@ public class clntSmtp implements Runnable {
      */
     public boolean conv2rep() {
         String of = from;
+        String ot = rcpt;
         String oe = envid;
         from = "";
         rcpt = of;
@@ -263,7 +264,8 @@ public class clntSmtp implements Runnable {
         l.add("hi " + of + "!");
         l.add("");
         l.add("this message was automatically generated at");
-        l.add(cfgAll.getFqdn() + " because you requested it!");
+        l.add(cfgAll.getFqdn() + " because your message was delivered");
+        l.add("to " + ot + ".");
         l.add("");
         l.add("this is the original header:");
         for (int i = 0; i < ob.size(); i++) {
@@ -307,10 +309,9 @@ public class clntSmtp implements Runnable {
         l.add("");
         l.add("this message was automatically generated at");
         l.add(cfgAll.getFqdn() + " because the attached mail was not");
-        l.add("delivered to the recipient. sorry for it!");
+        l.add("delivered to " + ot + ".");
         l.add("");
-        l.add("all i know is that " + of + " wanted to send to " + ot + ".");
-        l.add("this is what happened afterwards:");
+        l.add("this is what happened:");
         for (int i = 0; i < errors.size(); i++) {
             l.add(errors.get(i));
         }
@@ -457,6 +458,18 @@ public class clntSmtp implements Runnable {
             boolean b = doSend(10);
             cleanUp();
             if (!b) {
+                if (!notify) {
+                    return;
+                }
+                if (conv2rep()) {
+                    return;
+                }
+                b = doSend(5);
+                cleanUp();
+                if (!b) {
+                    return;
+                }
+                logger.error("giving up report email from " + from + " to " + rcpt);
                 return;
             }
             logger.error("giving up email from " + from + " to " + rcpt);
