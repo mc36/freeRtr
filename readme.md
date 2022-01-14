@@ -24,7 +24,9 @@ the following directories could be found here:
 
 ## directories under misc folder
 
-* native contains the packet processing engines
+* native dpdk and xdp based dataplanes
+* p4bf tofino based dataplane
+* p4lang bmv2 based dataplane
 * bogon web based bogon originator
 * lookingglass web based looking glass
 * sniffer web based packet capture
@@ -34,14 +36,12 @@ the following directories could be found here:
 * trackmap web based monitoring
 * voice an answering machine
 * snmp some snmp definitions
-* consistency some check definitions
+* consistency old style check definitions
 * tests some volumentric generators
 * check some check definitions
 * sensor some sensor definitions
 * prometheus some grafana definitions
 * netconf some yang definitions
-* p4lang bmv2 based dataplane
-* p4bf tofino based dataplane
 
 ## getting started
 
