@@ -27,10 +27,7 @@ exec mkdir -m 0755 %tmp%/usr/bin
 exec mkdir -m 0755 %tmp%/usr/sbin
 
 exec cp rtr.ver %tmp%/rtr/
-exec cp ../binTmp/modem.bin %tmp%/rtr/
-exec cp ../binTmp/ttyLin.bin %tmp%/rtr/
-exec cp ../binTmp/rawInt.bin %tmp%/rtr/
-exec cp ../binTmp/tapInt.bin %tmp%/rtr/
+exec cp ../binTmp/*.bin %tmp%/rtr/
 
 #catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
 #catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
@@ -87,3 +84,7 @@ select-one linux-image-cloud-%arch%       #cloud kernel
 select-one busybox                        #small utils
 select-one udev                           #bring up hw
 select-one ethtool                        #disable hw chksum
+select-one iproute2                       #bring up veth
+select-one libpcap0.8                     #dataplane requirement
+select-one libssl1.1                      #dataplane requirement
+select-one libbpf0                        #dataplane requirement

@@ -6,7 +6,9 @@ cd /rtr
 cp /proc/net/dev hwdet.eth
 cp /proc/tty/driver/serial hwdet.ser
 ip link show > hwdet.mac
-java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface raw line raw inline
+if [ ! -f /rtr/hwdet-all.sh ] ; then
+  java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface raw line raw inline
+  fi
 chmod 755 *.sh
 /rtr/hwdet-all.sh
 while (true); do

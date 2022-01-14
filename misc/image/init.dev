@@ -5,3 +5,4 @@ udevadm trigger --action=add
 udevadm settle || true
 udevadm control --property=STARTUP=
 modprobe tun
+modprobe veth
