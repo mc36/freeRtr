@@ -12787,3 +12787,6 @@ qc pass: p4lang: macsec with aes256ecb
 qc pass: p4lang: macsec with sha224
 qc pass: p4lang: macsec with sha384
 qc pass: p4lang: macsec with sha3224
+---------------------------------- 2022-01-15 15:28:23
+no qc pass: p4lang: macsec with sha3224
+no qc pass: p4lang: openvpn with sha3224

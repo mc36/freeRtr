@@ -1386,7 +1386,6 @@ qc pass: p4lang: openvpn with aes192ecb
 qc pass: p4lang: openvpn with aes256ecb
 qc pass: p4lang: openvpn with sha224
 qc pass: p4lang: openvpn with sha384
-qc pass: p4lang: openvpn with sha3224
 qc pass: p4lang: macsec with aes128cfb
 qc pass: p4lang: macsec with aes192cfb
 qc pass: p4lang: macsec with aes256cfb
@@ -1395,7 +1394,6 @@ qc pass: p4lang: macsec with aes192ecb
 qc pass: p4lang: macsec with aes256ecb
 qc pass: p4lang: macsec with sha224
 qc pass: p4lang: macsec with sha384
-qc pass: p4lang: macsec with sha3224
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
