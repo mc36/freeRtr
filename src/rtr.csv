@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.1.15-cur, done by cs@nop.
--;-;-;2022-01-15 13:05:30, took 00:07:13, with 100 workers, on 2528 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2022-01-15 13:32:54, took 00:05:59, with 100 workers, on 2543 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -563,6 +563,21 @@ http://sources.nop.hu/cfg/crypt-inlsp11.tst;crypt-inlsp11.tst;success;inlsp with
 http://sources.nop.hu/cfg/crypt-inlsp12.tst;crypt-inlsp12.tst;success;inlsp with sha1
 http://sources.nop.hu/cfg/crypt-inlsp13.tst;crypt-inlsp13.tst;success;inlsp with sha256
 http://sources.nop.hu/cfg/crypt-inlsp14.tst;crypt-inlsp14.tst;success;inlsp with sha512
+http://sources.nop.hu/cfg/crypt-inlsp15.tst;crypt-inlsp15.tst;success;inlsp with aes128cfb
+http://sources.nop.hu/cfg/crypt-inlsp16.tst;crypt-inlsp16.tst;success;inlsp with aes192cfb
+http://sources.nop.hu/cfg/crypt-inlsp17.tst;crypt-inlsp17.tst;success;inlsp with aes256cfb
+http://sources.nop.hu/cfg/crypt-inlsp18.tst;crypt-inlsp18.tst;success;inlsp with aes128ecb
+http://sources.nop.hu/cfg/crypt-inlsp19.tst;crypt-inlsp19.tst;success;inlsp with aes192ecb
+http://sources.nop.hu/cfg/crypt-inlsp20.tst;crypt-inlsp20.tst;success;inlsp with aes256ecb
+http://sources.nop.hu/cfg/crypt-inlsp21.tst;crypt-inlsp21.tst;success;inlsp with aes128gcm
+http://sources.nop.hu/cfg/crypt-inlsp22.tst;crypt-inlsp22.tst;success;inlsp with aes192gcm
+http://sources.nop.hu/cfg/crypt-inlsp23.tst;crypt-inlsp23.tst;success;inlsp with aes256gcm
+http://sources.nop.hu/cfg/crypt-inlsp24.tst;crypt-inlsp24.tst;success;inlsp with sha224
+http://sources.nop.hu/cfg/crypt-inlsp25.tst;crypt-inlsp25.tst;success;inlsp with sha384
+http://sources.nop.hu/cfg/crypt-inlsp26.tst;crypt-inlsp26.tst;success;inlsp with sha3224
+http://sources.nop.hu/cfg/crypt-inlsp27.tst;crypt-inlsp27.tst;success;inlsp with sha3256
+http://sources.nop.hu/cfg/crypt-inlsp28.tst;crypt-inlsp28.tst;success;inlsp with sha3384
+http://sources.nop.hu/cfg/crypt-inlsp29.tst;crypt-inlsp29.tst;success;inlsp with sha3512
 http://sources.nop.hu/cfg/crypt-insp01.tst;crypt-insp01.tst;success;route inspection
 http://sources.nop.hu/cfg/crypt-insp02.tst;crypt-insp02.tst;success;flow inspection
 http://sources.nop.hu/cfg/crypt-insp03.tst;crypt-insp03.tst;success;interface inspection

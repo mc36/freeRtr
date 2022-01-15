@@ -12672,3 +12672,19 @@ qc pass: p4lang: ipsec with aes256cbc
 qc pass: p4lang: openvpn with aes128cbc
 qc pass: p4lang: openvpn with aes192cbc
 qc pass: p4lang: openvpn with aes256cbc
+---------------------------------- 2022-01-15 13:26:55
+qc pass: inlsp with aes128cfb
+qc pass: inlsp with aes192cfb
+qc pass: inlsp with aes256cfb
+qc pass: inlsp with aes128ecb
+qc pass: inlsp with aes192ecb
+qc pass: inlsp with aes256ecb
+qc pass: inlsp with aes128gcm
+qc pass: inlsp with aes192gcm
+qc pass: inlsp with aes256gcm
+qc pass: inlsp with sha224
+qc pass: inlsp with sha384
+qc pass: inlsp with sha3224
+qc pass: inlsp with sha3256
+qc pass: inlsp with sha3384
+qc pass: inlsp with sha3512

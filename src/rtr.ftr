@@ -559,6 +559,21 @@ qc pass: inlsp with md5
 qc pass: inlsp with sha1
 qc pass: inlsp with sha256
 qc pass: inlsp with sha512
+qc pass: inlsp with aes128cfb
+qc pass: inlsp with aes192cfb
+qc pass: inlsp with aes256cfb
+qc pass: inlsp with aes128ecb
+qc pass: inlsp with aes192ecb
+qc pass: inlsp with aes256ecb
+qc pass: inlsp with aes128gcm
+qc pass: inlsp with aes192gcm
+qc pass: inlsp with aes256gcm
+qc pass: inlsp with sha224
+qc pass: inlsp with sha384
+qc pass: inlsp with sha3224
+qc pass: inlsp with sha3256
+qc pass: inlsp with sha3384
+qc pass: inlsp with sha3512
 qc pass: route inspection
 qc pass: flow inspection
 qc pass: interface inspection
