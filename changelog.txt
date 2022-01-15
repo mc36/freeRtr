@@ -12736,3 +12736,19 @@ qc pass: skip with sha3224
 qc pass: skip with sha3256
 qc pass: skip with sha3384
 qc pass: skip with sha3512
+---------------------------------- 2022-01-15 14:00:10
+qc pass: swipe with aes128cfb
+qc pass: swipe with aes192cfb
+qc pass: swipe with aes256cfb
+qc pass: swipe with aes128ecb
+qc pass: swipe with aes192ecb
+qc pass: swipe with aes256ecb
+qc pass: swipe with aes128gcm
+qc pass: swipe with aes192gcm
+qc pass: swipe with aes256gcm
+qc pass: swipe with sha224
+qc pass: swipe with sha384
+qc pass: swipe with sha3224
+qc pass: swipe with sha3256
+qc pass: swipe with sha3384
+qc pass: swipe with sha3512

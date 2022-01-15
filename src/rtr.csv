@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.1.15-cur, done by cs@nop.
--;-;-;2022-01-15 13:59:08, took 00:06:21, with 100 workers, on 2588 cases, 0 failed, 0 traces, 6 retries
+-;-;-;2022-01-15 14:06:17, took 00:06:07, with 100 workers, on 2603 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -742,6 +742,21 @@ http://sources.nop.hu/cfg/crypt-swipe11.tst;crypt-swipe11.tst;success;swipe with
 http://sources.nop.hu/cfg/crypt-swipe12.tst;crypt-swipe12.tst;success;swipe with sha1
 http://sources.nop.hu/cfg/crypt-swipe13.tst;crypt-swipe13.tst;success;swipe with sha256
 http://sources.nop.hu/cfg/crypt-swipe14.tst;crypt-swipe14.tst;success;swipe with sha512
+http://sources.nop.hu/cfg/crypt-swipe15.tst;crypt-swipe15.tst;success;swipe with aes128cfb
+http://sources.nop.hu/cfg/crypt-swipe16.tst;crypt-swipe16.tst;success;swipe with aes192cfb
+http://sources.nop.hu/cfg/crypt-swipe17.tst;crypt-swipe17.tst;success;swipe with aes256cfb
+http://sources.nop.hu/cfg/crypt-swipe18.tst;crypt-swipe18.tst;success;swipe with aes128ecb
+http://sources.nop.hu/cfg/crypt-swipe19.tst;crypt-swipe19.tst;success;swipe with aes192ecb
+http://sources.nop.hu/cfg/crypt-swipe20.tst;crypt-swipe20.tst;success;swipe with aes256ecb
+http://sources.nop.hu/cfg/crypt-swipe21.tst;crypt-swipe21.tst;success;swipe with aes128gcm
+http://sources.nop.hu/cfg/crypt-swipe22.tst;crypt-swipe22.tst;success;swipe with aes192gcm
+http://sources.nop.hu/cfg/crypt-swipe23.tst;crypt-swipe23.tst;success;swipe with aes256gcm
+http://sources.nop.hu/cfg/crypt-swipe24.tst;crypt-swipe24.tst;success;swipe with sha224
+http://sources.nop.hu/cfg/crypt-swipe25.tst;crypt-swipe25.tst;success;swipe with sha384
+http://sources.nop.hu/cfg/crypt-swipe26.tst;crypt-swipe26.tst;success;swipe with sha3224
+http://sources.nop.hu/cfg/crypt-swipe27.tst;crypt-swipe27.tst;success;swipe with sha3256
+http://sources.nop.hu/cfg/crypt-swipe28.tst;crypt-swipe28.tst;success;swipe with sha3384
+http://sources.nop.hu/cfg/crypt-swipe29.tst;crypt-swipe29.tst;success;swipe with sha3512
 http://sources.nop.hu/cfg/crypt-tls.tst;crypt-tls.tst;success;tls test
 http://sources.nop.hu/cfg/crypt-wireguard01.tst;crypt-wireguard01.tst;success;wireguard over ipv4
 http://sources.nop.hu/cfg/crypt-wireguard02.tst;crypt-wireguard02.tst;success;wireguard over ipv6
