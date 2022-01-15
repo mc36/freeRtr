@@ -45,10 +45,6 @@ const EVP_MD* getHashAlg(char *buf) {
     if (strcmp(buf, "sha256") == 0) return EVP_sha256();
     if (strcmp(buf, "sha384") == 0) return EVP_sha384();
     if (strcmp(buf, "sha512") == 0) return EVP_sha512();
-    if (strcmp(buf, "sha3224") == 0) return EVP_sha3_224();
-    if (strcmp(buf, "sha3256") == 0) return EVP_sha3_256();
-    if (strcmp(buf, "sha3384") == 0) return EVP_sha3_384();
-    if (strcmp(buf, "sha3512") == 0) return EVP_sha3_512();
     return NULL;
 }
 
