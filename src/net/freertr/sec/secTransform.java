@@ -6,7 +6,6 @@ import net.freertr.cry.cryEncrCBCblowfish;
 import net.freertr.cry.cryEncrCBCdes;
 import net.freertr.cry.cryEncrCBCdes3;
 import net.freertr.cry.cryEncrCFBaes;
-import net.freertr.cry.cryEncrCTRaes;
 import net.freertr.cry.cryEncrECBaes;
 import net.freertr.cry.cryEncrGCMaes;
 import net.freertr.cry.cryEncrGeneric;
@@ -53,7 +52,7 @@ public class secTransform {
 
     /**
      * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aescbc, 5=aescfb,
-     * 6=aesctr, 7=aesecb, 8=aesgcm
+     * 6=aesecb, 7=aesgcm
      */
     public int encrAlg;
 
@@ -145,10 +144,8 @@ public class secTransform {
             case 5:
                 return "aes" + encrKey + "cfb";
             case 6:
-                return "aes" + encrKey + "ctr";
-            case 7:
                 return "aes" + encrKey + "ecb";
-            case 8:
+            case 7:
                 return "aes" + encrKey + "gcm";
             default:
                 return "none";
@@ -866,10 +863,8 @@ public class secTransform {
             case 5:
                 return new cryEncrCFBaes();
             case 6:
-                return new cryEncrCTRaes();
-            case 7:
                 return new cryEncrECBaes();
-            case 8:
+            case 7:
                 return new cryEncrGCMaes();
             default:
                 return null;
@@ -1003,9 +998,6 @@ public class secTransform {
         l.add(null, "2 .    aes128cfb         128bit aes cfb algorithm");
         l.add(null, "2 .    aes192cfb         192bit aes cfb algorithm");
         l.add(null, "2 .    aes256cfb         256bit aes cfb algorithm");
-        l.add(null, "2 .    aes128ctr         128bit aes ctr algorithm");
-        l.add(null, "2 .    aes192ctr         192bit aes ctr algorithm");
-        l.add(null, "2 .    aes256ctr         256bit aes ctr algorithm");
         l.add(null, "2 .    aes128ecb         128bit aes ecb algorithm");
         l.add(null, "2 .    aes192ecb         192bit aes ecb algorithm");
         l.add(null, "2 .    aes256ecb         256bit aes ecb algorithm");
@@ -1063,40 +1055,28 @@ public class secTransform {
                 encrAlg = 5;
                 encrKey = 256;
             }
-            if (s.equals("aes128ctr")) {
-                encrAlg = 6;
-                encrKey = 128;
-            }
-            if (s.equals("aes192ctr")) {
-                encrAlg = 6;
-                encrKey = 192;
-            }
-            if (s.equals("aes256ctr")) {
-                encrAlg = 6;
-                encrKey = 256;
-            }
             if (s.equals("aes128ecb")) {
-                encrAlg = 7;
+                encrAlg = 6;
                 encrKey = 128;
             }
             if (s.equals("aes192ecb")) {
-                encrAlg = 7;
+                encrAlg = 6;
                 encrKey = 192;
             }
             if (s.equals("aes256ecb")) {
-                encrAlg = 7;
+                encrAlg = 6;
                 encrKey = 256;
             }
             if (s.equals("aes128gcm")) {
-                encrAlg = 8;
+                encrAlg = 7;
                 encrKey = 128;
             }
             if (s.equals("aes192gcm")) {
-                encrAlg = 8;
+                encrAlg = 7;
                 encrKey = 192;
             }
             if (s.equals("aes256gcm")) {
-                encrAlg = 8;
+                encrAlg = 7;
                 encrKey = 256;
             }
             return false;
