@@ -12790,3 +12790,8 @@ qc pass: p4lang: macsec with sha3224
 ---------------------------------- 2022-01-15 15:28:23
 no qc pass: p4lang: macsec with sha3224
 no qc pass: p4lang: openvpn with sha3224
+---------------------------------- 2022-01-15 20:20:32
+qc pass: access total
+qc pass: access tracker
+qc pass: access negated tracker
+qc pass: access follow tracker

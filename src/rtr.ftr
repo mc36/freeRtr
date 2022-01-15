@@ -413,6 +413,10 @@ qc pass: access policy
 qc pass: access subnet
 qc pass: remote triggered blackhole access
 qc pass: remote triggered whitelist access
+qc pass: access total
+qc pass: access tracker
+qc pass: access negated tracker
+qc pass: access follow tracker
 qc pass: ingress protocol matching access list
 qc pass: egress protocol matching access list
 qc pass: ingress destination matching access list
