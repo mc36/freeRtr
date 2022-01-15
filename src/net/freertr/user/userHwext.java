@@ -208,7 +208,7 @@ public class userHwext {
         swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        hwd.add("ip link add veth1a type veth peer name veth1b");
+        userHwdet.setupVeth(hwd, "veth1a", "veth1b");
         userHwdet.setupIface(hwd, "veth1a", 1500);
         userHwdet.setupIface(hwd, "veth1b", 8192);
         hwd.add("ip link set veth1a up address 00:00:11:11:22:22 mtu 1500");
@@ -258,7 +258,7 @@ public class userHwext {
                 switch (dpt) {
                     case p4dpdk:
                         ifn = "veth0a";
-                        hwd.add("ip link add veth0a type veth peer name veth0b");
+                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         String a = "";
@@ -270,7 +270,7 @@ public class userHwext {
                         break;
                     case p4emu:
                         ifn = "veth0a";
-                        hwd.add("ip link add veth0a type veth peer name veth0b");
+                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         a = "";
@@ -282,7 +282,7 @@ public class userHwext {
                     case p4xdp:
                         ifn = "veth0a";
                         hwd.add("ulimit -l unlimited");
-                        hwd.add("ip link add veth0a type veth peer name veth0b");
+                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 2048);
                         userHwdet.setupIface(hwd, "veth0b", 2048);
                         hwd.add("ip link set " + ifn + " xdp obj p4xdp_pass.bin sec p4xdp_pass");

@@ -96,6 +96,18 @@ public class userHwdet {
     }
 
     /**
+     * set up veth
+     *
+     * @param lst list
+     * @param n1 first name
+     * @param n2 second name
+     */
+    public static void setupVeth(List<String> lst, String n1, String n2) {
+        lst.add("ip link add " + n1 + " type veth peer name veth0");
+        lst.add("ip link set veth0 name " + n2);
+    }
+
+    /**
      * set up interface
      *
      * @param lst list

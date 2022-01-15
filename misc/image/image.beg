@@ -84,7 +84,6 @@ select-one linux-image-cloud-%arch%       #cloud kernel
 select-one busybox                        #small utils
 select-one udev                           #bring up hw
 select-one ethtool                        #disable hw chksum
-select-one iproute2                       #bring up veth
 select-one libpcap0.8                     #dataplane requirement
 select-one libssl1.1                      #dataplane requirement
 select-one libbpf0                        #dataplane requirement
