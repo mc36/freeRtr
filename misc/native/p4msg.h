@@ -25,7 +25,6 @@ int str2key(char *str, unsigned char *key) {
 const EVP_CIPHER* getEncrAlg(char *buf) {
     if (strcmp(buf, "des") == 0) return EVP_des_cbc();
     if (strcmp(buf, "3des") == 0) return EVP_des_ede3_cbc();
-if (strcmp(buf, "aes256") == 0) return EVP_aes_256_cbc();/////////////////////here
     if (strcmp(buf, "aes128cbc") == 0) return EVP_aes_128_cbc();
     if (strcmp(buf, "aes192cbc") == 0) return EVP_aes_192_cbc();
     if (strcmp(buf, "aes256cbc") == 0) return EVP_aes_256_cbc();
