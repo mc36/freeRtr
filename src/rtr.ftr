@@ -679,6 +679,21 @@ qc pass: satp with sha1
 qc pass: satp with sha256
 qc pass: satp with sha512
 qc pass: satp over asymmetric ports
+qc pass: satp with aes128cfb
+qc pass: satp with aes192cfb
+qc pass: satp with aes256cfb
+qc pass: satp with aes128ecb
+qc pass: satp with aes192ecb
+qc pass: satp with aes256ecb
+qc pass: satp with aes128gcm
+qc pass: satp with aes192gcm
+qc pass: satp with aes256gcm
+qc pass: satp with sha224
+qc pass: satp with sha384
+qc pass: satp with sha3224
+qc pass: satp with sha3256
+qc pass: satp with sha3384
+qc pass: satp with sha3512
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip

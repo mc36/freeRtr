@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.1.15-cur, done by cs@nop.
--;-;-;2022-01-15 13:41:54, took 00:07:23, with 100 workers, on 2558 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2022-01-15 13:50:07, took 00:06:47, with 100 workers, on 2573 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -683,6 +683,21 @@ http://sources.nop.hu/cfg/crypt-satp12.tst;crypt-satp12.tst;success;satp with sh
 http://sources.nop.hu/cfg/crypt-satp13.tst;crypt-satp13.tst;success;satp with sha256
 http://sources.nop.hu/cfg/crypt-satp14.tst;crypt-satp14.tst;success;satp with sha512
 http://sources.nop.hu/cfg/crypt-satp15.tst;crypt-satp15.tst;success;satp over asymmetric ports
+http://sources.nop.hu/cfg/crypt-satp16.tst;crypt-satp16.tst;success;satp with aes128cfb
+http://sources.nop.hu/cfg/crypt-satp17.tst;crypt-satp17.tst;success;satp with aes192cfb
+http://sources.nop.hu/cfg/crypt-satp18.tst;crypt-satp18.tst;success;satp with aes256cfb
+http://sources.nop.hu/cfg/crypt-satp19.tst;crypt-satp19.tst;success;satp with aes128ecb
+http://sources.nop.hu/cfg/crypt-satp20.tst;crypt-satp20.tst;success;satp with aes192ecb
+http://sources.nop.hu/cfg/crypt-satp21.tst;crypt-satp21.tst;success;satp with aes256ecb
+http://sources.nop.hu/cfg/crypt-satp22.tst;crypt-satp22.tst;success;satp with aes128gcm
+http://sources.nop.hu/cfg/crypt-satp23.tst;crypt-satp23.tst;success;satp with aes192gcm
+http://sources.nop.hu/cfg/crypt-satp24.tst;crypt-satp24.tst;success;satp with aes256gcm
+http://sources.nop.hu/cfg/crypt-satp25.tst;crypt-satp25.tst;success;satp with sha224
+http://sources.nop.hu/cfg/crypt-satp26.tst;crypt-satp26.tst;success;satp with sha384
+http://sources.nop.hu/cfg/crypt-satp27.tst;crypt-satp27.tst;success;satp with sha3224
+http://sources.nop.hu/cfg/crypt-satp28.tst;crypt-satp28.tst;success;satp with sha3256
+http://sources.nop.hu/cfg/crypt-satp29.tst;crypt-satp29.tst;success;satp with sha3384
+http://sources.nop.hu/cfg/crypt-satp30.tst;crypt-satp30.tst;success;satp with sha3512
 http://sources.nop.hu/cfg/crypt-skip01.tst;crypt-skip01.tst;success;skip over ipv4
 http://sources.nop.hu/cfg/crypt-skip02.tst;crypt-skip02.tst;success;skip over ipv6
 http://sources.nop.hu/cfg/crypt-skip03.tst;crypt-skip03.tst;success;skip over skip

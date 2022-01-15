@@ -12704,3 +12704,19 @@ qc pass: openvpn with sha3224
 qc pass: openvpn with sha3256
 qc pass: openvpn with sha3384
 qc pass: openvpn with sha3512
+---------------------------------- 2022-01-15 13:43:19
+qc pass: satp with aes128cfb
+qc pass: satp with aes192cfb
+qc pass: satp with aes256cfb
+qc pass: satp with aes128ecb
+qc pass: satp with aes192ecb
+qc pass: satp with aes256ecb
+qc pass: satp with aes128gcm
+qc pass: satp with aes192gcm
+qc pass: satp with aes256gcm
+qc pass: satp with sha224
+qc pass: satp with sha384
+qc pass: satp with sha3224
+qc pass: satp with sha3256
+qc pass: satp with sha3384
+qc pass: satp with sha3512
