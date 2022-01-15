@@ -1023,6 +1023,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct monitor_entry *monitor_res = NULL;
     struct mroute4_entry *mroute4_res = NULL;
     struct mroute6_entry *mroute6_res = NULL;
+    int rounds = 256;
     int index = 0;
     int label = 0;
     int sum = 0;
@@ -1094,6 +1095,7 @@ ethtyp_rx:
         }
     }
 etyped_rx:
+    if (rounds-- < 0) doDropper;
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
         checkLayer2;
@@ -1102,6 +1104,7 @@ etyped_rx:
         packMpls[port]++;
         byteMpls[port] += bufS;
 mpls_rx:
+        if (rounds-- < 0) doDropper;
         label = get32msb(bufD, bufP);
         ttl = (label & 0xff) - 1;
         if (ttl <= 1) doPunting;
