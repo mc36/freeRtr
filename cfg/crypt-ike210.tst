@@ -1,4 +1,4 @@
-description ike2 with aes256
+description ike2 with aes256cbc
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -12,7 +12,7 @@ int eth1
  exit
 crypto ipsec ips
  group 02
- cipher aes256
+ cipher aes256cbc
  hash md5
  seconds 3600
  bytes 1024000
@@ -40,7 +40,7 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher aes256
+ cipher aes256cbc
  hash md5
  seconds 3600
  bytes 1024000

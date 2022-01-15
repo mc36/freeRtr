@@ -1,4 +1,4 @@
-description p4lang: macsec with aes256
+description p4lang: macsec with aes256cbc
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -43,7 +43,7 @@ int sdn1
  exit
 crypto ipsec ips
  group 02
- cipher aes256
+ cipher aes256cbc
  hash md5
  key tester
  replay 0
@@ -148,7 +148,7 @@ int lo0
  exit
 crypto ipsec ips
  group 02
- cipher aes256
+ cipher aes256cbc
  hash md5
  key tester
  replay 0

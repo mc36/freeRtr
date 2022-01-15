@@ -1,4 +1,4 @@
-description swipe with aes192
+description swipe with aes192cbc
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -12,7 +12,7 @@ int ser1
  ipv6 addr 1234::1 ffff::
  exit
 crypto ipsec ips
- cipher aes192
+ cipher aes192cbc
  hash md5
  key tester
  exit
@@ -40,7 +40,7 @@ int ser1
  ipv6 addr 1234::2 ffff::
  exit
 crypto ipsec ips
- cipher aes192
+ cipher aes192cbc
  hash md5
  key tester
  exit

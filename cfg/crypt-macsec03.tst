@@ -10,7 +10,7 @@ bridge 1
  exit
 crypto ipsec ips
  group 02
- cipher aes256
+ cipher aes256cbc
  hash sha1
  key tester
  exit
@@ -33,7 +33,7 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher aes256
+ cipher aes256cbc
  hash sha1
  key tester
  exit

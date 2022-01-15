@@ -1,4 +1,4 @@
-description interop1: ike2 with aes128
+description interop1: ike2 with aes128cbc
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -13,7 +13,7 @@ int eth1
  exit
 crypto ipsec ips
  group 01
- cipher aes128
+ cipher aes128cbc
  hash md5
  seconds 3600
  bytes 67108864

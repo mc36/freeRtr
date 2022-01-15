@@ -500,9 +500,9 @@ qc pass: ipv6 in ike1 over ipv6
 qc pass: ike1 with des
 qc pass: ike1 with blowfish
 qc pass: ike1 with 3des
-qc pass: ike1 with aes128
-qc pass: ike1 with aes192
-qc pass: ike1 with aes256
+qc pass: ike1 with aes128cbc
+qc pass: ike1 with aes192cbc
+qc pass: ike1 with aes256cbc
 qc pass: ike1 with md5
 qc pass: ike1 with sha1
 qc pass: ike1 with sha256
@@ -526,9 +526,9 @@ qc pass: ipv6 in ike2 over ipv6
 qc pass: ike2 with des
 qc pass: ike2 with blowfish
 qc pass: ike2 with 3des
-qc pass: ike2 with aes128
-qc pass: ike2 with aes192
-qc pass: ike2 with aes256
+qc pass: ike2 with aes128cbc
+qc pass: ike2 with aes192cbc
+qc pass: ike2 with aes256cbc
 qc pass: ike2 with md5
 qc pass: ike2 with sha1
 qc pass: ike2 with sha256
@@ -552,9 +552,9 @@ qc pass: inlsp over loopback
 qc pass: inlsp with des
 qc pass: inlsp with blowfish
 qc pass: inlsp with 3des
-qc pass: inlsp with aes128
-qc pass: inlsp with aes192
-qc pass: inlsp with aes256
+qc pass: inlsp with aes128cbc
+qc pass: inlsp with aes192cbc
+qc pass: inlsp with aes256cbc
 qc pass: inlsp with md5
 qc pass: inlsp with sha1
 qc pass: inlsp with sha256
@@ -584,9 +584,9 @@ qc pass: macsec over tunnel
 qc pass: macsec with des
 qc pass: macsec with blowfish
 qc pass: macsec with 3des
-qc pass: macsec with aes128
-qc pass: macsec with aes192
-qc pass: macsec with aes256
+qc pass: macsec with aes128cbc
+qc pass: macsec with aes192cbc
+qc pass: macsec with aes256cbc
 qc pass: macsec with md5
 qc pass: macsec with sha1
 qc pass: macsec with sha256
@@ -625,9 +625,9 @@ qc pass: openvpn over loopback
 qc pass: openvpn with des
 qc pass: openvpn with blowfish
 qc pass: openvpn with 3des
-qc pass: openvpn with aes128
-qc pass: openvpn with aes192
-qc pass: openvpn with aes256
+qc pass: openvpn with aes128cbc
+qc pass: openvpn with aes192cbc
+qc pass: openvpn with aes256cbc
 qc pass: openvpn with md5
 qc pass: openvpn with sha1
 qc pass: openvpn with sha256
@@ -641,9 +641,9 @@ qc pass: satp over loopback
 qc pass: satp with des
 qc pass: satp with blowfish
 qc pass: satp with 3des
-qc pass: satp with aes128
-qc pass: satp with aes192
-qc pass: satp with aes256
+qc pass: satp with aes128cbc
+qc pass: satp with aes192cbc
+qc pass: satp with aes256cbc
 qc pass: satp with md5
 qc pass: satp with sha1
 qc pass: satp with sha256
@@ -656,9 +656,9 @@ qc pass: skip over loopback
 qc pass: skip with des
 qc pass: skip with blowfish
 qc pass: skip with 3des
-qc pass: skip with aes128
-qc pass: skip with aes192
-qc pass: skip with aes256
+qc pass: skip with aes128cbc
+qc pass: skip with aes192cbc
+qc pass: skip with aes256cbc
 qc pass: skip with md5
 qc pass: skip with sha1
 qc pass: skip with sha256
@@ -671,9 +671,9 @@ qc pass: swipe over loopback
 qc pass: swipe with des
 qc pass: swipe with blowfish
 qc pass: swipe with 3des
-qc pass: swipe with aes128
-qc pass: swipe with aes192
-qc pass: swipe with aes256
+qc pass: swipe with aes128cbc
+qc pass: swipe with aes192cbc
+qc pass: swipe with aes256cbc
 qc pass: swipe with md5
 qc pass: swipe with sha1
 qc pass: swipe with sha256
@@ -722,9 +722,9 @@ qc pass: interop1: fragmentation and reassembly
 qc pass: interop1: ike1 with ipv4
 qc pass: interop1: ike1 with ipv6
 qc pass: interop1: ike1 with 3des
-qc pass: interop1: ike1 with aes128
-qc pass: interop1: ike1 with aes192
-qc pass: interop1: ike1 with aes256
+qc pass: interop1: ike1 with aes128cbc
+qc pass: interop1: ike1 with aes192cbc
+qc pass: interop1: ike1 with aes256cbc
 qc pass: interop1: ike1 with sha1
 qc pass: interop1: ike1 with sha256
 qc pass: interop1: ike1 with sha512
@@ -737,9 +737,9 @@ qc pass: interop1: ike1 with group24
 qc pass: interop1: ike2 with ipv4
 qc pass: interop1: ike2 with ipv6
 qc pass: interop1: ike2 with 3des
-qc pass: interop1: ike2 with aes128
-qc pass: interop1: ike2 with aes192
-qc pass: interop1: ike2 with aes256
+qc pass: interop1: ike2 with aes128cbc
+qc pass: interop1: ike2 with aes192cbc
+qc pass: interop1: ike2 with aes256cbc
 qc pass: interop1: ike2 with sha1
 qc pass: interop1: ike2 with sha256
 qc pass: interop1: ike2 with sha512
@@ -1220,9 +1220,9 @@ qc pass: p4lang: ingress amt access list
 qc pass: p4lang: egress amt access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
-qc pass: p4lang: macsec with aes128
-qc pass: p4lang: macsec with aes192
-qc pass: p4lang: macsec with aes256
+qc pass: p4lang: macsec with aes128cbc
+qc pass: p4lang: macsec with aes192cbc
+qc pass: p4lang: macsec with aes256cbc
 qc pass: p4lang: macsec with md5
 qc pass: p4lang: macsec with sha1
 qc pass: p4lang: macsec with sha256
@@ -1240,9 +1240,9 @@ qc pass: p4lang: macsec vlan ingress access list
 qc pass: p4lang: macsec vlan egress access list
 qc pass: p4lang: ipsec with des
 qc pass: p4lang: ipsec with 3des
-qc pass: p4lang: ipsec with aes128
-qc pass: p4lang: ipsec with aes192
-qc pass: p4lang: ipsec with aes256
+qc pass: p4lang: ipsec with aes128cbc
+qc pass: p4lang: ipsec with aes192cbc
+qc pass: p4lang: ipsec with aes256cbc
 qc pass: p4lang: ipsec with md5
 qc pass: p4lang: ipsec with sha1
 qc pass: p4lang: ipsec with sha256
@@ -1262,9 +1262,9 @@ qc pass: p4lang: ipsec with ike1
 qc pass: p4lang: ipsec with ike2
 qc pass: p4lang: openvpn with des
 qc pass: p4lang: openvpn with 3des
-qc pass: p4lang: openvpn with aes128
-qc pass: p4lang: openvpn with aes192
-qc pass: p4lang: openvpn with aes256
+qc pass: p4lang: openvpn with aes128cbc
+qc pass: p4lang: openvpn with aes192cbc
+qc pass: p4lang: openvpn with aes256cbc
 qc pass: p4lang: openvpn with md5
 qc pass: p4lang: openvpn with sha1
 qc pass: p4lang: openvpn with sha256

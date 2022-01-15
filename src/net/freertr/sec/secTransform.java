@@ -5,13 +5,23 @@ import net.freertr.cry.cryEncrCBCaes;
 import net.freertr.cry.cryEncrCBCblowfish;
 import net.freertr.cry.cryEncrCBCdes;
 import net.freertr.cry.cryEncrCBCdes3;
+import net.freertr.cry.cryEncrCFBaes;
+import net.freertr.cry.cryEncrCTRaes;
+import net.freertr.cry.cryEncrECBaes;
+import net.freertr.cry.cryEncrGCMaes;
 import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryHashHmac;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.cry.cryHashSha1;
+import net.freertr.cry.cryHashSha2224;
 import net.freertr.cry.cryHashSha2256;
+import net.freertr.cry.cryHashSha2384;
 import net.freertr.cry.cryHashSha2512;
+import net.freertr.cry.cryHashSha3224;
+import net.freertr.cry.cryHashSha3256;
+import net.freertr.cry.cryHashSha3384;
+import net.freertr.cry.cryHashSha3512;
 import net.freertr.cry.cryKeyDH;
 import net.freertr.pack.packHolder;
 import net.freertr.user.userHelping;
@@ -42,7 +52,8 @@ public class secTransform {
     public int transId;
 
     /**
-     * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aes
+     * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aescbc, 5=aescfb,
+     * 6=aesctr, 7=aesecb, 8=aesgcm
      */
     public int encrAlg;
 
@@ -52,7 +63,8 @@ public class secTransform {
     public int encrKey;
 
     /**
-     * hash algorithm 1=md5, 2=sha1, 3=sha256, 4=sha512
+     * hash algorithm 1=md5, 2=sha1, 3=sha256, 4=sha512, 5=sha224, 6=sha384
+     * 7=sha3224, 8=sha3256, 9=sha3384, 10=sha3512
      */
     public int hashAlg;
 
@@ -129,7 +141,15 @@ public class secTransform {
             case 3:
                 return "3des";
             case 4:
-                return "aes" + encrKey;
+                return "aes" + encrKey + "cbc";
+            case 5:
+                return "aes" + encrKey + "cfb";
+            case 6:
+                return "aes" + encrKey + "ctr";
+            case 7:
+                return "aes" + encrKey + "ecb";
+            case 8:
+                return "aes" + encrKey + "gcm";
             default:
                 return "none";
         }
@@ -150,6 +170,18 @@ public class secTransform {
                 return "sha256";
             case 4:
                 return "sha512";
+            case 5:
+                return "sha224";
+            case 6:
+                return "sha384";
+            case 7:
+                return "sha3224";
+            case 8:
+                return "sha3256";
+            case 9:
+                return "sha3384";
+            case 10:
+                return "sha3512";
             default:
                 return "none";
         }
@@ -489,7 +521,7 @@ public class secTransform {
         }
         if (lifeByt > 0) {
             add1property(pck, 11, 2);
-            add1property(pck, 12, (int)lifeByt);
+            add1property(pck, 12, (int) lifeByt);
         }
         siz = pck.headSize() - siz;
         pck.msbPutW(2 - siz, siz);
@@ -568,7 +600,7 @@ public class secTransform {
         }
         if (lifeByt > 0) {
             add1property(pck, 1, 2);
-            add1property(pck, 2, (int)lifeByt);
+            add1property(pck, 2, (int) lifeByt);
         }
         siz = pck.headSize() - siz;
         pck.msbPutW(2 - siz, siz);
@@ -831,6 +863,14 @@ public class secTransform {
                 return new cryEncrCBCdes3();
             case 4:
                 return new cryEncrCBCaes();
+            case 5:
+                return new cryEncrCFBaes();
+            case 6:
+                return new cryEncrCTRaes();
+            case 7:
+                return new cryEncrECBaes();
+            case 8:
+                return new cryEncrGCMaes();
             default:
                 return null;
         }
@@ -855,6 +895,24 @@ public class secTransform {
                 break;
             case 4:
                 h = new cryHashSha2512();
+                break;
+            case 5:
+                h = new cryHashSha2224();
+                break;
+            case 6:
+                h = new cryHashSha2384();
+                break;
+            case 7:
+                h = new cryHashSha3224();
+                break;
+            case 8:
+                h = new cryHashSha3256();
+                break;
+            case 9:
+                h = new cryHashSha3384();
+                break;
+            case 10:
+                h = new cryHashSha3512();
                 break;
             default:
                 return null;
@@ -927,15 +985,33 @@ public class secTransform {
         l.add(null, "1 2  hash                select hash algorithm");
         l.add(null, "2 .    md5               message digest 5 algorithm");
         l.add(null, "2 .    sha1              secure hash algorithm 1");
-        l.add(null, "2 .    sha256            secure hash algorithm 256");
-        l.add(null, "2 .    sha512            secure hash algorithm 512");
+        l.add(null, "2 .    sha224            secure hash algorithm 2 224");
+        l.add(null, "2 .    sha256            secure hash algorithm 2 256");
+        l.add(null, "2 .    sha384            secure hash algorithm 2 384");
+        l.add(null, "2 .    sha512            secure hash algorithm 2 512");
+        l.add(null, "2 .    sha3224           secure hash algorithm 3 224");
+        l.add(null, "2 .    sha3256           secure hash algorithm 3 256");
+        l.add(null, "2 .    sha3384           secure hash algorithm 3 384");
+        l.add(null, "2 .    sha3512           secure hash algorithm 3 512");
         l.add(null, "1 2  cipher              select cipher algorithm");
         l.add(null, "2 .    des               des algorithm");
         l.add(null, "2 .    blowfish          blowfish algorithm");
         l.add(null, "2 .    3des              triple des algorithm");
-        l.add(null, "2 .    aes128            128bit aes algorithm");
-        l.add(null, "2 .    aes192            192bit aes algorithm");
-        l.add(null, "2 .    aes256            256bit aes algorithm");
+        l.add(null, "2 .    aes128cbc         128bit aes cbc algorithm");
+        l.add(null, "2 .    aes192cbc         192bit aes cbc algorithm");
+        l.add(null, "2 .    aes256cbc         256bit aes cbc algorithm");
+        l.add(null, "2 .    aes128cfb         128bit aes cfb algorithm");
+        l.add(null, "2 .    aes192cfb         192bit aes cfb algorithm");
+        l.add(null, "2 .    aes256cfb         256bit aes cfb algorithm");
+        l.add(null, "2 .    aes128ctr         128bit aes ctr algorithm");
+        l.add(null, "2 .    aes192ctr         192bit aes ctr algorithm");
+        l.add(null, "2 .    aes256ctr         256bit aes ctr algorithm");
+        l.add(null, "2 .    aes128ecb         128bit aes ecb algorithm");
+        l.add(null, "2 .    aes192ecb         192bit aes ecb algorithm");
+        l.add(null, "2 .    aes256ecb         256bit aes ecb algorithm");
+        l.add(null, "2 .    aes128gcm         128bit aes gcm algorithm");
+        l.add(null, "2 .    aes192gcm         192bit aes gcm algorithm");
+        l.add(null, "2 .    aes256gcm         256bit aes gcm algorithm");
     }
 
     /**
@@ -963,16 +1039,64 @@ public class secTransform {
             if (s.equals("3des")) {
                 encrAlg = 3;
             }
-            if (s.equals("aes128")) {
+            if (s.equals("aes128cbc")) {
                 encrAlg = 4;
                 encrKey = 128;
             }
-            if (s.equals("aes192")) {
+            if (s.equals("aes192cbc")) {
                 encrAlg = 4;
                 encrKey = 192;
             }
-            if (s.equals("aes256")) {
+            if (s.equals("aes256cbc")) {
                 encrAlg = 4;
+                encrKey = 256;
+            }
+            if (s.equals("aes128cfb")) {
+                encrAlg = 5;
+                encrKey = 128;
+            }
+            if (s.equals("aes192cfb")) {
+                encrAlg = 5;
+                encrKey = 192;
+            }
+            if (s.equals("aes256cfb")) {
+                encrAlg = 5;
+                encrKey = 256;
+            }
+            if (s.equals("aes128ctr")) {
+                encrAlg = 6;
+                encrKey = 128;
+            }
+            if (s.equals("aes192ctr")) {
+                encrAlg = 6;
+                encrKey = 192;
+            }
+            if (s.equals("aes256ctr")) {
+                encrAlg = 6;
+                encrKey = 256;
+            }
+            if (s.equals("aes128ecb")) {
+                encrAlg = 7;
+                encrKey = 128;
+            }
+            if (s.equals("aes192ecb")) {
+                encrAlg = 7;
+                encrKey = 192;
+            }
+            if (s.equals("aes256ecb")) {
+                encrAlg = 7;
+                encrKey = 256;
+            }
+            if (s.equals("aes128gcm")) {
+                encrAlg = 8;
+                encrKey = 128;
+            }
+            if (s.equals("aes192gcm")) {
+                encrAlg = 8;
+                encrKey = 192;
+            }
+            if (s.equals("aes256gcm")) {
+                encrAlg = 8;
                 encrKey = 256;
             }
             return false;
@@ -991,6 +1115,24 @@ public class secTransform {
             }
             if (s.equals("sha512")) {
                 hashAlg = 4;
+            }
+            if (s.equals("sha224")) {
+                hashAlg = 5;
+            }
+            if (s.equals("sha384")) {
+                hashAlg = 6;
+            }
+            if (s.equals("sha3224")) {
+                hashAlg = 7;
+            }
+            if (s.equals("sha3256")) {
+                hashAlg = 8;
+            }
+            if (s.equals("sha3384")) {
+                hashAlg = 9;
+            }
+            if (s.equals("sha3512")) {
+                hashAlg = 10;
             }
             return false;
         }
