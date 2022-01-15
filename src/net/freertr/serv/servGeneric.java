@@ -1016,6 +1016,14 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     }
 
     private boolean srvCheckAccept1(addrIP adr, int prt) {
+        if (srvTrckr != null) {
+            if (!srvTrckr.getStatus()) {
+                if (srvLogDrop) {
+                    logger.info("access tracker dropped " + adr + " " + prt);
+                }
+                return true;
+            }
+        }
         if (srvStartup > 0) {
             if ((bits.getTime() - cfgInit.started) < srvStartup) {
                 if (srvLogDrop) {
@@ -1115,14 +1123,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
             return true;
         }
-        if (srvTrckr != null) {
-            if (!srvTrckr.getStatus()) {
-                if (srvLogDrop) {
-                    logger.info("access tracker dropped " + conn);
-                }
-                return true;
-            }
-        }
         if (srvAccess != null) {
             if (!srvAccess.matches(conn)) {
                 if (srvLogDrop) {
@@ -1174,14 +1174,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     protected boolean srvCheckAccept(ipFwdIface ifc, packHolder pck) {
         if (srvCheckAccept1(pck.IPsrc, pck.IPprt)) {
             return true;
-        }
-        if (srvTrckr != null) {
-            if (!srvTrckr.getStatus()) {
-                if (srvLogDrop) {
-                    logger.info("access tracker dropped " + pck.IPsrc + " " + pck.IPprt);
-                }
-                return true;
-            }
         }
         if (srvAccess != null) {
             if (!srvAccess.matches(false, false, pck)) {
