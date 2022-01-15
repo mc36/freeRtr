@@ -12752,3 +12752,19 @@ qc pass: swipe with sha3224
 qc pass: swipe with sha3256
 qc pass: swipe with sha3384
 qc pass: swipe with sha3512
+---------------------------------- 2022-01-15 14:08:49
+qc pass: macsec with aes128cfb
+qc pass: macsec with aes192cfb
+qc pass: macsec with aes256cfb
+qc pass: macsec with aes128ecb
+qc pass: macsec with aes192ecb
+qc pass: macsec with aes256ecb
+qc pass: macsec with aes128gcm
+qc pass: macsec with aes192gcm
+qc pass: macsec with aes256gcm
+qc pass: macsec with sha224
+qc pass: macsec with sha384
+qc pass: macsec with sha3224
+qc pass: macsec with sha3256
+qc pass: macsec with sha3384
+qc pass: macsec with sha3512
