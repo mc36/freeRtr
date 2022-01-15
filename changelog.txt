@@ -12720,3 +12720,19 @@ qc pass: satp with sha3224
 qc pass: satp with sha3256
 qc pass: satp with sha3384
 qc pass: satp with sha3512
+---------------------------------- 2022-01-15 13:52:46
+qc pass: skip with aes128cfb
+qc pass: skip with aes192cfb
+qc pass: skip with aes256cfb
+qc pass: skip with aes128ecb
+qc pass: skip with aes192ecb
+qc pass: skip with aes256ecb
+qc pass: skip with aes128gcm
+qc pass: skip with aes192gcm
+qc pass: skip with aes256gcm
+qc pass: skip with sha224
+qc pass: skip with sha384
+qc pass: skip with sha3224
+qc pass: skip with sha3256
+qc pass: skip with sha3384
+qc pass: skip with sha3512

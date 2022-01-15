@@ -708,6 +708,21 @@ qc pass: skip with md5
 qc pass: skip with sha1
 qc pass: skip with sha256
 qc pass: skip with sha512
+qc pass: skip with aes128cfb
+qc pass: skip with aes192cfb
+qc pass: skip with aes256cfb
+qc pass: skip with aes128ecb
+qc pass: skip with aes192ecb
+qc pass: skip with aes256ecb
+qc pass: skip with aes128gcm
+qc pass: skip with aes192gcm
+qc pass: skip with aes256gcm
+qc pass: skip with sha224
+qc pass: skip with sha384
+qc pass: skip with sha3224
+qc pass: skip with sha3256
+qc pass: skip with sha3384
+qc pass: skip with sha3512
 qc pass: ssh test
 qc pass: swipe over ipv4
 qc pass: swipe over ipv6

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.1.15-cur, done by cs@nop.
--;-;-;2022-01-15 13:50:07, took 00:06:47, with 100 workers, on 2573 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2022-01-15 13:59:08, took 00:06:21, with 100 workers, on 2588 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -712,6 +712,21 @@ http://sources.nop.hu/cfg/crypt-skip11.tst;crypt-skip11.tst;success;skip with md
 http://sources.nop.hu/cfg/crypt-skip12.tst;crypt-skip12.tst;success;skip with sha1
 http://sources.nop.hu/cfg/crypt-skip13.tst;crypt-skip13.tst;success;skip with sha256
 http://sources.nop.hu/cfg/crypt-skip14.tst;crypt-skip14.tst;success;skip with sha512
+http://sources.nop.hu/cfg/crypt-skip15.tst;crypt-skip15.tst;success;skip with aes128cfb
+http://sources.nop.hu/cfg/crypt-skip16.tst;crypt-skip16.tst;success;skip with aes192cfb
+http://sources.nop.hu/cfg/crypt-skip17.tst;crypt-skip17.tst;success;skip with aes256cfb
+http://sources.nop.hu/cfg/crypt-skip18.tst;crypt-skip18.tst;success;skip with aes128ecb
+http://sources.nop.hu/cfg/crypt-skip19.tst;crypt-skip19.tst;success;skip with aes192ecb
+http://sources.nop.hu/cfg/crypt-skip20.tst;crypt-skip20.tst;success;skip with aes256ecb
+http://sources.nop.hu/cfg/crypt-skip21.tst;crypt-skip21.tst;success;skip with aes128gcm
+http://sources.nop.hu/cfg/crypt-skip22.tst;crypt-skip22.tst;success;skip with aes192gcm
+http://sources.nop.hu/cfg/crypt-skip23.tst;crypt-skip23.tst;success;skip with aes256gcm
+http://sources.nop.hu/cfg/crypt-skip24.tst;crypt-skip24.tst;success;skip with sha224
+http://sources.nop.hu/cfg/crypt-skip25.tst;crypt-skip25.tst;success;skip with sha384
+http://sources.nop.hu/cfg/crypt-skip26.tst;crypt-skip26.tst;success;skip with sha3224
+http://sources.nop.hu/cfg/crypt-skip27.tst;crypt-skip27.tst;success;skip with sha3256
+http://sources.nop.hu/cfg/crypt-skip28.tst;crypt-skip28.tst;success;skip with sha3384
+http://sources.nop.hu/cfg/crypt-skip29.tst;crypt-skip29.tst;success;skip with sha3512
 http://sources.nop.hu/cfg/crypt-ssh.tst;crypt-ssh.tst;success;ssh test
 http://sources.nop.hu/cfg/crypt-swipe01.tst;crypt-swipe01.tst;success;swipe over ipv4
 http://sources.nop.hu/cfg/crypt-swipe02.tst;crypt-swipe02.tst;success;swipe over ipv6
