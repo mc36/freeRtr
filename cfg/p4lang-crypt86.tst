@@ -1,4 +1,4 @@
-description p4lang: macsec with sha224
+description p4lang: macsec with sha384
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -44,7 +44,7 @@ int sdn1
 crypto ipsec ips
  group 02
  cipher des
- hash sha224
+ hash sha384
  key tester
  replay 0
  exit
@@ -149,7 +149,7 @@ int lo0
 crypto ipsec ips
  group 02
  cipher des
- hash sha224
+ hash sha384
  key tester
  replay 0
  exit

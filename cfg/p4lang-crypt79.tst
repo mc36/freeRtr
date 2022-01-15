@@ -1,13 +1,10 @@
-description p4lang: openvpn with sha3224
+description p4lang: macsec with aes128cfb
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1111 $2b$ $2a$
 !
 vrf def v1
- rd 1:1
- exit
-vrf def v2
  rd 1:1
  exit
 vrf def v9
@@ -39,27 +36,20 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int sdn1
- vrf for v2
- ipv4 addr 9.9.9.1 255.255.255.0
- exit
-crypto ipsec ips
- cipher des
- hash sha3224
- key 22f9c676f655336c3f3188b8d9cc759903733212ed77231bc38126b6000b043f1f56d07b885f4d00676afd8fea25c88fa917294d8f1e89b84922d5d2556de977beac2f254ba2b67477131f4d4708cb509f4c9f784780465462e502d29183665bbd5eff6bdc27370f05aa1d856b497a1f7ef5f20bad7aff155619a4b09849fab814ee76e7121c2adf85326db4c1cce132200ca3e4d03930f765ba96a8c46f1ab374beb73e79093d60879a8d9585f2feb987d89e65a33ef3857f3b09df80a2403f6c50dc50439e258d61c7dac377514a8d281c10feeea79ae7b063064aec3989b4d867bb24182f7d007ad41284ee6577053dae2cc289dd39e66cd8fe7089b7015f
- replay 0
- exit
-int tun1
- tun vrf v2
- tun source sdn1
- tun destination 9.9.9.2
- tun prot ips
- tun mode openvpn
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  exit
+crypto ipsec ips
+ group 02
+ cipher aes128cfb
+ hash md5
+ key tester
+ replay 0
+ exit
 int sdn2
+ macsec ips
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
@@ -80,12 +70,10 @@ int sdn4
 server p4lang p4
  interconnect eth2
  export-vrf v1 1
- export-vrf v2 2
  export-port sdn1 1
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port tun1 111
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
@@ -98,7 +86,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 feature route openvpn
+addother r2 feature route macsec
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -114,9 +102,6 @@ int eth1 eth 0000.0000.3333 $3b$ $3a$
 vrf def v1
  rd 1:1
  exit
-vrf def v2
- rd 1:1
- exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.103 255.255.255.255
@@ -130,21 +115,6 @@ int eth1
  bridge-gr 1
  exit
 int bvi1
- vrf for v2
- ipv4 addr 9.9.9.2 255.255.255.0
- exit
-crypto ipsec ips
- cipher des
- hash sha3224
- key 22f9c676f655336c3f3188b8d9cc759903733212ed77231bc38126b6000b043f1f56d07b885f4d00676afd8fea25c88fa917294d8f1e89b84922d5d2556de977beac2f254ba2b67477131f4d4708cb509f4c9f784780465462e502d29183665bbd5eff6bdc27370f05aa1d856b497a1f7ef5f20bad7aff155619a4b09849fab814ee76e7121c2adf85326db4c1cce132200ca3e4d03930f765ba96a8c46f1ab374beb73e79093d60879a8d9585f2feb987d89e65a33ef3857f3b09df80a2403f6c50dc50439e258d61c7dac377514a8d281c10feeea79ae7b063064aec3989b4d867bb24182f7d007ad41284ee6577053dae2cc289dd39e66cd8fe7089b7015f
- replay 0
- exit
-int tun1
- tun vrf v2
- tun source bvi1
- tun destination 9.9.9.1
- tun prot ips
- tun mode openvpn
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
@@ -176,7 +146,15 @@ int lo0
  ipv4 addr 2.2.2.104 255.255.255.255
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+crypto ipsec ips
+ group 02
+ cipher aes128cfb
+ hash md5
+ key tester
+ replay 0
+ exit
 int eth1
+ macsec ips
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
@@ -261,10 +239,6 @@ ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
-
-
-r1 tping 100 10 9.9.9.2 /vrf v2
-r3 tping 100 10 9.9.9.1 /vrf v2
 
 r1 tping 100 10 1.1.1.2 /vrf v1
 r1 tping 100 10 1234:1::2 /vrf v1
@@ -366,5 +340,5 @@ r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
 r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
-r1 dping sdn . r3 2.2.2.105 /vrf v1 /int lo0
-r1 dping sdn . r3 4321::105 /vrf v1 /int lo0
+r1 dping sdn . r4 2.2.2.105 /vrf v1 /int lo0
+r1 dping sdn . r4 4321::105 /vrf v1 /int lo0
