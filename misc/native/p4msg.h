@@ -25,9 +25,22 @@ int str2key(char *str, unsigned char *key) {
 const EVP_CIPHER* getEncrAlg(char *buf) {
     if (strcmp(buf, "des") == 0) return EVP_des_cbc();
     if (strcmp(buf, "3des") == 0) return EVP_des_ede3_cbc();
-    if (strcmp(buf, "aes128") == 0) return EVP_aes_128_cbc();
-    if (strcmp(buf, "aes192") == 0) return EVP_aes_192_cbc();
-    if (strcmp(buf, "aes256") == 0) return EVP_aes_256_cbc();
+if (strcmp(buf, "aes256") == 0) return EVP_aes_256_cbc();/////////////////////here
+    if (strcmp(buf, "aes128cbc") == 0) return EVP_aes_128_cbc();
+    if (strcmp(buf, "aes192cbc") == 0) return EVP_aes_192_cbc();
+    if (strcmp(buf, "aes256cbc") == 0) return EVP_aes_256_cbc();
+    if (strcmp(buf, "aes128cfb") == 0) return EVP_aes_128_cfb();
+    if (strcmp(buf, "aes192cfb") == 0) return EVP_aes_192_cfb();
+    if (strcmp(buf, "aes256cfb") == 0) return EVP_aes_256_cfb();
+    if (strcmp(buf, "aes128ctr") == 0) return EVP_aes_128_ctr();
+    if (strcmp(buf, "aes192ctr") == 0) return EVP_aes_192_ctr();
+    if (strcmp(buf, "aes256ctr") == 0) return EVP_aes_256_ctr();
+    if (strcmp(buf, "aes128ecb") == 0) return EVP_aes_128_ecb();
+    if (strcmp(buf, "aes192ecb") == 0) return EVP_aes_192_ecb();
+    if (strcmp(buf, "aes256ecb") == 0) return EVP_aes_256_ecb();
+    if (strcmp(buf, "aes128gcm") == 0) return EVP_aes_128_gcm();
+    if (strcmp(buf, "aes192gcm") == 0) return EVP_aes_192_gcm();
+    if (strcmp(buf, "aes256gcm") == 0) return EVP_aes_256_gcm();
     return NULL;
 }
 
@@ -35,8 +48,14 @@ const EVP_CIPHER* getEncrAlg(char *buf) {
 const EVP_MD* getHashAlg(char *buf) {
     if (strcmp(buf, "md5") == 0) return EVP_md5();
     if (strcmp(buf, "sha1") == 0) return EVP_sha1();
+    if (strcmp(buf, "sha224") == 0) return EVP_sha224();
     if (strcmp(buf, "sha256") == 0) return EVP_sha256();
+    if (strcmp(buf, "sha384") == 0) return EVP_sha384();
     if (strcmp(buf, "sha512") == 0) return EVP_sha512();
+    if (strcmp(buf, "sha3224") == 0) return EVP_sha3_224();
+    if (strcmp(buf, "sha3256") == 0) return EVP_sha3_256();
+    if (strcmp(buf, "sha3384") == 0) return EVP_sha3_384();
+    if (strcmp(buf, "sha3512") == 0) return EVP_sha3_512();
     return NULL;
 }
 
