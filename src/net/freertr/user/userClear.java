@@ -1,5 +1,6 @@
 package net.freertr.user;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
@@ -91,6 +92,11 @@ public class userClear {
             return alias;
         }
         if (a.equals("errors")) {
+            a = version.myWorkDir() + "core";
+            if (new File(a).exists()) {
+                userFlash.rename(a, a + ".bak", true, true);
+                bits.buf2txt(false, bits.str2lst("core dump detected"), version.myErrorFile());
+            }
             List<String> err = bits.txt2buf(version.myErrorFile());
             if (err == null) {
                 cmd.error("nothing to report");
