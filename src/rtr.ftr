@@ -2206,6 +2206,10 @@ qc pass: bgp with polka
 qc pass: bgp without recursion
 qc pass: bgp with recursion
 qc pass: bgp with route flap dampening
+qc pass: bgp routemap filtering with nexthop
+qc pass: bgp routepolicy filtering with nexthop
+qc pass: bgp routemap filtering with nexthop with soft-reconfig
+qc pass: bgp routepolicy filtering with nexthop with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

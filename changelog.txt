@@ -12795,3 +12795,8 @@ qc pass: access total
 qc pass: access tracker
 qc pass: access negated tracker
 qc pass: access follow tracker
+---------------------------------- 2022-01-16 13:50:41
+qc pass: bgp routemap filtering with nexthop
+qc pass: bgp routepolicy filtering with nexthop
+qc pass: bgp routemap filtering with nexthop with soft-reconfig
+qc pass: bgp routepolicy filtering with nexthop with soft-reconfig
