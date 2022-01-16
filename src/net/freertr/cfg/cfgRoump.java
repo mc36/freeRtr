@@ -60,6 +60,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match tracker",
         "route-map .*! sequence .* no match interface",
         "route-map .*! sequence .* no match nexthop",
+        "route-map .*! sequence .* no match recursive",
+        "route-map .*! sequence .* no match protocol",
         "route-map .*! sequence .* match peerasn all",
         "route-map .*! sequence .* match distance all",
         "route-map .*! sequence .* match locpref all",
@@ -183,6 +185,12 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "3 .       <name:ifc>        interface");
         l.add(null, "2 3     nexthop             match next hop");
         l.add(null, "3 .       <addr>            address");
+        l.add(null, "2 3     recursive           match old next hop");
+        l.add(null, "3 .       <addr>            address");
+        l.add(null, "2 3     protocol            match source protocol");
+        cfgRtr.getRouterList(l, "3 .", "");
+        cfgRtr.getRouterList(l, 1, "");
+        l.add(null, "4 .         <num>           process id");
         l.add(null, "2 3     peerasn             match peer asn");
         l.add(null, "3 .       <num>             asn");
         l.add(null, "3 .       all               any value");
@@ -416,6 +424,23 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             if (a.equals("nexthop")) {
                 ntry.nexthopMatch = new addrIP();
                 ntry.nexthopMatch.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("recursive")) {
+                ntry.oldhopMatch = new addrIP();
+                ntry.oldhopMatch.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("protocol")) {
+                ntry.protoTypMatch = cfgRtr.name2num(cmd.word());
+                if (ntry.protoTypMatch == null) {
+                    cmd.error("invalid protocol");
+                    return;
+                }
+                ntry.protoNumMatch = bits.str2num(cmd.word());
+                if (!cfgRtr.num2proc(ntry.protoTypMatch)) {
+                    ntry.protoNumMatch = -1;
+                }
                 return;
             }
             if (a.equals("aspath")) {
@@ -783,6 +808,15 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("nexthop")) {
                 ntry.nexthopMatch = null;
+                return;
+            }
+            if (a.equals("recursive")) {
+                ntry.oldhopMatch = null;
+                return;
+            }
+            if (a.equals("protocol")) {
+                ntry.protoTypMatch = null;
+                ntry.protoNumMatch = 0;
                 return;
             }
             if (a.equals("aspath")) {

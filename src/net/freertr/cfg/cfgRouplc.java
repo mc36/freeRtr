@@ -115,6 +115,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "3 .       <name:ifc>        interface");
         l.add(null, "2 3     nexthop             match next hop");
         l.add(null, "3 .       <addr>            address");
+        l.add(null, "2 3     recursive           match old next hop");
+        l.add(null, "3 .       <addr>            address");
+        l.add(null, "2 3     protocol            match source protocol");
+        cfgRtr.getRouterList(l, "3 .", "");
+        cfgRtr.getRouterList(l, 1, "");
+        l.add(null, "4 .         <num>           process id");
         l.add(null, "2 3     aspath              match as path");
         l.add(null, "3 3,.     <str>             regexp against as path");
         l.add(null, "2 3     peerstd             match standard community based on peer asn");
@@ -530,6 +536,28 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             if (ntry.nexthopSet.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
+            }
+            return;
+        }
+        if (a.equals("recursive")) {
+            ntry.ifMode = tabRtrplcN.ifType.recursive;
+            ntry.nexthopSet = new addrIP();
+            if (ntry.nexthopSet.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("protocol")) {
+            ntry.ifMode = tabRtrplcN.ifType.protocol;
+            ntry.protoMatch = cfgRtr.name2num(cmd.word());
+            if (ntry.protoMatch == null) {
+                cmd.error("invalid protocol");
+                return;
+            }
+            ntry.intVal = bits.str2num(cmd.word());
+            if (!cfgRtr.num2proc(ntry.protoMatch)) {
+                ntry.intVal = -1;
             }
             return;
         }

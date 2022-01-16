@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
@@ -305,7 +306,15 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         /**
          * interface
          */
-        iface
+        iface,
+        /**
+         * old nexthop
+         */
+        recursive,
+        /**
+         * protocol
+         */
+        protocol
     }
 
     /**
@@ -352,6 +361,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
      * route distinguisher matcher
      */
     public long rouDstMatch;
+
+    /**
+     * protocol type matcher
+     */
+    public tabRouteAttr.routeType protoMatch;
 
     /**
      * network matcher
@@ -548,6 +562,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "nexthop " + nexthopSet;
             case iface:
                 return "interface " + ifaceMatch.name;
+            case recursive:
+                return "recursive " + nexthopSet;
+            case protocol:
+                String a = "" + protoMatch;
+                if (cfgRtr.num2proc(protoMatch)) {
+                    a += " " + intVal;
+                }
+                return "protocol " + a;
             default:
                 return "unknown=" + ifMode;
         }
@@ -674,6 +696,19 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     return false;
                 }
                 return ((net.best.iface == ifaceMatch.fwdIf4) || (net.best.iface == ifaceMatch.fwdIf6));
+            case recursive:
+                if (net.best.oldHop == null) {
+                    return false;
+                }
+                return nexthopSet.compare(nexthopSet, net.best.oldHop) == 0;
+            case protocol:
+                if (net.best.rouTyp != protoMatch) {
+                    return false;
+                }
+                if (net.best.protoNum != intVal) {
+                    return false;
+                }
+                return true;
             default:
                 return true;
         }

@@ -1680,19 +1680,35 @@ public class userShow {
                 return null;
             }
             if (a.equals("counter")) {
-                doShowCounter(4);
+                doShowRouteCount(4);
                 return null;
             }
             if (a.equals("route")) {
-                doShowRouteU(4);
+                doShowRouteUni(4);
                 return null;
             }
             if (a.equals("ecmp")) {
-                doShowRouteE(4);
+                doShowRouteEcmp(4);
                 return null;
             }
             if (a.equals("labels")) {
-                doShowRouteL(4);
+                doShowRouteLab(4);
+                return null;
+            }
+            if (a.equals("via-interface")) {
+                doShowRouteIfc(4);
+                return null;
+            }
+            if (a.equals("via-nexthop")) {
+                doShowRouteHop(4);
+                return null;
+            }
+            if (a.equals("via-recursive")) {
+                doShowRouteRec(4);
+                return null;
+            }
+            if (a.equals("via-protocol")) {
+                doShowRoutePrt(4);
                 return null;
             }
             if (a.equals("distribution")) {
@@ -1712,11 +1728,11 @@ public class userShow {
                 return null;
             }
             if (a.equals("rpf")) {
-                doShowRouteM(4);
+                doShowRouteMul(4);
                 return null;
             }
             if (a.equals("flwspc")) {
-                doShowRouteF(4);
+                doShowRouteFlw(4);
                 return null;
             }
             if (a.equals("mroute")) {
@@ -1995,19 +2011,35 @@ public class userShow {
                 return null;
             }
             if (a.equals("counter")) {
-                doShowCounter(6);
+                doShowRouteCount(6);
                 return null;
             }
             if (a.equals("route")) {
-                doShowRouteU(6);
+                doShowRouteUni(6);
                 return null;
             }
             if (a.equals("ecmp")) {
-                doShowRouteE(6);
+                doShowRouteEcmp(6);
                 return null;
             }
             if (a.equals("labels")) {
-                doShowRouteL(6);
+                doShowRouteLab(6);
+                return null;
+            }
+            if (a.equals("via-interface")) {
+                doShowRouteIfc(6);
+                return null;
+            }
+            if (a.equals("via-nexthop")) {
+                doShowRouteHop(6);
+                return null;
+            }
+            if (a.equals("via-recursive")) {
+                doShowRouteRec(6);
+                return null;
+            }
+            if (a.equals("via-protocol")) {
+                doShowRoutePrt(6);
                 return null;
             }
             if (a.equals("distribution")) {
@@ -2027,11 +2059,11 @@ public class userShow {
                 return null;
             }
             if (a.equals("rpf")) {
-                doShowRouteM(6);
+                doShowRouteMul(6);
                 return null;
             }
             if (a.equals("flwspc")) {
-                doShowRouteF(6);
+                doShowRouteFlw(6);
                 return null;
             }
             if (a.equals("mroute")) {
@@ -4135,7 +4167,7 @@ public class userShow {
         rdr.putStrTab(l);
     }
 
-    private void doShowCounter(int ver) {
+    private void doShowRouteCount(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
@@ -4143,7 +4175,7 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 6);
     }
 
-    private void doShowRouteU(int ver) {
+    private void doShowRouteUni(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
@@ -4151,7 +4183,7 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 1);
     }
 
-    private void doShowRouteL(int ver) {
+    private void doShowRouteLab(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
@@ -4159,7 +4191,78 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 3);
     }
 
-    private void doShowRouteE(int ver) {
+    private void doShowRouteIfc(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+        if (ifc == null) {
+            cmd.error("no such interface");
+            return;
+        }
+        tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+        tabRtrmapN ntry = new tabRtrmapN();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.ifaceMatch = ifc;
+        roumap.add(ntry);
+        tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
+        doShowRoutes(fwd, res, 1);
+    }
+
+    private void doShowRouteHop(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+        tabRtrmapN ntry = new tabRtrmapN();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.nexthopMatch = new addrIP();
+        ntry.nexthopMatch.fromString(cmd.word());
+        roumap.add(ntry);
+        tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
+        doShowRoutes(fwd, res, 1);
+    }
+
+    private void doShowRouteRec(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+        tabRtrmapN ntry = new tabRtrmapN();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.oldhopMatch = new addrIP();
+        ntry.oldhopMatch.fromString(cmd.word());
+        roumap.add(ntry);
+        tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
+        doShowRoutes(fwd, res, 1);
+    }
+
+    private void doShowRoutePrt(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+        tabRtrmapN ntry = new tabRtrmapN();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.protoTypMatch = cfgRtr.name2num(cmd.word());
+        ntry.protoNumMatch = bits.str2num(cmd.word());
+        if (!cfgRtr.num2proc(ntry.protoTypMatch)) {
+            ntry.protoNumMatch = -1;
+        }
+        roumap.add(ntry);
+        tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
+        doShowRoutes(fwd, res, 1);
+    }
+
+    private void doShowRouteEcmp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
@@ -4212,7 +4315,7 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 8);
     }
 
-    private void doShowRouteM(int ver) {
+    private void doShowRouteMul(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
@@ -4220,7 +4323,7 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualM, 1);
     }
 
-    private void doShowRouteF(int ver) {
+    private void doShowRouteFlw(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;

@@ -1668,15 +1668,26 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      *
      * @param l list to update
      * @param p number start
+     * @param e ending
+     */
+    public static void getRouterList(userHelping l, String p, String e) {
+        l.add(null, p + "   connected             connected routes" + e);
+        l.add(null, p + "   static                static routes" + e);
+        l.add(null, p + "   defgw                 routes through default gateway" + e);
+        l.add(null, p + "   local                 local interface addresses" + e);
+        l.add(null, p + "   remote                remote interface addresses" + e);
+    }
+
+    /**
+     * get help string
+     *
+     * @param l list to update
+     * @param p number start
      */
     public static void getRedistHelp(userHelping l, int p) {
         l.add(null, (p + 1) + " .  ecmp                    enable ecmp export to rib");
         l.add(null, (p + 1) + " " + (p + 2) + "   redistribute            redistribute prefixes from other protocols");
-        l.add(null, (p + 2) + " " + (p + 4) + ",.   connected             connected routes");
-        l.add(null, (p + 2) + " " + (p + 4) + ",.   static                static routes");
-        l.add(null, (p + 2) + " " + (p + 4) + ",.   defgw                 routes through default gateway");
-        l.add(null, (p + 2) + " " + (p + 4) + ",.   local                 local interface addresses");
-        l.add(null, (p + 2) + " " + (p + 4) + ",.   remote                remote interface addresses");
+        getRouterList(l, (p + 2) + " " + (p + 4) + ",.", "");
         getRouterList(l, p, " routes");
         l.add(null, (p + 3) + " " + (p + 4) + ",.     <num>               process id");
         l.add(null, (p + 4) + " " + (p + 4) + ",.       ecmp              process ecmp alternatives also");

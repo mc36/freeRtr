@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
@@ -182,6 +183,21 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * next hop updater
      */
     public addrIP nexthopSet;
+
+    /**
+     * old hop matcher
+     */
+    public addrIP oldhopMatch;
+
+    /**
+     * protocol type matcher
+     */
+    public tabRouteAttr.routeType protoTypMatch;
+
+    /**
+     * protocol number matcher
+     */
+    public int protoNumMatch;
 
     /**
      * interface matcher
@@ -742,6 +758,20 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match nexthop " + nexthopMatch);
         }
+        if (oldhopMatch == null) {
+            l.add(beg + "no match recursive");
+        } else {
+            l.add(beg + "match recursive " + oldhopMatch);
+        }
+        if (protoTypMatch == null) {
+            l.add(beg + "no match protocol");
+        } else {
+            String a = "" + protoTypMatch;
+            if (cfgRtr.num2proc(protoTypMatch)) {
+                a += " " + protoNumMatch;
+            }
+            l.add(beg + "match protocol " + a);
+        }
         if (aspathMatch == null) {
             l.add(beg + "no match aspath");
         } else {
@@ -940,6 +970,22 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 return false;
             }
         }
+        if (oldhopMatch != null) {
+            if (net.best.oldHop == null) {
+                return false;
+            }
+            if (oldhopMatch.compare(oldhopMatch, net.best.oldHop) != 0) {
+                return false;
+            }
+        }
+        if (protoTypMatch != null) {
+            if (net.best.rouTyp != protoTypMatch) {
+                return false;
+            }
+            if (net.best.protoNum != protoNumMatch) {
+                return false;
+            }
+        }
         if (networkMatch != null) {
             if (!networkMatch.matches(afi, asn, net.prefix)) {
                 return false;
@@ -1104,6 +1150,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set broadcast " + net.prefix.broadcast);
         t.addLine("set rd " + rd2string(net.rouDst));
         t.addLine("set nexthop " + attr.nextHop);
+        t.addLine("set oldhop " + attr.oldHop);
         t.addLine("set distance " + attr.distance);
         t.addLine("set validity " + attr.validity);
         t.addLine("set locpref " + attr.locPref);
