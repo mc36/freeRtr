@@ -440,7 +440,7 @@ public class userHwdet {
         starter.add("ip link set lo up mtu 65535");
         starter.add("ip addr add 127.0.0.1/8 dev lo");
         starter.add("ip addr add ::1/128 dev lo");
-        starter.add("#ulimit -c unlimited");
+        starter.add("ulimit -c unlimited");
         starter.add("#modprobe -r kvm_intel");
         starter.add("#modprobe kvm_intel nested=1");
         starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
