@@ -193,7 +193,7 @@ public class extMrkLng {
                 if (prnt == null) {
                     data.add(new extMrkLngEntry(prnt, path, "", ""));
                 } else {
-                    data.add(prnt);
+                    data.add(new extMrkLngEntry(prnt.parent, prnt.name, "", ""));
                 }
                 continue;
             }
