@@ -1695,19 +1695,23 @@ public class userShow {
                 doShowRouteLab(4);
                 return null;
             }
-            if (a.equals("via-interface")) {
+            if (a.equals("just-network")) {
+                doShowRouteNet(4);
+                return null;
+            }
+            if (a.equals("just-interface")) {
                 doShowRouteIfc(4);
                 return null;
             }
-            if (a.equals("via-nexthop")) {
+            if (a.equals("just-nexthop")) {
                 doShowRouteHop(4);
                 return null;
             }
-            if (a.equals("via-recursive")) {
+            if (a.equals("just-recursive")) {
                 doShowRouteRec(4);
                 return null;
             }
-            if (a.equals("via-protocol")) {
+            if (a.equals("just-protocol")) {
                 doShowRoutePrt(4);
                 return null;
             }
@@ -2026,19 +2030,23 @@ public class userShow {
                 doShowRouteLab(6);
                 return null;
             }
-            if (a.equals("via-interface")) {
+            if (a.equals("just-network")) {
+                doShowRouteNet(6);
+                return null;
+            }
+            if (a.equals("just-interface")) {
                 doShowRouteIfc(6);
                 return null;
             }
-            if (a.equals("via-nexthop")) {
+            if (a.equals("just-nexthop")) {
                 doShowRouteHop(6);
                 return null;
             }
-            if (a.equals("via-recursive")) {
+            if (a.equals("just-recursive")) {
                 doShowRouteRec(6);
                 return null;
             }
-            if (a.equals("via-protocol")) {
+            if (a.equals("just-protocol")) {
                 doShowRoutePrt(6);
                 return null;
             }
@@ -4189,6 +4197,24 @@ public class userShow {
             return;
         }
         doShowRoutes(fwd, fwd.actualU, 3);
+    }
+
+    private void doShowRouteNet(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        String a = cmd.getRemaining();
+        cmd = new cmds("", "");
+        tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+        tabRtrmapN ntry = new tabRtrmapN();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.networkMatch = new tabPrfxlstN();
+        ntry.networkMatch.fromString(a);
+        roumap.add(ntry);
+        tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
+        doShowRoutes(fwd, res, 1);
     }
 
     private void doShowRouteIfc(int ver) {
