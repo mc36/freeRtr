@@ -4419,6 +4419,10 @@ public class userShow {
             default:
                 return;
         }
+        if (tab.size() < 1) {
+            rdr.putStrTab(l);
+            return;
+        }
         final int lines = 1024;
         for (int pos = 0; pos < tab.size(); pos += lines) {
             l.clear();
