@@ -5,7 +5,7 @@ CC="gcc"                                #gcc
 CC="clang"                              #clang
 
 MD="-O0 -g"                             #debug
-MD="-O3 -g"                             #release
+MD="-O3"                                #release
 #gdb xxx.bin core
 #bt full
 
