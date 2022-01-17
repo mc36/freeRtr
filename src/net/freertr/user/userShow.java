@@ -4419,48 +4419,54 @@ public class userShow {
             default:
                 return;
         }
-        for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> prf = tab.get(i);
-            if (prf == null) {
-                continue;
+        final int lines = 1024;
+        for (int pos = 0; pos < tab.size(); pos += lines) {
+            l.clear();
+            for (int i = 0; i < lines; i++) {
+                tabRouteEntry<addrIP> prf = tab.get(pos + i);
+                if (prf == null) {
+                    continue;
+                }
+                switch (typ) {
+                    case 1:
+                        tabRouteEntry.toShRoute(l, prf);
+                        break;
+                    case 2:
+                        tabRouteEntry.toShBgp(l, prf);
+                        break;
+                    case 3:
+                        tabRouteEntry.toShLdp(l, prf);
+                        break;
+                    case 1002:
+                    case 1005:
+                        tabRouteEntry.toShBgpLabels(l, prf, typ == 1005);
+                        break;
+                    case 4:
+                        tabRouteEntry.toShRpki(l, prf);
+                        break;
+                    case 5:
+                        tabRouteEntry.toShEvpn(l, prf);
+                        break;
+                    case 6:
+                        tabRouteEntry.toShCntr(l, prf);
+                        break;
+                    case 7:
+                        tabRouteEntry.toShSrRoute(l, prf);
+                        break;
+                    case 8:
+                        tabRouteEntry.toShBrRoute(l, prf);
+                        break;
+                    case 2002:
+                    case 2005:
+                    case 9:
+                        tabRouteEntry.toShEcmp(l, prf, typ == 2005);
+                        break;
+                }
             }
-            switch (typ) {
-                case 1:
-                    tabRouteEntry.toShRoute(l, prf);
-                    break;
-                case 2:
-                    tabRouteEntry.toShBgp(l, prf);
-                    break;
-                case 3:
-                    tabRouteEntry.toShLdp(l, prf);
-                    break;
-                case 1002:
-                case 1005:
-                    tabRouteEntry.toShBgpLabels(l, prf, typ == 1005);
-                    break;
-                case 4:
-                    tabRouteEntry.toShRpki(l, prf);
-                    break;
-                case 5:
-                    tabRouteEntry.toShEvpn(l, prf);
-                    break;
-                case 6:
-                    tabRouteEntry.toShCntr(l, prf);
-                    break;
-                case 7:
-                    tabRouteEntry.toShSrRoute(l, prf);
-                    break;
-                case 8:
-                    tabRouteEntry.toShBrRoute(l, prf);
-                    break;
-                case 2002:
-                case 2005:
-                case 9:
-                    tabRouteEntry.toShEcmp(l, prf, typ == 2005);
-                    break;
+            if (rdr.putStrTab(l)) {
+                break;
             }
         }
-        rdr.putStrTab(l);
     }
 
     private void doShowMptab(tabGen<ipFwdMpmp> tab, addrIP peer) {

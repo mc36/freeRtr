@@ -205,6 +205,15 @@ public class userFormat {
     }
 
     /**
+     * clear added lines
+     */
+    public void clear() {
+        lines = new ArrayList<userFormatLine>();
+        size = new ArrayList<Integer>();
+        updateSizes(header);
+    }
+
+    /**
      * format all lines
      *
      * @param sep separator to use

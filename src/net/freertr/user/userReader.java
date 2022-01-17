@@ -632,11 +632,11 @@ public class userReader implements Comparator<String> {
         }
     }
 
-    private void doPutArr(List<String> lst, userFormat.colorMode color) {
+    private boolean doPutArr(List<String> lst, userFormat.colorMode color) {
         lst = doFilterList(lst);
         if (lst == null) {
             pipe.linePut("");
-            return;
+            return true;
         }
         final int height = pipe.settingsGet(pipeSetting.height, 25);
         int p = 2;
@@ -693,36 +693,43 @@ public class userReader implements Comparator<String> {
                     o = height - 1;
                     break;
                 case 3: // end listing
-                    return;
+                    return true;
             }
         }
         pipe.linePut("");
+        return false;
     }
 
     /**
      * display one text to user
      *
      * @param lst string array to display
+     * @return true on quit, false on continue
      */
-    public void putStrArr(List<String> lst) {
+    public boolean putStrArr(List<String> lst) {
+        if (lst == null) {
+            pipe.linePut("");
+            return true;
+        }
         userFormat.colorMode color = pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal);
         if (color == userFormat.colorMode.header) {
             color = userFormat.colorMode.normal;
         }
-        doPutArr(lst, color);
+        return doPutArr(lst, color);
     }
 
     /**
      * display one text to table
      *
      * @param lst string array to display
+     * @return true on quit, false on continue
      */
-    public void putStrTab(userFormat lst) {
+    public boolean putStrTab(userFormat lst) {
         if (lst == null) {
             pipe.linePut("");
-            return;
+            return true;
         }
-        doPutArr(lst.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        return doPutArr(lst.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
     }
 
     /**
