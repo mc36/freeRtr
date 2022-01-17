@@ -246,6 +246,17 @@ public class userShow {
             rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(a)));
             return null;
         }
+        if (a.equals("disk")) {
+            a = cmd.getRemaining();
+            if (verCore.release) {
+                a = "";
+            }
+            if (a.length() < 1) {
+                a = "./";
+            }
+            rdr.putStrTab(userFlash.diskInfo(a));
+            return null;
+        }
         if (a.equals("aaa")) {
             cfgAuther aa = cfgAll.autherFind(cmd.word(), null);
             if (aa == null) {

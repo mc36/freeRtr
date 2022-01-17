@@ -145,16 +145,7 @@ public class userFlash {
         }
         if (a.equals("disk")) {
             a = cmd.getRemaining();
-            File f = new File(a);
-            userFormat l = new userFormat("|", "category|value");
-            try {
-                l.add("path|" + f.getCanonicalPath());
-                l.add("free|" + f.getFreeSpace());
-                l.add("total|" + f.getTotalSpace());
-                l.add("usable|" + f.getUsableSpace());
-            } catch (Exception e) {
-            }
-            rdr.putStrTab(l);
+            rdr.putStrTab(diskInfo(a));
             return null;
         }
         if (a.equals("info")) {
@@ -708,6 +699,25 @@ public class userFlash {
             fl[o + i] = lf.get(i).f;
         }
         return fl;
+    }
+
+    /**
+     * get disk information
+     *
+     * @param a target file
+     * @return converted text
+     */
+    public static userFormat diskInfo(String a) {
+        File f = new File(a);
+        userFormat l = new userFormat("|", "category|value");
+        try {
+            l.add("path|" + f.getCanonicalPath());
+            l.add("free|" + f.getFreeSpace());
+            l.add("total|" + f.getTotalSpace());
+            l.add("usable|" + f.getUsableSpace());
+        } catch (Exception e) {
+        }
+        return l;
     }
 
     /**

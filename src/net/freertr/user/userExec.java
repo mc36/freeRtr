@@ -861,6 +861,8 @@ public class userExec {
         if (privi) {
             hl.add(null, "2 3,.    flash                   list of flash");
             hl.add(null, "3 3,.      [text]                directory to print");
+            hl.add(null, "2 3,.    disk                    flash information");
+            hl.add(null, "3 3,.      [text]                directory to print");
         }
         hl.add(null, "2 3      whois                   query whois server");
         hl.add(null, "3 3,.      [text]                directory to print");
