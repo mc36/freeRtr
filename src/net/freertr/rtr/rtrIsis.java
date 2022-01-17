@@ -1211,13 +1211,11 @@ public class rtrIsis extends ipRtr {
             netEntTit.fromString(cmd.word());
             areaID = netEntTit.getArea();
             routerID = netEntTit.getNode();
-            if (areaID == null) {
-                areaID = new addrClns();
-                cmd.error("error getting areaid");
-            }
-            if (routerID == null) {
+            if ((areaID == null) || (routerID == null)) {
                 routerID = new addrIsis();
-                cmd.error("error getting routerid");
+                areaID = new addrClns();
+                cmd.error("invalid netid");
+                return false;
             }
             genLsps(3);
             return false;
