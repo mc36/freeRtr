@@ -104,6 +104,14 @@ public class userReader implements Comparator<String> {
          */
         padsort,
         /**
+         * reverse sort entities
+         */
+        revsort,
+        /**
+         * reverse padded sort entities
+         */
+        repsort,
+        /**
          * unique entities
          */
         uniq,
@@ -446,6 +454,26 @@ public class userReader implements Comparator<String> {
         }
     }
 
+    private void doPadCol(List<String> lst) {
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
+            int o = a.length();
+            if (o < columnB) {
+                continue;
+            }
+            String b = a.substring(0, columnB);
+            String c = "";
+            if (o > columnE) {
+                c = a.substring(columnE, o);
+                a = a.substring(columnB, columnE).trim();
+            } else {
+                a = a.substring(columnB, o);
+            }
+            a = bits.padBeg(a, columnE - columnB, " ");
+            lst.set(i, b + a + " " + c);
+        }
+    }
+
     /**
      * filter the list
      *
@@ -488,28 +516,33 @@ public class userReader implements Comparator<String> {
                 Collections.sort(lst, this);
                 lst.add(0, a);
                 return doSecond(lst);
+            case revsort:
+                findColumn(lst);
+                if (columnB < 0) {
+                    return bits.str2lst("no such column");
+                }
+                a = lst.remove(0);
+                Collections.sort(lst, this);
+                Collections.reverse(lst);
+                lst.add(0, a);
+                return doSecond(lst);
+            case repsort:
+                findColumn(lst);
+                if (columnB < 0) {
+                    return bits.str2lst("no such column");
+                }
+                doPadCol(lst);
+                a = lst.remove(0);
+                Collections.sort(lst, this);
+                Collections.reverse(lst);
+                lst.add(0, a);
+                return doSecond(lst);
             case padsort:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                for (int i = 0; i < lst.size(); i++) {
-                    a = lst.get(i);
-                    int o = a.length();
-                    if (o < columnB) {
-                        continue;
-                    }
-                    String b = a.substring(0, columnB);
-                    String c = "";
-                    if (o > columnE) {
-                        c = a.substring(columnE, o);
-                        a = a.substring(columnB, columnE).trim();
-                    } else {
-                        a = a.substring(columnB, o);
-                    }
-                    a = bits.padBeg(a, columnE - columnB, " ");
-                    lst.set(i, b + a + " " + c);
-                }
+                doPadCol(lst);
                 a = lst.remove(0);
                 Collections.sort(lst, this);
                 lst.add(0, a);
@@ -1103,7 +1136,7 @@ public class userReader implements Comparator<String> {
                     case 0x800d: // down
                         cmdHistNext();
                         break;
-                    case 0x8008: // home                
+                    case 0x8008: // home
                         cmdHome();
                         break;
                     case 0x8009: // end
@@ -1345,6 +1378,14 @@ public class userReader implements Comparator<String> {
         }
         if (a.equals("padsort")) {
             filterM = mode.padsort;
+            return cmd;
+        }
+        if (a.equals("revsort")) {
+            filterM = mode.revsort;
+            return cmd;
+        }
+        if (a.equals("repsort")) {
+            filterM = mode.repsort;
             return cmd;
         }
         if (a.equals("uniq")) {

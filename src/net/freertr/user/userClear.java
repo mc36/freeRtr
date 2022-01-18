@@ -165,6 +165,13 @@ public class userClear {
                 cmd.error("no such process");
                 return null;
             }
+            a = cmd.word();
+            if (a.equals("start")) {
+                ntry.startNow();
+            }
+            if (a.equals("stop")) {
+                ntry.stopNow();
+            }
             ntry.restartNow();
             return null;
         }

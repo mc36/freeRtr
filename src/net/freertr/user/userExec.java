@@ -760,6 +760,16 @@ public class userExec {
         hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");
         hl.add(null, (beg + 4) + " .            count           count entities");
         hl.add(null, (beg + 4) + " .            summary         summary entities");
+        hl.add(null, (beg + 1) + " " + (beg + 2) + "    revsort               reversed sort lines by");
+        hl.add(null, (beg + 2) + " " + (beg + 3) + ",.    <text>              column name");
+        hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");
+        hl.add(null, (beg + 4) + " .            count           count entities");
+        hl.add(null, (beg + 4) + " .            summary         summary entities");
+        hl.add(null, (beg + 1) + " " + (beg + 2) + "    repsort               reverseed sort padded lines by");
+        hl.add(null, (beg + 2) + " " + (beg + 3) + ",.    <text>              column name");
+        hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");
+        hl.add(null, (beg + 4) + " .            count           count entities");
+        hl.add(null, (beg + 4) + " .            summary         summary entities");
         hl.add(null, (beg + 1) + " " + (beg + 2) + "    padsort               sort padded lines by");
         hl.add(null, (beg + 2) + " " + (beg + 3) + ",.    <text>              column name");
         hl.add(null, (beg + 3) + " " + (beg + 4) + "        |                 output modifier");
@@ -1451,7 +1461,9 @@ public class userExec {
         hl.add(null, "4 .          stop                stop");
         hl.add(null, "4 .          start               start");
         hl.add(null, "2 3      process                 restart external process");
-        hl.add(null, "3 .        <name:prc>            name of process");
+        hl.add(null, "3 4,.      <name:prc>            name of process");
+        hl.add(null, "4 .          stop                stop");
+        hl.add(null, "4 .          start               start");
         hl.add(null, "2 .      logging                 logged messages");
         hl.add(null, "2 .      auto-bandwidth          set auto bandwidth values");
         hl.add(null, "2 .      follow-tracker          set interfaces based on trackers");
@@ -1840,7 +1852,9 @@ public class userExec {
         hl.add(null, "4 .          stop                stop");
         hl.add(null, "4 .          start               start");
         hl.add(null, "2 3      process                 reboot external process");
-        hl.add(null, "3 .        <name:prc>            name of process");
+        hl.add(null, "3 4,.      <name:prc>            name of process");
+        hl.add(null, "4 .          stop                stop");
+        hl.add(null, "4 .          start               start");
         return hl;
     }
 
@@ -2454,6 +2468,13 @@ public class userExec {
                 if (ntry == null) {
                     cmd.error("no such process");
                     return cmdRes.command;
+                }
+                a = cmd.word();
+                if (a.equals("start")) {
+                    ntry.startNow();
+                }
+                if (a.equals("stop")) {
+                    ntry.stopNow();
                 }
                 ntry.restartNow();
                 return cmdRes.command;
