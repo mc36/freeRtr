@@ -3268,7 +3268,7 @@ class servP4langConn implements Runnable {
                 }
                 vln.add(ntry);
             }
-            o = 0;
+            o = prt.size();
             for (i = 0; i < prt.size(); i++) {
                 o += prt.get(i).id;
             }
