@@ -3272,7 +3272,7 @@ class servP4langConn implements Runnable {
             for (i = 0; i < prt.size(); i++) {
                 o += prt.get(i).id;
             }
-            if (prt.size() != ifc.sentBundle) {
+            if (o != ifc.sentBundle) {
                 if (ifc.sentBundle < 1) {
                     a = "add";
                 } else {
