@@ -1475,6 +1475,10 @@ public class userShow {
                     cmd.error("no such process");
                     return null;
                 }
+                if (r.ospf4 == null) {
+                    cmd.error("uninitialized process");
+                    return null;
+                }
                 a = cmd.word();
                 if (a.equals("neighbor")) {
                     rdr.putStrTab(r.ospf4.showNeighs());
@@ -1631,6 +1635,10 @@ public class userShow {
                 cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.rip4, bits.str2num(cmd.word()), false);
                 if (r == null) {
                     cmd.error("no such process");
+                    return null;
+                }
+                if (r.rip4 == null) {
+                    cmd.error("uninitialized process");
                     return null;
                 }
                 a = cmd.word();
@@ -1810,6 +1818,10 @@ public class userShow {
                     cmd.error("no such process");
                     return null;
                 }
+                if (r.ospf6 == null) {
+                    cmd.error("uninitialized process");
+                    return null;
+                }
                 a = cmd.word();
                 if (a.equals("neighbor")) {
                     rdr.putStrTab(r.ospf6.showNeighs());
@@ -1968,6 +1980,10 @@ public class userShow {
                     cmd.error("no such process");
                     return null;
                 }
+                if (r.rip6 == null) {
+                    cmd.error("uninitialized process");
+                    return null;
+                }
                 a = cmd.word();
                 if (a.equals("summary")) {
                     rdr.putStrTab(r.rip6.showNeighs());
@@ -2110,6 +2126,10 @@ public class userShow {
             cmd.error("no such process");
             return;
         }
+        if (r.eigrp == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
         String a = cmd.word();
         if (a.equals("summary")) {
             rdr.putStrTab(r.eigrp.showNeighs());
@@ -2154,6 +2174,10 @@ public class userShow {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
+            return;
+        }
+        if (r.logger == null) {
+            cmd.error("uninitialized process");
             return;
         }
         String a = cmd.word();
@@ -2259,6 +2283,10 @@ public class userShow {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
+            return;
+        }
+        if (r.lsrp == null) {
+            cmd.error("uninitialized process");
             return;
         }
         String a = cmd.word();
@@ -2405,6 +2433,10 @@ public class userShow {
             cmd.error("no such process");
             return;
         }
+        if (r.pvrp == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
         String a = cmd.word();
         if (a.equals("summary")) {
             rdr.putStrTab(r.pvrp.showNeighs());
@@ -2453,6 +2485,10 @@ public class userShow {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
+            return;
+        }
+        if (r.isis == null) {
+            cmd.error("uninitialized process");
             return;
         }
         String a = cmd.word();
@@ -2704,6 +2740,10 @@ public class userShow {
             cmd.error("no such process");
             return;
         }
+        if (r.msdp == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
         String a = cmd.word();
         if (a.equals("neighbor")) {
             rdr.putStrTab(r.msdp.getNeighShow());
@@ -2844,6 +2884,10 @@ public class userShow {
             cmd.error("no such process");
             return;
         }
+        if (r.babel == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
         String a = cmd.word();
         if (a.equals("summary")) {
             rdr.putStrTab(r.babel.showNeighs());
@@ -2884,6 +2928,10 @@ public class userShow {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
+            return;
+        }
+        if (r.olsr == null) {
+            cmd.error("uninitialized process");
             return;
         }
         String a = cmd.word();
@@ -3163,6 +3211,10 @@ public class userShow {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
+            return;
+        }
+        if (r.bgp == null) {
+            cmd.error("uninitialized process");
             return;
         }
         String a = cmd.word();
