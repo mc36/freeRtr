@@ -68,6 +68,10 @@ public class userReader implements Comparator<String> {
          */
         begin,
         /**
+         * begin with headers
+         */
+        hbegin,
+        /**
          * end
          */
         end,
@@ -75,6 +79,10 @@ public class userReader implements Comparator<String> {
          * include
          */
         include,
+        /**
+         * include with headers
+         */
+        hinclude,
         /**
          * exclude
          */
@@ -91,6 +99,10 @@ public class userReader implements Comparator<String> {
          * last lines
          */
         last,
+        /**
+         * last lines with header
+         */
+        hlast,
         /**
          * count entities
          */
@@ -474,6 +486,108 @@ public class userReader implements Comparator<String> {
         }
     }
 
+    private void doBegin(List<String> lst, int num) {
+        if (num <= 0) {
+            lst.clear();
+            return;
+        }
+        num--;
+        for (int i = num; i >= 0; i--) {
+            lst.remove(i);
+        }
+    }
+
+    private List<String> doInclude(List<String> lst) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            boolean b = s.matches(filterS);
+            if (!b) {
+                continue;
+            }
+            res.add(s);
+        }
+        return res;
+    }
+
+    private void doLast(List<String> lst, int num) {
+        for (int i = lst.size() - num; i >= 0; i--) {
+            lst.remove(i);
+        }
+    }
+
+    private void doEnd(List<String> lst, int num) {
+        if (num < 0) {
+            return;
+        }
+        num++;
+        for (int i = lst.size() - 1; i >= num; i--) {
+            lst.remove(i);
+        }
+    }
+
+    private void doFirst(List<String> lst, int num) {
+        for (int i = lst.size() - 1; i >= num; i--) {
+            lst.remove(i);
+        }
+    }
+
+    private List<String> doUniq(List<String> lst) {
+        List<String> res = new ArrayList<String>();
+        List<String> tab = new ArrayList<String>();
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
+            String b = getColText(a);
+            if (tab.contains(b)) {
+                continue;
+            }
+            tab.add(b);
+            res.add(a);
+        }
+        return res;
+    }
+
+    private List<String> doHide(List<String> lst) {
+        List<String> res = new ArrayList<String>();
+        if (columnS.equals(" ")) {
+            for (int i = 0; i < lst.size(); i++) {
+                String a = lst.get(i);
+                if (a.length() > columnB) {
+                    a = a.substring(0, columnB);
+                }
+                res.add(a);
+            }
+        } else {
+            for (int i = 0; i < lst.size(); i++) {
+                String a = lst.get(i);
+                String b = "";
+                for (int o = 0; o < columnN; o++) {
+                    int p = a.indexOf(columnS);
+                    if (p < 0) {
+                        break;
+                    }
+                    b += a.substring(0, p + 1);
+                    a = a.substring(p + 1, a.length());
+                }
+                res.add(b);
+            }
+        }
+        return res;
+    }
+
+    private List<String> doExclude(List<String> lst) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            boolean b = s.matches(filterS);
+            if (b) {
+                continue;
+            }
+            res.add(s);
+        }
+        return res;
+    }
+
     /**
      * filter the list
      *
@@ -486,33 +600,22 @@ public class userReader implements Comparator<String> {
         }
         switch (filterM) {
             case include:
-                List<String> res = new ArrayList<String>();
-                for (int i = 0; i < lst.size(); i++) {
-                    String s = lst.get(i);
-                    boolean b = s.matches(filterS);
-                    if (!b) {
-                        continue;
-                    }
-                    res.add(s);
-                }
-                return doSecond(res);
+                lst = doInclude(lst);
+                return doSecond(lst);
+            case hinclude:
+                String a = lst.remove(0);
+                lst = doInclude(lst);
+                lst.add(0, a);
+                return doSecond(lst);
             case exclude:
-                res = new ArrayList<String>();
-                for (int i = 0; i < lst.size(); i++) {
-                    String s = lst.get(i);
-                    boolean b = s.matches(filterS);
-                    if (b) {
-                        continue;
-                    }
-                    res.add(s);
-                }
-                return doSecond(res);
+                lst = doExclude(lst);
+                return doSecond(lst);
             case sort:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                String a = lst.remove(0);
+                a = lst.remove(0);
                 Collections.sort(lst, this);
                 lst.add(0, a);
                 return doSecond(lst);
@@ -552,82 +655,45 @@ public class userReader implements Comparator<String> {
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                res = new ArrayList<String>();
-                if (columnS.equals(" ")) {
-                    for (int i = 0; i < lst.size(); i++) {
-                        a = lst.get(i);
-                        if (a.length() > columnB) {
-                            a = a.substring(0, columnB);
-                        }
-                        res.add(a);
-                    }
-                } else {
-                    for (int i = 0; i < lst.size(); i++) {
-                        a = lst.get(i);
-                        String b = "";
-                        for (int o = 0; o < columnN; o++) {
-                            int p = a.indexOf(columnS);
-                            if (p < 0) {
-                                break;
-                            }
-                            b += a.substring(0, p + 1);
-                            a = a.substring(p + 1, a.length());
-                        }
-                        res.add(b);
-                    }
-                }
-                return doSecond(res);
+                lst = doHide(lst);
+                return doSecond(lst);
             case uniq:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                res = new ArrayList<String>();
-                List<String> tab = new ArrayList<String>();
-                for (int i = 0; i < lst.size(); i++) {
-                    a = lst.get(i);
-                    String b = getColText(a);
-                    if (tab.contains(b)) {
-                        continue;
-                    }
-                    tab.add(b);
-                    res.add(a);
-                }
-                return doSecond(res);
+                lst = doUniq(lst);
+                return doSecond(lst);
             case redirect:
                 bits.buf2txt(true, lst, filterS);
-                return lst;
+                return doSecond(lst);
             case first:
                 int num = bits.str2num(filterS);
-                for (int i = lst.size() - 1; i >= num; i--) {
-                    lst.remove(i);
-                }
+                doFirst(lst, num);
                 return doSecond(lst);
             case last:
                 num = bits.str2num(filterS);
-                for (int i = lst.size() - num; i >= 0; i--) {
-                    lst.remove(i);
-                }
+                doLast(lst, num);
+                return doSecond(lst);
+            case hlast:
+                num = bits.str2num(filterS);
+                a = lst.remove(0);
+                doLast(lst, num);
+                lst.add(0, a);
                 return doSecond(lst);
             case begin:
                 num = bits.lstFnd(lst, filterS);
-                if (num < 0) {
-                    return new ArrayList<String>();
-                }
-                num--;
-                for (int i = num; i >= 0; i--) {
-                    lst.remove(i);
-                }
+                doBegin(lst, num);
+                return doSecond(lst);
+            case hbegin:
+                num = bits.lstFnd(lst, filterS);
+                a = lst.remove(0);
+                doBegin(lst, num);
+                lst.add(0, a);
                 return doSecond(lst);
             case end:
                 num = bits.lstFnd(lst, filterS);
-                if (num < 0) {
-                    return lst;
-                }
-                num++;
-                for (int i = lst.size() - 1; i >= num; i--) {
-                    lst.remove(i);
-                }
+                doEnd(lst, num);
                 return doSecond(lst);
             case count:
                 lst = doCount(lst);
@@ -661,7 +727,7 @@ public class userReader implements Comparator<String> {
                 lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.setdel);
                 return doSecond(lst);
             default:
-                return lst;
+                return doSecond(lst);
         }
     }
 
@@ -1353,6 +1419,11 @@ public class userReader implements Comparator<String> {
             filterM = mode.include;
             return cmd;
         }
+        if (a.equals("hinclude")) {
+            filterS = filter2reg(filterS);
+            filterM = mode.hinclude;
+            return cmd;
+        }
         if (a.equals("exclude")) {
             filterS = filter2reg(filterS);
             filterM = mode.exclude;
@@ -1361,6 +1432,11 @@ public class userReader implements Comparator<String> {
         if (a.equals("begin")) {
             filterS = filter2reg(filterS);
             filterM = mode.begin;
+            return cmd;
+        }
+        if (a.equals("hbegin")) {
+            filterS = filter2reg(filterS);
+            filterM = mode.hbegin;
             return cmd;
         }
         if (a.equals("end")) {
@@ -1409,8 +1485,16 @@ public class userReader implements Comparator<String> {
             filterM = mode.last;
             return cmd;
         }
+        if (a.equals("hlast")) {
+            filterM = mode.hlast;
+            return cmd;
+        }
         if (a.equals("reginc")) {
             filterM = mode.include;
+            return cmd;
+        }
+        if (a.equals("hreginc")) {
+            filterM = mode.hinclude;
             return cmd;
         }
         if (a.equals("regexc")) {
@@ -1419,6 +1503,10 @@ public class userReader implements Comparator<String> {
         }
         if (a.equals("regbeg")) {
             filterM = mode.begin;
+            return cmd;
+        }
+        if (a.equals("hregbeg")) {
+            filterM = mode.hbegin;
             return cmd;
         }
         if (a.equals("regend")) {
