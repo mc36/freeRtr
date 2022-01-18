@@ -1320,7 +1320,7 @@ class userTesterOne {
         }
         l.add(shrtPthFrst.graphEnd1);
         l.add(shrtPthFrst.graphEnd2);
-        bits.buf2txt(true, l, path + fileName + ".png");
+        bits.buf2txt(true, l, path + fileName + ".dot");
     }
 
     public userTesterPrc getPrc(String s) {
