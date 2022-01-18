@@ -33,7 +33,7 @@ class BfForwarder(Thread,RareApi):
 
     def tearDown(self):
         os._exit(0);
-        self.bfgc.interface._tear_down_stream()
+        self.bfgc.interface.tear_down_stream()
 
     def _getTableKeys(self, table_name_key, table_dict, keys):
         try:

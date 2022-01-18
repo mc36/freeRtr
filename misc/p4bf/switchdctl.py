@@ -165,7 +165,7 @@ class BfRuntimeGrpcClient:
     def tearDown(self):
         if self.interface is not None:
             logger.warn("Tearing down gracefully grpc session with %s" % self.grpc_addr)
-            self.interface._tear_down_stream()
+            self.interface.tear_down_stream()
 
     def bfrt_fp(self, base_path, p4_name):
         return base_path + "/" + p4_name + "/bf-rt.json"

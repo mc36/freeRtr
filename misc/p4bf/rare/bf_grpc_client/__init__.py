@@ -1,5 +1,5 @@
 
-from ..bf_gbl_env.var_env import *
+from ..bf_gbl_env.cst_env import *
 
 class BfRuntimeGrpcClient:
     def __init__(self, grpc_addr, p4_program_name, client_id, pipe_name ,bind):

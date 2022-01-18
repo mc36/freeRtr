@@ -1,5 +1,5 @@
 import os, sys, grpc
-import logging, linecache
+import logging, linecache, inspect
 from threading import Thread
 from time import sleep
 
@@ -53,6 +53,6 @@ def is_any_thread_alive(threads):
 
 def graceful_exit(bf_client,sck):
     os._exit(0)
-    bf_client.interface._tear_down_stream()
+    bf_client.interface.tear_down_stream()
     sck.close()
     sys.exit(0)

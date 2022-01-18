@@ -1,11 +1,5 @@
-import logging
-import os
-import sys
-import inspect
 
-PROGRAM_NAME = os.path.basename(sys.argv[0])
-log_level = logging.WARNING
-logger = logging.getLogger(PROGRAM_NAME)
+from ..bf_gbl_env.cst_env import *
 
 ACTIVE_PORTS = {}
 
@@ -31,7 +25,10 @@ def run(self):
         if len(line) == 0:
             logger.warning("BfForwarder - Empty message from control plane" )
             logger.warning("BfForwarder: connection with control plane lost, quitting ...")
-            graceful_exit(bf_client,sck)
+            os._exit(0)
+            self.bfgc.interface.tear_down_stream()
+            self.file.close()
+            sys.exit(0)
             continue
 
         splt = line.split(" ")

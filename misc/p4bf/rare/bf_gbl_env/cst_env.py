@@ -1,24 +1,10 @@
 from .var_env import *
 
-try:
-    from sal_services_pb2 import (
-        UNDEFINED_SPEED,
-        SPEED_NONE,
-        SPEED_1G,
-        SPEED_2P5G,
-        SPEED_5G,
-        SPEED_10G,
-        SPEED_25G,
-        SPEED_40G,
-        SPEED_50G,
-        SPEED_100G,
-    )
-    from sal_services_pb2 import UNDEFINED_FEC, FEC_NONE, FEC_FC, FEC_RS
-    from sal_services_pb2 import UNDEFINED_FC, FC_NONE, FC_PAUSE, FC_PFC
-    from sal_services_pb2 import UNDEFINED_AN, AN_OFF, AN_ON
-    from salgrpcclient import SalGrpcClient, SAL_PORT_ID
-except ImportError:
-    logger.warning("sal import failed")
+SAL_PORT_ID = {
+                0:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8,
+                12:9, 13:10, 14:11, 15:12, 
+                28:13, 29:14, 30:15, 31:16
+                }
 
 PORT_SPEED = [1,10,25,40, 50,100]
 UNDEFINED_FEC = 0 ;

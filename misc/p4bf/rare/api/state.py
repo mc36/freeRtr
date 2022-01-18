@@ -1,11 +1,11 @@
-from ..bf_gbl_env.var_env import *
+from ..bf_gbl_env.cst_env import *
 
-import inspect
-import logging, linecache
+#import inspect
+#import logging, linecache
 
-PROGRAM_NAME = os.path.basename(sys.argv[0])
-log_level = logging.WARNING
-logger = logging.getLogger(PROGRAM_NAME)
+#PROGRAM_NAME = os.path.basename(sys.argv[0])
+#log_level = logging.WARNING
+#logger = logging.getLogger(PROGRAM_NAME)
 
 PORT_SPEED = [1,10,25,40, 50,100]
 
@@ -33,7 +33,7 @@ def _setPortAdmStatusBF2556X1T(self, port_id, adm_status,
                                speed=new_speed,fec=fec,an=autoneg,fc=flowctrl,
                                enable=adm_status,up=adm_status)
 
-            # FL ACTIVE_PORTS[port_id]=port_speed
+            # ACTIVE_PORTS[port_id]=port_speed
         except:
             logger.warning("%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
                          % (self.class_name,method_name,port_id,port_speed,fec,autoneg,flowctrl ))
@@ -41,7 +41,7 @@ def _setPortAdmStatusBF2556X1T(self, port_id, adm_status,
     else:
         try:
             self.salgc.DelPort(port_num=sal_port, lane=0)
-            # FL ACTIVE_PORTS.pop(port_id)
+            # ACTIVE_PORTS.pop(port_id)
         except:
             logger.warning("%s:%s - Error in deleting port [%s]" % (self.class_name,method_name,port_id))
 

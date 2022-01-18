@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 ###############################################################################
 #
@@ -24,6 +24,7 @@ from rare.bf_ifstatus import BfIfStatus
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
+from salgrpcclient import SalGrpcClient
 
 ALL_THREADS = []
 
