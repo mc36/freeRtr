@@ -755,6 +755,20 @@ public class userScript {
                 i = a.lastIndexOf(" ", i);
                 return "" + i;
             }
+            if (a.equals("tohex")) {
+                a = getWord(true);
+                int i = bits.str2num(getWord(true));
+                if (a.equals("b")) {
+                    return "" + bits.toHexB(i);
+                }
+                if (a.equals("w")) {
+                    return "" + bits.toHexW(i);
+                }
+                if (a.equals("d")) {
+                    return "" + bits.toHexD(i);
+                }
+                return "%notyp%";
+            }
             return "%nostr%";
         }
         if (a.equals("after")) {
