@@ -1,7 +1,5 @@
 from ..bf_gbl_env.var_env import *
 
-ACTIVE_PORTS = {}
-
 def _Exception():
     exc_type, exc_obj, tb = sys.exc_info()
     f = tb.tb_frame
@@ -22,16 +20,29 @@ class BfSubIfCounter(Thread):
         self.die = False
         self.subif_counter_interval= subif_counter_interval
         self.pipe_name = pipe_name
+        self.active_ports = {}
+        self.active_subifs = {}
+        self.subif_counters = {}
+
+    def getAllActivePorts(self):
+        resp = self.bfgc.port_table.entry_get(self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name)
+        ACTIVE_PORTS = {}
+        for d, k in resp:
+            key_fields = k.to_dict()
+            data_fields = d.to_dict()
+            ACTIVE_PORTS[key_fields['$DEV_PORT']['value']] = data_fields['$PORT_NAME']
+        self.active_ports = ACTIVE_PORTS 
 
     def run(self):
         try:
             logger.warning("%s - main" % (self.class_name))
             while not self.die:
+                self.getAllActivePorts()  
                 logger.debug("%s - loop" % (self.class_name))
-                if len(ACTIVE_PORTS.keys())==0:
+                if len(self.active_ports.keys())==0:
                     logger.debug("%s - No active ports" % (self.class_name))
                 else:
-                    logger.debug("%s - ACTIVE_PORTS%s" % (self.class_name, ACTIVE_PORTS.keys()))
+                    logger.debug("%s - ACTIVE_PORTS%s" % (self.class_name, self.active_ports.keys()))
                     self.getReadSwitchSubIfCounter()
                 sleep(self.subif_counter_interval)
 
@@ -60,23 +71,23 @@ class BfSubIfCounter(Thread):
         tbl_stats_out.operations_execute(self.bfgc.target, 'Sync')
         tbl_stats_pkt_out.operations_execute(self.bfgc.target, 'Sync')
 
-        resp = tbl_vlan_in.entry_get(self.bfgc.target, [], {"from_hw": False})
+        resp = tbl_vlan_in.entry_get(self.bfgc.target, [], {"from_hw": False},p4_name=self.bfgc.p4_name)
         for d, k in resp:
             key_fields = k.to_dict()
             data_fields = d.to_dict()
-            ACTIVE_SUBIFS[data_fields['src']]=[key_fields['ig_md.ingress_id']['value'],
+            self.active_subifs[data_fields['src']]=[key_fields['ig_md.ingress_id']['value'],
                                   key_fields['hdr.vlan.vid']['value']]
 
-        for port_id in ACTIVE_PORTS.keys():
-            SUBIF_COUNTERS.update({port_id:[0,0,0,0]})
-        for subif_if in ACTIVE_SUBIFS.keys():
-            SUBIF_COUNTERS.update({subif_if:[0,0,0,0]})
+        for port_id in self.active_ports.keys():
+            self.subif_counters.update({port_id:[0,0,0,0]})
+        for subif_if in self.active_subifs.keys():
+            self.subif_counters.update({subif_if:[0,0,0,0]})
 
-        for key in SUBIF_COUNTERS.keys():
+        for key in self.subif_counters.keys():
             logger.debug("SUBIF_COUNTERS[%s]=%s" % (key,
-                                  SUBIF_COUNTERS[key]))
+                                  self.subif_counters[key]))
 
-        for counter_id in SUBIF_COUNTERS.keys():
+        for counter_id in self.subif_counters.keys():
         # read counter from p4 switch via grpc client
             logger.debug("%s - reading counter_id[%s]" % (self.class_name,counter_id))
             # IN counters
@@ -107,10 +118,11 @@ class BfSubIfCounter(Thread):
                                                         key_list,
                                                         {"from-hw": False},
                                                         data_list)
+
             stats_pkt_out = next(stats_pkt_out_entry)[0].to_dict()
             logger.debug("EGRESS PKT_OUT STATS FOR SUBIF[%s]=%s" % (counter_id,stats_pkt_out))
 
-            SUBIF_COUNTERS.update({counter_id:[stats_in["$COUNTER_SPEC_PKTS"] - stats_pkt_out["$COUNTER_SPEC_PKTS"],
+            self.subif_counters.update({counter_id:[stats_in["$COUNTER_SPEC_PKTS"] - stats_pkt_out["$COUNTER_SPEC_PKTS"],
                                                stats_in["$COUNTER_SPEC_BYTES"] - stats_pkt_out["$COUNTER_SPEC_BYTES"],
                                                stats_out["$COUNTER_SPEC_PKTS"] + stats_pkt_out["$COUNTER_SPEC_PKTS"],
                                                stats_out["$COUNTER_SPEC_BYTES"] + stats_pkt_out["$COUNTER_SPEC_BYTES"]]})
