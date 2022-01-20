@@ -111,6 +111,10 @@ ig_md.vrf:
         const default_action = NoAction();
     }
 
+#ifdef HAVE_ALPM
+    @pragma alpm 1
+    @pragma alpm_partitions 4096
+#endif
     table tbl_ipv6_fib_lpm {
         key = {
 hdr.ipv6b.dst_addr:
