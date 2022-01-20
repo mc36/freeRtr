@@ -1,4 +1,6 @@
 #!/bin/sh
+mkdir -p ../../binTmp
+UM=`uname -m`
 CC="tcc"                                #tcc
 CC="llc"                                #llc
 CC="gcc"                                #gcc
@@ -17,7 +19,7 @@ touch -d "2010-01-01 00:00:00" ../../binTmp/$1.bin
 }
 
 for fn in p4xdp_pass p4xdp_kern; do
-  compileFile $fn "-c -g" "-target bpf" "-I /usr/include/`uname -m`-linux-gnu/"
+  compileFile $fn "-c -g" "-target bpf" "-I /usr/include/$UM-linux-gnu/"
   done
 
 for fn in p4xdp_user; do
@@ -29,7 +31,7 @@ for fn in p4emu p4pkt; do
   done
 
 for fn in p4dpdk p4dpdkPkt; do
-  compileFile $fn "-I /usr/include/dpdk/ -I /usr/include/`uname -m`-linux-gnu/dpdk" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev" "-march=corei7"
+  compileFile $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev" "-march=corei7"
   done
 
 for fn in pcapInt pcap2pcap sender; do
