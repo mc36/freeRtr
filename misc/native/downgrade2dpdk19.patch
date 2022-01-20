@@ -1,0 +1,11 @@
+--- o/p4dpdk.h	2022-01-20 17:30:18.552481913 +0100
++++ ./p4dpdk.h	2022-01-11 19:52:22.991458100 +0100
+@@ -333,7 +333,7 @@
+     pthread_t threadStat;
+     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
+ 
++    rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MASTER);
+-    rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MAIN);
+ 
+     doMainLoop();
+ 

@@ -16,10 +16,6 @@ $CC -Wall $MD $4 -o../../binTmp/$1.bin $2 $1.c $3
 touch -d "2010-01-01 00:00:00" ../../binTmp/$1.bin
 }
 
-if [ "`dpkg -s dpdk-dev | grep Version`" \< "Version: 20" ] ; then
-  patch -p0 < dpdk19.patch
-  fi
-
 for fn in p4xdp_pass p4xdp_kern; do
   compileFile $fn "-c -g" "-target bpf" "-I /usr/include/`uname -m`-linux-gnu/"
   done
