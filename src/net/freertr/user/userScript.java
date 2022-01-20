@@ -769,6 +769,19 @@ public class userScript {
                 }
                 return "%notyp%";
             }
+            if (a.equals("random")) {
+                a = getWord(true);
+                if (a.equals("b")) {
+                    return "" + bits.randomB();
+                }
+                if (a.equals("w")) {
+                    return "" + bits.randomW();
+                }
+                if (a.equals("d")) {
+                    return "" + bits.randomD();
+                }
+                return "%notyp%";
+            }
             return "%nostr%";
         }
         if (a.equals("after")) {
