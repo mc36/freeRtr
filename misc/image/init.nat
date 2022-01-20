@@ -7,7 +7,7 @@ cp /proc/net/dev hwdet.eth
 cp /proc/tty/driver/serial hwdet.ser
 ip link show > hwdet.mac
 if [ ! -f /rtr/hwdet-all.sh ] ; then
-  /rtr/rtr.bin test hwdet binary tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface raw line raw inline
+  /rtr/rtr.bin test hwdet binary tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface pcap line raw inline
   fi
 chmod 755 *.sh
 /rtr/hwdet-all.sh
