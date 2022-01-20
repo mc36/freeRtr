@@ -43,4 +43,3 @@ for fn in pcapInt pcap2pcap sender; do
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" ""
   done
-
