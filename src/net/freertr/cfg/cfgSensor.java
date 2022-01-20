@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.Deflater;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
@@ -1157,6 +1158,17 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         return res;
     }
 
+    private byte[] compressReply(List<String> lst) {
+        byte[] buf = bits.lst2str(lst, "\r").getBytes();
+        Deflater cmp = new Deflater();
+        cmp.setInput(buf);
+        cmp.finish();
+        int i = cmp.deflate(buf);
+        byte[] res = new byte[i];
+        bits.byteCopy(buf, 0, res, 0, res.length);
+        return res;
+    }
+
     /**
      * get show
      *
@@ -1174,13 +1186,22 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         res.add("yang:");
         res.addAll(getYang());
         res.add("prometheus:");
-        res.addAll(getReportProm());
+        List<String> lst = getReportProm();
+        res.addAll(lst);
+        res.add("promwire:" + bits.byteDump(compressReply(lst), 0, -1));
         res.add("csv:");
-        res.addAll(getReportCsv());
+        lst = getReportCsv();
+        res.addAll(lst);
+        res.add("csvwire:" + bits.byteDump(compressReply(lst), 0, -1));
         res.add("netconf:");
-        extMrkLng x = new extMrkLng();
-        getReportNetConf(x, "/");
-        res.addAll(x.show());
+        extMrkLng xml = new extMrkLng();
+        getReportNetConf(xml, "/");
+        lst = xml.show();
+        res.addAll(lst);
+        res.add("xml:");
+        lst = xml.toXMLlst();
+        res.addAll(lst);
+        res.add("xmlwire:" + bits.byteDump(compressReply(lst), 0, -1));
         res.add("kvgpb:" + getReportKvGpb().dump());
         res.add("memory:");
         res.addAll(showReportMem(locMem));
