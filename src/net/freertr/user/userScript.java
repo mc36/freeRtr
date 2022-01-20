@@ -780,6 +780,11 @@ public class userScript {
                 if (a.equals("d")) {
                     return "" + bits.randomD();
                 }
+                if (a.equals("r")) {
+                    int i = bits.str2num(getWord(true));
+                    int o = bits.str2num(getWord(true));
+                    return "" + bits.random(i, o);
+                }
                 return "%notyp%";
             }
             return "%nostr%";
