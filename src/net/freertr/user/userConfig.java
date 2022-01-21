@@ -23,6 +23,7 @@ import net.freertr.cfg.cfgEvntmgr;
 import net.freertr.cfg.cfgGeneric;
 import net.freertr.cfg.cfgHrpn;
 import net.freertr.cfg.cfgIconn;
+import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgMenu;
 import net.freertr.cfg.cfgMtrack;
@@ -205,12 +206,16 @@ public class userConfig {
     /**
      * get help text for exec commands
      *
+     * @param needEdit need editor
      * @param needShow need show
      * @param needGen need generic
      * @return helping instance
      */
-    public userHelping getHelping(boolean needShow, boolean needGen) {
+    public userHelping getHelping(boolean needEdit, boolean needShow, boolean needGen) {
         userHelping l = new userHelping();
+        if (needEdit) {
+            l.add(null, "1 .    editor              edit the current section");
+        }
         if (needShow) {
             userHelping.getCfgHelp(l);
         }
@@ -252,6 +257,19 @@ public class userConfig {
         }
     }
 
+    private cfgGeneric getCurrConfiger() {
+        switch (modeV) {
+            case server:
+                return modeDserver;
+            case config:
+                return modeDconfig;
+            case global:
+                return null;
+            default:
+                return null;
+        }
+    }
+
     /**
      * execute one command
      *
@@ -289,6 +307,34 @@ public class userConfig {
             resetMode();
             return true;
         }
+        if (a.equals("editor")) {
+            if (authorization != null) {
+                authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
+                if (ntry.result != authResult.authSuccessful) {
+                    cmd.error("not authorized to edit this");
+                    return false;
+                }
+            }
+            cfgGeneric cur = getCurrConfiger();
+            if (cur == null) {
+                cmd.error("not allowed here");
+                return false;
+            }
+            List<String> c1 = cur.getShRun(1);
+            List<String> c2 = new ArrayList<String>();
+            c2.addAll(c1);
+            userEditor edt = new userEditor(new userScreen(cmd.pipe), c2, cur.getPrompt(), false);
+            if (edt.doEdit()) {
+                return false;
+            }
+            List<String> c3 = userFilter.getDiffs(c1, c2);
+            reader.putStrArr(bits.lst2lin(c3, false));
+            int res = cfgInit.executeSWcommands(c3, false);
+            reader.putStrArr(bits.str2lst("errors=" + res));
+            c3 = userFilter.getDiffs(c2, c1);
+            reader.putStrArr(c3);
+            return false;
+        }
         if (a.equals("show")) {
             if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
@@ -297,17 +343,8 @@ public class userConfig {
             cmd = reader.setFilter(cmd);
             shw.cmd = cmd;
             shw.rdr = reader;
-            shw.hlp = getHelping(false, false);
-            switch (modeV) {
-                case server:
-                    shw.cfg = modeDserver;
-                    break;
-                case config:
-                    shw.cfg = modeDconfig;
-                    break;
-                case global:
-                    break;
-            }
+            shw.hlp = getHelping(false, false, false);
+            shw.cfg = getCurrConfiger();
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
                 if (ntry.result != authResult.authSuccessful) {
@@ -366,7 +403,7 @@ public class userConfig {
      * @return status of operation, see at one command
      */
     public boolean doCommand() {
-        reader.setContext(getHelping(true, true), cfgAll.hostName + getPrompt() + "#");
+        reader.setContext(getHelping(true, true, true), cfgAll.hostName + getPrompt() + "#");
         String s = reader.readLine(cmds.finish);
         if (s == null) {
             return true;

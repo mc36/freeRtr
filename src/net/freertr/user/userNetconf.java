@@ -114,7 +114,7 @@ public class userNetconf {
             if (a.equals("!")) {
                 break;
             }
-            userHelping hlp = cfg.getHelping(true, true);
+            userHelping hlp = cfg.getHelping(false, true, true);
             rdr.setContext(hlp, "");
             String b = hlp.repairLine(a);
             if (b.length() < 1) {
@@ -124,10 +124,10 @@ public class userNetconf {
             cfg.executeCommand(b);
         }
         pos++;
-        userHelping ned = cfg.getHelping(false, false);
+        userHelping ned = cfg.getHelping(false, false, false);
         for (; pos < end; pos++) {
             String a = lst.get(pos);
-            userHelping hlp = cfg.getHelping(true, true);
+            userHelping hlp = cfg.getHelping(false, true, true);
             rdr.setContext(hlp, "");
             String b = hlp.repairLine(a);
             if (b.length() < 1) {

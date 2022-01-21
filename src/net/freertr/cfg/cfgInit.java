@@ -633,7 +633,7 @@ public class cfgInit implements Runnable {
                 logger.debug("cmd " + a);
             }
             String beg = "line " + (o + 1) + ": \"" + a + "\" : ";
-            userHelping hl = uc.getHelping(true, true);
+            userHelping hl = uc.getHelping(false, true, true);
             rd.setContext(hl, "");
             String b = hl.repairLine(a);
             if (b.length() < 1) {

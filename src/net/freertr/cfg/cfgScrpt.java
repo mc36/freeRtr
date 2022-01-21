@@ -13,10 +13,8 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabScrptN;
-import net.freertr.user.userEditor;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
-import net.freertr.user.userScreen;
 import net.freertr.user.userScript;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -162,7 +160,6 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
         l.add(null, "1  .      runnow                     run one round now");
-        l.add(null, "1  .      editor                     edit this script");
     }
 
     public List<String> getShRun(int filter) {
@@ -257,21 +254,6 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         if (a.equals("reindex")) {
             int i = bits.str2num(cmd.word());
             script.reindex(i, bits.str2num(cmd.word()));
-            return;
-        }
-        if (a.equals("editor")) {
-            List<String> txt = getText();
-            userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "script", false);
-            if (e.doEdit()) {
-                return;
-            }
-            script.clear();
-            for (int i = 0; i < txt.size(); i++) {
-                tabScrptN ntry = new tabScrptN();
-                ntry.sequence = (i + 1) * 10;
-                ntry.lin = txt.get(i);
-                script.add(ntry);
-            }
             return;
         }
         if (!a.equals("no")) {

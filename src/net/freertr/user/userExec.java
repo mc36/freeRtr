@@ -2590,7 +2590,7 @@ public class userExec {
         for (;;) {
             a = cmd.word();
             s = (s + " " + a).trim();
-            hlp = cfg.getHelping(true, true);
+            hlp = cfg.getHelping(true, true, true);
             reader.setContext(hlp, "");
             last = cmd.size() < 1;
             a = hlp.repairLine(s);
@@ -2611,7 +2611,7 @@ public class userExec {
             return;
         }
         s = cmd.getRemaining();
-        hlp = cfg.getHelping(true, true);
+        hlp = cfg.getHelping(true, true, true);
         reader.setContext(hlp, "");
         a = hlp.repairLine(s);
         if (hlp.endOfCmd(a)) {

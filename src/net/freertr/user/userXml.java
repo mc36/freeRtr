@@ -112,7 +112,7 @@ public class userXml {
                     if (s.length() < 1) {
                         continue;
                     }
-                    userHelping hlp = cfg.getHelping(true, true);
+                    userHelping hlp = cfg.getHelping(false, true, true);
                     rdr.setContext(hlp, "");
                     String b = hlp.repairLine(s);
                     if (b.length() < 1) {
