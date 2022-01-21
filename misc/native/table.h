@@ -2,6 +2,7 @@ struct table_head {
     int reclen;
     unsigned char *buffer;
     int size;
+    int alloc;
     int (*comparer) (void *, void *);
 };
 
@@ -13,8 +14,25 @@ void table_init(struct table_head *tab, int reclen, int comparer(void *, void *)
     tab->reclen = reclen;
     tab->comparer = comparer;
     tab->size = 0;
+    tab->alloc = 1;
     tab->buffer = malloc(reclen);
     if (tab->buffer == NULL) err("error allocating memory");
+}
+
+
+void table_resize(struct table_head *tab, int ned) {
+    int siz = -1;
+    if ((ned + 512) < tab->alloc) siz = ned + 128;
+    if (ned > tab->alloc) siz = ned + 512;
+    if (siz < 0) return;
+    unsigned char *old = tab->buffer;
+    unsigned char *new = malloc(tab->reclen * siz);
+    if (new == NULL) err("error allocating memory");
+    memcpy(new, old, tab->reclen * tab->size);
+    tab->buffer = new;
+    tab->alloc = siz;
+    usleep(10000);
+    free(old);
 }
 
 
@@ -55,8 +73,7 @@ void table_add(struct table_head *tab, void *ntry) {
         memmove(table_get(tab, idx), ntry, tab->reclen);
         return;
     }
-    tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+1));
-    if (tab->buffer == NULL) err("error allocating memory");
+    table_resize(tab, tab->size + 1);
     idx = -idx - 1;
     memmove(table_get(tab, idx + 1), table_get(tab, idx), (tab->size - idx) * tab->reclen);
     tab->size++;
@@ -69,7 +86,7 @@ void table_del(struct table_head *tab, void *ntry) {
     if (idx < 0) return;
     if (idx < (tab->size - 1)) memmove(table_get(tab, idx), table_get(tab, idx + 1), (tab->size - idx - 1) * tab->reclen);
     tab->size--;
-    tab->buffer = realloc(tab->buffer, tab->reclen * (tab->size+1));
+    table_resize(tab, tab->size);
 }
 
 

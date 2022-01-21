@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir -p ../../binTmp
+TR=../../binTmp
 UM=`uname -m`
 CC="tcc"                                #tcc
 CC="llc"                                #llc
@@ -10,12 +10,13 @@ MD="-O0 -g"                             #debug
 MD="-O3"                                #release
 #gdb xxx.bin core
 #bt full
+mkdir -p $TR
 
 compileFile()
 {
 echo compiling $1.
-$CC -Wall $MD $4 -o../../binTmp/$1.bin $2 $1.c $3
-touch -d "2010-01-01 00:00:00" ../../binTmp/$1.bin
+$CC -Wall $MD $4 -o$TR/$1.bin $2 $1.c $3
+touch -d "2010-01-01 00:00:00" $TR/$1.bin
 }
 
 for fn in p4xdp_pass p4xdp_kern; do
