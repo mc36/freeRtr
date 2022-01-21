@@ -15,10 +15,10 @@ the following directories could be found here:
 * cfg contains the self tests
 * misc contains some smaller subprojects, see below
 * img vm images used for interop and dataplane testing
-* binDwn packages used for vm creation
-* binDsk rootfs used for vm creation
-* binMnt rootfs mounted for vm creation
-* binImg outcome of vm creation
+* binDwn packages used for demo vm creation
+* binDsk rootfs used for demo vm creation
+* binMnt rootfs mounted for demo vm creation
+* binImg outcome of demo vm creation
 * binOut output of compilation
 * binTmp output of testing
 
@@ -42,6 +42,8 @@ the following directories could be found here:
 * sensor some sensor definitions
 * prometheus some grafana definitions
 * netconf some yang definitions
+* image demo vm iso creator
+* img2ova demo vm ova creator
 
 ## getting started
 
