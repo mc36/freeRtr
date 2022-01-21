@@ -26,7 +26,7 @@ for fn in p4xdp_user; do
   compileFile $fn "" "-lpthread -lbpf" ""
   done
 
-for fn in p4emu p4pkt; do
+for fn in p4emu p4pkt p4bench; do
   compileFile $fn "" "-lpthread -lpcap -lcrypto" ""
   done
 
