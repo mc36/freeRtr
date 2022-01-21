@@ -22,6 +22,7 @@ from rare.bf_gbl_env.cst_env import *
 from rare.bf_grpc_client import BfRuntimeGrpcClient
 from rare.bf_ifstatus import BfIfStatus
 from rare.bf_subifcounter import BfSubIfCounter
+from rare.bf_ifcounter import BfIfCounter
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
@@ -129,20 +130,30 @@ if __name__ == "__main__":
         bf_ifstatus.daemon=True
         bf_ifstatus.start()
 
-        bf_if_counter = BfSubIfCounter(4,
-                                "bf_if_counter",
+        bf_ifcounter = BfIfCounter(4,
+                                "bf_ifcounter",
                                 bf_client,
                                 sckw_file,
                                 args.pipe_name,
                                 5)
 
-        bf_if_counter.daemon=True
-        bf_if_counter.start()
+        bf_ifcounter.daemon=True
+        bf_ifcounter.start()
+
+        bf_subifcounter = BfSubIfCounter(5,
+                                "bf_subifcounter",
+                                bf_client,
+                                sckw_file,
+                                args.pipe_name,
+                                5)
+
+        bf_subifcounter.daemon=True
+        bf_subifcounter.start()
 
         if args.snmp:
-            ALL_THREADS = [bf_snmp,bf_forwarder,bf_ifstatus,bf_if_counter]
+            ALL_THREADS = [bf_snmp,bf_forwarder,bf_ifstatus,bf_ifcounter,bf_subifcounter]
         else:
-            ALL_THREADS = [bf_forwarder,bf_ifstatus,bf_if_counter]
+            ALL_THREADS = [bf_forwarder,bf_ifstatus,bf_ifcounter,bf_subifcounter]
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS

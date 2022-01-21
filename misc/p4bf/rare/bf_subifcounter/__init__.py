@@ -78,8 +78,8 @@ class BfSubIfCounter(Thread):
             self.active_subifs[data_fields['src']]=[key_fields['ig_md.ingress_id']['value'],
                                   key_fields['hdr.vlan.vid']['value']]
 
-        for port_id in self.active_ports.keys():
-            self.subif_counters.update({port_id:[0,0,0,0]})
+        #for port_id in self.active_ports.keys():
+        #    self.subif_counters.update({port_id:[0,0,0,0]})
         for subif_if in self.active_subifs.keys():
             self.subif_counters.update({subif_if:[0,0,0,0]})
 
