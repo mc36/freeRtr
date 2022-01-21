@@ -67,9 +67,9 @@ class BfSubIfCounter(Thread):
         logger.debug("EGRESS STATS TABLE PATH: %s" % tbl_name_out)
         logger.debug("EGRESS PKT_OUT_STATS TABLE PATH: %s" % tbl_name_pkt_out)
 
-        tbl_stats_in.operations_execute(self.bfgc.target, 'Sync')
-        tbl_stats_out.operations_execute(self.bfgc.target, 'Sync')
-        tbl_stats_pkt_out.operations_execute(self.bfgc.target, 'Sync')
+        tbl_stats_in.operations_execute(self.bfgc.target, 'Sync',p4_name=self.bfgc.p4_name)
+        tbl_stats_out.operations_execute(self.bfgc.target, 'Sync',p4_name=self.bfgc.p4_name)
+        tbl_stats_pkt_out.operations_execute(self.bfgc.target, 'Sync',p4_name=self.bfgc.p4_name)
 
         resp = tbl_vlan_in.entry_get(self.bfgc.target, [], {"from_hw": False},p4_name=self.bfgc.p4_name)
         for d, k in resp:
@@ -96,7 +96,7 @@ class BfSubIfCounter(Thread):
             stats_in_entry = tbl_stats_in.entry_get(self.bfgc.target,
                                                         key_list,
                                                         {"from-hw": False},
-                                                        data_list)
+                                                        data_list,p4_name=self.bfgc.p4_name)
 
             stats_in = next(stats_in_entry)[0].to_dict()
             logger.debug("INGRESS STATS FOR SUBIF[%s]=%s" % (counter_id,stats_in))
@@ -107,7 +107,7 @@ class BfSubIfCounter(Thread):
             stats_out_entry = tbl_stats_out.entry_get(self.bfgc.target,
                                                         key_list,
                                                         {"from-hw": False},
-                                                        data_list)
+                                                        data_list,p4_name=self.bfgc.p4_name)
             stats_out = next(stats_out_entry)[0].to_dict()
             logger.debug("EGRESS STATS FOR SUBIF[%s]=%s" % (counter_id,stats_out))
 
@@ -117,7 +117,7 @@ class BfSubIfCounter(Thread):
             stats_pkt_out_entry = tbl_stats_pkt_out.entry_get(self.bfgc.target,
                                                         key_list,
                                                         {"from-hw": False},
-                                                        data_list)
+                                                        data_list,p4_name=self.bfgc.p4_name)
 
             stats_pkt_out = next(stats_pkt_out_entry)[0].to_dict()
             logger.debug("EGRESS PKT_OUT STATS FOR SUBIF[%s]=%s" % (counter_id,stats_pkt_out))

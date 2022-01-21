@@ -21,8 +21,8 @@
 from rare.bf_gbl_env.cst_env import *
 from rare.bf_grpc_client import BfRuntimeGrpcClient
 from rare.bf_ifstatus import BfIfStatus
-from rare.bf_subifcounter import BfSubIfCounter
 from rare.bf_ifcounter import BfIfCounter
+from rare.bf_subifcounter import BfSubIfCounter
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
@@ -75,17 +75,20 @@ if __name__ == "__main__":
                                     args.client_id,
                                     args.pipe_name,True)
 
-        bf_ifstatus_client = BfRuntimeGrpcClient(args.bfruntime_address,
+        bf_ifstatus_c = BfRuntimeGrpcClient(args.bfruntime_address,
                                     args.p4_program_name,
                                     args.client_id+1,
                                     args.pipe_name,False)
 
-        # future improvement
-        #bf_subifcounter = BfRuntimeGrpcClient(args.bfruntime_address,
-        #                            args.p4_program_name,
-        #                            args.client_id+2,
-        #                            args.pipe_name,False)
+        bf_ifcounter_c = BfRuntimeGrpcClient(args.bfruntime_address,
+                                    args.p4_program_name,
+                                    args.client_id+2,
+                                    args.pipe_name,False)
 
+        bf_subifcounter_c = BfRuntimeGrpcClient(args.bfruntime_address,
+                                    args.p4_program_name,
+                                    args.client_id+3,
+                                    args.pipe_name,False)
         if args.snmp:
             bf_snmp = BfIfSnmpClient(1,
                              "bf_snmp",
@@ -123,7 +126,7 @@ if __name__ == "__main__":
 
         bf_ifstatus = BfIfStatus(3,
                                 "bf_ifstatus",
-                                bf_ifstatus_client,
+                                bf_ifstatus_c,
                                 sckw_file,
                                 1)
 
@@ -132,7 +135,7 @@ if __name__ == "__main__":
 
         bf_ifcounter = BfIfCounter(4,
                                 "bf_ifcounter",
-                                bf_client,
+                                bf_ifcounter_c,
                                 sckw_file,
                                 args.pipe_name,
                                 5)
@@ -142,7 +145,7 @@ if __name__ == "__main__":
 
         bf_subifcounter = BfSubIfCounter(5,
                                 "bf_subifcounter",
-                                bf_client,
+                                bf_subifcounter_c,
                                 sckw_file,
                                 args.pipe_name,
                                 5)
