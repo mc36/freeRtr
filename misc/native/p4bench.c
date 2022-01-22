@@ -56,6 +56,7 @@ int main(int argc, char **argv) {
         sscanf(argv[i], "%hhx", &origD[origS]);
         origS++;
     }
+    printf("code: %i\n", (int)((char*)&processCpuPack - (char*)&processDataPacket));
     printf("count: %i\n", count);
     hexdump(origD, 0, origS);
     ports = 1;
