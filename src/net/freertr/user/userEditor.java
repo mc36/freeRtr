@@ -533,6 +533,7 @@ public class userEditor {
             s = "* ";
         }
         console.putStr(20, console.sizY - 1, userScreen.colBlue, userScreen.colBrCyan, false, s + title);
+        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
     }
 
     private void putLine(int ln) {

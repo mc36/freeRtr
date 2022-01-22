@@ -323,7 +323,7 @@ public class userConfig {
             List<String> c1 = cur.getShRun(1);
             List<String> c2 = new ArrayList<String>();
             c2.addAll(c1);
-            userEditor edt = new userEditor(new userScreen(cmd.pipe), c2, cur.getPrompt(), false);
+            userEditor edt = new userEditor(new userScreen(cmd.pipe), c2, "current", false);
             if (edt.doEdit()) {
                 return false;
             }
