@@ -28,12 +28,12 @@ public class pipeWindow extends JPanel {
     /**
      * pipe image
      */
-    protected pipeImage img;
+    transient protected pipeImage img;
 
     /**
      * buffered image
      */
-    protected BufferedImage img3;
+    transient protected BufferedImage img3;
 
     /**
      * window handler
