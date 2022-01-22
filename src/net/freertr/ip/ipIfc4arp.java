@@ -347,6 +347,14 @@ public class ipIfc4arp implements ifcUp {
      * @return true not found, false if updated successfully
      */
     public boolean readMACheader(packHolder pck, addrIPv4 adr) {
+        ipIfc4arpEntry ntry = new ipIfc4arpEntry();
+        ntry.ip = adr;
+        ntry = cache.find(ntry);
+        if (ntry != null) {
+            ntry.time = currTim;
+            putHeader(pck, ntry.mac, hwaddr);
+            return false;
+        }
         if (adr.isMulticast()) {
             if (upper.ifcHdr.mcastAsBcast) {
                 putHeader(pck, addrMac.getBroadcast(), hwaddr);
@@ -367,21 +375,12 @@ public class ipIfc4arp implements ifcUp {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }
-        ipIfc4arpEntry ntry = new ipIfc4arpEntry();
-        ntry.ip = adr;
-        ntry = cache.find(ntry);
-        if (ntry != null) {
-            ntry.time = currTim;
-            putHeader(pck, ntry.mac, hwaddr);
-            return false;
-        }
         if (!network.matches(adr)) {
             cntr.drop(pck, counter.reasons.badTrgAddr);
             return true;
         }
         cntr.drop(pck, counter.reasons.notInTab);
-        sendArpPack(pck, opcodeARPreq, addrMac.getBroadcast(), adr, hwaddr,
-                ipaddr);
+        sendArpPack(pck, opcodeARPreq, addrMac.getBroadcast(), adr, hwaddr, ipaddr);
         return true;
     }
 

@@ -280,6 +280,14 @@ public class ipIfc6nei implements ifcUp {
      * @return true not found, false if updated successfully
      */
     public boolean readMACheader(packHolder pck, addrIPv6 adr) {
+        ipIfc6neiEntry ntry = new ipIfc6neiEntry();
+        ntry.ip = adr;
+        ntry = cache.find(ntry);
+        if (ntry != null) {
+            ntry.time = currTim;
+            putHeader(pck, ntry.mac);
+            return false;
+        }
         if (adr.isMulticast()) {
             if (upper.ifcHdr.mcastAsBcast) {
                 putHeader(pck, addrMac.getBroadcast());
@@ -297,14 +305,6 @@ public class ipIfc6nei implements ifcUp {
                 putHeader(pck, addrMac.getBroadcast());
                 return false;
             }
-        }
-        ipIfc6neiEntry ntry = new ipIfc6neiEntry();
-        ntry.ip = adr;
-        ntry = cache.find(ntry);
-        if (ntry != null) {
-            ntry.time = currTim;
-            putHeader(pck, ntry.mac);
-            return false;
         }
         if ((!network.matches(adr)) && (!adr.isLinkLocal())) {
             cntr.drop(pck, counter.reasons.badTrgAddr);
