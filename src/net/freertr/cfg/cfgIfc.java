@@ -43,6 +43,7 @@ import net.freertr.clnt.clntUdpGre;
 import net.freertr.clnt.clntUti;
 import net.freertr.clnt.clntVxlan;
 import net.freertr.clnt.clntWireguard;
+import net.freertr.ifc.ifcArcnet;
 import net.freertr.ifc.ifcAtmDxi;
 import net.freertr.ifc.ifcAtmSar;
 import net.freertr.ifc.ifcBridgeIfc;
@@ -61,6 +62,7 @@ import net.freertr.ifc.ifcFramePpp;
 import net.freertr.ifc.ifcFrameRelay;
 import net.freertr.ifc.ifcFrameRfc;
 import net.freertr.ifc.ifcHdlc;
+import net.freertr.ifc.ifcInfiniband;
 import net.freertr.ifc.ifcIpOnly;
 import net.freertr.ifc.ifcIsdn;
 import net.freertr.ifc.ifcIsl;
@@ -281,6 +283,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * ppp over frame relay handler
      */
     public ifcFramePpp frmppp;
+
+    /**
+     * arcnet handler
+     */
+    public ifcArcnet arcnet;
+
+    /**
+     * infiniband handler
+     */
+    public ifcInfiniband infiniband;
 
     /**
      * atm sar handler
@@ -1094,6 +1106,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          */
         serial,
         /**
+         * arcnet interface
+         */
+        arcnet,
+        /**
+         * infiniband interface
+         */
+        infiniband,
+        /**
          * atm interface
          */
         atm,
@@ -1870,6 +1890,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (s.equals("atm")) {
             typ = cfgIfc.ifaceType.atm;
         }
+        if (s.equals("arc")) {
+            typ = cfgIfc.ifaceType.arcnet;
+        }
+        if (s.equals("inf")) {
+            typ = cfgIfc.ifaceType.infiniband;
+        }
         return typ;
     }
 
@@ -2347,6 +2373,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "serial";
             case atm:
                 return "atm";
+            case arcnet:
+                return "arcnet";
+            case infiniband:
+                return "infiniband";
             case bridge:
                 return "bridged";
             case bundle:
@@ -2560,6 +2590,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         switch (type) {
             case serial:
             case atm:
+            case arcnet:
+            case infiniband:
             case tunnel:
             case dialer:
             case virtppp:
@@ -3211,6 +3243,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 atmsar = new ifcAtmSar();
                 thread.setUpper(atmsar);
                 atmsar.setUpper(ethtyp);
+                break;
+            case arcnet:
+                lower = thread;
+                arcnet = new ifcArcnet();
+                thread.setUpper(arcnet);
+                arcnet.setUpper(ethtyp);
+                break;
+            case infiniband:
+                lower = thread;
+                infiniband = new ifcInfiniband();
+                thread.setUpper(infiniband);
+                infiniband.setUpper(ethtyp);
                 break;
             case serial:
                 lower = thread;
@@ -4580,6 +4624,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (atmsar != null) {
             return atmsar;
+        }
+        if (arcnet != null) {
+            return arcnet;
+        }
+        if (infiniband != null) {
+            return infiniband;
         }
         return null;
     }

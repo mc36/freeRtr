@@ -1,27 +1,23 @@
 package net.freertr.ifc;
 
-import net.freertr.addr.addrArcnet;
+import net.freertr.addr.addrInfiniband;
 import net.freertr.addr.addrType;
 import net.freertr.pack.packHolder;
+import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.state;
 
 /**
- * arcnet encapsulation handler
+ * infiniband encapsulation handler
  *
  * @author matecsaba
  */
-public class ifcArcnet implements ifcUp, ifcDn {
+public class ifcInfiniband implements ifcUp, ifcDn {
 
     /**
      * size of header
      */
-    public final static int headSize = 3;
-
-    /**
-     * size of payload
-     */
-    public final static int paySize = 508;
+    public final static int headSize = 20;
 
     /**
      * counter of this interface
@@ -37,6 +33,8 @@ public class ifcArcnet implements ifcUp, ifcDn {
      * server that sends our packets
      */
     public ifcDn lower = new ifcNull();
+
+    private int seq = bits.randomD();
 
     public counter getCounter() {
         return cntr;
@@ -78,7 +76,7 @@ public class ifcArcnet implements ifcUp, ifcDn {
     }
 
     public addrType getHwAddr() {
-        return new addrArcnet();
+        return new addrInfiniband();
     }
 
     public void setState(state.states stat) {
@@ -93,33 +91,40 @@ public class ifcArcnet implements ifcUp, ifcDn {
     }
 
     public String toString() {
-        return "arcnet on " + lower;
+        return "infiniband on " + lower;
     }
 
     /**
      * create new instance
      */
-    public ifcArcnet() {
+    public ifcInfiniband() {
     }
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
+        if (pck.dataSize() < headSize) {
+            cntr.drop(pck, counter.reasons.tooSmall);
+            return;
+        }
+        pck.getSkip(headSize);
         upper.recvPack(pck);
     }
 
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
-        for (;;) {
-            int i = pck.dataSize();
-            if (i < 253) {
-                break;
-            }
-            if (i > 257) {
-                break;
-            }
-            pck.putByte(0, 0);
-            pck.merge2end();
-        }
+        pck.putByte(0, 0); // lane, version
+        pck.putByte(1, 2); // service, nexthdr
+        pck.msbPutW(2, 0xffff); // destination
+        pck.msbPutW(4, (pck.dataSize() + headSize) >>> 2); // length
+        pck.msbPutW(6, 0xffff); // source
+        pck.putByte(8, 100); // opcode
+        pck.putByte(9, 0); // solicit, migreq, pad, version
+        pck.msbPutW(10, 0xffff); // partition
+        pck.msbPutD(12, 1); // destination queue
+        pck.msbPutD(16, seq & 0xffffff); // sequence
+        seq++;
+        pck.putSkip(headSize);
+        pck.merge2beg();
         lower.sendPack(pck);
     }
 

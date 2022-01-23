@@ -20,11 +20,6 @@ public class addrArcnet extends addrType {
      */
     public final static int size = 1;
 
-    /**
-     * size of ethernet header (dstadr,srcadr)
-     */
-    public final static int sizeX2 = size * 2;
-
     public String toString() {
         return bits.toHexB(addr[0]);
     }

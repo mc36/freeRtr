@@ -43,7 +43,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 22;
+    public final static int day = 23;
 
     /**
      * statement of release
@@ -92,6 +92,6 @@ public class verCore {
     /**
      * interface names
      */
-    public final static String[] ifaces = {"atm", "ethernet", "serial", "cellular", "wireless"};
+    public final static String[] ifaces = {"atm", "arcnet", "infiniband", "ethernet", "serial", "cellular", "wireless"};
 
 }
