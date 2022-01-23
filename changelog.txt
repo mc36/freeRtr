@@ -12800,3 +12800,6 @@ qc pass: bgp routemap filtering with nexthop
 qc pass: bgp routepolicy filtering with nexthop
 qc pass: bgp routemap filtering with nexthop with soft-reconfig
 qc pass: bgp routepolicy filtering with nexthop with soft-reconfig
+---------------------------------- 2022-01-23 06:12:55
+qc pass: arcnet encapsulation
+qc pass: infini encapsulation

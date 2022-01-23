@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v22.1.22-cur, done by cs@nop.
--;-;-;2022-01-22 22:07:19, took 00:06:32, with 100 workers, on 2642 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter v22.1.23-cur, done by cs@nop.
+-;-;-;2022-01-23 06:19:38, took 00:06:43, with 100 workers, on 2644 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -8,6 +8,7 @@ http://sources.nop.hu/cfg/conn-amt02.tst;conn-amt02.tst;success;amt over ipv6
 http://sources.nop.hu/cfg/conn-amt03.tst;conn-amt03.tst;success;amt over amt
 http://sources.nop.hu/cfg/conn-amt04.tst;conn-amt04.tst;success;amt over loopback
 http://sources.nop.hu/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
+http://sources.nop.hu/cfg/conn-arcnet.tst;conn-arcnet.tst;success;arcnet encapsulation
 http://sources.nop.hu/cfg/conn-atmdxi.tst;conn-atmdxi.tst;success;atmdxi encapsulation
 http://sources.nop.hu/cfg/conn-atmsar.tst;conn-atmsar.tst;success;atmsar encapsulation
 http://sources.nop.hu/cfg/conn-ax2501.tst;conn-ax2501.tst;success;ppp with ax25
@@ -172,6 +173,7 @@ http://sources.nop.hu/cfg/conn-icmp01.tst;conn-icmp01.tst;success;icmptunnel ove
 http://sources.nop.hu/cfg/conn-icmp02.tst;conn-icmp02.tst;success;icmptunnel over ipv6
 http://sources.nop.hu/cfg/conn-icmp03.tst;conn-icmp03.tst;success;icmptunnel over icmptunnel
 http://sources.nop.hu/cfg/conn-icmp04.tst;conn-icmp04.tst;success;icmptunnel over loopback
+http://sources.nop.hu/cfg/conn-infini.tst;conn-infini.tst;success;infini encapsulation
 http://sources.nop.hu/cfg/conn-ipcomp01.tst;conn-ipcomp01.tst;success;ipcomp over ipv4
 http://sources.nop.hu/cfg/conn-ipcomp02.tst;conn-ipcomp02.tst;success;ipcomp over ipv6
 http://sources.nop.hu/cfg/conn-ipcomp03.tst;conn-ipcomp03.tst;success;ipcomp over ipcomp

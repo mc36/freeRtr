@@ -4,6 +4,7 @@ qc pass: amt over ipv6
 qc pass: amt over amt
 qc pass: amt over loopback
 qc pass: ip over anyconnect
+qc pass: arcnet encapsulation
 qc pass: atmdxi encapsulation
 qc pass: atmsar encapsulation
 qc pass: ppp with ax25
@@ -168,6 +169,7 @@ qc pass: icmptunnel over ipv4
 qc pass: icmptunnel over ipv6
 qc pass: icmptunnel over icmptunnel
 qc pass: icmptunnel over loopback
+qc pass: infini encapsulation
 qc pass: ipcomp over ipv4
 qc pass: ipcomp over ipv6
 qc pass: ipcomp over ipcomp
