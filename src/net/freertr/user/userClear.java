@@ -54,6 +54,7 @@ import net.freertr.serv.servBmp2mrt;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.extMrkLng;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
@@ -365,10 +366,38 @@ public class userClear {
             }
             return null;
         }
+        if (a.equals("sensor")) {
+            cfgSensor exp = cfgAll.sensorFind(cmd.word(), false);
+            if (exp == null) {
+                cmd.error("no such sensor");
+                return null;
+            }
+            a = cmd.word();
+            if (a.equals("append-csv")) {
+                bits.buf2txt(false, exp.getReportCsv(), cmd.getRemaining());
+                return null;
+            }
+            if (a.equals("csv")) {
+                bits.buf2txt(true, exp.getReportCsv(), cmd.getRemaining());
+                return null;
+            }
+            if (a.equals("prometheus")) {
+                bits.buf2txt(true, exp.getReportProm(), cmd.getRemaining());
+                return null;
+            }
+            if (a.equals("xml")) {
+                extMrkLng xml = new extMrkLng();
+                exp.getReportNetConf(xml, "/");
+                bits.buf2txt(true, xml.toXMLlst(), cmd.getRemaining());
+                return null;
+            }
+            cmd.error("invalid format");
+            return null;
+        }
         if (a.equals("telemetry")) {
             cfgSensor exp = cfgAll.sensorFind(cmd.word(), false);
             if (exp == null) {
-                cmd.error("no such exporter");
+                cmd.error("no such sensor");
                 return null;
             }
             cmd.error("generating report");

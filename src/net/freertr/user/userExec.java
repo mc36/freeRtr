@@ -1468,6 +1468,13 @@ public class userExec {
         hl.add(null, "2 3      bridge                  learnt mac address on a bridge");
         hl.add(null, "3 4,.      <num>                 bridge number");
         hl.add(null, "4 .          <name:ifc>          name of interface");
+        hl.add(null, "2 3      sensor                  trigger telemetry export");
+        hl.add(null, "3 4        <name:sns>            name of sensor");
+        hl.add(null, "4 5          csv                 save in csv format");
+        hl.add(null, "4 5          append-csv          append in csv format");
+        hl.add(null, "4 5          xml                 save in xml format");
+        hl.add(null, "4 5          prometheus          save in prometheus format");
+        hl.add(null, "5 5,.          <str>             filename");
         hl.add(null, "2 3      telemetry               trigger telemetry report");
         hl.add(null, "3 4        <name:sns>            name of sensor");
         hl.add(null, "4 4,.        <name:tlm>          name of telemetry");
