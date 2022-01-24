@@ -154,7 +154,7 @@ int portvrf_compare(void *ptr1, void *ptr2) {
 }
 
 
-struct vrf2route_entry {
+struct vrf2rib_entry {
     int vrf;
     struct tree_head tree;
     long pack;
@@ -162,13 +162,13 @@ struct vrf2route_entry {
 };
 
 
-struct table_head vrf2route4_table;
+struct table_head vrf2rib4_table;
 
-struct table_head vrf2route6_table;
+struct table_head vrf2rib6_table;
 
-int vrf2route_compare(void *ptr1, void *ptr2) {
-    struct vrf2route_entry *ntry1 = ptr1;
-    struct vrf2route_entry *ntry2 = ptr2;
+int vrf2rib_compare(void *ptr1, void *ptr2) {
+    struct vrf2rib_entry *ntry1 = ptr1;
+    struct vrf2rib_entry *ntry2 = ptr2;
     if (ntry1->vrf < ntry2->vrf) return -1;
     if (ntry1->vrf > ntry2->vrf) return +1;
     return 0;
@@ -357,7 +357,6 @@ int vlanout_compare(void *ptr1, void *ptr2) {
 
 
 struct acls_entry {
-    int ver;
     int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos, 8=flwspc
     int port;
     struct table_head aces;
@@ -367,13 +366,13 @@ struct acls_entry {
     int label;
 };
 
-struct table_head acls_table;
+struct table_head acls4_table;
+
+struct table_head acls6_table;
 
 int acls_compare(void *ptr1, void *ptr2) {
     struct acls_entry *ntry1 = ptr1;
     struct acls_entry *ntry2 = ptr2;
-    if (ntry1->ver < ntry2->ver) return -1;
-    if (ntry1->ver > ntry2->ver) return +1;
     if (ntry1->dir < ntry2->dir) return -1;
     if (ntry1->dir > ntry2->dir) return +1;
     if (ntry1->port < ntry2->port) return -1;
@@ -952,13 +951,14 @@ int initTables() {
     table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
     table_init(&portvrf_table, sizeof(struct portvrf_entry), &portvrf_compare);
-    table_init(&vrf2route4_table, sizeof(struct vrf2route_entry), &vrf2route_compare);
-    table_init(&vrf2route6_table, sizeof(struct vrf2route_entry), &vrf2route_compare);
+    table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), &vrf2rib_compare);
+    table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), &vrf2rib_compare);
     table_init(&neigh_table, sizeof(struct neigh_entry), &neigh_compare);
     table_init(&vlanin_table, sizeof(struct vlan_entry), &vlanin_compare);
     table_init(&vlanout_table, sizeof(struct vlan_entry), &vlanout_compare);
     table_init(&bridge_table, sizeof(struct bridge_entry), &bridge_compare);
-    table_init(&acls_table, sizeof(struct acls_entry), &acls_compare);
+    table_init(&acls4_table, sizeof(struct acls_entry), &acls_compare);
+    table_init(&acls6_table, sizeof(struct acls_entry), &acls_compare);
     table_init(&nat4_table, sizeof(struct nat4_entry), &nat4_compare);
     table_init(&nat6_table, sizeof(struct nat6_entry), &nat6_compare);
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);

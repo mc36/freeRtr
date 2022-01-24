@@ -64,8 +64,8 @@ int main(int argc, char **argv) {
     initTables();
     struct portvrf_entry portvrf_ntry;
     memset(&portvrf_ntry, 0, sizeof(portvrf_ntry));
-    struct vrf2route_entry vrf2route_ntry;
-    memset(&vrf2route_ntry, 0, sizeof(vrf2route_ntry));
+    struct vrf2rib_entry vrf2rib_ntry;
+    memset(&vrf2rib_ntry, 0, sizeof(vrf2rib_ntry));
     struct route4_entry route4_ntry;
     memset(&route4_ntry, 0, sizeof(route4_ntry));
     struct route6_entry route6_ntry;
@@ -79,9 +79,9 @@ int main(int argc, char **argv) {
     portvrf_ntry.vrf = 1;
     portvrf_ntry.mpls = 1;
     table_add(&portvrf_table, &portvrf_ntry);
-    vrf2route_ntry.vrf = 1;
-    struct vrf2route_entry *route4_table = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
-    struct vrf2route_entry *route6_table = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+    vrf2rib_ntry.vrf = 1;
+    struct vrf2rib_entry *route4_table = tree_addinited(&vrf2rib4_table, &vrf2rib_ntry, &vrf2rib_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+    struct vrf2rib_entry *route6_table = tree_addinited(&vrf2rib6_table, &vrf2rib_ntry, &vrf2rib_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
     route4_ntry.addr = 0x01010100;
     route4_ntry.mask = 24;
     route4_ntry.nexthop = 1234;
