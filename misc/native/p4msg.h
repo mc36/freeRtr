@@ -173,6 +173,9 @@ int doOneCommand(unsigned char* buf) {
     struct portvrf_entry *portvrf_res;
     struct portvrf_entry portvrf_ntry;
     memset(&portvrf_ntry, 0, sizeof(portvrf_ntry));
+    struct vrf2route_entry *vrf2route_res;
+    struct vrf2route_entry vrf2route_ntry;
+    memset(&vrf2route_ntry, 0, sizeof(vrf2route_ntry));
     struct route4_entry route4_ntry;
     memset(&route4_ntry, 0, sizeof(route4_ntry));
     struct route6_entry route6_ntry;
@@ -599,251 +602,268 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "myaddr4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[5]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
-        route4_ntry.vrf = atoi(arg[5]);
         route4_ntry.command = 2;
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "route4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
-        route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.command = 1;
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "labroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
-        route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.label1 = atoi(arg[7]);
         route4_ntry.command = 3;
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
-        route4_ntry.vrf = atoi(arg[6]);
         route4_ntry.label1 = atoi(arg[7]);
         route4_ntry.label2 = atoi(arg[8]);
         route4_ntry.command = 4;
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "srvroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
-        route4_ntry.vrf = atoi(arg[6]);
         inet_pton(AF_INET6, arg[7], buf2);
         route4_ntry.srv1 = get32msb(buf2, 0);
         route4_ntry.srv2 = get32msb(buf2, 4);
         route4_ntry.srv3 = get32msb(buf2, 8);
         route4_ntry.srv4 = get32msb(buf2, 12);
         route4_ntry.command = 5;
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "polroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
-        route4_ntry.vrf = atoi(arg[6]);
         str2key(arg[7], route4_ntry.polka);
         route4_ntry.command = 9;
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "neigh4") == 0) {
         route4_ntry.nexthop = atoi(arg[2]);
         inet_pton(AF_INET, arg[3], buf2);
+        vrf2route_ntry.vrf = atoi(arg[5]);
+        vrf2route_res = tree_addinited(&vrf2route4_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = 32;
-        route4_ntry.vrf = atoi(arg[5]);
         route4_ntry.command = 1;
         neigh_ntry.id = route4_ntry.nexthop;
-        neigh_ntry.vrf = route4_ntry.vrf;
+        neigh_ntry.vrf = vrf2route_ntry.vrf;
         neigh_ntry.aclport = neigh_ntry.port = atoi(arg[7]);
         neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
-        if (del == 0) tree_del(&route4_table, &route4_ntry);
-        else tree_add(&route4_table, &route4_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route4_ntry);
+        else tree_add(&vrf2route_res->tree, &route4_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "myaddr6") == 0) {
         inet_pton(AF_INET6, arg[2], buf);
+        vrf2route_ntry.vrf = atoi(arg[5]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf, 0);
         route6_ntry.addr2 = get32msb(buf, 4);
         route6_ntry.addr3 = get32msb(buf, 8);
         route6_ntry.addr4 = get32msb(buf, 12);
         route6_ntry.mask = atoi(arg[3]);
-        route6_ntry.vrf = atoi(arg[5]);
         route6_ntry.command = 2;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "route6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.nexthop = atoi(arg[4]);
-        route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.command = 1;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "labroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.nexthop = atoi(arg[4]);
-        route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.label1 = atoi(arg[7]);
         route6_ntry.command = 3;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.nexthop = atoi(arg[4]);
-        route6_ntry.vrf = atoi(arg[6]);
         route6_ntry.label1 = atoi(arg[7]);
         route6_ntry.label2 = atoi(arg[8]);
         route6_ntry.command = 4;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "srvroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.nexthop = atoi(arg[4]);
-        route6_ntry.vrf = atoi(arg[6]);
         inet_pton(AF_INET6, arg[7], buf2);
         route6_ntry.srv1 = get32msb(buf2, 0);
         route6_ntry.srv2 = get32msb(buf2, 4);
         route6_ntry.srv3 = get32msb(buf2, 8);
         route6_ntry.srv4 = get32msb(buf2, 12);
         route6_ntry.command = 5;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "polroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
+        vrf2route_ntry.vrf = atoi(arg[6]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.nexthop = atoi(arg[4]);
-        route6_ntry.vrf = atoi(arg[6]);
         str2key(arg[7], route6_ntry.polka);
         route6_ntry.command = 9;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "neigh6") == 0) {
         route6_ntry.nexthop = atoi(arg[2]);
         inet_pton(AF_INET6, arg[3], buf2);
+        vrf2route_ntry.vrf = atoi(arg[5]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = 128;
-        route6_ntry.vrf = atoi(arg[5]);
         route6_ntry.command = 1;
         neigh_ntry.id = route6_ntry.nexthop;
-        neigh_ntry.vrf = route6_ntry.vrf;
+        neigh_ntry.vrf = vrf2route_ntry.vrf;
         neigh_ntry.aclport = neigh_ntry.port = atoi(arg[7]);
         neigh_ntry.command = 1;
         str2mac(neigh_ntry.dmac, arg[4]);
         str2mac(neigh_ntry.smac, arg[6]);
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mysrv4") == 0) {
         inet_pton(AF_INET6, arg[3], buf2);
+        vrf2route_ntry.vrf = atoi(arg[2]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = 128;
-        route6_ntry.vrf = atoi(arg[2]);
         route6_ntry.srv1 = atoi(arg[4]);
         route6_ntry.command = 6;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mysrv6") == 0) {
         inet_pton(AF_INET6, arg[3], buf2);
+        vrf2route_ntry.vrf = atoi(arg[2]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = 128;
-        route6_ntry.vrf = atoi(arg[2]);
         route6_ntry.srv1 = atoi(arg[4]);
         route6_ntry.command = 7;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgesrv") == 0) {
         inet_pton(AF_INET6, arg[4], buf2);
+        vrf2route_ntry.vrf = atoi(arg[3]);
+        vrf2route_res = tree_addinited(&vrf2route6_table, &vrf2route_ntry, &vrf2route_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
         route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = 128;
-        route6_ntry.vrf = atoi(arg[3]);
         route6_ntry.srv1 = atoi(arg[2]);
         route6_ntry.command = 8;
-        if (del == 0) tree_del(&route6_table, &route6_ntry);
-        else tree_add(&route6_table, &route6_ntry);
+        if (del == 0) tree_del(&vrf2route_res->tree, &route6_ntry);
+        else tree_add(&vrf2route_res->tree, &route6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inacl4") == 0) {
@@ -1959,17 +1979,17 @@ int doOneCommand(unsigned char* buf) {
 
 
 
-void doStatRound_ipv4(void* buffer, void* param) {
+void doStatRound_ipv4(void* buffer, int fixed, void* param) {
     struct route4_entry *ntry = buffer;
     FILE *commands = param;
     unsigned char buf[128];
     unsigned char buf2[32];
     put32msb(buf2, 0, ntry->addr);
     inet_ntop(AF_INET, &buf2[0], (char*)&buf[0], sizeof(buf));
-    fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+    fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
 }
 
-void doStatRound_ipv6(void* buffer, void* param) {
+void doStatRound_ipv6(void* buffer, int fixed, void* param) {
     struct route6_entry *ntry = buffer;
     FILE *commands = param;
     unsigned char buf[128];
@@ -1979,7 +1999,16 @@ void doStatRound_ipv6(void* buffer, void* param) {
     put32msb(buf2, 8, ntry->addr3);
     put32msb(buf2, 12, ntry->addr4);
     inet_ntop(AF_INET6, &buf2[0], (char*)&buf[0], sizeof(buf));
-    fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", ntry->vrf, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+    fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+}
+
+void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), int fixed, void*param) {
+    FILE *commands = param;
+    for (int i = 0; i < tab->size; i++) {
+        struct vrf2route_entry *res = table_get(tab, i);
+        fprintf(commands, "vrf%i_cnt %i %li %li\r\n", fixed, res->vrf, res->pack, res->byte);
+        tree_walk(&res->tree, doer, res->vrf, param);
+    }
 }
 
 void doStatRound(FILE *commands, int round) {
@@ -2058,8 +2087,8 @@ void doStatRound(FILE *commands, int round) {
         mac2str(buf2, buf);
         fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
-    tree_walk(&route4_table, &doStatRound_ipv4, commands);
-    tree_walk(&route6_table, &doStatRound_ipv6, commands);
+    doStatRount_ipvX(&vrf2route4_table, &doStatRound_ipv4, 4, commands);
+    doStatRount_ipvX(&vrf2route6_table, &doStatRound_ipv6, 6, commands);
     for (int i=0; i<mroute4_table.size; i++) {
         struct mroute4_entry *ntry = table_get(&mroute4_table, i);
         put32msb(buf, 0, ntry->src);
@@ -2173,16 +2202,16 @@ void doStatRound(FILE *commands, int round) {
 
 
 
-void doConsoleCommand_ipv4(void* buffer, void* param) {
+void doConsoleCommand_ipv4(void* buffer, int fixed, void* param) {
     struct route4_entry *ntry = buffer;
     unsigned char buf[32];
     unsigned char buf2[128];
     put32msb(buf, 0, ntry->addr);
     inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-    printf("%16s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+    printf("%16s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, fixed, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
 }
 
-void doConsoleCommand_ipv6(void* buffer, void* param) {
+void doConsoleCommand_ipv6(void* buffer, int fixed, void* param) {
     struct route6_entry *ntry = buffer;
     unsigned char buf[32];
     unsigned char buf2[128];
@@ -2191,7 +2220,14 @@ void doConsoleCommand_ipv6(void* buffer, void* param) {
     put32msb(buf, 8, ntry->addr3);
     put32msb(buf, 12, ntry->addr4);
     inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-    printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, ntry->vrf, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+    printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, fixed, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
+}
+
+void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int, void *)) {
+    for (int i = 0; i < tab->size; i++) {
+        struct vrf2route_entry *res = table_get(tab, i);
+        tree_walk(&res->tree, doer, res->vrf, NULL);
+    }
 }
 
 int doConsoleCommand(unsigned char*buf) {
@@ -2296,11 +2332,11 @@ int doConsoleCommand(unsigned char*buf) {
         break;
     case '4':
         printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
-        tree_walk(&route4_table, &doConsoleCommand_ipv4, NULL);
+        doConsoleCommand_ipvX(&vrf2route4_table, &doConsoleCommand_ipv4);
         break;
     case '6':
         printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
-        tree_walk(&route6_table, &doConsoleCommand_ipv6, NULL);
+        doConsoleCommand_ipvX(&vrf2route6_table, &doConsoleCommand_ipv6);
         break;
 #endif
     default:

@@ -4642,6 +4642,13 @@ public class userShow {
         rdr.putStrTab(l);
     }
 
+    private String doShowVrfTraff(ipFwd f) {
+        counter ch = f.cntrH.sumUp(false);
+        counter ct = f.cntrT.sumUp(false);
+        counter cl = f.cntrL.sumUp(false);
+        return f.cfgName + ":" + f.ipVersion + "|" + tabRtrmapN.rd2string(f.rd) + "|" + ch.packRx + "|" + ch.byteRx + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx;
+    }
+
     private void doShowVrfTraff() {
         if (cmd.size() > 0) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
@@ -4649,16 +4656,20 @@ public class userShow {
                 cmd.error("no such vrf");
                 return;
             }
-            doShowHistory(cmd.word(), vrf.fwd4.hstryT.plus(vrf.fwd6.hstryT));
+            String a = cmd.word();
+            doShowHistory(a, vrf.fwd4.hstryH);
+            doShowHistory(a, vrf.fwd6.hstryH);
+            doShowHistory(a, vrf.fwd4.hstryT);
+            doShowHistory(a, vrf.fwd6.hstryT);
+            doShowHistory(a, vrf.fwd4.hstryL);
+            doShowHistory(a, vrf.fwd6.hstryL);
             return;
         }
-        userFormat l = new userFormat("|", "name|rd|pack|byte|pack|byte|pack|byte", "2|2total|2local|2forward");
+        userFormat l = new userFormat("|", "name|rd|pack|byte|pack|byte|pack|byte", "2|2hardware|2software|2local");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
-            counter ct = v.fwd4.cntrT.plus(v.fwd6.cntrT).sumUp(false);
-            counter cl = v.fwd4.cntrL.plus(v.fwd6.cntrL).sumUp(false);
-            counter cf = ct.minus(cl);
-            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx + "|" + cf.packRx + "|" + cf.byteRx);
+            l.add(doShowVrfTraff(v.fwd4));
+            l.add(doShowVrfTraff(v.fwd6));
         }
         rdr.putStrTab(l);
     }

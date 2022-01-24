@@ -249,6 +249,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public history hstryT;
 
     /**
+     * hardware counter for this vrf
+     */
+    public counter cntrH;
+
+    /**
+     * hardware historic for this vrf
+     */
+    public history hstryH;
+
+    /**
      * local counter for this vrf
      */
     public counter cntrL;
@@ -489,6 +499,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         natCfg = new tabListing<tabNatCfgN, addrIP>();
         natCfg.myCor = ipCore;
         natCfg.myIcmp = icc;
+        cntrH = new counter();
+        hstryH = new history();
         cntrT = new counter();
         hstryT = new history();
         cntrL = new counter();

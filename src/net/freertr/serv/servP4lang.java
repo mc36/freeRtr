@@ -1806,6 +1806,32 @@ class servP4langConn implements Runnable {
                 updateMroute(cmd, vrf.vrf.fwd6);
                 return false;
             }
+            if (s.equals("vrf4_cnt")) {
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                vrf.vrf.fwd4.cntrH.packRx = bits.str2long(cmd.word());
+                vrf.vrf.fwd4.cntrH.byteRx = bits.str2long(cmd.word());
+                return false;
+            }
+            if (s.equals("vrf6_cnt")) {
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                vrf.vrf.fwd6.cntrH.packRx = bits.str2long(cmd.word());
+                vrf.vrf.fwd6.cntrH.byteRx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("route4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
                 vrf = lower.expVrf.find(vrf);
