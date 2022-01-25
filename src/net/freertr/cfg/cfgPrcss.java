@@ -53,6 +53,16 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public String execName = null;
 
     /**
+     * user to use
+     */
+    public String userValue = null;
+
+    /**
+     * cpu pinning
+     */
+    public String cpuPinning = null;
+
+    /**
      * time range when allowed
      */
     public cfgTime time;
@@ -104,6 +114,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public final static String[] defaultL = {
         "process definition .*! no description",
         "process definition .*! respawn",
+        "process definition .*! pinning null",
+        "process definition .*! user null",
         "process definition .*! exec null",
         "process definition .*! time 1000",
         "process definition .*! delay 1000",
@@ -176,6 +188,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "2  .        <name>                   set new name of process");
         l.add(null, "1  2      exec                       set external binary to use");
         l.add(null, "2  2,.      <name>                   name of image");
+        l.add(null, "1  2      user                       set user to use");
+        l.add(null, "2  .        <name>                   user value");
+        l.add(null, "1  2      pinning                    set pinning mask");
+        l.add(null, "2  .        <name>                   cpu mask in hex");
         l.add(null, "1  2      time                       specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      delay                      specify initial delay");
@@ -201,6 +217,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         l.add(cmds.tabulator + "exec " + execName);
+        l.add(cmds.tabulator + "user " + userValue);
+        l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "random-time " + randInt);
@@ -242,6 +260,14 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         if (a.equals("exec")) {
             execName = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("user")) {
+            userValue = cmd.word();
+            return;
+        }
+        if (a.equals("pinning")) {
+            cpuPinning = cmd.word();
             return;
         }
         if (a.equals("range")) {
@@ -317,6 +343,14 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             execName = null;
             return;
         }
+        if (a.equals("user")) {
+            userValue = null;
+            return;
+        }
+        if (a.equals("pinning")) {
+            cpuPinning = null;
+            return;
+        }
         if (a.equals("stop")) {
             startNow();
             return;
@@ -381,7 +415,14 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         restartC++;
         pipeLine pl = new pipeLine(65536, false);
         pipe = pl.getSide();
-        proc = pipeShell.exec(pl.getSide(), execName, null, true, true);
+        String cmd = execName;
+        if (userValue != null) {
+            cmd = "sudo -u " + userValue + " " + cmd;
+        }
+        if (cpuPinning != null) {
+            cmd = "taskset " + cpuPinning + " " + cmd;
+        }
+        proc = pipeShell.exec(pl.getSide(), cmd, null, true, true);
         if (proc == null) {
             return;
         }

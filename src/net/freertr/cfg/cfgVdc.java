@@ -89,6 +89,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String uuidValue = null;
 
     /**
+     * user to use
+     */
+    public String userValue = null;
+
+    /**
      * cpu pinning
      */
     public String cpuPinning = null;
@@ -211,6 +216,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! bios null",
         "vdc definition .*! pinning null",
         "vdc definition .*! uuid null",
+        "vdc definition .*! user null",
         "vdc definition .*! mac null",
         "vdc definition .*! cpu null",
         "vdc definition .*! memory 512",
@@ -256,6 +262,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.redunPrio = redunPrio;
         n.respawn = respawn;
         n.uuidValue = uuidValue;
+        n.userValue = userValue;
         n.cpuPinning = cpuPinning;
         n.cpuType = cpuType;
         n.initial = initial;
@@ -337,6 +344,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  2,.      <name>                   name of image");
         l.add(null, "1  2      uuid                       set uuid to use");
         l.add(null, "2  .        <name>                   uuid value");
+        l.add(null, "1  2      user                       set user to use");
+        l.add(null, "2  .        <name>                   user value");
         l.add(null, "1  2      pinning                    set pinning mask");
         l.add(null, "2  .        <name>                   cpu mask in hex");
         l.add(null, "1  2      cpu                        set cpu type");
@@ -389,6 +398,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             l.add(cmds.tabulator + "connect " + conns.get(i));
         }
         l.add(cmds.tabulator + "uuid " + uuidValue);
+        l.add(cmds.tabulator + "user " + userValue);
         l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "cpu " + cpuType);
         l.add(cmds.tabulator + "bios " + biosName);
@@ -471,6 +481,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("uuid")) {
             uuidValue = cmd.word();
+            return;
+        }
+        if (a.equals("user")) {
+            userValue = cmd.word();
             return;
         }
         if (a.equals("pinning")) {
@@ -672,6 +686,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             uuidValue = null;
             return;
         }
+        if (a.equals("user")) {
+            userValue = null;
+            return;
+        }
         if (a.equals("pinning")) {
             cpuPinning = null;
             return;
@@ -860,6 +878,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 cfgVdcUsb dev = usbs.get(i);
                 cmd += " -device usb-host,hostbus=" + dev.bus + ",hostport=" + dev.prt;
             }
+        }
+        if (userValue != null) {
+            cmd = "sudo -u " + userValue + " " + cmd;
         }
         if (cpuPinning != null) {
             cmd = "taskset " + cpuPinning + " " + cmd;
