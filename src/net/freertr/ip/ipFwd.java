@@ -1096,7 +1096,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        lower.cntr.tx(pck);
+        if (lower.pmtuds > 0) {
+            if (pck.dataSize() > lower.pmtuds) {
+                doDrop(pck, lower, counter.reasons.fragment);
+                return;
+            }
+        }
         if (lower.cfilterOut != null) {
             if (!lower.cfilterOut.matches(false, true, pck)) {
                 doDrop(pck, lower, counter.reasons.denied);
@@ -1115,6 +1120,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
+        lower.cntr.tx(pck);
         if ((netflow != null) && lower.netflowTx) {
             netflow.session.doPack(pck, true);
         }

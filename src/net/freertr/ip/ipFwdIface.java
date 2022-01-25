@@ -192,6 +192,11 @@ public class ipFwdIface extends tabRouteIface {
     public int fragments;
 
     /**
+     * pmtud payload size
+     */
+    public int pmtuds;
+
+    /**
      * reassembly buffer
      */
     public List<packHolder> reasmBuf;
@@ -446,6 +451,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       <num>                     number of packets");
         l.add(null, "2 3     fragmentation               set up fragmentation");
         l.add(null, "3 .       <num>                     maximum payload size");
+        l.add(null, "2 3     pmtud-reply                 set up pmtud responder");
+        l.add(null, "3 .       <num>                     maximum payload size");
         l.add(null, "2 .     netflow-rx                  netflow received packets");
         l.add(null, "2 .     netflow-tx                  netflow transmitted packets");
         l.add(null, "2 .     propagate-ttl-always        enable ttl propagation to mpls");
@@ -668,6 +675,7 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "reassembly " + reasmBuf.size());
         }
         cmds.cfgLine(l, fragments < 1, cmds.tabulator, beg + "fragmentation", "" + fragments);
+        cmds.cfgLine(l, pmtuds < 1, cmds.tabulator, beg + "pmtud-reply", "" + pmtuds);
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
@@ -816,6 +824,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("fragmentation")) {
             fragments = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("pmtud-reply")) {
+            pmtuds = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("reassembly")) {
@@ -1420,6 +1432,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("fragmentation")) {
             fragments = 0;
+            return false;
+        }
+        if (a.equals("pmtud-reply")) {
+            pmtuds = 0;
             return false;
         }
         if (a.equals("reassembly")) {
