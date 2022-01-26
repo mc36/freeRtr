@@ -603,7 +603,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "myaddr4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[5]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.command = 2;
@@ -614,7 +614,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "route4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
@@ -626,7 +626,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "labroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
@@ -639,7 +639,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "vpnroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
@@ -653,7 +653,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "srvroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
@@ -670,7 +670,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "polroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = atoi(arg[3]);
         route4_ntry.nexthop = atoi(arg[4]);
@@ -684,7 +684,7 @@ int doOneCommand(unsigned char* buf) {
         route4_ntry.nexthop = atoi(arg[2]);
         inet_pton(AF_INET, arg[3], buf2);
         vrf2rib_ntry.vrf = atoi(arg[5]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         route4_ntry.addr = get32msb(buf2, 0);
         route4_ntry.mask = 32;
         route4_ntry.command = 1;
@@ -703,7 +703,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "myaddr6") == 0) {
         inet_pton(AF_INET6, arg[2], buf);
         vrf2rib_ntry.vrf = atoi(arg[5]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf, 0);
         route6_ntry.addr2 = get32msb(buf, 4);
         route6_ntry.addr3 = get32msb(buf, 8);
@@ -717,7 +717,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "route6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -732,7 +732,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "labroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -748,7 +748,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "vpnroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -765,7 +765,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "srvroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -785,7 +785,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "polroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -802,7 +802,7 @@ int doOneCommand(unsigned char* buf) {
         route6_ntry.nexthop = atoi(arg[2]);
         inet_pton(AF_INET6, arg[3], buf2);
         vrf2rib_ntry.vrf = atoi(arg[5]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -824,7 +824,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "mysrv4") == 0) {
         inet_pton(AF_INET6, arg[3], buf2);
         vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -839,7 +839,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "mysrv6") == 0) {
         inet_pton(AF_INET6, arg[3], buf2);
         vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -854,7 +854,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "bridgesrv") == 0) {
         inet_pton(AF_INET6, arg[4], buf2);
         vrf2rib_ntry.vrf = atoi(arg[3]);
-        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         route6_ntry.addr1 = get32msb(buf2, 0);
         route6_ntry.addr2 = get32msb(buf2, 4);
         route6_ntry.addr3 = get32msb(buf2, 8);
@@ -979,7 +979,8 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "nattrns4") == 0) {
-        nat4_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
         nat4_ntry.prot = atoi(arg[3]);
         inet_pton(AF_INET, arg[4], buf2);
         nat4_ntry.oSrcAddr = get32msb(buf2, 0);
@@ -1003,12 +1004,13 @@ int doOneCommand(unsigned char* buf) {
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&nat4_table, &nat4_ntry);
-        else table_add(&nat4_table, &nat4_ntry);
+        if (del == 0) table_del(&vrf2rib_res->nat, &nat4_ntry);
+        else table_add(&vrf2rib_res->nat, &nat4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns6") == 0) {
-        nat6_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
         nat6_ntry.prot = atoi(arg[3]);
         inet_pton(AF_INET6, arg[4], buf2);
         nat6_ntry.oSrcAddr1 = get32msb(buf2, 0);
@@ -1056,8 +1058,8 @@ int doOneCommand(unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&nat6_table, &nat6_ntry);
-        else table_add(&nat6_table, &nat6_ntry);
+        if (del == 0) table_del(&vrf2rib_res->nat, &nat6_ntry);
+        else table_add(&vrf2rib_res->nat, &nat6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inqos") == 0) {
@@ -1957,7 +1959,7 @@ int doOneCommand(unsigned char* buf) {
 
 
 
-void doStatRound_ipv4(void* buffer, int fixed, void* param) {
+void doStatRound_rou4(void* buffer, int fixed, void* param) {
     struct route4_entry *ntry = buffer;
     FILE *commands = param;
     unsigned char buf[128];
@@ -1967,7 +1969,7 @@ void doStatRound_ipv4(void* buffer, int fixed, void* param) {
     fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
 }
 
-void doStatRound_ipv6(void* buffer, int fixed, void* param) {
+void doStatRound_rou6(void* buffer, int fixed, void* param) {
     struct route6_entry *ntry = buffer;
     FILE *commands = param;
     unsigned char buf[128];
@@ -1980,12 +1982,51 @@ void doStatRound_ipv6(void* buffer, int fixed, void* param) {
     fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
 }
 
-void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), int fixed, void*param) {
+void doStatRound_nat4(void* buffer, int fixed, void* param) {
+    FILE *commands = param;
+    struct table_head *nat4_table = buffer;
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<nat4_table->size; i++) {
+        struct nat4_entry *ntry = table_get(nat4_table, i);
+        put32msb(buf, 0, ntry->oSrcAddr);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->oTrgAddr);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+    }
+}
+
+void doStatRound_nat6(void* buffer, int fixed, void* param) {
+    FILE *commands = param;
+    struct table_head *nat6_table = buffer;
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<nat6_table->size; i++) {
+        struct nat6_entry *ntry = table_get(nat6_table, i);
+        put32msb(buf, 0, ntry->oSrcAddr1);
+        put32msb(buf, 4, ntry->oSrcAddr2);
+        put32msb(buf, 8, ntry->oSrcAddr3);
+        put32msb(buf, 12, ntry->oSrcAddr4);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->oTrgAddr1);
+        put32msb(buf, 4, ntry->oTrgAddr2);
+        put32msb(buf, 8, ntry->oTrgAddr3);
+        put32msb(buf, 12, ntry->oTrgAddr4);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+    }
+}
+
+void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), int fixed, void*param) {
     FILE *commands = param;
     for (int i = 0; i < tab->size; i++) {
         struct vrf2rib_entry *res = table_get(tab, i);
         fprintf(commands, "vrf%i_cnt %i %li %li\r\n", fixed, res->vrf, res->pack, res->byte);
         tree_walk(&res->rou, doer, res->vrf, param);
+        natter(&res->nat, res->vrf, param);
     }
 }
 
@@ -2101,8 +2142,8 @@ void doStatRound(FILE *commands, int round) {
         mac2str(buf2, buf);
         fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
-    doStatRount_ipvX(&vrf2rib4_table, &doStatRound_ipv4, 4, commands);
-    doStatRount_ipvX(&vrf2rib6_table, &doStatRound_ipv6, 6, commands);
+    doStatRount_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, 4, commands);
+    doStatRount_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, 6, commands);
     for (int i=0; i<mroute4_table.size; i++) {
         struct mroute4_entry *ntry = table_get(&mroute4_table, i);
         put32msb(buf, 0, ntry->src);
@@ -2124,28 +2165,6 @@ void doStatRound(FILE *commands, int round) {
         put32msb(buf, 12, ntry->grp4);
         inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
         fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", ntry->vrf, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<nat4_table.size; i++) {
-        struct nat4_entry *ntry = table_get(&nat4_table, i);
-        put32msb(buf, 0, ntry->oSrcAddr);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->oTrgAddr);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<nat6_table.size; i++) {
-        struct nat6_entry *ntry = table_get(&nat6_table, i);
-        put32msb(buf, 0, ntry->oSrcAddr1);
-        put32msb(buf, 4, ntry->oSrcAddr2);
-        put32msb(buf, 8, ntry->oSrcAddr3);
-        put32msb(buf, 12, ntry->oSrcAddr4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->oTrgAddr1);
-        put32msb(buf, 4, ntry->oTrgAddr2);
-        put32msb(buf, 8, ntry->oTrgAddr3);
-        put32msb(buf, 12, ntry->oTrgAddr4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", ntry->vrf, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
     for (int i=0; i<tun4_table.size; i++) {
         struct tun4_entry *ntry = table_get(&tun4_table, i);
@@ -2336,4 +2355,3 @@ int doConsoleCommand(unsigned char*buf) {
     }
     return 0;
 }
-

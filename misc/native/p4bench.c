@@ -68,8 +68,12 @@ int main(int argc, char **argv) {
     memset(&vrf2rib_ntry, 0, sizeof(vrf2rib_ntry));
     struct route4_entry route4_ntry;
     memset(&route4_ntry, 0, sizeof(route4_ntry));
+    struct nat4_entry nat4_ntry;
+    memset(&nat4_ntry, 0, sizeof(nat4_ntry));
     struct route6_entry route6_ntry;
     memset(&route6_ntry, 0, sizeof(route6_ntry));
+    struct nat6_entry nat6_ntry;
+    memset(&nat6_ntry, 0, sizeof(nat6_ntry));
     struct mpls_entry mpls_ntry;
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
     struct neigh_entry neigh_ntry;
@@ -80,8 +84,8 @@ int main(int argc, char **argv) {
     portvrf_ntry.mpls = 1;
     table_add(&portvrf_table, &portvrf_ntry);
     vrf2rib_ntry.vrf = 1;
-    struct vrf2rib_entry *route4_table = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
-    struct vrf2rib_entry *route6_table = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+    struct vrf2rib_entry *route4_table = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), sizeof(nat4_ntry), &route4_masker, &route4_bitter, &nat4_compare);
+    struct vrf2rib_entry *route6_table = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), sizeof(nat6_ntry), &route6_masker, &route6_bitter, &nat6_compare);
     route4_ntry.addr = 0x01010100;
     route4_ntry.mask = 24;
     route4_ntry.nexthop = 1234;

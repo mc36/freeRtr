@@ -41,8 +41,6 @@ void send2cpu(unsigned char *bufD, int bufS, int port) {
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
-    packTx[cpuport]++;
-    byteTx[cpuport] += bufS;
     send2cpu(bufD, bufS, port);
 }
 
@@ -51,8 +49,6 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
     packRx[cpuport]++;
     byteRx[cpuport] += bufS;
     int prt = get16msb(bufD, preBuff);
-    packTx[prt]++;
-    byteTx[prt] += bufS;
     send2port(&bufD[preBuff + 2], bufS - 2, prt);
 }
 
@@ -1212,6 +1208,9 @@ neigh_tx:
         byteIpv4[port] += bufS;
         vrf2rib_ntry.vrf = portvrf_res->vrf;
 ipv4_rx:
+        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib4_table, index);
         if ((bufD[bufP + 0] & 0xf0) != 0x40) doDropper;
         bufT = bufD[bufP + 0] & 0xf;
         if (bufT < 5) doDropper;
@@ -1273,16 +1272,15 @@ ipv4_qosed:
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv4_flwed:
-        nat4_ntry.vrf = vrf2rib_ntry.vrf;
         nat4_ntry.prot = acl4_ntry.protV;
         nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
         nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
         nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
         nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
-        index = table_find(&nat4_table, &nat4_ntry);
+        index = table_find(&vrf2rib_res->nat, &nat4_ntry);
         if (index >= 0) {
             if (frag != 0) goto ipv4_natted;
-            nat4_res = table_get(&nat4_table, index);
+            nat4_res = table_get(&vrf2rib_res->nat, index);
             nat4_res->pack++;
             nat4_res->byte += bufS;
             acl4_ntry.srcAddr = mroute4_ntry.src = nat4_res->nSrcAddr;
@@ -1334,6 +1332,9 @@ ipv4_natted:
             default:
                 doDropper;
             }
+            index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+            if (index < 0) doDropper;
+            vrf2rib_res = table_get(&vrf2rib4_table, index);
         }
 ipv4_pbred:
         mroute4_ntry.vrf = vrf2rib_ntry.vrf;
@@ -1348,9 +1349,6 @@ ipv4_pbred:
             return;
         }
         if (acl4_ntry.protV == 46) doCpuing;
-        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib4_table, index);
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
         route4_ntry.mask = 32;
@@ -1421,6 +1419,9 @@ ipv4_tx:
         byteIpv6[port] += bufS;
         vrf2rib_ntry.vrf = portvrf_res->vrf;
 ipv6_rx:
+        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib6_table, index);
         if ((bufD[bufP + 0] & 0xf0) != 0x60) doDropper;
         ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff;
         if (ttl > bufS) doDropper;
@@ -1491,7 +1492,6 @@ ipv6_qosed:
             policer_res->avail -= bufS - bufP + preBuff;
         }
 ipv6_flwed:
-        nat6_ntry.vrf = vrf2rib_ntry.vrf;
         nat6_ntry.prot = acl6_ntry.protV;
         nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
         nat6_ntry.oSrcAddr2 = acl6_ntry.srcAddr2;
@@ -1503,10 +1503,10 @@ ipv6_flwed:
         nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
         nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
         nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
-        index = table_find(&nat6_table, &nat6_ntry);
+        index = table_find(&vrf2rib_res->nat, &nat6_ntry);
         if (index >= 0) {
             if (frag != 0) goto ipv6_natted;
-            nat6_res = table_get(&nat6_table, index);
+            nat6_res = table_get(&vrf2rib_res->nat, index);
             nat6_res->pack++;
             nat6_res->byte += bufS;
             acl6_ntry.srcAddr1 = mroute6_ntry.src1 = nat6_res->nSrcAddr1;
@@ -1569,6 +1569,9 @@ ipv6_natted:
             default:
                 doDropper;
             }
+            index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+            if (index < 0) doDropper;
+            vrf2rib_res = table_get(&vrf2rib6_table, index);
         }
 ipv6_pbred:
         mroute6_ntry.vrf = vrf2rib_ntry.vrf;
@@ -1583,9 +1586,6 @@ ipv6_pbred:
             return;
         }
         if (acl6_ntry.protV == 0) doCpuing;
-        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib6_table, index);
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
         route6_ntry.mask = 128;

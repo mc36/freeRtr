@@ -157,6 +157,7 @@ int portvrf_compare(void *ptr1, void *ptr2) {
 struct vrf2rib_entry {
     int vrf;
     struct tree_head rou;
+    struct table_head nat;
     long pack;
     long byte;
 };
@@ -175,7 +176,7 @@ int vrf2rib_compare(void *ptr1, void *ptr2) {
 }
 
 
-void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int masker(void*), int bitter(void*, int)) {
+void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int masker(void*), int bitter(void*, int), int comparer(void *, void *)) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
@@ -183,7 +184,9 @@ void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int recle
     }
     void *res = table_get(tab, index);
     struct tree_head *tab2 = res + ((char*)&ntry->rou - (char*)ntry);
+    struct table_head *tab3 = res + ((char*)&ntry->nat - (char*)ntry);
     if (tab2->reclen != reclen1) tree_init(tab2, reclen1, masker, bitter);
+    if (tab3->reclen != reclen2) table_init(tab3, reclen2, comparer);
     return res;
 }
 
@@ -524,7 +527,6 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
 
 
 struct nat4_entry {
-    int vrf;
     int prot;
     int oSrcAddr;
     int oTrgAddr;
@@ -540,13 +542,9 @@ struct nat4_entry {
     long byte;
 };
 
-struct table_head nat4_table;
-
 int nat4_compare(void *ptr1, void *ptr2) {
     struct nat4_entry *ntry1 = ptr1;
     struct nat4_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->prot < ntry2->prot) return -1;
     if (ntry1->prot > ntry2->prot) return +1;
     if (ntry1->oSrcPort < ntry2->oSrcPort) return -1;
@@ -562,7 +560,6 @@ int nat4_compare(void *ptr1, void *ptr2) {
 
 
 struct nat6_entry {
-    int vrf;
     int prot;
     int oSrcAddr1;
     int oSrcAddr2;
@@ -590,13 +587,9 @@ struct nat6_entry {
     long byte;
 };
 
-struct table_head nat6_table;
-
 int nat6_compare(void *ptr1, void *ptr2) {
     struct nat6_entry *ntry1 = ptr1;
     struct nat6_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->prot < ntry2->prot) return -1;
     if (ntry1->prot > ntry2->prot) return +1;
     if (ntry1->oSrcPort < ntry2->oSrcPort) return -1;
@@ -972,8 +965,6 @@ int initTables() {
     table_init(&bridge_table, sizeof(struct bridge_entry), &bridge_compare);
     table_init(&acls4_table, sizeof(struct acls_entry), &acls_compare);
     table_init(&acls6_table, sizeof(struct acls_entry), &acls_compare);
-    table_init(&nat4_table, sizeof(struct nat4_entry), &nat4_compare);
-    table_init(&nat6_table, sizeof(struct nat6_entry), &nat6_compare);
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
     table_init(&tun4_table, sizeof(struct tun4_entry), &tun4_compare);
