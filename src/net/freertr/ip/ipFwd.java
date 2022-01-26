@@ -1592,11 +1592,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (lower == null) {
             return;
         }
-        addrIP src = lower.getUnreachAddr();
-        if (src == null) {
-            return;
-        }
-        if (icmpCore.createError(pck, reason, src.copyBytes(), mplsExtRep)) {
+        if (icmpCore.createError(pck, reason, lower, mplsExtRep)) {
             return;
         }
         errorSent++;

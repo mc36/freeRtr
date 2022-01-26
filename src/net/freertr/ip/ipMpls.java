@@ -517,10 +517,6 @@ public class ipMpls implements ifcUp {
                 return true;
             }
         }
-        addrIP src = ifc.getUnreachAddr();
-        if (src == null) {
-            return true;
-        }
         List<Integer> labs = null;
         if (!pck.MPLSbottom) {
             int old = pck.MPLSlabel;
@@ -542,7 +538,7 @@ public class ipMpls implements ifcUp {
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(res));
         }
-        if (fwd.icmpCore.createError(pck, res, src.copyBytes(), fwd.mplsExtRep)) {
+        if (fwd.icmpCore.createError(pck, res, ifc, fwd.mplsExtRep)) {
             return true;
         }
         fwd.ipCore.createIPheader(pck);

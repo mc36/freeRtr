@@ -70,11 +70,11 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      *
      * @param pck packet
      * @param reason reason
-     * @param ifip address
+     * @param ifip interface
      * @param mplsExt add mpls extension
      * @return false on success, true on error
      */
-    public boolean createError(packHolder pck, counter.reasons reason, addrIP ifip, boolean mplsExt) {
+    public boolean createError(packHolder pck, counter.reasons reason, ipFwdIface ifip, boolean mplsExt) {
         final int maxErrorSize = 512;
         if (pck.IPprt == protoNum) {
             pck.getSkip(pck.IPsiz);
@@ -87,7 +87,12 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 return true;
             }
         }
+        addrIP src = ifip.getUnreachAddr();
+        if (src == null) {
+            return true;
+        }
         int typ;
+        int dat = 0;
         switch (reason) {
             case noRoute:
             case noIface:
@@ -107,6 +112,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 break;
             case fragment:
                 typ = icmpUnreachFrag;
+                dat = ifip.pmtuds;
                 break;
             case ttlExceed:
                 typ = icmpUnreachTtle;
@@ -116,7 +122,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         }
         pck.putDefaults();
         pck.IPtrg.setAddr(pck.IPsrc);
-        pck.IPsrc.setAddr(ifip);
+        pck.IPsrc.setAddr(src);
         pck.putStart();
         if (pck.dataSize() > maxErrorSize) {
             pck.setDataSize(maxErrorSize);
@@ -125,7 +131,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         if (mplsExt) {
             ipFwdEcho.addMplsExt(pck);
         }
-        pck.msbPutD(4, 0); // unused
+        pck.msbPutD(4, dat); // optional data
         createICMPheader(pck);
         return false;
     }
