@@ -1337,17 +1337,6 @@ ipv4_natted:
             vrf2rib_res = table_get(&vrf2rib4_table, index);
         }
 ipv4_pbred:
-        mroute4_ntry.vrf = vrf2rib_ntry.vrf;
-        index = table_find(&mroute4_table, &mroute4_ntry);
-        if (index >= 0) {
-            mroute4_res = table_get(&mroute4_table, index);
-            if (mroute4_res->ingr != prt) doDropper;
-            mroute4_res->pack++;
-            mroute4_res->byte += bufS;
-            doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
-            if (mroute4_res->local != 0) doCpuing;
-            return;
-        }
         if (acl4_ntry.protV == 46) doCpuing;
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
@@ -1389,6 +1378,16 @@ ipv4_tx:
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
         case 2: // punt
+            index = table_find(&vrf2rib_res->mcst, &mroute4_ntry);
+            if (index >= 0) {
+                mroute4_res = table_get(&vrf2rib_res->mcst, index);
+                if (mroute4_res->ingr != prt) doDropper;
+                mroute4_res->pack++;
+                mroute4_res->byte += bufS;
+                doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
+                if (mroute4_res->local != 0) doCpuing;
+                return;
+            }
             tun4_ntry.prot = acl4_ntry.protV;
             tun4_ntry.srcAddr = acl4_ntry.srcAddr;
             tun4_ntry.trgAddr = acl4_ntry.trgAddr;
@@ -1573,17 +1572,6 @@ ipv6_natted:
             vrf2rib_res = table_get(&vrf2rib6_table, index);
         }
 ipv6_pbred:
-        mroute6_ntry.vrf = vrf2rib_ntry.vrf;
-        index = table_find(&mroute6_table, &mroute6_ntry);
-        if (index >= 0) {
-            mroute6_res = table_get(&mroute6_table, index);
-            if (mroute6_res->ingr != prt) doDropper;
-            mroute6_res->pack++;
-            mroute6_res->byte += bufS;
-            doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
-            if (mroute6_res->local != 0) doCpuing;
-            return;
-        }
         if (acl6_ntry.protV == 0) doCpuing;
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
@@ -1625,6 +1613,16 @@ ipv6_tx:
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
         case 2: // punt
+            index = table_find(&vrf2rib_res->mcst, &mroute6_ntry);
+            if (index >= 0) {
+                mroute6_res = table_get(&vrf2rib_res->mcst, index);
+                if (mroute6_res->ingr != prt) doDropper;
+                mroute6_res->pack++;
+                mroute6_res->byte += bufS;
+                doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, 0x100 | ttl, port);
+                if (mroute6_res->local != 0) doCpuing;
+                return;
+            }
             tun6_ntry.prot = acl6_ntry.protV;
             tun6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
             tun6_ntry.srcAddr2 = acl6_ntry.srcAddr2;

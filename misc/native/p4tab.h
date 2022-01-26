@@ -159,6 +159,7 @@ struct vrf2rib_entry {
     struct tree_head rou;
     struct table_head nat;
     struct table_head tun;
+    struct table_head mcst;
     long pack;
     long byte;
 };
@@ -177,7 +178,7 @@ int vrf2rib_compare(void *ptr1, void *ptr2) {
 }
 
 
-void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int masker(void*), int bitter(void*, int), int natter(void *, void *), int tunner(void *, void *)) {
+void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int masker(void*), int bitter(void*, int), int natter(void *, void *), int tunner(void *, void *), int mcaster(void *, void *)) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
@@ -190,11 +191,13 @@ void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int recle
     if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
     tab3 = res + ((char*)&ntry->tun - (char*)ntry);
     if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
+    tab3 = res + ((char*)&ntry->mcst - (char*)ntry);
+    if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
     return res;
 }
 
-#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), &route4_masker, &route4_bitter, &nat4_compare, &tun4_compare)
-#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), &route6_masker, &route6_bitter, &nat6_compare, &tun6_compare)
+#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), &route4_masker, &route4_bitter, &nat4_compare, &tun4_compare, &mroute4_compare)
+#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), &route6_masker, &route6_bitter, &nat6_compare, &tun6_compare, &mroute6_compare)
 
 
 struct route4_entry {
@@ -859,7 +862,6 @@ int flood_compare(void *ptr1, void *ptr2) {
 
 
 struct mroute4_entry {
-    int vrf;
     int grp;
     int src;
     int ingr;
@@ -869,13 +871,9 @@ struct mroute4_entry {
     long byte;
 };
 
-struct table_head mroute4_table;
-
 int mroute4_compare(void *ptr1, void *ptr2) {
     struct mroute4_entry *ntry1 = ptr1;
     struct mroute4_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->grp < ntry2->grp) return -1;
     if (ntry1->grp > ntry2->grp) return +1;
     if (ntry1->src < ntry2->src) return -1;
@@ -886,7 +884,6 @@ int mroute4_compare(void *ptr1, void *ptr2) {
 
 
 struct mroute6_entry {
-    int vrf;
     int grp1;
     int grp2;
     int grp3;
@@ -902,13 +899,9 @@ struct mroute6_entry {
     long byte;
 };
 
-struct table_head mroute6_table;
-
 int mroute6_compare(void *ptr1, void *ptr2) {
     struct mroute6_entry *ntry1 = ptr1;
     struct mroute6_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->grp1 < ntry2->grp1) return -1;
     if (ntry1->grp1 > ntry2->grp1) return +1;
     if (ntry1->grp2 < ntry2->grp2) return -1;
@@ -966,8 +959,6 @@ int initTables() {
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
-    table_init(&mroute4_table, sizeof(struct mroute4_entry), &mroute4_compare);
-    table_init(&mroute6_table, sizeof(struct mroute6_entry), &mroute6_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 //    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
 //    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;

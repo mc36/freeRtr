@@ -1729,18 +1729,20 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "mlocal4") == 0) {
-        mroute4_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
         inet_pton(AF_INET, arg[4], buf2);
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute4_res = table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         mroute4_res->local = del;
         return 0;
     }
     if (strcmp(arg[0], "mlocal6") == 0) {
-        mroute6_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
         inet_pton(AF_INET6, arg[4], buf2);
         mroute6_ntry.grp1 = get32msb(buf2, 0);
         mroute6_ntry.grp2 = get32msb(buf2, 4);
@@ -1751,18 +1753,19 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute6_res = table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         mroute6_res->local = del;
         return 0;
     }
     if (strcmp(arg[0], "mroute4") == 0) {
-        mroute4_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
         inet_pton(AF_INET, arg[4], buf2);
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute4_res = table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.command = 1;
@@ -1773,7 +1776,8 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "mroute6") == 0) {
-        mroute6_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
         inet_pton(AF_INET6, arg[4], buf2);
         mroute6_ntry.grp1 = get32msb(buf2, 0);
         mroute6_ntry.grp2 = get32msb(buf2, 4);
@@ -1784,7 +1788,7 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute6_res = table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.command = 1;
@@ -1841,12 +1845,13 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "mlabroute4") == 0) {
-        mroute4_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
         inet_pton(AF_INET, arg[4], buf2);
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute4_res = table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.lab = atoi(arg[9]);
@@ -1856,7 +1861,8 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "mlabroute6") == 0) {
-        mroute6_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
         inet_pton(AF_INET6, arg[4], buf2);
         mroute6_ntry.grp1 = get32msb(buf2, 0);
         mroute6_ntry.grp2 = get32msb(buf2, 4);
@@ -1867,7 +1873,7 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute6_res = table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.lab = atoi(arg[9]);
@@ -1927,12 +1933,13 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "mbierroute4") == 0) {
-        mroute4_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
         inet_pton(AF_INET, arg[4], buf2);
         mroute4_ntry.grp = get32msb(buf2, 0);
         inet_pton(AF_INET, arg[5], buf2);
         mroute4_ntry.src = get32msb(buf2, 0);
-        mroute4_res = table_addinited(&mroute4_table, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute4_res = table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute4_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.lab = atoi(arg[9]);
@@ -1945,7 +1952,8 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "mbierroute6") == 0) {
-        mroute6_ntry.vrf = atoi(arg[2]);
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
         inet_pton(AF_INET6, arg[4], buf2);
         mroute6_ntry.grp1 = get32msb(buf2, 0);
         mroute6_ntry.grp2 = get32msb(buf2, 4);
@@ -1956,7 +1964,7 @@ int doOneCommand(unsigned char* buf) {
         mroute6_ntry.src2 = get32msb(buf2, 4);
         mroute6_ntry.src3 = get32msb(buf2, 8);
         mroute6_ntry.src4 = get32msb(buf2, 12);
-        mroute6_res = table_addinited(&mroute6_table, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+        mroute6_res = table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
         mroute6_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.lab = atoi(arg[9]);
@@ -2084,7 +2092,45 @@ void doStatRound_tun6(void* buffer, int fixed, void* param) {
     }
 }
 
-void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), void tunner(void *, int, void *), int ver, void*param) {
+void doStatRound_mcst4(void* buffer, int fixed, void* param) {
+    FILE *commands = param;
+    struct table_head *mroute_table = buffer;
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<mroute_table->size; i++) {
+        struct mroute4_entry *ntry = table_get(mroute_table, i);
+        put32msb(buf, 0, ntry->src);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->grp);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "mroute4_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
+    }
+}
+
+void doStatRound_mcst6(void* buffer, int fixed, void* param) {
+    FILE *commands = param;
+    struct table_head *mroute_table = buffer;
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<mroute_table->size; i++) {
+        struct mroute6_entry *ntry = table_get(mroute_table, i);
+        put32msb(buf, 0, ntry->src1);
+        put32msb(buf, 4, ntry->src2);
+        put32msb(buf, 8, ntry->src3);
+        put32msb(buf, 12, ntry->src4);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry->grp1);
+        put32msb(buf, 4, ntry->grp2);
+        put32msb(buf, 8, ntry->grp3);
+        put32msb(buf, 12, ntry->grp4);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
+    }
+}
+
+void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), void tunner(void *, int, void *), void mcaster(void *, int, void *), int ver, void*param) {
     FILE *commands = param;
     for (int i = 0; i < tab->size; i++) {
         struct vrf2rib_entry *res = table_get(tab, i);
@@ -2092,6 +2138,7 @@ void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), vo
         tree_walk(&res->rou, doer, res->vrf, param);
         natter(&res->nat, res->vrf, param);
         tunner(&res->tun, res->vrf, param);
+        mcaster(&res->mcst, res->vrf, param);
     }
 }
 
@@ -2166,7 +2213,6 @@ void doStatRound(FILE *commands, int round) {
     }
     unsigned char buf[1024];
     unsigned char buf2[1024];
-    unsigned char buf3[1024];
     for (int i = 0; i < ports; i++) {
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
@@ -2200,30 +2246,8 @@ void doStatRound(FILE *commands, int round) {
         mac2str(buf2, buf);
         fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
-    doStatRount_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, 4, commands);
-    doStatRount_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, 6, commands);
-    for (int i=0; i<mroute4_table.size; i++) {
-        struct mroute4_entry *ntry = table_get(&mroute4_table, i);
-        put32msb(buf, 0, ntry->src);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->grp);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "mroute4_cnt %i %s %s %li %li\r\n", ntry->vrf, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<mroute6_table.size; i++) {
-        struct mroute6_entry *ntry = table_get(&mroute6_table, i);
-        put32msb(buf, 0, ntry->src1);
-        put32msb(buf, 4, ntry->src2);
-        put32msb(buf, 8, ntry->src3);
-        put32msb(buf, 12, ntry->src4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->grp1);
-        put32msb(buf, 4, ntry->grp2);
-        put32msb(buf, 8, ntry->grp3);
-        put32msb(buf, 12, ntry->grp4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", ntry->vrf, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
-    }
+    doStatRount_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4, commands);
+    doStatRount_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
     for (int i=0; i<macsec_table.size; i++) {
         struct macsec_entry *ntry = table_get(&macsec_table, i);
         fprintf(commands, "macsec_cnt %i %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
