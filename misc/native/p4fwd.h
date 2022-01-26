@@ -1389,16 +1389,15 @@ ipv4_tx:
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
         case 2: // punt
-            tun4_ntry.vrf = vrf2rib_ntry.vrf;
             tun4_ntry.prot = acl4_ntry.protV;
             tun4_ntry.srcAddr = acl4_ntry.srcAddr;
             tun4_ntry.trgAddr = acl4_ntry.trgAddr;
             tun4_ntry.srcPort = acl4_ntry.srcPortV;
             tun4_ntry.trgPort = acl4_ntry.trgPortV;
-            index = table_find(&tun4_table, &tun4_ntry);
+            index = table_find(&vrf2rib_res->tun, &tun4_ntry);
             if (index >= 0) {
                 if (frag != 0) doPunting;
-                tun4_res = table_get(&tun4_table, index);
+                tun4_res = table_get(&vrf2rib_res->tun, index);
                 doTunneled(tun4_res);
             }
             acls_ntry.dir = 4;
@@ -1626,7 +1625,6 @@ ipv6_tx:
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
         case 2: // punt
-            tun6_ntry.vrf = vrf2rib_ntry.vrf;
             tun6_ntry.prot = acl6_ntry.protV;
             tun6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
             tun6_ntry.srcAddr2 = acl6_ntry.srcAddr2;
@@ -1638,10 +1636,10 @@ ipv6_tx:
             tun6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
             tun6_ntry.srcPort = acl6_ntry.srcPortV;
             tun6_ntry.trgPort = acl6_ntry.trgPortV;
-            index = table_find(&tun6_table, &tun6_ntry);
+            index = table_find(&vrf2rib_res->tun, &tun6_ntry);
             if (index >= 0) {
                 if (frag != 0) doPunting;
-                tun6_res = table_get(&tun6_table, index);
+                tun6_res = table_get(&vrf2rib_res->tun, index);
                 doTunneled(tun6_res);
             }
             acls_ntry.dir = 4;

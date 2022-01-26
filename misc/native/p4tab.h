@@ -158,6 +158,7 @@ struct vrf2rib_entry {
     int vrf;
     struct tree_head rou;
     struct table_head nat;
+    struct table_head tun;
     long pack;
     long byte;
 };
@@ -176,7 +177,7 @@ int vrf2rib_compare(void *ptr1, void *ptr2) {
 }
 
 
-void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int masker(void*), int bitter(void*, int), int comparer(void *, void *)) {
+void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int masker(void*), int bitter(void*, int), int natter(void *, void *), int tunner(void *, void *)) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
@@ -184,11 +185,16 @@ void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int recle
     }
     void *res = table_get(tab, index);
     struct tree_head *tab2 = res + ((char*)&ntry->rou - (char*)ntry);
-    struct table_head *tab3 = res + ((char*)&ntry->nat - (char*)ntry);
     if (tab2->reclen != reclen1) tree_init(tab2, reclen1, masker, bitter);
-    if (tab3->reclen != reclen2) table_init(tab3, reclen2, comparer);
+    struct table_head *tab3 = res + ((char*)&ntry->nat - (char*)ntry);
+    if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
+    tab3 = res + ((char*)&ntry->tun - (char*)ntry);
+    if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
     return res;
 }
+
+#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), &route4_masker, &route4_bitter, &nat4_compare, &tun4_compare)
+#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), &route6_masker, &route6_bitter, &nat6_compare, &tun6_compare)
 
 
 struct route4_entry {
@@ -657,7 +663,6 @@ int pppoe_compare(void *ptr1, void *ptr2) {
 
 
 struct tun4_entry {
-    int vrf;
     int prot;
     int srcAddr;
     int trgAddr;
@@ -680,13 +685,9 @@ struct tun4_entry {
     long byte;
 };
 
-struct table_head tun4_table;
-
 int tun4_compare(void *ptr1, void *ptr2) {
     struct tun4_entry *ntry1 = ptr1;
     struct tun4_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->prot < ntry2->prot) return -1;
     if (ntry1->prot > ntry2->prot) return +1;
     if (ntry1->srcPort < ntry2->srcPort) return -1;
@@ -702,7 +703,6 @@ int tun4_compare(void *ptr1, void *ptr2) {
 
 
 struct tun6_entry {
-    int vrf;
     int prot;
     int srcAddr1;
     int srcAddr2;
@@ -731,13 +731,9 @@ struct tun6_entry {
     long byte;
 };
 
-struct table_head tun6_table;
-
 int tun6_compare(void *ptr1, void *ptr2) {
     struct tun6_entry *ntry1 = ptr1;
     struct tun6_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->prot < ntry2->prot) return -1;
     if (ntry1->prot > ntry2->prot) return +1;
     if (ntry1->srcPort < ntry2->srcPort) return -1;
@@ -967,8 +963,6 @@ int initTables() {
     table_init(&acls6_table, sizeof(struct acls_entry), &acls_compare);
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
-    table_init(&tun4_table, sizeof(struct tun4_entry), &tun4_compare);
-    table_init(&tun6_table, sizeof(struct tun6_entry), &tun6_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
