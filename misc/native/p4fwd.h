@@ -843,7 +843,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
 
 
 #define routeMpls()                                                 \
-    vrf2rib_ntry.vrf = mpls_res->vrf;                             \
+    vrf2rib_ntry.vrf = mpls_res->vrf;                               \
     switch (mpls_res->ver) {                                        \
     case 4:                                                         \
         ethtyp = ETHERTYPE_IPV4;                                    \
@@ -945,12 +945,12 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         neigh_ntry.id = route_res->nexthop;                         \
         goto nethtyp_tx;                                            \
     case 6:                                                         \
-        vrf2rib_ntry.vrf = route_res->srv1;                       \
+        vrf2rib_ntry.vrf = route_res->srv1;                         \
         bufP = bufT;                                                \
         ethtyp = ETHERTYPE_IPV4;                                    \
         goto ipv4_rx;                                               \
     case 7:                                                         \
-        vrf2rib_ntry.vrf = route_res->srv1;                       \
+        vrf2rib_ntry.vrf = route_res->srv1;                         \
         bufP = bufT;                                                \
         ethtyp = ETHERTYPE_IPV6;                                    \
         goto ipv6_rx;                                               \
@@ -1354,7 +1354,7 @@ ipv4_pbred:
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
         route4_ntry.mask = 32;
-        route4_res = tree_lpm(&vrf2rib_res->tree, &route4_ntry);
+        route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
         if (route4_res == NULL) doPunting;
         route4_res->pack++;
         route4_res->byte += bufS;
@@ -1589,7 +1589,7 @@ ipv6_pbred:
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
         route6_ntry.mask = 128;
-        route6_res = tree_lpm(&vrf2rib_res->tree, &route6_ntry);
+        route6_res = tree_lpm(&vrf2rib_res->rou, &route6_ntry);
         if (route6_res == NULL) doPunting;
         route6_res->pack++;
         route6_res->byte += bufS;

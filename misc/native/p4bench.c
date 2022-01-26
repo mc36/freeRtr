@@ -80,13 +80,13 @@ int main(int argc, char **argv) {
     portvrf_ntry.mpls = 1;
     table_add(&portvrf_table, &portvrf_ntry);
     vrf2rib_ntry.vrf = 1;
-    struct vrf2rib_entry *route4_table = tree_addinited(&vrf2rib4_table, &vrf2rib_ntry, &vrf2rib_ntry.tree, sizeof(route4_ntry), &route4_masker, &route4_bitter);
-    struct vrf2rib_entry *route6_table = tree_addinited(&vrf2rib6_table, &vrf2rib_ntry, &vrf2rib_ntry.tree, sizeof(route6_ntry), &route6_masker, &route6_bitter);
+    struct vrf2rib_entry *route4_table = vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(route4_ntry), &route4_masker, &route4_bitter);
+    struct vrf2rib_entry *route6_table = vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(route6_ntry), &route6_masker, &route6_bitter);
     route4_ntry.addr = 0x01010100;
     route4_ntry.mask = 24;
     route4_ntry.nexthop = 1234;
     route4_ntry.command = 1;
-    tree_add(&route4_table->tree, &route4_ntry);
+    tree_add(&route4_table->rou, &route4_ntry);
     route6_ntry.addr1 = 0x01010101;
     route6_ntry.addr2 = 0x0;
     route6_ntry.addr3 = 0x0;
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     route6_ntry.mask = 64;
     route6_ntry.nexthop = 1234;
     route6_ntry.command = 1;
-    tree_add(&route6_table->tree, &route6_ntry);
+    tree_add(&route6_table->rou, &route6_ntry);
     mpls_ntry.label = 12345;
     mpls_ntry.nexthop = 1234;
     mpls_ntry.swap = 54321;

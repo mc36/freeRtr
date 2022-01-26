@@ -156,7 +156,7 @@ int portvrf_compare(void *ptr1, void *ptr2) {
 
 struct vrf2rib_entry {
     int vrf;
-    struct tree_head tree;
+    struct tree_head rou;
     long pack;
     long byte;
 };
@@ -172,6 +172,19 @@ int vrf2rib_compare(void *ptr1, void *ptr2) {
     if (ntry1->vrf < ntry2->vrf) return -1;
     if (ntry1->vrf > ntry2->vrf) return +1;
     return 0;
+}
+
+
+void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int masker(void*), int bitter(void*, int)) {
+    int index = table_find(tab, ntry);
+    if (index < 0) {
+        table_add(tab, ntry);
+        index = table_find(tab, ntry);
+    }
+    void *res = table_get(tab, index);
+    struct tree_head *tab2 = res + ((char*)&ntry->rou - (char*)ntry);
+    if (tab2->reclen != reclen1) tree_init(tab2, reclen1, masker, bitter);
+    return res;
 }
 
 

@@ -122,16 +122,3 @@ void tree_walk(struct tree_head *tab, void doer(void *, int, void *), int fixed,
     tree_walkNode(cur->zero, doer, fixed, param);
     tree_walkNode(cur->one, doer, fixed, param);
 }
-
-void* tree_addinited(struct table_head *tab, void *ntry, struct tree_head *tab2, int reclen, int masker(void*), int bitter(void*, int)) {
-    int index = table_find(tab, ntry);
-    if (index < 0) {
-        table_add(tab, ntry);
-        index = table_find(tab, ntry);
-    }
-    void *res = table_get(tab, index);
-    struct tree_head *tab3 = res + ((char*)tab2 - (char*)ntry);
-    if (tab3->reclen == reclen) return res;
-    tree_init(tab3, reclen, masker, bitter);
-    return res;
-}
