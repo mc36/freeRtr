@@ -31,7 +31,7 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     if (mbuf == NULL) return;
     char * pack = rte_pktmbuf_append(mbuf, bufS);
     if (pack == NULL) return;
-    memmove(pack, bufD, bufS);
+    memcpy(pack, bufD, bufS);
     if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return;
     rte_pktmbuf_free(mbuf);
 }
@@ -81,14 +81,6 @@ int commandSock;
 #define BURST_PAUSE 100
 #define RING_SIZE 512
 
-
-static const struct rte_eth_conf port_conf_default = {
-    .rxmode = {
-        .max_rx_pkt_len = RTE_ETHER_MAX_LEN,
-    },
-    .txmode = {
-    },
-};
 
 
 
@@ -196,13 +188,13 @@ static int doPacketLoop(__rte_unused void *arg) {
                 bufS = rte_pktmbuf_pkt_len(bufs[i]);
                 bufP = rte_pktmbuf_mtod(bufs[i], void *);
                 if ((bufs[i]->ol_flags & PKT_RX_VLAN_STRIPPED) != 0) {
-                    memmove(&bufD[preBuff], bufP, 12);
+                    memcpy(&bufD[preBuff], bufP, 12);
                     put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);
                     put16msb(bufD, preBuff + 14, bufs[i]->vlan_tci);
-                    memmove(&bufD[preBuff + 16], bufP + 12, bufS - 12);
+                    memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);
                     bufS += 4;
                 } else {
-                    memmove(&bufD[preBuff], bufP, bufS);
+                    memcpy(&bufD[preBuff], bufP, bufS);
                 }
                 rte_pktmbuf_free(bufs[i]);
                 if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
@@ -280,12 +272,16 @@ int main(int argc, char **argv) {
         printf("opening port %i on lcore (rx %i tx %i) on socket %i...\n", port, port2rx[port], port2tx[port], sock);
         initIface(port, (char*)&buf[0]);
 
-        struct rte_eth_conf port_conf = port_conf_default;
+        struct rte_eth_conf port_conf;
+        memset(&port_conf, 0, sizeof(port_conf));
         uint16_t nb_rxd = RX_RING_SIZE;
         uint16_t nb_txd = TX_RING_SIZE;
         struct rte_eth_dev_info dev_info;
+        memset(&dev_info, 0, sizeof(dev_info));
         struct rte_eth_txconf txconf;
+        memset(&txconf, 0, sizeof(txconf));
         struct rte_ether_addr macaddr;
+        memset(&macaddr, 0, sizeof(macaddr));
 
         if (!rte_eth_dev_is_valid_port(port)) err("not valid port");
 
@@ -299,6 +295,8 @@ int main(int argc, char **argv) {
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
             port_conf.rxmode.max_rx_pkt_len = RTE_MBUF_DEFAULT_DATAROOM;
+        } else {
+            port_conf.rxmode.max_rx_pkt_len = RTE_ETHER_MAX_LEN;
         }
 
         ret = rte_eth_dev_configure(port, 1, 1, &port_conf);

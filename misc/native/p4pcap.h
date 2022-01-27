@@ -73,7 +73,7 @@ void doIfaceLoop(int * param) {
             if (pack == NULL) continue;
             bufS = head.caplen;
             if (bufS < 1) continue;
-            memmove(&bufD[preBuff], pack, bufS);
+            memcpy(&bufD[preBuff], pack, bufS);
             processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
             fail = 0;
         }
@@ -84,7 +84,7 @@ void doIfaceLoop(int * param) {
             if (pack == NULL) continue;
             bufS = head.caplen;
             if (bufS < 1) continue;
-            memmove(&bufD[preBuff], pack, bufS);
+            memcpy(&bufD[preBuff], pack, bufS);
             processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
             fail = 0;
         }
