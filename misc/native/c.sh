@@ -17,7 +17,7 @@ compileFile()
 {
 echo compiling $1.
 $CC -Wall $MD $4 -o$TR/$1.bin $2 $1.c $3
-strip $1.bin
+strip $TR/$1.bin
 touch -d "2010-01-01 00:00:00" $TR/$1.bin
 }
 
