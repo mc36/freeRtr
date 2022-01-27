@@ -207,6 +207,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
      */
     public void setState(state.states stat) {
         cntr.stateChange(stat);
+        resetTimer(state.toUsable(stat) == state.states.up);
         if (neiCache != null) {
             neiCache.setState(stat);
         }
@@ -217,6 +218,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * close interface
      */
     public void closeUp() {
+        resetTimer(false);
         if (neiCache != null) {
             neiCache.closeUp();
         }
@@ -234,7 +236,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         } else {
             neiCache = null;
         }
-        resetTimer();
+        resetTimer(true);
     }
 
     /**
@@ -262,6 +264,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * @param mask mask
      */
     public void setIPv6addr(addrIPv6 addr, int mask) {
+        resetTimer(false);
         if (addr.isLinkLocal()) {
             lladdr.setAddr(addr);
         }
@@ -278,6 +281,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         }
         prefix = new addrPrefix<addrIP>(ipaddr, ipm);
         upper.ifaceAddr(ifcHdr, ipaddr, ipm);
+        resetTimer(true);
     }
 
     private boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
@@ -410,13 +414,18 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     /**
      * setup router advertise sender
+     * 
+     * @param needRun true if needed
      */
-    public void resetTimer() {
+    public void resetTimer(boolean needRun) {
         try {
             timer.cancel();
         } catch (Exception e) {
         }
         timer = null;
+        if (!needRun) {
+            return;
+        }
         if (rtrAdvInterval < 1) {
             return;
         }
@@ -430,9 +439,10 @@ public class ipIfc6 implements ipIfc, ifcUp {
      */
     public void sendAdverts() {
         packHolder pck = new packHolder(true, true);
-        icc.createNeighAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), false);
+        addrType hwa = lower.getHwAddr();
+        icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), false);
         sendProto(pck, pck.IPtrg);
-        icc.createNeighAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), ipaddr.toIPv6(), false);
+        icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), ipaddr.toIPv6(), false);
         sendProto(pck, pck.IPtrg);
         if (rtrAdvInterval < 1) {
             return;
@@ -444,7 +454,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         if (rtrAdvDns != null) {
             dns = rtrAdvDns.toIPv6();
         }
-        icc.createRouterAdv(lower.getHwAddr(), pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns, rtrAdvDom, rtrAdvValidity);
+        icc.createRouterAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns, rtrAdvDom, rtrAdvValidity);
         sendProto(pck, pck.IPtrg);
     }
 

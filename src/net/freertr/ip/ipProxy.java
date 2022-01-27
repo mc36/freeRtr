@@ -89,6 +89,7 @@ public class ipProxy implements ifcUp {
             timer.cancel();
         } catch (Exception e) {
         }
+        timer = null;
         if (!needRun) {
             return;
         }

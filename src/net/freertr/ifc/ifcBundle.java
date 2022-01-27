@@ -502,6 +502,7 @@ public class ifcBundle implements Runnable, ifcDn {
                 timer2.cancel();
             } catch (Exception e) {
             }
+            timer2 = null;
             return;
         }
         cmd.badCmd();

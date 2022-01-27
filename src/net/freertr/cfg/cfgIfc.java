@@ -7750,12 +7750,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("prefix-interval")) {
             ipIf6.rtrAdvInterval = bits.str2num(cmd.word());
-            ipIf6.resetTimer();
+            ipIf6.resetTimer(true);
             return;
         }
         if (a.equals("prefix-validity")) {
             ipIf6.rtrAdvValidity = bits.str2num(cmd.word());
-            ipIf6.resetTimer();
+            ipIf6.resetTimer(true);
             return;
         }
         if (a.equals("prefix-dns")) {

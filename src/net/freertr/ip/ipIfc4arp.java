@@ -156,6 +156,7 @@ public class ipIfc4arp implements ifcUp {
             timer.cancel();
         } catch (Exception e) {
         }
+        timer = null;
         if (!needRun) {
             return;
         }

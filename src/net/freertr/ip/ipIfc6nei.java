@@ -112,6 +112,7 @@ public class ipIfc6nei implements ifcUp {
             timer.cancel();
         } catch (Exception e) {
         }
+        timer = null;
         if (!needRun) {
             return;
         }

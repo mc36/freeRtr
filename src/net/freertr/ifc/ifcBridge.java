@@ -690,6 +690,7 @@ public class ifcBridge implements ifcDn {
             timer.cancel();
         } catch (Exception e) {
         }
+        timer = null;
         if (!needRun) {
             return;
         }
