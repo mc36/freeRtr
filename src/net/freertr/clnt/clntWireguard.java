@@ -147,7 +147,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private boolean working = true;
 
-    private tabWindow sequence;
+    private tabWindow<packHolder> sequence;
 
     private long seqRx;
 
@@ -860,7 +860,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         seqRx = 0;
         seqTx = 0;
         if (replayCheck > 0) {
-            sequence = new tabWindow(replayCheck);
+            sequence = new tabWindow<packHolder>(replayCheck);
         }
         if (debugger.clntWireguardTraf) {
             logger.debug("keys r=" + r + " ri=" + idxTx + " ti=" + idxRx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));

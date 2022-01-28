@@ -85,7 +85,7 @@ public class ifcMacSec implements Runnable {
 
     private counter cntr = new counter();
 
-    private tabWindow sequence;
+    private tabWindow<packHolder> sequence;
 
     private addrMac myaddr;
 
@@ -151,7 +151,7 @@ public class ifcMacSec implements Runnable {
         keygen.servXchg();
         replayCheck = profil.replay;
         if (replayCheck > 0) {
-            sequence = new tabWindow(replayCheck);
+            sequence = new tabWindow<packHolder>(replayCheck);
         }
         try {
             myaddr = (addrMac) eth.getHwAddr().copyBytes();
@@ -390,7 +390,7 @@ public class ifcMacSec implements Runnable {
         bits.byteCopy(res, pos, buf2, 0, buf2.length);
         keyUsage = new counter();
         if (replayCheck > 0) {
-            sequence = new tabWindow(replayCheck);
+            sequence = new tabWindow<packHolder>(replayCheck);
         }
         seqTx = 0;
         cphrTx = cphTx;

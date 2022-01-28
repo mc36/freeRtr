@@ -58,7 +58,7 @@ public class ifcBundle implements Runnable, ifcDn {
     /**
      * packets are sequenced
      */
-    public tabWindow sequence;
+    public tabWindow<packHolder> sequence;
 
     /**
      * peering handler
@@ -424,7 +424,7 @@ public class ifcBundle implements Runnable, ifcDn {
             if (i < 1) {
                 return;
             }
-            sequence = new tabWindow(i);
+            sequence = new tabWindow<packHolder>(i);
             seqTx = 0;
             return;
         }
@@ -947,7 +947,7 @@ public class ifcBundle implements Runnable, ifcDn {
         int i = sequence.seq1st();
         int o = sequence.seqLst();
         for (; i <= o; i++) {
-            pck = (packHolder) sequence.payGet(i);
+            pck = sequence.payGet(i);
             if (pck != null) {
                 break;
             }

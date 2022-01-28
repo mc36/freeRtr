@@ -154,7 +154,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
 
     private cryEncrGeneric cphrTx;
 
-    private tabWindow sequence;
+    private tabWindow<packHolder> sequence;
 
     private int seqRx;
 
@@ -387,7 +387,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         keyEncr = buf2;
         cphrSiz = buf3.length;
         if (replayCheck > 0) {
-            sequence = new tabWindow(replayCheck);
+            sequence = new tabWindow<packHolder>(replayCheck);
         }
         addrIP trg = userTerminal.justResolv(target, prefer);
         if (trg == null) {

@@ -82,7 +82,7 @@ public class packEsp implements ipPrt {
 
     private int seqTx;
 
-    private tabWindow sequence;
+    private tabWindow<packHolder> sequence;
 
     private ifcUp lower = new ifcNull();
 
@@ -376,7 +376,7 @@ public class packEsp implements ipPrt {
     public synchronized void doInit() {
         seqTx = 0;
         if (replayCheck > 0) {
-            sequence = new tabWindow(replayCheck);
+            sequence = new tabWindow<packHolder>(replayCheck);
         } else {
             sequence = null;
         }

@@ -3,16 +3,17 @@ package net.freertr.tab;
 /**
  * represents one window handler
  *
+ * @param <T> type of elements in the list
  * @author matecsaba
  */
-public class tabWindow {
+public class tabWindow<T extends Object> {
 
     /**
      * usage bitmap
      */
     protected final byte[] mapDat;
 
-    private final Object[] mapPay;
+    private final T[] mapPay;
 
     private int mapSeq;
 
@@ -25,9 +26,10 @@ public class tabWindow {
      *
      * @param siz window size
      */
+    @SuppressWarnings("unchecked")
     public tabWindow(int siz) {
         mapDat = new byte[siz];
-        mapPay = new Object[siz];
+        mapPay = (T[]) new Object[siz];
     }
 
     public String toString() {
@@ -60,9 +62,10 @@ public class tabWindow {
      * get size of window
      *
      * @param w window to check
+     * @param <T> type of elements in the list
      * @return number of packets
      */
-    public static int getSize(tabWindow w) {
+    public static <T extends Object> int getSize(tabWindow<T> w) {
         if (w == null) {
             return 0;
         }
@@ -161,7 +164,7 @@ public class tabWindow {
      * @param seq sequence number
      * @param dat data to store
      */
-    public void paySet(int seq, Object dat) {
+    public void paySet(int seq, T dat) {
         synchronized (mapDat) {
             int i = seq2pos(seq);
             if (i < 0) {
@@ -177,7 +180,7 @@ public class tabWindow {
      * @param seq sequence number
      * @return payload
      */
-    public Object payGet(int seq) {
+    public T payGet(int seq) {
         synchronized (mapDat) {
             int i = seq2pos(seq);
             if (i < 0) {
