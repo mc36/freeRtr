@@ -33,6 +33,41 @@ void send2cpu(unsigned char *bufD, int bufS, int port) {
 
 
 
+int hashDataPacket(unsigned char *bufP) {
+    int hash = get32msb(bufP, 0);
+    hash ^= get32msb(bufP, 4);
+    hash ^= get32msb(bufP, 8);
+    int ethtyp = get16msb(bufP, 12);
+    bufP += 14;
+    if (ethtyp == ETHERTYPE_VLAN) { // dot1q
+        hash ^= get16msb(bufP, 0) & 0xfff; // vlan
+        ethtyp = get16msb(bufP, 2);
+        bufP += 4;
+    }
+    switch (ethtyp) {
+    case ETHERTYPE_MPLS_UCAST: // mpls
+        hash ^= (get32msb(bufP, 0) >> 12) & 0xfffff; // label
+        break;
+    case ETHERTYPE_IPV4: // ipv4
+        hash ^= get32msb(bufP, 12); // src
+        hash ^= get32msb(bufP, 16); // dst
+        break;
+    case ETHERTYPE_IPV6: // ipv6
+        hash ^= get32msb(bufP, 8); // src
+        hash ^= get32msb(bufP, 12);
+        hash ^= get32msb(bufP, 16);
+        hash ^= get32msb(bufP, 20);
+        hash ^= get32msb(bufP, 24); // dst
+        hash ^= get32msb(bufP, 28);
+        hash ^= get32msb(bufP, 32);
+        hash ^= get32msb(bufP, 36);
+        break;
+    }
+    hash = ((hash >> 16) ^ hash) & 0xffff;
+    hash = ((hash >> 8) ^ hash) & 0xff;
+    return hash;
+}
+
 
 
 #ifdef basicLoop
@@ -1443,6 +1478,9 @@ ipv6_rx:
         acl6_ntry.trgAddr2 = mroute6_ntry.grp2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
         acl6_ntry.trgAddr3 = mroute6_ntry.grp3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
         acl6_ntry.trgAddr4 = mroute6_ntry.grp4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
+        hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1;
+        hash ^= acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2;
+        hash ^= acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3;
         hash ^= acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;

@@ -26,6 +26,8 @@ struct rte_mempool *mbuf_pool;
 
 struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
+struct rte_ring *prc_ring[RTE_MAX_LCORE];
+
 void sendPack(unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool);
     if (mbuf == NULL) return;
@@ -89,8 +91,13 @@ struct lcore_conf {
     int rx_list[RTE_MAX_ETHPORTS];
     int tx_num;
     int tx_list[RTE_MAX_ETHPORTS];
+    int justProcessor;
 } __rte_cache_aligned;
 struct lcore_conf lcore_conf[RTE_MAX_LCORE];
+
+int packProcDat[RTE_MAX_LCORE];
+int packProcNum;
+
 
 
 
@@ -171,7 +178,6 @@ static int doPacketLoop(__rte_unused void *arg) {
     int port;
     int seq;
     int num;
-    int pkts;
     int i;
     struct rte_mbuf *mbufs[BURST_SIZE];
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
@@ -182,31 +188,65 @@ static int doPacketLoop(__rte_unused void *arg) {
     int lcore = rte_lcore_id();
     struct lcore_conf *myconf = &lcore_conf[lcore];
 
-    printf("lcore %i started with %i rx and %i tx ports!\n", lcore, myconf->rx_num, myconf->tx_num);
-    if ((myconf->rx_num + myconf->tx_num) < 1) return 0;
+    printf("lcore %i started with %i rx and %i tx ports and %i processing!\n", lcore, myconf->rx_num, myconf->tx_num, myconf->justProcessor);
+    if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
 
-    for (;;) {
-        pkts = 0;
-        for (seq = 0; seq < myconf->tx_num; seq++) {
-            port = myconf->tx_list[seq];
-            num = rte_ring_count(tx_ring[port]);
-            if (num > BURST_SIZE) num = BURST_SIZE;
-            num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
-            rte_eth_tx_burst(port, 0, mbufs, num);
-            pkts += num;
-        }
-        for (seq = 0; seq < myconf->rx_num; seq++) {
-            port = myconf->rx_list[seq];
-            num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
-            for (i = 0; i < num; i++) {
-                mbuf2mybuf(mbufs[i]);
-                rte_pktmbuf_free(mbufs[i]);
-                if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
-                else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+    if (packProcNum < 1) {
+        int pkts;
+        for (;;) {
+            pkts = 0;
+            for (seq = 0; seq < myconf->tx_num; seq++) {
+                port = myconf->tx_list[seq];
+                num = rte_ring_count(tx_ring[port]);
+                if (num > BURST_SIZE) num = BURST_SIZE;
+                num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
+                rte_eth_tx_burst(port, 0, mbufs, num);
+                pkts += num;
             }
-            pkts += num;
+            for (seq = 0; seq < myconf->rx_num; seq++) {
+                port = myconf->rx_list[seq];
+                num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                for (i = 0; i < num; i++) {
+                    mbuf2mybuf(mbufs[i]);
+                    rte_pktmbuf_free(mbufs[i]);
+                    if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+                    else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+                }
+                pkts += num;
+            }
+            if (pkts < 1) usleep(BURST_PAUSE);
         }
-        if (pkts < 1) usleep(BURST_PAUSE);
+    } else if (myconf->justProcessor > 0) {
+        seq = myconf->justProcessor - 1;
+        for (;;) {
+            num = rte_ring_count(prc_ring[seq]);
+            if (num > BURST_SIZE) num = BURST_SIZE;
+            if (rte_ring_sc_dequeue(prc_ring[seq], (void**)mbufs) != 0) continue;
+            mbuf2mybuf(mbufs[0]);
+            port = mbufs[0]->port;
+            rte_pktmbuf_free(mbufs[0]);
+            if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+            else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+        }
+    } else {
+        for (;;) {
+            for (seq = 0; seq < myconf->tx_num; seq++) {
+                port = myconf->tx_list[seq];
+                num = rte_ring_count(tx_ring[port]);
+                if (num > BURST_SIZE) num = BURST_SIZE;
+                num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
+                rte_eth_tx_burst(port, 0, mbufs, num);
+            }
+            for (seq = 0; seq < myconf->rx_num; seq++) {
+                port = myconf->rx_list[seq];
+                num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                for (i = 0; i < num; i++) {
+                    bufP = rte_pktmbuf_mtod(mbufs[i], void *);
+                    port = hashDataPacket(bufP) % packProcNum;
+                    if (rte_ring_mp_enqueue(prc_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
+                }
+            }
+        }
     }
     err("packet thread exited");
     return 0;
@@ -229,7 +269,7 @@ int main(int argc, char **argv) {
     ports = rte_eth_dev_count_avail();
     if (ports < 2) err("at least 2 ports needed");
 
-    if (argc < 4) err("using: dp <host> <rport> <cpuport> [port rxlcore txlcore] ...");
+    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore]...");
     printf("dpdk version: %s\n", rte_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
@@ -249,14 +289,27 @@ int main(int argc, char **argv) {
     int port2tx[RTE_MAX_ETHPORTS];
     memset(&port2rx, 0, sizeof(port2rx));
     memset(&port2tx, 0, sizeof(port2tx));
+    memset(&lcore_conf, 0, sizeof(lcore_conf));
     for (int i = 4; i< argc; i += 3) {
         int p = atoi(argv[i + 0]);
         int r = atoi(argv[i + 1]);
         int t = atoi(argv[i + 2]);
+        if (p < 0) {
+            lcore_conf[r].justProcessor++;
+            lcore_conf[t].justProcessor++;
+            continue;
+        }
+        if (p > ports) continue;
         port2rx[p] = r;
         port2tx[p] = t;
     }
-    memset(&lcore_conf, 0, sizeof(lcore_conf));
+    packProcNum = 0;
+    for (int i = 0; i < RTE_MAX_LCORE; i++) {
+        if (lcore_conf[i].justProcessor < 1) continue;
+        packProcDat[packProcNum] = i;
+        packProcNum++;
+        lcore_conf[i].justProcessor = packProcNum;
+    }
     for (int i = 0; i < ports; i++) {
         int r = port2rx[i];
         int t = port2tx[i];
@@ -268,6 +321,17 @@ int main(int argc, char **argv) {
 
     mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
     if (mbuf_pool == NULL) err("cannot create mbuf pool");
+
+    for (int i = 0; i < RTE_MAX_LCORE; i++) {
+        if (lcore_conf[i].justProcessor < 1) continue;
+        int o = lcore_conf[i].justProcessor - 1;
+        int sock = rte_lcore_to_socket_id(i);
+        printf("opening forwarder %i on lcore %i on socket %i...\n", o, i, sock);
+        unsigned char buf[128];
+        sprintf((char*)&buf[0], "dpdk-pack%i", i);
+        prc_ring[o] = rte_ring_create((char*)&buf[0], RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        if (prc_ring[o] == NULL) err("error allocating pack ring");
+    }
 
     RTE_ETH_FOREACH_DEV(port) {
         unsigned char buf[128];
