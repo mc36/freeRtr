@@ -58,10 +58,10 @@ void doIfaceLoop(int * param) {
     unsigned char bufB[16384];
     unsigned char bufC[16384];
     unsigned char bufD[16384];
-    struct pcap_pkthdr head;
     const unsigned char *pack;
     int bufS;
     int fail = 0;
+    struct pcap_pkthdr head;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();

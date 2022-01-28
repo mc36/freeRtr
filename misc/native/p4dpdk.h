@@ -145,6 +145,20 @@ void doMainLoop() {
 }
 
 
+#define mbuf2mybuf(mbuf)                                        \
+    bufS = rte_pktmbuf_pkt_len(mbuf);                           \
+    bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
+    if ((mbuf->ol_flags & PKT_RX_VLAN_STRIPPED) != 0) {         \
+        memcpy(&bufD[preBuff], bufP, 12);                       \
+        put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);           \
+        put16msb(bufD, preBuff + 14, mbuf->vlan_tci);           \
+        memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);      \
+        bufS += 4;                                              \
+    } else {                                                    \
+        memcpy(&bufD[preBuff], bufP, bufS);                     \
+    }
+
+
 
 
 static int doPacketLoop(__rte_unused void *arg) {
@@ -152,14 +166,14 @@ static int doPacketLoop(__rte_unused void *arg) {
     unsigned char bufB[16384];
     unsigned char bufC[16384];
     unsigned char bufD[16384];
-    int bufS;
-    struct rte_mbuf *bufs[BURST_SIZE];
     unsigned char * bufP;
+    int bufS;
     int port;
     int seq;
     int num;
     int pkts;
     int i;
+    struct rte_mbuf *mbufs[BURST_SIZE];
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
@@ -177,26 +191,16 @@ static int doPacketLoop(__rte_unused void *arg) {
             port = myconf->tx_list[seq];
             num = rte_ring_count(tx_ring[port]);
             if (num > BURST_SIZE) num = BURST_SIZE;
-            num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)bufs, num, NULL);
-            rte_eth_tx_burst(port, 0, bufs, num);
+            num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
+            rte_eth_tx_burst(port, 0, mbufs, num);
             pkts += num;
         }
         for (seq = 0; seq < myconf->rx_num; seq++) {
             port = myconf->rx_list[seq];
-            num = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
+            num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
             for (i = 0; i < num; i++) {
-                bufS = rte_pktmbuf_pkt_len(bufs[i]);
-                bufP = rte_pktmbuf_mtod(bufs[i], void *);
-                if ((bufs[i]->ol_flags & PKT_RX_VLAN_STRIPPED) != 0) {
-                    memcpy(&bufD[preBuff], bufP, 12);
-                    put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);
-                    put16msb(bufD, preBuff + 14, bufs[i]->vlan_tci);
-                    memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);
-                    bufS += 4;
-                } else {
-                    memcpy(&bufD[preBuff], bufP, bufS);
-                }
-                rte_pktmbuf_free(bufs[i]);
+                mbuf2mybuf(mbufs[i]);
+                rte_pktmbuf_free(mbufs[i]);
                 if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
                 else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
             }
