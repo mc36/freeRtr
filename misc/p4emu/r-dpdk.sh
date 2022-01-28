@@ -10,5 +10,5 @@ dpdk-devbind.py -b uio_pci_generic 00:08.0
 while (true); do
 #  /home/mc36/p4dpdk.bin -- 10.10.10.227 9080 0
 #  /home/mc36/p4dpdk.bin -- 10.10.10.227 9080 0    -1 1 2
-  /home/mc36/p4dpdk.bin 10.10.10.227 9080 0    0 0 0   1 1 1   2 0 0    3 1 1   4 0 0
+  /home/mc36/p4dpdk.bin -- 10.10.10.227 9080 0    0 0 0   1 1 1   2 0 0    3 1 1   4 0 0
   done

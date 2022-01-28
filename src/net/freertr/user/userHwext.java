@@ -265,7 +265,7 @@ public class userHwext {
                         for (i = 0; i < ifp.size(); i++) {
                             a += " --vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
                         }
-                        hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " --vdev=net_af_packet" + ifl.size() + ",iface=veth0b 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " --vdev=net_af_packet" + ifl.size() + ",iface=veth0b -- 127.0.0.1 " + servP4lang.port + " " + ifl.size());
                         res = ", please enable nic bindings in " + hwdn;
                         break;
                     case p4emu:
