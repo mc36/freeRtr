@@ -2938,7 +2938,7 @@ public class userExec {
                 none = 0;
                 ttl = 1;
             }
-            if (none > 8) {
+            if (none > 16) {
                 none = 0;
                 ttl = 1;
             }
@@ -3098,6 +3098,9 @@ public class userExec {
             if (need2stop()) {
                 break;
             }
+            if (none > 16) {
+                break;
+            }
             if (delay > 0) {
                 bits.sleep(delay);
             }
@@ -3119,9 +3122,6 @@ public class userExec {
                 }
             }
             pipe.linePut(ttl + " " + trc.errRtr + " time=" + trc.errTim + a);
-            if (none >= 8) {
-                break;
-            }
             if (trc.errRtr == null) {
                 none++;
                 continue;
