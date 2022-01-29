@@ -1698,6 +1698,7 @@ ipv6_tx:
         bytePppoe[port] += bufS;
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
+        hash ^= pppoe_ntry.session;
         index = table_find(&pppoe_table, &pppoe_ntry);
         if (index < 0) doDropper;
         pppoe_res = table_get(&pppoe_table, index);
@@ -1776,6 +1777,7 @@ ipv6_tx:
         ethtyp = bufD[bufP + 3];
         nsh_ntry.sp = tmp >> 8;
         nsh_ntry.si = tmp & 0xff;
+        hash ^= tmp;
         index = table_find(&nsh_table, &nsh_ntry);
         if (index < 0) doDropper;
         nsh_res = table_get(&nsh_table, index);
@@ -1831,7 +1833,7 @@ bridge_rx:
 bridgevpls_rx:
         bridge_ntry.mac1 = get16msb(bufH, 6);
         bridge_ntry.mac2 = get32msb(bufH, 8);
-        hash ^= bridge_ntry.mac2;
+        hash ^= bridge_ntry.mac1 ^ bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
         if (index < 0) doCpuing;
         bridge_res = table_get(&bridge_table, index);
@@ -1839,7 +1841,7 @@ bridgevpls_rx:
         bridge_res->byteRx += bufS;
         bridge_ntry.mac1 = get16msb(bufH, 0);
         bridge_ntry.mac2 = get32msb(bufH, 2);
-        hash ^= bridge_ntry.mac2;
+        hash ^= bridge_ntry.mac1 ^ bridge_ntry.mac2;
         index = table_find(&bridge_table, &bridge_ntry);
         if (index < 0) doCpuing;
         bridge_res = table_get(&bridge_table, index);
