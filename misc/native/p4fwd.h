@@ -62,6 +62,9 @@ int hashDataPacket(unsigned char *bufP) {
         hash ^= get32msb(bufP, 32);
         hash ^= get32msb(bufP, 36);
         break;
+    case ETHERTYPE_PPPOE_DATA: // pppoe
+        hash ^= get16msb(bufP, 2); // session
+        break;
     }
     hash = ((hash >> 16) ^ hash) & 0xffff;
     hash = ((hash >> 8) ^ hash) & 0xff;
