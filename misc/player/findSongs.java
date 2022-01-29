@@ -79,6 +79,7 @@ public class findSongs {
         }
         playerUtil.put("writing " + s);
         fs.doSort();
+        playerUtil.put(fs.lst.size() + " total");
         playerUtil.saveas(playerSong.pls2txt(fs.lst), s);
     }
 
