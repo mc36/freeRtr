@@ -204,6 +204,7 @@ static int doPacketLoop(__rte_unused void *arg) {
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                pkts += num;
                 if (port == cpuport) {
                     for (i = 0; i < num; i++) {
                         mbuf2mybuf(mbufs[i]);
@@ -215,7 +216,6 @@ static int doPacketLoop(__rte_unused void *arg) {
                     mbuf2mybuf(mbufs[i]);
                     processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
                 }
-                pkts += num;
             }
             if (pkts < 1) usleep(BURST_PAUSE);
         }
