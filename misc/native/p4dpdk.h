@@ -222,8 +222,6 @@ static int doPacketLoop(__rte_unused void *arg) {
     } else if (myconf->justProcessor > 0) {
         seq = myconf->justProcessor - 1;
         for (;;) {
-            num = rte_ring_count(lcore_ring[seq]);
-            if (num > BURST_SIZE) num = BURST_SIZE;
             if (rte_ring_sc_dequeue(lcore_ring[seq], (void**)mbufs) != 0) continue;
             port = mbufs[0]->port;
             mbuf2mybuf(mbufs[0]);
