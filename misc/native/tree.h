@@ -95,8 +95,8 @@ void* tree_del(struct tree_head *tab, void *ntry) {
         if (p >= msk) {
             void* old = cur->value;
             if (old == NULL) return NULL;
-            free(old);
             cur->value = NULL;
+            free(old);
             return old;
         }
         if (tab->bitter(ntry, p) != 0) {
