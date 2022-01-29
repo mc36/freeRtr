@@ -29,8 +29,34 @@ import net.freertr.cry.cryEncrCBCblowfish;
 import net.freertr.cry.cryEncrCBCdes;
 import net.freertr.cry.cryEncrCBCdes3;
 import net.freertr.cry.cryEncrCBCrc2;
+import net.freertr.cry.cryEncrCFBaes;
+import net.freertr.cry.cryEncrCFBblowfish;
+import net.freertr.cry.cryEncrCFBdes;
+import net.freertr.cry.cryEncrCFBdes3;
+import net.freertr.cry.cryEncrCFBrc2;
+import net.freertr.cry.cryEncrCTRaes;
+import net.freertr.cry.cryEncrCTRblowfish;
+import net.freertr.cry.cryEncrCTRdes;
+import net.freertr.cry.cryEncrCTRdes3;
+import net.freertr.cry.cryEncrCTRrc2;
+import net.freertr.cry.cryEncrCTSaes;
+import net.freertr.cry.cryEncrCTSblowfish;
+import net.freertr.cry.cryEncrCTSdes;
+import net.freertr.cry.cryEncrCTSdes3;
+import net.freertr.cry.cryEncrCTSrc2;
 import net.freertr.cry.cryEncrChacha20;
+import net.freertr.cry.cryEncrECBaes;
+import net.freertr.cry.cryEncrECBblowfish;
+import net.freertr.cry.cryEncrECBdes;
+import net.freertr.cry.cryEncrECBdes3;
+import net.freertr.cry.cryEncrECBrc2;
+import net.freertr.cry.cryEncrGCMaes;
 import net.freertr.cry.cryEncrGeneric;
+import net.freertr.cry.cryEncrOFBaes;
+import net.freertr.cry.cryEncrOFBblowfish;
+import net.freertr.cry.cryEncrOFBdes;
+import net.freertr.cry.cryEncrOFBdes3;
+import net.freertr.cry.cryEncrOFBrc2;
 import net.freertr.cry.cryEncrRc4;
 import net.freertr.cry.cryHashBlake2s;
 import net.freertr.cry.cryHashCrc16;
@@ -573,13 +599,53 @@ public class userTest {
             return null;
         }
         if (a.equals("crypto")) {
-            doTestEncr(new cryEncrCBCaes());
-            doTestEncr(new cryEncrCBCblowfish());
-            doTestEncr(new cryEncrCBCdes3());
-            doTestEncr(new cryEncrCBCdes());
-            doTestEncr(new cryEncrCBCrc2());
-            doTestEncr(new cryEncrRc4());
-            doTestEncr(new cryEncrChacha20());
+            doTestEncr(new cryEncrCBCaes(), 128, "128cbc");
+            doTestEncr(new cryEncrCBCaes(), 192, "192cbc");
+            doTestEncr(new cryEncrCBCaes(), 256, "256cbc");
+            doTestEncr(new cryEncrCBCblowfish(), 0, "-cbc");
+            doTestEncr(new cryEncrCBCdes3(), 0, "-cbc");
+            doTestEncr(new cryEncrCBCdes(), 0, "-cbc");
+            doTestEncr(new cryEncrCBCrc2(), 0, "-cbc");
+            doTestEncr(new cryEncrCFBaes(), 128, "128cfb");
+            doTestEncr(new cryEncrCFBaes(), 192, "192cfb");
+            doTestEncr(new cryEncrCFBaes(), 256, "256cfb");
+            doTestEncr(new cryEncrCFBblowfish(), 0, "-cfb");
+            doTestEncr(new cryEncrCFBdes3(), 0, "-cfb");
+            doTestEncr(new cryEncrCFBdes(), 0, "-cfb");
+            doTestEncr(new cryEncrCFBrc2(), 0, "-cfb");
+            doTestEncr(new cryEncrCTRaes(), 128, "128ctr");
+            doTestEncr(new cryEncrCTRaes(), 192, "192ctr");
+            doTestEncr(new cryEncrCTRaes(), 256, "256ctr");
+            doTestEncr(new cryEncrCTRblowfish(), 0, "-ctr");
+            doTestEncr(new cryEncrCTRdes3(), 0, "-ctr");
+            doTestEncr(new cryEncrCTRdes(), 0, "-ctr");
+            doTestEncr(new cryEncrCTRrc2(), 0, "-ctr");
+            doTestEncr(new cryEncrCTSaes(), 128, "128cts");
+            doTestEncr(new cryEncrCTSaes(), 192, "192cts");
+            doTestEncr(new cryEncrCTSaes(), 256, "256cts");
+            doTestEncr(new cryEncrCTSblowfish(), 0, "-cts");
+            doTestEncr(new cryEncrCTSdes3(), 0, "-cts");
+            doTestEncr(new cryEncrCTSdes(), 0, "-cts");
+            doTestEncr(new cryEncrCTSrc2(), 0, "-cts");
+            doTestEncr(new cryEncrECBaes(), 128, "128ecb");
+            doTestEncr(new cryEncrECBaes(), 192, "192ecb");
+            doTestEncr(new cryEncrECBaes(), 256, "256ecb");
+            doTestEncr(new cryEncrECBblowfish(), 0, "-ecb");
+            doTestEncr(new cryEncrECBdes3(), 0, "-ecb");
+            doTestEncr(new cryEncrECBdes(), 0, "-ecb");
+            doTestEncr(new cryEncrECBrc2(), 0, "-ecb");
+            doTestEncr(new cryEncrOFBaes(), 128, "128ofb");
+            doTestEncr(new cryEncrOFBaes(), 192, "192ofb");
+            doTestEncr(new cryEncrOFBaes(), 256, "256ofb");
+            doTestEncr(new cryEncrOFBblowfish(), 0, "-ofb");
+            doTestEncr(new cryEncrOFBdes3(), 0, "-ofb");
+            doTestEncr(new cryEncrOFBdes(), 0, "-ofb");
+            doTestEncr(new cryEncrOFBrc2(), 0, "-ofb");
+            doTestEncr(new cryEncrGCMaes(), 128, "128gcm");
+            doTestEncr(new cryEncrGCMaes(), 192, "192gcm");
+            doTestEncr(new cryEncrGCMaes(), 256, "256gcm");
+            doTestEncr(new cryEncrRc4(), 0, "");
+            doTestEncr(new cryEncrChacha20(), 0, "");
             doTestHash(new cryHashCrc8(cryHashCrc8.polyCrc8c));
             doTestHash(new cryHashFcs16());
             doTestHash(new cryHashCrc16(cryHashCrc16.polyCrc16c));
@@ -900,12 +966,16 @@ public class userTest {
         conn.setClose();
     }
 
-    private void doTestEncr(cryEncrGeneric alg) {
-        cmd.pipe.strPut(alg.getName());
-        byte[] key = new byte[alg.getKeySize()];
+    private void doTestEncr(cryEncrGeneric alg, int kes, String add) {
+        cmd.pipe.strPut(alg.getName() + add);
+        kes /= 8;
+        if (kes < 1) {
+            kes = alg.getKeySize();
+        }
+        byte[] key = new byte[kes];
         byte[] iv = new byte[alg.getBlockSize()];
         alg.init(key, iv, true);
-        byte[] b1 = new byte[1024];
+        byte[] b1 = new byte[1280 + 256];
         int goodR = 0;
         long tim = bits.getTime();
         long cur;
@@ -915,7 +985,7 @@ public class userTest {
                 break;
             }
             goodR++;
-            alg.update(b1, 0, b1.length);
+            alg.update(b1, 0, b1.length - 256);
         }
         tim = cur - tim;
         finSpeedTest("" + goodR, b1.length, goodR, tim);
