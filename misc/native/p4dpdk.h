@@ -174,6 +174,7 @@ static int doPacketLoop(__rte_unused void *arg) {
     unsigned char * bufP;
     int bufS;
     int port;
+    int pkts;
     int seq;
     int num;
     int i;
@@ -190,7 +191,6 @@ static int doPacketLoop(__rte_unused void *arg) {
     if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
 
     if (lcore_procs < 1) {
-        int pkts;
         for (;;) {
             pkts = 0;
             for (seq = 0; seq < myconf->tx_num; seq++) {
@@ -198,8 +198,8 @@ static int doPacketLoop(__rte_unused void *arg) {
                 num = rte_ring_count(tx_ring[port]);
                 if (num > BURST_SIZE) num = BURST_SIZE;
                 num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
-                rte_eth_tx_burst(port, 0, mbufs, num);
                 pkts += num;
+                rte_eth_tx_burst(port, 0, mbufs, num);
             }
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
@@ -222,23 +222,29 @@ static int doPacketLoop(__rte_unused void *arg) {
     } else if (myconf->justProcessor > 0) {
         seq = myconf->justProcessor - 1;
         for (;;) {
-            if (rte_ring_sc_dequeue(lcore_ring[seq], (void**)mbufs) != 0) continue;
+            if (rte_ring_sc_dequeue(lcore_ring[seq], (void**)mbufs) != 0) {
+                usleep(BURST_PAUSE);
+                continue;
+            }
             port = mbufs[0]->port;
             mbuf2mybuf(mbufs[0]);
             processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
         }
     } else {
         for (;;) {
+            pkts = 0;
             for (seq = 0; seq < myconf->tx_num; seq++) {
                 port = myconf->tx_list[seq];
                 num = rte_ring_count(tx_ring[port]);
                 if (num > BURST_SIZE) num = BURST_SIZE;
                 num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
                 rte_eth_tx_burst(port, 0, mbufs, num);
+                pkts += num;
             }
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                pkts += num;
                 if (port == cpuport) {
                     for (i = 0; i < num; i++) {
                         mbuf2mybuf(mbufs[i]);
@@ -252,6 +258,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                     if (rte_ring_mp_enqueue(lcore_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
                 }
             }
+            if (pkts < 1) usleep(BURST_PAUSE);
         }
     }
     err("packet thread exited");
