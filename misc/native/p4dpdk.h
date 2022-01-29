@@ -160,7 +160,8 @@ void doMainLoop() {
         bufS += 4;                                              \
     } else {                                                    \
         memcpy(&bufD[preBuff], bufP, bufS);                     \
-    }
+    }                                                           \
+    rte_pktmbuf_free(mbuf);
 
 
 
@@ -203,11 +204,16 @@ static int doPacketLoop(__rte_unused void *arg) {
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                if (port == cpuport) {
+                    for (i = 0; i < num; i++) {
+                        mbuf2mybuf(mbufs[i]);
+                        processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+                    }
+                    continue;
+                }
                 for (i = 0; i < num; i++) {
                     mbuf2mybuf(mbufs[i]);
-                    rte_pktmbuf_free(mbufs[i]);
-                    if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
-                    else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+                    processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
                 }
                 pkts += num;
             }
@@ -219,11 +225,9 @@ static int doPacketLoop(__rte_unused void *arg) {
             num = rte_ring_count(lcore_ring[seq]);
             if (num > BURST_SIZE) num = BURST_SIZE;
             if (rte_ring_sc_dequeue(lcore_ring[seq], (void**)mbufs) != 0) continue;
-            mbuf2mybuf(mbufs[0]);
             port = mbufs[0]->port;
-            rte_pktmbuf_free(mbufs[0]);
-            if (port == cpuport) processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
-            else processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+            mbuf2mybuf(mbufs[0]);
+            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
         }
     } else {
         for (;;) {
@@ -237,6 +241,13 @@ static int doPacketLoop(__rte_unused void *arg) {
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                if (port == cpuport) {
+                    for (i = 0; i < num; i++) {
+                        mbuf2mybuf(mbufs[i]);
+                        processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+                    }
+                    continue;
+                }
                 for (i = 0; i < num; i++) {
                     bufP = rte_pktmbuf_mtod(mbufs[i], void *);
                     port = hashDataPacket(bufP) % lcore_procs;
