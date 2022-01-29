@@ -174,7 +174,7 @@ public abstract class ifcVlan implements ifcUp {
         }
         addrMac adr = new addrMac();
         bits.msbPutD(adr.getBytes(), 2, vlan);
-        adr.setXor(adr, ifm);
+        adr.setAdd(adr, ifm);
         return adr;
     }
 
