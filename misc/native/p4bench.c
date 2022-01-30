@@ -4,17 +4,10 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
-#include <openssl/conf.h>
-//#include <openssl/provider.h>
-#include <openssl/evp.h>
-#include <openssl/rand.h>
-#include <openssl/err.h>
 #include <time.h>
 
 #undef debugging
 #undef basicLoop
-
-#define debugging 1
 
 #include "p4cns.h"
 
