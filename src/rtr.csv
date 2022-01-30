@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.1.30-cur, done by cs@nop.
--;-;-;2022-01-30 12:18:18, took 00:06:47, with 100 workers, on 2642 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2022-01-30 14:46:12, took 00:06:18, with 100 workers, on 2648 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -643,6 +643,12 @@ http://sources.nop.hu/cfg/crypt-macsec44.tst;crypt-macsec44.tst;success;macsec w
 http://sources.nop.hu/cfg/crypt-macsec45.tst;crypt-macsec45.tst;success;macsec with sha3512
 http://sources.nop.hu/cfg/crypt-macsec46.tst;crypt-macsec46.tst;success;macsec with none encryption
 http://sources.nop.hu/cfg/crypt-macsec47.tst;crypt-macsec47.tst;success;macsec with none hash
+http://sources.nop.hu/cfg/crypt-macsec48.tst;crypt-macsec48.tst;success;macsec with aes128gcm and hash
+http://sources.nop.hu/cfg/crypt-macsec49.tst;crypt-macsec49.tst;success;macsec with aes192gcm and hash
+http://sources.nop.hu/cfg/crypt-macsec50.tst;crypt-macsec50.tst;success;macsec with aes256gcm and hash
+http://sources.nop.hu/cfg/crypt-macsec51.tst;crypt-macsec51.tst;success;macsec with aes128gcm and aead
+http://sources.nop.hu/cfg/crypt-macsec52.tst;crypt-macsec52.tst;success;macsec with aes192gcm and aead
+http://sources.nop.hu/cfg/crypt-macsec53.tst;crypt-macsec53.tst;success;macsec with aes256gcm and aead
 http://sources.nop.hu/cfg/crypt-nat01.tst;crypt-nat01.tst;success;source list translation to interface
 http://sources.nop.hu/cfg/crypt-nat02.tst;crypt-nat02.tst;success;source list translation to address
 http://sources.nop.hu/cfg/crypt-nat03.tst;crypt-nat03.tst;success;source address translation to interface
