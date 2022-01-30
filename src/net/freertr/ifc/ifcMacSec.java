@@ -2,6 +2,7 @@ package net.freertr.ifc;
 
 import java.math.BigInteger;
 import net.freertr.addr.addrMac;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIpsec;
 import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryHashGeneric;
@@ -106,6 +107,8 @@ public class ifcMacSec implements Runnable {
 
     private int seqTx;
 
+    private int kexNum;
+
     private boolean reply;
 
     private long lastKex;
@@ -129,6 +132,9 @@ public class ifcMacSec implements Runnable {
      */
     public userFormat getShow() {
         userFormat l = new userFormat("|", "category|value");
+        l.add("kex|" + kexNum);
+        l.add("for|" + bits.timePast(lastKex));
+        l.add("since|" + bits.time2str(cfgAll.timeZoneName, lastKex + cfgAll.timeServerOffset, 3));
         l.add("seq|" + seqTx);
         l.add("win|" + sequence);
         l.add("pack|" + cntr.getShHwPsum(hwCntr));
@@ -450,6 +456,7 @@ public class ifcMacSec implements Runnable {
         bits.byteCopy(res, pos, buf2, 0, buf2.length);
         cntr = new counter();
         hwCntr = null;
+        kexNum++;
         if (replayCheck > 0) {
             sequence = new tabWindow<packHolder>(replayCheck);
         }
