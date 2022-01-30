@@ -4,11 +4,6 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
-#include <openssl/conf.h>
-//#include <openssl/provider.h>
-#include <openssl/evp.h>
-#include <openssl/rand.h>
-#include <openssl/err.h>
 #include <dpdk/rte_config.h>
 #include <dpdk/rte_common.h>
 #include <dpdk/rte_version.h>

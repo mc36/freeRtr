@@ -773,6 +773,7 @@ struct macsec_entry {
     int encrBlkLen;
     int hashBlkLen;
     int needMacs;
+    int needAead;
     int seqTx;
     int seqRx;
     const EVP_CIPHER *encrAlg;

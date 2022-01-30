@@ -565,6 +565,8 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     macsec_res = table_get(&macsec_table, index);
     macsec_res->packTx++;
     macsec_res->byteTx += *bufS;
+    int seq = macsec_res->seqTx;
+    macsec_res->seqTx++;
     int tmp = *bufS - *bufP + preBuff;
     int tmp2 = tmp % macsec_res->encrBlkLen;
     if (tmp2 != 0) {
@@ -576,9 +578,29 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     RAND_bytes(&bufD[*bufP], macsec_res->encrBlkLen);
     tmp = *bufS - *bufP + preBuff;
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
-    if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) return 1;
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
-    if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    if (macsec_res->needAead != 0) {
+        unsigned char mac[16];
+        memset(mac, 0, sizeof(mac));
+        put32msb(mac, 0, seq);
+        if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, NULL, NULL) != 1) return 1;
+        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL) != 1) return 1;
+        if (EVP_EncryptInit_ex(encrCtx, NULL, NULL, macsec_res->encrKeyDat, mac) != 1) return 1;
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+        if (macsec_res->needMacs != 0) {
+            if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufH[6], 6) != 1) return 1;
+            if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufH[0], 6) != 1) return 1;
+        }
+        if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+        if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
+        tmp2 = 16;
+        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, tmp2, &bufD[*bufP + tmp]) != 1) return 1;
+        tmp += tmp2;
+        *bufS += tmp2;
+    } else {
+        if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) return 1;
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+        if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    }
     if (EVP_MD_CTX_reset(hashCtx) != 1) return 1;
     if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) return 1;
     if (macsec_res->needMacs != 0) {
@@ -593,8 +615,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     put16msb(bufD, *bufP + 0, macsec_res->ethtyp);
     bufD[*bufP + 2] = 0x08; // tci=v,e
     bufD[*bufP + 3] = 0; // sl
-    put32msb(bufD, *bufP + 4, macsec_res->seqTx);
-    macsec_res->seqTx++;
+    put32msb(bufD, *bufP + 4, seq);
     return 0;
 }
 
@@ -1087,7 +1108,7 @@ ethtyp_rx:
         macsec_res->byteRx += bufS;
         if (ethtyp != macsec_res->ethtyp) doDropper;
         if (bufD[bufP] != 0x08) doCpuing;
-        macsec_res->seqRx = get32msb(bufD, bufP + 2);
+        int seq = macsec_res->seqRx = get32msb(bufD, bufP + 2);
         bufP += 6;
         tmp = bufS - bufP + preBuff - macsec_res->hashBlkLen;
         if (tmp < 1) doDropper;
@@ -1103,9 +1124,27 @@ ethtyp_rx:
         if (memcmp(&bufH[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) doDropper;
         bufS -= macsec_res->hashBlkLen;
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
-        if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) doDropper;
-        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
-        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+        if (macsec_res->needAead != 0) {
+            unsigned char mac[16];
+            memset(mac, 0, sizeof(mac));
+            put32msb(mac, 0, seq);
+            if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, NULL, NULL) != 1) doDropper;
+            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL) != 1) doDropper;
+            if (EVP_DecryptInit_ex(encrCtx, NULL, NULL, macsec_res->encrKeyDat, mac) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
+            if (macsec_res->needMacs != 0) {
+                if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 6], 6) != 1) doDropper;
+                if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 0], 6) != 1) doDropper;
+            }
+            tmp -= 16;
+            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper;
+            if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
+        } else {
+            if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
+            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+        }
         bufP += macsec_res->encrBlkLen;
         tmp -= macsec_res->encrBlkLen;
         memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
@@ -1957,3 +1996,5 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
 
 
 #endif
+
+    

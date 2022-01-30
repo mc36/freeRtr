@@ -1491,7 +1491,9 @@ int doOneCommand(unsigned char* buf) {
         macsec_ntry.ethtyp = atoi(arg[3]);
         macsec_ntry.encrBlkLen = atoi(arg[4]);
         macsec_ntry.hashBlkLen = atoi(arg[5]);
-        macsec_ntry.needMacs = atoi(arg[6]);
+        macsec_ntry.needMacs = macsec_ntry.needAead = atoi(arg[6]);
+        macsec_ntry.needMacs &= 1;
+        macsec_ntry.needAead &= 2;
         macsec_ntry.encrAlg = getEncrAlg(arg[7]);
         if (macsec_ntry.encrAlg == NULL) return 0;
         macsec_ntry.hashAlg = getHashAlg(arg[8]);
