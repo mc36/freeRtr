@@ -372,6 +372,7 @@ public class ifcMacSec implements Runnable {
                     tx += hwCntr.packTx;
                 }
                 ned |= tx > 0xc0000000;
+                hwCntr = null;
             }
             if (!ned) {
                 return null;
@@ -453,6 +454,7 @@ public class ifcMacSec implements Runnable {
         bits.byteCopy(res, pos, buf1, 0, buf1.length);
         bits.byteCopy(res, pos, buf2, 0, buf2.length);
         cntr = new counter();
+        hwCntr = null;
         if (replayCheck > 0) {
             sequence = new tabWindow<packHolder>(replayCheck);
         }
