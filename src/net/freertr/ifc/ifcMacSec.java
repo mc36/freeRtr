@@ -112,8 +112,6 @@ public class ifcMacSec implements Runnable {
 
     private syncInt calcing = new syncInt(0);
 
-    private counter keyUsage = new counter();
-
     private ifcEthTyp etht;
 
     public String toString() {
@@ -194,7 +192,6 @@ public class ifcMacSec implements Runnable {
         if (hashTx == null) {
             return true;
         }
-        keyUsage.tx(pck);
         cntr.tx(pck);
         int pad = pck.dataSize() % cphrSiz;
         byte[] buf;
@@ -349,7 +346,6 @@ public class ifcMacSec implements Runnable {
         }
         pck.setDataSize(siz - pad);
         pck.getSkip(cphrSiz);
-        keyUsage.rx(pck);
         cntr.rx(pck);
         return false;
     }
@@ -366,7 +362,16 @@ public class ifcMacSec implements Runnable {
                 ned |= (bits.getTime() - lastKex) > (profil.trans.lifeSec * 1000);
             }
             if (profil.trans.lifeByt > 0) {
-                ned |= keyUsage.byteTx > profil.trans.lifeByt;
+                long tx = cntr.byteTx;
+                if (hwCntr != null) {
+                    tx += hwCntr.byteTx;
+                }
+                ned |= tx > profil.trans.lifeByt;
+                tx = cntr.packTx;
+                if (hwCntr != null) {
+                    tx += hwCntr.packTx;
+                }
+                ned |= tx > 0xc0000000;
             }
             if (!ned) {
                 return null;
@@ -447,7 +452,7 @@ public class ifcMacSec implements Runnable {
         buf2 = new byte[hashSiz];
         bits.byteCopy(res, pos, buf1, 0, buf1.length);
         bits.byteCopy(res, pos, buf2, 0, buf2.length);
-        keyUsage = new counter();
+        cntr = new counter();
         if (replayCheck > 0) {
             sequence = new tabWindow<packHolder>(replayCheck);
         }
