@@ -1,4 +1,4 @@
-description macsec with sha3256
+description macsec with none encryption
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,8 +8,8 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher des
- hash sha3256
+ cipher none
+ hash md5
  key tester
  exit
 int eth1
@@ -28,8 +28,8 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher des
- hash sha3256
+ cipher none
+ hash md5
  key tester
  exit
 int eth1

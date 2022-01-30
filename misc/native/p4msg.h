@@ -23,6 +23,7 @@ int str2key(char *str, unsigned char *key) {
 
 
 const EVP_CIPHER* getEncrAlg(char *buf) {
+    if (strcmp(buf, "none") == 0) return EVP_enc_null();
     if (strcmp(buf, "des") == 0) return EVP_des_cbc();
     if (strcmp(buf, "3des") == 0) return EVP_des_ede3_cbc();
     if (strcmp(buf, "aes128cbc") == 0) return EVP_aes_128_cbc();
@@ -39,6 +40,7 @@ const EVP_CIPHER* getEncrAlg(char *buf) {
 
 
 const EVP_MD* getHashAlg(char *buf) {
+    if (strcmp(buf, "none") == 0) return EVP_md_null();
     if (strcmp(buf, "md5") == 0) return EVP_md5();
     if (strcmp(buf, "sha1") == 0) return EVP_sha1();
     if (strcmp(buf, "sha224") == 0) return EVP_sha224();

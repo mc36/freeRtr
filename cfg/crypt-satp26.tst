@@ -1,4 +1,4 @@
-description satp with sha384
+description satp with sha3384
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -13,7 +13,7 @@ int ser1
  exit
 crypto ipsec ips
  cipher des
- hash sha384
+ hash sha3384
  key tester
  exit
 int tun1
@@ -41,7 +41,7 @@ int ser1
  exit
 crypto ipsec ips
  cipher des
- hash sha384
+ hash sha3384
  key tester
  exit
 int tun1

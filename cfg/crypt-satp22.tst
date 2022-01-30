@@ -1,4 +1,4 @@
-description satp with aes128gcm
+description satp with sha224
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -12,8 +12,8 @@ int ser1
  ipv6 addr 1234::1 ffff::
  exit
 crypto ipsec ips
- cipher aes128gcm
- hash md5
+ cipher des
+ hash sha224
  key tester
  exit
 int tun1
@@ -40,8 +40,8 @@ int ser1
  ipv6 addr 1234::2 ffff::
  exit
 crypto ipsec ips
- cipher aes128gcm
- hash md5
+ cipher des
+ hash sha224
  key tester
  exit
 int tun1

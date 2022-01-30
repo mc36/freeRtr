@@ -7,11 +7,12 @@ import net.freertr.cry.cryEncrCBCdes;
 import net.freertr.cry.cryEncrCBCdes3;
 import net.freertr.cry.cryEncrCFBaes;
 import net.freertr.cry.cryEncrECBaes;
-import net.freertr.cry.cryEncrGCMaes;
 import net.freertr.cry.cryEncrGeneric;
+import net.freertr.cry.cryEncrNone;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryHashHmac;
 import net.freertr.cry.cryHashMd5;
+import net.freertr.cry.cryHashNone;
 import net.freertr.cry.cryHashSha1;
 import net.freertr.cry.cryHashSha2224;
 import net.freertr.cry.cryHashSha2256;
@@ -52,7 +53,7 @@ public class secTransform {
 
     /**
      * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aescbc, 5=aescfb,
-     * 6=aesecb, 7=aesgcm
+     * 6=aesecb, 7=none
      */
     public int encrAlg;
 
@@ -63,7 +64,7 @@ public class secTransform {
 
     /**
      * hash algorithm 1=md5, 2=sha1, 3=sha256, 4=sha512, 5=sha224, 6=sha384
-     * 7=sha3224, 8=sha3256, 9=sha3384, 10=sha3512
+     * 7=sha3224, 8=sha3256, 9=sha3384, 10=sha3512, 11=none
      */
     public int hashAlg;
 
@@ -146,9 +147,9 @@ public class secTransform {
             case 6:
                 return "aes" + encrKey + "ecb";
             case 7:
-                return "aes" + encrKey + "gcm";
-            default:
                 return "none";
+            default:
+                return "unknown";
         }
     }
 
@@ -179,8 +180,10 @@ public class secTransform {
                 return "sha3384";
             case 10:
                 return "sha3512";
-            default:
+            case 11:
                 return "none";
+            default:
+                return "unknown";
         }
     }
 
@@ -865,7 +868,7 @@ public class secTransform {
             case 6:
                 return new cryEncrECBaes();
             case 7:
-                return new cryEncrGCMaes();
+                return new cryEncrNone();
             default:
                 return null;
         }
@@ -909,6 +912,9 @@ public class secTransform {
             case 10:
                 h = new cryHashSha3512();
                 break;
+            case 11:
+                h = new cryHashNone();
+                break;
             default:
                 return null;
         }
@@ -926,6 +932,9 @@ public class secTransform {
         cryHashGeneric h = getHash();
         if (h == null) {
             return null;
+        }
+        if (hashAlg == 11) {
+            return h;
         }
         h = new cryHashHmac(h, key);
         h.init();
@@ -988,6 +997,7 @@ public class secTransform {
         l.add(null, "2 .    sha3256           secure hash algorithm 3 256");
         l.add(null, "2 .    sha3384           secure hash algorithm 3 384");
         l.add(null, "2 .    sha3512           secure hash algorithm 3 512");
+        l.add(null, "2 .    none              null hash");
         l.add(null, "1 2  cipher              select cipher algorithm");
         l.add(null, "2 .    des               des algorithm");
         l.add(null, "2 .    blowfish          blowfish algorithm");
@@ -1001,9 +1011,7 @@ public class secTransform {
         l.add(null, "2 .    aes128ecb         128bit aes ecb algorithm");
         l.add(null, "2 .    aes192ecb         192bit aes ecb algorithm");
         l.add(null, "2 .    aes256ecb         256bit aes ecb algorithm");
-        l.add(null, "2 .    aes128gcm         128bit aes gcm algorithm");
-        l.add(null, "2 .    aes192gcm         192bit aes gcm algorithm");
-        l.add(null, "2 .    aes256gcm         256bit aes gcm algorithm");
+        l.add(null, "2 .    none              null encryption");
     }
 
     /**
@@ -1067,17 +1075,8 @@ public class secTransform {
                 encrAlg = 6;
                 encrKey = 256;
             }
-            if (s.equals("aes128gcm")) {
+            if (s.equals("none")) {
                 encrAlg = 7;
-                encrKey = 128;
-            }
-            if (s.equals("aes192gcm")) {
-                encrAlg = 7;
-                encrKey = 192;
-            }
-            if (s.equals("aes256gcm")) {
-                encrAlg = 7;
-                encrKey = 256;
             }
             return false;
         }
@@ -1113,6 +1112,9 @@ public class secTransform {
             }
             if (s.equals("sha3512")) {
                 hashAlg = 10;
+            }
+            if (s.equals("none")) {
+                hashAlg = 11;
             }
             return false;
         }

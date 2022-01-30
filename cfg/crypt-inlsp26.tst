@@ -1,4 +1,4 @@
-description inlsp with sha3224
+description inlsp with sha3512
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -13,7 +13,7 @@ int ser1
  exit
 crypto ipsec ips
  cipher des
- hash sha3224
+ hash sha3512
  key tester
  exit
 int tun1
@@ -41,7 +41,7 @@ int ser1
  exit
 crypto ipsec ips
  cipher des
- hash sha3224
+ hash sha3512
  key tester
  exit
 int tun1

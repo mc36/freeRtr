@@ -1,4 +1,4 @@
-description macsec with aes192gcm
+description macsec with sha384
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,8 +8,8 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher aes192gcm
- hash md5
+ cipher des
+ hash sha384
  key tester
  exit
 int eth1
@@ -28,8 +28,8 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher aes192gcm
- hash md5
+ cipher des
+ hash sha384
  key tester
  exit
 int eth1

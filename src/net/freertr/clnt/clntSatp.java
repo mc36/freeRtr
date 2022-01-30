@@ -292,6 +292,9 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
             hsh.init();
             hsh.update(buf1);
             buf1 = hsh.finish();
+            if (buf1.length < 1) {
+                buf1 = preshared.getBytes();
+            }
             buf2 = bits.byteConcat(buf2, buf1);
         }
         cphrTx = transform.getEncr();

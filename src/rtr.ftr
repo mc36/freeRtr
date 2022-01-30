@@ -571,15 +571,14 @@ qc pass: inlsp with aes256cfb
 qc pass: inlsp with aes128ecb
 qc pass: inlsp with aes192ecb
 qc pass: inlsp with aes256ecb
-qc pass: inlsp with aes128gcm
-qc pass: inlsp with aes192gcm
-qc pass: inlsp with aes256gcm
 qc pass: inlsp with sha224
 qc pass: inlsp with sha384
 qc pass: inlsp with sha3224
 qc pass: inlsp with sha3256
 qc pass: inlsp with sha3384
 qc pass: inlsp with sha3512
+qc pass: inlsp with none encryption
+qc pass: inlsp with none hash
 qc pass: route inspection
 qc pass: flow inspection
 qc pass: interface inspection
@@ -632,15 +631,14 @@ qc pass: macsec with aes256cfb
 qc pass: macsec with aes128ecb
 qc pass: macsec with aes192ecb
 qc pass: macsec with aes256ecb
-qc pass: macsec with aes128gcm
-qc pass: macsec with aes192gcm
-qc pass: macsec with aes256gcm
 qc pass: macsec with sha224
 qc pass: macsec with sha384
 qc pass: macsec with sha3224
 qc pass: macsec with sha3256
 qc pass: macsec with sha3384
 qc pass: macsec with sha3512
+qc pass: macsec with none encryption
+qc pass: macsec with none hash
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source address translation to interface
@@ -675,15 +673,14 @@ qc pass: openvpn with aes256cfb
 qc pass: openvpn with aes128ecb
 qc pass: openvpn with aes192ecb
 qc pass: openvpn with aes256ecb
-qc pass: openvpn with aes128gcm
-qc pass: openvpn with aes192gcm
-qc pass: openvpn with aes256gcm
 qc pass: openvpn with sha224
 qc pass: openvpn with sha384
 qc pass: openvpn with sha3224
 qc pass: openvpn with sha3256
 qc pass: openvpn with sha3384
 qc pass: openvpn with sha3512
+qc pass: openvpn with none encryption
+qc pass: openvpn with none hash
 qc pass: transparent proxy
 qc pass: satp over ipv4
 qc pass: satp over ipv6
@@ -706,15 +703,14 @@ qc pass: satp with aes256cfb
 qc pass: satp with aes128ecb
 qc pass: satp with aes192ecb
 qc pass: satp with aes256ecb
-qc pass: satp with aes128gcm
-qc pass: satp with aes192gcm
-qc pass: satp with aes256gcm
 qc pass: satp with sha224
 qc pass: satp with sha384
 qc pass: satp with sha3224
 qc pass: satp with sha3256
 qc pass: satp with sha3384
 qc pass: satp with sha3512
+qc pass: satp with none encryption
+qc pass: satp with none hash
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip
@@ -735,15 +731,14 @@ qc pass: skip with aes256cfb
 qc pass: skip with aes128ecb
 qc pass: skip with aes192ecb
 qc pass: skip with aes256ecb
-qc pass: skip with aes128gcm
-qc pass: skip with aes192gcm
-qc pass: skip with aes256gcm
 qc pass: skip with sha224
 qc pass: skip with sha384
 qc pass: skip with sha3224
 qc pass: skip with sha3256
 qc pass: skip with sha3384
 qc pass: skip with sha3512
+qc pass: skip with none encryption
+qc pass: skip with none hash
 qc pass: ssh test
 qc pass: swipe over ipv4
 qc pass: swipe over ipv6
@@ -765,15 +760,14 @@ qc pass: swipe with aes256cfb
 qc pass: swipe with aes128ecb
 qc pass: swipe with aes192ecb
 qc pass: swipe with aes256ecb
-qc pass: swipe with aes128gcm
-qc pass: swipe with aes192gcm
-qc pass: swipe with aes256gcm
 qc pass: swipe with sha224
 qc pass: swipe with sha384
 qc pass: swipe with sha3224
 qc pass: swipe with sha3256
 qc pass: swipe with sha3384
 qc pass: swipe with sha3512
+qc pass: swipe with none encryption
+qc pass: swipe with none hash
 qc pass: tls test
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6

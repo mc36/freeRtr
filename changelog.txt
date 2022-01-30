@@ -12803,3 +12803,34 @@ qc pass: bgp routepolicy filtering with nexthop with soft-reconfig
 ---------------------------------- 2022-01-23 06:12:55
 qc pass: arcnet encapsulation
 qc pass: infini encapsulation
+---------------------------------- 2022-01-30 08:19:54
+no qc pass: swipe with aes256gcm
+no qc pass: swipe with aes192gcm
+no qc pass: swipe with aes128gcm
+no qc pass: skip with aes256gcm
+no qc pass: skip with aes192gcm
+no qc pass: skip with aes128gcm
+no qc pass: satp with aes256gcm
+no qc pass: satp with aes192gcm
+no qc pass: satp with aes128gcm
+no qc pass: openvpn with aes256gcm
+no qc pass: openvpn with aes192gcm
+no qc pass: openvpn with aes128gcm
+no qc pass: macsec with aes256gcm
+no qc pass: macsec with aes192gcm
+no qc pass: macsec with aes128gcm
+no qc pass: inlsp with aes256gcm
+no qc pass: inlsp with aes192gcm
+no qc pass: inlsp with aes128gcm
+qc pass: inlsp with none encryption
+qc pass: inlsp with none hash
+qc pass: macsec with none encryption
+qc pass: macsec with none hash
+qc pass: openvpn with none encryption
+qc pass: openvpn with none hash
+qc pass: satp with none encryption
+qc pass: satp with none hash
+qc pass: skip with none encryption
+qc pass: skip with none hash
+qc pass: swipe with none encryption
+qc pass: swipe with none hash

@@ -1,4 +1,4 @@
-description swipe with sha3256
+description swipe with none encryption
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -12,8 +12,8 @@ int ser1
  ipv6 addr 1234::1 ffff::
  exit
 crypto ipsec ips
- cipher des
- hash sha3256
+ cipher none
+ hash md5
  key tester
  exit
 int tun1
@@ -40,8 +40,8 @@ int ser1
  ipv6 addr 1234::2 ffff::
  exit
 crypto ipsec ips
- cipher des
- hash sha3256
+ cipher none
+ hash md5
  key tester
  exit
 int tun1

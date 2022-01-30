@@ -366,7 +366,15 @@ public class ifcMacSec implements Runnable {
             hsh.update(keygen.common.toByteArray());
             hsh.update(profil.preshared.getBytes());
             hsh.update(i);
-            buf1 = bits.byteConcat(buf1, hsh.finish());
+            byte[] buf2 = hsh.finish();
+            if (buf2.length < 1) {
+                buf2 = keygen.common.toByteArray();
+                byte[] buf3 = profil.preshared.getBytes();
+                for (int o = 0; o < buf2.length; o++) {
+                    buf2[o] ^= buf3[o % buf3.length];
+                }
+            }
+            buf1 = bits.byteConcat(buf1, buf2);
         }
         if (debugger.ifcMacSecTraf) {
             logger.debug("master=" + bits.byteDump(buf1, 0, buf1.length));
