@@ -579,12 +579,11 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     tmp = *bufS - *bufP + preBuff;
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
     if (macsec_res->needAead != 0) {
-        unsigned char mac[16];
-        memset(mac, 0, sizeof(mac));
+        unsigned char mac[12];
         put32msb(mac, 0, seq);
-        if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, NULL, NULL) != 1) return 1;
-        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL) != 1) return 1;
-        if (EVP_EncryptInit_ex(encrCtx, NULL, NULL, macsec_res->encrKeyDat, mac) != 1) return 1;
+        put32msb(mac, 4, 0);
+        put32msb(mac, 8, 0);
+        if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, mac) != 1) return 1;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
         if (macsec_res->needMacs != 0) {
             if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufH[6], 6) != 1) return 1;
@@ -1125,12 +1124,11 @@ ethtyp_rx:
         bufS -= macsec_res->hashBlkLen;
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
         if (macsec_res->needAead != 0) {
-            unsigned char mac[16];
-            memset(mac, 0, sizeof(mac));
+            unsigned char mac[12];
             put32msb(mac, 0, seq);
-            if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, NULL, NULL) != 1) doDropper;
-            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL) != 1) doDropper;
-            if (EVP_DecryptInit_ex(encrCtx, NULL, NULL, macsec_res->encrKeyDat, mac) != 1) doDropper;
+            put32msb(mac, 4, 0);
+            put32msb(mac, 8, 0);
+            if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, mac) != 1) doDropper;
             if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
             if (macsec_res->needMacs != 0) {
                 if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 6], 6) != 1) doDropper;
