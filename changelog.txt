@@ -12834,3 +12834,8 @@ qc pass: skip with none encryption
 qc pass: skip with none hash
 qc pass: swipe with none encryption
 qc pass: swipe with none hash
+---------------------------------- 2022-01-30 08:49:57
+qc pass: p4lang: openvpn with none encryption
+qc pass: p4lang: openvpn with none hash
+qc pass: p4lang: macsec with none encryption
+qc pass: p4lang: macsec with none hash
