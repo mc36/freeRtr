@@ -12846,3 +12846,10 @@ qc pass: macsec with aes256gcm and hash
 qc pass: macsec with aes128gcm and aead
 qc pass: macsec with aes192gcm and aead
 qc pass: macsec with aes256gcm and aead
+---------------------------------- 2022-01-30 14:48:15
+qc pass: p4lang: macsec with aes128gcm and hash
+qc pass: p4lang: macsec with aes192gcm and hash
+qc pass: p4lang: macsec with aes256gcm and hash
+qc pass: p4lang: macsec with aes128gcm and aead
+qc pass: p4lang: macsec with aes192gcm and aead
+qc pass: p4lang: macsec with aes256gcm and aead

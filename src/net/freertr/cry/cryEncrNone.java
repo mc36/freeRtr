@@ -9,6 +9,12 @@ import net.freertr.util.bits;
  */
 public class cryEncrNone extends cryEncrGeneric {
 
+    /**
+     * create instance
+     */
+    public cryEncrNone() {
+    }
+
     public void init(byte[] key, byte[] iv, boolean encrypt) {
     }
 

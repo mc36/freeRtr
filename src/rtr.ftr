@@ -1404,6 +1404,12 @@ qc pass: p4lang: openvpn with none encryption
 qc pass: p4lang: openvpn with none hash
 qc pass: p4lang: macsec with none encryption
 qc pass: p4lang: macsec with none hash
+qc pass: p4lang: macsec with aes128gcm and hash
+qc pass: p4lang: macsec with aes192gcm and hash
+qc pass: p4lang: macsec with aes256gcm and hash
+qc pass: p4lang: macsec with aes128gcm and aead
+qc pass: p4lang: macsec with aes192gcm and aead
+qc pass: p4lang: macsec with aes256gcm and aead
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

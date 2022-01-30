@@ -35,6 +35,9 @@ const EVP_CIPHER* getEncrAlg(char *buf) {
     if (strcmp(buf, "aes128ecb") == 0) return EVP_aes_128_ecb();
     if (strcmp(buf, "aes192ecb") == 0) return EVP_aes_192_ecb();
     if (strcmp(buf, "aes256ecb") == 0) return EVP_aes_256_ecb();
+    if (strcmp(buf, "aes128gcm") == 0) return EVP_aes_128_gcm();
+    if (strcmp(buf, "aes192gcm") == 0) return EVP_aes_192_gcm();
+    if (strcmp(buf, "aes256gcm") == 0) return EVP_aes_256_gcm();
     return NULL;
 }
 

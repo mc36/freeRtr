@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.1.30-cur, done by cs@nop.
--;-;-;2022-01-30 14:46:12, took 00:06:18, with 100 workers, on 2648 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2022-01-30 14:54:46, took 00:06:30, with 100 workers, on 2654 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1408,6 +1408,12 @@ http://sources.nop.hu/cfg/p4lang-crypt87.tst;p4lang-crypt87.tst;success;p4lang: 
 http://sources.nop.hu/cfg/p4lang-crypt88.tst;p4lang-crypt88.tst;success;p4lang: openvpn with none hash
 http://sources.nop.hu/cfg/p4lang-crypt89.tst;p4lang-crypt89.tst;success;p4lang: macsec with none encryption
 http://sources.nop.hu/cfg/p4lang-crypt90.tst;p4lang-crypt90.tst;success;p4lang: macsec with none hash
+http://sources.nop.hu/cfg/p4lang-crypt91.tst;p4lang-crypt91.tst;success;p4lang: macsec with aes128gcm and hash
+http://sources.nop.hu/cfg/p4lang-crypt92.tst;p4lang-crypt92.tst;success;p4lang: macsec with aes192gcm and hash
+http://sources.nop.hu/cfg/p4lang-crypt93.tst;p4lang-crypt93.tst;success;p4lang: macsec with aes256gcm and hash
+http://sources.nop.hu/cfg/p4lang-crypt94.tst;p4lang-crypt94.tst;success;p4lang: macsec with aes128gcm and aead
+http://sources.nop.hu/cfg/p4lang-crypt95.tst;p4lang-crypt95.tst;success;p4lang: macsec with aes192gcm and aead
+http://sources.nop.hu/cfg/p4lang-crypt96.tst;p4lang-crypt96.tst;success;p4lang: macsec with aes256gcm and aead
 http://sources.nop.hu/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.nop.hu/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.nop.hu/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

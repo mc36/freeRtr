@@ -7,6 +7,12 @@ package net.freertr.cry;
  */
 public class cryHashNone extends cryHashGeneric {
 
+    /**
+     * create instance
+     */
+    public cryHashNone() {
+    }
+
     public void init() {
     }
 

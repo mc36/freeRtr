@@ -54,6 +54,11 @@ public class ifcMacSec implements Runnable {
     public boolean needLayer2 = true;
 
     /**
+     * need to do aead mode
+     */
+    public boolean aeadMode = false;
+
+    /**
      * encryption keys
      */
     public byte[] keyEncr = null;
@@ -101,8 +106,6 @@ public class ifcMacSec implements Runnable {
 
     private int seqTx;
 
-    private boolean aeadMode;
-
     private boolean reply;
 
     private long lastKex;
@@ -133,6 +136,22 @@ public class ifcMacSec implements Runnable {
         l.add("pack|" + cntr.getShHwPsum(hwCntr));
         l.add("byte|" + cntr.getShHwBsum(hwCntr));
         return l;
+    }
+
+    /**
+     * get mode flags
+     *
+     * @return flags
+     */
+    public int getModeFlags() {
+        int i = 0;
+        if (needLayer2) {
+            i |= 1;
+        }
+        if (aeadMode) {
+            i |= 2;
+        }
+        return i;
     }
 
     /**
