@@ -367,12 +367,6 @@ public class ifcMacSec implements Runnable {
                     tx += hwCntr.byteTx;
                 }
                 ned |= tx > profil.trans.lifeByt;
-                tx = cntr.packTx;
-                if (hwCntr != null) {
-                    tx += hwCntr.packTx;
-                }
-                ned |= tx > 0x7fff0000;
-                hwCntr = null;
             }
             if (!ned) {
                 return null;
@@ -388,6 +382,7 @@ public class ifcMacSec implements Runnable {
             calcing.set(0);
             reply = false;
             hashRx = null;
+            hwCntr = null;
         }
         if (debugger.ifcMacSecTraf) {
             logger.debug("sending kex, common=" + keygen.common);
