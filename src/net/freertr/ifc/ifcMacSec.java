@@ -371,7 +371,7 @@ public class ifcMacSec implements Runnable {
                 if (hwCntr != null) {
                     tx += hwCntr.packTx;
                 }
-                ned |= tx > 0xc0000000;
+                ned |= tx > 0x7fff0000;
                 hwCntr = null;
             }
             if (!ned) {
