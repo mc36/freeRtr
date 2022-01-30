@@ -7,6 +7,7 @@ import net.freertr.cry.cryEncrCBCdes;
 import net.freertr.cry.cryEncrCBCdes3;
 import net.freertr.cry.cryEncrCFBaes;
 import net.freertr.cry.cryEncrECBaes;
+import net.freertr.cry.cryEncrGCMaes;
 import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryEncrNone;
 import net.freertr.cry.cryHashGeneric;
@@ -53,7 +54,7 @@ public class secTransform {
 
     /**
      * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aescbc, 5=aescfb,
-     * 6=aesecb, 7=none
+     * 6=aesecb, 7=none, 8=aesgcm
      */
     public int encrAlg;
 
@@ -148,6 +149,8 @@ public class secTransform {
                 return "aes" + encrKey + "ecb";
             case 7:
                 return "none";
+            case 8:
+                return "aes" + encrKey + "gcm";
             default:
                 return "unknown";
         }
@@ -869,6 +872,8 @@ public class secTransform {
                 return new cryEncrECBaes();
             case 7:
                 return new cryEncrNone();
+            case 8:
+                return new cryEncrGCMaes();
             default:
                 return null;
         }
@@ -1012,6 +1017,9 @@ public class secTransform {
         l.add(null, "2 .    aes192ecb         192bit aes ecb algorithm");
         l.add(null, "2 .    aes256ecb         256bit aes ecb algorithm");
         l.add(null, "2 .    none              null encryption");
+        l.add(null, "2 .    aes128gcm         128bit aes gcm algorithm");
+        l.add(null, "2 .    aes192gcm         192bit aes gcm algorithm");
+        l.add(null, "2 .    aes256gcm         256bit aes gcm algorithm");
     }
 
     /**
@@ -1077,6 +1085,18 @@ public class secTransform {
             }
             if (s.equals("none")) {
                 encrAlg = 7;
+            }
+            if (s.equals("aes128gcm")) {
+                encrAlg = 8;
+                encrKey = 128;
+            }
+            if (s.equals("aes192gcm")) {
+                encrAlg = 8;
+                encrKey = 192;
+            }
+            if (s.equals("aes256gcm")) {
+                encrAlg = 8;
+                encrKey = 256;
             }
             return false;
         }

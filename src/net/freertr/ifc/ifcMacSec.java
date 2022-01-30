@@ -101,6 +101,8 @@ public class ifcMacSec implements Runnable {
 
     private int seqTx;
 
+    private boolean aeadMode;
+
     private boolean reply;
 
     private long lastKex;
@@ -194,13 +196,29 @@ public class ifcMacSec implements Runnable {
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
-        pck.encrData(cphrTx, 0, pck.dataSize());
+        int siz = pck.dataSize();
+        if (aeadMode) {
+            byte[] mac = new byte[cphrTx.getIVsize()];
+            bits.msbPutD(mac, 0, seqTx);
+            cphrTx.init(keyEncr, mac, true);
+        }
         hashTx.init();
         if (needLayer2) {
-            hashTx.update(pck.ETHsrc.getBytes());
-            hashTx.update(pck.ETHtrg.getBytes());
+            byte[] mac = pck.ETHsrc.getBytes();
+            hashTx.update(mac);
+            cphrTx.authAdd(mac);
+            mac = pck.ETHtrg.getBytes();
+            hashTx.update(mac);
+            cphrTx.authAdd(mac);
         }
-        pck.hashData(hashTx, 0, pck.dataSize());
+        siz = pck.encrData(cphrTx, 0, siz);
+        if (siz < 0) {
+            cntr.drop(pck, counter.reasons.badSum);
+            logger.info("bad aead on " + etht);
+            return true;
+        }
+        pck.setDataSize(siz);
+        pck.hashData(hashTx, 0, siz);
         buf = hashTx.finish();
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
@@ -281,10 +299,19 @@ public class ifcMacSec implements Runnable {
             logger.info("bad padding on " + etht);
             return true;
         }
+        if (aeadMode) {
+            byte[] mac = new byte[cphrTx.getIVsize()];
+            bits.msbPutD(mac, 0, seqRx);
+            cphrRx.init(keyEncr, mac, false);
+        }
         hashRx.init();
         if (needLayer2) {
-            hashRx.update(pck.ETHsrc.getBytes());
-            hashRx.update(pck.ETHtrg.getBytes());
+            byte[] mac = pck.ETHsrc.getBytes();
+            hashRx.update(mac);
+            cphrRx.authAdd(mac);
+            mac = pck.ETHtrg.getBytes();
+            hashRx.update(mac);
+            cphrRx.authAdd(mac);
         }
         siz -= hashSiz;
         pck.hashData(hashRx, 0, siz);
@@ -295,7 +322,12 @@ public class ifcMacSec implements Runnable {
             logger.info("bad hash on " + etht);
             return true;
         }
-        pck.encrData(cphrRx, 0, siz);
+        siz = pck.encrData(cphrRx, 0, siz);
+        if (siz < 0) {
+            cntr.drop(pck, counter.reasons.badSum);
+            logger.info("bad aead on " + etht);
+            return true;
+        }
         pck.setDataSize(siz - pad);
         pck.getSkip(cphrSiz);
         keyUsage.rx(pck);
@@ -401,6 +433,7 @@ public class ifcMacSec implements Runnable {
             sequence = new tabWindow<packHolder>(replayCheck);
         }
         seqTx = 0;
+        aeadMode = cphTx.getTagSize() > 0;
         cphrTx = cphTx;
         cphrRx = cphRx;
         hashTx = profil.trans.getHmac(buf1);
