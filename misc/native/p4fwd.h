@@ -591,10 +591,9 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         }
         if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
         if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
-        tmp2 = macsec_res->encrBlkLen;
-        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, tmp2, &bufD[*bufP + tmp]) != 1) return 1;
-        tmp += tmp2;
-        *bufS += tmp2;
+        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, macsec_res->encrBlkLen, &bufD[*bufP + tmp]) != 1) return 1;
+        tmp += macsec_res->encrBlkLen;
+        *bufS += macsec_res->encrBlkLen;
     } else {
         if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) return 1;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
@@ -1136,7 +1135,7 @@ ethtyp_rx:
             }
             tmp -= macsec_res->encrBlkLen;
             if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
-            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper;
+            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_TAG, macsec_res->encrBlkLen, &bufD[bufP + tmp]) != 1) doDropper;
             if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
         } else {
             if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) doDropper;
