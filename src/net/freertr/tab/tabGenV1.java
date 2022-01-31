@@ -35,12 +35,6 @@ public class tabGenV1<T extends Comparator<? super T>> {
     }
 
     /**
-     * optimize for lookup
-     */
-    public void optimize4lookup() {
-    }
-
-    /**
      * get table info
      *
      * @return info

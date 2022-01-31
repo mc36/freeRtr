@@ -65,27 +65,6 @@ public class tabGenV2<T extends Comparator<? super T>> {
     }
 
     /**
-     * optimize for lookup
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void optimize4lookup() {
-        synchronized (lck) {
-            T[] row = (T[]) new Comparator[valN];
-            int pos = 0;
-            for (int o = 0; o < blkN; o++) {
-                bits.objCopy(valD[o], 0, row, pos, sizD[o]);
-                pos += sizD[o];
-            }
-            lstB = 0;
-            blkN = 1;
-            valD = (T[][]) new Comparator[1][0];
-            valD[0] = row;
-            sizD[0] = valN;
-            begD[0] = 0;
-        }
-    }
-
-    /**
      * get table info
      *
      * @return info
