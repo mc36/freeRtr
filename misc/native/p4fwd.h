@@ -591,7 +591,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         }
         if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
         if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
-        tmp2 = 16;
+        tmp2 = macsec_res->encrBlkLen;
         if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, tmp2, &bufD[*bufP + tmp]) != 1) return 1;
         tmp += tmp2;
         *bufS += tmp2;
@@ -1134,7 +1134,7 @@ ethtyp_rx:
                 if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 6], 6) != 1) doDropper;
                 if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 0], 6) != 1) doDropper;
             }
-            tmp -= 16;
+            tmp -= macsec_res->encrBlkLen;
             if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
             if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper;
             if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
