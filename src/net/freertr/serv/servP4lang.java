@@ -1579,6 +1579,8 @@ class servP4langConn implements Runnable {
                 ntry.ifc.ethtyp.macSec.hwCntr.byteRx = bits.str2long(cmd.word());
                 ntry.ifc.ethtyp.macSec.hwCntr.packTx = bits.str2long(cmd.word());
                 ntry.ifc.ethtyp.macSec.hwCntr.byteTx = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.macSec.hwCntr.packDr = bits.str2long(cmd.word());
+                ntry.ifc.ethtyp.macSec.hwCntr.byteDr = bits.str2long(cmd.word());
                 return false;
             }
             if (s.equals("bridge_cnt")) {

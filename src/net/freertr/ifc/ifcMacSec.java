@@ -298,6 +298,7 @@ public class ifcMacSec implements Runnable {
                 return true;
         }
         if (hashRx == null) {
+            cntr.drop(pck, counter.reasons.notUp);
             return true;
         }
         int pad = pck.getByte(3); // sl

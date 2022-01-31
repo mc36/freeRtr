@@ -1150,6 +1150,8 @@ ethtyp_rx:
         prt2 = prt;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
+        macsec_res->packOk++;
+        macsec_res->byteOk += bufS;
     }
     monitor_ntry.port = prt;
     index = table_find(&monitor_table, &monitor_ntry);

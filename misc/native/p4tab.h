@@ -781,6 +781,8 @@ struct macsec_entry {
     EVP_PKEY *hashPkey;
     long packRx;
     long byteRx;
+    long packOk;
+    long byteOk;
     long packTx;
     long byteTx;
 };

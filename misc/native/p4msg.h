@@ -2257,7 +2257,7 @@ void doStatRound(FILE *commands, int round) {
     doStatRount_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
     for (int i=0; i<macsec_table.size; i++) {
         struct macsec_entry *ntry = table_get(&macsec_table, i);
-        fprintf(commands, "macsec_cnt %i %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
+        fprintf(commands, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx, (ntry->packRx - ntry->packOk), (ntry->byteRx - ntry->byteOk));
     }
     for (int i=0; i<acls4_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls4_table, i);
