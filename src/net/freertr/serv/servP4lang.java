@@ -1071,6 +1071,10 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentMss6out;
 
+    public int sentVerify4;
+
+    public int sentVerify6;
+
     public int sentMpls;
 
     public int sentNsh;
@@ -1247,6 +1251,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentMss4out = 0;
         sentMss6in = 0;
         sentMss6out = 0;
+        sentVerify4 = 0;
+        sentVerify6 = 0;
         sentMpls = 0;
         sentNsh = 0;
         sentAcl4in1 = null;
@@ -3070,6 +3076,20 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private int getVerifySource(ipFwdIface ifc) {
+        if (ifc == null) {
+            return 0;
+        }
+        if (!ifc.verifySource) {
+            return 0;
+        }
+        if (ifc.verifyStricht) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
     private void doIface(servP4langIfc ifc) {
         int i = -1;
         if (ifc.ifc.ethtyp.monSes != null) {
@@ -3459,6 +3479,8 @@ class servP4langConn implements Runnable {
             ifc.sentMss4out = -1;
             ifc.sentMss6in = -1;
             ifc.sentMss6out = -1;
+            ifc.sentVerify4 = -1;
+            ifc.sentVerify6 = -1;
             ifc.sentMpls = -1;
             ifc.sentNsh = -1;
         }
@@ -3489,6 +3511,16 @@ class servP4langConn implements Runnable {
         if (o != ifc.sentMss6out) {
             lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + o);
             ifc.sentMss6out = o;
+        }
+        i = getVerifySource(mstr.ifc.fwdIf4);
+        if (i != ifc.sentVerify4) {
+            lower.sendLine("verify4_" + a + " " + ifc.id + " " + i);
+            ifc.sentVerify4 = i;
+        }
+        i = getVerifySource(mstr.ifc.fwdIf6);
+        if (i != ifc.sentVerify6) {
+            lower.sendLine("verify6_" + a + " " + ifc.id + " " + i);
+            ifc.sentVerify6 = i;
         }
         i = 0;
         if (mstr.ifc.mplsPack != null) {
