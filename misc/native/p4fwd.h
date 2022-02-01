@@ -1299,13 +1299,27 @@ ipv4_rx:
         acl4_ntry.tosV = bufD[bufP + 1];
         acl4_ntry.flowV = get16msb(bufD, bufP + 4);
         acl4_ntry.srcAddr = mroute4_ntry.src = get32msb(bufD, bufP + 12);
-        acl4_ntry.trgAddr = mroute4_ntry.grp =route4_ntry.addr = get32msb(bufD, bufP + 16);
+        acl4_ntry.trgAddr = mroute4_ntry.grp = get32msb(bufD, bufP + 16);
         hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
         ttl = bufD[bufP + 8] - 1;
         if (ttl <= 1) doPunting;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
         extract_layer4(acl4_ntry, portvrf_res->tcpmss4);
+        route4_ntry.mask = 32;
+        if ((portvrf_res->verify4 > 0) && ((acl4_ntry.srcAddr & 0xffff0000) != 0xa9fe0000)) {
+            route4_ntry.addr = acl4_ntry.srcAddr;
+            route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
+            if (route4_res == NULL) doDropper;
+            if (portvrf_res->verify4 > 1) {
+                neigh_ntry.id = route4_res->nexthop;
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) doDropper;
+                neigh_res = table_get(&neigh_table, index);
+                if (neigh_res->port != prt) doDropper;
+            }
+        }
+        route4_ntry.addr = acl4_ntry.trgAddr;
         acls_ntry.dir = 1;
         acls_ntry.port = prt;
         index = table_find(&acls4_table, &acls_ntry);
@@ -1416,7 +1430,6 @@ ipv4_pbred:
         if (acl4_ntry.protV == 46) doCpuing;
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
-        route4_ntry.mask = 32;
         route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
         if (route4_res == NULL) doPunting;
         route4_res->pack++;
@@ -1515,10 +1528,10 @@ ipv6_rx:
         acl6_ntry.srcAddr2 = mroute6_ntry.src2 = get32msb(bufD, bufP + 12);
         acl6_ntry.srcAddr3 = mroute6_ntry.src3 = get32msb(bufD, bufP + 16);
         acl6_ntry.srcAddr4 = mroute6_ntry.src4 = get32msb(bufD, bufP + 20);
-        acl6_ntry.trgAddr1 = mroute6_ntry.grp1 = route6_ntry.addr1 = get32msb(bufD, bufP + 24);
-        acl6_ntry.trgAddr2 = mroute6_ntry.grp2 = route6_ntry.addr2 = get32msb(bufD, bufP + 28);
-        acl6_ntry.trgAddr3 = mroute6_ntry.grp3 = route6_ntry.addr3 = get32msb(bufD, bufP + 32);
-        acl6_ntry.trgAddr4 = mroute6_ntry.grp4 = route6_ntry.addr4 = get32msb(bufD, bufP + 36);
+        acl6_ntry.trgAddr1 = mroute6_ntry.grp1 = get32msb(bufD, bufP + 24);
+        acl6_ntry.trgAddr2 = mroute6_ntry.grp2 = get32msb(bufD, bufP + 28);
+        acl6_ntry.trgAddr3 = mroute6_ntry.grp3 = get32msb(bufD, bufP + 32);
+        acl6_ntry.trgAddr4 = mroute6_ntry.grp4 = get32msb(bufD, bufP + 36);
         hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1;
         hash ^= acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2;
         hash ^= acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3;
@@ -1527,6 +1540,26 @@ ipv6_rx:
         if (ttl <= 1) doPunting;
         bufD[bufP + 7] = ttl;
         extract_layer4(acl6_ntry, portvrf_res->tcpmss6);
+        route6_ntry.mask = 128;
+        if ((portvrf_res->verify6 > 0) && ((acl6_ntry.srcAddr1 & 0xffff0000) != 0xfe800000)) {
+            route6_ntry.addr1 = acl6_ntry.srcAddr1;
+            route6_ntry.addr2 = acl6_ntry.srcAddr2;
+            route6_ntry.addr3 = acl6_ntry.srcAddr3;
+            route6_ntry.addr4 = acl6_ntry.srcAddr4;
+            route6_res = tree_lpm(&vrf2rib_res->rou, &route6_ntry);
+            if (route6_res == NULL) doDropper;
+            if (portvrf_res->verify6 > 1) {
+                neigh_ntry.id = route6_res->nexthop;
+                index = table_find(&neigh_table, &neigh_ntry);
+                if (index < 0) doDropper;
+                neigh_res = table_get(&neigh_table, index);
+                if (neigh_res->port != prt) doDropper;
+            }
+        }
+        route6_ntry.addr1 = acl6_ntry.trgAddr1;
+        route6_ntry.addr2 = acl6_ntry.trgAddr2;
+        route6_ntry.addr3 = acl6_ntry.trgAddr3;
+        route6_ntry.addr4 = acl6_ntry.trgAddr4;
         acls_ntry.dir = 1;
         acls_ntry.port = prt;
         index = table_find(&acls6_table, &acls_ntry);
@@ -1654,7 +1687,6 @@ ipv6_pbred:
         if (acl6_ntry.protV == 0) doCpuing;
         vrf2rib_res->pack++;
         vrf2rib_res->byte += bufS;
-        route6_ntry.mask = 128;
         route6_res = tree_lpm(&vrf2rib_res->rou, &route6_ntry);
         if (route6_res == NULL) doPunting;
         route6_res->pack++;
@@ -1995,4 +2027,3 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
 
 
 #endif
-

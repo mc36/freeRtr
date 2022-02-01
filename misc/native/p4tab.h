@@ -139,6 +139,8 @@ struct portvrf_entry {
     int label2;
     int tcpmss4;
     int tcpmss6;
+    int verify4;
+    int verify6;
     int mpls;
     int nsh;
 };
