@@ -24,6 +24,7 @@
 #include <tna.p4>
 #endif
 
+#include "rare_profiles.p4"
 #include "include/cst_table_size.p4"
 #include "include/cst_bundle.p4"
 #include "include/def_types.p4"

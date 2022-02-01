@@ -167,8 +167,10 @@ state prs_nsh {
         prs_ipv4;
 8w2:
         prs_ipv6;
+#ifdef HAVE_MPLS
 8w5:
         prs_mpls0;
+#endif
     default:
         accept;
     }

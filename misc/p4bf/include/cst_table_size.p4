@@ -18,17 +18,11 @@
 #define _TABLE_SIZE_P4_
 
 /*
-on routing only profile we can have this
-#define IPV4_LPM_TABLE_SIZE                    34816
-#define IPV6_LPM_TABLE_SIZE                    4096
+these are just for testing, one need to fine-tune for the features enabled
+see the profiles directory to find a trial and error method for doing so
 */
-#ifdef HAVE_SRV6
 #define IPV4_LPM_TABLE_SIZE                    2048
 #define IPV6_LPM_TABLE_SIZE                    2048
-#else
-#define IPV4_LPM_TABLE_SIZE                    2048
-#define IPV6_LPM_TABLE_SIZE                    2048
-#endif
 
 #define IPV4_HOST_TABLE_SIZE                   512
 #define IPV6_HOST_TABLE_SIZE                   512

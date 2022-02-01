@@ -62,6 +62,10 @@
 #define NEED_REPLICA
 #endif
 
+#ifdef HAVE_BIER
+#define NEED_REPLICA
+#endif
+
 
 
 #endif // _NEEDS_P4_
