@@ -704,6 +704,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("metric")) {
+            metric = 10;
+            lower.genLsps(3);
+            return;
+        }
         if (a.equals("passive")) {
             passiveInt = false;
             return;

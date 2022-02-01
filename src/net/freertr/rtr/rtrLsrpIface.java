@@ -767,6 +767,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("metric")) {
+            metric = 10;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = 0;
             return;

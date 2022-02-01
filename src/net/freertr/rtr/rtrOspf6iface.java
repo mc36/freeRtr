@@ -635,6 +635,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             nei.statNeigh = false;
             return;
         }
+        if (a.equals("cost")) {
+            metric = 10;
+            schedWork(3);
+            return;
+        }
         if (a.equals("passive")) {
             passiveInt = false;
             return;
