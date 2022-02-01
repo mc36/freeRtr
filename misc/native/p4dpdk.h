@@ -279,7 +279,7 @@ int main(int argc, char **argv) {
     ports = rte_eth_dev_count_avail();
     if (ports < 2) err("at least 2 ports needed");
 
-    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore]...");
+    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0]...");
     printf("dpdk version: %s\n", rte_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
