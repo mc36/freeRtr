@@ -604,6 +604,11 @@ public class ipFwdTab {
                     continue;
                 }
             }
+            if (ifc.autRouPfxlst != null) {
+                if (!ifc.autRouPfxlst.matches(rtrBgpUtil.sfiUnicast, 0, prf.prefix)) {
+                    continue;
+                }
+            }
             prf.best.iface = ifc;
             prf.best.nextHop = ifc.autRouHop.copyBytes();
             prf.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);

@@ -367,6 +367,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean autRouExcld;
 
     /**
+     * autoroute prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> autRouPfxlst;
+
+    /**
      * other interface handler
      */
     public ipFwdIface otherHandler;
@@ -559,6 +564,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "7  7,.            multicast         process multicast table");
         l.add(null, "7  7,.            no-unicast        dont process unicast table");
         l.add(null, "7  7,.            exclude-match     exclude matching prefix");
+        l.add(null, "7  8              include-list      include matching prefix");
+        l.add(null, "8  7,.              <name:pl>       name of prefix list");
         l.add(null, "2 3     pim                         pim configuration options");
         l.add(null, "3 .       enable                    enable pim processing");
         l.add(null, "3 .       bfd                       enable bfd triggered down");
@@ -697,6 +704,9 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (autRouExcld) {
             a += " exclude-match";
+        }
+        if (autRouPfxlst != null) {
+            a += " include-list " + autRouPfxlst.listName;
         }
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
@@ -926,6 +936,7 @@ public class ipFwdIface extends tabRouteIface {
             autRouMcst = false;
             autRouUnic = false;
             autRouExcld = false;
+            autRouPfxlst = null;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -945,6 +956,14 @@ public class ipFwdIface extends tabRouteIface {
                 }
                 if (a.equals("exclude-match")) {
                     autRouExcld = true;
+                    continue;
+                }
+                if (a.equals("include-list")) {
+                    cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    autRouPfxlst = ntry.prflst;
                     continue;
                 }
             }
