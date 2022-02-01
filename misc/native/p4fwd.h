@@ -184,7 +184,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
             ntry.trgPortV = 0;                                  \
             break;                                              \
     }                                                           \
-    hash ^= ntry.srcPortV ^ ntry.trgPortV;
+    hash ^= ntry.protV ^ ntry.srcPortV ^ ntry.trgPortV;
 
 
 
