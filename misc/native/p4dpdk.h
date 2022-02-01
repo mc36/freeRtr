@@ -333,6 +333,7 @@ int main(int argc, char **argv) {
         lcore_conf[t].tx_num++;
     }
 
+    printf("%i forward only cores, mbuf is %i long...\n", lcore_procs, mbuf_size);
     mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), rte_socket_id());
     if (mbuf_pool == NULL) err("cannot create mbuf pool");
 
