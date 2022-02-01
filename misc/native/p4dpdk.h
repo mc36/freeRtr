@@ -19,6 +19,8 @@
 
 struct rte_mempool *mbuf_pool;
 
+int mbuf_size;
+
 struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
@@ -298,10 +300,15 @@ int main(int argc, char **argv) {
     memset(&port2rx, 0, sizeof(port2rx));
     memset(&port2tx, 0, sizeof(port2tx));
     memset(&lcore_conf, 0, sizeof(lcore_conf));
+    mbuf_size = RTE_MBUF_DEFAULT_DATAROOM;
     for (int i = 4; i< argc; i += 3) {
         int p = atoi(argv[i + 0]);
         int r = atoi(argv[i + 1]);
         int t = atoi(argv[i + 2]);
+        if (p < -1) {
+            mbuf_size = r;
+            continue;
+        }
         if (p < 0) {
             lcore_conf[r].justProcessor++;
             lcore_conf[t].justProcessor++;
@@ -326,7 +333,7 @@ int main(int argc, char **argv) {
         lcore_conf[t].tx_num++;
     }
 
-    mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
+    mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), rte_socket_id());
     if (mbuf_pool == NULL) err("cannot create mbuf pool");
 
     for (int i = 0; i < RTE_MAX_LCORE; i++) {
@@ -369,7 +376,7 @@ int main(int argc, char **argv) {
 
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
-            port_conf.rxmode.max_rx_pkt_len = RTE_MBUF_DEFAULT_DATAROOM;
+            port_conf.rxmode.max_rx_pkt_len = mbuf_size;
         } else {
             port_conf.rxmode.max_rx_pkt_len = RTE_ETHER_MAX_LEN;
         }
