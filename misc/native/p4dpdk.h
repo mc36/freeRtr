@@ -409,6 +409,8 @@ int main(int argc, char **argv) {
         memset(&dev_info, 0, sizeof(dev_info));
         struct rte_eth_txconf txconf;
         memset(&txconf, 0, sizeof(txconf));
+        struct rte_eth_rxconf rxconf;
+        memset(&rxconf, 0, sizeof(rxconf));
         struct rte_ether_addr macaddr;
         memset(&macaddr, 0, sizeof(macaddr));
 
@@ -434,7 +436,9 @@ int main(int argc, char **argv) {
         ret = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
         if (ret != 0) err("error adjusting descriptors");
 
-        ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool[sock]);
+        rxconf = dev_info.default_rxconf;
+        rxconf.offloads = port_conf.rxmode.offloads;
+        ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, &rxconf, mbuf_pool[sock]);
         if (ret != 0) err("error setting up rx queue");
 
         txconf = dev_info.default_txconf;
