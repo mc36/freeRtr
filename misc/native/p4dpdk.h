@@ -67,8 +67,9 @@ void err(char*buf) {
 int commandSock;
 
 
-#define BURST_SIZE 32
-#define BURST_PAUSE 100
+int burst_size;
+
+int burst_sleep;
 
 
 
@@ -167,7 +168,8 @@ static int doPacketLoop(__rte_unused void *arg) {
     int seq;
     int num;
     int i;
-    struct rte_mbuf *mbufs[BURST_SIZE];
+    struct rte_mbuf **mbufs = malloc(burst_size * sizeof(struct rte_mbuf*));
+    if (mbufs == NULL) err("error allocating mbufptrs");
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
@@ -185,14 +187,14 @@ static int doPacketLoop(__rte_unused void *arg) {
             for (seq = 0; seq < myconf->tx_num; seq++) {
                 port = myconf->tx_list[seq];
                 num = rte_ring_count(tx_ring[port]);
-                if (num > BURST_SIZE) num = BURST_SIZE;
+                if (num > burst_size) num = burst_size;
                 num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
                 pkts += num;
                 rte_eth_tx_burst(port, 0, mbufs, num);
             }
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
-                num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
                 if (port == cpuport) {
                     for (i = 0; i < num; i++) {
@@ -206,13 +208,13 @@ static int doPacketLoop(__rte_unused void *arg) {
                     processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
                 }
             }
-            if (pkts < 1) usleep(BURST_PAUSE);
+            if (pkts < 1) usleep(burst_sleep);
         }
     } else if (myconf->justProcessor > 0) {
         seq = myconf->justProcessor - 1;
         for (;;) {
             if (rte_ring_sc_dequeue(lcore_ring[seq], (void**)mbufs) != 0) {
-                usleep(BURST_PAUSE);
+                usleep(burst_sleep);
                 continue;
             }
             port = mbufs[0]->port;
@@ -225,14 +227,14 @@ static int doPacketLoop(__rte_unused void *arg) {
             for (seq = 0; seq < myconf->tx_num; seq++) {
                 port = myconf->tx_list[seq];
                 num = rte_ring_count(tx_ring[port]);
-                if (num > BURST_SIZE) num = BURST_SIZE;
+                if (num > burst_size) num = burst_size;
                 num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
                 rte_eth_tx_burst(port, 0, mbufs, num);
                 pkts += num;
             }
             for (seq = 0; seq < myconf->rx_num; seq++) {
                 port = myconf->rx_list[seq];
-                num = rte_eth_rx_burst(port, 0, mbufs, BURST_SIZE);
+                num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
                 if (port == cpuport) {
                     for (i = 0; i < num; i++) {
@@ -247,7 +249,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                     if (rte_ring_mp_enqueue(lcore_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
                 }
             }
-            if (pkts < 1) usleep(BURST_PAUSE);
+            if (pkts < 1) usleep(burst_sleep);
         }
     }
     err("packet thread exited");
@@ -271,7 +273,7 @@ int main(int argc, char **argv) {
     ports = rte_eth_dev_count_avail();
     if (ports < 2) err("at least 2 ports needed");
 
-    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0]...");
+    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0] [-9 brstsiz 0] [-10 brstslp 0]...");
     printf("dpdk version: %s\n", rte_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
@@ -299,10 +301,20 @@ int main(int argc, char **argv) {
     int desc_tx = 1024;
     int ring_tx = 512;
     int ring_fwd = 512;
+    burst_size = 32;
+    burst_sleep = 100;
     for (int i = 4; i< argc; i += 3) {
         int p = atoi(argv[i + 0]);
         int r = atoi(argv[i + 1]);
         int t = atoi(argv[i + 2]);
+        if (p <= -10) {
+            burst_sleep = r;
+            continue;
+        }
+        if (p <= -9) {
+            burst_size = r;
+            continue;
+        }
         if (p <= -8) {
             ring_fwd = r;
             continue;
@@ -358,6 +370,7 @@ int main(int argc, char **argv) {
     printf("there will be %i forwarding only cores...\n", lcore_procs);
     printf("there will be %i mbufs, each %i bytes, %i cached...\n", mbuf_num, mbuf_size, mbuf_cache);
     printf("there will be %i rx and %i tx descriptors, %i tx and %i fwd mbufs...", desc_rx, desc_tx, ring_tx, ring_fwd);
+    printf("there will be %i bursts and maybe %i sleeps...", burst_size, burst_sleep);
     mbuf_pool = rte_pktmbuf_pool_create("mbufs", mbuf_num * ports, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), rte_socket_id());
     if (mbuf_pool == NULL) err("cannot create mbuf pool");
 
