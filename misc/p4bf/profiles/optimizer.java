@@ -171,6 +171,8 @@ public class optimizer {
         doWrite(prof + ".p4", res);
     }
 
+    private final static int step0 = 256 * 1024;
+
     private final static int step1 = 1024;
 
     private final static int step2 = 4096;
@@ -191,7 +193,7 @@ public class optimizer {
         if (!checkString(orig, "$p")) {
             log("*** no first value to optimize ***");
         } else {
-            num1 = 256 * step1;
+            num1 = step0;
             res = false;
             for (;;) {
                 if (num1 < step1) {
@@ -219,7 +221,7 @@ public class optimizer {
         if (!checkString(orig, "$s")) {
             log("*** no second value to optimize ***");
         } else {
-            num2 = 64 * step2;
+            num2 = step0;
             res = false;
             for (;;) {
                 if (num2 < step2) {
