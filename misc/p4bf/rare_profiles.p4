@@ -1,6 +1,7 @@
 ##undef _TABLE_SIZE_P4_
 #include "../profiles/profile-bng.p4"
 #include "../profiles/profile-bras.p4"
+#include "../profiles/profile-cern-flowspec.p4"
 #include "../profiles/profile-cgnat.p4"
 #include "../profiles/profile-cleaner.p4"
 #include "../profiles/profile-cpe.p4"
