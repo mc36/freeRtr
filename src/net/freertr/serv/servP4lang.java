@@ -2037,7 +2037,7 @@ class servP4langConn implements Runnable {
                 lower.platform = cmd.getRemaining();
                 return false;
             }
-            if (s.equals("capability")) {
+            if (s.equals("capabilities")) {
                 lower.capability = cmd.getRemaining();
                 return false;
             }
