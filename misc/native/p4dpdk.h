@@ -19,8 +19,6 @@
 
 struct rte_mempool *mbuf_pool;
 
-int mbuf_size;
-
 struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
@@ -69,14 +67,8 @@ void err(char*buf) {
 int commandSock;
 
 
-#define RX_RING_SIZE 1024
-#define TX_RING_SIZE 1024
-
-#define NUM_MBUFS 8191
-#define MBUF_CACHE_SIZE 250
 #define BURST_SIZE 32
 #define BURST_PAUSE 100
-#define RING_SIZE 512
 
 
 
@@ -279,7 +271,7 @@ int main(int argc, char **argv) {
     ports = rte_eth_dev_count_avail();
     if (ports < 2) err("at least 2 ports needed");
 
-    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0]...");
+    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0]...");
     printf("dpdk version: %s\n", rte_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
@@ -300,16 +292,46 @@ int main(int argc, char **argv) {
     memset(&port2rx, 0, sizeof(port2rx));
     memset(&port2tx, 0, sizeof(port2tx));
     memset(&lcore_conf, 0, sizeof(lcore_conf));
-    mbuf_size = RTE_MBUF_DEFAULT_DATAROOM;
+    int mbuf_size = RTE_MBUF_DEFAULT_DATAROOM;
+    int mbuf_num = 8191;
+    int mbuf_cache = 250;
+    int desc_rx = 1024;
+    int desc_tx = 1024;
+    int ring_tx = 512;
+    int ring_fwd = 512;
     for (int i = 4; i< argc; i += 3) {
         int p = atoi(argv[i + 0]);
         int r = atoi(argv[i + 1]);
         int t = atoi(argv[i + 2]);
-        if (p < -1) {
+        if (p <= -8) {
+            ring_fwd = r;
+            continue;
+        }
+        if (p <= -7) {
+            ring_tx = r;
+            continue;
+        }
+        if (p <= -6) {
+            desc_tx = r;
+            continue;
+        }
+        if (p <= -5) {
+            desc_tx = r;
+            continue;
+        }
+        if (p <= -4) {
+            mbuf_cache = r;
+            continue;
+        }
+        if (p <= -3) {
+            mbuf_num = r;
+            continue;
+        }
+        if (p <= -2) {
             mbuf_size = r;
             continue;
         }
-        if (p < 0) {
+        if (p <= -1) {
             lcore_conf[r].justProcessor++;
             lcore_conf[t].justProcessor++;
             continue;
@@ -333,8 +355,10 @@ int main(int argc, char **argv) {
         lcore_conf[t].tx_num++;
     }
 
-    printf("%i forward only cores, mbuf is %i long...\n", lcore_procs, mbuf_size);
-    mbuf_pool = rte_pktmbuf_pool_create("mbufs", NUM_MBUFS * ports, MBUF_CACHE_SIZE, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), rte_socket_id());
+    printf("there will be %i forwarding only cores...\n", lcore_procs);
+    printf("there will be %i mbufs, each %i bytes, %i cached...\n", mbuf_num, mbuf_size, mbuf_cache);
+    printf("there will be %i rx and %i tx descriptors, %i tx and %i fwd mbufs...", desc_rx, desc_tx, ring_tx, ring_fwd);
+    mbuf_pool = rte_pktmbuf_pool_create("mbufs", mbuf_num * ports, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), rte_socket_id());
     if (mbuf_pool == NULL) err("cannot create mbuf pool");
 
     for (int i = 0; i < RTE_MAX_LCORE; i++) {
@@ -344,7 +368,7 @@ int main(int argc, char **argv) {
         printf("opening forwarder %i on lcore %i on socket %i...\n", o, i, sock);
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-pack%i", i);
-        lcore_ring[o] = rte_ring_create((char*)&buf[0], RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        lcore_ring[o] = rte_ring_create((char*)&buf[0], ring_fwd, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
         if (lcore_ring[o] == NULL) err("error allocating pack ring");
     }
 
@@ -357,8 +381,8 @@ int main(int argc, char **argv) {
 
         struct rte_eth_conf port_conf;
         memset(&port_conf, 0, sizeof(port_conf));
-        uint16_t nb_rxd = RX_RING_SIZE;
-        uint16_t nb_txd = TX_RING_SIZE;
+        uint16_t nb_rxd = desc_rx;
+        uint16_t nb_txd = desc_tx;
         struct rte_eth_dev_info dev_info;
         memset(&dev_info, 0, sizeof(dev_info));
         struct rte_eth_txconf txconf;
@@ -396,7 +420,7 @@ int main(int argc, char **argv) {
         ret = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
         if (ret != 0) err("error setting up tx queue");
 
-        tx_ring[port] = rte_ring_create((char*)&buf[0], RING_SIZE, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        tx_ring[port] = rte_ring_create((char*)&buf[0], ring_tx, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
         if (tx_ring[port] == NULL) err("error allocating tx ring");
 
         ret = rte_eth_dev_start(port);

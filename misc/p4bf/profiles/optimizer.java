@@ -153,6 +153,7 @@ public class optimizer {
 
     public static void main(String[] args) {
         String prof = args[0];
+        prof = prof.substring(0, prof.lastIndexOf("."));
         List<String> orig = doRead(prof + ".tmpl");
         log("read " + orig.size() + " lines from " + prof);
         int num = 256 * stepMin;
