@@ -106,6 +106,8 @@ void doSockLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
+    fprintf(commands, "platform %spcap\r\n", platformBase);
+    fprintf(commands, "capabilities %s\r\n", capabilities);
     int rnd = 0;
     for (;;) {
         doStatRound(commands, rnd);

@@ -61,6 +61,8 @@ void doSockLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
+    fprintf(commands, "platform p4xdp\r\n");
+    fprintf(commands, "capabilities route mpls bundle vlan pppoe eompls bridge vpls evpn\r\n");
     int rnd = 0;
     for (;;) {
         doStatRound(commands, rnd);

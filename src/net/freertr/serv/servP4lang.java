@@ -787,6 +787,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public userFormat getShow() {
         userFormat res = new userFormat("|", "category|value");
         res.add("peer|" + remote);
+        res.add("ready|" + conn);
         res.add("capability|" + capability);
         res.add("platform|" + platform);
         res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
@@ -1329,9 +1330,9 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
 class servP4langConn implements Runnable {
 
-    public pipeSide pipe;
+    public final pipeSide pipe;
 
-    public servP4lang lower;
+    public final servP4lang lower;
 
     public int keepalive;
 
@@ -1353,6 +1354,10 @@ class servP4langConn implements Runnable {
         pipe = pip;
         lower = upper;
         new Thread(this).start();
+    }
+
+    public String toString() {
+        return "" + pipe.isReady();
     }
 
     public void run() {
