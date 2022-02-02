@@ -51,6 +51,7 @@ import net.freertr.rtr.rtrPvrpNeigh;
 import net.freertr.rtr.rtrRip4neigh;
 import net.freertr.rtr.rtrRip6neigh;
 import net.freertr.serv.servBmp2mrt;
+import net.freertr.serv.servP4lang;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -133,6 +134,15 @@ public class userClear {
                 return null;
             }
             ntry.stopCall(cmd.word());
+            return null;
+        }
+        if (a.equals("p4lang")) {
+            servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            srv.doClear();
             return null;
         }
         if (a.equals("bmp")) {

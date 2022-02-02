@@ -74,6 +74,7 @@ import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -186,6 +187,26 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * last connection
      */
     protected servP4langConn conn = null;
+
+    /**
+     * last peer
+     */
+    protected addrIP remote = null;
+
+    /**
+     * last capability
+     */
+    protected String capability = null;
+
+    /**
+     * last platform
+     */
+    protected String platform = null;
+
+    /**
+     * connection start
+     */
+    protected long started = 0;
 
     /**
      * interconnection interface
@@ -615,7 +636,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         expDynAccNxt = 0;
         conn = new servP4langConn(pipe, this);
-        logger.warn("neighbor " + id.peerAddr + " up");
+        remote = id.peerAddr.copyBytes();
+        started = bits.getTime();
+        logger.warn("neighbor " + remote + " up");
         return false;
     }
 
@@ -744,6 +767,31 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      */
     public counter getCounter() {
         return cntr;
+    }
+
+    /**
+     * do clear
+     */
+    public void doClear() {
+        if (conn == null) {
+            return;
+        }
+        conn.pipe.setClose();
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("peer|" + remote);
+        res.add("capability|" + capability);
+        res.add("platform|" + platform);
+        res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
+        res.add("for|" + bits.timePast(started));
+        return res;
     }
 
 }
@@ -1486,10 +1534,6 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
-            if (s.equals("dataplane-say")) {
-                logger.info("dataplane said: " + cmd.getRemaining());
-                return false;
-            }
             if (s.equals("state")) {
                 servP4langIfc ntry = findIfc(bits.str2num(cmd.word()));
                 if (ntry == null) {
@@ -1978,6 +2022,18 @@ class servP4langConn implements Runnable {
                         updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.sctp6);
                         return false;
                 }
+                return false;
+            }
+            if (s.equals("dataplane-say")) {
+                logger.info("dataplane said: " + cmd.getRemaining());
+                return false;
+            }
+            if (s.equals("platform")) {
+                lower.platform = cmd.getRemaining();
+                return false;
+            }
+            if (s.equals("capability")) {
+                lower.capability = cmd.getRemaining();
                 return false;
             }
             if (debugger.servP4langErr) {

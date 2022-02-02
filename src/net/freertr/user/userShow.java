@@ -74,6 +74,7 @@ import net.freertr.serv.servDhcp6;
 import net.freertr.serv.servDns;
 import net.freertr.serv.servHttp;
 import net.freertr.serv.servNetflow;
+import net.freertr.serv.servP4lang;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servStreamingMdt;
 import net.freertr.tab.tabGen;
@@ -742,6 +743,15 @@ public class userShow {
                     continue;
                 }
             }
+            return null;
+        }
+        if (a.equals("p4lang")) {
+            servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
             return null;
         }
         if (a.equals("bmp")) {
