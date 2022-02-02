@@ -23,13 +23,17 @@ control IngressControlBridge(inout headers hdr, inout ingress_metadata_t ig_md,
                              in ingress_intrinsic_metadata_t ig_intr_md)
 {
 
-    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) statsRx;
+
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) statsTx;
 
     action act_set_bridge_port() {
+        statsRx.count();
         ig_md.bridge_src = 1;
     }
 
     action act_bridge_miss() {
+        statsRx.count();
         ig_md.bridge_src = 0;
         ig_md.nexthop_id = CPU_PORT;
         // Packets sent to the controller needs to be prepended with the
@@ -49,10 +53,11 @@ hdr.ethernet.src_mac_addr:
         }
         size = MAC_TABLE_SIZE;
         default_action = act_bridge_miss();
+        counters = statsRx;
     }
 
     action act_set_bridge_out(SubIntId_t port) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = port;
         ig_md.target_id = port;
     }
@@ -61,7 +66,7 @@ hdr.ethernet.src_mac_addr:
 
 
     action act_set_bridge_routed(NextHopId_t nexthop) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
 #ifdef HAVE_NSH
@@ -91,7 +96,7 @@ hdr.ethernet.src_mac_addr:
 
 #ifdef HAVE_MPLS
     action act_set_bridge_vpls(NextHopId_t port, label_t lab_tun, label_t lab_svc) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
@@ -106,7 +111,7 @@ hdr.ethernet.src_mac_addr:
 
 #ifdef HAVE_VXLAN
     action act_set_bridge_vxlan4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<24> instance) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
 #ifdef HAVE_NSH
@@ -159,7 +164,7 @@ hdr.ethernet.src_mac_addr:
 
 #ifdef HAVE_VXLAN
     action act_set_bridge_vxlan6(NextHopId_t nexthop, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<24> instance) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
 #ifdef HAVE_NSH
@@ -209,7 +214,7 @@ hdr.ethernet.src_mac_addr:
 
 #ifdef HAVE_PCKOUDP
     action act_set_bridge_pckoudp4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
 #ifdef HAVE_NSH
@@ -257,7 +262,7 @@ hdr.ethernet.src_mac_addr:
 
 #ifdef HAVE_PCKOUDP
     action act_set_bridge_pckoudp6(NextHopId_t nexthop, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port) {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
 #ifdef HAVE_NSH
@@ -300,7 +305,7 @@ hdr.ethernet.src_mac_addr:
 
 
     action act_bridge_punt() {
-        stats.count();
+        statsTx.count();
         ig_md.bridge_trg = 0;
         ig_md.nexthop_id = CPU_PORT;
         // Packets sent to the controller needs to be prepended with the
@@ -334,7 +339,7 @@ hdr.ethernet.dst_mac_addr:
         }
         size = MAC_TABLE_SIZE;
         default_action = act_bridge_punt();
-        counters = stats;
+        counters = statsTx;
     }
 
     apply {
