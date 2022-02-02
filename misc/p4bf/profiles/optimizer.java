@@ -149,8 +149,8 @@ public class optimizer {
         return res;
     }
 
-    private static boolean doRound(List<String> orig, int num1, int num2) {
-        log("trying with " + num1 + " and " + num2);
+    private static boolean doRound(String prof, List<String> orig, int num1, int num2) {
+        log("trying with " + num1 + " and " + num2 + " on " + prof);
         doDelete(tempFile);
         List<String> res = doTransform(orig, num1, num2);
         res.add("#include \"bf_router.p4\"");
@@ -160,7 +160,7 @@ public class optimizer {
         doWrite(tempFile, "rm -rf " + tempProg + ".tofino");
         doExec("bash " + tempFile);
         doDelete(tempProg + ".p4");
-        log("returning " + succ + " for " + num1 + " and " + num2);
+        log("returning " + succ + " for " + num1 + " and " + num2 + " on " + prof);
         return succ;
     }
 
@@ -197,7 +197,7 @@ public class optimizer {
                 if (num1 < step1) {
                     break;
                 }
-                res = doRound(orig, num1, num2);
+                res = doRound(prof, orig, num1, num2);
                 if (res) {
                     break;
                 }
@@ -209,7 +209,7 @@ public class optimizer {
             }
             for (;;) {
                 num1 += step1;
-                res = doRound(orig, num1, num2);
+                res = doRound(prof, orig, num1, num2);
                 if (!res) {
                     break;
                 }
@@ -225,7 +225,7 @@ public class optimizer {
                 if (num2 < step2) {
                     break;
                 }
-                res = doRound(orig, num1, num2);
+                res = doRound(prof, orig, num1, num2);
                 if (res) {
                     break;
                 }
@@ -237,14 +237,14 @@ public class optimizer {
             }
             for (;;) {
                 num2 += step2;
-                res = doRound(orig, num1, num2);
+                res = doRound(prof, orig, num1, num2);
                 if (!res) {
                     break;
                 }
             }
             num2 -= step2;
         }
-        res = doRound(orig, num1, num2);
+        res = doRound(prof, orig, num1, num2);
         if (!res) {
             log("*** profile failed at final verification ***");
             return;
