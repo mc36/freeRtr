@@ -14,6 +14,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
+import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtUdp;
@@ -33,6 +34,7 @@ import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRtrplcN;
 import net.freertr.tab.tabSession;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -372,6 +374,16 @@ public class ipFwdIface extends tabRouteIface {
     public tabListing<tabPrfxlstN, addrIP> autRouPfxlst;
 
     /**
+     * autoroute route map
+     */
+    public tabListing<tabRtrmapN, addrIP> autRouRoumap;
+
+    /**
+     * autoroute route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> autRouRoupol;
+
+    /**
      * other interface handler
      */
     public ipFwdIface otherHandler;
@@ -566,6 +578,10 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "7  7,.            exclude-match     exclude matching prefix");
         l.add(null, "7  8              include-list      include matching prefix");
         l.add(null, "8  7,.              <name:pl>       name of prefix list");
+        l.add(null, "7  8              include-map       include matching prefix");
+        l.add(null, "8  7,.              <name:rm>       name of route map");
+        l.add(null, "7  8              include-policy    include matching prefix");
+        l.add(null, "8  7,.              <name:rpl>      name of route map");
         l.add(null, "2 3     pim                         pim configuration options");
         l.add(null, "3 .       enable                    enable pim processing");
         l.add(null, "3 .       bfd                       enable bfd triggered down");
@@ -707,6 +723,12 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (autRouPfxlst != null) {
             a += " include-list " + autRouPfxlst.listName;
+        }
+        if (autRouRoumap != null) {
+            a += " include-map " + autRouRoumap.listName;
+        }
+        if (autRouRoupol != null) {
+            a += " include-policy " + autRouRoupol.listName;
         }
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
@@ -937,6 +959,8 @@ public class ipFwdIface extends tabRouteIface {
             autRouUnic = false;
             autRouExcld = false;
             autRouPfxlst = null;
+            autRouRoumap = null;
+            autRouRoupol = null;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -964,6 +988,22 @@ public class ipFwdIface extends tabRouteIface {
                         continue;
                     }
                     autRouPfxlst = ntry.prflst;
+                    continue;
+                }
+                if (a.equals("include-map")) {
+                    cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    autRouRoumap = ntry.roumap;
+                    continue;
+                }
+                if (a.equals("include-policy")) {
+                    cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    autRouRoupol = ntry.rouplc;
                     continue;
                 }
             }

@@ -29,6 +29,7 @@ import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRtrplc;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -606,6 +607,16 @@ public class ipFwdTab {
             }
             if (ifc.autRouPfxlst != null) {
                 if (!ifc.autRouPfxlst.matches(rtrBgpUtil.sfiUnicast, 0, prf.prefix)) {
+                    continue;
+                }
+            }
+            if (ifc.autRouRoumap != null) {
+                if (!ifc.autRouRoumap.matches(rtrBgpUtil.sfiUnicast, 0, prf.prefix)) {
+                    continue;
+                }
+            }
+            if (ifc.autRouRoupol != null) {
+                if (tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, prf, ifc.autRouRoupol, true) == null) {
                     continue;
                 }
             }

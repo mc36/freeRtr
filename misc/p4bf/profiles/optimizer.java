@@ -151,6 +151,11 @@ public class optimizer {
 
     private final static int stepMin = 1024;
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     */
     public static void main(String[] args) {
         String prof = args[0];
         prof = prof.substring(0, prof.lastIndexOf("."));
