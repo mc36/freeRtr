@@ -17,12 +17,14 @@
 #include "p4cns.h"
 
 
-struct rte_mempool *mbuf_pool;
+struct rte_mempool *mbuf_pool[RTE_MAX_NUMA_NODES];
 
 struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
+int port2pool[RTE_MAX_ETHPORTS];
+
 void sendPack(unsigned char *bufD, int bufS, int port) {
-    struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool);
+    struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool[port2pool[port]]);
     if (mbuf == NULL) return;
     char * pack = rte_pktmbuf_append(mbuf, bufS);
     if (pack == NULL) return;
@@ -369,10 +371,16 @@ int main(int argc, char **argv) {
 
     printf("there will be %i forwarding only cores...\n", lcore_procs);
     printf("there will be %i mbufs, each %i bytes, %i cached...\n", mbuf_num, mbuf_size, mbuf_cache);
-    printf("there will be %i rx and %i tx descriptors, %i tx and %i fwd mbufs...", desc_rx, desc_tx, ring_tx, ring_fwd);
-    printf("there will be %i bursts and maybe %i sleeps...", burst_size, burst_sleep);
-    mbuf_pool = rte_pktmbuf_pool_create("mbufs", mbuf_num * ports, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), rte_socket_id());
-    if (mbuf_pool == NULL) err("cannot create mbuf pool");
+    printf("there will be %i rx and %i tx descriptors, %i tx and %i fwd mbufs...\n", desc_rx, desc_tx, ring_tx, ring_fwd);
+    printf("there will be %i bursts and maybe %i sleeps...\n", burst_size, burst_sleep);
+    ret = rte_socket_count();
+    for (int i = 0; i < ret; i++) {
+        unsigned char buf[128];
+        sprintf((char*)&buf[0], "dpdk-pool%i", i);
+        printf("opening mempool on socket %i...\n", i);
+        mbuf_pool[i] = rte_pktmbuf_pool_create((char*)&buf[0], mbuf_num * ports, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), i);
+        if (mbuf_pool[i] == NULL) err("cannot create mbuf pool");
+    }
 
     for (int i = 0; i < RTE_MAX_LCORE; i++) {
         if (lcore_conf[i].justProcessor < 1) continue;
@@ -389,6 +397,7 @@ int main(int argc, char **argv) {
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-port%i", port);
         int sock = rte_eth_dev_socket_id(port);
+        port2pool[port] = sock;
         printf("opening port %i on lcore (rx %i tx %i) on socket %i...\n", port, port2rx[port], port2tx[port], sock);
         initIface(port, (char*)&buf[0]);
 
@@ -425,7 +434,7 @@ int main(int argc, char **argv) {
         ret = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
         if (ret != 0) err("error adjusting descriptors");
 
-        ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool);
+        ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, NULL, mbuf_pool[sock]);
         if (ret != 0) err("error setting up rx queue");
 
         txconf = dev_info.default_txconf;
