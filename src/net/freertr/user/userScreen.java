@@ -186,14 +186,10 @@ public class userScreen {
      * get one key
      *
      * @param pipe pipeline to use
-     * @return key readed
+     * @return key readed, -1 on error
      */
     public static int getKey(pipeSide pipe) {
-        byte[] buf = new byte[1];
-        if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
-            return -1;
-        }
-        int i = buf[0] & 0xff;
+        int i = readChr(pipe);
         switch (i) {
             case 127: // delete
                 return 0x8003;
@@ -238,10 +234,7 @@ public class userScreen {
             default: // any key
                 return i;
         }
-        if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
-            return -1;
-        }
-        i = buf[0] & 0xff;
+        i = readChr(pipe);
         switch (i) {
             case 8: // backspace
                 return 0x8403;
@@ -287,13 +280,10 @@ public class userScreen {
             default: // any key
                 return i | 0x0400;
         }
-        String s = new String(buf);
+        String s = "" + (char) i;
         for (;;) {
-            if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
-                return -1;
-            }
-            i = buf[0] & 0xff;
-            boolean need2stop = false;
+            i = readChr(pipe);
+            boolean need2stop = i < 0;
             switch (i) {
                 case 0x30:
                 case 0x31:
@@ -317,10 +307,7 @@ public class userScreen {
             if (need2stop) {
                 break;
             }
-            s += new String(buf);
-        }
-        if (debugger.userScreenEvnt) {
-            logger.debug("got " + s + (char) i + " from client");
+            s += "" + (char) i;
         }
         int ctr = s.indexOf(";");
         if (ctr < 0) {
@@ -518,6 +505,18 @@ public class userScreen {
         remC[remY][remX] = ch;
         remB[remY][remX] = remP;
         remX++;
+    }
+
+    private static int readChr(pipeSide pipe) {
+        byte[] buf = new byte[1];
+        if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
+            return -1;
+        }
+        int i = buf[0] & 0xff;
+        if (debugger.userScreenEvnt) {
+            logger.debug("got " + i + " from client");
+        }
+        return i;
     }
 
     /**
