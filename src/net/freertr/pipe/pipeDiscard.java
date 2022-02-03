@@ -1,5 +1,6 @@
 package net.freertr.pipe;
 
+import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 
 /**
@@ -52,16 +53,27 @@ public class pipeDiscard {
     /**
      * log pipe side
      *
-     * @param pre prepend
-     * @param pipe pipeline
+     * @param pre string to prepend
+     * @param sys enable system wide logging
+     * @param pipe pipeline to use
+     * @param mem log buffer to use
      */
-    public static void logLines(String pre, pipeSide pipe) {
+    public static void logLines(String pre, pipeSide pipe, boolean sys, logBuf mem) {
+        if (!sys && (mem == null)) {
+            flush(pipe);
+            return;
+        }
         for (;;) {
             String a = pipe.lineGet(0x81);
             if (a.length() < 1) {
                 break;
             }
-            logger.info(pre + a);
+            if (mem != null) {
+                mem.add(a);
+            }
+            if (sys) {
+                logger.info(pre + a);
+            }
         }
     }
 

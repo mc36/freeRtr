@@ -18,6 +18,7 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
+import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
@@ -52,6 +53,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      * console logging
      */
     public boolean logCon = false;
+
+    /**
+     * console collector
+     */
+    public logBuf logCol;
 
     /**
      * config to use
@@ -232,6 +238,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! delay 1000",
         "vdc definition .*! no log-actions",
         "vdc definition .*! no log-console",
+        "vdc definition .*! no log-collect",
         "vdc definition .*! random-time 0",
         "vdc definition .*! random-delay 0",};
 
@@ -388,6 +395,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds before start");
         l.add(null, "1  .      log-actions                log actions");
         l.add(null, "1  .      log-console                log console activity");
+        l.add(null, "1  2      log-collect                collect console activity");
+        l.add(null, "2  .        <num>                    lines to store");
     }
 
     public List<String> getShRun(int filter) {
@@ -431,6 +440,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
         cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
+        cmds.cfgLine(l, logCol == null, cmds.tabulator, "log-collect", "" + logBuf.getSize(logCol));
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "random-time " + randInt);
@@ -637,6 +647,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             logAct = true;
             return;
         }
+        if (a.equals("log-collect")) {
+            logCol = new logBuf(bits.str2num(cmd.word()));
+            return;
+        }
         if (a.equals("log-console")) {
             logCon = true;
             return;
@@ -771,6 +785,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("log-actions")) {
             logAct = false;
+            return;
+        }
+        if (a.equals("log-collect")) {
+            logCol = null;
             return;
         }
         if (a.equals("log-console")) {
@@ -912,11 +930,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                if (logCon) {
-                    pipeDiscard.logLines("vdc " + name + " said ", pipe);
-                } else {
-                    pipeDiscard.flush(pipe);
-                }
+                pipeDiscard.logLines("vdc " + name + " said ", pipe, logCon, logCol);
                 bits.sleep(1000);
                 continue;
             }

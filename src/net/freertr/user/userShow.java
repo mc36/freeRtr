@@ -97,6 +97,7 @@ import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.differ;
 import net.freertr.util.history;
+import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 import net.freertr.util.uniResLoc;
 import net.freertr.util.verCore;
@@ -485,6 +486,42 @@ public class userShow {
         }
         if (a.equals("logging")) {
             a = cmd.word();
+            if (a.equals("script")) {
+                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such script");
+                    return null;
+                }
+                rdr.putStrArr(logBuf.getLines(ntry.logCol));
+                return null;
+            }
+            if (a.equals("scheduler")) {
+                cfgSched ntry = cfgAll.schedFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such scheduler");
+                    return null;
+                }
+                rdr.putStrArr(logBuf.getLines(ntry.logCol));
+                return null;
+            }
+            if (a.equals("process")) {
+                cfgPrcss ntry = cfgAll.prcFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such process");
+                    return null;
+                }
+                rdr.putStrArr(logBuf.getLines(ntry.logCol));
+                return null;
+            }
+            if (a.equals("vdc")) {
+                cfgVdc ntry = cfgAll.vdcFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such vdc");
+                    return null;
+                }
+                rdr.putStrArr(logBuf.getLines(ntry.logCol));
+                return null;
+            }
             if (a.equals("file")) {
                 rdr.putStrArr(bits.txt2buf(logger.logFilNam));
                 return null;

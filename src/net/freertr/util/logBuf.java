@@ -21,6 +21,32 @@ public class logBuf {
     /**
      * get size of buffer
      *
+     * @param o buffer to check
+     * @return lines, -1 if no buffer given
+     */
+    public static int getSize(logBuf o) {
+        if (o == null) {
+            return -1;
+        }
+        return o.logBufLst.length;
+    }
+
+    /**
+     * get contents of buffer
+     *
+     * @param o buffer to check
+     * @return lines, null if no buffer given
+     */
+    public static List<String> getLines(logBuf o) {
+        if (o == null) {
+            return null;
+        }
+        return o.read();
+    }
+
+    /**
+     * get size of buffer
+     *
      * @return lines
      */
     public int size() {

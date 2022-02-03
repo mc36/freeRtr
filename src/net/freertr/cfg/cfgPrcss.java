@@ -13,6 +13,7 @@ import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 
 /**
@@ -51,6 +52,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
      * console logging
      */
     public boolean logCon = false;
+
+    /**
+     * console collector
+     */
+    public logBuf logCol;
 
     /**
      * execute this binary
@@ -128,6 +134,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         "process definition .*! random-delay 0",
         "process definition .*! no log-actions",
         "process definition .*! no log-console",
+        "process definition .*! no log-collect",
         "process definition .*! no range"
     };
 
@@ -210,6 +217,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "2  .        <name:tm>                name of time map");
         l.add(null, "1  .      log-actions                log actions");
         l.add(null, "1  .      log-console                log console activity");
+        l.add(null, "1  2      log-collect                collect console activity");
+        l.add(null, "2  .        <num>                    lines to store");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
         l.add(null, "1  .      runnow                     run one round now");
@@ -233,6 +242,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
         cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
         cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
+        cmds.cfgLine(l, logCol == null, cmds.tabulator, "log-collect", "" + logBuf.getSize(logCol));
         if (need2run) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -302,6 +312,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             logAct = true;
             return;
         }
+        if (a.equals("log-collect")) {
+            logCol = new logBuf(bits.str2num(cmd.word()));
+            return;
+        }
         if (a.equals("log-console")) {
             logCon = true;
             return;
@@ -329,6 +343,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         if (a.equals("log-actions")) {
             logAct = false;
+            return;
+        }
+        if (a.equals("log-collect")) {
+            logCol = null;
             return;
         }
         if (a.equals("log-console")) {
@@ -449,11 +467,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                if (logCon) {
-                    pipeDiscard.logLines("process " + name + " said ", pipe);
-                } else {
-                    pipeDiscard.flush(pipe);
-                }
+                pipeDiscard.logLines("process " + name + " said ", pipe, logCon, logCol);
                 bits.sleep(1000);
                 continue;
             }

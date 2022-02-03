@@ -1054,6 +1054,14 @@ public class userExec {
         hl.add(null, "3 .        big                   a big clock");
         hl.add(null, "3 .        raw                   a raw clock");
         hl.add(null, "2 3,.    logging                 logged messages");
+        hl.add(null, "3 4        script                script messages");
+        hl.add(null, "4 .          <name:scr>          name of script");
+        hl.add(null, "3 4        scheduler             scheduler messages");
+        hl.add(null, "4 .          <name:sch>          name of scheduler");
+        hl.add(null, "3 4        process               process messages");
+        hl.add(null, "4 .          <name:prc>          name of process");
+        hl.add(null, "3 4        vdc                   vdcmessages");
+        hl.add(null, "4 .          <name:vdc>          name of vdc");
         hl.add(null, "3 .        file                  saved messages");
         hl.add(null, "3 .        old-file              old saved messages");
         hl.add(null, "3 4        last                  last messages");

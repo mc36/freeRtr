@@ -18,6 +18,7 @@ import net.freertr.user.userHelping;
 import net.freertr.user.userReader;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 
 /**
@@ -89,6 +90,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     public boolean logCon = false;
 
     /**
+     * console collector
+     */
+    public logBuf logCol;
+
+    /**
      * status, false=stopped, true=running
      */
     public boolean working = false;
@@ -131,6 +137,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         "scheduler .*! no hidden",
         "scheduler .*! no log-actions",
         "scheduler .*! no log-console",
+        "scheduler .*! no log-collect",
         "scheduler .*! no range"
     };
 
@@ -167,6 +174,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add(null, "2  .        <name:tm>                name of time map");
         l.add(null, "1  .      log-actions                log actions");
         l.add(null, "1  .      log-console                log console activity");
+        l.add(null, "1  2      log-collect                collect console activity");
+        l.add(null, "2  .        <num>                    lines to store");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
         l.add(null, "1  .      runnow                     run one round now");
@@ -191,6 +200,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
         cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
         cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
+        cmds.cfgLine(l, logCol == null, cmds.tabulator, "log-collect", "" + logBuf.getSize(logCol));
         if (working) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -252,6 +262,10 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             logAct = true;
             return;
         }
+        if (a.equals("log-collect")) {
+            logCol = new logBuf(bits.str2num(cmd.word()));
+            return;
+        }
         if (a.equals("log-console")) {
             logCon = true;
             return;
@@ -307,6 +321,10 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
         if (a.equals("log-actions")) {
             logAct = false;
+            return;
+        }
+        if (a.equals("log-collect")) {
+            logCol = null;
             return;
         }
         if (a.equals("log-console")) {
@@ -410,11 +428,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                if (logCon) {
-                    pipeDiscard.logLines("scheduler " + name + " said ", pipe);
-                } else {
-                    pipeDiscard.flush(pipe);
-                }
+                pipeDiscard.logLines("scheduler " + name + " said ", pipe, logCon, logCol);
                 bits.sleep(1000);
                 continue;
             }
