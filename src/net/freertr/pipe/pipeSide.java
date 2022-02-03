@@ -826,7 +826,7 @@ public class pipeSide {
      * read one line
      *
      * @param editing editing mode 1=nothing 2=same 3=masked 0x10=process
-     * backspace 0x20=newline after, 0x40=binary
+     * backspace 0x20=newline after, 0x40=binary, 0x80=nonblock
      * @return string read
      */
     public String lineGet(int editing) {
@@ -834,9 +834,14 @@ public class pipeSide {
         pipeSide.modTyp last = null;
         for (;;) {
             byte[] buf = new byte[4];
-            int i = blockingGet(buf, 0, 1);
-            if (i == pipeLine.tryLater) {
-                continue;
+            int i;
+            if ((editing & 0x80) == 0) {
+                i = blockingGet(buf, 0, 1);
+                if (i == pipeLine.tryLater) {
+                    continue;
+                }
+            } else {
+                i = nonBlockGet(buf, 0, 1);
             }
             if (i != 1) {
                 break;

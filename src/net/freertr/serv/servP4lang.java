@@ -787,7 +787,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public userFormat getShow() {
         userFormat res = new userFormat("|", "category|value");
         res.add("peer|" + remote);
-        res.add("ready|" + conn);
+        res.add("closed|" + conn);
         res.add("capability|" + capability);
         res.add("platform|" + platform);
         res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
@@ -1357,7 +1357,7 @@ class servP4langConn implements Runnable {
     }
 
     public String toString() {
-        return "" + pipe.isReady();
+        return "" + pipe.isClosed();
     }
 
     public void run() {
