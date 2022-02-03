@@ -133,12 +133,10 @@ public class logger {
 
     private static int logFilSiz;
 
-    private static String[] logBufLst = new String[512];
-
-    private static int logBufPos = 0;
+    private static logBuf logBufLst = new logBuf(512);
 
     private static final tabGen<loggerTerm> logPipLst = new tabGen<loggerTerm>();
-    
+
     private static String dumpTraceClass(StackTraceElement s) {
         final String myModule = "net.freertr.";
         String a = s.getClassName();
@@ -163,7 +161,7 @@ public class logger {
      * @return lines
      */
     public static int getBufSize() {
-        return logBufLst.length;
+        return logBufLst.size();
     }
 
     /**
@@ -262,10 +260,7 @@ public class logger {
         }
         msg = getTimestamp() + " " + msg;
         if (logBufLev.compareTo(level) <= 0) {
-            synchronized (logBufLst) {
-                logBufPos = (logBufPos + 1) % logBufLst.length;
-                logBufLst[logBufPos] = msg;
-            }
+            logBufLst.add(msg);
         }
         if (logFilHnd == null) {
             return;
@@ -524,32 +519,7 @@ public class logger {
      * @return list of strings
      */
     public static List<String> bufferRead(int num) {
-        List<String> l = new ArrayList<String>();
-        if (num > logBufLst.length) {
-            num = logBufLst.length;
-        }
-        int o = logBufPos - num + 1;
-        if (o < 0) {
-            o = logBufLst.length + o;
-        }
-        if (o < 0) {
-            num = num - o;
-            o = 0;
-        }
-        synchronized (logBufLst) {
-            for (int i = 0; i < num; i++) {
-                String s = logBufLst[o];
-                o++;
-                if (o >= logBufLst.length) {
-                    o = 0;
-                }
-                if (s == null) {
-                    continue;
-                }
-                l.add(s);
-            }
-        }
-        return l;
+        return logBufLst.read(num);
     }
 
     /**
@@ -558,35 +528,14 @@ public class logger {
      * @return list of strings
      */
     public static List<String> bufferRead() {
-        List<String> l = new ArrayList<String>();
-        synchronized (logBufLst) {
-            for (int i = logBufPos + 1; i < logBufLst.length; i++) {
-                String s = logBufLst[i];
-                if (s == null) {
-                    continue;
-                }
-                l.add(s);
-            }
-            for (int i = 0; i <= logBufPos; i++) {
-                String s = logBufLst[i];
-                if (s == null) {
-                    continue;
-                }
-                l.add(s);
-            }
-        }
-        return l;
+        return logBufLst.read();
     }
 
     /**
      * clear logging buffer
      */
     public static void bufferClear() {
-        synchronized (logBufLst) {
-            for (int i = 0; i < logBufLst.length; i++) {
-                logBufLst[i] = null;
-            }
-        }
+        logBufLst.clear();
     }
 
     private static void listThreads(userFormat l, ThreadMXBean m, ThreadGroup g) {
@@ -682,21 +631,7 @@ public class logger {
      * @param siz size of buffer in lines
      */
     public static void bufferStart(int siz) {
-        List<String> old = bufferRead();
-        final int min = 16;
-        if (siz < min) {
-            siz = min;
-        }
-        synchronized (logBufLst) {
-            String[] nw = new String[siz];
-            int o = 0;
-            for (int i = 0; i < old.size(); i++) {
-                o = (o + 1) % siz;
-                nw[o] = old.get(i);
-            }
-            logBufPos = o;
-            logBufLst = nw;
-        }
+        logBufLst.resize(siz);
     }
 
     /**
