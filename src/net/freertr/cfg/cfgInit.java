@@ -110,6 +110,7 @@ import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.history;
+import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
@@ -424,6 +425,40 @@ public class cfgInit implements Runnable {
             }
             if (s.equals("nostall")) {
                 noStallCheck = true;
+                continue;
+            }
+            if (s.equals("prcpar")) {
+                cfgPrcss prc = new cfgPrcss(cmd.word());
+                prc = cfgAll.prcs.find(prc);
+                if (prc == null) {
+                    continue;
+                }
+                for (;;) {
+                    s = cmd.word();
+                    if (s.length() < 1) {
+                        break;
+                    }
+                    boolean neg = s.startsWith("no");
+                    if (neg) {
+                        s = s.substring(2, s.length());
+                    }
+                    if (s.equals("act")) {
+                        prc.logAct = !neg;
+                        continue;
+                    }
+                    if (s.equals("con")) {
+                        prc.logCon = !neg;
+                        continue;
+                    }
+                    if (s.equals("col")) {
+                        if (neg) {
+                            prc.logCol = null;
+                            continue;
+                        }
+                        prc.logCol = new logBuf(bits.str2num(cmd.word()));
+                        continue;
+                    }
+                }
                 continue;
             }
             if (s.equals("proc")) {
