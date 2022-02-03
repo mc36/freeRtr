@@ -2,7 +2,7 @@ from ..bf_gbl_env.var_env import *
 from ..api import RareApi
 
 class BfForwarder(Thread,RareApi):
-    def __init__(self, threadID, name,platform, bfgc, salgc, sck_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka, nsh, no_log_keepalive):
+    def __init__(self, threadID, name,platform, bfgc, salgc, sckr_file, sckw_file, brdg, mpls, srv6, nat, pbr, tun, poe, mcast, polka, nsh, no_log_keepalive):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -25,9 +25,11 @@ class BfForwarder(Thread,RareApi):
         self.hairpins = []
         self.mcast_nid = []
         self.mcast_xid = []
-        self.file = sck_file
-        self.recirc_port = 68;
-        self._clearTable();
+        self.file_r = sckr_file
+        self.file_w = sckw_file
+        self.recirc_port = 68
+        self.dp_capabilities = {}
+        self._clearTable()
 
     from .message_loop import run
 
@@ -120,3 +122,77 @@ class BfForwarder(Thread,RareApi):
         self._delTableKeys(mgid_name, table_dict, mgid_keys)
         self._delTableKeys(node_name, table_dict, node_keys)
 
+        self._getDataplaneCapability()
+
+        pltfm = 'platform tna/%s\n' % self.class_name.lower()
+        self.file_w.write(pltfm)
+        self.file_w.flush()
+
+        data = 'capabilities '
+        for capability in self.dp_capabilities.keys():
+            if self.dp_capabilities[capability] == True:
+                data = data + capability + ' '
+        self.file_w.write(data +'\n')
+        self.file_w.flush()
+        logger.debug('tx: %s' % data)
+
+    def _getDataplaneCapability(self):
+        capabilities={'mpls':'ig_ctl_mpls.tbl_mpls_fib',
+                        'bridge':'ig_ctl_bridge.tbl_bridge_target',
+                        'copp':'ig_ctl_copp.tbl_ipv4_copp',
+                        'flowspec':'ig_ctl_flowspec.tbl_ipv4_flowspec',
+                        'mcast':'ig_ctl_mcast.tbl_mcast4',
+                        'nat':'ig_ctl_nat.tbl_ipv4_nat_trns',
+                        'polka':'ig_ctl_polka.tbl_polka',
+                        'pbr':'ig_ctl_pbr.tbl_ipv4_pbr',
+                        'pppoe':'ig_ctl_pppoe.tbl_pppoe',
+                        'nsh':'ig_ctl_nsh.tbl_nsh',
+                        'acl_in':'ig_ctl_acl_in.tbl_ipv4_acl',
+                        'acl_out':'ig_ctl_acl_out.tbl_ipv4_acl',
+                        'qos_in':'ig_ctl_qos_in.tbl_ipv4_qos',
+                        'qos_out':'ig_ctl_qos_out.tbl_ipv4_qos',
+                        'tun': 'ig_ctl_tunnel.tbl_tunnel4',
+                        'srv6': 'ig_ctl_ipv6b.tbl_ipv6_fib_host',
+                        }
+        sub_capabilities={
+            'bier':{'parent':{'id':'mpls','path':'ig_ctl_mpls.tbl_mpls_fib'},'action':'ig_ctl_mpls.act_mpls_bier_label'},
+            'duplab':{'parent':{'id':'mpls','path':'ig_ctl_mpls.tbl_mpls_fib'},'action':'ig_ctl_mpls.act_mpls_bcast_label'},
+            'gre':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_gre'},
+            'ipip':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_ip4ip'},
+            'pckoudp':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_pckoudp'},
+            'vxlan':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_vxlan'},
+            'l2tp':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_l2tp'},
+            'tap':{'parent':{'id':'bridge','path':'ig_ctl_bridge.tbl_bridge_target'},'action':'ig_ctl_bridge.act_set_bridge_routed'},
+        }
+
+        ig_ctl_path = '%s.ig_ctl' % self.bfgc.pipe_name
+        tbl_list = self.bfgc.bfrt_info.table_dict.keys() 
+
+        for capability in capabilities.keys():
+            capability_name = '%s.%s' % (ig_ctl_path,capabilities[capability])
+            if capability_name in tbl_list:
+                self.dp_capabilities[capability] = True
+                logger.debug('%s - %s supported' % (self.class_name,capability))
+            else:
+                self.dp_capabilities[capability] = False
+                logger.debug('%s - %s not supported' % (self.class_name,capability))
+        
+        for sub_capability in sub_capabilities.keys():
+                capability_name = '%s.%s' % (ig_ctl_path,sub_capabilities[sub_capability]['parent']['path'])
+                act_sub_capability_name = '%s.%s' % (ig_ctl_path,sub_capabilities[sub_capability]['action'])
+                if self.dp_capabilities[sub_capabilities[sub_capability]['parent']['id']]:
+                    try:
+                        tbl_capability = self.bfgc.bfrt_info.table_get(capability_name) 
+                    except Exception as e:
+                        logger.debug('%s - cannot fetch table %s for %s not supported: %s ' % (self.class_name,capability_name, sub_capability,e))
+
+                    if act_sub_capability_name in tbl_capability.info.action_dict.keys():
+                        logger.debug('%s - %s supported' % (self.class_name,sub_capability))
+                        self.dp_capabilities[sub_capability] = True
+                    else:    
+                        logger.debug('%s - %s not supported' % (self.class_name,sub_capability,))
+                        self.dp_capabilities[sub_capability] = False
+                else:
+                        logger.debug('%s - %s not supported' % (self.class_name,sub_capability,))
+                        self.dp_capabilities[sub_capability] = False
+        

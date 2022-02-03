@@ -16,7 +16,7 @@ def run(self):
         # message loop from control plane
 
         try:
-            line = self.file.readline(8192)
+            line = self.file_r.readline(8192)
         except Exception as e:
             e = sys.exc_info()[0]
             logger.warning("%s - exited with code [%s]" % (self.class_name,_Exception()))

@@ -108,6 +108,7 @@ if __name__ == "__main__":
                                bf_client,
                                sal_client,
                                sckr_file,
+                               sckw_file,
                                args.brdg,
                                args.mpls,
                                args.srv6,
