@@ -26,7 +26,6 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define PPPOE_TABLE_SIZE               24576
-
+#define PPPOE_TABLE_SIZE               294912
 #define _TABLE_SIZE_P4_
 #endif

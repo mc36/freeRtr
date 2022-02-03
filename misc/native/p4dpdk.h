@@ -425,6 +425,10 @@ int main(int argc, char **argv) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
         }
 
+        if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MULTI_SEGS) {
+            port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MULTI_SEGS;
+        }
+
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
             port_conf.rxmode.max_rx_pkt_len = mbuf_size;
@@ -432,6 +436,7 @@ int main(int argc, char **argv) {
             port_conf.rxmode.max_rx_pkt_len = RTE_ETHER_MAX_LEN;
         }
 
+        printf("configuring port: offloads rx=%08x, tx=%08x, pktlen=%i\n", (int)port_conf.rxmode.offloads, (int)port_conf.txmode.offloads, port_conf.rxmode.max_rx_pkt_len);
         ret = rte_eth_dev_configure(port, 1, 1, &port_conf);
         if (ret != 0) err("error configuring port");
 

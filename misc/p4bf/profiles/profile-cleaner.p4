@@ -25,7 +25,6 @@
 
 
 #define IPV4_FLOWSPEC_TABLE_SIZE       1024
-
 #define IPV6_FLOWSPEC_TABLE_SIZE       1024
 #define _TABLE_SIZE_P4_
 #endif

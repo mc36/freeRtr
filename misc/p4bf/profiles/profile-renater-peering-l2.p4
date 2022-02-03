@@ -19,14 +19,12 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define MAC_TABLE_SIZE                 32768
+#define MAC_TABLE_SIZE                 102400
 
 #define IPV4_INACL_TABLE_SIZE          2048
-
 #define IPV6_INACL_TABLE_SIZE          1024
 
 #define IPV4_OUTACL_TABLE_SIZE         2048
-
 #define IPV6_OUTACL_TABLE_SIZE         1024
 #define _TABLE_SIZE_P4_
 #endif

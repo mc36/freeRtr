@@ -18,7 +18,7 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define MPLS_TABLE_SIZE                81920
+#define MPLS_TABLE_SIZE                163840
 
 #define IPV4_COPP_TABLE_SIZE                   512
 #define IPV6_COPP_TABLE_SIZE                   256
