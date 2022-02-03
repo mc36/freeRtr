@@ -56,7 +56,7 @@ public class pipeDiscard {
      * @return line read, null if nothing
      */
     public static String readLine(pipeSide pipe) {
-        if (pipe.ready2rx() < 1) {
+        if (pipe.ready2rx() < 2) {
             return null;
         }
         return pipe.lineGet(1);
