@@ -14,6 +14,11 @@ public class logBuf {
 
     private int logBufPos = 0;
 
+    /**
+     * create instance
+     *
+     * @param siz initial capacity
+     */
     public logBuf(int siz) {
         logBufLst = new String[siz];
     }
