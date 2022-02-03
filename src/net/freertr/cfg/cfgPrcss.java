@@ -45,7 +45,12 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     /**
      * action logging
      */
-    public boolean logging = false;
+    public boolean logAct = false;
+
+    /**
+     * console logging
+     */
+    public boolean logCon = false;
 
     /**
      * execute this binary
@@ -121,7 +126,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         "process definition .*! delay 1000",
         "process definition .*! random-time 0",
         "process definition .*! random-delay 0",
-        "process definition .*! no log",
+        "process definition .*! no log-actions",
+        "process definition .*! no log-console",
         "process definition .*! no range"
     };
 
@@ -202,7 +208,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds before start");
         l.add(null, "1  2      range                      specify time range");
         l.add(null, "2  .        <name:tm>                name of time map");
-        l.add(null, "1  .      log                        log actions");
+        l.add(null, "1  .      log-actions                log actions");
+        l.add(null, "1  .      log-console                log console activity");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
         l.add(null, "1  .      runnow                     run one round now");
@@ -224,7 +231,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "random-time " + randInt);
         l.add(cmds.tabulator + "random-delay " + randIni);
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
-        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
+        cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
         if (need2run) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -290,8 +298,12 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             interval = bits.str2num(cmd.word());
             return;
         }
-        if (a.equals("log")) {
-            logging = true;
+        if (a.equals("log-actions")) {
+            logAct = true;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = true;
             return;
         }
         if (a.equals("stop")) {
@@ -315,8 +327,12 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             stopNow();
             return;
         }
-        if (a.equals("log")) {
-            logging = false;
+        if (a.equals("log-actions")) {
+            logAct = false;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = false;
             return;
         }
         if (a.equals("range")) {
@@ -391,7 +407,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
                 logger.traceback(e);
             }
         }
-        if (logging) {
+        if (logAct) {
             logger.info("stopped process " + name);
         }
     }
@@ -405,7 +421,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         if (execName == null) {
             return;
         }
-        if (logging) {
+        if (logAct) {
             logger.info("restarting process " + name);
         }
         if (randInt > 0) {
@@ -415,6 +431,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         restartC++;
         pipeLine pl = new pipeLine(65536, false);
         pipe = pl.getSide();
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         String cmd = execName;
         if (userValue != null) {
             cmd = "sudo -u " + userValue + " " + cmd;
@@ -431,7 +449,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                pipeDiscard.flush(pipe);
+                if (logCon) {
+                    pipeDiscard.logLines("process " + name + " said ", pipe);
+                } else {
+                    pipeDiscard.flush(pipe);
+                }
                 bits.sleep(1000);
                 continue;
             }

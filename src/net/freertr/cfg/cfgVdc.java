@@ -46,7 +46,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     /**
      * action logging
      */
-    public boolean logging = false;
+    public boolean logAct = false;
+
+    /**
+     * console logging
+     */
+    public boolean logCon = false;
 
     /**
      * config to use
@@ -225,7 +230,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! nic e1000",
         "vdc definition .*! time 1000",
         "vdc definition .*! delay 1000",
-        "vdc definition .*! no log",
+        "vdc definition .*! no log-actions",
+        "vdc definition .*! no log-console",
         "vdc definition .*! random-time 0",
         "vdc definition .*! random-delay 0",};
 
@@ -380,7 +386,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      random-delay               specify random initial delay");
         l.add(null, "2  .        <num>                    milliseconds before start");
-        l.add(null, "1  .      log                        log actions");
+        l.add(null, "1  .      log-actions                log actions");
+        l.add(null, "1  .      log-console                log console activity");
     }
 
     public List<String> getShRun(int filter) {
@@ -422,7 +429,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (int i = 0; i < tcps.size(); i++) {
             l.add(cmds.tabulator + "tcp2vrf " + tcps.get(i));
         }
-        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
+        cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
         l.add(cmds.tabulator + "delay " + initial);
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "random-time " + randInt);
@@ -625,8 +633,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             tcps.add(dev);
             return;
         }
-        if (a.equals("log")) {
-            logging = true;
+        if (a.equals("log-actions")) {
+            logAct = true;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = true;
             return;
         }
         if (a.equals("delay")) {
@@ -757,8 +769,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             tcps.del(dev);
             return;
         }
-        if (a.equals("log")) {
-            logging = false;
+        if (a.equals("log-actions")) {
+            logAct = false;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = false;
             return;
         }
         if (a.equals("random-time")) {
@@ -796,13 +812,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 logger.traceback(e);
             }
         }
-        if (logging) {
+        if (logAct) {
             logger.info("stopped vdc " + name);
         }
     }
 
     private synchronized void doRound() {
-        if (logging) {
+        if (logAct) {
             logger.info("restarting vdc " + name);
         }
         if (randInt > 0) {
@@ -812,6 +828,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         restartC++;
         pipeLine pl = new pipeLine(65536, false);
         pipe = pl.getSide();
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         String cmd = null;
         addrMac mac;
         if (macBase == null) {
@@ -894,7 +912,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                pipeDiscard.flush(pipe);
+                if (logCon) {
+                    pipeDiscard.logLines("vdc " + name + " said ", pipe);
+                } else {
+                    pipeDiscard.flush(pipe);
+                }
                 bits.sleep(1000);
                 continue;
             }

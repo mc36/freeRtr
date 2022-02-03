@@ -76,7 +76,12 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     /**
      * action logging
      */
-    public boolean logging = false;
+    public boolean logAct = false;
+
+    /**
+     * console logging
+     */
+    public boolean logCon = false;
 
     /**
      * status, false=stopped, true=running
@@ -117,7 +122,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         "script .*! delay 0",
         "script .*! random-time 0",
         "script .*! random-delay 0",
-        "script .*! no log",
+        "script .*! no log-actions",
+        "script .*! no log-console",
         "script .*! no range"
     };
 
@@ -150,7 +156,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds before start");
         l.add(null, "1  2      range                      specify time range");
         l.add(null, "2  .        <name:tm>                name of time map");
-        l.add(null, "1  .      log                        log actions");
+        l.add(null, "1  .      log-actions                log actions");
+        l.add(null, "1  .      log-console                log console activity");
         l.add(null, "1  2      sequence                   sequence number of an entry");
         l.add(null, "2  3,.      <num>                    sequence number");
         l.add(null, "3  3,.        <str>                  tcl commands");
@@ -172,7 +179,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "random-time " + randInt);
         l.add(cmds.tabulator + "random-delay " + randIni);
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
-        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
+        cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
         l.addAll(script.dump(cmds.tabulator));
         if (working) {
             l.add(cmds.tabulator + "start");
@@ -223,8 +231,12 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
             respawn = true;
             return;
         }
-        if (a.equals("log")) {
-            logging = true;
+        if (a.equals("log-actions")) {
+            logAct = true;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = true;
             return;
         }
         if (a.equals("stop")) {
@@ -277,8 +289,12 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
             respawn = false;
             return;
         }
-        if (a.equals("log")) {
-            logging = false;
+        if (a.equals("log-actions")) {
+            logAct = false;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = false;
             return;
         }
         if (a.equals("range")) {
@@ -353,7 +369,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
                 return;
             }
         }
-        if (logging) {
+        if (logAct) {
             logger.info("starting " + name);
         }
         if (randInt > 0) {
@@ -377,7 +393,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         s.addLines(getText());
         s.cmdAll();
         pl.setClose();
-        if (logging) {
+        if (logAct) {
             logger.info("stopped " + name);
         }
     }
@@ -388,7 +404,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                pipeDiscard.flush(pipe);
+                if (logCon) {
+                    pipeDiscard.logLines("script " + name + " said ", pipe);
+                } else {
+                    pipeDiscard.flush(pipe);
+                }
                 bits.sleep(1000);
                 continue;
             }

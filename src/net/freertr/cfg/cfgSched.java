@@ -81,7 +81,12 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     /**
      * action logging
      */
-    public boolean logging = false;
+    public boolean logAct = false;
+
+    /**
+     * console logging
+     */
+    public boolean logCon = false;
 
     /**
      * status, false=stopped, true=running
@@ -124,7 +129,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         "scheduler .*! random-delay 0",
         "scheduler .*! command exit",
         "scheduler .*! no hidden",
-        "scheduler .*! no log",
+        "scheduler .*! no log-actions",
+        "scheduler .*! no log-console",
         "scheduler .*! no range"
     };
 
@@ -159,7 +165,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds before start");
         l.add(null, "1  2      range                      specify time range");
         l.add(null, "2  .        <name:tm>                name of time map");
-        l.add(null, "1  .      log                        log actions");
+        l.add(null, "1  .      log-actions                log actions");
+        l.add(null, "1  .      log-console                log console activity");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
         l.add(null, "1  .      runnow                     run one round now");
@@ -182,7 +189,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             l.add(cmds.tabulator + "command " + command);
         }
         cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
-        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
+        cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
         if (working) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -240,8 +248,12 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             command = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
-        if (a.equals("log")) {
-            logging = true;
+        if (a.equals("log-actions")) {
+            logAct = true;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = true;
             return;
         }
         if (a.equals("stop")) {
@@ -293,8 +305,12 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             hidden = false;
             return;
         }
-        if (a.equals("log")) {
-            logging = false;
+        if (a.equals("log-actions")) {
+            logAct = false;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = false;
             return;
         }
         if (a.equals("range")) {
@@ -361,7 +377,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
                 return;
             }
         }
-        if (logging) {
+        if (logAct) {
             logger.info("starting " + name);
         }
         if (randInt > 0) {
@@ -383,7 +399,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         String s = exe.repairCommand(command);
         exe.executeCommand(s);
         pipe.setClose();
-        if (logging) {
+        if (logAct) {
             logger.info("stopped " + name);
         }
     }
@@ -394,7 +410,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
                 break;
             }
             if (con == null) {
-                pipeDiscard.flush(pipe);
+                if (logCon) {
+                    pipeDiscard.logLines("scheduler " + name + " said ", pipe);
+                } else {
+                    pipeDiscard.flush(pipe);
+                }
                 bits.sleep(1000);
                 continue;
             }

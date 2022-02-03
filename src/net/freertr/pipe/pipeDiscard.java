@@ -49,6 +49,38 @@ public class pipeDiscard {
         }
     }
 
+    /**
+     * read a line from pipe
+     *
+     * @param pipe pipeline
+     * @return line read, null if nothing
+     */
+    public static String readLine(pipeSide pipe) {
+        if (pipe.ready2rx() < 1) {
+            return null;
+        }
+        return pipe.lineGet(1);
+    }
+
+    /**
+     * log pipe side
+     *
+     * @param pre prepend
+     * @param pipe pipeline
+     */
+    public static void logLines(String pre, pipeSide pipe) {
+        for (;;) {
+            String a = readLine(pipe);
+            if (a == null) {
+                break;
+            }
+            if (a.length() < 1) {
+                break;
+            }
+            logger.info(pre + a);
+        }
+    }
+
     private pipeDiscard() {
     }
 
