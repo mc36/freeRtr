@@ -424,11 +424,12 @@ int main(int argc, char **argv) {
         if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
         }
-
         if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MULTI_SEGS) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MULTI_SEGS;
         }
-
+        if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_SCATTER) {
+            port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_SCATTER;
+        }
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
             port_conf.rxmode.max_rx_pkt_len = mbuf_size;
