@@ -431,8 +431,12 @@ public class cfgInit implements Runnable {
                 prc.hidden = true;
                 prc.logging = true;
                 prc.execName = cmd.getRemaining();
-                cfgAll.prcs.put(prc);
+                cfgPrcss old = cfgAll.prcs.put(prc);
                 prc.startNow();
+                if (old == null) {
+                    continue;
+                }
+                old.stopNow();
                 continue;
             }
             if (s.equals("int")) {
