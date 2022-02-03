@@ -1386,8 +1386,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no bridge-filter ipv6in",
         "interface .*! no bridge-filter ipv6out",
         "interface .*! no bridge-macrewrite",
-        "interface .*! no bridge-macsecurity",
-        "interface .*! no bridge-staticmac",
+        "interface .*! no bridge-portsecurity",
+        "interface .*! no bridge-staticaddr",
         "interface .*! no bundle-group",
         "interface .*! bundle-priority 0",
         "interface .*! no service-policy-in",
@@ -5718,23 +5718,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, bridgeIfc.filter6in == null, cmds.tabulator, "bridge-filter ipv6in", "" + bridgeIfc.filter6in);
             cmds.cfgLine(l, bridgeIfc.filter6out == null, cmds.tabulator, "bridge-filter ipv6out", "" + bridgeIfc.filter6out);
             cmds.cfgLine(l, bridgeIfc.macRewrite == null, cmds.tabulator, "bridge-macrewrite", "" + bridgeIfc.macRewrite);
-            if (bridgeIfc.macStat == null) {
-                l.add(cmds.tabulator + "no bridge-staticmac");
+            if (bridgeIfc.statAddr == null) {
+                l.add(cmds.tabulator + "no bridge-staticaddr");
             } else {
                 s = "";
-                for (int i = 0; i < bridgeIfc.macStat.size(); i++) {
-                    s += " " + bridgeIfc.macStat.get(i);
+                for (int i = 0; i < bridgeIfc.statAddr.size(); i++) {
+                    s += " " + bridgeIfc.statAddr.get(i);
                 }
-                l.add(cmds.tabulator + "bridge-staticmac" + s);
+                l.add(cmds.tabulator + "bridge-staticaddr" + s);
             }
-            if (bridgeIfc.macSec == null) {
-                l.add(cmds.tabulator + "no bridge-macsecurity");
+            if (bridgeIfc.portSec == null) {
+                l.add(cmds.tabulator + "no bridge-portsecurity");
             } else {
                 s = "";
-                for (int i = 0; i < bridgeIfc.macSec.size(); i++) {
-                    s += " " + bridgeIfc.macSec.get(i);
+                for (int i = 0; i < bridgeIfc.portSec.size(); i++) {
+                    s += " " + bridgeIfc.portSec.get(i);
                 }
-                l.add(cmds.tabulator + "bridge-macsecurity" + s);
+                l.add(cmds.tabulator + "bridge-portsecurity" + s);
             }
         }
         if (bundleIfc == null) {
@@ -6070,9 +6070,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 .     <num>                       priroty of link");
         l.add(null, "1 2   bridge-group                  transparent bridging interface parameters");
         l.add(null, "2 .     <num>                       number of bridge group");
-        l.add(null, "1 2   bridge-macsecurity            transparent bridging interface parameters");
+        l.add(null, "1 2   bridge-portsecurity           transparent bridging interface parameters");
         l.add(null, "2 2,.   <addr>                      address to allow");
-        l.add(null, "1 2   bridge-staticmac              transparent bridging interface parameters");
+        l.add(null, "1 2   bridge-staticaddr             transparent bridging interface parameters");
         l.add(null, "2 2,.   <addr>                      address to forward");
         l.add(null, "1 2   bridge-macrewrite             transparent bridging interface parameters");
         l.add(null, "2 .     <addr>                      address to use");
@@ -6679,12 +6679,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2bridge(brdg);
             return;
         }
-        if (a.equals("bridge-staticmac")) {
+        if (a.equals("bridge-staticaddr")) {
             if (bridgeIfc == null) {
                 cmd.error("not bridged");
                 return;
             }
-            bridgeIfc.macStat = new tabGen<addrMac>();
+            bridgeIfc.statAddr = new tabGen<addrMac>();
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -6692,18 +6692,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 addrMac adr = new addrMac();
                 adr.fromString(a);
-                bridgeIfc.macStat.add(adr);
+                bridgeIfc.statAddr.add(adr);
             }
             bridgeHed.bridgeHed.delMacs(bridgeIfc);
-            bridgeHed.bridgeHed.addMacs(bridgeIfc, bridgeIfc.macStat);
+            bridgeHed.bridgeHed.addMacs(bridgeIfc, bridgeIfc.statAddr);
             return;
         }
-        if (a.equals("bridge-macsecurity")) {
+        if (a.equals("bridge-portsecurity")) {
             if (bridgeIfc == null) {
                 cmd.error("not bridged");
                 return;
             }
-            bridgeIfc.macSec = new tabGen<addrMac>();
+            bridgeIfc.portSec = new tabGen<addrMac>();
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -6711,7 +6711,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 addrMac adr = new addrMac();
                 adr.fromString(a);
-                bridgeIfc.macSec.add(adr);
+                bridgeIfc.portSec.add(adr);
             }
             return;
         }
@@ -7270,21 +7270,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             clear2bridge();
             return;
         }
-        if (a.equals("bridge-staticmac")) {
+        if (a.equals("bridge-staticaddr")) {
             if (bridgeIfc == null) {
                 cmd.error("not bridged");
                 return;
             }
-            bridgeIfc.macStat = null;
+            bridgeIfc.statAddr = null;
             bridgeHed.bridgeHed.delMacs(bridgeIfc);
             return;
         }
-        if (a.equals("bridge-macsecurity")) {
+        if (a.equals("bridge-portsecurity")) {
             if (bridgeIfc == null) {
                 cmd.error("not bridged");
                 return;
             }
-            bridgeIfc.macSec = null;
+            bridgeIfc.portSec = null;
             return;
         }
         if (a.equals("bridge-macrewrite")) {

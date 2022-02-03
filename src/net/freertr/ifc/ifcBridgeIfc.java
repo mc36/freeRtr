@@ -73,14 +73,14 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
     public addrMac macRewrite;
 
     /**
-     * mac security
+     * port security
      */
-    public tabGen<addrMac> macSec;
+    public tabGen<addrMac> portSec;
 
     /**
-     * static mac
+     * static addresses
      */
-    public tabGen<addrMac> macStat;
+    public tabGen<addrMac> statAddr;
 
     /**
      * ipv4 ingress acl
@@ -117,7 +117,7 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
         stated = state.toUsable(stat);
         cntr.stateChange(stated);
         if (stated == state.states.up) {
-            lowerBr.addMacs(this, macStat);
+            lowerBr.addMacs(this, statAddr);
             return;
         }
         lowerBr.delMacs(this);
@@ -180,8 +180,8 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
             }
             pck.getSkip(-2);
         }
-        if (macSec != null) {
-            if (macSec.find(pck.ETHsrc) == null) {
+        if (portSec != null) {
+            if (portSec.find(pck.ETHsrc) == null) {
                 cntr.drop(pck, counter.reasons.denied);
                 return;
             }

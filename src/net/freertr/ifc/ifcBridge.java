@@ -634,7 +634,7 @@ public class ifcBridge implements ifcDn {
             if (ntry == null) {
                 continue;
             }
-            addMacs(ntry, ntry.macStat);
+            addMacs(ntry, ntry.statAddr);
         }
     }
 
