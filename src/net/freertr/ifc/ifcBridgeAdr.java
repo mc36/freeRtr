@@ -23,6 +23,11 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
     public ifcBridgeIfc ifc;
 
     /**
+     * static config
+     */
+    public boolean stat;
+
+    /**
      * time
      */
     public long time;
@@ -72,7 +77,7 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
     }
 
     public String toString() {
-        return adr + "|" + ifc.getIfcName() + "|" + bits.timePast(time) + "|" + cntr.getShHwPsum(hwCntr) + "|" + cntr.getShHwBsum(hwCntr);
+        return adr + "|" + ifc.getIfcName() + "|" + stat + "|" + bits.timePast(time) + "|" + cntr.getShHwPsum(hwCntr) + "|" + cntr.getShHwBsum(hwCntr);
     }
 
 }

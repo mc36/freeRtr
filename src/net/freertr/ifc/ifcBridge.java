@@ -254,7 +254,7 @@ public class ifcBridge implements ifcDn {
         if (learned == null) {
             return null;
         }
-        userFormat lst = new userFormat("|", "addr|iface|time|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
+        userFormat lst = new userFormat("|", "addr|iface|static|time|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
         for (int i = 0; i < learned.size(); i++) {
             lst.add("" + learned.get(i));
         }
@@ -604,6 +604,41 @@ public class ifcBridge implements ifcDn {
     }
 
     /**
+     * add macs on interface
+     *
+     * @param ifc interface
+     * @param lst addresses
+     */
+    public void addMacs(ifcBridgeIfc ifc, tabGen<addrMac> lst) {
+        if (lst == null) {
+            return;
+        }
+        if (learned == null) {
+            return;
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            ifcBridgeAdr ntry = new ifcBridgeAdr(lst.get(i).copyBytes());
+            ntry.stat = true;
+            ntry.ifc = ifc;
+            ntry.cntr = new counter();
+            learned.put(ntry);
+        }
+    }
+
+    /**
+     * add macs on all the interface
+     */
+    public void addMacs() {
+        for (int i = 0; i < ifaces.size(); i++) {
+            ifcBridgeIfc ntry = ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            addMacs(ntry, ntry.macStat);
+        }
+    }
+
+    /**
      * delete macs on interface
      *
      * @param ifc interface, null means all
@@ -614,6 +649,7 @@ public class ifcBridge implements ifcDn {
         }
         if (ifc == null) {
             learned.clear();
+            addMacs();
             if (macRouter != null) {
                 macRouter.bridgeChanged();
             }
@@ -774,6 +810,9 @@ public class ifcBridge implements ifcDn {
             if (ntry == null) {
                 continue;
             }
+            if (ntry.stat) {
+                continue;
+            }
             if ((currTim - ntry.time) < macAgeTime) {
                 continue;
             }
@@ -913,8 +952,12 @@ public class ifcBridge implements ifcDn {
         lrn.cntr = new counter();
         ifcBridgeAdr old = learned.add(lrn);
         if (old != null) {
-            if (macMove) {
-                if (ifc != old.ifc) {
+            if (ifc != old.ifc) {
+                if (old.stat) {
+                    cntr.drop(pck, counter.reasons.denied);
+                    return;
+                }
+                if (macMove) {
                     logger.info(pck.ETHsrc + " moved from " + old.ifc.getIfcName() + " to " + ifc.getIfcName());
                 }
             }
@@ -1083,6 +1126,7 @@ public class ifcBridge implements ifcDn {
         stpCost = 0;
         if (learned != null) {
             learned.clear();
+            addMacs();
         }
         if (macMove) {
             logger.info("table flush");
