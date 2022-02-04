@@ -186,7 +186,7 @@ public class userScreen {
      * get one key
      *
      * @param pipe pipeline to use
-     * @return key readed, -1 on error
+     * @return key readed, -1 on error, -2 on unknown
      */
     public static int getKey(pipeSide pipe) {
         int i = readChr(pipe);
@@ -353,9 +353,8 @@ public class userScreen {
                 case 84:
                     return keys1[i - 80] | 0x8000 | ctr;
                 default:
-                    break;
+                    return -2;
             }
-            return i;
         }
         if (s.startsWith("[[")) {
             final int[] keys2 = {20, 21, 22, 23, 24};
@@ -367,11 +366,11 @@ public class userScreen {
                 case 69:
                     return keys2[i - 65] | 0x8000 | ctr;
                 default:
-                    return i;
+                    return -2;
             }
         }
         if (!s.startsWith("[")) {
-            return i;
+            return -2;
         }
         final int[] keys3 = {12, 13, 15, 14, 0, 9, 0, 8};
         final int[] keys4 = {20, 21, 22, 23, 24};
@@ -394,7 +393,7 @@ public class userScreen {
             case 126:
                 break;
             default:
-                return i;
+                return -2;
         }
         i = bits.str2num(s.substring(1, s.length()));
         final int[] keys5 = {8, 6, 7, 9, 10, 11};
@@ -423,7 +422,7 @@ public class userScreen {
             case 24:
                 return keys6[i - 11] | 0x8000 | ctr;
             default:
-                return 126;
+                return -2;
         }
     }
 

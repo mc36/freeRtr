@@ -19,10 +19,10 @@
 #
 #fdisk /dev/sdb / p
 #fsck -f /dev/sdb1
-#resize2fs /dev/sdb1 5G
+#resize2fs /dev/sdb1 6G
 #fsck -f /dev/sdb1
-#cfdisk /dev/sdb / resize 5.1G
-#qemu-img resize --shrink p4bf.img 5.2G
+#cfdisk /dev/sdb / resize 6.1G
+#qemu-img resize --shrink p4bf.img 6.2G
 #fallocate -d p4bf.img
 #
 cd ~/rare/p4src
