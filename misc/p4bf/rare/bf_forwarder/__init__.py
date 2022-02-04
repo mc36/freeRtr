@@ -155,19 +155,18 @@ class BfForwarder(Thread,RareApi):
                         'srv6': 'ig_ctl_ipv6b.tbl_ipv6_fib_host',
                         }
         sub_capabilities={
-            'bier':{'parent':{'id':'mpls','path':'ig_ctl_mpls.tbl_mpls_fib'},'action':'ig_ctl_mpls.act_mpls_bier_label'},
-            'duplab':{'parent':{'id':'mpls','path':'ig_ctl_mpls.tbl_mpls_fib'},'action':'ig_ctl_mpls.act_mpls_bcast_label'},
-            'gre':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_gre'},
-            'ipip':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_ip4ip'},
-            'pckoudp':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_pckoudp'},
-            'vxlan':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_vxlan'},
-            'l2tp':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl_tunnel.act_tunnel_l2tp'},
-            'tap':{'parent':{'id':'bridge','path':'ig_ctl_bridge.tbl_bridge_target'},'action':'ig_ctl_bridge.act_set_bridge_routed'},
+            'bier':{'parent':{'id':'mpls','path':'ig_ctl_mpls.tbl_mpls_fib'},'action':'ig_ctl.ig_ctl_mpls.act_mpls_bier_label'},
+            'duplab':{'parent':{'id':'mpls','path':'ig_ctl_mpls.tbl_mpls_fib'},'action':'ig_ctl.ig_ctl_mpls.act_mpls_bcast_label'},
+            'gre':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl.ig_ctl_tunnel.act_tunnel_gre'},
+            'ipip':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl.ig_ctl_tunnel.act_tunnel_ip4ip'},
+            'pckoudp':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl.ig_ctl_tunnel.act_tunnel_pckoudp'},
+            'vxlan':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl.ig_ctl_tunnel.act_tunnel_vxlan'},
+            'l2tp':{'parent':{'id':'tun','path':'ig_ctl_tunnel.tbl_tunnel4'},'action':'ig_ctl.ig_ctl_tunnel.act_tunnel_l2tp'},
+            'tap':{'parent':{'id':'bridge','path':'ig_ctl_bridge.tbl_bridge_target'},'action':'ig_ctl.ig_ctl_bridge.act_set_bridge_routed'},
         }
 
         ig_ctl_path = '%s.ig_ctl' % self.bfgc.pipe_name
         tbl_list = self.bfgc.bfrt_info.table_dict.keys() 
-
         for capability in capabilities.keys():
             capability_name = '%s.%s' % (ig_ctl_path,capabilities[capability])
             if capability_name in tbl_list:
@@ -179,12 +178,18 @@ class BfForwarder(Thread,RareApi):
         
         for sub_capability in sub_capabilities.keys():
                 capability_name = '%s.%s' % (ig_ctl_path,sub_capabilities[sub_capability]['parent']['path'])
-                act_sub_capability_name = '%s.%s' % (ig_ctl_path,sub_capabilities[sub_capability]['action'])
+
+                logger.debug('%s - capability name %s ' % (self.class_name, capability_name))
+                act_sub_capability_name = '%s' % (sub_capabilities[sub_capability]['action'])
+                logger.debug('%s - action capability name %s ' % (self.class_name, act_sub_capability_name))
                 if self.dp_capabilities[sub_capabilities[sub_capability]['parent']['id']]:
                     try:
                         tbl_capability = self.bfgc.bfrt_info.table_get(capability_name) 
                     except Exception as e:
+                        self.dp_capabilities[sub_capability] = False
                         logger.debug('%s - cannot fetch table %s for %s not supported: %s ' % (self.class_name,capability_name, sub_capability,e))
+
+                    logger.debug('%s - table %s action list %s ' % (self.class_name, capability_name, tbl_capability.info.action_dict.keys()))
 
                     if act_sub_capability_name in tbl_capability.info.action_dict.keys():
                         logger.debug('%s - %s supported' % (self.class_name,sub_capability))

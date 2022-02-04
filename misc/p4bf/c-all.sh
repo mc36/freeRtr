@@ -26,7 +26,7 @@
 #fallocate -d p4bf.img
 #
 cd ~/rare/p4src
-export SDE=/home/mc36/bf-sde-9.7.1
+export SDE=/home/mc36/bf-sde-9.8.0
 export SDE_INSTALL=$SDE/install
 $SDE/install/bin/bf-p4c -I. $@ -Xp4c="--disable-parse-depth-limit" bf_router.p4
 if [ -f bf_router.tofino/pipe/tofino.bin ] ; then
