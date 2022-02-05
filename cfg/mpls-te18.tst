@@ -95,23 +95,3 @@ r1 tping 100 10 4321::2 /vrf v1
 r2 tping 100 10 4321::1 /vrf v1
 r1 tping 0 10 1.1.1.2 /vrf v1
 r2 tping 0 10 1.1.1.1 /vrf v1
-
-r1 output show mpls forw
-r1 output show ipv4 rsvp v1 sum
-r1 output show ipv6 rsvp v1 sum
-output ../binTmp/mpls-te.html
-<html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
-here is the lib:
-<pre>
-<!>show:0
-</pre>
-here is the ipv4 database:
-<pre>
-<!>show:1
-</pre>
-here is the ipv6 database:
-<pre>
-<!>show:2
-</pre>
-</body></html>
-!
