@@ -26,6 +26,7 @@ control IngressControlPktPreEmit(inout headers hdr,
 
     action act_pkt_send_to_cpu() {
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = ig_md.ingress_id;
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 1;

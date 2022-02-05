@@ -26,6 +26,7 @@ control EgressControlHairpin(inout headers hdr, inout ingress_metadata_t eg_md,
     action act_set_recir(SubIntId_t port) {
 //        eg_intr_md.egress_spec = (PortId_t)port;
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = port;
     }
 

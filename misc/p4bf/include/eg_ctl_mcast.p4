@@ -73,6 +73,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls0.setInvalid();
         hdr.mpls1.setInvalid();
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = hdr.internal.source_id;
         eg_md.ethertype = ETHERTYPE_IPV4;
     }
@@ -82,6 +83,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls0.setInvalid();
         hdr.mpls1.setInvalid();
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = hdr.internal.source_id;
         eg_md.ethertype = ETHERTYPE_IPV6;
     }
@@ -178,6 +180,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls1.setInvalid();
         eg_md.bier_remove = 1;
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = hdr.internal.source_id;
         eg_md.ethertype = ETHERTYPE_IPV4;
     }
@@ -190,6 +193,7 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls1.setInvalid();
         eg_md.bier_remove = 1;
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = hdr.internal.source_id;
         eg_md.ethertype = ETHERTYPE_IPV6;
     }

@@ -55,6 +55,7 @@ control eg_ctl(
 
         if (hdr.internal.reason == INTREAS_RECIR) {
             hdr.cpu.setValid();
+            hdr.cpu._padding = 0;
             hdr.cpu.port = hdr.internal.source_id;
         }
 

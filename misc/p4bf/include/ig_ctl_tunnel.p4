@@ -45,6 +45,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = port;
         hdr.gre.setInvalid();
         hdr.ipv4.setInvalid();
@@ -67,6 +68,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = port;
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
@@ -82,6 +84,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = port;
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
@@ -110,6 +113,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = port;
         hdr.vxlan.setInvalid();
         hdr.udp.setInvalid();
@@ -131,6 +135,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
         hdr.cpu.port = port;
         hdr.udp.setInvalid();
         hdr.ipv4.setInvalid();
@@ -243,6 +248,7 @@ ig_md.layer4_dstprt:
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
             hdr.cpu.setValid();
+            hdr.cpu._padding = 0;
             hdr.cpu.port = l2tp_hit;
             hdr.l2tp.setInvalid();
             hdr.udp.setInvalid();
