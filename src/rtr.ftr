@@ -27,7 +27,9 @@ qc pass: bridge with spantree
 qc pass: bridged ethernet over bridge
 qc pass: bridge split horizon
 qc pass: bridge mac learning
-qc pass: bridged mac rewrite
+qc pass: bridge mac rewrite
+qc pass: bridge port security
+qc pass: bridge static address
 qc pass: ppp over bstun
 qc pass: bundle of ethernet port
 qc pass: bundle of serial port

@@ -12855,3 +12855,8 @@ qc pass: p4lang: macsec with aes192gcm and aead
 qc pass: p4lang: macsec with aes256gcm and aead
 ---------------------------------- 2022-02-03 07:55:32
 todo: p4dpdk multiseg rx/tx loop
+---------------------------------- 2022-02-05 03:03:13
+no qc pass: bridged mac rewrite
+qc pass: bridge mac rewrite
+qc pass: bridge port security
+qc pass: bridge static address
