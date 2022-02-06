@@ -414,6 +414,7 @@ ipv6_rx:
     case ETHERTYPE_LLDP:
         goto cpu;
     default:
+        if (ethtyp < 1500) goto cpu;
         goto punt;
     }
 

@@ -1997,6 +1997,7 @@ bridgevpls_rx:
         doCpuing;
     default:
         checkLayer2;
+        if (ethtyp < 1500) doCpuing;
 punt:
         if (punts < 0) {
 drop:
