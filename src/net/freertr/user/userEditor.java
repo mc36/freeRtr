@@ -29,6 +29,8 @@ public class userEditor {
 
     private String lastFind;
 
+    private String lastRepl;
+
     private int begX;
 
     private int begY;
@@ -94,6 +96,7 @@ public class userEditor {
         curX = 0;
         curY = 0;
         lastFind = "";
+        lastRepl = "";
     }
 
     /**
@@ -243,6 +246,15 @@ public class userEditor {
                 return false;
             case 0x8014: // f1
                 doKeyF1();
+                return false;
+            case 0x8015: // f2
+                doKeyF2();
+                return false;
+            case 0x8016: // f3
+                doKeyF3();
+                return false;
+            case 0x8017: // f4
+                doKeyF4();
                 return false;
             case 0x8019: // f6
                 doKeyF6();
@@ -451,6 +463,9 @@ public class userEditor {
     private void doKeyF1() {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
+        l.add("f2 - replace again");
+        l.add("f3 - find again");
+        l.add("f4 - replace text");
         l.add("f6 - goto line");
         l.add("f7 - find text");
         l.add("f10 - exit");
@@ -471,6 +486,54 @@ public class userEditor {
         console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
+    private void doKeyF2() {
+        if (readOnly) {
+            return;
+        }
+        String a = lastFind.toLowerCase();
+        for (int i = curY + 1; i < buffer.size(); i++) {
+            String b = buffer.get(i);
+            int o = b.toLowerCase().indexOf(a);
+            if (o < 0) {
+                continue;
+            }
+            curX = o;
+            curY = i;
+            b = b.substring(0, o) + lastRepl + b.subSequence(o + lastFind.length(), b.length());
+            buffer.set(i, b);
+            changed = true;
+            return;
+        }
+    }
+
+    private void doKeyF3() {
+        String a = lastFind.toLowerCase();
+        for (int i = curY + 1; i < buffer.size(); i++) {
+            int o = buffer.get(i).toLowerCase().indexOf(a);
+            if (o < 0) {
+                continue;
+            }
+            curX = o;
+            curY = i;
+            return;
+        }
+    }
+
+    private void doKeyF4() {
+        int i = console.sizY / 2;
+        String a = console.askUser("text to find:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, i - 3, -1, lastFind);
+        if (a.length() < 1) {
+            return;
+        }
+        lastFind = a;
+        a = console.askUser("text to replace:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, i + 3, -1, lastRepl);
+        if (a.length() < 1) {
+            return;
+        }
+        lastRepl = a;
+        doKeyF2();
+    }
+
     private void doKeyF6() {
         String a = console.askUser("line number:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, "" + curY);
         if (a.length() < 1) {
@@ -485,15 +548,7 @@ public class userEditor {
             return;
         }
         lastFind = a;
-        for (int i = curY + 1; i < buffer.size(); i++) {
-            int o = buffer.get(i).indexOf(a);
-            if (o < 0) {
-                continue;
-            }
-            curX = o;
-            curY = i;
-            return;
-        }
+        doKeyF3();
     }
 
     private void doDraw(boolean clr) {
