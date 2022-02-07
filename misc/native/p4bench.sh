@@ -2,7 +2,7 @@
 
 benchProto()
 {
-echo --------------------------- benchmarking $1.
+echo --------------------------- benchmarking $1 packets
 shift
 ../../binTmp/p4bench.bin 50000000 $@
 }
