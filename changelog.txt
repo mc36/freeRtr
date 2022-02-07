@@ -12860,3 +12860,12 @@ no qc pass: bridged mac rewrite
 qc pass: bridge mac rewrite
 qc pass: bridge port security
 qc pass: bridge static address
+---------------------------------- 2022-02-07 02:29:39
+qc pass: bgp routemap filtering with asend
+qc pass: bgp routemap filtering with asend with soft-reconfig
+qc pass: bgp routepolicy filtering with asend
+qc pass: bgp routepolicy filtering with asend with soft-reconfig
+qc pass: bgp routemap filtering with asmid
+qc pass: bgp routemap filtering with asmid with soft-reconfig
+qc pass: bgp routepolicy filtering with asmid
+qc pass: bgp routepolicy filtering with asmid with soft-reconfig
