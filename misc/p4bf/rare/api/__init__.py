@@ -5,6 +5,7 @@ class RareApi(BfRtRare):
 
     def __init__(self):
         self.name='RARE API'
+        self.file_w=None
 
     from .bierlabel4 import writeBierLabelRules
     #from .bierlabel6 import 

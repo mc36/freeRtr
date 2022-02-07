@@ -1,5 +1,6 @@
 from ..bf_gbl_env.cst_env import *
 
+
 def _processMeterFromControlPlane(
     self,
     op_type,
@@ -26,7 +27,14 @@ def _processMeterFromControlPlane(
         key_list = [tbl.make_key(key_field_list)]
         data_list = [tbl.make_data(data_field_list)]
     except KeyError as e:
-        print("Error preparing entry to control plane: {}".format(e))
+        (str_key, str_data) = _formatErrMessage(key_field_list, data_field_list)
+        err_msg = (
+            "dataplane-say entry failed to prepare entry for table %s with Key[%s] Data[%s]\n"
+            % (tbl_name, str_key, str_data)
+        )
+        logger.debug(err_msg)
+        self.file_w.write(err_msg)
+        self.file_w.flush()
         return
 
     try:
@@ -40,10 +48,102 @@ def _processMeterFromControlPlane(
         )
 
     except gc.BfruntimeRpcException as e:
-        print("Error processing entry from control plane: {}".format(e))
+        (str_key, str_data) = _formatErrMessage(key_field_list, data_field_list)
+        err_msg = (
+            "dataplane-say entry failed to program entry for table %s with Key[%s] Data[%s]\n"
+            % (tbl_name, str_key, str_data)
+        )
+        logger.debug(err_msg)
+        self.file_w.write(err_msg)
+        self.file_w.flush()
 
     except grpc.RpcError as e:
-        print(
-            "Grpc channel error "
-            "while processing entry from control plane: {}".format(e)
+        (str_key, str_data) = _formatErrMessage(key_field_list, data_field_list)
+        err_msg = (
+            "dataplane-say entry failed to program entry via GRPC for table %s with Key[%s] Data[%s]\n"
+            % (tbl_name, str_key, str_data)
         )
+        logger.debug(err_msg)
+        self.file_w.write(err_msg)
+        self.file_w.flush()
+
+
+def _formatErrMessage(key_field_list, data_field_list):
+    str_key = ""
+    for key_tuple in key_field_list:
+        if str_key != "":
+            str_key = (
+                str_key
+                + ","
+                + str(key_tuple.name)
+                + " "
+                + str(key_tuple.value)
+                + " "
+                + str(key_tuple.mask)
+                + " "
+                + str(key_tuple.prefix_len)
+                + " "
+                + str(key_tuple.low)
+                + " "
+                + str(key_tuple.low)
+                + " "
+                + str(key_tuple.is_valid)
+            )
+        else:
+            str_key = (
+                str(key_tuple.name)
+                + " "
+                + str(key_tuple.value)
+                + " "
+                + str(key_tuple.mask)
+                + " "
+                + str(key_tuple.prefix_len)
+                + " "
+                + str(key_tuple.low)
+                + " "
+                + str(key_tuple.low)
+                + " "
+                + str(key_tuple.is_valid)
+            )
+
+    str_data = ""
+    for data_tuple in data_field_list:
+        if str_data != "":
+            str_data = (
+                str_data
+                + ","
+                + str(data_tuple.name)
+                + " "
+                + str(data_tuple.val)
+                + " "
+                + str(data_tuple.float_val)
+                + " "
+                + str(data_tuple.str_val)
+                + " "
+                + str(data_tuple.bool_val)
+                + " "
+                + str(data_tuple.int_arr_val)
+                + " "
+                + str(data_tuple.str_arr_val)
+                + " "
+                + str(data_tuple.container_arr_val)
+            )
+        else:
+            str_data = (
+                str(data_tuple.name)
+                + " "
+                + str(data_tuple.val)
+                + " "
+                + str(data_tuple.float_val)
+                + " "
+                + str(data_tuple.str_val)
+                + " "
+                + str(data_tuple.bool_val)
+                + " "
+                + str(data_tuple.int_arr_val)
+                + " "
+                + str(data_tuple.str_arr_val)
+                + " "
+                + str(data_tuple.container_arr_val)
+            )
+    return (str_key, str_data)

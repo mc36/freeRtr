@@ -3,6 +3,7 @@ from ..bf_gbl_env.var_env import *
 class BfRtRare(object):
     def __init__(self):
         self.name = 'BfRt RARE'
+        self.file_w = None
 
     from .check_param_coherence import _checkParamCoherence
     from .get_str_an import _getStrAN

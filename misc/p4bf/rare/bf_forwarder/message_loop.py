@@ -1,30 +1,26 @@
-
+from logging import exception
 from ..bf_gbl_env.cst_env import *
 
-ACTIVE_PORTS = {}
 
 def run(self):
     logger.warning("BfForwarder - Main")
     logger.warning("BfForwarder - Entering message loop")
     while not self.die:
 
-        if len(ACTIVE_PORTS.keys())==0:
-            logger.debug("BfForwarder - No active ports")
-        else:
-            logger.debug("BfForwarder - Active ports %s" % ACTIVE_PORTS.keys())
-
-        # message loop from control plane
-
         try:
             line = self.file_r.readline(8192)
         except Exception as e:
             e = sys.exc_info()[0]
-            logger.warning("%s - exited with code [%s]" % (self.class_name,_Exception()))
+            logger.warning(
+                "%s - exited with code [%s]" % (self.class_name, _Exception())
+            )
             self.tearDown()
 
         if len(line) == 0:
-            logger.warning("BfForwarder - Empty message from control plane" )
-            logger.warning("BfForwarder: connection with control plane lost, quitting ...")
+            logger.warning("BfForwarder - Empty message from control plane")
+            logger.warning(
+                "BfForwarder: connection with control plane lost, quitting ..."
+            )
             os._exit(0)
             self.bfgc.interface.tear_down_stream()
             self.file.close()
@@ -214,35 +210,62 @@ def run(self):
             continue
 
         if splt[0] == "nshfwd_add":
-            self.writeNshFwdRules(1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            self.writeNshFwdRules(
+                1,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                int(splt[6]),
+                int(splt[7]),
+            )
             continue
         if splt[0] == "nshfwd_mod":
-            self.writeNshFwdRules(2,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            self.writeNshFwdRules(
+                2,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                int(splt[6]),
+                int(splt[7]),
+            )
             continue
         if splt[0] == "nshfwd_del":
-            self.writeNshFwdRules(3,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            self.writeNshFwdRules(
+                3,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                int(splt[6]),
+                int(splt[7]),
+            )
             continue
 
         if splt[0] == "nshloc_add":
-            self.writeNshLocRules(1,int(splt[1]),int(splt[2]),int(splt[3]))
+            self.writeNshLocRules(1, int(splt[1]), int(splt[2]), int(splt[3]))
             continue
         if splt[0] == "nshloc_mod":
-            self.writeNshLocRules(2,int(splt[1]),int(splt[2]),int(splt[3]))
+            self.writeNshLocRules(2, int(splt[1]), int(splt[2]), int(splt[3]))
             continue
         if splt[0] == "nshloc_del":
-            self.writeNshLocRules(3,int(splt[1]),int(splt[2]),int(splt[3]))
+            self.writeNshLocRules(3, int(splt[1]), int(splt[2]), int(splt[3]))
             continue
 
         if splt[0] == "neigh4_add":
-            self.writeNexthopRules(1, int(splt[1]), splt[3], splt[5],int(splt[6]))
+            self.writeNexthopRules(1, int(splt[1]), splt[3], splt[5], int(splt[6]))
             self.writeNeighborRules4(1, splt[2], int(splt[1]), int(splt[4]))
             continue
         if splt[0] == "neigh4_mod":
-            self.writeNexthopRules(2, int(splt[1]), splt[3], splt[5],int(splt[6]))
+            self.writeNexthopRules(2, int(splt[1]), splt[3], splt[5], int(splt[6]))
             self.writeNeighborRules4(2, splt[2], int(splt[1]), int(splt[4]))
             continue
         if splt[0] == "neigh4_del":
-            self.writeNexthopRules(3, int(splt[1]), splt[3], splt[5],int(splt[6]))
+            self.writeNexthopRules(3, int(splt[1]), splt[3], splt[5], int(splt[6]))
             self.writeNeighborRules4(3, splt[2], int(splt[1]), int(splt[4]))
             continue
 
@@ -333,13 +356,13 @@ def run(self):
             continue
 
         if splt[0] == "routedmac_add":
-            self.writeRoumacRules(1, int(splt[1]), splt[2], int(splt[3]),int(splt[4]))
+            self.writeRoumacRules(1, int(splt[1]), splt[2], int(splt[3]), int(splt[4]))
             continue
         if splt[0] == "routedmac_mod":
-            selfwriteRoumacRules(2, int(splt[1]), splt[2], int(splt[3]),int(splt[4]))
+            selfwriteRoumacRules(2, int(splt[1]), splt[2], int(splt[3]), int(splt[4]))
             continue
         if splt[0] == "routedmac_del":
-            self.writeRoumacRules(3, int(splt[1]), splt[2], int(splt[3]),int(splt[4]))
+            self.writeRoumacRules(3, int(splt[1]), splt[2], int(splt[3]), int(splt[4]))
             continue
 
         if splt[0] == "bridgelabel_add":
@@ -535,15 +558,15 @@ def run(self):
             continue
 
         if splt[0] == "neigh6_add":
-            self.writeNexthopRules(1,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            self.writeNexthopRules(1, int(splt[1]), splt[3], splt[5], int(splt[6]))
             self.writeNeighborRules6(1, splt[2], int(splt[1]), int(splt[4]))
             continue
         if splt[0] == "neigh6_mod":
-            self.writeNexthopRules(2,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            self.writeNexthopRules(2, int(splt[1]), splt[3], splt[5], int(splt[6]))
             self.writeNeighborRules6(2, splt[2], int(splt[1]), int(splt[4]))
             continue
         if splt[0] == "neigh6_del":
-            self.writeNexthopRules(3,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            self.writeNexthopRules(3, int(splt[1]), splt[3], splt[5], int(splt[6]))
             self.writeNeighborRules6(3, splt[2], int(splt[1]), int(splt[4]))
             continue
 
@@ -674,7 +697,6 @@ def run(self):
                 int(splt[16]),
             )
             continue
-
 
         if splt[0] == "natcfg4_add":
             self.writeNatCfgRules4(
@@ -810,8 +832,6 @@ def run(self):
             )
             continue
 
-
-
         if splt[0] == "nattrns4_add":
             self.writeNatTrnsRules4(
                 1,
@@ -858,8 +878,6 @@ def run(self):
             )
             continue
 
-
-
         if splt[0] == "nattrns6_add":
             self.writeNatTrnsRules6(
                 1,
@@ -905,8 +923,6 @@ def run(self):
                 int(splt[10]),
             )
             continue
-
-
 
         if splt[0] == "pbr4norm_add":
             self.writePbrNormRules4(
@@ -1474,8 +1490,6 @@ def run(self):
             )
             continue
 
-
-
         if splt[0] == "gre4_add":
             self.writeGre4rules(
                 1,
@@ -1515,7 +1529,6 @@ def run(self):
                 splt[8],
             )
             continue
-
 
         if splt[0] == "gre6_add":
             self.writeGre6rules(
@@ -1557,7 +1570,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "ipip4_add":
             self.writeIpip4rules(
                 1,
@@ -1597,7 +1609,6 @@ def run(self):
                 splt[8],
             )
             continue
-
 
         if splt[0] == "ipip6_add":
             self.writeIpip6rules(
@@ -1639,8 +1650,6 @@ def run(self):
             )
             continue
 
-
-
         if splt[0] == "pppoe_add":
             self.writePppoeRules(
                 1,
@@ -1677,7 +1686,6 @@ def run(self):
                 splt[7],
             )
             continue
-
 
         if splt[0] == "l2tp4_add":
             self.writeL2tp4rules(
@@ -1728,7 +1736,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "l2tp6_add":
             self.writeL2tp6rules(
                 1,
@@ -1778,7 +1785,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "bridgevxlan4_add":
             self.writeVxlan4rules(
                 1,
@@ -1812,13 +1818,12 @@ def run(self):
                 splt[2],
                 splt[3],
                 splt[4],
-                    int(splt[5]),
+                int(splt[5]),
                 int(splt[6]),
                 int(splt[7]),
                 int(splt[8]),
             )
             continue
-
 
         if splt[0] == "bridgevxlan6_add":
             self.writeVxlan6rules(
@@ -1859,8 +1864,6 @@ def run(self):
                 int(splt[8]),
             )
             continue
-
-
 
         if splt[0] == "bridgepckoudp4_add":
             self.writePckoudp4rules(
@@ -1905,7 +1908,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "bridgepckoudp6_add":
             self.writePckoudp6rules(
                 1,
@@ -1948,8 +1950,6 @@ def run(self):
                 int(splt[9]),
             )
             continue
-
-
 
         if splt[0] == "inqos_add":
             self.writeInQosRules(
@@ -1999,9 +1999,6 @@ def run(self):
                 int(splt[3]),
             )
             continue
-
-
-
 
         if splt[0] == "inqos4_add":
             self.writeInQos4Rules(
@@ -2280,7 +2277,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "flowspec4_add":
             self.writeFlowspec4Rules(
                 1,
@@ -2431,8 +2427,6 @@ def run(self):
                 int(splt[20]),
             )
             continue
-
-
 
         if splt[0] == "inacl4_add":
             self.writeInAcl4Rules(
@@ -2699,7 +2693,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "mlocal4_add":
             self.writeMlocal4rules(
                 1,
@@ -2852,7 +2845,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "mlabroute4_add":
             self.writeMlabRouteRules(
                 1,
@@ -2944,7 +2936,6 @@ def run(self):
                 int(splt[9]),
             )
             continue
-
 
         if splt[0] == "duplabloc4_add":
             self.writeDupLabLocRules(
@@ -3079,7 +3070,6 @@ def run(self):
                 int(splt[7]),
             )
             continue
-
 
         if splt[0] == "bierlabel4_add":
             self.writeBierLabelRules(
@@ -3457,7 +3447,6 @@ def run(self):
             )
             continue
 
-
         if splt[0] == "polkapoly_add":
             self.writePolkaPolyRules(
                 1,
@@ -3527,12 +3516,24 @@ def run(self):
             self.setPortMTU(int(splt[1]), int(splt[2]))
             continue
         if splt[0] == "state":
-            if (self.platform == "stordis_bf2556x_1t" and int(splt[1]) in SAL_PORT_ID):
-                self._setPortAdmStatusBF2556X1T(int(splt[1]), int(splt[2]),int(splt[3]),
-                                                int(splt[4]), int(splt[5]),int(splt[6]))
+            if self.platform == "stordis_bf2556x_1t" and int(splt[1]) in SAL_PORT_ID:
+                self._setPortAdmStatusBF2556X1T(
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                )
             else:
-                self._setPortAdmStatus(int(splt[1]),int(splt[2]),int(splt[3]),
-                                       int(splt[4]),int(splt[5]),int(splt[6]))
+                self._setPortAdmStatus(
+                    int(splt[1]),
+                    int(splt[2]),
+                    int(splt[3]),
+                    int(splt[4]),
+                    int(splt[5]),
+                    int(splt[6]),
+                )
             continue
         if splt[0] == "bundlelist_add":
             self.setBundleAdmStatus(1, int(splt[1]), list(splt[2:]))
