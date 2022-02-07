@@ -49,8 +49,8 @@ int main(int argc, char **argv) {
         sscanf(argv[i], "%hhx", &origD[origS]);
         origS++;
     }
-    printf("code: %i\n", (int)((char*)&processCpuPack - (char*)&processDataPacket));
-    printf("count: %i\n", count);
+    printf("codesize: %i\n", (int)((char*)&processCpuPack - (char*)&processDataPacket));
+    printf("rounds: %i\n", count);
     hexdump(origD, 0, origS);
     ports = 1;
     cpuport = 1;
@@ -110,9 +110,11 @@ int main(int argc, char **argv) {
     double spent = (double)(end - begin) / CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
     hexdump(lastB, 0, lastS);
-    printf("pack: %li\n", packs);
-    printf("byte: %li\n", bytes);
+    printf("packets: %li\n", packs);
+    printf("bytes: %li\n", bytes);
     printf("time: %f\n", spent);
-    printf("pps: %f\n", (double)packs / spent);
-    printf("bps: %f\n", (double)bytes * 8.0 / spent);
+    double prn = (double)packs / spent;
+    printf("pps: %f, %f mpps\n", prn, prn / 1000000);
+    prn = (double)bytes * 8.0 / spent;
+    printf("bps: %f, %f gbps\n", prn, prn / 1000000000);
 }
