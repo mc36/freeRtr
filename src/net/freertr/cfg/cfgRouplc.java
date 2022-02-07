@@ -151,6 +151,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     pathlen             match as path length");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     asend               match as path end");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     asmid               match as path middle");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
         l.add(null, "2 3     bandwidth           match bandwidth");
         l.add(null, "3 .       <num>             bandwidth");
         l.add(null, "3 .       all               any value");
@@ -467,6 +473,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("pathlen")) {
             ntry.ifMode = tabRtrplcN.ifType.pathlen;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("asend")) {
+            ntry.ifMode = tabRtrplcN.ifType.asend;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("asmid")) {
+            ntry.ifMode = tabRtrplcN.ifType.asmid;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;

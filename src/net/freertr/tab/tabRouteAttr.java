@@ -1162,6 +1162,43 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * end of as path
+     *
+     * @return end of as path, -1 if none
+     */
+    public int asPathEnd() {
+        if (pathSeq == null) {
+            return -1;
+        }
+        int i = pathSeq.size();
+        if (i < 1) {
+            return -1;
+        }
+        return pathSeq.get(i - 1);
+    }
+
+    /**
+     * end of as path
+     *
+     * @param match matcher
+     * @return true on match, false if not
+     */
+    public boolean asPathMid(tabIntMatcher match) {
+        if (match.action == tabIntMatcher.actionType.always) {
+            return true;
+        }
+        if (pathSeq == null) {
+            return false;
+        }
+        for (int i = 0; i < pathSeq.size() - 1; i++) {
+            if (match.matches(pathSeq.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * convert as path to string
      *
      * @return converted string

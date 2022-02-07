@@ -629,6 +629,10 @@ public class userExec {
         hl.add(null, "7 .                <str>            int matcher");
         hl.add(null, "6 7              pathlen            list of routes with path length");
         hl.add(null, "7 .                <str>            int matcher");
+        hl.add(null, "6 7              asend              list of routes with path end");
+        hl.add(null, "7 .                <str>            int matcher");
+        hl.add(null, "6 7              asmid              list of routes with path middle");
+        hl.add(null, "7 .                <str>            int matcher");
         hl.add(null, "6 7              locpref            list of routes with locpref");
         hl.add(null, "7 .                <str>            int matcher");
         hl.add(null, "6 7              validity           list of routes with validity");

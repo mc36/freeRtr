@@ -68,6 +68,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match aigp all",
         "route-map .*! sequence .* match validity all",
         "route-map .*! sequence .* match pathlen all",
+        "route-map .*! sequence .* match asend all",
+        "route-map .*! sequence .* match asmid all",
         "route-map .*! sequence .* match bandwidth all",
         "route-map .*! sequence .* match origin all",
         "route-map .*! sequence .* match metric all",
@@ -207,6 +209,12 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "3 .       <num>             validity");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     pathlen             match as path length");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     asend               match as path end");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     asmid               match as path middle");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     bandwidth           match bandwidth");
@@ -588,6 +596,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("asend")) {
+                if (ntry.asendMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("asmid")) {
+                if (ntry.asmidMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("bandwidth")) {
                 if (ntry.bandwidthMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -913,6 +935,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("pathlen")) {
                 ntry.pathlenMatch.set2always();
+                return;
+            }
+            if (a.equals("asend")) {
+                ntry.asendMatch.set2always();
+                return;
+            }
+            if (a.equals("asmid")) {
+                ntry.asmidMatch.set2always();
                 return;
             }
             if (a.equals("bandwidth")) {
