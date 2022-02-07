@@ -2662,6 +2662,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage
 todo: p4dpdk multiseg rx/tx loop
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server

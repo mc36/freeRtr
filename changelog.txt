@@ -12869,3 +12869,5 @@ qc pass: bgp routemap filtering with asmid
 qc pass: bgp routemap filtering with asmid with soft-reconfig
 qc pass: bgp routepolicy filtering with asmid
 qc pass: bgp routepolicy filtering with asmid with soft-reconfig
+---------------------------------- 2022-02-07 22:00:35
+todo: punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage

@@ -1,3 +1,4 @@
+punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage
 p4dpdk multiseg rx/tx loop
 nat and pbr config to have reindex
 bridge security from dhcp, slaac, whatever server
