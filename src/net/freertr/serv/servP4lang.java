@@ -4772,6 +4772,9 @@ class servP4langConn implements Runnable {
         } else {
             cmd = tabListingEntry.action2string(tabListingEntry.actionType.actDeny);
         }
+        if (ace.reflectFwd != null) {
+            cmd = "punt";
+        }
         return seq + " " + cmd + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535) + " " + numat2str(ace.tos, 255) + " " + numat2str(ace.flow, ipv4 ? 65535 : 1048575);
     }
 

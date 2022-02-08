@@ -514,7 +514,7 @@ int acl6_matcher(void *ptr1, void *ptr2) {
 
 struct aclH_entry {
     int pri;
-    int act;        // 0=permit, 1=deny
+    int act;        // 0=permit, 1=deny, 2=punt
     long pack;
     long byte;
 };

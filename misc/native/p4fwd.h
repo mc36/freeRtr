@@ -1326,7 +1326,9 @@ ipv4_rx:
         if (index >= 0) {
             if (frag != 0) doPunting;
             acls_res = table_get(&acls4_table, index);
-            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
+            tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+            if (tmp == 2) doCpuing;
+            if (tmp != 0) doPunting;
         }
         acls_ntry.dir = 6;
         index = table_find(&acls4_table, &acls_ntry);
@@ -1447,7 +1449,9 @@ ipv4_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 acls_res = table_get(&acls4_table, index);
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
+                tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+                if (tmp == 2) doCpuing;
+                if (tmp != 0) doPunting;
             }
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
@@ -1566,7 +1570,9 @@ ipv6_rx:
         if (index >= 0) {
             if (frag != 0) doPunting;
             acls_res = table_get(&acls6_table, index);
-            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
+            tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+            if (tmp == 2) doCpuing;
+            if (tmp != 0) doPunting;
         }
         acls_ntry.dir = 6;
         index = table_find(&acls6_table, &acls_ntry);
@@ -1704,7 +1710,9 @@ ipv6_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 acls_res = table_get(&acls6_table, index);
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
+                tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+                if (tmp == 2) doCpuing;
+                if (tmp != 0) doPunting;
             }
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);

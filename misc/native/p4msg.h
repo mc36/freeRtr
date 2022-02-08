@@ -60,11 +60,16 @@ long readRate(char**arg) {
 }
 
 
+int readAclMod(char*arg) {
+    if (strcmp(arg, "permit") == 0) return 0;
+    if (strcmp(arg, "punt") == 0) return 2;
+    return 1;
+}
+
 void readAcl4(struct acl4_entry *acl4_ntry, char**arg) {
     unsigned char buf2[1024];
     acl4_ntry->pri = atoi(arg[2]);
-    acl4_ntry->act = strcmp(arg[3], "permit");
-    if (acl4_ntry->act != 0) acl4_ntry->act = 1;
+    acl4_ntry->act = readAclMod(arg[3]);
     acl4_ntry->protV = atoi(arg[4]);
     acl4_ntry->protM = atoi(arg[5]);
     inet_pton(AF_INET, arg[6], buf2);
@@ -90,8 +95,7 @@ void readAcl4(struct acl4_entry *acl4_ntry, char**arg) {
 void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
     unsigned char buf2[1024];
     acl6_ntry->pri = atoi(arg[2]);
-    acl6_ntry->act = strcmp(arg[3], "permit");
-    if (acl6_ntry->act != 0) acl6_ntry->act = 1;
+    acl6_ntry->act = readAclMod(arg[3]);
     acl6_ntry->protV = atoi(arg[4]);
     acl6_ntry->protM = atoi(arg[5]);
     inet_pton(AF_INET6, arg[6], buf2);
