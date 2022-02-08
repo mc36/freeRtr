@@ -166,6 +166,36 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         trgPort = new tabIntMatcher();
     }
 
+    /**
+     * copy the matcher
+     *
+     * @return a copy
+     */
+    @SuppressWarnings("unchecked")
+    public tabAceslstN<T> copyBytes() {
+        tabAceslstN<T> r = new tabAceslstN<T>(srcAddr);
+        r.srcAddr = (T) srcAddr.copyBytes();
+        r.srcMask = (T) srcMask.copyBytes();
+        r.trgAddr = (T) trgAddr.copyBytes();
+        r.trgMask = (T) trgMask.copyBytes();
+        r.proto = proto.copyBytes();
+        r.tos = tos.copyBytes();
+        r.flow = flow.copyBytes();
+        r.dscp = dscp.copyBytes();
+        r.prec = prec.copyBytes();
+        r.ttl = ttl.copyBytes();
+        r.len = len.copyBytes();
+        r.flag = flag.copyBytes();
+        r.frag = frag;
+        r.srcPort = srcPort.copyBytes();
+        r.trgPort = trgPort.copyBytes();
+        r.srcOGnet = srcOGnet;
+        r.srcOGprt = srcOGprt;
+        r.trgOGnet = trgOGnet;
+        r.trgOGprt = trgOGprt;
+        return r;
+    }
+
     private String convPart(T addr, T mask, tabIntMatcher port, tabListing<tabObjnetN<T>, T> ogNet, tabListing<tabObjprtN<T>, T> ogPrt) {
         String a = addr + " " + mask;
         if (mask.isFilled(0) && addr.isFilled(0)) {
@@ -608,15 +638,13 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         } else {
             act = ace.action;
         }
-        String str = ace.toString();
         tabAceslstN<addrIP> ntry;
         int sn = 0;
         int sp = 0;
         int dn = 0;
         int dp = 0;
         for (;;) {
-            ntry = new tabAceslstN<addrIP>(new addrIP());
-            fromString(ntry, new cmds("ace", str));
+            ntry = ace.copyBytes();
             ntry.srcOGnet = null;
             ntry.srcOGprt = null;
             ntry.trgOGnet = null;

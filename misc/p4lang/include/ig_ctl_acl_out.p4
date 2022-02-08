@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-#ifndef _EG_CTL_Acl_out_P4_
-#define _EG_CTL_Acl_out_P4_
+#ifndef _IG_CTL_Acl_out_P4_
+#define _IG_CTL_Acl_out_P4_
 
-control EgressControlAclOut(inout headers hdr,
-                            inout ingress_metadata_t eg_md,
-                            inout standard_metadata_t eg_intr_md) {
+control IngressControlAclOut(inout headers hdr,
+                             inout ingress_metadata_t ig_md,
+                             inout standard_metadata_t ig_intr_md) {
 
     direct_counter(CounterType.packets_and_bytes) stats4;
     direct_counter(CounterType.packets_and_bytes) stats6;
 
     action act_deny() {
-        eg_md.dropping = 1;
+        ig_md.dropping = 1;
     }
 
     action act_permit() {
-        eg_md.dropping = 0;
+        ig_md.dropping = 0;
+    }
+
+    action act_punt() {
+        ig_md.dropping = 2;
     }
 
 
     table tbl_ipv4_acl {
         key = {
-eg_md.aclport_id:
+ig_md.aclport_id:
             exact;
 hdr.ipv4.protocol:
             ternary;
@@ -43,9 +47,9 @@ hdr.ipv4.src_addr:
             ternary;
 hdr.ipv4.dst_addr:
             ternary;
-eg_md.layer4_srcprt:
+ig_md.layer4_srcprt:
             ternary;
-eg_md.layer4_dstprt:
+ig_md.layer4_dstprt:
             ternary;
 hdr.ipv4.diffserv:
             ternary;
@@ -55,6 +59,7 @@ hdr.ipv4.identification:
         actions = {
             act_permit;
             act_deny;
+            act_punt;
             @defaultonly NoAction;
         }
         size = IPV4_OUTACL_TABLE_SIZE;
@@ -64,7 +69,7 @@ hdr.ipv4.identification:
 
     table tbl_ipv6_acl {
         key = {
-eg_md.aclport_id:
+ig_md.aclport_id:
             exact;
 hdr.ipv6.next_hdr:
             ternary;
@@ -72,9 +77,9 @@ hdr.ipv6.src_addr:
             ternary;
 hdr.ipv6.dst_addr:
             ternary;
-eg_md.layer4_srcprt:
+ig_md.layer4_srcprt:
             ternary;
-eg_md.layer4_dstprt:
+ig_md.layer4_dstprt:
             ternary;
 hdr.ipv6.traffic_class:
             ternary;
@@ -84,6 +89,7 @@ hdr.ipv6.flow_label:
         actions = {
             act_permit;
             act_deny;
+            act_punt;
             @defaultonly NoAction;
         }
         size = IPV6_OUTACL_TABLE_SIZE;
@@ -92,14 +98,14 @@ hdr.ipv6.flow_label:
     }
 
     apply {
-        if (eg_md.ipv4_valid==1)  {
+        if (ig_md.ipv4_valid==1)  {
             tbl_ipv4_acl.apply();
         }
-        if (eg_md.ipv6_valid==1)  {
+        if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_acl.apply();
         }
     }
 }
 
-#endif // _EG_CTL_Acl_out_P4_
+#endif // _IG_CTL_Acl_out_P4_
 

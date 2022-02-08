@@ -1,4 +1,4 @@
-description p4lang: ingress reflexive access list
+description p4lang: egress reflexive access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -47,25 +47,25 @@ access-list dyn6i
 access-list dyn6o
  hidden
  exit
-access-list test4o
- seq 1 permit 1 any all any all
- seq 10 evaluate permit dyn4o
- seq 20 deny all any all any all
- exit
-access-list test6o
- seq 1 permit 58 any all any all
- seq 10 evaluate permit dyn6o
- seq 20 deny all any all any all
- exit
 access-list test4i
+ seq 1 permit 1 any all any all
  seq 10 evaluate permit dyn4i
- seq 20 permit all any all any all
- seq 20 reflect dyn4i dyn4o 30000
+ seq 20 deny all any all any all
  exit
 access-list test6i
+ seq 1 permit 58 any all any all
  seq 10 evaluate permit dyn6i
+ seq 20 deny all any all any all
+ exit
+access-list test4o
+ seq 10 evaluate permit dyn4o
  seq 20 permit all any all any all
- seq 20 reflect dyn6i dyn6o 30000
+ seq 20 reflect dyn4o dyn4i 30000
+ exit
+access-list test6o
+ seq 10 evaluate permit dyn6o
+ seq 20 permit all any all any all
+ seq 20 reflect dyn6o dyn6i 30000
  exit
 int sdn1
  vrf for v1
@@ -389,12 +389,12 @@ r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
 r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
-r3 tping 0 10 3.3.1.2 /vrf v1
-r3 tping 0 10 3.3.2.2 /vrf v1
-r4 tping 100 10 3.3.1.1 /vrf v1
-r4 tping 100 10 3.3.2.1 /vrf v1
+r4 tping 0 10 3.3.1.1 /vrf v1
+r4 tping 0 10 3.3.2.1 /vrf v1
 r3 tping 100 10 3.3.1.2 /vrf v1
 r3 tping 100 10 3.3.2.2 /vrf v1
+r4 tping 100 10 3.3.1.1 /vrf v1
+r4 tping 100 10 3.3.2.1 /vrf v1
 
 r1 dping sdn . r4 3.3.1.1 /vrf v1
 r1 dping sdn . r4 3.3.2.1 /vrf v1

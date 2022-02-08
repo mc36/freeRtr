@@ -76,6 +76,7 @@
 #include "include/ig_ctl_ipv6b.p4"
 #include "include/ig_ctl_copp.p4"
 #include "include/ig_ctl_acl_in.p4"
+#include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_nat.p4"
 #include "include/ig_ctl_pbr.p4"
 #include "include/ig_ctl_qos_in.p4"
@@ -93,7 +94,6 @@
 #include "include/eg_ctl_hairpin.p4"
 #include "include/eg_ctl_vlan_out.p4"
 #include "include/eg_ctl_nexthop.p4"
-#include "include/eg_ctl_acl_out.p4"
 #include "include/eg_ctl_qos_out.p4"
 #include "include/eg_ctl.p4"
 

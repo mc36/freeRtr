@@ -4735,7 +4735,7 @@ class servP4langConn implements Runnable {
     public String numat2str(tabIntMatcher mat, int max) {
         switch (mat.action) {
             case xact:
-                return mat.rangeMin + " " + max;
+                return (mat.rangeMin & max) + " " + max;
             case range:
                 return mat.rangeMin + " " + (max - mat.rangeMax + mat.rangeMin);
             case mask:

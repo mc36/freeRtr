@@ -88,7 +88,7 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
         match_fields={
             "ig_md.target_id": port,
         },
-        action_name="ig_ctl.ig_ctl_outport.act_set_port",
+        action_name="ig_ctl.ig_ctl_outport.act_set_port_vlan",
         action_params={
             "port": main,
         })
@@ -106,9 +106,10 @@ def writeNhop2portRules(delete, p4info_helper, ingress_sw, nhop, subif, port):
         match_fields={
             "ig_md.nexthop_id": nhop,
         },
-        action_name="ig_ctl.ig_ctl_outport.act_set_port",
+        action_name="ig_ctl.ig_ctl_outport.act_set_port_nexthop",
         action_params={
             "port": port,
+            "subif": subif,
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry3, False)
@@ -1405,18 +1406,18 @@ def writeInAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm,
 
 
 def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
-    matches={"eg_md.aclport_id": port}
+    matches={"ig_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
-    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
     add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
     add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
-        table_name="eg_ctl.eg_ctl_acl_out.tbl_ipv4_acl",
+        table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv4_acl",
         match_fields=matches,
-        action_name="eg_ctl.eg_ctl_acl_out.act_"+act,
+        action_name="ig_ctl.ig_ctl_acl_out.act_"+act,
         priority=65535-pri,
         action_params={
         })
@@ -1429,18 +1430,18 @@ def writeOutAclRules4(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm
 
 
 def writeOutAclRules6(delete, p4info_helper, ingress_sw, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
-    matches={"eg_md.aclport_id": port}
+    matches={"ig_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
-    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
     add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
     add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
     table_entry = p4info_helper.buildTableEntry(
-        table_name="eg_ctl.eg_ctl_acl_out.tbl_ipv6_acl",
+        table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv6_acl",
         match_fields=matches,
-        action_name="eg_ctl.eg_ctl_acl_out.act_"+act,
+        action_name="ig_ctl.ig_ctl_acl_out.act_"+act,
         priority=65535-pri,
         action_params={
         })

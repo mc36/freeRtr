@@ -53,6 +53,19 @@ public class tabIntMatcher {
     public int rangeMax;
 
     /**
+     * copy the matcher
+     *
+     * @return a copy
+     */
+    public tabIntMatcher copyBytes() {
+        tabIntMatcher r = new tabIntMatcher();
+        r.action = action;
+        r.rangeMin = rangeMin;
+        r.rangeMax = rangeMax;
+        return r;
+    }
+
+    /**
      * test if a value matches to this matcher
      *
      * @param i value to test

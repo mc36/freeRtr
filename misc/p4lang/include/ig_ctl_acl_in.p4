@@ -31,6 +31,10 @@ control IngressControlAclIn(inout headers hdr,
         ig_md.dropping = 0;
     }
 
+    action act_punt() {
+        ig_md.dropping = 2;
+    }
+
 
     table tbl_ipv4_acl {
         key = {
@@ -54,6 +58,7 @@ hdr.ipv4.identification:
         actions = {
             act_permit;
             act_deny;
+            act_punt;
             @defaultonly NoAction;
         }
         size = IPV4_INACL_TABLE_SIZE;
@@ -82,6 +87,7 @@ hdr.ipv6.flow_label:
         actions = {
             act_permit;
             act_deny;
+            act_punt;
             @defaultonly NoAction;
         }
         size = IPV6_INACL_TABLE_SIZE;

@@ -36,7 +36,7 @@ struct ingress_metadata_t {
     ethertype_t ethertype;
     switch_vrf_t vrf;
     bit<16> polka_next;
-    bit<1>  dropping;
+    bit<2>  dropping;
     bit<1>  punting;
     bit<1>  natted;
     bit<2>  need_recir;
