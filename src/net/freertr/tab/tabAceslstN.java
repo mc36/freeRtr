@@ -706,4 +706,23 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         return res;
     }
 
+    /**
+     * size of one list
+     *
+     * @param src source list
+     * @return number of aces
+     */
+    public static int sizeofAcl(tabListing<tabAceslstN<addrIP>, addrIP> src) {
+        int o = 0;
+        for (int i = 0; i < src.size(); i++) {
+            tabAceslstN<addrIP> ace = src.get(i);
+            if (ace.evaluate != null) {
+                o += sizeofAcl(ace.evaluate);
+            } else {
+                o++;
+            }
+        }
+        return o;
+    }
+
 }
