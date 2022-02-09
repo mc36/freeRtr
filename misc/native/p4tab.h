@@ -536,6 +536,22 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
     return res->act;
 }
 
+void* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, int acer(void *, void *)) {
+    int index = table_find(tab, ntry);
+    if (index < 0) {
+        table_add(tab, ntry);
+        index = table_find(tab, ntry);
+    }
+    void *res = table_get(tab, index);
+    struct table_head *tab3 = res + ((char*)&ntry->aces - (char*)ntry);
+    if (tab3->reclen != reclen1) table_init(tab3, reclen1, acer);
+    return res;
+}
+
+#define acls_init4() acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), &acl4_compare);
+#define acls_init6() acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), &acl6_compare);
+
+
 
 struct nat4_entry {
     int prot;
