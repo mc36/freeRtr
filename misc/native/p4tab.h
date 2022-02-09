@@ -129,6 +129,8 @@ int mpls_compare(void *ptr1, void *ptr2) {
 }
 
 
+#define mpls_init table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+
 struct portvrf_entry {
     int port;
     int command;    // 1=vrf, 2=bridge, 3=xconn
@@ -548,8 +550,8 @@ void* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, in
     return res;
 }
 
-#define acls_init4() acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), &acl4_compare);
-#define acls_init6() acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), &acl6_compare);
+#define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), &acl4_compare);
+#define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), &acl6_compare);
 
 
 
@@ -942,6 +944,9 @@ int mroute6_compare(void *ptr1, void *ptr2) {
     return 0;
 }
 
+
+#define mcast_init4 table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+#define mcast_init6 table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
 
 
 
