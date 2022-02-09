@@ -114,12 +114,6 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         if (o1.ipPrt > o2.ipPrt) {
             return +1;
         }
-        if (o1.ipTos < o2.ipTos) {
-            return -1;
-        }
-        if (o1.ipTos > o2.ipTos) {
-            return +1;
-        }
         if (o1.srcPrt < o2.srcPrt) {
             return -1;
         }
