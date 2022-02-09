@@ -174,6 +174,11 @@ public class cfgInit implements Runnable {
     public static String hwIdNum;
 
     /**
+     * hardware serial number
+     */
+    public static String hwSnNum;
+
+    /**
      * jvm parameters
      */
     public static String jvmParam = "";
@@ -362,6 +367,10 @@ public class cfgInit implements Runnable {
             s = cmd.word().toLowerCase();
             if (s.equals("hwid")) {
                 hwIdNum = cmd.getRemaining();
+                continue;
+            }
+            if (s.equals("hwsn")) {
+                hwSnNum = cmd.getRemaining();
                 continue;
             }
             if (s.equals("jvm")) {
@@ -1054,6 +1063,7 @@ public class cfgInit implements Runnable {
         if (s.startsWith("router")) {
             boolean con = false;
             boolean win = false;
+            boolean add = false;
             String hwN = args[1];
             String swN = null;
             for (int i = 6; i < s.length(); i++) {
@@ -1061,6 +1071,7 @@ public class cfgInit implements Runnable {
                 if (a.equals("s")) {
                     hwN = args[1];
                     swN = args[2];
+                    add = true;
                 }
                 if (a.equals("a")) {
                     hwN = null;
@@ -1099,6 +1110,12 @@ public class cfgInit implements Runnable {
             cfgFileHw = hwN;
             cfgFileSw = swN;
             List<String> hwT = httpGet(cfgFileHw);
+            if (add) {
+                for (int i = 3; i < args.length; i++) {
+                    List<String> lst = httpGet(args[i]);
+                    hwT.addAll(lst);
+                }
+            }
             List<String> swT = httpGet(cfgFileSw);
             doInit(hwT, swT, pipCon);
             if (pipCon != null) {
@@ -1178,7 +1195,8 @@ public class cfgInit implements Runnable {
         hlp.add(null, "2 .   <cfg>        config url");
         hlp.add(null, "1 2 routers        start router from separate configs");
         hlp.add(null, "2 3   <hwcfg>      config url");
-        hlp.add(null, "3 .     <swcfg>    config url");
+        hlp.add(null, "3 4,.   <swcfg>    config url");
+        hlp.add(null, "4 4,.     [hwcfg]  config url");
         hlp.add(null, "1 2 routera        start router with sw config only");
         hlp.add(null, "2 .   <swcfg>      config url");
         hlp.add(null, "1 2 test           execute test command");
