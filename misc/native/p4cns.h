@@ -10,7 +10,7 @@
 #ifdef basicLoop
 #define capabilities "nothing"
 #else
-#define capabilities "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka"
+#define capabilities "copp acl racl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka"
 #endif
 
 #define platformBase "p4emu/openssl/"

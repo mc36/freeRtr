@@ -1316,7 +1316,8 @@ qc pass: p4lang: policer flowspec
 qc pass: p4lang: priority flowspec
 qc pass: p4lang: ingress amt access list
 qc pass: p4lang: egress amt access list
-qc pass: p4lang: reflexive access list
+qc pass: p4lang: ingress reflexive access list
+qc pass: p4lang: egress reflexive access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -2663,7 +2664,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage
 todo: p4dpdk multiseg rx/tx loop
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server

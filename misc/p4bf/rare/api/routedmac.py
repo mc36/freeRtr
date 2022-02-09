@@ -5,7 +5,7 @@ def writeRoumacRules(self, op_type, bridge, addr, nexthop, ppp):
     # for any reason, control plane is sending a msg
     # with port=-1
 
-    if self.brdg == False:
+    if self.bridge == False:
         return
     if ppp != 0:
         return

@@ -4,7 +4,7 @@ from ..bf_gbl_env.var_env import *
 def writePppoeRules(
     self, op_type, port, phport, nexthop, vrf, ses, dmac, smac
 ):
-    if self.poe == False:
+    if self.pppoe == False:
         return
     tbl_global_path_1 = "ig_ctl.ig_ctl_pppoe"
     tbl_name_1 = "%s.tbl_pppoe" % (tbl_global_path_1)

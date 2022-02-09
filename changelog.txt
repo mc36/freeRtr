@@ -12873,3 +12873,9 @@ qc pass: bgp routepolicy filtering with asmid with soft-reconfig
 todo: punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage
 ---------------------------------- 2022-02-08 10:08:19
 qc pass: p4lang: reflexive access list
+---------------------------------- 2022-02-08 18:30:17
+no qc pass: p4lang: reflexive access list
+qc pass: p4lang: ingress reflexive access list
+qc pass: p4lang: egress reflexive access list
+---------------------------------- 2022-02-09 05:11:48
+no todo: punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage

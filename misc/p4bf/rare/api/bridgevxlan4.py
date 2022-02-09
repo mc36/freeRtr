@@ -6,7 +6,7 @@ def writeVxlan4rules(
 ):
     if self.tun == False:
         return
-    if self.brdg == False:
+    if self.bridge == False:
         return
 
     tbl_global_path_1 = "ig_ctl.ig_ctl_bridge"

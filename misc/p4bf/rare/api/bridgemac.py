@@ -7,7 +7,7 @@ def writeBrmacRules(self, op_type, bridge, addr, port):
     if port < 0:
         return
 
-    if self.brdg == False:
+    if self.bridge == False:
         return
     tbl_global_path_1 = "ig_ctl.ig_ctl_bridge"
     tbl_name_1 = "%s.tbl_bridge_learn" % (tbl_global_path_1)

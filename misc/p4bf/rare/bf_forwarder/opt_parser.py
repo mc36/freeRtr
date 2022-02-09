@@ -1,5 +1,6 @@
 from ..bf_gbl_env.var_env import *
 
+
 def get_opt_parser():
     parser = argparse.ArgumentParser(description="BfRuntime controller")
 
@@ -52,110 +53,10 @@ def get_opt_parser():
         default="pipe",
     )
     parser.add_argument(
-        "--brdg",
-        help="enable bridge",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--mpls",
-        help="enable mpls",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--srv6",
-        help="enable srv6",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--polka",
-        help="enable polka",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--nsh",
-        help="enable nsh",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--nat",
-        help="enable nat",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--pbr",
-        help="enable pbr",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--tun",
-        help="enable tunnel",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--poe",
-        help="enable pppoe",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
-        "--mcast",
-        help="enable multicast",
-        type=str2bool,
-        nargs='?',
-        const=True,
-        action="store",
-        required=False,
-        default=True,
-    )
-    parser.add_argument(
         "--snmp",
         help="enable snmp export locally",
         type=str2bool,
-        nargs='?',
+        nargs="?",
         const=True,
         action="store",
         required=False,
@@ -206,8 +107,8 @@ def get_opt_parser():
         help="Whether to suppress logging of keepalive messages",
         action="store_true",
         required=False,
-        default=False
+        default=False,
     )
     args = parser.parse_args()
-    
-    return(args)
+
+    return args

@@ -7,7 +7,7 @@ def writeBrvplsRules(self, op_type, bridge, addr, port, labtun, labsvc):
     if port < 0:
         return
 
-    if self.brdg == False:
+    if self.bridge == False:
         return
     if self.mpls == False:
         return

@@ -328,7 +328,7 @@ int main(int argc, char **argv) {
             continue;
         }
         if (p <= -6) {
-            desc_tx = r;
+            desc_rx = r;
             continue;
         }
         if (p <= -5) {

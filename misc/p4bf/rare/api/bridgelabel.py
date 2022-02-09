@@ -4,7 +4,7 @@ from ..bf_gbl_env.var_env import *
 def writeBrlabRules(self, op_type, bridge, label):
     if self.mpls == False:
         return
-    if self.brdg == False:
+    if self.bridge == False:
         return
     tbl_global_path_1 = "ig_ctl.ig_ctl_mpls"
     tbl_name_1 = "%s.tbl_mpls_fib" % (tbl_global_path_1)
