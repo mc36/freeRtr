@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.9-cur, done by cs@nop.
--;-;-;2022-02-09 18:34:19, took 00:06:33, with 100 workers, on 2666 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2022-02-09 19:52:53, took 00:08:13, with 100 workers, on 2668 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1322,6 +1322,8 @@ http://sources.nop.hu/cfg/p4lang-acl53.tst;p4lang-acl53.tst;success;p4lang: ingr
 http://sources.nop.hu/cfg/p4lang-acl54.tst;p4lang-acl54.tst;success;p4lang: egress amt access list
 http://sources.nop.hu/cfg/p4lang-acl55.tst;p4lang-acl55.tst;success;p4lang: ingress reflexive access list
 http://sources.nop.hu/cfg/p4lang-acl56.tst;p4lang-acl56.tst;success;p4lang: egress reflexive access list
+http://sources.nop.hu/cfg/p4lang-acl57.tst;p4lang-acl57.tst;success;p4lang: interface inspection with egress drop
+http://sources.nop.hu/cfg/p4lang-acl58.tst;p4lang-acl58.tst;success;p4lang: interface inspection with ingress drop
 http://sources.nop.hu/cfg/p4lang-crypt01.tst;p4lang-crypt01.tst;success;p4lang: macsec with des
 http://sources.nop.hu/cfg/p4lang-crypt02.tst;p4lang-crypt02.tst;success;p4lang: macsec with 3des
 http://sources.nop.hu/cfg/p4lang-crypt03.tst;p4lang-crypt03.tst;success;p4lang: macsec with aes128cbc

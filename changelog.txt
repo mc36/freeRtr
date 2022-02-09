@@ -12881,3 +12881,6 @@ qc pass: p4lang: egress reflexive access list
 no todo: punt ace mode to the dataplanes, use it for reflexive acls, consider for ip inspect usage
 ---------------------------------- 2022-02-09 11:29:32
 todo: rtr-hw2.txt, hwsn knob
+---------------------------------- 2022-02-09 19:44:39
+qc pass: p4lang: interface inspection with egress drop
+qc pass: p4lang: interface inspection with ingress drop
