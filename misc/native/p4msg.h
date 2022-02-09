@@ -206,6 +206,10 @@ int doOneCommand(unsigned char* buf) {
     memset(&nat4_ntry, 0, sizeof(nat4_ntry));
     struct nat6_entry nat6_ntry;
     memset(&nat6_ntry, 0, sizeof(nat6_ntry));
+    struct insp4_entry insp4_ntry;
+    memset(&insp4_ntry, 0, sizeof(insp4_ntry));
+    struct insp6_entry insp6_ntry;
+    memset(&insp6_ntry, 0, sizeof(insp6_ntry));
     struct bundle_entry bundle_ntry;
     memset(&bundle_ntry, 0, sizeof(bundle_ntry));
     struct bundle_entry *bundle_res;
@@ -1089,6 +1093,42 @@ int doOneCommand(unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
         if (del == 0) table_del(&vrf2rib_res->nat, &nat6_ntry);
         else table_add(&vrf2rib_res->nat, &nat6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "inspect4") == 0) {
+        acls_ntry.dir = 1;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
+        insp4_ntry.prot = atoi(arg[3]);
+        inet_pton(AF_INET, arg[4], buf2);
+        insp4_ntry.srcAddr = get32msb(buf2, 0);
+        insp4_ntry.srcPort = atoi(arg[5]);
+        inet_pton(AF_INET, arg[6], buf2);
+        insp4_ntry.trgAddr = get32msb(buf2, 0);
+        insp4_ntry.trgPort = atoi(arg[7]);
+        if (del == 0) table_del(acls_res->insp, &insp4_ntry);
+        else table_add(acls_res->insp, &insp4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "inspect6") == 0) {
+        acls_ntry.dir = 1;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
+        insp6_ntry.prot = atoi(arg[3]);
+        inet_pton(AF_INET6, arg[4], buf2);
+        insp6_ntry.srcAddr1 = get32msb(buf2, 0);
+        insp6_ntry.srcAddr2 = get32msb(buf2, 4);
+        insp6_ntry.srcAddr3 = get32msb(buf2, 8);
+        insp6_ntry.srcAddr4 = get32msb(buf2, 12);
+        insp6_ntry.srcPort = atoi(arg[5]);
+        inet_pton(AF_INET6, arg[6], buf2);
+        insp6_ntry.trgAddr1 = get32msb(buf2, 0);
+        insp6_ntry.trgAddr2 = get32msb(buf2, 4);
+        insp6_ntry.trgAddr3 = get32msb(buf2, 8);
+        insp6_ntry.trgAddr4 = get32msb(buf2, 12);
+        insp6_ntry.trgPort = atoi(arg[7]);
+        if (del == 0) table_del(acls_res->insp, &insp6_ntry);
+        else table_add(acls_res->insp, &insp6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inqos") == 0) {
@@ -2206,6 +2246,40 @@ void doStatRount_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
     }
 }
 
+void doStatRount_insp4(struct table_head *ntry1, int port, FILE *commands) {
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<ntry1->size; i++) {
+        struct insp4_entry *ntry2 = table_get(ntry1, i);
+        put32msb(buf, 0, ntry2->srcAddr);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry2->trgAddr);
+        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "inspect4_cnt %i %i %s %s %i %i %li %li %li %li\r\n", port, ntry2->prot, (char*)&buf2[0], (char*)&buf3[0], ntry2->srcPort, ntry2->trgPort, ntry2->packRx, ntry2->byteRx, ntry2->packTx, ntry2->byteTx);
+    }
+}
+
+void doStatRount_insp6(struct table_head *ntry1, int port, FILE *commands) {
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    for (int i=0; i<ntry1->size; i++) {
+        struct insp6_entry *ntry2 = table_get(ntry1, i);
+        put32msb(buf, 0, ntry2->srcAddr1);
+        put32msb(buf, 4, ntry2->srcAddr2);
+        put32msb(buf, 8, ntry2->srcAddr3);
+        put32msb(buf, 12, ntry2->srcAddr4);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+        put32msb(buf, 0, ntry2->trgAddr1);
+        put32msb(buf, 4, ntry2->trgAddr2);
+        put32msb(buf, 8, ntry2->trgAddr3);
+        put32msb(buf, 12, ntry2->trgAddr4);
+        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+        fprintf(commands, "inspect6_cnt %i %i %s %s %i %i %li %li %li %li\r\n", port, ntry2->prot, (char*)&buf2[0], (char*)&buf3[0], ntry2->srcPort, ntry2->trgPort, ntry2->packRx, ntry2->byteRx, ntry2->packTx, ntry2->byteTx);
+    }
+}
+
 void doStatRound(FILE *commands, int round) {
     punts = 10;
     for (int i = 0; i < policer_table.size; i++) {
@@ -2282,10 +2356,12 @@ void doStatRound(FILE *commands, int round) {
     for (int i=0; i<acls4_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls4_table, i);
         doStatRount_acl(ntry1, 4, commands);
+        if (ntry1->dir < 3) doStatRount_insp4(ntry1->insp, ntry1->port, commands);
     }
     for (int i=0; i<acls6_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls6_table, i);
         doStatRount_acl(ntry1, 6, commands);
+        if (ntry1->dir < 3) doStatRount_insp6(ntry1->insp, ntry1->port, commands);
     }
 #endif
     fflush(commands);

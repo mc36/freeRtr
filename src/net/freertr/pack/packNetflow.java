@@ -8,6 +8,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabSessionEntry;
+import net.freertr.util.counter;
 
 /**
  * netflow (rfc3954) packet
@@ -137,8 +138,8 @@ public class packNetflow {
     }
 
     private void putFlow(packHolder pck, tabSessionEntry conn) {
-        pck.msbPutD(0, (int) (conn.txPack + conn.rxPack)); // packets
-        pck.msbPutD(4, (int) (conn.txByte + conn.rxByte)); // bytes
+        pck.msbPutD(0, (int) (conn.cntr.packTx + conn.cntr.packRx)); // packets
+        pck.msbPutD(4, (int) (conn.cntr.byteTx + conn.cntr.byteRx)); // bytes
         pck.putSkip(8);
         if (ipv4) {
             pck.putAddr(0, conn.srcAdr.toIPv4()); // src
@@ -226,8 +227,9 @@ public class packNetflow {
                     break;
                 }
                 tabSessionEntry ntry = new tabSessionEntry(false);
-                ntry.rxPack = pck.msbGetD(tmp.oPck);
-                ntry.rxByte = pck.msbGetD(tmp.oByt);
+                ntry.cntr = new counter();
+                ntry.cntr.packRx = pck.msbGetD(tmp.oPck);
+                ntry.cntr.byteRx = pck.msbGetD(tmp.oByt);
                 ntry.srcPrt = pck.msbGetW(tmp.oUsrc);
                 ntry.trgPrt = pck.msbGetW(tmp.oUtrg);
                 ntry.ipPrt = pck.getByte(tmp.oPrt);

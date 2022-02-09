@@ -5,6 +5,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
+import net.freertr.util.counter;
 
 /**
  * session entry
@@ -49,24 +50,14 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
     public int trgPrt;
 
     /**
-     * received bytes
+     * counter
      */
-    public long rxByte;
+    public counter cntr;
 
     /**
-     * transmitted bytes
+     * hardware counter
      */
-    public long txByte;
-
-    /**
-     * received packets
-     */
-    public long rxPack;
-
-    /**
-     * transmitted packets
-     */
-    public long txPack;
+    public counter hwCntr;
 
     /**
      * session started
@@ -147,10 +138,10 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         n.ipFlw = ipFlw;
         n.srcPrt = srcPrt;
         n.trgPrt = trgPrt;
-        n.rxByte = rxByte;
-        n.txByte = txByte;
-        n.rxPack = rxPack;
-        n.txPack = txPack;
+        n.cntr = cntr.copyBytes();
+        if (hwCntr != null) {
+            n.hwCntr = hwCntr.copyBytes();
+        }
         n.startTime = startTime;
         n.lastTime = lastTime;
         n.dir = dir;
@@ -173,6 +164,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
      */
     public static tabSessionEntry fromPack(packHolder pck, boolean macs) {
         tabSessionEntry ses = new tabSessionEntry(macs);
+        ses.cntr = new counter();
         ses.ipPrt = pck.IPprt;
         ses.ipTos = pck.IPtos;
         ses.ipFlw = pck.IPid;
@@ -205,6 +197,8 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         n.ipPrt = ipPrt;
         n.ipTos = ipTos;
         n.ipFlw = ipFlw;
+        n.cntr = cntr;
+        n.hwCntr = hwCntr;
         return n;
     }
 
@@ -215,10 +209,10 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
      */
     public tabSessionEntry reverseCounts() {
         tabSessionEntry n = new tabSessionEntry(logMacs);
-        n.rxByte = txByte;
-        n.txByte = rxByte;
-        n.rxPack = txPack;
-        n.txPack = rxPack;
+        n.cntr = cntr.reverse();
+        if (hwCntr != null) {
+            n.hwCntr = hwCntr.reverse();
+        }
         return n;
     }
 
@@ -226,10 +220,10 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
      * clear counters
      */
     public void clearCounts() {
-        rxByte = 0;
-        txByte = 0;
-        rxPack = 0;
-        txPack = 0;
+        cntr = new counter();
+        if (hwCntr != null) {
+            hwCntr = new counter();
+        }
     }
 
     /**
@@ -238,10 +232,13 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
      * @param old where from
      */
     public void addCounts(tabSessionEntry old) {
-        rxByte += old.rxByte;
-        txByte += old.txByte;
-        rxPack += old.rxPack;
-        txPack += old.txPack;
+        cntr = cntr.plus(old.cntr);
+        if (old.hwCntr != null) {
+            if (hwCntr == null) {
+                hwCntr = new counter();
+            }
+            hwCntr = hwCntr.plus(old.hwCntr);
+        }
     }
 
     private String getSrc(String sep) {
@@ -262,7 +259,13 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
 
     public String toString() {
         String s;
-        s = getDir() + " " + ipPrt + " " + getSrc(" ") + " -> " + getTrg(" ") + " (" + rxByte + "/" + txByte + "/" + getDur() + ")";
+        String hr = "";
+        String ht = "";
+        if (hwCntr != null) {
+            hr = "+" + hwCntr.byteRx;
+            ht = "+" + hwCntr.byteTx;
+        }
+        s = getDir() + " " + ipPrt + " " + getSrc(" ") + " -> " + getTrg(" ") + " (" + cntr.byteRx + hr + "/" + cntr.byteTx + ht + "/" + getDur() + ")";
         if (!logMacs) {
             return s;
         }
@@ -277,7 +280,17 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
      */
     public String dump() {
         String s;
-        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + rxPack + "|" + txPack + "|" + rxByte + "|" + txByte + "|" + getDur();
+        String hpr = "";
+        String hpt = "";
+        String hbr = "";
+        String hbt = "";
+        if (hwCntr != null) {
+            hpr = "+" + hwCntr.packRx;
+            hpt = "+" + hwCntr.packTx;
+            hbr = "+" + hwCntr.byteRx;
+            hbt = "+" + hwCntr.byteTx;
+        }
+        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + cntr.packRx + hpr + "|" + cntr.packTx + hpt + "|" + cntr.byteRx + hbr + "|" + cntr.byteTx + hbt + "|" + getDur();
         if (!logMacs) {
             return s;
         }

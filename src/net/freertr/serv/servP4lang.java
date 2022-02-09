@@ -1413,6 +1413,48 @@ class servP4langConn implements Runnable {
         ntry.reverse.lastUsed = ntry.lastUsed;
     }
 
+    private void updateInsp(cmds cmd, tabSession insp) {
+        if (insp == null) {
+            if (debugger.servP4langErr) {
+                logger.debug("got unneeded report: " + cmd.getOriginal());
+            }
+            return;
+        }
+        tabSessionEntry ntry = new tabSessionEntry(false);
+        ntry.ipPrt = bits.str2num(cmd.word());
+        ntry.srcAdr = new addrIP();
+        ntry.srcAdr.fromString(cmd.word());
+        ntry.trgAdr = new addrIP();
+        ntry.trgAdr.fromString(cmd.word());
+        ntry.srcPrt = bits.str2num(cmd.word());
+        ntry.trgPrt = bits.str2num(cmd.word());
+        tabSessionEntry res = insp.connects.find(ntry);
+        if (res == null) {
+            ntry = ntry.reverseDirection();
+            res = insp.connects.find(ntry);
+            if (res == null) {
+                if (debugger.servP4langErr) {
+                    logger.debug("got unneeded report: " + cmd.getOriginal());
+                }
+                return;
+            }
+        }
+        ntry = res;
+        counter old = ntry.hwCntr;
+        ntry.hwCntr = new counter();
+        ntry.hwCntr.packRx = bits.str2long(cmd.word());
+        ntry.hwCntr.byteRx = bits.str2long(cmd.word());
+        ntry.hwCntr.packTx = bits.str2long(cmd.word());
+        ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+        if (old == null) {
+            old = new counter();
+        }
+        if (old.compare(old, ntry.hwCntr) == 0) {
+            return;
+        }
+        ntry.lastTime = bits.getTime();
+    }
+
     private void updateMroute(cmds cmd, ipFwd fwd) {
         addrIP src = new addrIP();
         src.fromString(cmd.word());
@@ -1621,6 +1663,30 @@ class servP4langConn implements Runnable {
                     return false;
                 }
                 updateTrans(cmd, vrf.vrf.fwd6);
+                return false;
+            }
+            if (s.equals("inspect4_cnt")) {
+                servP4langIfc ifc = new servP4langIfc(bits.str2num(cmd.word()));
+                ifc = lower.expIfc.find(ifc);
+                if (ifc == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateInsp(cmd, ifc.ifc.fwdIf4.inspect);
+                return false;
+            }
+            if (s.equals("inspect6_cnt")) {
+                servP4langIfc ifc = new servP4langIfc(bits.str2num(cmd.word()));
+                ifc = lower.expIfc.find(ifc);
+                if (ifc == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                updateInsp(cmd, ifc.ifc.fwdIf6.inspect);
                 return false;
             }
             if (s.equals("macsec_cnt")) {
@@ -4847,9 +4913,9 @@ class servP4langConn implements Runnable {
 
     private String sess2str(tabSessionEntry ntry) {
         if (ntry.dir) {
-            return ntry.ipPrt + " " + ntry.srcAdr + " " + ntry.srcPrt + " " + ntry.trgAdr + " " + ntry.trgPrt;
-        } else {
             return ntry.ipPrt + " " + ntry.trgAdr + " " + ntry.trgPrt + " " + ntry.srcAdr + " " + ntry.srcPrt;
+        } else {
+            return ntry.ipPrt + " " + ntry.srcAdr + " " + ntry.srcPrt + " " + ntry.trgAdr + " " + ntry.trgPrt;
         }
     }
 

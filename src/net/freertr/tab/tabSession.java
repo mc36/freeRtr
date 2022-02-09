@@ -14,6 +14,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.counter;
 import net.freertr.util.logger;
 
 /**
@@ -407,8 +408,7 @@ public class tabSession implements Runnable {
         int i = pck.dataSize();
         pck.getSkip(pck.IPsiz);
         tabQos.classifyLayer4(pck);
-        int o = pck.dataSize();
-        pck.getSkip(o - i);
+        pck.getSkip(pck.dataSize() - i);
         tabSessionEntry ses = tabSessionEntry.fromPack(pck, logMacs);
         ses.dir = dir;
         ses = doSess(ses, pck, dir);
@@ -416,11 +416,9 @@ public class tabSession implements Runnable {
             return true;
         }
         if (dir) {
-            ses.txByte += o;
-            ses.txPack++;
+            ses.cntr.tx(pck);
         } else {
-            ses.rxByte += o;
-            ses.rxPack++;
+            ses.cntr.rx(pck);
         }
         return false;
     }
@@ -464,24 +462,28 @@ public class tabSession implements Runnable {
             if (cur == null) {
                 continue;
             }
-            updateTalker(ept, cur.srcAdr, cur.rxByte, cur.txByte, cur.rxPack, cur.txPack, cur.startTime);
-            updateTalker(ept, cur.trgAdr, cur.rxByte, cur.txByte, cur.rxPack, cur.txPack, cur.startTime);
+            updateTalker(ept, cur.srcAdr, cur.cntr, cur.hwCntr, cur.startTime);
+            updateTalker(ept, cur.trgAdr, cur.cntr, cur.hwCntr, cur.startTime);
         }
         return ept;
     }
 
-    private void updateTalker(tabGen<tabSessionEndpoint> ept, addrIP adr, long rxb, long txb, long rxp, long txp, long tim) {
+    private void updateTalker(tabGen<tabSessionEndpoint> ept, addrIP adr, counter cntr, counter hwCntr, long tim) {
         tabSessionEndpoint ntry = new tabSessionEndpoint();
         ntry.adr = adr.copyBytes();
         tabSessionEndpoint res = ept.find(ntry);
         if (res == null) {
             res = ntry;
             ept.add(res);
+            ntry.cntr = new counter();
         }
-        res.rxb += rxb;
-        res.txb += txb;
-        res.rxp += rxp;
-        res.txp += txp;
+        res.cntr = res.cntr.plus(cntr);
+        if (hwCntr != null) {
+            if (res.hwCntr == null) {
+                res.hwCntr = new counter();
+            }
+            res.hwCntr = res.hwCntr.plus(hwCntr);
+        }
         if ((res.tim == 0) || (res.tim > tim)) {
             res.tim = tim;
         }
@@ -597,18 +599,24 @@ class tabSessionEndpoint implements Comparator<tabSessionEndpoint> {
 
     public addrIP adr;
 
-    public long rxb;
+    public counter cntr;
 
-    public long txb;
-
-    public long rxp;
-
-    public long txp;
+    public counter hwCntr;
 
     public long tim;
 
     public String dump() {
-        return adr + "|" + rxp + "|" + txp + "|" + rxb + "|" + txb + "|" + bits.timePast(tim);
+        String hpr = "";
+        String hpt = "";
+        String hbr = "";
+        String hbt = "";
+        if (hwCntr != null) {
+            hpr = "+" + hwCntr.packRx;
+            hpt = "+" + hwCntr.packTx;
+            hbr = "+" + hwCntr.byteRx;
+            hbt = "+" + hwCntr.byteTx;
+        }
+        return adr + "|" + cntr.packRx + hpr + "|" + cntr.packTx + hpt + "|" + cntr.byteRx + hbr + "|" + cntr.byteTx + hbt + "|" + bits.timePast(tim);
     }
 
     public int compare(tabSessionEndpoint o1, tabSessionEndpoint o2) {

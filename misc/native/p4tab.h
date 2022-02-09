@@ -182,20 +182,20 @@ int vrf2rib_compare(void *ptr1, void *ptr2) {
 }
 
 
-void* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int masker(void*), int bitter(void*, int), int natter(void *, void *), int tunner(void *, void *), int mcaster(void *, void *)) {
+struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int masker(void*), int bitter(void*, int), int natter(void *, void *), int tunner(void *, void *), int mcaster(void *, void *)) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
         index = table_find(tab, ntry);
     }
-    void *res = table_get(tab, index);
-    struct tree_head *tab2 = res + ((char*)&ntry->rou - (char*)ntry);
+    struct vrf2rib_entry* res = table_get(tab, index);
+    struct tree_head *tab2 = &res->rou;
     if (tab2->reclen != reclen1) tree_init(tab2, reclen1, masker, bitter);
-    struct table_head *tab3 = res + ((char*)&ntry->nat - (char*)ntry);
+    struct table_head *tab3 = &res->nat;
     if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
-    tab3 = res + ((char*)&ntry->tun - (char*)ntry);
+    tab3 = &res->tun;
     if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
-    tab3 = res + ((char*)&ntry->mcst - (char*)ntry);
+    tab3 = &res->mcst;
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
     return res;
 }
@@ -389,6 +389,7 @@ struct acls_entry {
     int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos, 8=flwspc
     int port;
     struct table_head aces;
+    struct table_head *insp;
     int cmd; // 1=normal, 2=setvrf, 3=sethop, 4=setlab
     int vrf;
     int hop;
@@ -538,22 +539,49 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
     return res->act;
 }
 
-void* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, int acer(void *, void *)) {
+struct acls_entry* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer(void *, void *), int insper(void *, void *)) {
     int index = table_find(tab, ntry);
+    int oidx = index;
     if (index < 0) {
         table_add(tab, ntry);
         index = table_find(tab, ntry);
     }
-    void *res = table_get(tab, index);
-    struct table_head *tab3 = res + ((char*)&ntry->aces - (char*)ntry);
+    struct acls_entry *res = table_get(tab, index);
+    if ((ntry->dir < 3) && (oidx < 0)) {
+        ntry->dir = 3 - ntry->dir;
+        index = table_find(tab, ntry);
+        if (index >= 0) {
+            struct acls_entry *oth = table_get(tab, index);
+            res->insp = oth->insp;
+        }
+        ntry->dir = 3 - ntry->dir;
+    }
+    struct table_head *tab3 = &res->aces;
     if (tab3->reclen != reclen1) table_init(tab3, reclen1, acer);
+    if (res->insp == NULL) {
+        res->insp = malloc(sizeof(struct table_head));
+        if (res->insp == NULL) err("error allocating memory");
+        table_init(res->insp, reclen2, insper);
+    }
     return res;
 }
 
-#define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), &acl4_compare);
-#define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), &acl6_compare);
+#define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), sizeof(struct insp4_entry), &acl4_compare, &nat4_compare);
+#define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), sizeof(struct insp6_entry), &acl6_compare, &nat6_compare);
 
 
+
+struct insp4_entry {
+    int prot;
+    int srcAddr;
+    int trgAddr;
+    int srcPort;
+    int trgPort;
+    long packRx;
+    long byteRx;
+    long packTx;
+    long byteTx;
+};
 
 struct nat4_entry {
     int prot;
@@ -587,6 +615,25 @@ int nat4_compare(void *ptr1, void *ptr2) {
     return 0;
 }
 
+
+
+struct insp6_entry {
+    int prot;
+    int srcAddr1;
+    int srcAddr2;
+    int srcAddr3;
+    int srcAddr4;
+    int trgAddr1;
+    int trgAddr2;
+    int trgAddr3;
+    int trgAddr4;
+    int srcPort;
+    int trgPort;
+    long packRx;
+    long byteRx;
+    long packTx;
+    long byteTx;
+};
 
 struct nat6_entry {
     int prot;

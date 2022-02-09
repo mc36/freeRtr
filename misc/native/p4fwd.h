@@ -1044,6 +1044,8 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct acls_entry acls_ntry;
     struct acl4_entry acl4_ntry;
     struct acl6_entry acl6_ntry;
+    struct insp4_entry insp4_ntry;
+    struct insp6_entry insp6_ntry;
     struct nat4_entry nat4_ntry;
     struct nat6_entry nat6_ntry;
     struct pppoe_entry pppoe_ntry;
@@ -1067,6 +1069,8 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct bridge_entry *bridge_res = NULL;
     struct acls_entry *acls_res = NULL;
     struct aclH_entry *aceh_res = NULL;
+    struct insp4_entry *insp4_res = NULL;
+    struct insp6_entry *insp6_res = NULL;
     struct nat4_entry *nat4_res = NULL;
     struct nat6_entry *nat6_res = NULL;
     struct pppoe_entry *pppoe_res = NULL;
@@ -1326,9 +1330,21 @@ ipv4_rx:
         if (index >= 0) {
             if (frag != 0) doPunting;
             acls_res = table_get(&acls4_table, index);
-            tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
-            if (tmp == 2) doCpuing;
-            if (tmp != 0) doPunting;
+            insp4_ntry.prot = acl4_ntry.protV;
+            insp4_ntry.srcAddr = acl4_ntry.srcAddr;
+            insp4_ntry.trgAddr = acl4_ntry.trgAddr;
+            insp4_ntry.srcPort = acl4_ntry.srcPortV;
+            insp4_ntry.trgPort = acl4_ntry.trgPortV;
+            index = table_find(acls_res->insp, &insp4_ntry);
+            if (index < 0) {
+                tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+                if (tmp == 2) doCpuing;
+                if (tmp != 0) doPunting;
+            } else {
+                insp4_res = table_get(acls_res->insp, index);
+                insp4_res->packRx++;
+                insp4_res->byteRx += bufS;
+            }
         }
         acls_ntry.dir = 6;
         index = table_find(&acls4_table, &acls_ntry);
@@ -1449,9 +1465,21 @@ ipv4_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 acls_res = table_get(&acls4_table, index);
-                tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
-                if (tmp == 2) doCpuing;
-                if (tmp != 0) doPunting;
+                insp4_ntry.prot = acl4_ntry.protV;
+                insp4_ntry.trgAddr = acl4_ntry.srcAddr;
+                insp4_ntry.srcAddr = acl4_ntry.trgAddr;
+                insp4_ntry.trgPort = acl4_ntry.srcPortV;
+                insp4_ntry.srcPort = acl4_ntry.trgPortV;
+                index = table_find(acls_res->insp, &insp4_ntry);
+                if (index < 0) {
+                    tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+                    if (tmp == 2) doCpuing;
+                    if (tmp != 0) doPunting;
+                } else {
+                    insp4_res = table_get(acls_res->insp, index);
+                    insp4_res->packTx++;
+                    insp4_res->byteTx += bufS;
+                }
             }
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
@@ -1570,9 +1598,27 @@ ipv6_rx:
         if (index >= 0) {
             if (frag != 0) doPunting;
             acls_res = table_get(&acls6_table, index);
-            tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
-            if (tmp == 2) doCpuing;
-            if (tmp != 0) doPunting;
+            insp6_ntry.prot = acl6_ntry.protV;
+            insp6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
+            insp6_ntry.srcAddr2 = acl6_ntry.srcAddr2;
+            insp6_ntry.srcAddr3 = acl6_ntry.srcAddr3;
+            insp6_ntry.srcAddr4 = acl6_ntry.srcAddr4;
+            insp6_ntry.trgAddr1 = acl6_ntry.trgAddr1;
+            insp6_ntry.trgAddr2 = acl6_ntry.trgAddr2;
+            insp6_ntry.trgAddr3 = acl6_ntry.trgAddr3;
+            insp6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
+            insp6_ntry.srcPort = acl6_ntry.srcPortV;
+            insp6_ntry.trgPort = acl6_ntry.trgPortV;
+            index = table_find(acls_res->insp, &insp6_ntry);
+            if (index < 0) {
+                tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+                if (tmp == 2) doCpuing;
+                if (tmp != 0) doPunting;
+            } else {
+                insp6_res = table_get(acls_res->insp, index);
+                insp6_res->packRx++;
+                insp6_res->byteRx += bufS;
+            }
         }
         acls_ntry.dir = 6;
         index = table_find(&acls6_table, &acls_ntry);
@@ -1710,9 +1756,27 @@ ipv6_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 acls_res = table_get(&acls6_table, index);
-                tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
-                if (tmp == 2) doCpuing;
-                if (tmp != 0) doPunting;
+                insp6_ntry.prot = acl6_ntry.protV;
+                insp6_ntry.trgAddr1 = acl6_ntry.srcAddr1;
+                insp6_ntry.trgAddr2 = acl6_ntry.srcAddr2;
+                insp6_ntry.trgAddr3 = acl6_ntry.srcAddr3;
+                insp6_ntry.trgAddr4 = acl6_ntry.srcAddr4;
+                insp6_ntry.srcAddr1 = acl6_ntry.trgAddr1;
+                insp6_ntry.srcAddr2 = acl6_ntry.trgAddr2;
+                insp6_ntry.srcAddr3 = acl6_ntry.trgAddr3;
+                insp6_ntry.srcAddr4 = acl6_ntry.trgAddr4;
+                insp6_ntry.trgPort = acl6_ntry.srcPortV;
+                insp6_ntry.srcPort = acl6_ntry.trgPortV;
+                index = table_find(acls_res->insp, &insp6_ntry);
+                if (index < 0) {
+                    tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+                    if (tmp == 2) doCpuing;
+                    if (tmp != 0) doPunting;
+                } else {
+                    insp6_res = table_get(acls_res->insp, index);
+                    insp6_res->packTx++;
+                    insp6_res->byteTx += bufS;
+                }
             }
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);

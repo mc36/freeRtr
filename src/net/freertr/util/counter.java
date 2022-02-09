@@ -501,6 +501,24 @@ public class counter implements Comparator<counter> {
     }
 
     /**
+     * reverse values
+     *
+     * @return reversed counter
+     */
+    public counter reverse() {
+        counter res = new counter();
+        res.packRx = packTx;
+        res.packTx = packRx;
+        res.byteRx = byteTx;
+        res.byteTx = byteRx;
+        res.packDr = packDr;
+        res.byteDr = byteDr;
+        res.stateChg = stateChg;
+        res.lastChgd = lastChgd;
+        return res;
+    }
+
+    /**
      * convert counter to displayable text
      *
      * @param promisc promiscous state
