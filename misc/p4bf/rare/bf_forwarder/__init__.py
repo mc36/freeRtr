@@ -20,6 +20,7 @@ class BfForwarder(Thread, RareApi):
         self.name = name
         self.platform = platform
         self.bfgc = bfgc
+        self.salgc = salgc
         self.no_log_keepalive = no_log_keepalive
         self.die = False
         self.hairpins = []
