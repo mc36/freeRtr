@@ -1,6 +1,6 @@
-config iface-eth1
-config/interface/ethernet1
-freertr-iface-eth1
+config iface-lo1
+config/interface/loopback1
+freertr-iface-lo1
 interface loopback187156390
 !
  exit

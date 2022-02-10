@@ -1,8 +1,8 @@
 config iface-sdn1
 config/interface/sdn1
 freertr-iface-sdn1
-interface loopback187156390
+interface sdn187156390
 !
  exit
-no interface loopback187156390
+no interface sdn187156390
 .
