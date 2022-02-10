@@ -300,6 +300,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public List<tabLargeComm> lrgCommSet;
 
     /**
+     * cluster list updater
+     */
+    public boolean clstLstClear;
+
+    /**
      * community matcher
      */
     public boolean noStdComm;
@@ -826,7 +831,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, !logMatch, beg, "log", "");
         cmds.cfgLine(l, !stdCommClear, beg, "clear stdcomm", "");
         cmds.cfgLine(l, !extCommClear, beg, "clear extcomm", "");
-        cmds.cfgLine(l, !extCommClear, beg, "clear lrgcomm", "");
+        cmds.cfgLine(l, !lrgCommClear, beg, "clear lrgcomm", "");
+        cmds.cfgLine(l, !clstLstClear, beg, "clear clustlist", "");
         cmds.cfgLine(l, !privasClear, beg, "clear privateas", "");
         cmds.cfgLine(l, !peerasClear, beg, "clear peeras", "");
         cmds.cfgLine(l, exactasClear == 0, beg, "clear exactas", "" + bits.num2str(exactasClear));
@@ -1090,6 +1096,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (lrgCommClear) {
             attr.lrgComm = null;
+        }
+        if (clstLstClear) {
+            attr.clustList = null;
         }
         if (privasClear) {
             rtrBgpUtil.removePrivateAs(attr.pathSeq);

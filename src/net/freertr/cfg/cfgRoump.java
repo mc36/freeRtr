@@ -84,6 +84,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no clear stdcomm",
         "route-map .*! sequence .* no clear extcomm",
         "route-map .*! sequence .* no clear lrgcomm",
+        "route-map .*! sequence .* no clear clustlist",
         "route-map .*! sequence .* no clear privateas",
         "route-map .*! sequence .* no clear peeras",
         "route-map .*! sequence .* no clear exactas",
@@ -265,6 +266,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 .     stdcomm             clear standard community");
         l.add(null, "2 .     extcomm             clear extended community");
         l.add(null, "2 .     lrgcomm             clear large community");
+        l.add(null, "2 .     clustlist           clear cluster list");
         l.add(null, "2 .     privateas           clear private asn");
         l.add(null, ".2 .    peeras              clear peer asn");
         l.add(null, ".2 3    exactas             clear exact asn");
@@ -670,6 +672,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.lrgCommClear = true;
                 return;
             }
+            if (a.equals("clustlist")) {
+                ntry.clstLstClear = true;
+                return;
+            }
             if (a.equals("privateas")) {
                 ntry.privasClear = true;
                 return;
@@ -985,6 +991,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.lrgCommClear = false;
+                return;
+            }
+            if (a.equals("clustlist")) {
+                ntry.clstLstClear = false;
                 return;
             }
             if (a.equals("privateas")) {

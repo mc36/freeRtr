@@ -212,6 +212,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 .     stdcomm             clear standard community");
         l.add(null, "2 .     extcomm             clear extended community");
         l.add(null, "2 .     lrgcomm             clear large community");
+        l.add(null, "2 .     clustlist           clear cluster list");
         l.add(null, "2 .     privateas           clear private asn");
         l.add(null, ".2 .    peeras              clear peer asn");
         l.add(null, ".2 3    exactas             clear exact asn");
@@ -689,6 +690,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.doMode = tabRtrplcN.doType.clrLrgcomm;
+                return;
+            }
+            if (a.equals("clustlist")) {
+                ntry.doMode = tabRtrplcN.doType.clrClstlst;
                 return;
             }
             if (a.equals("privateas")) {

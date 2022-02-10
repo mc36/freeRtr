@@ -82,6 +82,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         clrLrgcomm,
         /**
+         * clear clstlst
+         */
+        clrClstlst,
+        /**
          * clear privas
          */
         clrPrivas,
@@ -447,6 +451,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return bits.str2lst(beg + "clear extcomm");
             case clrLrgcomm:
                 return bits.str2lst(beg + "clear lrgcomm");
+            case clrClstlst:
+                return bits.str2lst(beg + "clear clustlist");
             case clrPrivas:
                 return bits.str2lst(beg + "clear privateas");
             case clrPeeras:
@@ -744,6 +750,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case clrLrgcomm:
                 attr.lrgComm = null;
+                return;
+            case clrClstlst:
+                attr.clustList = null;
                 return;
             case clrPrivas:
                 rtrBgpUtil.removePrivateAs(attr.pathSeq);
