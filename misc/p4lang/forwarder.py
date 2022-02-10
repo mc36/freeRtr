@@ -1553,6 +1553,88 @@ def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writeInspectRules4(delete, p4info_helper, ingress_sw, port, proto, sa, sp, ta, tp):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv4_insp",
+        match_fields={
+            "ig_md.source_id": port,
+            "hdr.ipv4.protocol": proto,
+            "hdr.ipv4.src_addr": sa,
+            "hdr.ipv4.dst_addr": ta,
+            "ig_md.layer4_srcprt": sp,
+            "ig_md.layer4_dstprt": tp
+        },
+        action_name="ig_ctl.ig_ctl_acl_in.act_permit",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv4_insp",
+        match_fields={
+            "ig_md.aclport_id": port,
+            "hdr.ipv4.protocol": proto,
+            "hdr.ipv4.src_addr": ta,
+            "hdr.ipv4.dst_addr": sa,
+            "ig_md.layer4_srcprt": tp,
+            "ig_md.layer4_dstprt": sp
+        },
+        action_name="ig_ctl.ig_ctl_acl_out.act_permit",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writeInspectRules6(delete, p4info_helper, ingress_sw, port, proto, sa, sp, ta, tp):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_in.tbl_ipv6_insp",
+        match_fields={
+            "ig_md.source_id": port,
+            "hdr.ipv6.next_hdr": proto,
+            "hdr.ipv6.src_addr": sa,
+            "hdr.ipv6.dst_addr": ta,
+            "ig_md.layer4_srcprt": sp,
+            "ig_md.layer4_dstprt": tp
+        },
+        action_name="ig_ctl.ig_ctl_acl_in.act_permit",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_acl_out.tbl_ipv6_insp",
+        match_fields={
+            "ig_md.aclport_id": port,
+            "hdr.ipv6.next_hdr": proto,
+            "hdr.ipv6.src_addr": ta,
+            "hdr.ipv6.dst_addr": sa,
+            "ig_md.layer4_srcprt": tp,
+            "ig_md.layer4_dstprt": sp
+        },
+        action_name="ig_ctl.ig_ctl_acl_out.act_permit",
+        action_params={
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writePbrNormRules4(delete, p4info_helper, ingress_sw, vrf, tvrf, thop, pri, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm):
     matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
@@ -2797,14 +2879,24 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
             continue
 
-        if splt[0] == "nattrns6_add":
-            writeNatTrnsRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11],int(splt[12]))
+        if splt[0] == "inspect4_add":
+            writeInspectRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
             continue
-        if splt[0] == "nattrns6_mod":
-            writeNatTrnsRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11],int(splt[12]))
+        if splt[0] == "inspect4_mod":
+            writeInspectRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
             continue
-        if splt[0] == "nattrns6_del":
-            writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]),splt[11],int(splt[12]))
+        if splt[0] == "inspect4_del":
+            writeInspectRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
+            continue
+
+        if splt[0] == "inspect6_add":
+            writeInspectRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
+            continue
+        if splt[0] == "inspect6_mod":
+            writeInspectRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
+            continue
+        if splt[0] == "inspect6_del":
+            writeInspectRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
             continue
 
         if splt[0] == "pbr4norm_add":

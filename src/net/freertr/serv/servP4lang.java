@@ -41,12 +41,9 @@ import net.freertr.pack.packEsp;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
-import net.freertr.prt.prtDccp;
 import net.freertr.prt.prtGen;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtGenServ;
-import net.freertr.prt.prtLudp;
-import net.freertr.prt.prtSctp;
 import net.freertr.prt.prtServS;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
@@ -2063,15 +2060,6 @@ class servP4langConn implements Runnable {
                     case prtTcp.protoNum:
                         updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.tcp4);
                         return false;
-                    case prtLudp.protoNum:
-                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.ludp4);
-                        return false;
-                    case prtDccp.protoNum:
-                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.dccp4);
-                        return false;
-                    case prtSctp.protoNum:
-                        updateTunn(cmd, vrf.vrf.fwd4, vrf.vrf.sctp4);
-                        return false;
                 }
                 return false;
             }
@@ -2090,15 +2078,6 @@ class servP4langConn implements Runnable {
                         return false;
                     case prtTcp.protoNum:
                         updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.tcp6);
-                        return false;
-                    case prtLudp.protoNum:
-                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.ludp6);
-                        return false;
-                    case prtDccp.protoNum:
-                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.dccp6);
-                        return false;
-                    case prtSctp.protoNum:
-                        updateTunn(cmd, vrf.vrf.fwd6, vrf.vrf.sctp6);
                         return false;
                 }
                 return false;
@@ -4170,6 +4149,10 @@ class servP4langConn implements Runnable {
         }
     }
 
+    private String nattrns2str(tabNatTraN ntry) {
+        return ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort;
+    }
+
     private void doNatTrns(boolean ipv4, int vrf, tabGen<tabNatTraN> need, tabGen<tabNatTraN> done) {
         String afi;
         if (ipv4) {
@@ -4192,7 +4175,7 @@ class servP4langConn implements Runnable {
                 default:
                     continue;
             }
-            lower.sendLine("nattrns" + afi + "_add " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort);
+            lower.sendLine("nattrns" + afi + "_add " + vrf + " " + nattrns2str(ntry));
             done.add(ntry);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
@@ -4207,7 +4190,7 @@ class servP4langConn implements Runnable {
                 default:
                     continue;
             }
-            lower.sendLine("nattrns" + afi + "_del " + vrf + " " + ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort);
+            lower.sendLine("nattrns" + afi + "_del " + vrf + " " + nattrns2str(ntry));
             done.del(ntry);
         }
     }
@@ -4940,16 +4923,30 @@ class servP4langConn implements Runnable {
             if (ned.connects.find(ntry) != null) {
                 continue;
             }
-            old.connects.del(ntry);
+            switch (ntry.ipPrt) {
+                case prtUdp.protoNum:
+                case prtTcp.protoNum:
+                    break;
+                default:
+                    continue;
+            }
             lower.sendLine("inspect" + afi + "_del " + ifc + " " + sess2str(ntry));
+            old.connects.del(ntry);
         }
         for (int i = 0; i < ned.connects.size(); i++) {
             tabSessionEntry ntry = ned.connects.get(i);
             if (old.connects.find(ntry) != null) {
                 continue;
             }
-            old.connects.put(ntry);
+            switch (ntry.ipPrt) {
+                case prtUdp.protoNum:
+                case prtTcp.protoNum:
+                    break;
+                default:
+                    continue;
+            }
             lower.sendLine("inspect" + afi + "_add " + ifc + " " + sess2str(ntry));
+            old.connects.put(ntry);
         }
         return old;
     }

@@ -21,7 +21,11 @@ control IngressControlAclIn(inout headers hdr,
                             inout ingress_metadata_t ig_md,
                             inout standard_metadata_t ig_intr_md) {
 
-    direct_counter(CounterType.packets_and_bytes) stats;
+    direct_counter(CounterType.packets_and_bytes) acl4;
+    direct_counter(CounterType.packets_and_bytes) acl6;
+
+    direct_counter(CounterType.packets_and_bytes) insp4;
+    direct_counter(CounterType.packets_and_bytes) insp6;
 
     action act_deny() {
         ig_md.dropping = 1;
@@ -63,6 +67,7 @@ hdr.ipv4.identification:
         }
         size = IPV4_INACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = acl4;
     }
 
     table tbl_ipv6_acl {
@@ -92,14 +97,72 @@ hdr.ipv6.flow_label:
         }
         size = IPV6_INACL_TABLE_SIZE;
         const default_action = NoAction();
-        counters = stats;
+        counters = acl6;
     }
+
+
+
+    table tbl_ipv4_insp {
+        key = {
+ig_md.source_id:
+            exact;
+hdr.ipv4.protocol:
+            exact;
+hdr.ipv4.src_addr:
+            exact;
+hdr.ipv4.dst_addr:
+            exact;
+ig_md.layer4_srcprt:
+            exact;
+ig_md.layer4_dstprt:
+            exact;
+        }
+        actions = {
+            act_permit;
+            act_deny;
+        }
+        size = IPV4_ININSP_TABLE_SIZE;
+        const default_action = act_deny();
+        counters = insp4;
+    }
+
+    table tbl_ipv6_insp {
+        key = {
+ig_md.source_id:
+            exact;
+hdr.ipv6.next_hdr:
+            exact;
+hdr.ipv6.src_addr:
+            exact;
+hdr.ipv6.dst_addr:
+            exact;
+ig_md.layer4_srcprt:
+            exact;
+ig_md.layer4_dstprt:
+            exact;
+        }
+        actions = {
+            act_permit;
+            act_deny;
+        }
+        size = IPV6_ININSP_TABLE_SIZE;
+        const default_action = act_deny();
+        counters = insp6;
+    }
+
+
 
     apply {
         if (ig_md.ipv4_valid==1)  {
+            tbl_ipv4_insp.apply();
+            if (ig_md.dropping == 0) return;
+            ig_md.dropping = 0;
             tbl_ipv4_acl.apply();
         }
         if (ig_md.ipv6_valid==1)  {
+            tbl_ipv6_insp.apply();
+            if (ig_md.dropping == 0) return;
+            ig_md.dropping = 0;
             tbl_ipv6_acl.apply();
         }
     }
