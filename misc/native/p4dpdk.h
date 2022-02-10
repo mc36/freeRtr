@@ -212,18 +212,23 @@ static int doPacketLoop(__rte_unused void *arg) {
                     processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
                 }
             }
-            if (pkts < 1) usleep(burst_sleep);
+            if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
         }
     } else if (myconf->justProcessor > 0) {
         seq = myconf->justProcessor - 1;
         for (;;) {
-            if (rte_ring_sc_dequeue(lcore_ring[seq], (void**)mbufs) != 0) {
-                usleep(burst_sleep);
+            num = rte_ring_count(lcore_ring[seq]);
+            if (num > burst_size) num = burst_size;
+            num = rte_ring_sc_dequeue_bulk(lcore_ring[seq], (void**)mbufs, num, NULL);
+            if (num < 1) {
+                if (burst_sleep > 0) usleep(burst_sleep);
                 continue;
             }
-            port = mbufs[0]->port;
-            mbuf2mybuf(mbufs[0]);
-            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+            for (i = 0; i < num; i++) {
+                port = mbufs[i]->port;
+                mbuf2mybuf(mbufs[i]);
+                processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+            }
         }
     } else {
         for (;;) {
@@ -253,7 +258,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                     if (rte_ring_mp_enqueue(lcore_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
                 }
             }
-            if (pkts < 1) usleep(burst_sleep);
+            if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
         }
     }
     err("packet thread exited");
@@ -421,6 +426,8 @@ int main(int argc, char **argv) {
         ret = rte_eth_dev_info_get(port, &dev_info);
         if (ret != 0) err("error getting device info");
 
+        printf("devinfo: pmd=%s, mtu=%i..%i, bufs=%i, pktl=%i, rxque=%o, txque=%i, rxcapa=%08x, txcapa=%08x...\n", dev_info.driver_name, dev_info.min_mtu, dev_info.max_mtu, dev_info.min_rx_bufsize, dev_info.max_rx_pktlen, dev_info.max_rx_queues, dev_info.max_tx_queues, (int)dev_info.rx_offload_capa, (int)dev_info.tx_offload_capa);
+
         if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
         }
@@ -472,6 +479,7 @@ int main(int argc, char **argv) {
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
+    printf("starting lcores...\n");
     rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MAIN);
 
     doMainLoop();
