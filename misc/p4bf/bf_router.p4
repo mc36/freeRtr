@@ -91,6 +91,7 @@
 #include "include/ig_ctl_pppoe.p4"
 #include "include/ig_ctl_copp.p4"
 #include "include/ig_ctl_outport.p4"
+#include "include/ig_ctl_rewrites.p4"
 #include "include/ig_ctl.p4"
 
 /*------------------ I N G R E S S  D E P A R S E R ------------------------- */

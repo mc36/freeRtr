@@ -100,6 +100,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
     IngressControlMcast() ig_ctl_mcast;
 #endif
     IngressControlOutPort() ig_ctl_outport;
+    IngressControlRewrites() ig_ctl_rewrites;
 
     Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
 
@@ -180,6 +181,16 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
             ig_ctl_pkt_pre_emit.apply(hdr, ig_md, ig_intr_md, ig_tm_md);
 
+
+            ig_ctl_outport.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
+#ifdef HAVE_OUTACL
+            ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_OUTQOS
+            ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+
+
             if (ig_md.nexthop_id == CPU_PORT) {
 #ifdef HAVE_TUN
                 ig_ctl_tunnel.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
@@ -191,18 +202,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
                 ig_ctl_copp.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
             } else {
-                if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
-#ifdef HAVE_PPPOE
-                if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
-#endif
-                hdr.ethernet.ethertype = ig_md.ethertype;
-                ig_ctl_outport.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
-#ifdef HAVE_OUTACL
-                ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
-#endif
-#ifdef HAVE_OUTQOS
-                ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
-#endif
+                ig_ctl_rewrites.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
                 ig_ctl_bundle.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
             }
         }

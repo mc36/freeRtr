@@ -75,48 +75,12 @@ ig_md.nexthop_id:
 
     apply {
 
-        if (ig_md.target_id != 0) {
-            tbl_vlan_out.apply();
-        } else {
-            tbl_nexthop.apply();
-#ifdef HAVE_POLKA
-            if (ig_md.polka_remove == 1) {
-                hdr.polka.setInvalid();
-            } else if (hdr.polka.isValid()) {
-                if (hdr.polka.ttl < 2) act_set_drop();
-                hdr.polka.ttl = hdr.polka.ttl - 1;
+        if (ig_md.nexthop_id != CPU_PORT) {
+            if (ig_md.target_id != 0) {
+                tbl_vlan_out.apply();
             } else {
-#endif
-#ifdef HAVE_NSH
-                if (ig_md.nsh_remove == 1) {
-                    hdr.nsh.setInvalid();
-                } else if (hdr.nsh.isValid()) {
-                    if (hdr.nsh.ttl < 2) act_set_drop();
-                    //hdr.nsh.ttl = hdr.nsh.ttl - 1;
-                } else {
-#endif
-#ifdef HAVE_MPLS
-                    if (hdr.mpls0.isValid()) {
-                        if (hdr.mpls0.ttl < 2) act_set_drop();
-                        hdr.mpls0.ttl = hdr.mpls0.ttl - 1;
-                    } else {
-#endif
-                        if (hdr.ipv4.isValid()) {
-                            if (hdr.ipv4.ttl < 2) act_set_drop();
-                            hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
-                        } else if (hdr.ipv6.isValid()) {
-                            if (hdr.ipv6.hop_limit < 2) act_set_drop();
-                            hdr.ipv6.hop_limit = hdr.ipv6.hop_limit - 1;
-                        }
-#ifdef HAVE_MPLS
-                    }
-#endif
-#ifdef HAVE_NSH
-                }
-#endif
-#ifdef HAVE_POLKA
+                tbl_nexthop.apply();
             }
-#endif
         }
 
     }
