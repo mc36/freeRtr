@@ -9,7 +9,6 @@ mkdir a
 wget -O a/rtr.zip src.mchome.nop.hu/rtr.zip
 unzip a/rtr.zip -d a/
 sudo chown -R mc36:mc36 *
-rm -rf rare/snmp/*
 rm -rf rare/profiles/
 rm -rf rare/p4src/include/
 rm -rf rare/bfrt_python/rare/

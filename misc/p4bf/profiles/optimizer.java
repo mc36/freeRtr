@@ -103,9 +103,7 @@ public class optimizer {
         new File(fn).delete();
     }
 
-    private final static String tempFile = "optimizer.tmp";
-
-    private final static String tempProg = "optimizer";
+    private static String tempProg = null;
 
     private static boolean checkString(List<String> orig, String str) {
         for (int i = 0; i < orig.size(); i++) {
@@ -140,25 +138,25 @@ public class optimizer {
             a = a.substring(0, o);
             b = b.replaceAll("\\$p", "" + num1);
             b = b.replaceAll("\\$s", "" + num2);
-            doWrite(tempFile, "echo " + b + " | bc");
-            b = doExec("bash " + tempFile).get(0);
+            doWrite(tempProg + ".tmp", "echo " + b + " | bc");
+            b = doExec("bash " + tempProg + ".tmp").get(0);
             res.add(a + b);
         }
         res.add("#define _TABLE_SIZE_P4_");
-        doDelete(tempFile);
+        doDelete(tempProg + ".tmp");
         return res;
     }
 
     private static boolean doRound(String prof, List<String> orig, int num1, int num2) {
         log("trying with " + num1 + " and " + num2 + " on " + prof);
-        doDelete(tempFile);
+        doDelete(tempProg + ".tmp");
         List<String> res = doTransform(orig, num1, num2);
         res.add("#include \"bf_router.p4\"");
         doWrite(tempProg + ".p4", res);
         doExec(System.getenv("SDE") + "/install/bin/bf-p4c -I. -I../p4src/ -Xp4c=\"--disable-parse-depth-limit\" " + tempProg + ".p4");
         boolean succ = new File(tempProg + ".tofino/pipe/tofino.bin").exists();
-        doWrite(tempFile, "rm -rf " + tempProg + ".tofino");
-        doExec("bash " + tempFile);
+        doWrite(tempProg + ".tmp", "rm -rf " + tempProg + ".tofino");
+        doExec("bash " + tempProg + ".tmp");
         doDelete(tempProg + ".p4");
         log("returning " + succ + " for " + num1 + " and " + num2 + " on " + prof);
         return succ;
@@ -183,6 +181,7 @@ public class optimizer {
      * @param args arguments
      */
     public static void main(String[] args) {
+        tempProg = "optimizer" + ProcessHandle.current().pid();
         String prof = args[0];
         prof = prof.substring(0, prof.lastIndexOf("."));
         List<String> orig = doRead(prof + ".tmpl");
