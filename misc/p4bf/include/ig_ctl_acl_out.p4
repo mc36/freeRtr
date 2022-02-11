@@ -27,6 +27,12 @@ control IngressControlAclOut(inout headers hdr, inout ingress_metadata_t ig_md,
 {
 
 
+#ifdef HAVE_INSPECT
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) insp4;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) insp6;
+#endif
+
+
     action act_deny() {
         ig_dprsr_md.drop_ctl = 1;
     }
@@ -39,6 +45,18 @@ control IngressControlAclOut(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         ig_md.nexthop_id = CPU_PORT;
+    }
+#endif
+
+
+
+#ifdef HAVE_INSPECT
+    action act_insp4() {
+        insp4.count();
+    }
+
+    action act_insp6() {
+        insp6.count();
     }
 #endif
 
@@ -105,10 +123,71 @@ hdr.ipv6.flow_label:
         const default_action = NoAction();
     }
 
+
+
+
+#ifdef HAVE_INSPECT
+    table tbl_ipv4_insp {
+        key = {
+ig_md.aclport_id:
+            exact;
+hdr.ipv4.protocol:
+            exact;
+hdr.ipv4.src_addr:
+            exact;
+hdr.ipv4.dst_addr:
+            exact;
+ig_md.layer4_srcprt:
+            exact;
+ig_md.layer4_dstprt:
+            exact;
+        }
+        actions = {
+            act_insp4;
+            @defaultonly NoAction;
+        }
+        size = IPV4_OUTINSP_TABLE_SIZE;
+        const default_action = NoAction();
+        counters = insp4;
+    }
+
+    table tbl_ipv6_insp {
+        key = {
+ig_md.aclport_id:
+            exact;
+hdr.ipv6.next_hdr:
+            exact;
+hdr.ipv6.src_addr:
+            exact;
+hdr.ipv6.dst_addr:
+            exact;
+ig_md.layer4_srcprt:
+            exact;
+ig_md.layer4_dstprt:
+            exact;
+        }
+        actions = {
+            act_insp6;
+            @defaultonly NoAction;
+        }
+        size = IPV6_OUTINSP_TABLE_SIZE;
+        const default_action = NoAction();
+        counters = insp6;
+    }
+#endif
+
+
+
     apply {
         if (ig_md.ipv4_valid==1)  {
+#ifdef HAVE_INSPECT
+            if (!tbl_ipv4_insp.apply().hit)
+#endif
             tbl_ipv4_acl.apply();
         } else if (ig_md.ipv6_valid==1)  {
+#ifdef HAVE_INSPECT
+            if (!tbl_ipv6_insp.apply().hit)
+#endif
             tbl_ipv6_acl.apply();
         }
     }

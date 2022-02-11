@@ -56,6 +56,11 @@ see the profiles directory to find a trial and error method for doing so
 #define IPV4_OUTACL_TABLE_SIZE                 512
 #define IPV6_OUTACL_TABLE_SIZE                 512
 
+#define IPV4_ININSP_TABLE_SIZE                 512
+#define IPV6_ININSP_TABLE_SIZE                 512
+#define IPV4_OUTINSP_TABLE_SIZE                512
+#define IPV6_OUTINSP_TABLE_SIZE                512
+
 #define IPV4_INQOS_TABLE_SIZE                  512
 #define IPV6_INQOS_TABLE_SIZE                  512
 #define IPV4_OUTQOS_TABLE_SIZE                 512

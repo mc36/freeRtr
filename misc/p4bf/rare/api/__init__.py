@@ -64,6 +64,8 @@ class RareApi(BfRtRare):
     from .natcfg6 import writeNatCfgRules6
     from .nattrns4 import writeNatTrnsRules4
     from .nattrns6 import writeNatTrnsRules6
+    from .inspect4 import writeInspectRules4
+    from .inspect6 import writeInspectRules6
     from .neigh4 import writeNexthopRules
     from .neigh4 import writeNeighborRules4
     from .neigh6 import writeNeighborRules6

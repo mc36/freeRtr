@@ -924,6 +924,74 @@ def run(self):
             )
             continue
 
+        if splt[0] == "inspect4_add":
+            self.writeInspectRules4(
+                1,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                int(splt[4]),
+                splt[5],
+                int(splt[6]),
+            )
+            continue
+        if splt[0] == "inspect4_mod":
+            self.writeInspectRules4(
+                2,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                int(splt[4]),
+                splt[5],
+                int(splt[6]),
+            )
+            continue
+        if splt[0] == "inspect4_del":
+            self.writeInspectRules4(
+                3,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                int(splt[4]),
+                splt[5],
+                int(splt[6]),
+            )
+            continue
+
+        if splt[0] == "inspect6_add":
+            self.writeInspectRules6(
+                1,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                int(splt[4]),
+                splt[5],
+                int(splt[6]),
+            )
+            continue
+        if splt[0] == "inspect6_mod":
+            self.writeInspectRules6(
+                2,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                int(splt[4]),
+                splt[5],
+                int(splt[6]),
+            )
+            continue
+        if splt[0] == "inspect6_del":
+            self.writeInspectRules6(
+                3,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                int(splt[4]),
+                splt[5],
+                int(splt[6]),
+            )
+            continue
+
         if splt[0] == "pbr4norm_add":
             self.writePbrNormRules4(
                 1,
