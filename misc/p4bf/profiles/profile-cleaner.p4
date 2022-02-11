@@ -1,5 +1,4 @@
 #ifdef PROFILE_CLEANER
-#define HAVE_ALPM
 #define HAVE_FLOWSPEC
 ##define HAVE_COPP
 ##define HAVE_INACL
@@ -14,9 +13,9 @@
 
 #define VLAN_TABLE_SIZE                        512
 
-#define IPV4_LPM_TABLE_SIZE            256
+#define IPV4_LPM_TABLE_SIZE            4096
 
-#define IPV6_LPM_TABLE_SIZE            64
+#define IPV6_LPM_TABLE_SIZE            1024
 
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256
@@ -24,7 +23,7 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define IPV4_FLOWSPEC_TABLE_SIZE       1024
-#define IPV6_FLOWSPEC_TABLE_SIZE       1024
+#define IPV4_FLOWSPEC_TABLE_SIZE       4096
+#define IPV6_FLOWSPEC_TABLE_SIZE       4096
 #define _TABLE_SIZE_P4_
 #endif

@@ -20,11 +20,11 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define MPLS_TABLE_SIZE                81920
+#define MPLS_TABLE_SIZE                98304
 
-#define POLKA_TABLE_SIZE               5120
+#define POLKA_TABLE_SIZE               6144
 
-#define IPV4_MCAST_TABLE_SIZE          2560
-#define IPV6_MCAST_TABLE_SIZE          2560
+#define IPV4_MCAST_TABLE_SIZE          3072
+#define IPV6_MCAST_TABLE_SIZE          3072
 #define _TABLE_SIZE_P4_
 #endif
