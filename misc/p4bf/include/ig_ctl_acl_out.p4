@@ -183,12 +183,12 @@ ig_md.layer4_dstprt:
 #ifdef HAVE_INSPECT
             if (!tbl_ipv4_insp.apply().hit)
 #endif
-            tbl_ipv4_acl.apply();
+                tbl_ipv4_acl.apply();
         } else if (ig_md.ipv6_valid==1)  {
 #ifdef HAVE_INSPECT
             if (!tbl_ipv6_insp.apply().hit)
 #endif
-            tbl_ipv6_acl.apply();
+                tbl_ipv6_acl.apply();
         }
     }
 }
