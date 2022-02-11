@@ -2,6 +2,7 @@ import os, sys, grpc
 import logging, linecache, inspect
 from threading import Thread
 from time import sleep
+import ipaddress
 
 import argparse
 import socket
@@ -67,3 +68,7 @@ def graceful_exit(bf_client, sck):
     bf_client.interface.tear_down_stream()
     sck.close()
     sys.exit(0)
+
+
+def inet_ntoa(ip_addr):
+    return str(ipaddress.ip_address(ip_addr))

@@ -71,32 +71,32 @@ class BfNatCounter(Thread):
                 key_fields = k.to_dict()
                 data_fields = d.to_dict()
 
-            if not (key_fields == {}):
-                vrf = key_fields["ig_md.vrf"]["value"]
-                prt = key_fields["hdr.ipv4.protocol"]["value"]
+                if not (key_fields == {}):
+                    vrf = key_fields["ig_md.vrf"]["value"]
+                    prt = key_fields["hdr.ipv4.protocol"]["value"]
 
-                srcadr = data_fields["srcadr"]
-                srcprt = data_fields["srcprt"]
-                trgadr = data_fields["trgadr"]
-                trgprt = data_fields["trgprt"]
-                nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
-                nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
+                    srcadr = key_fields["hdr.ipv4.src_addr"]["value"]
+                    srcprt = key_fields["ig_md.layer4_srcprt"]["value"]
+                    trgadr = key_fields["hdr.ipv4.dst_addr"]["value"]
+                    trgprt = key_fields["ig_md.layer4_dstprt"]["value"]
+                    nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
+                    nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                data = "nattrns4_cnt %s %s %s %s %s %s %s %s \n" % (
-                    vrf,
-                    prt,
-                    srcadr,
-                    trgadr,
-                    srcprt,
-                    trgprt,
-                    nat_trns_pkt_cnt,
-                    nat_trns_byte_cnt,
-                )
+                    data = "nattrns4_cnt %s %s %s %s %s %s %s %s \n" % (
+                        vrf,
+                        prt,
+                        inet_ntoa(srcadr),
+                        inet_ntoa(trgadr),
+                        srcprt,
+                        trgprt,
+                        nat_trns_pkt_cnt,
+                        nat_trns_byte_cnt,
+                    )
 
-                logger.debug("tx: %s" % data.split(" "))
+                    logger.debug("tx: %s" % data.split(" "))
 
-                self.file.write(data)
-                self.file.flush()
+                    self.file.write(data)
+                    self.file.flush()
             else:
                 logger.debug("%s - no ipv4 nat entry" % self.class_name)
 
@@ -129,31 +129,31 @@ class BfNatCounter(Thread):
                 key_fields = k.to_dict()
                 data_fields = d.to_dict()
 
-            if not (key_fields == {}):
-                vrf = key_fields["ig_md.vrf"]["value"]
-                prt = key_fields["hdr.ipv6.next_hdr"]["value"]
-                srcadr = data_fields["srcadr"]
-                srcprt = data_fields["srcprt"]
-                trgadr = data_fields["trgadr"]
-                trgprt = data_fields["trgprt"]
-                nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
-                nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
+                if not (key_fields == {}):
+                    vrf = key_fields["ig_md.vrf"]["value"]
+                    prt = key_fields["hdr.ipv6.next_hdr"]["value"]
+                    srcadr = key_fields["hdr.ipv6.src_addr"]["value"]
+                    srcprt = key_fields["ig_md.layer4_srcprt"]["value"]
+                    trgadr = key_fields["hdr.ipv6.dst_addr"]["value"]
+                    trgprt = key_fields["ig_md.layer4_dstprt"]["value"]
+                    nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
+                    nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                data = "nattrns6_cnt %s %s %s %s %s %s %s %s \n" % (
-                    vrf,
-                    prt,
-                    srcadr,
-                    trgadr,
-                    srcprt,
-                    trgprt,
-                    nat_trns_pkt_cnt,
-                    nat_trns_byte_cnt,
-                )
+                    data = "nattrns6_cnt %s %s %s %s %s %s %s %s \n" % (
+                        vrf,
+                        prt,
+                        inet_ntoa(srcadr),
+                        inet_ntoa(trgadr),
+                        srcprt,
+                        trgprt,
+                        nat_trns_pkt_cnt,
+                        nat_trns_byte_cnt,
+                    )
 
-                logger.debug("tx: %s" % data.split(" "))
+                    logger.debug("tx: %s" % data.split(" "))
 
-                self.file.write(data)
-                self.file.flush()
+                    self.file.write(data)
+                    self.file.flush()
             else:
                 logger.debug("%s - no ipv6 nat entry" % self.class_name)
 
