@@ -153,7 +153,7 @@ public class optimizer {
         List<String> res = doTransform(orig, num1, num2);
         res.add("#include \"bf_router.p4\"");
         doWrite(tempProg + ".p4", res);
-        doExec(System.getenv("SDE") + "/install/bin/bf-p4c -I. -I../p4src/ -Xp4c=\"--disable-parse-depth-limit\" " + tempProg + ".p4");
+        doExec(System.getenv("SDE_INSTALL") + "/bin/bf-p4c -I. -I../p4src/ -Xp4c=\"--disable-parse-depth-limit\" " + tempProg + ".p4");
         boolean succ = new File(tempProg + ".tofino/pipe/tofino.bin").exists();
         doWrite(tempProg + ".tmp", "rm -rf " + tempProg + ".tofino");
         doExec("bash " + tempProg + ".tmp");
