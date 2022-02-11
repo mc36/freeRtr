@@ -16,6 +16,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 
 /**
  * one session record
@@ -117,6 +118,11 @@ public class tabSession implements Runnable {
      * allow routed multicast
      */
     public boolean allowMcast = false;
+
+    /**
+     * to be notified
+     */
+    protected notifier notif;
 
     /**
      * allow specific packets
@@ -298,10 +304,12 @@ public class tabSession implements Runnable {
         ses.startTime = bits.getTime();
         ses.lastTime = ses.startTime;
         connects.add(ses);
-        if (!logBefore) {
-            return ses;
+        if (notif != null) {
+            notif.wakeup();
         }
-        logger.info("started " + ses);
+        if (logBefore) {
+            logger.info("started " + ses);
+        }
         return ses;
     }
 
@@ -498,10 +506,23 @@ public class tabSession implements Runnable {
     }
 
     /**
+     * set notifier
+     *
+     * @param n notifier
+     */
+    public void setNotifier(notifier n) {
+        notif = n;
+        if (master != null) {
+            master.setNotifier(n);
+        }
+    }
+
+    /**
      * stop timer
      */
     public void stopTimer() {
         need2run = false;
+        notif = null;
     }
 
     /**
@@ -509,6 +530,7 @@ public class tabSession implements Runnable {
      */
     public void doInspect() {
         long tim = bits.getTime();
+        int o = 0;
         for (int i = connects.size() - 1; i >= 0; i--) {
             tabSessionEntry cur = connects.get(i);
             if (cur == null) {
@@ -518,9 +540,13 @@ public class tabSession implements Runnable {
                 continue;
             }
             connects.del(cur);
+            o++;
             if (logAfter) {
                 logger.info("finished " + cur);
             }
+        }
+        if ((o > 0) && (notif != null)) {
+            notif.wakeup();
         }
     }
 
@@ -554,6 +580,7 @@ public class tabSession implements Runnable {
         List<tabSessionEntry> lst = new ArrayList<tabSessionEntry>();
         boolean tmp = true;
         packHolder pck = new packHolder(true, true);
+        int o = 0;
         for (int i = connects.size() - 1; i >= 0; i--) {
             tabSessionEntry cur = connects.get(i);
             if (cur == null) {
@@ -570,12 +597,16 @@ public class tabSession implements Runnable {
                 continue;
             }
             connects.del(cur);
+            o++;
             if (logAfter) {
                 logger.info("finished " + cur);
             }
         }
         if (lst.size() > 0) {
             doNetflow(pck, pipe, lst, tmp);
+        }
+        if ((o > 0) && (notif != null)) {
+            notif.wakeup();
         }
     }
 

@@ -1287,6 +1287,7 @@ public class ipFwdIface extends tabRouteIface {
             inspect = new tabSession(true, 60000);
             inspect.fromString(cmd);
             inspect.startTimer();
+            inspect.setNotifier(fwd.triggerUpdate);
             return false;
         }
         if (a.equals("bfd")) {

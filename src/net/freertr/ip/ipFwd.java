@@ -403,7 +403,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public int nextIfaceNumber = bits.randomD();
 
-    private notifier triggerUpdate;
+    /**
+     * should compute tables
+     */
+    protected notifier triggerUpdate;
 
     private static int nextVrfNumber = bits.randomD();
 
