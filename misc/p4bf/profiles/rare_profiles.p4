@@ -5,6 +5,7 @@
 #include "profile-cgnat.p4"
 #include "profile-cleaner.p4"
 #include "profile-cpe.p4"
+#include "profile-fw.p4"
 #include "profile-geant-testbed.p4"
 #include "profile-gre.p4"
 #include "profile-ipip.p4"
