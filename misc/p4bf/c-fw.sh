@@ -1,0 +1,2 @@
+#!/bin/sh
+./c-all.sh -DHAVE_INACL -DHAVE_OUTACL -DHAVE_RACL -DHAVE_INSPECT

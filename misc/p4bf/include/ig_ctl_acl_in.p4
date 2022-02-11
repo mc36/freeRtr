@@ -32,6 +32,14 @@ control IngressControlAclIn(inout headers hdr, inout ingress_metadata_t ig_md,
     action act_permit() {
     }
 
+#ifdef HAVE_RACL
+    action act_punt() {
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.nexthop_id = CPU_PORT;
+    }
+#endif
+
 
     table tbl_ipv4_acl {
         key = {
@@ -55,6 +63,9 @@ hdr.ipv4.identification:
         actions = {
             act_permit;
             act_deny;
+#ifdef HAVE_RACL
+            act_punt();
+#endif
             @defaultonly NoAction;
         }
         size = IPV4_INACL_TABLE_SIZE;
@@ -83,6 +94,9 @@ hdr.ipv6.flow_label:
         actions = {
             act_permit;
             act_deny;
+#ifdef HAVE_RACL
+            act_punt();
+#endif
             @defaultonly NoAction;
         }
         size = IPV6_INACL_TABLE_SIZE;

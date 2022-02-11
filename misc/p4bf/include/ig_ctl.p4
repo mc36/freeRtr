@@ -179,9 +179,6 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
                 ig_ctl_ipv6b.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
             }
 #endif
-            ig_ctl_pkt_pre_emit.apply(hdr, ig_md, ig_intr_md, ig_tm_md);
-
-
             ig_ctl_outport.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
 #ifdef HAVE_OUTACL
             ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
@@ -189,7 +186,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_OUTQOS
             ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
-
+            ig_ctl_pkt_pre_emit.apply(hdr, ig_md, ig_intr_md, ig_tm_md);
 
             if (ig_md.nexthop_id == CPU_PORT) {
 #ifdef HAVE_TUN

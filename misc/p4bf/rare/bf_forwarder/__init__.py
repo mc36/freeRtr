@@ -124,10 +124,7 @@ class BfForwarder(Thread, RareApi):
 
         self._getDataplaneCapability()
         self._setDataplaneCapability()
-        logger.warning("self.bier=%s" % self.bier)
-        logger.warning("self.bridge=%s" % self.bridge)
-        logger.warning("self.copp=%s" % self.copp)
-        logger.warning("self.duplab=%s" % self.duplab)
+        logger.warning("self.nat=%s" % self.nat)
 
         pltfm = "platform tna/%s\n" % self.class_name.lower()
         self.file_w.write(pltfm)
@@ -143,22 +140,22 @@ class BfForwarder(Thread, RareApi):
 
     def _getDataplaneCapability(self):
         capabilities = {
-            "mpls": "ig_ctl_mpls.tbl_mpls_fib",
-            "bridge": "ig_ctl_bridge.tbl_bridge_target",
-            "copp": "ig_ctl_copp.tbl_ipv4_copp",
-            "flowspec": "ig_ctl_flowspec.tbl_ipv4_flowspec",
-            "mcast": "ig_ctl_mcast.tbl_mcast4",
-            "nat": "ig_ctl_nat.tbl_ipv4_nat_trns",
-            "polka": "ig_ctl_polka.tbl_polka",
-            "pbr": "ig_ctl_pbr.tbl_ipv4_pbr",
-            "pppoe": "ig_ctl_pppoe.tbl_pppoe",
-            "nsh": "ig_ctl_nsh.tbl_nsh",
-            "inacl": "ig_ctl_acl_in.tbl_ipv4_acl",
-            "outacl": "ig_ctl_acl_out.tbl_ipv4_acl",
-            "inqos": "ig_ctl_qos_in.tbl_ipv4_qos",
-            "outqos": "ig_ctl_qos_out.tbl_ipv4_qos",
-            "tun": "ig_ctl_tunnel.tbl_tunnel4",
-            "srv6": "ig_ctl_ipv6b.tbl_ipv6_fib_host",
+            "mpls": "ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+            "bridge": "ig_ctl.ig_ctl_bridge.tbl_bridge_target",
+            "copp": "ig_ctl.ig_ctl_copp.tbl_ipv4_copp",
+            "flowspec": "ig_ctl.ig_ctl_flowspec.tbl_ipv4_flowspec",
+            "mcast": "eg_ctl.eg_ctl_mcast.tbl_mcast",
+            "nat": "ig_ctl.ig_ctl_nat.tbl_ipv4_nat_trns",
+            "polka": "ig_ctl.ig_ctl_polka.tbl_polka",
+            "pbr": "ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
+            "pppoe": "ig_ctl.ig_ctl_pppoe.tbl_pppoe",
+            "nsh": "ig_ctl.ig_ctl_nsh.tbl_nsh",
+            "inacl": "ig_ctl.ig_ctl_acl_in.tbl_ipv4_acl",
+            "outacl": "ig_ctl.ig_ctl_acl_out.tbl_ipv4_acl",
+            "inqos": "ig_ctl.ig_ctl_qos_in.tbl_ipv4_qos",
+            "outqos": "ig_ctl.ig_ctl_qos_out.tbl_ipv4_qos",
+            "tun": "ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+            "srv6": "ig_ctl.ig_ctl_ipv6b.tbl_ipv6_fib_host",
         }
         sub_capabilities = {
             "bier": {
@@ -198,7 +195,7 @@ class BfForwarder(Thread, RareApi):
         ig_ctl_path = "%s.ig_ctl" % self.bfgc.pipe_name
         tbl_list = self.bfgc.bfrt_info.table_dict.keys()
         for capability in capabilities.keys():
-            capability_name = "%s.%s" % (ig_ctl_path, capabilities[capability])
+            capability_name = "%s" % (capabilities[capability])
             if capability_name in tbl_list:
                 self.dp_capabilities[capability] = True
                 logger.debug("%s - %s supported" % (self.class_name, capability))

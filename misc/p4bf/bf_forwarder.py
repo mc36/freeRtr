@@ -23,6 +23,7 @@ from rare.bf_grpc_client import BfRuntimeGrpcClient
 from rare.bf_ifstatus import BfIfStatus
 from rare.bf_ifcounter import BfIfCounter
 from rare.bf_subifcounter import BfSubIfCounter
+from rare.bf_natcounter import BfNatCounter
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
@@ -104,6 +105,15 @@ if __name__ == "__main__":
             args.pipe_name,
             False,
         )
+
+        bf_natcounter_c = BfRuntimeGrpcClient(
+            args.bfruntime_address,
+            args.p4_program_name,
+            args.client_id + 4,
+            args.pipe_name,
+            False,
+        )
+
         if args.snmp:
             bf_snmp = BfIfSnmpClient(
                 1,
@@ -152,6 +162,15 @@ if __name__ == "__main__":
         bf_subifcounter.daemon = True
         bf_subifcounter.start()
 
+        if bf_forwarder.dp_capabilities["nat"] == True:
+            bf_natcounter = BfNatCounter(
+                6, "bf_natcounter", bf_natcounter_c, sckw_file, args.pipe_name, 30
+            )
+            bf_natcounter.daemon = True
+            bf_natcounter.start()
+        else:
+            logging.warning("%s - nat not supported" % PROGRAM_NAME)
+
         if args.snmp:
             ALL_THREADS = [
                 bf_snmp,
@@ -159,9 +178,16 @@ if __name__ == "__main__":
                 bf_ifstatus,
                 bf_ifcounter,
                 bf_subifcounter,
+                ###bf_natcounter,
             ]
         else:
-            ALL_THREADS = [bf_forwarder, bf_ifstatus, bf_ifcounter, bf_subifcounter]
+            ALL_THREADS = [
+                bf_forwarder,
+                bf_ifstatus,
+                bf_ifcounter,
+                bf_subifcounter,
+                ###bf_natcounter,
+            ]
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS if t is not None and t.is_alive()]
