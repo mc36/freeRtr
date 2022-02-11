@@ -33,7 +33,7 @@ def _processEntryFromControlPlane(
             "dataplane-say entry failed to prepare entry for table %s with Key[%s] Data[%s]\n"
             % (tbl_name, str_key, str_data)
         )
-        logger.debug(err_msg)
+        logger.warning(err_msg)
         self.file_w.write(err_msg)
         self.file_w.flush()
         return
@@ -72,7 +72,7 @@ def _processEntryFromControlPlane(
             "dataplane-say entry failed to program entry for table %s with Key[%s] Data[%s]\n"
             % (tbl_name, str_key, str_data)
         )
-        logger.debug(err_msg)
+        logger.warning(err_msg)
         self.file_w.write(err_msg)
         self.file_w.flush()
 
@@ -82,7 +82,7 @@ def _processEntryFromControlPlane(
             "dataplane-say entry failed to program entry via GRPC for table %s with Key[%s] Data[%s]\n"
             % (tbl_name, str_key, str_data)
         )
-        logger.debug(err_msg)
+        logger.warning(err_msg)
         self.file_w.write(err_msg)
         self.file_w.flush()
 

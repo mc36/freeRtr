@@ -82,7 +82,7 @@ class BfNatCounter(Thread):
                 nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
                 nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                data = "nattrns4_cnt %s %s %s %s %s %s %s %s\n" % (
+                data = "nattrns4_cnt %s %s %s %s %s %s %s %s \n" % (
                     vrf,
                     prt,
                     srcadr,
@@ -93,7 +93,7 @@ class BfNatCounter(Thread):
                     nat_trns_byte_cnt,
                 )
 
-                logger.debug("tx: %s" % data)
+                logger.debug("tx: %s" % data.split(" "))
 
                 self.file.write(data)
                 self.file.flush()
@@ -139,7 +139,7 @@ class BfNatCounter(Thread):
                 nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
                 nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                data = "nattrns6_cnt %s %s %s %s %s %s %s %s\n" % (
+                data = "nattrns6_cnt %s %s %s %s %s %s %s %s \n" % (
                     vrf,
                     prt,
                     srcadr,
@@ -150,12 +150,12 @@ class BfNatCounter(Thread):
                     nat_trns_byte_cnt,
                 )
 
-                logger.warning("tx: %s" % data)
+                logger.debug("tx: %s" % data.split(" "))
 
                 self.file.write(data)
                 self.file.flush()
             else:
-                logger.warning("%s - no ipv6 nat entry" % self.class_name)
+                logger.debug("%s - no ipv6 nat entry" % self.class_name)
 
         except:
             logger.warning(_Exception())

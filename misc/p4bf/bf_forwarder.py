@@ -142,11 +142,13 @@ if __name__ == "__main__":
 
         bf_forwarder.daemon = True
         bf_forwarder.start()
+        ALL_THREADS.append(bf_forwarder)
 
         bf_ifstatus = BfIfStatus(3, "bf_ifstatus", bf_ifstatus_c, sckw_file, 1)
 
         bf_ifstatus.daemon = True
         bf_ifstatus.start()
+        ALL_THREADS.append(bf_ifstatus)
 
         bf_ifcounter = BfIfCounter(
             4, "bf_ifcounter", bf_ifcounter_c, sckw_file, args.pipe_name, 5
@@ -154,6 +156,7 @@ if __name__ == "__main__":
 
         bf_ifcounter.daemon = True
         bf_ifcounter.start()
+        ALL_THREADS.append(bf_ifcounter)
 
         bf_subifcounter = BfSubIfCounter(
             5, "bf_subifcounter", bf_subifcounter_c, sckw_file, args.pipe_name, 5
@@ -161,6 +164,7 @@ if __name__ == "__main__":
 
         bf_subifcounter.daemon = True
         bf_subifcounter.start()
+        ALL_THREADS.append(bf_subifcounter)
 
         if bf_forwarder.dp_capabilities["nat"] == True:
             bf_natcounter = BfNatCounter(
@@ -168,26 +172,12 @@ if __name__ == "__main__":
             )
             bf_natcounter.daemon = True
             bf_natcounter.start()
+            ALL_THREADS.append(bf_natcounter)
         else:
             logging.warning("%s - nat not supported" % PROGRAM_NAME)
 
         if args.snmp:
-            ALL_THREADS = [
-                bf_snmp,
-                bf_forwarder,
-                bf_ifstatus,
-                bf_ifcounter,
-                bf_subifcounter,
-                ###bf_natcounter,
-            ]
-        else:
-            ALL_THREADS = [
-                bf_forwarder,
-                bf_ifstatus,
-                bf_ifcounter,
-                bf_subifcounter,
-                ###bf_natcounter,
-            ]
+            ALL_THREADS.append(bf_snmp)
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS if t is not None and t.is_alive()]
