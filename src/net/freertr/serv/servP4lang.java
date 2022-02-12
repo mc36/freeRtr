@@ -4918,8 +4918,14 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        for (int i = old.connects.size() - 1; i >= 0; i--) {
-            tabSessionEntry ntry = old.connects.get(i);
+        tabGen<tabSessionEntry> cons;
+        if (old.master == null) {
+            cons = old.connects;
+        } else {
+            cons = old.master.connects;
+        }
+        for (int i = cons.size() - 1; i >= 0; i--) {
+            tabSessionEntry ntry = cons.get(i);
             if (ned.connects.find(ntry) != null) {
                 continue;
             }
@@ -4931,11 +4937,11 @@ class servP4langConn implements Runnable {
                     continue;
             }
             lower.sendLine("inspect" + afi + "_del " + ifc + " " + sess2str(ntry));
-            old.connects.del(ntry);
+            cons.del(ntry);
         }
         for (int i = 0; i < ned.connects.size(); i++) {
             tabSessionEntry ntry = ned.connects.get(i);
-            if (old.connects.find(ntry) != null) {
+            if (cons.find(ntry) != null) {
                 continue;
             }
             switch (ntry.ipPrt) {
@@ -4946,7 +4952,7 @@ class servP4langConn implements Runnable {
                     continue;
             }
             lower.sendLine("inspect" + afi + "_add " + ifc + " " + sess2str(ntry));
-            old.connects.put(ntry);
+            cons.put(ntry);
         }
         return old;
     }

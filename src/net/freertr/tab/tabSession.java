@@ -62,7 +62,7 @@ public class tabSession implements Runnable {
     /**
      * member of inspection
      */
-    protected tabSession master;
+    public tabSession master;
 
     /**
      * log before session
