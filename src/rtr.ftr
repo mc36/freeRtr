@@ -1320,6 +1320,8 @@ qc pass: p4lang: ingress reflexive access list
 qc pass: p4lang: egress reflexive access list
 qc pass: p4lang: interface inspection with egress drop
 qc pass: p4lang: interface inspection with ingress drop
+qc pass: p4lang: vlan interface inspection with egress drop
+qc pass: p4lang: vlan interface inspection with ingress drop
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc

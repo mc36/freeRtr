@@ -12886,3 +12886,6 @@ qc pass: p4lang: interface inspection with egress drop
 qc pass: p4lang: interface inspection with ingress drop
 ---------------------------------- 2022-02-09 20:22:55
 no todo: rtr-hw2.txt, hwsn knob
+---------------------------------- 2022-02-12 07:38:09
+qc pass: p4lang: vlan interface inspection with egress drop
+qc pass: p4lang: vlan interface inspection with ingress drop
