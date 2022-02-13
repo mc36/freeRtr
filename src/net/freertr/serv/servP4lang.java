@@ -4918,15 +4918,15 @@ class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        tabGen<tabSessionEntry> cons;
-        if (old.master == null) {
-            cons = old.connects;
+        tabGen<tabSessionEntry> nds;
+        if (ned.master == null) {
+            nds = ned.connects;
         } else {
-            cons = old.master.connects;
+            nds = ned.master.connects;
         }
-        for (int i = cons.size() - 1; i >= 0; i--) {
-            tabSessionEntry ntry = cons.get(i);
-            if (ned.connects.find(ntry) != null) {
+        for (int i = old.connects.size() - 1; i >= 0; i--) {
+            tabSessionEntry ntry = old.connects.get(i);
+            if (nds.find(ntry) != null) {
                 continue;
             }
             switch (ntry.ipPrt) {
@@ -4937,11 +4937,14 @@ class servP4langConn implements Runnable {
                     continue;
             }
             lower.sendLine("inspect" + afi + "_del " + ifc + " " + sess2str(ntry));
-            cons.del(ntry);
+            old.connects.del(ntry);
         }
-        for (int i = 0; i < ned.connects.size(); i++) {
-            tabSessionEntry ntry = ned.connects.get(i);
-            if (cons.find(ntry) != null) {
+        for (int i = 0; i < nds.size(); i++) {
+            tabSessionEntry ntry = nds.get(i);
+            if (old.connects.find(ntry) != null) {
+                continue;
+            }
+            if (ntry.evaluating != null) {
                 continue;
             }
             switch (ntry.ipPrt) {
@@ -4952,7 +4955,7 @@ class servP4langConn implements Runnable {
                     continue;
             }
             lower.sendLine("inspect" + afi + "_add " + ifc + " " + sess2str(ntry));
-            cons.put(ntry);
+            old.connects.put(ntry);
         }
         return old;
     }

@@ -40,6 +40,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
         "session .*! no allow-multicast",
         "session .*! no allow-broadcast",
         "session .*! no allow-list",
+        "session .*! no allow-url",
         "session .*! no drop-rx",
         "session .*! no drop-tx",
         "session .*! no drop-frg",

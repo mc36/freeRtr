@@ -75,6 +75,16 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
     public boolean dir;
 
     /**
+     * still evaluating headers
+     */
+    public packHolder evaluating;
+
+    /**
+     * url matched
+     */
+    public String sawUrl;
+
+    /**
      * log mac addresses
      */
     public boolean logMacs;
@@ -265,11 +275,11 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
             hr = "+" + hwCntr.byteRx;
             ht = "+" + hwCntr.byteTx;
         }
-        s = getDir() + " " + ipPrt + " " + getSrc(" ") + " -> " + getTrg(" ") + " (" + cntr.byteRx + hr + "/" + cntr.byteTx + ht + "/" + getDur() + ")";
+        s = getDir() + " " + ipPrt + " " + getSrc(" ") + " -> " + getTrg(" ") + " " + sawUrl + " " + cntr.byteRx + hr + "/" + cntr.byteTx + ht + "/" + getDur();
         if (!logMacs) {
             return s;
         }
-        s = s + " (" + srcMac + "->" + trgMac + ")";
+        s = s + " " + srcMac + "->" + trgMac;
         return s;
     }
 
@@ -290,7 +300,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
             hbr = "+" + hwCntr.byteRx;
             hbt = "+" + hwCntr.byteTx;
         }
-        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + cntr.packRx + hpr + "|" + cntr.packTx + hpt + "|" + cntr.byteRx + hbr + "|" + cntr.byteTx + hbt + "|" + getDur();
+        s = getDir() + "|" + ipPrt + "|" + ipTos + "|" + getSrc("|") + "|" + getTrg("|") + "|" + sawUrl + "|" + cntr.packRx + hpr + "|" + cntr.packTx + hpt + "|" + cntr.byteRx + hbr + "|" + cntr.byteTx + hbt + "|" + getDur();
         if (!logMacs) {
             return s;
         }

@@ -688,6 +688,15 @@ public class packTlsHndshk {
                 logger.debug("extension " + tlv.dump());
             }
             switch (tlv.valTyp) {
+                case 0: // server name
+                    int i = bits.msbGetW(tlv.valDat, 3);
+                    if (i >= tlv.valSiz) {
+                        break;
+                    }
+                    buf = new byte[i];
+                    bits.byteCopy(tlv.valDat, 5, buf, 0, buf.length);
+                    servNam = new String(buf);
+                    break;
                 case 43: // supported version
                     if (client) {
                         minVer = bits.msbGetW(tlv.valDat, 0);
@@ -699,7 +708,7 @@ public class packTlsHndshk {
                     }
                     minVer = 0x304;
                     maxVer = 0x300;
-                    for (int i = 1; i < tlv.valSiz; i += 2) {
+                    for (i = 1; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
                         if (o < minVer) {
                             minVer = o;
@@ -719,7 +728,7 @@ public class packTlsHndshk {
                     if (lower.verMax < 0x304) {
                         break;
                     }
-                    for (int i = 2; i < tlv.valSiz; i += 2) {
+                    for (i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
                         ecDiffHell.curve = cryECcurve.getByTls(o);
                         if (ecDiffHell.curve != null) {
@@ -731,7 +740,7 @@ public class packTlsHndshk {
                     if (lower.verMax < 0x304) {
                         break;
                     }
-                    for (int i = 2; i < tlv.valSiz; i += 2) {
+                    for (i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
                         if (getSignerHash(o) == null) {
                             continue;

@@ -8,9 +8,14 @@ import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgSessn;
+import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packNetflow;
+import net.freertr.pack.packTls;
+import net.freertr.pack.packTlsHndshk;
 import net.freertr.pipe.pipeSide;
+import net.freertr.prt.prtTcp;
+import net.freertr.serv.servHttp;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -130,6 +135,11 @@ public class tabSession implements Runnable {
     public tabListing<tabAceslstN<addrIP>, addrIP> allowList;
 
     /**
+     * allow specific urls
+     */
+    public cfgTrnsltn allowUrl;
+
+    /**
      * session timeout
      */
     public int timeout = 60000;
@@ -189,6 +199,7 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, !allowMcast, beg, "allow-multicast", "");
         cmds.cfgLine(res, !allowBcast, beg, "allow-broadcast", "");
         cmds.cfgLine(res, allowList == null, beg, "allow-list", "" + allowList);
+        cmds.cfgLine(res, allowUrl == null, beg, "allow-url", "" + allowUrl);
         cmds.cfgLine(res, timeout == defTim, beg, "timeout", "" + timeout);
     }
 
@@ -266,6 +277,14 @@ public class tabSession implements Runnable {
                 }
                 master = ntry.connects;
                 name = cmd.word();
+                continue;
+            }
+            if (a.equals("allow-url")) {
+                if (negated) {
+                    allowUrl = null;
+                    continue;
+                }
+                allowUrl = cfgAll.trnsltnFind(cmd.word(), false);
                 continue;
             }
             if (a.equals("allow-list")) {
@@ -395,14 +414,31 @@ public class tabSession implements Runnable {
         if (allowBcast && pck.IPbrd) {
             return sessPass(ses);
         }
-        if (allowList == null) {
-            return sessDrop(ses);
+        if (allowList != null) {
+            if (allowList.matches(false, false, pck)) {
+                return sessPass(ses);
+            }
         }
-        if (allowList.matches(false, false, pck)) {
+        if (allowUrl != null) {
+            if (pck.IPprt != prtTcp.protoNum) {
+                return sessDrop(ses);
+            }
+            int mod = 0;
+            if (pck.UDPtrg == servHttp.clearPort) {
+                mod = 1;
+            }
+            if (pck.UDPtrg == servHttp.securePort) {
+                mod = 2;
+            }
+            if (mod < 1) {
+                return sessDrop(ses);
+            }
+            ses.evaluating = new packHolder(true, true);
+            ses.evaluating.TCPflg = mod;
+            ses.evaluating.IPlnk = dir;
             return sessPass(ses);
-        } else {
-            return sessDrop(ses);
         }
+        return sessDrop(ses);
     }
 
     /**
@@ -428,6 +464,117 @@ public class tabSession implements Runnable {
         } else {
             ses.cntr.rx(pck);
         }
+        if (ses.evaluating == null) {
+            return false;
+        }
+        if (ses.evaluating.IPlnk != dir) {
+            return false;
+        }
+        if (ses.evaluating.IPbrd) {
+            return true;
+        }
+        int o = pck.IPsiz + pck.UDPsiz;
+        if (o > i) {
+            return true;
+        }
+        byte[] buf = new byte[i - o];
+        pck.getCopy(buf, 0, o, buf.length);
+        pck = ses.evaluating;
+        if ((pck.dataSize() + buf.length) >= packHolder.maxData) {
+            return true;
+        }
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2end();
+        String s = "";
+        switch (pck.TCPflg) {
+            case 1:
+                o = -100;
+                boolean don = false;
+                for (i = 0; i < pck.dataSize(); i++) {
+                    if (pck.getByte(i) != 13) {
+                        continue;
+                    }
+                    if ((i - o) > 2) {
+                        o = i;
+                        continue;
+                    }
+                    don = true;
+                    break;
+                }
+                if (!don) {
+                    return false;
+                }
+                ses.evaluating.IPbrd = true;
+                don = false;
+                for (i = 0; i <= o; i++) {
+                    int p = pck.getByte(i);
+                    switch (p) {
+                        case 10:
+                        case 13:
+                            p = s.indexOf(":");
+                            if (p < 0) {
+                                s = "";
+                                continue;
+                            }
+                            if (s.substring(0, p).trim().toLowerCase().equals("host")) {
+                                s = s.substring(p + 1, s.length()).trim();
+                                don = true;
+                            } else {
+                                s = "";
+                            }
+                            break;
+                        default:
+                            s += (char) p;
+                            break;
+                    }
+                    if (don) {
+                        break;
+                    }
+                }
+                if (!don) {
+                    return true;
+                }
+                break;
+            case 2:
+                packTls tlsp = new packTls(false);
+                o = pck.dataSize() - tlsp.getHeadSize();
+                if (o < 0) {
+                    return false;
+                }
+                i = pck.msbGetW(3);
+                if (o < i) {
+                    return false;
+                }
+                ses.evaluating.IPbrd = true;
+                tlsp.pckTyp = pck.getByte(0);
+                pck.getSkip(tlsp.getHeadSize());
+                pck.setBytesLeft(i);
+                tlsp.pckDat = pck;
+                packTlsHndshk tlsh = new packTlsHndshk(tlsp, false);
+                if (tlsh.headerParse()) {
+                    return true;
+                }
+                if (tlsh.clntHelloParse()) {
+                    return true;
+                }
+                s = tlsh.servNam;
+                if (s == null) {
+                    return true;
+                }
+                break;
+            default:
+                return true;
+        }
+        ses.sawUrl = s;
+        s = allowUrl.doTranslate(s);
+        if (s == null) {
+            if (logDrop) {
+                logger.info("forbidden " + ses);
+            }
+            return true;
+        }
+        ses.evaluating = null;
         return false;
     }
 
@@ -439,9 +586,9 @@ public class tabSession implements Runnable {
     public userFormat doShowInsp() {
         userFormat l;
         if (logMacs) {
-            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time|src|trg", "3|2source|2target|2packet|2byte|1|2mac");
+            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|url|rx|tx|rx|tx|time|src|trg", "3|2source|2target|1|2packet|2byte|1|2mac");
         } else {
-            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|rx|tx|rx|tx|time", "3|2source|2target|2packet|2byte|1");
+            l = new userFormat("|", "dir|prt|tos|addr|port|addr|port|url|rx|tx|rx|tx|time", "3|2source|2target|1|2packet|2byte|1");
         }
         for (int i = 0; i < connects.size(); i++) {
             l.add(connects.get(i).dump());

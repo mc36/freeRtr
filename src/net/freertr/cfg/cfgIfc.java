@@ -6294,6 +6294,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 3,.     allow-broadcast           allow broadcast traffic");
         l.add(null, "3 4       allow-list                allow specific traffic");
         l.add(null, "4 3,.       <name:acl>              name of access list");
+        l.add(null, "3 4       allow-url                 allow specific traffic");
+        l.add(null, "4 3,.       <num>                   translation rule");
         l.add(null, "3 4       member                    member of inspection");
         l.add(null, "4 5         <name:ses>              name of session group");
         l.add(null, "5 3,.         <name>                local identifier in the group");

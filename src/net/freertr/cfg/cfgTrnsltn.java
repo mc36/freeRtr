@@ -80,7 +80,12 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     public List<String> match = new ArrayList<String>();
 
     /**
-     * match pattern
+     * forbid pattern
+     */
+    public List<String> forbid = new ArrayList<String>();
+
+    /**
+     * action pattern
      */
     public List<String> action = new ArrayList<String>();
 
@@ -89,7 +94,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
     }
 
     public String toString() {
-        return "translate " + name;
+        return name;
     }
 
     /**
@@ -113,6 +118,9 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         }
         cmds.cfgLine(l, track == null, cmds.tabulator, "track", "" + track);
         cmds.cfgLine(l, time == null, cmds.tabulator, "time", "" + time);
+        for (int i = 0; i < forbid.size(); i++) {
+            l.add(cmds.tabulator + "forbid " + forbid.get(i));
+        }
         for (int i = 0; i < match.size(); i++) {
             l.add(cmds.tabulator + "match " + match.get(i));
         }
@@ -152,6 +160,8 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
         l.add(null, "1 2    time                consider time");
         l.add(null, "2 .      <name:tm>         name of time map");
         l.add(null, "1 2    match               match string");
+        l.add(null, "2 2,.    <str>             regular expression");
+        l.add(null, "1 2    forbid              forbid string");
         l.add(null, "2 2,.    <str>             regular expression");
         l.add(null, "1 2    replace             replace string");
         l.add(null, "2 3      <str>             regular expression");
@@ -204,6 +214,15 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
             time = cfgAll.timeFind(cmd.word(), false);
             if (time == null) {
                 cmd.error("no such time");
+            }
+            return;
+        }
+        if (a.equals("forbid")) {
+            a = cmd.getRemaining();
+            if (negated) {
+                forbid.remove(a);
+            } else {
+                forbid.add(a);
             }
             return;
         }
@@ -300,6 +319,11 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
                 continue;
             }
             src = src.replaceAll(a.substring(0, o), a.substring(o + 1, a.length()));
+        }
+        for (int i = 0; i < forbid.size(); i++) {
+            if (src.matches(forbid.get(i))) {
+                return null;
+            }
         }
         Pattern pat = null;
         Matcher mat = null;
