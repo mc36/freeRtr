@@ -575,6 +575,9 @@ public class tabSession implements Runnable {
             return true;
         }
         ses.evaluating = null;
+        if (notif != null) {
+            notif.wakeup();
+        }
         return false;
     }
 
