@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.13-cur, done by cs@nop.
--;-;-;2022-02-13 17:07:53, took 00:07:16, with 100 workers, on 2670 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2022-02-13 17:28:54, took 00:07:20, with 100 workers, on 2670 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
