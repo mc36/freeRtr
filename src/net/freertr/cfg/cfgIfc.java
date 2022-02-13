@@ -8549,7 +8549,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if (mplsPack.inspect != null) {
                 mplsPack.inspect.stopTimer();
             }
-            mplsPack.inspect = new tabSession(true, 60000);
+            mplsPack.inspect = new tabSession(true, 180000);
             mplsPack.inspect.fromString(cmd);
             mplsPack.inspect.startTimer();
             return;

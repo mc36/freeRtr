@@ -444,7 +444,7 @@ public class ifcBridge implements ifcDn {
             if (inspect != null) {
                 inspect.stopTimer();
             }
-            inspect = new tabSession(true, 60000);
+            inspect = new tabSession(true, 180000);
             inspect.fromString(cmd);
             inspect.startTimer();
             return;

@@ -24,7 +24,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     /**
      * sessions
      */
-    public tabSession connects = new tabSession(true, 60000);
+    public tabSession connects = new tabSession(true, 180000);
 
     /**
      * defaults text
