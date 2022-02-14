@@ -652,6 +652,10 @@ public class player implements Runnable {
                 }
                 res.add(ntry);
             }
+            if (res.size() < 1) {
+                buf.write("nothing selected!<br/>".getBytes());
+                return -1;
+            }
             playlist = res;
             buf.write("lockin successfully finished!<br/>".getBytes());
             return -1;
@@ -794,6 +798,10 @@ public class player implements Runnable {
             fnd.doFind("/media");
             fnd.doFind("/mnt");
             fnd.doSort();
+            if (fnd.lst.size() < 1) {
+                buf.write("nothing selected!<br/>".getBytes());
+                return -1;
+            }
             playlist = fnd.lst;
             prelock = playlist;
             String a = "media scanned, " + playlist.size() + " songs found.<br/><br/>";
@@ -805,10 +813,13 @@ public class player implements Runnable {
             putMenu(buf);
             int i = playerUtil.str2int(song);
             if (i > 0) {
-                ready = false;
-                playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(i - 1)));
+                List<playerSong> res = playerSong.txt2pls(null, playerUtil.readup(playlists.get(i - 1)));
+                if (res.size() < 1) {
+                    buf.write("nothing selected!<br/>".getBytes());
+                    return -1;
+                }
+                playlist = res;
                 prelock = playlist;
-                ready = true;
                 String a = "playlist #" + song + " selected with " + playlist.size() + " songs.<br/><br/>";
                 buf.write(a.getBytes());
             }

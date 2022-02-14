@@ -2712,967 +2712,396 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         line = fil.readline(8192)
         splt = line.split(" ")
         print("rx: ", splt)
+        cmds = splt[0].split("_")
+        mode = 0;
+        if len(cmds) > 1:
+            if cmds[1] == "add":
+                mode = 1;
+            if cmds[1] == "mod":
+                mode = 2;
+            if cmds[1] == "del":
+                mode = 3;
 
 
-        if splt[0] == "route4_add":
+        if cmds[0] == "route4":
             addr = splt[1].split("/");
-            writeForwardRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeForwardRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue
-        if splt[0] == "route4_mod":
+
+        if cmds[0] == "labroute4":
             addr = splt[1].split("/");
-            writeForwardRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeGlobRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
-        if splt[0] == "route4_del":
+
+        if cmds[0] == "srvroute4":
             addr = splt[1].split("/");
-            writeForwardRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
+            writeSrvRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
             continue
 
-        if splt[0] == "labroute4_add":
+        if cmds[0] == "vpnroute4":
             addr = splt[1].split("/");
-            writeGlobRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
+            writeVpnRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
             continue
-        if splt[0] == "labroute4_mod":
+
+        if cmds[0] == "myaddr4":
             addr = splt[1].split("/");
-            writeGlobRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
+            writeMyaddrRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
             continue
-        if splt[0] == "labroute4_del":
+
+        if cmds[0] == "copp4":
+            writeCoppRules4(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+
+        if cmds[0] == "copp6":
+            writeCoppRules6(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
+            continue
+
+        if cmds[0] == "inacl4":
+            writeInAclRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
+            continue
+
+        if cmds[0] == "inacl6":
+            writeInAclRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
+            continue
+
+        if cmds[0] == "outacl4":
+            writeOutAclRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
+            continue
+
+        if cmds[0] == "outacl6":
+            writeOutAclRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
+            continue
+
+        if cmds[0] == "natcfg4":
+            writeNatCfgRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
+            continue
+
+        if cmds[0] == "natcfg6":
+            writeNatCfgRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
+            continue
+
+        if cmds[0] == "nattrns4":
+            writeNatTrnsRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
+            continue
+
+        if cmds[0] == "nattrns6":
+            writeNatTrnsRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
+            continue
+
+        if cmds[0] == "inspect4":
+            writeInspectRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
+            continue
+
+        if cmds[0] == "inspect6":
+            writeInspectRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
+            continue
+
+        if cmds[0] == "pbr4norm":
+            writePbrNormRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+            continue
+
+        if cmds[0] == "pbr6norm":
+            writePbrNormRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+            continue
+
+        if cmds[0] == "pbr4vrf":
+            writePbrVrfRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+            continue
+
+        if cmds[0] == "pbr6vrf":
+            writePbrVrfRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+            continue
+
+        if cmds[0] == "pbr4hop":
+            writePbrHopRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+            continue
+
+        if cmds[0] == "pbr6hop":
+            writePbrHopRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+            continue
+
+        if cmds[0] == "pbr4lab":
+            writePbrLabRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
+            continue
+
+        if cmds[0] == "pbr6lab":
+            writePbrLabRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
+            continue
+
+        if cmds[0] == "inqos4":
+            writeInQosRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            continue
+
+        if cmds[0] == "inqos6":
+            writeInQosRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            continue
+
+        if cmds[0] == "outqos4":
+            writeOutQosRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            continue
+
+        if cmds[0] == "outqos6":
+            writeOutQosRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            continue
+
+        if cmds[0] == "inqos":
+            writeInQosRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "outqos":
+            writeOutQosRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "flowspec4":
+            writeFlowspecRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
+            continue
+
+        if cmds[0] == "flowspec6":
+            writeFlowspecRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
+            continue
+
+        if cmds[0] == "cpulabel":
+            writeCpuMplsRules(mode,p4info_helper,sw1,int(splt[1]))
+            continue
+
+        if cmds[0] == "label4":
+            writeMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            continue
+
+        if cmds[0] == "unlabel4":
+            writeUnMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "mylabel4":
+            writeMyMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "nshfwd":
+            writeNshFwdRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
+            continue
+
+        if cmds[0] == "nshloc":
+            writeNshLocRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "neigh4":
+            writeNexthopRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+            continue
+
+        if cmds[0] == "portvrf":
+            writeVrfRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "nhop2port":
+            writeNhop2portRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "portvlan":
+            writeVlanRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "bundlevlan":
+            writeBunVlanRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "portbundle":
+            writeBundleRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "hairpin":
+            writeHairpinRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "pppoe":
+            writePppoeRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
+            continue
+
+        if cmds[0] == "gre4":
+            writeGre4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+
+        if cmds[0] == "gre6":
+            writeGre6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+
+        if cmds[0] == "ipip4":
+            writeIpip4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+
+        if cmds[0] == "ipip6":
+            writeIpip6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
+            continue
+
+        if cmds[0] == "l2tp4":
+            writeL2tp4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+
+        if cmds[0] == "l2tp6":
+            writeL2tp6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+
+        if cmds[0] == "bridgevxlan4":
+            writeVxlan4rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
+            continue
+
+        if cmds[0] == "bridgevxlan6":
+            writeVxlan6rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
+            continue
+
+        if cmds[0] == "bridgepckoudp4":
+            writePckoudp4rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+
+        if cmds[0] == "bridgepckoudp6":
+            writePckoudp6rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
+            continue
+
+
+        if cmds[0] == "xconnect":
+            writeXconnRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+
+        if cmds[0] == "portbridge":
+            writeBrprtRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "bridgemac":
+            writeBrmacRules(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+            continue
+
+        if cmds[0] == "routedmac":
+            writeRoumacRules(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
+            continue
+
+        if cmds[0] == "bridgelabel":
+            writeBrlabRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "bridgevpls":
+            writeBrvplsRules(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+
+        if cmds[0] == "bridgesrv":
+            writeBrsrvRules(mode,p4info_helper,sw1,int(splt[2]),splt[3],int(splt[1]))
+            continue
+
+        if cmds[0] == "bridgesrv6":
+            writeBrsrv6rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),splt[5])
+            continue
+
+        if cmds[0] == "route6":
             addr = splt[1].split("/");
-            writeGlobRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
+            writeForwardRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
             continue
 
-        if splt[0] == "srvroute4_add":
+        if cmds[0] == "labroute6":
             addr = splt[1].split("/");
-            writeSrvRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
+            writeGlobRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
             continue
-        if splt[0] == "srvroute4_mod":
+
+        if cmds[0] == "srvroute6":
             addr = splt[1].split("/");
-            writeSrvRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
+            writeSrvRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
             continue
-        if splt[0] == "srvroute4_del":
+
+        if cmds[0] == "vpnroute6":
             addr = splt[1].split("/");
-            writeSrvRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
+            writeVpnRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
             continue
 
-        if splt[0] == "vpnroute4_add":
+        if cmds[0] == "myaddr6":
             addr = splt[1].split("/");
-            writeVpnRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
+            writeMyaddrRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
             continue
-        if splt[0] == "vpnroute4_mod":
-            addr = splt[1].split("/");
-            writeVpnRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "vpnroute4_del":
-            addr = splt[1].split("/");
-            writeVpnRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-
-        if splt[0] == "myaddr4_add":
-            addr = splt[1].split("/");
-            writeMyaddrRules4(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
-            continue
-        if splt[0] == "myaddr4_mod":
-            addr = splt[1].split("/");
-            writeMyaddrRules4(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
-            continue
-        if splt[0] == "myaddr4_del":
-            addr = splt[1].split("/");
-            writeMyaddrRules4(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
-            continue
-
-        if splt[0] == "copp4_add":
-            writeCoppRules4(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
-            continue
-        if splt[0] == "copp4_mod":
-            writeCoppRules4(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
-            continue
-        if splt[0] == "copp4_del":
-            writeCoppRules4(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
-            continue
-
-        if splt[0] == "copp6_add":
-            writeCoppRules6(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
-            continue
-        if splt[0] == "copp6_mod":
-            writeCoppRules6(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
-            continue
-        if splt[0] == "copp6_del":
-            writeCoppRules6(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]))
-            continue
-
-        if splt[0] == "inacl4_add":
-            writeInAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "inacl4_mod":
-            writeInAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "inacl4_del":
-            writeInAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-
-        if splt[0] == "inacl6_add":
-            writeInAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "inacl6_mod":
-            writeInAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "inacl6_del":
-            writeInAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-
-        if splt[0] == "outacl4_add":
-            writeOutAclRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "outacl4_mod":
-            writeOutAclRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "outacl4_del":
-            writeOutAclRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-
-        if splt[0] == "outacl6_add":
-            writeOutAclRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "outacl6_mod":
-            writeOutAclRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "outacl6_del":
-            writeOutAclRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-
-        if splt[0] == "natcfg4_add":
-            writeNatCfgRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "natcfg4_mod":
-            writeNatCfgRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "natcfg4_del":
-            writeNatCfgRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-
-        if splt[0] == "natcfg6_add":
-            writeNatCfgRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "natcfg6_mod":
-            writeNatCfgRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-        if splt[0] == "natcfg6_del":
-            writeNatCfgRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
-            continue
-
-        if splt[0] == "nattrns4_add":
-            writeNatTrnsRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
-            continue
-        if splt[0] == "nattrns4_mod":
-            writeNatTrnsRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
-            continue
-        if splt[0] == "nattrns4_del":
-            writeNatTrnsRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
-            continue
-
-        if splt[0] == "nattrns6_add":
-            writeNatTrnsRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
-            continue
-        if splt[0] == "nattrns6_mod":
-            writeNatTrnsRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
-            continue
-        if splt[0] == "nattrns6_del":
-            writeNatTrnsRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]),splt[7],int(splt[8]),splt[9],int(splt[10]))
-            continue
-
-        if splt[0] == "inspect4_add":
-            writeInspectRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
-            continue
-        if splt[0] == "inspect4_mod":
-            writeInspectRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
-            continue
-        if splt[0] == "inspect4_del":
-            writeInspectRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
-            continue
-
-        if splt[0] == "inspect6_add":
-            writeInspectRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
-            continue
-        if splt[0] == "inspect6_mod":
-            writeInspectRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
-            continue
-        if splt[0] == "inspect6_del":
-            writeInspectRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),splt[5],int(splt[6]))
-            continue
-
-        if splt[0] == "pbr4norm_add":
-            writePbrNormRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr4norm_mod":
-            writePbrNormRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr4norm_del":
-            writePbrNormRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-
-        if splt[0] == "pbr6norm_add":
-            writePbrNormRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr6norm_mod":
-            writePbrNormRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr6norm_del":
-            writePbrNormRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-
-        if splt[0] == "pbr4vrf_add":
-            writePbrVrfRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr4vrf_mod":
-            writePbrVrfRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr4vrf_del":
-            writePbrVrfRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-
-        if splt[0] == "pbr6vrf_add":
-            writePbrVrfRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr6vrf_mod":
-            writePbrVrfRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr6vrf_del":
-            writePbrVrfRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-
-        if splt[0] == "pbr4hop_add":
-            writePbrHopRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr4hop_mod":
-            writePbrHopRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr4hop_del":
-            writePbrHopRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-
-        if splt[0] == "pbr6hop_add":
-            writePbrHopRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr6hop_mod":
-            writePbrHopRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "pbr6hop_del":
-            writePbrHopRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[6]),int(splt[7]),splt[8],splt[9],splt[10],splt[11],int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-
-
-        if splt[0] == "pbr4lab_add":
-            writePbrLabRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "pbr4lab_mod":
-            writePbrLabRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "pbr4lab_del":
-            writePbrLabRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-
-        if splt[0] == "pbr6lab_add":
-            writePbrLabRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "pbr6lab_mod":
-            writePbrLabRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "pbr6lab_del":
-            writePbrLabRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-
-        if splt[0] == "inqos4_add":
-            writeInQosRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "inqos4_mod":
-            writeInQosRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "inqos4_del":
-            writeInQosRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-
-        if splt[0] == "inqos6_add":
-            writeInQosRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "inqos6_mod":
-            writeInQosRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "inqos6_del":
-            writeInQosRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-
-        if splt[0] == "outqos4_add":
-            writeOutQosRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "outqos4_mod":
-            writeOutQosRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "outqos4_del":
-            writeOutQosRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-
-        if splt[0] == "outqos6_add":
-            writeOutQosRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "outqos6_mod":
-            writeOutQosRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-        if splt[0] == "outqos6_del":
-            writeOutQosRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]),int(splt[6]),splt[7],splt[8],splt[9],splt[10],int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            continue
-
-        if splt[0] == "inqos_add":
-            writeInQosRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "inqos_mod":
-            writeInQosRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "inqos_del":
-            writeInQosRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "outqos_add":
-            writeOutQosRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "outqos_mod":
-            writeOutQosRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "outqos_del":
-            writeOutQosRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "flowspec4_add":
-            writeFlowspecRules4(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "flowspec4_mod":
-            writeFlowspecRules4(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "flowspec4_del":
-            writeFlowspecRules4(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-
-        if splt[0] == "flowspec6_add":
-            writeFlowspecRules6(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "flowspec6_mod":
-            writeFlowspecRules6(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-        if splt[0] == "flowspec6_del":
-            writeFlowspecRules6(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],int(splt[7]),int(splt[8]),splt[9],splt[10],splt[11],splt[12],int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]),int(splt[20]))
-            continue
-
-        if splt[0] == "cpulabel_add":
-            writeCpuMplsRules(1,p4info_helper,sw1,int(splt[1]))
-            continue
-        if splt[0] == "cpulabel_mod":
-            writeCpuMplsRules(2,p4info_helper,sw1,int(splt[1]))
-            continue
-        if splt[0] == "cpulabel_del":
-            writeCpuMplsRules(3,p4info_helper,sw1,int(splt[1]))
-            continue
-
-        if splt[0] == "label4_add":
-            writeMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
-            continue
-        if splt[0] == "label4_mod":
-            writeMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
-            continue
-        if splt[0] == "label4_del":
-            writeMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
-            continue
-
-        if splt[0] == "unlabel4_add":
-            writeUnMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "unlabel4_mod":
-            writeUnMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "unlabel4_del":
-            writeUnMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-
-        if splt[0] == "mylabel4_add":
-            writeMyMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "mylabel4_mod":
-            writeMyMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "mylabel4_del":
-            writeMyMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-
-        if splt[0] == "nshfwd_add":
-            writeNshFwdRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
-            continue
-        if splt[0] == "nshfwd_mod":
-            writeNshFwdRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
-            continue
-        if splt[0] == "nshfwd_del":
-            writeNshFwdRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],int(splt[6]),int(splt[7]))
-            continue
-
-        if splt[0] == "nshloc_add":
-            writeNshLocRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "nshloc_mod":
-            writeNshLocRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "nshloc_del":
-            writeNshLocRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "neigh4_add":
-            writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
-            writeNeighborRules4(1,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
-            continue
-        if splt[0] == "neigh4_mod":
-            writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
-            writeNeighborRules4(2,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
-            continue
-        if splt[0] == "neigh4_del":
-            writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
-            writeNeighborRules4(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
-            continue
-
-
-        if splt[0] == "portvrf_add":
-            writeVrfRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "portvrf_mod":
-            writeVrfRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "portvrf_del":
-            writeVrfRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-
-        if splt[0] == "nhop2port_add":
-            writeNhop2portRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "nhop2port_mod":
-            writeNhop2portRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "nhop2port_del":
-            writeNhop2portRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "portvlan_add":
-            writeVlanRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "portvlan_mod":
-            writeVlanRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "portvlan_del":
-            writeVlanRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "bundlevlan_add":
-            writeBunVlanRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "bundlevlan_mod":
-            writeBunVlanRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "bundlevlan_del":
-            writeBunVlanRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "portbundle_add":
-            writeBundleRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "portbundle_mod":
-            writeBundleRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-        if splt[0] == "portbundle_del":
-            writeBundleRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
-            continue
-
-        if splt[0] == "hairpin_add":
-            writeHairpinRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "hairpin_mod":
-            writeHairpinRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "hairpin_del":
-            writeHairpinRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-
-        if splt[0] == "pppoe_add":
-            writePppoeRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
-            continue
-        if splt[0] == "pppoe_mod":
-            writePppoeRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
-            continue
-        if splt[0] == "pppoe_del":
-            writePppoeRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),splt[6],splt[7])
-            continue
-
-        if splt[0] == "gre4_add":
-            writeGre4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "gre4_mod":
-            writeGre4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "gre4_del":
-            writeGre4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-
-        if splt[0] == "gre6_add":
-            writeGre6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "gre6_mod":
-            writeGre6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "gre6_del":
-            writeGre6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-
-
-        if splt[0] == "ipip4_add":
-            writeIpip4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "ipip4_mod":
-            writeIpip4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "ipip4_del":
-            writeIpip4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-
-        if splt[0] == "ipip6_add":
-            writeIpip6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "ipip6_mod":
-            writeIpip6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-        if splt[0] == "ipip6_del":
-            writeIpip6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8])
-            continue
-
-
-        if splt[0] == "l2tp4_add":
-            writeL2tp4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-        if splt[0] == "l2tp4_mod":
-            writeL2tp4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-        if splt[0] == "l2tp4_del":
-            writeL2tp4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-
-        if splt[0] == "l2tp6_add":
-            writeL2tp6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-        if splt[0] == "l2tp6_mod":
-            writeL2tp6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-        if splt[0] == "l2tp6_del":
-            writeL2tp6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-
-        if splt[0] == "bridgevxlan4_add":
-            writeVxlan4rules(1,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
-            continue
-        if splt[0] == "bridgevxlan4_mod":
-            writeVxlan4rules(2,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
-            continue
-        if splt[0] == "bridgevxlan4_del":
-            writeVxlan4rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
-            continue
-
-        if splt[0] == "bridgevxlan6_add":
-            writeVxlan6rules(1,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
-            continue
-        if splt[0] == "bridgevxlan6_mod":
-            writeVxlan6rules(2,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
-            continue
-        if splt[0] == "bridgevxlan6_del":
-            writeVxlan6rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]));
-            continue
-
-        if splt[0] == "bridgepckoudp4_add":
-            writePckoudp4rules(1,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
-            continue
-        if splt[0] == "bridgepckoudp4_mod":
-            writePckoudp4rules(2,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
-            continue
-        if splt[0] == "bridgepckoudp4_del":
-            writePckoudp4rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
-            continue
-
-        if splt[0] == "bridgepckoudp6_add":
-            writePckoudp6rules(1,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
-            continue
-        if splt[0] == "bridgepckoudp6_mod":
-            writePckoudp6rules(2,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
-            continue
-        if splt[0] == "bridgepckoudp6_del":
-            writePckoudp6rules(3,p4info_helper,sw1,int(splt[1]),splt[2],splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]));
-            continue
-
-
-        if splt[0] == "xconnect_add":
-            writeXconnRules(1,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "xconnect_mod":
-            writeXconnRules(2,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "xconnect_del":
-            writeXconnRules(3,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-
-        if splt[0] == "portbridge_add":
-            writeBrprtRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "portbridge_mod":
-            writeBrprtRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "portbridge_del":
-            writeBrprtRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-
-        if splt[0] == "bridgemac_add":
-            writeBrmacRules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
-        if splt[0] == "bridgemac_mod":
-            writeBrmacRules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
-        if splt[0] == "bridgemac_del":
-            writeBrmacRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
-
-        if splt[0] == "routedmac_add":
-            writeRoumacRules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
-            continue
-        if splt[0] == "routedmac_mod":
-            writeRoumacRules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
-            continue
-        if splt[0] == "routedmac_del":
-            writeRoumacRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]))
-            continue
-
-        if splt[0] == "bridgelabel_add":
-            writeBrlabRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "bridgelabel_mod":
-            writeBrlabRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "bridgelabel_del":
-            writeBrlabRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-
-        if splt[0] == "bridgevpls_add":
-            writeBrvplsRules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "bridgevpls_mod":
-            writeBrvplsRules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "bridgevpls_del":
-            writeBrvplsRules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-
-        if splt[0] == "bridgesrv_add":
-            writeBrsrvRules(1,p4info_helper,sw1,int(splt[2]),splt[3],int(splt[1]))
-            continue
-        if splt[0] == "bridgesrv_mod":
-            writeBrsrvRules(2,p4info_helper,sw1,int(splt[2]),splt[3],int(splt[1]))
-            continue
-        if splt[0] == "bridgesrv_del":
-            writeBrsrvRules(3,p4info_helper,sw1,int(splt[2]),splt[3],int(splt[1]))
-            continue
-
-        if splt[0] == "bridgesrv6_add":
-            writeBrsrv6rules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),splt[5])
-            continue
-        if splt[0] == "bridgesrv6_mod":
-            writeBrsrv6rules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),splt[5])
-            continue
-        if splt[0] == "bridgesrv6_del":
-            writeBrsrv6rules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[4]),splt[5])
-            continue
-
-        if splt[0] == "route6_add":
-            addr = splt[1].split("/");
-            writeForwardRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
-            continue
-        if splt[0] == "route6_mod":
-            addr = splt[1].split("/");
-            writeForwardRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
-            continue
-        if splt[0] == "route6_del":
-            addr = splt[1].split("/");
-            writeForwardRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]))
-            continue
 
-        if splt[0] == "labroute6_add":
-            addr = splt[1].split("/");
-            writeGlobRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
+        if cmds[0] == "label6":
+            writeMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
-        if splt[0] == "labroute6_mod":
-            addr = splt[1].split("/");
-            writeGlobRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
-            continue
-        if splt[0] == "labroute6_del":
-            addr = splt[1].split("/");
-            writeGlobRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]))
-            continue
-
-        if splt[0] == "srvroute6_add":
-            addr = splt[1].split("/");
-            writeSrvRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
-            continue
-        if splt[0] == "srvroute6_mod":
-            addr = splt[1].split("/");
-            writeSrvRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
-            continue
-        if splt[0] == "srvroute6_del":
-            addr = splt[1].split("/");
-            writeSrvRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),splt[5])
-            continue
-
-        if splt[0] == "vpnroute6_add":
-            addr = splt[1].split("/");
-            writeVpnRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "vpnroute6_mod":
-            addr = splt[1].split("/");
-            writeVpnRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
-        if splt[0] == "vpnroute6_del":
-            addr = splt[1].split("/");
-            writeVpnRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
-            continue
 
-        if splt[0] == "myaddr6_add":
-            addr = splt[1].split("/");
-            writeMyaddrRules6(1,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
-            continue
-        if splt[0] == "myaddr6_mod":
-            addr = splt[1].split("/");
-            writeMyaddrRules6(2,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
-            continue
-        if splt[0] == "myaddr6_del":
-            addr = splt[1].split("/");
-            writeMyaddrRules6(3,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
-            continue
-
-        if splt[0] == "label6_add":
-            writeMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
-            continue
-        if splt[0] == "label6_mod":
-            writeMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
-            continue
-        if splt[0] == "label6_del":
-            writeMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
-            continue
-
-        if splt[0] == "unlabel6_add":
-            writeUnMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "unlabel6_mod":
-            writeUnMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "unlabel6_del":
-            writeUnMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+        if cmds[0] == "unlabel6":
+            writeUnMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
-        if splt[0] == "mysrv4_add":
-            writeMySrv4rules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+        if cmds[0] == "mysrv4":
+            writeMySrv4rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
             continue
-        if splt[0] == "mysrv4_mod":
-            writeMySrv4rules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
-        if splt[0] == "mysrv4_del":
-            writeMySrv4rules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
 
-        if splt[0] == "mysrv6_add":
-            writeMySrv6rules(1,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
+        if cmds[0] == "mysrv6":
+            writeMySrv6rules(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
             continue
-        if splt[0] == "mysrv6_mod":
-            writeMySrv6rules(2,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
-        if splt[0] == "mysrv6_del":
-            writeMySrv6rules(3,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]))
-            continue
 
-        if splt[0] == "mylabel6_add":
-            writeMyMplsRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
-        if splt[0] == "mylabel6_mod":
-            writeMyMplsRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+        if cmds[0] == "mylabel6":
+            writeMyMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
-        if splt[0] == "mylabel6_del":
-            writeMyMplsRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]))
-            continue
 
-        if splt[0] == "neigh6_add":
-            writeNexthopRules(1,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
-            writeNeighborRules6(1,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
-            continue
-        if splt[0] == "neigh6_mod":
-            writeNexthopRules(2,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
-            writeNeighborRules6(2,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+        if cmds[0] == "neigh6":
+            writeNexthopRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
-        if splt[0] == "neigh6_del":
-            writeNexthopRules(3,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
-            writeNeighborRules6(3,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
-            continue
 
-        if splt[0] == "mlocal4_add":
-            writeMlocal4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
-            continue
-        if splt[0] == "mlocal4_mod":
-            writeMlocal4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
-            continue
-        if splt[0] == "mlocal4_del":
-            writeMlocal4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
+        if cmds[0] == "mlocal4":
+            writeMlocal4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
 
-        if splt[0] == "mlocal6_add":
-            writeMlocal6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
+        if cmds[0] == "mlocal6":
+            writeMlocal6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
             continue
-        if splt[0] == "mlocal6_mod":
-            writeMlocal6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
-            continue
-        if splt[0] == "mlocal6_del":
-            writeMlocal6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),splt[6])
-            continue
 
-        if splt[0] == "mroute4_add":
-            writeMroute4rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+        if cmds[0] == "mroute4":
+            writeMroute4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
             continue
-        if splt[0] == "mroute4_mod":
-            writeMroute4rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
-            continue
-        if splt[0] == "mroute4_del":
-            writeMroute4rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
-            continue
 
-        if splt[0] == "mroute6_add":
-            writeMroute6rules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
-            continue
-        if splt[0] == "mroute6_mod":
-            writeMroute6rules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+        if cmds[0] == "mroute6":
+            writeMroute6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
             continue
-        if splt[0] == "mroute6_del":
-            writeMroute6rules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
-            continue
 
-        if splt[0] == "mlabroute4_add":
-            writeMlabRouteRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
-            continue
-        if splt[0] == "mlabroute4_mod":
-            writeMlabRouteRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+        if cmds[0] == "mlabroute4":
+            writeMlabRouteRules(mode,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
             continue
-        if splt[0] == "mlabroute4_del":
-            writeMlabRouteRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
-            continue
 
-        if splt[0] == "mlabroute6_add":
-            writeMlabRouteRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
-            continue
-        if splt[0] == "mlabroute6_mod":
-            writeMlabRouteRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
-            continue
-        if splt[0] == "mlabroute6_del":
-            writeMlabRouteRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
+        if cmds[0] == "mlabroute6":
+            writeMlabRouteRules(mode,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]))
             continue
 
-        if splt[0] == "duplabel4_add":
-            writeDupLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+        if cmds[0] == "duplabel4":
+            writeDupLabelRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
             continue
-        if splt[0] == "duplabel4_mod":
-            writeDupLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
-            continue
-        if splt[0] == "duplabel4_del":
-            writeDupLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
-            continue
 
-        if splt[0] == "duplabel6_add":
-            writeDupLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
+        if cmds[0] == "duplabel6":
+            writeDupLabelRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
             continue
-        if splt[0] == "duplabel6_mod":
-            writeDupLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
-            continue
-        if splt[0] == "duplabel6_del":
-            writeDupLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]))
-            continue
 
-        if splt[0] == "duplabloc4_add":
-            writeDupLabLocRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
-            continue
-        if splt[0] == "duplabloc4_mod":
-            writeDupLabLocRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+        if cmds[0] == "duplabloc4":
+            writeDupLabLocRules(mode,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
             continue
-        if splt[0] == "duplabloc4_del":
-            writeDupLabLocRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
-            continue
 
-        if splt[0] == "duplabloc6_add":
-            writeDupLabLocRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
-            continue
-        if splt[0] == "duplabloc6_mod":
-            writeDupLabLocRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+        if cmds[0] == "duplabloc6":
+            writeDupLabLocRules(mode,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
             continue
-        if splt[0] == "duplabloc6_del":
-            writeDupLabLocRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
-            continue
 
-        if splt[0] == "bierlabel4_add":
-            writeBierLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
-            continue
-        if splt[0] == "bierlabel4_mod":
-            writeBierLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
-            continue
-        if splt[0] == "bierlabel4_del":
-            writeBierLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+        if cmds[0] == "bierlabel4":
+            writeBierLabelRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
             continue
 
-        if splt[0] == "bierlabel6_add":
-            writeBierLabelRules(1,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
+        if cmds[0] == "bierlabel6":
+            writeBierLabelRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
             continue
-        if splt[0] == "bierlabel6_mod":
-            writeBierLabelRules(2,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
-            continue
-        if splt[0] == "bierlabel6_del":
-            writeBierLabelRules(3,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]))
-            continue
 
-        if splt[0] == "bierlabloc4_add":
-            writeBierLabLocRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+        if cmds[0] == "bierlabloc4":
+            writeBierLabLocRules(mode,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
             continue
-        if splt[0] == "bierlabloc4_mod":
-            writeBierLabLocRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-        if splt[0] == "bierlabloc4_del":
-            writeBierLabLocRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
 
-        if splt[0] == "bierlabloc6_add":
-            writeBierLabLocRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
-        if splt[0] == "bierlabloc6_mod":
-            writeBierLabLocRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
+        if cmds[0] == "bierlabloc6":
+            writeBierLabLocRules(mode,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
             continue
-        if splt[0] == "bierlabloc6_del":
-            writeBierLabLocRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]))
-            continue
 
-        if splt[0] == "mbierroute4_add":
-            writeMbierRouteRules(1,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "mbierroute4_mod":
-            writeMbierRouteRules(2,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+        if cmds[0] == "mbierroute4":
+            writeMbierRouteRules(mode,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
-        if splt[0] == "mbierroute4_del":
-            writeMbierRouteRules(3,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
 
-        if splt[0] == "mbierroute6_add":
-            writeMbierRouteRules(1,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "mbierroute6_mod":
-            writeMbierRouteRules(2,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
-            continue
-        if splt[0] == "mbierroute6_del":
-            writeMbierRouteRules(3,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
+        if cmds[0] == "mbierroute6":
+            writeMbierRouteRules(mode,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
 
