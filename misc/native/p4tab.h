@@ -390,10 +390,6 @@ struct acls_entry {
     int port;
     struct table_head aces;
     struct table_head *insp;
-    int cmd; // 1=normal, 2=setvrf, 3=sethop, 4=setlab
-    int vrf;
-    int hop;
-    int label;
 };
 
 struct table_head acls4_table;
@@ -416,6 +412,10 @@ struct acl4_entry {
     int act;
     long pack;
     long byte;
+    int cmd;
+    int vrf;
+    int nexthop;
+    int label;
     int srcAddr;
     int srcMask;
     int trgAddr;
@@ -459,6 +459,10 @@ struct acl6_entry {
     int act;
     long pack;
     long byte;
+    int cmd;
+    int vrf;
+    int nexthop;
+    int label;
     int srcAddr1;
     int srcAddr2;
     int srcAddr3;
@@ -520,6 +524,10 @@ struct aclH_entry {
     int act;        // 0=permit, 1=deny, 2=punt
     long pack;
     long byte;
+    int cmd;        // 1=normal, 2=setvrf, 3=sethop, 4=setlab
+    int vrf;
+    int nexthop;
+    int label;
 };
 
 struct aclH_entry* search_ace(struct table_head *tab, void *ntry, int matcher(void *, void *),int siz) {

@@ -920,7 +920,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "inqos4") == 0) {
         acls_ntry.dir = 6;
         acls_ntry.port = atoi(arg[2]);
-        acls_ntry.hop = atoi(arg[3]);
+        acl4_ntry.nexthop = atoi(arg[3]);
         acls_res = acls_init4;
         readAcl4(&acl4_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
@@ -930,7 +930,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "outqos4") == 0) {
         acls_ntry.dir = 7;
         acls_ntry.port = atoi(arg[2]);
-        acls_ntry.hop = atoi(arg[3]);
+        acl4_ntry.nexthop = atoi(arg[3]);
         acls_res = acls_init4;
         readAcl4(&acl4_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
@@ -976,7 +976,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "inqos6") == 0) {
         acls_ntry.dir = 6;
         acls_ntry.port = atoi(arg[2]);
-        acls_ntry.hop = atoi(arg[3]);
+        acl6_ntry.nexthop = atoi(arg[3]);
         acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
@@ -986,7 +986,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "outqos6") == 0) {
         acls_ntry.dir = 7;
         acls_ntry.port = atoi(arg[2]);
-        acls_ntry.hop = atoi(arg[3]);
+        acl6_ntry.nexthop = atoi(arg[3]);
         acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
@@ -1179,7 +1179,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init4;
-        acls_res->cmd = 1;
+        acl4_ntry.cmd = 1;
         readAcl4(&acl4_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -1189,7 +1189,7 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init6;
-        acls_res->cmd = 1;
+        acl6_ntry.cmd = 1;
         readAcl6(&acl6_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -1199,8 +1199,8 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init4;
-        acls_res->cmd = 2;
-        acls_res->vrf = atoi(arg[3]);
+        acl4_ntry.cmd = 2;
+        acl4_ntry.vrf = atoi(arg[3]);
         readAcl4(&acl4_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -1210,8 +1210,8 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init6;
-        acls_res->cmd = 2;
-        acls_res->vrf = atoi(arg[3]);
+        acl6_ntry.cmd = 2;
+        acl6_ntry.vrf = atoi(arg[3]);
         readAcl6(&acl6_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -1221,9 +1221,9 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init4;
-        acls_res->cmd = 3;
-        acls_res->vrf = atoi(arg[3]);
-        acls_res->hop = atoi(arg[4]);
+        acl4_ntry.cmd = 3;
+        acl4_ntry.vrf = atoi(arg[3]);
+        acl4_ntry.nexthop = atoi(arg[4]);
         readAcl4(&acl4_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -1233,9 +1233,9 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init6;
-        acls_res->cmd = 3;
-        acls_res->vrf = atoi(arg[3]);
-        acls_res->hop = atoi(arg[4]);
+        acl6_ntry.cmd = 3;
+        acl6_ntry.vrf = atoi(arg[3]);
+        acl6_ntry.nexthop = atoi(arg[4]);
         readAcl6(&acl6_ntry, &arg[3]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
@@ -1245,10 +1245,10 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init4;
-        acls_res->cmd = 4;
-        acls_res->vrf = atoi(arg[3]);
-        acls_res->hop = atoi(arg[4]);
-        acls_res->label = atoi(arg[5]);
+        acl4_ntry.cmd = 4;
+        acl4_ntry.vrf = atoi(arg[3]);
+        acl4_ntry.nexthop = atoi(arg[4]);
+        acl4_ntry.label = atoi(arg[5]);
         readAcl4(&acl4_ntry, &arg[4]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
@@ -1258,10 +1258,10 @@ int doOneCommand(unsigned char* buf) {
         acls_ntry.dir = 5;
         acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init6;
-        acls_res->cmd = 4;
-        acls_res->vrf = atoi(arg[3]);
-        acls_res->hop = atoi(arg[4]);
-        acls_res->label = atoi(arg[5]);
+        acl6_ntry.cmd = 4;
+        acl6_ntry.vrf = atoi(arg[3]);
+        acl6_ntry.nexthop = atoi(arg[4]);
+        acl6_ntry.label = atoi(arg[5]);
         readAcl6(&acl6_ntry, &arg[4]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
