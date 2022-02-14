@@ -70,6 +70,7 @@
 #include "include/ig_ctl_tunnel.p4"
 #include "include/ig_ctl_mpls.p4"
 #include "include/ig_ctl_outport.p4"
+#include "include/ig_ctl_rewrites.p4"
 #include "include/ig_ctl_ipv4.p4"
 #include "include/ig_ctl_ipv6.p4"
 #include "include/ig_ctl_ipv4b.p4"

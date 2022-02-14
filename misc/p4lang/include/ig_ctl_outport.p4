@@ -74,62 +74,12 @@ ig_md.nexthop_id:
 
     apply {
 
-        if (ig_md.srv_op_type != 0) {
-            hdr.ipv6.setInvalid();
-        }
-        if (ig_md.srv_op_type == 2) {
-            hdr.eth3.setInvalid();
-        }
-
-        if (ig_md.nsh_remove == 1) {
-            hdr.nsh.setInvalid();
-        }
-
-        if (ig_md.polka_remove == 1) {
-            hdr.polka.setInvalid();
-        }
-
-        if (ig_md.mpls1_remove == 1) {
-            hdr.mpls1.setInvalid();
-        }
-
-        if (ig_md.mpls0_remove == 1) {
-            hdr.mpls0.setInvalid();
-            if (ig_md.ipv4_valid == 1) {
-                ig_md.ethertype = ETHERTYPE_IPV4;
-            } else {
-                ig_md.ethertype = ETHERTYPE_IPV6;
-            }
-        }
-
-
         if (ig_md.target_id != 0) {
             tbl_vlan_out.apply();
             return;
         }
 
         tbl_nexthop.apply();
-
-        if (hdr.nsh.isValid()) {
-            if (hdr.nsh.ttl < 2) act_set_drop();
-            hdr.nsh.ttl = hdr.nsh.ttl -1;
-        }
-        if (hdr.polka.isValid()) {
-            if (hdr.polka.ttl < 2) act_set_drop();
-            hdr.polka.ttl = hdr.polka.ttl -1;
-        }
-        if (hdr.mpls0.isValid()) {
-            if (hdr.mpls0.ttl < 2) act_set_drop();
-            hdr.mpls0.ttl = hdr.mpls0.ttl -1;
-        }
-        if (hdr.ipv4.isValid()) {
-            if (hdr.ipv4.ttl < 2) act_set_drop();
-            hdr.ipv4.ttl = hdr.ipv4.ttl -1;
-        }
-        if (hdr.ipv6.isValid()) {
-            if (hdr.ipv6.hop_limit < 2) act_set_drop();
-            hdr.ipv6.hop_limit = hdr.ipv6.hop_limit -1;
-        }
 
     }
 }
