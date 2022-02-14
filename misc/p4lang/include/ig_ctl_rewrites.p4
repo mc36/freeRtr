@@ -18,8 +18,8 @@
 #define _IG_CTL_REWRITES_P4_
 
 control IngressControlRewrites(inout headers hdr,
-                              inout ingress_metadata_t ig_md,
-                              inout standard_metadata_t ig_intr_md) {
+                               inout ingress_metadata_t ig_md,
+                               inout standard_metadata_t ig_intr_md) {
 
 
     action act_set_drop() {
