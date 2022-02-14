@@ -124,7 +124,6 @@ class BfForwarder(Thread, RareApi):
 
         self._getDataplaneCapability()
         self._setDataplaneCapability()
-        logger.warning("self.nat=%s" % self.nat)
 
         pltfm = "platform tna/%s\n" % self.class_name.lower()
         self.file_w.write(pltfm)

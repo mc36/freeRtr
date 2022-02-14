@@ -72,3 +72,7 @@ def graceful_exit(bf_client, sck):
 
 def inet_ntoa(ip_addr):
     return str(ipaddress.ip_address(ip_addr))
+
+
+def mac_ntoa(mac_addr):
+    return ":".join(re.findall("..", "%012x" % mac_addr))

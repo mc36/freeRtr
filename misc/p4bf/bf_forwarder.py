@@ -24,6 +24,7 @@ from rare.bf_ifstatus import BfIfStatus
 from rare.bf_ifcounter import BfIfCounter
 from rare.bf_subifcounter import BfSubIfCounter
 from rare.bf_natcounter import BfNatCounter
+from rare.bf_bridgecounter import BfBridgeCounter
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
@@ -114,23 +115,16 @@ if __name__ == "__main__":
             False,
         )
 
-        if args.snmp:
-            bf_snmp = BfIfSnmpClient(
-                1,
-                "bf_snmp",
-                bf_client,
-                args.ifmibs_dir,
-                args.stats_interval,
-                args.ifindex,
-            )
-            bf_snmp.daemon = True
-            bf_snmp.start()
-            logger.warning("bf_switchd started with SNMP export")
-        else:
-            logger.warning("bf_switchd started with no SNMP export")
+        bf_bridgecounter_c = BfRuntimeGrpcClient(
+            args.bfruntime_address,
+            args.p4_program_name,
+            args.client_id + 5,
+            args.pipe_name,
+            False,
+        )
 
         bf_forwarder = BfForwarder(
-            2,
+            1,
             "bf_forwarder",
             args.platform,
             bf_client,
@@ -144,14 +138,14 @@ if __name__ == "__main__":
         bf_forwarder.start()
         ALL_THREADS.append(bf_forwarder)
 
-        bf_ifstatus = BfIfStatus(3, "bf_ifstatus", bf_ifstatus_c, sckw_file, 1)
+        bf_ifstatus = BfIfStatus(2, "bf_ifstatus", bf_ifstatus_c, sckw_file, 1)
 
         bf_ifstatus.daemon = True
         bf_ifstatus.start()
         ALL_THREADS.append(bf_ifstatus)
 
         bf_ifcounter = BfIfCounter(
-            4, "bf_ifcounter", bf_ifcounter_c, sckw_file, args.pipe_name, 5
+            3, "bf_ifcounter", bf_ifcounter_c, sckw_file, args.pipe_name, 5
         )
 
         bf_ifcounter.daemon = True
@@ -168,7 +162,7 @@ if __name__ == "__main__":
 
         if bf_forwarder.dp_capabilities["nat"] == True:
             bf_natcounter = BfNatCounter(
-                6, "bf_natcounter", bf_natcounter_c, sckw_file, args.pipe_name, 30
+                5, "bf_natcounter", bf_natcounter_c, sckw_file, args.pipe_name, 30
             )
             bf_natcounter.daemon = True
             bf_natcounter.start()
@@ -176,8 +170,31 @@ if __name__ == "__main__":
         else:
             logging.warning("%s - nat not supported" % PROGRAM_NAME)
 
+        if bf_forwarder.dp_capabilities["bridge"] == True:
+            bf_bridgecounter = BfBridgeCounter(
+                6, "bf_bridgecounter", bf_bridgecounter_c, sckw_file, args.pipe_name, 30
+            )
+            bf_bridgecounter.daemon = True
+            bf_bridgecounter.start()
+            ALL_THREADS.append(bf_bridgecounter)
+        else:
+            logging.warning("%s - bridge not supported" % PROGRAM_NAME)
+
         if args.snmp:
+            bf_snmp = BfIfSnmpClient(
+                7,
+                "bf_snmp",
+                bf_client,
+                args.ifmibs_dir,
+                args.stats_interval,
+                args.ifindex,
+            )
+            bf_snmp.daemon = True
+            bf_snmp.start()
             ALL_THREADS.append(bf_snmp)
+            logger.warning("bf_switchd started with SNMP export")
+        else:
+            logger.warning("bf_switchd started with no SNMP export")
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS if t is not None and t.is_alive()]
