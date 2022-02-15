@@ -282,7 +282,7 @@ public class userTest {
         if (a.equals("otppass")) {
             byte[] buf = cmd.word().getBytes();
             long t = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
-            a = cryOtp.calcTotp(buf, t, 8, new cryHashSha1());
+            a = cryOtp.calcTotp(buf, t, cryOtp.timeInt, 8, new cryHashSha1());
             cmd.error("seed=" + bits.byteDump(buf, 0, buf.length));
             cmd.error("time=" + t);
             cmd.error("key=" + a);

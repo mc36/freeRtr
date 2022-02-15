@@ -729,7 +729,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         if (s.equals("otppass")) {
             byte[] buf1 = new byte[1];
             buf1[0] = (byte) bits.str2num(cmd.word());
-            otpseed = bits.byteConcat(buf1, cryOtp.androidPass(cmd.getRemaining()));
+            otpseed = bits.byteConcat(buf1, cmd.getRemaining().getBytes());
             return false;
         }
         if (s.equals("autocommand")) {
@@ -811,9 +811,9 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         bits.byteCopy(otpseed, 1, seed, 0, seed.length);
         List<String> lst = new ArrayList<String>();
         long tim = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
-        final int range = 120;
+        final int range = 10;
         for (int i = -range; i < range; i += cryOtp.timeInt) {
-            String a = cryOtp.calcTotp(seed, tim + i, digs, new cryHashSha1());
+            String a = cryOtp.calcTotp(seed, tim + i, cryOtp.timeInt, digs, new cryHashSha1());
             lst.add(pref + a);
         }
         return lst;

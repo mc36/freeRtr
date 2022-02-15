@@ -27,7 +27,7 @@ public class cryOtp {
      * @return result
      */
     public static String calcHotp(byte[] key, long vnt, int digs, cryHashGeneric cry) {
-        final int[] digPow = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+        final int[] digPow = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
         byte[] buf = new byte[8];
         bits.msbPutQ(buf, 0, vnt);
         buf = cryHashGeneric.compute(new cryHashHmac(cry, key), buf);
@@ -41,28 +41,13 @@ public class cryOtp {
      *
      * @param key key
      * @param tim time
+     * @param ntr interval
      * @param digs digits
      * @param cry crypto
      * @return result
      */
-    public static String calcTotp(byte[] key, long tim, int digs, cryHashGeneric cry) {
-        return calcHotp(key, tim / timeInt, digs, cry);
-    }
-
-    /**
-     * generate android password
-     *
-     * @param pwd password
-     * @return seed value
-     */
-    public static byte[] androidPass(String pwd) {
-        byte[] buf1 = pwd.getBytes();
-        cryHashSha1 h = new cryHashSha1();
-        byte[] buf2 = cryHashGeneric.compute(h, buf1);
-        h.init();
-        h.update(buf1);
-        h.update(buf2);
-        return h.finish();
+    public static String calcTotp(byte[] key, long tim, int ntr, int digs, cryHashGeneric cry) {
+        return calcHotp(key, tim / ntr, digs, cry);
     }
 
 }
