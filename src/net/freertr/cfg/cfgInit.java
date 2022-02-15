@@ -451,6 +451,10 @@ public class cfgInit implements Runnable {
                     if (neg) {
                         s = s.substring(2, s.length());
                     }
+                    if (s.equals("hid")) {
+                        prc.hidden = !neg;
+                        continue;
+                    }
                     if (s.equals("act")) {
                         prc.logAct = !neg;
                         continue;
