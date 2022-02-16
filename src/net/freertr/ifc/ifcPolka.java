@@ -42,11 +42,6 @@ public class ifcPolka implements ifcUp {
     public ifcDn lower = new ifcNull();
 
     /**
-     * hardware address
-     */
-    public addrMac hwaddr = addrMac.getBroadcast();
-
-    /**
      * local id
      */
     public final int localId;
@@ -270,10 +265,6 @@ public class ifcPolka implements ifcUp {
 
     public void setParent(ifcDn parent) {
         lower = parent;
-        try {
-            hwaddr = (addrMac) lower.getHwAddr();
-        } catch (Exception e) {
-        }
     }
 
     public counter getCounter() {
