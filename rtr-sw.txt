@@ -44,10 +44,6 @@ aaa tacacs tac
  server 10.10.10.227
  exit
 !
-session upl
- dropped
- exit
-!
 script logger
  sequence 10 exec "test logging info someone from $remote hit the script"
  stop

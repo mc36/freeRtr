@@ -316,10 +316,7 @@ public class tabSession implements Runnable {
      * @param ses session to pass
      * @return session entry
      */
-    public tabSessionEntry sessPass(tabSessionEntry ses) {
-        if (master != null) {
-            return master.sessPass(ses);
-        }
+    protected tabSessionEntry sessPass(tabSessionEntry ses) {
         ses.startTime = bits.getTime();
         ses.lastTime = ses.startTime;
         connects.add(ses);
@@ -338,10 +335,7 @@ public class tabSession implements Runnable {
      * @param ses session to drop
      * @return session entry
      */
-    public tabSessionEntry sessDrop(tabSessionEntry ses) {
-        if (master != null) {
-            return master.sessPass(ses);
-        }
+    protected tabSessionEntry sessDrop(tabSessionEntry ses) {
         if (logDrop) {
             logger.info("dropped " + ses);
         }
@@ -369,18 +363,10 @@ public class tabSession implements Runnable {
             }
         }
         tabSessionEntry res;
-        if (master == null) {
+        res = connects.find(ses);
+        if ((res == null) && bidir) {
+            ses = ses.reverseDirection();
             res = connects.find(ses);
-            if ((res == null) && bidir) {
-                ses = ses.reverseDirection();
-                res = connects.find(ses);
-            }
-        } else {
-            res = master.connects.find(ses);
-            if ((res == null) && bidir) {
-                ses = ses.reverseDirection();
-                res = master.connects.find(ses);
-            }
         }
         if (res != null) {
             res.lastTime = bits.getTime();
@@ -449,6 +435,9 @@ public class tabSession implements Runnable {
      * @return true to drop, false to forward
      */
     public boolean doPack(packHolder pck, boolean dir) {
+        if (master != null) {
+            return master.doPack(pck, dir);
+        }
         int i = pck.dataSize();
         pck.getSkip(pck.IPsiz);
         tabQos.classifyLayer4(pck);

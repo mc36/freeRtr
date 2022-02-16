@@ -75,6 +75,17 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
         l.add(null, "1 .  before                       log on session start");
         l.add(null, "1 .  after                        log on session stop");
         l.add(null, "1 .  dropped                      log on session stop");
+        l.add(null, "1 .  drop-rx                      drop sessions ingress");
+        l.add(null, "1 .  drop-tx                      drop sessions egress");
+        l.add(null, "1 .  drop-frg                     drop fragmented packets");
+        l.add(null, "1 .  allow-routing                allow control multicast traffic");
+        l.add(null, "1 .  allow-linklocal              allow link local traffic");
+        l.add(null, "1 .  allow-multicast              allow multicast traffic");
+        l.add(null, "1 .  allow-broadcast              allow broadcast traffic");
+        l.add(null, "1 2  allow-list                   allow specific traffic");
+        l.add(null, "2 .    <name:acl>                 name of access list");
+        l.add(null, "1 2  allow-url                    allow specific traffic");
+        l.add(null, "2 .    <num>                      translation rule");
     }
 
     public String getPrompt() {
