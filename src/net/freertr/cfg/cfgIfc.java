@@ -6281,6 +6281,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     access-group-common-out     common access list to apply to egress packets");
         l.add(null, "3 .       <name:acl>                name of access list");
         l.add(null, "2 3,.   inspect                     enable/disable inspection");
+        l.add(null, "3 4       timeout                   set timeout");
+        l.add(null, "4 3,.       <num>                   timeout in ms");
         l.add(null, "3 3,.     mac                       log mac addresses");
         l.add(null, "3 3,.     before                    log on session start");
         l.add(null, "3 3,.     after                     log on session stop");
