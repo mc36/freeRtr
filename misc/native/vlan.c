@@ -88,7 +88,7 @@ void doUpperLoop(void *arg) {
     unsigned int addrLen;
     for (;;) {
         addrLen = sizeof (addrTmp);
-        bufS = sizeof (bufD);
+        bufS = sizeof (bufD) - 4;
         bufS = recvfrom(vlanSck[myVlan], bufD + 4, bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
         if (bufS < 0) break;
         bufS += 4;

@@ -76,7 +76,7 @@ void doTxLoop() {
             sleep(1);
             continue;
         }
-        write(STDOUT_FILENO, &buf, i);
+        if (write(STDOUT_FILENO, &buf, i) < 0) err("error writing socket");
         byteTx += i;
     }
 }

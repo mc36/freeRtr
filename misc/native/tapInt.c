@@ -55,7 +55,7 @@ void doUdpLoop() {
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
-        write(ifaceSock, bufD, bufS);
+        if (write(ifaceSock, bufD, bufS) < 0) break;
     }
     err("udp thread exited");
 }
@@ -114,7 +114,7 @@ doer:
 
 void doCmd(char *cmd) {
     printf("running %s...\n", cmd);
-    system(cmd);
+    if (system(cmd) < 0) err("error executing command");
 }
 
 

@@ -58,7 +58,7 @@ void doTxLoop() {
             sleep(1);
             continue;
         }
-        write(addrTty, &buf, i);
+        if (write(addrTty, &buf, i) < 0) err("error writing socket");
         byteTx += i;
         packTx++;
     }

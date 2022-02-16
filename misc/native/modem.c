@@ -159,11 +159,11 @@ int doOneCmd(char *cmdFul) {
         unsigned char buf[1];
         buf[0] = 32;
         for (i = 0; i < cmdNum; i++) {
-            if (i > 0) write(addrTty, buf, 1);
-            write(addrTty, cmdPar[i], strlen(cmdPar[i]));
+            if (i > 0) if (write(addrTty, buf, 1) < 0) err("error writing socket");
+            if (write(addrTty, cmdPar[i], strlen(cmdPar[i])) < 0) err("error writing socket");
         }
         buf[0] = 13;
-        write(addrTty, buf, 1);
+        if (write(addrTty, buf, 1) < 0) err("error writing socket");
         return 0;
     }
     if (strcmp(cmdFul, "flush") == 0) {
