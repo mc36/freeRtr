@@ -304,6 +304,26 @@ public class version {
     }
 
     /**
+     * get read-write path name
+     *
+     * @return path
+     */
+    public static String getRWpath() {
+        String a = cfgInit.cfgFileSw;
+        if (a == null) {
+            a = cfgInit.cfgFileHw;
+        }
+        if (a == null) {
+            return "/tmp/";
+        }
+        int i = a.lastIndexOf("/");
+        if (i < 0) {
+            return "./";
+        }
+        return a.substring(0, i + 1);
+    }
+
+    /**
      * get archive path dir
      *
      * @return only path
@@ -323,7 +343,7 @@ public class version {
      * @return filename without path
      */
     public static String myReloadFile() {
-        return myPathName() + ".rld";
+        return getRWpath() + "reload.log";
     }
 
     /**
@@ -332,7 +352,7 @@ public class version {
      * @return filename without path
      */
     public static String myErrorFile() {
-        return myPathName() + ".err";
+        return getRWpath() + "errors.log";
     }
 
     /**
