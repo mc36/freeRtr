@@ -27,7 +27,7 @@ package-down
 package-inst
 
 find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
-exec %tmp%/usr/lib/jvm/%find%/bin/jlink --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base
+exec %tmp%/usr/lib/jvm/%find%/bin/jlink --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base,java.management
 exec ln -s /java/bin/java %tmp%/bin/java
 del-alw %tmp%/usr/lib/jvm
 del-alw %tmp%/etc/java-*
