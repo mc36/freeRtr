@@ -594,6 +594,8 @@ qc pass: interface inspection with selective ingress drop
 qc pass: interface inspection with selective egress drop
 qc pass: mpls inspection with selective ingress drop
 qc pass: mpls inspection with selective egress drop
+qc pass: interface inspection with member ingress drop
+qc pass: interface inspection with member egress drop
 qc pass: macsec over ethernet
 qc pass: macsec over ethernet vlan
 qc pass: macsec over ethernet bridge
