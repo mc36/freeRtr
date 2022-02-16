@@ -143,6 +143,18 @@ public class tabGenV2<T extends Comparator<? super T>> {
     }
 
     /**
+     * find one value
+     *
+     * @param val value to find
+     * @return index in list, negative if not found
+     */
+    public int index(T val) {
+        synchronized (lck) {
+            return doFind(val);
+        }
+    }
+
+    /**
      * delete value
      *
      * @param val value to delete
