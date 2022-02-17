@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.2.17-cur, done by cs@nop.<br/>
-tested: 2022-02-17 21:34:24, took 00:07:00, with 100 workers, on 2672 cases, 0 failed, 0 traces, 4 retries<br/>
+tested: 2022-02-17 22:14:00, took 00:07:53, with 100 workers, on 2684 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -1178,6 +1178,15 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-polka10.tst">mpls-polka10.tst</a></td><td>success</td><td>polka over ethernet chain</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-polka11.tst">mpls-polka11.tst</a></td><td>success</td><td>pwe over polka</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-polka12.tst">mpls-polka12.tst</a></td><td>success</td><td>bgp vpns over polka</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka13.tst">mpls-polka13.tst</a></td><td>success</td><td>mpolka over ethernet</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka14.tst">mpls-polka14.tst</a></td><td>success</td><td>mpolka over ethernet vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka15.tst">mpls-polka15.tst</a></td><td>success</td><td>mpolka over ethernet bridge</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka16.tst">mpls-polka16.tst</a></td><td>success</td><td>mpolka over hdlc</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka17.tst">mpls-polka17.tst</a></td><td>success</td><td>mpolka over ppp</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka18.tst">mpls-polka18.tst</a></td><td>success</td><td>mpolka over framerelay</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka19.tst">mpls-polka19.tst</a></td><td>success</td><td>mpolka over atmdxi</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka20.tst">mpls-polka20.tst</a></td><td>success</td><td>mpolka over gre</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/mpls-polka21.tst">mpls-polka21.tst</a></td><td>success</td><td>mpolka over ethernet</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwe01.tst">mpls-pwe01.tst</a></td><td>success</td><td>ppp over mpls</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwe02.tst">mpls-pwe02.tst</a></td><td>success</td><td>hdlc over mpls</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/mpls-pwe03.tst">mpls-pwe03.tst</a></td><td>success</td><td>lapb over mpls</td></tr>
@@ -2389,6 +2398,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis105.tst">rout-isis105.tst</a></td><td>success</td><td>isis dynamic icmp metric</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis106.tst">rout-isis106.tst</a></td><td>success</td><td>isis dynamic udp metric</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-isis107.tst">rout-isis107.tst</a></td><td>success</td><td>isis dynamic twamp metric</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-isis108.tst">rout-isis108.tst</a></td><td>success</td><td>isis with mpolka</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp01.tst">rout-lsrp01.tst</a></td><td>success</td><td>lsrp point2point connection</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp02.tst">rout-lsrp02.tst</a></td><td>success</td><td>lsrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp03.tst">rout-lsrp03.tst</a></td><td>success</td><td>lsrp point2point chain</td></tr>
@@ -2436,6 +2446,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp45.tst">rout-lsrp45.tst</a></td><td>success</td><td>lsrp dynamic icmp metric</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp46.tst">rout-lsrp46.tst</a></td><td>success</td><td>lsrp dynamic udp metric</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp47.tst">rout-lsrp47.tst</a></td><td>success</td><td>lsrp dynamic twamp metric</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-lsrp48.tst">rout-lsrp48.tst</a></td><td>success</td><td>lsrp with mpolka</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast01.tst">rout-mcast01.tst</a></td><td>success</td><td>multicast routing with static flooding</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast02.tst">rout-mcast02.tst</a></td><td>success</td><td>multicast routing with pim ssm</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-mcast03.tst">rout-mcast03.tst</a></td><td>success</td><td>multicast routing with igmp/mld</td></tr>
@@ -2537,6 +2548,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf55.tst">rout-ospf55.tst</a></td><td>success</td><td>ospf dynamic icmp cost</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf56.tst">rout-ospf56.tst</a></td><td>success</td><td>ospf dynamic udp cost</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-ospf57.tst">rout-ospf57.tst</a></td><td>success</td><td>ospf dynamic twamp cost</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-ospf58.tst">rout-ospf58.tst</a></td><td>success</td><td>ospf with mpolka</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr01.tst">rout-pbr01.tst</a></td><td>success</td><td>policy routing with nexthop</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr02.tst">rout-pbr02.tst</a></td><td>success</td><td>policy routing with interface and nexthop between vrfs</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-pbr03.tst">rout-pbr03.tst</a></td><td>success</td><td>policy routing with interface and nexthop</td></tr>
