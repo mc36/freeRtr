@@ -2696,9 +2696,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
     sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sck.connect((freerouter_address, int(freerouter_port)))
-    fil = sck.makefile('rw')
+    fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
     fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh\r\n");
+    fil.flush()
+    fil = sck.makefile('r')
 
     sw1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
         name='sw1',
@@ -3115,10 +3117,10 @@ if __name__ == '__main__':
 
     parser.add_argument('--p4info', help='p4info proto in text format from p4c',
             type=str, action="store", required=False,
-            default="../build/router.txt")
+            default="./router.txt")
     parser.add_argument('--bmv2-json', help='BMv2 JSON file from p4c',
             type=str, action="store", required=False,
-            default="../build/router.json")
+            default="./router.json")
     parser.add_argument('--p4runtime_address', help='p4 runtime address',
             type=str, action="store", required=False,
             default="127.0.0.1:9559")
