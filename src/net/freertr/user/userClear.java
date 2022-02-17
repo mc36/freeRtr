@@ -94,7 +94,7 @@ public class userClear {
             return alias;
         }
         if (a.equals("errors")) {
-            a = version.myWorkDir() + "core";
+            a = version.getRWpath() + "core";
             if (new File(a).exists()) {
                 userFlash.rename(a, a + ".bak", true, true);
                 bits.buf2txt(false, bits.str2lst("core dump detected"), version.myErrorFile());

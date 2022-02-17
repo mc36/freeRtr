@@ -209,7 +209,7 @@ public class rtrDownload extends ipRtr {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         pip.setTime(120000);
-        String tmp = version.myWorkDir() + "rou" + bits.randomD() + ".tmp";
+        String tmp = version.getRWpath() + "rou" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
         if (userFlash.doReceive(pip, uniResLoc.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);

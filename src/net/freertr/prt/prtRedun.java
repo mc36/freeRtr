@@ -266,7 +266,7 @@ class prtRedunIfc implements ifcUp {
         lower.setUpper(this);
         lower.startLoop(1);
         hwaddr = (addrMac) lower.getHwAddr();
-        filNm = version.myWorkDir() + "red" + bits.randomD() + ".tmp";
+        filNm = version.getRWpath() + "red" + bits.randomD() + ".tmp";
     }
 
     public void setParent(ifcDn parent) {

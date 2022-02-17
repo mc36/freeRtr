@@ -248,7 +248,7 @@ public class userUpgrade {
         err += verifyFile(version.getFileName(), blb.jars);
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
-            err += verifyFile(version.myWorkDir() + ntry.name, ntry.chk);
+            err += verifyFile(version.getRWpath() + ntry.name, ntry.chk);
         }
         if (err > 0) {
             cmd.error("some tests failed!");
@@ -269,7 +269,7 @@ public class userUpgrade {
         int err = 0;
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
-            if (new File(version.myWorkDir() + ntry.name).exists()) {
+            if (new File(version.getRWpath() + ntry.name).exists()) {
                 continue;
             }
             cmd.error(ntry.name + " is missing!");
@@ -335,7 +335,7 @@ public class userUpgrade {
      * do auto-revert
      */
     protected static void doAutoRevert() {
-        String tmp = version.myWorkDir() + "rev" + bits.randomD() + ".tmp";
+        String tmp = version.getRWpath() + "rev" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
@@ -386,7 +386,7 @@ public class userUpgrade {
             server = cfgAll.upgradeServer;
         }
         cons.debugStat("downloading version info");
-        String tmp = version.myWorkDir() + "upg" + bits.randomD() + ".tmp";
+        String tmp = version.getRWpath() + "upg" + bits.randomD() + ".tmp";
         uniResLoc url = uniResLoc.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
@@ -477,7 +477,7 @@ public class userUpgrade {
         diff.delFiles(blb.files);
         for (i = 0; i < diff.files.size(); i++) {
             userUpgradeNtry ntry = diff.files.get(i);
-            a = version.myWorkDir() + ntry.name;
+            a = version.getRWpath() + ntry.name;
             if (needStop(justSimu)) {
                 cons.debugStat("should remove " + a);
                 continue;
@@ -513,7 +513,7 @@ public class userUpgrade {
             if ((ntry.flag & flg) == 0) {
                 continue;
             }
-            int i = upgradeFile(ntry.chk, version.myWorkDir() + ntry.name, server + ntry.name, tmp);
+            int i = upgradeFile(ntry.chk, version.getRWpath() + ntry.name, server + ntry.name, tmp);
             if (i == 2) {
                 some = (ntry.flag & userUpgradeNtry.flgData) == 0;
                 continue;
@@ -537,7 +537,7 @@ public class userUpgrade {
             if ((ntry.flag & userUpgradeNtry.flgScript) == 0) {
                 continue;
             }
-            List<String> res = bits.txt2buf(version.myWorkDir() + ntry.name);
+            List<String> res = bits.txt2buf(version.getRWpath() + ntry.name);
             if (res == null) {
                 continue;
             }

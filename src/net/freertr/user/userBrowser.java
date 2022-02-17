@@ -45,7 +45,7 @@ public class userBrowser {
      */
     public userBrowser(userScreen pip, String u) {
         console = pip;
-        tempFile = version.myWorkDir() + "web" + bits.randomD() + ".tmp";
+        tempFile = version.getRWpath() + "web" + bits.randomD() + ".tmp";
         if (u.length() < 1) {
             url = verCore.homeUrl;
         } else {

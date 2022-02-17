@@ -234,6 +234,7 @@ public class version {
         sa.add("hwsn: " + cfgInit.hwSnNum);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.started));
         sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
+        sa.add("rwpath: " + getRWpath());
         sa.add("hwcfg: " + cfgInit.cfgFileHw);
         sa.add("swcfg: " + cfgInit.cfgFileSw);
         sa.add("cpu: " + getCPUname());
@@ -298,7 +299,7 @@ public class version {
             o = 0;
         }
         if (i < o) {
-            return "unknown";
+            return "rtr";
         }
         return s.substring(0, i);
     }
@@ -317,27 +318,13 @@ public class version {
             a = cfgInit.cfgFileHw;
         }
         if (a == null) {
-            return "/tmp/";
+            return "./";
         }
         int i = a.lastIndexOf("/");
         if (i < 0) {
             return "./";
         }
         return a.substring(0, i + 1);
-    }
-
-    /**
-     * get archive path dir
-     *
-     * @return only path
-     */
-    public static String myWorkDir() {
-        String s = getFileName();
-        int i = s.lastIndexOf("/");
-        if (i < 0) {
-            return "./";
-        }
-        return s.substring(0, i + 1);
     }
 
     /**
