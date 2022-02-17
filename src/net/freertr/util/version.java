@@ -318,13 +318,15 @@ public class version {
             a = cfgInit.cfgFileHw;
         }
         if (a == null) {
-            return "./";
+            a = "./";
         }
         int i = a.lastIndexOf("/");
         if (i < 0) {
-            return "./";
+            a = "./";
+        } else {
+            a = a.substring(0, i + 1);
         }
-        return a.substring(0, i + 1);
+        return a;
     }
 
     /**

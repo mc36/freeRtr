@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.util.bits;
+import net.freertr.util.version;
 
 /**
  * file manager
@@ -34,7 +35,7 @@ public class userFilman {
             pan[i].scrY = 0;
             pan[i].sizX = siz;
             pan[i].sizY = console.sizY - 2;
-            pan[i].path = "/";
+            pan[i].path = version.getRWpath();
             pan[i].readUp();
         }
     }
