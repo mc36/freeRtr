@@ -2044,6 +2044,9 @@ class servP4langConn implements Runnable {
                 ntry.hwCntr.byteRx = bits.str2long(cmd.word());
                 return false;
             }
+            if (s.equals("neigh_cnt")) {
+                return false;
+            }
             if (s.equals("tunnel4_cnt")) {
                 servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
                 vrf = lower.expVrf.find(vrf);
