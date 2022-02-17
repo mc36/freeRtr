@@ -992,35 +992,26 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      */
     public void startNow(List<String> defs, List<String> inhs, int beg, int end) {
         need2run = true;
-        cfgBase = cfgInit.cfgFileSw;
-        int i = cfgBase.lastIndexOf("/");
-        if (i < 0) {
-            cfgBase = "./";
-        } else {
-            cfgBase = cfgBase.substring(0, i + 1);
-        }
-        cfgBase += "vdc-" + name + "-";
+        cfgBase = version.getRWpath() + "vdc-" + name + "-";
         List<String> l = new ArrayList<String>();
-        if (uuidValue == null) {
-            l.add("hwid " + cfgInit.hwIdNum + "-" + name);
-        } else {
-            l.add("hwid " + uuidValue);
-        }
+        l.add("hwid " + cfgInit.hwIdNum + "-" + name);
+        l.add("hwsn " + uuidValue);
+        l.add("rwpath " + version.getRWpath());
         l.add("port " + beg + " " + end);
         l.add("prio " + redunPrio);
         addParam(l, "jvm", cfgInit.jvmParam);
         addParam(l, "url", cfgAll.upgradeServer);
         addParam(l, "key", cfgAll.upgradePubKey);
-        for (i = 0; i < defs.size(); i++) {
+        for (int i = 0; i < defs.size(); i++) {
             l.add("def " + defs.get(i));
         }
-        for (i = 0; i < inhs.size(); i++) {
+        for (int i = 0; i < inhs.size(); i++) {
             l.add(inhs.get(i));
         }
-        for (i = 0; i < tcps.size(); i++) {
+        for (int i = 0; i < tcps.size(); i++) {
             l.add("tcp2vrf " + tcps.get(i));
         }
-        for (i = 0; i < ifaces.size(); i++) {
+        for (int i = 0; i < ifaces.size(); i++) {
             cfgVdcIfc ntry = ifaces.get(i);
             l.add("int " + ntry.line);
             cfgIfc ifc = cfgAll.ifcFind(ntry.name, false);
@@ -1041,7 +1032,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         addrMac one = new addrMac();
         one.fromString("0000:0000:0001");
-        for (i = 0; i < locals.size(); i++) {
+        for (int i = 0; i < locals.size(); i++) {
             cfgVdcIfc ntry = locals.get(i);
             String a = "";
             if (ntry.redundancy) {
@@ -1050,7 +1041,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             l.add("int " + ntry.name + a + " " + ntry.name.substring(0, 3) + " " + mac + " 127.0.0.1 " + (ntry.port + 1) + " 127.0.0.1 " + ntry.port);
             mac.setAdd(mac, one);
         }
-        for (i = 0; i < conns.size(); i++) {
+        for (int i = 0; i < conns.size(); i++) {
             cfgVdcConn ntry = conns.get(i);
             if (ntry.port < 1) {
                 ntry.port = cfgInit.vdcPortBeg;

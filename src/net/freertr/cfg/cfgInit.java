@@ -159,6 +159,11 @@ public class cfgInit implements Runnable {
     public static int lastReloadCode;
 
     /**
+     * read-write path name
+     */
+    public static String rwPath;
+
+    /**
      * hw config file in use
      */
     public static String cfgFileHw;
@@ -434,6 +439,13 @@ public class cfgInit implements Runnable {
             }
             if (s.equals("nostall")) {
                 noStallCheck = true;
+                continue;
+            }
+            if (s.equals("rwpath")) {
+                rwPath = cmd.getRemaining();
+                if (!rwPath.endsWith("/")) {
+                    rwPath += "/";
+                }
                 continue;
             }
             if (s.equals("prcpar")) {

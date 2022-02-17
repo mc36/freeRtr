@@ -309,7 +309,10 @@ public class version {
      * @return path
      */
     public static String getRWpath() {
-        String a = cfgInit.cfgFileSw;
+        String a = cfgInit.rwPath;
+        if (a == null) {
+            a = cfgInit.cfgFileSw;
+        }
         if (a == null) {
             a = cfgInit.cfgFileHw;
         }
