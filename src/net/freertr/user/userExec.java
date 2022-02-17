@@ -1174,6 +1174,11 @@ public class userExec {
         hl.add(null, "4 .          <name:ifc>          interface to see");
         hl.add(null, "3 4,.      interfaces            polka interface table");
         hl.add(null, "4 .          [name:ifc]          interface to see");
+        hl.add(null, "2 3      mpolka                  multipath polynomial key architecture");
+        hl.add(null, "3 4        routeid               mpolka routeid information");
+        hl.add(null, "4 .          <name:ifc>          interface to see");
+        hl.add(null, "3 4,.      interfaces            mpolka interface table");
+        hl.add(null, "4 .          [name:ifc]          interface to see");
         hl.add(null, "2 3      ipx                     ipx information");
         hl.add(null, "3 4        route                 routing table entries");
         hl.add(null, "4 5,.        <name:vrf>          name of routing table");

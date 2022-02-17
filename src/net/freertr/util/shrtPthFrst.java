@@ -835,6 +835,24 @@ public class shrtPthFrst<Ta extends addrType> {
     /**
      * get metric to node
      *
+     * @param ntry node to query
+     * @return segment routing peers
+     */
+    protected tabGen<tabIndex<addrIP>> findSegrouPeers(shrtPthFrstNode<Ta> ntry) {
+        tabGen<tabIndex<addrIP>> res = new tabGen<tabIndex<addrIP>>();
+        for (int i = 0; i < ntry.conn.size(); i++) {
+            shrtPthFrstConn<Ta> con = ntry.conn.get(i);
+            if (con.target.srIdx < 1) {
+                continue;
+            }
+            res.add(new tabIndex<addrIP>(con.target.srIdx, null));
+        }
+        return res;
+    }
+
+    /**
+     * get metric to node
+     *
      * @param which node to query
      * @return metric to node, negative on error
      */
@@ -1489,20 +1507,21 @@ public class shrtPthFrst<Ta extends addrType> {
             int met = getMetric(ntry.name);
             int sro = getSegRouB(ntry.name);
             int bro = getBierB(ntry.name);
+            tabGen<tabIndex<addrIP>> srp = findSegrouPeers(ntry);
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.prfAdd.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.name.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
                 rou.best.metric += met;
-                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, false);
+                populateRoute(tab1, fwdCor, ntry, fwdKey, segrouLab, segrouUsd, srp, rou, hop, false);
             }
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.prfFix.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.name.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
-                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, false);
+                populateRoute(tab1, fwdCor, ntry, fwdKey, segrouLab, segrouUsd, srp, rou, hop, false);
             }
         }
         tim4 = bits.getTime();
@@ -1529,27 +1548,28 @@ public class shrtPthFrst<Ta extends addrType> {
             int met = getMetric(ntry.name);
             int sro = getSegRouB(ntry.name);
             int bro = getBierB(ntry.name);
+            tabGen<tabIndex<addrIP>> srp = findSegrouPeers(ntry);
             for (int i = 0; i < ntry.othAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.othAdd.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.name.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
                 rou.best.metric += met;
-                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, true);
+                populateRoute(tab1, fwdCor, ntry, fwdKey, segrouLab, segrouUsd, srp, rou, hop, true);
             }
             for (int i = 0; i < ntry.othFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = ntry.othFix.get(i).copyBytes(tabRoute.addType.notyet);
                 rou.best.srcRtr = ntry.name.copyBytes();
                 rou.best.segrouOld = sro;
                 rou.best.bierOld = bro;
-                populateRoute(tab1, fwdCor, fwdKey, segrouLab, segrouUsd, rou, hop, true);
+                populateRoute(tab1, fwdCor, ntry, fwdKey, segrouLab, segrouUsd, srp, rou, hop, true);
             }
         }
         tim4 = bits.getTime();
         return tab1;
     }
 
-    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop, boolean other) {
+    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, shrtPthFrstNode<Ta> ntry, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd, tabGen<tabIndex<addrIP>> srp, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop, boolean other) {
         rou.alts.clear();
         boolean srPop = (rou.best.rouSrc & 16) != 0;
         for (int i = 0; i < hop.size(); i++) {
@@ -1604,7 +1624,10 @@ public class shrtPthFrst<Ta extends addrType> {
             return;
         }
         segrouLab[rou.best.segrouIdx].setFwdMpls(fwdKey, fwdCor, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
-        tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(rou.best.segrouIdx, rou.prefix));
+        tabIndex<addrIP> sri = new tabIndex<addrIP>(rou.best.segrouIdx, rou.prefix);
+        sri.neighs = srp;
+        sri.conned = ntry.nxtMet < Integer.MAX_VALUE;
+        tabIndex.add2table(segrouUsd, sri);
     }
 
     private void listLinStateHdr(typLenVal tlv, packHolder pck, int prt, int typ) {

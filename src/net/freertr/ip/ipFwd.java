@@ -161,7 +161,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     /**
      * the computed index to prefix table
      */
-    public tabGen<tabIndex<addrIP>> actualI;
+    public tabGen<tabIndex<addrIP>> actualIU;
+
+    /**
+     * the computed index to connected table
+     */
+    public tabGen<tabIndex<addrIP>> actualIC;
 
     /**
      * list of multicast groups
@@ -492,7 +497,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         actualU = new tabRoute<addrIP>("computed");
         actualM = new tabRoute<addrIP>("computed");
         actualF = new tabRoute<addrIP>("computed");
-        actualI = new tabGen<tabIndex<addrIP>>();
+        actualIU = new tabGen<tabIndex<addrIP>>();
+        actualIC = new tabGen<tabIndex<addrIP>>();
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
         natTrns = new tabGen<tabNatTraN>();

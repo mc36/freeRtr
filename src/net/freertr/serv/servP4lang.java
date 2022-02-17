@@ -2014,9 +2014,9 @@ class servP4langConn implements Runnable {
                     return false;
                 }
                 tabIndex<addrIP> ntry = new tabIndex<addrIP>(bits.str2num(cmd.word()), null);
-                tabIndex<addrIP> res = vrf.vrf.fwd4.actualI.find(ntry);
+                tabIndex<addrIP> res = vrf.vrf.fwd4.actualIU.find(ntry);
                 if (res == null) {
-                    res = vrf.vrf.fwd6.actualI.find(ntry);
+                    res = vrf.vrf.fwd6.actualIU.find(ntry);
                 }
                 if (res == null) {
                     if (debugger.servP4langErr) {
@@ -2140,8 +2140,8 @@ class servP4langConn implements Runnable {
             doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
-            doIndexes(true, vrf.id, vrf.vrf.fwd4.actualI, vrf.indexes4, vrf.vrf.fwd4.actualU, vrf.indexed4);
-            doIndexes(false, vrf.id, vrf.vrf.fwd6.actualI, vrf.indexes6, vrf.vrf.fwd6.actualU, vrf.indexed6);
+            doIndexes(true, vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexes4, vrf.vrf.fwd4.actualU, vrf.indexed4);
+            doIndexes(false, vrf.id, vrf.vrf.fwd6.actualIU, vrf.indexes6, vrf.vrf.fwd6.actualU, vrf.indexed6);
             doMroutes(true, vrf.id, vrf.vrf.fwd4.groups, vrf.mroutes4);
             doMroutes(false, vrf.id, vrf.vrf.fwd6.groups, vrf.mroutes6);
             vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4, vrf.natCfg4f);

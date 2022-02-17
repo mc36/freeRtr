@@ -361,6 +361,7 @@ public class clntPolka implements Runnable, ifcDn {
             if (debugger.clntPolkaTraf) {
                 logger.debug("error encoding routeid for " + target);
             }
+            clearState();
             return;
         }
         upper.setState(state.states.up);
@@ -391,7 +392,6 @@ public class clntPolka implements Runnable, ifcDn {
         if (debugger.clntPolkaTraf) {
             logger.debug("bad routeid for " + target + " with " + mod);
         }
-
     }
 
     /**

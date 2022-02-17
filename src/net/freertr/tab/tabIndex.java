@@ -24,6 +24,21 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     public final addrPrefix<T> prefix;
 
     /**
+     * neighbors
+     */
+    public tabGen<tabIndex<T>> neighs;
+
+    /**
+     * bitmap
+     */
+    public int bitmap;
+
+    /**
+     * connected
+     */
+    public boolean conned;
+
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -75,6 +90,23 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
             }
             if (prefix.compare(prefix, o.prefix) != 0) {
                 return true;
+            }
+        }
+        if (neighs == null) {
+            if (o.neighs != null) {
+                return true;
+            }
+        } else {
+            if (o.neighs == null) {
+                return true;
+            }
+            if (neighs.size() != o.neighs.size()) {
+                return true;
+            }
+            for (int i = 0; i < neighs.size(); i++) {
+                if (neighs.get(i) != o.neighs.get(i)) {
+                    return true;
+                }
             }
         }
         return false;

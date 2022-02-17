@@ -689,6 +689,11 @@ public class debugger {
     public static boolean clntPolkaTraf = false;
 
     /**
+     * clntMpolka traffic
+     */
+    public static boolean clntMpolkaTraf = false;
+
+    /**
      * clntMplsBier traffic
      */
     public static boolean clntMplsBierTraf = false;
@@ -929,6 +934,11 @@ public class debugger {
     public static boolean ifcNshEvnt = false;
 
     /**
+     * ifcMpolka events
+     */
+    public static boolean ifcMpolkaEvnt = false;
+
+    /**
      * ifcPolka events
      */
     public static boolean ifcPolkaEvnt = false;
@@ -1140,6 +1150,7 @@ public class debugger {
         l.add(null, "3 .        mplsbier          mpls bier tunnel");
         l.add(null, "3 .        mplssr            mpls segrout tunnel");
         l.add(null, "3 .        polka             polka tunnel");
+        l.add(null, "3 .        mpolka            mpolka tunnel");
         l.add(null, "3 .        automesh          mpls automesh tunnel");
         l.add(null, "3 .        mplsldp           mpls ldp tunnel");
         l.add(null, "3 .        radius            radius protocol");
@@ -1196,6 +1207,7 @@ public class debugger {
         l.add(null, "3 .        eapols            eap over lan server");
         l.add(null, "3 .        nsh               nsh encapsulation");
         l.add(null, "3 .        polka             polka encapsulation");
+        l.add(null, "3 .        mpolka            mpolka encapsulation");
     }
 
     /**
@@ -1868,6 +1880,10 @@ public class debugger {
                 clntPolkaTraf = v;
                 return false;
             }
+            if (s.equals("mpolka")) {
+                clntMpolkaTraf = v;
+                return false;
+            }
             if (s.equals("automesh")) {
                 clntMplsAutMsh = v;
                 return false;
@@ -2106,6 +2122,10 @@ public class debugger {
             }
             if (s.equals("polka")) {
                 ifcPolkaEvnt = v;
+                return false;
+            }
+            if (s.equals("mpolka")) {
+                ifcMpolkaEvnt = v;
                 return false;
             }
             return true;

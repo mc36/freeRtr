@@ -648,7 +648,7 @@ public class ipFwdTab {
         tabU.defDist = 0;
         tabU.defMetr = 1;
         tabU.defRouTyp = tabRouteAttr.routeType.local;
-        tabGen<tabIndex<addrIP>> tabI = new tabGen<tabIndex<addrIP>>();
+        tabGen<tabIndex<addrIP>> tabIU = new tabGen<tabIndex<addrIP>>();
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (ifc == null) {
@@ -726,7 +726,7 @@ public class ipFwdTab {
             tabL.mergeFrom(adm, rtr.routerComputedU, tabRouteAttr.distanMax);
             tabM.mergeFrom(adm, rtr.routerComputedM, tabRouteAttr.distanMax);
             tabF.mergeFrom(adm, rtr.routerComputedF, tabRouteAttr.distanMax);
-            tabIndex.mergeTable(tabI, rtr.routerComputedI);
+            tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabL, 1);
@@ -770,7 +770,7 @@ public class ipFwdTab {
             tabU.mergeFrom(adm, rtr.routerComputedU, tabL, rec, tabRouteAttr.distanMax);
             tabM.mergeFrom(adm, rtr.routerComputedM, tabL, rec, tabRouteAttr.distanMax);
             tabF.mergeFrom(adm, rtr.routerComputedF, tabRouteAttr.distanMax);
-            tabIndex.mergeTable(tabI, rtr.routerComputedI);
+            tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 2);
@@ -790,7 +790,7 @@ public class ipFwdTab {
             tabU.mergeFrom(adm, rtr.routerComputedU, tabRouteAttr.distanMax);
             tabM.mergeFrom(adm, rtr.routerComputedM, tabRouteAttr.distanMax);
             tabF.mergeFrom(adm, rtr.routerComputedF, tabRouteAttr.distanMax);
-            tabIndex.mergeTable(tabI, rtr.routerComputedI);
+            tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
             rstatic2table(lower.staticU.get(i), tabU, 3);
@@ -1013,9 +1013,13 @@ public class ipFwdTab {
         if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }
-        for (int i = 0; i < tabI.size(); i++) {
-            tabIndex<addrIP> ntry = tabI.get(i);
-            tabIndex<addrIP> old = lower.actualI.find(ntry);
+        tabGen<tabIndex<addrIP>> tabIC = new tabGen<tabIndex<addrIP>>();
+        for (int i = 0; i < tabIU.size(); i++) {
+            tabIndex<addrIP> ntry = tabIU.get(i);
+            if (ntry.conned) {
+                tabIC.add(ntry);
+            }
+            tabIndex<addrIP> old = lower.actualIU.find(ntry);
             if (old == null) {
                 continue;
             }
@@ -1037,7 +1041,8 @@ public class ipFwdTab {
         lower.actualU = tabU;
         lower.actualM = tabM;
         lower.actualF = tabF;
-        lower.actualI = tabI;
+        lower.actualIU = tabIU;
+        lower.actualIC = tabIC;
         return true;
     }
 

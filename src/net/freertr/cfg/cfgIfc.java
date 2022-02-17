@@ -30,6 +30,7 @@ import net.freertr.clnt.clntMplsTeP2mp;
 import net.freertr.clnt.clntMplsTeP2p;
 import net.freertr.clnt.clntMplsTrg;
 import net.freertr.clnt.clntMplsUdp;
+import net.freertr.clnt.clntMpolka;
 import net.freertr.clnt.clntNvGre;
 import net.freertr.clnt.clntOpenvpn;
 import net.freertr.clnt.clntPckOudp;
@@ -71,6 +72,7 @@ import net.freertr.ifc.ifcLapb;
 import net.freertr.ifc.ifcLldp;
 import net.freertr.ifc.ifcLossDet;
 import net.freertr.ifc.ifcMacSec;
+import net.freertr.ifc.ifcMpolka;
 import net.freertr.ifc.ifcNhrp;
 import net.freertr.ifc.ifcNshFwd;
 import net.freertr.ifc.ifcNshXcn;
@@ -710,6 +712,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntPolka tunPolka;
 
     /**
+     * mpolka tunnel handler
+     */
+    public clntMpolka tunMpolka;
+
+    /**
      * sr over srh tunnel handler
      */
     public clntSrExt tunSrExt;
@@ -1040,6 +1047,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public ifcPolka polkaPack;
 
     /**
+     * mpolka packet processing
+     */
+    public ifcMpolka mpolkaPack;
+
+    /**
      * mpls ldp ipv4 discovery
      */
     public rtrLdpIface mplsLdp4;
@@ -1226,6 +1238,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          */
         polka,
         /**
+         * mpolka tunnel interface
+         */
+        mpolka,
+        /**
          * exp bundle tunnel interface
          */
         expBun,
@@ -1404,6 +1420,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no nsh enable",
         "interface .*! no nsh xconnect",
         "interface .*! no polka enable",
+        "interface .*! no mpolka enable",
         // mpls
         "interface .*! no mpls enable",
         "interface .*! no mpls access-group-in",
@@ -1798,6 +1815,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ppp nshcp open",
         "interface .*! no ppp polkacp close",
         "interface .*! no ppp polkacp open",
+        "interface .*! no ppp mpolkacp close",
+        "interface .*! no ppp mpolkacp open",
         "interface .*! no ppp authentication",
         // hdlc
         "interface .*! hdlc keepalive 5000",
@@ -2139,6 +2158,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "pweompls";
             case polka:
                 return "polka";
+            case mpolka:
+                return "mpolka";
             case expBun:
                 return "expbun";
             case srMpls:
@@ -2271,6 +2292,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("polka")) {
             return tunnelType.polka;
+        }
+        if (s.equals("mpolka")) {
+            return tunnelType.mpolka;
         }
         if (s.equals("expbun")) {
             return tunnelType.expBun;
@@ -3671,6 +3695,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunPolka.workStop();
             tunPolka = null;
         }
+        if (tunMpolka != null) {
+            tunMpolka.workStop();
+            tunMpolka = null;
+        }
         if (tunExpBun != null) {
             tunExpBun.workStop();
             tunExpBun = null;
@@ -3943,7 +3971,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case mplsudp:
                 tunMplsudp = new clntMplsUdp();
-                tunMplsudp.udp = tunVrf.getUdp(tunTrg);
+                 tunMplsudp.udp = tunVrf.getUdp(tunTrg);
                 tunMplsudp.fwdIfc = tunSrc.getFwdIfc(tunTrg);
                 tunMplsudp.target = tunTrg.copyBytes();
                 tunMplsudp.prtR = tunKey;
@@ -4163,6 +4191,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPolka.setUpper(ethtyp);
                 tunPolka.workStart();
                 lower = tunPolka;
+                break;
+            case mpolka:
+                tunMpolka = new clntMpolka();
+                tunMpolka.fwdCor = tunVrf.getFwd(tunTrg);
+                tunMpolka.setTargets(tunFQDN);
+                tunFQDN = tunMpolka.getTargets();
+                tunMpolka.ttl = tunTTL;
+                tunMpolka.verify = tunSum;
+                tunMpolka.setUpper(ethtyp);
+                tunMpolka.workStart();
+                lower = tunMpolka;
                 break;
             case pweOmpls:
                 tunPweOmpls = new clntMplsPwe();
@@ -4884,15 +4923,20 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void update2polka() {
         if (ipIf4 != null) {
             ipIf4.setPolka(polkaPack);
+            ipIf4.setMpolka(mpolkaPack);
         }
         if (ipIf6 != null) {
             ipIf6.setPolka(polkaPack);
+            ipIf6.setMpolka(mpolkaPack);
         }
-        if (polkaPack == null) {
-            return;
+        if (polkaPack != null) {
+            polkaPack.fwd4 = vrfFor.fwd4;
+            polkaPack.fwd6 = vrfFor.fwd6;
         }
-        polkaPack.fwd4 = vrfFor.fwd4;
-        polkaPack.fwd6 = vrfFor.fwd6;
+        if (mpolkaPack != null) {
+            mpolkaPack.fwd4 = vrfFor.fwd4;
+            mpolkaPack.fwd6 = vrfFor.fwd6;
+        }
     }
 
     /**
@@ -4919,6 +4963,33 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void clear2polka() {
         polkaPack = null;
         ethtyp.delET(ifcPolka.type);
+        update2polka();
+    }
+
+    /**
+     * setup interface mpolka packet
+     *
+     * @param id local id
+     * @param bas crc base
+     * @param max crc max
+     */
+    public synchronized void setup2mpolka(int id, int bas, int max) {
+        if (vrfFor == null) {
+            return;
+        }
+        clear2mpolka();
+        mpolkaPack = new ifcMpolka(id, bas, max);
+        ethtyp.addET(ifcMpolka.type, "mpolka", mpolkaPack);
+        ethtyp.updateET(ifcMpolka.type, mpolkaPack);
+        update2polka();
+    }
+
+    /**
+     * clear interface polka packet
+     */
+    public synchronized void clear2mpolka() {
+        mpolkaPack = null;
+        ethtyp.delET(ifcMpolka.type);
         update2polka();
     }
 
@@ -5828,6 +5899,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             a = polkaPack.localId + " " + polkaPack.crcBase + " " + polkaPack.crcMax;
         }
         cmds.cfgLine(l, polkaPack == null, cmds.tabulator, "polka enable", a);
+        a = "";
+        if (mpolkaPack != null) {
+            a = mpolkaPack.localId + " " + mpolkaPack.crcBase + " " + mpolkaPack.crcMax;
+        }
+        cmds.cfgLine(l, mpolkaPack == null, cmds.tabulator, "mpolka enable", a);
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
         if (mplsPack != null) {
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
@@ -6173,6 +6249,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       expbun                    mpls exp bundle tunnel");
         l.add(null, "3 .       srmpls                    segment routing te over mpls tunnel");
         l.add(null, "3 .       polka                     polinomial key architecture tunnel");
+        l.add(null, "3 .       mpolka                    multipath polinomial key architecture tunnel");
         l.add(null, "3 .       srext                     segment routing te over exthdr tunnel");
         l.add(null, "3 .       pcesr                     mpls sr tunnel from pcep");
         l.add(null, "3 .       pcete                     mpls te tunnel from pcep");
@@ -6263,6 +6340,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 4       <num>                     service path");
         l.add(null, "4 .         <num>                   service index");
         l.add(null, "1 2   polka                         polynominal key architecture commands");
+        l.add(null, "2 3     enable                      enable/disable packet processing");
+        l.add(null, "3 4       <num>                     local node id");
+        l.add(null, "4 5         <num>                   coefficient base");
+        l.add(null, "5 .           <num>                 number of coefficients");
+        l.add(null, "1 2   mpolka                        multipath polynominal key architecture commands");
         l.add(null, "2 3     enable                      enable/disable packet processing");
         l.add(null, "3 4       <num>                     local node id");
         l.add(null, "4 5         <num>                   coefficient base");
@@ -7127,6 +7209,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             doCfgPolka(cmd);
             return;
         }
+        if (a.equals("mpolka")) {
+            doCfgMpolka(cmd);
+            return;
+        }
         if (a.equals("mpls")) {
             doCfgMpls(cmd);
             return;
@@ -7535,6 +7621,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("polka")) {
             doCfgNoPolka(cmd);
+            return;
+        }
+        if (a.equals("polka")) {
+            doCfgNoMpolka(cmd);
             return;
         }
         if (a.equals("mpls")) {
@@ -8863,6 +8953,26 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("enable")) {
             clear2polka();
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    private void doCfgMpolka(cmds cmd) {
+        String s = cmd.word();
+        if (s.equals("enable")) {
+            int i = bits.str2num(cmd.word());
+            int o = bits.str2num(cmd.word());
+            setup2mpolka(i, o, bits.str2num(cmd.word()));
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    private void doCfgNoMpolka(cmds cmd) {
+        String s = cmd.word();
+        if (s.equals("enable")) {
+            clear2mpolka();
             return;
         }
         cmd.badCmd();

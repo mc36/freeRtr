@@ -40,6 +40,7 @@ import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntNetflow;
 import net.freertr.clnt.clntWhois;
+import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcThread;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
@@ -1335,7 +1336,49 @@ public class userShow {
                     cmd.error("not enabled");
                     return null;
                 }
-                rdr.putStrTab(ntry.polkaPack.getShow());
+                rdr.putStrTab(ifcPolka.getShow(ntry.polkaPack.coeffs));
+                return null;
+            }
+            return null;
+        }
+        if (a.equals("mpolka")) {
+            a = cmd.word();
+            if (a.equals("routeid")) {
+                a = cmd.word();
+                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                if (ntry == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ntry.tunMpolka == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                rdr.putStrTab(ntry.tunMpolka.getShRoute());
+                rdr.putStrTab(ntry.tunMpolka.getShDecode());
+                return null;
+            }
+            if (a.equals("interfaces")) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    userFormat lst = new userFormat("|", "interface|packet|headend");
+                    for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+                        cfgIfc ntry = cfgAll.ifaces.get(i);
+                        lst.add(ntry.name + "|" + (ntry.mpolkaPack != null) + "|" + (ntry.tunMpolka != null));
+                    }
+                    rdr.putStrTab(lst);
+                    return null;
+                }
+                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                if (ntry == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ntry.mpolkaPack == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                rdr.putStrTab(ifcPolka.getShow(ntry.mpolkaPack.coeffs));
                 return null;
             }
             return null;
@@ -4456,17 +4499,23 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        userFormat lst = new userFormat("|", "index|prefix|bytes");
-        for (int i = 0; i < fwd.actualI.size(); i++) {
-            tabIndex<addrIP> prf = fwd.actualI.get(i);
+        userFormat lst = new userFormat("|", "index|conn|prefix|peers|bytes");
+        for (int i = 0; i < fwd.actualIU.size(); i++) {
+            tabIndex<addrIP> prf = fwd.actualIU.get(i);
             if (prf == null) {
                 continue;
+            }
+            String b = "";
+            if (prf.neighs != null) {
+                for (int o = 0; o < prf.neighs.size(); o++) {
+                    b += " " + prf.neighs.get(o).index;
+                }
             }
             String a = "";
             if (prf.hwCntr != null) {
                 a = "+" + prf.hwCntr.byteRx;
             }
-            lst.add(prf.index + "|" + addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.byteRx + a);
+            lst.add(prf.index + "|" + prf.conned + "|" + addrPrefix.ip2str(prf.prefix) + "|" + b + "|" + prf.cntr.byteRx + a);
         }
         rdr.putStrTab(lst);
     }

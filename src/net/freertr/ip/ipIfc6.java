@@ -9,6 +9,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.ifc.ifcDn;
+import net.freertr.ifc.ifcMpolka;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
@@ -80,6 +81,8 @@ public class ipIfc6 implements ipIfc, ifcUp {
     private ipMpls mpls = null;
 
     private ifcPolka polka = null;
+
+    private ifcMpolka mpolka = null;
 
     /**
      * forwarder
@@ -258,6 +261,15 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     /**
+     * set mpolka forwarder
+     *
+     * @param p lower layer
+     */
+    public void setMpolka(ifcMpolka p) {
+        mpolka = p;
+    }
+
+    /**
      * set ip network
      *
      * @param addr address
@@ -347,8 +359,24 @@ public class ipIfc6 implements ipIfc, ifcUp {
         polka.send2eth(pck);
     }
 
+    public void sendMpolka(packHolder pck, addrIP nexthop) {
+        if (mpolka == null) {
+            return;
+        }
+        ifcMpolka.createMpolkaHeader(pck);
+        if (createETHheader(pck, nexthop, ifcMpolka.type)) {
+            cntr.drop(pck, counter.reasons.notInTab);
+            return;
+        }
+        mpolka.send2eth(pck);
+    }
+
     public ifcPolka getPolka() {
         return polka;
+    }
+
+    public ifcMpolka getMpolka() {
+        return mpolka;
     }
 
     public void sendL2info(addrType l2info, addrIP nexthop) {
@@ -414,7 +442,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     /**
      * setup router advertise sender
-     * 
+     *
      * @param needRun true if needed
      */
     public void resetTimer(boolean needRun) {

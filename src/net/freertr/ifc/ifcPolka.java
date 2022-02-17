@@ -1,7 +1,6 @@
 package net.freertr.ifc;
 
 import java.math.BigInteger;
-import net.freertr.addr.addrMac;
 import net.freertr.cry.cryHashCrc16;
 import net.freertr.cry.cryPoly;
 import net.freertr.ip.ipFwd;
@@ -312,9 +311,10 @@ public class ifcPolka implements ifcUp {
     /**
      * get show
      *
+     * @param coeffs coefficients
      * @return show
      */
-    public userFormat getShow() {
+    public static userFormat getShow(cryPoly[] coeffs) {
         userFormat l = new userFormat("|", "index|deg|coeff|poly");
         for (int i = 0; i < coeffs.length; i++) {
             l.add(i + "|" + coeffs[i].getDegree() + "|" + bits.toHexD(coeffs[i].intCoeff()) + "|" + coeffs[i]);
