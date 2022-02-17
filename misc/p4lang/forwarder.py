@@ -2697,6 +2697,8 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('rw')
+    fil.write("platform bmv2\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh\r\n");
 
     sw1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
         name='sw1',
