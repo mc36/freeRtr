@@ -2129,7 +2129,7 @@ void doStatRound_tun4(void* buffer, int fixed, void* param) {
         inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->trgAddr);
         inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "tun4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+        fprintf(commands, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
 }
 
@@ -2155,7 +2155,7 @@ void doStatRound_tun6(void* buffer, int fixed, void* param) {
         put32msb(buf, 8, ntry->trgAddr3);
         put32msb(buf, 12, ntry->trgAddr4);
         inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "tun6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+        fprintf(commands, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
 }
 
