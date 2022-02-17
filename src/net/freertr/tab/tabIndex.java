@@ -70,6 +70,11 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
      */
     public tabIndex<T> copyBytes() {
         tabIndex<T> n = new tabIndex<T>(index, prefix.copyBytes());
+        n.conned = conned;
+        n.bitmap = bitmap;
+        if (neighs != null) {
+            n.neighs = new tabGen<tabIndex<T>>(neighs);
+        }
         return n;
     }
 
@@ -80,6 +85,12 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
      * @return true if differs, false if equals
      */
     public boolean differs(tabIndex<T> o) {
+        if (bitmap != o.bitmap) {
+            return true;
+        }
+        if (conned != o.conned) {
+            return true;
+        }
         if (prefix == null) {
             if (o.prefix != null) {
                 return true;

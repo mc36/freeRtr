@@ -15,7 +15,6 @@ import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabAceslstN;
-import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelBier;

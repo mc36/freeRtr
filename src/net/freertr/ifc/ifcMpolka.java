@@ -164,7 +164,7 @@ public class ifcMpolka implements ifcUp {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        if (debugger.ifcPolkaEvnt) {
+        if (debugger.ifcMpolkaEvnt) {
             logger.debug("rx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.NSHmdv, 0, -1));
         }
         ipMpls.gotMpolkaPack(this, fwd4, fwd6, pck);

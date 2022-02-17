@@ -3971,7 +3971,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case mplsudp:
                 tunMplsudp = new clntMplsUdp();
-                 tunMplsudp.udp = tunVrf.getUdp(tunTrg);
+                tunMplsudp.udp = tunVrf.getUdp(tunTrg);
                 tunMplsudp.fwdIfc = tunSrc.getFwdIfc(tunTrg);
                 tunMplsudp.target = tunTrg.copyBytes();
                 tunMplsudp.prtR = tunKey;
@@ -7623,7 +7623,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             doCfgNoPolka(cmd);
             return;
         }
-        if (a.equals("polka")) {
+        if (a.equals("mpolka")) {
             doCfgNoMpolka(cmd);
             return;
         }
