@@ -256,13 +256,22 @@ if __name__ == "__main__":
             logging.warning("%s - nsh not supported" % PROGRAM_NAME)
 
         if args.snmp:
+            bf_snmp_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 9,
+                args.pipe_name,
+                False,
+            )
+
             bf_snmp = BfIfSnmpClient(
                 9,
                 "bf_snmp",
-                bf_client,
+                bf_snmp_c,
                 args.ifmibs_dir,
                 args.stats_interval,
                 args.ifindex,
+                args.pipe_name,
             )
             bf_snmp.daemon = True
             bf_snmp.start()

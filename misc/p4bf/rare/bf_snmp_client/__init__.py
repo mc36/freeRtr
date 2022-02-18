@@ -2,7 +2,9 @@ from ..bf_gbl_env.cst_env import *
 
 
 class BfIfSnmpClient(Thread):
-    def __init__(self, threadID, name, bfgc, ifmibs_dir, stats_interval, ifindex):
+    def __init__(
+        self, threadID, name, bfgc, ifmibs_dir, stats_interval, ifindex, pipe_name
+    ):
         self.class_name = type(self).__name__
         Thread.__init__(self)
         self.threadID = threadID
@@ -19,6 +21,7 @@ class BfIfSnmpClient(Thread):
         self.active_ports = {}
         self.active_subifs = {}
         self.subif_counters = {}
+        self.pipe_name = pipe_name
 
         ## Remove all MIBs to get rid of left-overs from previous runs
         for root, dirs, files in os.walk(self.ifmibs_dir):
@@ -90,7 +93,7 @@ class BfIfSnmpClient(Thread):
                         [gc.KeyTuple("$DEV_PORT", self.active_subifs[port_id][0])]
                     )
                 ],
-                {"from-hw": False},
+                {"from_hw": True},
             )
             port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
             port_massaged = re.sub("/", "_", port_name)
@@ -129,7 +132,7 @@ class BfIfSnmpClient(Thread):
         port_entry = self.bfgc.port_table.entry_get(
             self.bfgc.target,
             [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-            {"from-hw": False},
+            {"from_hw": True},
         )
         port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
         port_massaged = re.sub("/", "_", port_name)
@@ -155,7 +158,7 @@ class BfIfSnmpClient(Thread):
             port_entry = self.bfgc.port_table.entry_get(
                 self.bfgc.target,
                 [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-                {"from-hw": False},
+                {"from_hw": True},
             )
             port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
             port_massaged = re.sub("/", "_", port_name)
@@ -165,17 +168,17 @@ class BfIfSnmpClient(Thread):
                 self.bfgc.target,
                 [
                     self.bfgc.port_table.make_key(
-                        [gc.KeyTuple("$DEV_PORT", self.active_subifs[subif][0])]
+                        [gc.KeyTuple("$DEV_PORT", self.active_subifs[port_id][0])]
                     )
                 ],
-                {"from-hw": False},
+                {"from_hw": True},
             )
             port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
             port_massaged = re.sub("/", "_", port_name)
             mib_file = "%s/%s.%s" % (
                 self.ifmibs_dir,
                 port_massaged,
-                self.active_subifs[subif][1],
+                self.active_subifs[port_id][1],
             )
             self.updateIndex(
                 DELETE, "%s.%s" % (port_name, self.active_subifs[port_id][1], port_id)
@@ -204,7 +207,7 @@ class BfIfSnmpClient(Thread):
                             [gc.KeyTuple("$DEV_PORT", port_id)]
                         )
                     ],
-                    {"from-hw": False},
+                    {"from_hw": True},
                 )
                 port = next(port_entry)[0].to_dict()
                 stat_entry = self.bfgc.stat_table.entry_get(
@@ -214,7 +217,7 @@ class BfIfSnmpClient(Thread):
                             [gc.KeyTuple("$DEV_PORT", port_id)]
                         )
                     ],
-                    {"from-hw": False},
+                    {"from_hw": True},
                 )
                 stat = next(stat_entry)[0].to_dict()
                 ifTable.update(port, stat)
@@ -282,7 +285,7 @@ class BfIfSnmpClient(Thread):
 
     def getAllActivePorts(self):
         resp = self.bfgc.port_table.entry_get(
-            self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+            self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
         )
         self.active_ports = {}
         for d, k in resp:
@@ -298,7 +301,7 @@ class BfIfSnmpClient(Thread):
         tbl_name_vlan_in = "%s.ig_ctl_vlan_in.tbl_vlan_in" % (tbl_global_path)
         tbl_vlan_in = self.bfgc.bfrt_info.table_get(tbl_name_vlan_in)
         resp = tbl_vlan_in.entry_get(
-            self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+            self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
         )
         active_subifs = {}
         for d, k in resp:
@@ -326,18 +329,18 @@ class BfIfSnmpClient(Thread):
         logger.debug("EGRESS STATS TABLE PATH: %s" % tbl_name_out)
         logger.debug("EGRESS PKT_OUT_STATS TABLE PATH: %s" % tbl_name_pkt_out)
 
-        tbl_stats_in.operations_execute(
-            self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        )
-        tbl_stats_out.operations_execute(
-            self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        )
-        tbl_stats_pkt_out.operations_execute(
-            self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        )
+        # tbl_stats_in.operations_execute(
+        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
+        # )
+        # tbl_stats_out.operations_execute(
+        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
+        # )
+        # tbl_stats_pkt_out.operations_execute(
+        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
+        # )
 
         resp = tbl_vlan_in.entry_get(
-            self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+            self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
         )
         for d, k in resp:
             key_fields = k.to_dict()
@@ -366,7 +369,7 @@ class BfIfSnmpClient(Thread):
             stats_in_entry = tbl_stats_in.entry_get(
                 self.bfgc.target,
                 key_list,
-                {"from-hw": False},
+                {"from_hw": True},
                 data_list,
                 p4_name=self.bfgc.p4_name,
             )
@@ -382,7 +385,7 @@ class BfIfSnmpClient(Thread):
             stats_out_entry = tbl_stats_out.entry_get(
                 self.bfgc.target,
                 key_list,
-                {"from-hw": False},
+                {"from_hw": True},
                 data_list,
                 p4_name=self.bfgc.p4_name,
             )
@@ -397,7 +400,7 @@ class BfIfSnmpClient(Thread):
             stats_pkt_out_entry = tbl_stats_pkt_out.entry_get(
                 self.bfgc.target,
                 key_list,
-                {"from-hw": False},
+                {"from_hw": True},
                 data_list,
                 p4_name=self.bfgc.p4_name,
             )
@@ -436,14 +439,6 @@ class BfIfSnmpClient(Thread):
                     + stats_pkt_out["$COUNTER_SPEC_BYTES"],
                 )
             )
-
-            # self.file.write("counter %s %s %s %s %s\n"
-            #                    % (counter_id,
-            #                    stats_in["$COUNTER_SPEC_PKTS"] - stats_pkt_out["$COUNTER_SPEC_PKTS"],
-            #                    stats_in["$COUNTER_SPEC_BYTES"] - stats_pkt_out["$COUNTER_SPEC_BYTES"],
-            #                    stats_out["$COUNTER_SPEC_PKTS"] + stats_pkt_out["$COUNTER_SPEC_PKTS"],
-            #                    stats_out["$COUNTER_SPEC_BYTES"] + stats_pkt_out["$COUNTER_SPEC_BYTES"]))
-            # self.file.flush()
 
     def tearDown(self):
         self.die = True
