@@ -1027,13 +1027,21 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
     public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
 
-    public tabGen<servP4langStr<tabIndex<addrIP>>> indexed4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    public tabGen<servP4langStr<tabIndex<addrIP>>> indexUs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
 
-    public tabGen<servP4langStr<tabIndex<addrIP>>> indexed6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    public tabGen<servP4langStr<tabIndex<addrIP>>> indexUs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
 
-    public tabGen<tabIndex<addrIP>> indexes4 = new tabGen<tabIndex<addrIP>>();
+    public tabGen<tabIndex<addrIP>> indexUd4 = new tabGen<tabIndex<addrIP>>();
 
-    public tabGen<tabIndex<addrIP>> indexes6 = new tabGen<tabIndex<addrIP>>();
+    public tabGen<tabIndex<addrIP>> indexUd6 = new tabGen<tabIndex<addrIP>>();
+
+    public tabGen<servP4langStr<tabIndex<addrIP>>> indexCs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+
+    public tabGen<servP4langStr<tabIndex<addrIP>>> indexCs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+
+    public tabGen<tabIndex<addrIP>> indexCd4 = new tabGen<tabIndex<addrIP>>();
+
+    public tabGen<tabIndex<addrIP>> indexCd6 = new tabGen<tabIndex<addrIP>>();
 
     public servP4langVrf(int i) {
         id = i;
@@ -1071,10 +1079,14 @@ class servP4langVrf implements Comparator<servP4langVrf> {
         udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
-        indexed4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
-        indexed6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
-        indexes4 = new tabGen<tabIndex<addrIP>>();
-        indexes6 = new tabGen<tabIndex<addrIP>>();
+        indexUs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexUs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexUd4 = new tabGen<tabIndex<addrIP>>();
+        indexUd6 = new tabGen<tabIndex<addrIP>>();
+        indexCs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexCs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexCd4 = new tabGen<tabIndex<addrIP>>();
+        indexCd6 = new tabGen<tabIndex<addrIP>>();
     }
 
 }
@@ -1110,6 +1122,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public int sentLabel;
 
     public int sentPolka;
+
+    public int sentMpolka;
 
     public int sentMss4in;
 
@@ -1299,6 +1313,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentMtu = 0;
         sentLabel = -1;
         sentPolka = -1;
+        sentMpolka = -1;
         sentMss4in = 0;
         sentMss4out = 0;
         sentMss6in = 0;
@@ -2029,6 +2044,31 @@ class servP4langConn implements Runnable {
                 res.hwCntr.byteRx = bits.str2long(cmd.word());
                 return false;
             }
+            if (s.equals("mpolka_cnt")) {
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                tabIndex<addrIP> ntry = new tabIndex<addrIP>(bits.str2num(cmd.word()), null);
+                tabIndex<addrIP> res = vrf.vrf.fwd4.actualIC.find(ntry);
+                if (res == null) {
+                    res = vrf.vrf.fwd6.actualIC.find(ntry);
+                }
+                if (res == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    return false;
+                }
+                res.hwCntr = new counter();
+                res.hwCntr.packRx = bits.str2long(cmd.word());
+                res.hwCntr.byteRx = bits.str2long(cmd.word());
+                return false;
+            }
             if (s.equals("nsh_cnt")) {
                 int i = bits.str2num(cmd.word());
                 tabNshEntry ntry = new tabNshEntry(i, bits.str2num(cmd.word()));
@@ -2140,8 +2180,10 @@ class servP4langConn implements Runnable {
             doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
-            doIndexes(true, vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexes4, vrf.vrf.fwd4.actualU, vrf.indexed4);
-            doIndexes(false, vrf.id, vrf.vrf.fwd6.actualIU, vrf.indexes6, vrf.vrf.fwd6.actualU, vrf.indexed6);
+            doIndexes("", vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexUd4, vrf.vrf.fwd4.actualU, vrf.indexUs4);
+            doIndexes("", vrf.id, vrf.vrf.fwd6.actualIU, vrf.indexUd6, vrf.vrf.fwd6.actualU, vrf.indexUs6);
+            doIndexes("m", vrf.id, vrf.vrf.fwd4.actualIC, vrf.indexCd4, vrf.vrf.fwd4.actualU, vrf.indexCs4);
+            doIndexes("m", vrf.id, vrf.vrf.fwd6.actualIC, vrf.indexCd6, vrf.vrf.fwd6.actualU, vrf.indexCs6);
             doMroutes(true, vrf.id, vrf.vrf.fwd4.groups, vrf.mroutes4);
             doMroutes(false, vrf.id, vrf.vrf.fwd6.groups, vrf.mroutes6);
             vrf.natCfg4 = doNatCfg(true, vrf.id, vrf.vrf.fwd4.natCfg, vrf.natCfg4, vrf.natCfg4f);
@@ -3339,30 +3381,12 @@ class servP4langConn implements Runnable {
             lower.sendLine("mtu " + ifc.id + " " + i);
             ifc.sentMtu = i;
         }
-        i = -1;
-        int o = -1;
-        if (ifc.ifc.polkaPack != null) {
-            i = ifc.ifc.polkaPack.localId;
-            o = ifc.ifc.polkaPack.coeffs[i].intCoeff();
-        }
-        if (i != ifc.sentPolka) {
-            if (ifc.sentPolka >= 0) {
-                a = "mod";
-            } else {
-                a = "add";
-            }
-            if (i < 0) {
-                a = "del";
-            }
-            lower.sendLine("polkapoly_" + a + " " + ifc.id + " " + o);
-            ifc.sentPolka = i;
-        }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
             lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
         if (ifc.ifc.hairpinHed != null) {
-            o = 0;
+            int o = 0;
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
                 if (ntry == ifc) {
@@ -3433,7 +3457,7 @@ class servP4langConn implements Runnable {
                 }
                 vln.add(ntry);
             }
-            o = prt.size();
+            int o = prt.size();
             for (i = 0; i < prt.size(); i++) {
                 o += prt.get(i).id;
             }
@@ -3604,7 +3628,7 @@ class servP4langConn implements Runnable {
             ifc.sentNsh = -1;
         }
         i = 0;
-        o = 0;
+        int o = 0;
         if (mstr.ifc.fwdIf4 != null) {
             i = mstr.ifc.fwdIf4.tcpMssIn;
             o = mstr.ifc.fwdIf4.tcpMssOut;
@@ -3640,6 +3664,42 @@ class servP4langConn implements Runnable {
         if (i != ifc.sentVerify6) {
             lower.sendLine("verify6_" + a + " " + ifc.id + " " + i);
             ifc.sentVerify6 = i;
+        }
+        i = -1;
+        o = -1;
+        if (mstr.ifc.polkaPack != null) {
+            i = mstr.ifc.polkaPack.localId;
+            o = mstr.ifc.polkaPack.coeffs[i].intCoeff();
+        }
+        if (i != ifc.sentPolka) {
+            if (ifc.sentPolka >= 0) {
+                a = "mod";
+            } else {
+                a = "add";
+            }
+            if (i < 0) {
+                a = "del";
+            }
+            lower.sendLine("polkapoly_" + a + " " + ifc.id + " " + o);
+            ifc.sentPolka = i;
+        }
+        i = -1;
+        o = -1;
+        if (mstr.ifc.mpolkaPack != null) {
+            i = mstr.ifc.mpolkaPack.localId;
+            o = mstr.ifc.mpolkaPack.coeffs[i].intCoeff();
+        }
+        if (i != ifc.sentMpolka) {
+            if (ifc.sentMpolka >= 0) {
+                a = "mod";
+            } else {
+                a = "add";
+            }
+            if (i < 0) {
+                a = "del";
+            }
+            lower.sendLine("mpolkapoly_" + a + " " + ifc.id + " " + o);
+            ifc.sentMpolka = i;
         }
         i = 0;
         if (mstr.ifc.mplsPack != null) {
@@ -4590,7 +4650,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private void doIndexes(boolean ipv4, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes, tabGen<servP4langStr<tabIndex<addrIP>>> store) {
+    private void doIndexes(String beg, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes, tabGen<servP4langStr<tabIndex<addrIP>>> store) {
         for (int i = 0; i < need.size(); i++) {
             tabIndex<addrIP> ntry = need.get(i);
             ntry = ntry.copyBytes();
@@ -4617,7 +4677,7 @@ class servP4langConn implements Runnable {
             }
             done.put(ntry);
             store.put(str);
-            lower.sendLine("polkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
+            lower.sendLine(beg + "polkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
             tabIndex<addrIP> ntry = done.get(i);
@@ -4626,7 +4686,7 @@ class servP4langConn implements Runnable {
             }
             done.del(ntry);
             store.del(new servP4langStr<tabIndex<addrIP>>(ntry));
-            lower.sendLine("polkaidx_del " + ntry.index + " " + vrf + " 0");
+            lower.sendLine(beg + "polkaidx_del " + ntry.index + " " + vrf + " 0");
         }
     }
 
