@@ -327,16 +327,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "polkapoly") == 0) {
         polkaPoly_ntry.port = atoi(arg[2]);
         int p = atoi(arg[3]);
-        for (int o=0; o < 256; o++) {
-            int v = o << 8;
-            for (int i = 0; i < 8; ++i) {
-                v <<= 1;
-                if ((v & 0x10000) != 0) {
-                    v ^= p;
-                }
-            }
-            polkaPoly_ntry.tab[o] = v & 0xffff;
-        }
+        crc16mktab(polkaPoly_ntry.tab, p);
         if (del == 0) table_del(&polkaPoly_table, &polkaPoly_ntry);
         else table_add(&polkaPoly_table, &polkaPoly_ntry);
         return 0;

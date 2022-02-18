@@ -77,6 +77,26 @@ int polkaPoly_compare(void *ptr1, void *ptr2) {
 }
 
 
+void crc16mktab(int *tab, int poly) {
+    for (int o=0; o < 256; o++) {
+        int v = o << 8;
+        for (int i = 0; i < 8; ++i) {
+            v <<= 1;
+            if ((v & 0x10000) != 0) {
+                v ^= poly;
+            }
+        }
+        tab[o] = v & 0xffff;
+    }
+}
+
+#define crc16calc(tmp, tab, buf, ofs, len)                                      \
+    tmp = 0;                                                                    \
+    for (i = 0; i < len; i++) {                                                 \
+        tmp = ((tmp << 8) & 0xffff) ^ tab[(tmp >> 8) ^ (buf[ofs + i] & 0xff)];  \
+    }
+
+
 struct nsh_entry {
     int sp;
     int si;

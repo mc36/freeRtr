@@ -1899,10 +1899,7 @@ ipv6_tx:
         polkaPoly_res = table_get(&polkaPoly_table, index);
         polkaPoly_res->pack++;
         polkaPoly_res->byte += bufS;
-        tmp = 0;
-        for (i = 0; i < 14; i++) {
-            tmp = ((tmp << 8) & 0xffff) ^ polkaPoly_res->tab[(tmp >> 8) ^ (bufD[bufP + 4 + i] & 0xff)];
-        }
+        crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
         tmp ^= get16msb(bufD, bufP + 18);
         if (tmp == 0) {
             ethtyp = get16msb(bufD, bufP + 2);
