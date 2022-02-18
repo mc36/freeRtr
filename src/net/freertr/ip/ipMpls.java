@@ -755,7 +755,10 @@ public class ipMpls implements ifcUp {
             fwd = fwd6;
         }
         for (int i = 1; i <= fwd.actualIC.size(); i++) {
-            if ((id & (1 << i)) == 0) {
+            if (i >= bits.bitVals.length) {
+                continue;
+            }
+            if ((id & bits.bitVals[i]) == 0) {
                 continue;
             }
             tabIndex<addrIP> idx = fwd.actualIC.get(i - 1);
