@@ -25,6 +25,9 @@ from rare.bf_ifcounter import BfIfCounter
 from rare.bf_subifcounter import BfSubIfCounter
 from rare.bf_natcounter import BfNatCounter
 from rare.bf_bridgecounter import BfBridgeCounter
+from rare.bf_inspectcounter import BfInspectCounter
+from rare.bf_flowspeccounter import BfFlowspecCounter
+from rare.bf_nshcounter import BfNshCounter
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
@@ -107,24 +110,8 @@ if __name__ == "__main__":
             False,
         )
 
-        bf_natcounter_c = BfRuntimeGrpcClient(
-            args.bfruntime_address,
-            args.p4_program_name,
-            args.client_id + 4,
-            args.pipe_name,
-            False,
-        )
-
-        bf_bridgecounter_c = BfRuntimeGrpcClient(
-            args.bfruntime_address,
-            args.p4_program_name,
-            args.client_id + 5,
-            args.pipe_name,
-            False,
-        )
-
         bf_forwarder = BfForwarder(
-            1,
+            0,
             "bf_forwarder",
             args.platform,
             bf_client,
@@ -138,14 +125,14 @@ if __name__ == "__main__":
         bf_forwarder.start()
         ALL_THREADS.append(bf_forwarder)
 
-        bf_ifstatus = BfIfStatus(2, "bf_ifstatus", bf_ifstatus_c, sckw_file, 1)
+        bf_ifstatus = BfIfStatus(1, "bf_ifstatus", bf_ifstatus_c, sckw_file, 1)
 
         bf_ifstatus.daemon = True
         bf_ifstatus.start()
         ALL_THREADS.append(bf_ifstatus)
 
         bf_ifcounter = BfIfCounter(
-            3, "bf_ifcounter", bf_ifcounter_c, sckw_file, args.pipe_name, 5
+            2, "bf_ifcounter", bf_ifcounter_c, sckw_file, args.pipe_name, 5
         )
 
         bf_ifcounter.daemon = True
@@ -153,7 +140,7 @@ if __name__ == "__main__":
         ALL_THREADS.append(bf_ifcounter)
 
         bf_subifcounter = BfSubIfCounter(
-            5, "bf_subifcounter", bf_subifcounter_c, sckw_file, args.pipe_name, 5
+            3, "bf_subifcounter", bf_subifcounter_c, sckw_file, args.pipe_name, 5
         )
 
         bf_subifcounter.daemon = True
@@ -161,8 +148,17 @@ if __name__ == "__main__":
         ALL_THREADS.append(bf_subifcounter)
 
         if bf_forwarder.dp_capabilities["nat"] == True:
+
+            bf_natcounter_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 4,
+                args.pipe_name,
+                False,
+            )
+
             bf_natcounter = BfNatCounter(
-                5, "bf_natcounter", bf_natcounter_c, sckw_file, args.pipe_name, 30
+                4, "bf_natcounter", bf_natcounter_c, sckw_file, args.pipe_name, 30
             )
             bf_natcounter.daemon = True
             bf_natcounter.start()
@@ -171,8 +167,17 @@ if __name__ == "__main__":
             logging.warning("%s - nat not supported" % PROGRAM_NAME)
 
         if bf_forwarder.dp_capabilities["bridge"] == True:
+
+            bf_bridgecounter_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 5,
+                args.pipe_name,
+                False,
+            )
+
             bf_bridgecounter = BfBridgeCounter(
-                6, "bf_bridgecounter", bf_bridgecounter_c, sckw_file, args.pipe_name, 30
+                5, "bf_bridgecounter", bf_bridgecounter_c, sckw_file, args.pipe_name, 30
             )
             bf_bridgecounter.daemon = True
             bf_bridgecounter.start()
@@ -180,9 +185,79 @@ if __name__ == "__main__":
         else:
             logging.warning("%s - bridge not supported" % PROGRAM_NAME)
 
+        if (
+            bf_forwarder.dp_capabilities["inspect_in"] == True
+            or bf_forwarder.dp_capabilities["inspect_out"] == True
+        ):
+
+            bf_inspectcounter_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 6,
+                args.pipe_name,
+                False,
+            )
+
+            bf_inspectcounter = BfInspectCounter(
+                6,
+                "bf_inspectcounter",
+                bf_inspectcounter_c,
+                sckw_file,
+                args.pipe_name,
+                30,
+            )
+            bf_inspectcounter.daemon = True
+            bf_inspectcounter.start()
+            ALL_THREADS.append(bf_inspectcounter)
+        else:
+            logging.warning("%s - inspect not supported" % PROGRAM_NAME)
+
+        if bf_forwarder.dp_capabilities["flowspec"] == True:
+
+            bf_flowspeccounter_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 7,
+                args.pipe_name,
+                False,
+            )
+
+            bf_flowspeccounter = BfFlowspecCounter(
+                7,
+                "bf_flowspeccounter",
+                bf_flowspeccounter_c,
+                sckw_file,
+                args.pipe_name,
+                30,
+            )
+            bf_flowspeccounter.daemon = True
+            bf_flowspeccounter.start()
+            ALL_THREADS.append(bf_flowspeccounter)
+        else:
+            logging.warning("%s - flowspec not supported" % PROGRAM_NAME)
+
+        if bf_forwarder.dp_capabilities["nsh"] == True:
+
+            bf_nshcounter_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 8,
+                args.pipe_name,
+                False,
+            )
+
+            bf_nshcounter = BfNshCounter(
+                8, "bf_nshcounter", bf_nshcounter_c, sckw_file, args.pipe_name, 30
+            )
+            bf_nshcounter.daemon = True
+            bf_nshcounter.start()
+            ALL_THREADS.append(bf_nshcounter)
+        else:
+            logging.warning("%s - nsh not supported" % PROGRAM_NAME)
+
         if args.snmp:
             bf_snmp = BfIfSnmpClient(
-                7,
+                9,
                 "bf_snmp",
                 bf_client,
                 args.ifmibs_dir,

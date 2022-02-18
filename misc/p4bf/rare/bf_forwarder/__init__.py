@@ -189,6 +189,18 @@ class BfForwarder(Thread, RareApi):
                 "parent": {"id": "bridge", "path": "ig_ctl_bridge.tbl_bridge_target"},
                 "action": "ig_ctl.ig_ctl_bridge.act_set_bridge_routed",
             },
+            "inspect_in": {
+                "parent": {"id": "inacl", "path": "ig_ctl_acl_in.tbl_ipv4_insp"},
+                "action": "ig_ctl.ig_ctl_acl_in.act_insp4",
+            },
+            "inspect_out": {
+                "parent": {"id": "outacl", "path": "ig_ctl_acl_out.tbl_ipv4_insp"},
+                "action": "ig_ctl.ig_ctl_acl_out.act_insp4",
+            },
+            "racl": {
+                "parent": {"id": "inacl", "path": "ig_ctl_acl_in.tbl_ipv4_acl"},
+                "action": "ig_ctl.ig_ctl_acl_in.act_punt",
+            },
         }
 
         ig_ctl_path = "%s.ig_ctl" % self.bfgc.pipe_name

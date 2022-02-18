@@ -39,7 +39,7 @@ class BfIfCounter(Thread):
 
     def getAllActivePorts(self):
         resp = self.bfgc.port_table.entry_get(
-            self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+            self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
         )
         ACTIVE_PORTS = {}
         for d, k in resp:
@@ -77,7 +77,7 @@ class BfIfCounter(Thread):
             port_entry = self.bfgc.port_table.entry_get(
                 self.bfgc.target,
                 [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-                {"from-hw": False},
+                {"from_hw": True},
                 p4_name=self.bfgc.p4_name,
             )
             port = next(port_entry)[0].to_dict()
@@ -85,7 +85,7 @@ class BfIfCounter(Thread):
             stat_entry = self.bfgc.stat_table.entry_get(
                 self.bfgc.target,
                 [self.bfgc.stat_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-                {"from-hw": False},
+                {"from_hw": True},
                 p4_name=self.bfgc.p4_name,
             )
 

@@ -35,7 +35,7 @@ class BfIfStatus(Thread):
 
     def getAllActivePorts(self):
         resp = self.bfgc.port_table.entry_get(
-            self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+            self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
         )
         ACTIVE_PORTS = {}
         for d, k in resp:
@@ -77,7 +77,7 @@ class BfIfStatus(Thread):
             port_entry = self.bfgc.port_table.entry_get(
                 self.bfgc.target,
                 key_list,
-                {"from-hw": False},
+                {"from_hw": True},
                 data_list,
                 p4_name=self.bfgc.p4_name,
             )

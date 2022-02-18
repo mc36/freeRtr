@@ -13,7 +13,7 @@ def _Exception():
     )
 
 
-class BfNatCounter(Thread):
+class BfFlowspecCounter(Thread):
     def __init__(
         self,
         threadID,
@@ -21,7 +21,7 @@ class BfNatCounter(Thread):
         bfgc,
         sck_file,
         pipe_name,
-        nat_counter_interval=30,
+        flowspec_counter_interval=30,
     ):
         self.class_name = type(self).__name__
         Thread.__init__(self)
@@ -30,40 +30,42 @@ class BfNatCounter(Thread):
         self.bfgc = bfgc
         self.file = sck_file
         self.die = False
-        self.nat_counter_interval = nat_counter_interval
+        self.flowspec_counter_interval = flowspec_counter_interval
         self.pipe_name = pipe_name
 
     def run(self):
         try:
             logger.debug("%s - main" % (self.class_name))
             while not self.die:
-                logger.debug("%s - Sending nat counters ..." % self.name)
+                logger.debug("%s - Sending flowspec counters ..." % self.name)
                 logger.debug("%s - %s thread loop" % (self.class_name, self.name))
-                self.getReadSwitchNatCounter4()
-                self.getReadSwitchNatCounter6()
-                sleep(self.nat_counter_interval)
+                self.getReadSwitchFlowspecCounter4()
+                self.getReadSwitchFlowspecCounter6()
+                sleep(self.flowspec_counter_interval)
 
         except Exception as e:
             e = sys.exc_info()[0]
             logger.warning("%s - %s" % (self.class_name, _Exception()))
             self.tearDown()
 
-    def getReadSwitchNatCounter4(self):
+    def getReadSwitchFlowspecCounter4(self):
         tbl_global_path = "%s.ig_ctl" % self.pipe_name
-        tbl_ipv4_nat_trns_name = "%s.ig_ctl_nat.tbl_ipv4_nat_trns" % (tbl_global_path)
+        tbl_ipv4_flowspec_name = "%s.ig_ctl_flowspec.tbl_ipv4_flowspec" % (
+            tbl_global_path
+        )
 
         try:
             key_fields = {}
             data_fields = {}
             data = ""
-            tbl_ipv4_nat_trns = self.bfgc.bfrt_info.table_get(tbl_ipv4_nat_trns_name)
-            # tbl_ipv4_nat_trns.operations_execute(
+            tbl_ipv4_flowspec = self.bfgc.bfrt_info.table_get(tbl_ipv4_flowspec_name)
+            # tbl_ipv4_flowspec.operations_execute(
             #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
             # )
             # logger.debug(
-            #    "%s - %s counters synced !" % (self.class_name, tbl_ipv4_nat_trns_name)
+            #    "%s - %s counters synced !" % (self.class_name, tbl_ipv4_flowspec_name)
             # )
-            resp = tbl_ipv4_nat_trns.entry_get(
+            resp = tbl_ipv4_flowspec.entry_get(
                 self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
             )
 
@@ -74,23 +76,26 @@ class BfNatCounter(Thread):
                 if not (key_fields == {}):
                     vrf = key_fields["ig_md.vrf"]["value"]
                     prt = key_fields["hdr.ipv4.protocol"]["value"]
-
                     srcadr = key_fields["hdr.ipv4.src_addr"]["value"]
                     srcprt = key_fields["ig_md.layer4_srcprt"]["value"]
                     trgadr = key_fields["hdr.ipv4.dst_addr"]["value"]
                     trgprt = key_fields["ig_md.layer4_dstprt"]["value"]
-                    nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
-                    nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
+                    ipv4_diffsrv = key_fields["hdr.ipv4.diffserv"]["value"]
+                    ipv4_id = key_fields["hdr.ipv4.diffserv"]["value"]
+                    flowspec_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
+                    flowspec_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                    data = "nattrns4_cnt %s %s %s %s %s %s %s %s \n" % (
+                    data = "flowspec4_cnt %s %s %s %s %s %s %s %s %s %s \n" % (
                         vrf,
                         prt,
                         inet_ntoa(srcadr),
                         inet_ntoa(trgadr),
                         srcprt,
                         trgprt,
-                        nat_trns_pkt_cnt,
-                        nat_trns_byte_cnt,
+                        ipv4_diffsrv,
+                        ipv4_id,
+                        flowspec_pkt_cnt,
+                        flowspec_byte_cnt,
                     )
 
                     logger.debug("tx: %s" % data.split(" "))
@@ -98,30 +103,32 @@ class BfNatCounter(Thread):
                     self.file.write(data)
                     self.file.flush()
             else:
-                logger.debug("%s - no ipv4 nat entry" % self.class_name)
+                logger.debug("%s - no ipv4 flowspec entry" % self.class_name)
 
         except:
             logger.warning(_Exception())
             logger.warning(
-                "%s - %s request problem" % (self.class_name, tbl_ipv4_nat_trns_name)
+                "%s - %s request problem" % (self.class_name, tbl_ipv4_flowspec_name)
             )
 
-    def getReadSwitchNatCounter6(self):
+    def getReadSwitchFlowspecCounter6(self):
         tbl_global_path = "%s.ig_ctl" % self.pipe_name
-        tbl_ipv6_nat_trns_name = "%s.ig_ctl_nat.tbl_ipv6_nat_trns" % (tbl_global_path)
+        tbl_ipv6_flowspec_name = "%s.ig_ctl_flowspec.tbl_ipv6_flowspec" % (
+            tbl_global_path
+        )
 
         try:
             key_fields = {}
             data_fields = {}
             data = ""
-            tbl_ipv6_nat_trns = self.bfgc.bfrt_info.table_get(tbl_ipv6_nat_trns_name)
-            # tbl_ipv6_nat_trns.operations_execute(
+            tbl_ipv6_flowspec = self.bfgc.bfrt_info.table_get(tbl_ipv6_flowspec_name)
+            # tbl_ipv6_flowspec.operations_execute(
             #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
             # )
             # logger.debug(
-            #    "%s - %s counters synced !" % (self.class_name, tbl_ipv6_nat_trns_name)
+            #    "%s - %s counters synced !" % (self.class_name, tbl_ipv6_flowspec_name)
             # )
-            resp = tbl_ipv6_nat_trns.entry_get(
+            resp = tbl_ipv6_flowspec.entry_get(
                 self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
             )
 
@@ -136,18 +143,22 @@ class BfNatCounter(Thread):
                     srcprt = key_fields["ig_md.layer4_srcprt"]["value"]
                     trgadr = key_fields["hdr.ipv6.dst_addr"]["value"]
                     trgprt = key_fields["ig_md.layer4_dstprt"]["value"]
-                    nat_trns_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
-                    nat_trns_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
+                    ipv6_tc = key_fields["hdr.ipv6.traffic_class"]["value"]
+                    ipv6_fl = key_fields["hdr.ipv6.flow_label"]["value"]
+                    flowspec_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
+                    flowspec_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                    data = "nattrns6_cnt %s %s %s %s %s %s %s %s \n" % (
+                    data = "flowspec6_cnt %s %s %s %s %s %s %s %s %s %s \n" % (
                         vrf,
                         prt,
                         inet_ntoa(srcadr),
                         inet_ntoa(trgadr),
                         srcprt,
                         trgprt,
-                        nat_trns_pkt_cnt,
-                        nat_trns_byte_cnt,
+                        ipv6_tc,
+                        ipv6_fl,
+                        flowspec_pkt_cnt,
+                        flowspec_byte_cnt,
                     )
 
                     logger.debug("tx: %s" % data.split(" "))
@@ -155,12 +166,12 @@ class BfNatCounter(Thread):
                     self.file.write(data)
                     self.file.flush()
             else:
-                logger.debug("%s - no ipv6 nat entry" % self.class_name)
+                logger.debug("%s - no ipv6 flowspec entry" % self.class_name)
 
         except:
             logger.warning(_Exception())
             logger.warning(
-                "%s - %s request problem" % (self.class_name, tbl_ipv6_nat_trns_name)
+                "%s - %s request problem" % (self.class_name, tbl_ipv6_flowspec_name)
             )
 
     def tearDown(self):

@@ -1,10 +1,10 @@
-
 from ..bf_gbl_env.cst_env import *
 
+
 class BfRuntimeGrpcClient:
-    def __init__(self, grpc_addr, p4_program_name, client_id, pipe_name ,bind):
+    def __init__(self, grpc_addr, p4_program_name, client_id, pipe_name, bind):
         self.class_name = type(self).__name__
-        self.grpc_addr = grpc_addr # "localhost:50052"
+        self.grpc_addr = grpc_addr  # "localhost:50052"
         self.p4_name = p4_program_name
         self.client_id = client_id
         self.pipe_name = pipe_name
@@ -36,7 +36,8 @@ class BfRuntimeGrpcClient:
                 logger.warning("Connected to grcp server")
                 break
 
-        self.bfrt_info = self.interface.bfrt_info_get(self.p4_name)
+        # self.bfrt_info = self.interface.bfrt_info_get(self.p4_name)
+        self.bfrt_info = self.interface.bfrt_info_get()
         self.port_table = self.bfrt_info.table_get("$PORT")
         self.port_str_info_table = self.bfrt_info.table_get("$PORT_STR_INFO")
         self.stat_table = self.bfrt_info.table_get("$PORT_STAT")

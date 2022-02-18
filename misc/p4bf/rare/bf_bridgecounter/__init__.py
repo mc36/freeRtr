@@ -59,22 +59,22 @@ class BfBridgeCounter(Thread):
             data_fields = {}
             data = ""
             tbl_bridge_learn = self.bfgc.bfrt_info.table_get(tbl_bridge_learn_name)
-            tbl_bridge_learn.operations_execute(
-                self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-            )
+            # tbl_bridge_learn.operations_execute(
+            #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
+            # )
             tbl_bridge_target = self.bfgc.bfrt_info.table_get(tbl_bridge_target_name)
-            tbl_bridge_target.operations_execute(
-                self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-            )
-            logger.debug(
-                "%s - %s and %s counters synced !"
-                % (self.class_name, tbl_bridge_learn_name, tbl_bridge_target_name)
-            )
+            # tbl_bridge_target.operations_execute(
+            #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
+            # )
+            # logger.debug(
+            #    "%s - %s and %s counters synced !"
+            #    % (self.class_name, tbl_bridge_learn_name, tbl_bridge_target_name)
+            # )
             resp_learn = tbl_bridge_learn.entry_get(
-                self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+                self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
             )
             resp_target = tbl_bridge_target.entry_get(
-                self.bfgc.target, [], {"from_hw": False}, p4_name=self.bfgc.p4_name
+                self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
             )
 
             bridge_rx_dict = {}
