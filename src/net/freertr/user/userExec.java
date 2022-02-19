@@ -1164,6 +1164,7 @@ public class userExec {
         hl.add(null, "4 5          <name:ifc>          interface to see");
         hl.add(null, "5 .            session           list of sessions");
         hl.add(null, "5 .            toptalk           top talker list");
+        hl.add(null, "2 .      sgt                     security group tag");
         hl.add(null, "2 3      nsh                     network service header");
         hl.add(null, "3 4,.      forwarding            nsh forwarding table");
         hl.add(null, "4 5          [num]               path to view");

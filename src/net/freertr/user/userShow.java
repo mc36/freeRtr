@@ -1383,6 +1383,15 @@ public class userShow {
             }
             return null;
         }
+        if (a.equals("sgt")) {
+            userFormat lst = new userFormat("|", "interface|packet");
+            for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+                cfgIfc ntry = cfgAll.ifaces.get(i);
+                lst.add(ntry.name + "|" + ntry.ethtyp.getSgt());
+            }
+            rdr.putStrTab(lst);
+            return null;
+        }
         if (a.equals("nsh")) {
             a = cmd.word();
             if (a.equals("forwarding")) {
