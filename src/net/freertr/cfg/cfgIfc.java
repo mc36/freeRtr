@@ -90,6 +90,7 @@ import net.freertr.ifc.ifcQinqX;
 import net.freertr.ifc.ifcRandom;
 import net.freertr.ifc.ifcRaw;
 import net.freertr.ifc.ifcSep;
+import net.freertr.ifc.ifcSgt;
 import net.freertr.ifc.ifcSyncE;
 import net.freertr.ifc.ifcThread;
 import net.freertr.ifc.ifcUdld;
@@ -1388,6 +1389,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no macsec",
         "interface .*! no disable-macsec",
         "interface .*! no loss-detection",
+        "interface .*! no sgt enable",
+        "interface .*! no sgt assign",
         "interface .*! monitor-direction both",
         "interface .*! monitor-truncate 0",
         "interface .*! monitor-sample 0",
@@ -5752,6 +5755,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, !disableMacsec, cmds.tabulator, "disable-macsec", "");
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
+        cmds.cfgLine(l, ethtyp.sgtHnd == null, cmds.tabulator, "sgt enable", "");
+        cmds.cfgLine(l, ethtyp.sgtSet < 1, cmds.tabulator, "sgt assign", "" + ethtyp.sgtSet);
         s = "none";
         if (ethtyp.mtuCheckRx) {
             s = "in";
@@ -6441,6 +6446,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 .     out                         only in egress");
         l.add(null, "2 .     both                        check in both directions");
         l.add(null, "2 .     none                        not check at all");
+        l.add(null, "1 2   sgt                           security group tag commands");
+        l.add(null, "2 .     enable                      enable tagging");
+        l.add(null, "2 3     assign                      assign tag");
+        l.add(null, "3 .       <num>                     tag");
         l.add(null, "1 2,. loss-detection                loss detection commands");
         l.add(null, "2 3     <num>                       packet loss to block");
         l.add(null, "3 .       <num>                     time to block");
@@ -6897,6 +6906,19 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 ethtyp.mtuCheckTx = true;
                 return;
             }
+            return;
+        }
+        if (a.equals("sgt")) {
+            a = cmd.word();
+            if (a.equals("enable")) {
+                ethtyp.sgtHnd = new ifcSgt();
+                return;
+            }
+            if (a.equals("assign")) {
+                ethtyp.sgtSet = bits.str2num(cmd.word());
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         if (a.equals("loss-detection")) {
@@ -7425,6 +7447,19 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("enforce-mtu")) {
             ethtyp.mtuCheckRx = false;
             ethtyp.mtuCheckTx = false;
+            return;
+        }
+        if (a.equals("sgt")) {
+            a = cmd.word();
+            if (a.equals("enable")) {
+                ethtyp.sgtHnd = null;
+                return;
+            }
+            if (a.equals("assign")) {
+                ethtyp.sgtSet = 0;
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         if (a.equals("loss-detection")) {

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.19-cur, done by cs@nop.
--;-;-;2022-02-19 13:06:55, took 00:06:40, with 100 workers, on 2684 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2022-02-19 15:40:06, took 00:07:02, with 100 workers, on 2696 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -337,6 +337,17 @@ http://sources.nop.hu/cfg/conn-pptp.tst;conn-pptp.tst;success;ppp over pptp
 http://sources.nop.hu/cfg/conn-raw.tst;conn-raw.tst;success;raw encapsulation
 http://sources.nop.hu/cfg/conn-redun.tst;conn-redun.tst;success;process redundancy
 http://sources.nop.hu/cfg/conn-sep.tst;conn-sep.tst;success;sep
+http://sources.nop.hu/cfg/conn-sgt01.tst;conn-sgt01.tst;success;sgt ethernet encapsulation
+http://sources.nop.hu/cfg/conn-sgt02.tst;conn-sgt02.tst;success;sgt vlan encapsulation
+http://sources.nop.hu/cfg/conn-sgt03.tst;conn-sgt03.tst;success;sgt bridge encapsulation
+http://sources.nop.hu/cfg/conn-sgt04.tst;conn-sgt04.tst;success;sgt bundle encapsulation
+http://sources.nop.hu/cfg/conn-sgt05.tst;conn-sgt05.tst;success;sgt hdlc encapsulation
+http://sources.nop.hu/cfg/conn-sgt06.tst;conn-sgt06.tst;success;sgt ppp encapsulation
+http://sources.nop.hu/cfg/conn-sgt07.tst;conn-sgt07.tst;success;sgt framerelay encapsulation
+http://sources.nop.hu/cfg/conn-sgt08.tst;conn-sgt08.tst;success;sgt atmdxi encapsulation
+http://sources.nop.hu/cfg/conn-sgt09.tst;conn-sgt09.tst;success;sgt isdn encapsulation
+http://sources.nop.hu/cfg/conn-sgt10.tst;conn-sgt10.tst;success;sgt sep encapsulation
+http://sources.nop.hu/cfg/conn-sgt11.tst;conn-sgt11.tst;success;sgt tunnel encapsulation
 http://sources.nop.hu/cfg/conn-slaac.tst;conn-slaac.tst;success;slaac
 http://sources.nop.hu/cfg/conn-sreth01.tst;conn-sreth01.tst;success;sreth over ipv4
 http://sources.nop.hu/cfg/conn-sreth02.tst;conn-sreth02.tst;success;sreth over ipv6
@@ -823,6 +834,7 @@ http://sources.nop.hu/cfg/intop1-eth04.tst;intop1-eth04.tst;success;interop1: sp
 http://sources.nop.hu/cfg/intop1-eth05.tst;intop1-eth05.tst;success;interop1: point2point ethernet encapsulation
 http://sources.nop.hu/cfg/intop1-eth06.tst;intop1-eth06.tst;success;interop1: lacp
 http://sources.nop.hu/cfg/intop1-eth07.tst;intop1-eth07.tst;success;interop1: fragmentation and reassembly
+http://sources.nop.hu/cfg/intop1-eth08.tst;intop1-eth08.tst;success;interop1: sgt encapsulation
 http://sources.nop.hu/cfg/intop1-ike101.tst;intop1-ike101.tst;success;interop1: ike1 with ipv4
 http://sources.nop.hu/cfg/intop1-ike102.tst;intop1-ike102.tst;success;interop1: ike1 with ipv6
 http://sources.nop.hu/cfg/intop1-ike103.tst;intop1-ike103.tst;success;interop1: ike1 with 3des

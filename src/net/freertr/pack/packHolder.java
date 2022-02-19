@@ -77,6 +77,11 @@ public class packHolder {
     public final addrMac ETHtrg = new addrMac();
 
     /**
+     * sgt id
+     */
+    public int SGTid;
+
+    /**
      * nsh service path
      */
     public int NSHsp;
@@ -333,6 +338,7 @@ public class packHolder {
         ETHtype = 0;
         ETHsrc.fillBytes(0);
         ETHtrg.fillBytes(0);
+        SGTid = 0;
         NSHttl = 0;
         NSHmdt = 0;
         NSHmdv = new byte[0];
@@ -402,6 +408,7 @@ public class packHolder {
         ETHtype = src.ETHtype;
         ETHsrc.setAddr(src.ETHsrc);
         ETHtrg.setAddr(src.ETHtrg);
+        SGTid = src.SGTid;
         NSHttl = src.NSHttl;
         NSHmdt = src.NSHmdt;
         NSHmdv = bits.byteConcat(src.NSHmdv, new byte[0]);
@@ -1137,6 +1144,7 @@ public class packHolder {
      * put default values for sending
      */
     public void putDefaults() {
+        SGTid = 0;
         IPttl = -1;
         IPtos = -1;
         IPid = -1;

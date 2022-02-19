@@ -794,6 +794,11 @@ public class debugger {
     public static boolean counterTraf = false;
 
     /**
+     * ifcSgt packets
+     */
+    public static boolean ifcSgtTraf = false;
+
+    /**
      * ifcDot1q packets
      */
     public static boolean ifcDot1qTraf = false;
@@ -1178,6 +1183,7 @@ public class debugger {
         l.add(null, "3 .        drop              dropped packets");
         l.add(null, "3 .        bridge            briding");
         l.add(null, "3 .        bundle            bundlng");
+        l.add(null, "3 .        sgt               sgt encapsulation");
         l.add(null, "3 .        dot1q             802.1q vlan");
         l.add(null, "3 .        dot1ad            802.1ad vlan");
         l.add(null, "3 .        dot1ah            802.1ah vlan");
@@ -2006,6 +2012,10 @@ public class debugger {
             }
             if (s.equals("bundle")) {
                 ifcBundleTraf = v;
+                return false;
+            }
+            if (s.equals("sgt")) {
+                ifcSgtTraf = v;
                 return false;
             }
             if (s.equals("dot1q")) {

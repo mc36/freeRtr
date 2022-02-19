@@ -102,6 +102,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcLossDet lossDet;
 
     /**
+     * sgt handler
+     */
+    public ifcSgt sgtHnd;
+
+    /**
+     * sgt handler
+     */
+    public int sgtSet;
+
+    /**
      * service chaining
      */
     public ifcNshFwd nshFwd;
@@ -269,6 +279,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
      */
     public boolean getLossdet() {
         return lossDet != null;
+    }
+
+    /**
+     * get sgt state
+     *
+     * @return state
+     */
+    public boolean getSgt() {
+        return sgtHnd != null;
     }
 
     /**
@@ -734,6 +753,11 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 monSes.doTxPack(mon);
             }
         }
+        if (sgtHnd != null) {
+            if (sgtHnd.doEncode(pck)) {
+                return;
+            }
+        }
         if (lossDet != null) {
             if (lossDet.doEncode(pck)) {
                 return;
@@ -784,6 +808,13 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (lossDet != null) {
             if (lossDet.doDecode(pck)) {
+                cntr.drop(pck, counter.reasons.badSum);
+                return;
+            }
+        }
+        pck.SGTid = sgtSet;
+        if (sgtHnd != null) {
+            if (sgtHnd.doDecode(pck)) {
                 cntr.drop(pck, counter.reasons.badSum);
                 return;
             }

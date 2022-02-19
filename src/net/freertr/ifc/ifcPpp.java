@@ -279,6 +279,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public ifcPppNsh ctrlNsh;
 
     /**
+     * sgtcp
+     */
+    public ifcPppSgt ctrlSgt;
+
+    /**
      * polkacp
      */
     public ifcPppPolka ctrlPolka;
@@ -412,6 +417,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         ctrlIpx = new ifcPppIpx(this);
         ctrlCrypt = new ifcPppCrypt(this);
         ctrlNsh = new ifcPppNsh(this);
+        ctrlSgt = new ifcPppSgt(this);
         ctrlPolka = new ifcPppPolka(this);
         ctrlMpolka = new ifcPppMpolka(this);
         clearState();
@@ -493,6 +499,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "2 3     nshcp                       service control protocol");
         l.add(null, "3 .       open                      force to open state");
         l.add(null, "3 .       close                     force to close state");
+        l.add(null, "2 3     sgtcp                       sgt control protocol");
+        l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     polkacp                     polka control protocol");
         l.add(null, "3 .       open                      force to open state");
         l.add(null, "3 .       close                     force to close state");
@@ -558,6 +567,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, !ctrlCrypt.forced2open(), cmds.tabulator, "ppp ecp open", "");
         cmds.cfgLine(l, !ctrlNsh.forced2close(), cmds.tabulator, "ppp nshcp close", "");
         cmds.cfgLine(l, !ctrlNsh.forced2open(), cmds.tabulator, "ppp nshcp open", "");
+        cmds.cfgLine(l, !ctrlSgt.forced2close(), cmds.tabulator, "ppp sgtcp close", "");
+        cmds.cfgLine(l, !ctrlSgt.forced2open(), cmds.tabulator, "ppp sgtcp open", "");
         cmds.cfgLine(l, !ctrlPolka.forced2close(), cmds.tabulator, "ppp polkacp close", "");
         cmds.cfgLine(l, !ctrlPolka.forced2open(), cmds.tabulator, "ppp polkacp open", "");
         cmds.cfgLine(l, !ctrlMpolka.forced2close(), cmds.tabulator, "ppp mpolkacp close", "");
@@ -738,6 +749,17 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             if (a.equals("close")) {
                 ctrlNsh.forceClose(true);
+                return;
+            }
+        }
+        if (a.equals("sgtcp")) {
+            a = cmd.word();
+            if (a.equals("open")) {
+                ctrlSgt.forceOpen(true);
+                return;
+            }
+            if (a.equals("close")) {
+                ctrlSgt.forceClose(true);
                 return;
             }
         }
@@ -966,6 +988,17 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 return;
             }
         }
+        if (a.equals("sgtcp")) {
+            a = cmd.word();
+            if (a.equals("open")) {
+                ctrlSgt.forceOpen(false);
+                return;
+            }
+            if (a.equals("close")) {
+                ctrlSgt.forceClose(false);
+                return;
+            }
+        }
         if (a.equals("polkacp")) {
             a = cmd.word();
             if (a.equals("open")) {
@@ -1045,6 +1078,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         ctrlIpx.clearState();
         ctrlCrypt.clearState();
         ctrlNsh.clearState();
+        ctrlSgt.clearState();
         ctrlPolka.clearState();
         ctrlMpolka.clearState();
     }
@@ -1312,6 +1346,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 ctrlIpx.clearState();
                 ctrlCrypt.clearState();
                 ctrlNsh.clearState();
+                ctrlSgt.clearState();
                 ctrlPolka.clearState();
                 ctrlMpolka.clearState();
                 if (ctrlLcp.authLoc > 0) {
@@ -1352,6 +1387,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 sendConfReq(ctrlIpx);
                 sendConfReq(ctrlCrypt);
                 sendConfReq(ctrlNsh);
+                sendConfReq(ctrlSgt);
                 sendConfReq(ctrlPolka);
                 sendConfReq(ctrlMpolka);
                 if (reqSent > 0) {
@@ -1442,6 +1478,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             case ifcPppNsh.pppData:
                 newProt = ifcPppNsh.ethTyp;
                 break;
+            case ifcPppSgt.pppData:
+                newProt = ifcPppSgt.ethTyp;
+                break;
             case ifcPppPolka.pppData:
                 newProt = ifcPppPolka.ethTyp;
                 break;
@@ -1498,6 +1537,12 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     break;
                 }
                 recvNcpCtrl(pck, ctrlNsh, prot);
+                break;
+            case ifcPppSgt.pppCtrl:
+                if (curMode != modeUp) {
+                    break;
+                }
+                recvNcpCtrl(pck, ctrlSgt, prot);
                 break;
             case ifcPppPolka.pppCtrl:
                 if (curMode != modeUp) {
@@ -1584,6 +1629,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 break;
             case ifcPppNsh.ethTyp:
                 newProt = ifcPppNsh.pppData;
+                break;
+            case ifcPppSgt.ethTyp:
+                newProt = ifcPppSgt.pppData;
                 break;
             case ifcPppPolka.ethTyp:
                 newProt = ifcPppPolka.pppData;

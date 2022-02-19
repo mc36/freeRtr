@@ -12905,3 +12905,16 @@ qc pass: mpolka over ethernet
 qc pass: isis with mpolka
 qc pass: lsrp with mpolka
 qc pass: ospf with mpolka
+---------------------------------- 2022-02-19 15:33:04
+qc pass: sgt ethernet encapsulation
+qc pass: sgt vlan encapsulation
+qc pass: sgt bridge encapsulation
+qc pass: sgt bundle encapsulation
+qc pass: sgt hdlc encapsulation
+qc pass: sgt ppp encapsulation
+qc pass: sgt framerelay encapsulation
+qc pass: sgt atmdxi encapsulation
+qc pass: sgt isdn encapsulation
+qc pass: sgt sep encapsulation
+qc pass: sgt tunnel encapsulation
+qc pass: interop1: sgt encapsulation
