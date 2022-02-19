@@ -141,6 +141,9 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add(null, "12 13                  ttl           time to live matching");
         l.add(null, "13 12,.                  all         no ttl matching");
         l.add(null, "13 12,.                  <num>       ttl value");
+        l.add(null, "12 13                  sgt           security group tag matching");
+        l.add(null, "13 12,.                  all         no sgt matching");
+        l.add(null, "13 12,.                  <num>       sgt value");
         l.add(null, "12 12,.                log           log on matching");
         l.add(null, "1  2,. reindex                       reindex access list");
         l.add(null, "2  3,.   [num]                       initial number to start with");

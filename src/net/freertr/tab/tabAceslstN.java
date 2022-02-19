@@ -98,6 +98,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     public tabIntMatcher prec;
 
     /**
+     * sgt
+     */
+    public tabIntMatcher sgt;
+
+    /**
      * ttl
      */
     public tabIntMatcher ttl;
@@ -158,6 +163,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         flow = new tabIntMatcher();
         dscp = new tabIntMatcher();
         prec = new tabIntMatcher();
+        sgt = new tabIntMatcher();
         ttl = new tabIntMatcher();
         len = new tabIntMatcher();
         flag = new tabIntMatcher();
@@ -183,6 +189,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         r.flow = flow.copyBytes();
         r.dscp = dscp.copyBytes();
         r.prec = prec.copyBytes();
+        r.sgt = sgt.copyBytes();
         r.ttl = ttl.copyBytes();
         r.len = len.copyBytes();
         r.flag = flag.copyBytes();
@@ -229,6 +236,9 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
         if (prec.action != tabIntMatcher.actionType.always) {
             a += " prec " + prec;
+        }
+        if (sgt.action != tabIntMatcher.actionType.always) {
+            a += " sgt " + sgt;
         }
         if (ttl.action != tabIntMatcher.actionType.always) {
             a += " ttl " + ttl;
@@ -367,6 +377,12 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 }
                 continue;
             }
+            if (a.equals("sgt")) {
+                if (ntry.sgt.fromString(cmd.word())) {
+                    return true;
+                }
+                continue;
+            }
             if (a.equals("ttl")) {
                 if (ntry.ttl.fromString(cmd.word())) {
                     return true;
@@ -479,6 +495,9 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             return false;
         }
         if (!prec.matches(pck.IPtos >>> 5)) {
+            return false;
+        }
+        if (!sgt.matches(pck.SGTid)) {
             return false;
         }
         if (!ttl.matches(pck.IPttl)) {

@@ -12921,3 +12921,6 @@ qc pass: interop1: sgt encapsulation
 ---------------------------------- 2022-02-19 17:34:29
 qc pass: qos ingress sgt matcher
 qc pass: qos egress sgt matcher
+---------------------------------- 2022-02-19 18:09:06
+qc pass: ingress sgt matching access list
+qc pass: egress sgt matching access list
