@@ -1125,6 +1125,10 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public int sentMpolka;
 
+    public int sentSgtTag;
+
+    public int sentSgtSet;
+
     public int sentMss4in;
 
     public int sentMss4out;
@@ -1314,6 +1318,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentLabel = -1;
         sentPolka = -1;
         sentMpolka = -1;
+        sentSgtTag = -1;
+        sentSgtSet = -1;
         sentMss4in = 0;
         sentMss4out = 0;
         sentMss6in = 0;
@@ -3326,24 +3332,50 @@ class servP4langConn implements Runnable {
             }
             ifc.sentMacsec = null;
         } else {
-            String s = null;
+            a = null;
             if (ifc.ifc.ethtyp.macSec.keyHash != null) {
-                s = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + ifc.ifc.ethtyp.macSec.getModeFlags() + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash);
+                a = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + ifc.ifc.ethtyp.macSec.getModeFlags() + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash);
             }
-            if (s != null) {
+            if (a != null) {
                 if (ifc.sentMacsec != null) {
-                    if (!s.equals(ifc.sentMacsec)) {
-                        lower.sendLine("macsec_mod " + ifc.id + " " + s);
+                    if (!a.equals(ifc.sentMacsec)) {
+                        lower.sendLine("macsec_mod " + ifc.id + " " + a);
                     }
                 } else {
-                    lower.sendLine("macsec_add " + ifc.id + " " + s);
+                    lower.sendLine("macsec_add " + ifc.id + " " + a);
                 }
             } else {
                 if (ifc.sentMacsec != null) {
                     lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
                 }
             }
-            ifc.sentMacsec = s;
+            ifc.sentMacsec = a;
+        }
+        i = 0;
+        if (ifc.ifc.ethtyp.getSgt()) {
+            i = 1;
+        }
+        if (ifc.sentSgtTag != i) {
+            if (i == 0) {
+                a = "del";
+            } else {
+                a = "add";
+            }
+            lower.sendLine("sgttag_" + a + " " + ifc.id + " " + i);
+            ifc.sentSgtTag = i;
+        }
+        i = ifc.ifc.ethtyp.sgtSet;
+        if (ifc.sentSgtSet != i) {
+            if (ifc.sentSgtSet > 0) {
+                a = "mod";
+            } else {
+                a = "add";
+            }
+            if (i < 1) {
+                a = "del";
+            }
+            lower.sendLine("sgtset_" + a + " " + ifc.id + " " + i);
+            ifc.sentSgtSet = i;
         }
         if (ifc.ifc.pppoeC != null) {
             servP4langIfc res = findIfc(ifc.ifc.pppoeC.clnIfc);
@@ -3573,7 +3605,6 @@ class servP4langConn implements Runnable {
             ifc.sentVrf = -1;
             return;
         }
-        servP4langVrf vrf;
         servP4langIfc mstr = ifc;
         if (ifc.ifc.bundleIfc != null) {
             mstr = findBundl(ifc.ifc.bundleHed);
@@ -3581,7 +3612,7 @@ class servP4langConn implements Runnable {
         if (ifc.ifc.bridgeIfc != null) {
             mstr = findIfc(ifc.ifc.bridgeHed);
         }
-        vrf = findVrf(mstr);
+        servP4langVrf vrf = findVrf(mstr);
         if (vrf == null) {
             return;
         }
