@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.19-cur, done by cs@nop.
--;-;-;2022-02-19 16:53:44, took 00:06:47, with 100 workers, on 2696 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2022-02-19 17:41:34, took 00:07:04, with 100 workers, on 2698 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1681,6 +1681,8 @@ http://sources.nop.hu/cfg/qos-match15.tst;qos-match15.tst;success;qos ingress tt
 http://sources.nop.hu/cfg/qos-match16.tst;qos-match16.tst;success;qos egress ttl matcher
 http://sources.nop.hu/cfg/qos-match17.tst;qos-match17.tst;success;qos ingress flow matcher
 http://sources.nop.hu/cfg/qos-match18.tst;qos-match18.tst;success;qos egress flow matcher
+http://sources.nop.hu/cfg/qos-match19.tst;qos-match19.tst;success;qos ingress sgt matcher
+http://sources.nop.hu/cfg/qos-match20.tst;qos-match20.tst;success;qos egress sgt matcher
 http://sources.nop.hu/cfg/qos-set01.tst;qos-set01.tst;success;qos ingress qosgroup set
 http://sources.nop.hu/cfg/qos-set02.tst;qos-set02.tst;success;qos ingress tos set
 http://sources.nop.hu/cfg/qos-set03.tst;qos-set03.tst;success;qos egress tos set

@@ -12918,3 +12918,6 @@ qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
 qc pass: sgt tunnel encapsulation
 qc pass: interop1: sgt encapsulation
+---------------------------------- 2022-02-19 17:34:29
+qc pass: qos ingress sgt matcher
+qc pass: qos egress sgt matcher

@@ -86,6 +86,11 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater tosSet = new tabIntUpdater();
 
     /**
+     * sgt matcher
+     */
+    public tabIntMatcher sgtMatch = new tabIntMatcher();
+
+    /**
      * cos matcher
      */
     public tabIntMatcher cosMatch = new tabIntMatcher();
@@ -229,6 +234,7 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match length " + lengthMatch);
         l.add(beg + "match ttl " + ttlMatch);
         l.add(beg + "match ethtyp " + ethtypMatch);
+        l.add(beg + "match sgt " + sgtMatch);
         l.add(beg + "match cos " + cosMatch);
         l.add(beg + "match exp " + expMatch);
         l.add(beg + "match tos " + tosMatch);
@@ -273,6 +279,9 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!qosMatch.matches(pck.INTqosGrp)) {
+            return false;
+        }
+        if (!sgtMatch.matches(pck.SGTid)) {
             return false;
         }
         if (!cosMatch.matches(pck.ETHcos)) {

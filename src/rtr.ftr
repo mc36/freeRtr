@@ -1677,6 +1677,8 @@ qc pass: qos ingress ttl matcher
 qc pass: qos egress ttl matcher
 qc pass: qos ingress flow matcher
 qc pass: qos egress flow matcher
+qc pass: qos ingress sgt matcher
+qc pass: qos egress sgt matcher
 qc pass: qos ingress qosgroup set
 qc pass: qos ingress tos set
 qc pass: qos egress tos set

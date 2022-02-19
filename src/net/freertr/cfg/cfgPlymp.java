@@ -46,6 +46,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         "policy-map .*! sequence .* match length all",
         "policy-map .*! sequence .* match ttl all",
         "policy-map .*! sequence .* match ethtyp all",
+        "policy-map .*! sequence .* match sgt all",
         "policy-map .*! sequence .* match cos all",
         "policy-map .*! sequence .* match exp all",
         "policy-map .*! sequence .* match tos all",
@@ -155,6 +156,9 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "3 .       all               any value");
         l.add(null, "2 .     frag                fragmented datagrams");
         l.add(null, "2 3     flag                tcp flags");
+        l.add(null, "3 .       <num>             value to match");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     sgt                 match sgt value");
         l.add(null, "3 .       <num>             value to match");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     cos                 match cos value");
@@ -400,6 +404,13 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
                 ntry.fragMatch = true;
                 return;
             }
+            if (a.equals("sgt")) {
+                if (ntry.sgtMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("cos")) {
                 if (ntry.cosMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -580,6 +591,10 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
             }
             if (a.equals("frag")) {
                 ntry.fragMatch = false;
+                return;
+            }
+            if (a.equals("sgt")) {
+                ntry.sgtMatch.set2always();
                 return;
             }
             if (a.equals("cos")) {
