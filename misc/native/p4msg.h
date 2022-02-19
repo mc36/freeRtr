@@ -221,6 +221,10 @@ int doOneCommand(unsigned char* buf) {
     memset(&tun6_ntry, 0, sizeof(tun6_ntry));
     struct macsec_entry macsec_ntry;
     memset(&macsec_ntry, 0, sizeof(macsec_ntry));
+    struct sgttag_entry sgttag_ntry;
+    memset(&sgttag_ntry, 0, sizeof(sgttag_ntry));
+    struct sgtset_entry sgtset_ntry;
+    memset(&sgtset_ntry, 0, sizeof(sgtset_ntry));
     struct policer_entry policer_ntry;
     memset(&policer_ntry, 0, sizeof(policer_ntry));
     struct monitor_entry monitor_ntry;
@@ -1535,6 +1539,19 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "sgttag") == 0) {
+        sgttag_ntry.port = atoi(arg[2]);
+        if (del == 0) table_del(&sgttag_table, &sgttag_ntry);
+        else table_add(&sgttag_table, &sgttag_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "sgtset") == 0) {
+        sgtset_ntry.port = atoi(arg[2]);
+        sgtset_ntry.value = atoi(arg[3]);
+        if (del == 0) table_del(&sgtset_table, &sgtset_ntry);
+        else table_add(&sgtset_table, &sgtset_ntry);
         return 0;
     }
     if (strcmp(arg[0], "macsec") == 0) {

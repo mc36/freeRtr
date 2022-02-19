@@ -885,8 +885,39 @@ struct macsec_entry {
 struct table_head macsec_table;
 
 int macsec_compare(void *ptr1, void *ptr2) {
-    struct pppoe_entry *ntry1 = ptr1;
-    struct pppoe_entry *ntry2 = ptr2;
+    struct macsec_entry *ntry1 = ptr1;
+    struct macsec_entry *ntry2 = ptr2;
+    if (ntry1->port < ntry2->port) return -1;
+    if (ntry1->port > ntry2->port) return +1;
+    return 0;
+}
+
+
+struct sgttag_entry {
+    int port;
+};
+
+struct table_head sgttag_table;
+
+int sgttag_compare(void *ptr1, void *ptr2) {
+    struct sgttag_entry *ntry1 = ptr1;
+    struct sgttag_entry *ntry2 = ptr2;
+    if (ntry1->port < ntry2->port) return -1;
+    if (ntry1->port > ntry2->port) return +1;
+    return 0;
+}
+
+
+struct sgtset_entry {
+    int port;
+    int value;
+};
+
+struct table_head sgtset_table;
+
+int sgtset_compare(void *ptr1, void *ptr2) {
+    struct sgtset_entry *ntry1 = ptr1;
+    struct sgtset_entry *ntry2 = ptr2;
     if (ntry1->port < ntry2->port) return -1;
     if (ntry1->port > ntry2->port) return +1;
     return 0;
@@ -1058,6 +1089,8 @@ int initTables() {
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
+    table_init(&sgtset_table, sizeof(struct sgtset_entry), &sgtset_compare);
+    table_init(&sgttag_table, sizeof(struct sgttag_entry), &sgttag_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));

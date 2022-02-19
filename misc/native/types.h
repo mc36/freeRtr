@@ -12,9 +12,11 @@
 #define ETHERTYPE_PPPOE_DATA        0x8864
 #define ETHERTYPE_ROUTEDMAC         0x6558
 #define ETHERTYPE_MACSEC            0x88e5
+#define ETHERTYPE_SGT               0x8909
 
 #define PPPTYPE_IPV4                0x0021
 #define PPPTYPE_IPV6                0x0057
 #define PPPTYPE_MPLS_UCAST          0x0281
 #define PPPTYPE_ROUTEDMAC           0x0031
 #define PPPTYPE_MACSEC              0x0053
+#define PPPTYPE_SGT                 0x004a
