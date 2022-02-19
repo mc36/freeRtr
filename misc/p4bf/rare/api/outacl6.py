@@ -6,7 +6,7 @@ def writeOutAcl6Rules(
 ):
     tbl_global_path = "ig_ctl.ig_ctl_acl_out"
     tbl_name = "%s.tbl_ipv6_acl" % (tbl_global_path)
-    tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
+    tbl_action_name = "%s.act_%s6" % (tbl_global_path, act)
     key_field_list = [
         gc.KeyTuple("ig_md.aclport_id", port),
         gc.KeyTuple("$MATCH_PRIORITY", pri),

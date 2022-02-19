@@ -26,6 +26,8 @@ control IngressControlAclOut(inout headers hdr, inout ingress_metadata_t ig_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) acl4;
+    DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) acl6;
 
 #ifdef HAVE_INSPECT
     DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) insp4;
@@ -33,15 +35,34 @@ control IngressControlAclOut(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
 
 
-    action act_deny() {
+    action act_deny4() {
+        acl4.count();
         ig_dprsr_md.drop_ctl = 1;
     }
 
-    action act_permit() {
+    action act_permit4() {
+        acl4.count();
+    }
+
+    action act_deny6() {
+        acl6.count();
+        ig_dprsr_md.drop_ctl = 1;
+    }
+
+    action act_permit6() {
+        acl6.count();
     }
 
 #ifdef HAVE_RACL
-    action act_punt() {
+    action act_punt4() {
+        acl4.count();
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.nexthop_id = CPU_PORT;
+    }
+
+    action act_punt6() {
+        acl6.count();
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         ig_md.nexthop_id = CPU_PORT;
@@ -81,15 +102,16 @@ hdr.ipv4.identification:
             ternary;
         }
         actions = {
-            act_permit;
-            act_deny;
+            act_permit4;
+            act_deny4;
 #ifdef HAVE_RACL
-            act_punt();
+            act_punt4;
 #endif
             @defaultonly NoAction;
         }
         size = IPV4_OUTACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = acl4;
     }
 
     table tbl_ipv6_acl {
@@ -112,15 +134,16 @@ hdr.ipv6.flow_label:
             ternary;
         }
         actions = {
-            act_permit;
-            act_deny;
+            act_permit6;
+            act_deny6;
 #ifdef HAVE_RACL
-            act_punt();
+            act_punt6;
 #endif
             @defaultonly NoAction;
         }
         size = IPV6_OUTACL_TABLE_SIZE;
         const default_action = NoAction();
+        counters = acl6;
     }
 
 

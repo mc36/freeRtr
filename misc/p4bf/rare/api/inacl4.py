@@ -6,7 +6,7 @@ def writeInAcl4Rules(
 ):
     tbl_global_path = "ig_ctl.ig_ctl_acl_in"
     tbl_name = "%s.tbl_ipv4_acl" % (tbl_global_path)
-    tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
+    tbl_action_name = "%s.act_%s4" % (tbl_global_path, act)
     key_field_list = [
         gc.KeyTuple("ig_md.source_id", port),
         gc.KeyTuple("$MATCH_PRIORITY", pri),
