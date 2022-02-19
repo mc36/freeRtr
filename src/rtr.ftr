@@ -333,17 +333,6 @@ qc pass: ppp over pptp
 qc pass: raw encapsulation
 qc pass: process redundancy
 qc pass: sep
-qc pass: sgt ethernet encapsulation
-qc pass: sgt vlan encapsulation
-qc pass: sgt bridge encapsulation
-qc pass: sgt bundle encapsulation
-qc pass: sgt hdlc encapsulation
-qc pass: sgt ppp encapsulation
-qc pass: sgt framerelay encapsulation
-qc pass: sgt atmdxi encapsulation
-qc pass: sgt isdn encapsulation
-qc pass: sgt sep encapsulation
-qc pass: sgt tunnel encapsulation
 qc pass: slaac
 qc pass: sreth over ipv4
 qc pass: sreth over ipv6
@@ -734,6 +723,17 @@ qc pass: satp with sha3384
 qc pass: satp with sha3512
 qc pass: satp with none encryption
 qc pass: satp with none hash
+qc pass: sgt ethernet encapsulation
+qc pass: sgt vlan encapsulation
+qc pass: sgt bridge encapsulation
+qc pass: sgt bundle encapsulation
+qc pass: sgt hdlc encapsulation
+qc pass: sgt ppp encapsulation
+qc pass: sgt framerelay encapsulation
+qc pass: sgt atmdxi encapsulation
+qc pass: sgt isdn encapsulation
+qc pass: sgt sep encapsulation
+qc pass: sgt tunnel encapsulation
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip

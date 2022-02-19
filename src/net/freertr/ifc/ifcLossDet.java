@@ -7,7 +7,7 @@ import net.freertr.util.bits;
 import net.freertr.util.logger;
 
 /**
- * packet loss detector
+ * packet loss detector protocol
  *
  * @author matecsaba
  */

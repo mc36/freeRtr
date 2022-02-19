@@ -5,7 +5,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
 /**
- * security group tag
+ * security group tag (rfcXXXX) protocol
  *
  * @author matecsaba
  */

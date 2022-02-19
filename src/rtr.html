@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.2.19-cur, done by cs@nop.<br/>
-tested: 2022-02-19 20:11:48, took 00:08:09, with 100 workers, on 2700 cases, 0 failed, 0 traces, 0 retries<br/>
+tested: 2022-02-19 22:57:58, took 00:09:22, with 100 workers, on 2700 cases, 0 failed, 0 traces, 11 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -350,17 +350,6 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-raw.tst">conn-raw.tst</a></td><td>success</td><td>raw encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-redun.tst">conn-redun.tst</a></td><td>success</td><td>process redundancy</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-sep.tst">conn-sep.tst</a></td><td>success</td><td>sep</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt01.tst">conn-sgt01.tst</a></td><td>success</td><td>sgt ethernet encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt02.tst">conn-sgt02.tst</a></td><td>success</td><td>sgt vlan encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt03.tst">conn-sgt03.tst</a></td><td>success</td><td>sgt bridge encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt04.tst">conn-sgt04.tst</a></td><td>success</td><td>sgt bundle encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt05.tst">conn-sgt05.tst</a></td><td>success</td><td>sgt hdlc encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt06.tst">conn-sgt06.tst</a></td><td>success</td><td>sgt ppp encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt07.tst">conn-sgt07.tst</a></td><td>success</td><td>sgt framerelay encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt08.tst">conn-sgt08.tst</a></td><td>success</td><td>sgt atmdxi encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt09.tst">conn-sgt09.tst</a></td><td>success</td><td>sgt isdn encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt10.tst">conn-sgt10.tst</a></td><td>success</td><td>sgt sep encapsulation</td></tr>
-<tr><td><a href="http://sources.nop.hu/cfg/conn-sgt11.tst">conn-sgt11.tst</a></td><td>success</td><td>sgt tunnel encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-slaac.tst">conn-slaac.tst</a></td><td>success</td><td>slaac</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-sreth01.tst">conn-sreth01.tst</a></td><td>success</td><td>sreth over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-sreth02.tst">conn-sreth02.tst</a></td><td>success</td><td>sreth over ipv6</td></tr>
@@ -751,6 +740,17 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-satp27.tst">crypt-satp27.tst</a></td><td>success</td><td>satp with sha3512</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-satp28.tst">crypt-satp28.tst</a></td><td>success</td><td>satp with none encryption</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-satp29.tst">crypt-satp29.tst</a></td><td>success</td><td>satp with none hash</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt01.tst">crypt-sgt01.tst</a></td><td>success</td><td>sgt ethernet encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt02.tst">crypt-sgt02.tst</a></td><td>success</td><td>sgt vlan encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt03.tst">crypt-sgt03.tst</a></td><td>success</td><td>sgt bridge encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt04.tst">crypt-sgt04.tst</a></td><td>success</td><td>sgt bundle encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt05.tst">crypt-sgt05.tst</a></td><td>success</td><td>sgt hdlc encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt06.tst">crypt-sgt06.tst</a></td><td>success</td><td>sgt ppp encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt07.tst">crypt-sgt07.tst</a></td><td>success</td><td>sgt framerelay encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt08.tst">crypt-sgt08.tst</a></td><td>success</td><td>sgt atmdxi encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt09.tst">crypt-sgt09.tst</a></td><td>success</td><td>sgt isdn encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt10.tst">crypt-sgt10.tst</a></td><td>success</td><td>sgt sep encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt11.tst">crypt-sgt11.tst</a></td><td>success</td><td>sgt tunnel encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip01.tst">crypt-skip01.tst</a></td><td>success</td><td>skip over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip02.tst">crypt-skip02.tst</a></td><td>success</td><td>skip over ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>success</td><td>skip over skip</td></tr>

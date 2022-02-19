@@ -1144,7 +1144,6 @@ public class packHolder {
      * put default values for sending
      */
     public void putDefaults() {
-        SGTid = 0;
         IPttl = -1;
         IPtos = -1;
         IPid = -1;

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.19-cur, done by cs@nop.
--;-;-;2022-02-19 20:11:48, took 00:08:09, with 100 workers, on 2700 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2022-02-19 22:57:58, took 00:09:22, with 100 workers, on 2700 cases, 0 failed, 0 traces, 11 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -337,17 +337,6 @@ http://sources.nop.hu/cfg/conn-pptp.tst;conn-pptp.tst;success;ppp over pptp
 http://sources.nop.hu/cfg/conn-raw.tst;conn-raw.tst;success;raw encapsulation
 http://sources.nop.hu/cfg/conn-redun.tst;conn-redun.tst;success;process redundancy
 http://sources.nop.hu/cfg/conn-sep.tst;conn-sep.tst;success;sep
-http://sources.nop.hu/cfg/conn-sgt01.tst;conn-sgt01.tst;success;sgt ethernet encapsulation
-http://sources.nop.hu/cfg/conn-sgt02.tst;conn-sgt02.tst;success;sgt vlan encapsulation
-http://sources.nop.hu/cfg/conn-sgt03.tst;conn-sgt03.tst;success;sgt bridge encapsulation
-http://sources.nop.hu/cfg/conn-sgt04.tst;conn-sgt04.tst;success;sgt bundle encapsulation
-http://sources.nop.hu/cfg/conn-sgt05.tst;conn-sgt05.tst;success;sgt hdlc encapsulation
-http://sources.nop.hu/cfg/conn-sgt06.tst;conn-sgt06.tst;success;sgt ppp encapsulation
-http://sources.nop.hu/cfg/conn-sgt07.tst;conn-sgt07.tst;success;sgt framerelay encapsulation
-http://sources.nop.hu/cfg/conn-sgt08.tst;conn-sgt08.tst;success;sgt atmdxi encapsulation
-http://sources.nop.hu/cfg/conn-sgt09.tst;conn-sgt09.tst;success;sgt isdn encapsulation
-http://sources.nop.hu/cfg/conn-sgt10.tst;conn-sgt10.tst;success;sgt sep encapsulation
-http://sources.nop.hu/cfg/conn-sgt11.tst;conn-sgt11.tst;success;sgt tunnel encapsulation
 http://sources.nop.hu/cfg/conn-slaac.tst;conn-slaac.tst;success;slaac
 http://sources.nop.hu/cfg/conn-sreth01.tst;conn-sreth01.tst;success;sreth over ipv4
 http://sources.nop.hu/cfg/conn-sreth02.tst;conn-sreth02.tst;success;sreth over ipv6
@@ -738,6 +727,17 @@ http://sources.nop.hu/cfg/crypt-satp26.tst;crypt-satp26.tst;success;satp with sh
 http://sources.nop.hu/cfg/crypt-satp27.tst;crypt-satp27.tst;success;satp with sha3512
 http://sources.nop.hu/cfg/crypt-satp28.tst;crypt-satp28.tst;success;satp with none encryption
 http://sources.nop.hu/cfg/crypt-satp29.tst;crypt-satp29.tst;success;satp with none hash
+http://sources.nop.hu/cfg/crypt-sgt01.tst;crypt-sgt01.tst;success;sgt ethernet encapsulation
+http://sources.nop.hu/cfg/crypt-sgt02.tst;crypt-sgt02.tst;success;sgt vlan encapsulation
+http://sources.nop.hu/cfg/crypt-sgt03.tst;crypt-sgt03.tst;success;sgt bridge encapsulation
+http://sources.nop.hu/cfg/crypt-sgt04.tst;crypt-sgt04.tst;success;sgt bundle encapsulation
+http://sources.nop.hu/cfg/crypt-sgt05.tst;crypt-sgt05.tst;success;sgt hdlc encapsulation
+http://sources.nop.hu/cfg/crypt-sgt06.tst;crypt-sgt06.tst;success;sgt ppp encapsulation
+http://sources.nop.hu/cfg/crypt-sgt07.tst;crypt-sgt07.tst;success;sgt framerelay encapsulation
+http://sources.nop.hu/cfg/crypt-sgt08.tst;crypt-sgt08.tst;success;sgt atmdxi encapsulation
+http://sources.nop.hu/cfg/crypt-sgt09.tst;crypt-sgt09.tst;success;sgt isdn encapsulation
+http://sources.nop.hu/cfg/crypt-sgt10.tst;crypt-sgt10.tst;success;sgt sep encapsulation
+http://sources.nop.hu/cfg/crypt-sgt11.tst;crypt-sgt11.tst;success;sgt tunnel encapsulation
 http://sources.nop.hu/cfg/crypt-skip01.tst;crypt-skip01.tst;success;skip over ipv4
 http://sources.nop.hu/cfg/crypt-skip02.tst;crypt-skip02.tst;success;skip over ipv6
 http://sources.nop.hu/cfg/crypt-skip03.tst;crypt-skip03.tst;success;skip over skip
