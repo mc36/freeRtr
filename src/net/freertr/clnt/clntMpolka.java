@@ -189,7 +189,7 @@ public class clntMpolka implements Runnable, ifcDn {
         if (s == null) {
             s = "";
         }
-        List<clntMpolkaTrg> trgs = new ArrayList<clntMpolkaTrg>();
+        tabGen<clntMpolkaTrg> trgs = new tabGen<clntMpolkaTrg>();
         cmds c = new cmds("adrs", s);
         for (;;) {
             s = c.word();
@@ -223,7 +223,7 @@ public class clntMpolka implements Runnable, ifcDn {
      *
      * @param trg targets
      */
-    public void setTargets(List<clntMpolkaTrg> trg) {
+    public void setTargets(tabGen<clntMpolkaTrg> trg) {
         clearState();
         clntMpolkaTrg[] ts = new clntMpolkaTrg[trg.size()];
         for (int i = 0; i < ts.length; i++) {
@@ -468,7 +468,7 @@ public class clntMpolka implements Runnable, ifcDn {
 
 }
 
-class clntMpolkaTrg {
+class clntMpolkaTrg implements Comparator<clntMpolkaTrg> {
 
     public addrIP node;
 
@@ -480,6 +480,10 @@ class clntMpolkaTrg {
             a += " " + peers.get(i);
         }
         return a + " ,";
+    }
+
+    public int compare(clntMpolkaTrg o1, clntMpolkaTrg o2) {
+        return o1.node.compare(o1.node, o2.node);
     }
 
 }
