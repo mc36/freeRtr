@@ -812,12 +812,14 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
-        pck.SGTid = sgtSet;
         if (sgtHnd != null) {
             if (sgtHnd.doDecode(pck)) {
                 cntr.drop(pck, counter.reasons.badSum);
                 return;
             }
+        }
+        if (sgtSet > 0) {
+            pck.SGTid = sgtSet;
         }
         if (lastState != state.states.up) {
             cntr.drop(pck, counter.reasons.notUp);
