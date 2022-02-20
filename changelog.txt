@@ -12944,3 +12944,10 @@ qc pass: sgt over macsec ethernet encapsulation
 qc pass: sgt over macsec vlan encapsulation
 qc pass: p4lang: sgt over macsec over ethernet
 qc pass: p4lang: sgt over macsec over vlan
+---------------------------------- 2022-02-20 07:57:01
+qc pass: sgt hairpin encapsulation
+qc pass: no sgt ethernet encapsulation
+qc pass: p4lang: sgt ingress access list
+qc pass: p4lang: sgt egress access list
+qc pass: p4lang: sgt vlan ingress access list
+qc pass: p4lang: sgt vlan egress access list

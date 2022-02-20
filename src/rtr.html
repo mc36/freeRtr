@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.2.20-cur, done by cs@nop.<br/>
-tested: 2022-02-20 07:37:18, took 00:08:01, with 100 workers, on 2716 cases, 0 failed, 2 traces, 2 retries<br/>
+tested: 2022-02-20 08:04:00, took 00:06:59, with 100 workers, on 2722 cases, 0 failed, 2 traces, 4 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -757,6 +757,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt15.tst">crypt-sgt15.tst</a></td><td>success</td><td>sgt tunnel map out encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt16.tst">crypt-sgt16.tst</a></td><td>success</td><td>sgt over macsec ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt17.tst">crypt-sgt17.tst</a></td><td>success</td><td>sgt over macsec vlan encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt18.tst">crypt-sgt18.tst</a></td><td>success</td><td>sgt hairpin encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/crypt-sgt19.tst">crypt-sgt19.tst</a></td><td>success</td><td>no sgt ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip01.tst">crypt-skip01.tst</a></td><td>success</td><td>skip over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip02.tst">crypt-skip02.tst</a></td><td>success</td><td>skip over ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>success</td><td>skip over skip</td></tr>
@@ -1474,6 +1476,10 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt102.tst">p4lang-crypt102.tst</a></td><td>success</td><td>p4lang: sgt over hairpin</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt103.tst">p4lang-crypt103.tst</a></td><td>success</td><td>p4lang: sgt over macsec over ethernet</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt104.tst">p4lang-crypt104.tst</a></td><td>success</td><td>p4lang: sgt over macsec over vlan</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt105.tst">p4lang-crypt105.tst</a></td><td>success</td><td>p4lang: sgt ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt106.tst">p4lang-crypt106.tst</a></td><td>success</td><td>p4lang: sgt egress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt107.tst">p4lang-crypt107.tst</a></td><td>success</td><td>p4lang: sgt vlan ingress access list</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt108.tst">p4lang-crypt108.tst</a></td><td>success</td><td>p4lang: sgt vlan egress access list</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>

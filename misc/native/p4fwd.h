@@ -1938,6 +1938,9 @@ ipv6_tx:
         if (index < 0) doDropper;
         packPolka[port]++;
         bytePolka[port] += bufS;
+        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib4_table, index);
         ttl = get16msb(bufD, bufP + 0);
         if ((ttl & 0xff00) != 0) doDropper;
         if ((ttl & 0xff) <= 1) doPunting;
@@ -1956,11 +1959,10 @@ ipv6_tx:
             bufP += 20;
             goto etyped_rx;
         }
-        polkaIdx_ntry.vrf = portvrf_res->vrf;
         polkaIdx_ntry.index = tmp;
-        index = table_find(&polkaIdx_table, &polkaIdx_ntry);
+        index = table_find(&vrf2rib_res->plk, &polkaIdx_ntry);
         if (index < 0) doDropper;
-        polkaIdx_res = table_get(&polkaIdx_table, index);
+        polkaIdx_res = table_get(&vrf2rib_res->plk, index);
         polkaIdx_res->pack++;
         polkaIdx_res->byte += bufS;
         neigh_ntry.id = polkaIdx_res->nexthop;

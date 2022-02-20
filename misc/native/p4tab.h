@@ -39,20 +39,15 @@ long int packNsh[maxPorts];
 
 
 struct polkaIdx_entry {
-    int vrf;
     int index;
     int nexthop;
     long pack;
     long byte;
 };
 
-struct table_head polkaIdx_table;
-
 int polkaIdx_compare(void *ptr1, void *ptr2) {
     struct polkaIdx_entry *ntry1 = ptr1;
     struct polkaIdx_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
     if (ntry1->index < ntry2->index) return -1;
     if (ntry1->index > ntry2->index) return +1;
     return 0;
@@ -184,6 +179,7 @@ struct vrf2rib_entry {
     struct table_head nat;
     struct table_head tun;
     struct table_head mcst;
+    struct table_head plk;
     long pack;
     long byte;
 };
@@ -217,6 +213,9 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
     tab3 = &res->mcst;
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
+    tab3 = &res->plk;
+    reclen4 = sizeof(struct polkaIdx_entry);
+    if (tab3->reclen != reclen4) table_init(tab3, reclen4, &polkaIdx_compare);
     return res;
 }
 
@@ -1079,7 +1078,6 @@ void initIface(int port, char *name) {
 
 
 int initTables() {
-    table_init(&polkaIdx_table, sizeof(struct polkaIdx_entry), &polkaIdx_compare);
     table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), &polkaPoly_compare);
     table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);

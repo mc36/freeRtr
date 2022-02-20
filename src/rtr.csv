@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.20-cur, done by cs@nop.
--;-;-;2022-02-20 07:37:18, took 00:08:01, with 100 workers, on 2716 cases, 0 failed, 2 traces, 2 retries
+-;-;-;2022-02-20 08:04:00, took 00:06:59, with 100 workers, on 2722 cases, 0 failed, 2 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -744,6 +744,8 @@ http://sources.nop.hu/cfg/crypt-sgt14.tst;crypt-sgt14.tst;success;sgt vlan map o
 http://sources.nop.hu/cfg/crypt-sgt15.tst;crypt-sgt15.tst;success;sgt tunnel map out encapsulation
 http://sources.nop.hu/cfg/crypt-sgt16.tst;crypt-sgt16.tst;success;sgt over macsec ethernet encapsulation
 http://sources.nop.hu/cfg/crypt-sgt17.tst;crypt-sgt17.tst;success;sgt over macsec vlan encapsulation
+http://sources.nop.hu/cfg/crypt-sgt18.tst;crypt-sgt18.tst;success;sgt hairpin encapsulation
+http://sources.nop.hu/cfg/crypt-sgt19.tst;crypt-sgt19.tst;success;no sgt ethernet encapsulation
 http://sources.nop.hu/cfg/crypt-skip01.tst;crypt-skip01.tst;success;skip over ipv4
 http://sources.nop.hu/cfg/crypt-skip02.tst;crypt-skip02.tst;success;skip over ipv6
 http://sources.nop.hu/cfg/crypt-skip03.tst;crypt-skip03.tst;success;skip over skip
@@ -1461,6 +1463,10 @@ http://sources.nop.hu/cfg/p4lang-crypt101.tst;p4lang-crypt101.tst;success;p4lang
 http://sources.nop.hu/cfg/p4lang-crypt102.tst;p4lang-crypt102.tst;success;p4lang: sgt over hairpin
 http://sources.nop.hu/cfg/p4lang-crypt103.tst;p4lang-crypt103.tst;success;p4lang: sgt over macsec over ethernet
 http://sources.nop.hu/cfg/p4lang-crypt104.tst;p4lang-crypt104.tst;success;p4lang: sgt over macsec over vlan
+http://sources.nop.hu/cfg/p4lang-crypt105.tst;p4lang-crypt105.tst;success;p4lang: sgt ingress access list
+http://sources.nop.hu/cfg/p4lang-crypt106.tst;p4lang-crypt106.tst;success;p4lang: sgt egress access list
+http://sources.nop.hu/cfg/p4lang-crypt107.tst;p4lang-crypt107.tst;success;p4lang: sgt vlan ingress access list
+http://sources.nop.hu/cfg/p4lang-crypt108.tst;p4lang-crypt108.tst;success;p4lang: sgt vlan egress access list
 http://sources.nop.hu/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.nop.hu/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.nop.hu/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

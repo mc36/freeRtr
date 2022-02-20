@@ -325,11 +325,12 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "polkaidx") == 0) {
+        vrf2rib_ntry.vrf = atoi(arg[3]);
+        vrf2rib_res = vrf2rib_init4;
         polkaIdx_ntry.index = atoi(arg[2]);
-        polkaIdx_ntry.vrf = atoi(arg[3]);
         polkaIdx_ntry.nexthop = atoi(arg[4]);
-        if (del == 0) table_del(&polkaIdx_table, &polkaIdx_ntry);
-        else table_add(&polkaIdx_table, &polkaIdx_ntry);
+        if (del == 0) table_del(&vrf2rib_res->plk, &polkaIdx_ntry);
+        else table_add(&vrf2rib_res->plk, &polkaIdx_ntry);
         return 0;
     }
     if (strcmp(arg[0], "polkapoly") == 0) {
@@ -2209,7 +2210,16 @@ void doStatRound_mcst6(void* buffer, int fixed, void* param) {
     }
 }
 
-void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), void tunner(void *, int, void *), void mcaster(void *, int, void *), int ver, void*param) {
+void doStatRound_polka(void* buffer, int fixed, void* param) {
+    FILE *commands = param;
+    struct table_head *polkaIdx_table = buffer;
+    for (int i=0; i<polkaIdx_table->size; i++) {
+        struct polkaIdx_entry *ntry = table_get(polkaIdx_table, i);
+        fprintf(commands, "polka_cnt %i %i %li %li\r\n", fixed, ntry->index, ntry->pack, ntry->byte);
+    }
+}
+
+void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), void tunner(void *, int, void *), void mcaster(void *, int, void *), int ver, void*param) {
     FILE *commands = param;
     for (int i = 0; i < tab->size; i++) {
         struct vrf2rib_entry *res = table_get(tab, i);
@@ -2218,11 +2228,12 @@ void doStatRount_ipvX(struct table_head *tab, void doer(void *, int, void *), vo
         natter(&res->nat, res->vrf, param);
         tunner(&res->tun, res->vrf, param);
         mcaster(&res->mcst, res->vrf, param);
+        doStatRound_polka(&res->plk, res->vrf, param);
     }
 }
 
 
-void doStatRount_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
+void doStatRound_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
     unsigned char buf2[1024];
     switch (ntry1->dir) {
     case 1:
@@ -2258,7 +2269,7 @@ void doStatRount_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
     }
 }
 
-void doStatRount_insp4(struct table_head *ntry1, int port, FILE *commands) {
+void doStatRound_insp4(struct table_head *ntry1, int port, FILE *commands) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
@@ -2272,7 +2283,7 @@ void doStatRount_insp4(struct table_head *ntry1, int port, FILE *commands) {
     }
 }
 
-void doStatRount_insp6(struct table_head *ntry1, int port, FILE *commands) {
+void doStatRound_insp6(struct table_head *ntry1, int port, FILE *commands) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
@@ -2336,10 +2347,6 @@ void doStatRound(FILE *commands, int round) {
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
     }
-    for (int i=0; i<polkaIdx_table.size; i++) {
-        struct polkaIdx_entry *ntry = table_get(&polkaIdx_table, i);
-        fprintf(commands, "polka_cnt %i %i %li %li\r\n", ntry->vrf, ntry->index, ntry->pack, ntry->byte);
-    }
     for (int i=0; i<nsh_table.size; i++) {
         struct nsh_entry *ntry = table_get(&nsh_table, i);
         fprintf(commands, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
@@ -2359,21 +2366,21 @@ void doStatRound(FILE *commands, int round) {
         mac2str(buf2, buf);
         fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
-    doStatRount_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4, commands);
-    doStatRount_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
+    doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4, commands);
+    doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
     for (int i=0; i<macsec_table.size; i++) {
         struct macsec_entry *ntry = table_get(&macsec_table, i);
         fprintf(commands, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx, (ntry->packRx - ntry->packOk), (ntry->byteRx - ntry->byteOk));
     }
     for (int i=0; i<acls4_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls4_table, i);
-        doStatRount_acl(ntry1, 4, commands);
-        if (ntry1->dir < 3) doStatRount_insp4(ntry1->insp, ntry1->port, commands);
+        doStatRound_acl(ntry1, 4, commands);
+        if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port, commands);
     }
     for (int i=0; i<acls6_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls6_table, i);
-        doStatRount_acl(ntry1, 6, commands);
-        if (ntry1->dir < 3) doStatRount_insp6(ntry1->insp, ntry1->port, commands);
+        doStatRound_acl(ntry1, 6, commands);
+        if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port, commands);
     }
 #endif
     fflush(commands);
