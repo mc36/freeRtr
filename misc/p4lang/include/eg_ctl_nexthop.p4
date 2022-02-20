@@ -69,6 +69,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.pppoeD.session = session;
         hdr.pppoeD.length = (bit<16>)eg_intr_md.packet_length - eg_md.vlan_size - 12;
         hdr.pppoeD.ppptyp = 0;
+        if (eg_md.ethertype == ETHERTYPE_SGT) hdr.pppoeD.ppptyp = PPPTYPE_SGT;
         if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.pppoeD.ppptyp = PPPTYPE_IPV4;
         if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.pppoeD.ppptyp = PPPTYPE_IPV6;
         if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.pppoeD.ppptyp = PPPTYPE_MPLS_UCAST;
@@ -245,6 +246,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.l2tp2.offset = 0;
         hdr.l2tp2.pppflags = 0xff03;
         hdr.l2tp2.ppptyp = 0;
+        if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l2tp2.ppptyp = PPPTYPE_SGT;
         if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;
         if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
         if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
@@ -298,6 +300,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.l2tp2.offset = 0;
         hdr.l2tp2.pppflags = 0xff03;
         hdr.l2tp2.ppptyp = 0;
+        if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l2tp2.ppptyp = PPPTYPE_SGT;
         if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;
         if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
         if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;

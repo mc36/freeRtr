@@ -40,6 +40,10 @@ control IngressControlRewrites(inout headers hdr,
             hdr.eth3.setInvalid();
         }
 
+        if (ig_md.sgt_remove == 1) {
+            hdr.sgt.setInvalid();
+        }
+
         if (ig_md.nsh_remove == 1) {
             hdr.nsh.setInvalid();
         }

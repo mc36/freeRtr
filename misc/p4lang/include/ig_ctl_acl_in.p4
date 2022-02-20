@@ -58,6 +58,8 @@ hdr.ipv4.diffserv:
             ternary;
 hdr.ipv4.identification:
             ternary;
+ig_md.sec_grp_id:
+            ternary;
         }
         actions = {
             act_permit;
@@ -87,6 +89,8 @@ ig_md.layer4_dstprt:
 hdr.ipv6.traffic_class:
             ternary;
 hdr.ipv6.flow_label:
+            ternary;
+ig_md.sec_grp_id:
             ternary;
         }
         actions = {

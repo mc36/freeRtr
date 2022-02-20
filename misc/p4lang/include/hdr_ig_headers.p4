@@ -34,6 +34,7 @@ struct headers {
     pppbr_t		pppbr;
     ethernet_t		eth4;
     polka_t		polka;
+    sgt_t		sgt;
     nsh_t		nsh;
     mpls_t		mpls0;
     mpls_t		mpls1;

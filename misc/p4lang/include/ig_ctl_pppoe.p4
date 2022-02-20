@@ -37,6 +37,7 @@ control IngressControlPPPOE(inout headers hdr,
 
     action act_pppoe_data(SubIntId_t port) {
         ig_md.source_id = port;
+        if (hdr.pppoeD.ppptyp == PPPTYPE_SGT) ig_md.ethertype = ETHERTYPE_SGT;
         if (hdr.pppoeD.ppptyp == PPPTYPE_IPV4) ig_md.ethertype = ETHERTYPE_IPV4;
         if (hdr.pppoeD.ppptyp == PPPTYPE_IPV6) ig_md.ethertype = ETHERTYPE_IPV6;
         if (hdr.pppoeD.ppptyp == PPPTYPE_MPLS_UCAST) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;

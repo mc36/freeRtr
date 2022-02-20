@@ -33,10 +33,11 @@ const bit<16> ETHERTYPE_LLDP              = 0x88cc;
 const bit<16> ETHERTYPE_PPPOE_CTRL        = 0x8863;
 const bit<16> ETHERTYPE_PPPOE_DATA        = 0x8864;
 const bit<16> ETHERTYPE_ROUTEDMAC         = 0x6558;
-
+const bit<16> ETHERTYPE_SGT               = 0x8909;
 const bit<16> PPPTYPE_IPV4                = 0x0021;
 const bit<16> PPPTYPE_IPV6                = 0x0057;
 const bit<16> PPPTYPE_MPLS_UCAST          = 0x0281;
 const bit<16> PPPTYPE_ROUTEDMAC           = 0x0031;
+const bit<16> PPPTYPE_SGT                 = 0x004a;
 
 #endif // _ETHERTYPE_P4_

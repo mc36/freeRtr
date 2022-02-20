@@ -33,6 +33,7 @@ control ig_ctl(inout headers hdr,
     IngressControlIPv4b() ig_ctl_ipv4b;
     IngressControlIPv6b() ig_ctl_ipv6b;
     IngressControlVlanIn() ig_ctl_vlan_in;
+    IngressControlSgt() ig_ctl_sgt;
     IngressControlVRF() ig_ctl_vrf;
     IngressControlLLC() ig_ctl_llc;
     IngressControlCoPP() ig_ctl_copp;
@@ -70,6 +71,10 @@ control ig_ctl(inout headers hdr,
         hdr.cpu.setInvalid();
         ig_ctl_vlan_in.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_pppoe.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_sgt.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            return;
+        }
         ig_ctl_acl_in.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
             return;
