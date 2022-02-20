@@ -1447,6 +1447,12 @@ qc pass: p4lang: macsec with aes256gcm and hash
 qc pass: p4lang: macsec with aes128gcm and aead
 qc pass: p4lang: macsec with aes192gcm and aead
 qc pass: p4lang: macsec with aes256gcm and aead
+qc pass: p4lang: sgt over ethernet
+qc pass: p4lang: sgt over vlan
+qc pass: p4lang: sgt over gre
+qc pass: p4lang: sgt over pppoe
+qc pass: p4lang: sgt over l2tp
+qc pass: p4lang: sgt over hairpin
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

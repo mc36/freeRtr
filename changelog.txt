@@ -12932,3 +12932,10 @@ qc pass: sgt ethernet chain encapsulation
 qc pass: sgt vlan chain encapsulation
 qc pass: sgt vlan map out encapsulation
 qc pass: sgt tunnel map out encapsulation
+---------------------------------- 2022-02-20 06:20:19
+qc pass: p4lang: sgt over ethernet
+qc pass: p4lang: sgt over vlan
+qc pass: p4lang: sgt over gre
+qc pass: p4lang: sgt over pppoe
+qc pass: p4lang: sgt over l2tp
+qc pass: p4lang: sgt over hairpin
