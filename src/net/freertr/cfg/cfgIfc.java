@@ -208,6 +208,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public boolean disableMacsec;
 
     /**
+     * disable sgt on this interface
+     */
+    public boolean disableSgt;
+
+    /**
      * packet handler
      */
     public ifcDn lower = new ifcNull();
@@ -1388,6 +1393,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! enforce-mtu none",
         "interface .*! no macsec",
         "interface .*! no disable-macsec",
+        "interface .*! no disable-sgt",
         "interface .*! no loss-detection",
         "interface .*! no sgt enable",
         "interface .*! no sgt assign",
@@ -5753,6 +5759,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         cmds.cfgLine(l, random == null, cmds.tabulator, "random", "" + ifcRandom.getCfg(random));
         cmds.cfgLine(l, !disableMacsec, cmds.tabulator, "disable-macsec", "");
+        cmds.cfgLine(l, !disableSgt, cmds.tabulator, "disable-sgt", "");
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
         cmds.cfgLine(l, ethtyp.sgtHnd == null, cmds.tabulator, "sgt enable", "");
@@ -6454,6 +6461,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     <num>                       packet loss to block");
         l.add(null, "3 .       <num>                     time to block");
         l.add(null, "1 .   disable-macsec                disable macsec");
+        l.add(null, "1 .   disable-sgt                   disable sgt");
         l.add(null, "1 2   macsec                        mac security protocol commands");
         l.add(null, "2 3,.   <name:ips>                  name of ipsec profile");
         l.add(null, "3 .       <num>                     ethertype to use");
@@ -6911,6 +6919,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("sgt")) {
             a = cmd.word();
             if (a.equals("enable")) {
+                if (disableSgt) {
+                    ethtyp.sgtHnd = null;
+                    return;
+                }
                 ethtyp.sgtHnd = new ifcSgt();
                 return;
             }
@@ -6928,6 +6940,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             sec.blocking = bits.str2num(cmd.word());
             ethtyp.lossDet = sec;
             ethtyp.timerUpdate();
+            return;
+        }
+        if (a.equals("disable-sgt")) {
+            disableSgt = true;
+            ethtyp.sgtHnd = null;
             return;
         }
         if (a.equals("disable-macsec")) {
@@ -7465,6 +7482,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("loss-detection")) {
             ethtyp.lossDet = null;
             ethtyp.timerUpdate();
+            return;
+        }
+        if (a.equals("disable-sgt")) {
+            disableSgt = false;
             return;
         }
         if (a.equals("disable-macsec")) {
