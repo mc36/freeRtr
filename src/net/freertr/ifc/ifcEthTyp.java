@@ -442,6 +442,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
                     if (pck == null) {
                         break;
                     }
+                    doOutProcess(pck);
                     pktAccount(pck);
                     lower.sendPack(pck);
                 }
@@ -729,6 +730,18 @@ public class ifcEthTyp implements Runnable, ifcUp {
             cntr.drop(pck, counter.reasons.tooLong);
             return;
         }
+        if (qosOut != null) {
+            qosOut.classifyPack(pck);
+            qosOut.enqueuePack(pck);
+            notif.wakeup();
+            return;
+        }
+        doOutProcess(pck);
+        pktAccount(pck);
+        lower.sendPack(pck);
+    }
+
+    private void doOutProcess(packHolder pck) {
         if (logFile != null) {
             packHolder mon = applyMonitor(pck, 2, false);
             if (mon != null) {
@@ -768,16 +781,8 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
-        if (qosOut == null) {
-            pktAccount(pck);
-            lower.sendPack(pck);
-            return;
-        }
-        qosOut.classifyPack(pck);
-        qosOut.enqueuePack(pck);
-        notif.wakeup();
     }
-
+    
     public void recvPack(packHolder pck) {
         doRxWork(pck, false);
     }
