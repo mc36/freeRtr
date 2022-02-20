@@ -88,6 +88,8 @@ void readAcl4(struct acl4_entry *acl4_ntry, char**arg) {
     acl4_ntry->tosM = atoi(arg[15]);
     acl4_ntry->flowV = atoi(arg[16]);
     acl4_ntry->flowM = atoi(arg[17]);
+    acl4_ntry->sgtV = atoi(arg[18]);
+    acl4_ntry->sgtM = atoi(arg[19]);
 }
 
 
@@ -126,6 +128,8 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
     acl6_ntry->tosM = atoi(arg[15]);
     acl6_ntry->flowV = atoi(arg[16]);
     acl6_ntry->flowM = atoi(arg[17]);
+    acl6_ntry->sgtV = atoi(arg[18]);
+    acl6_ntry->sgtM = atoi(arg[19]);
 }
 
 

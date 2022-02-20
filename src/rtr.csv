@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.20-cur, done by cs@nop.
--;-;-;2022-02-20 04:46:13, took 00:06:50, with 100 workers, on 2702 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2022-02-20 05:03:48, took 00:08:48, with 100 workers, on 2706 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -738,6 +738,10 @@ http://sources.nop.hu/cfg/crypt-sgt08.tst;crypt-sgt08.tst;success;sgt atmdxi enc
 http://sources.nop.hu/cfg/crypt-sgt09.tst;crypt-sgt09.tst;success;sgt isdn encapsulation
 http://sources.nop.hu/cfg/crypt-sgt10.tst;crypt-sgt10.tst;success;sgt sep encapsulation
 http://sources.nop.hu/cfg/crypt-sgt11.tst;crypt-sgt11.tst;success;sgt tunnel encapsulation
+http://sources.nop.hu/cfg/crypt-sgt12.tst;crypt-sgt12.tst;success;sgt ethernet chain encapsulation
+http://sources.nop.hu/cfg/crypt-sgt13.tst;crypt-sgt13.tst;success;sgt vlan chain encapsulation
+http://sources.nop.hu/cfg/crypt-sgt14.tst;crypt-sgt14.tst;success;sgt vlan map out encapsulation
+http://sources.nop.hu/cfg/crypt-sgt15.tst;crypt-sgt15.tst;success;sgt tunnel map out encapsulation
 http://sources.nop.hu/cfg/crypt-skip01.tst;crypt-skip01.tst;success;skip over ipv4
 http://sources.nop.hu/cfg/crypt-skip02.tst;crypt-skip02.tst;success;skip over ipv6
 http://sources.nop.hu/cfg/crypt-skip03.tst;crypt-skip03.tst;success;skip over skip

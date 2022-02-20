@@ -1347,6 +1347,7 @@ ipv4_rx:
         bufS = ttl;
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff;
+        acl4_ntry.sgtV = sgt;
         acl4_ntry.protV = bufD[bufP + 9];
         acl4_ntry.tosV = bufD[bufP + 1];
         acl4_ntry.flowV = get16msb(bufD, bufP + 4);
@@ -1600,6 +1601,7 @@ ipv6_rx:
         if (ttl > bufS) doDropper;
         bufS = ttl;
         bufT = bufP + 40;
+        acl6_ntry.sgtV = sgt;
         acl6_ntry.protV = bufD[bufP + 6];
         acl6_ntry.tosV = (get16msb(bufD, bufP + 0) >> 4) & 0xff;
         acl6_ntry.flowV = get32msb(bufD, bufP + 0) & 0xfffff;

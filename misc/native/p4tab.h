@@ -450,6 +450,8 @@ struct acl4_entry {
     int tosM;
     int flowV;
     int flowM;
+    int sgtV;
+    int sgtM;
 };
 
 int acl4_compare(void *ptr1, void *ptr2) {
@@ -468,6 +470,7 @@ int acl4_matcher(void *ptr1, void *ptr2) {
     if ((ntry1->trgPortV & ntry2->trgPortM) != ntry2->trgPortV) return 1;
     if ((ntry1->tosV & ntry2->tosM) != ntry2->tosV) return 1;
     if ((ntry1->flowV & ntry2->flowM) != ntry2->flowV) return 1;
+    if ((ntry1->sgtV & ntry2->sgtM) != ntry2->sgtV) return 1;
     if ((ntry1->srcAddr & ntry2->srcMask) != ntry2->srcAddr) return 1;
     if ((ntry1->trgAddr & ntry2->trgMask) != ntry2->trgAddr) return 1;
     return 0;
@@ -509,6 +512,8 @@ struct acl6_entry {
     int tosM;
     int flowV;
     int flowM;
+    int sgtV;
+    int sgtM;
 };
 
 int acl6_compare(void *ptr1, void *ptr2) {
@@ -527,6 +532,7 @@ int acl6_matcher(void *ptr1, void *ptr2) {
     if ((ntry1->trgPortV & ntry2->trgPortM) != ntry2->trgPortV) return 1;
     if ((ntry1->tosV & ntry2->tosM) != ntry2->tosV) return 1;
     if ((ntry1->flowV & ntry2->flowM) != ntry2->flowV) return 1;
+    if ((ntry1->sgtV & ntry2->sgtM) != ntry2->sgtV) return 1;
     if ((ntry1->srcAddr1 & ntry2->srcMask1) != ntry2->srcAddr1) return 1;
     if ((ntry1->srcAddr2 & ntry2->srcMask2) != ntry2->srcAddr2) return 1;
     if ((ntry1->srcAddr3 & ntry2->srcMask3) != ntry2->srcAddr3) return 1;

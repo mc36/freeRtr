@@ -734,6 +734,10 @@ qc pass: sgt atmdxi encapsulation
 qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
 qc pass: sgt tunnel encapsulation
+qc pass: sgt ethernet chain encapsulation
+qc pass: sgt vlan chain encapsulation
+qc pass: sgt vlan map out encapsulation
+qc pass: sgt tunnel map out encapsulation
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip

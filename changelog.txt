@@ -12927,3 +12927,8 @@ qc pass: egress sgt matching access list
 ---------------------------------- 2022-02-20 04:39:23
 qc pass: qos ingress sgt set
 qc pass: qos egress sgt set
+---------------------------------- 2022-02-20 04:54:59
+qc pass: sgt ethernet chain encapsulation
+qc pass: sgt vlan chain encapsulation
+qc pass: sgt vlan map out encapsulation
+qc pass: sgt tunnel map out encapsulation
