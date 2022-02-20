@@ -17,5 +17,3 @@ cp *.py ~/
 cp -r p4runtime_lib ~/
 cd ~
 rm -rf a/
-sudo dd if=/dev/zero of=/zzz bs=1M
-sudo rm /zzz

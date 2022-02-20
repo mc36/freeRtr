@@ -15,5 +15,3 @@ mv ../../binTmp/p4*.bin ~/
 cp ../p4emu/*.sh ~/
 cd ~
 rm -rf a/
-sudo dd if=/dev/zero of=/zzz bs=1M
-sudo rm /zzz
