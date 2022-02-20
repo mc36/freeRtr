@@ -2227,12 +2227,16 @@ void doStatRound_mcst6(void* buffer, int fixed, void* param) {
     }
 }
 
-void doStatRound_polka(void* buffer, int fixed, void* param) {
+void doStatRound_polka(void* buffer, int ver, int fixed, void* param) {
     FILE *commands = param;
     struct table_head *polkaIdx_table = buffer;
+    unsigned char wer[2];
+    wer[0] = 0;
+    wer[1] = 0;
+    if (ver == 4) wer[0] = 'm';
     for (int i=0; i<polkaIdx_table->size; i++) {
         struct polkaIdx_entry *ntry = table_get(polkaIdx_table, i);
-        fprintf(commands, "polka_cnt %i %i %li %li\r\n", fixed, ntry->index, ntry->pack, ntry->byte);
+        fprintf(commands, "%spolka_cnt %i %i %li %li\r\n", wer, fixed, ntry->index, ntry->pack, ntry->byte);
     }
 }
 
@@ -2245,7 +2249,7 @@ void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), vo
         natter(&res->nat, res->vrf, param);
         tunner(&res->tun, res->vrf, param);
         mcaster(&res->mcst, res->vrf, param);
-        doStatRound_polka(&res->plk, res->vrf, param);
+        doStatRound_polka(&res->plk, ver, res->vrf, param);
     }
 }
 
@@ -2362,6 +2366,7 @@ void doStatRound(FILE *commands, int round) {
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
+        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPOLKA, packMpolka[i], byteMpolka[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
     }
     for (int i=0; i<nsh_table.size; i++) {

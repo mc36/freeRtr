@@ -1970,8 +1970,8 @@ ipv6_tx:
     case ETHERTYPE_MPOLKA: // mpolka
         checkLayer2;
         if (index < 0) doDropper;
-        packPolka[port]++;
-        bytePolka[port] += bufS;
+        packMpolka[port]++;
+        byteMpolka[port] += bufS;
         index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
         if (index < 0) doDropper;
         vrf2rib_res = table_get(&vrf2rib6_table, index);

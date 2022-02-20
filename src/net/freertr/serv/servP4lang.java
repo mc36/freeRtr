@@ -2060,9 +2060,9 @@ class servP4langConn implements Runnable {
                     return false;
                 }
                 tabIndex<addrIP> ntry = new tabIndex<addrIP>(bits.str2num(cmd.word()), null);
-                tabIndex<addrIP> res = vrf.vrf.fwd4.actualIC.find(ntry);
+                tabIndex<addrIP> res = vrf.vrf.fwd6.actualIC.find(ntry);
                 if (res == null) {
-                    res = vrf.vrf.fwd6.actualIC.find(ntry);
+                    res = vrf.vrf.fwd4.actualIC.find(ntry);
                 }
                 if (res == null) {
                     if (debugger.servP4langErr) {
