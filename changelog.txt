@@ -12924,3 +12924,6 @@ qc pass: qos egress sgt matcher
 ---------------------------------- 2022-02-19 18:09:06
 qc pass: ingress sgt matching access list
 qc pass: egress sgt matching access list
+---------------------------------- 2022-02-20 04:39:23
+qc pass: qos ingress sgt set
+qc pass: qos egress sgt set

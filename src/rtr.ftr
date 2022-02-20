@@ -1695,6 +1695,8 @@ qc pass: qos ingress ttl set
 qc pass: qos egress ttl set
 qc pass: qos ingress flow set
 qc pass: qos egress flow set
+qc pass: qos ingress sgt set
+qc pass: qos egress sgt set
 qc pass: babel on one subnet
 qc pass: babel in chain
 qc pass: babel ingress route filtering with prefixlist

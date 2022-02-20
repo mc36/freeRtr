@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.20-cur, done by cs@nop.
--;-;-;2022-02-20 04:29:54, took 00:07:05, with 100 workers, on 2700 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2022-02-20 04:46:13, took 00:06:50, with 100 workers, on 2702 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1699,6 +1699,8 @@ http://sources.nop.hu/cfg/qos-set11.tst;qos-set11.tst;success;qos ingress ttl se
 http://sources.nop.hu/cfg/qos-set12.tst;qos-set12.tst;success;qos egress ttl set
 http://sources.nop.hu/cfg/qos-set13.tst;qos-set13.tst;success;qos ingress flow set
 http://sources.nop.hu/cfg/qos-set14.tst;qos-set14.tst;success;qos egress flow set
+http://sources.nop.hu/cfg/qos-set15.tst;qos-set15.tst;success;qos ingress sgt set
+http://sources.nop.hu/cfg/qos-set16.tst;qos-set16.tst;success;qos egress sgt set
 http://sources.nop.hu/cfg/rout-babel01.tst;rout-babel01.tst;success;babel on one subnet
 http://sources.nop.hu/cfg/rout-babel02.tst;rout-babel02.tst;success;babel in chain
 http://sources.nop.hu/cfg/rout-babel03.tst;rout-babel03.tst;success;babel ingress route filtering with prefixlist
