@@ -6961,6 +6961,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             if (disableMacsec) {
                 ethtyp.macSec = null;
+                ethtyp.timerUpdate();
                 return;
             }
             ifcMacSec sec = new ifcMacSec();

@@ -1318,8 +1318,8 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentLabel = -1;
         sentPolka = -1;
         sentMpolka = -1;
-        sentSgtTag = -1;
-        sentSgtSet = -1;
+        sentSgtTag = 0;
+        sentSgtSet = 0;
         sentMss4in = 0;
         sentMss4out = 0;
         sentMss6in = 0;
@@ -3354,6 +3354,9 @@ class servP4langConn implements Runnable {
         i = 0;
         if (ifc.ifc.ethtyp.getSgt()) {
             i = 1;
+            if ((ifc.ifc.ethtyp.macSec != null) && (ifc.sentMacsec == null)) {
+                i = 0;
+            }
         }
         if (ifc.sentSgtTag != i) {
             if (i == 0) {

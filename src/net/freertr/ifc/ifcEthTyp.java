@@ -442,7 +442,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
                     if (pck == null) {
                         break;
                     }
-                    doOutProcess(pck);
+                    if (doOutProcess(pck)) {
+                        break;
+                    }
                     pktAccount(pck);
                     lower.sendPack(pck);
                 }
@@ -736,12 +738,14 @@ public class ifcEthTyp implements Runnable, ifcUp {
             notif.wakeup();
             return;
         }
-        doOutProcess(pck);
+        if (doOutProcess(pck)) {
+            return;
+        }
         pktAccount(pck);
         lower.sendPack(pck);
     }
 
-    private void doOutProcess(packHolder pck) {
+    private boolean doOutProcess(packHolder pck) {
         if (logFile != null) {
             packHolder mon = applyMonitor(pck, 2, false);
             if (mon != null) {
@@ -768,21 +772,22 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (sgtHnd != null) {
             if (sgtHnd.doEncode(pck)) {
-                return;
+                return true;
             }
         }
         if (lossDet != null) {
             if (lossDet.doEncode(pck)) {
-                return;
+                return true;
             }
         }
         if (macSec != null) {
             if (macSec.doEncrypt(pck)) {
-                return;
+                return true;
             }
         }
+        return false;
     }
-    
+
     public void recvPack(packHolder pck) {
         doRxWork(pck, false);
     }
