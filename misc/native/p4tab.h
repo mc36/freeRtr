@@ -32,6 +32,8 @@ long int byteBridge[maxPorts];
 long int packBridge[maxPorts];
 long int bytePolka[maxPorts];
 long int packPolka[maxPorts];
+long int byteMpolka[maxPorts];
+long int packMpolka[maxPorts];
 long int byteNsh[maxPorts];
 long int packNsh[maxPorts];
 
@@ -62,6 +64,8 @@ struct polkaPoly_entry {
 };
 
 struct table_head polkaPoly_table;
+
+struct table_head mpolkaPoly_table;
 
 int polkaPoly_compare(void *ptr1, void *ptr2) {
     struct polkaPoly_entry *ntry1 = ptr1;
@@ -1079,6 +1083,7 @@ void initIface(int port, char *name) {
 
 int initTables() {
     table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), &polkaPoly_compare);
+    table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), &polkaPoly_compare);
     table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
     table_init(&portvrf_table, sizeof(struct portvrf_entry), &portvrf_compare);

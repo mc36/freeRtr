@@ -341,6 +341,23 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&polkaPoly_table, &polkaPoly_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "mpolkaidx") == 0) {
+        vrf2rib_ntry.vrf = atoi(arg[3]);
+        vrf2rib_res = vrf2rib_init6;
+        polkaIdx_ntry.index = atoi(arg[2]);
+        polkaIdx_ntry.nexthop = atoi(arg[4]);
+        if (del == 0) table_del(&vrf2rib_res->plk, &polkaIdx_ntry);
+        else table_add(&vrf2rib_res->plk, &polkaIdx_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "mpolkapoly") == 0) {
+        polkaPoly_ntry.port = atoi(arg[2]);
+        int p = atoi(arg[3]);
+        crc16mktab(polkaPoly_ntry.tab, p);
+        if (del == 0) table_del(&mpolkaPoly_table, &polkaPoly_ntry);
+        else table_add(&mpolkaPoly_table, &polkaPoly_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "nshfwd") == 0) {
         nsh_ntry.sp = atoi(arg[2]);
         nsh_ntry.si = atoi(arg[3]);

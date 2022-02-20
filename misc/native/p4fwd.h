@@ -1967,6 +1967,45 @@ ipv6_tx:
         polkaIdx_res->byte += bufS;
         neigh_ntry.id = polkaIdx_res->nexthop;
         goto ethtyp_tx;
+    case ETHERTYPE_MPOLKA: // mpolka
+        checkLayer2;
+        if (index < 0) doDropper;
+        packPolka[port]++;
+        bytePolka[port] += bufS;
+        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib6_table, index);
+        ttl = get16msb(bufD, bufP + 0);
+        if ((ttl & 0xff00) != 0) doDropper;
+        if ((ttl & 0xff) <= 1) doPunting;
+        ttl--;
+        bufD[bufP + 1] = ttl;
+        polkaPoly_ntry.port = prt;
+        index = table_find(&mpolkaPoly_table, &polkaPoly_ntry);
+        if (index < 0) doDropper;
+        polkaPoly_res = table_get(&mpolkaPoly_table, index);
+        polkaPoly_res->pack++;
+        polkaPoly_res->byte += bufS;
+        crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
+        tmp ^= get16msb(bufD, bufP + 18);
+        for (i = 0; i < vrf2rib_res->plk.size; i++) {
+            if ((tmp & bitVals[30 - i]) == 0) continue;
+            polkaIdx_res = table_get(&vrf2rib_res->plk, i);
+            polkaIdx_res->pack++;
+            polkaIdx_res->byte += bufS;
+            neigh_ntry.id = polkaIdx_res->nexthop;
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) continue;
+            neigh_res = table_get(&neigh_table, index);
+            int tmpP = bufP - 2;
+            int tmpS = bufS;
+            int tmpE = ethtyp;
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, &tmpP, &tmpS, bufH, &tmpE, sgt);
+        }
+        if ((tmp & 1) == 0) return;
+        ethtyp = get16msb(bufD, bufP + 2);
+        bufP += 20;
+        goto etyped_rx;
     case ETHERTYPE_NSH: // nsh
         checkLayer2;
         if (index < 0) doDropper;
