@@ -12951,3 +12951,8 @@ qc pass: p4lang: sgt ingress access list
 qc pass: p4lang: sgt egress access list
 qc pass: p4lang: sgt vlan ingress access list
 qc pass: p4lang: sgt vlan egress access list
+---------------------------------- 2022-02-20 09:51:31
+qc pass: p4lang: mpolka core
+qc pass: p4lang: mpolka vlan core
+qc pass: p4lang: mpolka edge
+qc pass: p4lang: mpolka vlan edge

@@ -1644,6 +1644,10 @@ qc pass: p4lang: nsh
 qc pass: p4lang: vlan nsh
 qc pass: p4lang: polka
 qc pass: p4lang: vlan polka
+qc pass: p4lang: mpolka core
+qc pass: p4lang: mpolka vlan core
+qc pass: p4lang: mpolka edge
+qc pass: p4lang: mpolka vlan edge
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
