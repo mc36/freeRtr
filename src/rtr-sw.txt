@@ -390,6 +390,7 @@ interface bvi4
 !
 interface ethernet1
  description uplink
+ sgt enable
  vrf forwarding v1
  ipv4 address 10.1.123.91 255.255.255.0
  ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
