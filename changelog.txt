@@ -12939,3 +12939,8 @@ qc pass: p4lang: sgt over gre
 qc pass: p4lang: sgt over pppoe
 qc pass: p4lang: sgt over l2tp
 qc pass: p4lang: sgt over hairpin
+---------------------------------- 2022-02-20 07:29:16
+qc pass: sgt over macsec ethernet encapsulation
+qc pass: sgt over macsec vlan encapsulation
+qc pass: p4lang: sgt over macsec over ethernet
+qc pass: p4lang: sgt over macsec over vlan

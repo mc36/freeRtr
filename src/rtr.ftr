@@ -738,6 +738,8 @@ qc pass: sgt ethernet chain encapsulation
 qc pass: sgt vlan chain encapsulation
 qc pass: sgt vlan map out encapsulation
 qc pass: sgt tunnel map out encapsulation
+qc pass: sgt over macsec ethernet encapsulation
+qc pass: sgt over macsec vlan encapsulation
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip
@@ -1453,6 +1455,8 @@ qc pass: p4lang: sgt over gre
 qc pass: p4lang: sgt over pppoe
 qc pass: p4lang: sgt over l2tp
 qc pass: p4lang: sgt over hairpin
+qc pass: p4lang: sgt over macsec over ethernet
+qc pass: p4lang: sgt over macsec over vlan
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
