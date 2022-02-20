@@ -19,6 +19,7 @@ policy-map p1
  exit
 int eth1
  macsec ips
+ exit
 int eth1.123
  sgt ena
  vrf for v1
@@ -45,6 +46,7 @@ crypto ipsec ips
  exit
 int eth1
  macsec ips
+ exit
 int eth1.123
  sgt ena
  vrf for v1
@@ -84,17 +86,17 @@ ipv6 route v1 :: :: 4321::1
 !
 
 
-r1 tping 100 5 2.2.2.2 /vrf v1 /siz 200
-r3 tping 100 5 1.1.1.1 /vrf v1 /siz 200
-r1 tping 100 5 4321::2 /vrf v1 /siz 200
-r3 tping 100 5 1234::1 /vrf v1 /siz 200
+r1 tping 100 30 2.2.2.2 /vrf v1 /siz 200
+r3 tping 100 30 1.1.1.1 /vrf v1 /siz 200
+r1 tping 100 30 4321::2 /vrf v1 /siz 200
+r3 tping 100 30 1234::1 /vrf v1 /siz 200
 
-r1 tping 0 5 2.2.2.2 /vrf v1 /siz 400
-r3 tping 0 5 1.1.1.1 /vrf v1 /siz 400
-r1 tping 0 5 4321::2 /vrf v1 /siz 400
-r3 tping 0 5 1234::1 /vrf v1 /siz 400
+r1 tping 0 30 2.2.2.2 /vrf v1 /siz 400
+r3 tping 0 30 1.1.1.1 /vrf v1 /siz 400
+r1 tping 0 30 4321::2 /vrf v1 /siz 400
+r3 tping 0 30 1234::1 /vrf v1 /siz 400
 
-r1 tping 100 5 2.2.2.2 /vrf v1 /siz 600
-r3 tping 100 5 1.1.1.1 /vrf v1 /siz 600
-r1 tping 100 5 4321::2 /vrf v1 /siz 600
-r3 tping 100 5 1234::1 /vrf v1 /siz 600
+r1 tping 100 30 2.2.2.2 /vrf v1 /siz 600
+r3 tping 100 30 1.1.1.1 /vrf v1 /siz 600
+r1 tping 100 30 4321::2 /vrf v1 /siz 600
+r3 tping 100 30 1234::1 /vrf v1 /siz 600
