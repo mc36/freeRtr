@@ -1997,10 +1997,12 @@ ipv6_tx:
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            int tmpP = bufP - 2;
-            int tmpS = bufS;
+            int tmpP = preBuff;
+            int tmpS = bufS - bufP + preBuff + 2;
             int tmpE = ethtyp;
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            put16msb(bufC, preBuff, tmpE);
+            memmove(&bufC[preBuff + 2], &bufD[bufP], tmpS);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);
