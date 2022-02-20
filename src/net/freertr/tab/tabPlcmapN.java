@@ -91,6 +91,11 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher sgtMatch = new tabIntMatcher();
 
     /**
+     * sgt updater
+     */
+    public tabIntUpdater sgtSet = new tabIntUpdater();
+
+    /**
      * cos matcher
      */
     public tabIntMatcher cosMatch = new tabIntMatcher();
@@ -241,6 +246,7 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match dscp " + dscpMatch);
         l.add(beg + "match precedence " + precedenceMatch);
         l.add(beg + "match qosgroup " + qosMatch);
+        l.add(beg + "set sgt " + sgtSet);
         l.add(beg + "set cos " + cosSet);
         l.add(beg + "set exp " + expSet);
         l.add(beg + "set tos " + tosSet);

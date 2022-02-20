@@ -285,6 +285,7 @@ public class tabQos {
      */
     public void updatePack(packHolder pck, tabQosN cls) {
         pck.INTqosGrp = cls.entry.qosSet.update(pck.INTqosGrp);
+        pck.SGTid = cls.entry.sgtSet.update(pck.SGTid);
         int o = cls.entry.ttlSet.update(pck.IPttl);
         int p = cls.entry.flowSet.update(pck.IPid);
         switch (pck.ETHtype) {

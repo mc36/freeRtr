@@ -54,6 +54,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         "policy-map .*! sequence .* match precedence all",
         "policy-map .*! sequence .* match qosgroup all",
         "policy-map .*! sequence .* match flow all",
+        "policy-map .*! sequence .* set sgt leave",
         "policy-map .*! sequence .* set cos leave",
         "policy-map .*! sequence .* set exp leave",
         "policy-map .*! sequence .* set tos leave",
@@ -199,6 +200,14 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "3 4       sub               substract value to current value");
         l.add(null, "4 .         <num>           value");
         l.add(null, "2 3     ttl                 set ttl value");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 4       set               set value to a specific value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "3 4       add               add value to current value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "3 4       sub               substract value to current value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "2 3     sgt                 set sgt value");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 4       set               set value to a specific value");
         l.add(null, "4 .         <num>           value");
@@ -473,6 +482,13 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("sgt")) {
+                if (ntry.sgtSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("cos")) {
                 if (ntry.cosSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -633,6 +649,10 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
             }
             if (a.equals("ttl")) {
                 ntry.ttlSet.set2unchange();
+                return;
+            }
+            if (a.equals("sgt")) {
+                ntry.sgtSet.set2unchange();
                 return;
             }
             if (a.equals("cos")) {
