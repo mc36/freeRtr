@@ -2233,7 +2233,7 @@ void doStatRound_polka(void* buffer, int ver, int fixed, void* param) {
     unsigned char wer[2];
     wer[0] = 0;
     wer[1] = 0;
-    if (ver == 4) wer[0] = 'm';
+    if (ver == 6) wer[0] = 'm';
     for (int i=0; i<polkaIdx_table->size; i++) {
         struct polkaIdx_entry *ntry = table_get(polkaIdx_table, i);
         fprintf(commands, "%spolka_cnt %i %i %li %li\r\n", wer, fixed, ntry->index, ntry->pack, ntry->byte);
