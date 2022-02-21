@@ -25,6 +25,7 @@ import net.freertr.ifc.ifcBundleIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
+import net.freertr.ifc.ifcMpolka;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcP2pOEservSess;
 import net.freertr.ifc.ifcPolka;
@@ -2857,6 +2858,12 @@ class servP4langConn implements Runnable {
                 }
                 rou.best.attribAs = ifcPolka.type;
                 return ifc.ifc.tunPolka.getResultRoute(rou);
+            case mpolka:
+                if (ifc.ifc.tunMpolka == null) {
+                    return null;
+                }
+                rou.best.attribAs = ifcMpolka.type;
+                return ifc.ifc.tunMpolka.getResultRoute(rou);
             default:
                 return rou;
         }
@@ -4813,6 +4820,10 @@ class servP4langConn implements Runnable {
             }
             if (ntry.best.attribAs == ifcPolka.type) {
                 lower.sendLine("polroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + bits.toHex(ntry.best.attribVal));
+                continue;
+            }
+            if (ntry.best.attribAs == ifcMpolka.type) {
+                lower.sendLine("mpolroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + bits.toHex(ntry.best.attribVal));
                 continue;
             }
             if (ntry.best.labelRem != null) {

@@ -1051,6 +1051,14 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         neigh_ntry.id = route_res->nexthop;                         \
         ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \
+    case 10:                                                        \
+        bufP -= 20;                                                 \
+        put16msb(bufD, bufP + 0, ttl);                              \
+        put16msb(bufD, bufP + 2, ethtyp);                           \
+        memmove(&bufD[bufP + 4], route_res->polka, 16);             \
+        neigh_ntry.id = route_res->nexthop;                         \
+        ethtyp = ETHERTYPE_MPOLKA;                                  \
+        goto ethtyp_tx;                                             \
 
 
 

@@ -18,8 +18,8 @@
 #define _IG_CTL_SGT_P4_
 
 control IngressControlSgt(inout headers hdr,
-                             inout ingress_metadata_t ig_md,
-                             in standard_metadata_t  ig_intr_md) {
+                          inout ingress_metadata_t ig_md,
+                          in standard_metadata_t  ig_intr_md) {
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) stats;
 

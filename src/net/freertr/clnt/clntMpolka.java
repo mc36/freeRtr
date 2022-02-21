@@ -1,8 +1,6 @@
 package net.freertr.clnt;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
@@ -13,9 +11,11 @@ import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
+import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -178,6 +178,26 @@ public class clntMpolka implements Runnable, ifcDn {
             pck.NSHmdv = outputs[i].rou;
             outputs[i].ifc.lower.sendMpolka(pck.copyBytes(true, true), outputs[i].hop);
         }
+    }
+
+    /**
+     * get resulting route
+     *
+     * @param src source to use
+     * @return route, null if no suitable
+     */
+    public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
+        if (outputs == null) {
+            return null;
+        }
+        if (outputs.length < 1) {
+            return null;
+        }
+        src.best.nextHop = outputs[0].hop.copyBytes();
+        src.best.iface = outputs[0].ifc;
+        src.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);
+        src.best.attribVal = outputs[0].rou;
+        return src;
     }
 
     /**
