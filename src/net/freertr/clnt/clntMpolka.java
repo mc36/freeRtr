@@ -525,7 +525,20 @@ class clntMpolkaTrg implements Comparator<clntMpolkaTrg> {
     }
 
     public int compare(clntMpolkaTrg o1, clntMpolkaTrg o2) {
-        return o1.node.compare(o1.node, o2.node);
+        int i = o1.node.compare(o1.node, o2.node);
+        if (i != 0) {
+            return i;
+        }
+        if ((o1.through == null) && (o2.through == null)) {
+            return 0;
+        }
+        if (o1.through == null) {
+            return -1;
+        }
+        if (o2.through == null) {
+            return +1;
+        }
+        return o1.through.compare(o1.through, o2.through);
     }
 
 }
