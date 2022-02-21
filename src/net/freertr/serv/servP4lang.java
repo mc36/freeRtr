@@ -640,6 +640,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             }
         }
         expDynAccNxt = 0;
+        capability = null;
+        platform = null;
+        fronts.clear();
         conn = new servP4langConn(pipe, this);
         remote = id.peerAddr.copyBytes();
         started = bits.getTime();
