@@ -231,8 +231,35 @@ class BfForwarder(Thread, RareApi):
                 % (self.class_name, act_sub_capability_name)
             )
             if self.dp_capabilities[sub_capabilities[sub_capability]["parent"]["id"]]:
+                tbl_capability = None
                 try:
                     tbl_capability = self.bfgc.bfrt_info.table_get(capability_name)
+                    logger.debug(
+                        "%s - table %s action list %s "
+                        % (
+                            self.class_name,
+                            capability_name,
+                            tbl_capability.info.action_dict.keys(),
+                        )
+                    )
+                    if (
+                        act_sub_capability_name
+                        in tbl_capability.info.action_dict.keys()
+                    ):
+                        logger.debug(
+                            "%s - %s supported" % (self.class_name, sub_capability)
+                        )
+                        self.dp_capabilities[sub_capability] = True
+                    else:
+                        logger.debug(
+                            "%s - %s not supported"
+                            % (
+                                self.class_name,
+                                sub_capability,
+                            )
+                        )
+                        self.dp_capabilities[sub_capability] = False
+
                 except Exception as e:
                     self.dp_capabilities[sub_capability] = False
                     logger.debug(
@@ -240,29 +267,6 @@ class BfForwarder(Thread, RareApi):
                         % (self.class_name, capability_name, sub_capability, e)
                     )
 
-                logger.debug(
-                    "%s - table %s action list %s "
-                    % (
-                        self.class_name,
-                        capability_name,
-                        tbl_capability.info.action_dict.keys(),
-                    )
-                )
-
-                if act_sub_capability_name in tbl_capability.info.action_dict.keys():
-                    logger.debug(
-                        "%s - %s supported" % (self.class_name, sub_capability)
-                    )
-                    self.dp_capabilities[sub_capability] = True
-                else:
-                    logger.debug(
-                        "%s - %s not supported"
-                        % (
-                            self.class_name,
-                            sub_capability,
-                        )
-                    )
-                    self.dp_capabilities[sub_capability] = False
             else:
                 logger.debug(
                     "%s - %s not supported"

@@ -59,12 +59,7 @@ class BfFlowspecCounter(Thread):
             data_fields = {}
             data = ""
             tbl_ipv4_flowspec = self.bfgc.bfrt_info.table_get(tbl_ipv4_flowspec_name)
-            # tbl_ipv4_flowspec.operations_execute(
-            #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-            # )
-            # logger.debug(
-            #    "%s - %s counters synced !" % (self.class_name, tbl_ipv4_flowspec_name)
-            # )
+
             resp = tbl_ipv4_flowspec.entry_get(
                 self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
             )
@@ -75,25 +70,14 @@ class BfFlowspecCounter(Thread):
 
                 if not (key_fields == {}):
                     vrf = key_fields["ig_md.vrf"]["value"]
-                    prt = key_fields["hdr.ipv4.protocol"]["value"]
-                    srcadr = key_fields["hdr.ipv4.src_addr"]["value"]
-                    srcprt = key_fields["ig_md.layer4_srcprt"]["value"]
-                    trgadr = key_fields["hdr.ipv4.dst_addr"]["value"]
-                    trgprt = key_fields["ig_md.layer4_dstprt"]["value"]
-                    ipv4_diffsrv = key_fields["hdr.ipv4.diffserv"]["value"]
-                    ipv4_id = key_fields["hdr.ipv4.diffserv"]["value"]
+                    pri = key_fields["$MATCH_PRIORITY"]["value"]
+
                     flowspec_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
                     flowspec_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                    data = "flowspec4_cnt %s %s %s %s %s %s %s %s %s %s \n" % (
+                    data = "flowspec4_cnt %s %s %s %s \n" % (
                         vrf,
-                        prt,
-                        inet_ntoa(srcadr),
-                        inet_ntoa(trgadr),
-                        srcprt,
-                        trgprt,
-                        ipv4_diffsrv,
-                        ipv4_id,
+                        pri,
                         flowspec_pkt_cnt,
                         flowspec_byte_cnt,
                     )
@@ -122,12 +106,7 @@ class BfFlowspecCounter(Thread):
             data_fields = {}
             data = ""
             tbl_ipv6_flowspec = self.bfgc.bfrt_info.table_get(tbl_ipv6_flowspec_name)
-            # tbl_ipv6_flowspec.operations_execute(
-            #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-            # )
-            # logger.debug(
-            #    "%s - %s counters synced !" % (self.class_name, tbl_ipv6_flowspec_name)
-            # )
+
             resp = tbl_ipv6_flowspec.entry_get(
                 self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name
             )
@@ -138,25 +117,14 @@ class BfFlowspecCounter(Thread):
 
                 if not (key_fields == {}):
                     vrf = key_fields["ig_md.vrf"]["value"]
-                    prt = key_fields["hdr.ipv6.next_hdr"]["value"]
-                    srcadr = key_fields["hdr.ipv6.src_addr"]["value"]
-                    srcprt = key_fields["ig_md.layer4_srcprt"]["value"]
-                    trgadr = key_fields["hdr.ipv6.dst_addr"]["value"]
-                    trgprt = key_fields["ig_md.layer4_dstprt"]["value"]
-                    ipv6_tc = key_fields["hdr.ipv6.traffic_class"]["value"]
-                    ipv6_fl = key_fields["hdr.ipv6.flow_label"]["value"]
+                    pri = key_fields["$MATCH_PRIORITY"]["value"]
+
                     flowspec_pkt_cnt = data_fields["$COUNTER_SPEC_PKTS"]
                     flowspec_byte_cnt = data_fields["$COUNTER_SPEC_BYTES"]
 
-                    data = "flowspec6_cnt %s %s %s %s %s %s %s %s %s %s \n" % (
+                    data = "flowspec6_cnt %s %s %s %s \n" % (
                         vrf,
-                        prt,
-                        inet_ntoa(srcadr),
-                        inet_ntoa(trgadr),
-                        srcprt,
-                        trgprt,
-                        ipv6_tc,
-                        ipv6_fl,
+                        pri,
                         flowspec_pkt_cnt,
                         flowspec_byte_cnt,
                     )

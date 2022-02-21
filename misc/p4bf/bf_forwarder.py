@@ -28,6 +28,7 @@ from rare.bf_bridgecounter import BfBridgeCounter
 from rare.bf_inspectcounter import BfInspectCounter
 from rare.bf_flowspeccounter import BfFlowspecCounter
 from rare.bf_nshcounter import BfNshCounter
+from rare.bf_aclcounter import BfAclCounter
 from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
@@ -255,8 +256,12 @@ if __name__ == "__main__":
         else:
             logging.warning("%s - nsh not supported" % PROGRAM_NAME)
 
-        if args.snmp:
-            bf_snmp_c = BfRuntimeGrpcClient(
+        if (
+            bf_forwarder.dp_capabilities["inacl"] == True
+            and bf_forwarder.dp_capabilities["outacl"] == True
+        ):
+
+            bf_aclcounter_c = BfRuntimeGrpcClient(
                 args.bfruntime_address,
                 args.p4_program_name,
                 args.client_id + 9,
@@ -264,8 +269,26 @@ if __name__ == "__main__":
                 False,
             )
 
+            bf_aclcounter = BfAclCounter(
+                9, "bf_aclcounter", bf_aclcounter_c, sckw_file, args.pipe_name, 30
+            )
+            bf_aclcounter.daemon = True
+            bf_aclcounter.start()
+            ALL_THREADS.append(bf_aclcounter)
+        else:
+            logging.warning("%s - acl not supported" % PROGRAM_NAME)
+
+        if args.snmp:
+            bf_snmp_c = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + 10,
+                args.pipe_name,
+                False,
+            )
+
             bf_snmp = BfIfSnmpClient(
-                9,
+                10,
                 "bf_snmp",
                 bf_snmp_c,
                 args.ifmibs_dir,
