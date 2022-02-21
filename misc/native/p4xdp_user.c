@@ -63,6 +63,7 @@ void doStatLoop() {
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform p4xdp\r\n");
     fprintf(commands, "capabilities route mpls bundle vlan pppoe eompls bridge vpls evpn\r\n");
+    for (int i = 0; i < ports; i++) fprintf(commands, "portname %i xdp-port%i\r\n", i, ifaces[i]);
     int rnd = 0;
     for (;;) {
         doStatRound(commands, rnd);
