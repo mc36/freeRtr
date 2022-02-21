@@ -228,6 +228,13 @@ public class clntMpolka implements Runnable, ifcDn {
                     break;
                 }
                 addrIP a = new addrIP();
+                if (s.equals("-")) {
+                    if (a.fromString(c.word())) {
+                        continue;
+                    }
+                    ntry.through = a;
+                    continue;
+                }
                 if (a.fromString(s)) {
                     continue;
                 }
@@ -337,9 +344,19 @@ public class clntMpolka implements Runnable, ifcDn {
             }
             if (idx.neighs == null) {
                 if (debugger.clntMpolkaTraf) {
-                    logger.debug("no srindex for " + rou);
+                    logger.debug("no srneigh for " + rou);
                 }
                 continue;
+            }
+            if (targets[o].through != null) {
+                adr = targets[o].through;
+                rou = fwdCor.actualU.route(adr);
+                if (rou == null) {
+                    if (debugger.clntMpolkaTraf) {
+                        logger.debug("no route for " + adr);
+                    }
+                    continue;
+                }
             }
             clntMpolkaOut ntry = new clntMpolkaOut(rou.best.nextHop.copyBytes());
             ntry.ifc = (ipFwdIface) rou.best.iface;
@@ -492,10 +509,15 @@ class clntMpolkaTrg implements Comparator<clntMpolkaTrg> {
 
     public addrIP node;
 
+    public addrIP through;
+
     public tabGen<addrIP> peers = new tabGen<addrIP>();
 
     public String toString() {
         String a = "" + node;
+        if (through != null) {
+            a += " - " + through;
+        }
         for (int i = 0; i < peers.size(); i++) {
             a += " " + peers.get(i);
         }
