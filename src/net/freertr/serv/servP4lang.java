@@ -199,14 +199,14 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected String capability = null;
 
     /**
-     * last front panel
-     */
-    protected tabGen<servP4langPrt> fronts = new tabGen<servP4langPrt>();
-
-    /**
      * last platform
      */
     protected String platform = null;
+
+    /**
+     * last front panel
+     */
+    protected tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
 
     /**
      * connection start
@@ -801,7 +801,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
         res.add("for|" + bits.timePast(started));
         for (int i = 0; i < fronts.size(); i++) {
-            servP4langPrt ntry = fronts.get(i);
+            servP4langFrnt ntry = fronts.get(i);
             res.add("port" + ntry.id + "|" + ntry.nam);
         }
         return res;
@@ -1104,13 +1104,17 @@ class servP4langVrf implements Comparator<servP4langVrf> {
 
 }
 
-class servP4langPrt implements Comparator<servP4langPrt> {
+class servP4langFrnt implements Comparator<servP4langFrnt> {
 
-    public int id;
+    public final int id;
 
     public String nam;
 
-    public int compare(servP4langPrt o1, servP4langPrt o2) {
+    public servP4langFrnt(int i) {
+        id = i;
+    }
+
+    public int compare(servP4langFrnt o1, servP4langFrnt o2) {
         if (o1.id < o2.id) {
             return -1;
         }
@@ -2166,19 +2170,18 @@ class servP4langConn implements Runnable {
                 logger.info("dataplane said: " + cmd.getRemaining());
                 return false;
             }
+            if (s.equals("portname")) {
+                servP4langFrnt ntry = new servP4langFrnt(bits.str2num(cmd.word()));
+                ntry.nam = cmd.getRemaining();
+                lower.fronts.put(ntry);
+                return false;
+            }
             if (s.equals("platform")) {
                 lower.platform = cmd.getRemaining();
                 return false;
             }
             if (s.equals("capabilities")) {
                 lower.capability = cmd.getRemaining();
-                return false;
-            }
-            if (s.equals("portname")) {
-                servP4langPrt ntry = new servP4langPrt();
-                ntry.id = bits.str2num(cmd.word());
-                ntry.nam = cmd.getRemaining();
-                lower.fronts.put(ntry);
                 return false;
             }
             if (debugger.servP4langErr) {
