@@ -1070,7 +1070,8 @@ int mroute6_compare(void *ptr1, void *ptr2) {
 
 
 void initIface(int port, char *name) {
-    ifaceName[port] = malloc(1024);
+    ifaceName[port] = malloc(strlen(name)+1);
+    if (ifaceName[port] == NULL) err("error allocating memory");
     strcpy(ifaceName[port], name);
     byteRx[port] = 0;
     packRx[port] = 0;
@@ -1078,6 +1079,24 @@ void initIface(int port, char *name) {
     packTx[port] = 0;
     byteDr[port] = 0;
     packDr[port] = 0;
+    byteMpls[port] = 0;
+    packMpls[port] = 0;
+    byteVlan[port] = 0;
+    packVlan[port] = 0;
+    byteIpv4[port] = 0;
+    packIpv4[port] = 0;
+    byteIpv6[port] = 0;
+    packIpv6[port] = 0;
+    bytePppoe[port] = 0;
+    packPppoe[port] = 0;
+    byteBridge[port] = 0;
+    packBridge[port] = 0;
+    bytePolka[port] = 0;
+    packPolka[port] = 0;
+    byteMpolka[port] = 0;
+    packMpolka[port] = 0;
+    byteNsh[port] = 0;
+    packNsh[port] = 0;
 }
 
 
