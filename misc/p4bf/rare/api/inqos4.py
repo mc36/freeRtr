@@ -2,7 +2,7 @@ from ..bf_gbl_env.var_env import *
 
 
 def writeInQos4Rules(
-    self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
+    self, op_type, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm
 ):
     tbl_global_path = "ig_ctl.ig_ctl_qos_in"
     tbl_name = "%s.tbl_ipv4_qos" % (tbl_global_path)
@@ -18,6 +18,8 @@ def writeInQos4Rules(
         gc.KeyTuple("hdr.ipv4.diffserv", ts, tsm),
         gc.KeyTuple("hdr.ipv4.identification", fl, flm),
     ]
+    if self.sgt == True:
+        key_field_list.append(gc.KeyTuple("ig_md.sec_grp_id", gr, grm))
     data_field_list = [
          gc.DataTuple("metid", meter),
     ]

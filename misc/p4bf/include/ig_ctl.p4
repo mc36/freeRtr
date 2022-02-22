@@ -77,6 +77,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
     IngressControlAclIn() ig_ctl_acl_in;
 #endif
     IngressControlVlanIn()ig_ctl_vlan_in;
+#ifdef HAVE_SGT
+    IngressControlSgt() ig_ctl_sgt;
+#endif
     IngressControlVRF()ig_ctl_vrf;
 #ifdef HAVE_NAT
     IngressControlNAT() ig_ctl_nat;
@@ -135,6 +138,10 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             }
 #ifdef HAVE_PPPOE
             ig_ctl_pppoe.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+
+#ifdef HAVE_SGT
+            ig_ctl_sgt.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 
 #ifdef HAVE_INACL

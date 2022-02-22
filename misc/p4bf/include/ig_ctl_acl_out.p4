@@ -100,6 +100,10 @@ hdr.ipv4.diffserv:
             ternary;
 hdr.ipv4.identification:
             ternary;
+#ifdef HAVE_SGT
+ig_md.sec_grp_id:
+            ternary;
+#endif
         }
         actions = {
             act_permit4;
@@ -132,6 +136,10 @@ hdr.ipv6.traffic_class:
             ternary;
 hdr.ipv6.flow_label:
             ternary;
+#ifdef HAVE_SGT
+ig_md.sec_grp_id:
+            ternary;
+#endif
         }
         actions = {
             act_permit6;

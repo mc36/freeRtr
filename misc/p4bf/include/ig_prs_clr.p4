@@ -68,6 +68,10 @@ ig_md.polka_valid = 0;
 #ifdef HAVE_NSH
 ig_md.nsh_valid = 0;
 #endif
+#ifdef HAVE_SGT
+ig_md.sgt_valid = 0;
+ig_md.sec_grp_id = 0;
+#endif
 #ifdef HAVE_MPLS
 ig_md.mpls0_valid = 0;
 ig_md.mpls1_valid = 0;

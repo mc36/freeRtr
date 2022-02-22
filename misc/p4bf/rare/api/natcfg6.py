@@ -2,7 +2,7 @@ from ..bf_gbl_env.var_env import *
 
 
 def writeNatCfgRules6(
-    self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
+    self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm
 ):
     if self.nat == False:
         return
@@ -20,6 +20,8 @@ def writeNatCfgRules6(
         gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
         gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
     ]
+    if self.sgt == True:
+        key_field_list.append(gc.KeyTuple("ig_md.sec_grp_id", gr, grm))
     data_field_list = []
     key_annotation_fields = {
         "hdr.ipv6.src_addr": "ipv6",

@@ -7,6 +7,10 @@ state prs_ethernet {
         prs_llc;	/* LLC SAP frame */
 0 &&& 0xfa00:
         prs_llc;	/* LLC SAP frame */
+#ifdef HAVE_SGT
+ETHERTYPE_SGT :
+            prs_sgt;
+#endif
 ETHERTYPE_VLAN:
         prs_vlan;
 #ifdef HAVE_PPPOE
@@ -55,6 +59,10 @@ state prs_vlan {
         prs_llc;		/* LLC SAP frame */
 0 &&& 0xfa00:
         prs_llc;	/* LLC SAP frame */
+#ifdef HAVE_SGT
+ETHERTYPE_SGT :
+            prs_sgt;
+#endif
 #ifdef HAVE_PPPOE
 ETHERTYPE_PPPOE_CTRL :
         prs_pppoeCtrl;
@@ -106,6 +114,10 @@ state prs_pppoeData {
     pkt.extract(hdr.pppoeD);
     ig_md.pppoe_data_valid = 1;
     transition select(hdr.pppoeD.ppptyp) {
+#ifdef HAVE_SGT
+PPPTYPE_SGT:
+            prs_sgt;
+#endif
 PPPTYPE_IPV4:
         prs_ipv4;
 PPPTYPE_IPV6:
@@ -113,6 +125,10 @@ PPPTYPE_IPV6:
 #ifdef HAVE_MPLS
 PPPTYPE_MPLS_UCAST:
         prs_mpls0;
+#endif
+#ifdef HAVE_SGT
+PPPTYPE_SGT:
+        prs_sgt;
 #endif
     default:
         prs_pppoeDataCtrl;
@@ -132,6 +148,44 @@ state prs_eth6 {
     pkt.extract(hdr.eth6);
     transition accept;
 }
+#endif
+
+
+#ifdef HAVE_SGT
+    state prs_sgt {
+        pkt.extract(hdr.sgt);
+        ig_md.sgt_valid = 1;
+        transition select(hdr.sgt.ethertype) {
+0 &&& 0xfe00:
+            prs_llc; /* LLC SAP frame */
+0 &&& 0xfa00:
+            prs_llc; /* LLC SAP frame */
+#ifdef HAVE_TAP
+ETHERTYPE_ROUTEDMAC_INT:
+        prs_eth2;
+ETHERTYPE_ROUTEDMAC:
+        prs_eth6;
+#endif
+ETHERTYPE_ARP:
+            prs_arp;
+ETHERTYPE_LACP:
+            prs_control;
+ETHERTYPE_LLDP:
+            prs_control;
+#ifdef HAVE_MPLS
+ETHERTYPE_MPLS_UCAST:
+            prs_mpls0;
+#endif
+#ifdef HAVE_NSH
+ETHERTYPE_NSH:
+            prs_nsh;
+#endif
+ETHERTYPE_IPV4:
+            prs_ipv4;
+ETHERTYPE_IPV6:
+            prs_ipv6;
+        }
+    }
 #endif
 
 

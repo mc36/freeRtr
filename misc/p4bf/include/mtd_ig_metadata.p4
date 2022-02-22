@@ -93,11 +93,17 @@ struct ingress_metadata_t {
 #ifdef HAVE_NSH
     bit <1> nsh_valid;
 #endif
+#ifdef HAVE_SGT
+    bit <1> sgt_valid;
+#endif
     bit <1> arp_valid;
     bit <1> ipv4_valid;
     bit <1> ipv6_valid;
     bit <16> layer4_srcprt;
     bit <16> layer4_dstprt;
+#ifdef HAVE_SGT
+    bit<16> sec_grp_id;
+#endif
     bit <1> srv_encap_l3vpn_valid;
     bit <1> mpls_encap_rawip_valid;
     bit <1> mpls_encap_l3vpn_valid;

@@ -48,6 +48,9 @@ struct headers {
 #ifdef HAVE_POLKA
     polka_t polka;
 #endif
+#ifdef HAVE_SGT
+     sgt_t sgt;
+#endif
 #ifdef HAVE_NSH
     nsh_t nsh;
 #endif

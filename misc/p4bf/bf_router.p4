@@ -36,6 +36,7 @@
 #include "include/hdr_bier.p4"
 #include "include/hdr_internal.p4"
 #include "include/hdr_ethernet.p4"
+#include "include/hdr_sgt.p4"
 #include "include/hdr_arp.p4"
 #include "include/hdr_llc.p4"
 #include "include/hdr_vlan.p4"
@@ -70,6 +71,7 @@
 #include "include/ig_ctl_bundle.p4"
 #include "include/ig_ctl_pkt_pre_emit.p4"
 #include "include/ig_ctl_vlan_in.p4"
+#include "include/ig_ctl_sgt.p4"
 #include "include/ig_ctl_acl_in.p4"
 #include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_vrf.p4"
@@ -112,6 +114,7 @@
 #include "include/eg_ctl_nexthop.p4"
 #include "include/eg_ctl_mcast.p4"
 #include "include/eg_ctl_vlan_out.p4"
+#include "include/eg_ctl_sgt.p4"
 #include "include/eg_ctl_hairpin.p4"
 #include "include/eg_ctl.p4"
 

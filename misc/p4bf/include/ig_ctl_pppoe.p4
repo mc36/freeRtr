@@ -72,8 +72,15 @@ hdr.pppoeD.session:
             tbl_pppoe.apply();
             if (hdr.pppoeD.ppptyp == PPPTYPE_IPV4) ig_md.ethertype = ETHERTYPE_IPV4;
             else if (hdr.pppoeD.ppptyp == PPPTYPE_IPV6) ig_md.ethertype = ETHERTYPE_IPV6;
+#ifdef HAVE_SGT
+            else if (hdr.pppoeD.ppptyp == PPPTYPE_SGT) ig_md.ethertype = ETHERTYPE_SGT;
+#endif
+#ifdef HAVE_MPLS
             else if (hdr.pppoeD.ppptyp == PPPTYPE_MPLS_UCAST) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+#endif
+#ifdef HAVE_TAP
             else if (hdr.pppoeD.ppptyp == PPPTYPE_ROUTEDMAC) ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
+#endif
         }
 
     }

@@ -32,6 +32,8 @@ class RareApi(BfRtRare):
     from .gre4 import writeGre4rules
     from .gre6 import writeGre6rules
     from .hairpin import writeHairpinRules
+    from .sgttag import writeSgtTagRules
+    from .sgtset import writeSgtSetRules
     from .inacl4 import writeInAcl4Rules
     from .inacl6 import writeInAcl6Rules
     from .inqos4 import writeInQos4Rules

@@ -149,6 +149,7 @@ class BfForwarder(Thread, RareApi):
             "pbr": "ig_ctl.ig_ctl_pbr.tbl_ipv4_pbr",
             "pppoe": "ig_ctl.ig_ctl_pppoe.tbl_pppoe",
             "nsh": "ig_ctl.ig_ctl_nsh.tbl_nsh",
+            "sgt": "ig_ctl.ig_ctl_sgt.tbl_sgt_in",
             "inacl": "ig_ctl.ig_ctl_acl_in.tbl_ipv4_acl",
             "outacl": "ig_ctl.ig_ctl_acl_out.tbl_ipv4_acl",
             "inqos": "ig_ctl.ig_ctl_qos_in.tbl_ipv4_qos",

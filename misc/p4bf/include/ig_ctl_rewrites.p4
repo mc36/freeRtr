@@ -33,6 +33,9 @@ control IngressControlRewrites(inout headers hdr, inout ingress_metadata_t ig_md
 #ifdef HAVE_PPPOE
         if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
 #endif
+#ifdef HAVE_SGT
+        if (hdr.sgt.isValid()) hdr.sgt.setInvalid();
+#endif
         hdr.ethernet.ethertype = ig_md.ethertype;
 
 

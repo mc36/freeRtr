@@ -35,9 +35,12 @@ control eg_ctl(
 #ifdef NEED_REPLICA
     EgressControlMcast() eg_ctl_mcast;
 #endif
+#ifdef HAVE_SGT
+    EgressControlSgt() eg_ctl_sgt;
+#endif
     EgressControlVlanOut() eg_ctl_vlan_out;
     EgressControlHairpin() eg_ctl_hairpin;
-    EgressControlNexthop()eg_ctl_nexthop;
+    EgressControlNexthop() eg_ctl_nexthop;
 
 
 
@@ -45,6 +48,9 @@ control eg_ctl(
 
 #ifdef NEED_PKTLEN
         eg_md.pktlen = hdr.internal.pktlen;
+#endif
+#ifdef HAVE_SGT
+        eg_md.sec_grp_id = hdr.internal.sec_grp_id;
 #endif
         eg_md.ethertype = hdr.ethernet.ethertype;
 #ifdef HAVE_TAP
@@ -61,6 +67,10 @@ control eg_ctl(
 
 #ifdef NEED_REPLICA
         eg_ctl_mcast.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
+#endif
+
+#ifdef HAVE_SGT
+        eg_ctl_sgt.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 #endif
 
         eg_ctl_nexthop.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);

@@ -2,7 +2,7 @@ from ..bf_gbl_env.var_env import *
 
 
 def writeInAcl6Rules(
-    self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm
+    self, op_type, port, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm
 ):
     tbl_global_path = "ig_ctl.ig_ctl_acl_in"
     tbl_name = "%s.tbl_ipv6_acl" % (tbl_global_path)
@@ -18,6 +18,8 @@ def writeInAcl6Rules(
         gc.KeyTuple("hdr.ipv6.traffic_class", ts, tsm),
         gc.KeyTuple("hdr.ipv6.flow_label", fl, flm),
     ]
+    if self.sgt == True:
+        key_field_list.append(gc.KeyTuple("ig_md.sec_grp_id", gr, grm))
     data_field_list = []
     key_annotation_fields = {
         "hdr.ipv6.src_addr": "ipv6",

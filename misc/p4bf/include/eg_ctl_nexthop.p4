@@ -377,8 +377,15 @@ eg_md.nexthop_id:
             if (hdr.pppoeD.isValid()) {
                 if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.pppoeD.ppptyp = PPPTYPE_IPV4;
                 else if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.pppoeD.ppptyp = PPPTYPE_IPV6;
+#ifdef HAVE_SGT
+                else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.pppoeD.ppptyp = PPPTYPE_SGT;
+#endif
+#ifdef HAVE_MPLS
                 else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.pppoeD.ppptyp = PPPTYPE_MPLS_UCAST;
+#endif
+#ifdef HAVE_TAP
                 else if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.pppoeD.ppptyp = PPPTYPE_ROUTEDMAC;
+#endif
                 eg_md.ethertype = ETHERTYPE_PPPOE_DATA;
             }
 #endif
@@ -386,8 +393,15 @@ eg_md.nexthop_id:
             if (hdr.l2tp2.isValid()) {
                 if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;
                 else if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
+#ifdef HAVE_SGT
+                else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l2tp2.ppptyp = PPPTYPE_SGT;
+#endif
+#ifdef HAVE_MPLS
                 else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
+#endif
+#ifdef HAVE_TAP
                 else if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l2tp2.ppptyp = PPPTYPE_ROUTEDMAC;
+#endif
 
                 if (hdr.ipv4d.isValid()) eg_md.ethertype = ETHERTYPE_IPV4;
                 else if (hdr.ipv6d.isValid()) eg_md.ethertype = ETHERTYPE_IPV6;

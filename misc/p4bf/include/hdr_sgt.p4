@@ -1,5 +1,6 @@
+
 /*
- * Copyright 2019-present GÉANT RARE project
+ * Copyright 2019-present GT RARE project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +15,20 @@
  * limitations under the License.
  */
 
+#ifndef _SGT_P4_
+#define _SGT_P4_
 
-#ifndef _INTERNAL_
-#define _INTERNAL_
-
-#define INTREAS_UCAST 1
-#define INTREAS_RECIR 2
-#define INTREAS_MCAST 3
-
-header internal_header_t {
-    bit<16> pktlen;
-    bit<16> clone_session;
 #ifdef HAVE_SGT
-    bit<16> sec_grp_id;
-#endif
-    NextHopId_t nexthop_id;
-    bit<6> _padding1;
-    SubIntId_t target_id;
-    bit<6> _padding2;
-    SubIntId_t source_id;
-    bit<6> _padding3;
-    SubIntId_t aclport_id;
-    bit<8> reason;
+
+header sgt_t {
+    bit<8>      version;
+    bit<8>      length;
+    bit<16>     options;
+    bit<16>     groupid;
+    ethertype_t ethertype;
 }
 
-#endif // _INTERNAL_
+#endif
+
+#endif // _SGT_P4_
+

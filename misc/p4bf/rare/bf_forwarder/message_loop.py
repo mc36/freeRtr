@@ -410,6 +410,21 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "sgttag":
+            self.writeSgtTagRules(
+                mode,
+                int(splt[1]),
+            )
+            continue
+
+        if cmds[0] == "sgtset":
+            self.writeSgtSetRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+            )
+            continue
+
         if cmds[0] == "copp4":
             self.writeCopp4Rules(
                 mode,
@@ -429,6 +444,8 @@ def run(self):
                 int(splt[14]),
                 int(splt[15]),
                 int(splt[16]),
+                int(splt[17]),
+                int(splt[18]),
             )
             continue
 
@@ -451,6 +468,8 @@ def run(self):
                 int(splt[14]),
                 int(splt[15]),
                 int(splt[16]),
+                int(splt[17]),
+                int(splt[18]),
             )
             continue
 
@@ -474,6 +493,8 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
             )
             continue
 
@@ -497,6 +518,8 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
             )
             continue
 
@@ -577,6 +600,8 @@ def run(self):
                 int(splt[17]),
                 int(splt[18]),
                 int(splt[19]),
+                int(splt[20]),
+                int(splt[21]),
             )
             continue
 
@@ -601,6 +626,8 @@ def run(self):
                 int(splt[17]),
                 int(splt[18]),
                 int(splt[19]),
+                int(splt[20]),
+                int(splt[21]),
             )
             continue
 
@@ -625,6 +652,8 @@ def run(self):
                 int(splt[17]),
                 int(splt[18]),
                 int(splt[19]),
+                int(splt[20]),
+                int(splt[21]),
             )
             continue
 
@@ -649,6 +678,8 @@ def run(self):
                 int(splt[17]),
                 int(splt[18]),
                 int(splt[19]),
+                int(splt[20]),
+                int(splt[21]),
             )
             continue
 
@@ -673,6 +704,8 @@ def run(self):
                 int(splt[17]),
                 int(splt[18]),
                 int(splt[19]),
+                int(splt[20]),
+                int(splt[21]),
             )
             continue
 
@@ -697,6 +730,8 @@ def run(self):
                 int(splt[17]),
                 int(splt[18]),
                 int(splt[19]),
+                int(splt[20]),
+                int(splt[21]),
             )
             continue
 
@@ -722,6 +757,8 @@ def run(self):
                 int(splt[18]),
                 int(splt[19]),
                 int(splt[20]),
+                int(splt[21]),
+                int(splt[22]),
             )
             continue
 
@@ -747,6 +784,8 @@ def run(self):
                 int(splt[18]),
                 int(splt[19]),
                 int(splt[20]),
+                int(splt[21]),
+                int(splt[22]),
             )
             continue
 
@@ -950,6 +989,8 @@ def run(self):
                 int(splt[16]),
                 int(splt[17]),
                 int(splt[18]),
+                int(splt[19]),
+                int(splt[20]),
             )
             continue
 
@@ -974,6 +1015,8 @@ def run(self):
                 int(splt[16]),
                 int(splt[17]),
                 int(splt[18]),
+                int(splt[19]),
+                int(splt[20]),
             )
             continue
 
@@ -998,6 +1041,8 @@ def run(self):
                 int(splt[16]),
                 int(splt[17]),
                 int(splt[18]),
+                int(splt[19]),
+                int(splt[20]),
             )
             continue
 
@@ -1022,6 +1067,8 @@ def run(self):
                 int(splt[16]),
                 int(splt[17]),
                 int(splt[18]),
+                int(splt[19]),
+                int(splt[20]),
             )
             continue
 
@@ -1048,6 +1095,8 @@ def run(self):
                 int(splt[18]),
                 int(splt[19]),
                 int(splt[20]),
+                int(splt[21]),
+                int(splt[22]),
             )
             continue
 
@@ -1074,6 +1123,8 @@ def run(self):
                 int(splt[18]),
                 int(splt[19]),
                 int(splt[20]),
+                int(splt[21]),
+                int(splt[22]),
             )
             continue
 
@@ -1097,6 +1148,8 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
             )
             continue
 
@@ -1120,6 +1173,8 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
             )
             continue
 
@@ -1143,6 +1198,8 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
             )
             continue
 
@@ -1166,6 +1223,8 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
             )
             continue
 

@@ -40,9 +40,13 @@ control IngressControlBundle(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.internal.setValid();
         hdr.internal.target_id = ig_md.target_id;
         hdr.internal.nexthop_id = ig_md.nexthop_id;
+        hdr.internal.aclport_id = ig_md.aclport_id;
         hdr.internal.clone_session = 0;
 #ifdef NEED_PKTLEN
         hdr.internal.pktlen = ig_md.pktlen;
+#endif
+#ifdef HAVE_SGT
+        hdr.internal.sec_grp_id = ig_md.sec_grp_id;
 #endif
     }
 
