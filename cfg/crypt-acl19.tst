@@ -1,4 +1,4 @@
-description ingress destination matching hibryd access list
+description ingress destination matching hybrid access list
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
