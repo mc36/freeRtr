@@ -402,10 +402,11 @@ int main(int argc, char **argv) {
     }
 
     RTE_ETH_FOREACH_DEV(port) {
-        if (!rte_eth_dev_is_valid_port(port)) err("not valid port");
+        ret = rte_eth_dev_is_valid_port(port);
+        if (ret != 1) err("not valid port");
         unsigned char buf[1024];
-        ret = rte_eth_dev_get_name_by_port(port, &buf);
-        if (ret != 0) strcpy(&buf, "unknown");
+        ret = rte_eth_dev_get_name_by_port(port, (char*)&buf[0]);
+        if (ret != 0) strcpy((char*)&buf[0], "unknown");
         int sock = rte_eth_dev_socket_id(port);
         port2pool[port] = sock;
         printf("opening port %i on lcore (rx %i tx %i) on socket %i...\n", port, port2rx[port], port2tx[port], sock);
