@@ -5772,7 +5772,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
         cmds.cfgLine(l, ethtyp.sgtHnd == null, cmds.tabulator, "sgt enable", "");
         if (ethtyp.sgtHnd != null) {
-            cmds.cfgLine(l, ethtyp.sgtHnd.optional < 1, cmds.tabulator, "sgt optional", "" + ethtyp.sgtHnd.optional);
+            cmds.cfgLine(l, ethtyp.sgtHnd.optional < 0, cmds.tabulator, "sgt optional", "" + ethtyp.sgtHnd.optional);
             cmds.cfgLine(l, ethtyp.sgtHnd.allowIn == null, cmds.tabulator, "sgt allow-in", tabIndex.convertTable(ethtyp.sgtHnd.allowIn));
             cmds.cfgLine(l, ethtyp.sgtHnd.allowOut == null, cmds.tabulator, "sgt allow-out", tabIndex.convertTable(ethtyp.sgtHnd.allowOut));
             cmds.cfgLine(l, ethtyp.sgtHnd.forbidIn == null, cmds.tabulator, "sgt forbid-in", tabIndex.convertTable(ethtyp.sgtHnd.forbidIn));
@@ -7531,7 +7531,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             if (a.equals("optional")) {
-                ethtyp.sgtHnd.optional = 0;
+                ethtyp.sgtHnd.optional = -1;
                 return;
             }
             if (a.equals("allow-in")) {

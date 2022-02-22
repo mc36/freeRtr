@@ -23,7 +23,7 @@ public class ifcSgt {
     /**
      * optional value
      */
-    public int optional = 0;
+    public int optional = -1;
 
     /**
      * allowed values
@@ -98,7 +98,7 @@ public class ifcSgt {
      */
     public boolean doDecode(packHolder pck) {
         if (pck.msbGetW(0) != type) {
-            if (optional < 1) {
+            if (optional < 0) {
                 return true;
             }
             pck.SGTid = optional;
