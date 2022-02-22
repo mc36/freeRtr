@@ -224,6 +224,11 @@ public class clntTrack implements rtrBfdClnt {
     public int typOsrv;
 
     /**
+     * security group value
+     */
+    public int secGrp;
+
+    /**
      * flow label value
      */
     public int flowLab;
@@ -662,7 +667,7 @@ public class clntTrack implements rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, typOsrv, flowLab, 0, false);
+                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, secGrp, typOsrv, flowLab, 0, false);
                 if (ping == null) {
                     haveResult(false, false);
                     break;

@@ -1307,10 +1307,16 @@ public class userExec {
         hl.add(null, "6 5,.            <name:ifc>      name of interface");
         hl.add(null, "5 6            /timeout          specify timeout");
         hl.add(null, "6 5,.            <num>           timeout in milliseconds");
+        hl.add(null, "5 6            /data             specify data to send");
+        hl.add(null, "6 5,.            <num>           payload byte");
         hl.add(null, "5 6            /ttl              specify ttl value");
         hl.add(null, "6 5,.            <num>           ttl");
         hl.add(null, "5 6            /tos              specify tos value");
         hl.add(null, "6 5,.            <num>           tos");
+        hl.add(null, "5 6            /sgt              specify sgt value");
+        hl.add(null, "6 5,.            <num>           sgt");
+        hl.add(null, "5 6            /flow             specify flow value");
+        hl.add(null, "6 5,.            <num>           flow");
         hl.add(null, "5 6            /size             specify payload size");
         hl.add(null, "6 5,.            <num>           byte count");
         hl.add(null, "5 6            /port             specify tcp port");
@@ -1405,8 +1411,10 @@ public class userExec {
         hl.add(null, "4 3,.        <num>               ttl");
         hl.add(null, "3 4        /tos                  specify tos value");
         hl.add(null, "4 3,.        <num>               tos");
+        hl.add(null, "3 4        /sgt                  specify sgt value");
+        hl.add(null, "4 3,.        <num>               sgt");
         hl.add(null, "3 4        /flow                 specify flow value");
-        hl.add(null, "4 3,.        <num>               tos");
+        hl.add(null, "4 3,.        <num>               flow");
         hl.add(null, "1 2    sleep                     do nothing for a while");
         hl.add(null, "2 .      <num>                   milliseconds for sleep");
         hl.add(null, "1 2    whois                     perform whois query");
@@ -3167,7 +3175,10 @@ public class userExec {
         cfgIfc ifc = cfgAll.getClntIfc();
         int tim = 100;
         int ttl = 255;
+        int sgt = 0;
         int tos = 0;
+        int flow = 0;
+        int data = 0;
         int len = 64;
         int prt = -1;
         boolean lok = false;
@@ -3189,12 +3200,24 @@ public class userExec {
                 tim = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/data")) {
+                data = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("/ttl")) {
                 ttl = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/sgt")) {
+                sgt = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("/tos")) {
                 tos = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("/flow")) {
+                flow = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("/size")) {
@@ -3256,7 +3279,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, tos, 0, 0, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 continue;
             }
@@ -3284,6 +3307,7 @@ public class userExec {
         int data = 0;
         int timeout = 1000;
         int repeat = 5;
+        int sgt = 0;
         int tos = 0;
         int flow = 0;
         int ttl = 255;
@@ -3342,6 +3366,10 @@ public class userExec {
                 ttl = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("/sgt")) {
+                sgt = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("/tos")) {
                 tos = bits.str2num(cmd.word());
                 continue;
@@ -3387,7 +3415,7 @@ public class userExec {
         int ttlMax = 0;
         int ttlSum = 0;
         long timBeg = bits.getTime();
-        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi + ", detail=" + detail);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgtf=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi + ", detail=" + detail);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
@@ -3405,7 +3433,7 @@ public class userExec {
                 break;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, tos, flow, data, multi);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, sgt, tos, flow, data, multi);
             if (ping == null) {
                 lost++;
                 if (detail) {

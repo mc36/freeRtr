@@ -57,6 +57,11 @@ public class clntPing implements Runnable {
     public int tim2liv = 255;
 
     /**
+     * sgt
+     */
+    public int secGrp = 0;
+
+    /**
      * tos
      */
     public int typOsrv = 0;
@@ -80,7 +85,7 @@ public class clntPing implements Runnable {
 
     public void run() {
         try {
-            ipFwdEcho ping = fwd.echoSendReq(src.addr, trg, size, tim2liv, typOsrv, flowLab, datPat, false);
+            ipFwdEcho ping = fwd.echoSendReq(src.addr, trg, size, tim2liv, secGrp, typOsrv, flowLab, datPat, false);
             if (ping == null) {
                 return;
             }

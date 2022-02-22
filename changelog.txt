@@ -12961,3 +12961,24 @@ qc pass: sgt encapsulation with ingress allow
 qc pass: sgt encapsulation with egress allow
 qc pass: sgt encapsulation with ingress forbid
 qc pass: sgt encapsulation with egress forbid
+---------------------------------- 2022-02-22 17:10:39
+no qc pass: p4lang: egress hibryd access list
+no qc pass: p4lang: ingress hibryd access list
+no qc pass: egress destination port matching hibryd access list
+no qc pass: ingress destination port matching hibryd access list
+no qc pass: egress source port matching hibryd access list
+no qc pass: ingress source port matching hibryd access list
+no qc pass: egress source matching hibryd access list
+no qc pass: ingress source matching hibryd access list
+no qc pass: egress destination matching hibryd access list
+no qc pass: ingress destination matching hibryd access list
+qc pass: ingress destination matching hybrid access list
+qc pass: egress destination matching hybrid access list
+qc pass: ingress source matching hybrid access list
+qc pass: egress source matching hybrid access list
+qc pass: ingress source port matching hybrid access list
+qc pass: egress source port matching hybrid access list
+qc pass: ingress destination port matching hybrid access list
+qc pass: egress destination port matching hybrid access list
+qc pass: p4lang: ingress hybrid access list
+qc pass: p4lang: egress hybrid access list

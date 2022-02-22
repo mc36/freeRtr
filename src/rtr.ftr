@@ -439,10 +439,10 @@ qc pass: ingress precedence matching access list
 qc pass: egress precedence matching access list
 qc pass: ingress length matching access list
 qc pass: egress length matching access list
-qc pass: ingress destination matching hibryd access list
-qc pass: egress destination matching hibryd access list
-qc pass: ingress source matching hibryd access list
-qc pass: egress source matching hibryd access list
+qc pass: ingress destination matching hybrid access list
+qc pass: egress destination matching hybrid access list
+qc pass: ingress source matching hybrid access list
+qc pass: egress source matching hybrid access list
 qc pass: ingress protocol matching common access list
 qc pass: egress protocol matching common access list
 qc pass: ingress destination matching common access list
@@ -459,10 +459,10 @@ qc pass: ingress source port matching access list
 qc pass: egress source port matching access list
 qc pass: ingress destination port matching access list
 qc pass: egress destination port matching access list
-qc pass: ingress source port matching hibryd access list
-qc pass: egress source port matching hibryd access list
-qc pass: ingress destination port matching hibryd access list
-qc pass: egress destination port matching hibryd access list
+qc pass: ingress source port matching hybrid access list
+qc pass: egress source port matching hybrid access list
+qc pass: ingress destination port matching hybrid access list
+qc pass: egress destination port matching hybrid access list
 qc pass: ingress source port matching common access list
 qc pass: egress source port matching common access list
 qc pass: ingress destination port matching common access list
@@ -1339,8 +1339,8 @@ qc pass: p4lang: ingress vlan ipip access list
 qc pass: p4lang: egress vlan ipip access list
 qc pass: p4lang: ingress common access list
 qc pass: p4lang: egress common access list
-qc pass: p4lang: ingress hibryd access list
-qc pass: p4lang: egress hibryd access list
+qc pass: p4lang: ingress hybrid access list
+qc pass: p4lang: egress hybrid access list
 qc pass: p4lang: ingress hierarchical access list
 qc pass: p4lang: egress hierarchical access list
 qc pass: p4lang: ingress policer

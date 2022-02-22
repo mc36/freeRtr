@@ -61,6 +61,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! random-initial 0",
         "tracker .*! interval 0",
         "tracker .*! timeout 0",
+        "tracker .*! sgt 0",
         "tracker .*! tos 0",
         "tracker .*! flow 0",
         "tracker .*! ttl 255",
@@ -142,6 +143,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      timeout                    specify timeout value");
         l.add(null, "2  .        <num>                    timeout in milliseconds");
+        l.add(null, "1  2      sgt                        specify sgt");
+        l.add(null, "2  .        <num>                    value");
         l.add(null, "1  2      tos                        specify tos");
         l.add(null, "2  .        <num>                    value");
         l.add(null, "1  2      ttl                        specify ttl");
@@ -213,6 +216,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(cmds.tabulator + "random-initial " + worker.randIni);
         l.add(cmds.tabulator + "interval " + worker.interval);
         l.add(cmds.tabulator + "timeout " + worker.timeout);
+        l.add(cmds.tabulator + "sgt " + worker.secGrp);
         l.add(cmds.tabulator + "tos " + worker.typOsrv);
         l.add(cmds.tabulator + "flow " + worker.flowLab);
         l.add(cmds.tabulator + "ttl " + worker.tim2liv);
@@ -405,6 +409,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("timeout")) {
             worker.timeout = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("sgt")) {
+            worker.secGrp = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("tos")) {

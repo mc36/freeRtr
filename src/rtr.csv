@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.22-cur, done by cs@nop.
--;-;-;2022-02-22 16:37:36, took 00:08:17, with 100 workers, on 2730 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2022-02-22 17:17:53, took 00:07:13, with 100 workers, on 2730 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -443,10 +443,10 @@ http://sources.nop.hu/cfg/crypt-acl15.tst;crypt-acl15.tst;success;ingress preced
 http://sources.nop.hu/cfg/crypt-acl16.tst;crypt-acl16.tst;success;egress precedence matching access list
 http://sources.nop.hu/cfg/crypt-acl17.tst;crypt-acl17.tst;success;ingress length matching access list
 http://sources.nop.hu/cfg/crypt-acl18.tst;crypt-acl18.tst;success;egress length matching access list
-http://sources.nop.hu/cfg/crypt-acl19.tst;crypt-acl19.tst;success;ingress destination matching hibryd access list
-http://sources.nop.hu/cfg/crypt-acl20.tst;crypt-acl20.tst;success;egress destination matching hibryd access list
-http://sources.nop.hu/cfg/crypt-acl21.tst;crypt-acl21.tst;success;ingress source matching hibryd access list
-http://sources.nop.hu/cfg/crypt-acl22.tst;crypt-acl22.tst;success;egress source matching hibryd access list
+http://sources.nop.hu/cfg/crypt-acl19.tst;crypt-acl19.tst;success;ingress destination matching hybrid access list
+http://sources.nop.hu/cfg/crypt-acl20.tst;crypt-acl20.tst;success;egress destination matching hybrid access list
+http://sources.nop.hu/cfg/crypt-acl21.tst;crypt-acl21.tst;success;ingress source matching hybrid access list
+http://sources.nop.hu/cfg/crypt-acl22.tst;crypt-acl22.tst;success;egress source matching hybrid access list
 http://sources.nop.hu/cfg/crypt-acl23.tst;crypt-acl23.tst;success;ingress protocol matching common access list
 http://sources.nop.hu/cfg/crypt-acl24.tst;crypt-acl24.tst;success;egress protocol matching common access list
 http://sources.nop.hu/cfg/crypt-acl25.tst;crypt-acl25.tst;success;ingress destination matching common access list
@@ -463,10 +463,10 @@ http://sources.nop.hu/cfg/crypt-acl35.tst;crypt-acl35.tst;success;ingress source
 http://sources.nop.hu/cfg/crypt-acl36.tst;crypt-acl36.tst;success;egress source port matching access list
 http://sources.nop.hu/cfg/crypt-acl37.tst;crypt-acl37.tst;success;ingress destination port matching access list
 http://sources.nop.hu/cfg/crypt-acl38.tst;crypt-acl38.tst;success;egress destination port matching access list
-http://sources.nop.hu/cfg/crypt-acl39.tst;crypt-acl39.tst;success;ingress source port matching hibryd access list
-http://sources.nop.hu/cfg/crypt-acl40.tst;crypt-acl40.tst;success;egress source port matching hibryd access list
-http://sources.nop.hu/cfg/crypt-acl41.tst;crypt-acl41.tst;success;ingress destination port matching hibryd access list
-http://sources.nop.hu/cfg/crypt-acl42.tst;crypt-acl42.tst;success;egress destination port matching hibryd access list
+http://sources.nop.hu/cfg/crypt-acl39.tst;crypt-acl39.tst;success;ingress source port matching hybrid access list
+http://sources.nop.hu/cfg/crypt-acl40.tst;crypt-acl40.tst;success;egress source port matching hybrid access list
+http://sources.nop.hu/cfg/crypt-acl41.tst;crypt-acl41.tst;success;ingress destination port matching hybrid access list
+http://sources.nop.hu/cfg/crypt-acl42.tst;crypt-acl42.tst;success;egress destination port matching hybrid access list
 http://sources.nop.hu/cfg/crypt-acl43.tst;crypt-acl43.tst;success;ingress source port matching common access list
 http://sources.nop.hu/cfg/crypt-acl44.tst;crypt-acl44.tst;success;egress source port matching common access list
 http://sources.nop.hu/cfg/crypt-acl45.tst;crypt-acl45.tst;success;ingress destination port matching common access list
@@ -1343,8 +1343,8 @@ http://sources.nop.hu/cfg/p4lang-acl37.tst;p4lang-acl37.tst;success;p4lang: ingr
 http://sources.nop.hu/cfg/p4lang-acl38.tst;p4lang-acl38.tst;success;p4lang: egress vlan ipip access list
 http://sources.nop.hu/cfg/p4lang-acl39.tst;p4lang-acl39.tst;success;p4lang: ingress common access list
 http://sources.nop.hu/cfg/p4lang-acl40.tst;p4lang-acl40.tst;success;p4lang: egress common access list
-http://sources.nop.hu/cfg/p4lang-acl41.tst;p4lang-acl41.tst;success;p4lang: ingress hibryd access list
-http://sources.nop.hu/cfg/p4lang-acl42.tst;p4lang-acl42.tst;success;p4lang: egress hibryd access list
+http://sources.nop.hu/cfg/p4lang-acl41.tst;p4lang-acl41.tst;success;p4lang: ingress hybrid access list
+http://sources.nop.hu/cfg/p4lang-acl42.tst;p4lang-acl42.tst;success;p4lang: egress hybrid access list
 http://sources.nop.hu/cfg/p4lang-acl43.tst;p4lang-acl43.tst;success;p4lang: ingress hierarchical access list
 http://sources.nop.hu/cfg/p4lang-acl44.tst;p4lang-acl44.tst;success;p4lang: egress hierarchical access list
 http://sources.nop.hu/cfg/p4lang-acl45.tst;p4lang-acl45.tst;success;p4lang: ingress policer

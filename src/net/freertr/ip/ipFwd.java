@@ -2142,13 +2142,14 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param trg target address
      * @param size size of payload
      * @param ttl ttl to use
+     * @param sgt sgt to use
      * @param tos tos to use
      * @param id flow to use
      * @param dat filler byte
      * @param mul multiple responses
      * @return notifier notified on reply
      */
-    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int tos, int id, int dat, boolean mul) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2194,6 +2195,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.IPttl = ttl;
         pck.IPtos = tos;
         pck.IPid = id;
+        pck.SGTid = sgt;
         pck.INTupper = -1;
         protoPack(ifc, null, pck);
         return ntry;

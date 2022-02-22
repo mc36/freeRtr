@@ -282,6 +282,7 @@ interface template1
  ptp enable
  ptp receive
  carrier-delay 123
+ sgt enable
  vrf forwarding v1
  ipv4 address dynamic 255.255.255.252
  ipv4 host-watch appear logger change logger disappear logger
@@ -390,7 +391,6 @@ interface bvi4
 !
 interface ethernet1
  description uplink
- sgt enable
  vrf forwarding v1
  ipv4 address 10.1.123.91 255.255.255.0
  ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
