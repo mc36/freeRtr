@@ -145,6 +145,7 @@ import net.freertr.rtr.rtrRsvpIface;
 import net.freertr.sec.secIke;
 import net.freertr.sec.secIsakmp;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabSession;
@@ -1396,6 +1397,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no disable-sgt",
         "interface .*! no loss-detection",
         "interface .*! no sgt enable",
+        "interface .*! no sgt optional",
+        "interface .*! no sgt allow-in",
+        "interface .*! no sgt allow-out",
+        "interface .*! no sgt forbid-in",
+        "interface .*! no sgt forbid-out",
         "interface .*! no sgt assign",
         "interface .*! monitor-direction both",
         "interface .*! monitor-truncate 0",
@@ -5765,6 +5771,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
         cmds.cfgLine(l, ethtyp.sgtHnd == null, cmds.tabulator, "sgt enable", "");
+        if (ethtyp.sgtHnd != null) {
+            cmds.cfgLine(l, ethtyp.sgtHnd.optional < 1, cmds.tabulator, "sgt optional", "" + ethtyp.sgtHnd.optional);
+            cmds.cfgLine(l, ethtyp.sgtHnd.allowIn == null, cmds.tabulator, "sgt allow-in", tabIndex.convertTable(ethtyp.sgtHnd.allowIn));
+            cmds.cfgLine(l, ethtyp.sgtHnd.allowOut == null, cmds.tabulator, "sgt allow-out", tabIndex.convertTable(ethtyp.sgtHnd.allowOut));
+            cmds.cfgLine(l, ethtyp.sgtHnd.forbidIn == null, cmds.tabulator, "sgt forbid-in", tabIndex.convertTable(ethtyp.sgtHnd.forbidIn));
+            cmds.cfgLine(l, ethtyp.sgtHnd.forbidOut == null, cmds.tabulator, "sgt forbid-out", tabIndex.convertTable(ethtyp.sgtHnd.forbidOut));
+        }
         cmds.cfgLine(l, ethtyp.sgtSet < 1, cmds.tabulator, "sgt assign", "" + ethtyp.sgtSet);
         s = "none";
         if (ethtyp.mtuCheckRx) {
@@ -6458,7 +6471,17 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "1 2   sgt                           security group tag commands");
         l.add(null, "2 .     enable                      enable tagging");
         l.add(null, "2 3     assign                      assign tag");
-        l.add(null, "3 .       <num>                     tag");
+        l.add(null, "3 .       <num>                     value");
+        l.add(null, "2 3     optional                    allow untagged packets");
+        l.add(null, "3 .       <num>                     tag to assign");
+        l.add(null, "2 3     allow-in                    allow only specific tags");
+        l.add(null, "3 3,.     <num>                     value");
+        l.add(null, "2 3     allow-out                   allow only specific tags");
+        l.add(null, "3 3,.     <num>                     value");
+        l.add(null, "2 3     forbid-in                   forbid some specific tags");
+        l.add(null, "3 3,.     <num>                     value");
+        l.add(null, "2 3     forbid-out                  forbid some specific tags");
+        l.add(null, "3 3,.     <num>                     value");
         l.add(null, "1 2,. loss-detection                loss detection commands");
         l.add(null, "2 3     <num>                       packet loss to block");
         l.add(null, "3 .       <num>                     time to block");
@@ -6930,6 +6953,30 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             if (a.equals("assign")) {
                 ethtyp.sgtSet = bits.str2num(cmd.word());
+                return;
+            }
+            if (ethtyp.sgtHnd == null) {
+                cmd.error("not enabled");
+                return;
+            }
+            if (a.equals("optional")) {
+                ethtyp.sgtHnd.optional = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("allow-in")) {
+                ethtyp.sgtHnd.allowIn = tabIndex.convertTable(cmd);
+                return;
+            }
+            if (a.equals("allow-out")) {
+                ethtyp.sgtHnd.allowOut = tabIndex.convertTable(cmd);
+                return;
+            }
+            if (a.equals("forbid-in")) {
+                ethtyp.sgtHnd.forbidIn = tabIndex.convertTable(cmd);
+                return;
+            }
+            if (a.equals("forbid-out")) {
+                ethtyp.sgtHnd.forbidOut = tabIndex.convertTable(cmd);
                 return;
             }
             cmd.badCmd();
@@ -7477,6 +7524,30 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             if (a.equals("assign")) {
                 ethtyp.sgtSet = 0;
+                return;
+            }
+            if (ethtyp.sgtHnd == null) {
+                cmd.error("not enabled");
+                return;
+            }
+            if (a.equals("optional")) {
+                ethtyp.sgtHnd.optional = 0;
+                return;
+            }
+            if (a.equals("allow-in")) {
+                ethtyp.sgtHnd.allowIn = null;
+                return;
+            }
+            if (a.equals("allow-out")) {
+                ethtyp.sgtHnd.allowOut = null;
+                return;
+            }
+            if (a.equals("forbid-in")) {
+                ethtyp.sgtHnd.forbidIn = null;
+                return;
+            }
+            if (a.equals("forbid-out")) {
+                ethtyp.sgtHnd.forbidOut = null;
                 return;
             }
             cmd.badCmd();
