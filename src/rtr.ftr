@@ -742,6 +742,10 @@ qc pass: sgt over macsec ethernet encapsulation
 qc pass: sgt over macsec vlan encapsulation
 qc pass: sgt hairpin encapsulation
 qc pass: no sgt ethernet encapsulation
+qc pass: sgt encapsulation with ingress allow
+qc pass: sgt encapsulation with egress allow
+qc pass: sgt encapsulation with ingress forbid
+qc pass: sgt encapsulation with egress forbid
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip

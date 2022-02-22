@@ -12956,3 +12956,8 @@ qc pass: p4lang: mpolka core
 qc pass: p4lang: mpolka vlan core
 qc pass: p4lang: mpolka edge
 qc pass: p4lang: mpolka vlan edge
+---------------------------------- 2022-02-22 14:42:51
+qc pass: sgt encapsulation with ingress allow
+qc pass: sgt encapsulation with egress allow
+qc pass: sgt encapsulation with ingress forbid
+qc pass: sgt encapsulation with egress forbid
