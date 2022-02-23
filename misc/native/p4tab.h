@@ -1122,8 +1122,10 @@ int initTables() {
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
-//    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
-//    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
+    if (OSSL_PROVIDER_load(NULL, "default") == NULL) return 1;
+#endif
     OpenSSL_add_all_ciphers();
     OpenSSL_add_all_digests();
     OpenSSL_add_all_algorithms();

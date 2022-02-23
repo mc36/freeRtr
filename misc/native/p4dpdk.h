@@ -144,6 +144,7 @@ void doMainLoop() {
 }
 
 
+#if RTE_VERSION < RTE_VERSION_NUM(21, 11, 0, 0)
 #define mbuf2mybuf(mbuf)                                        \
     bufS = rte_pktmbuf_pkt_len(mbuf);                           \
     bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
@@ -157,6 +158,21 @@ void doMainLoop() {
         memcpy(&bufD[preBuff], bufP, bufS);                     \
     }                                                           \
     rte_pktmbuf_free(mbuf);
+#else
+#define mbuf2mybuf(mbuf)                                        \
+    bufS = rte_pktmbuf_pkt_len(mbuf);                           \
+    bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
+    if ((mbuf->ol_flags & RTE_MBUF_F_RX_VLAN_STRIPPED) != 0) {  \
+        memcpy(&bufD[preBuff], bufP, 12);                       \
+        put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);           \
+        put16msb(bufD, preBuff + 14, mbuf->vlan_tci);           \
+        memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);      \
+        bufS += 4;                                              \
+    } else {                                                    \
+        memcpy(&bufD[preBuff], bufP, bufS);                     \
+    }                                                           \
+    rte_pktmbuf_free(mbuf);
+#endif
 
 
 
@@ -425,6 +441,7 @@ int main(int argc, char **argv) {
         memset(&rxconf, 0, sizeof(rxconf));
         struct rte_ether_addr macaddr;
         memset(&macaddr, 0, sizeof(macaddr));
+        int maxlen;
 
         ret = rte_eth_dev_info_get(port, &dev_info);
         if (ret != 0) err("error getting device info");
@@ -440,14 +457,21 @@ int main(int argc, char **argv) {
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_SCATTER) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_SCATTER;
         }
+#if RTE_VERSION < RTE_VERSION_NUM(21, 11, 0, 0)
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
-            port_conf.rxmode.max_rx_pkt_len = mbuf_size;
+            maxlen = mbuf_size;
+            port_conf.rxmode.max_rx_pkt_len = maxlen;
         } else {
-            port_conf.rxmode.max_rx_pkt_len = RTE_ETHER_MAX_LEN;
+            maxlen = RTE_ETHER_MAX_LEN;
+            port_conf.rxmode.max_rx_pkt_len = maxlen;
         }
-
-        printf("configuring port: offloads rx=%08x, tx=%08x, pktlen=%i\n", (int)port_conf.rxmode.offloads, (int)port_conf.txmode.offloads, port_conf.rxmode.max_rx_pkt_len);
+#else
+        maxlen = dev_info.max_rx_pktlen;
+        if (maxlen > mbuf_size) maxlen = mbuf_size;
+        port_conf.rxmode.mtu = maxlen;
+#endif
+        printf("configuring port: offloads rx=%08x, tx=%08x, pktlen=%i\n", (int)port_conf.rxmode.offloads, (int)port_conf.txmode.offloads, maxlen);
         ret = rte_eth_dev_configure(port, 1, 1, &port_conf);
         if (ret != 0) err("error configuring port");
 
@@ -483,7 +507,11 @@ int main(int argc, char **argv) {
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
     printf("starting lcores...\n");
+#if RTE_VERSION < RTE_VERSION_NUM(20, 11, 0, 0)
+    rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MASTER);
+#else
     rte_eal_mp_remote_launch(&doPacketLoop, NULL, CALL_MAIN);
+#endif
 
     doMainLoop();
 
