@@ -105,6 +105,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher asendMatch = new tabIntMatcher();
 
     /**
+     * aspath begin matched
+     */
+    public tabIntMatcher asbegMatch = new tabIntMatcher();
+
+    /**
      * aspath mid matched
      */
     public tabIntMatcher asmidMatch = new tabIntMatcher();
@@ -815,6 +820,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match validity " + validityMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
         l.add(beg + "match asend " + asendMatch);
+        l.add(beg + "match asbeg " + asbegMatch);
         l.add(beg + "match asmid " + asmidMatch);
         l.add(beg + "match aigp " + accIgpMatch);
         l.add(beg + "match bandwidth " + bandwidthMatch);
@@ -936,6 +942,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!asendMatch.matches(net.best.asPathEnd())) {
+            return false;
+        }
+        if (!asbegMatch.matches(net.best.asPathBeg())) {
             return false;
         }
         if (!net.best.asPathMid(asmidMatch)) {
@@ -1190,6 +1199,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set bier " + attr.bierIdx);
         t.addLine("set aspath \"" + attr.asPathStr() + "\"");
         t.addLine("set asend \"" + attr.asPathEnd() + "\"");
+        t.addLine("set asbeg \"" + attr.asPathBeg() + "\"");
         t.addLine("set pathlen \"" + attr.asPathLen() + "\"");
         t.addLine("set stdcomm \"" + stdComms2string(attr.stdComm) + "\"");
         t.addLine("set extcomm \"" + extComms2string(attr.extComm) + "\"");

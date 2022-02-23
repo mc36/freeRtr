@@ -1178,6 +1178,22 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * begin of as path
+     *
+     * @return end of as path, -1 if none
+     */
+    public int asPathBeg() {
+        if (pathSeq == null) {
+            return -1;
+        }
+        int i = pathSeq.size();
+        if (i < 1) {
+            return -1;
+        }
+        return pathSeq.get(0);
+    }
+
+    /**
      * end of as path
      *
      * @param match matcher

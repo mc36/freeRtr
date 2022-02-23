@@ -69,6 +69,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match validity all",
         "route-map .*! sequence .* match pathlen all",
         "route-map .*! sequence .* match asend all",
+        "route-map .*! sequence .* match asbeg all",
         "route-map .*! sequence .* match asmid all",
         "route-map .*! sequence .* match bandwidth all",
         "route-map .*! sequence .* match origin all",
@@ -212,7 +213,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     pathlen             match as path length");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
-        l.add(null, "2 3     asend               match as path end");
+        l.add(null, "2 3     asend               match as path ending");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     asbeg               match as path beginning");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     asmid               match as path middle");
@@ -605,6 +609,13 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("asbeg")) {
+                if (ntry.asbegMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("asmid")) {
                 if (ntry.asmidMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -945,6 +956,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("asend")) {
                 ntry.asendMatch.set2always();
+                return;
+            }
+            if (a.equals("asbeg")) {
+                ntry.asbegMatch.set2always();
                 return;
             }
             if (a.equals("asmid")) {

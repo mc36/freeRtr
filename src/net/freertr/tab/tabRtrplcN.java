@@ -284,6 +284,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         asend,
         /**
+         * asbeg
+         */
+        asbeg,
+        /**
          * asmid
          */
         asmid,
@@ -562,6 +566,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "pathlen " + intMatch;
             case asend:
                 return "asend " + intMatch;
+            case asbeg:
+                return "asbeg " + intMatch;
             case asmid:
                 return "asmid " + intMatch;
             case bandwidth:
@@ -694,6 +700,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.asPathLen());
             case asend:
                 return intMatch.matches(net.best.asPathEnd());
+            case asbeg:
+                return intMatch.matches(net.best.asPathBeg());
             case asmid:
                 return net.best.asPathMid(intMatch);
             case bandwidth:
