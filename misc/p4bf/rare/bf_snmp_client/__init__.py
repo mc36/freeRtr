@@ -94,6 +94,7 @@ class BfIfSnmpClient(Thread):
                     )
                 ],
                 {"from_hw": True},
+                p4_name=self.bfgc.p4_name,
             )
             port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
             port_massaged = re.sub("/", "_", port_name)
@@ -133,6 +134,7 @@ class BfIfSnmpClient(Thread):
             self.bfgc.target,
             [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
             {"from_hw": True},
+            p4_name=self.bfgc.p4_name,
         )
         port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
         port_massaged = re.sub("/", "_", port_name)
@@ -159,6 +161,7 @@ class BfIfSnmpClient(Thread):
                 self.bfgc.target,
                 [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
                 {"from_hw": True},
+                p4_name=self.bfgc.p4_name,
             )
             port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
             port_massaged = re.sub("/", "_", port_name)
@@ -172,6 +175,7 @@ class BfIfSnmpClient(Thread):
                     )
                 ],
                 {"from_hw": True},
+                p4_name=self.bfgc.p4_name,
             )
             port_name = next(port_entry)[0].to_dict()["$PORT_NAME"]
             port_massaged = re.sub("/", "_", port_name)
@@ -208,6 +212,7 @@ class BfIfSnmpClient(Thread):
                         )
                     ],
                     {"from_hw": True},
+                    p4_name=self.bfgc.p4_name,
                 )
                 port = next(port_entry)[0].to_dict()
                 stat_entry = self.bfgc.stat_table.entry_get(
@@ -218,6 +223,7 @@ class BfIfSnmpClient(Thread):
                         )
                     ],
                     {"from_hw": True},
+                    p4_name=self.bfgc.p4_name,
                 )
                 stat = next(stat_entry)[0].to_dict()
                 ifTable.update(port, stat)
@@ -328,16 +334,6 @@ class BfIfSnmpClient(Thread):
         logger.debug("INGRESS STATS TABLE PATH: %s" % tbl_name_in)
         logger.debug("EGRESS STATS TABLE PATH: %s" % tbl_name_out)
         logger.debug("EGRESS PKT_OUT_STATS TABLE PATH: %s" % tbl_name_pkt_out)
-
-        # tbl_stats_in.operations_execute(
-        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        # )
-        # tbl_stats_out.operations_execute(
-        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        # )
-        # tbl_stats_pkt_out.operations_execute(
-        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        # )
 
         resp = tbl_vlan_in.entry_get(
             self.bfgc.target, [], {"from_hw": True}, p4_name=self.bfgc.p4_name

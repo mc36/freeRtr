@@ -40,6 +40,7 @@ class BfRuntimeGrpcClient:
         self.bfrt_info = self.interface.bfrt_info_get()
         self.port_table = self.bfrt_info.table_get("$PORT")
         self.port_str_info_table = self.bfrt_info.table_get("$PORT_STR_INFO")
+        self.port_hdl_info_table = self.bfrt_info.table_get("$PORT_HDL_INFO")
         self.stat_table = self.bfrt_info.table_get("$PORT_STAT")
         self.target = gc.Target(device_id=0, pipe_id=0xFFFF)
         self.client_id = int(client_id)

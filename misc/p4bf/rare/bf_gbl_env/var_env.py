@@ -6,7 +6,7 @@ import ipaddress
 
 import argparse
 import socket
-import mib, shutil, re
+import mib, shutil, re, subprocess
 
 # INTEL SDE client path
 SDE = os.environ.get("SDE", "~/bf-sde-9.8.0")

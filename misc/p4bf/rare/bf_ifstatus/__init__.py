@@ -15,6 +15,9 @@ def _Exception():
     )
 
 
+from .bf_mac import tnaparser, getmacaddr
+
+
 class BfIfStatus(Thread):
     def __init__(
         self,
@@ -32,6 +35,16 @@ class BfIfStatus(Thread):
         self.file = sck_file
         self.die = False
         self.oper_status_interval = oper_status_interval
+        self.all_ports = []
+
+    from .bf_mac import TNAPort, tnaparser, getmacaddr
+
+    def sendPortInfoToCP(self):
+        for p in self.all_ports:
+            data = "portname %s %s \n" % (p.dp, p.port)
+            logger.warning("tx: %s" % data.split(" "))
+            self.file.write(data)
+            self.file.flush()
 
     def getAllActivePorts(self):
         resp = self.bfgc.port_table.entry_get(
@@ -46,6 +59,9 @@ class BfIfStatus(Thread):
 
     def run(self):
         try:
+
+            self.all_ports = tnaparser()
+            self.sendPortInfoToCP()
 
             logger.warning("%s - main" % (self.class_name))
             while not self.die:
