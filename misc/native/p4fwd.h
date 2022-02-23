@@ -377,6 +377,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
     if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) doDropper;   \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+    sizt = preBuff;                                             \
     if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) doDropper; \
     bufS += neigh_res->hashBlkLen;                              \
     neigh_res->seq++;
@@ -391,6 +392,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
     if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+    sizt = preBuff;                                             \
     if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
     if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
     bufS -= tun_res->hashBlkLen;                                \
@@ -469,6 +471,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) doDropper;   \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
     bufP -= neigh_res->hashBlkLen;                              \
+    sizt = preBuff;                                             \
     if (EVP_DigestSignFinal(hashCtx, &bufD[bufP], &sizt) != 1) doDropper; \
     neigh_res->seq++;
 
@@ -494,6 +497,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;              \
     if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
     if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+    sizt = preBuff;                                             \
     if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
     if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
@@ -635,6 +639,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         if (EVP_DigestSignUpdate(hashCtx, &bufH[0], 6) != 1) return 1;
     }
     if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
+    sizt = preBuff;
     if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
     *bufS += macsec_res->hashBlkLen;
     *bufP -= 8;
@@ -1163,6 +1168,7 @@ ethtyp_rx:
             if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) doDropper;
         }
         if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;
+        sizt = preBuff;
         if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;
         if (memcmp(&bufH[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) doDropper;
         bufS -= macsec_res->hashBlkLen;
