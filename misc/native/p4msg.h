@@ -54,6 +54,15 @@ const EVP_MD* getHashAlg(char *buf) {
 }
 
 
+EVP_PKEY* getHashKey(unsigned char* key, int len) {
+    if (len < 1) {
+        return EVP_PKEY_new();
+    } else {
+        return EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, key, len);
+    }
+}
+
+
 long readRate(char**arg) {
     float res = atof(arg[3]) * 100.0 / atof(arg[4]);
     return res;
@@ -1619,7 +1628,7 @@ int doOneCommand(unsigned char* buf) {
         if (macsec_ntry.hashAlg == NULL) return 0;
         macsec_ntry.encrKeyLen = str2key(arg[9], macsec_ntry.encrKeyDat);
         macsec_ntry.hashKeyLen = str2key(arg[10], macsec_ntry.hashKeyDat);
-        macsec_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, macsec_ntry.hashKeyDat, macsec_ntry.hashKeyLen);
+        macsec_ntry.hashPkey = getHashKey(macsec_ntry.hashKeyDat, macsec_ntry.hashKeyLen);
         if (macsec_ntry.hashPkey == NULL) return 0;
         if (del == 0) table_del(&macsec_table, &macsec_ntry);
         else table_add(&macsec_table, &macsec_ntry);
@@ -1647,12 +1656,12 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.spi = atoi(arg[14]);
         tun4_ntry.encrKeyLen = str2key(arg[15], tun4_ntry.encrKeyDat);
         tun4_ntry.hashKeyLen = str2key(arg[16], tun4_ntry.hashKeyDat);
-        tun4_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
+        tun4_ntry.hashPkey = getHashKey(tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
         if (tun4_ntry.hashPkey == NULL) return 0;
         neigh_ntry.spi = atoi(arg[17]);
         neigh_ntry.encrKeyLen = str2key(arg[18], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[19], neigh_ntry.hashKeyDat);
-        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
+        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
         tun4_ntry.prot = 50;
         tun4_ntry.command = 6;
@@ -1690,12 +1699,12 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.spi = atoi(arg[14]);
         tun6_ntry.encrKeyLen = str2key(arg[15], tun6_ntry.encrKeyDat);
         tun6_ntry.hashKeyLen = str2key(arg[16], tun6_ntry.hashKeyDat);
-        tun6_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
+        tun6_ntry.hashPkey = getHashKey(tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
         if (tun6_ntry.hashPkey == NULL) return 0;
         neigh_ntry.spi = atoi(arg[17]);
         neigh_ntry.encrKeyLen = str2key(arg[18], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[19], neigh_ntry.hashKeyDat);
-        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
+        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
         tun6_ntry.prot = 50;
         tun6_ntry.command = 6;
@@ -1731,9 +1740,9 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.hashKeyLen = str2key(arg[18], tun4_ntry.hashKeyDat);
         neigh_ntry.encrKeyLen = str2key(arg[17], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[18], neigh_ntry.hashKeyDat);
-        tun4_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
+        tun4_ntry.hashPkey = getHashKey(tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
         if (tun4_ntry.hashPkey == NULL) return 0;
-        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
+        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
         tun4_ntry.prot = 17;
         tun4_ntry.command = 8;
@@ -1775,9 +1784,9 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.hashKeyLen = str2key(arg[18], tun6_ntry.hashKeyDat);
         neigh_ntry.encrKeyLen = str2key(arg[17], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[18], neigh_ntry.hashKeyDat);
-        tun6_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
+        tun6_ntry.hashPkey = getHashKey(tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
         if (tun6_ntry.hashPkey == NULL) return 0;
-        neigh_ntry.hashPkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
+        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
         tun6_ntry.prot = 17;
         tun6_ntry.command = 8;
