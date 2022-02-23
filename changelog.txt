@@ -12982,3 +12982,8 @@ qc pass: ingress destination port matching hybrid access list
 qc pass: egress destination port matching hybrid access list
 qc pass: p4lang: ingress hybrid access list
 qc pass: p4lang: egress hybrid access list
+---------------------------------- 2022-02-23 08:14:30
+qc pass: bgp routemap filtering with asbeg
+qc pass: bgp routemap filtering with asbeg with soft-reconfig
+qc pass: bgp routepolicy filtering with asbeg
+qc pass: bgp routepolicy filtering with asbeg with soft-reconfig

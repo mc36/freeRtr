@@ -2295,6 +2295,10 @@ qc pass: bgp routemap filtering with asmid
 qc pass: bgp routemap filtering with asmid with soft-reconfig
 qc pass: bgp routepolicy filtering with asmid
 qc pass: bgp routepolicy filtering with asmid with soft-reconfig
+qc pass: bgp routemap filtering with asbeg
+qc pass: bgp routemap filtering with asbeg with soft-reconfig
+qc pass: bgp routepolicy filtering with asbeg
+qc pass: bgp routepolicy filtering with asbeg with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
