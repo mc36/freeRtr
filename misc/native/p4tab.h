@@ -171,6 +171,7 @@ struct portvrf_entry {
     int monTruncate;
     int monPackets;
     int sgtSet;
+    int sgtTag;
 };
 
 struct table_head portvrf_table;
@@ -920,21 +921,6 @@ int macsec_compare(void *ptr1, void *ptr2) {
 }
 
 
-struct sgttag_entry {
-    int port;
-};
-
-struct table_head sgttag_table;
-
-int sgttag_compare(void *ptr1, void *ptr2) {
-    struct sgttag_entry *ntry1 = ptr1;
-    struct sgttag_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    return 0;
-}
-
-
 struct policer_entry {
     int vrf;
     int meter;
@@ -1100,7 +1086,6 @@ int initTables() {
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
     table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
-    table_init(&sgttag_table, sizeof(struct sgttag_entry), &sgttag_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L

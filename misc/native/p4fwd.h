@@ -571,13 +571,16 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
+    struct portvrf_entry portvrf_ntry;
+    struct portvrf_entry *portvrf_res;
     struct macsec_entry macsec_ntry;
     struct macsec_entry *macsec_res;
-    struct sgttag_entry sgttag_ntry;
     size_t sizt;
-    sgttag_ntry.port = prt;
-    int index = table_find(&sgttag_table, &sgttag_ntry);
-    if ((sgt >= 0) && (index >= 0)) {
+    portvrf_ntry.port = prt;
+    int index = table_find(&portvrf_table, &portvrf_ntry);
+    portvrf_res = table_get(&macsec_table, index);
+    if (index>=0)////////
+    if ((sgt >= 0) && (portvrf_res->sgtTag != 0)) {
         *bufP -= 8;
         put16msb(bufD, *bufP + 2, 0x0101);
         put16msb(bufD, *bufP + 4, 0x0001);
@@ -1090,7 +1093,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct tun4_entry tun4_ntry;
     struct tun6_entry tun6_ntry;
     struct macsec_entry macsec_ntry;
-    struct sgttag_entry sgttag_ntry;
     struct policer_entry policer_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
@@ -1197,15 +1199,6 @@ ethtyp_rx:
         macsec_res->packOk++;
         macsec_res->byteOk += bufS;
     }
-    sgttag_ntry.port = prt;
-    index = table_find(&sgttag_table, &sgttag_ntry);
-    if (index >= 0) {
-        if (ethtyp != ETHERTYPE_SGT) doDropper;
-        if (get32msb(bufD, bufP + 0) != 0x01010001) doDropper;
-        sgt = get16msb(bufD, bufP + 4);
-        ethtyp = get16msb(bufD, bufP + 6);
-        bufP += 8;
-    }
     portvrf_ntry.port = prt;
     index = table_find(&portvrf_table, &portvrf_ntry);
     if (index < 0) {
@@ -1213,6 +1206,13 @@ ethtyp_rx:
         goto etyped_rx;
     }
     portvrf_res = table_get(&portvrf_table, index);
+    if (portvrf_res->sgtTag != 0) {
+        if (ethtyp != ETHERTYPE_SGT) doDropper;
+        if (get32msb(bufD, bufP + 0) != 0x01010001) doDropper;
+        sgt = get16msb(bufD, bufP + 4);
+        ethtyp = get16msb(bufD, bufP + 6);
+        bufP += 8;
+    }
     if (portvrf_res->sgtSet >= 0) {
         sgt = portvrf_res->sgtSet;
     }
