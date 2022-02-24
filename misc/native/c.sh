@@ -13,6 +13,13 @@ MD="-O3"                                #release
 #bt full
 mkdir -p $TR
 
+compileBpf()
+{
+echo compiling $1.
+clang -Wall $MD -c -g -target bpf -I /usr/include/$UM-linux-gnu/ -o$TR/$1.bin $1.c
+touch -d "2010-01-01 00:00:00" $TR/$1.bin
+}
+
 compileFile()
 {
 echo compiling $1.
@@ -22,7 +29,7 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin
 }
 
 for fn in p4xdp_pass p4xdp_kern; do
-  compileFile $fn "-c -g" "-target bpf" "-I /usr/include/$UM-linux-gnu/"
+  compileBpf $fn
   done
 
 for fn in p4xdp_user; do
