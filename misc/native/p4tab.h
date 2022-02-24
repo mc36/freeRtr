@@ -166,6 +166,10 @@ struct portvrf_entry {
     int verify6;
     int mpls;
     int nsh;
+    int monTarget;
+    int monSample;
+    int monTruncate;
+    int monPackets;
 };
 
 struct table_head portvrf_table;
@@ -176,6 +180,16 @@ int portvrf_compare(void *ptr1, void *ptr2) {
     if (ntry1->port < ntry2->port) return -1;
     if (ntry1->port > ntry2->port) return +1;
     return 0;
+}
+
+struct portvrf_entry* portvrf_init(struct portvrf_entry *ntry) {
+    int index = table_find(&portvrf_table, ntry);
+    if (index >= 0) return table_get(&portvrf_table, index);
+    table_add(&portvrf_table, ntry);
+    index = table_find(&portvrf_table, ntry);
+    ntry = table_get(&portvrf_table, index);
+    ntry->monTarget = -1;
+    return ntry;
 }
 
 
@@ -958,25 +972,6 @@ int policer_compare(void *ptr1, void *ptr2) {
 }
 
 
-struct monitor_entry {
-    int port;
-    int target;
-    int sample;
-    int truncate;
-    int packets;
-};
-
-struct table_head monitor_table;
-
-int monitor_compare(void *ptr1, void *ptr2) {
-    struct monitor_entry *ntry1 = ptr1;
-    struct monitor_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    return 0;
-}
-
-
 struct flood_entry {
     int trg;
     int id;
@@ -1122,7 +1117,6 @@ int initTables() {
     table_init(&sgtset_table, sizeof(struct sgtset_entry), &sgtset_compare);
     table_init(&sgttag_table, sizeof(struct sgttag_entry), &sgttag_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
-    table_init(&monitor_table, sizeof(struct monitor_entry), &monitor_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
     if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;

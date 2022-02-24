@@ -241,8 +241,6 @@ int doOneCommand(unsigned char* buf) {
     memset(&sgtset_ntry, 0, sizeof(sgtset_ntry));
     struct policer_entry policer_ntry;
     memset(&policer_ntry, 0, sizeof(policer_ntry));
-    struct monitor_entry monitor_ntry;
-    memset(&monitor_ntry, 0, sizeof(monitor_ntry));
     struct flood_entry flood_ntry;
     memset(&flood_ntry, 0, sizeof(flood_ntry));
     struct mroute4_entry *mroute4_res;
@@ -390,72 +388,60 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "portvrf") == 0) {
-        portvrf_ntry.command = 1;
         portvrf_ntry.port = atoi(arg[2]);
-        portvrf_ntry.vrf = atoi(arg[3]);
-        if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
-        else table_add(&portvrf_table, &portvrf_ntry);
+        portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->command = 1;
+        portvrf_res->vrf = atoi(arg[3]);
+        if (del == 0) portvrf_res->command = 0;
         return 0;
     }
     if (strcmp(arg[0], "tcpmss4in") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) return 0;
-        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->tcpmss4 = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "tcpmss6in") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) return 0;
-        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->tcpmss6 = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "verify4") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) return 0;
-        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->verify4 = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "verify6") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) return 0;
-        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->verify6 = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "mplspack") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) return 0;
-        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->mpls = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "nshpack") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) return 0;
-        portvrf_res = table_get(&portvrf_table, index);
+        portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->nsh = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {
-        portvrf_ntry.command = 3;
         portvrf_ntry.port = atoi(arg[2]);
-        portvrf_ntry.nexthop = atoi(arg[4]);
-        portvrf_ntry.label1 = atoi(arg[5]);
-        portvrf_ntry.label2 = atoi(arg[7]);
+        portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->command = 3;
+        portvrf_res->nexthop = atoi(arg[4]);
+        portvrf_res->label1 = atoi(arg[5]);
+        portvrf_res->label2 = atoi(arg[7]);
         mpls_ntry.label = atoi(arg[6]);
-        mpls_ntry.port = portvrf_ntry.port;
+        mpls_ntry.port = portvrf_res->port;
         mpls_ntry.command = 4;
-        if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
-        else table_add(&portvrf_table, &portvrf_ntry);
+        if (del == 0) portvrf_res->command = 0;
         if (del == 0) table_del(&mpls_table, &mpls_ntry);
         else table_add(&mpls_table, &mpls_ntry);
         return 0;
@@ -482,11 +468,11 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "portbridge") == 0) {
-        portvrf_ntry.command = 2;
         portvrf_ntry.port = atoi(arg[2]);
-        portvrf_ntry.bridge = atoi(arg[3]);
-        if (del == 0) table_del(&portvrf_table, &portvrf_ntry);
-        else table_add(&portvrf_table, &portvrf_ntry);
+        portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->command = 2;
+        portvrf_res->bridge = atoi(arg[3]);
+        if (del == 0) portvrf_res->command = 0;
         return 0;
     }
     if (strcmp(arg[0], "bridgemac") == 0) {
@@ -1856,12 +1842,12 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "monitor") == 0) {
-        monitor_ntry.port = atoi(arg[2]);
-        monitor_ntry.target = atoi(arg[3]);
-        monitor_ntry.sample = atoi(arg[5]);
-        monitor_ntry.truncate = atoi(arg[6]);
-        if (del == 0) table_del(&monitor_table, &monitor_ntry);
-        else table_add(&monitor_table, &monitor_ntry);
+        portvrf_ntry.port = atoi(arg[2]);
+        portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->monTarget = atoi(arg[3]);
+        portvrf_res->monSample = atoi(arg[5]);
+        portvrf_res->monTruncate = atoi(arg[6]);
+        if (del == 0) portvrf_res->monTarget = -1;
         return 0;
     }
     if (strcmp(arg[0], "mlocal4") == 0) {

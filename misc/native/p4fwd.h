@@ -1093,7 +1093,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct sgttag_entry sgttag_ntry;
     struct sgtset_entry sgtset_ntry;
     struct policer_entry policer_ntry;
-    struct monitor_entry monitor_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
     struct polkaPoly_entry *polkaPoly_res = NULL;
@@ -1119,7 +1118,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct macsec_entry *macsec_res = NULL;
     struct sgtset_entry *sgtset_res = NULL;
     struct policer_entry *policer_res = NULL;
-    struct monitor_entry *monitor_res = NULL;
     struct mroute4_entry *mroute4_res = NULL;
     struct mroute6_entry *mroute6_res = NULL;
     int sgt = 0;
@@ -1216,35 +1214,32 @@ ethtyp_rx:
         sgtset_res = table_get(&sgtset_table, index);
         sgt = sgtset_res->value;
     }
-    monitor_ntry.port = prt;
-    index = table_find(&monitor_table, &monitor_ntry);
-    if (index >= 0) {
-        monitor_res = table_get(&monitor_table, index);
-        if ((monitor_res->packets++%monitor_res->sample) == 0) {
+    portvrf_ntry.port = prt;
+    index = table_find(&portvrf_table, &portvrf_ntry);
+    if (index < 0) {
+        portvrf_res = NULL;
+        goto etyped_rx;
+    }
+    portvrf_res = table_get(&portvrf_table, index);
+    if (portvrf_res->monTarget >= 0) {
+        if ((portvrf_res->monPackets++%portvrf_res->monSample) == 0) {
             int tmpS = bufS - bufP + preBuff + 2;
-            if (tmpS > monitor_res->truncate) tmpS = monitor_res->truncate;
+            if (tmpS > portvrf_res->monTruncate) tmpS = portvrf_res->monTruncate;
             memmove(&bufC[preBuff], &bufD[bufP - 2], tmpS);
             memmove(&bufH[0], &bufD[preBuff], 12);
             int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(monitor_res->target, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            send2subif(portvrf_res->monTarget, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
         }
     }
-etyped_rx:
-    if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
-    portvrf_ntry.port = prt;
-    index = table_find(&portvrf_table, &portvrf_ntry);
-    if (index >= 0) {
-        portvrf_res = table_get(&portvrf_table, index);
-        if (ethtyp != ETHERTYPE_ROUTEDMAC) switch (portvrf_res->command) {
+    if (ethtyp != ETHERTYPE_ROUTEDMAC) switch (portvrf_res->command) {
         case 2:
             goto bridge_rx;
         case 3:
             goto xconn_rx;
         }
-    } else {
-        portvrf_res = NULL;
-    }
+etyped_rx:
+    if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
         if (portvrf_res == NULL) doDropper;
