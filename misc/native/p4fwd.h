@@ -1091,7 +1091,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct tun6_entry tun6_ntry;
     struct macsec_entry macsec_ntry;
     struct sgttag_entry sgttag_ntry;
-    struct sgtset_entry sgtset_ntry;
     struct policer_entry policer_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
@@ -1116,7 +1115,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct tun4_entry *tun4_res = NULL;
     struct tun6_entry *tun6_res = NULL;
     struct macsec_entry *macsec_res = NULL;
-    struct sgtset_entry *sgtset_res = NULL;
     struct policer_entry *policer_res = NULL;
     struct mroute4_entry *mroute4_res = NULL;
     struct mroute6_entry *mroute6_res = NULL;
@@ -1208,12 +1206,6 @@ ethtyp_rx:
         ethtyp = get16msb(bufD, bufP + 6);
         bufP += 8;
     }
-    sgtset_ntry.port = prt;
-    index = table_find(&sgtset_table, &sgtset_ntry);
-    if (index >= 0) {
-        sgtset_res = table_get(&sgtset_table, index);
-        sgt = sgtset_res->value;
-    }
     portvrf_ntry.port = prt;
     index = table_find(&portvrf_table, &portvrf_ntry);
     if (index < 0) {
@@ -1221,6 +1213,9 @@ ethtyp_rx:
         goto etyped_rx;
     }
     portvrf_res = table_get(&portvrf_table, index);
+    if (portvrf_res->sgtSet >= 0) {
+        sgt = portvrf_res->sgtSet;
+    }
     if (portvrf_res->monTarget >= 0) {
         if ((portvrf_res->monPackets++%portvrf_res->monSample) == 0) {
             int tmpS = bufS - bufP + preBuff + 2;
