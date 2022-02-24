@@ -240,7 +240,7 @@ int main(int argc, char **argv) {
     int i, o;
     for (i = 2; i < argc; i++) {
         char buf[1024];
-        if (strlen(argv[i]) >= sizeof(buf)) err("too long argument");
+        if (strlen(argv[i]) >= sizeof(buf)) continue;
         strcpy(buf, argv[i]);
         o = doOneCmd(buf);
         if (o == 0) continue;
