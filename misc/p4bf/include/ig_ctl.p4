@@ -105,8 +105,6 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
     IngressControlOutPort() ig_ctl_outport;
     IngressControlRewrites() ig_ctl_rewrites;
 
-    Counter< bit<64>, SubIntId_t> ((MAX_PORT+1), CounterType_t.PACKETS_AND_BYTES) pkt_out_stats;
-
     apply {
 
         ig_dprsr_md.drop_ctl = 0; // hack for odd/even ports
@@ -128,7 +126,6 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_ctl_vlan_in.apply(hdr, ig_md, ig_intr_md);
 
         if (ig_intr_md.ingress_port == CPU_PORT) {
-            pkt_out_stats.count(ig_md.source_id);
             ig_tm_md.ucast_egress_port = (PortId_t)hdr.cpu.port;
             ig_tm_md.bypass_egress = 1;
             hdr.cpu.setInvalid();

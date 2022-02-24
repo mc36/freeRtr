@@ -80,19 +80,13 @@ class BfSubIfCounter(Thread):
         tbl_stats_in = self.bfgc.bfrt_info.table_get(tbl_name_in)
         tbl_name_out = "%s.eg_ctl_vlan_out.stats" % (tbl_global2_path)
         tbl_stats_out = self.bfgc.bfrt_info.table_get(tbl_name_out)
-        tbl_name_pkt_out = "%s.pkt_out_stats" % (tbl_global_path)
-        tbl_stats_pkt_out = self.bfgc.bfrt_info.table_get(tbl_name_pkt_out)
         logger.debug("INGRESS STATS TABLE PATH: %s" % tbl_name_in)
         logger.debug("EGRESS STATS TABLE PATH: %s" % tbl_name_out)
-        logger.debug("EGRESS PKT_OUT_STATS TABLE PATH: %s" % tbl_name_pkt_out)
 
         # tbl_stats_in.operations_execute(
         #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
         # )
         # tbl_stats_out.operations_execute(
-        #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
-        # )
-        # tbl_stats_pkt_out.operations_execute(
         #    self.bfgc.target, "Sync", p4_name=self.bfgc.p4_name
         # )
 
@@ -152,35 +146,14 @@ class BfSubIfCounter(Thread):
             stats_out = next(stats_out_entry)[0].to_dict()
             logger.debug("EGRESS STATS FOR SUBIF[%s]=%s" % (counter_id, stats_out))
 
-            # PKT_OUT counters
-            key_list = [
-                tbl_stats_pkt_out.make_key([gc.KeyTuple("$COUNTER_INDEX", counter_id)])
-            ]
-            data_list = None
-            stats_pkt_out_entry = tbl_stats_pkt_out.entry_get(
-                self.bfgc.target,
-                key_list,
-                {"from_hw": True},
-                data_list,
-                p4_name=self.bfgc.p4_name,
-            )
-
-            stats_pkt_out = next(stats_pkt_out_entry)[0].to_dict()
-            logger.debug(
-                "EGRESS PKT_OUT STATS FOR SUBIF[%s]=%s" % (counter_id, stats_pkt_out)
-            )
 
             self.subif_counters.update(
                 {
                     counter_id: [
-                        stats_in["$COUNTER_SPEC_PKTS"]
-                        - stats_pkt_out["$COUNTER_SPEC_PKTS"],
-                        stats_in["$COUNTER_SPEC_BYTES"]
-                        - stats_pkt_out["$COUNTER_SPEC_BYTES"],
-                        stats_out["$COUNTER_SPEC_PKTS"]
-                        + stats_pkt_out["$COUNTER_SPEC_PKTS"],
-                        stats_out["$COUNTER_SPEC_BYTES"]
-                        + stats_pkt_out["$COUNTER_SPEC_BYTES"],
+                        stats_in["$COUNTER_SPEC_PKTS"],
+                        stats_in["$COUNTER_SPEC_BYTES"],
+                        stats_out["$COUNTER_SPEC_PKTS"],
+                        stats_out["$COUNTER_SPEC_BYTES"],
                     ]
                 }
             )
@@ -189,14 +162,10 @@ class BfSubIfCounter(Thread):
                 "tx: ['counter','%s','%s','%s', '%s', '%s'\\n']"
                 % (
                     counter_id,
-                    stats_in["$COUNTER_SPEC_PKTS"]
-                    - stats_pkt_out["$COUNTER_SPEC_PKTS"],
-                    stats_in["$COUNTER_SPEC_BYTES"]
-                    - stats_pkt_out["$COUNTER_SPEC_BYTES"],
-                    stats_out["$COUNTER_SPEC_PKTS"]
-                    + stats_pkt_out["$COUNTER_SPEC_PKTS"],
-                    stats_out["$COUNTER_SPEC_BYTES"]
-                    + stats_pkt_out["$COUNTER_SPEC_BYTES"],
+                    stats_in["$COUNTER_SPEC_PKTS"],
+                    stats_in["$COUNTER_SPEC_BYTES"],
+                    stats_out["$COUNTER_SPEC_PKTS"],
+                    stats_out["$COUNTER_SPEC_BYTES"],
                 )
             )
 
@@ -204,14 +173,10 @@ class BfSubIfCounter(Thread):
                 "counter %s %s %s %s %s\n"
                 % (
                     counter_id,
-                    stats_in["$COUNTER_SPEC_PKTS"]
-                    - stats_pkt_out["$COUNTER_SPEC_PKTS"],
-                    stats_in["$COUNTER_SPEC_BYTES"]
-                    - stats_pkt_out["$COUNTER_SPEC_BYTES"],
-                    stats_out["$COUNTER_SPEC_PKTS"]
-                    + stats_pkt_out["$COUNTER_SPEC_PKTS"],
-                    stats_out["$COUNTER_SPEC_BYTES"]
-                    + stats_pkt_out["$COUNTER_SPEC_BYTES"],
+                    stats_in["$COUNTER_SPEC_PKTS"],
+                    stats_in["$COUNTER_SPEC_BYTES"],
+                    stats_out["$COUNTER_SPEC_PKTS"],
+                    stats_out["$COUNTER_SPEC_BYTES"],
                 )
             )
             self.file.flush()
