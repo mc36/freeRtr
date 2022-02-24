@@ -4,7 +4,9 @@
 #include "types.h"
 
 
-#define preBuff 256
+#define preBuff 512
+#define minBuff 128
+#define maxBuff 1024
 
 int ports = 0;
 int cpuport = 0;
