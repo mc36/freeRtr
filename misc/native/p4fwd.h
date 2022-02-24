@@ -569,20 +569,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define checkLayer2                                             \
-    portvrf_ntry.port = prt;                                    \
-    index = table_find(&portvrf_table, &portvrf_ntry);          \
-    if (index >= 0) {                                           \
-        portvrf_res = table_get(&portvrf_table, index);         \
-        switch (portvrf_res->command) {                         \
-        case 2:                                                 \
-            goto bridge_rx;                                     \
-        case 3:                                                 \
-            goto xconn_rx;                                      \
-        }                                                       \
-    }
-
-
 
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     struct macsec_entry macsec_ntry;
@@ -1246,10 +1232,22 @@ ethtyp_rx:
     }
 etyped_rx:
     if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
+    portvrf_ntry.port = prt;
+    index = table_find(&portvrf_table, &portvrf_ntry);
+    if (index >= 0) {
+        portvrf_res = table_get(&portvrf_table, index);
+        if (ethtyp != ETHERTYPE_ROUTEDMAC) switch (portvrf_res->command) {
+        case 2:
+            goto bridge_rx;
+        case 3:
+            goto xconn_rx;
+        }
+    } else {
+        portvrf_res = NULL;
+    }
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
-        checkLayer2;
-        if (index < 0) doDropper;
+        if (portvrf_res == NULL) doDropper;
         if (portvrf_res->mpls == 0) doDropper;
         packMpls[port]++;
         byteMpls[port] += bufS;
@@ -1340,7 +1338,6 @@ neigh_tx:
         }
         return;
     case ETHERTYPE_VLAN: // dot1q
-        checkLayer2;
         packVlan[port]++;
         byteVlan[port] += bufS;
         vlan_ntry.port = prt;
@@ -1354,8 +1351,7 @@ neigh_tx:
         vlan_res->byte += bufS;
         goto ethtyp_rx;
     case ETHERTYPE_IPV4: // ipv4
-        checkLayer2;
-        if (index < 0) doDropper;
+        if (portvrf_res == NULL) doDropper;
         packIpv4[port]++;
         byteIpv4[port] += bufS;
         vrf2rib_ntry.vrf = portvrf_res->vrf;
@@ -1611,8 +1607,7 @@ ipv4_tx:
             doRouted(route4_res, 4);
         }
     case ETHERTYPE_IPV6: // ipv6
-        checkLayer2;
-        if (index < 0) doDropper;
+        if (portvrf_res == NULL) doDropper;
         packIpv6[port]++;
         byteIpv6[port] += bufS;
         vrf2rib_ntry.vrf = portvrf_res->vrf;
@@ -1921,7 +1916,6 @@ ipv6_tx:
             doRouted(route6_res, 41);
         }
     case ETHERTYPE_PPPOE_DATA: // pppoe
-        checkLayer2;
         packPppoe[port]++;
         bytePppoe[port] += bufS;
         pppoe_ntry.port = prt;
@@ -1945,12 +1939,9 @@ ipv6_tx:
         prt2 = prt;
         goto ether_rx;
     case ETHERTYPE_ROUTEDMAC: // routed bridge
+        if (portvrf_res == NULL) doDropper;
         packBridge[port]++;
         byteBridge[port] += bufS;
-        portvrf_ntry.port = prt;
-        index = table_find(&portvrf_table, &portvrf_ntry);
-        if (index < 0) doDropper;
-        portvrf_res = table_get(&portvrf_table, index);
         if (portvrf_res->command != 2) doDropper;
         bridge_ntry.id = portvrf_res->bridge;
         memmove(&bufH[0], &bufD[bufP], 12);
@@ -1958,8 +1949,7 @@ ipv6_tx:
         bufP += 2;
         goto bridgevpls_rx;
     case ETHERTYPE_POLKA: // polka
-        checkLayer2;
-        if (index < 0) doDropper;
+        if (portvrf_res == NULL) doDropper;
         packPolka[port]++;
         bytePolka[port] += bufS;
         index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
@@ -1992,8 +1982,7 @@ ipv6_tx:
         neigh_ntry.id = polkaIdx_res->nexthop;
         goto ethtyp_tx;
     case ETHERTYPE_MPOLKA: // mpolka
-        checkLayer2;
-        if (index < 0) doDropper;
+        if (portvrf_res == NULL) doDropper;
         packMpolka[port]++;
         byteMpolka[port] += bufS;
         index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
@@ -2033,8 +2022,7 @@ ipv6_tx:
         bufP += 20;
         goto etyped_rx;
     case ETHERTYPE_NSH: // nsh
-        checkLayer2;
-        if (index < 0) doDropper;
+        if (portvrf_res == NULL) doDropper;
         if (portvrf_res->nsh == 0) doDropper;
         packNsh[port]++;
         byteNsh[port] += bufS;
@@ -2179,22 +2167,16 @@ bridgevpls_rx:
         if (prt2 >= 0) goto ether_rx;
         return;
     case ETHERTYPE_ARP: // arp
-        checkLayer2;
         doCpuing;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
-        checkLayer2;
         doCpuing;
     case ETHERTYPE_MACSEC: // macsec
-        checkLayer2;
         doCpuing;
     case ETHERTYPE_LACP: // lacp
-        checkLayer2;
         doCpuing;
     case ETHERTYPE_LLDP: // lldp
-        checkLayer2;
         doCpuing;
     default:
-        checkLayer2;
         if (ethtyp < 1500) doCpuing;
 punt:
         if (punts < 0) {
