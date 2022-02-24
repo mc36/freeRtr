@@ -25,7 +25,8 @@ int main(int argc, char **argv) {
 
     printf("pcap version: %s\n", pcap_lib_version());
 
-    ifaceName = malloc(1024);
+    ifaceName = malloc(strlen(argv[1]) + 1);
+    if (ifaceName == NULL) err("error allocating memory");
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s\n", ifaceName);
 

@@ -80,7 +80,7 @@ void doMainLoop() {
     for (;;) {
         printf("> ");
         buf[0] = 0;
-        int i = scanf("%s", buf);
+        int i = scanf("%1024s", buf);
         if (i < 1) {
             sleep(1);
             continue;

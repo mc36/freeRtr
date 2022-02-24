@@ -108,7 +108,7 @@ void doMainLoop() {
 doer:
     printf("> ");
     buf[0] = 0;
-    int i = scanf("%s", buf);
+    int i = scanf("%1024s", buf);
     if (i < 1) {
         sleep(1);
         goto doer;
@@ -209,7 +209,7 @@ help :
         memset(&vlanRem[i], 0, sizeof (addrRem));
         if (inet_aton(argv[2], &vlanRem[i].sin_addr) == 0) err("bad raddr address");
         if (inet_aton(argv[4], &vlanLoc[i].sin_addr) == 0) err("bad laddr address");
-        vlanVal[i] = atoi(argv[i * 3 + 4]);
+        vlanVal[i] = atoi(argv[i * 3 + 4]) & 0xfff;
         portLoc = atoi(argv[i * 3 + 5]);
         portRem = atoi(argv[i * 3 + 6]);
         vlanLoc[i].sin_family = AF_INET;

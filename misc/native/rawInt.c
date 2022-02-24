@@ -86,7 +86,7 @@ void doMainLoop() {
 doer:
     printf("> ");
     buf[0] = 0;
-    int i = scanf("%s", buf);
+    int i = scanf("%1024s", buf);
     if (i < 1) {
         sleep(1);
         goto doer;
@@ -182,7 +182,8 @@ help :
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
 
-    ifaceName = malloc(1024);
+    ifaceName = malloc(strlen(argv[1]) + 1);
+    if (ifaceName == NULL) err("error allocating memory");
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s.\n", ifaceName);
 

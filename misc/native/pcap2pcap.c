@@ -56,7 +56,7 @@ void doMainLoop() {
 doer:
     printf("> ");
     buf[0] = 0;
-    int i = scanf("%s", buf);
+    int i = scanf("%1024s", buf);
     if (i < 1) {
         sleep(1);
         goto doer;
@@ -150,7 +150,8 @@ help :
 
     printf("pcap version: %s\n", pcap_lib_version());
 
-    iface1name = malloc(1024);
+    iface1name = malloc(strlen(argv[1]) + 1);
+    if (iface1name == NULL) err("error allocating memory");
     strcpy(iface1name, argv[1]);
     printf("opening interface %s\n", iface1name);
     iface1pcap = pcap_create(iface1name, errbuf);
@@ -161,7 +162,8 @@ help :
     if (pcap_activate(iface1pcap) < 0) err("activation failed");
     if (pcap_setdirection(iface1pcap, PCAP_D_IN) < 0) err("unable to set direction");
 
-    iface2name = malloc(1024);
+    iface2name = malloc(strlen(argv[2]) + 1);
+    if (iface2name == NULL) err("error allocating memory");
     strcpy(iface2name, argv[2]);
     printf("opening interface %s\n", iface2name);
     iface2pcap = pcap_create(iface2name, errbuf);

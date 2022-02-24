@@ -162,6 +162,7 @@ int doOneCommand(unsigned char* buf) {
     int i = 0;
     int o = 0;
     for (;;) {
+        if (cnt >= 128) break;
         switch (buf[i]) {
         case 0:
         case 10:

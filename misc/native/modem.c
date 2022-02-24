@@ -223,7 +223,8 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    ttyName = malloc(1024);
+    ttyName = malloc(strlen(argv[1]) + 1);
+    if (ttyName == NULL) err("error allocating memory");
     strcpy(ttyName, argv[1]);
     printf("opening tty %s.\n", ttyName);
     if ((addrTty = open(ttyName, O_RDWR)) < 0) err("unable to open file");
@@ -239,6 +240,7 @@ int main(int argc, char **argv) {
     int i, o;
     for (i = 2; i < argc; i++) {
         char buf[1024];
+        if (strlen(argv[i]) >= sizeof(buf)) err("too long argument");
         strcpy(buf, argv[i]);
         o = doOneCmd(buf);
         if (o == 0) continue;

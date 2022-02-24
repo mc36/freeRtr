@@ -90,7 +90,7 @@ void doMainLoop() {
 doer:
     printf("> ");
     buf[0] = 0;
-    int i = scanf("%s", buf);
+    int i = scanf("%1024s", buf);
     if (i < 1) {
         sleep(1);
         goto doer;
@@ -176,7 +176,8 @@ help :
     if (listen(lstnSock, 1024) < 0) err("failed to listen socket");
     printf("listening on port %i.\n", portLoc);
 
-    ttyName = malloc(1024);
+    ttyName = malloc(strlen(argv[1]) + 1);
+    if (ttyName == NULL) err("error allocating memory");
     strcpy(ttyName, argv[1]);
     printf("opening tty %s.\n", ttyName);
     if ((addrTty = open(ttyName, O_RDWR)) < 0) err("unable to open file");

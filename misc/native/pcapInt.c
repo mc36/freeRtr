@@ -60,7 +60,7 @@ void doMainLoop() {
 doer:
     printf("> ");
     buf[0] = 0;
-    int i = scanf("%s", buf);
+    int i = scanf("%1024s", buf);
     if (i < 1) {
         sleep(1);
         goto doer;
@@ -177,7 +177,8 @@ help :
 
     printf("pcap version: %s\n", pcap_lib_version());
 
-    ifaceName = malloc(1024);
+    ifaceName = malloc(strlen(argv[1]) + 1);
+    if (ifaceName == NULL) err("error allocating memory");
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s\n", ifaceName);
 

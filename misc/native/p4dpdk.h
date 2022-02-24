@@ -132,7 +132,7 @@ void doMainLoop() {
     for (;;) {
         printf("> ");
         buf[0] = 0;
-        int i = scanf("%s", buf);
+        int i = scanf("%1024s", buf);
         if (i < 1) {
             sleep(1);
             continue;
@@ -298,6 +298,10 @@ int main(int argc, char **argv) {
 
     ports = rte_eth_dev_count_avail();
     if (ports < 2) err("at least 2 ports needed");
+    int cores = rte_lcore_count();
+    if (cores < 1) err("at least 1 cores needed");
+    printf("%i cores and %i ports detected...\n", cores, ports);
+    if (ports > maxPorts) ports = maxPorts;
 
     if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0] [-9 brstsiz 0] [-10 brstslp 0]...");
     printf("dpdk version: %s\n", rte_version());
@@ -369,6 +373,8 @@ int main(int argc, char **argv) {
             mbuf_size = r;
             continue;
         }
+        if (r > cores) continue;
+        if (t > cores) continue;
         if (p <= -1) {
             lcore_conf[r].justProcessor++;
             lcore_conf[t].justProcessor++;

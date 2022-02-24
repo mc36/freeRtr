@@ -181,7 +181,7 @@ void doMainLoop() {
 doer:
     printf("> ");
     buf[0] = 0;
-    int i = scanf("%s", buf);
+    int i = scanf("%1024s", buf);
     if (i < 1) {
         sleep(1);
         goto doer;
@@ -306,7 +306,8 @@ help :
         printf(" hack=%08x\n", hackTty);
     }
 
-    ttyName = malloc(1024);
+    ttyName = malloc(strlen(argv[1]) + 1);
+    if (ttyName == NULL) err("error allocating memory");
     strcpy(ttyName, argv[1]);
     printf("opening tty %s.\n", ttyName);
     if ((addrTty = open(ttyName, O_RDWR)) < 0) err("unable to open file");

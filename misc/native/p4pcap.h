@@ -127,7 +127,7 @@ void doMainLoop() {
     for (;;) {
         printf("> ");
         buf[0] = 0;
-        int i = scanf("%s", buf);
+        int i = scanf("%1024s", buf);
         if (i < 1) {
             sleep(1);
             continue;
@@ -150,6 +150,7 @@ int main(int argc, char **argv) {
         ports++;
     }
     if (ports < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
+    if (ports > maxPorts) ports = maxPorts;
     printf("pcap version: %s\n", pcap_lib_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
