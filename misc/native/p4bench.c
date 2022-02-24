@@ -67,11 +67,11 @@ int main(int argc, char **argv) {
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
     struct neigh_entry neigh_ntry;
     memset(&neigh_ntry, 0, sizeof(neigh_ntry));
-    portvrf_ntry.command = 1;
     portvrf_ntry.port = 0;
-    portvrf_ntry.vrf = 1;
-    portvrf_ntry.mpls = 1;
-    table_add(&portvrf_table, &portvrf_ntry);
+    struct portvrf_entry *portvrf_res = portvrf_init(&portvrf_ntry);
+    portvrf_res->command = 1;
+    portvrf_res->vrf = 1;
+    portvrf_res->mpls = 1;
     vrf2rib_ntry.vrf = 1;
     struct vrf2rib_entry *route4_table = vrf2rib_init4;
     struct vrf2rib_entry *route6_table = vrf2rib_init6;

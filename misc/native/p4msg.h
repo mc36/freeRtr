@@ -233,8 +233,6 @@ int doOneCommand(unsigned char* buf) {
     memset(&tun4_ntry, 0, sizeof(tun4_ntry));
     struct tun6_entry tun6_ntry;
     memset(&tun6_ntry, 0, sizeof(tun6_ntry));
-    struct macsec_entry macsec_ntry;
-    memset(&macsec_ntry, 0, sizeof(macsec_ntry));
     struct policer_entry policer_ntry;
     memset(&policer_ntry, 0, sizeof(policer_ntry));
     struct flood_entry flood_ntry;
@@ -1587,7 +1585,6 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "sgttag") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_res = portvrf_init(&portvrf_ntry);
-        sgttag_ntry.port = atoi(arg[2]);
         if (del == 0) portvrf_res->sgtTag = 0;
         else portvrf_res->sgtTag = 1;
         return 0;
@@ -1600,23 +1597,32 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "macsec") == 0) {
-        macsec_ntry.port = atoi(arg[2]);
-        macsec_ntry.ethtyp = atoi(arg[3]);
-        macsec_ntry.encrBlkLen = atoi(arg[4]);
-        macsec_ntry.hashBlkLen = atoi(arg[5]);
-        macsec_ntry.needMacs = macsec_ntry.needAead = atoi(arg[6]);
-        macsec_ntry.needMacs &= 1;
-        macsec_ntry.needAead &= 2;
-        macsec_ntry.encrAlg = getEncrAlg(arg[7]);
-        if (macsec_ntry.encrAlg == NULL) return 0;
-        macsec_ntry.hashAlg = getHashAlg(arg[8]);
-        if (macsec_ntry.hashAlg == NULL) return 0;
-        macsec_ntry.encrKeyLen = str2key(arg[9], macsec_ntry.encrKeyDat);
-        macsec_ntry.hashKeyLen = str2key(arg[10], macsec_ntry.hashKeyDat);
-        macsec_ntry.hashPkey = getHashKey(macsec_ntry.hashKeyDat, macsec_ntry.hashKeyLen);
-        if (macsec_ntry.hashPkey == NULL) return 0;
-        if (del == 0) table_del(&macsec_table, &macsec_ntry);
-        else table_add(&macsec_table, &macsec_ntry);
+        portvrf_ntry.port = atoi(arg[2]);
+        portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->mcscEthtyp = atoi(arg[3]);
+        portvrf_res->mcscEncrBlkLen = atoi(arg[4]);
+        portvrf_res->mcscHashBlkLen = atoi(arg[5]);
+        portvrf_res->mcscNeedMacs = portvrf_res->mcscNeedAead = atoi(arg[6]);
+        portvrf_res->mcscNeedMacs &= 1;
+        portvrf_res->mcscNeedAead &= 2;
+        portvrf_res->mcscEncrAlg = getEncrAlg(arg[7]);
+        if (portvrf_res->mcscEncrAlg == NULL) {
+            portvrf_res->mcscEthtyp = 0;
+            return 0;
+        }
+        portvrf_res->mcscHashAlg = getHashAlg(arg[8]);
+        if (portvrf_res->mcscHashAlg == NULL) {
+            portvrf_res->mcscEthtyp = 0;
+            return 0;
+        }
+        portvrf_res->mcscEncrKeyLen = str2key(arg[9], portvrf_res->mcscEncrKeyDat);
+        portvrf_res->mcscHashKeyLen = str2key(arg[10], portvrf_res->mcscHashKeyDat);
+        portvrf_res->mcscHashPkey = getHashKey(portvrf_res->mcscHashKeyDat, portvrf_res->mcscHashKeyLen);
+        if (portvrf_res->mcscHashPkey == NULL) {
+            portvrf_res->mcscEthtyp = 0;
+            return 0;
+        }
+        if (del == 0) portvrf_res->mcscEthtyp = 0;
         return 0;
     }
     if (strcmp(arg[0], "ipsec4") == 0) {
@@ -2413,9 +2419,10 @@ void doStatRound(FILE *commands, int round) {
     }
     doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4, commands);
     doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
-    for (int i=0; i<macsec_table.size; i++) {
-        struct macsec_entry *ntry = table_get(&macsec_table, i);
-        fprintf(commands, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx, (ntry->packRx - ntry->packOk), (ntry->byteRx - ntry->byteOk));
+    for (int i=0; i<portvrf_table.size; i++) {
+        struct portvrf_entry *ntry = table_get(&portvrf_table, i);
+        if (ntry->mcscEthtyp == 0) continue;
+        fprintf(commands, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
     }
     for (int i=0; i<acls4_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls4_table, i);

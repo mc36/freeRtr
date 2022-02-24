@@ -573,13 +573,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     struct portvrf_entry portvrf_ntry;
     struct portvrf_entry *portvrf_res;
-    struct macsec_entry macsec_ntry;
-    struct macsec_entry *macsec_res;
     size_t sizt;
     portvrf_ntry.port = prt;
     int index = table_find(&portvrf_table, &portvrf_ntry);
-    portvrf_res = table_get(&macsec_table, index);
-    if (index>=0)////////
+    if (index < 0) return 0;
+    portvrf_res = table_get(&portvrf_table, index);
     if ((sgt >= 0) && (portvrf_res->sgtTag != 0)) {
         *bufP -= 8;
         put16msb(bufD, *bufP + 2, 0x0101);
@@ -589,61 +587,57 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         put16msb(bufD, *bufP + 0, *ethtyp);
     }
     if (encrCtx == NULL) return 0;
-    macsec_ntry.port = prt;
-    index = table_find(&macsec_table, &macsec_ntry);
-    if (index < 0) return 0;
-    macsec_res = table_get(&macsec_table, index);
-    macsec_res->packTx++;
-    macsec_res->byteTx += *bufS;
-    int seq = macsec_res->seqTx;
-    macsec_res->seqTx++;
+    if (portvrf_res->mcscEthtyp == 0) return 0;
+    portvrf_res->mcscPackTx++;
+    portvrf_res->mcscByteTx += *bufS;
+    int seq = portvrf_res->mcscSeqTx++;
     int tmp = *bufS - *bufP + preBuff;
-    int tmp2 = tmp % macsec_res->encrBlkLen;
+    int tmp2 = tmp % portvrf_res->mcscEncrBlkLen;
     if (tmp2 != 0) {
-        tmp2 = macsec_res->encrBlkLen - tmp2;
+        tmp2 = portvrf_res->mcscEncrBlkLen - tmp2;
         RAND_bytes(&bufD[*bufP + tmp], tmp2);
         *bufS += tmp2;
     }
-    *bufP -= macsec_res->encrBlkLen;
-    RAND_bytes(&bufD[*bufP], macsec_res->encrBlkLen);
+    *bufP -= portvrf_res->mcscEncrBlkLen;
+    RAND_bytes(&bufD[*bufP], portvrf_res->mcscEncrBlkLen);
     tmp = *bufS - *bufP + preBuff;
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
-    if (macsec_res->needAead != 0) {
+    if (portvrf_res->mcscNeedAead != 0) {
         unsigned char mac[12];
         put32msb(mac, 0, seq);
         put32msb(mac, 4, 0);
         put32msb(mac, 8, 0);
-        if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, mac) != 1) return 1;
+        if (EVP_EncryptInit_ex(encrCtx, portvrf_res->mcscEncrAlg, NULL, portvrf_res->mcscEncrKeyDat, mac) != 1) return 1;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
-        if (macsec_res->needMacs != 0) {
+        if (portvrf_res->mcscNeedMacs != 0) {
             if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufH[6], 6) != 1) return 1;
             if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufH[0], 6) != 1) return 1;
         }
         if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
         if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
-        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, macsec_res->encrBlkLen, &bufD[*bufP + tmp]) != 1) return 1;
-        tmp += macsec_res->encrBlkLen;
-        *bufS += macsec_res->encrBlkLen;
+        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, portvrf_res->mcscEncrBlkLen, &bufD[*bufP + tmp]) != 1) return 1;
+        tmp += portvrf_res->mcscEncrBlkLen;
+        *bufS += portvrf_res->mcscEncrBlkLen;
     } else {
-        if (EVP_EncryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) return 1;
+        if (EVP_EncryptInit_ex(encrCtx, portvrf_res->mcscEncrAlg, NULL, portvrf_res->mcscEncrKeyDat, portvrf_res->mcscHashKeyDat) != 1) return 1;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
         if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
     }
-    if (macsec_res->hashBlkLen > 0) {
+    if (portvrf_res->mcscHashBlkLen > 0) {
         if (EVP_MD_CTX_reset(hashCtx) != 1) return 1;
-        if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) return 1;
-        if (macsec_res->needMacs != 0) {
+        if (EVP_DigestSignInit(hashCtx, NULL, portvrf_res->mcscHashAlg, NULL, portvrf_res->mcscHashPkey) != 1) return 1;
+        if (portvrf_res->mcscNeedMacs != 0) {
             if (EVP_DigestSignUpdate(hashCtx, &bufH[6], 6) != 1) return 1;
             if (EVP_DigestSignUpdate(hashCtx, &bufH[0], 6) != 1) return 1;
         }
         if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
         sizt = preBuff;
         if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
-        *bufS += macsec_res->hashBlkLen;
+        *bufS += portvrf_res->mcscHashBlkLen;
     }
     *bufP -= 8;
-    *ethtyp = macsec_res->ethtyp;
-    put16msb(bufD, *bufP + 0, macsec_res->ethtyp);
+    *ethtyp = portvrf_res->mcscEthtyp;
+    put16msb(bufD, *bufP + 0, portvrf_res->mcscEthtyp);
     bufD[*bufP + 2] = 0x08; // tci=v,e
     bufD[*bufP + 3] = 0; // sl
     put32msb(bufD, *bufP + 4, seq);
@@ -1092,7 +1086,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct pppoe_entry pppoe_ntry;
     struct tun4_entry tun4_ntry;
     struct tun6_entry tun6_ntry;
-    struct macsec_entry macsec_ntry;
     struct policer_entry policer_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
@@ -1116,7 +1109,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct pppoe_entry *pppoe_res = NULL;
     struct tun4_entry *tun4_res = NULL;
     struct tun6_entry *tun6_res = NULL;
-    struct macsec_entry *macsec_res = NULL;
     struct policer_entry *policer_res = NULL;
     struct mroute4_entry *mroute4_res = NULL;
     struct mroute6_entry *mroute6_res = NULL;
@@ -1141,64 +1133,6 @@ ether_rx:
 ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
-    macsec_ntry.port = prt;
-    index = table_find(&macsec_table, &macsec_ntry);
-    if (index >= 0) {
-        macsec_res = table_get(&macsec_table, index);
-        macsec_res->packRx++;
-        macsec_res->byteRx += bufS;
-        if (ethtyp != macsec_res->ethtyp) doDropper;
-        if (bufD[bufP] != 0x08) doCpuing;
-        int seq = macsec_res->seqRx = get32msb(bufD, bufP + 2);
-        bufP += 6;
-        tmp = bufS - bufP + preBuff - macsec_res->hashBlkLen;
-        if (tmp < 1) doDropper;
-        if ((tmp % macsec_res->encrBlkLen) != 0) doDropper;
-        if (macsec_res->hashBlkLen > 0) {
-            if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;
-            if (EVP_DigestSignInit(hashCtx, NULL, macsec_res->hashAlg, NULL, macsec_res->hashPkey) != 1) doDropper;
-            if (macsec_res->needMacs != 0) {
-                if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 6], 6) != 1) doDropper;
-                if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) doDropper;
-            }
-            if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;
-            sizt = preBuff;
-            if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;
-            if (memcmp(&bufH[0], &bufD[bufP + tmp], macsec_res->hashBlkLen) !=0) doDropper;
-            bufS -= macsec_res->hashBlkLen;
-        }
-        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
-        if (macsec_res->needAead != 0) {
-            unsigned char mac[12];
-            put32msb(mac, 0, seq);
-            put32msb(mac, 4, 0);
-            put32msb(mac, 8, 0);
-            if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, mac) != 1) doDropper;
-            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
-            if (macsec_res->needMacs != 0) {
-                if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 6], 6) != 1) doDropper;
-                if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 0], 6) != 1) doDropper;
-            }
-            tmp -= macsec_res->encrBlkLen;
-            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
-            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_TAG, macsec_res->encrBlkLen, &bufD[bufP + tmp]) != 1) doDropper;
-            if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
-        } else {
-            if (EVP_DecryptInit_ex(encrCtx, macsec_res->encrAlg, NULL, macsec_res->encrKeyDat, macsec_res->hashKeyDat) != 1) doDropper;
-            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
-            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
-        }
-        bufP += macsec_res->encrBlkLen;
-        tmp -= macsec_res->encrBlkLen;
-        memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
-        bufP = preBuff + 12;
-        bufS = tmp + 12;
-        prt2 = prt;
-        ethtyp = get16msb(bufD, bufP);
-        bufP += 2;
-        macsec_res->packOk++;
-        macsec_res->byteOk += bufS;
-    }
     portvrf_ntry.port = prt;
     index = table_find(&portvrf_table, &portvrf_ntry);
     if (index < 0) {
@@ -1206,6 +1140,61 @@ ethtyp_rx:
         goto etyped_rx;
     }
     portvrf_res = table_get(&portvrf_table, index);
+    if (portvrf_res->mcscEthtyp != 0) {
+        portvrf_res->mcscPackRx++;
+        portvrf_res->mcscByteRx += bufS;
+        if (ethtyp != portvrf_res->mcscEthtyp) doDropper;
+        if (bufD[bufP] != 0x08) doCpuing;
+        int seq = portvrf_res->mcscSeqRx = get32msb(bufD, bufP + 2);
+        bufP += 6;
+        tmp = bufS - bufP + preBuff - portvrf_res->mcscHashBlkLen;
+        if (tmp < 1) doDropper;
+        if ((tmp % portvrf_res->mcscEncrBlkLen) != 0) doDropper;
+        if (portvrf_res->mcscHashBlkLen > 0) {
+            if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;
+            if (EVP_DigestSignInit(hashCtx, NULL, portvrf_res->mcscHashAlg, NULL, portvrf_res->mcscHashPkey) != 1) doDropper;
+            if (portvrf_res->mcscNeedMacs != 0) {
+                if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 6], 6) != 1) doDropper;
+                if (EVP_DigestSignUpdate(hashCtx, &bufD[preBuff + 0], 6) != 1) doDropper;
+            }
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;
+            sizt = preBuff;
+            if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;
+            if (memcmp(&bufH[0], &bufD[bufP + tmp], portvrf_res->mcscHashBlkLen) !=0) doDropper;
+            bufS -= portvrf_res->mcscHashBlkLen;
+        }
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
+        if (portvrf_res->mcscNeedAead != 0) {
+            unsigned char mac[12];
+            put32msb(mac, 0, seq);
+            put32msb(mac, 4, 0);
+            put32msb(mac, 8, 0);
+            if (EVP_DecryptInit_ex(encrCtx, portvrf_res->mcscEncrAlg, NULL, portvrf_res->mcscEncrKeyDat, mac) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
+            if (portvrf_res->mcscNeedMacs != 0) {
+                if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 6], 6) != 1) doDropper;
+                if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[preBuff + 0], 6) != 1) doDropper;
+            }
+            tmp -= portvrf_res->mcscEncrBlkLen;
+            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+            if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_SET_TAG, portvrf_res->mcscEncrBlkLen, &bufD[bufP + tmp]) != 1) doDropper;
+            if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
+        } else {
+            if (EVP_DecryptInit_ex(encrCtx, portvrf_res->mcscEncrAlg, NULL, portvrf_res->mcscEncrKeyDat, portvrf_res->mcscHashKeyDat) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
+            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+        }
+        bufP += portvrf_res->mcscEncrBlkLen;
+        tmp -= portvrf_res->mcscEncrBlkLen;
+        memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
+        bufP = preBuff + 12;
+        bufS = tmp + 12;
+        prt2 = prt;
+        ethtyp = get16msb(bufD, bufP);
+        bufP += 2;
+        portvrf_res->mcscPackOk++;
+        portvrf_res->mcscByteOk += bufS;
+    }
     if (portvrf_res->sgtTag != 0) {
         if (ethtyp != ETHERTYPE_SGT) doDropper;
         if (get32msb(bufD, bufP + 0) != 0x01010001) doDropper;

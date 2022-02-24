@@ -172,6 +172,26 @@ struct portvrf_entry {
     int monPackets;
     int sgtSet;
     int sgtTag;
+    int mcscEthtyp;
+    unsigned char mcscEncrKeyDat[256];
+    unsigned char mcscHashKeyDat[256];
+    int mcscEncrKeyLen;
+    int mcscHashKeyLen;
+    int mcscEncrBlkLen;
+    int mcscHashBlkLen;
+    int mcscNeedMacs;
+    int mcscNeedAead;
+    int mcscSeqTx;
+    int mcscSeqRx;
+    const EVP_CIPHER *mcscEncrAlg;
+    const EVP_MD *mcscHashAlg;
+    EVP_PKEY *mcscHashPkey;
+    long mcscPackRx;
+    long mcscByteRx;
+    long mcscPackOk;
+    long mcscByteOk;
+    long mcscPackTx;
+    long mcscByteTx;
 };
 
 struct table_head portvrf_table;
@@ -886,41 +906,6 @@ int tun6_compare(void *ptr1, void *ptr2) {
 }
 
 
-struct macsec_entry {
-    int port;
-    int ethtyp;
-    unsigned char encrKeyDat[256];
-    unsigned char hashKeyDat[256];
-    int encrKeyLen;
-    int hashKeyLen;
-    int encrBlkLen;
-    int hashBlkLen;
-    int needMacs;
-    int needAead;
-    int seqTx;
-    int seqRx;
-    const EVP_CIPHER *encrAlg;
-    const EVP_MD *hashAlg;
-    EVP_PKEY *hashPkey;
-    long packRx;
-    long byteRx;
-    long packOk;
-    long byteOk;
-    long packTx;
-    long byteTx;
-};
-
-struct table_head macsec_table;
-
-int macsec_compare(void *ptr1, void *ptr2) {
-    struct macsec_entry *ntry1 = ptr1;
-    struct macsec_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    return 0;
-}
-
-
 struct policer_entry {
     int vrf;
     int meter;
@@ -1085,7 +1070,6 @@ int initTables() {
     table_init(&acls6_table, sizeof(struct acls_entry), &acls_compare);
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
-    table_init(&macsec_table, sizeof(struct macsec_entry), &macsec_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
