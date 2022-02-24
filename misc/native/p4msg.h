@@ -1600,6 +1600,14 @@ int doOneCommand(unsigned char* buf) {
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->mcscEthtyp = atoi(arg[3]);
+        portvrf_res->mcscSeqTx = 0;
+        portvrf_res->mcscSeqRx = 0;
+        portvrf_res->mcscPackRx = 0;
+        portvrf_res->mcscByteRx = 0;
+        portvrf_res->mcscPackOk = 0;
+        portvrf_res->mcscByteOk = 0;
+        portvrf_res->mcscPackTx = 0;
+        portvrf_res->mcscByteTx = 0;
         portvrf_res->mcscEncrBlkLen = atoi(arg[4]);
         portvrf_res->mcscHashBlkLen = atoi(arg[5]);
         portvrf_res->mcscNeedMacs = portvrf_res->mcscNeedAead = atoi(arg[6]);
