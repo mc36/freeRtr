@@ -39,6 +39,7 @@ int vlan_in_fd;
 int vlan_out_fd;
 int pppoes_fd;
 int bridges_fd;
+int cpuport;
 
 
 #include "p4xdp_msg.h"
@@ -64,6 +65,9 @@ void doStatLoop() {
     fprintf(commands, "platform p4xdp\r\n");
     fprintf(commands, "capabilities route mpls bundle vlan pppoe eompls bridge vpls evpn\r\n");
     for (int i = 0; i < ports; i++) fprintf(commands, "portname %i xdp-port%i\r\n", i, ifaces[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuport);
+    fprintf(commands, "dynrange 32768 65535\r\n");
+    fflush(commands);
     int rnd = 0;
     for (;;) {
         doStatRound(commands, rnd);
@@ -128,7 +132,7 @@ int main(int argc, char **argv) {
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
-    int cpuport = atoi(argv[3]);
+    cpuport = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuport, ports);
 
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");

@@ -114,6 +114,9 @@ void doStatLoop() {
     fprintf(commands, "platform %sdpdk\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", capabilities);
     for (int i = 0; i < ports; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuport);
+    fprintf(commands, "dynrange %i 65535\r\n", maxPorts);
+    fflush(commands);
     int rnd = 0;
     for (;;) {
         doStatRound(commands, rnd);

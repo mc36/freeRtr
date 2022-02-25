@@ -2767,6 +2767,10 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
     fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh sgt\r\n");
+    for x in range(0, 10):
+        data = "portname %i bmv2-port%i\r\n" % (x,x)
+        fil.write(data)
+    fil.write("dynrange 512 1023\r\n")
     fil.flush()
     fil = sck.makefile('r')
 

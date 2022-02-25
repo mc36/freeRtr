@@ -41,10 +41,11 @@ class BfIfStatus(Thread):
 
     def sendPortInfoToCP(self):
         for p in self.all_ports:
-            data = "portname %s %s \n" % (p.dp, p.port)
+            data = "portname %s frontpanel-%s \n" % (p.dp, p.port)
             logger.warning("tx: %s" % data.split(" "))
             self.file.write(data)
-            self.file.flush()
+        self.file.write("dynrange 512 1023 \n")
+        self.file.flush()
 
     def getAllActivePorts(self):
         resp = self.bfgc.port_table.entry_get(

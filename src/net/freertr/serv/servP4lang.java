@@ -204,6 +204,21 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected String platform = null;
 
     /**
+     * last cpuport
+     */
+    protected int cpuport;
+
+    /**
+     * last dynamic range
+     */
+    protected int dynRngBeg;
+
+    /**
+     * last dynamic range
+     */
+    protected int dynRngEnd;
+
+    /**
      * last front panel
      */
     protected tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
@@ -642,6 +657,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         expDynAccNxt = 0;
         capability = null;
         platform = null;
+        dynRngBeg = -1;
+        dynRngEnd = -2;
+        cpuport = -3;
         fronts.clear();
         conn = new servP4langConn(pipe, this);
         remote = id.peerAddr.copyBytes();
@@ -796,13 +814,15 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         userFormat res = new userFormat("|", "category|value");
         res.add("peer|" + remote);
         res.add("closed|" + conn);
-        res.add("capability|" + capability);
-        res.add("platform|" + platform);
         res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
         res.add("for|" + bits.timePast(started));
+        res.add("capability|" + capability);
+        res.add("platform|" + platform);
+        res.add("cpuport|" + cpuport);
+        res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
         for (int i = 0; i < fronts.size(); i++) {
             servP4langFrnt ntry = fronts.get(i);
-            res.add("port" + ntry.id + "|" + ntry.nam);
+            res.add("portid" + ntry.id + "|" + ntry.nam);
         }
         return res;
     }
@@ -2172,12 +2192,21 @@ class servP4langConn implements Runnable {
             }
             if (s.equals("portname")) {
                 servP4langFrnt ntry = new servP4langFrnt(bits.str2num(cmd.word()));
-                ntry.nam = cmd.getRemaining();
+                ntry.nam = cmd.getRemaining().replaceAll(" ", "_");
                 lower.fronts.put(ntry);
                 return false;
             }
             if (s.equals("platform")) {
                 lower.platform = cmd.getRemaining();
+                return false;
+            }
+            if (s.equals("cpuport")) {
+                lower.cpuport = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.equals("dynrange")) {
+                lower.dynRngBeg = bits.str2num(cmd.word());
+                lower.dynRngEnd = bits.str2num(cmd.word());
                 return false;
             }
             if (s.equals("capabilities")) {
