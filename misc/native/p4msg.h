@@ -384,9 +384,14 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "portvrf") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->bridge = 0;
+        if (del == 0) {
+            portvrf_res->command = 0;
+            portvrf_res->vrf = 0;
+            return 0;
+        }
         portvrf_res->command = 1;
         portvrf_res->vrf = atoi(arg[3]);
-        if (del == 0) portvrf_res->command = 0;
         return 0;
     }
     if (strcmp(arg[0], "tcpmss4in") == 0) {
@@ -429,6 +434,8 @@ int doOneCommand(unsigned char* buf) {
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_res = portvrf_init(&portvrf_ntry);
         portvrf_res->command = 3;
+        portvrf_res->bridge = 0;
+        portvrf_res->vrf = 0;
         portvrf_res->nexthop = atoi(arg[4]);
         portvrf_res->label1 = atoi(arg[5]);
         portvrf_res->label2 = atoi(arg[7]);
@@ -464,9 +471,14 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "portbridge") == 0) {
         portvrf_ntry.port = atoi(arg[2]);
         portvrf_res = portvrf_init(&portvrf_ntry);
+        portvrf_res->vrf = 0;
+        if (del == 0) {
+            portvrf_res->command = 0;
+            portvrf_res->bridge = 0;
+            return 0;
+        }
         portvrf_res->command = 2;
         portvrf_res->bridge = atoi(arg[3]);
-        if (del == 0) portvrf_res->command = 0;
         return 0;
     }
     if (strcmp(arg[0], "bridgemac") == 0) {
