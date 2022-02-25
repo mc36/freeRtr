@@ -517,7 +517,7 @@ public class player implements Runnable {
      * @return string to add
      */
     public String toFound1(int num, playerSong ntry) {
-        return "((<a href=\"" + urlR + "?cmd=enq&song=" + num + "\">Q</a>))<a href=\"" + urlR + "?cmd=play&song=" + num + "\">" + ntry.title + "</a><br/>";
+        return "((<a href=\"" + urlR + "?cmd=enqueue&song=" + num + "\">Q</a>))<a href=\"" + urlR + "?cmd=play&song=" + num + "\">" + ntry.title + "</a><br/>";
     }
 
     /**
@@ -771,13 +771,28 @@ public class player implements Runnable {
             putMenu(buf);
             buf.write("queued songs:<br/>".getBytes());
             for (int i = 0; i < nextSong.size(); i++) {
-                playerSong ntry = playlist.get(nextSong.get(i));
-                String a = ntry.title + "<br/>";
+                int num = nextSong.get(i);
+                playerSong ntry = playlist.get(num);
+                String a = "((<a href=\"" + urlR + "?cmd=dequeue&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
                 buf.write(a.getBytes());
             }
             return -1;
         }
-        if (cmd.equals("enq")) {
+        if (cmd.equals("dequeue")) {
+            String a;
+            int i = playerUtil.str2int(song);
+            a = "nothing removed<br/>";
+            if (nextSong.size() > 1) {
+                if (nextSong.remove(Integer.valueOf(i))) {
+                    a = "removed from queue<br/>";
+                }
+            }
+            putStart(buf, 3);
+            putMenu(buf);
+            buf.write(a.getBytes());
+            return -1;
+        }
+        if (cmd.equals("enqueue")) {
             String a;
             int i = playerUtil.str2int(song);
             if (i == currSong) {
