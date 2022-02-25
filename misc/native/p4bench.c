@@ -55,8 +55,8 @@ int main(int argc, char **argv) {
     ports = 1;
     cpuport = 1;
     initTables();
-    struct portvrf_entry portvrf_ntry;
-    memset(&portvrf_ntry, 0, sizeof(portvrf_ntry));
+    struct port2vrf_entry port2vrf_ntry;
+    memset(&port2vrf_ntry, 0, sizeof(port2vrf_ntry));
     struct vrf2rib_entry vrf2rib_ntry;
     memset(&vrf2rib_ntry, 0, sizeof(vrf2rib_ntry));
     struct route4_entry route4_ntry;
@@ -67,11 +67,11 @@ int main(int argc, char **argv) {
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
     struct neigh_entry neigh_ntry;
     memset(&neigh_ntry, 0, sizeof(neigh_ntry));
-    portvrf_ntry.port = 0;
-    struct portvrf_entry *portvrf_res = portvrf_init(&portvrf_ntry);
-    portvrf_res->command = 1;
-    portvrf_res->vrf = 1;
-    portvrf_res->mpls = 1;
+    port2vrf_ntry.port = 0;
+    struct port2vrf_entry *port2vrf_res = port2vrf_init(&port2vrf_ntry);
+    port2vrf_res->command = 1;
+    port2vrf_res->vrf = 1;
+    port2vrf_res->mpls = 1;
     vrf2rib_ntry.vrf = 1;
     struct vrf2rib_entry *route4_table = vrf2rib_init4;
     struct vrf2rib_entry *route6_table = vrf2rib_init6;

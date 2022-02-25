@@ -152,7 +152,7 @@ int mpls_compare(void *ptr1, void *ptr2) {
 
 #define mpls_init table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
 
-struct portvrf_entry {
+struct port2vrf_entry {
     int port;
     int command;    // 1=vrf, 2=bridge, 3=xconn
     int vrf;
@@ -194,22 +194,22 @@ struct portvrf_entry {
     long mcscByteTx;
 };
 
-struct table_head portvrf_table;
+struct table_head port2vrf_table;
 
-int portvrf_compare(void *ptr1, void *ptr2) {
-    struct portvrf_entry *ntry1 = ptr1;
-    struct portvrf_entry *ntry2 = ptr2;
+int port2vrf_compare(void *ptr1, void *ptr2) {
+    struct port2vrf_entry *ntry1 = ptr1;
+    struct port2vrf_entry *ntry2 = ptr2;
     if (ntry1->port < ntry2->port) return -1;
     if (ntry1->port > ntry2->port) return +1;
     return 0;
 }
 
-struct portvrf_entry* portvrf_init(struct portvrf_entry *ntry) {
-    int index = table_find(&portvrf_table, ntry);
-    if (index >= 0) return table_get(&portvrf_table, index);
-    table_add(&portvrf_table, ntry);
-    index = table_find(&portvrf_table, ntry);
-    ntry = table_get(&portvrf_table, index);
+struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
+    int index = table_find(&port2vrf_table, ntry);
+    if (index >= 0) return table_get(&port2vrf_table, index);
+    table_add(&port2vrf_table, ntry);
+    index = table_find(&port2vrf_table, ntry);
+    ntry = table_get(&port2vrf_table, index);
     ntry->monTarget = -1;
     ntry->sgtSet = -1;
     return ntry;
@@ -1059,7 +1059,7 @@ int initTables() {
     table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), &polkaPoly_compare);
     table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
     table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
-    table_init(&portvrf_table, sizeof(struct portvrf_entry), &portvrf_compare);
+    table_init(&port2vrf_table, sizeof(struct port2vrf_entry), &port2vrf_compare);
     table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), &vrf2rib_compare);
     table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), &vrf2rib_compare);
     table_init(&neigh_table, sizeof(struct neigh_entry), &neigh_compare);
