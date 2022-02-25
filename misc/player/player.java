@@ -779,28 +779,20 @@ public class player implements Runnable {
             return -1;
         }
         if (cmd.equals("dequeue")) {
-            String a;
             int i = playerUtil.str2int(song);
-            a = "nothing removed<br/>";
             if (nextSong.size() > 1) {
-                if (nextSong.remove(Integer.valueOf(i))) {
-                    a = "removed from queue<br/>";
-                }
+                nextSong.remove(Integer.valueOf(i));
             }
+            String a = "dequeued song #" + i + "<br/>";
             putStart(buf, 3);
             putMenu(buf);
             buf.write(a.getBytes());
             return -1;
         }
         if (cmd.equals("enqueue")) {
-            String a;
             int i = playerUtil.str2int(song);
-            if (i == currSong) {
-                a = "not qeueued<br/>";
-            } else {
-                nextSong.add(i);
-                a = "queued song #" + i + "<br/>";
-            }
+            nextSong.add(i);
+            String a = "queued song #" + i + "<br/>";
             putStart(buf, 3);
             putMenu(buf);
             buf.write(a.getBytes());
