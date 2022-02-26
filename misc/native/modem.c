@@ -137,6 +137,15 @@ int doOneCmd(char *cmdFul) {
     if (strcmp(cmdFul, "speedset") == 0) {
         o = atoi(cmdPar[0]);
         switch (o) {
+        case 75:
+            i = B75;
+            break;
+        case 110:
+            i = B110;
+            break;
+        case 150:
+            i = B150;
+            break;
         case 300:
             i = B300;
             break;
