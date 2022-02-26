@@ -136,16 +136,49 @@ int doOneCmd(char *cmdFul) {
     }
     if (strcmp(cmdFul, "speedset") == 0) {
         o = atoi(cmdPar[0]);
-        i = 0;
-        if (o == 1200) i = B1200;
-        if (o == 2400) i = B2400;
-        if (o == 4800) i = B4800;
-        if (o == 9600) i = B9600;
-        if (o == 19200) i = B19200;
-        if (o == 38400) i = B38400;
-        if (o == 57600) i = B57600;
-        if (o == 115200) i = B115200;
-        if (i == 0) return 1;
+        switch (o) {
+        case 300:
+            i = B300;
+            break;
+        case 600:
+            i = B600;
+            break;
+        case 1200:
+            i = B1200;
+            break;
+        case 2400:
+            i = B2400;
+            break;
+        case 4800:
+            i = B4800;
+            break;
+        case 9600:
+            i = B9600;
+            break;
+        case 19200:
+            i = B19200;
+            break;
+        case 38400:
+            i = B38400;
+            break;
+        case 57600:
+            i = B57600;
+            break;
+        case 115200:
+            i = B115200;
+            break;
+        case 230400:
+            i = B230400;
+            break;
+        case 460800:
+            i = B460800;
+            break;
+        case 576000:
+            i = B576000;
+            break;
+        default:
+            return 1;
+        }
         struct termios term;
         memset(&term, 0, sizeof (term));
         term.c_cflag = CREAD | CS8 | CLOCAL;
