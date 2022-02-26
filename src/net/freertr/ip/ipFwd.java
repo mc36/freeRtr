@@ -1421,7 +1421,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (debugger.ipFwdTraf) {
             logger.debug("snd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
-        ipCore.testIPaddress(pck, pck.IPtrg);
         ipMpls.beginMPLSfields(pck, mplsPropTtl);
     }
 
@@ -1477,7 +1476,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     return;
                 }
             }
-            ipCore.testIPaddress(pck, pck.IPtrg);
             ipMpls.beginMPLSfields(pck, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
             forwardPacket(4, iface, hop, pck);
             return;
@@ -1511,7 +1509,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     return;
                 }
             }
-            ipCore.testIPaddress(snd, snd.IPtrg);
             ipMpls.beginMPLSfields(snd, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
             forwardPacket(4, iface, hop, snd);
         }
@@ -1908,7 +1905,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 natT.reverse.lastUsed = tim;
                 natT.updatePack(pck);
                 natCfg.packUpdate(pck);
-                ipCore.testIPaddress(pck, pck.IPtrg);
             } else {
                 tabNatCfgN natC = natCfg.find(pck);
                 if (natC != null) {
@@ -1932,6 +1928,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         if (pck.IPlnk) {
             if ((from & 1) != 0) {
+                if (pck.IPmlt || pck.IPbrd) {
+                    protoSend(rxIfc, pck);
+                    return;
+                }
                 if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
                     protoSend(rxIfc, pck);
                     return;

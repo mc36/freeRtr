@@ -106,12 +106,12 @@ public class ipCor4 implements ipCor {
         // int sum = pck.msbGetW(10); // header checksum
         pck.getAddr(adr, 12); // source address
         pck.IPsrc.fromIPv4addr(adr);
+        pck.IPlnk = adr.isLinkLocal();
         pck.getAddr(adr, 16); // destination address
         pck.IPtrg.fromIPv4addr(adr);
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk = adr.isLinkLocal();
         pck.IPdf = ((flagFrag & 0x4000) != 0);
         pck.IPmf = ((flagFrag & 0x2000) != 0);
         pck.IPfrg = (flagFrag & 0x1fff) << 3;
@@ -126,14 +126,6 @@ public class ipCor4 implements ipCor {
             logger.debug("rx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
         return false;
-    }
-
-    public void testIPaddress(packHolder pck, addrIP test) {
-        addrIPv4 adr = test.toIPv4();
-        pck.IPbrd = adr.isBroadcast();
-        pck.IPmlt = adr.isMulticast();
-        pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk = adr.isLinkLocal();
     }
 
     public void createIPheader(packHolder pck) {
@@ -171,6 +163,7 @@ public class ipCor4 implements ipCor {
         pck.msbPutW(10, 0); // header checksum
         addrIPv4 adr = pck.IPsrc.toIPv4();
         pck.putAddr(12, adr); // source address
+        pck.IPlnk = adr.isLinkLocal();
         adr = pck.IPtrg.toIPv4();
         pck.putAddr(16, adr); // destination address
         if (cfgAll.ipv4ChecksumTx) {
@@ -179,7 +172,6 @@ public class ipCor4 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk = adr.isLinkLocal();
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;

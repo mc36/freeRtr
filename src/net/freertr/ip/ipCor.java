@@ -48,14 +48,6 @@ public interface ipCor {
     public boolean parseIPheader(packHolder pck, boolean chksiz);
 
     /**
-     * test ip address
-     *
-     * @param pck packet to set in
-     * @param test address to test
-     */
-    public void testIPaddress(packHolder pck, addrIP test);
-
-    /**
      * create ip header
      *
      * @param pck packet to update

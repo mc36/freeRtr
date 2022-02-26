@@ -116,12 +116,12 @@ public class ipCor6 implements ipCor {
         pck.IPttl = pck.getByte(7); // hop limit
         pck.getAddr(adr, 8); // source address
         pck.IPsrc.fromIPv6addr(adr);
+        pck.IPlnk = adr.isLinkLocal();
         pck.getAddr(adr, 24); // destination address
         pck.IPtrg.fromIPv6addr(adr);
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk = adr.isLinkLocal();
         pck.IPsiz = size;
         pck.IPver = protocolVersion;
         pck.IPdf = false;
@@ -151,14 +151,6 @@ public class ipCor6 implements ipCor {
             logger.debug("rx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
         return false;
-    }
-
-    public void testIPaddress(packHolder pck, addrIP test) {
-        addrIPv6 adr = test.toIPv6();
-        pck.IPbrd = adr.isBroadcast();
-        pck.IPmlt = adr.isMulticast();
-        pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk = adr.isLinkLocal();
     }
 
     public void createIPheader(packHolder pck) {
@@ -202,12 +194,12 @@ public class ipCor6 implements ipCor {
         pck.putByte(7, pck.IPttl); // hop limit
         addrIPv6 adr = pck.IPsrc.toIPv6();
         pck.putAddr(8, adr); // source address
+        pck.IPlnk = adr.isLinkLocal();
         adr = pck.IPtrg.toIPv6();
         pck.putAddr(24, adr); // destination address
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk = adr.isLinkLocal();
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;
