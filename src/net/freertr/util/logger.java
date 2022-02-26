@@ -566,15 +566,6 @@ public class logger {
      */
     public static userFormat listThreads() {
         ThreadGroup r = Thread.currentThread().getThreadGroup();
-        /*
-        for (;;) {
-            ThreadGroup p = r.getParent();
-            if (p == null) {
-                break;
-            }
-            r = p;
-        }
-         */
         ThreadMXBean tb = ManagementFactory.getThreadMXBean();
         userFormat l = new userFormat("|", "grp|name|time|state|stack");
         listThreads(l, tb, r);
