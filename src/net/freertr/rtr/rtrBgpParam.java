@@ -1624,11 +1624,14 @@ public abstract class rtrBgpParam {
     public abstract void getConfig(List<String> l, String beg, int filter);
 
     /**
-     * check safe ebgp policy
+     * check shutdown policy
      *
-     * @return true if violating, false if correct
+     * @return true if shutdown, false if not
      */
-    public boolean checkSafeEbgp() {
+    public boolean checkShutdown() {
+        if (shutdown) {
+            return true;
+        }
         if (!lower.safeEbgp) {
             return false;
         }
@@ -1679,7 +1682,6 @@ public abstract class rtrBgpParam {
             copyFrom(t);
             template = t;
             shutdown |= cmd.word().equals("shutdown");
-            shutdown |= checkSafeEbgp();
             return false;
         }
         if (isTemplate) {
@@ -1697,7 +1699,6 @@ public abstract class rtrBgpParam {
                 distance = lower.distantExt;
             }
             shutdown |= cmd.word().equals("shutdown");
-            shutdown |= checkSafeEbgp();
             return false;
         }
         if (s.equals("local-as")) {
@@ -1854,7 +1855,6 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("shutdown")) {
             shutdown = !negated;
-            shutdown |= checkSafeEbgp();
             if (shutdown) {
                 flapBgpConn();
             }

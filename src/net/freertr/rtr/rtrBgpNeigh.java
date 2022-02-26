@@ -530,6 +530,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public userFormat getStatus() {
         userFormat l = new userFormat("|", "category|value");
         l.add("peer|" + peerAddr);
+        l.add("shutdown|" + checkShutdown());
         l.add("reachable state|" + reachable);
         l.add("reachable changed|" + bits.timePast(reachTim) + " ago, at " + bits.time2str(cfgAll.timeZoneName, reachTim + cfgAll.timeServerOffset, 3));
         l.add("reachable changes|" + reachNum);
@@ -683,7 +684,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (!need2run) {
                 return;
             }
-            if (shutdown) {
+            if (checkShutdown()) {
                 continue;
             }
             if (conn.txFree() >= 0) {
@@ -1247,7 +1248,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             }
         }
         groupMember = -1;
-        if (shutdown) {
+        if (checkShutdown()) {
             return;
         }
         if (conn == null) {
