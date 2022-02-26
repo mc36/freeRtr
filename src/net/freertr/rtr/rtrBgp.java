@@ -2559,7 +2559,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("safe-ebgp")) {
             safeEbgp = !negated;
-            if (negated) {
+            if (!safeEbgp) {
                 return false;
             }
             for (int i = 0; i < neighs.size(); i++) {
