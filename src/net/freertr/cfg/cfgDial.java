@@ -734,13 +734,13 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         l.add(null, "1 2    source                  interface to use");
         l.add(null, "2 .      <name:ifc>            interface name");
         l.add(null, "1 2    target                  set peer name");
-        l.add(null, "2 2,.    <name>                domain name");
+        l.add(null, "2 2,.    <str>                 domain name");
         l.add(null, "1 2    myname                  set endpoint");
-        l.add(null, "2 2,.    <name>                username");
+        l.add(null, "2 2,.    <str>                 username");
         l.add(null, "1 2    username                set username");
-        l.add(null, "2 2,.    <name>                username");
+        l.add(null, "2 2,.    <str>                 username");
         l.add(null, "1 2    password                set password");
-        l.add(null, "2 2,.    <name>                password");
+        l.add(null, "2 2,.    <str>                 password");
         l.add(null, "1 2    protocol                set peer protocol");
         l.add(null, "2 .      sip-udp               sip over udp");
         l.add(null, "2 .      sip-listen            sip over tcp as server");

@@ -166,7 +166,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "1 2,. description           description of this route map");
         l.add(null, "2 2,.   [text]              text describing this route map");
         l.add(null, "1 2   rename                rename this route map");
-        l.add(null, "2 .     <name>              set new name");
+        l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 2   tcladd                add tcl line");
         l.add(null, "2 2,.   <str>               script");
         l.add(null, "1 .   tcldel                delete tcl script");

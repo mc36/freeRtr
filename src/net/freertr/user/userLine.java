@@ -544,7 +544,7 @@ public class userLine {
     public void getHelp(userHelping l) {
         l.add(null, "1 2  exec                           set executable parameters");
         l.add(null, "2 3    interface                    set interface to use for framing");
-        l.add(null, "3 .      <name>                     name of interface");
+        l.add(null, "3 .      <name:ifc>                 name of interface");
         l.add(null, "2 .    logging                      enable logging");
         l.add(null, "2 .    timestamp                    enable timestamps");
         l.add(null, "2 3    colorize                     enable colorization");
@@ -582,7 +582,7 @@ public class userLine {
         l.add(null, "2 3    privilege                    set default privilege");
         l.add(null, "3 .      <num>                      privilege of terminal");
         l.add(null, "2 3    authorization                set authorization");
-        l.add(null, "3 .      <name>                     name of authentication list");
+        l.add(null, "3 .      <name:aaa>                 name of authentication list");
         l.add(null, "1 2  login                          set login parameters");
         l.add(null, "2 3,.  last                         display last login line");
         l.add(null, "3 .      none                       nothing");
@@ -591,7 +591,7 @@ public class userLine {
         l.add(null, "3 .      both                       everything");
         l.add(null, "2 .    logging                      enable logging");
         l.add(null, "2 3    authentication               set authentication");
-        l.add(null, "3 .      <name>                     name of authentication list");
+        l.add(null, "3 .      <name:aaa>                 name of authentication list");
         l.add(null, "2 3    escape                       set escape character");
         l.add(null, "3 .      <num>                      ascii number");
         l.add(null, "2 3    activate                     set activation character");

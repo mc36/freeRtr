@@ -303,13 +303,13 @@ public class servDhcp6 extends servGeneric implements prtServS {
         l.add(null, "2 3,.  <addr>               dns#1 server address");
         l.add(null, "3 .      <addr>             dns#2 server address");
         l.add(null, "1 2  boot-url               url to boot file");
-        l.add(null, "2 .    <name>               url");
+        l.add(null, "2 .    <str>                url");
         l.add(null, "1 2  domain-name            domain name to delegate");
-        l.add(null, "2 .    <name>               domain name");
+        l.add(null, "2 .    <str>                domain name");
         l.add(null, "1 2  lease                  lease time to delegate");
-        l.add(null, "2 .    <sec>                lease time in ms");
+        l.add(null, "2 .    <num>                lease time in ms");
         l.add(null, "1 2  renew                  renew time to delegate");
-        l.add(null, "2 .    <sec>                renew time in ms");
+        l.add(null, "2 .    <num>                renew time in ms");
         l.add(null, "1 2  netmask                network to delegate");
         l.add(null, "2 .    <mask>               netmask to delegate");
         l.add(null, "1 2  preference             server preference value");

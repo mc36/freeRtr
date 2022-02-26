@@ -101,7 +101,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "1  3,.    description                specify description");
         l.add(null, "3  3,.      <str>                    text");
         l.add(null, "1  2      rename                     rename this tracker");
-        l.add(null, "2  .        <name>                   set new name");
+        l.add(null, "2  .        <str>                    set new name");
         l.add(null, "1  2      mode                       specify mode of runs");
         l.add(null, "2  .        icmp                     icmp echo request");
         l.add(null, "2  .        nrpe                     nrpe remote check");

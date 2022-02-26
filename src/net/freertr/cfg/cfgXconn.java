@@ -82,7 +82,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
         l.add(null, "1 2  rename                         rename this xconnect");
-        l.add(null, "2 .    <name>                       set new name");
+        l.add(null, "2 .    <str>                        set new name");
         l.add(null, "1 2  mtu                            specify vc mtu");
         l.add(null, "2 .    <num>                        mtu");
         l.add(null, "1 2  type                           type of pseudowire");

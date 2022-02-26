@@ -74,7 +74,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
         l.add(null, "1 2   rename                        rename this connect");
-        l.add(null, "2 .     <name>                      set new name");
+        l.add(null, "2 .     <str>                       set new name");
         l.add(null, "1 2  side1                          specify first side of connection");
         getSideHelp(l);
         l.add(null, "1 2  side2                          specify seconds side of connection");

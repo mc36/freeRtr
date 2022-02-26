@@ -751,7 +751,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "1 2,. description        description of this vrf");
         l.add(null, "2 2,.   [text]           text describing this vrf");
         l.add(null, "1 2  rename              rename this vrf");
-        l.add(null, "2 .    <name>            set new name of vrf");
+        l.add(null, "2 .    <str>             set new name of vrf");
         l.add(null, "1 2  rd                  specify route distinguisher");
         l.add(null, "2 .    <rd>              rd in ASnum:IDnum format");
         l.add(null, "1 2  rt-both             specify route target");

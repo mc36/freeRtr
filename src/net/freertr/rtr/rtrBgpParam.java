@@ -1262,11 +1262,11 @@ public abstract class rtrBgpParam {
         l.add(null, "3  4       address-family              specify address families");
         getAfiList(l, "4  4,.", "use", true);
         l.add(null, "3  4       monitor                     bgp monitor protocol for this peer");
-        l.add(null, "4  .         <name>                    name of bmp");
+        l.add(null, "4  .         <str>                     name of bmp");
         l.add(null, "3  4       other-address               address of peer in the other afi");
         l.add(null, "4  .         <addr>                    other address");
         l.add(null, "3  4       dump                        bgp dump for this peer");
-        l.add(null, "4  .         <name>                    name of mrt");
+        l.add(null, "4  .         <str>                     name of mrt");
         l.add(null, "3  4       buffer-size                 size of buffer");
         l.add(null, "4  .         <num>                     bytes in buffer");
         l.add(null, "3  4       ttl-security                sending ttl value");

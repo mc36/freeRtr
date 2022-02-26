@@ -157,7 +157,7 @@ public class servL2f extends servGeneric implements prtServP {
         l.add(null, "1 2  clone                        set interface to clone");
         l.add(null, "2 .    <name:ifc>                 name of interface");
         l.add(null, "1 2  password                     set password");
-        l.add(null, "2 .    <name>                     password");
+        l.add(null, "2 .    <str>                      password");
     }
 
     public String srvName() {

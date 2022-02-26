@@ -73,7 +73,7 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         l.add(null, "1 3,. description           specify description");
         l.add(null, "3 3,.   <str>               text");
         l.add(null, "1 2   rename                rename this prefix list");
-        l.add(null, "2 .     <name>              set new name");
+        l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 3   evaluate              evaluate another list");
         l.add(null, "3 4     permit              specify list to allow");
         l.add(null, "3 4     deny                specify list to forbid");

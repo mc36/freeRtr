@@ -158,7 +158,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         l.add(null, "1 3,. description        specify description");
         l.add(null, "3 3,.   <str>            text");
         l.add(null, "1 2   rename             rename this ipsec");
-        l.add(null, "2 .     <name>           set new name");
+        l.add(null, "2 .     <str>            set new name");
         l.add(null, "1 2  key                 set preshared key");
         l.add(null, "2 .    <text>            key");
         l.add(null, "1 2  protected           set protected protocol");

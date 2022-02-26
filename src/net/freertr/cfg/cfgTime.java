@@ -117,7 +117,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "1 3,. description           specify description");
         l.add(null, "3 3,.   <str>               text");
         l.add(null, "1 2   rename                rename this time map");
-        l.add(null, "2 .     <name>              set new name");
+        l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 2,. reindex               reindex route map");
         l.add(null, "2 3,.   [num]               initial number to start with");
         l.add(null, "3 4,.     [num]             increment number");

@@ -6142,13 +6142,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     server                      start pppoe server");
         l.add(null, "3 4,.     <name:ifc>                name of dialer interface");
         l.add(null, "4 5         name                    set service name");
-        l.add(null, "5 4,.         <name>                text");
+        l.add(null, "5 4,.         <str>                 text");
         l.add(null, "4 5         delay                   set pado delay");
         l.add(null, "5 4,.         <num>                 time");
         l.add(null, "2 3     relay                       start pppoe relay");
         l.add(null, "3 4,.     <name:ifc>                name of dialer interface");
         l.add(null, "4 5         name                    set service name");
-        l.add(null, "5 4,.         <name>                text");
+        l.add(null, "5 4,.         <str>                 text");
         l.add(null, "4 5         delay                   set pado delay");
         l.add(null, "5 4,.         <num>                 time");
         l.add(null, "1 2   eapol                         eapol parameters on the interface");
@@ -6224,7 +6224,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     prefix-dns                  name server in router advertisements");
         l.add(null, "3 .       <addr>                    name server address");
         l.add(null, "2 3     prefix-domain               domain name in router advertisements");
-        l.add(null, "3 .       <name>                    domain name");
+        l.add(null, "3 .       <str>                     domain name");
         l.add(null, "2 3     prefix-interval             time between router advertisements");
         l.add(null, "3 .       <num>                     time in milliseconds");
         l.add(null, "2 3     prefix-validity             prefix validity in router advertisements");
@@ -6291,7 +6291,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     destination                 destination of encapsulated packets");
         l.add(null, "3 .       <addr>                    ip address where to send");
         l.add(null, "2 3     domain-name                 destination of encapsulated packets");
-        l.add(null, "3 3,.     <name>                    domain name where to send");
+        l.add(null, "3 3,.     <str>                     domain name where to send");
         l.add(null, "2 3     tos                         set type of service, -1 to map out");
         l.add(null, "3 .       <num>                     value of tos field");
         l.add(null, "2 3     ttl                         set time to live, -1 to map out");
@@ -6409,7 +6409,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "4 3,.       <num>                   translation rule");
         l.add(null, "3 4       member                    member of inspection");
         l.add(null, "4 5         <name:ses>              name of session group");
-        l.add(null, "5 3,.         <name>                local identifier in the group");
+        l.add(null, "5 3,.         <str>                 local identifier in the group");
         l.add(null, "2 3     redirection                 send packets out on different interface");
         l.add(null, "3 .       <name:ifc>                name of interface");
         l.add(null, "2 3,.   ldp4                        enable/disable ldp ipv4 discovery");

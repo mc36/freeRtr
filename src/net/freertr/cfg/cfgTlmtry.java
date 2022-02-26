@@ -65,7 +65,7 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         l.add(null, "1  2,.    description              specify description");
         l.add(null, "2  2,.      <str>                  text");
         l.add(null, "1  2      rename                   rename this exporter");
-        l.add(null, "2  .        <name>                 set new name");
+        l.add(null, "2  .        <str>                  set new name");
         l.add(null, "1  2      target                   specify target address");
         l.add(null, "2  2,.      <str>                  name");
         l.add(null, "1  2      port                     specify target port");

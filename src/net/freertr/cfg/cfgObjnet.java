@@ -61,7 +61,7 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
         l.add(null, "1  3,. description           specify description");
         l.add(null, "3  3,.   <str>               text");
         l.add(null, "1  2   rename                rename this object group");
-        l.add(null, "2  .     <name>              set new name");
+        l.add(null, "2  .     <str>               set new name");
         l.add(null, "1  3   <addr>                address of network");
         l.add(null, "3  .     <mask>              mask of network");
         l.add(null, "1  2,. reindex               reindex access list");

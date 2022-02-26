@@ -208,7 +208,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         l.add(null, "1 2    rename              rename this authenticator");
-        l.add(null, "2 .      <name>            set new name");
+        l.add(null, "2 .      <str>             set new name");
         l.add(null, "1 .    log-failure         log failure");
         l.add(null, "1 .    log-success         log success");
         l.add(null, "1 .    log-error           log error");

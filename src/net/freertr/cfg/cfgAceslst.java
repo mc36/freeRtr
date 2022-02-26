@@ -87,7 +87,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add(null, "1  3,. description                   specify description");
         l.add(null, "3  3,.   <str>                       text");
         l.add(null, "1  2   rename                        rename this access list");
-        l.add(null, "2  .     <name>                      set new name");
+        l.add(null, "2  .     <str>                       set new name");
         l.add(null, "1  .   hidden                        hide the entries");
         l.add(null, "1  3   evaluate                      evaluate another list");
         l.add(null, "3  4     permit                      specify list to allow");
@@ -109,7 +109,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add(null, "6  8           all                   no source port matching");
         l.add(null, "6  8           <port>                source port");
         l.add(null, "6  7           obj                   object group source port matching");
-        l.add(null, "7  8             <name>              name of object group");
+        l.add(null, "7  8             <str>               name of object group");
         l.add(null, "8  10            any                 no target address matching");
         l.add(null, "8  9             obj                 object group target address matching");
         l.add(null, "8  9             host                host target address matching");
@@ -118,7 +118,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         l.add(null, "10 12,.              all             no target port matching");
         l.add(null, "10 12,.              <port>          target port");
         l.add(null, "10 11                obj             object group target port matching");
-        l.add(null, "11 12,.                <name>        name of object group");
+        l.add(null, "11 12,.                <str>         name of object group");
         l.add(null, "12 12,.                frag          fragmented datagrams");
         l.add(null, "12 13                  flag          tcp flags");
         l.add(null, "13 12,.                  all         no flag matching");

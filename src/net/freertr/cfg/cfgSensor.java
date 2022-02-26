@@ -227,7 +227,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         l.add(null, "1 2      rename                   rename this sensor");
-        l.add(null, "2 .        <name>                 set new name");
+        l.add(null, "2 .        <str>                  set new name");
         l.add(null, "1 2      command                  specify command to execute");
         l.add(null, "2 2,.      <str>                  command");
         l.add(null, "1 2      prepend                  specify prepend");

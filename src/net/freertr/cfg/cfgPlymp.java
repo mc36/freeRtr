@@ -133,7 +133,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "1 2,. description           description of this policy map");
         l.add(null, "2 2,.   [text]              text describing this policy map");
         l.add(null, "1 2   rename                rename this policy map");
-        l.add(null, "2 .     <name>              set new name");
+        l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 2   match                 match values from packet");
         l.add(null, "2 3     length              match length value");
         l.add(null, "3 .       <num>             value to match");

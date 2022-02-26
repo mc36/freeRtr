@@ -198,13 +198,13 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "2  2,.      [text]                   text describing this process");
         l.add(null, "1  .      respawn                    restart on termination");
         l.add(null, "1  2      rename                     rename this process");
-        l.add(null, "2  .        <name>                   set new name of process");
+        l.add(null, "2  .        <str>                    set new name of process");
         l.add(null, "1  2      exec                       set external binary to use");
-        l.add(null, "2  2,.      <name>                   name of image");
+        l.add(null, "2  2,.      <str>                    name of image");
         l.add(null, "1  2      user                       set user to use");
-        l.add(null, "2  .        <name>                   user value");
+        l.add(null, "2  .        <str>                    user value");
         l.add(null, "1  2      pinning                    set pinning mask");
-        l.add(null, "2  .        <name>                   cpu mask in hex");
+        l.add(null, "2  .        <str>                    cpu mask in hex");
         l.add(null, "1  2      time                       specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      delay                      specify initial delay");

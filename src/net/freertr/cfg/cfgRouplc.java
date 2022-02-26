@@ -106,7 +106,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "1 2,. description           description of this route policy");
         l.add(null, "2 2,.   [text]              text describing this route policy");
         l.add(null, "1 2   rename                rename this route policy");
-        l.add(null, "2 .     <name>              set new name");
+        l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 2   if                    match values from source routing protocol");
         l.add(null, "1 2   elsif                 match values from source routing protocol");
         l.add(null, "2 .     always              match always");

@@ -413,12 +413,12 @@ public class userConfig {
 
     private void getHelpGlobal(userHelping l) {
         l.add(null, "1  2  hostname                       set name of system");
-        l.add(null, "2  .    <name>                       name of system");
+        l.add(null, "2  .    <str>                        name of system");
         l.add(null, "1  .  buggy                          enable dangerous things");
         l.add(null, "1  2  enable                         set enable password");
-        l.add(null, "2  .    <name>                       enable password");
+        l.add(null, "2  .    <str>                        enable password");
         l.add(null, "1  2  password-encrypt               set password encryption key");
-        l.add(null, "2  .    <name>                       encryption key");
+        l.add(null, "2  .    <str>                        encryption key");
         l.add(null, "1  2  banner                         banner of system");
         l.add(null, "2  3    set                          set banner");
         l.add(null, "3  3,.    <cmd>                      first line of banner");
@@ -441,10 +441,10 @@ public class userConfig {
         l.add(null, "3  4,.    warning                    warning messages");
         l.add(null, "3  4,.    error                      error messages");
         l.add(null, "3  4,.    exception                  exception messages");
-        l.add(null, "4  .        <name>                   name of file");
+        l.add(null, "4  .        <str>                    name of file");
         l.add(null, "2  3    rotate                       log file rotation");
         l.add(null, "3  4      <num>                      maximum file size");
-        l.add(null, "4  .        <name>                   name of second file");
+        l.add(null, "4  .        <str>                    name of second file");
         l.add(null, "2  3    syslog                       syslog logging");
         l.add(null, "3  4      debug                      debugging messages");
         l.add(null, "3  4      informational              informational messages");
@@ -482,8 +482,8 @@ public class userConfig {
         l.add(null, "3  4,.    warning                    warning messages");
         l.add(null, "3  4,.    error                      error messages");
         l.add(null, "3  4,.    exception                  exception messages");
-        l.add(null, "4  5        <name>                   name of host");
-        l.add(null, "5  .          <name>                 name of channel");
+        l.add(null, "4  5        <str>                    name of host");
+        l.add(null, "5  .          <str>                  name of channel");
         l.add(null, "2  3    monitor                      terminal logging");
         l.add(null, "3  .      debug                      debugging messages");
         l.add(null, "3  .      informational              informational messages");
@@ -548,7 +548,7 @@ public class userConfig {
         l.add(null, "2  3    bullying                     specify shame quote source");
         l.add(cfgAll.dmnQuote.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    domain-name                  specify domain name");
-        l.add(null, "3  .      <name>                     name of domain");
+        l.add(null, "3  .      <str>                      name of domain");
         l.add(null, "2  3    name-proxy                   specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    name-server                  specify address of name server");
@@ -559,13 +559,13 @@ public class userConfig {
         l.add(null, "2  .    upgrade-backup               automatically backup image on upgrade");
         l.add(null, "2  .    upgrade-ownkey               use just the configured key");
         l.add(null, "2  3    upgrade-server               specify url of upgrade server");
-        l.add(null, "3  .      <name>                     url of server");
+        l.add(null, "3  .      <str>                      url of server");
         l.add(null, "2  3    upgrade-script               specify script to run on upgrade");
         l.add(null, "3  .      <name:scr>                 name of script");
         l.add(null, "2  3    upgrade-pubkey               specify key of upgrade");
         l.add(null, "3  .      <text>                     public key");
         l.add(null, "2  3    config-server                specify url of config server");
-        l.add(null, "3  .      <name>                     url of server");
+        l.add(null, "3  .      <str>                      url of server");
         l.add(null, "2  3    config-username              specify username on config server");
         l.add(null, "3  .      <text>                     set username");
         l.add(null, "2  3    config-password              specify password on config server");
@@ -582,7 +582,7 @@ public class userConfig {
         l.add(null, "3  3,.    chksum                     append chksum");
         l.add(null, "3  3,.    none                       append nothing");
         l.add(null, "2  3    whois-server                 set whois server");
-        l.add(null, "3  .      <name>                     server name");
+        l.add(null, "3  .      <str>                      server name");
         l.add(null, "2  .    password-stars               type stars in passwords");
         l.add(null, "2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add(null, "2  .    prefer-ipv4                  prefer ipv4 for domains");
@@ -610,13 +610,13 @@ public class userConfig {
         l.add(null, "3  4      <num>                      forced minimum version");
         l.add(null, "4  .        <num>                    forced maximum version");
         l.add(null, "2  3    time-server                  specify name of time server");
-        l.add(null, "3  .      <name>                     name of server");
+        l.add(null, "3  .      <str>                      name of server");
         l.add(null, "2  3    time-zone                    specify time zone");
-        l.add(null, "3  .      <name>                     name of time zone");
+        l.add(null, "3  .      <str>                      name of time zone");
         l.add(null, "2  3    mail-server                  specify name of mail server");
-        l.add(null, "3  .      <name>                     name of server");
+        l.add(null, "3  .      <str>                      name of server");
         l.add(null, "2  3    mail-username                specify username on mail server");
-        l.add(null, "3  .      <name>                     set username");
+        l.add(null, "3  .      <str>                      set username");
         l.add(null, "2  3    mail-password                specify password on mail server");
         l.add(null, "3  .      <text>                     set password");
         l.add(null, "1  2  ipx                            ipx config commands");
@@ -654,7 +654,7 @@ public class userConfig {
         l.add(null, "2  3    packet                       packet alias");
         l.add(null, "2  3    flash                        flash alias");
         l.add(null, "2  3    test                         test alias");
-        l.add(null, "3  4      <name>                     name of new command");
+        l.add(null, "3  4      <str>                      name of new command");
         l.add(null, "4  .        hidden                   hide the command");
         l.add(null, "4  5        command                  specify command to execute");
         l.add(null, "5  5,.        <cmd>                  command");

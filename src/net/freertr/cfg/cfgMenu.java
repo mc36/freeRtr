@@ -62,14 +62,14 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
         l.add(null, "1 2   rename                        rename this menu");
-        l.add(null, "2 .     <name>                      set new name");
+        l.add(null, "2 .     <str>                       set new name");
         l.add(null, "1 .  ignore-case                    ignore case on matching");
         l.add(null, "1 2  letter                         set letter to configure");
-        l.add(null, "2 3,.  <name>                       menu item");
+        l.add(null, "2 3,.  <str>                        menu item");
         l.add(null, "3 4      command                    command to do");
-        l.add(null, "4 4,.      <name>                   command");
+        l.add(null, "4 4,.      <str>                    command");
         l.add(null, "3 4      text                       text to display");
-        l.add(null, "4 4,.      <name>                   text");
+        l.add(null, "4 4,.      <str>                    text");
     }
 
     public List<String> getShRun(int filter) {

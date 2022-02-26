@@ -80,7 +80,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
         l.add(null, "1 2   rename                        rename this proxy");
-        l.add(null, "2 .     <name>                      set new name");
+        l.add(null, "2 .     <str>                       set new name");
         l.add(null, "1 2  protocol                       specify protocol to use");
         l.add(null, "2 .    local                        select local vrf");
         l.add(null, "2 .    socks4                       select socks v4");
@@ -93,9 +93,9 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "2 .    dtls                         use datagram transport layer security");
         l.add(null, "2 .    telnet                       use telnet protocol");
         l.add(null, "1 2  username                       username to send");
-        l.add(null, "2 .    <name>                       username");
+        l.add(null, "2 .    <str>                        username");
         l.add(null, "1 2  password                       password to send");
-        l.add(null, "2 .    <name>                       username");
+        l.add(null, "2 .    <str>                        username");
         l.add(null, "1 2  recursive                      name of profile to use");
         l.add(null, "2 .    <name:prx>                   profile name");
         l.add(null, "1 2  vrf                            name of vrf to find target in");
@@ -103,7 +103,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "1 2  source                         name of source interface");
         l.add(null, "2 .    <name:ifc>                   interface name");
         l.add(null, "1 2  target                         specify address of proxy");
-        l.add(null, "2 .    <name>                       name or address");
+        l.add(null, "2 .    <str>                        name or address");
         l.add(null, "1 2  port                           specify port of proxy");
         l.add(null, "2 .    <num>                        port number");
         l.add(null, "1 2  prefer                         prefer ip protocol");

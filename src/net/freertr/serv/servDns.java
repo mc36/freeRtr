@@ -162,7 +162,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "3  .       <addr>                address to prepend");
         l.add(null, "2  .     6to4nothing             clear 6to4 prefix");
         l.add(null, "1  2   resolver                  define resolver");
-        l.add(null, "2  3     <name>                  zone name");
+        l.add(null, "2  3     <str>                   zone name");
         l.add(null, "3  .       <addr>                address of resolver");
         l.add(null, "1  2   zone                      name of a zone");
         List<String> lst = new ArrayList<String>();
@@ -177,11 +177,11 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "3  .     disable                 prohibit");
         l.add(null, "1  .   clear                     clear all records from zone");
         l.add(null, "1  3   reverse                   generate reverse zone");
-        l.add(null, "3  .     <name>                  name of zone");
+        l.add(null, "3  .     <str>                   name of zone");
         l.add(null, "1  3   download                  download zone with dns axfr if changed");
-        l.add(null, "3  .     <name>                  name of server");
+        l.add(null, "3  .     <str>                   name of server");
         l.add(null, "1  3   redownload                download zone with dns axfr anyway");
-        l.add(null, "3  .     <name>                  name of server");
+        l.add(null, "3  .     <str>                   name of server");
         l.add(null, "1  3   rr                        specify a record");
         lst = new ArrayList<String>();
         packDnsZone zon = new packDnsZone(lastZone);

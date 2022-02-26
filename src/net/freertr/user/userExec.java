@@ -565,7 +565,7 @@ public class userExec {
         hl.add(null, "5 .            rpkitab              list of prefixes");
         hl.add(null, "5 .            summary              list of neighbors");
         hl.add(null, "5 6            template             information about template");
-        hl.add(null, "6 7              <name>             template name");
+        hl.add(null, "6 7              <str>              template name");
         hl.add(null, "7 .                config           peer configuration");
         hl.add(null, "5 6            neighbor             information about neighbor");
         hl.add(null, "6 7              <addr>             neighbor address");
@@ -1126,7 +1126,7 @@ public class userExec {
         hl.add(null, "4 3,.        <str>               url to use, %name% and %id% will be replaced");
         hl.add(null, "2 3      dns                     dns protocol information");
         hl.add(cfgAll.dmnDns.listServers(), "3 4        <name:loc>            server name");
-        hl.add(null, "4 .          <name>              zone name");
+        hl.add(null, "4 .          <str>               zone name");
         hl.add(null, "2 3      http                    http protocol information");
         hl.add(cfgAll.dmnHttp.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      smtp                    smtp protocol information");
@@ -1145,9 +1145,9 @@ public class userExec {
         hl.add(null, "4 .          toptalk             top talker list");
         hl.add(null, "2 3      streamingmdt            streaming telemetry collector information");
         hl.add(cfgAll.dmnStreamingMdt.listServers(), "3 4,.      <name:loc>            server name");
-        hl.add(null, "4 5,.        <name>              peer");
-        hl.add(null, "5 6            <name>            path");
-        hl.add(null, "6 .              <name>          key");
+        hl.add(null, "4 5,.        <str>               peer");
+        hl.add(null, "5 6            <str>             path");
+        hl.add(null, "6 .              <str>           key");
         hl.add(null, "2 3      bmp                     bgp monitoring protocol information");
         hl.add(cfgAll.dmnBmp.listServers(), "3 4,.      <name:loc>            server name");
         hl.add(null, "4 5,.        <addr>              from");

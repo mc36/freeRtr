@@ -49,7 +49,7 @@ public class authTacacs extends authGeneric {
 
     public void getHelp(userHelping l) {
         l.add(null, "1 2  server              specify server");
-        l.add(null, "2 .    <name>            name of server");
+        l.add(null, "2 .    <str>             name of server");
         l.add(null, "1 2  secret              specify secret");
         l.add(null, "2 .    <text>            shared secret");
         l.add(null, "1 2  privilege           set default privilege");

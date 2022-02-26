@@ -158,7 +158,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         l.add(null, "1  2,.    description                description of this scheduler");
         l.add(null, "2  2,.      [text]                   text describing this scheduler");
         l.add(null, "1  2      rename                     rename this scheduler");
-        l.add(null, "2  .        <name>                   set new name");
+        l.add(null, "2  .        <str>                    set new name");
         l.add(null, "1  .      respawn                    restart on termination");
         l.add(null, "1  2      command                    specify command to run");
         l.add(null, "2  2,.      <cmd>                    exec command to run");

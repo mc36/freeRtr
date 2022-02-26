@@ -71,7 +71,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         l.add(null, "1  3,.    description                specify description");
         l.add(null, "3  3,.      <str>                    text");
         l.add(null, "1  2      rename                     rename this mtracker");
-        l.add(null, "2  .        <name>                   set new name");
+        l.add(null, "2  .        <str>                    set new name");
         l.add(null, "1  2      group                      specify group address");
         l.add(null, "2  2,.      <addr>                   address of group");
         l.add(null, "1  2      target                     specify target address");

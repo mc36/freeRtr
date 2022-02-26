@@ -522,7 +522,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "4 3,.       <num>                   translation rule");
         l.add(null, "3 4       member                    member of inspection");
         l.add(null, "4 5         <name:ses>              name of session group");
-        l.add(null, "5 3,.         <name>                local identifier in the group");
+        l.add(null, "5 3,.         <str>                 local identifier in the group");
         l.add(null, "2 3     bfd                         enable bidirectional forwarding detection");
         l.add(null, "3 4       <num>                     tx interval in ms");
         l.add(null, "4 5         <num>                   rx interval in ms");

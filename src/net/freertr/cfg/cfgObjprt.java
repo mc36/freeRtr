@@ -61,7 +61,7 @@ public class cfgObjprt implements Comparator<cfgObjprt>, cfgGeneric {
         l.add(null, "1  3,. description           specify description");
         l.add(null, "3  3,.   <str>               text");
         l.add(null, "1  2   rename                rename this object group");
-        l.add(null, "2  .     <name>              set new name");
+        l.add(null, "2  .     <str>               set new name");
         l.add(null, "1  .   <port>                port");
         l.add(null, "1  2,. reindex               reindex access list");
         l.add(null, "2  3,.   [num]               initial number to start with");

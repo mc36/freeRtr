@@ -776,13 +776,13 @@ public class servHttp extends servGeneric implements prtServS {
         }
         l.add(lst, "2 3,.  <name:loc>                   name of server, * for any");
         l.add(null, "3 4      path                       set server root");
-        l.add(null, "4 .        <name>                   root directory of server");
+        l.add(null, "4 .        <str>                    root directory of server");
         l.add(null, "3 4      redir                      set redirect path");
         l.add(null, "4 .        <url>                    url to redirect to");
         l.add(null, "3 .      logging                    log to syslog");
         l.add(null, "3 4      reconn                     reconnect to server");
         l.add(null, "4 5        <name:prx>               proxy profile");
-        l.add(null, "5 .          <name>                 server to redirect to");
+        l.add(null, "5 .          <str>                  server to redirect to");
         l.add(null, "3 4      translate                  translate the url");
         l.add(null, "4 4,.      <num:trn>                translation rule to use");
         l.add(null, "3 4      subconn                    reconnect only to the url");
@@ -794,12 +794,12 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 4,.      keep-host                keep hostname");
         l.add(null, "4 4,.      keep-path                append path");
         l.add(null, "3 4      stream                     stream from server");
-        l.add(null, "4 5        <name>                   content type");
+        l.add(null, "4 5        <str>                    content type");
         l.add(null, "5 6          <name:prx>             proxy profile");
-        l.add(null, "6 .            <name>               server to stream from");
+        l.add(null, "6 .            <str>                server to stream from");
         l.add(null, "3 4      multiacc                   access multiple servers");
         l.add(null, "4 5        <name:prx>               proxy profile");
-        l.add(null, "5 5,.        <name>                 server to access");
+        l.add(null, "5 5,.        <str>                  server to access");
         l.add(null, "3 .      markdown                   allow markdown conversion");
         l.add(null, "3 .      noindex                    disallow index for directory");
         l.add(null, "3 4,.    dirlist                    allow directory listing");
@@ -818,7 +818,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 .      upload                     allow upload files");
         l.add(null, "3 4      backup                     backup uploaded files");
         l.add(null, "4 5        <num>                    number of backups to keep");
-        l.add(null, "5 .          <name>                 root directory of backup");
+        l.add(null, "5 .          <str>                  root directory of backup");
         l.add(null, "3 4      sstp                       allow sstp clients");
         l.add(null, "4 .        <name:ifc>               name of interface");
         l.add(null, "3 4      anyconn                    allow anyconnect clients");

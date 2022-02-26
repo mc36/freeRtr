@@ -201,7 +201,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         l.add(null, "1 2      rename                   rename this check");
-        l.add(null, "2 .        <name>                 set new name");
+        l.add(null, "2 .        <str>                  set new name");
         l.add(null, "1 2      resolve                  resolve the regexp group a to hostname");
         l.add(null, "2 2,.      <str>                  text to resolv");
         l.add(null, "1 2      replace                  replace from one string to another");
