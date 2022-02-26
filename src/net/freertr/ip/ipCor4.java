@@ -112,6 +112,7 @@ public class ipCor4 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk |= adr.isLinkLocal();
         pck.IPdf = ((flagFrag & 0x4000) != 0);
         pck.IPmf = ((flagFrag & 0x2000) != 0);
         pck.IPfrg = (flagFrag & 0x1fff) << 3;
@@ -172,6 +173,7 @@ public class ipCor4 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk |= adr.isLinkLocal();
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;

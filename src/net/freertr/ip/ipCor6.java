@@ -122,6 +122,7 @@ public class ipCor6 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk |= adr.isLinkLocal();
         pck.IPsiz = size;
         pck.IPver = protocolVersion;
         pck.IPdf = false;
@@ -200,6 +201,7 @@ public class ipCor6 implements ipCor {
         pck.IPbrd = adr.isBroadcast();
         pck.IPmlt = adr.isMulticast();
         pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk |= adr.isLinkLocal();
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;
