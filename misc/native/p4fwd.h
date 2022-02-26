@@ -1359,7 +1359,7 @@ ipv4_rx:
         update_chksum(bufP + 10, -1);
         extract_layer4(acl4_ntry, port2vrf_res->tcpmss4);
         route4_ntry.mask = 32;
-        if ((port2vrf_res->verify4 > 0) && ((acl4_ntry.srcAddr & 0xffff0000) != 0xa9fe0000)) {
+        if ((port2vrf_res->verify4 > 0) && (acl4_ntry.trgAddr != 0xffffffff)) {
             route4_ntry.addr = acl4_ntry.srcAddr;
             route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
             if (route4_res == NULL) doDropper;

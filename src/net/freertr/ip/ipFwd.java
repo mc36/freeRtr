@@ -1207,7 +1207,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         pck.putStart();
         pck.INTiface = lower.ifwNum;
-        if (lower.verifySource && !pck.IPlnk) {
+        if (lower.verifySource && !pck.IPlnk && !pck.IPbrd) {
             tabRouteEntry<addrIP> prf = actualU.route(pck.IPsrc);
             if (prf == null) {
                 lower.cntr.drop(pck, counter.reasons.denied);

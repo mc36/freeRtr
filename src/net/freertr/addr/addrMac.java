@@ -175,8 +175,7 @@ public class addrMac extends addrType {
      * @return true if yes
      */
     public boolean isBroadcast() {
-        addrMac a = getBroadcast();
-        return compare(this, a) == 0;
+        return isFilled(255);
     }
 
     /**

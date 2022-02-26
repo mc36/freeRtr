@@ -262,8 +262,7 @@ public class addrIPv6 extends addrType {
      * @return true if yes
      */
     public boolean isEmpty() {
-        addrIPv6 a = getEmpty();
-        return compare(this, a) == 0;
+        return isFilled(0);
     }
 
     /**

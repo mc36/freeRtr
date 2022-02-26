@@ -147,8 +147,7 @@ public class addrIPv4 extends addrType {
      * @return true if yes
      */
     public boolean isBroadcast() {
-        addrIPv4 a = getBroadcast();
-        return compare(this, a) == 0;
+        return isFilled(255);
     }
 
     /**
@@ -177,8 +176,7 @@ public class addrIPv4 extends addrType {
      * @return true if yes
      */
     public boolean isEmpty() {
-        addrIPv4 a = getEmpty();
-        return compare(this, a) == 0;
+        return isFilled(0);
     }
 
     /**
