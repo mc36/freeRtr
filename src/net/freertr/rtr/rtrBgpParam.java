@@ -1624,6 +1624,37 @@ public abstract class rtrBgpParam {
     public abstract void getConfig(List<String> l, String beg, int filter);
 
     /**
+     * check safe ebgp policy
+     *
+     * @return true if violating, false if correct
+     */
+    public boolean checkSafeEbgp() {
+        if (!lower.safeEbgp) {
+            return false;
+        }
+        if (remoteAs == localAs) {
+            return false;
+        }
+        if ((addrFams & mskUni) != 0) {
+            if ((roumapIn == null) && (roupolIn == null) && (prflstIn == null)) {
+                return true;
+            }
+            if ((roumapOut == null) && (roupolOut == null) && (prflstOut == null)) {
+                return true;
+            }
+        }
+        if ((addrFams & mskOtrU) != 0) {
+            if ((oroumapIn == null) && (oroupolIn == null) && (oprflstIn == null)) {
+                return true;
+            }
+            if ((oroumapOut == null) && (oroupolOut == null) && (oprflstOut == null)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * parse configuration command
      *
      * @param cmd command to parse
@@ -1648,6 +1679,7 @@ public abstract class rtrBgpParam {
             copyFrom(t);
             template = t;
             shutdown |= cmd.word().equals("shutdown");
+            shutdown |= checkSafeEbgp();
             return false;
         }
         if (isTemplate) {
@@ -1665,6 +1697,7 @@ public abstract class rtrBgpParam {
                 distance = lower.distantExt;
             }
             shutdown |= cmd.word().equals("shutdown");
+            shutdown |= checkSafeEbgp();
             return false;
         }
         if (s.equals("local-as")) {
@@ -1821,6 +1854,7 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("shutdown")) {
             shutdown = !negated;
+            shutdown |= checkSafeEbgp();
             if (shutdown) {
                 flapBgpConn();
             }

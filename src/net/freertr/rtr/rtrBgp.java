@@ -83,6 +83,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public addrIPv4 routerID;
 
     /**
+     * safe ebgp
+     */
+    public boolean safeEbgp;
+
+    /**
      * segment routing index
      */
     public int segrouIdx = 0;
@@ -846,6 +851,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         evpnUni.setFwdPwe(10, fwdCore, evpnRcv, 0, null);
         evpnMul.setFwdPwe(10, fwdCore, evpnRcv, 0, null);
         routerID = new addrIPv4();
+        safeEbgp = false;
         addrFams = rtrBgpParam.mskUni;
         rtrNum = id;
         switch (fwdCore.ipVersion) {
@@ -2324,6 +2330,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "2 .     <num>                     autonomous system number");
         l.add(null, "1 .   conquer                     conquer bestpath advertisements");
         l.add(null, "1 .   flapstat                    count flap statistics");
+        l.add(null, "1 .   safe-ebgp                   safe ebgp policy");
         l.add(null, "1 2   incremental                 limit on incremental bestpath calculation");
         l.add(null, "2 .     <num>                     maximum prefixes");
         l.add(null, "1 2   router-id                   specify router id");
@@ -2465,6 +2472,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "local-as " + bits.num2str(localAs));
         l.add(beg + "router-id " + routerID);
+        cmds.cfgLine(l, !safeEbgp, beg, "safe-ebgp", "");
         l.add(beg + "address-family" + rtrBgpParam.mask2string(addrFams));
         l.add(beg + "distance " + distantExt + " " + distantInt + " " + distantLoc);
         l.add(beg + "scantime " + scanTime);
@@ -2547,6 +2555,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("router-id")) {
             routerID.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("safe-ebgp")) {
+            safeEbgp = !negated;
             return false;
         }
         if (s.equals("address-family")) {
