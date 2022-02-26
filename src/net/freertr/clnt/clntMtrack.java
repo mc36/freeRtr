@@ -172,6 +172,9 @@ public class clntMtrack implements Runnable, prtServS {
         if (cfgTrg.size() < 1) {
             return;
         }
+        if (srcIfc.getFwdIfc(cfgTrg.get(0)) == null) {
+            return;
+        }
         doRebind();
         working = 1;
         new Thread(this).start();
