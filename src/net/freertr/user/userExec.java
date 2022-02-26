@@ -1150,10 +1150,10 @@ public class userExec {
         hl.add(null, "6 .              <name>          key");
         hl.add(null, "2 3      bmp                     bgp monitoring protocol information");
         hl.add(cfgAll.dmnBmp.listServers(), "3 4,.      <name:loc>            server name");
-        hl.add(null, "2 3      p4lang                  p4lang protocol information");
-        hl.add(cfgAll.dmnP4lang.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "4 5,.        <addr>              from");
         hl.add(null, "5 .            <addr>            peer");
+        hl.add(null, "2 3      p4lang                  p4lang protocol information");
+        hl.add(cfgAll.dmnP4lang.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      bridge                  bridging information");
         hl.add(null, "3 .        <num>                 bridge number");
         hl.add(null, "2 3      bundle                  bundling information");
