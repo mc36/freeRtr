@@ -12996,3 +12996,10 @@ qc pass: p4lang: gre interface inspection with ingress drop
 qc pass: p4lang: gre interface inspection with egress drop
 qc pass: p4lang: l2tp interface inspection with ingress drop
 qc pass: p4lang: l2tp interface inspection with egress drop
+---------------------------------- 2022-02-27 20:53:59
+qc pass: p4lang: interface verify source
+qc pass: p4lang: vlan interface verify source
+qc pass: p4lang: bridge interface verify source
+qc pass: p4lang: pppoe interface verify source
+qc pass: p4lang: gre interface verify source
+qc pass: p4lang: l2tp interface verify source
