@@ -835,18 +835,18 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
         for (int i = 0; i < fronts.size(); i++) {
             servP4langFrnt ntry = fronts.get(i);
-            res.add("portid" + ntry.id + "|" + ntry.nam);
+            res.add("front-" + ntry.id + "|" + ntry.nam);
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
-            res.add("sentid" + ntry.id + "|" + ntry.ifc.name);
+            res.add("sent-" + ntry.id + "|" + ntry.ifc.name);
         }
         if (conn == null) {
             return res;
         }
         for (int i = 0; i < conn.neighs.size(); i++) {
             servP4langNei ntry = conn.neighs.get(i);
-            res.add("neigh" + ntry.id + "|" + ntry.iface + " " + ntry.adr);
+            res.add("neigh-" + ntry.id + "|" + ntry.iface + " " + ntry.adr);
         }
         return res;
     }
