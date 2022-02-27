@@ -418,7 +418,18 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("not p4lang interface");
                 return false;
             }
-            servP4langIfc ntry = new servP4langIfc(bits.str2num(cmd.word()));
+            s = cmd.word();
+            int i = bits.str2num(s);
+            if (!s.equals("" + i)) {
+                servP4langFrnt ntry = new servP4langFrnt(-1, s);
+                ntry = fronts.find(ntry);
+                if (ntry == null) {
+                    cmd.error("no such front panel port");
+                    return false;
+                }
+                i = ntry.id;
+            }
+            servP4langIfc ntry = new servP4langIfc(i);
             ntry.lower = this;
             ntry.ifc = ifc;
             ntry.doClear();
@@ -431,7 +442,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 }
                 ntry = old;
             }
-            for (int i = 0; i < expIfc.size(); i++) {
+            for (i = 0; i < expIfc.size(); i++) {
                 old = expIfc.get(i);
                 if ((ifc == old.ifc) && (old.id != ntry.id)) {
                     cmd.error("interface already exported as port " + old.id);
@@ -445,7 +456,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
             if (ifc.vlanNum != 0) {
                 need = false;
-                for (int i = 0; i < expIfc.size(); i++) {
+                for (i = 0; i < expIfc.size(); i++) {
                     old = expIfc.get(i);
                     if (old.master != null) {
                         continue;
@@ -585,7 +596,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add(null, "2 .    <num>                   bridge number");
         l.add(null, "1 2  export-port               specify port to export");
         l.add(null, "2 3    <name:ifc>              interface name");
-        l.add(null, "3 4,.    <num>                 port number");
+        List<String> lst = new ArrayList<String>();
+        for (int i = 0; i < fronts.size(); i++) {
+            lst.add(fronts.get(i).nam);
+        }
+        l.add(lst, "3 4,.    <num:loc>             port number");
         l.add(null, "4 5,.      <num>               speed in gbps");
         l.add(null, "5 6,.        <num>             fec, see hw vendor manual");
         l.add(null, "6 7,.          <num>           autoneg, see hw vendor manual");
@@ -1128,20 +1143,15 @@ class servP4langFrnt implements Comparator<servP4langFrnt> {
 
     public final int id;
 
-    public String nam;
+    public final String nam;
 
-    public servP4langFrnt(int i) {
+    public servP4langFrnt(int i, String n) {
         id = i;
+        nam = n;
     }
 
     public int compare(servP4langFrnt o1, servP4langFrnt o2) {
-        if (o1.id < o2.id) {
-            return -1;
-        }
-        if (o1.id > o2.id) {
-            return +1;
-        }
-        return 0;
+        return o1.nam.compareTo(o2.nam);
     }
 
 }
@@ -2191,8 +2201,9 @@ class servP4langConn implements Runnable {
                 return false;
             }
             if (s.equals("portname")) {
-                servP4langFrnt ntry = new servP4langFrnt(bits.str2num(cmd.word()));
-                ntry.nam = cmd.getRemaining().replaceAll(" ", "_");
+                int i = bits.str2num(cmd.word());
+                s = cmd.getRemaining().replaceAll(" ", "_");
+                servP4langFrnt ntry = new servP4langFrnt(i, s);
                 lower.fronts.put(ntry);
                 return false;
             }
