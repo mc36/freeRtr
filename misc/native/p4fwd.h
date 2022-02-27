@@ -1359,16 +1359,16 @@ ipv4_rx:
         update_chksum(bufP + 10, -1);
         extract_layer4(acl4_ntry, port2vrf_res->tcpmss4);
         route4_ntry.mask = 32;
-        if ((port2vrf_res->verify4 > 0) && (acl4_ntry.trgAddr != 0xffffffff)) {
+        if (port2vrf_res->verify4 > 0) {
             route4_ntry.addr = acl4_ntry.srcAddr;
             route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
-            if (route4_res == NULL) doDropper;
+            if (route4_res == NULL) doPunting;
             if (port2vrf_res->verify4 > 1) {
                 neigh_ntry.id = route4_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) doDropper;
                 neigh_res = table_get(&neigh_table, index);
-                if (neigh_res->port != prt) doDropper;
+                if (neigh_res->aclport != prt) doPunting;
             }
         }
         route4_ntry.addr = acl4_ntry.trgAddr;
@@ -1627,19 +1627,19 @@ ipv6_rx:
         bufD[bufP + 7] = ttl;
         extract_layer4(acl6_ntry, port2vrf_res->tcpmss6);
         route6_ntry.mask = 128;
-        if ((port2vrf_res->verify6 > 0) && ((acl6_ntry.srcAddr1 & 0xffff0000) != 0xfe800000)) {
+        if (port2vrf_res->verify6 > 0) {
             route6_ntry.addr1 = acl6_ntry.srcAddr1;
             route6_ntry.addr2 = acl6_ntry.srcAddr2;
             route6_ntry.addr3 = acl6_ntry.srcAddr3;
             route6_ntry.addr4 = acl6_ntry.srcAddr4;
             route6_res = tree_lpm(&vrf2rib_res->rou, &route6_ntry);
-            if (route6_res == NULL) doDropper;
+            if (route6_res == NULL) doPunting;
             if (port2vrf_res->verify6 > 1) {
                 neigh_ntry.id = route6_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
                 if (index < 0) doDropper;
                 neigh_res = table_get(&neigh_table, index);
-                if (neigh_res->port != prt) doDropper;
+                if (neigh_res->aclport != prt) doPunting;
             }
         }
         route6_ntry.addr1 = acl6_ntry.trgAddr1;

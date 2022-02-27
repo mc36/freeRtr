@@ -69,10 +69,6 @@ server p4lang p4
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port sdn1.111 101
- export-port sdn2.111 102
- export-port sdn3.111 103
- export-port sdn4.111 104
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2

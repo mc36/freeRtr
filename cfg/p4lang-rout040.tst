@@ -120,8 +120,6 @@ server p4lang p4
  export-port sdn4 4
  export-port hair11 11
  export-port hair12 12
- export-port hair11.111 111
- export-port hair12.111 112
  export-port di1 221
  export-port di2 222
  vrf v9

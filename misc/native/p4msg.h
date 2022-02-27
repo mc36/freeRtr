@@ -2559,12 +2559,12 @@ int doConsoleCommand(unsigned char*buf) {
         break;
     case 'n':
     case 'N':
-        printf("        id        vrf       port              smac              dmac\n");
+        printf("        id        vrf       port    aclport              smac              dmac\n");
         for (int i=0; i<neigh_table.size; i++) {
             struct neigh_entry *ntry = table_get(&neigh_table, i);
             mac2str(ntry->smac, buf2);
             mac2str(ntry->dmac, buf3);
-            printf("%10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, (char*)&buf2[0], (char*)&buf3[0]);
+            printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
         }
         break;
     case 'b':

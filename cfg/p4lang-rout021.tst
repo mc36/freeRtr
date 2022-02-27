@@ -71,8 +71,6 @@ server p4lang p4
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port sdn3.111 333
- export-port sdn4.222 444
  export-port bvi1 999
  vrf v9
  exit

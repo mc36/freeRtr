@@ -112,8 +112,6 @@ server p4lang p4
  export-port sdn4 4
  export-port hair11 11
  export-port hair12 12
- export-port hair11.111 222
- export-port hair12.111 223
  export-port tun1 111
  vrf v9
  exit

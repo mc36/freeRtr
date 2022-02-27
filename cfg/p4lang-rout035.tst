@@ -76,8 +76,6 @@ server p4lang p4
  export-port sdn4 4
  export-port hair11 11
  export-port hair12 12
- export-port hair11.111 111
- export-port hair12.111 112
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
