@@ -1,10 +1,13 @@
-description p4lang: pppoe interface inspection with egress drop
+description p4lang: l2tp interface inspection with egress drop
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1111 $2b$ $2a$
 !
 vrf def v1
+ rd 1:1
+ exit
+vrf def v2
  rd 1:1
  exit
 vrf def v9
@@ -42,10 +45,18 @@ access-list test6
  seq 10 permit 58 any all any all
  exit
 int sdn1
+ vrf for v2
+ ipv4 addr 9.9.9.1 255.255.255.0
+ exit
+int virt1
+ enc ppp
+ pseudo v2 sdn1 l2tp2 9.9.9.2 1234
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
+ ipv4 inspect drop-tx allow-list test4
+ ipv6 inspect drop-tx allow-list test6
  exit
 int sdn2
  vrf for v1
@@ -59,25 +70,21 @@ int sdn3
  ipv6 addr 1234:3::1 ffff:ffff::
  ipv6 ena
  exit
-int di1
+int sdn4
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
- ipv4 inspect drop-tx allow-list test4
- ipv6 inspect drop-tx allow-list test6
- exit
-int sdn4
- p2poe relay di1
  exit
 server p4lang p4
  interconnect eth2
  export-vrf v1 1
+ export-vrf v2 2
  export-port sdn1 1
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port di1 222
+ export-port virt1 111
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
@@ -90,7 +97,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 feature pppoe inspect
+addother r2 feature l2tp inspect
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -106,19 +113,38 @@ int eth1 eth 0000.0000.3333 $3b$ $3a$
 vrf def v1
  rd 1:1
  exit
+vrf def v2
+ rd 1:1
+ exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+bridge 1
+ mac-learn
+ block-unicast
+ exit
 int eth1
+ bridge-gr 1
+ exit
+int bvi1
+ vrf for v2
+ ipv4 addr 9.9.9.2 255.255.255.0
+ exit
+int di1
+ enc ppp
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
+server l2tp2 l
+ clone dialer1
+ vrf v2
+ exit
 int tun1
  tun sou lo0
- tun dest 2.2.2.106
+ tun dest 2.2.2.104
  tun vrf v1
  tun key 2554
  tun mod pckoudp
@@ -127,7 +153,7 @@ int tun1
  exit
 int tun2
  tun sou lo0
- tun dest 4321::106
+ tun dest 4321::104
  tun vrf v1
  tun key 2554
  tun mod pckoudp
@@ -165,6 +191,24 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
+ exit
+int tun1
+ tun sou lo0
+ tun dest 2.2.2.103
+ tun vrf v1
+ tun key 2554
+ tun mod pckoudp
+ vrf for v1
+ ipv4 addr 3.3.1.2 255.255.255.0
+ exit
+int tun2
+ tun sou lo0
+ tun dest 4321::103
+ tun vrf v1
+ tun key 2554
+ tun mod pckoudp
+ vrf for v1
+ ipv4 addr 3.3.2.2 255.255.255.0
  exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.2.1
@@ -225,31 +269,10 @@ int lo0
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int di1
+int eth1
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::
- exit
-int eth1
- p2poe client di1
- exit
-int tun1
- tun sou lo0
- tun dest 2.2.2.103
- tun vrf v1
- tun key 2554
- tun mod pckoudp
- vrf for v1
- ipv4 addr 3.3.1.2 255.255.255.0
- exit
-int tun2
- tun sou lo0
- tun dest 4321::103
- tun vrf v1
- tun key 2554
- tun mod pckoudp
- vrf for v1
- ipv4 addr 3.3.2.2 255.255.255.0
  exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.4.1
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.4.1
@@ -267,6 +290,9 @@ ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
+
+r1 tping 100 30 9.9.9.2 /vrf v2
+r3 tping 100 30 9.9.9.1 /vrf v2
 
 r1 tping 100 30 1.1.1.2 /vrf v1
 r1 tping 100 30 1234:1::2 /vrf v1
@@ -368,12 +394,12 @@ r6 tping 100 10 4321::105 /vrf v1 /int lo0
 r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
 r6 tping 100 10 4321::106 /vrf v1 /int lo0
 
-r3 tping 0 10 3.3.1.2 /vrf v1
-r3 tping 0 10 3.3.2.2 /vrf v1
-r6 tping 100 10 3.3.1.1 /vrf v1
-r6 tping 100 10 3.3.2.1 /vrf v1
+r4 tping 0 10 3.3.1.1 /vrf v1
+r4 tping 0 10 3.3.2.1 /vrf v1
 r3 tping 100 10 3.3.1.2 /vrf v1
 r3 tping 100 10 3.3.2.2 /vrf v1
+r4 tping 100 10 3.3.1.1 /vrf v1
+r4 tping 100 10 3.3.2.1 /vrf v1
 
-r1 dping sdn . r6 3.3.1.1 /vrf v1
-r1 dping sdn . r6 3.3.2.1 /vrf v1
+r1 dping sdn . r4 3.3.1.1 /vrf v1
+r1 dping sdn . r4 3.3.2.1 /vrf v1
