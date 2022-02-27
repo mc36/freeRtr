@@ -110,6 +110,7 @@ qc pass: secondary addresses over dot1q vlan
 qc pass: monitor session over tunnel
 qc pass: monitor session over pwhe
 qc pass: verify source with ethernet encapsulation
+qc pass: loose verify source with ethernet encapsulation
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback
@@ -1378,6 +1379,12 @@ qc pass: p4lang: bridge interface verify source
 qc pass: p4lang: pppoe interface verify source
 qc pass: p4lang: gre interface verify source
 qc pass: p4lang: l2tp interface verify source
+qc pass: p4lang: interface loose verify source
+qc pass: p4lang: vlan interface loose verify source
+qc pass: p4lang: bridge interface loose verify source
+qc pass: p4lang: pppoe interface loose verify source
+qc pass: p4lang: gre interface loose verify source
+qc pass: p4lang: l2tp interface loose verify source
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -2735,6 +2742,7 @@ qc pass: static routing with other tracker
 qc pass: static routing with check tracker
 qc pass: static routing with nrpe tracker
 qc pass: verify source with static routing
+qc pass: loose verify source with static routing
 qc pass: static bmp peer
 qc pass: dynamic bmp peer
 qc pass: authoritative dns server

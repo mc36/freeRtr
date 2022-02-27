@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.2.27-cur, done by cs@nop.<br/>
-tested: 2022-02-27 21:09:59, took 00:07:58, with 100 workers, on 2754 cases, 0 failed, 0 traces, 2 retries<br/>
+tested: 2022-02-27 21:23:43, took 00:07:17, with 100 workers, on 2762 cases, 0 failed, 4 traces, 7 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -127,6 +127,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth25.tst">conn-eth25.tst</a></td><td>success</td><td>monitor session over tunnel</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth26.tst">conn-eth26.tst</a></td><td>success</td><td>monitor session over pwhe</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth27.tst">conn-eth27.tst</a></td><td>success</td><td>verify source with ethernet encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth28.tst">conn-eth28.tst</a></td><td>success</td><td>loose verify source with ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip01.tst">conn-etherip01.tst</a></td><td>success</td><td>etherip over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip02.tst">conn-etherip02.tst</a></td><td>success</td><td>etherip over ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip03.tst">conn-etherip03.tst</a></td><td>success</td><td>etherip over loopback</td></tr>
@@ -1395,6 +1396,12 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl72.tst">p4lang-acl72.tst</a></td><td>success</td><td>p4lang: pppoe interface verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl73.tst">p4lang-acl73.tst</a></td><td>success</td><td>p4lang: gre interface verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl74.tst">p4lang-acl74.tst</a></td><td>success</td><td>p4lang: l2tp interface verify source</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl75.tst">p4lang-acl75.tst</a></td><td>success</td><td>p4lang: interface loose verify source</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl76.tst">p4lang-acl76.tst</a></td><td>success</td><td>p4lang: vlan interface loose verify source</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl77.tst">p4lang-acl77.tst</a></td><td>success</td><td>p4lang: bridge interface loose verify source</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl78.tst">p4lang-acl78.tst</a></td><td>success</td><td>p4lang: pppoe interface loose verify source</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl79.tst">p4lang-acl79.tst</a></td><td>success</td><td>p4lang: gre interface loose verify source</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/p4lang-acl80.tst">p4lang-acl80.tst</a></td><td>success</td><td>p4lang: l2tp interface loose verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt001.tst">p4lang-crypt001.tst</a></td><td>success</td><td>p4lang: macsec with des</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt002.tst">p4lang-crypt002.tst</a></td><td>success</td><td>p4lang: macsec with 3des</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/p4lang-crypt003.tst">p4lang-crypt003.tst</a></td><td>success</td><td>p4lang: macsec with aes128cbc</td></tr>
@@ -2752,6 +2759,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-static17.tst">rout-static17.tst</a></td><td>success</td><td>static routing with check tracker</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-static18.tst">rout-static18.tst</a></td><td>success</td><td>static routing with nrpe tracker</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-static19.tst">rout-static19.tst</a></td><td>success</td><td>verify source with static routing</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-static20.tst">rout-static20.tst</a></td><td>success</td><td>loose verify source with static routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/serv-bmp01.tst">serv-bmp01.tst</a></td><td>success</td><td>static bmp peer</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/serv-bmp02.tst">serv-bmp02.tst</a></td><td>success</td><td>dynamic bmp peer</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/serv-dns01.tst">serv-dns01.tst</a></td><td>success</td><td>authoritative dns server</td></tr>

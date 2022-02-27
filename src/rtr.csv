@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.27-cur, done by cs@nop.
--;-;-;2022-02-27 21:09:59, took 00:07:58, with 100 workers, on 2754 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2022-02-27 21:23:43, took 00:07:17, with 100 workers, on 2762 cases, 0 failed, 4 traces, 7 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -114,6 +114,7 @@ http://sources.nop.hu/cfg/conn-eth24.tst;conn-eth24.tst;success;secondary addres
 http://sources.nop.hu/cfg/conn-eth25.tst;conn-eth25.tst;success;monitor session over tunnel
 http://sources.nop.hu/cfg/conn-eth26.tst;conn-eth26.tst;success;monitor session over pwhe
 http://sources.nop.hu/cfg/conn-eth27.tst;conn-eth27.tst;success;verify source with ethernet encapsulation
+http://sources.nop.hu/cfg/conn-eth28.tst;conn-eth28.tst;success;loose verify source with ethernet encapsulation
 http://sources.nop.hu/cfg/conn-etherip01.tst;conn-etherip01.tst;success;etherip over ipv4
 http://sources.nop.hu/cfg/conn-etherip02.tst;conn-etherip02.tst;success;etherip over ipv6
 http://sources.nop.hu/cfg/conn-etherip03.tst;conn-etherip03.tst;success;etherip over loopback
@@ -1382,6 +1383,12 @@ http://sources.nop.hu/cfg/p4lang-acl71.tst;p4lang-acl71.tst;success;p4lang: brid
 http://sources.nop.hu/cfg/p4lang-acl72.tst;p4lang-acl72.tst;success;p4lang: pppoe interface verify source
 http://sources.nop.hu/cfg/p4lang-acl73.tst;p4lang-acl73.tst;success;p4lang: gre interface verify source
 http://sources.nop.hu/cfg/p4lang-acl74.tst;p4lang-acl74.tst;success;p4lang: l2tp interface verify source
+http://sources.nop.hu/cfg/p4lang-acl75.tst;p4lang-acl75.tst;success;p4lang: interface loose verify source
+http://sources.nop.hu/cfg/p4lang-acl76.tst;p4lang-acl76.tst;success;p4lang: vlan interface loose verify source
+http://sources.nop.hu/cfg/p4lang-acl77.tst;p4lang-acl77.tst;success;p4lang: bridge interface loose verify source
+http://sources.nop.hu/cfg/p4lang-acl78.tst;p4lang-acl78.tst;success;p4lang: pppoe interface loose verify source
+http://sources.nop.hu/cfg/p4lang-acl79.tst;p4lang-acl79.tst;success;p4lang: gre interface loose verify source
+http://sources.nop.hu/cfg/p4lang-acl80.tst;p4lang-acl80.tst;success;p4lang: l2tp interface loose verify source
 http://sources.nop.hu/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.nop.hu/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.nop.hu/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc
@@ -2739,6 +2746,7 @@ http://sources.nop.hu/cfg/rout-static16.tst;rout-static16.tst;success;static rou
 http://sources.nop.hu/cfg/rout-static17.tst;rout-static17.tst;success;static routing with check tracker
 http://sources.nop.hu/cfg/rout-static18.tst;rout-static18.tst;success;static routing with nrpe tracker
 http://sources.nop.hu/cfg/rout-static19.tst;rout-static19.tst;success;verify source with static routing
+http://sources.nop.hu/cfg/rout-static20.tst;rout-static20.tst;success;loose verify source with static routing
 http://sources.nop.hu/cfg/serv-bmp01.tst;serv-bmp01.tst;success;static bmp peer
 http://sources.nop.hu/cfg/serv-bmp02.tst;serv-bmp02.tst;success;dynamic bmp peer
 http://sources.nop.hu/cfg/serv-dns01.tst;serv-dns01.tst;success;authoritative dns server

@@ -13010,3 +13010,12 @@ qc pass: interop2: verify source
 qc pass: interop8: verify source
 qc pass: interop9: verify source
 qc pass: verify source with static routing
+---------------------------------- 2022-02-27 21:16:26
+qc pass: loose verify source with ethernet encapsulation
+qc pass: p4lang: interface loose verify source
+qc pass: p4lang: vlan interface loose verify source
+qc pass: p4lang: bridge interface loose verify source
+qc pass: p4lang: pppoe interface loose verify source
+qc pass: p4lang: gre interface loose verify source
+qc pass: p4lang: l2tp interface loose verify source
+qc pass: loose verify source with static routing
