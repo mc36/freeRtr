@@ -13003,3 +13003,10 @@ qc pass: p4lang: bridge interface verify source
 qc pass: p4lang: pppoe interface verify source
 qc pass: p4lang: gre interface verify source
 qc pass: p4lang: l2tp interface verify source
+---------------------------------- 2022-02-27 21:02:01
+qc pass: verify source with ethernet encapsulation
+qc pass: interop1: verify source
+qc pass: interop2: verify source
+qc pass: interop8: verify source
+qc pass: interop9: verify source
+qc pass: verify source with static routing

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.2.27-cur, done by cs@nop.
--;-;-;2022-02-27 21:00:55, took 00:06:56, with 100 workers, on 2748 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2022-02-27 21:09:59, took 00:07:58, with 100 workers, on 2754 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.nop.hu/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.nop.hu/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -113,6 +113,7 @@ http://sources.nop.hu/cfg/conn-eth23.tst;conn-eth23.tst;success;secondary addres
 http://sources.nop.hu/cfg/conn-eth24.tst;conn-eth24.tst;success;secondary addresses over dot1q vlan
 http://sources.nop.hu/cfg/conn-eth25.tst;conn-eth25.tst;success;monitor session over tunnel
 http://sources.nop.hu/cfg/conn-eth26.tst;conn-eth26.tst;success;monitor session over pwhe
+http://sources.nop.hu/cfg/conn-eth27.tst;conn-eth27.tst;success;verify source with ethernet encapsulation
 http://sources.nop.hu/cfg/conn-etherip01.tst;conn-etherip01.tst;success;etherip over ipv4
 http://sources.nop.hu/cfg/conn-etherip02.tst;conn-etherip02.tst;success;etherip over ipv6
 http://sources.nop.hu/cfg/conn-etherip03.tst;conn-etherip03.tst;success;etherip over loopback
@@ -849,6 +850,7 @@ http://sources.nop.hu/cfg/intop1-eth05.tst;intop1-eth05.tst;success;interop1: po
 http://sources.nop.hu/cfg/intop1-eth06.tst;intop1-eth06.tst;success;interop1: lacp
 http://sources.nop.hu/cfg/intop1-eth07.tst;intop1-eth07.tst;success;interop1: fragmentation and reassembly
 http://sources.nop.hu/cfg/intop1-eth08.tst;intop1-eth08.tst;success;interop1: sgt encapsulation
+http://sources.nop.hu/cfg/intop1-eth09.tst;intop1-eth09.tst;success;interop1: verify source
 http://sources.nop.hu/cfg/intop1-ike101.tst;intop1-ike101.tst;success;interop1: ike1 with ipv4
 http://sources.nop.hu/cfg/intop1-ike102.tst;intop1-ike102.tst;success;interop1: ike1 with ipv6
 http://sources.nop.hu/cfg/intop1-ike103.tst;intop1-ike103.tst;success;interop1: ike1 with 3des
@@ -970,6 +972,7 @@ http://sources.nop.hu/cfg/intop2-eth03.tst;intop2-eth03.tst;success;interop2: do
 http://sources.nop.hu/cfg/intop2-eth04.tst;intop2-eth04.tst;success;interop2: point2point ethernet encapsulation
 http://sources.nop.hu/cfg/intop2-eth05.tst;intop2-eth05.tst;success;interop2: lacp
 http://sources.nop.hu/cfg/intop2-eth06.tst;intop2-eth06.tst;success;interop2: fragmentation and reassembly
+http://sources.nop.hu/cfg/intop2-eth07.tst;intop2-eth07.tst;success;interop2: verify source
 http://sources.nop.hu/cfg/intop2-isis01.tst;intop2-isis01.tst;success;interop2: point2point isis
 http://sources.nop.hu/cfg/intop2-isis02.tst;intop2-isis02.tst;success;interop2: isis dis
 http://sources.nop.hu/cfg/intop2-isis03.tst;intop2-isis03.tst;success;interop2: isis nondis
@@ -1033,6 +1036,7 @@ http://sources.nop.hu/cfg/intop8-bgp13.tst;intop8-bgp13.tst;success;interop8: bg
 http://sources.nop.hu/cfg/intop8-bgp14.tst;intop8-bgp14.tst;success;interop8: bgp with php labels
 http://sources.nop.hu/cfg/intop8-eigrp01.tst;intop8-eigrp01.tst;success;interop8: eigrp
 http://sources.nop.hu/cfg/intop8-eth01.tst;intop8-eth01.tst;success;interop8: fragmentation and reassembly
+http://sources.nop.hu/cfg/intop8-eth02.tst;intop8-eth02.tst;success;interop8: verify source
 http://sources.nop.hu/cfg/intop8-isis01.tst;intop8-isis01.tst;success;interop8: point2point isis
 http://sources.nop.hu/cfg/intop8-isis02.tst;intop8-isis02.tst;success;interop8: isis dis
 http://sources.nop.hu/cfg/intop8-isis03.tst;intop8-isis03.tst;success;interop8: isis nondis
@@ -1076,6 +1080,7 @@ http://sources.nop.hu/cfg/intop9-bgp18.tst;intop9-bgp18.tst;success;interop9: bg
 http://sources.nop.hu/cfg/intop9-eth01.tst;intop9-eth01.tst;success;interop9: ethernet encapsulation
 http://sources.nop.hu/cfg/intop9-eth02.tst;intop9-eth02.tst;success;interop9: dot1q encapsulation
 http://sources.nop.hu/cfg/intop9-eth03.tst;intop9-eth03.tst;success;interop9: fragmentation and reassembly
+http://sources.nop.hu/cfg/intop9-eth04.tst;intop9-eth04.tst;success;interop9: verify source
 http://sources.nop.hu/cfg/intop9-isis01.tst;intop9-isis01.tst;success;interop9: point2point isis
 http://sources.nop.hu/cfg/intop9-isis02.tst;intop9-isis02.tst;success;interop9: isis dis
 http://sources.nop.hu/cfg/intop9-isis03.tst;intop9-isis03.tst;success;interop9: isis nondis
@@ -2733,6 +2738,7 @@ http://sources.nop.hu/cfg/rout-static15.tst;rout-static15.tst;success;static rou
 http://sources.nop.hu/cfg/rout-static16.tst;rout-static16.tst;success;static routing with other tracker
 http://sources.nop.hu/cfg/rout-static17.tst;rout-static17.tst;success;static routing with check tracker
 http://sources.nop.hu/cfg/rout-static18.tst;rout-static18.tst;success;static routing with nrpe tracker
+http://sources.nop.hu/cfg/rout-static19.tst;rout-static19.tst;success;verify source with static routing
 http://sources.nop.hu/cfg/serv-bmp01.tst;serv-bmp01.tst;success;static bmp peer
 http://sources.nop.hu/cfg/serv-bmp02.tst;serv-bmp02.tst;success;dynamic bmp peer
 http://sources.nop.hu/cfg/serv-dns01.tst;serv-dns01.tst;success;authoritative dns server

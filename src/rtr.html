@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.2.27-cur, done by cs@nop.<br/>
-tested: 2022-02-27 21:00:55, took 00:06:56, with 100 workers, on 2748 cases, 0 failed, 0 traces, 5 retries<br/>
+tested: 2022-02-27 21:09:59, took 00:07:58, with 100 workers, on 2754 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -126,6 +126,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth24.tst">conn-eth24.tst</a></td><td>success</td><td>secondary addresses over dot1q vlan</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth25.tst">conn-eth25.tst</a></td><td>success</td><td>monitor session over tunnel</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-eth26.tst">conn-eth26.tst</a></td><td>success</td><td>monitor session over pwhe</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/conn-eth27.tst">conn-eth27.tst</a></td><td>success</td><td>verify source with ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip01.tst">conn-etherip01.tst</a></td><td>success</td><td>etherip over ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip02.tst">conn-etherip02.tst</a></td><td>success</td><td>etherip over ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/conn-etherip03.tst">conn-etherip03.tst</a></td><td>success</td><td>etherip over loopback</td></tr>
@@ -862,6 +863,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-eth06.tst">intop1-eth06.tst</a></td><td>success</td><td>interop1: lacp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-eth07.tst">intop1-eth07.tst</a></td><td>success</td><td>interop1: fragmentation and reassembly</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-eth08.tst">intop1-eth08.tst</a></td><td>success</td><td>interop1: sgt encapsulation</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop1-eth09.tst">intop1-eth09.tst</a></td><td>success</td><td>interop1: verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ike101.tst">intop1-ike101.tst</a></td><td>success</td><td>interop1: ike1 with ipv4</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ike102.tst">intop1-ike102.tst</a></td><td>success</td><td>interop1: ike1 with ipv6</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop1-ike103.tst">intop1-ike103.tst</a></td><td>success</td><td>interop1: ike1 with 3des</td></tr>
@@ -983,6 +985,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eth04.tst">intop2-eth04.tst</a></td><td>success</td><td>interop2: point2point ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eth05.tst">intop2-eth05.tst</a></td><td>success</td><td>interop2: lacp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-eth06.tst">intop2-eth06.tst</a></td><td>success</td><td>interop2: fragmentation and reassembly</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop2-eth07.tst">intop2-eth07.tst</a></td><td>success</td><td>interop2: verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-isis01.tst">intop2-isis01.tst</a></td><td>success</td><td>interop2: point2point isis</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-isis02.tst">intop2-isis02.tst</a></td><td>success</td><td>interop2: isis dis</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop2-isis03.tst">intop2-isis03.tst</a></td><td>success</td><td>interop2: isis nondis</td></tr>
@@ -1046,6 +1049,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-bgp14.tst">intop8-bgp14.tst</a></td><td>success</td><td>interop8: bgp with php labels</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-eigrp01.tst">intop8-eigrp01.tst</a></td><td>success</td><td>interop8: eigrp</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-eth01.tst">intop8-eth01.tst</a></td><td>success</td><td>interop8: fragmentation and reassembly</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop8-eth02.tst">intop8-eth02.tst</a></td><td>success</td><td>interop8: verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis01.tst">intop8-isis01.tst</a></td><td>success</td><td>interop8: point2point isis</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis02.tst">intop8-isis02.tst</a></td><td>success</td><td>interop8: isis dis</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop8-isis03.tst">intop8-isis03.tst</a></td><td>success</td><td>interop8: isis nondis</td></tr>
@@ -1089,6 +1093,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-eth01.tst">intop9-eth01.tst</a></td><td>success</td><td>interop9: ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-eth02.tst">intop9-eth02.tst</a></td><td>success</td><td>interop9: dot1q encapsulation</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-eth03.tst">intop9-eth03.tst</a></td><td>success</td><td>interop9: fragmentation and reassembly</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/intop9-eth04.tst">intop9-eth04.tst</a></td><td>success</td><td>interop9: verify source</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis01.tst">intop9-isis01.tst</a></td><td>success</td><td>interop9: point2point isis</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis02.tst">intop9-isis02.tst</a></td><td>success</td><td>interop9: isis dis</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/intop9-isis03.tst">intop9-isis03.tst</a></td><td>success</td><td>interop9: isis nondis</td></tr>
@@ -2746,6 +2751,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-static16.tst">rout-static16.tst</a></td><td>success</td><td>static routing with other tracker</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-static17.tst">rout-static17.tst</a></td><td>success</td><td>static routing with check tracker</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/rout-static18.tst">rout-static18.tst</a></td><td>success</td><td>static routing with nrpe tracker</td></tr>
+<tr><td><a href="http://sources.nop.hu/cfg/rout-static19.tst">rout-static19.tst</a></td><td>success</td><td>verify source with static routing</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/serv-bmp01.tst">serv-bmp01.tst</a></td><td>success</td><td>static bmp peer</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/serv-bmp02.tst">serv-bmp02.tst</a></td><td>success</td><td>dynamic bmp peer</td></tr>
 <tr><td><a href="http://sources.nop.hu/cfg/serv-dns01.tst">serv-dns01.tst</a></td><td>success</td><td>authoritative dns server</td></tr>
