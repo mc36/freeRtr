@@ -1366,7 +1366,7 @@ ipv4_rx:
             if (port2vrf_res->verify4 > 1) {
                 neigh_ntry.id = route4_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doDropper;
+                if (index < 0) doPunting;
                 neigh_res = table_get(&neigh_table, index);
                 if (neigh_res->aclport != prt) doPunting;
             }
@@ -1637,7 +1637,7 @@ ipv6_rx:
             if (port2vrf_res->verify6 > 1) {
                 neigh_ntry.id = route6_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doDropper;
+                if (index < 0) doPunting;
                 neigh_res = table_get(&neigh_table, index);
                 if (neigh_res->aclport != prt) doPunting;
             }

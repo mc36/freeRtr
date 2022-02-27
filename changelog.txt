@@ -12987,3 +12987,12 @@ qc pass: bgp routemap filtering with asbeg
 qc pass: bgp routemap filtering with asbeg with soft-reconfig
 qc pass: bgp routepolicy filtering with asbeg
 qc pass: bgp routepolicy filtering with asbeg with soft-reconfig
+---------------------------------- 2022-02-27 20:32:47
+qc pass: p4lang: bridge interface inspection with ingress drop
+qc pass: p4lang: bridge interface inspection with egress drop
+qc pass: p4lang: pppoe interface inspection with ingress drop
+qc pass: p4lang: pppoe interface inspection with egress drop
+qc pass: p4lang: gre interface inspection with ingress drop
+qc pass: p4lang: gre interface inspection with egress drop
+qc pass: p4lang: l2tp interface inspection with ingress drop
+qc pass: p4lang: l2tp interface inspection with egress drop
