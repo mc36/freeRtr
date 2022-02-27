@@ -44,6 +44,7 @@ the following directories could be found here:
 * netconf some yang definitions
 * image demo vm iso creator
 * img2ova demo vm ova creator
+* service install script
 
 ## getting started
 
