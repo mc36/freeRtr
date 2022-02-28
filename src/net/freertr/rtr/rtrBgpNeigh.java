@@ -1213,9 +1213,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             tabRoute<addrIP> lnks, tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo) {
         tabRoute.addType mod;
         if (lower.routerEcmp) {
-            mod = tabRoute.addType.lnkBcmp;
-        } else {
             mod = tabRoute.addType.lnkEcmp;
+        } else {
+            mod = tabRoute.addType.lnkBcmp;
         }
         uni.mergeFrom(mod, new tabRoute<addrIP>(accUni), tabRouteAttr.distanLim);
         mlt.mergeFrom(mod, new tabRoute<addrIP>(accMlt), tabRouteAttr.distanLim);
