@@ -453,10 +453,14 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                     break;
                 }
                 adr6 = null;
-                if (ifc.rtrAdvDns != null) {
-                    adr6 = ifc.rtrAdvDns.toIPv6();
+                if (ifc.rtrAdvDns1 != null) {
+                    adr6 = ifc.rtrAdvDns1.toIPv6();
                 }
-                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLinkLocalAddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6, ifc.rtrAdvDom, ifc.rtrAdvValidity);
+                addrIPv6 adr7 = null;
+                if (ifc.rtrAdvDns2 != null) {
+                    adr7 = ifc.rtrAdvDns2.toIPv6();
+                }
+                createRouterAdv(ifc.getHWaddr(), pck, pck.IPsrc.toIPv6(), ifc.getLinkLocalAddr().toIPv6(), rxIfc.addr.toIPv6(), rxIfc.mask, rxIfc.mtu + ipCor6.size, adr6, adr7, ifc.rtrAdvDom, ifc.rtrAdvValidity);
                 ifc.sendProto(pck, pck.IPtrg);
                 break;
             case icmpRtrAdv:
@@ -625,11 +629,12 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      * @param net network
      * @param mask mask
      * @param mtu maximum transmission unit
-     * @param dns name server address
+     * @param dns1 name server address
+     * @param dns2 name server address
      * @param dom domain name
      * @param vld prefix validity
      */
-    public void createRouterAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, addrIPv6 net, int mask, int mtu, addrIPv6 dns, String dom, int vld) {
+    public void createRouterAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, addrIPv6 net, int mask, int mtu, addrIPv6 dns1, addrIPv6 dns2, String dom, int vld) {
         if (trg == null) {
             trg = addrIPv6.getAllNodes();
         } else {
@@ -668,11 +673,17 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             bits.msbPutD(buf, 2, mtu); // mtu
             tlv.putBytes(pck, 5, 6, buf); // mtu
         }
-        if (dns != null) {
+        if (dns1 != null) {
             bits.msbPutW(buf, 0, 0); // reserved
             bits.msbPutD(buf, 2, vld / 1000); // preferred lifetime
-            dns.toBuffer(buf, 6); // address
-            tlv.putBytes(pck, 25, dns.getSize() + 6, buf); // dns info
+            int len = 6;
+            dns1.toBuffer(buf, len); // address
+            len += dns1.getSize();
+            if (dns2 != null) {
+                dns2.toBuffer(buf, len); // address2
+                len += dns2.getSize();
+            }
+            tlv.putBytes(pck, 25, len, buf); // dns info
         }
         if (dom != null) {
             packHolder tmp = new packHolder(true, true);

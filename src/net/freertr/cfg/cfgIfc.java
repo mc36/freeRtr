@@ -5903,7 +5903,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 cmds.cfgLine(l, ip6polC == null, cmds.tabulator, "ipv6 pool", "" + ip6polC);
                 cmds.cfgLine(l, !ipIf6.rtrAdvSuppress, cmds.tabulator, "ipv6 prefix-suppress", "");
-                cmds.cfgLine(l, ipIf6.rtrAdvDns == null, cmds.tabulator, "ipv6 prefix-dns", "" + ipIf6.rtrAdvDns);
+                a = "";
+                if (ipIf6.rtrAdvDns2 != null) {
+                    a = " " + ipIf6.rtrAdvDns2;
+                }
+                cmds.cfgLine(l, ipIf6.rtrAdvDns1 == null, cmds.tabulator, "ipv6 prefix-dns", "" + ipIf6.rtrAdvDns1 + a);
                 cmds.cfgLine(l, ipIf6.rtrAdvDom == null, cmds.tabulator, "ipv6 prefix-domain", "" + ipIf6.rtrAdvDom);
                 l.add(cmds.tabulator + "ipv6 prefix-interval " + ipIf6.rtrAdvInterval);
                 l.add(cmds.tabulator + "ipv6 prefix-validity " + ipIf6.rtrAdvValidity);
@@ -6222,7 +6226,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "4 .         <num>                   time in seconds");
         l.add(null, "2 .     prefix-suppress             suppress router advertisements");
         l.add(null, "2 3     prefix-dns                  name server in router advertisements");
-        l.add(null, "3 .       <addr>                    name server address");
+        l.add(null, "3 4,.     <addr>                    name server address");
+        l.add(null, "4 .         <addr>                  name server address");
         l.add(null, "2 3     prefix-domain               domain name in router advertisements");
         l.add(null, "3 .       <str>                     domain name");
         l.add(null, "2 3     prefix-interval             time between router advertisements");
@@ -8028,7 +8033,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if (adr.fromString(cmd.word())) {
                 return;
             }
-            ipIf6.rtrAdvDns = adr;
+            ipIf6.rtrAdvDns1 = adr;
+            adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                return;
+            }
+            ipIf6.rtrAdvDns2 = adr;
             return;
         }
         if (a.equals("prefix-domain")) {
@@ -8101,7 +8111,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("prefix-dns")) {
-            ipIf6.rtrAdvDns = null;
+            ipIf6.rtrAdvDns1 = null;
+            ipIf6.rtrAdvDns2 = null;
             return;
         }
         if (a.equals("prefix-domain")) {

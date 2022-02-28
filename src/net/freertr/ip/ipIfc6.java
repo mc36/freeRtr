@@ -49,7 +49,12 @@ public class ipIfc6 implements ipIfc, ifcUp {
     /**
      * dns information
      */
-    public addrIP rtrAdvDns;
+    public addrIP rtrAdvDns1;
+
+    /**
+     * dns information
+     */
+    public addrIP rtrAdvDns2;
 
     /**
      * domain information
@@ -478,11 +483,15 @@ public class ipIfc6 implements ipIfc, ifcUp {
         if (rtrAdvSuppress) {
             return;
         }
-        addrIPv6 dns = null;
-        if (rtrAdvDns != null) {
-            dns = rtrAdvDns.toIPv6();
+        addrIPv6 dns1 = null;
+        if (rtrAdvDns1 != null) {
+            dns1 = rtrAdvDns1.toIPv6();
         }
-        icc.createRouterAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns, rtrAdvDom, rtrAdvValidity);
+        addrIPv6 dns2 = null;
+        if (rtrAdvDns2 != null) {
+            dns2 = rtrAdvDns2.toIPv6();
+        }
+        icc.createRouterAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), ipaddr.toIPv6(), ipmask, ifcHdr.mtu + ipCor6.size, dns1, dns2, rtrAdvDom, rtrAdvValidity);
         sendProto(pck, pck.IPtrg);
     }
 
