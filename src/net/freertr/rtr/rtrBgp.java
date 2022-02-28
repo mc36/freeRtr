@@ -1881,7 +1881,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return;
         }
-        best.hashBest();
+        if (routerEcmp) {
+            best.hashBest();
+        } else {
+            best.selectBest();
+        }
         computeIncrVersion(best);
         if (conquer) {
             tabRouteEntry<addrIP> res = computeConquerEntry(cmp, best);

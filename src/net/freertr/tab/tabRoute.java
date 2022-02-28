@@ -47,6 +47,10 @@ public class tabRoute<T extends addrType> {
          */
         lnkEcmp,
         /**
+         * ecmp but with linking copy mode and strict best selection
+         */
+        lnkBcmp,
+        /**
          * alternatives but with linking copy mode
          */
         lnkAlters,
@@ -216,6 +220,7 @@ public class tabRoute<T extends addrType> {
                 version++;
                 return;
             case lnkEcmp:
+            case lnkBcmp:
             case ecmp:
                 own = prefixes.add(prefix);
                 if (own == null) {
@@ -237,7 +242,11 @@ public class tabRoute<T extends addrType> {
                     }
                     own.alts.add(ntry);
                 }
-                own.hashBest();
+                if (mod == addType.lnkBcmp) {
+                    own.selectBest();
+                } else {
+                    own.hashBest();
+                }
                 version++;
                 return;
             case better:

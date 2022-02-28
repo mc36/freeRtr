@@ -1211,28 +1211,34 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             tabRoute<addrIP> vpls, tabRoute<addrIP> mspw, tabRoute<addrIP> evpn,
             tabRoute<addrIP> mdt, tabRoute<addrIP> nsh, tabRoute<addrIP> srte,
             tabRoute<addrIP> lnks, tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo) {
-        uni.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accUni), tabRouteAttr.distanLim);
-        mlt.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMlt), tabRouteAttr.distanLim);
-        otrU.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrU), tabRouteAttr.distanLim);
-        otrM.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrM), tabRouteAttr.distanLim);
-        otrF.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrF), tabRouteAttr.distanLim);
-        otrS.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accOtrS), tabRouteAttr.distanLim);
-        flw.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accFlw), tabRouteAttr.distanLim);
-        vpnU.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpnU), tabRouteAttr.distanLim);
-        vpnM.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpnM), tabRouteAttr.distanLim);
-        vpnF.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpnF), tabRouteAttr.distanLim);
-        vpoU.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpoU), tabRouteAttr.distanLim);
-        vpoM.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpoM), tabRouteAttr.distanLim);
-        vpoF.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpoF), tabRouteAttr.distanLim);
-        vpls.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accVpls), tabRouteAttr.distanLim);
-        mspw.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMspw), tabRouteAttr.distanLim);
-        evpn.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accEvpn), tabRouteAttr.distanLim);
-        mdt.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMdt), tabRouteAttr.distanLim);
-        nsh.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accNsh), tabRouteAttr.distanLim);
-        srte.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accSrte), tabRouteAttr.distanLim);
-        lnks.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accLnks), tabRouteAttr.distanLim);
-        mvpn.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMvpn), tabRouteAttr.distanLim);
-        mvpo.mergeFrom(tabRoute.addType.lnkEcmp, new tabRoute<addrIP>(accMvpo), tabRouteAttr.distanLim);
+        tabRoute.addType mod;
+        if (lower.routerEcmp) {
+            mod = tabRoute.addType.lnkBcmp;
+        } else {
+            mod = tabRoute.addType.lnkEcmp;
+        }
+        uni.mergeFrom(mod, new tabRoute<addrIP>(accUni), tabRouteAttr.distanLim);
+        mlt.mergeFrom(mod, new tabRoute<addrIP>(accMlt), tabRouteAttr.distanLim);
+        otrU.mergeFrom(mod, new tabRoute<addrIP>(accOtrU), tabRouteAttr.distanLim);
+        otrM.mergeFrom(mod, new tabRoute<addrIP>(accOtrM), tabRouteAttr.distanLim);
+        otrF.mergeFrom(mod, new tabRoute<addrIP>(accOtrF), tabRouteAttr.distanLim);
+        otrS.mergeFrom(mod, new tabRoute<addrIP>(accOtrS), tabRouteAttr.distanLim);
+        flw.mergeFrom(mod, new tabRoute<addrIP>(accFlw), tabRouteAttr.distanLim);
+        vpnU.mergeFrom(mod, new tabRoute<addrIP>(accVpnU), tabRouteAttr.distanLim);
+        vpnM.mergeFrom(mod, new tabRoute<addrIP>(accVpnM), tabRouteAttr.distanLim);
+        vpnF.mergeFrom(mod, new tabRoute<addrIP>(accVpnF), tabRouteAttr.distanLim);
+        vpoU.mergeFrom(mod, new tabRoute<addrIP>(accVpoU), tabRouteAttr.distanLim);
+        vpoM.mergeFrom(mod, new tabRoute<addrIP>(accVpoM), tabRouteAttr.distanLim);
+        vpoF.mergeFrom(mod, new tabRoute<addrIP>(accVpoF), tabRouteAttr.distanLim);
+        vpls.mergeFrom(mod, new tabRoute<addrIP>(accVpls), tabRouteAttr.distanLim);
+        mspw.mergeFrom(mod, new tabRoute<addrIP>(accMspw), tabRouteAttr.distanLim);
+        evpn.mergeFrom(mod, new tabRoute<addrIP>(accEvpn), tabRouteAttr.distanLim);
+        mdt.mergeFrom(mod, new tabRoute<addrIP>(accMdt), tabRouteAttr.distanLim);
+        nsh.mergeFrom(mod, new tabRoute<addrIP>(accNsh), tabRouteAttr.distanLim);
+        srte.mergeFrom(mod, new tabRoute<addrIP>(accSrte), tabRouteAttr.distanLim);
+        lnks.mergeFrom(mod, new tabRoute<addrIP>(accLnks), tabRouteAttr.distanLim);
+        mvpn.mergeFrom(mod, new tabRoute<addrIP>(accMvpn), tabRouteAttr.distanLim);
+        mvpo.mergeFrom(mod, new tabRoute<addrIP>(accMvpo), tabRouteAttr.distanLim);
     }
 
     /**

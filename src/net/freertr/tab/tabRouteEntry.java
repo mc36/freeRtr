@@ -191,6 +191,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                 prf.selectBest();
                 return prf;
             case lnkEcmp:
+            case lnkBcmp:
                 prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
                     tabRouteAttr<T> ntry = alts.get(i);
@@ -199,7 +200,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                     }
                     prf.alts.add(ntry);
                 }
-                prf.hashBest();
+                if (mod == tabRoute.addType.lnkBcmp) {
+                    prf.selectBest();
+                } else {
+                    prf.hashBest();
+                }
                 return prf;
             case lnkAlters:
                 prf.alts.clear();
