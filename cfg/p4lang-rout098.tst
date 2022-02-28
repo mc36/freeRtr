@@ -118,7 +118,6 @@ server p4lang p4
  export-br 1
  export-br 2
  export-br 3
- export-dynbr 123 11
  export-port sdn1 1
  export-port sdn2 2
  export-port sdn3 3
