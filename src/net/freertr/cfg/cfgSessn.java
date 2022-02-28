@@ -36,6 +36,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
         "session .*! no after",
         "session .*! no dropped",
         "session .*! no allow-routing",
+        "session .*! no allow-sending",
         "session .*! no allow-linklocal",
         "session .*! no allow-multicast",
         "session .*! no allow-broadcast",
@@ -80,6 +81,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
         l.add(null, "1 .  drop-tx                      drop sessions egress");
         l.add(null, "1 .  drop-frg                     drop fragmented packets");
         l.add(null, "1 .  allow-routing                allow control multicast traffic");
+        l.add(null, "1 .  allow-sending                allow self originated traffic");
         l.add(null, "1 .  allow-linklocal              allow link local traffic");
         l.add(null, "1 .  allow-multicast              allow multicast traffic");
         l.add(null, "1 .  allow-broadcast              allow broadcast traffic");

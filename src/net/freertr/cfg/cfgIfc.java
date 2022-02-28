@@ -6400,6 +6400,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 3,.     drop-tx                   drop sessions egress");
         l.add(null, "3 3,.     drop-frg                  drop fragmented packets");
         l.add(null, "3 3,.     allow-routing             allow control multicast traffic");
+        l.add(null, "3 3,.     allow-sending             allow self originated traffic");
         l.add(null, "3 3,.     allow-linklocal           allow link local traffic");
         l.add(null, "3 3,.     allow-multicast           allow multicast traffic");
         l.add(null, "3 3,.     allow-broadcast           allow broadcast traffic");

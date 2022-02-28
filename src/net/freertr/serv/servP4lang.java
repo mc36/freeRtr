@@ -599,11 +599,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 cmd.error("no such export");
                 return false;
             }
-            sendLine("state " + ntry.id + " 0 " + ntry.getStateEnding());
-            if ((ntry.ifc.type == cfgIfc.ifaceType.sdn) && (ntry.ifc.vlanNum == 0)) {
-                ifcNull nul = new ifcNull();
-                nul.setUpper(ntry.ifc.ethtyp);
-            }
+            ntry.tearDown();
             return false;
         }
         return true;
@@ -1341,6 +1337,14 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
             return +1;
         }
         return 0;
+    }
+
+    public void tearDown() {
+        lower.sendLine("state " + id + " 0 " + getStateEnding());
+        if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
+            ifcNull nul = new ifcNull();
+            nul.setUpper(ifc.ethtyp);
+        }
     }
 
     public String getCfgLine() {
@@ -2409,6 +2413,7 @@ class servP4langConn implements Runnable {
             servP4langIfc ifc = lower.expIfc.get(i);
             if (doIface(ifc)) {
                 lower.expIfc.del(ifc);
+                ifc.tearDown();
                 continue;
             }
             doNeighs(true, ifc, ifc.ifc.ipIf4);

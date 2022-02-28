@@ -45,6 +45,7 @@ public class servNetflow extends servGeneric implements prtServS {
         "server netflow .*! no after",
         "server netflow .*! no dropped",
         "server netflow .*! no allow-routing",
+        "server netflow .*! no allow-sending",
         "server netflow .*! no allow-linklocal",
         "server netflow .*! no allow-multicast",
         "server netflow .*! no allow-broadcast",

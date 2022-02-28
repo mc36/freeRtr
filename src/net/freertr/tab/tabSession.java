@@ -110,6 +110,11 @@ public class tabSession implements Runnable {
     public boolean allowRoutng = false;
 
     /**
+     * allow local multicast
+     */
+    public boolean allowSending = false;
+
+    /**
      * allow link local
      */
     public boolean allowLnklc = false;
@@ -195,6 +200,7 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, !dropTx, beg, "drop-tx", "");
         cmds.cfgLine(res, !dropFrg, beg, "drop-frg", "");
         cmds.cfgLine(res, !allowRoutng, beg, "allow-routing", "");
+        cmds.cfgLine(res, !allowSending, beg, "allow-sending", "");
         cmds.cfgLine(res, !allowLnklc, beg, "allow-linklocal", "");
         cmds.cfgLine(res, !allowMcast, beg, "allow-multicast", "");
         cmds.cfgLine(res, !allowBcast, beg, "allow-broadcast", "");
@@ -252,6 +258,10 @@ public class tabSession implements Runnable {
             }
             if (a.equals("allow-routing")) {
                 allowRoutng = !negated;
+                continue;
+            }
+            if (a.equals("allow-sending")) {
+                allowSending = !negated;
                 continue;
             }
             if (a.equals("allow-linklocal")) {
@@ -387,6 +397,9 @@ public class tabSession implements Runnable {
         }
         if (pck == null) {
             return sessDrop(ses);
+        }
+        if (allowSending && (pck.INTupper != 0)) {
+            return sessPass(ses);
         }
         if (allowMcast && pck.IPmlt) {
             return sessPass(ses);
