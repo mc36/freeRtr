@@ -168,14 +168,14 @@ server p4lang p4
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port tun11 11
- export-port tun12 12
- export-port tun21 21
- export-port tun22 22
- export-port tun31 31
- export-port tun32 32
- export-port tun41 41
- export-port tun42 42
+ export-port tun11 dynamic
+ export-port tun12 dynamic
+ export-port tun21 dynamic
+ export-port tun22 dynamic
+ export-port tun31 dynamic
+ export-port tun32 dynamic
+ export-port tun41 dynamic
+ export-port tun42 dynamic
  vrf v9
  exit
 ipv4 route v1 2.2.2.203 255.255.255.255 1.1.11.2

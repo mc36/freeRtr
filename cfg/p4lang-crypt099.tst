@@ -79,7 +79,7 @@ server p4lang p4
  export-vrf v1 1
  export-vrf v2 2
  export-port sdn1 1
- export-port tun1 111
+ export-port tun1 dynamic
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4

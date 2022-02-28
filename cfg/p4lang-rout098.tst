@@ -123,10 +123,10 @@ server p4lang p4
  export-port sdn2 2
  export-port sdn3 3
  export-port sdn4 4
- export-port hair11 11
- export-port hair12 12
- export-port hair21 21
- export-port hair22 22
+ export-port hair11 dynamic
+ export-port hair12 dynamic
+ export-port hair21 dynamic
+ export-port hair22 dynamic
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
