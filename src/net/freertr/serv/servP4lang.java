@@ -159,26 +159,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public int expDynBrNxt = 0;
 
     /**
-     * exported dynamic interface first
-     */
-    public int expDynAcc1st = 0;
-
-    /**
-     * exported dynamic range size
-     */
-    public int expDynAccSiz = 0;
-
-    /**
-     * exported dynamic interfaces
-     */
-    public servP4langIfc[] expDynAccIfc;
-
-    /**
-     * exported dynamic next
-     */
-    public int expDynAccNxt = 0;
-
-    /**
      * export interval
      */
     public int expDelay = 1000;
@@ -260,7 +240,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         "server p4lang .*! no export-copp4",
         "server p4lang .*! no export-copp6",
         "server p4lang .*! no export-dynbr",
-        "server p4lang .*! no export-dynacc",
         "server p4lang .*! no interconnect",
         "server p4lang .*! export-interval 1000",};
 
@@ -306,7 +285,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             l.add(beg + "export-copp6 " + expCopp6.listName);
         }
         cmds.cfgLine(l, expDynBrSiz < 1, beg, "export-dynbr", expDynBr1st + " " + expDynBrSiz);
-        cmds.cfgLine(l, expDynAccSiz < 1, beg, "export-dynacc", expDynAcc1st + " " + expDynAccSiz);
         l.add(beg + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
         for (int i = 0; i < downLinks.size(); i++) {
@@ -388,13 +366,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             expCopp6 = acl.aceslst;
-            return false;
-        }
-        if (s.equals("export-dynacc")) {
-            expDynAcc1st = bits.str2num(cmd.word());
-            expDynAccSiz = bits.str2num(cmd.word());
-            expDynAccNxt = 0;
-            expDynAccIfc = new servP4langIfc[expDynAccSiz];
             return false;
         }
         if (s.equals("export-dynbr")) {
@@ -482,7 +453,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             if (ntry.dynamic) {
-                ntry.id = getNextDynamic();
+                int id = getNextDynamic();
+                if (id < 0) {
+                    return false;
+                }
+                ntry.id = id;
             }
             ifc.ethtyp.hwHstry = new history();
             ifc.ethtyp.hwCntr = new counter();
@@ -544,13 +519,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             interconn = null;
             return false;
         }
-        if (s.equals("export-dynacc")) {
-            expDynAcc1st = 0;
-            expDynAccSiz = 0;
-            expDynAccNxt = 0;
-            expDynAccIfc = null;
-            return false;
-        }
         if (s.equals("export-dynbr")) {
             expDynBr1st = 0;
             expDynBrSiz = 0;
@@ -591,9 +559,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add(null, "2 3    <name:vrf>              vrf name");
         l.add(null, "3 .      <num>                 p4lang vrf number");
         l.add(null, "1 2  export-dynbr              specify dynamic bridge port range");
-        l.add(null, "2 3    <num>                   first id");
-        l.add(null, "3 .      <num>                 number of ids");
-        l.add(null, "1 2  export-dynacc             specify dynamic access port range");
         l.add(null, "2 3    <num>                   first id");
         l.add(null, "3 .      <num>                 number of ids");
         l.add(null, "1 2  export-bridge             specify bridge to export");
@@ -699,18 +664,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         int id = pck.msbGetW(0);
         pck.getSkip(2);
         ifcEther.parseETHheader(pck, false);
-        if ((expDynAccIfc != null) && (id >= expDynAcc1st) && (id < (expDynAcc1st + expDynAccSiz))) {
-            servP4langIfc ifc = expDynAccIfc[id - expDynAcc1st];
-            if (ifc == null) {
-                if (debugger.servP4langErr) {
-                    logger.debug("got unneeded target: " + id);
-                }
-                cntr.drop(pck, counter.reasons.noIface);
-                return;
-            }
-            ifc.ifc.ethtyp.gotFromDataplane(pck);
-            return;
-        }
         if ((expDynBrIfc != null) && (id >= expDynBr1st) && (id < (expDynBr1st + expDynBrSiz))) {
             if (pck.msbGetW(0) == ifcBridge.serialType) {
                 pck.getSkip(2);
@@ -863,35 +816,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (ifc == null) {
             return null;
         }
-        if (ifc.cloned == null) {
-            for (int i = 0; i < expIfc.size(); i++) {
-                servP4langIfc ntry = expIfc.get(i);
-                if (ntry.ifc == ifc) {
-                    return ntry;
-                }
-            }
-        }
-        if (expDynAccIfc == null) {
-            return null;
-        }
-        if (ifc.cloned == null) {
-            return null;
-        }
-        for (int i = 0; i < expDynAccIfc.length; i++) {
-            if (expDynAccIfc[i] == null) {
-                continue;
-            }
-            if (expDynAccIfc[i].ifc == ifc) {
-                return expDynAccIfc[i];
+        for (int i = 0; i < expIfc.size(); i++) {
+            servP4langIfc ntry = expIfc.get(i);
+            if (ntry.ifc == ifc) {
+                return ntry;
             }
         }
         return null;
     }
 
     protected servP4langIfc findIfc(int id) {
-        if ((expDynAccIfc != null) && (id >= expDynAcc1st) && (id < (expDynAcc1st + expDynAccSiz))) {
-            return expDynAccIfc[id - expDynAcc1st];
-        }
         servP4langIfc ntry = new servP4langIfc(id);
         return expIfc.find(ntry);
     }
@@ -903,17 +837,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return ntry;
             }
         }
-        if (expDynAccIfc == null) {
-            return null;
-        }
-        for (int i = 0; i < expDynAccIfc.length; i++) {
-            if (expDynAccIfc[i] == null) {
-                continue;
-            }
-            if (expDynAccIfc[i].ifc.ethtyp == ifc) {
-                return expDynAccIfc[i];
-            }
-        }
         return null;
     }
 
@@ -923,21 +846,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
-            if (ifc == ntry.ifc.fwdIf4) {
-                return ntry;
-            }
-            if (ifc == ntry.ifc.fwdIf6) {
-                return ntry;
-            }
-        }
-        if (expDynAccIfc == null) {
-            return null;
-        }
-        for (int i = 0; i < expDynAccIfc.length; i++) {
-            servP4langIfc ntry = expDynAccIfc[i];
-            if (ntry == null) {
-                continue;
-            }
             if (ifc == ntry.ifc.fwdIf4) {
                 return ntry;
             }
@@ -1903,12 +1811,6 @@ class servP4langConn implements Runnable {
             }
         }
         lower.expDynBrNxt = 0;
-        if (lower.expDynAccIfc != null) {
-            for (int i = 0; i < lower.expDynAccIfc.length; i++) {
-                lower.expDynAccIfc[i] = null;
-            }
-        }
-        lower.expDynAccNxt = 0;
         lower.capability = null;
         lower.platform = null;
         lower.dynRngBeg = -1;
@@ -3456,9 +3358,6 @@ class servP4langConn implements Runnable {
             if (ifc.cloned == null) {
                 continue;
             }
-            if (lower.expDynAccIfc == null) {
-                continue;
-            }
             servP4langIfc ntry = lower.findIfc(ifc);
             if (ntry != null) {
                 doIface(ntry);
@@ -3470,15 +3369,18 @@ class servP4langConn implements Runnable {
             if (prnt == null) {
                 continue;
             }
-            lower.expDynAccNxt = (lower.expDynAccNxt + 1) % lower.expDynAccSiz;
-            ntry = new servP4langIfc(lower.expDynAccNxt + lower.expDynAcc1st);
+            int id = lower.getNextDynamic();
+            if (id < 0) {
+                continue;
+            }
+            ntry = new servP4langIfc(id);
             ntry.doClear();
             ntry.ifc = ifc;
             ntry.lower = lower;
             ntry.cloned = prnt;
             ntry.ifc.ethtyp.hwHstry = new history();
             ntry.ifc.ethtyp.hwCntr = new counter();
-            lower.expDynAccIfc[lower.expDynAccNxt] = ntry;
+            lower.expIfc.put(ntry);
             continue;
         }
     }

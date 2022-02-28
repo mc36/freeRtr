@@ -85,7 +85,6 @@ server p4lang p4
  export-port sdn3 3
  export-port sdn4 4
  export-port temp1 dynamic
- export-dynacc 123 11
  vrf v9
  exit
 ipv4 route v2 8.8.8.2 255.255.255.255 9.9.9.2
