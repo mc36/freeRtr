@@ -3628,7 +3628,7 @@ class servP4langConn implements Runnable {
         }
         i = ifc.ifc.ethtyp.sgtSet;
         if (ifc.sentSgtSet != i) {
-            if (ifc.sentSgtSet > 0) {
+            if (ifc.sentSgtSet >= 0) {
                 a = "mod";
             } else {
                 a = "add";
