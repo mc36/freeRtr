@@ -2057,8 +2057,13 @@ class servP4langConn implements Runnable {
     private boolean doNegot() {
         lower.started = bits.getTime();
         lower.neighs.clear();
-        for (int i = 0; i < lower.expIfc.size(); i++) {
-            lower.expIfc.get(i).doClear();
+        for (int i = lower.expIfc.size() - 1; i >= 0; i--) {
+            servP4langIfc ntry = lower.expIfc.get(i);
+            if (ntry.ifc == null) {
+                lower.expIfc.del(ntry);
+            } else {
+                ntry.doClear();
+            }
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             lower.expVrf.get(i).doClear();

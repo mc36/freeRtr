@@ -645,6 +645,11 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 }
 
 
+#define putMacAddr                                  \
+    *bufP -= 12;                                    \
+    memmove(&bufD[*bufP], &bufH[0], 12);
+
+
 
 int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
@@ -667,23 +672,26 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
         *ethtyp = ETHERTYPE_VLAN;
         if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
     }
-    *bufP -= 12;
-    memmove(&bufD[*bufP], &bufH[0], 12);
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
-    if (index >= 0) {
-        bundle_res = table_get(&bundle_table, index);
-        hash = ((hash >> 16) ^ hash) & 0xffff;
-        hash = ((hash >> 8) ^ hash) & 0xff;
-        hash = ((hash >> 4) ^ hash) & 0xf;
-        prt = bundle_res->out[hash];
-        bundle_res->pack++;
-        bundle_res->byte += *bufS;
-        if (bundle_res->command == 2) {
-            *bufS = *bufS - *bufP + preBuff;
-            memmove(&bufD[preBuff], &bufD[*bufP], *bufS);
-            return prt;
-        }
+    if (index < 0) {
+        putMacAddr;
+        send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
+        return -1;
+    }
+    bundle_res = table_get(&bundle_table, index);
+    hash = ((hash >> 16) ^ hash) & 0xffff;
+    hash = ((hash >> 8) ^ hash) & 0xff;
+    hash = ((hash >> 4) ^ hash) & 0xf;
+    prt = bundle_res->out[hash];
+    bundle_res->pack++;
+    bundle_res->byte += *bufS;
+    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
+    putMacAddr;
+    if (bundle_res->command == 2) {
+        *bufS = *bufS - *bufP + preBuff;
+        memmove(&bufD[preBuff], &bufD[*bufP], *bufS);
+        return prt;
     }
     send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
     return -1;
@@ -1331,6 +1339,7 @@ neigh_tx:
         goto ethtyp_rx;
     case ETHERTYPE_IPV4: // ipv4
         if (port2vrf_res == NULL) doDropper;
+        if (port2vrf_res->command != 1) doDropper;
         packIpv4[port]++;
         byteIpv4[port] += bufS;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;
@@ -1587,6 +1596,7 @@ ipv4_tx:
         }
     case ETHERTYPE_IPV6: // ipv6
         if (port2vrf_res == NULL) doDropper;
+        if (port2vrf_res->command != 1) doDropper;
         packIpv6[port]++;
         byteIpv6[port] += bufS;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;

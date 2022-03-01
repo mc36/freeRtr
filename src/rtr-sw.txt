@@ -86,6 +86,9 @@ route-policy nht6
  sequence 70 enif
  exit
 !
+bundle 1
+ exit
+!
 bridge 1
  rd 65535:1
  rt-import 65535:1
@@ -346,7 +349,7 @@ interface loopback42
  exit
 !
 interface loopback65535
- no description
+ description vpn
  vrf forwarding vpn
  ipv4 address 172.16.27.4 255.255.255.255
  ipv6 address fd42:1234::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
@@ -354,8 +357,17 @@ interface loopback65535
  no log-link-change
  exit
 !
+interface bundle1
+ description uplink
+ vrf forwarding v1
+ ipv4 address 10.1.123.91 255.255.255.0
+ ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
+ template template1
+ no shutdown
+ exit
+!
 interface bvi1
- no description
+ description vpn
  lldp enable
  cdp enable
  no shutdown
@@ -363,7 +375,7 @@ interface bvi1
  exit
 !
 interface bvi2
- no description
+ description vpn
  lldp enable
  cdp enable
  no shutdown
@@ -371,7 +383,7 @@ interface bvi2
  exit
 !
 interface bvi3
- no description
+ description vpn
  lldp enable
  cdp enable
  vrf forwarding bvi
@@ -382,7 +394,7 @@ interface bvi3
  exit
 !
 interface bvi4
- no description
+ description vpn
  lldp enable
  cdp enable
  no shutdown
@@ -390,12 +402,17 @@ interface bvi4
  exit
 !
 interface ethernet1
- description uplink
- vrf forwarding v1
- ipv4 address 10.1.123.91 255.255.255.0
- ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
- template template1
+ description uplink1
+ bundle-group 1
  no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet2
+ description uplink2
+ bundle-group 1
+ no shutdown
+ no log-link-change
  exit
 !
 interface ethernet8
