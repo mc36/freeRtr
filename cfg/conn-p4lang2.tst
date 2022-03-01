@@ -37,7 +37,7 @@ hair 1
  exit
 hair 2
  exit
-serv pktmux mchome
+serv pktmux pm
  cpu eth1
  data hair11 1
  data hair21 9
