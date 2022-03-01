@@ -1384,10 +1384,10 @@ public class userShow {
             return null;
         }
         if (a.equals("sgt")) {
-            userFormat lst = new userFormat("|", "interface|packet");
+            userFormat lst = new userFormat("|", "interface|tagging|assign");
             for (int i = 0; i < cfgAll.ifaces.size(); i++) {
                 cfgIfc ntry = cfgAll.ifaces.get(i);
-                lst.add(ntry.name + "|" + ntry.ethtyp.getSgt());
+                lst.add(ntry.name + "|" + ntry.ethtyp.getSgt() + "|" + ntry.ethtyp.sgtSet);
             }
             rdr.putStrTab(lst);
             return null;

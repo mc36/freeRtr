@@ -109,7 +109,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     /**
      * sgt handler
      */
-    public int sgtSet;
+    public int sgtSet = -1;
 
     /**
      * service chaining
@@ -828,7 +828,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
-        if (sgtSet > 0) {
+        if (sgtSet >= 0) {
             pck.SGTid = sgtSet;
         }
         if (lastState != state.states.up) {

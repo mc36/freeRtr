@@ -1770,7 +1770,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentPolka = -1;
         sentMpolka = -1;
         sentSgtTag = 0;
-        sentSgtSet = 0;
+        sentSgtSet = -1;
         sentMss4in = 0;
         sentMss4out = 0;
         sentMss6in = 0;
@@ -3633,7 +3633,7 @@ class servP4langConn implements Runnable {
             } else {
                 a = "add";
             }
-            if (i < 1) {
+            if (i < 0) {
                 a = "del";
             }
             lower.sendLine("sgtset_" + a + " " + ifc.id + " " + i);

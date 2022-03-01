@@ -5778,7 +5778,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, ethtyp.sgtHnd.forbidIn == null, cmds.tabulator, "sgt forbid-in", tabIndex.convertTable(ethtyp.sgtHnd.forbidIn));
             cmds.cfgLine(l, ethtyp.sgtHnd.forbidOut == null, cmds.tabulator, "sgt forbid-out", tabIndex.convertTable(ethtyp.sgtHnd.forbidOut));
         }
-        cmds.cfgLine(l, ethtyp.sgtSet < 1, cmds.tabulator, "sgt assign", "" + ethtyp.sgtSet);
+        cmds.cfgLine(l, ethtyp.sgtSet < 0, cmds.tabulator, "sgt assign", "" + ethtyp.sgtSet);
         s = "none";
         if (ethtyp.mtuCheckRx) {
             s = "in";
@@ -7529,7 +7529,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             if (a.equals("assign")) {
-                ethtyp.sgtSet = 0;
+                ethtyp.sgtSet = -1;
                 return;
             }
             if (ethtyp.sgtHnd == null) {
