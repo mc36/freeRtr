@@ -1,2 +1,2 @@
 #!/bin/sh
-echo `cd ../../binTmp/;tar cf --owner=root --group=root ../binImg/rtr.tar *.bin`
+echo `cd ../../binTmp/;tar cf ../binImg/rtr.tar --owner=root --group=root *.bin`
