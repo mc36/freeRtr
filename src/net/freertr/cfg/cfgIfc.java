@@ -5300,7 +5300,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         cfgTrack trck = cfgAll.trackFind(followTrack, false);
         if (trck == null) {
-            logger.warn("interface " + name + " cannot to find configured tracker");
+            logger.warn("interface " + name + " cannot find the tracker");
             return;
         }
         final int myVal = 8;
