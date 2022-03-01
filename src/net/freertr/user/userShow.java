@@ -446,12 +446,7 @@ public class userShow {
         }
         if (a.equals("resolve")) {
             a = cmd.word();
-            int i;
-            if (cfgAll.preferIpv6) {
-                i = packDnsRec.typeAAAA;
-            } else {
-                i = packDnsRec.typeANY;
-            }
+            int i = clntDns.getTypPri(0);
             addrIP adr = new addrIP();
             if (!adr.fromString(a)) {
                 a = packDnsRec.generateReverse(adr);

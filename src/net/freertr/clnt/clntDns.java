@@ -392,7 +392,26 @@ public class clntDns {
         return 1;
     }
 
-    private int getTypPri(int prefer) {
+    /**
+     * get primary preference
+     *
+     * @return preferred protocol
+     */
+    public static int getPriPref() {
+        if (cfgAll.preferIpv6) {
+            return 6;
+        } else {
+            return 4;
+        }
+    }
+
+    /**
+     * get primary type
+     *
+     * @param prefer preferred protocol, 0 if default
+     * @return dns record type
+     */
+    public static int getTypPri(int prefer) {
         switch (prefer) {
             case 4:
                 return packDnsRec.typeA;
@@ -407,7 +426,13 @@ public class clntDns {
         }
     }
 
-    private int getTypBck(int prefer) {
+    /**
+     * get secondary type
+     *
+     * @param prefer preferred protocol, 0 if default
+     * @return dns record type
+     */
+    public static int getTypSec(int prefer) {
         if (getTypPri(prefer) == packDnsRec.typeA) {
             return packDnsRec.typeAAAA;
         } else {
@@ -452,7 +477,7 @@ public class clntDns {
         if (!checkReply(i)) {
             return false;
         }
-        i = doResolvList(srv, nam, true, getTypBck(prefer));
+        i = doResolvList(srv, nam, true, getTypSec(prefer));
         return checkReply(i);
     }
 
@@ -518,7 +543,7 @@ public class clntDns {
         packDnsRec rr;
         rr = findAnswer(getTypPri(prefer));
         if (rr == null) {
-            rr = findAnswer(getTypBck(prefer));
+            rr = findAnswer(getTypSec(prefer));
         }
         if (rr == null) {
             return null;

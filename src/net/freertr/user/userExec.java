@@ -3559,12 +3559,7 @@ public class userExec {
     private void doListen() {
         int port = bits.str2num(cmd.word());
         int trns = servGeneric.protoTcp;
-        int proto;
-        if (cfgAll.preferIpv6) {
-            proto = 6;
-        } else {
-            proto = 4;
-        }
+        int proto = clntDns.getPriPref();
         cfgVrf vrf = cfgAll.getClntVrf();
         cfgIfc ifc = cfgAll.getClntIfc();
         addrIP rem = null;
