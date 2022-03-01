@@ -907,6 +907,8 @@ public class userExec {
         }
         hl.add(null, "2 3      whois                   query whois server");
         hl.add(null, "3 3,.      [text]                directory to print");
+        hl.add(null, "2 3      resolve                 query dns server");
+        hl.add(null, "3 .        <addr>                name or address");
         hl.add(null, "2 3      transproxy              transparent proxy connections");
         hl.add(null, "3 .        <name:ifc>            name of interface");
         hl.add(null, "2 3,.    version                 version information");

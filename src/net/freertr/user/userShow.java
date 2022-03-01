@@ -49,6 +49,7 @@ import net.freertr.ip.ipFwdMpmp;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipFwdTrfng;
 import net.freertr.ip.ipRtr;
+import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packDnsZone;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packLdpMp;
@@ -441,6 +442,32 @@ public class userShow {
         if (a.equals("name-cache")) {
             rdr.putStrTab(clntDns.showLocalCache(false));
             rdr.putStrTab(clntDns.showLocalCache(true));
+            return null;
+        }
+        if (a.equals("resolve")) {
+            a = cmd.word();
+            int i;
+            if (cfgAll.preferIpv6) {
+                i = packDnsRec.typeAAAA;
+            } else {
+                i = packDnsRec.typeANY;
+            }
+            addrIP adr = new addrIP();
+            if (!adr.fromString(a)) {
+                a = packDnsRec.generateReverse(adr);
+                i = packDnsRec.typePTR;
+            }
+            cmd.error("resolving " + packDnsRec.type2str(i) + " " + a);
+            List<addrIP> srvs = new ArrayList<addrIP>();
+            srvs.addAll(cfgAll.nameServerAddr);
+            clntDns clnt = new clntDns();
+            clnt.doResolvList(srvs, a, true, i);
+            packDnsRec res = clnt.findAnswer(i);
+            if (res == null) {
+                cmd.error("no reply");
+                return null;
+            }
+            rdr.putStrArr(res.toUserStr(" ", "", false));
             return null;
         }
         if (a.equals("whois")) {
