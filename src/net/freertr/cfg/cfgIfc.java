@@ -5352,7 +5352,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (ipxIfc != null) {
                     l.add(cmds.tabulator + "ipx address=" + ipxAddr + ", ifcid=" + ipxIfc.ifwNum);
                 }
-                l.addAll(ethtyp.getCounter().getShFull(ethtyp.getPromisc(), ethtyp.getMacsec()));
+                l.addAll(ethtyp.getCounter().getShFull(ethtyp.getPromisc(), ethtyp.getMacsec(), ethtyp.getSgt()));
                 break;
             case 2:
             case 3:
@@ -5369,7 +5369,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (ethtyp.hwCntr == null) {
                     return null;
                 }
-                l.addAll(ethtyp.hwCntr.getShFull(ethtyp.getPromisc(), ethtyp.getMacsec()));
+                l.addAll(ethtyp.hwCntr.getShFull(ethtyp.getPromisc(), ethtyp.getMacsec(), ethtyp.getSgt()));
                 break;
             case 12:
             case 13:

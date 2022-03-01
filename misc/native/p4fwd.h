@@ -686,13 +686,14 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
     prt = bundle_res->out[hash];
     bundle_res->pack++;
     bundle_res->byte += *bufS;
-    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
-    putMacAddr;
     if (bundle_res->command == 2) {
+        putMacAddr;
         *bufS = *bufS - *bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[*bufP], *bufS);
         return prt;
     }
+    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
+    putMacAddr;
     send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
     return -1;
 }

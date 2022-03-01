@@ -523,12 +523,13 @@ public class counter implements Comparator<counter> {
      *
      * @param promisc promiscous state
      * @param macsec macsec state
+     * @param sgt sgt state
      * @return string list of user string
      */
-    public List<String> getShFull(boolean promisc, boolean macsec) {
+    public List<String> getShFull(boolean promisc, boolean macsec, boolean sgt) {
         List<String> l = new ArrayList<String>();
         l.add(cmds.tabulator + "received " + packRx + " packets (" + byteRx + " bytes) dropped " + packDr + " packets (" + byteDr + " bytes)");
-        l.add(cmds.tabulator + "transmitted " + packTx + " packets (" + byteTx + " bytes) promisc=" + promisc + " macsec=" + macsec);
+        l.add(cmds.tabulator + "transmitted " + packTx + " packets (" + byteTx + " bytes) promisc=" + promisc + " macsec=" + macsec + " sgt=" + sgt);
         return l;
     }
 
