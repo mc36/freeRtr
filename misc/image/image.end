@@ -41,7 +41,7 @@ exec cp ../misc/default.cfg %tmp%/rtr/rtr-sw.txt
 exec for a in `busybox --list`; do ln -s /bin/busybox %tmp%/bin/$a; done
 
 exec du -sh %tmp%
-exec cd %tmp%;find . | cpio --quiet -H newc -O ../cpio -o
+exec cd %tmp%;find . | cpio --quiet -H newc --owner root:root -O ../cpio -o
 exec mv %tmp%/../cpio %img%.cpio
 exec gzip -n <%img%.cpio >%img%.ird
 exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
