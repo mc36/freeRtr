@@ -121,7 +121,11 @@ public class userFormat {
         /**
          * rainbow
          */
-        rainbow
+        rainbow,
+        /**
+         * prompt
+         */
+        prompt
 
     }
 
@@ -141,6 +145,9 @@ public class userFormat {
         if (a.equals("rainbow")) {
             return colorMode.rainbow;
         }
+        if (a.equals("prompt")) {
+            return colorMode.prompt;
+        }
         return colorMode.normal;
     }
 
@@ -158,6 +165,8 @@ public class userFormat {
                 return "header";
             case rainbow:
                 return "rainbow";
+            case prompt:
+                return "prompt";
             default:
                 return "unknown";
         }

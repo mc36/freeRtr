@@ -1293,6 +1293,7 @@ public class userExec {
         hl.add(null, "3 .        normal                select normal mode");
         hl.add(null, "3 .        header                select header mode");
         hl.add(null, "3 .        rainbow               select rainbow mode");
+        hl.add(null, "3 .        prompt                select prompt mode");
         hl.add(null, "2 .      spacetab                treat space as tabulator");
         hl.add(null, "2 3      tablemode               select table formatting mode");
         hl.add(null, "3 .        normal                select normal mode");

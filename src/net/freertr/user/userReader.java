@@ -746,18 +746,19 @@ public class userReader implements Comparator<String> {
         final byte[] rainc = {userScreen.colBrWhite, userScreen.colBrYellow, userScreen.colBrCyan, userScreen.colBrGreen, userScreen.colBrRed, userScreen.colBrMagenta};
         final int rains = 12;
         for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
             switch (color) {
                 case normal:
-                    pipe.linePut(lst.get(i));
+                case prompt:
+                    pipe.linePut(a);
                     break;
                 case header:
                     userScreen.sendCol(pipe, userScreen.colBrYellow);
-                    pipe.linePut(lst.get(i));
+                    pipe.linePut(a);
                     userScreen.sendCol(pipe, userScreen.colWhite);
                     color = userFormat.colorMode.normal;
                     break;
                 case rainbow:
-                    String a = lst.get(i);
                     int r = a.length();
                     for (int q = 0;; q++) {
                         int s = q * rains;

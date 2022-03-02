@@ -551,6 +551,7 @@ public class userLine {
         l.add(null, "3 .      normal                     select normal mode");
         l.add(null, "3 .      header                     select header mode");
         l.add(null, "3 .      rainbow                    select rainbow mode");
+        l.add(null, "3 .      prompt                     select prompt mode");
         l.add(null, "2 .    spacetab                     enable space as tab");
         l.add(null, "2 3    tablemode                    set table mode");
         l.add(null, "3 .      csv                        select csv mode");
