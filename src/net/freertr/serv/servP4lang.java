@@ -751,10 +751,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @return show
      */
     public userFormat getShowNeighs() {
-        userFormat res = new userFormat("|", "neigh|name");
+        userFormat res = new userFormat("|", "neigh|addr|iface");
         for (int i = 0; i < neighs.size(); i++) {
             servP4langNei ntry = neighs.get(i);
-            res.add(ntry.id + "|" + ntry.iface + " " + ntry.adr);
+            res.add(ntry.id + "|" + ntry.adr + "|" + ntry.iface);
         }
         return res;
     }
