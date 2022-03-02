@@ -240,7 +240,7 @@ public class ifcBridge implements ifcDn {
         userFormat lst = new userFormat("|", "iface|fwd|phys|tx|rx|drop|tx|rx|drop|grp", "3|3packet|3byte|1");
         lst.add("" + upNtry);
         for (int i = 0; i < ifaces.size(); i++) {
-            lst.add("" + ifaces.get(i));
+            lst.add("" + ifaces.get(i).getShow());
         }
         return lst;
     }

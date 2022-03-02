@@ -296,6 +296,15 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
     }
 
     public String toString() {
+        return "brprt " + getIfcName();
+    }
+
+    /**
+     * get interface show
+     *
+     * @return show
+     */
+    public String getShow() {
         String a = "";
         if (groups != null) {
             for (int i = 0; i < groups.size(); i++) {

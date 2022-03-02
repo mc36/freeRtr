@@ -418,7 +418,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 ntry.setUpper(ifc.ethtyp);
             }
             if (orig != null) {
-                sendLine("state " + old.id + " 0 " + orig.getStateEnding());
+                sendLine("state " + ntry.id + " 0 " + orig.getStateEnding());
                 sendLine("state " + ntry.id + " 1 " + ntry.getStateEnding());
                 return false;
             }
@@ -696,11 +696,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     /**
-     * get show
+     * get generic show
      *
      * @return show
      */
-    public userFormat getShow() {
+    public userFormat getShowGen() {
         userFormat res = new userFormat("|", "category|value");
         res.add("peer|" + remote);
         res.add("closed|" + conn);
@@ -710,17 +710,51 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         res.add("platform|" + platform);
         res.add("cpuport|" + cpuport);
         res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
+        return res;
+    }
+
+    /**
+     * get frontpanel show
+     *
+     * @return show
+     */
+    public userFormat getShowFront() {
+        userFormat res = new userFormat("|", "front|name");
         for (int i = 0; i < fronts.size(); i++) {
             servP4langFrnt ntry = fronts.get(i);
-            res.add("front-" + ntry.id + "|" + ntry.nam);
+            res.add(ntry.id + "|" + ntry.nam);
         }
+        return res;
+    }
+
+    /**
+     * get generic show
+     *
+     * @return show
+     */
+    public userFormat getShowIfaces() {
+        userFormat res = new userFormat("|", "sent|name");
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
-            res.add("sent-" + ntry.id + "|" + ntry.ifc);
+            if (ntry.ifc == null) {
+                res.add(ntry.id + "|brif " + ntry.brif.getIfcName());
+            } else {
+                res.add(ntry.id + "|ifc " + ntry.ifc.name);
+            }
         }
+        return res;
+    }
+
+    /**
+     * get neighbor show
+     *
+     * @return show
+     */
+    public userFormat getShowNeighs() {
+        userFormat res = new userFormat("|", "neigh|name");
         for (int i = 0; i < neighs.size(); i++) {
             servP4langNei ntry = neighs.get(i);
-            res.add("neigh-" + ntry.id + "|" + ntry.iface + " " + ntry.adr);
+            res.add(ntry.id + "|" + ntry.iface + " " + ntry.adr);
         }
         return res;
     }

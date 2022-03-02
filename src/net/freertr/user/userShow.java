@@ -811,7 +811,10 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            rdr.putStrTab(srv.getShow());
+            rdr.putStrTab(srv.getShowGen());
+            rdr.putStrTab(srv.getShowFront());
+            rdr.putStrTab(srv.getShowIfaces());
+            rdr.putStrTab(srv.getShowNeighs());
             return null;
         }
         if (a.equals("bmp")) {
