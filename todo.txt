@@ -1,9 +1,11 @@
+quic
 p4dpdk multiseg rx/tx loop
 nat and pbr config to have reindex
 bridge security from dhcp, slaac, whatever server
 bgp optimal route reflection
 bgp peer autoconfig
 bgp layer2 flowspec
+bgp flowspec v2
 bgp strict bfd mode
 bgp signed path
 traffic through bgp sr-policy
@@ -13,6 +15,7 @@ ldap client, server
 trustpoint for certificates
 dhcp relay support
 tcp selective ack
+tcp window scale
 xot, x75 switching
 ilnp (rfc6740)
 lisp4, lisp6
