@@ -671,6 +671,10 @@ class servSmtpDoer implements Runnable {
 
     private List<String> trgR = new ArrayList<String>();
 
+    private List<String> hdrA = new ArrayList<String>();
+
+    private List<String> hdrD = new ArrayList<String>();
+
     private String trgS = "";
 
     private boolean recurAva;
@@ -693,6 +697,17 @@ class servSmtpDoer implements Runnable {
             logger.debug("tx: " + s);
         }
         pipe.linePut(s);
+    }
+
+    public void doClear() {
+        src = "";
+        dsn = false;
+        env = "";
+        trgS = "";
+        trgL.clear();
+        trgR.clear();
+        hdrA.clear();
+        hdrD.clear();
     }
 
     public boolean doOne() {
@@ -898,6 +913,8 @@ class servSmtpDoer implements Runnable {
             if (clst != null) {
                 trgS += last + " ";
                 trgR.addAll(clst.remotes);
+                hdrA.add("Reply-To: " + last);
+                hdrD.add("reply-to");
                 doLine("250 " + clst.email + " now added");
                 return false;
             }
@@ -910,6 +927,8 @@ class servSmtpDoer implements Runnable {
                 }
                 trgS += last + " ";
                 trgR.addAll(res);
+                hdrA.add("Reply-To: " + last);
+                hdrD.add("reply-to");
                 doLine("250 " + elst.email + " now added");
                 return false;
             }
@@ -923,12 +942,7 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("rset")) {
-            src = "";
-            dsn = false;
-            String env = "";
-            trgS = "";
-            trgL.clear();
-            trgR.clear();
+            doClear();
             doLine("250 target list cleared");
             return false;
         }
@@ -941,12 +955,16 @@ class servSmtpDoer implements Runnable {
             doLine("354 start mail input");
             packText pt = new packText(pipe);
             List<String> txt = pt.dottedRecvAll();
-            txt.add(0, "Received: from " + conn.peerAddr + " (helo " + helo + ")");
-            txt.add(1, "    by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ")");
-            txt.add(2, "    (envelope-from " + src + ") with smtp (" + version.namVer + ")");
-            txt.add(3, "    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 4));
-            int o = 0;
+            clntSmtp.deleteHead(txt, hdrD);
+            clntSmtp.prependHead(txt, hdrA);
+            hdrA.clear();
             long tim = bits.getTime();
+            hdrA.add("Received: from " + conn.peerAddr + " (helo " + helo + ")");
+            hdrA.add("    by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ")");
+            hdrA.add("    (envelope-from " + src + ") with smtp (" + version.namVer + ")");
+            hdrA.add("    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 4));
+            clntSmtp.prependHead(txt, hdrA);
+            int o = 0;
             for (int i = 0; i < trgL.size(); i++) {
                 servSmtpLoc usr = trgL.get(i);
                 if (!bits.buf2txt(true, txt, lower.mailFolders + usr.user + "/" + tim + ".msg")) {
@@ -969,22 +987,19 @@ class servSmtpDoer implements Runnable {
                 sm.putBody(txt);
                 sm.startSend();
             }
-            doLine("250 mail saved in " + o + " local and " + trgR.size() + " remote mailbox(es)");
-            if (dsn) {
-                clntSmtp sm = new clntSmtp(null);
-                sm.from = src;
-                sm.envid = env;
-                sm.putBody(txt);
-                if (!sm.conv2rep()) {
-                    sm.startSend();
-                }
+            doLine("250 mail saved in " + o + " local and " + trgR.size() + " remote mailboxes");
+            if (!dsn) {
+                doClear();
+                return false;
             }
-            src = "";
-            dsn = false;
-            String env = "";
-            trgS = "";
-            trgL.clear();
-            trgR.clear();
+            clntSmtp sm = new clntSmtp(null);
+            sm.from = src;
+            sm.envid = env;
+            sm.putBody(txt);
+            if (!sm.conv2rep()) {
+                sm.startSend();
+            }
+            doClear();
             return false;
         }
         if (a.equals("vrfy")) {
@@ -1020,44 +1035,50 @@ class servSmtpDoer implements Runnable {
         return false;
     }
 
+    public void doRbls() {
+        rblRes = 0;
+        if (lower.rbls.size() < 1) {
+            return;
+        }
+        int[] res = new int[lower.rbls.size()];
+        notifier notif = new notifier();
+        for (int i = 0; i < res.length; i++) {
+            new servSmtpRbler(res, i, notif, lower.rbls.get(i), conn.peerAddr);
+        }
+        long tim = bits.getTime();
+        for (;;) {
+            notif.sleep(1000);
+            if ((bits.getTime() - tim) > lower.rblTim) {
+                break;
+            }
+            int o = 0;
+            for (int i = 0; i < res.length; i++) {
+                if (res[i] != 0) {
+                    o++;
+                }
+            }
+            if (o >= res.length) {
+                break;
+            }
+        }
+        for (int i = 0; i < res.length; i++) {
+            switch (res[i]) {
+                case 1:
+                    rblRes++;
+                    break;
+                case 0:
+                case 2:
+                    logger.error("rbl " + lower.rbls.get(i) + " not responding");
+                    break;
+            }
+        }
+    }
+
     public void run() {
         try {
             doLine("220 server ready");
-            if (lower.rbls.size() > 0) {
-                int[] res = new int[lower.rbls.size()];
-                notifier notif = new notifier();
-                for (int i = 0; i < res.length; i++) {
-                    new servSmtpRbler(res, i, notif, lower.rbls.get(i), conn.peerAddr);
-                }
-                long tim = bits.getTime();
-                for (;;) {
-                    notif.sleep(1000);
-                    if ((bits.getTime() - tim) > lower.rblTim) {
-                        break;
-                    }
-                    int o = 0;
-                    for (int i = 0; i < res.length; i++) {
-                        if (res[i] != 0) {
-                            o++;
-                        }
-                    }
-                    if (o >= res.length) {
-                        break;
-                    }
-                }
-                rblRes = 0;
-                for (int i = 0; i < res.length; i++) {
-                    switch (res[i]) {
-                        case 1:
-                            rblRes++;
-                            break;
-                        case 0:
-                        case 2:
-                            logger.error("rbl " + lower.rbls.get(i) + " not responding");
-                            break;
-                    }
-                }
-            }
+            doRbls();
+            doClear();
             for (;;) {
                 if (doOne()) {
                     break;

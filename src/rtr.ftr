@@ -2762,12 +2762,14 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: quic
 todo: p4dpdk multiseg rx/tx loop
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server
 todo: bgp optimal route reflection
 todo: bgp peer autoconfig
 todo: bgp layer2 flowspec
+todo: bgp flowspec v2
 todo: bgp strict bfd mode
 todo: bgp signed path
 todo: traffic through bgp sr-policy
@@ -2777,6 +2779,7 @@ todo: ldap client, server
 todo: trustpoint for certificates
 todo: dhcp relay support
 todo: tcp selective ack
+todo: tcp window scale
 todo: xot, x75 switching
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6

@@ -121,6 +121,43 @@ public class clntSmtp implements Runnable {
     }
 
     /**
+     * prepend header
+     *
+     * @param msg message
+     * @param hdr headers
+     */
+    public static void prependHead(List<String> msg, List<String> hdr) {
+        for (int i = 0; i < hdr.size(); i++) {
+            msg.add(i, hdr.get(i));
+        }
+    }
+
+    /**
+     * prepend header
+     *
+     * @param msg message
+     * @param hdr headers
+     */
+    public static void deleteHead(List<String> msg, List<String> hdr) {
+        for (int o = 0; o < msg.size(); o++) {
+            String a = msg.get(o);
+            if (a.length() < 1) {
+                break;
+            }
+            int i = a.indexOf(":");
+            if (i < 0) {
+                i = a.length();
+            }
+            a = a.substring(0, i).toLowerCase();
+            if (hdr.indexOf(a) < 0) {
+                continue;
+            }
+            msg.remove(o);
+            o--;
+        }
+    }
+
+    /**
      * write header
      *
      * @param from source
