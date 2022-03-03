@@ -13052,3 +13052,5 @@ no qc pass: unnamed
 no qc pass: unnamed
 qc pass: ipv6 over gtp
 qc pass: ipv4 and ipv6 over gtp
+---------------------------------- 2022-03-03 12:31:33
+qc pass: gtp tunnel

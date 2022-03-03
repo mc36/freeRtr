@@ -166,6 +166,7 @@ qc pass: ppp over gtp
 qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
 qc pass: ipv4 and ipv6 over gtp
+qc pass: gtp tunnel
 qc pass: ethernet hairpin
 qc pass: serial hairpin
 qc pass: bundle hairpin
