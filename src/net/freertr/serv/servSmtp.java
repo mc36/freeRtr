@@ -92,6 +92,16 @@ public class servSmtp extends servGeneric implements prtServS {
     public tabGen<servSmtpFwd> forwards = new tabGen<servSmtpFwd>();
 
     /**
+     * list of config list email addresses
+     */
+    public tabGen<servSmtpClst> cfgLists = new tabGen<servSmtpClst>();
+
+    /**
+     * list of external list email addresses
+     */
+    public tabGen<servSmtpElst> extLists = new tabGen<servSmtpElst>();
+
+    /**
      * list of rbl servers
      */
     public tabGen<servSmtpRbl> rbls = new tabGen<servSmtpRbl>();
@@ -158,12 +168,10 @@ public class servSmtp extends servGeneric implements prtServS {
         cmds.cfgLine(lst, !recursEna, beg, "recursion enable", "");
         cmds.cfgLine(lst, bccUser == null, beg, "bcc", "" + bccUser);
         lst.add(beg + "path " + mailFolders);
-        for (int i = 0; i < locals.size(); i++) {
-            lst.add(beg + "local " + locals.get(i));
-        }
-        for (int i = 0; i < forwards.size(); i++) {
-            lst.add(beg + "forward " + forwards.get(i));
-        }
+        doGetCfg(locals, beg + "local ", lst);
+        doGetCfg(forwards, beg + "forward ", lst);
+        doGetCfg(cfgLists, beg + "clist ", lst);
+        doGetCfg(extLists, beg + "elist ", lst);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -204,20 +212,16 @@ public class servSmtp extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("local")) {
-            servSmtpLoc ntry = new servSmtpLoc();
-            if (ntry.fromString(cmd)) {
-                return true;
-            }
-            locals.put(ntry);
-            return false;
+            return doAddCfg(locals, cmd, new servSmtpLoc());
         }
         if (s.equals("forward")) {
-            servSmtpFwd ntry = new servSmtpFwd();
-            if (ntry.fromString(cmd)) {
-                return true;
-            }
-            forwards.put(ntry);
-            return false;
+            return doAddCfg(forwards, cmd, new servSmtpFwd());
+        }
+        if (s.equals("clist")) {
+            return doAddCfg(cfgLists, cmd, new servSmtpClst());
+        }
+        if (s.equals("elist")) {
+            return doAddCfg(extLists, cmd, new servSmtpElst());
         }
         if (s.equals("rbl-server")) {
             servSmtpRbl ntry = new servSmtpRbl();
@@ -269,18 +273,16 @@ public class servSmtp extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("local")) {
-            servSmtpLoc ntry = new servSmtpLoc();
-            if (ntry.fromString(cmd)) {
-                return true;
-            }
-            return locals.del(ntry) == null;
+            return doDelCfg(locals, cmd, new servSmtpLoc());
         }
         if (s.equals("forward")) {
-            servSmtpFwd ntry = new servSmtpFwd();
-            if (ntry.fromString(cmd)) {
-                return true;
-            }
-            return forwards.del(ntry) == null;
+            return doDelCfg(forwards, cmd, new servSmtpFwd());
+        }
+        if (s.equals("clist")) {
+            return doDelCfg(cfgLists, cmd, new servSmtpClst());
+        }
+        if (s.equals("elist")) {
+            return doDelCfg(extLists, cmd, new servSmtpElst());
         }
         if (s.equals("rbl-server")) {
             servSmtpRbl ntry = new servSmtpRbl();
@@ -318,6 +320,12 @@ public class servSmtp extends servGeneric implements prtServS {
         l.add(null, "2 3    <user>                     remote email address");
         l.add(null, "3 4,.    <addr>                   local email address");
         l.add(null, "4 .        <user>                 name of bcc user");
+        l.add(null, "1 2  clist                        set config list email address");
+        l.add(null, "2 3    <addr>                     local email address");
+        l.add(null, "3 3,.    <addr>                   remote email address");
+        l.add(null, "1 2  elist                        set external list email address");
+        l.add(null, "2 3    <addr>                     local email address");
+        l.add(null, "3 .      <path>                   file name to read");
         l.add(null, "1 2  path                         set root folder");
         l.add(null, "2 .    <path>                     name of root folder");
         l.add(null, "1 2  rbl-server                   set rbl server");
@@ -349,38 +357,176 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     /**
+     * find in one list
+     *
+     * @param <T> type
+     * @param l list
+     * @param n entry
+     * @param e email
+     * @return result
+     */
+    protected static <T extends servSmtpTrg> T doFinder(tabGen<T> l, T n, String e) {
+        n.email = uniResLoc.fromEmail(e).toLowerCase();
+        n = l.find(n);
+        if (n == null) {
+            return null;
+        }
+        n.askNum++;
+        n.askTim = bits.getTime();
+        return n;
+    }
+
+    /**
+     * config for one list
+     *
+     * @param <T> type
+     * @param l list
+     * @param p prepend
+     * @param r result
+     */
+    protected static <T extends servSmtpTrg> void doGetCfg(tabGen<T> l, String p, List<String> r) {
+        for (int i = 0; i < l.size(); i++) {
+            r.add(p + l.get(i));
+        }
+    }
+
+    /**
+     * config for one list
+     *
+     * @param <T> type
+     * @param l list
+     * @param c cmds
+     * @param n entry
+     * @return true on error, false on success
+     */
+    protected static <T extends servSmtpTrg> boolean doAddCfg(tabGen<T> l, cmds c, T n) {
+        if (n.fromString(c)) {
+            return true;
+        }
+        l.put(n);
+        return false;
+    }
+
+    /**
+     * config for one list
+     *
+     * @param <T> type
+     * @param l list
+     * @param c cmds
+     * @param n entry
+     * @return true on error, false on success
+     */
+    protected static <T extends servSmtpTrg> boolean doDelCfg(tabGen<T> l, cmds c, T n) {
+        if (n.fromString(c)) {
+            return true;
+        }
+        return l.del(n) == null;
+    }
+
+    /**
+     * show for one list
+     *
+     * @param <T> type
+     * @param l list
+     * @param r result
+     */
+    protected static <T extends servSmtpTrg> void doGetShw(tabGen<T> l, userFormat r) {
+        for (int i = 0; i < l.size(); i++) {
+            T n = l.get(i);
+            r.add(n.email + "|" + n.askNum + "|" + bits.timePast(n.askTim));
+        }
+    }
+
+    /**
      * get show
      *
      * @return result
      */
     public userFormat getShow() {
         userFormat res = new userFormat("|", "email|hit|last");
-        for (int i = 0; i < locals.size(); i++) {
-            servSmtpLoc ntry = locals.get(i);
-            res.add(ntry.email + "|" + ntry.askNum + "|" + bits.timePast(ntry.askTim));
-        }
-        for (int i = 0; i < forwards.size(); i++) {
-            servSmtpFwd ntry = forwards.get(i);
-            res.add(ntry.email + "|" + ntry.askNum + "|" + bits.timePast(ntry.askTim));
-        }
+        doGetShw(locals, res);
+        doGetShw(forwards, res);
+        doGetShw(cfgLists, res);
+        doGetShw(extLists, res);
         return res;
     }
 
 }
 
-class servSmtpFwd implements Comparator<servSmtpFwd> {
+abstract class servSmtpTrg implements Comparator<servSmtpTrg> {
 
     public String email;
-
-    public String remote;
-
-    public String bcc;
 
     public int askNum;
 
     public long askTim;
 
-    ;
+    public int compare(servSmtpTrg o1, servSmtpTrg o2) {
+        return o1.email.toLowerCase().compareTo(o2.email.toLowerCase());
+    }
+
+    abstract public boolean fromString(cmds cmd);
+
+}
+
+class servSmtpElst extends servSmtpTrg {
+
+    public String extFil;
+
+    public String toString() {
+        return email + " " + extFil;
+    }
+
+    public boolean fromString(cmds cmd) {
+        email = cmd.word();
+        extFil = cmd.word();
+        if (extFil.length() < 1) {
+            return true;
+        }
+        if (email.length() < 1) {
+            return true;
+        }
+        return false;
+    }
+
+}
+
+class servSmtpClst extends servSmtpTrg {
+
+    public List<String> remotes;
+
+    public String toString() {
+        String a = "";
+        for (int i = 0; i < remotes.size(); i++) {
+            a += " " + remotes.get(i);
+        }
+        return email + a;
+    }
+
+    public boolean fromString(cmds cmd) {
+        remotes = new ArrayList<String>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            remotes.add(a);
+        }
+        if (remotes.size() < 2) {
+            return true;
+        }
+        email = remotes.remove(0);
+        return false;
+    }
+
+}
+
+class servSmtpFwd extends servSmtpTrg {
+
+    public String remote;
+
+    public String bcc;
+
     public String toString() {
         return (remote + " " + email + " " + bcc).trim();
     }
@@ -398,23 +544,13 @@ class servSmtpFwd implements Comparator<servSmtpFwd> {
         return false;
     }
 
-    public int compare(servSmtpFwd o1, servSmtpFwd o2) {
-        return o1.email.toLowerCase().compareTo(o2.email.toLowerCase());
-    }
-
 }
 
-class servSmtpLoc implements Comparator<servSmtpLoc> {
-
-    public String email;
+class servSmtpLoc extends servSmtpTrg {
 
     public String user;
 
     public String bcc;
-
-    public int askNum;
-
-    public long askTim;
 
     public String toString() {
         return (user + " " + email + " " + bcc).trim();
@@ -431,10 +567,6 @@ class servSmtpLoc implements Comparator<servSmtpLoc> {
             return true;
         }
         return false;
-    }
-
-    public int compare(servSmtpLoc o1, servSmtpLoc o2) {
-        return o1.email.toLowerCase().compareTo(o2.email.toLowerCase());
     }
 
 }
@@ -554,30 +686,6 @@ class servSmtpDoer implements Runnable {
             recurAva &= lower.recursAcl.matches(conn);
         }
         new Thread(this).start();
-    }
-
-    public servSmtpLoc findLocal(String s) {
-        servSmtpLoc ntry = new servSmtpLoc();
-        ntry.email = uniResLoc.fromEmail(s).toLowerCase();
-        ntry = lower.locals.find(ntry);
-        if (ntry == null) {
-            return null;
-        }
-        ntry.askNum++;
-        ntry.askTim = bits.getTime();
-        return ntry;
-    }
-
-    public servSmtpFwd findForward(String s) {
-        servSmtpFwd ntry = new servSmtpFwd();
-        ntry.email = uniResLoc.fromEmail(s).toLowerCase();
-        ntry = lower.forwards.find(ntry);
-        if (ntry == null) {
-            return null;
-        }
-        ntry.askNum++;
-        ntry.askTim = bits.getTime();
-        return ntry;
     }
 
     public void doLine(String s) {
@@ -761,7 +869,7 @@ class servSmtpDoer implements Runnable {
                 }
             }
             last = uniResLoc.fromEmail(last);
-            servSmtpLoc loc = findLocal(last);
+            servSmtpLoc loc = servSmtp.doFinder(lower.locals, new servSmtpLoc(), last);
             if (loc != null) {
                 trgS += last + " ";
                 if (trgL.add(loc) != null) {
@@ -771,11 +879,11 @@ class servSmtpDoer implements Runnable {
                 doLine("250 " + loc.email + " now added");
                 return false;
             }
-            servSmtpFwd fwd = findForward(last);
+            servSmtpFwd fwd = servSmtp.doFinder(lower.forwards, new servSmtpFwd(), last);
             if (fwd != null) {
                 trgS += last + " ";
                 trgR.add(fwd.remote);
-                doLine("250 " + fwd.email + " added");
+                doLine("250 " + fwd.email + " now added");
                 if (fwd.bcc.length() < 1) {
                     return false;
                 }
@@ -784,6 +892,25 @@ class servSmtpDoer implements Runnable {
                 loc.user = fwd.bcc;
                 loc.bcc = "";
                 trgL.add(loc);
+                return false;
+            }
+            servSmtpClst clst = servSmtp.doFinder(lower.cfgLists, new servSmtpClst(), last);
+            if (clst != null) {
+                trgS += last + " ";
+                trgR.addAll(clst.remotes);
+                doLine("250 " + clst.email + " now added");
+                return false;
+            }
+            servSmtpElst elst = servSmtp.doFinder(lower.extLists, new servSmtpElst(), last);
+            if (elst != null) {
+                List<String> res = bits.txt2buf(elst.extFil);
+                if (res == null) {
+                    doLine("550 " + last + " was not found");
+                    return false;
+                }
+                trgS += last + " ";
+                trgR.addAll(res);
+                doLine("250 " + elst.email + " now added");
                 return false;
             }
             if (recurAva) {
@@ -862,14 +989,24 @@ class servSmtpDoer implements Runnable {
         }
         if (a.equals("vrfy")) {
             String last = uniResLoc.fromEmail(cmd.word());
-            servSmtpLoc loc = findLocal(last);
-            if (loc != null) {
-                doLine("250 " + loc.user + " <" + loc.email + ">");
+            servSmtpTrg trg = servSmtp.doFinder(lower.locals, new servSmtpLoc(), last);
+            if (trg != null) {
+                doLine("250 <" + trg.email + ">");
                 return false;
             }
-            servSmtpFwd fwd = findForward(last);
-            if (fwd != null) {
-                doLine("250 <" + fwd.email + ">");
+            trg = servSmtp.doFinder(lower.forwards, new servSmtpFwd(), last);
+            if (trg != null) {
+                doLine("250 <" + trg.email + ">");
+                return false;
+            }
+            trg = servSmtp.doFinder(lower.cfgLists, new servSmtpClst(), last);
+            if (trg != null) {
+                doLine("250 <" + trg.email + ">");
+                return false;
+            }
+            trg = servSmtp.doFinder(lower.extLists, new servSmtpElst(), last);
+            if (trg != null) {
+                doLine("250 <" + trg.email + ">");
                 return false;
             }
             doLine("550 no such user");
