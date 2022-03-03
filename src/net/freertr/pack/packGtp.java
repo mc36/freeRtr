@@ -1893,7 +1893,6 @@ public class packGtp {
             }
             tlv.valTyp = tlvGSNaddr;
             createTlv(pck);
-            createTlv(pck);
         }
         if (valMSISDN != null) {
             tlv.valSiz = createNumber(valMSISDN); // msisdn
