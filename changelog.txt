@@ -13054,3 +13054,10 @@ qc pass: ipv6 over gtp
 qc pass: ipv4 and ipv6 over gtp
 ---------------------------------- 2022-03-03 12:31:33
 qc pass: gtp tunnel
+---------------------------------- 2022-03-03 17:30:24
+qc pass: p4lang: ingress gtp access list
+qc pass: p4lang: egress gtp access list
+qc pass: p4lang: gtp server over ipv4
+qc pass: p4lang: gtp server over ipv6
+qc pass: p4lang: gtp server over ipv4 loopback
+qc pass: p4lang: gtp server over ipv6 loopback

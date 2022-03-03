@@ -1391,6 +1391,8 @@ qc pass: p4lang: bridge interface loose verify source
 qc pass: p4lang: pppoe interface loose verify source
 qc pass: p4lang: gre interface loose verify source
 qc pass: p4lang: l2tp interface loose verify source
+qc pass: p4lang: ingress gtp access list
+qc pass: p4lang: egress gtp access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -1684,6 +1686,10 @@ qc pass: p4lang: mpolka core
 qc pass: p4lang: mpolka vlan core
 qc pass: p4lang: mpolka edge
 qc pass: p4lang: mpolka vlan edge
+qc pass: p4lang: gtp server over ipv4
+qc pass: p4lang: gtp server over ipv6
+qc pass: p4lang: gtp server over ipv4 loopback
+qc pass: p4lang: gtp server over ipv6 loopback
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
