@@ -53,7 +53,7 @@ int di1
 vpdn gtp
  int di1
  proxy p1
- tar 1.1.1.1
+ tar 1234::1
  called inet
  calling 4321
  dir in
