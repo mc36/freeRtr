@@ -1594,6 +1594,64 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "gtp4") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.trgAddr = neigh_ntry.sip1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[6], buf2);
+        tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
+        vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        vrf2rib_res = vrf2rib_init4;
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[9]);
+        neigh_ntry.command = 17;
+        neigh_ntry.sprt = atoi(arg[10]);
+        neigh_ntry.dprt = atoi(arg[11]);
+        neigh_ntry.tid = atoi(arg[12]);
+        tun4_ntry.srcPort = neigh_ntry.dprt;
+        tun4_ntry.trgPort = neigh_ntry.sprt;
+        tun4_ntry.prot = 17;
+        tun4_ntry.command = 11;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
+        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "gtp6") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.trgAddr1 = neigh_ntry.sip1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = neigh_ntry.sip2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = neigh_ntry.sip3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = neigh_ntry.sip4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[6], buf2);
+        tun6_ntry.srcAddr1 = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = neigh_ntry.dip2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = neigh_ntry.dip3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
+        vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        vrf2rib_res = vrf2rib_init6;
+        str2mac(neigh_ntry.dmac, arg[7]);
+        str2mac(neigh_ntry.smac, arg[9]);
+        neigh_ntry.command = 18;
+        neigh_ntry.sprt = atoi(arg[10]);
+        neigh_ntry.dprt = atoi(arg[11]);
+        neigh_ntry.tid = atoi(arg[12]);
+        tun6_ntry.srcPort = neigh_ntry.dprt;
+        tun6_ntry.trgPort = neigh_ntry.sprt;
+        tun6_ntry.prot = 17;
+        tun6_ntry.command = 11;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
+        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "sgttag") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);

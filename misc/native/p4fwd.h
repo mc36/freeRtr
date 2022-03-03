@@ -568,6 +568,16 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, bufP, ethtyp);
 
 
+#define putGtpHeader                                            \
+        *bufP -= 10;                                            \
+        put16msb(bufD, *bufP + 0, 0x32ff);                      \
+        tmp = *bufS - *bufP + preBuff - 8;                      \
+        put16msb(bufD, *bufP + 2, tmp);                         \
+        put32msb(bufD, *bufP + 4, neigh_res->tid);              \
+        neigh_res->seq++;                                       \
+        put16msb(bufD, *bufP + 8, neigh_res->seq);              \
+        put16msb(bufD, *bufP + 10, 0);
+
 
 
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
@@ -795,6 +805,16 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
+    case 17: // gtp4
+        putGtpHeader;
+        putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
+        putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
+        break;
+    case 18: // gtp6
+        putGtpHeader;
+        putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        break;
     default:
         doDropper;
     }
@@ -994,6 +1014,13 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         bufP = bufT + 8;                                            \
         if (bufD[bufP] != 6) doCpuing;                              \
         bufP += 2;                                                  \
+        guessEthtyp;                                                \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ethtyp);                               \
+        break;                                                      \
+    case 11:                                                        \
+        bufP = bufT + 8;                                            \
+        bufP += 12;                                                 \
         guessEthtyp;                                                \
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \

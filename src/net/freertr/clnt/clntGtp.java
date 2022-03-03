@@ -111,11 +111,20 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
 
     private prtGenConn connD;
 
-    private int teidLoc;
+    /**
+     * local tunnel id
+     */
+    public int teidLoc;
 
-    private int teidDat;
+    /**
+     * data tunnel id
+     */
+    public int teidDat;
 
-    private int teidCtr;
+    /**
+     * control tunnel id
+     */
+    public int teidCtr;
 
     private int seqCtr;
 
@@ -125,6 +134,54 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
 
     public String toString() {
         return "gtp to " + target;
+    }
+
+    /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemAddr() {
+        if (teidDat == 0) {
+            return null;
+        }
+        return connD.peerAddr.copyBytes();
+    }
+
+    /**
+     * get local address
+     *
+     * @return address
+     */
+    public addrIP getLocAddr() {
+        if (teidDat == 0) {
+            return null;
+        }
+        return connD.iface.addr.copyBytes();
+    }
+
+    /**
+     * get remote port
+     *
+     * @return address
+     */
+    public int getRemPort() {
+        if (teidDat == 0) {
+            return 0;
+        }
+        return connD.portRem;
+    }
+
+    /**
+     * get local port
+     *
+     * @return address
+     */
+    public int getLocPort() {
+        if (teidDat == 0) {
+            return 0;
+        }
+        return connD.portLoc;
     }
 
     /**
