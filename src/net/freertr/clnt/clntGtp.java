@@ -35,6 +35,11 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * config class
+     */
+    public cfgIfc cfger;
+
+    /**
      * upper layer
      */
     public ifcUp upper = new ifcNull();
@@ -193,7 +198,9 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
             return;
         }
         cntr.tx(pck);
-        pck.getSkip(2);
+        if (cfger.ppp != null) {
+            pck.getSkip(2);
+        }
         packGtp gtp = new packGtp();
         gtp.flags = packGtp.flgSeq;
         gtp.msgTyp = packGtp.typGPDU;
@@ -286,7 +293,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         gtp.valTeidCp = teidLoc | 2; // tunnel endpoint id
         gtp.valNSAPI = 0; // nsapi
         gtp.valChargChar = 0x800; // normal charging
-        gtp.valEndUserAddr = packGtp.adrPpp; // ppp mode
+        gtp.fillEndUserAddr(cfger, false);
         gtp.valAccessPointName = apn; // apn name
         gtp.valIMEI = imei; // imei
         gtp.valMSISDN = "19" + isdn; // msisdn
@@ -312,6 +319,14 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         }
         teidCtr = lastCtrl.valTeidCp;
         teidDat = lastCtrl.valTeid1;
+        if (cfger.ppp == null) {
+            if (lastCtrl.valEndUserAddr4 != null) {
+                cfger.addr4changed(lastCtrl.valEndUserAddr4, cfger.mask4, null);
+            }
+            if (lastCtrl.valEndUserAddr6 != null) {
+                cfger.addr6changed(lastCtrl.valEndUserAddr6, cfger.mask6, null);
+            }
+        }
         for (int i = 0;;) {
             bits.sleep(1000);
             if (!working) {
@@ -452,9 +467,11 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
                 if (gtp.parseHeader(pck)) {
                     return false;
                 }
-                pck.msbPutW(0, 0xff03); // address + control
-                pck.putSkip(2);
-                pck.merge2beg();
+                if (cfger.ppp != null) {
+                    pck.msbPutW(0, 0xff03); // address + control
+                    pck.putSkip(2);
+                    pck.merge2beg();
+                }
                 upper.recvPack(pck);
                 return false;
             }

@@ -348,7 +348,9 @@ class servGtpConn implements Comparator<servGtpConn> {
         if (connD == null) {
             return;
         }
-        pck.getSkip(2);
+        if (ses.ifc.ppp != null) {
+            pck.getSkip(2);
+        }
         packGtp gtp = new packGtp();
         gtp.flags = packGtp.flgSeq;
         gtp.msgTyp = packGtp.typGPDU;
@@ -403,9 +405,11 @@ class servGtpConn implements Comparator<servGtpConn> {
                 cntr.drop(pck, counter.reasons.noIface);
                 return;
             }
-            pck.msbPutW(0, 0xff03); // address + control
-            pck.putSkip(2);
-            pck.merge2beg();
+            if (ses.ifc.ppp != null) {
+                pck.msbPutW(0, 0xff03); // address + control
+                pck.putSkip(2);
+                pck.merge2beg();
+            }
             ses.upper.recvPack(pck);
             return;
         }
@@ -466,7 +470,7 @@ class servGtpConn implements Comparator<servGtpConn> {
                 gtp.valTeid1 = ses.teidLoc; // tunnel endpoint id
                 gtp.valTeidCp = ses.teidLoc; // tunnel endpoint id
                 gtp.valChargID = ses.teidLoc; // charging id id
-                gtp.valEndUserAddr = packGtp.adrPpp; // ppp mode
+                gtp.fillEndUserAddr(ses.ifc, true);
                 gtp.valGSNaddr = connC.iface.addr.copyBytes(); // gsn address
                 gtp.valQOSpro = 0xb921f; // best effort
                 connC.send2net(gtp.createPacket());

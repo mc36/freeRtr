@@ -1995,6 +1995,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (peer4 != null) {
             res.ip4polA = peer4;
+            if (res.raw != null) {
+                res.addr4changed(res.addr4, res.mask4, peer4);
+            }
+            if (res.ipOnly != null) {
+                res.addr4changed(res.addr4, res.mask4, peer4);
+            }
             if (res.ppp != null) {
                 res.ppp.remAddrCfg = peer4.copyBytes();
                 res.ppp.ctrlIp4.remAddrCur = peer4.copyBytes();
@@ -2007,6 +2013,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (peer6 != null) {
             res.ip6polA = peer6;
+            if (res.raw != null) {
+                res.addr6changed(res.addr6, res.mask6, peer6);
+            }
+            if (res.ipOnly != null) {
+                res.addr6changed(res.addr6, res.mask6, peer6);
+            }
             if (res.sep != null) {
                 res.sep.loc6addr = addr6.copyBytes();
                 res.sep.msk6addr = mask6.copyBytes();

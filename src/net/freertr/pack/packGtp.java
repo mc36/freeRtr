@@ -3,6 +3,7 @@ package net.freertr.pack;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.util.bits;
 import net.freertr.util.typLenVal;
 
@@ -123,6 +124,16 @@ public class packGtp {
      * framing mode
      */
     public int valEndUserAddr = -1;
+
+    /**
+     * framing address
+     */
+    public addrIPv4 valEndUserAddr4 = null;
+
+    /**
+     * framing address
+     */
+    public addrIPv6 valEndUserAddr6 = null;
 
     /**
      * apn name
@@ -1467,20 +1478,49 @@ public class packGtp {
     }
 
     /**
+     * fill end user address
+     *
+     * @param cfger interface to test
+     * @param peer use peer address
+     */
+    public void fillEndUserAddr(cfgIfc cfger, boolean peer) {
+        if (cfger.ppp != null) {
+            valEndUserAddr = packGtp.adrPpp; // mode
+            return;
+        }
+        addrIPv4 adr4;
+        addrIPv6 adr6;
+        if (peer) {
+            adr4 = cfger.ip4polA;
+            adr6 = cfger.ip6polA;
+        } else {
+            adr4 = cfger.addr4;
+            adr6 = cfger.addr6;
+        }
+        valEndUserAddr = packGtp.adrIp46; // ip46 mode
+        if (adr4 == null) {
+            valEndUserAddr = packGtp.adrIp6; // ip6 mode
+        } else {
+            valEndUserAddr4 = adr4.copyBytes();
+        }
+        if (adr6 == null) {
+            valEndUserAddr = packGtp.adrIp4; // ip4 mode
+        } else {
+            valEndUserAddr6 = adr6.copyBytes();
+        }
+    }
+
+    /**
      * dump this packet
      *
      * @return string
      */
     public String dump() {
-        String s = "flag=" + flags + " type=" + type2string(msgTyp) + " tun=" + tunId + " seq=" + seqNum + " npdu=" + npduNum
-                + " ext=" + extTyp;
-        s += " cause=" + valCause + " imsi=" + valIMSI + " reorder=" + valReordReq + " recovery=" + valRecovery + " select="
-                + valSelectMode;
-        s += " tunD=" + valTeid1 + " tunC=" + valTeidCp + " teardown=" + valTeardown + " nsapi=" + valNSAPI + " chrgChr="
-                + valChargChar;
-        s += " chrgId=" + valChargID + " addr=" + valEndUserAddr + " apn=" + valAccessPointName + " gsn=" + valGSNaddr
-                + " isdn=" + valMSISDN;
-        s += " qos=" + valQOSpro + " imei=" + valIMEI;
+        String s = "flag=" + flags + " type=" + type2string(msgTyp) + " tun=" + tunId + " seq=" + seqNum + " npdu=" + npduNum + " ext=" + extTyp;
+        s += " cause=" + valCause + " imsi=" + valIMSI + " reorder=" + valReordReq + " recovery=" + valRecovery + " select=" + valSelectMode;
+        s += " tunD=" + valTeid1 + " tunC=" + valTeidCp + " teardown=" + valTeardown + " nsapi=" + valNSAPI + " chrgChr=" + valChargChar;
+        s += " chrgId=" + valChargID + " addr=" + valEndUserAddr + "," + valEndUserAddr4 + "," + valEndUserAddr6 + " apn=" + valAccessPointName;
+        s += " gsn=" + valGSNaddr + " isdn=" + valMSISDN + " qos=" + valQOSpro + " imei=" + valIMEI;
         return s;
     }
 
@@ -1697,7 +1737,25 @@ public class packGtp {
                     valChargID = bits.msbGetD(tlv.valDat, 0);
                     break;
                 case tlvEndUserAddr:
-                    valEndUserAddr = bits.msbGetW(tlv.valDat, 0);
+                    valEndUserAddr = bits.msbGetW(tlv.valDat, 0); // mode
+                    switch (valEndUserAddr) {
+                        case adrPpp:
+                            break;
+                        case adrIp4:
+                            valEndUserAddr4 = new addrIPv4();
+                            valEndUserAddr4.fromBuf(tlv.valDat, 2); // address
+                            break;
+                        case adrIp6:
+                            valEndUserAddr6 = new addrIPv6();
+                            valEndUserAddr6.fromBuf(tlv.valDat, 2);  // address
+                            break;
+                        case adrIp46:
+                            valEndUserAddr4 = new addrIPv4();
+                            valEndUserAddr6 = new addrIPv6();
+                            valEndUserAddr4.fromBuf(tlv.valDat, 2);  // address
+                            valEndUserAddr6.fromBuf(tlv.valDat, 6);  // address
+                            break;
+                    }
                     break;
                 case tlvAccessPointName:
                     valAccessPointName = tlv.getStr();
@@ -1793,9 +1851,27 @@ public class packGtp {
             createTlv(pck);
         }
         if (valEndUserAddr >= 0) {
-            bits.msbPutW(tlv.valDat, 0, valEndUserAddr); // ppp mode
+            bits.msbPutW(tlv.valDat, 0, valEndUserAddr); // mode
             tlv.valTyp = tlvEndUserAddr;
             tlv.valSiz = 2;
+            switch (valEndUserAddr) {
+                case adrPpp:
+                    break;
+                case adrIp4:
+                    valEndUserAddr4.toBuffer(tlv.valDat, tlv.valSiz); // address
+                    tlv.valSiz += valEndUserAddr4.getSize();
+                    break;
+                case adrIp6:
+                    valEndUserAddr6.toBuffer(tlv.valDat, tlv.valSiz); // address
+                    tlv.valSiz += valEndUserAddr6.getSize();
+                    break;
+                case adrIp46:
+                    valEndUserAddr4.toBuffer(tlv.valDat, tlv.valSiz); // address
+                    tlv.valSiz += valEndUserAddr4.getSize();
+                    valEndUserAddr6.toBuffer(tlv.valDat, tlv.valSiz); // address
+                    tlv.valSiz += valEndUserAddr6.getSize();
+                    break;
+            }
             createTlv(pck);
         }
         if (valAccessPointName != null) {

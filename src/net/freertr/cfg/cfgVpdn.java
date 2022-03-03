@@ -1329,6 +1329,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gtp.isdn = calling;
                 gtp.imsi = calling;
                 gtp.imei = calling;
+                gtp.cfger = ifaceDialer;
                 gtp.setUpper(ifaceDialer.getEncapProto());
                 gtp.workStart();
                 lower = gtp;
