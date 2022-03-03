@@ -149,7 +149,15 @@ public class clntSmtp implements Runnable {
                 i = a.length();
             }
             a = a.substring(0, i).toLowerCase();
-            if (hdr.indexOf(a) < 0) {
+            int p = -1;
+            for (i = 0; i < hdr.size(); i++) {
+                if (!a.equals(hdr.get(i))) {
+                    continue;
+                }
+                p = i;
+                break;
+            }
+            if (p < 0) {
                 continue;
             }
             msg.remove(o);

@@ -710,6 +710,14 @@ class servSmtpDoer implements Runnable {
         hdrD.clear();
     }
 
+    public void doLists(String trg) {
+        hdrA.add("Reply-To: " + trg + "," + src);
+        hdrD.add("reply-to");
+        hdrA.add("Sender: " + trg);
+        hdrD.add("sender");
+        hdrA.add("List-Id: " + trg);
+    }
+
     public boolean doOne() {
         String s = pipe.lineGet(1).trim();
         if (debugger.servSmtpTraf) {
@@ -913,8 +921,7 @@ class servSmtpDoer implements Runnable {
             if (clst != null) {
                 trgS += last + " ";
                 trgR.addAll(clst.remotes);
-                hdrA.add("Reply-To: " + last);
-                hdrD.add("reply-to");
+                doLists(last);
                 doLine("250 " + clst.email + " now added");
                 return false;
             }
@@ -927,8 +934,7 @@ class servSmtpDoer implements Runnable {
                 }
                 trgS += last + " ";
                 trgR.addAll(res);
-                hdrA.add("Reply-To: " + last);
-                hdrD.add("reply-to");
+                doLists(last);
                 doLine("250 " + elst.email + " now added");
                 return false;
             }
