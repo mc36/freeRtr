@@ -273,7 +273,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         cntr.tx(pck);
         pck.getSkip(2);
         packGtp gtp = new packGtp();
-        gtp.flags = packGtp.flgSeq;
+        gtp.flags = packGtp.flgNothing;
         gtp.msgTyp = packGtp.typGPDU;
         gtp.tunId = teidDat;
         gtp.seqNum = seqDat++;

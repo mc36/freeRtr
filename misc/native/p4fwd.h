@@ -569,14 +569,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define putGtpHeader                                            \
-        *bufP -= 10;                                            \
-        put16msb(bufD, *bufP + 0, 0x32ff);                      \
+        *bufP -= 6;                                             \
+        put16msb(bufD, *bufP + 0, 0x30ff);                      \
         tmp = *bufS - *bufP + preBuff - 8;                      \
         put16msb(bufD, *bufP + 2, tmp);                         \
-        put32msb(bufD, *bufP + 4, neigh_res->tid);              \
-        neigh_res->seq++;                                       \
-        put16msb(bufD, *bufP + 8, neigh_res->seq);              \
-        put16msb(bufD, *bufP + 10, 0);
+        put32msb(bufD, *bufP + 4, neigh_res->tid);
 
 
 
@@ -1020,7 +1017,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         break;                                                      \
     case 11:                                                        \
         bufP = bufT + 8;                                            \
-        bufP += 12;                                                 \
+        bufP += 8;                                                  \
         guessEthtyp;                                                \
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \

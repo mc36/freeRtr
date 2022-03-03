@@ -149,7 +149,7 @@ public class servGtpConn implements Comparator<servGtpConn> {
             pck.getSkip(2);
         }
         packGtp gtp = new packGtp();
-        gtp.flags = packGtp.flgSeq;
+        gtp.flags = packGtp.flgNothing;
         gtp.msgTyp = packGtp.typGPDU;
         gtp.tunId = ses.teidDat;
         gtp.seqNum = ses.seqDat++;

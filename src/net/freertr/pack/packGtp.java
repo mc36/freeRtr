@@ -181,6 +181,11 @@ public class packGtp {
     public static final int flgSeq = 0x02;
 
     /**
+     * no flags set
+     */
+    public static final int flgNothing = 0x00;
+
+    /**
      * n-pdu number
      */
     public static final int flgNpdu = 0x01;
