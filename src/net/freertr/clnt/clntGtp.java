@@ -6,6 +6,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcDn;
+import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwdIface;
@@ -83,6 +84,21 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
      * client imei
      */
     public String imei;
+
+    /**
+     * sending ttl value, -1 means maps out
+     */
+    public int sendingTTL = 255;
+
+    /**
+     * sending tos value, -1 means maps out
+     */
+    public int sendingTOS = -1;
+
+    /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
 
     /**
      * counter
@@ -198,9 +214,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
             return;
         }
         cntr.tx(pck);
-        if (cfger.ppp != null) {
-            pck.getSkip(2);
-        }
+        pck.getSkip(2);
         packGtp gtp = new packGtp();
         gtp.flags = packGtp.flgSeq;
         gtp.msgTyp = packGtp.typGPDU;
@@ -263,6 +277,9 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
             return;
         }
         connD.timeout = 120000;
+        connD.sendFLW = sendingFLW;
+        connD.sendTOS = sendingTOS;
+        connD.sendTTL = sendingTTL;
         packGtp gtp = new packGtp();
         gtp.seqNum = seqCtr++;
         gtp.msgTyp = packGtp.typEchoReq;
@@ -469,6 +486,16 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
                 }
                 if (cfger.ppp != null) {
                     pck.msbPutW(0, 0xff03); // address + control
+                    pck.putSkip(2);
+                    pck.merge2beg();
+                } else {
+                    int typ = ifcEther.guessEtherType(pck);
+                    if (typ < 0) {
+                        logger.info("got bad protocol from " + target);
+                        cntr.drop(pck, counter.reasons.badProto);
+                        return false;
+                    }
+                    pck.msbPutW(0, typ); // ethertype
                     pck.putSkip(2);
                     pck.merge2beg();
                 }

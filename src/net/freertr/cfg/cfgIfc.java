@@ -17,6 +17,7 @@ import net.freertr.clnt.clntDlsw;
 import net.freertr.clnt.clntErspan;
 import net.freertr.clnt.clntEtherIp;
 import net.freertr.clnt.clntGeneve;
+import net.freertr.clnt.clntGtp;
 import net.freertr.clnt.clntL2tp3;
 import net.freertr.clnt.clntLisp;
 import net.freertr.clnt.clntLwapp;
@@ -699,6 +700,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntL2tp3 tunL2tp3;
 
     /**
+     * gtp tunnel handler
+     */
+    public clntGtp tunGtp;
+
+    /**
      * pweOmpls tunnel handler
      */
     public clntMplsPwe tunPweOmpls;
@@ -1236,6 +1242,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * l2tp3 tunnel interface
          */
         l2tp3,
+        /**
+         * gtp tunnel interface
+         */
+        gtp,
         /**
          * pweOmpls tunnel interface
          */
@@ -2183,6 +2193,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "pckoip";
             case l2tp3:
                 return "l2tp3";
+            case gtp:
+                return "gtp";
             case pweOmpls:
                 return "pweompls";
             case polka:
@@ -2315,6 +2327,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("l2tp3")) {
             return tunnelType.l2tp3;
+        }
+        if (s.equals("gtp")) {
+            return tunnelType.gtp;
         }
         if (s.equals("pweompls")) {
             return tunnelType.pweOmpls;
@@ -3716,6 +3731,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunL2tp3.workStop();
             tunL2tp3 = null;
         }
+        if (tunGtp != null) {
+            tunGtp.workStop();
+            tunGtp = null;
+        }
         if (tunPweOmpls != null) {
             tunPweOmpls.workStop();
             tunPweOmpls = null;
@@ -4192,6 +4211,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunPckOip.sendingFLW = tunFLW;
                 tunPckOip.sendingTTL = tunTTL;
                 lower = tunPckOip;
+                break;
+            case gtp:
+                tunGtp = new clntGtp();
+                tunGtp.target = "" + tunTrg;
+                tunGtp.vrf = tunVrf;
+                tunGtp.srcIfc = tunSrc;
+                tunGtp.cfger = this;
+                tunGtp.setUpper(ethtyp);
+                tunGtp.workStart();
+                lower = tunGtp;
                 break;
             case l2tp3:
                 tunL2tp3 = new clntL2tp3();
@@ -6270,6 +6299,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       ipsec                     ip security encapsulation");
         l.add(null, "3 .       pckoudp                   packet over udp encapsulation");
         l.add(null, "3 .       pckoip                    packet over raw ip protocol");
+        l.add(null, "3 .       gtp                       gtp encapsulation");
         l.add(null, "3 .       l2tp3                     l2tp v3 encapsulation");
         l.add(null, "3 .       vxlan                     vxlan encapsulation");
         l.add(null, "3 .       geneve                    geneve encapsulation");

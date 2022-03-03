@@ -13047,3 +13047,8 @@ no qc pass: ipv4 and ipv6 over gtp
 no qc pass: ipv6 over gtp
 qc pass: unnamed
 qc pass: unnamed
+---------------------------------- 2022-03-03 11:54:43
+no qc pass: unnamed
+no qc pass: unnamed
+qc pass: ipv6 over gtp
+qc pass: ipv4 and ipv6 over gtp

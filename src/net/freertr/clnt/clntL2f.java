@@ -74,6 +74,21 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
     public String password;
 
     /**
+     * sending ttl value, -1 means maps out
+     */
+    public int sendingTTL = 255;
+
+    /**
+     * sending tos value, -1 means maps out
+     */
+    public int sendingTOS = -1;
+
+    /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -247,6 +262,9 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
             return;
         }
         conn.timeout = 120000;
+        conn.sendFLW = sendingFLW;
+        conn.sendTOS = sendingTOS;
+        conn.sendTTL = sendingTTL;
         tunLoc = bits.randomW();
         byte[] chlLoc = null;
         if (password != null) {

@@ -47,7 +47,7 @@ int eth1
  ipv6 addr 1234::2 ffff::
  exit
 int di1
- enc iponly
+ enc raw
  vrf for v1
  ipv4 addr 3.3.3.3 0.0.0.0
  ipv6 addr 3333::3333 ::
