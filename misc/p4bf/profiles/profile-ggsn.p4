@@ -1,3 +1,4 @@
+#ifdef PROFILE_GGSN
 #define HAVE_ALPM
 #define HAVE_GTP
 #define HAVE_TUN
@@ -16,9 +17,9 @@
 
 #define VLAN_TABLE_SIZE                        512
 
-#define IPV4_LPM_TABLE_SIZE                    $p
+#define IPV4_LPM_TABLE_SIZE            147456
 
-#define IPV6_LPM_TABLE_SIZE                    $p/4
+#define IPV6_LPM_TABLE_SIZE            36864
 
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256
@@ -26,5 +27,7 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define IPV4_TUNNEL_TABLE_SIZE                 $s
-#define IPV6_TUNNEL_TABLE_SIZE                 $s/2
+#define IPV4_TUNNEL_TABLE_SIZE         32768
+#define IPV6_TUNNEL_TABLE_SIZE         16384
+#define _TABLE_SIZE_P4_
+#endif
