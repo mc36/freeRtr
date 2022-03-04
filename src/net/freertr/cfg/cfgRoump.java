@@ -270,8 +270,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 .     stdcomm             clear standard community");
         l.add(null, "2 .     extcomm             clear extended community");
         l.add(null, "2 .     lrgcomm             clear large community");
-        l.add(null, "2 .     clustlist           clear cluster list");
         l.add(null, "2 .     privateas           clear private asn");
+        l.add(null, ".2 .    clustlist           clear cluster list");
         l.add(null, ".2 .    peeras              clear peer asn");
         l.add(null, ".2 3    exactas             clear exact asn");
         l.add(null, ".3 .      <num>             as number to remove");
