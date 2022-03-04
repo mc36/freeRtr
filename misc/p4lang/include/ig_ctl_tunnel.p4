@@ -74,6 +74,16 @@ control IngressControlTunnel(inout headers hdr,
     }
 
 
+    action act_tunnel_amt(SubIntId_t port) {
+        if (ig_md.amt_type == 4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        if (ig_md.amt_type == 6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+        if (hdr.amt.type != 6) ig_md.need_recir = 0;
+    }
+
+
 
     table tbl_tunnel4 {
         key = {
@@ -97,6 +107,7 @@ ig_md.layer4_dstprt:
             act_tunnel_l2tp;
             act_tunnel_vxlan;
             act_tunnel_pckoudp;
+            act_tunnel_amt;
             @defaultonly NoAction;
         }
         size = IPV4_TUNNEL_TABLE_SIZE;
@@ -126,6 +137,7 @@ ig_md.layer4_dstprt:
             act_tunnel_l2tp;
             act_tunnel_vxlan;
             act_tunnel_pckoudp;
+            act_tunnel_amt;
             @defaultonly NoAction;
         }
         size = IPV6_TUNNEL_TABLE_SIZE;
@@ -148,6 +160,7 @@ ig_md.layer4_dstprt:
 
         hdr.vxlan.setInvalid();
         hdr.l2tp.setInvalid();
+        hdr.amt.setInvalid();
         hdr.udp.setInvalid();
         hdr.gre.setInvalid();
         hdr.ipv4.setInvalid();
