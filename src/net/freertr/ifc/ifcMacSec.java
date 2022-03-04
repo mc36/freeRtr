@@ -45,11 +45,6 @@ public class ifcMacSec implements Runnable {
     public cfgIpsec profil;
 
     /**
-     * replay check window
-     */
-    public int replayCheck = 1024;
-
-    /**
      * need to check layer2 info
      */
     public boolean needLayer2 = true;
@@ -111,7 +106,9 @@ public class ifcMacSec implements Runnable {
 
     private boolean reply;
 
-    private long lastKex;
+    private long lastKex = 0;
+
+    private int lastRnd = 0;
 
     private syncInt calcing = new syncInt(0);
 
@@ -174,9 +171,8 @@ public class ifcMacSec implements Runnable {
         profil = ips;
         keygen = ips.trans.getGroup();
         keygen.servXchg();
-        replayCheck = profil.replay;
-        if (replayCheck > 0) {
-            sequence = new tabWindow<packHolder>(replayCheck);
+        if (profil.replay > 0) {
+            sequence = new tabWindow<packHolder>(profil.replay);
         }
         try {
             myaddr = (addrMac) eth.getHwAddr().copyBytes();
@@ -366,7 +362,7 @@ public class ifcMacSec implements Runnable {
         if ((hashRx != null) && (!reply)) {
             boolean ned = false;
             if (profil.trans.lifeSec > 0) {
-                ned |= (bits.getTime() - lastKex) > (profil.trans.lifeSec * 1000);
+                ned |= (bits.getTime() - lastKex - lastRnd) > (profil.trans.lifeSec * 1000);
             }
             if (profil.trans.lifeByt > 0) {
                 long tx = cntr.byteTx;
@@ -391,12 +387,13 @@ public class ifcMacSec implements Runnable {
             hashRx = null;
             hwCntr = null;
         }
+        boolean rep = hashRx == null;
         if (debugger.ifcMacSecTraf) {
-            logger.debug("sending kex, common=" + keygen.common);
+            logger.debug("sending kex, reply=" + (!rep) + " common=" + keygen.common);
         }
         packHolder pck = new packHolder(true, true);
         pck.msbPutW(0, myTyp); // ethertype
-        pck.putByte(2, hashRx == null ? 0x01 : 0x02); // tci=v,e
+        pck.putByte(2, rep ? 0x01 : 0x02); // tci=v,e
         pck.putByte(3, 0); // sl
         pck.msbPutD(4, 0); // seq
         pck.putSkip(size);
@@ -412,7 +409,7 @@ public class ifcMacSec implements Runnable {
 
     private void doCalc() {
         if (debugger.ifcMacSecTraf) {
-            logger.debug("got kex, reply=" + reply + ", modulus=" + keygen.clntPub);
+            logger.debug("got kex, reply=" + (!reply) + ", modulus=" + keygen.clntPub);
         }
         keygen.servKey();
         if (debugger.ifcMacSecTraf) {
@@ -458,8 +455,11 @@ public class ifcMacSec implements Runnable {
         cntr = new counter();
         hwCntr = null;
         kexNum++;
-        if (replayCheck > 0) {
-            sequence = new tabWindow<packHolder>(replayCheck);
+        if (profil.replay > 0) {
+            sequence = new tabWindow<packHolder>(profil.replay);
+        }
+        if (profil.trans.lifeRnd > 1) {
+            lastRnd = bits.random(1, profil.trans.lifeRnd);
         }
         seqTx = 0;
         aeadMode = cphTx.getTagSize() > 0;
@@ -469,6 +469,7 @@ public class ifcMacSec implements Runnable {
         hashRx = profil.trans.getHmac(buf2);
         keyHash = buf1;
         calcing.set(0);
+        etht.triggerSync();
     }
 
     public void run() {

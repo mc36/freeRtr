@@ -95,6 +95,11 @@ public class secTransform {
     public int lifeSec;
 
     /**
+     * random lifetime
+     */
+    public int lifeRnd;
+
+    /**
      * lifetime in kilobytes
      */
     public long lifeByt;
@@ -119,6 +124,7 @@ public class secTransform {
         n.hashAlg = hashAlg;
         n.lifeByt = lifeByt;
         n.lifeSec = lifeSec;
+        n.lifeRnd = lifeRnd;
         n.number = number;
         n.transId = transId;
         return n;
@@ -967,6 +973,7 @@ public class secTransform {
         cmds.cfgLine(lst, hashAlg == 0, beg, "hash", hash2str());
         cmds.cfgLine(lst, lifeSec == 0, beg, "seconds", "" + lifeSec);
         cmds.cfgLine(lst, lifeByt == 0, beg, "bytes", "" + lifeByt);
+        cmds.cfgLine(lst, lifeRnd == 0, beg, "random", "" + lifeRnd);
     }
 
     /**
@@ -989,6 +996,8 @@ public class secTransform {
         l.add(null, "2 .    24                2048 bit group");
         l.add(null, "1 2  seconds             sa lifetime in time");
         l.add(null, "2 .    <num>             number of seconds");
+        l.add(null, "1 2  random              randomize time");
+        l.add(null, "2 .    <num>             number of milliseconds");
         l.add(null, "1 2  bytes               sa lifetime in traffic amount");
         l.add(null, "2 .    <num>             number of bytes");
         l.add(null, "1 2  hash                select hash algorithm");
@@ -1142,6 +1151,10 @@ public class secTransform {
             lifeSec = bits.str2num(cmd.word());
             return false;
         }
+        if (s.equals("random")) {
+            lifeRnd = bits.str2num(cmd.word());
+            return false;
+        }
         if (s.equals("bytes")) {
             lifeByt = bits.str2long(cmd.word());
             return false;
@@ -1165,6 +1178,10 @@ public class secTransform {
         }
         if (s.equals("seconds")) {
             lifeSec = 0;
+            return false;
+        }
+        if (s.equals("random")) {
+            lifeRnd = 0;
             return false;
         }
         if (s.equals("bytes")) {

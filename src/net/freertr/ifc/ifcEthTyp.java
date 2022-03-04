@@ -180,6 +180,8 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     private int need2run;
 
+    private long lastSync;
+
     private state.states lastState;
 
     private ifcDn lower;
@@ -428,8 +430,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
         new Thread(this).start();
     }
 
+    /**
+     * trigger timer thread
+     */
+    public void triggerSync() {
+        lastSync = 0;
+        notif.wakeup();
+    }
+
     public void run() {
-        long sec = 0;
         for (;;) {
             if ((need2run & 1) == 0) {
                 break;
@@ -468,10 +477,10 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 lst = 10000;
             }
             notif.misleep((int) lst);
-            if ((tim - sec) < 5000) {
+            if ((tim - lastSync) < 5000) {
                 continue;
             }
-            sec = tim;
+            lastSync = tim;
             if (lossDet != null) {
                 packHolder pck = lossDet.doSync();
                 if (pck != null) {
