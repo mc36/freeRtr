@@ -87,6 +87,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         "crypto ipsec .*! no cipher",
         "crypto ipsec .*! no hash",
         "crypto ipsec .*! no seconds",
+        "crypto ipsec .*! no random",
         "crypto ipsec .*! no bytes",
         "crypto ipsec .*! no key",
         "crypto ipsec .*! role static",
