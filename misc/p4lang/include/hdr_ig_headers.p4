@@ -32,6 +32,7 @@ struct headers {
     vxlan_t		vxlan2;
     l2tp_t		l2tp2;
     amt_t		amt2;
+    gtp_t		gtp2;
     pppbr_t		pppbr;
     ethernet_t		eth4;
     polka_t		polka;
@@ -54,6 +55,7 @@ struct headers {
     udp_t		udp;
     l2tp_t		l2tp;
     amt_t		amt;
+    gtp_t		gtp;
     vxlan_t		vxlan;
     tcp_t		tcp;
     pppbr_t		l2tpbr;

@@ -46,6 +46,7 @@ struct ingress_metadata_t {
     bit<3>  mpls_op_type;
     bit<3>  srv_op_type;
     bit<3>  amt_type;
+    bit<3>  gtp_type;
     bit<16> vlan_size;
     bit<1>  sgt_remove;
     bit<1>  polka_remove;

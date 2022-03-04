@@ -365,6 +365,10 @@ ETHERTYPE_ROUTEDMAC:
                 prs_amt;
             (0 &&& 0, 2268):
                 prs_amt;
+            (2152, 0 &&& 0):
+                prs_gtp;
+            (0 &&& 0, 2152):
+                prs_gtp;
             (4789, 0 &&& 0):
                 prs_vxlan;
             (0 &&& 0, 4789):
@@ -407,7 +411,6 @@ PPPTYPE_ROUTEDMAC:
 
     state prs_amt {
         pkt.extract(hdr.amt);
-        hdr.amt.reserved = 0;
         transition select((pkt.lookahead<bit<4>>())[3:0]) {
 4w0x4:
             prs_amt4;
@@ -425,6 +428,29 @@ PPPTYPE_ROUTEDMAC:
 
     state prs_amt6 {
         ig_md.amt_type = 6;
+        transition accept;
+    }
+
+
+    state prs_gtp {
+        pkt.extract(hdr.gtp);
+        transition select((pkt.lookahead<bit<4>>())[3:0]) {
+4w0x4:
+            prs_gtp4;
+4w0x6:
+            prs_gtp6;
+        default:
+            accept;
+        }
+    }
+
+    state prs_gtp4 {
+        ig_md.gtp_type = 4;
+        transition accept;
+    }
+
+    state prs_gtp6 {
+        ig_md.gtp_type = 6;
         transition accept;
     }
 

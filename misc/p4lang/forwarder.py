@@ -589,6 +589,99 @@ def writeAmt6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip
 
 
 
+def writeGtp4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac, sprt, dprt, teid):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 17,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": dprt,
+            "ig_md.layer4_dstprt": sprt,
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_gtp",
+        action_params={
+            "port": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "eg_md.nexthop_id": nexthop,
+        },
+        action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_gtp4",
+        action_params={
+            "dst_mac_addr": dmac,
+            "src_mac_addr": smac,
+            "egress_port": phport,
+            "acl_port": port,
+            "src_ip_addr": sip,
+            "dst_ip_addr": dip,
+            "src_port": sprt,
+            "dst_port": dprt,
+            "teid": teid,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+         ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writeGtp6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac, sprt, dprt, teid):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 17,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": dprt,
+            "ig_md.layer4_dstprt": sprt,
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_gtp",
+        action_params={
+            "port": port
+        })
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "eg_md.nexthop_id": nexthop,
+        },
+        action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_gtp6",
+        action_params={
+            "dst_mac_addr": dmac,
+            "src_mac_addr": smac,
+            "egress_port": phport,
+            "acl_port": port,
+            "src_ip_addr": sip,
+            "dst_ip_addr": dip,
+            "src_port": sprt,
+            "dst_port": dprt,
+            "teid": teid,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+
 def writeVxlan4rules(delete, p4info_helper, ingress_sw, bridge, addr, sip, dip, nexthop, instance, vrf, port):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_bridge.tbl_bridge_learn",
@@ -2857,7 +2950,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
-    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh sgt amt\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp\r\n");
     for x in range(0, 10):
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)
@@ -3122,6 +3215,14 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "amt6":
             writeAmt6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]))
+            continue
+
+        if cmds[0] == "gtp4":
+            writeGtp4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
+            continue
+
+        if cmds[0] == "gtp6":
+            writeGtp6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]),splt[4],splt[5],splt[6],int(splt[7]),splt[8],int(splt[9]),int(splt[10]),int(splt[11]))
             continue
 
         if cmds[0] == "bridgevxlan4":
