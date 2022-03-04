@@ -892,6 +892,40 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "gtp4":
+            self.writeGtp4rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                int(splt[7]),
+                splt[8],
+                int(splt[9]),
+                int(splt[10]),
+                int(splt[11]),
+            )
+            continue
+
+        if cmds[0] == "gtp6":
+            self.writeGtp6rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                int(splt[7]),
+                splt[8],
+                int(splt[9]),
+                int(splt[10]),
+                int(splt[11]),
+            )
+            continue
+
         if cmds[0] == "bridgevxlan4":
             self.writeVxlan4rules(
                 mode,

@@ -72,6 +72,9 @@ ig_md.nsh_valid = 0;
 ig_md.sgt_valid = 0;
 ig_md.sec_grp_id = 0;
 #endif
+#ifdef HAVE_GTP
+ig_md.gtp_type = 0;
+#endif
 #ifdef HAVE_MPLS
 ig_md.mpls0_valid = 0;
 ig_md.mpls1_valid = 0;

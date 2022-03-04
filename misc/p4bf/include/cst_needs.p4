@@ -40,6 +40,10 @@
 #define NEED_UDP2
 #endif
 
+#ifdef HAVE_GTP
+#define NEED_UDP2
+#endif
+
 #ifdef HAVE_VXLAN
 #define NEED_UDP2
 #endif

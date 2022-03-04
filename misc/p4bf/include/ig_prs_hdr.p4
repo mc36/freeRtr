@@ -9,7 +9,7 @@ state prs_ethernet {
         prs_llc;	/* LLC SAP frame */
 #ifdef HAVE_SGT
 ETHERTYPE_SGT :
-            prs_sgt;
+        prs_sgt;
 #endif
 ETHERTYPE_VLAN:
         prs_vlan;
@@ -61,7 +61,7 @@ state prs_vlan {
         prs_llc;	/* LLC SAP frame */
 #ifdef HAVE_SGT
 ETHERTYPE_SGT :
-            prs_sgt;
+        prs_sgt;
 #endif
 #ifdef HAVE_PPPOE
 ETHERTYPE_PPPOE_CTRL :
@@ -116,7 +116,7 @@ state prs_pppoeData {
     transition select(hdr.pppoeD.ppptyp) {
 #ifdef HAVE_SGT
 PPPTYPE_SGT:
-            prs_sgt;
+        prs_sgt;
 #endif
 PPPTYPE_IPV4:
         prs_ipv4;
@@ -152,14 +152,14 @@ state prs_eth6 {
 
 
 #ifdef HAVE_SGT
-    state prs_sgt {
-        pkt.extract(hdr.sgt);
-        ig_md.sgt_valid = 1;
-        transition select(hdr.sgt.ethertype) {
+state prs_sgt {
+    pkt.extract(hdr.sgt);
+    ig_md.sgt_valid = 1;
+    transition select(hdr.sgt.ethertype) {
 0 &&& 0xfe00:
-            prs_llc; /* LLC SAP frame */
+        prs_llc; /* LLC SAP frame */
 0 &&& 0xfa00:
-            prs_llc; /* LLC SAP frame */
+        prs_llc; /* LLC SAP frame */
 #ifdef HAVE_TAP
 ETHERTYPE_ROUTEDMAC_INT:
         prs_eth2;
@@ -167,25 +167,25 @@ ETHERTYPE_ROUTEDMAC:
         prs_eth6;
 #endif
 ETHERTYPE_ARP:
-            prs_arp;
+        prs_arp;
 ETHERTYPE_LACP:
-            prs_control;
+        prs_control;
 ETHERTYPE_LLDP:
-            prs_control;
+        prs_control;
 #ifdef HAVE_MPLS
 ETHERTYPE_MPLS_UCAST:
-            prs_mpls0;
+        prs_mpls0;
 #endif
 #ifdef HAVE_NSH
 ETHERTYPE_NSH:
-            prs_nsh;
+        prs_nsh;
 #endif
 ETHERTYPE_IPV4:
-            prs_ipv4;
+        prs_ipv4;
 ETHERTYPE_IPV6:
-            prs_ipv6;
-        }
+        prs_ipv6;
     }
+}
 #endif
 
 
@@ -420,6 +420,12 @@ state prs_udp {
         (0 &&& 0, 1701):
             prs_l2tp;
 #endif
+#ifdef HAVE_GTP
+        (2152, 0 &&& 0):
+            prs_gtp;
+        (0 &&& 0, 2152):
+            prs_gtp;
+#endif
 #ifdef HAVE_VXLAN
         (4789, 0 &&& 0):
             prs_vxlan;
@@ -453,6 +459,30 @@ state prs_tcp {
 #ifdef HAVE_L2TP
 state prs_l2tp {
     pkt.extract(hdr.l2tp);
+    transition accept;
+}
+#endif
+
+#ifdef HAVE_GTP
+state prs_gtp {
+    pkt.extract(hdr.gtp);
+    transition select((pkt.lookahead<bit<4>>())[3:0]) {
+4w0x4:
+        prs_gtp4;
+4w0x6:
+        prs_gtp6;
+    default:
+        accept;
+    }
+}
+
+state prs_gtp4 {
+    ig_md.gtp_type = 4;
+    transition accept;
+}
+
+state prs_gtp6 {
+    ig_md.gtp_type = 6;
     transition accept;
 }
 #endif

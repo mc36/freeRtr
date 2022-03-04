@@ -20,8 +20,8 @@
 #ifdef HAVE_SGT
 
 control EgressControlSgt(inout headers hdr, inout ingress_metadata_t eg_md,
-                             in egress_intrinsic_metadata_t eg_intr_md,
-                             inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
+                         in egress_intrinsic_metadata_t eg_intr_md,
+                         inout egress_intrinsic_metadata_for_deparser_t eg_dprsr_md)
 {
 
 

@@ -96,6 +96,9 @@ struct ingress_metadata_t {
 #ifdef HAVE_SGT
     bit <1> sgt_valid;
 #endif
+#ifdef HAVE_GTP
+    bit<3>  gtp_type;
+#endif
     bit <1> arp_valid;
     bit <1> ipv4_valid;
     bit <1> ipv6_valid;

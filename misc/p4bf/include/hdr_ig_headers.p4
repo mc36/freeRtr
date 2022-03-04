@@ -42,6 +42,9 @@ struct headers {
 #ifdef HAVE_L2TP
     l2tp_t l2tp2;
 #endif
+#ifdef HAVE_GTP
+    gtp_t gtp2;
+#endif
 #ifdef HAVE_VXLAN
     vxlan_t vxlan2;
 #endif
@@ -49,7 +52,7 @@ struct headers {
     polka_t polka;
 #endif
 #ifdef HAVE_SGT
-     sgt_t sgt;
+    sgt_t sgt;
 #endif
 #ifdef HAVE_NSH
     nsh_t nsh;
@@ -79,6 +82,9 @@ struct headers {
     udp_t udp;
 #ifdef HAVE_L2TP
     l2tp_t l2tp;
+#endif
+#ifdef HAVE_GTP
+    gtp_t gtp;
 #endif
 #ifdef HAVE_VXLAN
     vxlan_t vxlan;
