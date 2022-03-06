@@ -1294,13 +1294,12 @@ public class userPacket {
             a = cmd.word();
             clntSnmp sn = new clntSnmp(cmd.pipe, cfgAll.getClntPrx(null), cmd.word());
             sn.community = cmd.word();
-            a = cmd.word();
             if (a.equals("get")) {
-                sn.doGet(a);
+                sn.doGet(cmd.word());
                 return null;
             }
             if (a.equals("next")) {
-                sn.doNext(a);
+                sn.doNext(cmd.word());
                 return null;
             }
             return null;
