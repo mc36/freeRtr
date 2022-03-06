@@ -40,7 +40,6 @@ import net.freertr.pack.packHolder;
 import net.freertr.pack.packNrpe;
 import net.freertr.pack.packWol;
 import net.freertr.pipe.pipeLine;
-import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.pipe.pipeTerm;
 import net.freertr.prt.prtDccp;
@@ -1257,7 +1256,7 @@ public class userPacket {
                 return null;
             }
             a = cmd.word();
-            userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
+            userTerminal trm = new userTerminal(cmd.pipe);
             addrIP trg = trm.resolveAddr(a, 0);
             if (trg == null) {
                 cmd.error("server not found");

@@ -42,7 +42,6 @@ import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packDnsZone;
 import net.freertr.pack.packText;
 import net.freertr.pipe.pipeLine;
-import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeShell;
 import net.freertr.pipe.pipeSide;
@@ -3786,15 +3785,15 @@ public class userExec {
                 prt = 22;
             }
         }
-        userTerminal term = new userTerminal(new pipeProgress(pipe));
+        userTerminal term = new userTerminal(pipe);
         addrIP adr = term.resolveAddr(rem, proto);
         if (prx == null) {
             prx = clntProxy.makeTemp(vrf, ifc);
         }
-        pipe.strPut(" - connecting to " + adr + " " + prt);
+        pipe.strPut("connecting to " + adr + " " + prt);
         pipeSide strm = prx.doConnect(dgrm, adr, prt, "telnet");
         if (strm == null) {
-            pipe.linePut(" failed!");
+            pipe.linePut(" failed");
             return;
         }
         pipe.linePut(" ok!");

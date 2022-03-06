@@ -1,6 +1,5 @@
 package net.freertr.pipe;
 
-import net.freertr.cfg.cfgAll;
 import net.freertr.util.bits;
 
 /**
@@ -135,31 +134,6 @@ public class pipeProgress {
      */
     public void debugRes(String s) {
         putLn(pipeSide.modTyp.modeCRLF, " * " + s);
-    }
-
-    /**
-     * ask user
-     *
-     * @param que question
-     * @param hide true to hide input
-     * @return entered string
-     */
-    public String userInput(String que, boolean hide) {
-        pipe.strPut(que);
-        pipeSide.modTyp mod = pipe.lineTx;
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
-        int red = 0x32;
-        if (hide) {
-            if (cfgAll.passwdStars) {
-                red = 0x33;
-            } else {
-                red = 0x31;
-            }
-        }
-        String res = pipe.lineGet(red);
-        pipe.lineRx = mod;
-        putLn(pipeSide.modTyp.modeCRLF, "");
-        return res;
     }
 
 }

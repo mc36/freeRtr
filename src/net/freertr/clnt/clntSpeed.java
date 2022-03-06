@@ -2,7 +2,6 @@ package net.freertr.clnt;
 
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
-import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servCharGen;
 import net.freertr.serv.servDiscard;
@@ -50,7 +49,7 @@ public class clntSpeed {
      * @param cmd command to use
      */
     public static void smllClnt(cmds cmd) {
-        userTerminal t = new userTerminal(new pipeProgress(cmd.pipe));
+        userTerminal t = new userTerminal(cmd.pipe);
         String a = cmd.word();
         addrIP trg = userTerminal.justResolv(a, 0);
         if (trg == null) {

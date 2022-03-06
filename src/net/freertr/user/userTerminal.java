@@ -7,6 +7,7 @@ import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.sec.secClient;
 import net.freertr.serv.servGeneric;
+import net.freertr.util.bits;
 
 /**
  * terminal emulator
@@ -15,14 +16,14 @@ import net.freertr.serv.servGeneric;
  */
 public class userTerminal {
 
-    private final pipeProgress console;
+    private final pipeSide console;
 
     /**
      * start user terminal
      *
      * @param con console to use
      */
-    public userTerminal(pipeProgress con) {
+    public userTerminal(pipeSide con) {
         console = con;
     }
 
@@ -41,6 +42,14 @@ public class userTerminal {
         return clnt.getAddr(prt);
     }
 
+    private void putLn(pipeSide.modTyp mod, String s) {
+        s = bits.padEnd(s, 16, " ");
+        pipeSide.modTyp i = console.lineTx;
+        console.lineTx = mod;
+        console.linePut(s);
+        console.lineTx = i;
+    }
+
     /**
      * resolve one host to address
      *
@@ -53,13 +62,39 @@ public class userTerminal {
         if (!addr.fromString(host)) {
             return addr;
         }
-        console.debugStat("resolving " + host + " for proto " + prt);
+        console.strPut("resolving " + host + " for proto " + prt);
         addrIP adr = justResolv(host, prt);
         if (adr == null) {
-            console.debugStat("not found");
+            putLn(pipeSide.modTyp.modeCRLF, " failed");
             return null;
         }
+        putLn(pipeSide.modTyp.modeCRLF, " ok!");
         return adr;
+    }
+
+    /**
+     * ask user
+     *
+     * @param que question
+     * @param hide true to hide input
+     * @return entered string
+     */
+    public String userInput(String que, boolean hide) {
+        console.strPut(que);
+        pipeSide.modTyp mod = console.lineTx;
+        console.lineRx = pipeSide.modTyp.modeCRtryLF;
+        int red = 0x32;
+        if (hide) {
+            if (cfgAll.passwdStars) {
+                red = 0x33;
+            } else {
+                red = 0x31;
+            }
+        }
+        String res = console.lineGet(red);
+        console.lineRx = mod;
+        putLn(pipeSide.modTyp.modeCRLF, "");
+        return res;
     }
 
     /**
@@ -80,19 +115,21 @@ public class userTerminal {
             return stream;
         }
         if (proto == servGeneric.protoSsh) {
+            pipeProgress prg = new pipeProgress(console);
             if (user == null) {
-                user = console.userInput("username: ", false);
+                user = userInput("username: ", false);
             }
             if (pass == null) {
-                pass = console.userInput("password: ", true);
+                pass = userInput("password: ", true);
             }
         }
-        console.debugStat("securing connection");
+        console.strPut("securing connection");
         stream = secClient.openSec(stream, proto, user, pass);
         if (stream == null) {
-            console.debugStat("failed");
+            putLn(pipeSide.modTyp.modeCRLF, " failed");
             return null;
         }
+        putLn(pipeSide.modTyp.modeCRLF, " ok!");
         return stream;
     }
 

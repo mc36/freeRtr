@@ -14,7 +14,6 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGen;
 import net.freertr.user.userTerminal;
-import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 

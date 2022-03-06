@@ -42,7 +42,9 @@ public class clntTftp implements prtServS {
 
     private ipFwdIface ifc;
 
-    private pipeProgress cons;
+    private final pipeSide conp;
+
+    private final pipeProgress cons;
 
     private RandomAccessFile fr;
 
@@ -52,7 +54,8 @@ public class clntTftp implements prtServS {
      * @param console console to use
      */
     public clntTftp(pipeSide console) {
-        cons = new pipeProgress(pipeDiscard.needAny(console));
+        conp = pipeDiscard.needAny(console);
+        cons = new pipeProgress(conp);
     }
 
     /**
@@ -202,7 +205,7 @@ public class clntTftp implements prtServS {
     }
 
     private boolean openConn(String trg) {
-        adr = new userTerminal(cons).resolveAddr(trg, 0);
+        adr = new userTerminal(conp).resolveAddr(trg, 0);
         if (adr == null) {
             return true;
         }
