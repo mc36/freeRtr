@@ -85,7 +85,7 @@ public class userFlash {
             if (e.doEdit()) {
                 return null;
             }
-            bits.buf2txt(true, b, a);
+            cmd.error(userExec.doneFail(bits.buf2txt(true, b, a)));
             return null;
         }
         if (a.equals("viewer")) {
@@ -114,7 +114,7 @@ public class userFlash {
         }
         if (a.equals("receive")) {
             a = cmd.word();
-            doReceive(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            cmd.error(userExec.doneFail(doReceive(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a))));
             return null;
         }
         if (a.equals("transmit")) {
@@ -381,9 +381,7 @@ public class userFlash {
             delete(arc);
         }
         RandomAccessFile ft;
-        try {
-            new File(arc).createNewFile();
-        } catch (Exception e) {
+        if (mkfile(arc)) {
             return true;
         }
         try {
@@ -471,9 +469,7 @@ public class userFlash {
             arc = dir + arc;
             delete(arc);
             RandomAccessFile ft;
-            try {
-                new File(arc).createNewFile();
-            } catch (Exception e) {
+            if (mkfile(arc)) {
                 pip.linePut("error creating file");
                 break;
             }
@@ -573,9 +569,7 @@ public class userFlash {
         } catch (Exception e) {
             return true;
         }
-        try {
-            new File(trg).createNewFile();
-        } catch (Exception e) {
+        if (mkfile(trg)) {
             return true;
         }
         long siz;
@@ -620,7 +614,9 @@ public class userFlash {
             delete(trg);
         }
         try {
-            new File(src).renameTo(new File(trg));
+            if (!new File(src).renameTo(new File(trg))) {
+                return true;
+            }
         } catch (Exception e) {
             return true;
         }
@@ -638,7 +634,9 @@ public class userFlash {
      */
     public static boolean delete(String trg) {
         try {
-            new File(trg).delete();
+            if (!new File(trg).delete()) {
+                return true;
+            }
         } catch (Exception e) {
             return true;
         }
@@ -653,7 +651,26 @@ public class userFlash {
      */
     public static boolean mkdir(String trg) {
         try {
-            new File(trg).mkdir();
+            if (!new File(trg).mkdir()) {
+                return true;
+            }
+        } catch (Exception e) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * make one file
+     *
+     * @param trg target file
+     * @return result code
+     */
+    public static boolean mkfile(String trg) {
+        try {
+            if (!new File(trg).createNewFile()) {
+                return true;
+            }
         } catch (Exception e) {
             return true;
         }

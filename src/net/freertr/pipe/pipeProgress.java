@@ -56,15 +56,6 @@ public class pipeProgress {
     }
 
     /**
-     * put one line
-     *
-     * @param s string to write
-     */
-    public void putLine(String s) {
-        putLn(pipeSide.modTyp.modeCR, s);
-    }
-
-    /**
      * set current value
      *
      * @param cur value
@@ -97,7 +88,7 @@ public class pipeProgress {
                 break;
         }
         s = "(" + a + ") " + s;
-        putLine(s);
+        putLn(pipeSide.modTyp.modeCR, s);
     }
 
     /**

@@ -944,9 +944,7 @@ public class userVM {
                     return 0;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
-                try {
-                    new File(a).createNewFile();
-                } catch (Exception e) {
+                if (userFlash.mkfile(a)) {
                     return 0;
                 }
                 regs[reg_b] = 0;
@@ -957,11 +955,7 @@ public class userVM {
                     return 0;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
-                try {
-                    if (!new File(a).delete()) {
-                        return 0;
-                    }
-                } catch (Exception e) {
+                if (userFlash.delete(a)) {
                     return 0;
                 }
                 regs[reg_b] = 0;
@@ -1000,10 +994,7 @@ public class userVM {
                     return 0;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
-                try {
-                    new File(a).renameTo(new File(rootDir
-                            + fromDos(getPascii(regs[reg_trg]))));
-                } catch (Exception e) {
+                if (userFlash.rename(a, rootDir + fromDos(getPascii(regs[reg_trg])), false, false)) {
                     return 0;
                 }
                 regs[reg_b] = 0;
@@ -1097,11 +1088,7 @@ public class userVM {
                     return 0;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
-                try {
-                    if (!new File(a).mkdir()) {
-                        return 0;
-                    }
-                } catch (Exception e) {
+                if (userFlash.mkdir(a)) {
                     return 0;
                 }
                 regs[reg_b] = 0;
@@ -1112,11 +1099,7 @@ public class userVM {
                     return 0;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
-                try {
-                    if (!new File(a).delete()) {
-                        return 0;
-                    }
-                } catch (Exception e) {
+                if (userFlash.delete(a)) {
                     return 0;
                 }
                 regs[reg_b] = 0;

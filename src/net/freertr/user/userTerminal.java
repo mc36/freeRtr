@@ -42,14 +42,6 @@ public class userTerminal {
         return clnt.getAddr(prt);
     }
 
-    private void putLn(pipeSide.modTyp mod, String s) {
-        s = bits.padEnd(s, 16, " ");
-        pipeSide.modTyp i = console.lineTx;
-        console.lineTx = mod;
-        console.linePut(s);
-        console.lineTx = i;
-    }
-
     /**
      * resolve one host to address
      *
@@ -65,10 +57,10 @@ public class userTerminal {
         console.strPut("resolving " + host + " for proto " + prt);
         addrIP adr = justResolv(host, prt);
         if (adr == null) {
-            putLn(pipeSide.modTyp.modeCRLF, " failed");
+            console.linePut(" failed");
             return null;
         }
-        putLn(pipeSide.modTyp.modeCRLF, " ok!");
+        console.linePut(" ok!");
         return adr;
     }
 
@@ -81,8 +73,6 @@ public class userTerminal {
      */
     public String userInput(String que, boolean hide) {
         console.strPut(que);
-        pipeSide.modTyp mod = console.lineTx;
-        console.lineRx = pipeSide.modTyp.modeCRtryLF;
         int red = 0x32;
         if (hide) {
             if (cfgAll.passwdStars) {
@@ -92,8 +82,6 @@ public class userTerminal {
             }
         }
         String res = console.lineGet(red);
-        console.lineRx = mod;
-        putLn(pipeSide.modTyp.modeCRLF, "");
         return res;
     }
 
@@ -126,10 +114,10 @@ public class userTerminal {
         console.strPut("securing connection");
         stream = secClient.openSec(stream, proto, user, pass);
         if (stream == null) {
-            putLn(pipeSide.modTyp.modeCRLF, " failed");
+            console.linePut(" failed");
             return null;
         }
-        putLn(pipeSide.modTyp.modeCRLF, " ok!");
+        console.linePut(" ok!");
         return stream;
     }
 

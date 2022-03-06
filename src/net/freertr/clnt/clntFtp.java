@@ -227,7 +227,8 @@ public class clntFtp implements prtServS {
         sendLine("SIZE " + src.toPathName());
         cmds cmd = new cmds("ftp", getLine());
         cmd.word();
-        cons.setMax(bits.str2long(cmd.word()));
+        long len = bits.str2long(cmd.word());
+        cons.setMax(len);
         if (begDatCon()) {
             pipe.setClose();
             return true;
@@ -276,7 +277,7 @@ public class clntFtp implements prtServS {
         getLine();
         pipe.setClose();
         cons.debugRes(pos + " bytes done");
-        return false;
+        return pos < len;
     }
 
     /**
