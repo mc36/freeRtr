@@ -160,7 +160,6 @@ class servNrpeConn implements Runnable {
             logger.traceback(e);
         }
         conn.setClose();
-
     }
 
 }

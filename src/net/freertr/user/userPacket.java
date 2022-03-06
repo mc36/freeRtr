@@ -1256,12 +1256,23 @@ public class userPacket {
                 cmd.error("invalid command");
                 return null;
             }
-            userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
-            pipeSide conn = trm.resolvAndConn(servGeneric.protoTcp, cmd.word(), userNetconf.port, "netconf");
+            a = cmd.word();
+            addrIP trg = userTerminal.justResolv(a, 0);
+            if (trg == null) {
+                cmd.error("server not found");
+                return null;
+            }
+            clntProxy prx = cfgAll.getClntPrx(null);
+            if (prx == null) {
+                cmd.error("no proxy configured");
+                return null;
+            }
+            pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, userNetconf.port, "netconf");
             if (conn == null) {
                 cmd.error("error opening connection");
                 return null;
             }
+            userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
             a = cmd.word();
             conn = trm.startSecurity(servGeneric.protoSsh, a, cmd.word());
             if (conn == null) {
@@ -1281,7 +1292,7 @@ public class userPacket {
         }
         if (a.equals("snmp")) {
             a = cmd.word();
-            clntSnmp sn = new clntSnmp(cmd.pipe,cfgAll.getClntPrx(null),cmd.word());
+            clntSnmp sn = new clntSnmp(cmd.pipe, cfgAll.getClntPrx(null), cmd.word());
             sn.community = cmd.word();
             a = cmd.word();
             if (a.equals("get")) {
@@ -1359,7 +1370,11 @@ public class userPacket {
             return null;
         }
         if (a.equals("nrpe")) {
-            clntNrpe ch = new clntNrpe(cmd.pipe, cfgAll.getClntPrx(null), cmd.word());
+            clntProxy prx = cfgAll.getClntPrx(null);
+            if (prx == null) {
+                return null;
+            }
+            clntNrpe ch = new clntNrpe(cmd.pipe, prx.vrf, prx.srcIfc, cmd.word());
             boolean b = ch.doCheck(cmd.getRemaining());
             cmd.error("status=" + b + ", code=" + packNrpe.code2string(ch.code));
             rdr.putStrArr(ch.text);

@@ -57,6 +57,7 @@ public class clntSnmp {
     /**
      * do one get
      *
+     * @param o oid
      * @return false on success, true on error
      */
     public boolean doGet(String o) {
@@ -67,6 +68,7 @@ public class clntSnmp {
     /**
      * do one get
      *
+     * @param o oid
      * @return false on success, true on error
      */
     public boolean doNext(String o) {
