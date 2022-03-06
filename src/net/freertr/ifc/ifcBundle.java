@@ -325,6 +325,9 @@ public class ifcBundle implements Runnable, ifcDn {
         l.add(null, "2 .    addr                         xor addresses");
         l.add(null, "2 .    all                          xor everything");
         l.add(null, "2 .    random                       randomize");
+        l.add(null, "2 .    none                         nothing");
+        l.add(null, "2 .    round                        round robin");
+        l.add(null, "2 .    share                        share by bandwidth");
     }
 
     /**
@@ -344,6 +347,9 @@ public class ifcBundle implements Runnable, ifcDn {
         cmds.cfgLine(l, dynamic < 1, beg, "dynamic", "" + dynamic);
         String a;
         switch (loadBalance) {
+            case 0:
+                a = "none";
+                break;
             case 2:
             case 3:
             case 4:
@@ -357,6 +363,12 @@ public class ifcBundle implements Runnable, ifcDn {
                 break;
             case 8:
                 a = "random";
+                break;
+            case 9:
+                a = "round";
+                break;
+            case 10:
+                a = "share";
                 break;
             default:
                 a = "unknown=" + loadBalance;
@@ -394,8 +406,20 @@ public class ifcBundle implements Runnable, ifcDn {
         }
         if (s.equals("loadbalance")) {
             s = cmd.word();
+            if (s.equals("none")) {
+                loadBalance = 0;
+                return;
+            }
             if (s.equals("random")) {
                 loadBalance = 8;
+                return;
+            }
+            if (s.equals("round")) {
+                loadBalance = 9;
+                return;
+            }
+            if (s.equals("share")) {
+                loadBalance = 10;
                 return;
             }
             if (s.equals("addr")) {
@@ -658,30 +682,44 @@ public class ifcBundle implements Runnable, ifcDn {
      * @param pck packet to send
      */
     protected void doTxNext(packHolder pck) {
-        if (loadBalance > 0) {
-            switch (loadBalance) {
-                case 2:
-                    nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB();
-                    break;
-                case 3:
-                    nextSender = pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB();
-                    break;
-                case 4:
-                    nextSender = getHash(pck.UDPsrc ^ pck.UDPtrg);
-                    break;
-                case 5:
-                    nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB();
-                    break;
-                case 7:
-                    nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB() ^ getHash(pck.UDPsrc ^ pck.UDPtrg);
-                    break;
-                case 8:
-                    nextSender = bits.randomB();
-                    break;
-            }
-            nextSender %= ifaces.size();
-            currSender = 0;
+        switch (loadBalance) {
+            case 0:
+                nextSender = 0;
+                currSender = 0;
+                break;
+            case 2:
+                nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB();
+                currSender = 0;
+                break;
+            case 3:
+                nextSender = pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB();
+                currSender = 0;
+                break;
+            case 4:
+                nextSender = getHash(pck.UDPsrc ^ pck.UDPtrg);
+                currSender = 0;
+                break;
+            case 5:
+                nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB();
+                currSender = 0;
+                break;
+            case 7:
+                nextSender = pck.ETHsrc.getHashB() ^ pck.ETHtrg.getHashB() ^ pck.IPsrc.getHashB() ^ pck.IPtrg.getHashB() ^ getHash(pck.UDPsrc ^ pck.UDPtrg);
+                currSender = 0;
+                break;
+            case 8:
+                nextSender = bits.randomW();
+                currSender = 0;
+                break;
+            case 9:
+                nextSender++;
+                currSender = 0;
+                break;
+            case 10:
+                break;
         }
+        int o = ifaces.size();
+        nextSender %= o;
         ifcBundleIfc ifc = ifaces.get(nextSender);
         if (ifc != null) {
             if ((ifc.stated == state.states.up) && (ifc.byteNeed > currSender)) {
@@ -691,7 +729,6 @@ public class ifcBundle implements Runnable, ifcDn {
             }
         }
         currSender = 0;
-        int o = ifaces.size();
         for (int i = 0; i < o; i++) {
             nextSender = (nextSender + 1) % o;
             ifc = ifaces.get(nextSender);

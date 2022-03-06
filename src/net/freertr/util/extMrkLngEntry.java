@@ -90,6 +90,15 @@ public class extMrkLngEntry {
     }
 
     /**
+     * get name equals value path
+     *
+     * @return string
+     */
+    public String getNamVal() {
+        return name + "=" + value;
+    }
+
+    /**
      * get unescaped path
      *
      * @return path

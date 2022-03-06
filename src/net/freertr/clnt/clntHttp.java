@@ -2,6 +2,9 @@ package net.freertr.clnt;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.cry.cryBase64;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryHashMd5;
@@ -10,12 +13,13 @@ import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
+import net.freertr.sec.secClient;
 import net.freertr.sec.secHttp2;
 import net.freertr.serv.servGeneric;
-import net.freertr.serv.servHttp;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
+import net.freertr.util.extMrkLngEntry;
 import net.freertr.util.logger;
 import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
@@ -27,11 +31,46 @@ import net.freertr.util.version;
  */
 public class clntHttp {
 
-    private pipeSide pipe;
+    /**
+     * pipeline in use
+     */
+    public pipeSide pipe;
+
+    /**
+     * proxy profile
+     */
+    public clntProxy proxy;
 
     private pipeProgress cons;
 
     private RandomAccessFile fr;
+
+    private boolean debug;
+
+    /**
+     * content length
+     */
+    public long cntLen;
+
+    /**
+     * chunked
+     */
+    public boolean chnkd;
+
+    /**
+     * keepalive
+     */
+    public boolean kepAliv;
+
+    /**
+     * cookies
+     */
+    public List<extMrkLngEntry> cookies;
+
+    /**
+     * cookies
+     */
+    public List<extMrkLngEntry> headers;
 
     /**
      * get basic authorization line
@@ -196,9 +235,13 @@ public class clntHttp {
      * create new client
      *
      * @param console console to use
+     * @param vrfPrx proxy
+     * @param debugging debug enabled
      */
-    public clntHttp(pipeSide console) {
+    public clntHttp(pipeSide console, clntProxy vrfPrx, boolean debugging) {
+        proxy = vrfPrx;
         cons = new pipeProgress(pipeDiscard.needAny(console));
+        debug = debugger.clntHttpTraf | debugging;
     }
 
     /**
@@ -215,8 +258,13 @@ public class clntHttp {
         }
     }
 
-    private void sendLine(String s) {
-        if (debugger.clntHttpTraf) {
+    /**
+     * send line
+     *
+     * @param s line
+     */
+    public void sendLine(String s) {
+        if (debug) {
             logger.debug("tx:" + s);
         }
         cons.debugTx(s);
@@ -236,71 +284,75 @@ public class clntHttp {
         if (s == null) {
             s = "";
         }
-        if (debugger.clntHttpTraf) {
+        if (debug) {
             logger.debug("rx:" + s);
         }
         cons.debugRx(s);
         return s;
     }
 
-    private boolean doConnect(uniResLoc url) {
+    /**
+     * create new connection
+     *
+     * @param url url to connect
+     * @return false on success, true on error
+     */
+    public boolean doConnect(uniResLoc url) {
         if (pipe != null) {
             pipe.setClose();
         }
-        userTerminal t = new userTerminal(cons);
-        if (url.proto.equals("http2")) {
-            url.proto = "http";
-            pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
-            if (pipe == null) {
-                return true;
-            }
-            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
-            if (ht2.startClient()) {
-                return true;
-            }
-            pipe = ht2.getPipe();
-            return false;
+        if (proxy == null) {
+            return true;
         }
-        if (!url.proto.equals("https")) {
-            pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(new servHttp().srvPort()), "http");
-            return pipe == null;
+        if (debug) {
+            logger.debug("resolving " + url.dump());
         }
-        pipe = t.resolvAndConn(servGeneric.protoTcp, url.server, url.getPort(servHttp.securePort), "https");
+        addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
+        if (trg == null) {
+            return true;
+        }
+        if (debug) {
+            logger.debug("connecting " + trg + " " + url.getPort(0));
+        }
+        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "http");
         if (pipe == null) {
             return true;
         }
-        pipe = t.startSecurity(servGeneric.protoTls, null, null);
+        if (debug) {
+            logger.debug("securing " + url.dump());
+        }
+        pipe = secClient.openSec(pipe, url.getSecurity(), url.username, url.password);
         if (pipe == null) {
             return true;
         }
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        if (!url.proto.equals("http2")) {
+            return false;
+        }
+        url.proto = "http";
+        secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
+        if (ht2.startClient()) {
+            return true;
+        }
+        pipe = ht2.getPipe();
+        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
         return false;
     }
 
-    private boolean doDown(uniResLoc src, long pos) {
-        try {
-            fr.seek(pos);
-        } catch (Exception e) {
-            return true;
-        }
-        if (doConnect(src)) {
-            return true;
-        }
-        sendLine("GET " + src.toURL(false, true) + " HTTP/1.1");
-        sendLine("User-Agent: " + version.usrAgnt);
-        sendLine("Host: " + src.server);
-        sendLine("Accept: */*");
-        sendLine("Accept-Language: en,*");
-        sendLine("Accept-Charset: iso-8859-1, *");
-        sendLine("Accept-Encoding: identity");
-        if (pos > 0) {
-            sendLine("Range: bytes=" + pos + "-");
-        }
-        sendLine("Connection: Close");
-        sendAuth(src);
-        sendLine("");
-        long ctl = -1;
+    /**
+     * receive headers
+     *
+     * @param src url to connect
+     * @return false on proceed, true on location
+     */
+    public boolean doHeaders(uniResLoc src) {
+        cntLen = -1;
+        chnkd = false;
+        kepAliv = false;
+        cookies = new ArrayList<extMrkLngEntry>();
+        headers = new ArrayList<extMrkLngEntry>();
         String loc = null;
         String res = getLine();
         int i = res.indexOf(" ");
@@ -327,18 +379,81 @@ public class clntHttp {
                 loc = s;
                 continue;
             }
-            if (a.equals("content-length")) {
-                ctl = bits.str2long(s);
-                cons.setMax(ctl);
+            if (a.equals("connection")) {
+                kepAliv = s.equals("keep-alive");
                 continue;
             }
+            if (a.equals("content-length")) {
+                cntLen = bits.str2long(s);
+                cons.setMax(cntLen);
+                continue;
+            }
+            if (a.equals("transfer-encoding")) {
+                chnkd = s.equals("chunked");
+                continue;
+            }
+            if (a.equals("set-cookie")) {
+                i = s.indexOf(";");
+                if (i < 0) {
+                    continue;
+                }
+                String p = s.substring(i + 1, s.length()).trim();
+                s = s.substring(0, i).trim();
+                i = s.indexOf("=");
+                if (i < 0) {
+                    continue;
+                }
+                a = s.substring(0, i).trim();
+                s = s.substring(i + 1, s.length()).trim();
+                cookies.add(new extMrkLngEntry(null, a, p, s));
+            }
+            headers.add(new extMrkLngEntry(null, a, null, s));
         }
-        if (res.equals("301") || res.equals("302") || res.equals("307")) {
+        if (loc == null) {
+            return false;
+        }
+        if (loc.startsWith("/")) {
+            src.fromPathname(loc);
+        } else {
             src.fromString(loc);
-            return true;
         }
-        cons.debugStat("receiving " + cons.getMax() + " bytes");
-        pos = 0;
+        return true;
+    }
+
+    private static void bytes2array(List<Byte> res, byte[] buf, int siz) {
+        for (int i = 0; i < siz; i++) {
+            res.add(buf[i]);
+        }
+    }
+
+    /**
+     * receive body
+     *
+     * @return bytes read, null on error
+     */
+    public List<Byte> doBody() {
+        List<Byte> res = new ArrayList<Byte>();
+        if (chnkd) {
+            for (;;) {
+                byte[] buf = getChunk();
+                if (buf == null) {
+                    break;
+                }
+                if (buf.length < 1) {
+                    break;
+                }
+                bytes2array(res, buf, buf.length);
+            }
+            return res;
+        }
+        if (cntLen >= 0) {
+            byte[] buf = new byte[(int) cntLen];
+            if (pipe.moreGet(buf, 0, buf.length) != buf.length) {
+                return null;
+            }
+            bytes2array(res, buf, buf.length);
+            return res;
+        }
         for (;;) {
             final int max = 8192;
             byte[] buf = new byte[max];
@@ -346,19 +461,99 @@ public class clntHttp {
             if (siz < 1) {
                 break;
             }
-            pos += siz;
-            cons.setCurr(pos);
-            try {
-                fr.write(buf, 0, siz);
-            } catch (Exception ex) {
-                return true;
+            bytes2array(res, buf, siz);
+        }
+        return res;
+    }
+
+    private byte[] getChunk() {
+        String s = "0";
+        for (;;) {
+            if (pipe.ready2rx() < 1) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
+            }
+            s = getLine();
+            break;
+        }
+        int i = bits.fromHex(s);
+        if (i < 1) {
+            return new byte[0];
+        }
+        byte[] buf = new byte[i];
+        if (pipe.moreGet(buf, 0, buf.length) != buf.length) {
+            return null;
+        }
+        return buf;
+    }
+
+    private boolean doDown(uniResLoc src, long pos) {
+        try {
+            fr.seek(pos);
+        } catch (Exception e) {
+            return true;
+        }
+        if (doConnect(src)) {
+            return true;
+        }
+        sendLine("GET " + src.toURL(false, true) + " HTTP/1.1");
+        sendLine("User-Agent: " + version.usrAgnt);
+        sendLine("Host: " + src.server);
+        sendLine("Accept: */*");
+        sendLine("Accept-Language: en,*");
+        sendLine("Accept-Charset: iso-8859-1, *");
+        sendLine("Accept-Encoding: identity");
+        if (pos > 0) {
+            sendLine("Range: bytes=" + pos + "-");
+        }
+        sendLine("Connection: Close");
+        sendAuth(src);
+        sendLine("");
+        if (doHeaders(src)) {
+            return true;
+        }
+        pos = 0;
+        cons.debugStat("receiving " + cons.getMax() + " bytes");
+        if (chnkd) {
+            for (;;) {
+                byte[] buf = getChunk();
+                if (buf == null) {
+                    return true;
+                }
+                if (buf.length < 1) {
+                    break;
+                }
+                pos += buf.length;
+                cons.setCurr(pos);
+                try {
+                    fr.write(buf, 0, buf.length);
+                } catch (Exception ex) {
+                    return true;
+                }
+            }
+        } else {
+            for (;;) {
+                final int max = 8192;
+                byte[] buf = new byte[max];
+                int siz = pipe.moreGet(buf, 0, max);
+                if (siz < 1) {
+                    break;
+                }
+                pos += siz;
+                cons.setCurr(pos);
+                try {
+                    fr.write(buf, 0, siz);
+                } catch (Exception ex) {
+                    return true;
+                }
             }
         }
         cons.debugRes(pos + " bytes done");
-        if (ctl < 0) {
+        if (cntLen < 0) {
             return false;
         }
-        return pos < ctl;
+        return pos < cntLen;
     }
 
     /**

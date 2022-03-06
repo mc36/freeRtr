@@ -10,6 +10,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSstp;
 import net.freertr.pipe.pipeSide;
+import net.freertr.sec.secClient;
 import net.freertr.serv.servGeneric;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
@@ -247,6 +248,10 @@ public class clntSstp implements Runnable, ifcDn {
             logger.debug("connecting " + trg);
         }
         pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "sstp");
+        if (pipe == null) {
+            return;
+        }
+        pipe = secClient.openSec(pipe, url.getSecurity(), url.username, url.password);
         if (pipe == null) {
             return;
         }

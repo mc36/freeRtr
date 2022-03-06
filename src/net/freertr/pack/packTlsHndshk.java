@@ -831,6 +831,10 @@ public class packTlsHndshk {
             buf = extenList2bytes(makeECcurveList());
             tlv.putBytes(pck, 10, buf); // supported groups
         }
+        if (ecDiffHell.curve == null) {
+            pck.merge2end();
+            return pck.getCopy();
+        }
         byte[] res;
         if (client) {
             if (ecDiffHell.curve != null) {

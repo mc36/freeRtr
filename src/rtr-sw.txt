@@ -87,6 +87,7 @@ route-policy nht6
  exit
 !
 bundle 1
+ loadbalance all
  exit
 !
 bridge 1

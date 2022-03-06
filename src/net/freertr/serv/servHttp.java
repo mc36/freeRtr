@@ -1251,14 +1251,17 @@ class servHttpConn implements Runnable {
         if (type != null) {
             sendLn("Content-Type: " + type);
         }
-        if (size >= 0) {
-            sendLn("Content-Length: " + size);
-        }
         if (!gotKeep || lower.singleRequest) {
             sendLn("Connection: Close");
         } else {
             sendLn("Connection: Keep-Alive");
             sendLn("Keep-Alive: TimeOut=60, Max=25");
+            if (size < 0) {
+                size = 0;
+            }
+        }
+        if (size >= 0) {
+            sendLn("Content-Length: " + size);
         }
         for (int i = 0; i < headers.size(); i++) {
             sendLn(headers.get(i));

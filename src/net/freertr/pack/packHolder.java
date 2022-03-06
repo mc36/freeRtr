@@ -1193,6 +1193,7 @@ public class packHolder {
      * @return value returned by nonblocking get on pipeline
      */
     public int pipeRecv(pipeSide pipe, int rofs, int len, int blocking) {
+        int oofs = rofs;
         byte[] buf = null;
         switch ((blocking / 100) % 10) {
             case 0:
@@ -1252,7 +1253,7 @@ public class packHolder {
                 merge2end();
                 break;
             case 4:
-                setDataSize(rofs + res);
+                setDataSize(oofs + res);
                 break;
             default:
                 res = 0;

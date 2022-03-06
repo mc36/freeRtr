@@ -1,7 +1,6 @@
 package net.freertr.clnt;
 
 import net.freertr.addr.addrEmpty;
-import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcDn;
@@ -10,11 +9,10 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packForti;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
-import net.freertr.serv.servGeneric;
-import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
+import net.freertr.util.extMrkLng;
 import net.freertr.util.logger;
 import net.freertr.util.state;
 import net.freertr.util.uniResLoc;
@@ -73,8 +71,6 @@ public class clntForti implements Runnable, ifcDn {
     private pipeSide pipe;
 
     private boolean good;
-
-    private addrIP trg;
 
     private String cookie;
 
@@ -218,119 +214,47 @@ public class clntForti implements Runnable, ifcDn {
         clearState();
     }
 
-    private boolean mkConn() {
-        if (debugger.clntFortiTraf) {
-            logger.debug("connecting " + trg);
-        }
-        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "forti");
-        if (pipe == null) {
-            return true;
-        }
-        pipe.setTime(120000);
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        return false;
-    }
-
-    private void sendLine(String s) {
-        if (debugger.clntFortiTraf) {
-            logger.debug("tx: " + s);
-        }
-        pipe.linePut(s);
-    }
-
-    private String recvLn() {
-        String s = pipe.lineGet(1);
-        if (debugger.clntFortiTraf) {
-            logger.debug("rx: " + s);
-        }
-        return s;
-    }
-
-    private byte[] recvHdr() {
-        int cntLen = 0;
-        for (;;) {
-            String s = recvLn();
-            if (s.length() < 1) {
-                break;
-            }
-            String a;
-            int i = s.indexOf(":");
-            if (i < 0) {
-                a = s.trim().toLowerCase();
-                s = "";
-            } else {
-                a = s.substring(0, i).trim().toLowerCase();
-                s = s.substring(i + 1, s.length()).trim();
-            }
-            if (a.equals("content-length")) {
-                cntLen = bits.str2num(s);
-                continue;
-            }
-            if (a.equals("set-cookie")) {
-                i = s.indexOf(";");
-                if (i < 0) {
-                    continue;
-                }
-                s = s.substring(0, i).trim();
-                i = s.indexOf("=");
-                if (i < 0) {
-                    continue;
-                }
-                a = s.substring(0, i).trim().toLowerCase();
-                s = s.substring(i + 1, s.length()).trim();
-                if (a.equals("svpncookie")) {
-                    cookie = a + "=" + s;
-                    continue;
-                }
-            }
-        }
-        if (cntLen < 1) {
-            return new byte[0];
-        }
-        byte[] buf = new byte[cntLen];
-        pipe.moreGet(buf, 0, buf.length);
-        return buf;
-    }
-
     private void workDoer() {
         url = uniResLoc.parseOne(target);
-        if (debugger.clntFortiTraf) {
-            logger.debug("resolving " + url.dump());
-        }
-        trg = userTerminal.justResolv(url.server, proxy.prefer);
-        if (trg == null) {
-            return;
-        }
-        if (mkConn()) {
+        clntHttp cln = new clntHttp(null, proxy, debugger.clntFortiTraf);
+        if (cln.doConnect(url)) {
             return;
         }
         url.addParam("username", username);
         url.addParam("credential", password);
         url.filPath = "remote/";
         url.filName = "logincheck";
-        sendLine("POST " + url.toURL(false, true) + " HTTP/1.1");
-        sendLine("user-agent: " + version.usrAgnt);
-        sendLine("host: " + url.server);
-        sendLine("connection: keep-alive");
-        sendLine("content-length: 0");
-        sendLine("content-type: application/x-www-form-urlencoded");
-        sendLine("");
-        recvHdr();
-        pipe.setClose();
-        if (mkConn()) {
+        cln.sendLine("POST " + url.toURL(false, true) + " HTTP/1.1");
+        cln.sendLine("user-agent: " + version.usrAgnt);
+        cln.sendLine("host: " + url.server);
+        cln.sendLine("connection: keep-alive");
+        cln.sendLine("content-length: 0");
+        cln.sendLine("content-type: application/x-www-form-urlencoded");
+        cln.sendLine("");
+        cln.doHeaders(url);
+        cln.doBody();
+        cln.cleanUp();
+        int i = extMrkLng.findParam(cln.cookies, "|svpncookie|");
+        if (i < 0) {
             return;
         }
-        sendLine("GET /remote/fortisslvpn_xml HTTP/1.1");
-        sendLine("user-agent: " + version.usrAgnt);
-        sendLine("host: " + url.server);
-        sendLine("cookie: " + cookie);
-        sendLine("");
-        recvHdr();
-        sendLine("GET /remote/sslvpn-tunnel HTTP/1.1");
-        sendLine("host: sslvpn");
-        sendLine("cookie: " + cookie);
-        sendLine("");
+        cookie = cln.cookies.get(i).getNamVal();
+        cln = new clntHttp(null, proxy, debugger.clntFortiTraf);
+        if (cln.doConnect(url)) {
+            return;
+        }
+        cln.sendLine("GET /remote/fortisslvpn_xml HTTP/1.1");
+        cln.sendLine("user-agent: " + version.usrAgnt);
+        cln.sendLine("host: " + url.server);
+        cln.sendLine("cookie: " + cookie);
+        cln.sendLine("");
+        cln.doHeaders(url);
+        cln.doBody();
+        cln.sendLine("GET /remote/sslvpn-tunnel HTTP/1.1");
+        cln.sendLine("host: sslvpn");
+        cln.sendLine("cookie: " + cookie);
+        cln.sendLine("");
+        pipe = cln.pipe;
         packHolder pckB = new packHolder(true, true);
         packForti pckS = new packForti(pipe);
         good = true;

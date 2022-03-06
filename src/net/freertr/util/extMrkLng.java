@@ -118,6 +118,21 @@ public class extMrkLng {
     /**
      * convert string to xml
      *
+     * @param l list to parse
+     * @return false on success, true on error
+     */
+    public boolean fromString(List<Byte> l) {
+        String s = "";
+        for (int i = 0; i < l.size(); i++) {
+            byte ch = l.get(i);
+            s += (char) ch;
+        }
+        return fromString(s);
+    }
+
+    /**
+     * convert string to xml
+     *
      * @param s string to parse
      * @return false on success, true on error
      */

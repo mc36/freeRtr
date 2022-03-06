@@ -579,6 +579,11 @@ public class debugger {
     public static boolean clntFortiTraf = false;
 
     /**
+     * clntPulse traffic
+     */
+    public static boolean clntPulseTraf = false;
+
+    /**
      * clntSnmp traffic
      */
     public static boolean clntSnmpTraf = false;
@@ -1133,6 +1138,7 @@ public class debugger {
         l.add(null, "3 .        sstp              secure socket tunneling protocol");
         l.add(null, "3 .        anyconn           anyconnect protocol");
         l.add(null, "3 .        forti             fortinet protocol");
+        l.add(null, "3 .        pulse             pulsevpn protocol");
         l.add(null, "3 .        snmp              simple network management protocol");
         l.add(null, "3 .        dhcp4             ipv4 dynamic host config protocol");
         l.add(null, "3 .        dhcp6             ipv6 dynamic host config protocol");
@@ -1812,6 +1818,10 @@ public class debugger {
             }
             if (s.equals("forti")) {
                 clntFortiTraf = v;
+                return false;
+            }
+            if (s.equals("pulse")) {
+                clntPulseTraf = v;
                 return false;
             }
             if (s.equals("snmp")) {

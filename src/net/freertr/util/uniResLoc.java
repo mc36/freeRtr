@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv6;
+import net.freertr.serv.servGeneric;
 import net.freertr.serv.servHttp;
 
 /**
@@ -170,9 +171,13 @@ public class uniResLoc {
         if (s == null) {
             return o;
         }
-        final String e = "%:?#[]@!$&'()*+,;=";
+        final String e = "%:?#[]@!$&'()*+,;=\\|*";
         for (int ps = 0; ps < s.length(); ps++) {
             char c = s.charAt(ps);
+            if (c == 0x20) {
+                o += "+";
+                continue;
+            }
             boolean n;
             n = (c <= 0x20) || (c >= 0x7e);
             if (!n) {
@@ -191,60 +196,12 @@ public class uniResLoc {
      * convert string to url
      *
      * @param s string to parse
-     * @return false on success, true on error
      */
-    public boolean fromString(String s) {
-        clear();
-        orig = "" + s;
-        if (s == null) {
-            return true;
-        }
+    public void fromPathname(String s) {
         if (s.startsWith("/")) {
-            filPath = s.substring(1, s.length());
-        } else {
-            int i = s.indexOf(":");
-            if (i < 0) {
-                filPath = s;
-            } else {
-                proto = s.substring(0, i);
-                server = s.substring(i + 1, s.length());
-            }
-            if (server.indexOf("//") == 0) {
-                server = server.substring(2, server.length());
-            }
-            i = server.indexOf("/");
-            if (i >= 0) {
-                filPath = server.substring(i + 1, server.length());
-                server = server.substring(0, i);
-            }
-            i = server.indexOf("@");
-            if (i >= 0) {
-                username = server.substring(0, i);
-                server = server.substring(i + 1, server.length());
-                i = username.indexOf(":");
-                if (i >= 0) {
-                    password = username.substring(i + 1, username.length());
-                    username = username.substring(0, i);
-                }
-            }
-            i = server.indexOf("[");
-            int o = server.indexOf("]");
-            if ((i >= 0) && (o > i)) {
-                s = server.substring(o + 1, server.length());
-                server = server.substring(i + 1, o);
-            } else {
-                s = "";
-                i = server.indexOf(":");
-                if (i >= 0) {
-                    s = server.substring(i, server.length());
-                    server = server.substring(0, i);
-                }
-            }
-            i = s.indexOf(":");
-            if (i >= 0) {
-                port = bits.str2num(s.substring(i + 1, s.length()).trim());
-            }
+            s = s.substring(1, s.length());
         }
+        filPath = s;
         int i = filPath.indexOf("?");
         String pars = "";
         if (i >= 0) {
@@ -264,15 +221,12 @@ public class uniResLoc {
             filExt = filName.substring(i, filName.length());
             filName = filName.substring(0, i);
         }
-        proto = percentUncode(proto);
-        server = percentUncode(server);
-        username = percentUncode(username);
-        password = percentUncode(password);
         filPath = percentUncode(filPath);
         filName = percentUncode(filName);
         filExt = percentUncode(filExt);
+        param.clear();
         if (pars.length() < 1) {
-            return false;
+            return;
         }
         for (;;) {
             if (pars.length() < 1) {
@@ -296,6 +250,71 @@ public class uniResLoc {
             }
             param.add(ntry);
         }
+    }
+
+    /**
+     * convert string to url
+     *
+     * @param s string to parse
+     * @return false on success, true on error
+     */
+    public boolean fromString(String s) {
+        clear();
+        orig = "" + s;
+        if (s == null) {
+            return true;
+        }
+        if (s.startsWith("/")) {
+            fromPathname(s);
+            return false;
+        }
+        int i = s.indexOf(":");
+        if (i < 0) {
+            filPath = s;
+        } else {
+            proto = s.substring(0, i);
+            server = s.substring(i + 1, s.length());
+        }
+        if (server.indexOf("//") == 0) {
+            server = server.substring(2, server.length());
+        }
+        i = server.indexOf("/");
+        if (i >= 0) {
+            filPath = server.substring(i + 1, server.length());
+            server = server.substring(0, i);
+        }
+        i = server.indexOf("@");
+        if (i >= 0) {
+            username = server.substring(0, i);
+            server = server.substring(i + 1, server.length());
+            i = username.indexOf(":");
+            if (i >= 0) {
+                password = username.substring(i + 1, username.length());
+                username = username.substring(0, i);
+            }
+        }
+        i = server.indexOf("[");
+        int o = server.indexOf("]");
+        if ((i >= 0) && (o > i)) {
+            s = server.substring(o + 1, server.length());
+            server = server.substring(i + 1, o);
+        } else {
+            s = "";
+            i = server.indexOf(":");
+            if (i >= 0) {
+                s = server.substring(i, server.length());
+                server = server.substring(0, i);
+            }
+        }
+        i = s.indexOf(":");
+        if (i >= 0) {
+            port = bits.str2num(s.substring(i + 1, s.length()).trim());
+        }
+        proto = percentUncode(proto);
+        server = percentUncode(server);
+        username = percentUncode(username);
+        password = percentUncode(password);
+        fromPathname(filPath);
         return false;
     }
 
@@ -425,15 +444,29 @@ public class uniResLoc {
         }
         c = "";
         if (params) {
-            for (int i = 0; i < param.size(); i++) {
-                uniResLocPar ntry = param.get(i);
-                c += "&" + percentEncode(ntry.nam) + "=" + percentEncode(ntry.val);
-            }
-            if (c.length() > 0) {
-                c = "?" + c.substring(1, c.length());
-            }
+            c = toParams();
+        }
+        if (c.length() > 0) {
+            c = "?" + c;
         }
         return percentEncode(proto) + "://" + b + a + "/" + percentEncode(filPath) + percentEncode(filName) + percentEncode(filExt) + c;
+    }
+
+    /**
+     * convert to parameters
+     *
+     * @return pathname format
+     */
+    public String toParams() {
+        String c = "";
+        for (int i = 0; i < param.size(); i++) {
+            uniResLocPar ntry = param.get(i);
+            c += "&" + percentEncode(ntry.nam) + "=" + percentEncode(ntry.val);
+        }
+        if (c.length() > 0) {
+            c = c.substring(1, c.length());
+        }
+        return c;
     }
 
     /**
@@ -530,10 +563,25 @@ public class uniResLoc {
         if (proto.equals("http")) {
             return new servHttp().srvPort();
         }
+        if (proto.equals("http2")) {
+            return new servHttp().srvPort();
+        }
         if (proto.equals("https")) {
             return servHttp.securePort;
         }
         return def;
+    }
+
+    /**
+     * get security
+     *
+     * @return security to connect with
+     */
+    public int getSecurity() {
+        if (proto.equals("https")) {
+            return servGeneric.protoTls;
+        }
+        return servGeneric.protoTcp;
     }
 
     /**

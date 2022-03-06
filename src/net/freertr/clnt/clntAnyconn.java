@@ -12,8 +12,6 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packAnyconn;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
-import net.freertr.serv.servGeneric;
-import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -77,15 +75,11 @@ public class clntAnyconn implements Runnable, ifcDn {
 
     private boolean good;
 
-    private addrIP trg;
-
     private uniResLoc url;
 
     private String cookie1; // webvpncontext
 
     private String cookie2; // webvpn
-
-    private String cookie3; // webvpnc
 
     private addrIP addr4;
 
@@ -236,161 +230,83 @@ public class clntAnyconn implements Runnable, ifcDn {
         clearState();
     }
 
-    private boolean mkConn() {
-        if (debugger.clntAnyconnTraf) {
-            logger.debug("connecting " + trg);
-        }
-        pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "anyconn");
-        if (pipe == null) {
-            return true;
-        }
-        pipe.setTime(120000);
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        return false;
-    }
-
-    private void sendLine(String s) {
-        if (debugger.clntAnyconnTraf) {
-            logger.debug("tx: " + s);
-        }
-        pipe.linePut(s);
-    }
-
-    private String recvLn() {
-        String s = pipe.lineGet(1);
-        if (debugger.clntAnyconnTraf) {
-            logger.debug("rx: " + s);
-        }
-        return s;
-    }
-
-    private byte[] recvHdr() {
-        int cntLen = 0;
-        for (;;) {
-            String s = recvLn();
-            if (s.length() < 1) {
-                break;
-            }
-            String a;
-            int i = s.indexOf(":");
-            if (i < 0) {
-                a = s.trim().toLowerCase();
-                s = "";
-            } else {
-                a = s.substring(0, i).trim().toLowerCase();
-                s = s.substring(i + 1, s.length()).trim();
-            }
-            if (a.equals("content-length")) {
-                cntLen = bits.str2num(s);
-                continue;
-            }
-            if (a.equals("location")) {
-                url = uniResLoc.parseOne(s);
-                continue;
-            }
-            if (a.equals("set-cookie")) {
-                i = s.indexOf(";");
-                if (i < 0) {
-                    continue;
-                }
-                s = s.substring(0, i).trim();
-                i = s.indexOf("=");
-                if (i < 0) {
-                    continue;
-                }
-                a = s.substring(0, i).trim().toLowerCase();
-                s = s.substring(i + 1, s.length()).trim();
-                if (a.equals("webvpncontext")) {
-                    cookie1 = a + "=" + s;
-                    continue;
-                }
-                if (a.equals("webvpn")) {
-                    cookie2 = a + "=" + s;
-                    continue;
-                }
-                if (a.equals("webvpnc")) {
-                    cookie3 = a + "=" + s;
-                    continue;
-                }
-            }
-            if (a.equals("x-cstp-address")) {
-                addr4 = new addrIP();
-                addr4.fromString(s);
-                continue;
-            }
-            if (a.equals("x-cstp-address-ip6")) {
-                i = s.indexOf("/");
-                if (i < 0) {
-                    continue;
-                }
-                s = s.substring(0, i).trim();
-                addr6 = new addrIP();
-                addr6.fromString(s);
-                continue;
-            }
-        }
-        if (cntLen < 1) {
-            return new byte[0];
-        }
-        byte[] buf = new byte[cntLen];
-        pipe.moreGet(buf, 0, buf.length);
-        return buf;
-    }
-
     private void workDoer() {
         url = uniResLoc.parseOne(target);
-        if (debugger.clntAnyconnTraf) {
-            logger.debug("resolving " + url.dump());
-        }
-        trg = userTerminal.justResolv(url.server, proxy.prefer);
-        if (trg == null) {
-            return;
-        }
-        if (mkConn()) {
+        clntHttp cln = new clntHttp(null, proxy, debugger.clntAnyconnTraf);
+        if (cln.doConnect(url)) {
             return;
         }
         String cntx = extMrkLng.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(false, true) + "</group-access></config-auth>";
-        sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
-        sendLine("user-agent: " + version.usrAgnt);
-        sendLine("host: " + url.server);
-        sendLine("connection: keep-alive");
-        sendLine("content-length: " + (cntx.length() + 2));
-        sendLine("content-type: application/x-www-form-urlencoded");
-        sendLine("");
-        sendLine(cntx);
-        recvHdr();
-        pipe.setClose();
-        if (mkConn()) {
+        cln.sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
+        cln.sendLine("user-agent: " + version.usrAgnt);
+        cln.sendLine("host: " + url.server);
+        cln.sendLine("connection: keep-alive");
+        cln.sendLine("content-length: " + (cntx.length() + 2));
+        cln.sendLine("content-type: application/x-www-form-urlencoded");
+        cln.sendLine("");
+        cln.sendLine(cntx);
+        cln.doHeaders(url);
+        cln.doBody();
+        cln.cleanUp();
+        int i = extMrkLng.findParam(cln.cookies, "|webvpncontext|");
+        if (i < 0) {
+            return;
+        }
+        cookie1 = cln.cookies.get(i).getNamVal();
+        cln = new clntHttp(null, proxy, debugger.clntAnyconnTraf);
+        if (cln.doConnect(url)) {
             return;
         }
         cntx = "username=" + uniResLoc.percentEncode(username) + "&password=" + uniResLoc.percentEncode(password);
-        sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
-        sendLine("user-agent: " + version.usrAgnt);
-        sendLine("host: " + url.server);
-        sendLine("cookie: " + cookie1);
-        sendLine("content-length: " + cntx.length());
-        sendLine("content-Type: application/x-www-form-urlencoded");
-        sendLine("accept: */*");
-        sendLine("accept-encoding: identity");
-        sendLine("connection: keep-alive");
-        sendLine("x-transcend-version: 1");
-        sendLine("x-support-http-auth: true");
-        sendLine("x-pad: 0000000000000000000000000000000000");
-        sendLine("");
-        pipe.strPut(cntx);
-        recvHdr();
-        sendLine("CONNECT /CSCOSSLC/tunnel HTTP/1.1");
-        sendLine("user-agent: " + version.usrAgnt);
-        sendLine("host: " + url.server);
-        sendLine("cookie: " + cookie2);
-        sendLine("x-cstp-version: 1");
-        sendLine("x-cstp-hostname: " + cfgAll.hostName);
-        sendLine("x-cstp-base-mtu: 1500");
-        sendLine("x-cstp-mtu: 1500");
-        sendLine("x-cstp-address-type: ipv6,ipv4");
-        sendLine("");
-        recvHdr();
+        cln.sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
+        cln.sendLine("user-agent: " + version.usrAgnt);
+        cln.sendLine("host: " + url.server);
+        cln.sendLine("cookie: " + cookie1);
+        cln.sendLine("content-length: " + cntx.length());
+        cln.sendLine("content-Type: application/x-www-form-urlencoded");
+        cln.sendLine("accept: */*");
+        cln.sendLine("accept-encoding: identity");
+        cln.sendLine("connection: keep-alive");
+        cln.sendLine("x-transcend-version: 1");
+        cln.sendLine("x-support-http-auth: true");
+        cln.sendLine("x-pad: 0000000000000000000000000000000000");
+        cln.sendLine("");
+        cln.pipe.strPut(cntx);
+        cln.doHeaders(url);
+        cln.doBody();
+        pipe = cln.pipe;
+        i = extMrkLng.findParam(cln.cookies, "|webvpn|");
+        if (i < 0) {
+            return;
+        }
+        cookie2 = cln.cookies.get(i).getNamVal();
+        cln.sendLine("CONNECT /CSCOSSLC/tunnel HTTP/1.1");
+        cln.sendLine("user-agent: " + version.usrAgnt);
+        cln.sendLine("host: " + url.server);
+        cln.sendLine("cookie: " + cookie2);
+        cln.sendLine("x-cstp-version: 1");
+        cln.sendLine("x-cstp-hostname: " + cfgAll.hostName);
+        cln.sendLine("x-cstp-base-mtu: 1500");
+        cln.sendLine("x-cstp-mtu: 1500");
+        cln.sendLine("x-cstp-address-type: ipv6,ipv4");
+        cln.sendLine("");
+        cln.doHeaders(url);
+        i = extMrkLng.findParam(cln.headers, "|x-cstp-address|");
+        if (i >= 0) {
+            String s = cln.headers.get(i).value;
+            addr4 = new addrIP();
+            addr4.fromString(s);
+        }
+        i = extMrkLng.findParam(cln.headers, "|x-cstp-address-ip6|");
+        if (i >= 0) {
+            String s = cln.headers.get(i).value;
+            i = s.indexOf("/");
+            if (i >= 0) {
+                s = s.substring(0, i).trim();
+                addr6 = new addrIP();
+                addr6.fromString(s);
+            }
+        }
         if (debugger.clntAnyconnTraf) {
             logger.debug("addresses: ipv4=" + addr4 + " ipv6=" + addr6);
         }
@@ -412,7 +328,7 @@ public class clntAnyconn implements Runnable, ifcDn {
             }
             switch (pckS.msgTyp) {
                 case packAnyconn.typData:
-                    int i = ifcEther.guessEtherType(pckB);
+                    i = ifcEther.guessEtherType(pckB);
                     if (i < 0) {
                         logger.info("got bad protocol from " + target);
                         break;
