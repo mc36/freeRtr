@@ -279,7 +279,6 @@ public class clntPulse implements Runnable, ifcDn {
     private void workDoer() {
         url = uniResLoc.parseOne(target);
         clntHttp cln = new clntHttp(null, proxy, debugger.clntPulseTraf);
-        String siu = url.toPathName();
         if (cln.doConnect(url)) {
             return;
         }
