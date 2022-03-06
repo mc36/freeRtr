@@ -206,7 +206,7 @@ public class clntTftp implements prtServS {
         if (adr == null) {
             return true;
         }
-        prx = cfgAll.getClntPrx();
+        prx = cfgAll.getClntPrx(null);
         fwd = prx.vrf.getFwd(adr);
         udp = prx.vrf.getUdp(adr);
         ifc = null;

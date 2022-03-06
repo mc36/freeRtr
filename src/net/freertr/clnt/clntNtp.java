@@ -78,6 +78,7 @@ public class clntNtp implements Runnable {
         if (serverAddr == null) {
             return true;
         }
+        clntProxy prx = cfgAll.getClntPrx(null);
         pipeSide pipe = cfgAll.clntConnect(servGeneric.protoUdp, serverAddr, packNtp.port, "ntp");
         if (pipe == null) {
             return true;

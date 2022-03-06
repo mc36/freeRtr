@@ -1079,9 +1079,13 @@ public class cfgAll {
     /**
      * get client proxy
      *
+     * @param other optional other to return
      * @return client proxy, null if nothing
      */
-    public static clntProxy getClntPrx() {
+    public static clntProxy getClntPrx(clntProxy other) {
+        if (other != null) {
+            return other;
+        }
         if (clientProxy == null) {
             return null;
         }

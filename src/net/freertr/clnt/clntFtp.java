@@ -106,7 +106,7 @@ public class clntFtp implements prtServS {
             if (adri == null) {
                 return true;
             }
-            prx = cfgAll.getClntPrx();
+            prx = cfgAll.getClntPrx(null);
             ifc = null;
             if (prx.srcIfc != null) {
                 ifc = prx.srcIfc.getFwdIfc(adri);

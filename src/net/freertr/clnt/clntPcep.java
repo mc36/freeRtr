@@ -48,7 +48,7 @@ public class clntPcep {
     public void setTarget(String s) {
         cmds cmd = new cmds("trg", s);
         target = cmd.word();
-        proxy = cfgAll.getClntPrx();
+        proxy = cfgAll.getClntPrx(null);
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
             return;

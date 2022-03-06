@@ -25,8 +25,11 @@ public class clntTacacs {
 
     /**
      * create instance
+     *
+     * @param prx proxy
      */
-    public clntTacacs() {
+    public clntTacacs(clntProxy prx) {
+        proxy = prx;
     }
 
     /**
@@ -38,6 +41,11 @@ public class clntTacacs {
      * shared secret
      */
     public String secret = null;
+
+    /**
+     * proxy to use
+     */
+    public clntProxy proxy;
 
     private packTacacs tacTx;
 
@@ -95,7 +103,11 @@ public class clntTacacs {
         if (trg == null) {
             return true;
         }
-        pipeSide conn = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
+        clntProxy prx = cfgAll.getClntPrx(proxy);
+        if (prx == null) {
+            return true;
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
         if (conn == null) {
             return true;
         }

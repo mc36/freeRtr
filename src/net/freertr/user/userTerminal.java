@@ -148,7 +148,7 @@ public class userTerminal {
         if (adr == null) {
             return null;
         }
-        pipeSide pipe = startConn(cfgAll.getClntPrx(), proto, adr, port, name);
+        pipeSide pipe = startConn(cfgAll.getClntPrx(null), proto, adr, port, name);
         if (pipe == null) {
             return null;
         }

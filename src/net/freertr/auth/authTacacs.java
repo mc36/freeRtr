@@ -2,6 +2,9 @@ package net.freertr.auth;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgProxy;
+import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntTacacs;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -35,6 +38,11 @@ public class authTacacs extends authGeneric {
      */
     public int privilege = 15;
 
+    /**
+     * proxy to use
+     */
+    public clntProxy proxy;
+
     public String getCfgName() {
         return "tacacs";
     }
@@ -43,6 +51,7 @@ public class authTacacs extends authGeneric {
         List<String> l = new ArrayList<String>();
         cmds.cfgLine(l, secret == null, beg, "secret", authLocal.passwdEncode(secret, (filter & 2) != 0));
         cmds.cfgLine(l, server == null, beg, "server", server);
+        cmds.cfgLine(l, proxy == null, beg, "proxy", "" + proxy);
         l.add(beg + "privilege " + privilege);
         return l;
     }
@@ -54,6 +63,8 @@ public class authTacacs extends authGeneric {
         l.add(null, "2 .    <text>            shared secret");
         l.add(null, "1 2  privilege           set default privilege");
         l.add(null, "2 .    <num>             privilege of terminal");
+        l.add(null, "1 2  proxy               set proxy to use");
+        l.add(null, "2 .    <name:prx>        proxy profile");
     }
 
     public boolean fromString(cmds cmd) {
@@ -70,6 +81,15 @@ public class authTacacs extends authGeneric {
             privilege = bits.str2num(cmd.word());
             return false;
         }
+        if (s.equals("proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            proxy = prx.proxy;
+            return false;
+        }
         if (!s.equals("no")) {
             return true;
         }
@@ -82,11 +102,15 @@ public class authTacacs extends authGeneric {
             secret = null;
             return false;
         }
+        if (s.equals("proxy")) {
+            proxy = null;
+            return false;
+        }
         return true;
     }
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
-        clntTacacs tac = new clntTacacs();
+        clntTacacs tac = new clntTacacs(proxy);
         tac.secret = secret;
         tac.server = server;
         if (tac.doChap(user, id, chal, resp)) {
@@ -100,14 +124,14 @@ public class authTacacs extends authGeneric {
     }
 
     public authResult authUserCommand(String user, String cmd) {
-        clntTacacs tac = new clntTacacs();
+        clntTacacs tac = new clntTacacs(proxy);
         tac.secret = secret;
         tac.server = server;
         return tac.doCmd(this, user, cmd);
     }
 
     public authResult authUserPass(String user, String pass) {
-        clntTacacs tac = new clntTacacs();
+        clntTacacs tac = new clntTacacs(proxy);
         tac.secret = secret;
         tac.server = server;
         if (tac.doPap(user, pass)) {

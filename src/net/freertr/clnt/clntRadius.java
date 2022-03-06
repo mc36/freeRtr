@@ -23,8 +23,11 @@ public class clntRadius {
 
     /**
      * create instance
+     *
+     * @param prx proxy
      */
-    public clntRadius() {
+    public clntRadius(clntProxy prx) {
+        proxy = prx;
     }
 
     /**
@@ -36,6 +39,11 @@ public class clntRadius {
      * shared secret
      */
     public String secret = null;
+
+    /**
+     * proxy to use
+     */
+    public clntProxy proxy;
 
     private String radUsr;
 
@@ -90,7 +98,11 @@ public class clntRadius {
         if (trg == null) {
             return true;
         }
-        pipeSide conn = cfgAll.clntConnect(servGeneric.protoUdp, trg, new servRadius().srvPort(), "radius");
+        clntProxy prx = cfgAll.getClntPrx(proxy);
+        if (prx == null) {
+            return true;
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, new servRadius().srvPort(), "radius");
         if (conn == null) {
             return true;
         }
