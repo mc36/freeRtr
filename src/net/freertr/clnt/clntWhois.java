@@ -4,7 +4,6 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
-import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeReader;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
@@ -56,7 +55,6 @@ public class clntWhois {
         if (trg == null) {
             return null;
         }
-        pipeProgress con = new pipeProgress(pipeDiscard.needAny(null));
         pipeSide pipe = proxy.doConnect(servGeneric.protoTcp, trg, port, "whois");
         if (pipe == null) {
             return null;

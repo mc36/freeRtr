@@ -2738,9 +2738,9 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        addrIP trg = userTerminal.justResolv(rem, proto);
+        userTerminal trm = new userTerminal(pipe);
+        addrIP trg = trm.resolveAddr(rem, proto);
         if (trg == null) {
-            cmd.error("bad host");
             return;
         }
         if (timeout < 1) {
@@ -2913,9 +2913,9 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        addrIP trg = userTerminal.justResolv(rem, ipver);
+        userTerminal trm = new userTerminal(pipe);
+        addrIP trg = trm.resolveAddr(rem, ipver);
         if (trg == null) {
-            cmd.error("bad host");
             return;
         }
         if (timeout < 1) {
@@ -3103,9 +3103,9 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        addrIP trg = userTerminal.justResolv(rem, ipver);
+        userTerminal trm = new userTerminal(pipe);
+        addrIP trg = trm.resolveAddr(rem, ipver);
         if (trg == null) {
-            cmd.error("bad host");
             return;
         }
         if (timeout < 1) {
@@ -3395,9 +3395,9 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        addrIP trg = userTerminal.justResolv(rem, proto);
+        userTerminal trm = new userTerminal(pipe);
+        addrIP trg = trm.resolveAddr(rem, proto);
         if (trg == null) {
-            cmd.error("bad host");
             return;
         }
         addrIP src = null;
@@ -3793,7 +3793,7 @@ public class userExec {
         pipe.strPut("connecting to " + adr + " " + prt);
         pipeSide strm = prx.doConnect(dgrm, adr, prt, "telnet");
         if (strm == null) {
-            pipe.linePut(" failed");
+            pipe.linePut(" failed!");
             return;
         }
         pipe.linePut(" ok!");

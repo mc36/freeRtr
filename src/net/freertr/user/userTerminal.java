@@ -3,11 +3,9 @@ package net.freertr.user;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
-import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.sec.secClient;
 import net.freertr.serv.servGeneric;
-import net.freertr.util.bits;
 
 /**
  * terminal emulator
@@ -57,7 +55,7 @@ public class userTerminal {
         console.strPut("resolving " + host + " for proto " + prt);
         addrIP adr = justResolv(host, prt);
         if (adr == null) {
-            console.linePut(" failed");
+            console.linePut(" failed!");
             return null;
         }
         console.linePut(" ok!");
@@ -103,7 +101,6 @@ public class userTerminal {
             return stream;
         }
         if (proto == servGeneric.protoSsh) {
-            pipeProgress prg = new pipeProgress(console);
             if (user == null) {
                 user = userInput("username: ", false);
             }
@@ -114,7 +111,7 @@ public class userTerminal {
         console.strPut("securing connection");
         stream = secClient.openSec(stream, proto, user, pass);
         if (stream == null) {
-            console.linePut(" failed");
+            console.linePut(" failed!");
             return null;
         }
         console.linePut(" ok!");
