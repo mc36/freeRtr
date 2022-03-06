@@ -222,7 +222,11 @@ public class clntTacacs {
         if (trg == null) {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }
-        pipeSide conn = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
+        clntProxy prx = cfgAll.getClntPrx(proxy);
+        if (prx == null) {
+            return new authResult(par, authResult.authServerError, usr, cmd);
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
         if (conn == null) {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }
