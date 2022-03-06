@@ -48,7 +48,7 @@ public class clntWhois {
      * @return response, null if error
      */
     public List<String> doQuery(String quest) {
-        console.linePut("querying " + quest + " at " + server + " " + port);
+        console.linePut("querying " + quest + " at " + server);
         if (proxy == null) {
             return null;
         }

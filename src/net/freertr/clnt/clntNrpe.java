@@ -54,7 +54,7 @@ public class clntNrpe {
      * @return false on success, true on error
      */
     public boolean doCheck(String check) {
-        console.linePut("querying " + check + " at " + server + " " + packNrpe.portNum);
+        console.linePut("querying " + check + " at " + server);
         if (proxy == null) {
             return true;
         }

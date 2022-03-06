@@ -1281,17 +1281,15 @@ public class userPacket {
         }
         if (a.equals("snmp")) {
             a = cmd.word();
-            clntSnmp sn = new clntSnmp();
-            sn.cons = new pipeProgress(cmd.pipe);
-            sn.host = cmd.word();
+            clntSnmp sn = new clntSnmp(cmd.pipe,cfgAll.getClntPrx(null),cmd.word());
             sn.community = cmd.word();
-            sn.oid = cmd.word();
+            a = cmd.word();
             if (a.equals("get")) {
-                sn.doGet();
+                sn.doGet(a);
                 return null;
             }
             if (a.equals("next")) {
-                sn.doNext();
+                sn.doNext(a);
                 return null;
             }
             return null;
