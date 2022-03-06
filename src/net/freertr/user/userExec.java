@@ -2039,9 +2039,9 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("whois")) {
-            clntWhois w = new clntWhois(cmd.word());
-            w.quest = cmd.getRemaining();
-            reader.putStrArr(w.doQuery(cmd));
+            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(null), cmd.word());
+            a = cmd.getRemaining();
+            reader.putStrArr(w.doQuery(a));
             return cmdRes.command;
         }
         if (a.equals("ssh")) {

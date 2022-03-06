@@ -32,6 +32,7 @@ check c1
  exit
 tracker t1
  targ 2.2.2.101/c1
+ vrf v1
  mod nrpe
  inter 1000
  time 500
@@ -41,10 +42,6 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2 dist 22
 ipv6 route v1 :: :: 1234:1::2 dist 22
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.2 dist 11 track t1
 ipv6 route v1 :: :: 1234:2::2 dist 11 track t1
-proxy-profile p1
- vrf v1
- exit
-client proxy p1
 !
 
 addrouter r2
@@ -78,6 +75,7 @@ check c1
  exit
 tracker t1
  targ 2.2.2.201/c1
+ vrf v1
  mod nrpe
  inter 1000
  time 500
@@ -87,10 +85,6 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.1 dist 22
 ipv6 route v1 :: :: 1234:1::1 dist 22
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.1 dist 11 track t1
 ipv6 route v1 :: :: 1234:2::1 dist 11 track t1
-proxy-profile p1
- vrf v1
- exit
-client proxy p1
 !
 
 

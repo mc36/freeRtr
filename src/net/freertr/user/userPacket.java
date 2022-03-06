@@ -1361,11 +1361,8 @@ public class userPacket {
             return null;
         }
         if (a.equals("nrpe")) {
-            clntNrpe ch = new clntNrpe(cmd.pipe);
-            ch.proxy = cfgAll.getClntPrx(null);
-            ch.server = cmd.word();
-            ch.check = cmd.getRemaining();
-            boolean b = ch.doCheck();
+            clntNrpe ch = new clntNrpe(cmd.pipe, cfgAll.getClntPrx(null), cmd.word());
+            boolean b = ch.doCheck(cmd.getRemaining());
             cmd.error("status=" + b + ", code=" + packNrpe.code2string(ch.code));
             rdr.putStrArr(ch.text);
             return null;

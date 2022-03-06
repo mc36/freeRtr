@@ -5,7 +5,6 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.pack.packNrpe;
 import net.freertr.pipe.pipeDiscard;
-import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
 import net.freertr.user.userTerminal;
@@ -19,22 +18,11 @@ import net.freertr.util.logger;
  */
 public class clntNrpe {
 
-    private pipeProgress cons;
+    private final clntProxy proxy;
 
-    /**
-     * proxy to use
-     */
-    public clntProxy proxy;
+    private final String server;
 
-    /**
-     * server address
-     */
-    public String server;
-
-    /**
-     * check name
-     */
-    public String check;
+    private final pipeSide console;
 
     /**
      * result code
@@ -49,27 +37,33 @@ public class clntNrpe {
     /**
      * create new client
      *
-     * @param console console to use
+     * @param con console to use
+     * @param srv server to use
+     * @param prx proxy to use
      */
-    public clntNrpe(pipeSide console) {
-        cons = new pipeProgress(pipeDiscard.needAny(console));
+    public clntNrpe(pipeSide con, clntProxy prx, String srv) {
+        console = pipeDiscard.needAny(con);
+        server = srv;
+        proxy = prx;
     }
 
     /**
      * perform check
      *
+     * @param check check to read
      * @return false on success, true on error
      */
-    public boolean doCheck() {
+    public boolean doCheck(String check) {
+        console.linePut("querying " + check + " at " + server + " " + packNrpe.portNum);
         if (proxy == null) {
             return true;
         }
-        code = packNrpe.coUnk;
-        text = new ArrayList<String>();
         addrIP trg = userTerminal.justResolv(server, 0);
         if (trg == null) {
             return true;
         }
+        code = packNrpe.coUnk;
+        text = new ArrayList<String>();
         pipeSide pipe = proxy.doConnect(servGeneric.protoTcp, trg, packNrpe.portNum, "nrpe");
         if (pipe == null) {
             text.add(check + " CRITICAL failed to connect to " + server);

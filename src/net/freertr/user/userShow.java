@@ -470,9 +470,9 @@ public class userShow {
                 cmd.error("not enabled");
                 return null;
             }
-            clntWhois w = new clntWhois(cfgAll.whoisServer);
-            w.quest = cmd.getRemaining();
-            rdr.putStrArr(w.doQuery(cmd));
+            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(null), cfgAll.whoisServer);
+            a = cmd.getRemaining();
+            rdr.putStrArr(w.doQuery(a));
             return null;
         }
         if (a.equals("watchdog")) {

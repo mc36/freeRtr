@@ -620,11 +620,8 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     return;
                 }
-                clntNrpe nrpe = new clntNrpe(null);
-                nrpe.proxy = clntProxy.makeTemp(vrf, srcIfc);
-                nrpe.server = target.substring(0, i);
-                nrpe.check = target.substring(i + 1, target.length());
-                haveResult(!nrpe.doCheck(), false);
+                clntNrpe nrpe = new clntNrpe(null, clntProxy.makeTemp(vrf, srcIfc), target.substring(0, i));
+                haveResult(!nrpe.doCheck(target.substring(i + 1, target.length())), false);
                 if (logging) {
                     a = "";
                     for (i = 0; i < nrpe.text.size(); i++) {
