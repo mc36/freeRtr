@@ -470,7 +470,7 @@ public class userShow {
                 cmd.error("not enabled");
                 return null;
             }
-            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(null), cfgAll.whoisServer);
+            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
             a = cmd.getRemaining();
             rdr.putStrArr(w.doQuery(a));
             return null;

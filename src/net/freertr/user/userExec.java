@@ -2039,7 +2039,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("whois")) {
-            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(null), cmd.word());
+            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(cfgAll.whoisProxy), cmd.word());
             a = cmd.getRemaining();
             reader.putStrArr(w.doQuery(a));
             return cmdRes.command;

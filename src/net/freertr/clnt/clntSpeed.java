@@ -1,5 +1,7 @@
 package net.freertr.clnt;
 
+import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgAll;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servCharGen;
@@ -50,12 +52,20 @@ public class clntSpeed {
     public static void smllClnt(cmds cmd) {
         userTerminal t = new userTerminal(new pipeProgress(cmd.pipe));
         String a = cmd.word();
+        addrIP trg = userTerminal.justResolv(a, 0);
+        if (trg == null) {
+            return;
+        }
+        clntProxy prx = cfgAll.getClntPrx(null);
+        if (prx == null) {
+            return;
+        }
         clntSpeed s = new clntSpeed();
-        s.rxp = t.resolvAndConn(servGeneric.protoTcp, a, new servCharGen().srvPort(), "speed");
+        s.rxp = prx.doConnect(servGeneric.protoTcp, trg, new servCharGen().srvPort(), "speed");
         if (s.rxp == null) {
             return;
         }
-        s.txp = t.resolvAndConn(servGeneric.protoTcp, a, new servDiscard().srvPort(), "speed");
+        s.txp = prx.doConnect(servGeneric.protoTcp, trg, new servDiscard().srvPort(), "speed");
         if (s.txp == null) {
             s.rxp.setClose();
             return;

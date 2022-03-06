@@ -738,6 +738,11 @@ public class cfgAll {
     public static String whoisServer = null;
 
     /**
+     * proxy to use
+     */
+    public static clntProxy whoisProxy;
+
+    /**
      * chatter
      */
     public static final chatter chat = new chatter();
@@ -1046,6 +1051,7 @@ public class cfgAll {
         "!no client upgrade-revert",
         "!no client upgrade-script",
         "!no client upgrade-ownkey",
+        "!no client whois-proxy",
         "!no client whois-server",
         "!no client config-server",
         "!no client config-username",
@@ -3338,6 +3344,7 @@ public class cfgAll {
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, !passwdStars, "", "client password-stars", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
+        cmds.cfgLine(l, whoisProxy == null, "", "client whois-proxy", "" + whoisProxy);
         cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
         l.add("client ipv4-checksum " + rxtx2string(ipv4ChecksumRx, ipv4ChecksumTx));
         l.add("client icmp4-checksum " + rxtx2string(icmp4ChecksumRx, icmp4ChecksumTx));

@@ -122,42 +122,4 @@ public class userTerminal {
         return stream;
     }
 
-    /**
-     * resolve and connect
-     *
-     * @param proto protocol to use
-     * @param server server name
-     * @param port port number
-     * @param name client name
-     * @return pipeside
-     */
-    public pipeSide resolvAndConn(int proto, String server, int port, String name) {
-        int prf;
-        switch (proto & servGeneric.protoNets) {
-            case servGeneric.protoIp4:
-                prf = 4;
-                break;
-            case servGeneric.protoIp6:
-                prf = 6;
-                break;
-            default:
-                prf = 0;
-                break;
-        }
-        addrIP adr = resolveAddr(server, prf);
-        if (adr == null) {
-            return null;
-        }
-        pipeSide pipe = startConn(cfgAll.getClntPrx(null), proto, adr, port, name);
-        if (pipe == null) {
-            return null;
-        }
-        pipe.setTime(60000);
-        pipe.wait4ready(60000);
-        pipe.settingsAdd(pipeSetting.origin, server);
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        return pipe;
-    }
-
 }

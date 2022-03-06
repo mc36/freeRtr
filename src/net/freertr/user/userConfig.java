@@ -585,6 +585,8 @@ public class userConfig {
         l.add(null, "3  3,.    none                       append nothing");
         l.add(null, "2  3    whois-server                 set whois server");
         l.add(null, "3  .      <str>                      server name");
+        l.add(null, "2  3    whois-proxy                  specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  .    password-stars               type stars in passwords");
         l.add(null, "2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add(null, "2  .    prefer-ipv4                  prefer ipv4 for domains");
@@ -1667,6 +1669,15 @@ public class userConfig {
                 cfgAll.whoisServer = cmd.getRemaining();
                 return;
             }
+            if (a.equals("whois-proxy")) {
+                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+                if (prx == null) {
+                    cmd.error("no such proxy");
+                    return;
+                }
+                cfgAll.whoisProxy = prx.proxy;
+                return;
+            }
             if (a.equals("end-format")) {
                 cfgAll.endForm = 0;
                 for (;;) {
@@ -2612,6 +2623,10 @@ public class userConfig {
             }
             if (a.equals("whois-server")) {
                 cfgAll.whoisServer = null;
+                return;
+            }
+            if (a.equals("whois-proxy")) {
+                cfgAll.whoisProxy = null;
                 return;
             }
             if (a.equals("end-format")) {
