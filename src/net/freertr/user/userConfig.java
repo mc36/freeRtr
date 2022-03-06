@@ -613,6 +613,8 @@ public class userConfig {
         l.add(null, "3  .      <str>                      name of server");
         l.add(null, "2  3    time-zone                    specify time zone");
         l.add(null, "3  .      <str>                      name of time zone");
+        l.add(null, "2  3    time-proxy                   specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    mail-server                  specify name of mail server");
         l.add(null, "3  .      <str>                      name of server");
         l.add(null, "2  3    mail-username                specify username on mail server");
@@ -1879,6 +1881,15 @@ public class userConfig {
                 cfgAll.timeZoneName = cmd.word();
                 return;
             }
+            if (a.equals("time-proxy")) {
+                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+                if (prx == null) {
+                    cmd.error("no such proxy");
+                    return;
+                }
+                cfgAll.timeProxy = prx.proxy;
+                return;
+            }
             if (a.equals("mail-server")) {
                 cfgAll.mailServerName = cmd.word();
                 return;
@@ -2666,6 +2677,10 @@ public class userConfig {
             }
             if (a.equals("time-zone")) {
                 cfgAll.timeZoneName = "Z";
+                return;
+            }
+            if (a.equals("time-proxy")) {
+                cfgAll.timeProxy = null;
                 return;
             }
             if (a.equals("mail-server")) {

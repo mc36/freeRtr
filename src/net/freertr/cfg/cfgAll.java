@@ -769,6 +769,11 @@ public class cfgAll {
     public static String timeZoneName = "Z";
 
     /**
+     * proxy to use
+     */
+    public static clntProxy timeProxy;
+
+    /**
      * last offset to time server
      */
     public static long timeServerOffset;
@@ -1007,6 +1012,7 @@ public class cfgAll {
         "!no client name-proxy",
         "!client name-server",
         "!client time-zone Z",
+        "!no client time-proxy",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
         "!client tls-version 1 4",
@@ -3362,6 +3368,7 @@ public class cfgAll {
         l.add("client tls-version " + tlsVerMin + " " + tlsVerMax);
         cmds.cfgLine(l, timeServerName == null, "", "client time-server", "" + timeServerName);
         l.add("client time-zone " + timeZoneName);
+        cmds.cfgLine(l, timeProxy == null, "", "client time-proxy", "" + timeProxy);
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);
         cmds.cfgLine(l, mailServerUser == null, "", "client mail-username", "" + mailServerUser);
         cmds.cfgLine(l, mailServerPass == null, "", "client mail-password", "" + authLocal.passwdEncode(mailServerPass, (filter & 2) != 0));
