@@ -810,7 +810,7 @@ public class userFlash {
     public static boolean doReceive(pipeSide pipe, uniResLoc url, File f) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("http")) {
-            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(null), false);
+            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), false);
             boolean b = c.download(url, f);
             c.cleanUp();
             return b;
@@ -852,7 +852,7 @@ public class userFlash {
             return;
         }
         if (a.startsWith("http")) {
-            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(null), false);
+            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), false);
             c.upload(url, f);
             c.cleanUp();
             return;

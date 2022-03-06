@@ -608,6 +608,8 @@ public class userConfig {
         l.add(null, "3  .      <num>                      bits");
         l.add(null, "2  .    ftp-passive                  use passive mode ftp");
         l.add(null, "2  .    ftp-active                   use active mode ftp");
+        l.add(null, "2  3    ftp-proxy                    specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    tls-version                  specify tls version");
         l.add(null, "3  4      <num>                      forced minimum version");
         l.add(null, "4  .        <num>                    forced maximum version");
@@ -616,6 +618,12 @@ public class userConfig {
         l.add(null, "2  3    time-zone                    specify time zone");
         l.add(null, "3  .      <str>                      name of time zone");
         l.add(null, "2  3    time-proxy                   specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
+        l.add(null, "2  3    tftp-proxy                   specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
+        l.add(null, "2  3    http-proxy                   specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
+        l.add(null, "2  3    mail-proxy                   specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    mail-server                  specify name of mail server");
         l.add(null, "3  .      <str>                      name of server");
@@ -1761,6 +1769,15 @@ public class userConfig {
                 cfgAll.ftpPassive = false;
                 return;
             }
+            if (a.equals("ftp-proxy")) {
+                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+                if (prx == null) {
+                    cmd.error("no such proxy");
+                    return;
+                }
+                cfgAll.ftpProxy = prx.proxy;
+                return;
+            }
             if (a.equals("tls-version")) {
                 cfgAll.tlsVerMin = bits.str2num(cmd.word());
                 cfgAll.tlsVerMax = bits.str2num(cmd.word());
@@ -1890,6 +1907,33 @@ public class userConfig {
                     return;
                 }
                 cfgAll.timeProxy = prx.proxy;
+                return;
+            }
+            if (a.equals("tftp-proxy")) {
+                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+                if (prx == null) {
+                    cmd.error("no such proxy");
+                    return;
+                }
+                cfgAll.tftpProxy = prx.proxy;
+                return;
+            }
+            if (a.equals("http-proxy")) {
+                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+                if (prx == null) {
+                    cmd.error("no such proxy");
+                    return;
+                }
+                cfgAll.httpProxy = prx.proxy;
+                return;
+            }
+            if (a.equals("mail-proxy")) {
+                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+                if (prx == null) {
+                    cmd.error("no such proxy");
+                    return;
+                }
+                cfgAll.mailProxy = prx.proxy;
                 return;
             }
             if (a.equals("mail-server")) {
@@ -2598,6 +2642,10 @@ public class userConfig {
                 cfgAll.ftpPassive = true;
                 return;
             }
+            if (a.equals("ftp-proxy")) {
+                cfgAll.ftpProxy = null;
+                return;
+            }
             if (a.equals("proxy")) {
                 cfgAll.clientProxy = null;
                 return;
@@ -2683,6 +2731,18 @@ public class userConfig {
             }
             if (a.equals("time-proxy")) {
                 cfgAll.timeProxy = null;
+                return;
+            }
+            if (a.equals("tftp-proxy")) {
+                cfgAll.tftpProxy = null;
+                return;
+            }
+            if (a.equals("http-proxy")) {
+                cfgAll.httpProxy = null;
+                return;
+            }
+            if (a.equals("mail-proxy")) {
+                cfgAll.mailProxy = null;
                 return;
             }
             if (a.equals("mail-server")) {

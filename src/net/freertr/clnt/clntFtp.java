@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
@@ -37,6 +38,8 @@ public class clntFtp implements prtServS {
     private clntProxy prx;
 
     private ipFwdIface ifc;
+
+    private addrIP srvr;
 
     private pipeSide data;
 
@@ -100,57 +103,102 @@ public class clntFtp implements prtServS {
         src.password = "ftp@" + cfgAll.hostName;
     }
 
-    private boolean begDatCon(String trg) {
+    private boolean begDatCon() {
         if (!cfgAll.ftpPassive) {
-            addrIP adri = new userTerminal(cons).resolveAddr(trg, 0);
-            if (adri == null) {
-                return true;
-            }
-            prx = cfgAll.getClntPrx(null);
             ifc = null;
             if (prx.srcIfc != null) {
-                ifc = prx.srcIfc.getFwdIfc(adri);
+                ifc = prx.srcIfc.getFwdIfc(srvr);
             }
             if (ifc == null) {
-                ifc = ipFwdTab.findSendingIface(prx.vrf.fwd4, adri);
+                ifc = ipFwdTab.findSendingIface(prx.vrf.fwd4, srvr);
             }
             if (ifc == null) {
                 return true;
             }
-            prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1);
-            byte[] buf = new byte[6];
-            addrIPv4 adr4 = ifc.addr.toIPv4();
-            adr4.toBuffer(buf, 0);
-            bits.msbPutW(buf, 4, locprt);
-            String a = "";
-            for (int i = 0; i < buf.length; i++) {
-                a += "," + (buf[i] & 0xff);
+            if (srvr.isIPv4()) {
+                prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1);
+                byte[] buf = new byte[6];
+                addrIPv4 adr4 = ifc.addr.toIPv4();
+                adr4.toBuffer(buf, 0);
+                bits.msbPutW(buf, 4, locprt);
+                String a = "";
+                for (int i = 0; i < buf.length; i++) {
+                    a += "," + (buf[i] & 0xff);
+                }
+                sendLine("PORT " + a.substring(1, a.length()));
+                getLine();
+                return false;
+            } else {
+                prx.vrf.tcp6.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1);
+                sendLine("EPRT |2|" + ifc.addr.toIPv6() + "|" + locprt);
+                getLine();
+                return false;
             }
-            sendLine("PORT " + a.substring(1, a.length()));
-            getLine();
-            return false;
         }
-        sendLine("PASV");
-        cmds cmd = new cmds("ftp", getLine());
-        cmd.word("(");
-        cmd = new cmds("ftp", cmd.word(")"));
-        byte[] buf = new byte[6];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = (byte) (bits.str2num(cmd.word(",")) & 0xff);
+        if (srvr.isIPv4()) {
+            sendLine("PASV");
+            cmds cmd = new cmds("ftp", getLine());
+            cmd.word("(");
+            cmd = new cmds("ftp", cmd.word(")"));
+            byte[] buf = new byte[6];
+            for (int i = 0; i < buf.length; i++) {
+                buf[i] = (byte) (bits.str2num(cmd.word(",")) & 0xff);
+            }
+            addrIPv4 adr4 = new addrIPv4();
+            adr4.fromBuf(buf, 0);
+            int prt = bits.msbGetW(buf, 4);
+            addrIP addr = new addrIP();
+            addr.fromIPv4addr(adr4);
+            data = prx.doConnect(servGeneric.protoTcp, addr, prt, "ftp");
+            return data == null;
+        } else {
+            sendLine("EPSV");
+            cmds cmd = new cmds("ftp", getLine());
+            cmd.word("(");
+            cmd = new cmds("ftp", cmd.word(")"));
+            addrIPv6 adr6 = new addrIPv6();
+            cmd.word("|");
+            cmd.word("|");
+            if (adr6.fromString(cmd.word("|"))) {
+                adr6 = srvr.toIPv6();
+            }
+            int prt = bits.str2num(cmd.word("|"));
+            addrIP addr = new addrIP();
+            addr.fromIPv6addr(adr6);
+            data = prx.doConnect(servGeneric.protoTcp, srvr, prt, "ftp");
+            return data == null;
         }
-        addrIPv4 adr = new addrIPv4();
-        adr.fromBuf(buf, 0);
-        int prt = bits.msbGetW(buf, 4);
-        data = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, "" + adr, prt, "ftp");
-        return data == null;
     }
 
     private boolean endDatCon() {
         if (cfgAll.ftpPassive) {
             return false;
         }
-        prx.vrf.tcp4.listenStop(ifc, locprt, null, 0);
+        if (cfgAll.preferIpv6) {
+            prx.vrf.tcp6.listenStop(ifc, locprt, null, 0);
+        } else {
+            prx.vrf.tcp4.listenStop(ifc, locprt, null, 0);
+        }
         return data == null;
+    }
+
+    private boolean doRslvCnn(uniResLoc src) {
+        prx = cfgAll.getClntPrx(cfgAll.ftpProxy);
+        if (prx == null) {
+            return true;
+        }
+        srvr = userTerminal.justResolv(src.server, 0);
+        if (srvr == null) {
+            return true;
+        }
+        servFtp srv = new servFtp();
+        pipe = prx.doConnect(servGeneric.protoTcp, srvr, srv.srvPort(), "ftp");
+        if (pipe == null) {
+            return true;
+        }
+        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        return false;
     }
 
     /**
@@ -162,13 +210,9 @@ public class clntFtp implements prtServS {
      */
     public boolean download(uniResLoc src, File trg) {
         setAnonymFtp(src);
-        servFtp srv = new servFtp();
-        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, src.server, srv.srvPort(), "ftp");
-        if (pipe == null) {
+        if (doRslvCnn(src)) {
             return true;
         }
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
         getLine();
         sendLine("USER " + src.username);
         getLine();
@@ -184,7 +228,7 @@ public class clntFtp implements prtServS {
         cmds cmd = new cmds("ftp", getLine());
         cmd.word();
         cons.setMax(bits.str2long(cmd.word()));
-        if (begDatCon(src.server)) {
+        if (begDatCon()) {
             pipe.setClose();
             return true;
         }
@@ -244,13 +288,9 @@ public class clntFtp implements prtServS {
      */
     public boolean upload(uniResLoc trg, File src) {
         setAnonymFtp(trg);
-        servFtp srv = new servFtp();
-        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, trg.server, srv.srvPort(), "ftp");
-        if (pipe == null) {
+        if (doRslvCnn(trg)) {
             return true;
         }
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
         getLine();
         sendLine("USER " + trg.username);
         getLine();
@@ -262,7 +302,7 @@ public class clntFtp implements prtServS {
         getLine();
         sendLine("STRU F");
         getLine();
-        if (begDatCon(trg.server)) {
+        if (begDatCon()) {
             pipe.setClose();
             return true;
         }

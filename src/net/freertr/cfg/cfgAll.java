@@ -19,7 +19,6 @@ import net.freertr.ifc.ifcBundle;
 import net.freertr.ifc.ifcHairpin;
 import net.freertr.ifc.ifcThread;
 import net.freertr.line.lineThread;
-import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servAmt;
 import net.freertr.serv.servBmp2mrt;
 import net.freertr.serv.servBstun;
@@ -779,6 +778,16 @@ public class cfgAll {
     public static long timeServerOffset;
 
     /**
+     * proxy to use
+     */
+    public static clntProxy tftpProxy;
+
+    /**
+     * proxy to use
+     */
+    public static clntProxy httpProxy;
+
+    /**
      * access subnet prefix length
      */
     public static int accessSubnet4 = 120;
@@ -787,6 +796,11 @@ public class cfgAll {
      * access subnet prefix length
      */
     public static int accessSubnet6 = 64;
+
+    /**
+     * proxy to use
+     */
+    public static clntProxy mailProxy;
 
     /**
      * name of mail server
@@ -857,6 +871,11 @@ public class cfgAll {
      * passive mode ftp
      */
     public static boolean ftpPassive = true;
+
+    /**
+     * proxy to use
+     */
+    public static clntProxy ftpProxy;
 
     /**
      * ipv4 checksum tx
@@ -1014,6 +1033,8 @@ public class cfgAll {
         "!client name-server",
         "!client time-zone Z",
         "!no client time-proxy",
+        "!no client tftp-proxy",
+        "!no client http-proxy",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
         "!client tls-version 1 4",
@@ -1033,6 +1054,7 @@ public class cfgAll {
         "!no client config-archive",
         "!no client config-backup",
         "!no client config-exclusive",
+        "!no client mail-proxy",
         "!no client mail-server",
         "!no client mail-username",
         "!no client mail-password",
@@ -1041,6 +1063,7 @@ public class cfgAll {
         "!no client end-format",
         "!client graceful-reload",
         "!client ftp-passive",
+        "!no client ftp-proxy",
         "!client ipv4-checksum both",
         "!client icmp4-checksum both",
         "!client icmp6-checksum both",
@@ -3331,6 +3354,7 @@ public class cfgAll {
         }
         l.add("client name-server" + a);
         cmds.cfgLine(l, !ftpPassive, "", "client ftp-passive", "");
+        cmds.cfgLine(l, ftpProxy == null, "", "client ftp-proxy", "" + ftpProxy);
         cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);
         cmds.cfgLine(l, !upgradeConfig, "", "client upgrade-config", "");
@@ -3355,6 +3379,9 @@ public class cfgAll {
         cmds.cfgLine(l, timeServerName == null, "", "client time-server", "" + timeServerName);
         l.add("client time-zone " + timeZoneName);
         cmds.cfgLine(l, timeProxy == null, "", "client time-proxy", "" + timeProxy);
+        cmds.cfgLine(l, tftpProxy == null, "", "client tftp-proxy", "" + tftpProxy);
+        cmds.cfgLine(l, httpProxy == null, "", "client http-proxy", "" + httpProxy);
+        cmds.cfgLine(l, mailProxy == null, "", "client mail-proxy", "" + mailProxy);
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);
         cmds.cfgLine(l, mailServerUser == null, "", "client mail-username", "" + mailServerUser);
         cmds.cfgLine(l, mailServerPass == null, "", "client mail-password", "" + authLocal.passwdEncode(mailServerPass, (filter & 2) != 0));

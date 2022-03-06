@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryBase64;
 import net.freertr.pack.packDnsRec;
@@ -401,10 +402,19 @@ public class clntSmtp implements Runnable {
             serv = "";
             return "no suitable server found";
         }
-        pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, serv, new servSmtp().srvPort(), "smtp");
+        clntProxy prx = cfgAll.getClntPrx(cfgAll.mailProxy);
+        if (prx == null) {
+            return "no proxy configured";
+        }
+        addrIP trg = userTerminal.justResolv(serv, 0);
+        if (trg == null) {
+            return "no address found for server";
+        }
+        pipe = prx.doConnect(servGeneric.protoTcp, trg, new servSmtp().srvPort(), "smtp");
         if (pipe == null) {
             return "failed to open connection";
         }
+        pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         cons.debugStat("logging in");
