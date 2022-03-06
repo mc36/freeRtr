@@ -1362,6 +1362,7 @@ public class userPacket {
         }
         if (a.equals("nrpe")) {
             clntNrpe ch = new clntNrpe(cmd.pipe);
+            ch.proxy = cfgAll.getClntPrx(null);
             ch.server = cmd.word();
             ch.check = cmd.getRemaining();
             boolean b = ch.doCheck();

@@ -2,6 +2,7 @@ package net.freertr.clnt;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.pack.packNrpe;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeProgress;
@@ -19,6 +20,11 @@ import net.freertr.util.logger;
 public class clntNrpe {
 
     private pipeProgress cons;
+
+    /**
+     * proxy to use
+     */
+    public clntProxy proxy;
 
     /**
      * server address
@@ -55,9 +61,16 @@ public class clntNrpe {
      * @return false on success, true on error
      */
     public boolean doCheck() {
+        if (proxy == null) {
+            return true;
+        }
         code = packNrpe.coUnk;
         text = new ArrayList<String>();
-        pipeSide pipe = new userTerminal(cons).resolvAndConn(servGeneric.protoTcp, server, packNrpe.portNum, "nrpe");
+        addrIP trg = userTerminal.justResolv(server, 0);
+        if (trg == null) {
+            return true;
+        }
+        pipeSide pipe = proxy.doConnect(servGeneric.protoTcp, trg, packNrpe.portNum, "nrpe");
         if (pipe == null) {
             text.add(check + " CRITICAL failed to connect to " + server);
             return true;

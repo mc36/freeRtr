@@ -611,12 +611,17 @@ public class clntTrack implements rtrBfdClnt {
                     haveResult(false, false);
                     return;
                 }
+                if (vrf == null) {
+                    haveResult(false, false);
+                    return;
+                }
                 int i = target.indexOf("/");
                 if (i < 0) {
                     haveResult(false, false);
                     return;
                 }
                 clntNrpe nrpe = new clntNrpe(null);
+                nrpe.proxy = clntProxy.makeTemp(vrf, srcIfc);
                 nrpe.server = target.substring(0, i);
                 nrpe.check = target.substring(i + 1, target.length());
                 haveResult(!nrpe.doCheck(), false);
