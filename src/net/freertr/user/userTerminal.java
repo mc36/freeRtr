@@ -52,7 +52,10 @@ public class userTerminal {
         if (!addr.fromString(host)) {
             return addr;
         }
-        console.strPut("resolving " + host + " for proto " + prt);
+        if (prt == 0) {
+            prt = clntDns.getPriPref();
+        }
+        console.strPut("resolving " + host + " for ipv" + prt);
         addrIP adr = justResolv(host, prt);
         if (adr == null) {
             console.linePut(" failed!");
