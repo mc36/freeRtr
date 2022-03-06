@@ -997,6 +997,7 @@ public class cfgAll {
         "!logging monitor debug",
         "!logging format normal",
         "!no logging milliseconds",
+        "!no logging proxy",
         "!no logging rotate 0",
         "!no logging syslog debug kernel",
         "!no logging file debug",
@@ -1109,22 +1110,6 @@ public class cfgAll {
         } else {
             return hostName + "." + domainName;
         }
-    }
-
-    /**
-     * open one connection
-     *
-     * @param proto protocol to use from servGeneric
-     * @param addr target address
-     * @param port target port
-     * @param name client name
-     * @return pipeline, null on error
-     */
-    public static pipeSide clntConnect(int proto, addrIP addr, int port, String name) {
-        if (clientProxy == null) {
-            return null;
-        }
-        return clientProxy.doConnect(proto, addr, port, name);
     }
 
     /**
@@ -3279,6 +3264,7 @@ public class cfgAll {
         l.add("logging format " + logger.format2string(logger.logPosForm));
         cmds.cfgLine(l, logger.logFilNam.length() < 1, "", "logging file " + logger.level2string(logger.logFilLev), logger.logFilNam);
         cmds.cfgLine(l, logger.logRotNam.length() < 1, "", "logging rotate " + logger.logRotLim, logger.logRotNam);
+        cmds.cfgLine(l, logger.logProxy == null, "", "logging proxy", "" + logger.logProxy);
         String a = "";
         for (int i = 0; i < logger.logSylHnd.size(); i++) {
             a += " " + logger.logSylHnd.get(i);

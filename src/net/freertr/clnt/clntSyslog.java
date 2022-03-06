@@ -85,7 +85,11 @@ public class clntSyslog {
             b = pipe.isClosed() != 0;
         }
         if (b) {
-            pipe = cfgAll.clntConnect(servGeneric.protoUdp, addr, new servSyslog().srvPort(), "syslog");
+            clntProxy prx = cfgAll.getClntPrx(logger.logProxy);
+            if (prx == null) {
+                return;
+            }
+            pipe = prx.doConnect(servGeneric.protoUdp, addr, new servSyslog().srvPort(), "syslog");
         }
         if (pipe == null) {
             return;

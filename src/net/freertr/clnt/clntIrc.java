@@ -113,7 +113,11 @@ public class clntIrc implements Runnable {
         if (trg == null) {
             return;
         }
-        pipe = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servIrc().srvPort(), "irc");
+        clntProxy prx = cfgAll.getClntPrx(logger.logProxy);
+        if (prx == null) {
+            return;
+        }
+        pipe = prx.doConnect(servGeneric.protoTcp, trg, new servIrc().srvPort(), "irc");
         if (pipe == null) {
             return;
         }

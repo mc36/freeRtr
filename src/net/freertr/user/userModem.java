@@ -2,6 +2,7 @@ package net.freertr.user;
 
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntProxy;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
@@ -137,7 +138,12 @@ public class userModem {
                     doResult(6);
                     return false;
                 }
-                pipeSide con = cfgAll.clntConnect(servGeneric.protoTcp, trg, new servTelnet().srvPort(), "modem");
+                clntProxy prx = cfgAll.getClntPrx(null);
+                if (prx == null) {
+                    doResult(3);
+                    return false;
+                }
+                pipeSide con = prx.doConnect(servGeneric.protoTcp, trg, new servTelnet().srvPort(), "modem");
                 if (con == null) {
                     doResult(3);
                     return false;

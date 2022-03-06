@@ -428,6 +428,8 @@ public class userConfig {
         l.add(null, "3  3,.    <cmd>                      encoded banner");
         l.add(null, "1  2  logging                        set logging parameters");
         l.add(null, "2  .    milliseconds                 millisecond logging");
+        l.add(null, "2  3    proxy                        set proxy to use");
+        l.add(null, "3  .      <name:prx>                 proxy profile");
         l.add(null, "2  3    buffered                     buffered logging");
         l.add(null, "3  4      debug                      debugging messages");
         l.add(null, "3  4      informational              informational messages");
@@ -3357,6 +3359,10 @@ public class userConfig {
             logger.fileStart("");
             return;
         }
+        if (s.equals("proxy")) {
+            logger.logProxy = null;
+            return;
+        }
         if (s.equals("rotate")) {
             logger.logRotLim = 0;
             logger.logRotNam = "";
@@ -3399,6 +3405,15 @@ public class userConfig {
         if (s.equals("file")) {
             logger.logFilLev = logger.string2level(cmd.word());
             logger.fileStart(cmd.word());
+            return;
+        }
+        if (s.equals("proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            logger.logProxy = prx.proxy;
             return;
         }
         if (s.equals("rotate")) {

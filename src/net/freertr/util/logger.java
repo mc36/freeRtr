@@ -18,6 +18,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgEvntmgr;
 import net.freertr.cfg.cfgInit;
 import net.freertr.clnt.clntIrc;
+import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntSyslog;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -104,6 +105,11 @@ public class logger {
      */
     public static int logSylFac = 0;
 
+    /**
+     * proxy profile for syslog
+     */
+    public static clntProxy logProxy = null;
+    
     /**
      * level of syslog
      */
