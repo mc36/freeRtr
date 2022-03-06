@@ -3,9 +3,7 @@ package net.freertr.user;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
-import net.freertr.clnt.clntProxy;
 import net.freertr.pipe.pipeProgress;
-import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.sec.secClient;
 import net.freertr.serv.servGeneric;
@@ -17,9 +15,7 @@ import net.freertr.serv.servGeneric;
  */
 public class userTerminal {
 
-    private pipeProgress console;
-
-    private pipeSide stream;
+    private final pipeProgress console;
 
     /**
      * start user terminal
@@ -67,37 +63,15 @@ public class userTerminal {
     }
 
     /**
-     * start tcp session
-     *
-     * @param prx proxy to use
-     * @param proto protocol to use
-     * @param addr address of remote
-     * @param port port to connect to
-     * @param name client name
-     * @return pipeline of this connection, null=error
-     */
-    public pipeSide startConn(clntProxy prx, int proto, addrIP addr, int port, String name) {
-        console.debugStat("connecting to " + addr + " " + port);
-        if (prx == null) {
-            return null;
-        }
-        stream = prx.doConnect(proto, addr, port, name);
-        if (stream == null) {
-            console.debugStat("failed");
-            return null;
-        }
-        return stream;
-    }
-
-    /**
      * start ssh session
      *
+     * @param stream connection to use
      * @param proto protocol to use
      * @param user username
      * @param pass password
      * @return pipeline of this connection, null=error
      */
-    public pipeSide startSecurity(int proto, String user, String pass) {
+    public pipeSide startSecurity(pipeSide stream, int proto, String user, String pass) {
         proto &= servGeneric.protoSec;
         if (stream == null) {
             return null;

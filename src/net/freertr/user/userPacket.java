@@ -1257,7 +1257,8 @@ public class userPacket {
                 return null;
             }
             a = cmd.word();
-            addrIP trg = userTerminal.justResolv(a, 0);
+            userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
+            addrIP trg = trm.resolveAddr(a, 0);
             if (trg == null) {
                 cmd.error("server not found");
                 return null;
@@ -1272,11 +1273,9 @@ public class userPacket {
                 cmd.error("error opening connection");
                 return null;
             }
-            userTerminal trm = new userTerminal(new pipeProgress(cmd.pipe));
             a = cmd.word();
-            conn = trm.startSecurity(servGeneric.protoSsh, a, cmd.word());
+            conn = trm.startSecurity(conn, servGeneric.protoSsh, a, cmd.word());
             if (conn == null) {
-                cmd.error("error securing connection");
                 return null;
             }
             userNetconf nc = new userNetconf(conn, false, false, false);

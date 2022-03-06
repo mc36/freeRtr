@@ -2039,7 +2039,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("whois")) {
-            clntWhois w = new clntWhois(cmd.pipe, cfgAll.getClntPrx(cfgAll.whoisProxy), cmd.word());
+            clntWhois w = new clntWhois(pipe, cfgAll.getClntPrx(cfgAll.whoisProxy), cmd.word());
             a = cmd.getRemaining();
             reader.putStrArr(w.doQuery(a));
             return cmdRes.command;
@@ -2093,14 +2093,14 @@ public class userExec {
                 cmd.error("no enable configured");
                 return cmdRes.command;
             }
-            cmd.pipe.strPut("password:");
+            pipe.strPut("password:");
             int i;
             if (cfgAll.passwdStars) {
                 i = 0x33;
             } else {
                 i = 0x31;
             }
-            a = cmd.pipe.lineGet(i);
+            a = pipe.lineGet(i);
             if (authLocal.secretTest(cfgAll.enaPass, a)) {
                 cmd.error("invalid password");
                 return cmdRes.command;
@@ -2673,8 +2673,8 @@ public class userExec {
             cmd.error("no such menu");
             return;
         }
-        ntry.putMenu(cmd.pipe);
-        a = cmd.pipe.strChr("choose:", ntry.getKeys());
+        ntry.putMenu(pipe);
+        a = pipe.strChr("choose:", ntry.getKeys());
         String s = ntry.findKey(a);
         if (s == null) {
             return;
@@ -2682,10 +2682,10 @@ public class userExec {
         if (s.length() < 1) {
             return;
         }
-        userExec exe = new userExec(cmd.pipe, reader);
+        userExec exe = new userExec(pipe, reader);
         exe.privileged = privileged;
         s = exe.repairCommand(s);
-        cmd.pipe.linePut(a + " - " + s);
+        pipe.linePut(a + " - " + s);
         if (pipe.settingsGet(pipeSetting.logging, false)) {
             logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
         }
@@ -3791,11 +3791,14 @@ public class userExec {
         if (prx == null) {
             prx = clntProxy.makeTemp(vrf, ifc);
         }
-        pipeSide strm = term.startConn(prx, dgrm, adr, prt, "telnet");
+        pipe.strPut(" - connecting to " + adr + " " + prt);
+        pipeSide strm = prx.doConnect(dgrm, adr, prt, "telnet");
         if (strm == null) {
+            pipe.linePut(" failed!");
             return;
         }
-        strm = term.startSecurity(secur, user, pass);
+        pipe.linePut(" ok!");
+        strm = term.startSecurity(strm, secur, user, pass);
         if (strm == null) {
             return;
         }

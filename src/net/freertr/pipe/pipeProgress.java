@@ -10,13 +10,7 @@ import net.freertr.util.bits;
  */
 public class pipeProgress {
 
-    /**
-     * create instance
-     */
-    public pipeProgress() {
-    }
-
-    private pipeSide pipe; // pipeline
+    private final pipeSide pipe; // pipeline
 
     private long max = 0; // upper limit
 
@@ -145,7 +139,7 @@ public class pipeProgress {
 
     /**
      * ask user
-     * 
+     *
      * @param que question
      * @param hide true to hide input
      * @return entered string
