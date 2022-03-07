@@ -12,6 +12,7 @@ import net.freertr.cry.cryHashSha1;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
+import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.sec.secClient;
 import net.freertr.sec.secHttp2;
@@ -318,6 +319,7 @@ public class clntHttp {
         if (pipe == null) {
             return true;
         }
+        pipe.settingsAdd(pipeSetting.origin, url.server);
         if (debug) {
             logger.debug("securing " + url.dump());
         }

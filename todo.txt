@@ -1,5 +1,5 @@
 quic
-update gtp stack to the latest standards, add to dataplanes
+update gtp stack to the latest standards
 p4dpdk multiseg rx/tx loop
 nat and pbr config to have reindex
 bridge security from dhcp, slaac, whatever server

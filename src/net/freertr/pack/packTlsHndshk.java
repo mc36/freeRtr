@@ -796,7 +796,7 @@ public class packTlsHndshk {
         byte[] buf = new byte[2];
         bits.msbPutW(buf, 0, 8192);
         tlv.putBytes(pck, 28, buf); // record size limit
-        if (servNam != null) {
+        if (client && (servNam != null)) {
             int len = servNam.length();
             buf = new byte[len + 5];
             bits.msbPutW(buf, 0, len + 3);
@@ -831,10 +831,6 @@ public class packTlsHndshk {
             buf = extenList2bytes(makeECcurveList());
             tlv.putBytes(pck, 10, buf); // supported groups
         }
-        if (ecDiffHell.curve == null) {
-            pck.merge2end();
-            return pck.getCopy();
-        }
         byte[] res;
         if (client) {
             if (ecDiffHell.curve != null) {
@@ -856,9 +852,15 @@ public class packTlsHndshk {
                 res = new byte[0];
                 buf = new byte[2];
             }
-            bits.msbPutW(buf, 0, ecDiffHell.curve.tls);
+            if (ecDiffHell.curve == null) {
+                buf = null;
+            } else {
+                bits.msbPutW(buf, 0, ecDiffHell.curve.tls);
+            }
         }
-        tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
+        if (buf != null) {
+            tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
+        }
         if (!client && (ecDiffHell.servPub == null)) {
             buf = new byte[6];
             bits.msbPutD(buf, 2, bits.randomD());
