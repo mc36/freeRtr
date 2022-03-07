@@ -13061,3 +13061,6 @@ qc pass: p4lang: gtp server over ipv4
 qc pass: p4lang: gtp server over ipv6
 qc pass: p4lang: gtp server over ipv4 loopback
 qc pass: p4lang: gtp server over ipv6 loopback
+---------------------------------- 2022-03-07 06:41:13
+no todo: update gtp stack to the latest standards, add to dataplanes
+todo: update gtp stack to the latest standards
