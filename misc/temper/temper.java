@@ -503,8 +503,8 @@ public class temper implements Runnable {
         }
         f.close();
         tmpMax -= tmpMin;
-        final int mx = 1400;
-        final int my = 700;
+        final int mx = 1800;
+        final int my = 900;
         final int mx10 = mx - 10;
         final int mx20 = mx - 20;
         final int my1 = my - 1;
