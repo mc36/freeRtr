@@ -621,6 +621,7 @@ public class clntTrack implements rtrBfdClnt {
                     return;
                 }
                 clntNrpe nrpe = new clntNrpe(null, vrf, srcIfc, target.substring(0, i));
+                nrpe.timeout = timeout;
                 haveResult(!nrpe.doCheck(target.substring(i + 1, target.length())), false);
                 if (logging) {
                     a = "";

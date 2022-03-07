@@ -33,6 +33,11 @@ public class clntNrpe {
     private final pipeSide console;
 
     /**
+     * timeout
+     */
+    public int timeout = 60000;
+    
+    /**
      * result code
      */
     public int code;
@@ -85,8 +90,8 @@ public class clntNrpe {
             text.add(check + " CRITICAL failed to connect to " + server);
             return true;
         }
-        pipe.wait4ready(60000);
-        pipe.setTime(60000);
+        pipe.wait4ready(timeout);
+        pipe.setTime(timeout);
         packNrpe pck = new packNrpe();
         pck.ver = 3;
         pck.typ = packNrpe.tyReq;
