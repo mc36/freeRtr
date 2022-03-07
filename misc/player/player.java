@@ -318,7 +318,7 @@ public class player implements Runnable {
     public void doInit() {
         playlists = playerUtil.readup("/etc/asound.conf");
         int volDef = 50;
-        boolean autoPlay = false;
+        int autoPlay = 0;
         if (playlists != null) {
             for (int i = 0; i < playlists.size(); i++) {
                 String a = playlists.get(i);
@@ -337,7 +337,7 @@ public class player implements Runnable {
                     continue;
                 }
                 if (a.equals("#player.class autoplay")) {
-                    autoPlay = true;
+                    autoPlay = playerUtil.str2int(b);
                     continue;
                 }
                 if (a.equals("#player.class srate")) {
@@ -364,11 +364,20 @@ public class player implements Runnable {
         stopFull();
         setVolume(volDef);
         startPlayNormal(-1, "0");
-        ready = true;
-        if (!autoPlay) {
-            return;
+        switch (autoPlay) {
+            case 0:
+                break;
+            case 1:
+                startPlayNormal(0, "0");
+                break;
+            case 2:
+                startPlayDlna();
+                break;
+            case 3:
+                startPlayRcvr();
+                break;
         }
-        startPlayNormal(0, "0");
+        ready = true;
     }
 
     public void run() {
