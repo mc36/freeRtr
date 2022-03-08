@@ -29,6 +29,7 @@ import net.freertr.clnt.clntPckOudp;
 import net.freertr.clnt.clntPptp;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntPulse;
+import net.freertr.clnt.clntSdwan;
 import net.freertr.clnt.clntSrEth;
 import net.freertr.clnt.clntSstp;
 import net.freertr.clnt.clntStun;
@@ -44,6 +45,7 @@ import net.freertr.pack.packLdpPwe;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -276,6 +278,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          */
         prSstp,
         /**
+         * sdwan
+         */
+        prSdwan,
+        /**
          * anyconnect
          */
         prAnycon,
@@ -313,6 +319,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntL2tp3 l2tp3;
 
     private clntSstp sstp;
+
+    private clntSdwan sdwan;
 
     private clntAnyconn anycon;
 
@@ -420,6 +428,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "l2tp3";
             case prSstp:
                 return "sstp";
+            case prSdwan:
+                return "sdwan";
             case prAnycon:
                 return "anyconn";
             case prForti:
@@ -503,6 +513,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("sstp")) {
             return protocolType.prSstp;
+        }
+        if (s.equals("sdwan")) {
+            return protocolType.prSdwan;
         }
         if (s.equals("anyconn")) {
             return protocolType.prAnycon;
@@ -667,6 +680,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    l2tp2                        select l2tp v2");
         l.add(null, "2 .    l2tp3                        select l2tp v3");
         l.add(null, "2 .    sstp                         select sstp");
+        l.add(null, "2 .    sdwan                        select sdwan");
         l.add(null, "2 .    anyconn                      select anyconnect");
         l.add(null, "2 .    forti                        select fortinet");
         l.add(null, "2 .    pulse                        select pulsevpn");
@@ -1003,6 +1017,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             sstp.workStop();
             sstp = null;
         }
+        if (sdwan != null) {
+            sdwan.workStop();
+            sdwan = null;
+        }
         if (anycon != null) {
             anycon.workStop();
             anycon = null;
@@ -1201,6 +1219,30 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sstp.setUpper(ifaceDialer.getEncapProto());
                 sstp.workStart();
                 lower = sstp;
+                break;
+            case prSdwan:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                if (username == null) {
+                    return;
+                }
+                if (password == null) {
+                    return;
+                }
+                sdwan = new clntSdwan();
+                sdwan.ctrlAddr = target;
+                sdwan.ctrlPort = vcid;
+                sdwan.localPort = bits.str2num("" + called);
+                sdwan.prefer = prefer;
+                sdwan.vrf = proxy.vrf;
+                sdwan.ifc = proxy.srcIfc;
+                sdwan.username = username;
+                sdwan.password = password;
+                sdwan.clone = ifaceDialer;
+                sdwan.setUpper(ifaceDialer.getEncapProto());
+                sdwan.workStart();
+                lower = sdwan;
                 break;
             case prAnycon:
                 if (ifaceDialer == null) {
@@ -1665,6 +1707,18 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             }
         }
         running = true;
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        if (sdwan != null) {
+            return sdwan.getShow();
+        }
+        return null;
     }
 
 }

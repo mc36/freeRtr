@@ -71,6 +71,7 @@ import net.freertr.serv.servQuote;
 import net.freertr.serv.servRadius;
 import net.freertr.serv.servRfb;
 import net.freertr.serv.servRpki;
+import net.freertr.serv.servSdwan;
 import net.freertr.serv.servSip;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servSnmp;
@@ -526,6 +527,11 @@ public class cfgAll {
      * dcp daemons
      */
     public static final servGenList<servDcp> dmnDcp = new servGenList<servDcp>();
+
+    /**
+     * sdwan daemons
+     */
+    public static final servGenList<servSdwan> dmnSdwan = new servGenList<servSdwan>();
 
     /**
      * pcep daemons
@@ -3501,6 +3507,7 @@ public class cfgAll {
         dmnBmp.getShRun(l, filter);
         dmnIrc.getShRun(l, filter);
         dmnDcp.getShRun(l, filter);
+        dmnSdwan.getShRun(l, filter);
         dmnPcep.getShRun(l, filter);
         dmnDhcp4.getShRun(l, filter);
         dmnDhcp6.getShRun(l, filter);

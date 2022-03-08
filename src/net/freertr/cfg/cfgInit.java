@@ -77,6 +77,7 @@ import net.freertr.serv.servQuote;
 import net.freertr.serv.servRadius;
 import net.freertr.serv.servRfb;
 import net.freertr.serv.servRpki;
+import net.freertr.serv.servSdwan;
 import net.freertr.serv.servSip;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servSnmp;
@@ -821,6 +822,7 @@ public class cfgInit implements Runnable {
         servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);
         servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);
         servDcp.defaultF = createFilter(servDcp.defaultL, srvdefsF);
+        servSdwan.defaultF = createFilter(servSdwan.defaultL, srvdefsF);
         servPcep.defaultF = createFilter(servPcep.defaultL, srvdefsF);
         servIrc.defaultF = createFilter(servIrc.defaultL, srvdefsF);
         servDhcp4.defaultF = createFilter(servDhcp4.defaultL, srvdefsF);

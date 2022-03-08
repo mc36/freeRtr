@@ -184,6 +184,11 @@ public class debugger {
     public static boolean servDcpTraf = false;
 
     /**
+     * servSdwan traffic
+     */
+    public static boolean servSdwanTraf = false;
+
+    /**
      * servPcep traffic
      */
     public static boolean servPcepTraf = false;
@@ -567,6 +572,11 @@ public class debugger {
      * clntSstp traffic
      */
     public static boolean clntSstpTraf = false;
+
+    /**
+     * clntSdwan traffic
+     */
+    public static boolean clntSdwanTraf = false;
 
     /**
      * clntAnyconnect traffic
@@ -1021,6 +1031,7 @@ public class debugger {
         l.add(null, "3 .        nrpe              nagios remote plugin");
         l.add(null, "3 .        prometheus        prometheus targets");
         l.add(null, "3 .        dcp               direct connect protocol");
+        l.add(null, "3 .        sdwan             sdwan protocol");
         l.add(null, "3 .        pcep              path computation element protocol");
         l.add(null, "3 4        openflow          openflow protocol");
         l.add(null, "4 .          rx              received packets");
@@ -1136,6 +1147,7 @@ public class debugger {
         l.add(null, "3 .        sip               session initiation protocol");
         l.add(null, "3 .        pcep              path computation element protocol");
         l.add(null, "3 .        sstp              secure socket tunneling protocol");
+        l.add(null, "3 .        sdwan             sdwan protocol");
         l.add(null, "3 .        anyconn           anyconnect protocol");
         l.add(null, "3 .        forti             fortinet protocol");
         l.add(null, "3 .        pulse             pulsevpn protocol");
@@ -1382,6 +1394,10 @@ public class debugger {
             }
             if (s.equals("dcp")) {
                 servDcpTraf = v;
+                return false;
+            }
+            if (s.equals("sdwan")) {
+                servSdwanTraf = v;
                 return false;
             }
             if (s.equals("pcep")) {
@@ -1810,6 +1826,10 @@ public class debugger {
             }
             if (s.equals("sstp")) {
                 clntSstpTraf = v;
+                return false;
+            }
+            if (s.equals("sdwan")) {
+                clntSdwanTraf = v;
                 return false;
             }
             if (s.equals("anyconn")) {

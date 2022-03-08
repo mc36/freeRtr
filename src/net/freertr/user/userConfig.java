@@ -116,6 +116,7 @@ import net.freertr.serv.servQuote;
 import net.freertr.serv.servRadius;
 import net.freertr.serv.servRfb;
 import net.freertr.serv.servRpki;
+import net.freertr.serv.servSdwan;
 import net.freertr.serv.servSip;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servSnmp;
@@ -874,6 +875,8 @@ public class userConfig {
         l.add(cfgAll.dmnIrc.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    dcp                          configure a dcp server");
         l.add(cfgAll.dmnDcp.listServers(), "3  .      <name:loc>                 name of server");
+        l.add(null, "2  3    sdwan                        configure a sdwan server");
+        l.add(cfgAll.dmnSdwan.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    pcep                         configure a pcep server");
         l.add(cfgAll.dmnPcep.listServers(), "3  .      <name:loc>                 name of server");
         l.add(null, "2  3    ntp                          configure a ntp server");
@@ -1513,6 +1516,10 @@ public class userConfig {
             }
             if (a.equals("dcp")) {
                 daemonMake(new servDcp(), cfgAll.dmnDcp);
+                return;
+            }
+            if (a.equals("sdwan")) {
+                daemonMake(new servSdwan(), cfgAll.dmnSdwan);
                 return;
             }
             if (a.equals("pcep")) {
@@ -2482,6 +2489,10 @@ public class userConfig {
             }
             if (a.equals("dcp")) {
                 daemonErase(new servDcp(), cfgAll.dmnDcp);
+                return;
+            }
+            if (a.equals("sdwan")) {
+                daemonErase(new servSdwan(), cfgAll.dmnSdwan);
                 return;
             }
             if (a.equals("pcep")) {

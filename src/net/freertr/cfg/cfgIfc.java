@@ -5586,7 +5586,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (hidden) {
             return l;
         }
-        if (cloned != null) {
+        if ((cloned != null) && ((filter & 0x40000000) == 0)) {
             return l;
         }
         l.add("interface " + name);

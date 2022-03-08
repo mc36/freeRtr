@@ -36,6 +36,7 @@ import net.freertr.cfg.cfgSessn;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVdcIfc;
+import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntNetflow;
@@ -615,7 +616,7 @@ public class userShow {
                     cmd.error("no such interface");
                     return null;
                 }
-                rdr.putStrArr(ifc.getShRun(getConfigFilter(null, cmd)));
+                rdr.putStrArr(ifc.getShRun(0x40000000 | getConfigFilter(null, cmd)));
                 return null;
             }
             List<String> lst = cfgAll.getShRun(1);
@@ -803,6 +804,15 @@ public class userShow {
                     continue;
                 }
             }
+            return null;
+        }
+        if (a.equals("vpdn")) {
+            cfgVpdn cln = cfgAll.vpdnFind(cmd.word(), false);
+            if (cln == null) {
+                cmd.error("no such vpdn");
+                return null;
+            }
+            rdr.putStrTab(cln.getShow());
             return null;
         }
         if (a.equals("p4lang")) {

@@ -46,6 +46,7 @@ int lo1
 int sdn1
  vrf for v2
  ipv6 addr 9999::1 ffff:ffff::
+ ipv6 ena
  exit
 ipv4 pool p4 1.1.1.2 0.0.0.1 1
 ipv6 pool p6 1234:1::2 ::1 1

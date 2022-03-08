@@ -43,6 +43,10 @@ public class addrPool<T extends addrType> {
         incr = addr2bn(nxt);
     }
 
+    public String toString() {
+        return poolName;
+    }
+
     private BigInteger addr2bn(T adr) {
         byte[] buf1 = adr.getBytes();
         byte[] buf2 = new byte[buf1.length + 1];
