@@ -3523,6 +3523,8 @@ class servP4langConn implements Runnable {
             ntry = new servP4langIfc(id);
             ntry.doClear();
             ntry.ifc = ifc;
+            ntry.dynamic = true;
+            ntry.hidden = true;
             ntry.lower = lower;
             ntry.cloned = prnt;
             ntry.ifc.ethtyp.hwHstry = new history();
