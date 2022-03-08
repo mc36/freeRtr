@@ -155,6 +155,10 @@ public class clntSdwan implements Runnable, ifcDn {
      */
     protected addrIPv6 myAddr6;
 
+    public String toString() {
+        return "sdwan to " + ctrlAddr;
+    }
+
     /**
      * get hw address
      *
@@ -336,7 +340,7 @@ public class clntSdwan implements Runnable, ifcDn {
         if (debugger.clntSdwanTraf) {
             logger.debug("connecting " + trg);
         }
-        conn = tcpCor.streamConnect(new pipeLine(65536, false), fwdIfc, 0, trg, ctrlPort, ctrlAddr, null, -1);
+        conn = tcpCor.streamConnect(new pipeLine(65536, false), fwdIfc, 0, trg, ctrlPort, "sdwan", null, -1);
         if (conn == null) {
             logger.error("unable to connect " + trg);
             return;

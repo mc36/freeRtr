@@ -86,6 +86,10 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         lower = parent;
     }
 
+    public String toString() {
+        return "sdwan to " + addr;
+    }
+
     public int compare(clntSdwanConn o1, clntSdwanConn o2) {
         if (o1.port < o2.port) {
             return -1;
