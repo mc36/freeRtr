@@ -57,7 +57,7 @@ public class clntSdwan implements Runnable, ifcDn {
     /**
      * source of tunnel
      */
-    public int localPort = 0;
+    public int dataPort = 0;
 
     /**
      * vrf of target
@@ -272,8 +272,8 @@ public class clntSdwan implements Runnable, ifcDn {
         if (ctrlPort < 1) {
             ctrlPort = servSdwan.port;
         }
-        if (localPort < 1) {
-            localPort = ctrlPort;
+        if (dataPort < 1) {
+            dataPort = ctrlPort;
         }
         if (prefer < 1) {
             prefer = clntDns.getPriPref();
@@ -350,7 +350,7 @@ public class clntSdwan implements Runnable, ifcDn {
         addrIP adr = new addrIP();
         adr.fromIPv4addr(new addrIPv4());
         adr.fromIPv6addr(new addrIPv6());
-        sendLn("myendpoint " + prefer + " " + fwdIfc.addr + " " + localPort);
+        sendLn("myendpoint " + prefer + " " + fwdIfc.addr + " " + dataPort);
         sendLn("nomore");
         for (;;) {
             String a = readLn();

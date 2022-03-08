@@ -1233,7 +1233,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sdwan = new clntSdwan();
                 sdwan.ctrlAddr = target;
                 sdwan.ctrlPort = vcid;
-                sdwan.localPort = bits.str2num("" + called);
+                sdwan.dataPort = bits.str2num("" + calling);
                 sdwan.prefer = prefer;
                 sdwan.vrf = proxy.vrf;
                 sdwan.ifc = proxy.srcIfc;

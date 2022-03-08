@@ -136,7 +136,7 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         if (debugger.clntSdwanTraf) {
             logger.debug("starting peer " + addr + " " + port);
         }
-        conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.localPort, addr, port, "sdwan", null, -1);
+        conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.dataPort, addr, port, "sdwan", null, -1);
         if (conn == null) {
             logger.error("failed to connect " + addr + " " + port);
             return;
@@ -280,7 +280,7 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
      * @return session id, 0 if no session
      */
     public int getPortLoc() {
-        return lower.localPort;
+        return lower.dataPort;
     }
 
     /**
