@@ -5043,6 +5043,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             ipFwdMcast ntry = need.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry = ntry.copyBytes();
             ipFwdMcast old = done.find(ntry);
             boolean bef;
@@ -5097,6 +5100,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabConnectEntry<addrIP, prtGenServ> ntry = need.read(i);
+            if (ntry == null) {
+                continue;
+            }
             prtGenServ old = done.get(ntry.iface, null, ntry.local, ntry.remote);
             if (old != null) {
                 continue;
@@ -5114,6 +5120,9 @@ class servP4langConn implements Runnable {
     private void doIndexes(String beg, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes, tabGen<servP4langStr<tabIndex<addrIP>>> store) {
         for (int i = 0; i < need.size(); i++) {
             tabIndex<addrIP> ntry = need.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry = ntry.copyBytes();
             tabRouteEntry<addrIP> rou = routes.find(ntry.prefix);
             if (rou == null) {
@@ -5160,6 +5169,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             tabRouteEntry<addrIP> old = done.find(ntry);
             if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {

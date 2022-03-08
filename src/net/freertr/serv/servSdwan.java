@@ -55,13 +55,19 @@ public class servSdwan extends servGeneric implements prtServS {
     protected tabGen<servSdwanConn> conns = new tabGen<servSdwanConn>();
 
     /**
+     * list of users
+     */
+    public boolean natted = true;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
         "server sdwan .*! port " + port,
         "server sdwan .*! protocol " + proto2string(protoAllStrm),
         "server sdwan .*! no pool4",
-        "server sdwan .*! no pool6",};
+        "server sdwan .*! no pool6",
+        "server sdwan .*! natted",};
 
     /**
      * defaults filter
@@ -95,10 +101,15 @@ public class servSdwan extends servGeneric implements prtServS {
     public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, pool4 == null, beg, "pool4", "" + pool4);
         cmds.cfgLine(l, pool6 == null, beg, "pool6", "" + pool6);
+        cmds.cfgLine(l, !natted, beg, "natted", "");
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("natted")) {
+            natted = true;
+            return false;
+        }
         if (s.equals("pool4")) {
             cfgPool<addrIPv4> ntry = cfgAll.poolFind(cfgAll.ip4pool, cmd.word(), false);
             if (ntry == null) {
@@ -121,6 +132,10 @@ public class servSdwan extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("natted")) {
+            natted = false;
+            return false;
+        }
         if (s.equals("pool4")) {
             pool4 = null;
             return false;
@@ -133,6 +148,7 @@ public class servSdwan extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 .  natted                       use natted addresses");
         l.add(null, "1 2  pool4                        ipv4 pool to use");
         l.add(null, "2 .    <name:pl4>                 name of pool");
         l.add(null, "1 2  pool6                        ipv6 pool to use");
@@ -372,7 +388,13 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
     }
 
     public String getEndpt() {
-        return endptVer + " " + endptIp + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + endptPar;
+        String a;
+        if (lower.natted) {
+            a = "" + connA;
+        } else {
+            a = "" + endptIp;
+        }
+        return endptVer + " " + a + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + endptPar;
     }
 
     public boolean doRound() {
