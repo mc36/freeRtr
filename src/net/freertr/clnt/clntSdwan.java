@@ -60,6 +60,11 @@ public class clntSdwan implements Runnable, ifcDn {
     public int dataPort = 0;
 
     /**
+     * randomize source port
+     */
+    public boolean dataRand = false;
+
+    /**
      * vrf of target
      */
     public cfgVrf vrf = null;
@@ -247,6 +252,9 @@ public class clntSdwan implements Runnable, ifcDn {
             peers.get(i).workStop();
         }
         peers.clear();
+        if (dataRand) {
+            dataPort = bits.random(1024, 16383);
+        }
     }
 
     public void run() {
