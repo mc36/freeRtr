@@ -1926,17 +1926,17 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             ifaceProto(rxIfc, pck, hop);
             return;
         }
+        if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
+            protoSend(rxIfc, pck);
+            return;
+        }
+        if (rxIfc.lower.checkMyAlias(pck.IPtrg) != null) {
+            protoSend(rxIfc, pck);
+            return;
+        }
         if (pck.IPlnk) {
             if ((from & 1) != 0) {
                 if (pck.IPmlt || pck.IPbrd) {
-                    protoSend(rxIfc, pck);
-                    return;
-                }
-                if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
-                    protoSend(rxIfc, pck);
-                    return;
-                }
-                if (rxIfc.lower.checkMyAlias(pck.IPtrg) != null) {
                     protoSend(rxIfc, pck);
                     return;
                 }
