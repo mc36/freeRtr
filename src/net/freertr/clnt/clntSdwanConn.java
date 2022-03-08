@@ -150,7 +150,7 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         conn.sendTOS = lower.sendingTOS;
         conn.sendTTL = lower.sendingTTL;
         upper = new ifcNull();
-        ifc = lower.clone.cloneStart(this);
+        ifc = lower.clonIfc.cloneStart(this);
         ifc.addr4changed(lower.myAddr4, ifc.mask4, peer4.toIPv4());
         ifc.addr6changed(lower.myAddr6, ifc.mask6, peer6.toIPv6());
     }

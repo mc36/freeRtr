@@ -12,6 +12,7 @@ import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
+import net.freertr.ip.ipFwdTab;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -67,17 +68,17 @@ public class clntSdwan implements Runnable, ifcDn {
     /**
      * vrf of target
      */
-    public cfgVrf vrf = null;
+    public cfgVrf srcVrf = null;
 
     /**
      * source interface
      */
-    public cfgIfc ifc = null;
+    public cfgIfc srcIfc = null;
 
     /**
      * clone interface
      */
-    public cfgIfc clone = null;
+    public cfgIfc clonIfc = null;
 
     /**
      * control protocol preference
@@ -325,10 +326,15 @@ public class clntSdwan implements Runnable, ifcDn {
             logger.error("unable to resolve " + ctrlAddr);
             return;
         }
-        fwdCor = vrf.getFwd(trg);
-        tcpCor = vrf.getTcp(trg);
-        udpCor = vrf.getUdp(trg);
-        fwdIfc = ifc.getFwdIfc(trg);
+        fwdCor = srcVrf.getFwd(trg);
+        tcpCor = srcVrf.getTcp(trg);
+        udpCor = srcVrf.getUdp(trg);
+        fwdIfc = null;
+        if (srcIfc != null) {
+            fwdIfc = srcIfc.getFwdIfc(trg);
+        } else {
+            fwdIfc = ipFwdTab.findSendingIface(fwdCor, trg);
+        }
         if (fwdCor.ipVersion != prefer) {
             logger.error("unable to resolve " + ctrlAddr);
             return;

@@ -1236,11 +1236,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sdwan.dataRand = ctrlWrd;
                 sdwan.dataPort = bits.str2num("" + calling);
                 sdwan.prefer = prefer;
-                sdwan.vrf = proxy.vrf;
-                sdwan.ifc = proxy.srcIfc;
+                sdwan.srcVrf = proxy.vrf;
+                sdwan.srcIfc = proxy.srcIfc;
                 sdwan.username = username;
                 sdwan.password = password;
-                sdwan.clone = ifaceDialer;
+                sdwan.clonIfc = ifaceDialer;
                 sdwan.setUpper(ifaceDialer.getEncapProto());
                 sdwan.workStart();
                 lower = sdwan;
