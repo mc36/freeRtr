@@ -65,6 +65,11 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
     public addrIP peer6;
 
     /**
+     * peer name
+     */
+    public String name;
+
+    /**
      * remote parameters
      */
     public String par;
@@ -115,6 +120,7 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         peer4.fromString(cmd.word());
         peer6 = new addrIP();
         peer6.fromString(cmd.word());
+        name = cmd.word();
         par = cmd.getRemaining();
     }
 
@@ -131,6 +137,8 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         if (conn != null) {
             conn.setClosing();
         }
+        ifc = null;
+        conn = null;
     }
 
     /**
@@ -155,8 +163,13 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         ifc.addr6changed(lower.myAddr6, ifc.mask6, peer6.toIPv6());
     }
 
-    void getShow(userFormat l) {
-        l.add(addr + "|" + port + "|" + num + "|" + ifc.name + "|" + peer4 + "|" + peer6);
+    /**
+     * get show
+     *
+     * @param l list to update
+     */
+    protected void getShow(userFormat l) {
+        l.add(name + "|" + addr + "|" + port + "|" + num + "|" + ifc.name + "|" + peer4 + "|" + peer6);
     }
 
     public addrType getHwAddr() {

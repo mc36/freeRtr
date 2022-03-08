@@ -258,7 +258,7 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         peers.clear();
         if (dataRand) {
-            dataPort = bits.random(1024, 16383);
+            dataPort = bits.random(1024, 8191);
         }
     }
 

@@ -394,7 +394,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         } else {
             a = "" + endptIp;
         }
-        return endptVer + " " + a + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + endptPar;
+        return endptVer + " " + a + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + username + " " + endptPar;
     }
 
     public boolean doRound() {
