@@ -17,6 +17,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntPckOudp;
+import net.freertr.clnt.clntSdwanConn;
 import net.freertr.clnt.clntVxlan;
 import net.freertr.ifc.ifcBridge;
 import net.freertr.ifc.ifcBridgeAdr;
@@ -4156,6 +4157,67 @@ class servP4langConn implements Runnable {
             }
             try {
                 servL2tp2sess ntry = (servL2tp2sess) ifc.ifc.lower;
+                addrIP src = ntry.getAddrLoc();
+                if (src == null) {
+                    return;
+                }
+                addrIP trg = ntry.getAddrRem();
+                if (trg == null) {
+                    return;
+                }
+                ipFwd ofwd = ntry.getFwder();
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    return;
+                }
+                servP4langNei hop = lower.findHop(ofwd, trg);
+                if (hop == null) {
+                    return;
+                }
+                if (hop.mac == null) {
+                    return;
+                }
+                int tun = ntry.getTunnRem();
+                if (tun < 1) {
+                    return;
+                }
+                int ses = ntry.getSessRem();
+                if (ses < 1) {
+                    return;
+                }
+                tun = (tun << 16) | ses;
+                int lp = ntry.getPortLoc();
+                if (lp < 1) {
+                    return;
+                }
+                int rp = ntry.getPortRem();
+                if (rp < 1) {
+                    return;
+                }
+                String act;
+                if (nei.mac == null) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                        return;
+                    }
+                }
+                nei.viaH = hop;
+                nei.mac = hop.mac.copyBytes();
+                nei.sentIfc = hop.sentIfc;
+                nei.sentTun = lp;
+                String afi;
+                if (trg.isIPv4()) {
+                    afi = "4";
+                } else {
+                    afi = "6";
+                }
+                lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
+            } catch (Exception e) {
+            }
+            try {
+                clntSdwanConn ntry = (clntSdwanConn) ifc.ifc.lower;
                 addrIP src = ntry.getAddrLoc();
                 if (src == null) {
                     return;
