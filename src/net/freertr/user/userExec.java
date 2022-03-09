@@ -388,7 +388,8 @@ public class userExec {
         hl.add(null, "8 .                  [addr]         prefix to view");
         hl.add(null, "7 8,.              adverted         routes advertised to neighbor");
         hl.add(null, "8 .                  [addr]         prefix to view");
-        hl.add(null, "5 .            summary              list of neighbors");
+        hl.add(null, "5 6,.          summary              list of neighbors");
+        hl.add(null, "6 .              brief              only brief listing");
         hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 6,.          route                list of routes in database");
@@ -397,7 +398,8 @@ public class userExec {
         hl.add(null, "6 .              [addr]             prefix to view");
         hl.add(null, "3 4        lsrp                     link state routing protocol");
         hl.add(null, "4 5          <num>                  process id");
-        hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "5 6,.          neighbor             list of neighbors");
+        hl.add(null, "6 .              brief              only brief listing");
         hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 .            software             list of software");
@@ -454,7 +456,8 @@ public class userExec {
         hl.add(null, "6 .              [addr]             prefix to view");
         hl.add(null, "3 4        ospf                     open shortest path first protocol");
         hl.add(null, "4 5          <num>                  process id");
-        hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "5 6,.          neighbor             list of neighbors");
+        hl.add(null, "6 .              brief              only brief listing");
         hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 6            database             list of lsas in area");
@@ -495,7 +498,8 @@ public class userExec {
         hl.add(null, "6 .              [addr]             prefix to view");
         hl.add(null, "3 4        isis                     intermediate system intermediate system protocol");
         hl.add(null, "4 5          <num>                  process id");
-        hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "5 6,.          neighbor             list of neighbors");
+        hl.add(null, "6 .              brief              only brief listing");
         hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 6            database             list of lsas in area");

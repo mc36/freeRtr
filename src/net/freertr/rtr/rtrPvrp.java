@@ -175,13 +175,19 @@ public class rtrPvrp extends ipRtr implements Runnable {
     /**
      * list of neighbors
      *
+     * @param brief only briefly
      * @return list
      */
-    public userFormat showNeighs() {
-        userFormat res = new userFormat("|", "iface|router|name|peerif|peer|learned|adverted|uptime");
+    public userFormat showNeighs(boolean brief) {
+        userFormat res;
+        if (brief) {
+            res = new userFormat("|", "router|name|uptime");
+        } else {
+            res = new userFormat("|", "iface|router|name|peerif|peer|learned|adverted|uptime");
+        }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
-            ifc.showNeighs(res);
+            ifc.showNeighs(res, brief);
         }
         return res;
     }
@@ -199,7 +205,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         return res;
     }
-
 
     /**
      * find one neighbor

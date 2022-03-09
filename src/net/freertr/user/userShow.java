@@ -1615,7 +1615,7 @@ public class userShow {
                 }
                 a = cmd.word();
                 if (a.equals("neighbor")) {
-                    rdr.putStrTab(r.ospf4.showNeighs());
+                    rdr.putStrTab(r.ospf4.showNeighs(cmd.word().equals("brief")));
                     return null;
                 }
                 if (a.equals("metric")) {
@@ -1958,7 +1958,7 @@ public class userShow {
                 }
                 a = cmd.word();
                 if (a.equals("neighbor")) {
-                    rdr.putStrTab(r.ospf6.showNeighs());
+                    rdr.putStrTab(r.ospf6.showNeighs(cmd.word().equals("brief")));
                     return null;
                 }
                 if (a.equals("metric")) {
@@ -2425,7 +2425,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("neighbor")) {
-            rdr.putStrTab(r.lsrp.showNeighs());
+            rdr.putStrTab(r.lsrp.showNeighs(cmd.word().equals("brief")));
             return;
         }
         if (a.equals("metric")) {
@@ -2573,7 +2573,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("summary")) {
-            rdr.putStrTab(r.pvrp.showNeighs());
+            rdr.putStrTab(r.pvrp.showNeighs(cmd.word().equals("brief")));
             return;
         }
         if (a.equals("metric")) {
@@ -2627,7 +2627,7 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("neighbor")) {
-            rdr.putStrTab(r.isis.showNeighs());
+            rdr.putStrTab(r.isis.showNeighs(cmd.word().equals("brief")));
             return;
         }
         if (a.equals("metric")) {

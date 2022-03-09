@@ -1876,10 +1876,16 @@ public class rtrIsis extends ipRtr {
     /**
      * list neighbors
      *
+     * @param brief only briefly
      * @return list of neighbors
      */
-    public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|mac address|level|routerid|ip address|other address|state|uptime");
+    public userFormat showNeighs(boolean brief) {
+        userFormat l;
+        if (brief) {
+            l = new userFormat("|", "level|routerid|state|uptime");
+        } else {
+            l = new userFormat("|", "interface|mac address|level|routerid|ip address|other address|state|uptime");
+        }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrIsisIface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -1890,7 +1896,11 @@ public class rtrIsis extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
+                if (brief) {
+                    l.add(nei.level.level + "|" + nei.rtrID + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
+                } else {
+                    l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
+                }
             }
         }
         return l;

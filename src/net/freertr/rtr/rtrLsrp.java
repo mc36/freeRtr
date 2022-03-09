@@ -297,13 +297,19 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * list of neighbors
      *
+     * @param brief only briefly
      * @return list
      */
-    public userFormat showNeighs() {
-        userFormat res = new userFormat("|", "iface|router|name|peerif|peer|ready|uptime");
+    public userFormat showNeighs(boolean brief) {
+        userFormat res;
+        if (brief) {
+            res = new userFormat("|", "router|name|ready|uptime");
+        } else {
+            res = new userFormat("|", "iface|router|name|peerif|peer|ready|uptime");
+        }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
-            ifc.showNeighs(res);
+            ifc.showNeighs(res, brief);
         }
         return res;
     }

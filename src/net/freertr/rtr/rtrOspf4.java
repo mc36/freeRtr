@@ -771,10 +771,16 @@ public class rtrOspf4 extends ipRtr {
     /**
      * list neighbors
      *
+     * @param brief only briefly
      * @return list of neighbors
      */
-    public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|area|address|routerid|state|uptime");
+    public userFormat showNeighs(boolean brief) {
+        userFormat l;
+        if (brief) {
+            l = new userFormat("|", "area|routerid|state|uptime");
+        } else {
+            l = new userFormat("|", "interface|area|address|routerid|state|uptime");
+        }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrOspf4iface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -785,7 +791,11 @@ public class rtrOspf4 extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
+                if (brief) {
+                    l.add(nei.area.area + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
+                } else {
+                    l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
+                }
             }
         }
         return l;

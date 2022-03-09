@@ -370,15 +370,20 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * list of neighbors
      *
+     * @param brief only briefly
      * @param res list to update
      */
-    protected void showNeighs(userFormat res) {
+    protected void showNeighs(userFormat res, boolean brief) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrPvrpNeigh nei = neighs.get(i);
             if (nei == null) {
                 continue;
             }
-            res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.learned.size() + "|" + nei.adverted.size() + "|" + bits.timePast(nei.upTime));
+            if (brief) {
+                res.add(nei.rtrId + "|" + nei.name + "|" + bits.timePast(nei.upTime));
+            } else {
+                res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.learned.size() + "|" + nei.adverted.size() + "|" + bits.timePast(nei.upTime));
+            }
         }
     }
 
