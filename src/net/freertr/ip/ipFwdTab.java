@@ -678,7 +678,7 @@ public class ipFwdTab {
                 continue;
             }
             if (ifc.gateRem) {
-                prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
+                prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.remote;
                 prf.best.nextHop = gtw.copyBytes();
