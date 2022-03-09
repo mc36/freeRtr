@@ -351,6 +351,14 @@ public class clntSdwan implements Runnable, ifcDn {
             logger.error("unable to connect " + trg);
             return;
         }
+        conn.setTime(120000);
+        conn.lineRx = pipeSide.modTyp.modeCRtryLF;
+        conn.lineTx = pipeSide.modTyp.modeCRLF;
+        sendLn("sdwan");
+        if (!readLn().equals("okay")) {
+            logger.error("unable to validate " + trg);
+            return;
+        }
         conn = secClient.openSec(conn, servGeneric.protoSsh, username, password);
         if (conn == null) {
             logger.error("unable to authenticate " + trg);

@@ -291,6 +291,14 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         if (debugger.servSdwanTraf) {
             logger.debug("accepting " + connA);
         }
+        connS.setTime(120000);
+        connS.lineRx = pipeSide.modTyp.modeCRtryLF;
+        connS.lineTx = pipeSide.modTyp.modeCRLF;
+        if (!readLn().equals("sdwan")) {
+            logger.error("unable to validate " + connA);
+            return true;
+        }
+        sendLn("okay");
         connS = lower.negoSecSess(connS, servGeneric.protoSsh, new pipeLine(65536, false), lower.srvAuther);
         if (connS == null) {
             logger.error("unable to authenticate " + connA);
