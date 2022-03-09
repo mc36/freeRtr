@@ -224,6 +224,9 @@ public class servSdwan extends servGeneric implements prtServS {
             if (ntry == peer) {
                 continue;
             }
+            if ((ntry.hub == false) && (peer.hub == false)) {
+                continue;
+            }
             peer.sendLn("endpoint_add " + ntry.getEndpt());
         }
         sendLn(peer, peer.hub, "endpoint_add " + peer.getEndpt());
