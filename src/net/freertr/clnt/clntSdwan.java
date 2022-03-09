@@ -244,17 +244,18 @@ public class clntSdwan implements Runnable, ifcDn {
     public void sendPack(packHolder pck) {
     }
 
-    private void clearState(tabGen<clntSdwanConn> conns) {
-    }
-
     private void clearState() {
         if (conn != null) {
             conn.setClose();
         }
         myAddr4 = new addrIPv4();
         myAddr6 = new addrIPv6();
-        for (int i = 0; i < peers.size(); i++) {
-            peers.get(i).workStop();
+        for (int i = peers.size() - 1; i >= 0; i--) {
+            clntSdwanConn ntry = peers.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.workStop();
         }
         peers.clear();
         if (dataRand) {
