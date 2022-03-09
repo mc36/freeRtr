@@ -449,7 +449,7 @@ public class clntSdwan implements Runnable, ifcDn {
      * @return state
      */
     public userFormat getShow() {
-        userFormat l = new userFormat("|", "peer|port|num|iface|addr4|addr6");
+        userFormat l = new userFormat("|", "user|peer|port|num|iface|addr4|addr6");
         for (int i = 0; i < peers.size(); i++) {
             clntSdwanConn ntry = peers.get(i);
             if (ntry == null) {
