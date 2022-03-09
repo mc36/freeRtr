@@ -55,9 +55,14 @@ public class servSdwan extends servGeneric implements prtServS {
     protected tabGen<servSdwanConn> conns = new tabGen<servSdwanConn>();
 
     /**
-     * list of users
+     * report natted addresses
      */
     public boolean natted = true;
+
+    /**
+     * list of hubs
+     */
+    public String hubs = null;
 
     /**
      * defaults text
@@ -67,6 +72,7 @@ public class servSdwan extends servGeneric implements prtServS {
         "server sdwan .*! protocol " + proto2string(protoAllStrm),
         "server sdwan .*! no pool4",
         "server sdwan .*! no pool6",
+        "server sdwan .*! no hubs",
         "server sdwan .*! natted",};
 
     /**
@@ -101,6 +107,7 @@ public class servSdwan extends servGeneric implements prtServS {
     public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, pool4 == null, beg, "pool4", "" + pool4);
         cmds.cfgLine(l, pool6 == null, beg, "pool6", "" + pool6);
+        cmds.cfgLine(l, hubs == null, beg, "hubs", "" + hubs);
         cmds.cfgLine(l, !natted, beg, "natted", "");
     }
 
@@ -108,6 +115,10 @@ public class servSdwan extends servGeneric implements prtServS {
         String s = cmd.word();
         if (s.equals("natted")) {
             natted = true;
+            return false;
+        }
+        if (s.equals("hubs")) {
+            hubs = cmd.getRemaining();
             return false;
         }
         if (s.equals("pool4")) {
@@ -136,6 +147,10 @@ public class servSdwan extends servGeneric implements prtServS {
             natted = false;
             return false;
         }
+        if (s.equals("hubs")) {
+            hubs = null;
+            return false;
+        }
         if (s.equals("pool4")) {
             pool4 = null;
             return false;
@@ -149,6 +164,8 @@ public class servSdwan extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 .  natted                       use natted addresses");
+        l.add(null, "1 2  hubs                         list of hubs");
+        l.add(null, "2 2,.  <str>                      name of hub");
         l.add(null, "1 2  pool4                        ipv4 pool to use");
         l.add(null, "2 .    <name:pl4>                 name of pool");
         l.add(null, "1 2  pool6                        ipv6 pool to use");
@@ -165,9 +182,10 @@ public class servSdwan extends servGeneric implements prtServS {
      * send line to everyone
      *
      * @param excl peer to exclude
-     * @param s line to send
+     * @param hub value of the sender
+     * @param str line to send
      */
-    protected void sendLn(servSdwanConn excl, String s) {
+    protected void sendLn(servSdwanConn excl, boolean hub, String str) {
         for (int i = 0; i < conns.size(); i++) {
             servSdwanConn ntry = conns.get(i);
             if (ntry == null) {
@@ -176,7 +194,10 @@ public class servSdwan extends servGeneric implements prtServS {
             if (ntry == excl) {
                 continue;
             }
-            ntry.sendLn(s);
+            if ((ntry.hub == false) && (hub == false)) {
+                continue;
+            }
+            ntry.sendLn(str);
         }
     }
 
@@ -186,6 +207,11 @@ public class servSdwan extends servGeneric implements prtServS {
      * @param peer peer
      */
     protected synchronized void addEndpt(servSdwanConn peer) {
+        if (hubs == null) {
+            peer.hub = true;
+        } else {
+            peer.hub = (" " + hubs + " ").indexOf(" " + peer.username + " ") >= 0;
+        }
         servSdwanConn old = conns.put(peer);
         if (old != null) {
             old.doClose();
@@ -200,7 +226,7 @@ public class servSdwan extends servGeneric implements prtServS {
             }
             peer.sendLn("endpoint_add " + ntry.getEndpt());
         }
-        sendLn(peer, "endpoint_add " + peer.getEndpt());
+        sendLn(peer, peer.hub, "endpoint_add " + peer.getEndpt());
     }
 
 }
@@ -240,6 +266,8 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
     public addrIPv4 endptAdr4;
 
     public addrIPv6 endptAdr6;
+
+    public boolean hub;
 
     public int idNum;
 
@@ -337,7 +365,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
                 break;
             }
             if (a.equals("username")) {
-                username = cmd.getRemaining();
+                username = cmd.getRemaining().replaceAll(" ", "_");
                 continue;
             }
             if (a.equals("software")) {
@@ -391,7 +419,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         if (endptAdr6 != null) {
             lower.pool6.addrRelease(endptAdr6);
         }
-        lower.sendLn(this, "endpoint_del " + getEndpt());
+        lower.sendLn(this, hub, "endpoint_del " + getEndpt());
     }
 
     public String getEndpt() {
@@ -401,7 +429,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         } else {
             a = "" + endptIp;
         }
-        return endptVer + " " + a + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + username.replaceAll(" ", "_") + " " + endptPar;
+        return endptVer + " " + a + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + username + " " + endptPar;
     }
 
     public boolean doRound() {
