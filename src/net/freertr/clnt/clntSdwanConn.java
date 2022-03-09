@@ -82,6 +82,10 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
 
     private prtGenConn conn;
 
+    private boolean noMacsec;
+
+    private boolean noSgt;
+
     /**
      * create instance
      *
@@ -121,7 +125,18 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         peer6 = new addrIP();
         peer6.fromString(cmd.word());
         name = cmd.word();
-        par = cmd.getRemaining();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("nomacsec")) {
+                noMacsec = true;
+            }
+            if (a.equals("nosgt")) {
+                noSgt = true;
+            }
+        }
     }
 
     /**
@@ -161,6 +176,15 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         ifc = lower.clonIfc.cloneStart(this);
         ifc.addr4changed(lower.myAddr4, ifc.mask4, peer4.toIPv4());
         ifc.addr6changed(lower.myAddr6, ifc.mask6, peer6.toIPv6());
+        if (noMacsec) {
+            ifc.disableMacsec = true;
+            ifc.ethtyp.macSec = null;
+            ifc.ethtyp.timerUpdate();
+        }
+        if (noSgt) {
+            ifc.disableSgt = true;
+            ifc.ethtyp.sgtHnd = null;
+        }
     }
 
     /**

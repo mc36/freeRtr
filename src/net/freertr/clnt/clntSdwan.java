@@ -377,10 +377,17 @@ public class clntSdwan implements Runnable, ifcDn {
         addrIP adr = new addrIP();
         adr.fromIPv4addr(new addrIPv4());
         adr.fromIPv6addr(new addrIPv6());
-        sendLn("myendpoint " + prefer + " " + fwdIfc.addr + " " + dataPort);
+        String a = "";
+        if (clonIfc.disableMacsec) {
+            a += " nomacsec";
+        }
+        if (clonIfc.disableSgt) {
+            a += " nosgt";
+        }
+        sendLn("myendpoint " + prefer + " " + fwdIfc.addr + " " + dataPort + " " + a);
         sendLn("nomore");
         for (;;) {
-            String a = readLn();
+            a = readLn();
             cmds cmd = new cmds("sdw", a);
             a = cmd.word();
             if (a.length() < 1) {
@@ -428,12 +435,12 @@ public class clntSdwan implements Runnable, ifcDn {
             if (ntry.ver != prefer) {
                 return false;
             }
-            ntry.workStart();
-            ntry = peers.put(ntry);
-            if (ntry == null) {
-                return false;
+            clntSdwanConn old = peers.del(ntry);
+            if (old != null) {
+                old.workStop();
             }
-            ntry.workStop();
+            ntry.workStart();
+            peers.put(ntry);
             return false;
         }
         if (a.equals("endpoint_del")) {
