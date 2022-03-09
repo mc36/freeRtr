@@ -186,12 +186,21 @@ public class servSdwan extends servGeneric implements prtServS {
      * @param peer peer
      */
     protected synchronized void addEndpt(servSdwanConn peer) {
-        sendLn(peer, "endpoint_add " + peer.getEndpt());
         servSdwanConn old = conns.put(peer);
-        if (old == null) {
-            return;
+        if (old != null) {
+            old.doClose();
         }
-        old.doClose();
+        for (int i = 0; i < conns.size(); i++) {
+            servSdwanConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry == peer) {
+                continue;
+            }
+            peer.sendLn("endpoint_add " + ntry.getEndpt());
+        }
+        sendLn(peer, "endpoint_add " + peer.getEndpt());
     }
 
 }
@@ -369,16 +378,6 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         sendLn("nomore");
         logger.info("neighbor " + connA + " up");
         lower.addEndpt(this);
-        for (int i = 0; i < lower.conns.size(); i++) {
-            servSdwanConn ntry = lower.conns.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry == this) {
-                continue;
-            }
-            sendLn("endpoint_add " + ntry.getEndpt());
-        }
         return false;
     }
 
