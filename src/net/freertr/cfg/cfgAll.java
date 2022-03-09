@@ -1842,6 +1842,22 @@ public class cfgAll {
         ntry.setup2pppoeServ(null, null);
         ntry.setup2pppoeRely(null, null);
         ntry.clear2pseudowire();
+        if (ntry.vlanNum != 0) {
+            return false;
+        }
+        for (int i = ifaces.size() - 1; i >= 0; i--) {
+            cfgIfc cur = ifaces.get(i);
+            if (cur == null) {
+                continue;
+            }
+            if (cur.vlanNum == 0) {
+                continue;
+            }
+            if (cur.parent != ntry) {
+                continue;
+            }
+            ifcDel(cur.name, checks);
+        }
         return false;
     }
 
