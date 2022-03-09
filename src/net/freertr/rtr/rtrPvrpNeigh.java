@@ -150,7 +150,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     }
 
     public int compare(rtrPvrpNeigh o1, rtrPvrpNeigh o2) {
-        return o1.rtrId.compare(o1.rtrId, o2.rtrId);
+        return o1.peer.compare(o1.peer, o2.peer);
     }
 
     public String toString() {

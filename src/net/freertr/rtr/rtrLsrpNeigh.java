@@ -158,7 +158,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     }
 
     public int compare(rtrLsrpNeigh o1, rtrLsrpNeigh o2) {
-        return o1.rtrId.compare(o1.rtrId, o2.rtrId);
+        return o1.peer.compare(o1.peer, o2.peer);
     }
 
     /**
