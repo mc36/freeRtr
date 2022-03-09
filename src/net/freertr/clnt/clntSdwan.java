@@ -336,6 +336,12 @@ public class clntSdwan implements Runnable, ifcDn {
         } else {
             fwdIfc = ipFwdTab.findSendingIface(fwdCor, trg);
         }
+        if (fwdIfc == null) {
+            return;
+        }
+        if (!fwdIfc.ready) {
+            return;
+        }
         if (fwdCor.ipVersion != prefer) {
             logger.error("unable to resolve " + ctrlAddr);
             return;
