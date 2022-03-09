@@ -6,6 +6,7 @@ import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.cry.cryBase64;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
@@ -95,6 +96,11 @@ public class servForwarder extends servGeneric implements prtServS {
     public boolean logging = false;
 
     /**
+     * public key
+     */
+    public String trgKey = null;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
@@ -104,6 +110,7 @@ public class servForwarder extends servGeneric implements prtServS {
         "server forwarder .*! no target security",
         "server forwarder .*! no target username",
         "server forwarder .*! no target password",
+        "server forwarder .*! no target pubkey",
         "server forwarder .*! target protocol tcp",
         "server forwarder .*! timeout 300000",
         "server forwarder .*! buffer 65536",
@@ -130,6 +137,7 @@ public class servForwarder extends servGeneric implements prtServS {
         } else {
             l.add(beg + "target interface " + trgIface.name);
         }
+        cmds.cfgLine(l, trgKey == null, beg, "target pubkey", "" + trgKey);
         cmds.cfgLine(l, trgAddr == null, beg, "target address", "" + trgAddr);
         l.add(beg + "target port " + trgPort);
         l.add(beg + "target protocol " + proto2string(trgProto));
@@ -156,6 +164,10 @@ public class servForwarder extends servGeneric implements prtServS {
         }
         if (a.equals("target")) {
             a = cmd.word();
+            if (a.equals("pubkey")) {
+                trgKey = cmd.getRemaining();
+                return false;
+            }
             if (a.equals("vrf")) {
                 cfgVrf v = cfgAll.vrfFind(cmd.word(), false);
                 if (v == null) {
@@ -215,6 +227,10 @@ public class servForwarder extends servGeneric implements prtServS {
         }
         if (a.equals("target")) {
             a = cmd.word();
+            if (a.equals("pubkey")) {
+                trgKey = null;
+                return false;
+            }
             if (a.equals("vrf")) {
                 trgVrf = null;
                 return false;
@@ -263,6 +279,8 @@ public class servForwarder extends servGeneric implements prtServS {
         l.add(null, "3 .      <name:vrf>               name of vrf");
         l.add(null, "2 3    interface                  set source interface");
         l.add(null, "3 .      <name:ifc>               name of interface");
+        l.add(null, "2 3    pubkey                     set target public key");
+        l.add(null, "3 3,.    <str>                    public key");
         l.add(null, "2 3    address                    set target address");
         l.add(null, "3 .      <addr>                   remote address");
         l.add(null, "2 3    port                       set target port");
@@ -347,7 +365,11 @@ public class servForwarder extends servGeneric implements prtServS {
         if (con2.wait4ready(timeOut)) {
             return true;
         }
-        pipeSide con3 = secClient.openSec(con2, trgSecur, trgUser, trgPass);
+        byte[] pkey = null;
+        if (trgKey != null) {
+            pkey = cryBase64.decodeBytes(trgKey);
+        }
+        pipeSide con3 = secClient.openSec(con2, trgSecur, null, trgUser, trgPass);
         if (con3 == null) {
             con2.setClose();
             return true;

@@ -251,7 +251,7 @@ public class clntSstp implements Runnable, ifcDn {
         if (pipe == null) {
             return;
         }
-        pipe = secClient.openSec(pipe, url.getSecurity(), url.username, url.password);
+        pipe = secClient.openSec(pipe, url.getSecurity(), null, url.username, url.password);
         if (pipe == null) {
             return;
         }

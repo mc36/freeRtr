@@ -380,7 +380,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 if (debugger.rtrLsrpEvnt) {
                     logger.debug("secure client " + peer);
                 }
-                conn = secClient.openSec(conn, iface.encryptionMethod, "", "");
+                conn = secClient.openSec(conn, iface.encryptionMethod, null, "", "");
             } else {
                 if (debugger.rtrLsrpEvnt) {
                     logger.debug("secure server " + peer);

@@ -163,7 +163,7 @@ public class secWebsock {
             if (pipe == null) {
                 return null;
             }
-            pipe = secClient.openSec(pipe, servGeneric.protoTls, null, null);
+            pipe = secClient.openSec(pipe, servGeneric.protoTls, null, null, null);
         }
         if (pipe == null) {
             return null;

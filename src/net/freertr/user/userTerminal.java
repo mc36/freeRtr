@@ -112,7 +112,7 @@ public class userTerminal {
             }
         }
         console.strPut("securing connection");
-        stream = secClient.openSec(stream, proto, user, pass);
+        stream = secClient.openSec(stream, proto, null, user, pass);
         if (stream == null) {
             console.linePut(" failed!");
             return null;

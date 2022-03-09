@@ -238,7 +238,7 @@ public class clntProxy {
                 return null;
             }
             pip.setTime(120000);
-            pip = secClient.openSec(pip, secProto, username, password);
+            pip = secClient.openSec(pip, secProto, null, username, password);
             if (pip == null) {
                 return null;
             }
@@ -291,7 +291,7 @@ public class clntProxy {
                 pip.setClose();
                 return null;
             }
-            pip = secClient.openSec(pip, secProto, username, password);
+            pip = secClient.openSec(pip, secProto, null, username, password);
             if (pip == null) {
                 return null;
             }
@@ -316,7 +316,7 @@ public class clntProxy {
         if (pip == null) {
             return null;
         }
-        pip = secClient.openSec(pip, secProto, username, password);
+        pip = secClient.openSec(pip, secProto, null, username, password);
         if (pip == null) {
             return null;
         }

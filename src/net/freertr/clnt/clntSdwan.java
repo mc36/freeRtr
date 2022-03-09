@@ -8,6 +8,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.cry.cryBase64;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
@@ -86,6 +87,11 @@ public class clntSdwan implements Runnable, ifcDn {
     public int prefer;
 
     /**
+     * pubkey to use
+     */
+    public String pubkey = null;
+
+    /**
      * username to use
      */
     public String username = null;
@@ -109,6 +115,11 @@ public class clntSdwan implements Runnable, ifcDn {
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
+
+    /**
+     * timeout
+     */
+    public int timeout = 120000;
 
     /**
      * counter
@@ -358,20 +369,28 @@ public class clntSdwan implements Runnable, ifcDn {
             logger.error("unable to connect " + trg);
             return;
         }
-        conn.setTime(120000);
+        conn.setTime(timeout);
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
+        if (conn.wait4ready(timeout)) {
+            logger.error("failed to connect " + trg);
+            return;
+        }
         sendLn("sdwan");
         if (!readLn().equals("okay")) {
             logger.error("unable to validate " + trg);
             return;
         }
-        conn = secClient.openSec(conn, servGeneric.protoSsh, username, password);
+        byte[] pkey = null;
+        if (pubkey != null) {
+            pkey = cryBase64.decodeBytes(pubkey);
+        }
+        conn = secClient.openSec(conn, servGeneric.protoSsh, pkey, username, password);
         if (conn == null) {
             logger.error("unable to authenticate " + trg);
             return;
         }
-        conn.setTime(120000);
+        conn.setTime(timeout);
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         sendLn("hello");

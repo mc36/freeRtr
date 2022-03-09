@@ -174,7 +174,7 @@ class pipeTermTx implements Runnable {
                     case 84: // T
                     case 20: // ctrl+t
                         parent.console.strPut("tls negotiation");
-                        pipeSide res = secClient.openSec(parent.stream, servGeneric.protoTls, null, null);
+                        pipeSide res = secClient.openSec(parent.stream, servGeneric.protoTls, null, null, null);
                         if (res == null) {
                             parent.console.linePut(" failed!");
                         } else {

@@ -692,7 +692,7 @@ public class userTest {
             secSsh srvH = new secSsh(conn.getSide(), new pipeLine(65536, false));
             secSsh clnH = new secSsh(conn.getSide(), new pipeLine(65536, false));
             srvH.startServer(new authConstant(true), rsa, dss, ecdss);
-            clnH.startClient("c", "c");
+            clnH.startClient(null, "c", "c");
             doTestPipe("ssh", srvH.getPipe(), clnH.getPipe(), 1024);
             conn.setClose();
             return null;

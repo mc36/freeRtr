@@ -223,7 +223,7 @@ public class clntTelnet implements Runnable, ifcDn {
         }
         conn.setTime(120000);
         if (security > 0) {
-            conn = secClient.openSec(conn, security, username, password);
+            conn = secClient.openSec(conn, security, null, username, password);
         }
         if (conn == null) {
             return;

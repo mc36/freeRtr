@@ -323,7 +323,7 @@ public class clntHttp {
         if (debug) {
             logger.debug("securing " + url.dump());
         }
-        pipe = secClient.openSec(pipe, url.getSecurity(), url.username, url.password);
+        pipe = secClient.openSec(pipe, url.getSecurity(), null, url.username, url.password);
         if (pipe == null) {
             return true;
         }

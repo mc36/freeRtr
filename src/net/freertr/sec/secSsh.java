@@ -77,6 +77,11 @@ public class secSsh implements Runnable {
     protected cryKeyECDSA keyecdsa;
 
     /**
+     * client pubkey
+     */
+    protected byte[] clntPkey;
+
+    /**
      * client username
      */
     protected String clntUser;
@@ -138,13 +143,15 @@ public class secSsh implements Runnable {
     /**
      * start client connection
      *
+     * @param pkey pubkey
      * @param user username
      * @param pass password
      */
-    public void startClient(String user, String pass) {
+    public void startClient(byte[] pkey, String user, String pass) {
         client = true;
         clntUser = user;
         clntPass = pass;
+        clntPkey = pkey;
         workerStart();
     }
 
@@ -585,6 +592,14 @@ public class secSsh implements Runnable {
         pg.hashBuf(pg.cert);
         pg.hashMerge();
         pg.hashCalc();
+        if (clntPkey != null) {
+            if (clntPkey.length != pg.cert.length) {
+                return;
+            }
+            if (bits.byteComp(clntPkey, 0, pg.cert, 0, clntPkey.length) != 0) {
+                return;
+            }
+        }
         cryKeyGeneric key = pi.getKeyVerifier();
         if (key.sshReader(pg.cert)) {
             return;
