@@ -393,40 +393,39 @@ public class userReader implements Comparator<String> {
         return res.formatAll(tabMod);
     }
 
+    private cmds doSummary(userFormat.tableMode tabMod, String a) {
+        switch (tabMod) {
+            case raw:
+            case csv:
+                a = a.replaceAll(";", " ").trim();
+                break;
+            case fancy:
+            case table:
+                a = a.replaceAll("\\|", " ").trim();
+                break;
+            case html:
+            case normal:
+            case setdel:
+                break;
+        }
+        return new cmds("row", a);
+    }
+
     private List<String> doSummary(List<String> lst) {
         List<Long> sum = new ArrayList<Long>();
         List<Long> min = new ArrayList<Long>();
         List<Long> max = new ArrayList<Long>();
         final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
         for (int i = 0; i < lst.size(); i++) {
-            String a = lst.get(i).trim();
-            switch (tabMod) {
-                case raw:
-                case csv:
-                    a = a.replaceAll(";", " ").trim();
-                    break;
-                case fancy:
-                case table:
-                    a = a.replaceAll("\\|", " ").trim();
-                    break;
-                case html:
-                case normal:
-                case setdel:
-                    break;
-            }
-            cmds cmd = new cmds("row", a);
+            cmds cmd = doSummary(tabMod, lst.get(i));
             for (int p = 0;; p++) {
-                a = cmd.word();
+                String a = cmd.word();
                 if (a.length() < 1) {
                     break;
                 }
                 if (p >= sum.size()) {
                     sum.add((long) 0);
-                }
-                if (p >= min.size()) {
                     min.add(Long.MAX_VALUE);
-                }
-                if (p >= max.size()) {
                     max.add(Long.MIN_VALUE);
                 }
                 long v = bits.str2long(a);
@@ -447,7 +446,7 @@ public class userReader implements Comparator<String> {
         if (div < 1) {
             div = 1;
         }
-        cmds cmd = new cmds("row", lst.get(0));
+        cmds cmd = doSummary(tabMod, lst.get(0));
         for (int i = 0; i < sum.size(); i++) {
             long val = sum.get(i);
             res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
