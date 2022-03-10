@@ -219,6 +219,10 @@ public class prtTcp extends prtGen {
                 case 0x03: // window scale
                     pck.TCPwsc = tlv.valDat[0] & 0xff;
                     continue;
+                case 0x08: // timestamps
+                    pck.TCPtsV = bits.msbGetD(tlv.valDat, 0);
+                    pck.TCPtsE = bits.msbGetD(tlv.valDat, 4);
+                    continue;
                 default:
                     continue;
             }
@@ -383,6 +387,9 @@ public class prtTcp extends prtGen {
         if (pck.TCPwsc > 0) {
             hdr += 4;
         }
+        if (pck.TCPtsV != 0) {
+            hdr += 12;
+        }
         cryHashMd5 h = new cryHashMd5();
         h.init();
         hashOneAddress(h, pck.IPsrc);
@@ -439,6 +446,15 @@ public class prtTcp extends prtGen {
             bits.msbPutW(tlv.valDat, 0, pck.TCPmss);
             tlv.putBytes(pck, 2, 2, tlv.valDat); // mss
         }
+        if (pck.TCPtsV != 0) {
+            pck.putByte(0, 1); // nop
+            pck.putByte(1, 1); // nop
+            pck.putSkip(2);
+            typLenVal tlv = getTCPoption(null);
+            bits.msbPutD(tlv.valDat, 0, pck.TCPtsV);
+            bits.msbPutD(tlv.valDat, 4, pck.TCPtsE);
+            tlv.putBytes(pck, 8, 8, tlv.valDat); // timestamp
+        }
         if (pck.TCPwsc > 0) {
             typLenVal tlv = getTCPoption(null);
             tlv.valDat[0] = (byte) pck.TCPwsc;
@@ -481,6 +497,8 @@ public class prtTcp extends prtGen {
         pck.clear();
         pck.TCPmss = 0;
         pck.TCPwsc = 0;
+        pck.TCPtsE = 0;
+        pck.TCPtsV = 0;
         pck.UDPsrc = src.UDPtrg;
         pck.UDPtrg = src.UDPsrc;
         pck.TCPseq = src.TCPack;
@@ -537,6 +555,10 @@ public class prtTcp extends prtGen {
             }
             pck.TCPwin = i >>> cfgAll.tcpWinScale;
             pck.TCPurg = 0;
+            if (pr.tmstmpTx != 0) {
+                pck.TCPtsE = pr.tmstmpRx;
+                pck.TCPtsV = pr.tmstmpTx + (int) bits.getTime();
+            }
             pck.IPsrc.setAddr(clnt.iface.addr);
             pck.IPtrg.setAddr(clnt.peerAddr);
             pck.IPdf = false;
@@ -605,10 +627,16 @@ public class prtTcp extends prtGen {
         pr.activWait = prtTcpConn.tmNow;
         pr.activFrcd = true;
         pr.seqLoc = bits.randomD();
+        if (cfgAll.tcpTimStmp) {
+            pr.tmstmpTx = 1 + bits.randomD();
+        }
         pr.staTim = bits.getTime();
         if (pck == null) {
             pr.state = prtTcpConn.stConReq;
             return false;
+        }
+        if (pck.TCPtsV == 0) {
+            pr.tmstmpTx = 0;
         }
         pr.state = prtTcpConn.stGotSyn;
         pr.seqRem = pck.TCPseq + 1;
@@ -667,7 +695,8 @@ public class prtTcp extends prtGen {
      */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
-        return pck.pipeSend(pr.netBufTx, 0, pck.dataSize(), 1) != pck.dataSize();
+        int len = pck.dataSize();
+        return pck.pipeSend(pr.netBufTx, 0, len, 1) != len;
     }
 
     private static boolean spoofCheck(int i) {
@@ -688,6 +717,9 @@ public class prtTcp extends prtGen {
             int packSize = pck.dataSize(); // bytes in packet
             int newBytes = packSize - oldBytes; // new bytes in packet
             int flg = pck.TCPflg & flagSynFinRstAck;
+            if (pr.tmstmpTx != 0) {
+                pr.tmstmpRx = pck.TCPtsV;
+            }
             if ((flg & flagSynFin) == flagSynFin) {
                 logger.info("got both syn fin " + clnt);
                 return;
@@ -706,6 +738,9 @@ public class prtTcp extends prtGen {
                 pr.seqRem = pck.TCPseq + 1;
                 if (debugger.prtTcpTraf) {
                     logger.debug("accepted");
+                }
+                if (pck.TCPtsE == 0) {
+                    pr.tmstmpTx = 0;
                 }
                 pr.state = prtTcpConn.stOpened;
                 pr.staTim = bits.getTime();
@@ -1170,6 +1205,16 @@ class prtTcpConn {
      * tx buffer
      */
     protected pipeSide netBufTx;
+
+    /**
+     * timestamp base
+     */
+    protected int tmstmpTx;
+
+    /**
+     * timestamp received
+     */
+    protected int tmstmpRx;
 
     public String toString() {
         switch (state) {

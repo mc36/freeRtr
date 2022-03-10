@@ -317,6 +317,16 @@ public class packHolder {
     public int TCPmss;
 
     /**
+     * tcp timestamp value
+     */
+    public int TCPtsV;
+
+    /**
+     * tcp timestamp echo
+     */
+    public int TCPtsE;
+
+    /**
      * window scale
      */
     public int TCPwsc;
@@ -391,6 +401,8 @@ public class packHolder {
         TCPwin = 0;
         TCPurg = 0;
         TCPmss = 0;
+        TCPtsV = 0;
+        TCPtsE = 0;
         TCPwsc = 0;
         RTPtyp = 0;
         RTPsrc = 0;
@@ -466,6 +478,8 @@ public class packHolder {
         TCPwin = src.TCPwin;
         TCPurg = src.TCPurg;
         TCPmss = src.TCPmss;
+        TCPtsV = src.TCPtsV;
+        TCPtsE = src.TCPtsE;
         TCPwsc = src.TCPwsc;
         RTPtyp = src.RTPtyp;
         RTPsrc = src.RTPsrc;

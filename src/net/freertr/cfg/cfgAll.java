@@ -949,6 +949,11 @@ public class cfgAll {
     public static int tcpWinScale = 1;
 
     /**
+     * tcp timestamps
+     */
+    public static boolean tcpTimStmp = true;
+
+    /**
      * tcp checksum tx
      */
     public static boolean tcpChecksumTx = true;
@@ -1087,6 +1092,7 @@ public class cfgAll {
         "!client udp-checksum both",
         "!client tcp-segments 1024",
         "!client tcp-winscale 1",
+        "!client tcp-timestamp",
         "!client tcp-checksum both",
         "!client ludp-checksum both",
         "!client dccp-checksum both",
@@ -3381,6 +3387,7 @@ public class cfgAll {
         l.add("client tcp-checksum " + rxtx2string(tcpChecksumRx, tcpChecksumTx));
         l.add("client tcp-segments " + tcpMaxSegment);
         l.add("client tcp-winscale " + tcpWinScale);
+        cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
         l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
         l.add("client dccp-checksum " + rxtx2string(dccpChecksumRx, dccpChecksumTx));
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));

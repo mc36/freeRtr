@@ -603,6 +603,7 @@ public class userConfig {
         l.add(null, ".3 .      receive                    only check, not generate");
         l.add(null, ".3 .      transmit                   only generate, not check");
         l.add(null, ".3 .      none                       not generate nor check");
+        l.add(null, ".2  .    tcp-timestamp               set tcp timestamping");
         l.add(null, ".2  3    tcp-segments                set tcp segment size");
         l.add(null, ".3  .      <num>                      bytes");
         l.add(null, ".2  3    tcp-winscale                set tcp window scale");
@@ -1753,6 +1754,10 @@ public class userConfig {
                 cfgAll.udpChecksumTx = (i & 2) != 0;
                 return;
             }
+            if (a.equals("tcp-timestamp")) {
+                cfgAll.tcpTimStmp = true;
+                return;
+            }
             if (a.equals("tcp-segments")) {
                 cfgAll.tcpMaxSegment = bits.str2num(cmd.word());
                 return;
@@ -2656,6 +2661,10 @@ public class userConfig {
             }
             if (a.equals("password-stars")) {
                 cfgAll.passwdStars = false;
+                return;
+            }
+            if (a.equals("tcp-timestamp")) {
+                cfgAll.tcpTimStmp = false;
                 return;
             }
             if (a.equals("prefer-ipv6")) {
