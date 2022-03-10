@@ -399,9 +399,8 @@ public class clntSdwan implements Runnable, ifcDn {
         sendLn("middleware " + version.getVMname());
         sendLn("kernel " + version.getKernelName());
         sendLn("hardware " + cfgInit.hwIdNum + " " + version.getCPUname() + version.getMemoryInfo());
-        addrIP adr = new addrIP();
-        adr.fromIPv4addr(new addrIPv4());
-        adr.fromIPv6addr(new addrIPv6());
+        sendLn("needaddr " + (clonIfc.addr4 != null) + " " + (clonIfc.addr6 != null));
+        sendLn("myaddr " + clonIfc.addr4 + " " + clonIfc.addr6);
         String a = "";
         if (clonIfc.disableMacsec) {
             a += " nomacsec";
@@ -424,6 +423,9 @@ public class clntSdwan implements Runnable, ifcDn {
             if (a.equals("nomore")) {
                 break;
             }
+            if (a.equals("hello")) {
+                continue;
+            }
             if (a.equals("youraddr")) {
                 myAddr4.fromString(cmd.word());
                 myAddr6.fromString(cmd.word());
@@ -433,6 +435,7 @@ public class clntSdwan implements Runnable, ifcDn {
                 myNum = bits.str2num(cmd.word());
                 continue;
             }
+            logger.warn("got unknown command: " + cmd.getOriginal());
         }
         logger.info("neighbor " + trg + " up");
         for (;;) {

@@ -158,24 +158,24 @@ r1 tping 100 60 1234:3::2 /vrf v1
 
 r2 tping 100 60 2.2.2.2 /vrf v1
 r2 tping 100 60 2.2.2.3 /vrf v1
-r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 100 60 2.2.2.4 /vrf v1
 
 r3 tping 100 60 2.2.2.2 /vrf v1
 r3 tping 100 60 2.2.2.3 /vrf v1
-r3 tping 100 60 2.2.2.3 /vrf v1
+r3 tping 100 60 2.2.2.4 /vrf v1
 
 r4 tping 100 60 2.2.2.2 /vrf v1
 r4 tping 100 60 2.2.2.3 /vrf v1
-r4 tping 100 60 2.2.2.3 /vrf v1
+r4 tping 100 60 2.2.2.4 /vrf v1
 
 r2 tping 100 60 2222::2 /vrf v1
 r2 tping 100 60 2222::3 /vrf v1
-r2 tping 100 60 2222::3 /vrf v1
+r2 tping 100 60 2222::4 /vrf v1
 
 r3 tping 100 60 2222::2 /vrf v1
 r3 tping 100 60 2222::3 /vrf v1
-r3 tping 100 60 2222::3 /vrf v1
+r3 tping 100 60 2222::4 /vrf v1
 
 r4 tping 100 60 2222::2 /vrf v1
 r4 tping 100 60 2222::3 /vrf v1
-r4 tping 100 60 2222::3 /vrf v1
+r4 tping 100 60 2222::4 /vrf v1

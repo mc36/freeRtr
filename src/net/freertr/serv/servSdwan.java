@@ -246,29 +246,33 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
 
     public String authed;
 
-    public String username;
+    public String username = "unknown";
 
-    public String hostname;
+    public String hostname = "unknown";
 
-    public String software;
+    public String software = "unknown";
 
-    public String hardware;
+    public String hardware = "unknown";
 
-    public String middleware;
+    public String middleware = "unknown";
 
-    public String kernel;
+    public String kernel = "unknown";
 
-    public int endptVer;
+    public int endptProto;
 
-    public addrIP endptIp;
+    public addrIP endptIp = null;
 
-    public int endptPrt;
+    public int endptPort;
 
     public String endptPar;
 
-    public addrIPv4 endptAdr4;
+    public addrIPv4 innerAdr4 = new addrIPv4();
 
-    public addrIPv6 endptAdr6;
+    public addrIPv6 innerAdr6 = new addrIPv6();
+
+    public boolean addrRel4 = false;
+
+    public boolean addrRel6 = false;
 
     public boolean hub;
 
@@ -352,8 +356,8 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
             logger.debug("accepted " + connA);
         }
         idNum = bits.randomW();
-        sendLn("hello");
-        sendLn("yourid " + idNum);
+        boolean needAdr4 = false;
+        boolean needAdr6 = false;
         for (;;) {
             String a = readLn();
             cmds cmd = new cmds("sdw", a);
@@ -366,6 +370,9 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
             }
             if (a.equals("nomore")) {
                 break;
+            }
+            if (a.equals("hello")) {
+                continue;
             }
             if (a.equals("username")) {
                 username = cmd.getRemaining().replaceAll(" ", "_");
@@ -391,21 +398,48 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
                 if (endptIp != null) {
                     continue;
                 }
-                endptVer = bits.str2num(cmd.word());
+                endptProto = bits.str2num(cmd.word());
                 endptIp = new addrIP();
                 endptIp.fromString(cmd.word());
-                endptPrt = bits.str2num(cmd.word());
+                endptPort = bits.str2num(cmd.word());
                 endptPar = cmd.getRemaining();
-                if (lower.pool4 != null) {
-                    endptAdr4 = lower.pool4.addrAlloc();
-                }
-                if (lower.pool6 != null) {
-                    endptAdr6 = lower.pool6.addrAlloc();
-                }
                 continue;
             }
+            if (a.equals("needaddr")) {
+                needAdr4 = cmd.word().equals("true");
+                needAdr6 = cmd.word().equals("true");
+                continue;
+            }
+            if (a.equals("myaddr")) {
+                innerAdr4.fromString(cmd.word());
+                innerAdr6.fromString(cmd.word());
+                continue;
+            }
+            logger.warn("got unknown command: " + cmd.getOriginal());
         }
-        sendLn("youraddr " + endptAdr4 + " " + endptAdr6);
+        if (endptIp == null) {
+            sendLn("error no endpoint address sent");
+            return true;
+        }
+        if ((needAdr4 == false) && (needAdr6 == false)) {
+            sendLn("error no tunneled address asked");
+            return true;
+        }
+        sendLn("hello");
+        sendLn("yourid " + idNum);
+        if (needAdr4 && (lower.pool4 != null)) {
+            if (innerAdr4.isFilled(0)) {
+                innerAdr4 = lower.pool4.addrAlloc();
+                addrRel4 = innerAdr4 != null;
+            }
+        }
+        if (needAdr6 && (lower.pool6 != null)) {
+            if (innerAdr6.isFilled(0)) {
+                innerAdr6 = lower.pool6.addrAlloc();
+                addrRel6 = innerAdr6 != null;
+            }
+        }
+        sendLn("youraddr " + innerAdr4 + " " + innerAdr6);
         sendLn("nomore");
         logger.info("neighbor " + connA + " up");
         lower.addEndpt(this);
@@ -416,11 +450,11 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         logger.warn("neighbor " + connA + " down");
         lower.conns.del(this);
         connS.setClose();
-        if (endptAdr4 != null) {
-            lower.pool4.addrRelease(endptAdr4);
+        if (addrRel4 && (innerAdr4 != null)) {
+            lower.pool4.addrRelease(innerAdr4);
         }
-        if (endptAdr6 != null) {
-            lower.pool6.addrRelease(endptAdr6);
+        if (addrRel6 && (innerAdr6 != null)) {
+            lower.pool6.addrRelease(innerAdr6);
         }
         lower.sendLn(this, hub, "endpoint_del " + getEndpt());
     }
@@ -432,7 +466,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         } else {
             a = "" + endptIp;
         }
-        return endptVer + " " + a + " " + endptPrt + " " + idNum + " " + endptAdr4 + " " + endptAdr6 + " " + username + " " + endptPar;
+        return endptProto + " " + a + " " + endptPort + " " + idNum + " " + innerAdr4 + " " + innerAdr6 + " " + username + " " + endptPar;
     }
 
     public boolean doRound() {

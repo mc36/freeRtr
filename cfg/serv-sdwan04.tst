@@ -1,4 +1,4 @@
-description sdwan over ipv4
+description sdwan hub and spoke
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,6 +8,7 @@ int eth3 eth 0000.0000.3333 $3a$ $3b$
 aaa userlist usr
  username u password p
  username u privilege 14
+ username h password p
  exit
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
@@ -35,8 +36,8 @@ int eth3
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff::
  exit
-ipv4 pool p4 2.2.2.2 0.0.0.1 3
-ipv6 pool p6 2222::2 ::1 3
+ipv4 pool p4 2.2.2.222 0.0.0.1 3
+ipv6 pool p6 2222::222 ::1 3
 server sdwan v9
  security authentication usr
  security rsakey rsa
@@ -44,6 +45,7 @@ server sdwan v9
  security ecdsakey ecdsa
  pool4 p4
  pool6 p6
+ hub h
  vrf v1
  exit
 !
@@ -67,14 +69,14 @@ proxy-profile p1
  exit
 int di1
  vrf for v1
- ipv4 addr dyn dyn
- ipv6 addr dyn dyn
+ ipv4 addr 2.2.2.2 255.255.255.255
+ ipv6 addr 2222::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 vpdn sdw
  int di1
- target 1.1.1.99
+ target 1234::99
  proxy p1
- pref ipv4
+ pref ipv6
  user u
  pass p
  proto sdwan
@@ -100,14 +102,14 @@ proxy-profile p1
  exit
 int di1
  vrf for v1
- ipv4 addr dyn dyn
- ipv6 addr dyn dyn
+ ipv4 addr 2.2.2.3 255.255.255.255
+ ipv6 addr 2222::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 vpdn sdw
  int di1
- target 1.1.1.99
+ target 1234::99
  proxy p1
- pref ipv4
+ pref ipv6
  user u
  pass p
  proto sdwan
@@ -133,15 +135,15 @@ proxy-profile p1
  exit
 int di1
  vrf for v1
- ipv4 addr dyn dyn
- ipv6 addr dyn dyn
+ ipv4 addr 2.2.2.4 255.255.255.255
+ ipv6 addr 2222::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 vpdn sdw
  int di1
- target 1.1.1.99
+ target 1234::99
  proxy p1
- pref ipv4
- user u
+ pref ipv6
+ user h
  pass p
  calling 1701
  proto sdwan
@@ -157,10 +159,10 @@ r1 tping 100 60 1234:2::2 /vrf v1
 r1 tping 100 60 1234:3::2 /vrf v1
 
 r2 tping 100 60 2.2.2.2 /vrf v1
-r2 tping 100 60 2.2.2.3 /vrf v1
+r2 tping 0 60 2.2.2.3 /vrf v1
 r2 tping 100 60 2.2.2.4 /vrf v1
 
-r3 tping 100 60 2.2.2.2 /vrf v1
+r3 tping 0 60 2.2.2.2 /vrf v1
 r3 tping 100 60 2.2.2.3 /vrf v1
 r3 tping 100 60 2.2.2.4 /vrf v1
 
@@ -169,10 +171,10 @@ r4 tping 100 60 2.2.2.3 /vrf v1
 r4 tping 100 60 2.2.2.4 /vrf v1
 
 r2 tping 100 60 2222::2 /vrf v1
-r2 tping 100 60 2222::3 /vrf v1
+r2 tping 0 60 2222::3 /vrf v1
 r2 tping 100 60 2222::4 /vrf v1
 
-r3 tping 100 60 2222::2 /vrf v1
+r3 tping 0 60 2222::2 /vrf v1
 r3 tping 100 60 2222::3 /vrf v1
 r3 tping 100 60 2222::4 /vrf v1
 
