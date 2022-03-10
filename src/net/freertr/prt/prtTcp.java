@@ -216,6 +216,9 @@ public class prtTcp extends prtGen {
                 case 0x02: // maximum segment size
                     pck.TCPmss = bits.msbGetW(tlv.valDat, 0);
                     continue;
+                case 0x03: // window scale
+                    pck.TCPwsc = tlv.valDat[0] & 0xff;
+                    continue;
                 default:
                     continue;
             }
@@ -377,6 +380,9 @@ public class prtTcp extends prtGen {
         if (pck.TCPmss > 0) {
             hdr += 4;
         }
+        if (pck.TCPwsc > 0) {
+            hdr += 4;
+        }
         cryHashMd5 h = new cryHashMd5();
         h.init();
         hashOneAddress(h, pck.IPsrc);
@@ -424,14 +430,20 @@ public class prtTcp extends prtGen {
             byte[] buf = getTCPpassword(pck, pwd.getBytes());
             bits.byteCopy(buf, 0, tlv.valDat, 0, buf.length);
             tlv.putBytes(pck, 19, 16, tlv.valDat); // md5
+            pck.putByte(0, 1); // nop
+            pck.putByte(1, 1); // nop
+            pck.putSkip(2);
         }
         if (pck.TCPmss > 0) {
             typLenVal tlv = getTCPoption(null);
             bits.msbPutW(tlv.valDat, 0, pck.TCPmss);
             tlv.putBytes(pck, 2, 2, tlv.valDat); // mss
         }
-        for (; (pck.headSize() & 3) != 0;) {
-            pck.putByte(0, 0);
+        if (pck.TCPwsc > 0) {
+            typLenVal tlv = getTCPoption(null);
+            tlv.valDat[0] = (byte) pck.TCPwsc;
+            tlv.putBytes(pck, 3, 1, tlv.valDat); // win scale
+            pck.putByte(0, 1); // nop
             pck.putSkip(1);
         }
         int hdrSiz = size + pck.headSize();
@@ -468,6 +480,7 @@ public class prtTcp extends prtGen {
         packHolder pck = new packHolder(true, true);
         pck.clear();
         pck.TCPmss = 0;
+        pck.TCPwsc = 0;
         pck.UDPsrc = src.UDPtrg;
         pck.UDPtrg = src.UDPsrc;
         pck.TCPseq = src.TCPack;
@@ -509,6 +522,7 @@ public class prtTcp extends prtGen {
                 datSiz = 0;
             }
             pck.TCPmss = 0;
+            pck.TCPwsc = 0;
             pck.UDPsrc = clnt.portLoc;
             pck.UDPtrg = clnt.portRem;
             pck.TCPseq = pr.seqLoc + pr.netOut;
@@ -521,7 +535,7 @@ public class prtTcp extends prtGen {
             if (i > winSizMax) {
                 i = winSizMax;
             }
-            pck.TCPwin = i;
+            pck.TCPwin = i >>> cfgAll.tcpWinScale;
             pck.TCPurg = 0;
             pck.IPsrc.setAddr(clnt.iface.addr);
             pck.IPtrg.setAddr(clnt.peerAddr);
@@ -532,6 +546,7 @@ public class prtTcp extends prtGen {
             if ((flg & flagSYN) != 0) {
                 pck.TCPseq--;
                 pck.TCPmss = cfgAll.tcpMaxSegment;
+                pck.TCPwsc = cfgAll.tcpWinScale;
             }
             pr.netOut += datSiz;
         }

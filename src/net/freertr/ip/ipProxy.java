@@ -306,6 +306,7 @@ public class ipProxy implements ifcUp {
                     conn.toPack(pck);
                     pck.putStart();
                     pck.TCPmss = 1024;
+                    pck.TCPwsc = 0;
                     pck.TCPseq--;
                     sendTcp(pck, prtTcp.flagSynAck);
                     return;

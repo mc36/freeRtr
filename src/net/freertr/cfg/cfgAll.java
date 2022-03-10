@@ -944,6 +944,11 @@ public class cfgAll {
     public static int tcpMaxSegment = 1024;
 
     /**
+     * tcp window scale
+     */
+    public static int tcpWinScale = 1;
+
+    /**
      * tcp checksum tx
      */
     public static boolean tcpChecksumTx = true;
@@ -1081,6 +1086,7 @@ public class cfgAll {
         "!client icmp6-checksum both",
         "!client udp-checksum both",
         "!client tcp-segments 1024",
+        "!client tcp-winscale 1",
         "!client tcp-checksum both",
         "!client ludp-checksum both",
         "!client dccp-checksum both",
@@ -3374,6 +3380,7 @@ public class cfgAll {
         l.add("client udp-checksum " + rxtx2string(udpChecksumRx, udpChecksumTx));
         l.add("client tcp-checksum " + rxtx2string(tcpChecksumRx, tcpChecksumTx));
         l.add("client tcp-segments " + tcpMaxSegment);
+        l.add("client tcp-winscale " + tcpWinScale);
         l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
         l.add("client dccp-checksum " + rxtx2string(dccpChecksumRx, dccpChecksumTx));
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));

@@ -605,6 +605,8 @@ public class userConfig {
         l.add(null, ".3 .      none                       not generate nor check");
         l.add(null, ".2  3    tcp-segments                set tcp segment size");
         l.add(null, ".3  .      <num>                      bytes");
+        l.add(null, ".2  3    tcp-winscale                set tcp window scale");
+        l.add(null, ".3  .      <num>                      factor");
         l.add(null, "2  3    access-subnet-ipv4           access subnet length");
         l.add(null, "3  .      <num>                      bits");
         l.add(null, "2  3    access-subnet-ipv6           access subnet length");
@@ -1753,6 +1755,10 @@ public class userConfig {
             }
             if (a.equals("tcp-segments")) {
                 cfgAll.tcpMaxSegment = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("tcp-winscale")) {
+                cfgAll.tcpWinScale = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("tcp-checksum")) {

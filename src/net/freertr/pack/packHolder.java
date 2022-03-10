@@ -317,6 +317,11 @@ public class packHolder {
     public int TCPmss;
 
     /**
+     * window scale
+     */
+    public int TCPwsc;
+
+    /**
      * payload type
      */
     public int RTPtyp;
@@ -386,6 +391,7 @@ public class packHolder {
         TCPwin = 0;
         TCPurg = 0;
         TCPmss = 0;
+        TCPwsc = 0;
         RTPtyp = 0;
         RTPsrc = 0;
     }
@@ -460,6 +466,7 @@ public class packHolder {
         TCPwin = src.TCPwin;
         TCPurg = src.TCPurg;
         TCPmss = src.TCPmss;
+        TCPwsc = src.TCPwsc;
         RTPtyp = src.RTPtyp;
         RTPsrc = src.RTPsrc;
         if (copyHdr) {
