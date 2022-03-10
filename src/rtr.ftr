@@ -2770,6 +2770,8 @@ qc pass: radius server
 qc pass: scheduler
 qc pass: sdwan over ipv4
 qc pass: sdwan over ipv6
+qc pass: sdwan with fixed addresses
+qc pass: sdwan hub and spoke
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server

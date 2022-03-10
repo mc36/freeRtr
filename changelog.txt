@@ -13067,3 +13067,6 @@ todo: update gtp stack to the latest standards
 ---------------------------------- 2022-03-08 16:56:26
 qc pass: sdwan over ipv4
 qc pass: sdwan over ipv6
+---------------------------------- 2022-03-10 06:14:25
+qc pass: sdwan with fixed addresses
+qc pass: sdwan hub and spoke
