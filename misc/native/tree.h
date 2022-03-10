@@ -119,6 +119,5 @@ void tree_walkNode(struct tree_node *cur, void doer(void *, int, void *), int fi
 
 void tree_walk(struct tree_head *tab, void doer(void *, int, void *), int fixed, void* param) {
     struct tree_node* cur = tab->root;
-    tree_walkNode(cur->zero, doer, fixed, param);
-    tree_walkNode(cur->one, doer, fixed, param);
+    tree_walkNode(cur, doer, fixed, param);
 }

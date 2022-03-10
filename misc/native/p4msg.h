@@ -766,13 +766,13 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "myaddr6") == 0) {
-        inet_pton(AF_INET6, arg[2], buf);
+        inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[5]);
         vrf2rib_res = vrf2rib_init6;
-        route6_ntry.addr1 = get32msb(buf, 0);
-        route6_ntry.addr2 = get32msb(buf, 4);
-        route6_ntry.addr3 = get32msb(buf, 8);
-        route6_ntry.addr4 = get32msb(buf, 12);
+        route6_ntry.addr1 = get32msb(buf2, 0);
+        route6_ntry.addr2 = get32msb(buf2, 4);
+        route6_ntry.addr3 = get32msb(buf2, 8);
+        route6_ntry.addr4 = get32msb(buf2, 12);
         route6_ntry.mask = atoi(arg[3]);
         route6_ntry.command = 2;
         if (del == 0) tree_del(&vrf2rib_res->rou, &route6_ntry);
