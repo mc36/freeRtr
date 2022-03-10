@@ -69,11 +69,6 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
      */
     public String name;
 
-    /**
-     * remote parameters
-     */
-    public String par;
-
     private cfgIfc ifc;
 
     private ifcUp upper = new ifcNull();
