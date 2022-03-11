@@ -116,6 +116,11 @@ public class servHttp extends servGeneric implements prtServS {
     protected boolean singleRequest;
 
     /**
+     * buffer size
+     */
+    protected int bufSiz = 65536;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
@@ -124,6 +129,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! no single-request",
+        "server http .*! buffer 65536",
         "server http .*! no second-port",};
 
     /**
@@ -233,6 +239,7 @@ public class servHttp extends servGeneric implements prtServS {
             l.add(beg + "error " + error);
         }
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
+        l.add(beg + "buffer " + bufSiz);
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpServ ntry = hosts.get(hn);
@@ -381,6 +388,10 @@ public class servHttp extends servGeneric implements prtServS {
                 return false;
             }
             secondPort = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("single-request")) {
@@ -763,6 +774,8 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public void srvHelp(userHelping l) {
         l.add(null, "1 .  single-request                 one request per connection");
+        l.add(null, "1 2  buffer                         set buffer size on connection");
+        l.add(null, "2 .    <num>                        buffer in bytes");
         l.add(null, "1 2  proxy                          enable proxy support");
         l.add(null, "2 .    <name:prx>                   proxy profile");
         l.add(null, "1 2  second-port                    enable dual binding");
@@ -865,11 +878,11 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public boolean srvInit() {
         if (secondPort > 0) {
-            if (genStrmStart(this, new pipeLine(65535, false), secondPort)) {
+            if (genStrmStart(this, new pipeLine(bufSiz, false), secondPort)) {
                 return true;
             }
         }
-        return genStrmStart(this, new pipeLine(65536, false), 0);
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
 
     /**
@@ -1416,7 +1429,7 @@ class servHttpConn implements Runnable {
         sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(gotWebsock));
         sendLn("Sec-WebSocket-Protocol: " + l.get(3));
         sendLn("");
-        secWebsock wsk = new secWebsock(pipe, new pipeLine(65536, false));
+        secWebsock wsk = new secWebsock(pipe, new pipeLine(lower.bufSiz, false));
         wsk.binary = l.get(4).equals("bin");
         wsk.startServer();
         pipeConnect.connect(pip, wsk.getPipe(), true);
@@ -2093,7 +2106,7 @@ class servHttpConn implements Runnable {
         }
         if (gotCmd.equals(secHttp2.magicCmd)) {
             gotCmd = "";
-            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
+            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(lower.bufSiz, false));
             if (ht2.startServer(true)) {
                 return true;
             }
@@ -2275,7 +2288,7 @@ class servHttpConn implements Runnable {
             headers.add("Upgrade: " + gotUpgrade);
             headers.add("Connection: Upgrade");
             sendRespHeader("101 switch protocol", -1, null);
-            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(65536, false));
+            secHttp2 ht2 = new secHttp2(pipe, new pipeLine(lower.bufSiz, false));
             if (ht2.startServer(false)) {
                 return true;
             }
@@ -2291,7 +2304,7 @@ class servHttpConn implements Runnable {
         headers.add("Upgrade: " + gotUpgrade + ", HTTP/1.1");
         sendRespHeader("101 switch protocol", -1, null);
         headers.clear();
-        pipeSide res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(65536, false), null);
+        pipeSide res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(lower.bufSiz, false), null);
         if (res == null) {
             return true;
         }
@@ -2790,14 +2803,11 @@ class servHttpConn implements Runnable {
             }
             uniResLoc url = uniResLoc.parseOne(gotDstntn);
             url.normalizePath();
-            pipeLine pip = new pipeLine(32768, false);
-            pipeDiscard.discard(pip.getSide());
             if (userFlash.copy(gotHost.path + pn, gotHost.path + url.toPathName(), false)) {
                 sendRespHeader("409 conflict", 0, null);
             } else {
                 sendRespHeader("201 created", 0, null);
             }
-            pip.setClose();
             return;
         }
         if (gotCmd.equals("move")) {
@@ -2878,7 +2888,7 @@ class servHttpConn implements Runnable {
     public void run() {
         try {
             if (secured) {
-                pipeSide res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(65536, false), null);
+                pipeSide res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(lower.bufSiz, false), null);
                 if (res == null) {
                     return;
                 }
