@@ -16,7 +16,6 @@ ldap client, server
 trustpoint for certificates
 dhcp relay support
 tcp selective ack
-tcp window scale
 xot, x75 switching
 ilnp (rfc6740)
 lisp4, lisp6
