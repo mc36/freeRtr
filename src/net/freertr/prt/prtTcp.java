@@ -141,7 +141,7 @@ public class prtTcp extends prtGen {
 
     private final static int winSizMax = 49152;
 
-    private final static int maxSegMax = 65536;
+    private final static int maxSegMax = 32768;
 
     private final static int pshNetOut = 16384;
 
@@ -677,7 +677,11 @@ public class prtTcp extends prtGen {
      * @return bytes
      */
     protected int connectionBytes(prtGenConn ntry) {
-        return 512;
+        int i = ntry.pipeClient.ready2tx();
+        if (i > 512) {
+            i = 512;
+        }
+        return i;
     }
 
     /**
