@@ -8,8 +8,6 @@ import net.freertr.cry.cryHashMd5;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
-import net.freertr.pipe.pipeLine;
-import net.freertr.pipe.pipeSide;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -143,7 +141,7 @@ public class prtTcp extends prtGen {
 
     private final static int winSizMax = 49152;
 
-    private final static int maxSegMax = 32768;
+    private final static int maxSegMax = 65536;
 
     private final static int pshNetOut = 16384;
 
@@ -529,7 +527,7 @@ public class prtTcp extends prtGen {
             pck.clear();
             if (datSiz > 0) {
                 byte[] buf = new byte[pr.netOut + datSiz];
-                datSiz = pr.netBufRx.nonDestructiveGet(buf, 0, pr.netOut + datSiz) - pr.netOut;
+                datSiz = clnt.pipeNetwork.nonDestructiveGet(buf, 0, pr.netOut + datSiz) - pr.netOut;
                 if (datSiz < 1) {
                     return 0;
                 }
@@ -617,9 +615,6 @@ public class prtTcp extends prtGen {
         }
         clnt.sendPRT = protoNum;
         prtTcpConn pr = new prtTcpConn();
-        pipeLine pip = new pipeLine(65536, false);
-        pr.netBufRx = pip.getSide();
-        pr.netBufTx = pip.getSide();
         pr.netMax = cfgAll.tcpMaxSegment;
         clnt.proto = pr;
         clnt.timeout = timeoutSyn;
@@ -664,9 +659,9 @@ public class prtTcp extends prtGen {
         if (debugger.prtTcpTraf) {
             logger.debug("close");
         }
-        pr.netBufRx.setClose();
-        pr.netBufTx.setClose();
-        if ((pr.netBufRx.ready2rx() < 1) && (pr.state == prtTcpConn.stOpened)) {
+        clnt.pipeClient.setClose();
+        clnt.pipeNetwork.setClose();
+        if ((clnt.pipeNetwork.ready2rx() < 1) && (pr.state == prtTcpConn.stOpened)) {
             pr.state = prtTcpConn.stClrReq;
             pr.staTim = bits.getTime();
         }
@@ -682,8 +677,7 @@ public class prtTcp extends prtGen {
      * @return bytes
      */
     protected int connectionBytes(prtGenConn ntry) {
-        prtTcpConn pr = (prtTcpConn) ntry.proto;
-        return pr.netBufTx.ready2tx();
+        return 512;
     }
 
     /**
@@ -696,7 +690,7 @@ public class prtTcp extends prtGen {
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
         int len = pck.dataSize();
-        return pck.pipeSend(pr.netBufTx, 0, len, 1) != len;
+        return pck.pipeSend(clnt.pipeClient, 0, len, 1) != len;
     }
 
     private static boolean spoofCheck(int i) {
@@ -772,7 +766,7 @@ public class prtTcp extends prtGen {
                 return;
             }
             if ((flg & flagACK) != 0) {
-                if (nowAcked > pr.netBufRx.ready2rx()) {
+                if (nowAcked > clnt.pipeNetwork.ready2rx()) {
                     if ((flg & flagFIN) != 0) {
                         pr.seqLoc++;
                     }
@@ -781,7 +775,7 @@ public class prtTcp extends prtGen {
                     nowAcked = 0;
                 }
                 if (nowAcked > 0) {
-                    int i = pr.netBufRx.nonBlockSkip(nowAcked);
+                    int i = clnt.pipeNetwork.nonBlockSkip(nowAcked);
                     if (i < 1) {
                         logger.info("net buffer underflow " + clnt);
                         return;
@@ -923,9 +917,9 @@ public class prtTcp extends prtGen {
 
     private boolean flush2net(prtGenConn clnt) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
-        int bufSiz = pr.netBufRx.ready2rx();
+        int bufSiz = clnt.pipeNetwork.ready2rx();
         if ((!pr.activFrcd) && (bufSiz < 1)) {
-            if (pr.netBufRx.isClosed() == 0) {
+            if (clnt.pipeNetwork.isClosed() == 0) {
                 pr.activWait = prtTcpConn.tmAlive;
                 return true;
             }
@@ -1195,16 +1189,6 @@ class prtTcpConn {
      * seen fin fro peer
      */
     protected boolean seenFin;
-
-    /**
-     * rx buffer
-     */
-    protected pipeSide netBufRx;
-
-    /**
-     * tx buffer
-     */
-    protected pipeSide netBufTx;
 
     /**
      * timestamp base

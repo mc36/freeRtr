@@ -92,6 +92,16 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     public int workInterval;
 
     /**
+     * password if applicable
+     */
+    public final String passwd;
+
+    /**
+     * hardware counter
+     */
+    public counter hwCntr;
+
+    /**
      * time of last activity
      */
     protected long lastActivity;
@@ -102,16 +112,9 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     protected final pipeSide pipeClient;
 
     /**
-     * password if applicable
+     * network side of pipeline
      */
-    public final String passwd;
-
-    /**
-     * hardware counter
-     */
-    public counter hwCntr;
-
-    private final pipeSide pipeNetwork;
+    protected final pipeSide pipeNetwork;
 
     private final boolean stream;
 
@@ -162,6 +165,10 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      * @param ttl time to live
      */
     protected prtGenConn(prtGen low, prtServP upP, prtServS upS, pipeLine pip, boolean dir, ipFwdIface ifc, int prtL, addrIP adrR, int prtR, String nam, String pwd, int ttl) {
+        int prt = low.getProtoNum();
+        if ((pip == null) && (prt == prtTcp.protoNum)) {
+            pip = new pipeLine(65536, false);
+        }
         iface = ifc;
         passwd = pwd;
         sendTTL = ttl;
@@ -191,7 +198,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (b) {
             b = pip.isBlockMode();
         } else {
-            b = low.getProtoNum() != prtTcp.protoNum;
+            b = prt != prtTcp.protoNum;
         }
         pipeLine pipeHandler = pipeLine.doClone(pip, b);
         pipeNetwork = pipeHandler.getSide();
