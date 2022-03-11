@@ -13070,3 +13070,5 @@ qc pass: sdwan over ipv6
 ---------------------------------- 2022-03-10 06:14:25
 qc pass: sdwan with fixed addresses
 qc pass: sdwan hub and spoke
+---------------------------------- 2022-03-11 07:56:22
+no todo: tcp window scale
