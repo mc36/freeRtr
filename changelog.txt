@@ -13072,3 +13072,6 @@ qc pass: sdwan with fixed addresses
 qc pass: sdwan hub and spoke
 ---------------------------------- 2022-03-11 07:56:22
 no todo: tcp window scale
+---------------------------------- 2022-03-11 09:59:39
+qc pass: secondary dns server
+qc pass: sdwan with mixed addresses

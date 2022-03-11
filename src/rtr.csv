@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.3.11-cur, done by cs@nop.
--;-;-;2022-03-11 09:24:11, took 00:08:24, with 100 workers, on 2778 cases, 0 failed, 0 traces, 9 retries
+-;-;-;2022-03-11 10:06:48, took 00:07:08, with 100 workers, on 2780 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin
 http://sources.freertr.net/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.net/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -2765,6 +2765,7 @@ http://sources.freertr.net/cfg/serv-dns01.tst;serv-dns01.tst;success;authoritati
 http://sources.freertr.net/cfg/serv-dns02.tst;serv-dns02.tst;success;recursive dns server
 http://sources.freertr.net/cfg/serv-dns03.tst;serv-dns03.tst;success;relaying dns server
 http://sources.freertr.net/cfg/serv-dns04.tst;serv-dns04.tst;success;dns64 server
+http://sources.freertr.net/cfg/serv-dns05.tst;serv-dns05.tst;success;secondary dns server
 http://sources.freertr.net/cfg/serv-dyndest.tst;serv-dyndest.tst;success;dynamic tunnel destination
 http://sources.freertr.net/cfg/serv-eventmgr.tst;serv-eventmgr.tst;success;event manager
 http://sources.freertr.net/cfg/serv-forward.tst;serv-forward.tst;success;forwarder server
@@ -2776,6 +2777,7 @@ http://sources.freertr.net/cfg/serv-sdwan01.tst;serv-sdwan01.tst;success;sdwan o
 http://sources.freertr.net/cfg/serv-sdwan02.tst;serv-sdwan02.tst;success;sdwan over ipv6
 http://sources.freertr.net/cfg/serv-sdwan03.tst;serv-sdwan03.tst;success;sdwan with fixed addresses
 http://sources.freertr.net/cfg/serv-sdwan04.tst;serv-sdwan04.tst;success;sdwan hub and spoke
+http://sources.freertr.net/cfg/serv-sdwan05.tst;serv-sdwan05.tst;success;sdwan with mixed addresses
 http://sources.freertr.net/cfg/serv-socks4.tst;serv-socks4.tst;success;socks4 server
 http://sources.freertr.net/cfg/serv-socks5.tst;serv-socks5.tst;success;socks5 server
 http://sources.freertr.net/cfg/serv-tacacs.tst;serv-tacacs.tst;success;tacacs server

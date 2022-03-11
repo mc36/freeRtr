@@ -2761,6 +2761,7 @@ qc pass: authoritative dns server
 qc pass: recursive dns server
 qc pass: relaying dns server
 qc pass: dns64 server
+qc pass: secondary dns server
 qc pass: dynamic tunnel destination
 qc pass: event manager
 qc pass: forwarder server
@@ -2772,6 +2773,7 @@ qc pass: sdwan over ipv4
 qc pass: sdwan over ipv6
 qc pass: sdwan with fixed addresses
 qc pass: sdwan hub and spoke
+qc pass: sdwan with mixed addresses
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
