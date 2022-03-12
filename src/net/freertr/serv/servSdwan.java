@@ -2,6 +2,8 @@ package net.freertr.serv;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
@@ -278,9 +280,9 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
 
     public int idNum;
 
-    public long lastKeep;
-
     public int lastEcho;
+
+    public Timer keepTimer;
 
     public servSdwanConn(servSdwan parent, pipeSide pipe, addrIP remA, int remP) {
         lower = parent;
@@ -320,6 +322,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
             if (doInit()) {
                 return;
             }
+            restartTimer(false);
             for (;;) {
                 if (doRound()) {
                     break;
@@ -447,6 +450,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
     }
 
     public void doClose() {
+        restartTimer(true);
         logger.warn("neighbor " + connA + " down");
         lower.conns.del(this);
         connS.setClose();
@@ -470,23 +474,57 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
     }
 
     public boolean doRound() {
-        if (connS.isClosed() != 0) {
-            return true;
+        String a = readLn();
+        cmds cmd = new cmds("sdw", a);
+        a = cmd.word();
+        if (a.length() < 1) {
+            return connS.isClosed() != 0;
         }
-        if (connS.ready2rx() > 2) {
-            String a = readLn();
-            if (a.equals("echoed")) {
-                return false;
-            }
-        }
-        long tim = bits.getTime();
-        if ((tim - lastKeep) < 60000) {
+        if (a.equals("echo")) {
+            sendLn("echoed " + cmd.getRemaining());
             return false;
         }
+        if (a.equals("echoed")) {
+            return false;
+        }
+        return false;
+    }
+
+    protected void doTimer() {
         lastEcho = bits.randomD();
         sendLn("echo " + lastEcho);
-        lastKeep = tim;
-        return false;
+    }
+
+    public void restartTimer(boolean shutdown) {
+        try {
+            keepTimer.cancel();
+        } catch (Exception e) {
+        }
+        keepTimer = null;
+        if (shutdown) {
+            return;
+        }
+        keepTimer = new Timer();
+        servSdwanTimer task = new servSdwanTimer(this);
+        keepTimer.schedule(task, 500, 60000);
+    }
+
+}
+
+class servSdwanTimer extends TimerTask {
+
+    private final servSdwanConn lower;
+
+    public servSdwanTimer(servSdwanConn parent) {
+        lower = parent;
+    }
+
+    public void run() {
+        try {
+            lower.doTimer();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }
