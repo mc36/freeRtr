@@ -864,6 +864,11 @@ public class cfgAll {
     public static boolean upgradeOwnKey = false;
 
     /**
+     * cpu hog check
+     */
+    public static int cpuhogCheck = 0;
+
+    /**
      * redundancy keepalive time
      */
     public static int redundancyKeep = 500;
@@ -1046,6 +1051,7 @@ public class cfgAll {
         "!no password-encrypt",
         "!no enable",
         // client
+        "!client cpuhog 0",
         "!client redundancy 500 2500 5000",
         "!no client bullying",
         "!no client proxy",
@@ -3359,6 +3365,7 @@ public class cfgAll {
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
+        l.add("client cpuhog " + cpuhogCheck);
         if (clientShamer == null) {
             l.add("no client bullying");
         } else {

@@ -542,6 +542,8 @@ public class userConfig {
         l.add(null, "5  6          <num>                  new service path");
         l.add(null, "6  4,.          <num>                new service index");
         l.add(null, "1  2  client                         specify address of name server");
+        l.add(null, "2  3    cpuhog                       specify cpuhog parameters");
+        l.add(null, "3  .      <num>                      percentage");
         l.add(null, "2  3    redundancy                   specify redundancy parameters");
         l.add(null, "3  4      <num>                      keepalive in ms");
         l.add(null, "4  5        <num>                    hold time in ms");
@@ -1667,6 +1669,10 @@ public class userConfig {
                     return;
                 }
                 cfgAll.clientShamer = ntry;
+                return;
+            }
+            if (a.equals("cpuhog")) {
+                cfgAll.cpuhogCheck = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("redundancy")) {

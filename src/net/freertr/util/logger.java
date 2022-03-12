@@ -109,7 +109,7 @@ public class logger {
      * proxy profile for syslog
      */
     public static clntProxy logProxy = null;
-    
+
     /**
      * level of syslog
      */
@@ -576,6 +576,23 @@ public class logger {
         userFormat l = new userFormat("|", "grp|name|time|state|stack");
         listThreads(l, tb, r);
         return l;
+    }
+
+    /**
+     * get process cpu load
+     *
+     * @return cpu load
+     */
+    public static int getProcCpuLoad() {
+        try {
+            MBeanServer mb = ManagementFactory.getPlatformMBeanServer();
+            double val = (double) mb.getAttribute(ObjectName.getInstance("java.lang:type=OperatingSystem"), "ProcessCpuLoad");
+            val = val * Runtime.getRuntime().availableProcessors();
+            val = val * 100;
+            return (int) val;
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     /**
