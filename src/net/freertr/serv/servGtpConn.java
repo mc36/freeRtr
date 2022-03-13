@@ -58,6 +58,11 @@ public class servGtpConn implements Comparator<servGtpConn> {
      */
     public int keep;
 
+    /**
+     * creation time
+     */
+    public long created;
+
     public int compare(servGtpConn o1, servGtpConn o2) {
         return o1.peer.compare(o1.peer, o2.peer);
     }
@@ -159,7 +164,7 @@ public class servGtpConn implements Comparator<servGtpConn> {
 
     /**
      * transmit work
-     * 
+     *
      * @param id connection
      */
     public void doWork(prtGenConn id) {
@@ -196,7 +201,7 @@ public class servGtpConn implements Comparator<servGtpConn> {
 
     /**
      * receive work
-     * 
+     *
      * @param pck packet
      * @param ctrl true if control
      */

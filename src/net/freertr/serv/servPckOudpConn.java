@@ -49,6 +49,11 @@ public class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
      */
     protected ifcBridgeIfc brdgIfc;
 
+    /**
+     * creation time
+     */
+    protected long created;
+
     public String toString() {
         return "pckoudp with " + conn.peerAddr;
     }

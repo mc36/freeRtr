@@ -96,6 +96,7 @@ public class servVxlan extends servGeneric implements prtServP {
         }
         ntry.brdgIfc = brdgIfc.bridgeHed.newIface(physInt, true, false);
         ntry.setUpper(ntry.brdgIfc);
+        ntry.created = bits.getTime();
         return ntry;
     }
 
@@ -277,13 +278,13 @@ public class servVxlan extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|iface");
+        userFormat res = new userFormat("|", "addr|port|iface|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servVxlanConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.brdgIfc.getIfcName());
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.brdgIfc.getIfcName() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }

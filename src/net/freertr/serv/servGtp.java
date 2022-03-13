@@ -13,6 +13,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.state;
@@ -71,8 +72,9 @@ public class servGtp extends servGeneric implements prtServP {
         }
         servGtpConn old = conns.add(ntry);
         if (old != null) {
-            ntry = old;
+            return old;
         }
+        ntry.created = bits.getTime();
         return ntry;
     }
 
@@ -271,13 +273,13 @@ public class servGtp extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|sess");
+        userFormat res = new userFormat("|", "addr|sess|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servGtpConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.peer + "|" + ntry.session.size());
+            res.add(ntry.peer + "|" + ntry.session.size() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }

@@ -232,13 +232,13 @@ public class servMplsIp extends servGeneric implements ipPrt {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|iface");
+        userFormat res = new userFormat("|", "addr|iface|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servMplsIpConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.peer + "|" + ntry.acesIfc.name);
+            res.add(ntry.peer + "|" + ntry.acesIfc.name + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }
@@ -260,6 +260,8 @@ class servMplsIpConn implements Runnable, Comparator<servMplsIpConn> {
     public prtMplsIp worker;
 
     public boolean seenPack;
+
+    public long created;
 
     public servMplsIpConn(ipFwdIface ifc, addrIP adr, servMplsIp parent) {
         iface = ifc;
@@ -286,6 +288,7 @@ class servMplsIpConn implements Runnable, Comparator<servMplsIpConn> {
         acesIfc = lower.tempIfc.cloneStart(worker);
         worker.setUpper(acesIfc.ethtyp);
         acesIfc.ethtyp.setState(state.states.up);
+        created = bits.getTime();
         new Thread(this).start();
     }
 

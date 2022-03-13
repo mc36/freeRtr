@@ -47,6 +47,11 @@ public class servL2tp2conn implements Comparator<servL2tp2conn> {
      */
     protected tabGen<servL2tp2sess> session = new tabGen<servL2tp2sess>();
 
+    /**
+     * creation time
+     */
+    protected long created;
+
     private byte[] chlng = null;
 
     private counter cntr = new counter();

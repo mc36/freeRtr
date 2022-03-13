@@ -244,13 +244,13 @@ public class servEtherIp extends servGeneric implements ipPrt {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|iface");
+        userFormat res = new userFormat("|", "addr|iface|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servEtherIpConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.peer + "|" + ntry.brdgIfc.getIfcName());
+            res.add(ntry.peer + "|" + ntry.brdgIfc.getIfcName() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }
@@ -273,6 +273,8 @@ class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
 
     public boolean seenPack;
 
+    public long created;
+
     public servEtherIpConn(ipFwdIface ifc, addrIP adr, servEtherIp parent) {
         iface = ifc;
         peer = adr.copyBytes();
@@ -293,6 +295,7 @@ class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
         worker.setEndpoints(fwdCor, iface, peer);
         brdgIfc = lower.brdgIfc.bridgeHed.newIface(lower.physInt, true, false);
         worker.setUpper(brdgIfc);
+        created = bits.getTime();
         new Thread(this).start();
     }
 

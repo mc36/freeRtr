@@ -44,6 +44,11 @@ public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
      */
     protected counter cntr = new counter();
 
+    /**
+     * creation time
+     */
+    protected long created;
+
     public int compare(servVxlanConn o1, servVxlanConn o2) {
         return o1.conn.compare(o1.conn, o2.conn);
     }

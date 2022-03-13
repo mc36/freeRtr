@@ -97,6 +97,7 @@ public class servL2f extends servGeneric implements prtServP {
             }
         }
         ntry.tunLoc = bits.randomW();
+        ntry.created = bits.getTime();
         return ntry;
     }
 
@@ -270,13 +271,13 @@ public class servL2f extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|tunloc|tunrem|sess");
+        userFormat res = new userFormat("|", "addr|port|tunloc|tunrem|sess|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servL2fConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.tunLoc + "|" + ntry.tunRem + "|" + ntry.session.size());
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.tunLoc + "|" + ntry.tunRem + "|" + ntry.session.size() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }
@@ -308,6 +309,8 @@ class servL2fConn implements Comparator<servL2fConn> {
     public byte[] chlLoc = null;
 
     public byte[] chlRem = null;
+
+    public long created;
 
     public int compare(servL2fConn o1, servL2fConn o2) {
         return o1.conn.compare(o1.conn, o2.conn);

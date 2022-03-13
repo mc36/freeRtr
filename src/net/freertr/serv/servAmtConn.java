@@ -16,6 +16,7 @@ import net.freertr.ip.ipIcmp6;
 import net.freertr.ip.ipMhost4;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
+import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.state;
 
@@ -57,10 +58,15 @@ public class servAmtConn implements ifcDn, Comparator<servAmtConn> {
     public int nonce;
 
     /**
+     * creation time
+     */
+    public long created;
+
+    /**
      * response mac
      */
     public addrMac respmc = addrMac.getRandom();
-    
+
     public int compare(servAmtConn o1, servAmtConn o2) {
         return o1.conn.compare(o1.conn, o2.conn);
     }
@@ -188,6 +194,7 @@ public class servAmtConn implements ifcDn, Comparator<servAmtConn> {
         acesIfc = lower.tempIfc.cloneStart(this);
         setUpper(acesIfc.ethtyp);
         acesIfc.ethtyp.setState(state.states.up);
+        created = bits.getTime();
     }
 
     public void sendPack(packHolder pck) {

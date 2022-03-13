@@ -13,6 +13,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.state;
@@ -89,6 +90,7 @@ public class servPckOudp extends servGeneric implements prtServP {
         if (old != null) {
             return old;
         }
+        ntry.created = bits.getTime();
         if (dialIfc != null) {
             ntry.dialIfc = dialIfc.cloneStart(ntry);
             return ntry;
@@ -288,13 +290,13 @@ public class servPckOudp extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|dial|bridge");
+        userFormat res = new userFormat("|", "addr|port|dial|bridge|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servPckOudpConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.dialIfc + "|" + ntry.brdgIfc);
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.dialIfc + "|" + ntry.brdgIfc + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }

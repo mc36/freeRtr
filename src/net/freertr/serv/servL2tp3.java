@@ -303,13 +303,13 @@ public class servL2tp3 extends servGeneric implements ipPrt {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|conloc|conrem|sess");
+        userFormat res = new userFormat("|", "addr|conloc|conrem|sess|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servL2tp3conn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.peer + "|" + ntry.conLoc + "|" + ntry.conRem + "|" + ntry.session.size());
+            res.add(ntry.peer + "|" + ntry.conLoc + "|" + ntry.conRem + "|" + ntry.session.size() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }
@@ -349,6 +349,8 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
     public ipFwd fwdCor;
 
     public byte[] chlng = null;
+
+    public long created;
 
     public servL2tp3conn(ipFwdIface ifc, addrIP adr, servL2tp3 parent) {
         iface = ifc;
@@ -395,6 +397,7 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
                 chlng[i] = (byte) bits.randomB();
             }
         }
+        created = bits.getTime();
         new Thread(this).start();
     }
 

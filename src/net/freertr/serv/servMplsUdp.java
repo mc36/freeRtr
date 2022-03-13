@@ -263,13 +263,13 @@ public class servMplsUdp extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|iface");
+        userFormat res = new userFormat("|", "addr|port|iface|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servMplsUdpConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.acesIfc.name);
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.acesIfc.name + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }
@@ -287,6 +287,8 @@ class servMplsUdpConn implements ifcDn, Comparator<servMplsUdpConn> {
     public ifcUp upper = new ifcNull();
 
     public cfgIfc acesIfc;
+
+    public long created;
 
     public int compare(servMplsUdpConn o1, servMplsUdpConn o2) {
         return o1.conn.compare(o1.conn, o2.conn);
@@ -314,6 +316,7 @@ class servMplsUdpConn implements ifcDn, Comparator<servMplsUdpConn> {
         acesIfc = lower.tempIfc.cloneStart(this);
         setUpper(acesIfc.ethtyp);
         acesIfc.ethtyp.setState(state.states.up);
+        created = bits.getTime();
     }
 
     public void sendPack(packHolder pck) {

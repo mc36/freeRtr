@@ -14,6 +14,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.state;
@@ -80,6 +81,7 @@ public class servL2tp2 extends servGeneric implements prtServP {
         if (old != null) {
             return old;
         }
+        ntry.created = bits.getTime();
         return ntry;
     }
 
@@ -253,13 +255,13 @@ public class servL2tp2 extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|tunloc|tunrem|sess");
+        userFormat res = new userFormat("|", "addr|port|tunloc|tunrem|sess|since|for");
         for (int i = 0; i < conns.size(); i++) {
             servL2tp2conn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.tunLoc + "|" + ntry.tunRem + "|" + ntry.session.size());
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.tunLoc + "|" + ntry.tunRem + "|" + ntry.session.size() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
         }
         return res;
     }
