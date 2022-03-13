@@ -1210,62 +1210,50 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return list of topology
      */
     public userFormat listTopology() {
-        userFormat res = new userFormat("|", "node|reach|met|uplink|ups|res|conn|prfx|sr|br|neighbors|prefixes");
+        userFormat res = new userFormat("|", "node|category|value|extra");
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
-            String a = "";
-            if (ntry.uplinks == null) {
-                a = "-1";
-            } else {
-                a = "" + ntry.uplinks.size();
-            }
-            String s = "";
-            if (ntry.result == null) {
-                s = "-1";
-            } else {
-                s = "" + ntry.result.size();
-            }
-            a = ntry + "|" + ntry.visited + "|" + ntry.metric + "|" + ntry.uplink + "|" + a + "|" + s + "|" + ntry.conn.size() + "|" + ntry.prfFix.size() + "+" + ntry.prfAdd.size() + "+" + ntry.othFix.size() + "+" + ntry.othAdd.size() + "|" + ntry.srIdx + "|" + ntry.brIdx + "|";
+            res.add(ntry + "|reach|" + ntry.visited);
+            res.add(ntry + "|segrou|" + ntry.srIdx);
+            res.add(ntry + "|bier|" + ntry.brIdx);
             for (int o = 0; o < ntry.conn.size(); o++) {
                 shrtPthFrstConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {
                     continue;
                 }
-                a += con.target + "=" + con.metric + "=" + con.ident + " ";
+                res.add(ntry + "|neigh|" + con.target + "|" + con.metric);
             }
-            a += "|";
             for (int o = 0; o < ntry.prfFix.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.prfFix.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
+                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
             }
             for (int o = 0; o < ntry.prfAdd.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.prfAdd.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
+                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
             }
             for (int o = 0; o < ntry.othFix.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.othFix.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
+                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
             }
             for (int o = 0; o < ntry.othAdd.size(); o++) {
                 tabRouteEntry<addrIP> rou = ntry.othAdd.get(o);
                 if (rou == null) {
                     continue;
                 }
-                a += addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric + " ";
+                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
             }
-            res.add(a);
         }
         return res;
     }
