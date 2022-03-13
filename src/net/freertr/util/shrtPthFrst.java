@@ -1120,7 +1120,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return list of topology
      */
     public userFormat listTopology(Ta adr) {
-        userFormat res = new userFormat("|", "category|value");
+        userFormat res = new userFormat("|", "category|value|addition");
         shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(adr);
         ntry = nodes.find(ntry);
         if (ntry == null) {
@@ -1171,35 +1171,35 @@ public class shrtPthFrst<Ta extends addrType> {
             if (con == null) {
                 continue;
             }
-            res.add("neighbor|" + con.target + "=" + con.metric + "=" + con.ident);
+            res.add("neighbor|" + con.target + "|" + con.metric + " " + con.ident);
         }
         for (int i = 0; i < ntry.prfFix.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.prfFix.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("fixprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
+            res.add("fixprefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
         }
         for (int i = 0; i < ntry.prfAdd.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.prfAdd.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
+            res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
         }
         for (int i = 0; i < ntry.othFix.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.othFix.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("fixprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
+            res.add("fixprefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
         }
         for (int i = 0; i < ntry.othAdd.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.othAdd.get(i);
             if (rou == null) {
                 continue;
             }
-            res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "=" + rou.best.metric);
+            res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
         }
         return res;
     }
