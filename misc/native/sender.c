@@ -6,7 +6,6 @@
 
 char *ifaceName;
 pcap_t *ifacePcap;
-FILE *fil;
 int packLen;
 unsigned char packBuf[16 * 1024];
 
@@ -21,7 +20,13 @@ void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, uns
 int main(int argc, char **argv) {
     char errbuf[PCAP_ERRBUF_SIZE + 1];
 
-    if (argc < 2) err("using: <iface> <packet>");
+    if (argc < 2) err("using: snd <iface> [bytes]");
+
+    packLen = 0;
+    for (int i=2; i< argc; i++) {
+        packBuf[packLen] = atoi(argv[i]);
+        packLen++;
+    }
 
     printf("pcap version: %s\n", pcap_lib_version());
 
@@ -38,11 +43,6 @@ int main(int argc, char **argv) {
     if (pcap_activate(ifacePcap) < 0) err("activation failed");
     if (pcap_setdirection(ifacePcap, PCAP_D_IN) < 0) err("unable to set direction");
 
-    fil = fopen(argv[2], "rb");
-    if (!fil) err("error opening file");
-    packLen = fread(packBuf, 1, sizeof packBuf, fil);
-    if (packLen < 1) err("error reading file");
-    fclose(fil);
     printf("sending packets with length %i\n", packLen);
 
     for (;;) {
