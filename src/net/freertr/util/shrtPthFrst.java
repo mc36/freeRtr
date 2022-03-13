@@ -1210,7 +1210,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return list of topology
      */
     public userFormat listTopology() {
-        userFormat res = new userFormat("|", "node|category|value|extra");
+        userFormat res = new userFormat("|", "node|category|value|addition");
         for (int i = 0; i < nodes.size(); i++) {
             shrtPthFrstNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
