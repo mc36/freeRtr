@@ -17,6 +17,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtUdp;
 import net.freertr.serv.servL2f;
+import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -529,6 +530,21 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
         }
         notif.wakeup();
         return false;
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("conn|" + conn);
+        res.add("upper|" + upper);
+        res.add("cntr|" + cntr);
+        res.add("tunloc|" + tunLoc);
+        res.add("tunrem|" + tunRem);
+        return res;
     }
 
 }

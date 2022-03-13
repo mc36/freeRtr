@@ -9,6 +9,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packForti;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -270,6 +271,19 @@ public class clntForti implements Runnable, ifcDn {
             pckB.merge2beg();
             upper.recvPack(pckB);
         }
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("upper|" + upper);
+        res.add("cntr|" + cntr);
+        res.add("cookie|" + cookie);
+        return res;
     }
 
 }

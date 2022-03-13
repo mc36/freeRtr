@@ -19,6 +19,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -261,6 +262,23 @@ public class servL2f extends servGeneric implements prtServP {
         }
         ntry.doRecv(pck);
         return false;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "addr|port|tunloc|tunrem|sess");
+        for (int i = 0; i < conns.size(); i++) {
+            servL2fConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.tunLoc + "|" + ntry.tunRem + "|" + ntry.session.size());
+        }
+        return res;
     }
 
 }

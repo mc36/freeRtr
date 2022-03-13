@@ -1717,6 +1717,27 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
      * @return state
      */
     public userFormat getShow() {
+        if (anycon != null) {
+            return anycon.getShow();
+        }
+        if (forti != null) {
+            return forti.getShow();
+        }
+        if (gtp != null) {
+            return gtp.getShow();
+        }
+        if (l2f != null) {
+            return l2f.getShow();
+        }
+        if (l2tp2 != null) {
+            return l2tp2.getShow();
+        }
+        if (l2tp3 != null) {
+            return l2tp3.getShow();
+        }
+        if (pulse != null) {
+            return pulse.getShow();
+        }
         if (sdwan != null) {
             return sdwan.getShow();
         }

@@ -17,6 +17,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -232,6 +233,23 @@ public class servSdwan extends servGeneric implements prtServS {
             peer.sendLn("endpoint_add " + ntry.getEndpt());
         }
         sendLn(peer, peer.hub, "endpoint_add " + peer.getEndpt());
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "addr|port|user|hub|id|prt|addr|port|prm|inner4|inner6");
+        for (int i = 0; i < conns.size(); i++) {
+            servSdwanConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.connA + "|" + ntry.connP + "|" + ntry.username + "|" + ntry.hub + "|" + ntry.idNum + "|" + ntry.endptProto + "|" + ntry.endptIp + "|" + ntry.endptPort + "|" + ntry.endptPar + "|" + ntry.innerAdr4 + "|" + ntry.innerAdr6);
+        }
+        return res;
     }
 
 }

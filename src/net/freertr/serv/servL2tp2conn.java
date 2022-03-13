@@ -42,13 +42,16 @@ public class servL2tp2conn implements Comparator<servL2tp2conn> {
      */
     protected int tunRem = 0;
 
+    /**
+     * sessions
+     */
+    protected tabGen<servL2tp2sess> session = new tabGen<servL2tp2sess>();
+
     private byte[] chlng = null;
 
     private counter cntr = new counter();
 
     private List<packL2tp2> queue = new ArrayList<packL2tp2>();
-
-    private tabGen<servL2tp2sess> session = new tabGen<servL2tp2sess>();
 
     private int txed = 0;
 

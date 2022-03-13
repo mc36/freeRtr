@@ -15,6 +15,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -235,6 +236,23 @@ public class servEtherIp extends servGeneric implements ipPrt {
      */
     public counter getCounter() {
         return cntr;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "addr|iface");
+        for (int i = 0; i < conns.size(); i++) {
+            servEtherIpConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.peer + "|" + ntry.brdgIfc.getIfcName());
+        }
+        return res;
     }
 
 }

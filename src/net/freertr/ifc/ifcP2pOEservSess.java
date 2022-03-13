@@ -20,9 +20,12 @@ public class ifcP2pOEservSess implements ifcDn, Comparator<ifcP2pOEservSess> {
 
     private counter cntr = new counter();
 
-    private cfgIfc ifc;
-
     private ifcUp upper = new ifcNull();
+
+    /**
+     * interface
+     */
+    protected cfgIfc ifc;
 
     /**
      * client address

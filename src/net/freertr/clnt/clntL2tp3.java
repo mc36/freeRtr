@@ -20,6 +20,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pack.packL2tp;
 import net.freertr.pack.packL2tp3;
 import net.freertr.pack.packLdpPwe;
+import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -602,6 +603,22 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
      * @param pck packet
      */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("upper|" + upper);
+        res.add("cntr|" + cntr);
+        res.add("conloc|" + conLoc);
+        res.add("conrem|" + conRem);
+        res.add("sesloc|" + sesLoc);
+        res.add("sesrem|" + sesRem);
+        return res;
     }
 
 }

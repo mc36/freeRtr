@@ -26,6 +26,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -294,6 +295,23 @@ public class servL2tp3 extends servGeneric implements ipPrt {
      */
     public counter getCounter() {
         return cntr;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "addr|conloc|conrem|sess");
+        for (int i = 0; i < conns.size(); i++) {
+            servL2tp3conn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.peer + "|" + ntry.conLoc + "|" + ntry.conRem + "|" + ntry.session.size());
+        }
+        return res;
     }
 
 }

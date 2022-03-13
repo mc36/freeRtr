@@ -22,9 +22,12 @@ import net.freertr.util.state;
  */
 public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
 
-    private prtGenConn conn;
-
     private servVxlan lower;
+
+    /**
+     * connection
+     */
+    protected prtGenConn conn;
 
     /**
      * bridge used

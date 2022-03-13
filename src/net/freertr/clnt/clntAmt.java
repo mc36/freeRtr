@@ -17,6 +17,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtUdp;
+import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -156,7 +157,7 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
         }
         return conn.portLoc;
     }
-    
+
     /**
      * get counter
      *
@@ -469,6 +470,20 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
         pck.merge2beg();
         upper.recvPack(pck);
         return false;
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("conn|" + conn);
+        res.add("upper|" + upper);
+        res.add("cntr|" + cntr);
+        res.add("nonce|" + nonce);
+        return res;
     }
 
 }

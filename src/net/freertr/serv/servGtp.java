@@ -11,6 +11,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -262,6 +263,23 @@ public class servGtp extends servGeneric implements prtServP {
         }
         ntry.doRecv(pck, ctrl == 1);
         return false;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "addr|sess");
+        for (int i = 0; i < conns.size(); i++) {
+            servGtpConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.peer + "|" + ntry.session.size());
+        }
+        return res;
     }
 
 }

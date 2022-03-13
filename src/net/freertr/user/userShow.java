@@ -71,15 +71,27 @@ import net.freertr.rtr.rtrOlsrNeigh;
 import net.freertr.rtr.rtrPvrpNeigh;
 import net.freertr.rtr.rtrRip4neigh;
 import net.freertr.rtr.rtrRip6neigh;
+import net.freertr.serv.servAmt;
 import net.freertr.serv.servBmp2mrt;
 import net.freertr.serv.servDhcp4;
 import net.freertr.serv.servDhcp6;
 import net.freertr.serv.servDns;
+import net.freertr.serv.servEtherIp;
+import net.freertr.serv.servGre;
+import net.freertr.serv.servGtp;
 import net.freertr.serv.servHttp;
+import net.freertr.serv.servL2f;
+import net.freertr.serv.servL2tp2;
+import net.freertr.serv.servL2tp3;
+import net.freertr.serv.servMplsIp;
+import net.freertr.serv.servMplsUdp;
 import net.freertr.serv.servNetflow;
 import net.freertr.serv.servP4lang;
+import net.freertr.serv.servPckOudp;
+import net.freertr.serv.servSdwan;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servStreamingMdt;
+import net.freertr.serv.servVxlan;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -660,6 +672,96 @@ public class userShow {
                 return null;
             }
             rdr.putStrTab(ntry.toUserStr(true));
+            return null;
+        }
+        if (a.equals("amt")) {
+            servAmt srv = cfgAll.srvrFind(new servAmt(), cfgAll.dmnAmt, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("etherip")) {
+            servEtherIp srv = cfgAll.srvrFind(new servEtherIp(), cfgAll.dmnEtherIp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("gre")) {
+            servGre srv = cfgAll.srvrFind(new servGre(), cfgAll.dmnGre, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("gtp")) {
+            servGtp srv = cfgAll.srvrFind(new servGtp(), cfgAll.dmnGtp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("l2f")) {
+            servL2f srv = cfgAll.srvrFind(new servL2f(), cfgAll.dmnL2f, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("l2tp2")) {
+            servL2tp2 srv = cfgAll.srvrFind(new servL2tp2(), cfgAll.dmnL2tp2, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("l2tp3")) {
+            servL2tp3 srv = cfgAll.srvrFind(new servL2tp3(), cfgAll.dmnL2tp3, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("pckoudp")) {
+            servPckOudp srv = cfgAll.srvrFind(new servPckOudp(), cfgAll.dmnPckOudp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("vxlan")) {
+            servVxlan srv = cfgAll.srvrFind(new servVxlan(), cfgAll.dmnVxlan, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("sdwan")) {
+            servSdwan srv = cfgAll.srvrFind(new servSdwan(), cfgAll.dmnSdwan, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
             return null;
         }
         if (a.equals("http")) {
@@ -1483,6 +1585,24 @@ public class userShow {
             }
             if (a.equals("interfaces")) {
                 rdr.putStrTab(tabLabel.getShInt());
+                return null;
+            }
+            if (a.equals("server-udp")) {
+                servMplsUdp srv = cfgAll.srvrFind(new servMplsUdp(), cfgAll.dmnMplsUdp, cmd.word());
+                if (srv == null) {
+                    cmd.error("no such server");
+                    return null;
+                }
+                rdr.putStrTab(srv.getShow());
+                return null;
+            }
+            if (a.equals("server-ip")) {
+                servMplsIp srv = cfgAll.srvrFind(new servMplsIp(), cfgAll.dmnMplsIp, cmd.word());
+                if (srv == null) {
+                    cmd.error("no such server");
+                    return null;
+                }
+                rdr.putStrTab(srv.getShow());
                 return null;
             }
             cmd.badCmd();

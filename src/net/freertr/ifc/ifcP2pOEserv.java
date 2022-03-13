@@ -84,10 +84,13 @@ public class ifcP2pOEserv implements ifcUp {
      * @return show
      */
     public userFormat getShow() {
-        userFormat l = new userFormat("|", "mac|sess");
+        userFormat l = new userFormat("|", "mac|sess|iface");
         for (int i = 0; i < clnts.size(); i++) {
             ifcP2pOEservSess ntry = clnts.get(i);
-            l.add(ntry.mac + "|" + ntry.sessid);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.mac + "|" + ntry.sessid + "|" + ntry.ifc.name);
         }
         return l;
     }

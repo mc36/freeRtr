@@ -14,6 +14,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtMplsIp;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -223,6 +224,23 @@ public class servMplsIp extends servGeneric implements ipPrt {
      */
     public counter getCounter() {
         return cntr;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "addr|iface");
+        for (int i = 0; i < conns.size(); i++) {
+            servMplsIpConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.peer + "|" + ntry.acesIfc.name);
+        }
+        return res;
     }
 
 }

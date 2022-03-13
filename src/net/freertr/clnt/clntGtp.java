@@ -15,6 +15,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtUdp;
+import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -589,6 +590,23 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         }
         id.setClosing();
         return true;
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("ctrl|" + connC);
+        res.add("data|" + connD);
+        res.add("upper|" + upper);
+        res.add("cntr|" + cntr);
+        res.add("loc|" + teidLoc);
+        res.add("ctr|" + teidCtr);
+        res.add("dat|" + teidDat);
+        return res;
     }
 
 }

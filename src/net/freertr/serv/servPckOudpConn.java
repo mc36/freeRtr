@@ -22,9 +22,12 @@ import net.freertr.util.state;
  */
 public class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
 
-    private prtGenConn conn;
-
     private servPckOudp lower;
+
+    /**
+     * connection
+     */
+    protected prtGenConn conn;
 
     /**
      * counter

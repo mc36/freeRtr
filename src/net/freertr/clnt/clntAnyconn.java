@@ -12,6 +12,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packAnyconn;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -355,6 +356,20 @@ public class clntAnyconn implements Runnable, ifcDn {
                     break;
             }
         }
+    }
+
+    /**
+     * get show
+     *
+     * @return state
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("upper|" + upper);
+        res.add("cntr|" + cntr);
+        res.add("cookie1|" + cookie1);
+        res.add("cookie2|" + cookie2);
+        return res;
     }
 
 }
