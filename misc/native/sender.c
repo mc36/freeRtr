@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pcap.h>
+#include "dump.h"
 
 char *ifaceName;
 pcap_t *ifacePcap;
@@ -24,7 +25,7 @@ int main(int argc, char **argv) {
 
     packLen = 0;
     for (int i=2; i< argc; i++) {
-        packBuf[packLen] = atoi(argv[i]);
+        sscanf(argv[i], "%hhx", &packBuf[packLen]);
         packLen++;
     }
 
@@ -43,7 +44,8 @@ int main(int argc, char **argv) {
     if (pcap_activate(ifacePcap) < 0) err("activation failed");
     if (pcap_setdirection(ifacePcap, PCAP_D_IN) < 0) err("unable to set direction");
 
-    printf("sending packets with length %i\n", packLen);
+    printf("sending packets with length %i: ", packLen);
+    hexdump(packBuf, 0, packLen);
 
     for (;;) {
         pcap_sendpacket(ifacePcap, packBuf, packLen);
