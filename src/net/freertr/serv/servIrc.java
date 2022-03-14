@@ -14,6 +14,7 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
+import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
@@ -46,6 +47,11 @@ public class servIrc extends servGeneric implements prtServS {
     public boolean log2local;
 
     /**
+     * log to local file
+     */
+    public logFil log2file;
+
+    /**
      * peers
      */
     public tabGen<servIrcConn> peers = new tabGen<servIrcConn>();
@@ -56,7 +62,9 @@ public class servIrc extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server irc .*! port " + port,
         "server irc .*! protocol " + proto2string(protoAllStrm),
-        "server irc .*! no local"
+        "server irc .*! no local",
+        "server irc .*! no file",
+        "server irc .*! no rotate"
     };
 
     /**
@@ -81,6 +89,11 @@ public class servIrc extends servGeneric implements prtServS {
      */
     public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !log2local, beg, "local", "");
+        cmds.cfgLine(l, log2file == null, beg, "file", "" + log2file);
+        if (log2file != null) {
+            String a = log2file.rotate1();
+            cmds.cfgLine(l, a == null, beg, "rotate", a);
+        }
     }
 
     /**
@@ -91,6 +104,25 @@ public class servIrc extends servGeneric implements prtServS {
      */
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("file")) {
+            try {
+                log2file.close();
+            } catch (Exception e) {
+            }
+            log2file = new logFil(cmd.word());
+            log2file.open(false);
+            return false;
+        }
+        if (s.equals("rotate")) {
+            if (log2file == null) {
+                return false;
+            }
+            int siz = bits.str2num(cmd.word());
+            s = cmd.word();
+            int tim = bits.str2num(cmd.word());
+            log2file.rotate(s, siz, tim, 0);
+            return false;
+        }
         if (s.equals("local")) {
             log2local = true;
             return false;
@@ -99,6 +131,21 @@ public class servIrc extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("file")) {
+            try {
+                log2file.close();
+            } catch (Exception e) {
+            }
+            log2file = null;
+            return false;
+        }
+        if (s.equals("rotate")) {
+            if (log2file == null) {
+                return false;
+            }
+            log2file.rotate(null, 0, 0, 0);
+            return false;
+        }
         if (s.equals("local")) {
             log2local = false;
             return false;
@@ -112,7 +159,13 @@ public class servIrc extends servGeneric implements prtServS {
      * @param l help
      */
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  local                   log user communication");
+        l.add(null, "1 2  file                         set log file");
+        l.add(null, "2 .    <file>                     log file");
+        l.add(null, "1 2  rotate                       log file rotation");
+        l.add(null, "2 3    <num>                      maximum file size");
+        l.add(null, "3 4,.    <str>                    name of second file");
+        l.add(null, "4 .        <num>                  ms between backup");
+        l.add(null, "1 .  local                        set local logging");
     }
 
     /**
@@ -475,7 +528,10 @@ class servIrcConn implements Comparator<servIrcConn>, Runnable {
             s = cmd.word();
             String a = cmd.getRemaining();
             if (lower.log2local) {
-                logger.info(nick + " " + s + " " + a);
+                logger.info("irc " + nick + " " + s + " " + a);
+            }
+            if (lower.log2file != null) {
+                lower.log2file.add(logger.getTimestamp() + " " + nick + " " + s + " " + a);
             }
             if (s.startsWith("#")) {
                 servIrcChan chn = lower.findChan(s, false);

@@ -1,6 +1,5 @@
 package net.freertr.serv;
 
-import java.util.ArrayList;
 import java.util.List;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
@@ -12,6 +11,7 @@ import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logFil;
 import net.freertr.util.logger;
 
 /**
@@ -40,7 +40,7 @@ public class servSyslog extends servGeneric implements prtServS {
     /**
      * log to local file
      */
-    protected String log2file;
+    protected logFil log2file;
 
     /**
      * defaults text
@@ -49,7 +49,8 @@ public class servSyslog extends servGeneric implements prtServS {
         "server syslog .*! port " + port,
         "server syslog .*! protocol " + proto2string(protoAllDgrm),
         "server syslog .*! no local",
-        "server syslog .*! no file"
+        "server syslog .*! no file",
+        "server syslog .*! no rotate"
     };
 
     /**
@@ -123,13 +124,32 @@ public class servSyslog extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !log2local, beg, "local", "");
-        cmds.cfgLine(lst, log2file == null, beg, "file", log2file);
+        cmds.cfgLine(lst, log2file == null, beg, "file", "" + log2file);
+        if (log2file != null) {
+            String a = log2file.rotate1();
+            cmds.cfgLine(lst, a == null, beg, "rotate", a);
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("file")) {
-            log2file = cmd.word();
+            try {
+                log2file.close();
+            } catch (Exception e) {
+            }
+            log2file = new logFil(cmd.word());
+            log2file.open(false);
+            return false;
+        }
+        if (s.equals("rotate")) {
+            if (log2file == null) {
+                return false;
+            }
+            int siz = bits.str2num(cmd.word());
+            s = cmd.word();
+            int tim = bits.str2num(cmd.word());
+            log2file.rotate(s, siz, tim, 0);
             return false;
         }
         if (s.equals("local")) {
@@ -141,7 +161,18 @@ public class servSyslog extends servGeneric implements prtServS {
         }
         s = cmd.word();
         if (s.equals("file")) {
+            try {
+                log2file.close();
+            } catch (Exception e) {
+            }
             log2file = null;
+            return false;
+        }
+        if (s.equals("rotate")) {
+            if (log2file == null) {
+                return false;
+            }
+            log2file.rotate(null, 0, 0, 0);
             return false;
         }
         if (s.equals("local")) {
@@ -154,6 +185,10 @@ public class servSyslog extends servGeneric implements prtServS {
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  file                         set log file");
         l.add(null, "2 .    <file>                     log file");
+        l.add(null, "1 2  rotate                       log file rotation");
+        l.add(null, "2 3    <num>                      maximum file size");
+        l.add(null, "3 4,.    <str>                    name of second file");
+        l.add(null, "4 .        <num>                  ms between backup");
         l.add(null, "1 .  local                        set local logging");
     }
 
@@ -163,24 +198,6 @@ public class servSyslog extends servGeneric implements prtServS {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new servSyslogDoer(this, pipe, id);
         return false;
-    }
-
-    /**
-     * got message
-     *
-     * @param peer source of message
-     * @param msg message string
-     */
-    protected void gotMsg(String peer, String msg) {
-        if (log2local) {
-            logger.info("syslog " + peer + ": " + msg);
-        }
-        if (log2file != null) {
-            List<String> l = new ArrayList<String>();
-            l.add(logger.getTimestamp() + " " + peer + " " + msg);
-            bits.buf2txt(false, l, log2file);
-
-        }
     }
 
 }
@@ -211,7 +228,13 @@ class servSyslogDoer implements Runnable {
                 if (i < 1) {
                     continue;
                 }
-                lower.gotMsg("" + sck.peerAddr, pck.getAsciiZ(0, i, -1).replaceAll("\r", " ").replaceAll("\n", " "));
+                String msg = pck.getAsciiZ(0, i, -1).replaceAll("\r", " ").replaceAll("\n", " ");
+                if (lower.log2local) {
+                    logger.info("syslog " + sck.peerAddr + ": " + msg);
+                }
+                if (lower.log2file != null) {
+                    lower.log2file.add(logger.getTimestamp() + " " + sck.peerAddr + " " + msg);
+                }
             }
         } catch (Exception e) {
             logger.traceback(e);
