@@ -1771,7 +1771,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         }
         if (!suppressState()) {
             lower.sendLine("state " + id + " 0 " + getStateEnding());
-            lower.sendLine("ports_del " + id + getStateEnding());
+            lower.sendLine("ports_del " + id + " " + getStateEnding());
         }
         if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
             ifcNull nul = new ifcNull();
