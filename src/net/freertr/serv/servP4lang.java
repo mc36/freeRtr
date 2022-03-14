@@ -1705,6 +1705,18 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         if (ifc == null) {
             return;
         }
+        if (sentMpls != 0) {
+            lower.sendLine("mplspack_del " + id + " " + sentMpls);
+        }
+        if (sentNsh != 0) {
+            lower.sendLine("nshpack_del " + id + " " + sentNsh);
+        }
+        if (sentVrf != 0) {
+            lower.sendLine("portvrf_del " + id + " " + sentVrf);
+        }
+        if ((master != null) && (sentVlan != 0)) {
+            lower.sendLine("portvlan_del " + id + " " + master.id + " " + ifc.vlanNum);
+        }
         if (!suppressState()) {
             lower.sendLine("state " + id + " 0 " + getStateEnding());
         }
@@ -4018,6 +4030,22 @@ class servP4langConn implements Runnable {
             lower.sendLine("verify6_" + a + " " + ifc.id + " " + i);
             ifc.sentVerify6 = i;
         }
+        i = 0;
+        if (mstr.ifc.mplsPack != null) {
+            i = 1;
+        }
+        if (i != ifc.sentMpls) {
+            lower.sendLine("mplspack_" + a + " " + ifc.id + " " + i);
+            ifc.sentMpls = i;
+        }
+        i = 0;
+        if (mstr.ifc.nshPack != null) {
+            i = 1;
+        }
+        if (i != ifc.sentNsh) {
+            lower.sendLine("nshpack_" + a + " " + ifc.id + " " + i);
+            ifc.sentNsh = i;
+        }
         i = -1;
         o = -1;
         if (mstr.ifc.polkaPack != null) {
@@ -4053,22 +4081,6 @@ class servP4langConn implements Runnable {
             }
             lower.sendLine("mpolkapoly_" + a + " " + ifc.id + " " + o);
             ifc.sentMpolka = i;
-        }
-        i = 0;
-        if (mstr.ifc.mplsPack != null) {
-            i = 1;
-        }
-        if (i != ifc.sentMpls) {
-            lower.sendLine("mplspack_" + a + " " + ifc.id + " " + i);
-            ifc.sentMpls = i;
-        }
-        i = 0;
-        if (mstr.ifc.nshPack != null) {
-            i = 1;
-        }
-        if (i != ifc.sentNsh) {
-            lower.sendLine("nshpack_" + a + " " + ifc.id + " " + i);
-            ifc.sentNsh = i;
         }
         return false;
     }
