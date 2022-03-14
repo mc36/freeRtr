@@ -555,7 +555,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             String bck = cmd.word();
             int siz = bits.str2num(cmd.word());
             dumpFile.rotate(bck, siz, tim, 0);
-            dumpFile.open(false);
+            dumpFile.open(true);
             return;
         }
         if (a.equals("password")) {

@@ -3198,7 +3198,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             String bck = cmd.word();
             int siz = bits.str2num(cmd.word());
             dmp.fileHandle.rotate(bck, siz, tim, 0);
-            dmp.fileHandle.open(false);
+            dmp.fileHandle.open(true);
             return false;
         }
         if (s.equals("monitor")) {
