@@ -1,8 +1,5 @@
 package net.freertr.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.lang.management.CompilationMXBean;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
@@ -23,7 +20,6 @@ import net.freertr.clnt.clntSyslog;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
-import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
 import net.freertr.user.userUpgrade;
 

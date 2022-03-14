@@ -247,7 +247,9 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (debugger.rtrPvrpTraf) {
             logger.debug(peer + " rx " + a);
         }
-        iface.dumpLine(false, a);
+        if (iface.dumpFile != null) {
+            iface.dumpFile.add(logger.getTimestamp() + " " + peer + " rx " + a);
+        }
         cmds cmd = new cmds("rx", a);
         if (signRx == null) {
             return cmd;
@@ -289,7 +291,9 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (debugger.rtrPvrpTraf) {
             logger.debug(peer + " tx " + s);
         }
-        iface.dumpLine(true, s);
+        if (iface.dumpFile != null) {
+            iface.dumpFile.add(logger.getTimestamp() + " " + peer + " tx " + s);
+        }
         conn.linePut(s);
     }
 

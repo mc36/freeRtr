@@ -1,7 +1,5 @@
 package net.freertr.rtr;
 
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
@@ -20,13 +18,13 @@ import net.freertr.prt.prtServP;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
-import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
+import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.state;
 
@@ -190,17 +188,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     /**
      * dump file
      */
-    public String dumpFile = null;
-
-    /**
-     * dump backup time
-     */
-    public int dumpTime = 0;
-
-    /**
-     * name of backup file
-     */
-    public String dumpBackup = null;
+    public logFil dumpFile = null;
 
     /**
      * the interface this works on
@@ -221,12 +209,6 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      * list of neighbors
      */
     protected tabGen<rtrLsrpNeigh> neighs;
-
-    private FileOutputStream dumpHandle1 = null;
-
-    private PrintStream dumpHandle2 = null;
-
-    private long dumpStarted = 0;
 
     private boolean need2run;
 
@@ -269,59 +251,6 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         conn.timeout = 0;
         need2run = true;
         new Thread(this).start();
-    }
-
-    /**
-     * dump one line
-     *
-     * @param dir direction: false=rx, true=tx
-     * @param dat line
-     */
-    protected void dumpLine(boolean dir, String dat) {
-        if (dumpHandle2 == null) {
-            return;
-        }
-        synchronized (dumpFile) {
-            if (dumpTime > 0) {
-                if ((bits.getTime() - dumpStarted) > dumpTime) {
-                    dumpStarted = bits.getTime();
-                    try {
-                        dumpHandle2.flush();
-                        dumpHandle1.close();
-                    } catch (Exception e) {
-                        logger.error("unable to close file");
-                    }
-                    dumpHandle2 = null;
-                    dumpHandle1 = null;
-                    userFlash.rename(dumpFile, dumpBackup, true, true);
-                    try {
-                        dumpHandle1 = new FileOutputStream(dumpFile);
-                        dumpHandle2 = new PrintStream(dumpHandle1);
-                    } catch (Exception e) {
-                        logger.error("unable to open file");
-                    }
-                }
-            }
-            try {
-                dumpHandle2.print(logger.getTimestamp());
-                if (dir) {
-                    dumpHandle2.print(" tx ");
-                } else {
-                    dumpHandle2.print(" rx ");
-                }
-                dumpHandle2.println(dat);
-                dumpHandle2.flush();
-                return;
-            } catch (Exception e) {
-                logger.error("unable to write file");
-            }
-            try {
-                dumpHandle2.close();
-            } catch (Exception e) {
-            }
-            dumpHandle1 = null;
-            dumpHandle2 = null;
-        }
     }
 
     /**
@@ -390,11 +319,13 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         if (dumpFile == null) {
             l.add(cmds.tabulator + "no " + beg + "dump");
         } else {
-            String a = "";
-            if (dumpTime != 0) {
-                a = " " + dumpTime + " " + dumpBackup;
+            String a = dumpFile.rotate2();
+            if (a == null) {
+                a = "";
+            } else {
+                a = " " + a;
             }
-            l.add(cmds.tabulator + beg + "dump " + dumpFile + a);
+            l.add(cmds.tabulator + beg + "dump " + dumpFile.name() + a);
         }
         String a = "";
         if (segrouPop) {
@@ -498,7 +429,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "4 5         dump                        setup dump file");
         l.add(null, "5 6,.         <file>                    name of file");
         l.add(null, "6 7             <num>                   ms between backup");
-        l.add(null, "7 .               <file>                name of backup");
+        l.add(null, "7 8,.             <file>                name of backup");
+        l.add(null, "8 .                 <num>               maximum size of backup");
         l.add(null, "4 5         password                    password for authentication");
         l.add(null, "5 .           <text>                    set password");
         l.add(null, "4 5         metric                      interface metric");
@@ -615,25 +547,15 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("dump")) {
             try {
-                dumpHandle2.flush();
-                dumpHandle1.close();
+                dumpFile.close();
             } catch (Exception e) {
             }
-            dumpHandle2 = null;
-            dumpHandle1 = null;
-            dumpFile = cmd.word();
-            dumpTime = bits.str2num(cmd.word());
-            dumpBackup = cmd.word();
-            dumpStarted = bits.getTime();
-            if (dumpTime > 0) {
-                userFlash.rename(dumpFile, dumpBackup, true, true);
-            }
-            try {
-                dumpHandle1 = new FileOutputStream(dumpFile);
-                dumpHandle2 = new PrintStream(dumpHandle1);
-            } catch (Exception e) {
-                logger.error("unable to open file");
-            }
+            dumpFile = new logFil(cmd.word());
+            int tim = bits.str2num(cmd.word());
+            String bck = cmd.word();
+            int siz = bits.str2num(cmd.word());
+            dumpFile.rotate(bck, siz, tim);
+            dumpFile.open(false);
             return;
         }
         if (a.equals("password")) {
@@ -825,15 +747,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("dump")) {
             try {
-                dumpHandle1.flush();
-                dumpHandle2.close();
+                dumpFile.close();
             } catch (Exception e) {
             }
-            dumpHandle2 = null;
-            dumpHandle1 = null;
             dumpFile = null;
-            dumpTime = 0;
-            dumpBackup = null;
             return;
         }
         if (a.equals("password")) {

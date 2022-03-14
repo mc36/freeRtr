@@ -63,6 +63,14 @@ public class logFil {
         logRotNam = fn;
         logRotSiz = siz;
         logRotTim = tim;
+        if (fn != null) {
+            if (fn.length() > 0) {
+                return;
+            }
+        }
+        logRotNam = null;
+        logRotSiz = 0;
+        logRotTim = 0;
     }
 
     /**
