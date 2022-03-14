@@ -22,14 +22,12 @@ from rare.bf_gbl_env.cst_env import *
 from rare.bf_grpc_client import BfRuntimeGrpcClient
 from rare.bf_ifstatus import BfIfStatus
 from rare.bf_ifcounter import BfIfCounter
-from rare.bf_subifcounter import BfSubIfCounter
 from rare.bf_natcounter import BfNatCounter
 from rare.bf_bridgecounter import BfBridgeCounter
 from rare.bf_inspectcounter import BfInspectCounter
 from rare.bf_flowspeccounter import BfFlowspecCounter
 from rare.bf_nshcounter import BfNshCounter
 from rare.bf_aclcounter import BfAclCounter
-from rare.bf_snmp_client import BfIfSnmpClient
 from rare.bf_forwarder import BfForwarder
 from rare.bf_forwarder.opt_parser import get_opt_parser
 
@@ -38,6 +36,7 @@ try:
 except ImportError:
     logger.warning("SAL import failed")
 
+next_thread_id = 0
 ALL_THREADS = []
 
 if __name__ == "__main__":
@@ -79,40 +78,29 @@ if __name__ == "__main__":
         sckr_file = sck.makefile("r")
         sckw_file = sck.makefile("w")
 
-        bf_client = BfRuntimeGrpcClient(
-            args.bfruntime_address,
-            args.p4_program_name,
-            args.client_id,
-            args.pipe_name,
-            True,
-        )
+        def newClient(bind = False):
+            global next_thread_id
+            thread_id = next_thread_id
+            client = BfRuntimeGrpcClient(
+                args.bfruntime_address,
+                args.p4_program_name,
+                args.client_id + thread_id,
+                args.pipe_name,
+                bind,
+            )
+            next_thread_id += 1
+            return client, thread_id
 
-        bf_ifstatus_c = BfRuntimeGrpcClient(
-            args.bfruntime_address,
-            args.p4_program_name,
-            args.client_id + 1,
-            args.pipe_name,
-            False,
-        )
+        def startThread(thread):
+            thread.daemon= True
+            thread.start()
+            ALL_THREADS.append(thread)
 
-        bf_ifcounter_c = BfRuntimeGrpcClient(
-            args.bfruntime_address,
-            args.p4_program_name,
-            args.client_id + 2,
-            args.pipe_name,
-            False,
-        )
-
-        bf_subifcounter_c = BfRuntimeGrpcClient(
-            args.bfruntime_address,
-            args.p4_program_name,
-            args.client_id + 3,
-            args.pipe_name,
-            False,
-        )
-
+        bf_client, bf_client_id = newClient(bind = True)
+        bf_ifstatus_c, bf_ifstatus_id = newClient()
+        bf_ifcounter_c, bf_ifcounter_id = newClient()
         bf_forwarder = BfForwarder(
-            0,
+            bf_client_id,
             "bf_forwarder",
             args.platform,
             bf_client,
@@ -121,187 +109,66 @@ if __name__ == "__main__":
             sckw_file,
             args.no_log_keepalive,
         )
-
-        bf_forwarder.daemon = True
-        bf_forwarder.start()
-        ALL_THREADS.append(bf_forwarder)
-
-        bf_ifstatus = BfIfStatus(1, "bf_ifstatus", bf_ifstatus_c, sckw_file, 1)
-
-        bf_ifstatus.daemon = True
-        bf_ifstatus.start()
-        ALL_THREADS.append(bf_ifstatus)
-
-        bf_ifcounter = BfIfCounter(
-            2, "bf_ifcounter", bf_ifcounter_c, sckw_file, args.pipe_name, 5
-        )
-
-        bf_ifcounter.daemon = True
-        bf_ifcounter.start()
-        ALL_THREADS.append(bf_ifcounter)
-
-        bf_subifcounter = BfSubIfCounter(
-            3, "bf_subifcounter", bf_subifcounter_c, sckw_file, args.pipe_name, 5
-        )
-
-        bf_subifcounter.daemon = True
-        bf_subifcounter.start()
-        ALL_THREADS.append(bf_subifcounter)
+        startThread(bf_forwarder)
+        startThread(BfIfStatus(bf_ifstatus_id, "bf_ifstatus", bf_ifstatus_c,
+                               sckw_file, 1))
+        startThread(BfIfCounter(bf_ifcounter_id, "bf_ifcounter",
+                                bf_ifcounter_c, sckw_file, args.pipe_name, 5,
+                                args.snmp, args.ifmibs_dir, args.ifindex))
 
         if bf_forwarder.dp_capabilities["nat"] == True:
 
-            bf_natcounter_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 4,
-                args.pipe_name,
-                False,
-            )
-
-            bf_natcounter = BfNatCounter(
-                4, "bf_natcounter", bf_natcounter_c, sckw_file, args.pipe_name, 30
-            )
-            bf_natcounter.daemon = True
-            bf_natcounter.start()
-            ALL_THREADS.append(bf_natcounter)
+            bf_natcounter_c, id = newClient()
+            startThread(BfNatCounter(id, "bf_natcounter", bf_natcounter_c,
+                                     sckw_file, args.pipe_name, 30))
         else:
             logging.warning("%s - nat not supported" % PROGRAM_NAME)
 
         if bf_forwarder.dp_capabilities["bridge"] == True:
 
-            bf_bridgecounter_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 5,
-                args.pipe_name,
-                False,
-            )
-
-            bf_bridgecounter = BfBridgeCounter(
-                5, "bf_bridgecounter", bf_bridgecounter_c, sckw_file, args.pipe_name, 30
-            )
-            bf_bridgecounter.daemon = True
-            bf_bridgecounter.start()
-            ALL_THREADS.append(bf_bridgecounter)
+            bf_bridgecounter_c, id = newClient()
+            startThread(BfBridgeCounter(id, "bf_bridgecounter", bf_bridgecounter_c,
+                                        sckw_file, args.pipe_name, 30))
         else:
             logging.warning("%s - bridge not supported" % PROGRAM_NAME)
 
-        if (
-            bf_forwarder.dp_capabilities["inspect_in"] == True
+        if (bf_forwarder.dp_capabilities["inspect_in"] == True
             or bf_forwarder.dp_capabilities["inspect_out"] == True
-        ):
+            ):
 
-            bf_inspectcounter_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 6,
-                args.pipe_name,
-                False,
-            )
-
-            bf_inspectcounter = BfInspectCounter(
-                6,
-                "bf_inspectcounter",
-                bf_inspectcounter_c,
-                sckw_file,
-                args.pipe_name,
-                30,
-            )
-            bf_inspectcounter.daemon = True
-            bf_inspectcounter.start()
-            ALL_THREADS.append(bf_inspectcounter)
+            bf_inspectcounter_c, id = newClient()
+            startThread(BfInspectCounter(id, "bf_inspectcounter",
+                                         bf_inspectcounter_c, sckw_file,
+                                         args.pipe_name, 30))
         else:
             logging.warning("%s - inspect not supported" % PROGRAM_NAME)
 
         if bf_forwarder.dp_capabilities["flowspec"] == True:
 
-            bf_flowspeccounter_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 7,
-                args.pipe_name,
-                False,
-            )
-
-            bf_flowspeccounter = BfFlowspecCounter(
-                7,
-                "bf_flowspeccounter",
-                bf_flowspeccounter_c,
-                sckw_file,
-                args.pipe_name,
-                30,
-            )
-            bf_flowspeccounter.daemon = True
-            bf_flowspeccounter.start()
-            ALL_THREADS.append(bf_flowspeccounter)
+            bf_flowspeccounter_c, id = newClient()
+            startThread(BfFlowspecCounter(id, "bf_flowspeccounter",
+                                          bf_flowspeccounter_c, sckw_file,
+                                          args.pipe_name, 30))
         else:
             logging.warning("%s - flowspec not supported" % PROGRAM_NAME)
 
         if bf_forwarder.dp_capabilities["nsh"] == True:
 
-            bf_nshcounter_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 8,
-                args.pipe_name,
-                False,
-            )
-
-            bf_nshcounter = BfNshCounter(
-                8, "bf_nshcounter", bf_nshcounter_c, sckw_file, args.pipe_name, 30
-            )
-            bf_nshcounter.daemon = True
-            bf_nshcounter.start()
-            ALL_THREADS.append(bf_nshcounter)
+            bf_nshcounter_c, id = newClient()
+            startThread(BfNshCounter(id, "bf_nshcounter", bf_nshcounter_c,
+                                   sckw_file, args.pipe_name, 30))
         else:
             logging.warning("%s - nsh not supported" % PROGRAM_NAME)
 
-        if (
-            bf_forwarder.dp_capabilities["inacl"] == True
+        if (bf_forwarder.dp_capabilities["inacl"] == True
             and bf_forwarder.dp_capabilities["outacl"] == True
-        ):
+            ):
 
-            bf_aclcounter_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 9,
-                args.pipe_name,
-                False,
-            )
-
-            bf_aclcounter = BfAclCounter(
-                9, "bf_aclcounter", bf_aclcounter_c, sckw_file, args.pipe_name, 30
-            )
-            bf_aclcounter.daemon = True
-            bf_aclcounter.start()
-            ALL_THREADS.append(bf_aclcounter)
+            bf_aclcounter_c, id = newClient()
+            startThread(BfAclCounter(id, "bf_aclcounter", bf_aclcounter_c,
+                                     sckw_file, args.pipe_name, 30))
         else:
             logging.warning("%s - acl not supported" % PROGRAM_NAME)
-
-        if args.snmp:
-            bf_snmp_c = BfRuntimeGrpcClient(
-                args.bfruntime_address,
-                args.p4_program_name,
-                args.client_id + 10,
-                args.pipe_name,
-                False,
-            )
-
-            bf_snmp = BfIfSnmpClient(
-                10,
-                "bf_snmp",
-                bf_snmp_c,
-                args.ifmibs_dir,
-                args.stats_interval,
-                args.ifindex,
-                args.pipe_name,
-            )
-            bf_snmp.daemon = True
-            bf_snmp.start()
-            ALL_THREADS.append(bf_snmp)
-            logger.warning("bf_switchd started with SNMP export")
-        else:
-            logger.warning("bf_switchd started with no SNMP export")
 
         while is_any_thread_alive(ALL_THREADS):
             [t.join(1) for t in ALL_THREADS if t is not None and t.is_alive()]

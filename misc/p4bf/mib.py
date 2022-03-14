@@ -94,6 +94,7 @@ types = {
 class MIB:
     def __init__(self, file):
         index_file = file + ".index"
+        self.file = file
         self.data_f = io.open(file, "w+b", buffering=0)
         self.index_f = io.open(index_file, "w")
         self.index_f.write(u'MIB:1\n')
@@ -104,6 +105,12 @@ class MIB:
         ## will be allocated by register()
         self.offset = 0
         self.objects = {}
+
+    def __del__(self):
+        self.data_f.close()
+        self.index_f.close()
+        os.unlink(self.file)
+        os.unlink(self.file + ".index")
 
     def register(self, name, type, value = None, octet_str_len = None):
         assert(type in types.keys())
