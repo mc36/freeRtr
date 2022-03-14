@@ -50,6 +50,7 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
+import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.shrtPthFrst;
@@ -2276,7 +2277,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < dmps.size(); i++) {
             rtrBgpMrt ntry = dmps.get(i);
-            ntry.stopNow();
+            ntry.fileHandle.close();
         }
         if (lstnTmp != null) {
             tcpCore.listenStop(lstnIfc, port, null, 0);
@@ -2390,7 +2391,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "2 3     <str>                     name of mrt");
         l.add(null, "3 4,.     <file>                  name of file");
         l.add(null, "4 5         <num>                 ms between backup");
-        l.add(null, "5 .           <file>              name of backup");
+        l.add(null, "5 6,.         <file>              name of backup");
+        l.add(null, "6 .             <num>             maximum size of backup");
         l.add(null, "1 2   monitor                     setup bgp monitor protocol server");
         l.add(null, "2 3     <str>                     name of bmp");
         l.add(null, "3 4       <name:prx>              proxy profile");
@@ -3177,30 +3179,30 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("dump")) {
-            rtrBgpMrt dmp = new rtrBgpMrt();
-            dmp.dumpName = cmd.word();
+            rtrBgpMrt dmp = new rtrBgpMrt(cmd.word());
             if (negated) {
                 dmp = dmps.del(dmp);
                 if (dmp == null) {
                     return false;
                 }
-                dmp.stopNow();
+                dmp.fileHandle.close();
                 return false;
             }
             rtrBgpMrt old = dmps.add(dmp);
             if (old != null) {
-                old.stopNow();
+                old.fileHandle.close();
                 dmp = old;
             }
-            dmp.fileName = cmd.word();
-            dmp.backupTime = bits.str2num(cmd.word());
-            dmp.backupName = cmd.word();
-            dmp.startNow();
+            dmp.fileHandle = new logFil(cmd.word());
+            int tim = bits.str2num(cmd.word());
+            String bck = cmd.word();
+            int siz = bits.str2num(cmd.word());
+            dmp.fileHandle.rotate(bck, siz, tim);
+            dmp.fileHandle.open(false);
             return false;
         }
         if (s.equals("monitor")) {
-            rtrBgpMon mon = new rtrBgpMon(this);
-            mon.monName = cmd.word();
+            rtrBgpMon mon = new rtrBgpMon(this, cmd.word());
             if (negated) {
                 mon = mons.del(mon);
                 if (mon == null) {

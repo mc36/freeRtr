@@ -1740,8 +1740,7 @@ public abstract class rtrBgpParam {
                 dump = null;
                 return false;
             }
-            rtrBgpMrt mon = new rtrBgpMrt();
-            mon.dumpName = cmd.word();
+            rtrBgpMrt mon = new rtrBgpMrt(cmd.word());
             dump = lower.dmps.find(mon);
             if (dump == null) {
                 cmd.error("no such dump");
@@ -1753,8 +1752,7 @@ public abstract class rtrBgpParam {
                 monitor = null;
                 return false;
             }
-            rtrBgpMon mon = new rtrBgpMon(null);
-            mon.monName = cmd.word();
+            rtrBgpMon mon = new rtrBgpMon(null, cmd.word());
             monitor = lower.mons.find(mon);
             if (monitor == null) {
                 cmd.error("no such monitor");

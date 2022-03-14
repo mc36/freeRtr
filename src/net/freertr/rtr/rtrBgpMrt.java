@@ -1,15 +1,12 @@
 package net.freertr.rtr;
 
-import java.io.File;
-import java.io.RandomAccessFile;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
-import net.freertr.user.userFlash;
 import net.freertr.util.bits;
-import net.freertr.util.logger;
+import net.freertr.util.logFil;
 
 /**
  * multi-threaded routing toolkit
@@ -17,12 +14,6 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
-
-    /**
-     * create instance
-     */
-    public rtrBgpMrt() {
-    }
 
     /**
      * bgp type
@@ -52,26 +43,23 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
     /**
      * name of dump
      */
-    public String dumpName;
+    public final String dumpName;
 
     /**
-     * name of file
+     * handler of dump
      */
-    public String fileName;
-
-    /**
-     * backup time
-     */
-    public int backupTime;
-
-    /**
-     * name of backup file
-     */
-    public String backupName;
-
-    private RandomAccessFile fileHandle;
+    public logFil fileHandle;
 
     private long started;
+
+    /**
+     * create instance
+     *
+     * @param nam name of dump
+     */
+    public rtrBgpMrt(String nam) {
+        dumpName = nam;
+    }
 
     public String toString() {
         return dumpName;
@@ -88,37 +76,13 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      * @param beg beginning
      */
     public void getConfig(List<String> l, String beg) {
-        String a = "";
-        if (backupTime != 0) {
-            a = " " + backupTime + " " + backupName;
+        String a = fileHandle.rotate2();
+        if (a == null) {
+            a = "";
+        } else {
+            a = " " + a;
         }
-        l.add(beg + "dump " + dumpName + " " + fileName + a);
-    }
-
-    /**
-     * stop this peer
-     */
-    protected synchronized void stopNow() {
-        try {
-            fileHandle.close();
-        } catch (Exception e) {
-        }
-    }
-
-    /**
-     * start this peer
-     */
-    protected synchronized void startNow() {
-        if (backupTime > 0) {
-            userFlash.rename(fileName, backupName, true, true);
-        }
-        started = bits.getTime();
-        try {
-            fileHandle = new RandomAccessFile(new File(fileName), "rw");
-            fileHandle.setLength(0);
-        } catch (Exception e) {
-            logger.error("unable to open file");
-        }
+        l.add(beg + "dump " + dumpName + " " + fileHandle.name() + a);
     }
 
     /**
@@ -170,28 +134,7 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      * @param nei neighbor
      * @param dat data bytes
      */
-    public synchronized void gotMessage(boolean dir, int typ, rtrBgpNeigh nei, byte[] dat) {
-        if (fileHandle == null) {
-            return;
-        }
-        if (backupTime > 0) {
-            if ((bits.getTime() - started) > backupTime) {
-                try {
-                    fileHandle.close();
-                } catch (Exception e) {
-                    logger.error("unable to close file");
-                }
-                fileHandle = null;
-                userFlash.rename(fileName, backupName, true, true);
-                started = bits.getTime();
-                try {
-                    fileHandle = new RandomAccessFile(new File(fileName), "rw");
-                    fileHandle.setLength(0);
-                } catch (Exception e) {
-                    logger.error("unable to open file");
-                }
-            }
-        }
+    public void gotMessage(boolean dir, int typ, rtrBgpNeigh nei, byte[] dat) {
         byte[] hdr = new byte[128];
         int len = putMrtHeader(hdr, dir, nei.remoteAs, nei.localAs, nei.peerAddr, nei.localAddr, dat.length + rtrBgpSpeak.sizeU);
         for (int i = 0; i < 16; i++) {
@@ -201,18 +144,7 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
         bits.msbPutW(hdr, len, dat.length + rtrBgpSpeak.sizeU);
         hdr[len + 2] = (byte) typ;
         len += 3;
-        try {
-            fileHandle.write(hdr, 0, len);
-            fileHandle.write(dat, 0, dat.length);
-            return;
-        } catch (Exception e) {
-            logger.error("unable to write file");
-        }
-        try {
-            fileHandle.close();
-        } catch (Exception e) {
-        }
-        fileHandle = null;
+        fileHandle.add(hdr, 0, len, dat, 0, dat.length);
     }
 
 }

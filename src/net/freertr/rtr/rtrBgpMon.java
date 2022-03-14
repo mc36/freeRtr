@@ -30,7 +30,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
     /**
      * name of monitor
      */
-    public String monName;
+    public final String monName;
 
     /**
      * proxy to use
@@ -86,9 +86,11 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
      * create instance
      *
      * @param lower parent
+     * @param nam name of monitor
      */
-    public rtrBgpMon(rtrBgp lower) {
+    public rtrBgpMon(rtrBgp lower, String nam) {
         parent = lower;
+        monName = nam;
     }
 
     public String toString() {
