@@ -4201,14 +4201,14 @@ class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
                 nei.viaH = hop;
                 nei.mac = hop.mac.copyBytes();
                 nei.sentIfc = hop.sentIfc;
-                nei.sentTun = lp;
+                nei.sentTun = rp;
                 String afi;
                 if (trg.isIPv4()) {
                     afi = "4";
@@ -4262,14 +4262,14 @@ class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
                 nei.viaH = hop;
                 nei.mac = hop.mac.copyBytes();
                 nei.sentIfc = hop.sentIfc;
-                nei.sentTun = lp;
+                nei.sentTun = rp;
                 String afi;
                 if (trg.isIPv4()) {
                     afi = "4";
@@ -4314,14 +4314,14 @@ class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
                 nei.viaH = hop;
                 nei.mac = hop.mac.copyBytes();
                 nei.sentIfc = hop.sentIfc;
-                nei.sentTun = lp;
+                nei.sentTun = rp;
                 String afi;
                 if (trg.isIPv4()) {
                     afi = "4";
@@ -4366,14 +4366,14 @@ class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == lp)) {
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
                 nei.viaH = hop;
                 nei.mac = hop.mac.copyBytes();
                 nei.sentIfc = hop.sentIfc;
-                nei.sentTun = lp;
+                nei.sentTun = rp;
                 String afi;
                 if (trg.isIPv4()) {
                     afi = "4";
