@@ -173,7 +173,6 @@ public class logFil {
             logFilHnd.flush();
             logFilHnd.close();
         } catch (Exception e) {
-            logger.traceback(e);
         }
     }
 
@@ -195,13 +194,11 @@ public class logFil {
         try {
             logFilHnd.close();
         } catch (Exception e) {
-            logger.traceback(e);
         }
         userFlash.rename(logFilNam, logRotNam, true, true);
         try {
             logFilHnd = new PrintStream(new FileOutputStream(logFilNam, true));
         } catch (Exception e) {
-            logger.traceback(e);
         }
         logFilSiz = 0;
         logFilLin = 0;
@@ -214,6 +211,7 @@ public class logFil {
      * @param msg message
      */
     public synchronized void add(String msg) {
+        doRotate();
         try {
             logFilHnd.println(msg);
             logFilHnd.flush();
@@ -222,7 +220,6 @@ public class logFil {
         }
         logFilSiz += msg.length() + 2;
         logFilLin++;
-        doRotate();
     }
 
     /**
@@ -236,6 +233,7 @@ public class logFil {
      * @param siz2 second size
      */
     public synchronized void add(byte[] buf1, int ofs1, int siz1, byte[] buf2, int ofs2, int siz2) {
+        doRotate();
         try {
             logFilHnd.write(buf1, ofs1, siz1);
             logFilHnd.write(buf2, ofs2, siz2);
@@ -246,7 +244,6 @@ public class logFil {
         logFilSiz += siz1 - ofs1;
         logFilSiz += siz2 - ofs2;
         logFilLin++;
-        doRotate();
     }
 
 }
