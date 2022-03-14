@@ -5481,6 +5481,9 @@ class servP4langConn implements Runnable {
         }
         for (int i = 0; i < nds.size(); i++) {
             tabSessionEntry ntry = nds.get(i);
+            if (ntry == null) {
+                continue;
+            }
             if (old.connects.find(ntry) != null) {
                 continue;
             }
