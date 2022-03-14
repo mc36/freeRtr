@@ -53,6 +53,21 @@ int getState(int port) {
 }
 
 
+void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
+    struct rte_eth_stats stat;
+    if (rte_eth_stats_get(port, &stat) != 0) return;
+    *len += snprintf((char*)&buf[*len], 128, "%s ipackets %li\r\n", (char*)pre, stat.ipackets);
+    *len += snprintf((char*)&buf[*len], 128, "%s opackets %li\r\n", (char*)pre, stat.opackets);
+    *len += snprintf((char*)&buf[*len], 128, "%s ibytes %li\r\n", (char*)pre, stat.ibytes);
+    *len += snprintf((char*)&buf[*len], 128, "%s obytes %li\r\n", (char*)pre, stat.obytes);
+    *len += snprintf((char*)&buf[*len], 128, "%s imissed %li\r\n", (char*)pre, stat.imissed);
+    *len += snprintf((char*)&buf[*len], 128, "%s ierrors %li\r\n", (char*)pre, stat.ierrors);
+    *len += snprintf((char*)&buf[*len], 128, "%s oerrors %li\r\n", (char*)pre, stat.oerrors);
+    *len += snprintf((char*)&buf[*len], 128, "%s rx_nombuf %li\r\n", (char*)pre, stat.rx_nombuf);
+    return;
+}
+
+
 void err(char*buf) {
     rte_exit(EXIT_FAILURE, "%s\n", buf);
     exit(1);

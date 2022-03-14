@@ -209,6 +209,21 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      */
     protected notifier notif = new notifier();
 
+    /**
+     * controller text
+     */
+    protected List<String> statsTxt;
+
+    /**
+     * controller notifier
+     */
+    protected notifier statsNtf;
+
+    /**
+     * controller port
+     */
+    protected int statsPrt;
+
     private ifcDn intercon;
 
     /**
@@ -731,7 +746,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     /**
-     * get generic show
+     * get interfaces show
      *
      * @return show
      */
@@ -758,6 +773,35 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         for (int i = 0; i < neighs.size(); i++) {
             servP4langNei ntry = neighs.get(i);
             res.add(ntry.id + "|" + ntry.adr + "|" + ntry.iface);
+        }
+        return res;
+    }
+
+    /**
+     * get interfaces show
+     *
+     * @param ifc interface
+     * @return show
+     */
+    public List<String> getShowIface(cfgIfc ifc) {
+        if (conn == null) {
+            return bits.str2lst("dataplane not connected");
+        }
+        servP4langIfc ntry = findIfc(ifc);
+        if (ntry == null) {
+            return bits.str2lst("interface not exported");
+        }
+        statsTxt = null;
+        statsNtf = new notifier();
+        statsPrt = ntry.id;
+        sendLine("stats " + ntry.id);
+        statsNtf.misleep(5000);
+        List<String> res = statsTxt;
+        statsTxt = null;
+        statsNtf = null;
+        statsPrt = -4;
+        if (res == null) {
+            return bits.str2lst("no answer from dataplane");
         }
         return res;
     }
@@ -1870,23 +1914,23 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
 class servP4langConn implements Runnable {
 
-    public final pipeSide pipe;
+    protected final pipeSide pipe;
 
-    public final servP4lang lower;
+    private final servP4lang lower;
 
-    public int keepalive;
+    private int keepalive;
 
-    public tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
+    private tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
 
-    public tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
+    private tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
 
-    public tabListing<tabAceslstN<addrIP>, addrIP> copp4;
+    private tabListing<tabAceslstN<addrIP>, addrIP> copp4;
 
-    public tabListing<tabAceslstN<addrIP>, addrIP> copp6;
+    private tabListing<tabAceslstN<addrIP>, addrIP> copp6;
 
-    public tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+    private tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
 
-    public tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+    private tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
 
     public servP4langConn(pipeSide pip, servP4lang upper) {
         pipe = pip;
@@ -2138,6 +2182,9 @@ class servP4langConn implements Runnable {
         lower.dynRngBeg = -1;
         lower.dynRngEnd = -2;
         lower.cpuport = -3;
+        lower.statsPrt = -4;
+        lower.statsTxt = null;
+        lower.statsNtf = null;
         lower.fronts.clear();
         for (;;) {
             if (pipe.isClosed() != 0) {
@@ -2747,6 +2794,57 @@ class servP4langConn implements Runnable {
             }
             if (s.equals("dataplane-say")) {
                 logger.info("dataplane said: " + cmd.getRemaining());
+                continue;
+            }
+            if (s.equals("stats_beg")) {
+                int i = bits.str2num(cmd.word());
+                if (lower.statsPrt != i) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                if (lower.statsTxt != null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                lower.statsTxt = new ArrayList<String>();
+                continue;
+            }
+            if (s.equals("stats_txt")) {
+                int i = bits.str2num(cmd.word());
+                if (lower.statsPrt != i) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                if (lower.statsTxt == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                lower.statsTxt.add(cmd.getRemaining());
+                continue;
+            }
+            if (s.equals("stats_end")) {
+                int i = bits.str2num(cmd.word());
+                if (lower.statsPrt != i) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                if (lower.statsNtf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                lower.statsNtf.wakeup();
                 continue;
             }
             if (debugger.servP4langErr) {
@@ -5357,7 +5455,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    public String numat2str(tabIntMatcher mat, int max) {
+    private String numat2str(tabIntMatcher mat, int max) {
         switch (mat.action) {
             case xact:
                 return (mat.rangeMin & max) + " " + max;
@@ -5370,7 +5468,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    public String ip2str(boolean ipv4, addrIP adr) {
+    private String ip2str(boolean ipv4, addrIP adr) {
         if (ipv4) {
             return "" + adr.toIPv4();
         } else {
@@ -5378,7 +5476,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    public String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace, boolean check, boolean negate) {
+    private String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace, boolean check, boolean negate) {
         if (check) {
             if (!ace.srcMask.isFilled(0)) {
                 if (ace.srcMask.isIPv4() != ipv4) {
@@ -5403,7 +5501,7 @@ class servP4langConn implements Runnable {
         return seq + " " + cmd + " " + numat2str(ace.proto, 255) + " " + ip2str(ipv4, ace.srcAddr) + " " + ip2str(ipv4, ace.srcMask) + " " + ip2str(ipv4, ace.trgAddr) + " " + ip2str(ipv4, ace.trgMask) + " " + numat2str(ace.srcPort, 65535) + " " + numat2str(ace.trgPort, 65535) + " " + numat2str(ace.tos, 255) + " " + numat2str(ace.flow, ipv4 ? 65535 : 1048575) + " " + numat2str(ace.sgt, 65535);
     }
 
-    public int sendAcl(int seq, String pre1, String perm, String deny, String pre2, String pre3, boolean ipv4, boolean check, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra, tabSession sess, tabListing<tabAceslstN<addrIP>, addrIP> res) {
+    private int sendAcl(int seq, String pre1, String perm, String deny, String pre2, String pre3, boolean ipv4, boolean check, tabListing<tabAceslstN<addrIP>, addrIP> iface, tabListing<tabAceslstN<addrIP>, addrIP> infra, tabSession sess, tabListing<tabAceslstN<addrIP>, addrIP> res) {
         if (res == null) {
             res = new tabListing<tabAceslstN<addrIP>, addrIP>();
         }
@@ -5440,7 +5538,7 @@ class servP4langConn implements Runnable {
         return seq + 1;
     }
 
-    public boolean needAcl(tabListing<tabAceslstN<addrIP>, addrIP> done1, tabListing<tabAceslstN<addrIP>, addrIP> need1, tabListing<tabAceslstN<addrIP>, addrIP> done2, tabListing<tabAceslstN<addrIP>, addrIP> need2, tabSession sess, tabListing<tabAceslstN<addrIP>, addrIP> sent) {
+    private boolean needAcl(tabListing<tabAceslstN<addrIP>, addrIP> done1, tabListing<tabAceslstN<addrIP>, addrIP> need1, tabListing<tabAceslstN<addrIP>, addrIP> done2, tabListing<tabAceslstN<addrIP>, addrIP> need2, tabSession sess, tabListing<tabAceslstN<addrIP>, addrIP> sent) {
         if (need1 != done1) {
             return true;
         }
@@ -5468,7 +5566,7 @@ class servP4langConn implements Runnable {
         }
     }
 
-    public tabSession sendSess(int ifc, boolean ipv4, tabSession old, tabSession ned) {
+    private tabSession sendSess(int ifc, boolean ipv4, tabSession old, tabSession ned) {
         if (ned == null) {
             if (old == null) {
                 return null;

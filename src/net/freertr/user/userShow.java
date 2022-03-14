@@ -929,10 +929,20 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            rdr.putStrTab(srv.getShowGen());
-            rdr.putStrTab(srv.getShowFront());
-            rdr.putStrTab(srv.getShowIfaces());
-            rdr.putStrTab(srv.getShowNeighs());
+            a = cmd.word();
+            if (a.length() < 1) {
+                rdr.putStrTab(srv.getShowGen());
+                rdr.putStrTab(srv.getShowFront());
+                rdr.putStrTab(srv.getShowIfaces());
+                rdr.putStrTab(srv.getShowNeighs());
+                return null;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            rdr.putStrArr(srv.getShowIface(ifc));
             return null;
         }
         if (a.equals("bmp")) {

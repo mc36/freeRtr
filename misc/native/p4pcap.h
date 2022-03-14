@@ -26,6 +26,16 @@ int getState(int port) {
 }
 
 
+void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
+    struct pcap_stat stat;
+    if (pcap_stats(ifacePcap[port], &stat) != 0) return;
+    *len += snprintf((char*)&buf[*len], 128, "%s ps_recv %i\r\n", (char*)pre, stat.ps_recv);
+    *len += snprintf((char*)&buf[*len], 128, "%s ps_drop %i\r\n", (char*)pre, stat.ps_drop);
+    *len += snprintf((char*)&buf[*len], 128, "%s ps_ifdrop %i\r\n", (char*)pre, stat.ps_ifdrop);
+    return;
+}
+
+
 
 void err(char*buf) {
     printf("%s\n", buf);

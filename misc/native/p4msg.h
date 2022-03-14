@@ -1,3 +1,6 @@
+unsigned char portStatsBuf[1024];
+int portStatsLen = 0;
+
 void str2mac(unsigned char *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
 }
@@ -246,6 +249,16 @@ int doOneCommand(unsigned char* buf) {
     int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
+    }
+    if (strcmp(arg[0], "stats") == 0) {
+        i = atoi(arg[1]);
+        if (i < 0) return 0;
+        if (i >= ports) return 0;
+        portStatsLen = snprintf((char*)&portStatsBuf, 128, "stats_beg %i\r\n", i);
+        snprintf((char*)&buf2, 128, "stats_txt %i ", i);
+        getStats(i, &portStatsBuf[0], &buf2[0], &portStatsLen);
+        portStatsLen += snprintf((char*)&portStatsBuf[portStatsLen], 128, "stats_end %i\r\n", i);
+        return 0;
     }
     if (strcmp(arg[0], "state") == 0) {
         i = atoi(arg[1]);
@@ -2436,6 +2449,11 @@ void doStatRound(FILE *commands, int round) {
     for (int i = 0; i < policer_table.size; i++) {
         struct policer_entry *ntry = table_get(&policer_table, i);
         ntry->avail = ntry->allow;
+    }
+    if (portStatsLen > 0) {
+        fprintf(commands, "%s", (char*)&portStatsBuf[0]);
+        portStatsLen = 0;
+        fflush(commands);
     }
     if ((round % 10) != 0) return;
     for (int i = 0; i < ports; i++) {
