@@ -58,11 +58,13 @@ public class logFil {
      * @param fn name of file
      * @param siz size of file
      * @param tim age of file
+     * @param lin line of file
      */
-    public void rotate(String fn, int siz, int tim) {
+    public void rotate(String fn, int siz, int tim, int lin) {
         logRotNam = fn;
         logRotSiz = siz;
         logRotTim = tim;
+        logRotLin = lin;
         if (fn != null) {
             if (fn.length() > 0) {
                 return;
@@ -71,6 +73,7 @@ public class logFil {
         logRotNam = null;
         logRotSiz = 0;
         logRotTim = 0;
+        logRotLin = 0;
     }
 
     /**
@@ -103,6 +106,42 @@ public class logFil {
             a = a + " " + logRotSiz;
         }
         return a;
+    }
+
+    /**
+     * get file rotation
+     *
+     * @return configuration
+     */
+    public String rotateN() {
+        return logRotNam;
+    }
+
+    /**
+     * get file rotation
+     *
+     * @return configuration
+     */
+    public int rotateT() {
+        return logRotTim;
+    }
+
+    /**
+     * get file rotation
+     *
+     * @return configuration
+     */
+    public int rotateS() {
+        return logRotSiz;
+    }
+
+    /**
+     * get file rotation
+     *
+     * @return configuration
+     */
+    public int rotateL() {
+        return logRotLin;
     }
 
     /**
@@ -207,6 +246,7 @@ public class logFil {
         logFilSiz += siz1 - ofs1;
         logFilSiz += siz2 - ofs2;
         logFilLin++;
+        doRotate();
     }
 
 }

@@ -490,7 +490,7 @@ public class logger {
         if (logFilHnd == null) {
             return;
         }
-        logFilHnd.rotate(fn, siz, tim);
+        logFilHnd.rotate(fn, siz, tim, 0);
     }
 
     /**
