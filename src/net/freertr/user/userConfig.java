@@ -447,7 +447,8 @@ public class userConfig {
         l.add(null, "4  .        <str>                    name of file");
         l.add(null, "2  3    rotate                       log file rotation");
         l.add(null, "3  4      <num>                      maximum file size");
-        l.add(null, "4  .        <str>                    name of second file");
+        l.add(null, "4  5,.      <str>                    name of second file");
+        l.add(null, "5  .          <num>                  ms between backup");
         l.add(null, "2  3    syslog                       syslog logging");
         l.add(null, "3  4      debug                      debugging messages");
         l.add(null, "3  4      informational              informational messages");
@@ -3463,7 +3464,7 @@ public class userConfig {
             return;
         }
         if (s.equals("file")) {
-            logger.fileStart("");
+            logger.fileName(null);
             return;
         }
         if (s.equals("proxy")) {
@@ -3471,8 +3472,7 @@ public class userConfig {
             return;
         }
         if (s.equals("rotate")) {
-            logger.logRotLim = 0;
-            logger.logRotNam = "";
+            logger.fileRotate(null, 0, 0);
             return;
         }
         if (s.equals("syslog")) {
@@ -3511,7 +3511,7 @@ public class userConfig {
         }
         if (s.equals("file")) {
             logger.logFilLev = logger.string2level(cmd.word());
-            logger.fileStart(cmd.word());
+            logger.fileName(cmd.word());
             return;
         }
         if (s.equals("proxy")) {
@@ -3524,8 +3524,10 @@ public class userConfig {
             return;
         }
         if (s.equals("rotate")) {
-            logger.logRotLim = bits.str2num(cmd.word());
-            logger.logRotNam = cmd.word();
+            int siz = bits.str2num(cmd.word());
+            s = cmd.word();
+            int tim = bits.str2num(cmd.word());
+            logger.fileRotate(s, siz, tim);
             return;
         }
         if (s.equals("syslog")) {

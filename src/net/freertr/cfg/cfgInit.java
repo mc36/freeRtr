@@ -1037,7 +1037,7 @@ public class cfgInit implements Runnable {
             }
         }
         logger.error("shutdown code=" + code + " reason=" + reason);
-        logger.fileStart("");
+        logger.fileName(null);
         System.exit(code);
     }
 

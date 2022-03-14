@@ -1043,7 +1043,7 @@ public class cfgAll {
         "!logging format normal",
         "!no logging milliseconds",
         "!no logging proxy",
-        "!no logging rotate 0",
+        "!no logging rotate",
         "!no logging syslog debug kernel",
         "!no logging file debug",
         "!no logging irc debug",
@@ -3331,10 +3331,12 @@ public class cfgAll {
         l.add("logging buffered " + logger.level2string(logger.logBufLev) + " " + logger.getBufSize());
         l.add("logging monitor " + logger.level2string(logger.logPipLev));
         l.add("logging format " + logger.format2string(logger.logPosForm));
-        cmds.cfgLine(l, logger.logFilNam.length() < 1, "", "logging file " + logger.level2string(logger.logFilLev), logger.logFilNam);
-        cmds.cfgLine(l, logger.logRotNam.length() < 1, "", "logging rotate " + logger.logRotLim, logger.logRotNam);
+        String a = logger.fileName();
+        cmds.cfgLine(l, a == null, "", "logging file " + logger.level2string(logger.logFilLev), a);
+        a = logger.fileRotate();
+        cmds.cfgLine(l, a == null, "", "logging rotate", a);
         cmds.cfgLine(l, logger.logProxy == null, "", "logging proxy", "" + logger.logProxy);
-        String a = "";
+        a = "";
         for (int i = 0; i < logger.logSylHnd.size(); i++) {
             a += " " + logger.logSylHnd.get(i);
         }

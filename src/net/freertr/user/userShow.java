@@ -559,11 +559,17 @@ public class userShow {
                 return null;
             }
             if (a.equals("file")) {
-                rdr.putStrArr(bits.txt2buf(logger.logFilNam));
+                rdr.putStrArr(bits.txt2buf(logger.fileName()));
                 return null;
             }
             if (a.equals("old-file")) {
-                rdr.putStrArr(bits.txt2buf(logger.logRotNam));
+                a = logger.fileRotate();
+                if (a == null) {
+                    return null;
+                }
+                cmd = new cmds("fn", a);
+                cmd.word();
+                rdr.putStrArr(bits.txt2buf(cmd.word()));
                 return null;
             }
             if (a.equals("last")) {

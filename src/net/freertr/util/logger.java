@@ -66,24 +66,9 @@ public class logger {
     }
 
     /**
-     * name of log file
-     */
-    public static String logFilNam = "";
-
-    /**
      * level of log file
      */
     public static logLev logFilLev = logLev.msgDebg;
-
-    /**
-     * size of log file
-     */
-    public static int logRotLim;
-
-    /**
-     * name of rotate file
-     */
-    public static String logRotNam = "";
 
     /**
      * log milliseconds
@@ -135,9 +120,7 @@ public class logger {
      */
     public static int logPosForm = 2;
 
-    private static PrintStream logFilHnd;
-
-    private static int logFilSiz;
+    private static logFil logFilHnd = null;
 
     private static logBuf logBufLst = new logBuf(512);
 
@@ -274,31 +257,7 @@ public class logger {
         if (logFilLev.compareTo(level) > 0) {
             return;
         }
-        try {
-            logFilHnd.println(msg);
-            logFilHnd.flush();
-        } catch (Exception e) {
-            return;
-        }
-        logFilSiz += msg.length() + 2;
-        if (logRotLim < 1) {
-            return;
-        }
-        if (logFilSiz < logRotLim) {
-            return;
-        }
-        try {
-            logFilHnd.close();
-        } catch (Exception e) {
-            traceback(e);
-        }
-        userFlash.rename(logFilNam, logRotNam, true, true);
-        try {
-            logFilHnd = new PrintStream(new FileOutputStream(logFilNam, true));
-        } catch (Exception e) {
-            traceback(e);
-        }
-        logFilSiz = 0;
+        logFilHnd.add(msg);
     }
 
     /**
@@ -492,30 +451,62 @@ public class logger {
      * @param fn name of file
      * @return false if successful, true if error happened
      */
-    public static boolean fileStart(String fn) {
+    public static boolean fileName(String fn) {
         try {
-            logFilHnd.flush();
             logFilHnd.close();
         } catch (Exception e) {
         }
         logFilHnd = null;
-        logFilSiz = 0;
-        logFilNam = fn;
-        if (fn.length() < 2) {
-            logFilNam = "";
+        if (fn == null) {
             return true;
         }
-        try {
-            logFilHnd = new PrintStream(new FileOutputStream(fn, true));
-            List<String> buf = bufferRead();
-            for (int i = 0; i < buf.size(); i++) {
-                logFilHnd.println(buf.get(i));
-            }
-            logFilHnd.flush();
-            logFilSiz = (int) new File(fn).length();
-        } catch (Exception e) {
+        logFilHnd = new logFil(fn);
+        if (logFilHnd.open(false)) {
+            return true;
         }
-        return logFilHnd == null;
+        List<String> buf = bufferRead();
+        for (int i = 0; i < buf.size(); i++) {
+            logFilHnd.add(buf.get(i));
+        }
+        return false;
+    }
+
+    /**
+     * get file logger
+     *
+     * @return name
+     */
+    public static String fileName() {
+        if (logFilHnd == null) {
+            return null;
+        }
+        return logFilHnd.name();
+    }
+
+    /**
+     * start file rotation
+     *
+     * @param fn name of file
+     * @param siz size of file
+     * @param tim age of file
+     */
+    public static void fileRotate(String fn, int siz, int tim) {
+        if (logFilHnd == null) {
+            return;
+        }
+        logFilHnd.rotate(fn, siz, tim);
+    }
+
+    /**
+     * get file rotation
+     *
+     * @return name
+     */
+    public static String fileRotate() {
+        if (logFilHnd == null) {
+            return null;
+        }
+        return logFilHnd.rotate1();
     }
 
     /**
