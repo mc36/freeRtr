@@ -15,9 +15,6 @@ def _Exception():
     )
 
 
-from .bf_mac import tnaparser, getmacaddr
-
-
 class BfIfStatus(Thread):
     def __init__(
         self,
@@ -37,13 +34,39 @@ class BfIfStatus(Thread):
         self.oper_status_interval = oper_status_interval
         self.all_ports = []
 
-    from .bf_mac import TNAPort, tnaparser, getmacaddr
-
     def sendPortInfoToCP(self):
-        for p in self.all_ports:
-            data = "portname %s frontpanel-%s \n" % (p.dp, p.port)
-            logger.warning("tx: %s" % data.split(" "))
-            self.file.write(data)
+        ## Determine the mapping from port names in the form
+        ## "connector/channel" to physical port IDs.  It is provided
+        ## directly by the $PORT_STR_INFO table. However, this table
+        ## (like all "internal" tables) can only be queried for
+        ## specific keys, i.e. traversal of all entries by providing
+        ## an empty list of keys is not supported. As a workaround, we
+        ## use the $PORT_HDL_INFO table instead and simply iterate
+        ## over all connector/channel pairs and pick out those that
+        ## are actually present. Scanning for connectors from 1 to 65
+        ## should cover all current Tofino models.
+        for conn in range(1, 65):
+            for chnl in range(0,4):
+                try:
+                    resp = self.bfgc.port_hdl_info_table.entry_get(
+                        self.bfgc.target, [
+                            self.bfgc.port_hdl_info_table.make_key([
+                                gc.KeyTuple("$CONN_ID", conn),
+                                gc.KeyTuple("$CHNL_ID", chnl)
+                            ])
+                        ],
+                        {"from_hw": False},
+                        p4_name=self.bfgc.p4_name
+                    )
+                    dev_port = next(resp)[0].to_dict()['$DEV_PORT']
+                except Exception as e:
+                    ## Skip non-existant entries.  TODO: make sure
+                    ## this is the only error to be expected here
+                    pass
+                else:
+                    data = "portname %s frontpanel-%s/%s \n" % (dev_port, conn, chnl)
+                    logger.warning("tx: %s" % data.split(" "))
+                    self.file.write(data)
         self.file.write("dynrange 512 1023 \n")
         self.file.flush()
 
@@ -61,9 +84,7 @@ class BfIfStatus(Thread):
     def run(self):
         try:
 
-            self.all_ports = tnaparser()
             self.sendPortInfoToCP()
-
             logger.warning("%s - main" % (self.class_name))
             while not self.die:
                 logger.debug("%s - loop" % (self.class_name))
