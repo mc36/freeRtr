@@ -418,6 +418,9 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 ntry.setUpper(ifc.ethtyp);
             }
             if (orig != null) {
+                if (ntry.suppressState()) {
+                    return false;
+                }
                 sendLine("state " + ntry.id + " 0 " + orig.getStateEnding());
                 sendLine("state " + ntry.id + " 1 " + ntry.getStateEnding());
                 return false;
@@ -1691,10 +1694,19 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         return 0;
     }
 
+    public boolean suppressState() {
+        if (ifc == null) {
+            return true;
+        }
+        return (master != null) || (ifc.type == cfgIfc.ifaceType.bundle) || (ifc.type == cfgIfc.ifaceType.bridge) || (ifc.type == cfgIfc.ifaceType.dialer) || (ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.type == cfgIfc.ifaceType.tunnel) || (ifc.type == cfgIfc.ifaceType.virtppp);
+    }
+
     public void tearDown() {
-        lower.sendLine("state " + id + " 0 " + getStateEnding());
         if (ifc == null) {
             return;
+        }
+        if (!suppressState()) {
+            lower.sendLine("state " + id + " 0 " + getStateEnding());
         }
         if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
             ifcNull nul = new ifcNull();
@@ -3697,7 +3709,7 @@ class servP4langConn implements Runnable {
             sta = state.states.up;
         }
         i = ifc.ifc.ethtyp.getMTUsize();
-        if ((ifc.master != null) || (ifc.ifc.type == cfgIfc.ifaceType.bundle) || (ifc.ifc.type == cfgIfc.ifaceType.bridge) || (ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.ifc.type == cfgIfc.ifaceType.tunnel) || (ifc.ifc.type == cfgIfc.ifaceType.virtppp)) {
+        if (ifc.suppressState()) {
             ifc.sentState = sta;
             ifc.sentMtu = i;
         }
