@@ -438,7 +438,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 }
                 sendLine("state " + ntry.id + " 0 " + orig.getStateEnding());
                 sendLine("ports_mod " + ntry.id + " " + ntry.getStateEnding());
-                ntry.sentState = state.states.admin;
+                ntry.sentState = state.states.close;
                 ntry.sentMtu = 0;
                 return false;
             }
