@@ -437,8 +437,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                     return false;
                 }
                 sendLine("state " + ntry.id + " 0 " + orig.getStateEnding());
-                sendLine("state " + ntry.id + " 1 " + ntry.getStateEnding());
+                sendLine("ports_mod " + ntry.id + " " + ntry.getStateEnding());
+                ntry.sentState = state.states.admin;
+                ntry.sentMtu = 0;
                 return false;
+            }
+            if (!ntry.suppressState()) {
+                sendLine("ports_add " + ntry.id + " " + ntry.getStateEnding());
             }
             if (ntry.dynamic) {
                 int id = getNextDynamic();
@@ -1766,6 +1771,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         }
         if (!suppressState()) {
             lower.sendLine("state " + id + " 0 " + getStateEnding());
+            lower.sendLine("ports_del " + id + getStateEnding());
         }
         if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
             ifcNull nul = new ifcNull();
@@ -2240,6 +2246,9 @@ class servP4langConn implements Runnable {
         int dynRngNxt = lower.dynRngBeg;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
+            if (!ntry.suppressState()) {
+                lower.sendLine("ports_add " + ntry.id + " " + ntry.getStateEnding());
+            }
             if (!ntry.dynamic) {
                 continue;
             }
