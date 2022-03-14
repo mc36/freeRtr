@@ -789,7 +789,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         servP4langIfc ntry = findIfc(ifc);
         if (ntry == null) {
-            return bits.str2lst("interface not exported");
+            return bits.str2lst("interface not found");
+        }
+        if (ntry.suppressState()) {
+            return bits.str2lst("not a physical port");
         }
         statsTxt = null;
         statsNtf = new notifier();
