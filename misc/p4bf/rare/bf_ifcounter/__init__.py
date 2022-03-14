@@ -333,3 +333,7 @@ class BfIfCounter(Thread):
                 "%s - exited with code [%s]" % (self.class_name, _Exception())
             )
             self.tearDown()
+
+    def tearDown(self):
+        os._exit(0)
+        self.die = True
