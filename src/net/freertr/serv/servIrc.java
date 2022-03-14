@@ -41,9 +41,9 @@ public class servIrc extends servGeneric implements prtServS {
     public tabGen<servIrcChan> chans = new tabGen<servIrcChan>();
 
     /**
-     * logging
+     * local
      */
-    public boolean logging;
+    public boolean log2local;
 
     /**
      * peers
@@ -56,7 +56,7 @@ public class servIrc extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server irc .*! port " + port,
         "server irc .*! protocol " + proto2string(protoAllStrm),
-        "server irc .*! no logging"
+        "server irc .*! no local"
     };
 
     /**
@@ -80,7 +80,7 @@ public class servIrc extends servGeneric implements prtServS {
      * @param l list
      */
     public void srvShRun(String beg, List<String> l, int filter) {
-        cmds.cfgLine(l, !logging, beg, "logging", "");
+        cmds.cfgLine(l, !log2local, beg, "local", "");
     }
 
     /**
@@ -91,16 +91,16 @@ public class servIrc extends servGeneric implements prtServS {
      */
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        if (s.equals("logging")) {
-            logging = true;
+        if (s.equals("local")) {
+            log2local = true;
             return false;
         }
         if (!s.equals("no")) {
             return true;
         }
         s = cmd.word();
-        if (s.equals("logging")) {
-            logging = false;
+        if (s.equals("local")) {
+            log2local = false;
             return false;
         }
         return true;
@@ -112,7 +112,7 @@ public class servIrc extends servGeneric implements prtServS {
      * @param l help
      */
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  logging                   log user communication");
+        l.add(null, "1 .  local                   log user communication");
     }
 
     /**
@@ -474,7 +474,7 @@ class servIrcConn implements Comparator<servIrcConn>, Runnable {
         if (s.equals("privmsg")) {
             s = cmd.word();
             String a = cmd.getRemaining();
-            if (lower.logging) {
+            if (lower.log2local) {
                 logger.info(nick + " " + s + " " + a);
             }
             if (s.startsWith("#")) {

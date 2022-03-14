@@ -2,7 +2,6 @@ package net.freertr.serv;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -178,7 +177,7 @@ public class servSyslog extends servGeneric implements prtServS {
         }
         if (log2file != null) {
             List<String> l = new ArrayList<String>();
-            l.add(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " " + peer + " " + msg);
+            l.add(logger.getTimestamp() + " " + peer + " " + msg);
             bits.buf2txt(false, l, log2file);
 
         }

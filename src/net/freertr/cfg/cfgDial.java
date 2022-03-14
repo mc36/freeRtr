@@ -298,7 +298,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         if (log) {
             logger.info(s);
         }
-        histDat.add(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " " + s);
+        histDat.add(logger.getTimestamp() + " " + s);
         for (; histDat.size() > histMax;) {
             histDat.remove(0);
         }

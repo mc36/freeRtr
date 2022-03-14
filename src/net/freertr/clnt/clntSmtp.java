@@ -491,7 +491,7 @@ public class clntSmtp implements Runnable {
             if (a == null) {
                 return false;
             }
-            errors.add(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + " remote=" + serv + " issue=" + a + " sent=" + lastT + " received=" + lastR);
+            errors.add(logger.getTimestamp() + " remote=" + serv + " issue=" + a + " sent=" + lastT + " received=" + lastR);
             logger.warn("error sending email from " + from + " to " + rcpt);
             bits.sleep(bits.random(60 * 1000, 600 * 1000));
         }

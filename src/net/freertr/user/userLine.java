@@ -760,7 +760,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
                 pipe.linePut(parent.promptLast + "unknown:" + parent.loginLast);
                 break;
         }
-        String s = user.user + " from " + remote + " at " + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3);
+        String s = user.user + " from " + remote + " at " + logger.getTimestamp();
         userLine.prevUserGlb = s;
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);

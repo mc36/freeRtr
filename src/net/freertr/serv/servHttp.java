@@ -33,7 +33,6 @@ import net.freertr.pack.packForti;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSstp;
 import net.freertr.pipe.pipeConnect;
-import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
@@ -1392,7 +1391,7 @@ class servHttpConn implements Runnable {
         if (!new File(s).exists()) {
             return;
         }
-        String a = peer + ";" + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ";" + gotAgent.replaceAll(";", ",") + ";" + gotReferer.replaceAll(";", ",") + "\n";
+        String a = peer + ";" + logger.getTimestamp() + ";" + gotAgent.replaceAll(";", ",") + ";" + gotReferer.replaceAll(";", ",") + "\n";
         bits.byteSave(false, a.getBytes(), s);
     }
 

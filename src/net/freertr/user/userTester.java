@@ -524,7 +524,7 @@ public class userTester {
         }
         listFails(finished, true, 1);
         listFails(needed, false, 0);
-        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
+        String a = logger.getTimestamp() + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
             return;

@@ -338,7 +338,7 @@ public class userConfig {
         }
         if (a.equals("show")) {
             if (pipe.settingsGet(pipeSetting.times, false)) {
-                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+                pipe.linePut(logger.getTimestamp());
             }
             userShow shw = new userShow();
             cmd = reader.setFilter(cmd);
@@ -363,7 +363,7 @@ public class userConfig {
         }
         if (a.equals("do")) {
             if (pipe.settingsGet(pipeSetting.times, false)) {
-                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+                pipe.linePut(logger.getTimestamp());
             }
             userExec exe = new userExec(pipe, reader);
             exe.privileged = true;

@@ -1968,7 +1968,7 @@ public class userExec {
                 return cmdRes.logout;
             }
             if (pipe.settingsGet(pipeSetting.times, false)) {
-                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+                pipe.linePut(logger.getTimestamp());
             }
             cmdRes i = executeCommand(s);
             if (i != cmdRes.command) {
@@ -4231,7 +4231,7 @@ public class userExec {
                 userScreen.sendCol(pipe, userScreen.colWhite);
             }
             if (pipe.settingsGet(pipeSetting.times, false)) {
-                pipe.linePut(bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3));
+                pipe.linePut(logger.getTimestamp());
             }
             pipe.strPut(a);
             bits.sleep(1000);

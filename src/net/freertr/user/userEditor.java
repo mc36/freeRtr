@@ -2,8 +2,8 @@ package net.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.freertr.cfg.cfgAll;
 import net.freertr.util.bits;
+import net.freertr.util.logger;
 import net.freertr.util.version;
 
 /**
@@ -576,7 +576,7 @@ public class userEditor {
         if (!clock) {
             return;
         }
-        String a = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3);
+        String a = logger.getTimestamp();
         console.putStr(console.sizX - a.length() - 1, 0, userScreen.colGreen, userScreen.colBrYellow, false, a);
     }
 
