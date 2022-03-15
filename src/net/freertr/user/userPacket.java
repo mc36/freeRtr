@@ -30,6 +30,7 @@ import net.freertr.clnt.clntVconf;
 import net.freertr.clnt.clntVoice;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
+import net.freertr.ip.ipCor;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
@@ -41,6 +42,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pack.packNrpe;
 import net.freertr.pack.packWol;
 import net.freertr.pipe.pipeLine;
+import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.pipe.pipeTerm;
 import net.freertr.prt.prtDccp;
@@ -922,10 +924,21 @@ public class userPacket {
             return null;
         }
         if (a.equals("flood")) {
-            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
-            if (vrf == null) {
-                cmd.error("no such vrf");
-                return null;
+            a = cmd.word();
+            cfgVrf vrf = null;
+            cfgIfc ifc = null;
+            if (a.equals("vrf")) {
+                vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+            } else {
+                ifc = cfgAll.ifcFind(cmd.word(), false);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
             }
             a = cmd.word();
             packHolder pck = new packHolder(true, true);
@@ -952,18 +965,54 @@ public class userPacket {
                 prtSctp.createSCTPheader(pck);
             }
             pck.merge2beg();
-            ipFwd fwd = vrf.getFwd(pck.IPtrg);
-            ipFwdIface ifc = ipFwdTab.findSendingIface(vrf.getFwd(pck.IPtrg), pck.IPtrg);
-            if (ifc == null) {
+            pipeProgress prg = new pipeProgress(cmd.pipe);
+            long cnt = 0;
+            if (vrf != null) {
+                ipFwd fwd = vrf.getFwd(pck.IPtrg);
+                ipFwdIface fwi = ipFwdTab.findSendingIface(vrf.getFwd(pck.IPtrg), pck.IPtrg);
+                if (fwi == null) {
+                    return null;
+                }
+                cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg + " on " + fwd.vrfName);
+                cmd.error("packet is " + pck.dump());
+                for (;;) {
+                    cnt++;
+                    prg.setCurr(cnt);
+                    if (need2stop()) {
+                        break;
+                    }
+                    fwd.protoPack(fwi, null, pck.copyBytes(true, true));
+                }
                 return null;
             }
-            cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg);
+            ipCor cor;
+            int typ;
+            if (pck.IPtrg.isIPv4()) {
+                cor = new ipCor4();
+                typ = ipIfc4.type;
+            } else {
+                cor = new ipCor6();
+                typ = ipIfc6.type;
+            }
+            cor.createIPheader(pck);
+            pck.merge2beg();
+            pck.msbPutW(0, typ);
+            pck.putSkip(2);
+            pck.merge2beg();
+            try {
+                pck.ETHsrc.setAddr(ifc.ethtyp.getHwAddr());
+            } catch (Exception e) {
+            }
+            pck.ETHtrg.fillBytes(0xff);
+            cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg + " on " + ifc.name);
+            cmd.error("packet is " + pck.dump());
             for (;;) {
-                cmd.pipe.strPut(".");
+                cnt++;
+                prg.setCurr(cnt);
                 if (need2stop()) {
                     break;
                 }
-                fwd.protoPack(ifc, null, pck.copyBytes(true, true));
+                ifc.ethtyp.doTxPack(pck.copyBytes(true, true));
             }
             return null;
         }
