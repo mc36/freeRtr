@@ -1240,17 +1240,18 @@ public class userExec {
     }
 
     private void getHelpFlood(userHelping hl) {
-        hl.add(null, ".5 6           tcp                    select tcp");
-        hl.add(null, ".5 6           udp                    select udp");
-        hl.add(null, ".5 6           ludp                   select ludp");
-        hl.add(null, ".5 6           dccp                   select dccp");
-        hl.add(null, ".5 6           sctp                   select sctp");
-        hl.add(null, ".6 7             <addr>               source address");
-        hl.add(null, ".7 8               <num>              source port");
-        hl.add(null, ".8 9                 <addr>           target address");
-        hl.add(null, ".9 10                  <num>          target port");
-        hl.add(null, ".10 11                   <num>        flags");
-        hl.add(null, ".11 .                      <num>      size");
+        hl.add(null, ".5 6           tcp                          select tcp");
+        hl.add(null, ".5 6           udp                          select udp");
+        hl.add(null, ".5 6           ludp                         select ludp");
+        hl.add(null, ".5 6           dccp                         select dccp");
+        hl.add(null, ".5 6           sctp                         select sctp");
+        hl.add(null, ".6 7             <addr>                     source address");
+        hl.add(null, ".7 8               <num>                    source port");
+        hl.add(null, ".8 9                 <addr>                 target address");
+        hl.add(null, ".9 10                  <num>                target port");
+        hl.add(null, ".10 11                   <num>              flags");
+        hl.add(null, ".11 12                     <num>            size");
+        hl.add(null, ".12 .                        <name:pm>      policy map");
     }
 
     private void getHelpTelnet(userHelping hl) {
@@ -1738,7 +1739,8 @@ public class userExec {
         hl.add(null, ".5 6           <num>                  source port");
         hl.add(null, ".6 7             <addr>               target prefix");
         hl.add(null, ".7 8               <num>              target range");
-        hl.add(null, ".8 .                 <num>            size range");
+        hl.add(null, ".8 9                 <num>            size range");
+        hl.add(null, ".9 .                   <name:pm>      policy map");
         hl.add(null, ".2 3     flood                        flood packets");
         hl.add(null, ".3 4       vrf                        through a vrf");
         hl.add(null, ".4 5         <name:vrf>               name of vrf");

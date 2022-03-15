@@ -15,6 +15,7 @@ import net.freertr.cfg.cfgAlias;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgPlymp;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
@@ -61,6 +62,7 @@ import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
+import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
@@ -939,9 +941,16 @@ public class userPacket {
             tp.fromString(cmd.word());
             tabIntMatcher sz = new tabIntMatcher();
             sz.fromString(cmd.word());
+            cfgPlymp plc = cfgAll.plmpFind(cmd.word(), false);
+            if (plc == null) {
+                cmd.error("no such policy map");
+                return null;
+            }
+            tabQos qos = tabQos.convertPolicy(plc.plcmap);
             ipFwd fwd = vrf.getFwd(ta.network);
             ipFwdIface fwi = ipFwdTab.findSendingIface(fwd, ta.network);
             if (fwi == null) {
+                cmd.error("no outgoing interface");
                 return null;
             }
             cmd.error("flooding " + sa + " " + sp + " -> " + ta + " " + tp + " on " + fwd.vrfName);
@@ -951,17 +960,19 @@ public class userPacket {
             addrIP adr = new addrIP();
             int ofs = adr.getSize() - 4;
             for (;;) {
-                cnt++;
                 prg.setCurr(cnt);
                 if (need2stop()) {
                     break;
                 }
-                bits.msbPutD(adr.getBytes(), ofs, bits.randomD());
-                adr.setAnd(adr, ta.wildcard);
-                adr.setOr(adr, ta.network);
                 pck.clear();
                 pck.putSkip(bits.random(sz.rangeMin, sz.rangeMax + 1));
                 pck.merge2beg();
+                if (qos.checkPacket(bits.getTime(), pck)) {
+                    continue;
+                }
+                bits.msbPutD(adr.getBytes(), ofs, bits.randomD());
+                adr.setAnd(adr, ta.wildcard);
+                adr.setOr(adr, ta.network);
                 pck.IPsrc.setAddr(sa);
                 pck.UDPsrc = sp;
                 pck.IPtrg.setAddr(adr);
@@ -970,6 +981,7 @@ public class userPacket {
                 prtUdp.createUDPheader(pck);
                 pck.merge2beg();
                 fwd.protoPack(fwi, null, pck);
+                cnt++;
             }
             return null;
         }
@@ -999,6 +1011,12 @@ public class userPacket {
             pck.TCPflg = bits.str2num(cmd.word());
             pck.putSkip(bits.str2num(cmd.word()));
             pck.merge2beg();
+            cfgPlymp plc = cfgAll.plmpFind(cmd.word(), false);
+            if (plc == null) {
+                cmd.error("no such policy map");
+                return null;
+            }
+            tabQos qos = tabQos.convertPolicy(plc.plcmap);
             if (a.equals("tcp")) {
                 prtTcp.createTCPheader(pck, null);
             }
@@ -1021,17 +1039,21 @@ public class userPacket {
                 ipFwd fwd = vrf.getFwd(pck.IPtrg);
                 ipFwdIface fwi = ipFwdTab.findSendingIface(fwd, pck.IPtrg);
                 if (fwi == null) {
+                    cmd.error("no outgoing interface");
                     return null;
                 }
                 cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg + " on " + fwd.vrfName);
                 cmd.error("packet is " + pck.dump());
                 for (;;) {
-                    cnt++;
                     prg.setCurr(cnt);
                     if (need2stop()) {
                         break;
                     }
+                    if (qos.checkPacket(bits.getTime(), pck)) {
+                        continue;
+                    }
                     fwd.protoPack(fwi, null, pck.copyBytes(true, true));
+                    cnt++;
                 }
                 return null;
             }
@@ -1057,12 +1079,15 @@ public class userPacket {
             cmd.error("flooding " + pck.IPsrc + " " + pck.UDPsrc + " -> " + pck.IPtrg + " " + pck.UDPtrg + " on " + ifc.name);
             cmd.error("packet is " + pck.dump());
             for (;;) {
-                cnt++;
                 prg.setCurr(cnt);
                 if (need2stop()) {
                     break;
                 }
+                if (qos.checkPacket(bits.getTime(), pck)) {
+                    continue;
+                }
                 ifc.ethtyp.doTxPack(pck.copyBytes(true, true));
+                cnt++;
             }
             return null;
         }
