@@ -940,7 +940,6 @@ public class userPacket {
             tabIntMatcher sz = new tabIntMatcher();
             sz.fromString(cmd.word());
             ipFwd fwd = vrf.getFwd(ta.network);
-            cmd.error("here " + sa + " " + sp + " " + ta + " " + tp + " " + sz);///////////
             ipFwdIface fwi = ipFwdTab.findSendingIface(fwd, ta.network);
             if (fwi == null) {
                 return null;
