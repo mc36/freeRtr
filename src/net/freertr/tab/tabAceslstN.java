@@ -255,7 +255,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         if (logMatch) {
             a += " log";
         }
-        return a;
+        return tabListingEntry.action2string(action) + " " + a;
     }
 
     private static boolean parsePart(tabAceslstN<addrIP> ntry, cmds cmd, boolean src) {
@@ -420,7 +420,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         if (evaluate != null) {
             a = "evaluate " + tabListingEntry.action2string(action) + " " + evaluate.listName;
         } else {
-            a = tabListingEntry.action2string(action) + " " + this;
+            a = "" + this;
         }
         List<String> l = new ArrayList<String>();
         l.add(beg + "sequence " + sequence + " " + a);
