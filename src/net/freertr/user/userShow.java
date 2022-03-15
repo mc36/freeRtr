@@ -1123,7 +1123,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats(true));
+                rdr.putStrTab(tab.getStats(true));
                 return null;
             }
             if (a.equals("data-plane")) {
@@ -1144,7 +1144,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats(false));
+                rdr.putStrTab(tab.getStats(false));
                 return null;
             }
             if (a.equals("control-plane")) {
@@ -1171,7 +1171,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats(false));
+                rdr.putStrTab(tab.getStats(false));
                 return null;
             }
             if (a.equals("interface")) {
@@ -1192,7 +1192,7 @@ public class userShow {
                     cmd.error("no such policy");
                     return null;
                 }
-                rdr.putStrArr(tab.getStats(false));
+                rdr.putStrTab(tab.getStats(false));
                 return null;
             }
             cmd.badCmd();
@@ -1206,7 +1206,7 @@ public class userShow {
                     cmd.error("no such object group");
                     return null;
                 }
-                rdr.putStrArr(og.objgrp.getStats());
+                rdr.putStrTab(og.objgrp.getStats(3));
                 return null;
             }
             if (a.equals("port")) {
@@ -1215,7 +1215,7 @@ public class userShow {
                     cmd.error("no such object group");
                     return null;
                 }
-                rdr.putStrArr(og.objgrp.getStats());
+                rdr.putStrTab(og.objgrp.getStats(3));
                 return null;
             }
             cmd.badCmd();
@@ -1227,7 +1227,7 @@ public class userShow {
                 cmd.error("no such access list");
                 return null;
             }
-            rdr.putStrArr(acl.aceslst.getStats());
+            rdr.putStrTab(acl.aceslst.getStats(3));
             return null;
         }
         if (a.equals("route-map")) {
@@ -1236,7 +1236,7 @@ public class userShow {
                 cmd.error("no such route map");
                 return null;
             }
-            rdr.putStrArr(rtmp.roumap.getStats());
+            rdr.putStrTab(rtmp.roumap.getStats(3));
             return null;
         }
         if (a.equals("route-policy")) {
@@ -1245,7 +1245,7 @@ public class userShow {
                 cmd.error("no such route policy");
                 return null;
             }
-            rdr.putStrArr(rtpl.rouplc.getStats());
+            rdr.putStrTab(rtpl.rouplc.getStats(3));
             return null;
         }
         if (a.equals("prefix-list")) {
@@ -1254,7 +1254,7 @@ public class userShow {
                 cmd.error("no such prefix list");
                 return null;
             }
-            rdr.putStrArr(prfx.prflst.getStats());
+            rdr.putStrTab(prfx.prflst.getStats(3));
             return null;
         }
         if (a.equals("terminal")) {
@@ -4426,7 +4426,7 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        rdr.putStrArr(fwd.pbrCfg.getStats());
+        rdr.putStrTab(fwd.pbrCfg.getStats(3));
     }
 
     private void doShowIpXnat(int ver) {
@@ -4444,7 +4444,7 @@ public class userShow {
             return;
         }
         if (a.equals("statistics")) {
-            rdr.putStrArr(fwd.natCfg.getStats());
+            rdr.putStrTab(fwd.natCfg.getStats(3));
             return;
         }
         cmd.badCmd();

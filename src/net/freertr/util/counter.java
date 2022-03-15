@@ -555,9 +555,10 @@ public class counter implements Comparator<counter> {
      * get statistics
      *
      * @param hw hw counter
+     * @param wht what: 1=tx, 2=rx, 4=drop
      * @return summary for table
      */
-    public String getShHwStat(counter hw) {
+    public String getShHwStat(counter hw, int wht) {
         String tb = "";
         String rb = "";
         String db = "";
@@ -572,7 +573,17 @@ public class counter implements Comparator<counter> {
             rp = "+" + hw.packRx;
             dp = "+" + hw.packDr;
         }
-        return "tx=" + byteTx + tb + "(" + packTx + tp + ") rx=" + byteRx + rb + "(" + packRx + rp + ") drp=" + byteDr + db + "(" + packDr + dp + ")";
+        String a = "";
+        if ((wht & 1) != 0) {
+            a += "|" + byteTx + tb + "|" + packTx + tp;
+        }
+        if ((wht & 2) != 0) {
+            a += "|" + byteRx + rb + "|" + packRx + rp;
+        }
+        if ((wht & 4) != 0) {
+            a += "|" + byteDr + db + "|" + packDr + dp;
+        }
+        return a;
     }
 
     /**

@@ -233,14 +233,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         return 0;
     }
 
-    /**
-     * convert to string
-     *
-     * @param beg beginning
-     * @return string
-     */
-    public List<String> usrString(String beg) {
-        List<String> l = new ArrayList<String>();
+    public String toString() {
         int what = 0;
         addrIP orgA = new addrIP();
         addrIP newA = new addrIP();
@@ -296,7 +289,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                 s = "unknown";
                 break;
         }
-        s = "sequence " + sequence + " " + s;
         if ((what & 4) != 0) {
             s = s + " " + protocol;
         }
@@ -323,8 +315,19 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if ((what & 8) != 0) {
             s = s + " " + mask;
         }
-        l.add(beg + s);
-        s = beg + "sequence " + sequence;
+        return s;
+    }
+
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @return string
+     */
+    public List<String> usrString(String beg) {
+        List<String> l = new ArrayList<String>();
+        l.add(beg + "sequence " + sequence + " " + this);
+        String s = beg + "sequence " + sequence;
         l.add(s + " timeout " + timeout);
         if (rangeMin > 0) {
             l.add(s + " randomize " + rangeMin + " " + rangeMax);

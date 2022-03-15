@@ -120,9 +120,8 @@ public class tabPbrN extends tabListingEntry<addrIP> {
         return false;
     }
 
-    public List<String> usrString(String beg) {
-        List<String> l = new ArrayList<String>();
-        String s = "sequence " + sequence + " " + matcher.listName + " " + setVrf.cfgName;
+    public String toString() {
+        String s = matcher.listName + " " + setVrf.cfgName;
         if (setIfc != null) {
             s += " interface " + setIfc;
         }
@@ -132,7 +131,12 @@ public class tabPbrN extends tabListingEntry<addrIP> {
         if ((setSp > 0) && (setSi > 0)) {
             s += " nsh " + setSp + " " + setSi;
         }
-        l.add(beg + s);
+        return s;
+    }
+
+    public List<String> usrString(String beg) {
+        List<String> l = new ArrayList<String>();
+        l.add(beg + "sequence " + sequence + " " + this);
         return l;
     }
 

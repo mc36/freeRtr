@@ -423,85 +423,89 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
      */
     public cfgIfc ifaceMatch;
 
+    public String toString() {
+        switch (doMode) {
+            case next:
+                return "next";
+            case description:
+                return "description " + description;
+            case iff:
+                return "if " + ifString();
+            case elsif:
+                return "elsif " + ifString();
+            case els:
+                return "else";
+            case enif:
+                return "enif";
+            case pass:
+                return "pass";
+            case drop:
+                return "drop";
+            case log:
+                return "log";
+            case tcl:
+                return "tcl " + strVal;
+            case clrStdcomm:
+                return "clear stdcomm";
+            case clrExtcomm:
+                return "clear extcomm";
+            case clrLrgcomm:
+                return "clear lrgcomm";
+            case clrClstlst:
+                return "clear clustlist";
+            case clrPrivas:
+                return "clear privateas";
+            case clrPeeras:
+                return "clear peeras";
+            case clrExactas:
+                return "clear exactas " + intVal;
+            case clrFirstas:
+                return "clear firstas";
+            case setStdcomm:
+                return "set stdcomm " + tabRtrmapN.stdComms2string(intLst);
+            case setExtcomm:
+                return "set extcomm " + tabRtrmapN.extComms2string(lngLst);
+            case setLrgcomm:
+                return "set lrgcomm " + tabRtrmapN.lrgComms2string(lrgLst);
+            case setNexthop:
+                return "set nexthop " + nexthopSet;
+            case setAspath:
+                return "set aspath " + tabRouteAttr.dumpIntList(intLst, "", "");
+            case setAsconf:
+                return "set asconfed " + tabRouteAttr.dumpIntList(intLst, "", "");
+            case setDistance:
+                return "set distance " + intSet;
+            case setMetric:
+                return "set metric " + intSet;
+            case setOrigin:
+                return "set origin " + intSet;
+            case setLocPref:
+                return "set locpref " + intSet;
+            case setAccIgp:
+                return "set aigp " + intSet;
+            case setBandwidth:
+                return "set bandwidth " + intSet;
+            case setTag:
+                return "set tag " + intSet;
+            case setSegrou:
+                return "set segrout " + intSet;
+            case setBier:
+                return "set bier " + intSet;
+            case setRoumap:
+                return "set route-map " + roumap;
+            case setRouplc:
+                return "set route-policy " + rouplc;
+            default:
+                return "unknown=" + doMode;
+        }
+    }
+
     public List<String> usrString(String beg) {
         beg += "sequence " + sequence + " ";
         for (int i = 0; i < indent; i++) {
             beg += "  ";
         }
-        switch (doMode) {
-            case next:
-                return bits.str2lst(beg + "next");
-            case description:
-                return bits.str2lst(beg + "description " + description);
-            case iff:
-                return bits.str2lst(beg + "if " + ifString());
-            case elsif:
-                return bits.str2lst(beg + "elsif " + ifString());
-            case els:
-                return bits.str2lst(beg + "else");
-            case enif:
-                return bits.str2lst(beg + "enif");
-            case pass:
-                return bits.str2lst(beg + "pass");
-            case drop:
-                return bits.str2lst(beg + "drop");
-            case log:
-                return bits.str2lst(beg + "log");
-            case tcl:
-                return bits.str2lst(beg + "tcl " + strVal);
-            case clrStdcomm:
-                return bits.str2lst(beg + "clear stdcomm");
-            case clrExtcomm:
-                return bits.str2lst(beg + "clear extcomm");
-            case clrLrgcomm:
-                return bits.str2lst(beg + "clear lrgcomm");
-            case clrClstlst:
-                return bits.str2lst(beg + "clear clustlist");
-            case clrPrivas:
-                return bits.str2lst(beg + "clear privateas");
-            case clrPeeras:
-                return bits.str2lst(beg + "clear peeras");
-            case clrExactas:
-                return bits.str2lst(beg + "clear exactas " + intVal);
-            case clrFirstas:
-                return bits.str2lst(beg + "clear firstas");
-            case setStdcomm:
-                return bits.str2lst(beg + "set stdcomm " + tabRtrmapN.stdComms2string(intLst));
-            case setExtcomm:
-                return bits.str2lst(beg + "set extcomm " + tabRtrmapN.extComms2string(lngLst));
-            case setLrgcomm:
-                return bits.str2lst(beg + "set lrgcomm " + tabRtrmapN.lrgComms2string(lrgLst));
-            case setNexthop:
-                return bits.str2lst(beg + "set nexthop " + nexthopSet);
-            case setAspath:
-                return bits.str2lst(beg + "set aspath " + tabRouteAttr.dumpIntList(intLst, "", ""));
-            case setAsconf:
-                return bits.str2lst(beg + "set asconfed " + tabRouteAttr.dumpIntList(intLst, "", ""));
-            case setDistance:
-                return bits.str2lst(beg + "set distance " + intSet);
-            case setMetric:
-                return bits.str2lst(beg + "set metric " + intSet);
-            case setOrigin:
-                return bits.str2lst(beg + "set origin " + intSet);
-            case setLocPref:
-                return bits.str2lst(beg + "set locpref " + intSet);
-            case setAccIgp:
-                return bits.str2lst(beg + "set aigp " + intSet);
-            case setBandwidth:
-                return bits.str2lst(beg + "set bandwidth " + intSet);
-            case setTag:
-                return bits.str2lst(beg + "set tag " + intSet);
-            case setSegrou:
-                return bits.str2lst(beg + "set segrout " + intSet);
-            case setBier:
-                return bits.str2lst(beg + "set bier " + intSet);
-            case setRoumap:
-                return bits.str2lst(beg + "set route-map " + roumap);
-            case setRouplc:
-                return bits.str2lst(beg + "set route-policy " + rouplc);
-            default:
-                return bits.str2lst(beg + "unknown=" + doMode);
-        }
+        return bits.str2lst(beg + this);
     }
 
     public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {

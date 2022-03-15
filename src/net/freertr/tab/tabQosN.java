@@ -56,18 +56,6 @@ public class tabQosN {
     }
 
     /**
-     * get statistics
-     *
-     * @param l list to append
-     */
-    protected void getStats(List<String> l) {
-        l.add("description=" + entry.description);
-        l.add("  childs=" + childs + ", queues=" + packets.size() + "/" + getQueues() + ", interval=" + getInterval() + ", bytes/interval=" + getBytePerInt());
-        l.add("  match=" + entry.getCounters());
-        l.add("  transmit=" + cntr.getShStat());
-    }
-
-    /**
      * update byte counts (in parents also)
      *
      * @param add bytes to add

@@ -161,19 +161,11 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     /**
      * get counters
      *
+     * @param wht what
      * @return counters
      */
-    public String getCounters() {
-        return cntr.getShHwStat(hwCntr);
-    }
-
-    /**
-     * get times
-     *
-     * @return times
-     */
-    public String getTimes() {
-        return bits.timePast(lastMatch) + " ago, " + bits.timeDump(timeout / 1000) + " timeout";
+    public String getCounters(int wht) {
+        return cntr.getShHwStat(hwCntr, wht);
     }
 
     /**

@@ -735,6 +735,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         return s.substring(1, s.length());
     }
 
+    public String toString() {
+        return description;
+    }
+
     /**
      * get the config
      *

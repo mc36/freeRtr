@@ -13,6 +13,7 @@ import net.freertr.prt.prtLudp;
 import net.freertr.prt.prtSctp;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
@@ -60,17 +61,27 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
     /**
      * get statistics
      *
+     * @param wht what
      * @return statistics
      */
-    public List<String> getStats() {
-        List<String> l = new ArrayList<String>();
+    public userFormat getStats(int wht) {
+        String a = "";
+        if ((wht & 1) != 0) {
+            a += "|txb|txp";
+        }
+        if ((wht & 2) != 0) {
+            a += "|rxb|rxp";
+        }
+        if ((wht & 4) != 0) {
+            a += "|drb|drp";
+        }
+        userFormat l = new userFormat("|", "seq" + a + "|last|timout|cfg");
         for (int i = 0; i < entries.size(); i++) {
             Te ntry = entries.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.addAll(ntry.usrString(" "));
-            l.add("  match=" + ntry.getCounters() + " accessed=" + ntry.getTimes());
+            l.add(ntry.sequence + ntry.getCounters(wht) + "|" + bits.timePast(ntry.lastMatch) + "|" + bits.timeDump(ntry.timeout / 1000) + "|" + ntry);
         }
         return l;
     }

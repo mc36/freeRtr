@@ -23,6 +23,7 @@ import net.freertr.prt.prtLudp;
 import net.freertr.prt.prtSctp;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
+import net.freertr.user.userFormat;
 import net.freertr.util.counter;
 
 /**
@@ -81,22 +82,25 @@ public class tabQos {
      * @param dump dump entries
      * @return statistics
      */
-    public List<String> getStats(boolean dump) {
-        List<String> l = new ArrayList<String>();
+    public userFormat getStats(boolean dump) {
+        String a = "";
+        if (dump) {
+            a = "|ace";
+        }
+        userFormat l = new userFormat("|", "seq|chld|queue|intrvl|byt/int|rxb|rxp|trnsmt" + a);
         for (int i = 0; i < classesD.size(); i++) {
             tabQosN cls = classesD.get(i);
             if (cls == null) {
                 continue;
             }
-            cls.getStats(l);
-            if (!dump) {
-                continue;
+            a = "";
+            if (dump) {
+                try {
+                    a = "|" + cls.entry.aclMatch.get(0);
+                } catch (Exception e) {
+                }
             }
-            l.addAll(cls.entry.usrString("    "));
-            if (cls.entry.aclMatch == null) {
-                continue;
-            }
-            l.addAll(cls.entry.aclMatch.dump("      "));
+            l.add(cls.entry.sequence + "|" + cls.childs + "|" + cls.packets.size() + "/" + cls.getQueues() + "|" + cls.getInterval() + "|" + cls.getBytePerInt() + cls.entry.getCounters(2) + "|" + cls.cntr.getShStat() + a);
         }
         return l;
     }
