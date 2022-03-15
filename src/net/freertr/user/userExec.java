@@ -1732,6 +1732,13 @@ public class userExec {
         hl.add(null, "2 3      monitor                      monitor interface traffic");
         hl.add(null, "3 4,.      <name:ifc>                 name of interface");
         hl.add(null, "4 .          [name:ifc]               name of target interface");
+        hl.add(null, ".2 3     udpflood                     flood packets");
+        hl.add(null, ".3 4       <name:vrf>                 name of vrf");
+        hl.add(null, ".4 5         <addr>                   source address");
+        hl.add(null, ".5 6           <num>                  source port");
+        hl.add(null, ".6 7             <addr>               target prefix");
+        hl.add(null, ".7 8               <num>              target range");
+        hl.add(null, ".8 .                 <num>            size range");
         hl.add(null, ".2 3     flood                        flood packets");
         hl.add(null, ".3 4       vrf                        through a vrf");
         hl.add(null, ".4 5         <name:vrf>               name of vrf");

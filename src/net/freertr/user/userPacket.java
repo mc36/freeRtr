@@ -60,11 +60,13 @@ import net.freertr.sec.secWebsock;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
+import net.freertr.util.logger;
 import net.freertr.util.uniResLoc;
 
 /**
@@ -923,6 +925,55 @@ public class userPacket {
             cmd.error("finished");
             return null;
         }
+        if (a.equals("udpflood")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return null;
+            }
+            addrIP sa = new addrIP();
+            sa.fromString(cmd.word());
+            int sp = bits.str2num(cmd.word());
+            addrPrefix<addrIP> ta = addrPrefix.str2ip(cmd.word());
+            tabIntMatcher tp = new tabIntMatcher();
+            tp.fromString(cmd.word());
+            tabIntMatcher sz = new tabIntMatcher();
+            sz.fromString(cmd.word());
+            ipFwd fwd = vrf.getFwd(ta.network);
+            cmd.error("here " + sa + " " + sp + " " + ta + " " + tp + " " + sz);///////////
+            ipFwdIface fwi = ipFwdTab.findSendingIface(fwd, ta.network);
+            if (fwi == null) {
+                return null;
+            }
+            cmd.error("flooding " + sa + " " + sp + " -> " + ta + " " + tp + " on " + fwd.vrfName);
+            pipeProgress prg = new pipeProgress(cmd.pipe);
+            long cnt = 0;
+            packHolder pck = new packHolder(true, true);
+            addrIP adr = new addrIP();
+            int ofs = adr.getSize() - 4;
+            for (;;) {
+                cnt++;
+                prg.setCurr(cnt);
+                if (need2stop()) {
+                    break;
+                }
+                bits.msbPutD(adr.getBytes(), ofs, bits.randomD());
+                adr.setAnd(adr, ta.wildcard);
+                adr.setOr(adr, ta.network);
+                pck.clear();
+                pck.putSkip(bits.random(sz.rangeMin, sz.rangeMax + 1));
+                pck.merge2beg();
+                pck.IPsrc.setAddr(sa);
+                pck.UDPsrc = sp;
+                pck.IPtrg.setAddr(adr);
+                pck.UDPtrg = bits.random(tp.rangeMin, tp.rangeMax + 1);
+                pck.TCPflg = 0;
+                prtUdp.createUDPheader(pck);
+                pck.merge2beg();
+                fwd.protoPack(fwi, null, pck);
+            }
+            return null;
+        }
         if (a.equals("flood")) {
             a = cmd.word();
             cfgVrf vrf = null;
@@ -969,7 +1020,7 @@ public class userPacket {
             long cnt = 0;
             if (vrf != null) {
                 ipFwd fwd = vrf.getFwd(pck.IPtrg);
-                ipFwdIface fwi = ipFwdTab.findSendingIface(vrf.getFwd(pck.IPtrg), pck.IPtrg);
+                ipFwdIface fwi = ipFwdTab.findSendingIface(fwd, pck.IPtrg);
                 if (fwi == null) {
                     return null;
                 }
