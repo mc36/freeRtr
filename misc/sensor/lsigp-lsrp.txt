@@ -14,14 +14,14 @@ sensor lsigp4peer
 path lsigp4peer/peer/peer
 prefix freertr-lsigp4peer
 key name lsigp4peer/peer
-command sho ipv4 lsrp 1 topology
+command sho ipv4 lsrp 1 topology | inc reach
 prepend lsigp4_peers_
 name 0 proto="lsrp1",node=
 replace \. _
-column 1 name reachable
-column 1 replace false 0
-column 1 replace true 1
-column 6 name neighbors
+column 2 name reachable
+column 2 replace false 0
+column 2 replace true 1
+column 3 name neighbors
 .
 exit
 
@@ -53,14 +53,14 @@ sensor lsigp6peer
 path lsigp6peer/peer/peer
 prefix freertr-lsigp6peer
 key name lsigp6peer/peer
-command sho ipv6 lsrp 1 topology
+command sho ipv6 lsrp 1 topology | inc reach
 prepend lsigp6_peers_
 name 0 proto="lsrp1",node=
 replace \. _
-column 1 name reachable
-column 1 replace false 0
-column 1 replace true 1
-column 6 name neighbors
+column 2 name reachable
+column 2 replace false 0
+column 2 replace true 1
+column 3 name neighbors
 .
 exit
 

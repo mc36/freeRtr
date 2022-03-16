@@ -1,18 +1,37 @@
-sensor ifaces-acl
-path ifaces-acl/ifaces-acl
-prefix ifaces-acl
-prepend ifaces_acl_
+sensor acl4
+path acl4
+prefix acl4
+prepend acl4_
 command sho access-list nat4
 name 0 seq=
-key ifaces-acl ifaces-acl/ifaces-acl
+key acl4 acl4/acl4
 skip 2
-column 1 name txb
+column 1 name txbyte
 column 1 split + typ="sw" typ="hw"
-column 2 name txp
+column 2 name txpack
 column 2 split + typ="sw" typ="hw"
-column 3 name rxb
+column 3 name rxbyte
 column 3 split + typ="sw" typ="hw"
-column 4 name rxp
+column 4 name rxpack
+column 4 split + typ="sw" typ="hw"
+.
+exit
+
+sensor acl6
+path acl6
+prefix acl6
+prepend acl6_
+command sho access-list nat4
+name 0 seq=
+key acl6 acl6/acl6
+skip 2
+column 1 name txbyte
+column 1 split + typ="sw" typ="hw"
+column 2 name txpack
+column 2 split + typ="sw" typ="hw"
+column 3 name rxbyte
+column 3 split + typ="sw" typ="hw"
+column 4 name rxpack
 column 4 split + typ="sw" typ="hw"
 .
 exit
