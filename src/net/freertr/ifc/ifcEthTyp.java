@@ -1244,15 +1244,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     /**
-     * get transition results
-     *
-     * @return text
-     */
-    public String getShTrans() {
-        return "" + cntr.getShTrans();
-    }
-
-    /**
      * reinit file logger
      *
      * @param s name of capture file

@@ -5368,9 +5368,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         switch (mode) {
             case 1:
+                counter cntr = ethtyp.getCounter();
                 l.add(ethtyp.getShHeads());
                 l.add(cmds.tabulator + "description: " + description);
-                l.add(cmds.tabulator + "state changed " + ethtyp.getShTrans());
+                l.add(cmds.tabulator + "state changed " + cntr.getShTrans());
+                l.add(cmds.tabulator + "last packet " + cntr.getShTraff());
                 String a = ", hwaddr=" + ethtyp.getHwAddr() + ", mtu=" + ethtyp.getMTUsize() + ", bw=" + bits.bandwidth(ethtyp.getBandwidth());
                 if (vrfFor != null) {
                     a += ", vrf=" + vrfFor.name;
@@ -5460,7 +5462,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * 7=lldp, 8=udld, 9=trafic, 10=total, 11=psumary, 12=ptrafic, 13=ptotal,
      * 14=lacp, 15=hwsum, 16=hwpsum, 17=hwtrafic, 18=hwptrafic, 19=swsum,
      * 20=swpsum, 21=swtrafic, 22=swptrafic, 23=hwtot, 24=hwptot, 25=swtot,
-     * 26=swptot, 27=stat
+     * 26=swptot, 27=stat, 28=last
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -5575,6 +5577,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case 27:
                 counter cntr = ethtyp.getCounter();
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(cntr.lastChgd));
+                break;
+            case 28:
+                cntr = ethtyp.getCounter();
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + bits.timePast(cntr.lastRx) + "|" + bits.timePast(cntr.lastTx) + "|" + bits.timePast(cntr.lastDr));
                 break;
         }
     }

@@ -291,6 +291,21 @@ public class counter implements Comparator<counter> {
     public long lastChgd;
 
     /**
+     * last rx
+     */
+    public long lastRx;
+
+    /**
+     * last tx
+     */
+    public long lastTx;
+
+    /**
+     * last drop
+     */
+    public long lastDr;
+
+    /**
      * last seen state
      */
     public state.states lastState = state.states.close;
@@ -327,6 +342,7 @@ public class counter implements Comparator<counter> {
     public void rx(packHolder pck) {
         packRx++;
         byteRx += pck.dataSize();
+        lastRx = bits.getTime();
     }
 
     /**
@@ -338,6 +354,7 @@ public class counter implements Comparator<counter> {
         packTx++;
         byteTx += pck.dataSize();
         byteTx += pck.headSize();
+        lastTx = bits.getTime();
     }
 
     /**
@@ -351,10 +368,12 @@ public class counter implements Comparator<counter> {
             dropper.packDr++;
             dropper.byteDr += pck.dataSize();
             dropper.byteDr += pck.headSize();
+            dropper.lastDr = bits.getTime();
         }
         packDr++;
         byteDr += pck.dataSize();
         byteDr += pck.headSize();
+        lastDr = bits.getTime();
         if (!debugger.counterTraf) {
             return;
         }
@@ -391,6 +410,9 @@ public class counter implements Comparator<counter> {
         res.byteDr = byteDr - old.byteDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -410,6 +432,9 @@ public class counter implements Comparator<counter> {
         res.byteDr = byteDr + old.byteDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -429,6 +454,9 @@ public class counter implements Comparator<counter> {
         }
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -448,6 +476,9 @@ public class counter implements Comparator<counter> {
         res.byteDr = byteDr * m;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -467,6 +498,9 @@ public class counter implements Comparator<counter> {
         res.byteDr = byteDr / d;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -481,6 +515,10 @@ public class counter implements Comparator<counter> {
         packDr = 0;
         byteDr = 0;
         stateChg = 0;
+        lastChgd = 0;
+        lastRx = 0;
+        lastTx = 0;
+        lastDr = 0;
     }
 
     /**
@@ -498,6 +536,9 @@ public class counter implements Comparator<counter> {
         res.byteDr = byteDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -516,6 +557,9 @@ public class counter implements Comparator<counter> {
         res.byteDr = byteDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
         return res;
     }
 
@@ -539,7 +583,16 @@ public class counter implements Comparator<counter> {
      * @return header for details
      */
     public String getShTrans() {
-        return stateChg + " times, last at " + bits.time2str(cfgAll.timeZoneName, lastChgd + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(lastChgd)+" ago";
+        return stateChg + " times, last at " + bits.time2str(cfgAll.timeZoneName, lastChgd + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(lastChgd) + " ago";
+    }
+
+    /**
+     * get header
+     *
+     * @return header for details
+     */
+    public String getShTraff() {
+        return "input " + bits.timePast(lastRx) + " ago, output " + bits.timePast(lastTx) + " ago, drop " + bits.timePast(lastDr) + " ago";
     }
 
     /**
