@@ -96,6 +96,7 @@ int eth6 eth 0000.0000.2222 $6a$ $6b$
 
 addrouter r3
 int eth1 eth 0000.0000.3333 $3b$ $3a$
+int eth2 eth 0000.0000.3333 $7a$ $7b$
 !
 vrf def v1
  rd 1:1
@@ -109,6 +110,11 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
+ exit
+int eth2
+ vrf for v1
+ ipv4 addr 1.1.99.1 255.255.255.0
+ ipv6 addr 1234:99::1 ffff:ffff::
  exit
 int tun1
  tun sou lo0
@@ -138,14 +144,17 @@ ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.1
 ipv4 route v1 2.2.2.105 255.255.255.255 1.1.1.1
 ipv4 route v1 2.2.2.106 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.199 255.255.255.255 1.1.99.2
 ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::199 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:99::2
 !
 
 addrouter r4
 int eth1 eth 0000.0000.4444 $4b$ $4a$
+int eth2 eth 0000.0000.4444 $7b$ $7a$
 !
 vrf def v1
  rd 1:1
@@ -155,6 +164,11 @@ int lo0
  ipv4 addr 2.2.2.104 255.255.255.255
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 2.2.2.199 255.255.255.255
+ ipv6 addr 4321::199 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 int di1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
@@ -162,6 +176,11 @@ int di1
  exit
 int eth1
  p2poe relay di1
+ exit
+int eth2
+ vrf for v1
+ ipv4 addr 1.1.99.2 255.255.255.0
+ ipv6 addr 1234:99::2 ffff:ffff::
  exit
 int tun1
  tun sou lo0
@@ -368,6 +387,11 @@ r3 tping 100 10 3.3.1.2 /vrf v1
 r3 tping 100 10 3.3.2.2 /vrf v1
 r4 tping 100 10 3.3.1.1 /vrf v1
 r4 tping 100 10 3.3.2.1 /vrf v1
+
+r3 tping 100 10 2.2.2.199 /vrf v1
+r3 tping 100 10 4321::199 /vrf v1
+r3 tping 0 10 2.2.2.199 /vrf v1 /int lo0
+r3 tping 0 10 4321::199 /vrf v1 /int lo0
 
 r1 dping sdn . r4 3.3.1.1 /vrf v1
 r1 dping sdn . r4 3.3.2.1 /vrf v1
