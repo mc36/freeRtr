@@ -3,6 +3,7 @@ package net.freertr.util;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 
 /**
@@ -521,15 +522,14 @@ public class counter implements Comparator<counter> {
     /**
      * convert counter to displayable text
      *
-     * @param promisc promiscous state
      * @param macsec macsec state
      * @param sgt sgt state
      * @return string list of user string
      */
-    public List<String> getShFull(boolean promisc, boolean macsec, boolean sgt) {
+    public List<String> getShFull(boolean macsec, boolean sgt) {
         List<String> l = new ArrayList<String>();
         l.add(cmds.tabulator + "received " + packRx + " packets (" + byteRx + " bytes) dropped " + packDr + " packets (" + byteDr + " bytes)");
-        l.add(cmds.tabulator + "transmitted " + packTx + " packets (" + byteTx + " bytes) promisc=" + promisc + " macsec=" + macsec + " sgt=" + sgt);
+        l.add(cmds.tabulator + "transmitted " + packTx + " packets (" + byteTx + " bytes) macsec=" + macsec + " sgt=" + sgt);
         return l;
     }
 
@@ -538,8 +538,8 @@ public class counter implements Comparator<counter> {
      *
      * @return header for details
      */
-    public String getShHead() {
-        return " (since " + bits.timePast(lastChgd) + ", " + stateChg + " changes)";
+    public String getShTrans() {
+        return stateChg + " times, last at " + bits.time2str(cfgAll.timeZoneName, lastChgd + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(lastChgd)+" ago";
     }
 
     /**

@@ -3228,6 +3228,9 @@ public class cfgAll {
             case 14:
                 l = new userFormat("|", "interface|system|port|state");
                 break;
+            case 27:
+                l = new userFormat("|", "interface|state|mtu|macsec|sgt|changes|since|for");
+                break;
             default:
                 return null;
         }

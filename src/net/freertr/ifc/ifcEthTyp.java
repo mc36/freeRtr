@@ -1231,16 +1231,25 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     /**
-     * get shot results
+     * get short results
      *
      * @return text
      */
     public String getShHeads() {
         String s = "";
         if (promiscous) {
-            s = "promisc, ";
+            s = ", promisc";
         }
-        return name + " is " + s + state.conv2string(getState()) + cntr.getShHead();
+        return name + " is " + state.conv2string(getState()) + s;
+    }
+
+    /**
+     * get transition results
+     *
+     * @return text
+     */
+    public String getShTrans() {
+        return "" + cntr.getShTrans();
     }
 
     /**

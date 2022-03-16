@@ -1317,6 +1317,10 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(2));
                 return null;
             }
+            if (a.equals("status")) {
+                rdr.putStrTab(cfgAll.getShIntTab(27));
+                return null;
+            }
             if (a.equals("hwsummary")) {
                 rdr.putStrTab(cfgAll.getShIntTab(15));
                 return null;

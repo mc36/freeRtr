@@ -109,7 +109,7 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
             a = " log";
         }
         int i = addrPrefix.dispSub(prefix);
-        return tabListingEntry.action2string(action) + " " + network + "/" + (lenDef - i) + " ge " + (lenMin - i) + " le " + (lenMax - i) + a;
+        return network + "/" + (lenDef - i) + " ge " + (lenMin - i) + " le " + (lenMax - i) + a;
     }
 
     /**
@@ -123,7 +123,7 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
         if (evaluate != null) {
             a = "evaluate " + tabListingEntry.action2string(action) + " " + evaluate.listName;
         } else {
-            a = "" + this;
+            a = tabListingEntry.action2string(action) + " " + this;
         }
         List<String> l = new ArrayList<String>();
         l.add(beg + "sequence " + sequence + " " + a);

@@ -5370,6 +5370,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case 1:
                 l.add(ethtyp.getShHeads());
                 l.add(cmds.tabulator + "description: " + description);
+                l.add(cmds.tabulator + "state changed " + ethtyp.getShTrans());
                 String a = ", hwaddr=" + ethtyp.getHwAddr() + ", mtu=" + ethtyp.getMTUsize() + ", bw=" + bits.bandwidth(ethtyp.getBandwidth());
                 if (vrfFor != null) {
                     a += ", vrf=" + vrfFor.name;
@@ -5385,15 +5386,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 l.add(cmds.tabulator + "type is " + type2string() + a);
                 if (fwdIf4 != null) {
-                    l.add(cmds.tabulator + "ip4 address=" + addr4 + "/" + mask4.toNetmask() + ", netmask=" + mask4 + ", ifcid=" + fwdIf4.ifwNum);
+                    l.add(cmds.tabulator + "ipv4 address=" + addr4 + "/" + mask4.toNetmask() + ", mask=" + mask4 + ", ifcid=" + fwdIf4.ifwNum);
                 }
                 if (fwdIf6 != null) {
-                    l.add(cmds.tabulator + "ip6 address=" + addr6 + "/" + mask6.toNetmask() + ", netmask=" + mask6 + ", ifcid=" + fwdIf6.ifwNum);
+                    l.add(cmds.tabulator + "ipv6 address=" + addr6 + "/" + mask6.toNetmask() + ", mask=" + mask6 + ", ifcid=" + fwdIf6.ifwNum);
                 }
                 if (ipxIfc != null) {
                     l.add(cmds.tabulator + "ipx address=" + ipxAddr + ", ifcid=" + ipxIfc.ifwNum);
                 }
-                l.addAll(ethtyp.getCounter().getShFull(ethtyp.getPromisc(), ethtyp.getMacsec(), ethtyp.getSgt()));
+                l.addAll(ethtyp.getCounter().getShFull(ethtyp.getMacsec(), ethtyp.getSgt()));
                 break;
             case 2:
             case 3:
@@ -5410,7 +5411,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 if (ethtyp.hwCntr == null) {
                     return null;
                 }
-                l.addAll(ethtyp.hwCntr.getShFull(ethtyp.getPromisc(), ethtyp.getMacsec(), ethtyp.getSgt()));
+                l.addAll(ethtyp.hwCntr.getShFull(ethtyp.getMacsec(), ethtyp.getSgt()));
                 break;
             case 12:
             case 13:
@@ -5459,7 +5460,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * 7=lldp, 8=udld, 9=trafic, 10=total, 11=psumary, 12=ptrafic, 13=ptotal,
      * 14=lacp, 15=hwsum, 16=hwpsum, 17=hwtrafic, 18=hwptrafic, 19=swsum,
      * 20=swpsum, 21=swtrafic, 22=swptrafic, 23=hwtot, 24=hwptot, 25=swtot,
-     * 26=swptot
+     * 26=swptot, 27=stat
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -5570,6 +5571,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case 26:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getTotalCntr().getShPsum());
+                break;
+            case 27:
+                counter cntr = ethtyp.getCounter();
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(cntr.lastChgd));
                 break;
         }
     }
