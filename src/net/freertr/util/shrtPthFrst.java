@@ -1217,6 +1217,7 @@ public class shrtPthFrst<Ta extends addrType> {
                 continue;
             }
             res.add(ntry + "|reach|" + ntry.visited);
+            res.add(ntry + "|neighs|" + ntry.conn.size());
             res.add(ntry + "|segrou|" + ntry.srIdx);
             res.add(ntry + "|bier|" + ntry.brIdx);
             for (int o = 0; o < ntry.conn.size(); o++) {
