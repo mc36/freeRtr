@@ -66,16 +66,20 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      */
     public userFormat getStats(int wht) {
         String a = "";
+        String b = "";
         if ((wht & 1) != 0) {
-            a += "|txb|txp";
+            b += "|2tx";
+            a += "|byte|pack";
         }
         if ((wht & 2) != 0) {
-            a += "|rxb|rxp";
+            b += "|2rx";
+            a += "|byte|pack";
         }
         if ((wht & 4) != 0) {
-            a += "|drb|drp";
+            b += "|2drop";
+            a += "|byte|pack";
         }
-        userFormat l = new userFormat("|", "seq" + a + "|last|timout|cfg");
+        userFormat l = new userFormat("|", "seq" + a + "|last|timout|cfg", "1" + b);
         for (int i = 0; i < entries.size(); i++) {
             Te ntry = entries.get(i);
             if (ntry == null) {
