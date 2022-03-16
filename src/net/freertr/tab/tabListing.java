@@ -79,7 +79,7 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             b += "|2drop";
             a += "|byte|pack";
         }
-        userFormat l = new userFormat("|", "seq" + a + "|last|timout|cfg", "1" + b);
+        userFormat l = new userFormat("|", "seq" + a + "|last|timout|cfg", "1" + b + "|2timers");
         for (int i = 0; i < entries.size(); i++) {
             Te ntry = entries.get(i);
             if (ntry == null) {
