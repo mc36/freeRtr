@@ -2076,30 +2076,30 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.best.nextHop = ntry.best.nextHop;
             prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
         }
-        addAttribed(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribed(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribed(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribed(currOtrU, parent.afiOtrL, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribed(currOtrU, parent.afiOtrU, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribed(currOtrM, parent.afiOtrM, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribed(currFlw, parent.afiFlw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currOtrF, parent.afiOtrF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currSrte, parent.afiSrte, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currOtrS, parent.afiOtrS, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currVpnU, parent.afiVpnU, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currVpnM, parent.afiVpnM, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currVpnF, parent.afiVpnF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currVpls, parent.afiVpls, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currMspw, parent.afiMspw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currEvpn, parent.afiEvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currMdt, parent.afiMdt, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currNsh, parent.afiNsh, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribed(currMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribed(currLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currOtrU, parent.afiOtrL, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOtrU, parent.afiOtrU, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOtrM, parent.afiOtrM, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currFlw, parent.afiFlw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currOtrF, parent.afiOtrF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currSrte, parent.afiSrte, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currOtrS, parent.afiOtrS, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpnU, parent.afiVpnU, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpnM, parent.afiVpnM, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpnF, parent.afiVpnF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpls, parent.afiVpls, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMspw, parent.afiMspw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currEvpn, parent.afiEvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMdt, parent.afiMdt, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currNsh, parent.afiNsh, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         if ((currChg > 0) && (rxReady() < (neigh.bufferSize / 4))) {
             parent.compute.wakeup();
         }
@@ -2116,7 +2116,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribed(tabRouteEntry<addrIP> cur, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribedOne(tabRouteEntry<addrIP> cur, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (parent.flaps != null) {
             parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
         }
@@ -2149,7 +2149,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         changed.add(tabRoute.addType.always, cur, false, false);
     }
 
-    private void addAttribed(List<tabRouteEntry<addrIP>> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (!afiMsk(peerAfis, safi)) {
             return;
         }
@@ -2176,7 +2176,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 attr.best.segrouPrf.fromIPv6addr(adr6);
             }
             attr.best.copyBytes(pref.best, false);
-            addAttribed(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
+            addAttribedOne(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
         }
     }
 
