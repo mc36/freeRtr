@@ -3042,6 +3042,8 @@ public class userConfig {
         l.add(null, "6  .            log-translations           turn on logging");
         l.add(null, "6  7            timeout                    specify timeout");
         l.add(null, "7  .              <num>                    time in ms");
+        l.add(null, "6  7            sessions                   specify translation limit");
+        l.add(null, "7  .              <num>                    number of translations");
         l.add(null, "6  7            randomize                  randomize source port");
         l.add(null, "7  8              <num>                    lowest port number");
         l.add(null, "8  .                <num>                  highest port number");

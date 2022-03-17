@@ -105,6 +105,11 @@ public class tabSession implements Runnable {
     public boolean dropFrg = false;
 
     /**
+     * maximum number of sessions
+     */
+    public int maxSess = 0;
+
+    /**
      * allow routing multicast
      */
     public boolean allowRoutng = false;
@@ -207,6 +212,7 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, allowList == null, beg, "allow-list", "" + allowList);
         cmds.cfgLine(res, allowUrl == null, beg, "allow-url", "" + allowUrl);
         cmds.cfgLine(res, timeout == defTim, beg, "timeout", "" + timeout);
+        cmds.cfgLine(res, maxSess < 1, beg, "sessions", "" + maxSess);
     }
 
     /**
@@ -234,10 +240,6 @@ public class tabSession implements Runnable {
             }
             if (a.equals("after")) {
                 logAfter = !negated;
-                continue;
-            }
-            if (a.equals("dropped")) {
-                logDrop = !negated;
                 continue;
             }
             if (a.equals("dropped")) {
@@ -317,6 +319,14 @@ public class tabSession implements Runnable {
                 timeout = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("sessions")) {
+                if (negated) {
+                    maxSess = 0;
+                    continue;
+                }
+                maxSess = bits.str2num(cmd.word());
+                continue;
+            }
         }
     }
 
@@ -369,6 +379,11 @@ public class tabSession implements Runnable {
                 return sessDrop(ses);
             }
             if (pck.IPfrg > 0) {
+                return sessDrop(ses);
+            }
+        }
+        if (maxSess > 0) {
+            if (connects.size() >= maxSess) {
                 return sessDrop(ses);
             }
         }

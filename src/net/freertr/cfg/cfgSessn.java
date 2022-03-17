@@ -31,6 +31,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
      */
     public final static String[] defaultL = {
         "session .*! no timeout",
+        "session .*! no sessions",
         "session .*! no mac",
         "session .*! no before",
         "session .*! no after",
@@ -73,6 +74,8 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1 2  timeout                      set timeout");
         l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 2  sessions                     set session limit");
+        l.add(null, "2 .    <num>                      number of sessions");
         l.add(null, "1 .  mac                          with mac addresses");
         l.add(null, "1 .  before                       log on session start");
         l.add(null, "1 .  after                        log on session stop");

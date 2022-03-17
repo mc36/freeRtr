@@ -132,6 +132,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             timeout = bits.str2num(cmd.word());
             return 2;
         }
+        if (s.equals("sessions")) {
+            maxSess = bits.str2num(cmd.word());
+            return 2;
+        }
         if (s.equals("randomize")) {
             rangeMin = bits.str2num(cmd.word());
             rangeMax = bits.str2num(cmd.word());
@@ -329,6 +333,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         l.add(beg + "sequence " + sequence + " " + this);
         String s = beg + "sequence " + sequence;
         l.add(s + " timeout " + timeout);
+        l.add(s + " sessions " + maxSess);
         if (rangeMin > 0) {
             l.add(s + " randomize " + rangeMin + " " + rangeMax);
         }
