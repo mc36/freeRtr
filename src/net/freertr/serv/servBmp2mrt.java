@@ -68,10 +68,6 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     private final tabGen<servBmp2mrtStat> stats = new tabGen<servBmp2mrtStat>();
 
-    private packHolder pckUpd = new packHolder(true, true);
-
-    private packHolder pckHlp = new packHolder(true, true);
-
     private boolean local;
 
     private int rateInt;
@@ -565,6 +561,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(dat, 0, -1));
         }
         if ((dir == stat.rouD) && (stat.nei != null)) {
+            packHolder pckUpd = new packHolder(true, true);
+            packHolder pckHlp = new packHolder(true, true);
             pckUpd.clear();
             pckUpd.putCopy(dat, 0, 0, dat.length);
             pckUpd.putSkip(dat.length);
