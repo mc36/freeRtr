@@ -561,21 +561,20 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(dat, 0, -1));
         }
         if ((dir == stat.rouD) && (stat.nei != null)) {
-            packHolder pckUpd = new packHolder(true, true);
-            packHolder pckHlp = new packHolder(true, true);
-            pckUpd.clear();
-            pckUpd.putCopy(dat, 0, 0, dat.length);
-            pckUpd.putSkip(dat.length);
-            pckUpd.merge2beg();
-            int typ = pckUpd.getByte(rtrBgpSpeak.sizeU - 1);
-            pckUpd.getSkip(rtrBgpSpeak.sizeU);
+            packHolder upd = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
+            upd.putCopy(dat, 0, 0, dat.length);
+            upd.putSkip(dat.length);
+            upd.merge2beg();
+            int typ = upd.getByte(rtrBgpSpeak.sizeU - 1);
+            upd.getSkip(rtrBgpSpeak.sizeU);
             try {
                 switch (typ) {
                     case rtrBgpUtil.msgUpdate:
-                        stat.nei.conn.parseUpdate(pckUpd, pckHlp);
+                        stat.nei.conn.parseUpdate(upd, hlp);
                         break;
                     case rtrBgpUtil.msgOpen:
-                        stat.nei.conn.parseOpen(pckUpd);
+                        stat.nei.conn.parseOpen(upd);
                         break;
                 }
             } catch (Exception e) {
