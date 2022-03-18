@@ -36,6 +36,7 @@ import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.tab.tabSession;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -432,22 +433,30 @@ public class ipFwdIface extends tabRouteIface {
      *
      * @return show
      */
-    public List<String> getShow() {
-        List<String> l = new ArrayList<String>();
-        l.add(lower + " ready=" + ready);
-        l.add(cmds.tabulator + "num=" + ifwNum + " mtu=" + mtu + " bw=" + bits.bandwidth(bandwidth) + " p2p=" + point2point);
-        l.add(cmds.tabulator + "addr=" + addr + " mask=" + mask);
-        l.add(cmds.tabulator + "net=" + network);
-        l.add(cmds.tabulator + "ll=" + lower.getLinkLocalAddr());
+    public userFormat getShow() {
+        userFormat l = new userFormat("|", "category|value");
+        l.add("name|" + lower);
+        l.add("ready|" + ready);
+        l.add("num|" + ifwNum);
+        l.add("mtu|" + mtu);
+        l.add("bw|" + bits.bandwidth(bandwidth));
+        l.add("p2p|" + point2point);
+        l.add("addr|" + addr);
+        l.add("mask|" + mask);
+        l.add("net|" + network);
+        l.add("ll|" + lower.getLinkLocalAddr());
         for (int i = 0; i < adrs.size(); i++) {
             ipFwdIfaceAddr adr = adrs.get(i);
             if (adr == null) {
                 continue;
             }
-            l.add(cmds.tabulator + "additional=" + adr.ip + " " + adr.mac + " " + adr.cfg);
+            l.add("additional|" + adr.ip + "|" + adr.mac + "|" + adr.cfg);
         }
-        l.add(cmds.tabulator + "cntr=" + cntr.getShStat());
-        l.add(cmds.tabulator + "ipcntr=" + lower.getCounter().getShStat());
+        l.add("cntr|" + cntr.getShStat());
+        l.add("lastio|" + cntr.getShTraff());
+        counter cnt = lower.getCounter();
+        l.add("ipcntr|" + cnt.getShStat());
+        l.add("iplast|" + cnt.getShTraff());
         return l;
     }
 

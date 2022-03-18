@@ -819,21 +819,14 @@ public class ipFwdTab {
                 autoRouteTable(tabM, ifc);
             }
         }
-        if (lower.counterMap != null) {
-            for (int i = 0; i < tabU.size(); i++) {
-                tabRouteEntry<addrIP> ntry = tabU.get(i);
-                if (!lower.counterMap.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
-                    continue;
-                }
-                tabRouteEntry<addrIP> old = lower.actualU.find(ntry);
-                if (old != null) {
-                    ntry.cntr = old.cntr;
-                    ntry.hwCntr = old.hwCntr;
-                }
-                if (ntry.cntr == null) {
-                    ntry.cntr = new counter();
-                }
+        for (int i = 0; i < tabU.size(); i++) {
+            tabRouteEntry<addrIP> ntry = tabU.get(i);
+            tabRouteEntry<addrIP> old = lower.actualU.find(ntry);
+            if (old == null) {
+                continue;
             }
+            ntry.cntr = old.cntr;
+            ntry.hwCntr = old.hwCntr;
         }
         switch (lower.prefixMode) {
             case igp:

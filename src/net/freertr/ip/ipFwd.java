@@ -339,11 +339,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public tabQos coppOut;
 
     /**
-     * traffic counter filter
-     */
-    public tabListing<tabRtrmapN, addrIP> counterMap;
-
-    /**
      * import list
      */
     public tabListing<tabPrfxlstN, addrIP> importList;

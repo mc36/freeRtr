@@ -214,6 +214,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         res.add("pwe advertised|" + pweAdvert.size() + " of " + pweNeed2adv.size());
         res.add("p2mp advertised|" + pmpAdvert.size());
         res.add("connection|" + cntr.getShStat());
+        res.add("lastio|" + cntr.getShTraff());
     }
 
     /**

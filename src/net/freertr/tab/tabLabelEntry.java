@@ -360,7 +360,8 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
         lst.add("pwe iface|" + pweIfc);
         lst.add("pwe del|" + pweDel);
         lst.add("pwe add|" + bits.byteDump(pweAdd, 0, -1));
-        lst.add("counter|" + counter.getShStat(cntr));
+        lst.add("counter|" + cntr.getShStat());
+        lst.add("lastio|" + cntr.getShTraff());
         lst.add("hardware counter|" + counter.getShStat(hwCntr));
         return lst;
     }

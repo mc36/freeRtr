@@ -54,18 +54,6 @@ prefix-list all
  sequence 20 permit ::/0 ge 0 le 128
  exit
 !
-route-map count4
- sequence 10 action permit
- sequence 10 match network 0.0.0.0/0 ge 32 le 32
- !
- exit
-!
-route-map count6
- sequence 10 action permit
- sequence 10 match network ::/0 ge 128 le 128
- !
- exit
-!
 route-policy nht4
  sequence 10 if network 0.0.0.0/0 ge 0 le 0
  sequence 20   drop
@@ -145,8 +133,6 @@ vrf definition v1
  rd 1:1
  rt-import 1:1
  rt-export 1:1
- counter4map count4
- counter6map count6
  exit
 !
 vrf definition v2

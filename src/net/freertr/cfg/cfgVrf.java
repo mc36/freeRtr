@@ -302,16 +302,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public cfgAceslst packet6fltr = null;
 
     /**
-     * ipv4 counter map
-     */
-    public cfgRoump counter4map = null;
-
-    /**
-     * ipv6 counter map
-     */
-    public cfgRoump counter6map = null;
-
-    /**
      * ipv4 dapp
      */
     public cfgPlymp dapp4 = null;
@@ -384,8 +374,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no copp6out",
         "vrf definition .*! no packet4filter",
         "vrf definition .*! no packet6filter",
-        "vrf definition .*! no counter4map",
-        "vrf definition .*! no counter6map",
         "!ipv[4|6] nat .* sequence .* timeout 300000",
         "!ipv[4|6] nat .* sequence .* sessions 0"
     };
@@ -693,8 +681,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, copp6out == null, cmds.tabulator, "copp6out", "" + copp6out);
         cmds.cfgLine(l, packet4fltr == null, cmds.tabulator, "packet4filter", "" + packet4fltr);
         cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
-        cmds.cfgLine(l, counter4map == null, cmds.tabulator, "counter4map", "" + counter4map);
-        cmds.cfgLine(l, counter6map == null, cmds.tabulator, "counter6map", "" + counter6map);
         cmds.cfgLine(l, !mdt4, cmds.tabulator, "mdt4", "");
         cmds.cfgLine(l, !mdt6, cmds.tabulator, "mdt6", "");
         l.add(cmds.tabulator + cmds.finish);
@@ -820,10 +806,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 .    <name:acl>        name of access list");
         l.add(null, "1 2  packet6filter       specify ipv6 packet filter");
         l.add(null, "2 .    <name:acl>        name of access list");
-        l.add(null, "1 2  counter4map         specify ipv4 traffic counter");
-        l.add(null, "2 .    <name:acl>        name of route map");
-        l.add(null, "1 2  counter6map         specify ipv6 traffic counter");
-        l.add(null, "2 .    <name:acl>        name of route map");
         l.add(null, "1 .  propagate-ttl       specify to copy ip ttl to mpls ttl");
         l.add(null, "1 .  report-labels       append icmp extension with labels");
         l.add(null, "1 .  mdt4                enable multicast distribution tree for ipv4");
@@ -1238,26 +1220,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.packetFilter = packet6fltr.aceslst;
             return;
         }
-        if (a.equals("counter4map")) {
-            counter4map = cfgAll.rtmpFind(cmd.word(), false);
-            if (counter4map == null) {
-                cmd.error("no such route map");
-                return;
-            }
-            fwd4.counterMap = counter4map.roumap;
-            fwd4.routerStaticChg();
-            return;
-        }
-        if (a.equals("counter6map")) {
-            counter6map = cfgAll.rtmpFind(cmd.word(), false);
-            if (counter6map == null) {
-                cmd.error("no such route map");
-                return;
-            }
-            fwd6.counterMap = counter6map.roumap;
-            fwd6.routerStaticChg();
-            return;
-        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -1470,18 +1432,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("packet6filter")) {
             packet6fltr = null;
             fwd6.packetFilter = null;
-            return;
-        }
-        if (a.equals("counter4map")) {
-            counter4map = null;
-            fwd4.counterMap = null;
-            fwd4.routerStaticChg();
-            return;
-        }
-        if (a.equals("counter6map")) {
-            counter6map = null;
-            fwd6.counterMap = null;
-            fwd6.routerStaticChg();
             return;
         }
         cmd.badCmd();

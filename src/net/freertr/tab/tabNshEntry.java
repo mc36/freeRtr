@@ -351,6 +351,7 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
         lst.add("rawpack|" + rawPack);
         lst.add("keephdr|" + keepHdr);
         lst.add("counter|" + cntr.getShStat());
+        lst.add("lastio|" + cntr.getShTraff());
         lst.add("hardware counter|" + counter.getShStat(hwCntr));
         return lst;
     }

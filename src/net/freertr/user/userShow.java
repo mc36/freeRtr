@@ -4505,7 +4505,7 @@ public class userShow {
             cmd.error("protocol not enabled");
             return;
         }
-        rdr.putStrArr(ifc.getShow());
+        rdr.putStrTab(ifc.getShow());
     }
 
     private void doShowSockets(int ver) {

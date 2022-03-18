@@ -597,7 +597,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("incr|" + incrCount + ", " + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(incrLast) + " ago, " + incrTime + " ms");
         l.add("sent|" + advertCount + ", " + bits.time2str(cfgAll.timeZoneName, advertLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(advertLast) + " ago");
         l.add("connection|" + conn.cntr.getShStat());
+        l.add("lastio|" + conn.cntr.getShTraff());
         l.add("uncompressed|" + conn.compressCntr.getShStat());
+        l.add("uncomplastio|" + conn.compressCntr.getShTraff());
         l.add("buffer|" + pipeSide.getStatus(conn.pipe));
         l.add("policy reject|" + conn.repPolRej);
         l.add("aspath loop|" + conn.repAsPath);

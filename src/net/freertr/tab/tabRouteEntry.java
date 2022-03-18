@@ -58,6 +58,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * create instance
      */
     public tabRouteEntry() {
+        cntr = new counter();
         best = new tabRouteAttr<T>();
         alts = new ArrayList<tabRouteAttr<T>>();
         alts.add(best);
@@ -399,9 +400,6 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param prf entry to dump
      */
     public static void toShCntr(userFormat l, tabRouteEntry<addrIP> prf) {
-        if (prf.cntr == null) {
-            return;
-        }
         String a = "";
         String s = "";
         if (prf.hwCntr != null) {
@@ -498,7 +496,8 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             l.add("alternate #" + i + "|ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
             ntry.fullDump(l);
         }
-        l.add("counter|" + counter.getShStat(cntr));
+        l.add("counter|" + cntr.getShStat());
+        l.add("lastio|" + cntr.getShTraff());
         l.add("hardware counter|" + counter.getShStat(hwCntr));
         return l;
     }
