@@ -400,13 +400,17 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param prf entry to dump
      */
     public static void toShCntr(userFormat l, tabRouteEntry<addrIP> prf) {
-        String a = "";
-        String s = "";
+        String tp = "";
+        String tb = "";
+        String rp = "";
+        String rb = "";
         if (prf.hwCntr != null) {
-            a = "+" + prf.hwCntr.packTx;
-            s = "+" + prf.hwCntr.byteTx;
+            tp = "+" + prf.hwCntr.packTx;
+            tb = "+" + prf.hwCntr.byteTx;
+            rp = "+" + prf.hwCntr.packRx;
+            rb = "+" + prf.hwCntr.byteRx;
         }
-        l.add(addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.packTx + a + "|" + prf.cntr.byteTx + s + "|" + bits.timePast(prf.best.time));
+        l.add(addrPrefix.ip2str(prf.prefix) + "|" + prf.cntr.packTx + tp + "|" + prf.cntr.byteTx + tb + "|" + prf.cntr.packRx + rp + "|" + prf.cntr.byteRx + rb + "|" + bits.timePast(prf.best.time));
     }
 
     /**
