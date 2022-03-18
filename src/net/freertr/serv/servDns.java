@@ -7,6 +7,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.clnt.clntDns;
 import net.freertr.pack.packDns;
 import net.freertr.pack.packDnsRec;
@@ -179,9 +180,11 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "1  3   reverse                   generate reverse zone");
         l.add(null, "3  .     <str>                   name of zone");
         l.add(null, "1  3   download                  download zone with dns axfr if changed");
-        l.add(null, "3  .     <str>                   name of server");
+        l.add(null, "3  4     <name:prx>              proxy to use");
+        l.add(null, "4  .       <str>                 name of server");
         l.add(null, "1  3   redownload                download zone with dns axfr anyway");
-        l.add(null, "3  .     <str>                   name of server");
+        l.add(null, "3  4     <name:prx>              proxy to use");
+        l.add(null, "4  .       <str>                 name of server");
         l.add(null, "1  3   rr                        specify a record");
         lst = new ArrayList<String>();
         packDnsZone zon = new packDnsZone(lastZone);
@@ -322,9 +325,14 @@ public class servDns extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("download")) {
+            clntDns clnt = new clntDns();
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                return true;
+            }
+            clnt.curPrx = prx;
             addrIP adr = new addrIP();
             adr.fromString(cmd.word());
-            clntDns clnt = new clntDns();
             zon = clnt.doZoneXfer(adr, zon, false);
             if (zon == null) {
                 return true;
@@ -333,9 +341,14 @@ public class servDns extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("redownload")) {
+            clntDns clnt = new clntDns();
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                return true;
+            }
+            clnt.curPrx = prx;
             addrIP adr = new addrIP();
             adr.fromString(cmd.word());
-            clntDns clnt = new clntDns();
             zon = clnt.doZoneXfer(adr, zon, true);
             if (zon == null) {
                 return true;

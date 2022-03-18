@@ -49,7 +49,7 @@ client name-server 1.1.1.2
 r2 tping 100 5 1.1.1.1 /vrf v1
 r2 send conf t
 r2 send server dns dns
-r2 send zone test.corp redownload 1.1.1.1
+r2 send zone test.corp redownload p1 1.1.1.1
 r2 send exit
 r2 send end
 r2 tping 100 5 ip4a.test.corp /vrf v1

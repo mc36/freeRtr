@@ -29,7 +29,7 @@ public class clntDns {
     /**
      * working proxy
      */
-    private cfgProxy curPrx;
+    public cfgProxy curPrx;
 
     /**
      * dns question
