@@ -20,8 +20,7 @@
 
 from rare.bf_gbl_env.cst_env import *
 from rare.bf_grpc_client import BfRuntimeGrpcClient
-from rare.bf_ifstatus import BfIfStatus
-from rare.bf_ifcounter import BfIfCounter
+from rare.bf_ports import BfPorts
 from rare.bf_natcounter import BfNatCounter
 from rare.bf_bridgecounter import BfBridgeCounter
 from rare.bf_inspectcounter import BfInspectCounter
@@ -97,8 +96,7 @@ if __name__ == "__main__":
             ALL_THREADS.append(thread)
 
         bf_client, bf_client_id = newClient(bind = True)
-        bf_ifstatus_c, bf_ifstatus_id = newClient()
-        bf_ifcounter_c, bf_ifcounter_id = newClient()
+        bf_ports_c, bf_ports_id = newClient()
         bf_forwarder = BfForwarder(
             bf_client_id,
             "bf_forwarder",
@@ -110,11 +108,9 @@ if __name__ == "__main__":
             args.no_log_keepalive,
         )
         startThread(bf_forwarder)
-        startThread(BfIfStatus(bf_ifstatus_id, "bf_ifstatus", bf_ifstatus_c,
-                               sckw_file, 1))
-        startThread(BfIfCounter(bf_ifcounter_id, "bf_ifcounter",
-                                bf_ifcounter_c, sckw_file, args.pipe_name, 5,
-                                args.snmp, args.ifmibs_dir, args.ifindex))
+        startThread(BfPorts(bf_ports_id, "bf_ports",
+                            bf_ports_c, sckw_file, args.pipe_name, 5,
+                            args.snmp, args.ifmibs_dir, args.ifindex))
 
         if bf_forwarder.dp_capabilities["nat"] == True:
 

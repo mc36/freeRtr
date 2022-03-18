@@ -1557,25 +1557,23 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "ports":
+            self.managePort(
+                self.platform,
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                int(splt[4]),
+                int(splt[5]),
+            )
+
         if cmds[0] == "state":
-            if self.platform == "stordis_bf2556x_1t" and int(splt[1]) in SAL_PORT_ID:
-                self._setPortAdmStatusBF2556X1T(
-                    int(splt[1]),
-                    int(splt[2]),
-                    int(splt[3]),
-                    int(splt[4]),
-                    int(splt[5]),
-                    int(splt[6]),
-                )
-            else:
-                self._setPortAdmStatus(
-                    int(splt[1]),
-                    int(splt[2]),
-                    int(splt[3]),
-                    int(splt[4]),
-                    int(splt[5]),
-                    int(splt[6]),
-                )
+            self.setPortAdmStatus(
+                self.platform,
+                int(splt[1]),
+                int(splt[2]),
+            )
             continue
 
         if cmds[0] == "bundlelist":

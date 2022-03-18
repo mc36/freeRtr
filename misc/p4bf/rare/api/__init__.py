@@ -103,8 +103,8 @@ class RareApi(BfRtRare):
     from .routedmac import writeRoumacRules
     from .srvroute4 import writeSrvRules4
     from .srvroute6 import writeSrvRules6
-    from .state import _setPortAdmStatusBF2556X1T
-    from .state import _setPortAdmStatus
+    from .state import setPortAdmStatus
+    from .ports import managePort
     from .unlabel4 import writeUnMplsRules
     #from .unlabel6 import 
     from .vpnroute4 import writeVpnRules4

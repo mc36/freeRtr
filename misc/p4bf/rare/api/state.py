@@ -1,8 +1,5 @@
 from ..bf_gbl_env.cst_env import *
 
-PORT_SPEED = [1, 10, 25, 40, 50, 100]
-
-
 def _Exception():
     exc_type, exc_obj, tb = sys.exc_info()
     f = tb.tb_frame
@@ -14,129 +11,49 @@ def _Exception():
         filename, lineno, line.strip(), exc_obj
     )
 
-
-def _setPortAdmStatusBF2556X1T(
-    self, port_id, adm_status, port_speed, fec=0, autoneg=1, flowctrl=0
-):
+def setPortAdmStatus(self, platform, port_id, adm_status=0):
     method_name = inspect.currentframe().f_code.co_name
-    new_speed = self.salgc.speedTnaToSal(port_speed)
-    sal_port = SAL_PORT_ID[port_id]
-    if adm_status == 1:
-        if self._checkParamCoherence(port_speed, fec, autoneg, flowctrl) == False:
-            logger.warning(
-                "%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
-                % (self.class_name, port_id, port_speed, fec, autoneg, flowctrl)
-            )
-            return None
-        try:
-            self.salgc.AddPort(
+
+    if port_id not in self.active_ports:
+        self.controlPlaneMsg("Attempting to set administrative state for inactive port [%s]" % port_id)
+        return
+
+    port_enable = True if adm_status == 1 else False
+    port_enable_str = "up" if port_enable else "down"
+    try:
+        if platform == "stordis_bf2556x_1t" and port_id in SAL_PORT_ID:
+            sal_port = SAL_PORT_ID[port_id]
+            self.salgc.EnablePort(
                 sal_port,
                 lane=0,
-                speed=new_speed,
-                fec=fec,
-                an=autoneg,
-                fc=flowctrl,
-                enable=adm_status,
-                up=adm_status,
+                new_enb=port_enable
             )
-
-        except:
-            logger.warning(
-                "%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
-                % (
-                    self.class_name,
-                    method_name,
-                    port_id,
-                    port_speed,
-                    fec,
-                    autoneg,
-                    flowctrl,
-                )
-            )
-            logger.warning(
-                "%s:%s - with code [%s]" % (self.class_name, method_name, _Exception())
-            )
-    else:
-        try:
-            self.salgc.DelPort(port_num=sal_port, lane=0)
-
-        except:
-            logger.warning(
-                "%s:%s - Error in deleting port [%s]"
-                % (self.class_name, method_name, port_id)
-            )
-
-
-def _setPortAdmStatus(
-    self, port_id, adm_status=0, port_speed=10, fec=0, autoneg=1, flowctrl=0
-):
-    # set port_id to adm_status
-    method_name = inspect.currentframe().f_code.co_name
-
-    str_port_speed = ""
-    str_fec = ""
-    str_an = ""
-
-    if adm_status == 1:
-        if port_speed in PORT_SPEED:
-            str_port_speed = "BF_SPEED_%sG" % (port_speed)
         else:
-            logger.error("Unknown port speed: %s", port_speed)
-            return
-
-        if self._checkParamCoherence(port_speed, fec, autoneg, flowctrl) == False:
-            logger.warning(
-                "%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
-                % (self.class_name, port_id, port_speed, fec, autoneg, flowctrl)
-            )
-            return None
-
-        str_fec = self._getStrFEC(fec)
-        str_an = self._getStrAN(autoneg)
-
-        try:
-            self.bfgc.port_table.entry_add(
+            self.bfgc.port_table.entry_mod(
                 self.bfgc.target,
                 [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
                 [
                     self.bfgc.port_table.make_data(
                         [
-                            gc.DataTuple("$SPEED", str_val=str_port_speed),
-                            gc.DataTuple("$FEC", str_val=str_fec),
-                            gc.DataTuple("$AUTO_NEGOTIATION", str_val=str_an),
-                            gc.DataTuple("$PORT_ENABLE", bool_val=True),
+                            gc.DataTuple("$PORT_ENABLE", bool_val=port_enable),
                         ]
                     )
                 ],
             )
-
-            logger.debug("Port[%s] administratively enabled", port_id)
-        except:
-            logger.warning(
-                "%s:%s - Error in enabling port [%s] with parameters:[%s,%s,%s,%s]"
-                % (
-                    self.class_name,
-                    method_name,
-                    port_id,
-                    port_speed,
-                    fec,
-                    autoneg,
-                    flowctrl,
-                )
+    except Exception as e:
+        self.controlPlaneMsg(
+            "%s:%s - Error setting admin state of port [%s] to %s: %s"
+            % (
+                self.class_name,
+                method_name,
+                port_id,
+                port_enable_str,
+                e
             )
-            logger.warning(
-                "%s:%s - with code [%s]" % (self.class_name, method_name, _Exception())
-            )
+        )
+        self.controlPlaneMsg(
+            "%s:%s - with code [%s]" % (self.class_name, method_name, _Exception())
+        )
     else:
-        try:
-            self.bfgc.port_table.entry_del(
-                self.bfgc.target,
-                [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
-            )
-
-            logger.debug("Port[%s] administratively disabled", port_id)
-        except:
-            logger.warning(
-                "%s:%s - Error in deleting port [%s]"
-                % (self.class_name, method_name, port_id)
-            )
+        logger.warning("Port[%s] administrative status set to %s" %
+                     (port_id, port_enable_str))

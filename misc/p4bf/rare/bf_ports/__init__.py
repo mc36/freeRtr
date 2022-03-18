@@ -29,7 +29,7 @@ def _Exception():
     )
 
 
-class BfIfCounter(Thread):
+class BfPorts(Thread):
     def __init__(
             self,
             threadID,
@@ -186,14 +186,30 @@ class BfIfCounter(Thread):
         self.addSubIfToIfIndex(ifDescr, port_id)
         logger.debug("Port[%s] added IF MIB %s" % (port_id, mib_file))
 
+    def operStateChange(self, port_id, state_up):
+        state = (port_id, 1 if state_up else 0)
+        self.file.write("state %s %s\n" % state)
+        self.file.flush()
+        logger.warning("tx: ['state','%s','%s','\\n']" % state)
+        logger.warning(
+            "%s - port [%s] operational state changed to %s"
+            % (self.class_name, port_id, "UP" if state_up else "DOWN")
+        )
+
     def getIfs(self):
         ports = self.entryGet(self.bfgc.port_table)
+        old_ifs = self.ifs
         self.ifs = {}
         for d, k in ports:
             keys = k.to_dict()
             port_data = d.to_dict()
             port_id = keys["$DEV_PORT"]["value"]
             self.ifs[port_id] = port_data
+            ## Detect change in oper status
+            new_oper_state = port_data["$PORT_UP"]
+            if port_id not in old_ifs or new_oper_state != old_ifs[port_id]["$PORT_UP"]:
+                self.operStateChange(port_id, new_oper_state)
+
         if self.snmp_enable:
             for port_id in set(self.ifs) - set(self.ifmibs):
                 self.addSnmpIf(port_id, self.ifs[port_id])
@@ -299,12 +315,49 @@ class BfIfCounter(Thread):
                 }
                 self.subifmibs[port_id].update(phys_port_data, stat)
 
+    def sendPortInfoToCP(self):
+        ## Determine the mapping from port names in the form
+        ## "connector/channel" to physical port IDs.  It is provided
+        ## directly by the $PORT_STR_INFO table. However, this table
+        ## (like all "internal" tables) can only be queried for
+        ## specific keys, i.e. traversal of all entries by providing
+        ## an empty list of keys is not supported. As a workaround, we
+        ## use the $PORT_HDL_INFO table instead and simply iterate
+        ## over all connector/channel pairs and pick out those that
+        ## are actually present. Scanning for connectors from 1 to 65
+        ## should cover all current Tofino models.
+        for conn in range(1, 65):
+            for chnl in range(0,4):
+                try:
+                    resp = self.bfgc.port_hdl_info_table.entry_get(
+                        self.bfgc.target, [
+                            self.bfgc.port_hdl_info_table.make_key([
+                                gc.KeyTuple("$CONN_ID", conn),
+                                gc.KeyTuple("$CHNL_ID", chnl)
+                            ])
+                        ],
+                        {"from_hw": False},
+                        p4_name=self.bfgc.p4_name
+                    )
+                    dev_port = next(resp)[0].to_dict()['$DEV_PORT']
+                except Exception as e:
+                    ## Skip non-existant entries.  TODO: make sure
+                    ## this is the only error to be expected here
+                    pass
+                else:
+                    data = "portname %s frontpanel-%s/%s \n" % (dev_port, conn, chnl)
+                    logger.warning("tx: %s" % data.split(" "))
+                    self.file.write(data)
+        self.file.write("dynrange 512 1023 \n")
+        self.file.flush()
+
     def run(self):
         try:
             logger.warning("%s - main" % (self.class_name))
             if self.snmp_enable:
                 ## Reset the ifindex file
                 shutil.copy("%s.init" % self.ifindex_file, self.ifindex_file)
+            self.sendPortInfoToCP()
             while not self.die:
                 self.getIfs()
                 self.getSubIfs()

@@ -30,6 +30,9 @@ class BfForwarder(Thread, RareApi):
         self.file_w = sckw_file
         self.recirc_port = 68
         self.dp_capabilities = {}
+        ## List of physical ports that have been successfully added by
+        ## the ports_add API call
+        self.active_ports = {}
         self._clearTable()
 
     from .message_loop import run
@@ -285,3 +288,11 @@ class BfForwarder(Thread, RareApi):
     def _setDataplaneCapability(self):
         for capability in self.dp_capabilities:
             self.__dict__[capability] = self.dp_capabilities[capability]
+
+    def controlPlaneMsg(self, msg):
+        logger.warning(msg)
+        if msg[-1] != '\n':
+            msg = msg + "\n"
+        for line in msg.splitlines():
+            self.file_w.write("dataplane-say " + line + "\n")
+        self.file_w.flush()
