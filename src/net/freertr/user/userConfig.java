@@ -962,9 +962,6 @@ public class userConfig {
             cfgAll.hostName = cmd.word();
             return;
         }
-        if (a.equals("end")) {
-            return;
-        }
         if (a.equals("enable")) {
             cfgAll.enaPass = authLocal.secretDecode(cmd.word());
             return;
@@ -1992,9 +1989,6 @@ public class userConfig {
             return;
         }
         a = cmd.word();
-        if (a.equals("end")) {
-            return;
-        }
         if (a.equals("enable")) {
             cfgAll.enaPass = null;
             return;

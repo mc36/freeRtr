@@ -109,7 +109,7 @@ if __name__ == "__main__":
         )
         startThread(bf_forwarder)
         startThread(BfPorts(bf_ports_id, "bf_ports",
-                            bf_ports_c, sckw_file, args.pipe_name, 5,
+                            bf_ports_c, sckw_file, args.pipe_name, 1, 5,
                             args.snmp, args.ifmibs_dir, args.ifindex))
 
         if bf_forwarder.dp_capabilities["nat"] == True:

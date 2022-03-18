@@ -61,9 +61,6 @@ public class userFilter implements Comparator<userFilter> {
         if (a.equals(cmds.comment)) {
             return true;
         }
-        if (a.equals(cmds.finish)) {
-            return true;
-        }
         return false;
     }
 
@@ -115,6 +112,9 @@ public class userFilter implements Comparator<userFilter> {
         for (; c.startsWith(" ");) {
             c = c.substring(1, c.length());
             b += " ";
+        }
+        if (c.equals(cmds.finish)) {
+            return null;
         }
         if (c.startsWith("no ")) {
             return new userFilter(section, b + c.substring(3, c.length()), listing);
@@ -196,14 +196,16 @@ public class userFilter implements Comparator<userFilter> {
         List<String> txt = new ArrayList<String>();
         String prev = "";
         String beg = "";
+        boolean fin = false;
         for (int i = 0; i < src.size(); i++) {
             userFilter ntry = src.get(i);
             String s = ntry.command.trim();
             if (prev.equals(ntry.section)) {
+                fin |= s.equals(cmds.finish);
                 txt.add(beg + s);
                 continue;
             }
-            if (rep && (beg.length() > 0)) {
+            if (rep && !fin && (beg.length() > 0)) {
                 txt.add(beg + cmds.finish);
             }
             prev = ntry.section.trim();
@@ -216,8 +218,9 @@ public class userFilter implements Comparator<userFilter> {
                 beg = "";
             }
             txt.add(beg + s);
+            fin = s.equals(cmds.finish);
         }
-        if (rep && (beg.length() > 0)) {
+        if (rep && !fin && (beg.length() > 0)) {
             txt.add(beg + cmds.finish);
         }
         return txt;
@@ -274,6 +277,9 @@ public class userFilter implements Comparator<userFilter> {
                 continue;
             }
             ntry = ntry.negate();
+            if (ntry == null) {
+                continue;
+            }
             res.add(ntry);
         }
         return res;
@@ -471,6 +477,9 @@ public class userFilter implements Comparator<userFilter> {
                 continue;
             }
             userFilter neg = ntry.negate();
+            if (neg == null) {
+                continue;
+            }
             found = findText(neg, trgS);
             if (found != null) {
                 found.used = true;
@@ -494,7 +503,11 @@ public class userFilter implements Comparator<userFilter> {
         if (trgS.size() > 0) {
             return;
         }
-        res.add(new userFilter("", sec, null).negate());
+        userFilter ntry = new userFilter("", sec, null).negate();
+        if (ntry == null) {
+            return;
+        }
+        res.add(ntry);
     }
 
     private static List<userFilter> normalizeSection(List<userFilter> src) {

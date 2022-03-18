@@ -37,7 +37,8 @@ class BfPorts(Thread):
             bfgc,
             sck_file,
             pipe_name,
-            interval,
+            status_interval,
+            counter_interval_multiplier,
             snmp_enable,
             ifmibs_dir,
             ifindex_file
@@ -49,7 +50,8 @@ class BfPorts(Thread):
         self.bfgc = bfgc
         self.file = sck_file
         self.die = False
-        self.interval = interval
+        self.status_interval = status_interval
+        self.counter_mp = counter_interval_multiplier
         self.pipe_name = pipe_name
         ## Key: physical port ID
         ## Value: the port's entry in the $PORT table
@@ -358,27 +360,30 @@ class BfPorts(Thread):
                 ## Reset the ifindex file
                 shutil.copy("%s.init" % self.ifindex_file, self.ifindex_file)
             self.sendPortInfoToCP()
+            i = 0
             while not self.die:
+                i += 1
                 self.getIfs()
-                self.getSubIfs()
-                logger.debug("%s - loop" % (self.class_name))
-                if len(self.ifs.keys()) == 0:
-                    logger.debug("%s - No active interfaces" % (self.class_name))
-                else:
-                    logger.debug(
-                        "%s - IFS %s"
-                        % (self.class_name, self.ifs.keys())
-                    )
-                    self.getIfCounters()
-                if len(self.subifs.keys()) == 0:
-                    logger.debug("%s - No active sub-interfaces" % (self.class_name))
-                else:
-                    logger.debug(
-                        "%s - SUBIFS %s"
-                        % (self.class_name, self.subifs.keys())
-                    )
-                    self.getSubIfCounters()
-                sleep(self.interval)
+                if i % self.counter_mp == 0:
+                    self.getSubIfs()
+                    logger.debug("%s - loop" % (self.class_name))
+                    if len(self.ifs.keys()) == 0:
+                        logger.debug("%s - No active interfaces" % (self.class_name))
+                    else:
+                        logger.debug(
+                            "%s - IFS %s"
+                            % (self.class_name, self.ifs.keys())
+                        )
+                        self.getIfCounters()
+                        if len(self.subifs.keys()) == 0:
+                            logger.debug("%s - No active sub-interfaces" % (self.class_name))
+                        else:
+                            logger.debug(
+                                "%s - SUBIFS %s"
+                                % (self.class_name, self.subifs.keys())
+                            )
+                            self.getSubIfCounters()
+                sleep(self.status_interval)
 
         except Exception as e:
             e = sys.exc_info()[0]

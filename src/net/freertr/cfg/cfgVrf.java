@@ -1225,6 +1225,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         a = cmd.word();
+        if (a.equals("rd")) {
+            rd = 0;
+            fwd4.rd = 0;
+            fwd6.rd = 0;
+            return;
+        }
         if (a.equals("rt-import")) {
             rtImp = new ArrayList<Long>();
             fwd4.routerStaticChg();
