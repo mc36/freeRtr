@@ -2209,7 +2209,7 @@ void doStatRound_rou4(void* buffer, int fixed, void* param) {
     unsigned char buf2[32];
     put32msb(buf2, 0, ntry->addr);
     inet_ntop(AF_INET, &buf2[0], (char*)&buf[0], sizeof(buf));
-    fprintf(commands, "route4_cnt %i %s %i %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+    fprintf(commands, "route4_cnt %i %s %i %li %li %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->packTx, ntry->byteTx, ntry->packRx, ntry->byteRx);
 }
 
 void doStatRound_rou6(void* buffer, int fixed, void* param) {
@@ -2222,7 +2222,7 @@ void doStatRound_rou6(void* buffer, int fixed, void* param) {
     put32msb(buf2, 8, ntry->addr3);
     put32msb(buf2, 12, ntry->addr4);
     inet_ntop(AF_INET6, &buf2[0], (char*)&buf[0], sizeof(buf));
-    fprintf(commands, "route6_cnt %i %s %i %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->pack, ntry->byte);
+    fprintf(commands, "route6_cnt %i %s %i %li %li %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->packTx, ntry->byteTx, ntry->packRx, ntry->byteRx);
 }
 
 void doStatRound_nat4(void* buffer, int fixed, void* param) {

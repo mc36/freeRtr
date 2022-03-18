@@ -1397,6 +1397,8 @@ ipv4_rx:
             route4_ntry.addr = acl4_ntry.srcAddr;
             route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
             if (route4_res == NULL) doPunting;
+            route4_res->packRx++;
+            route4_res->byteRx += bufS;
             if (port2vrf_res->verify4 > 1) {
                 neigh_ntry.id = route4_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
@@ -1536,8 +1538,8 @@ ipv4_pbred:
         vrf2rib_res->byte += bufS;
         route4_res = tree_lpm(&vrf2rib_res->rou, &route4_ntry);
         if (route4_res == NULL) doPunting;
-        route4_res->pack++;
-        route4_res->byte += bufS;
+        route4_res->packTx++;
+        route4_res->byteTx += bufS;
         switch (route4_res->command) {
         case 1: // route
             neigh_ntry.id = route4_res->nexthop;
@@ -1669,6 +1671,8 @@ ipv6_rx:
             route6_ntry.addr4 = acl6_ntry.srcAddr4;
             route6_res = tree_lpm(&vrf2rib_res->rou, &route6_ntry);
             if (route6_res == NULL) doPunting;
+            route6_res->packRx++;
+            route6_res->byteRx += bufS;
             if (port2vrf_res->verify6 > 1) {
                 neigh_ntry.id = route6_res->nexthop;
                 index = table_find(&neigh_table, &neigh_ntry);
@@ -1834,8 +1838,8 @@ ipv6_pbred:
         vrf2rib_res->byte += bufS;
         route6_res = tree_lpm(&vrf2rib_res->rou, &route6_ntry);
         if (route6_res == NULL) doPunting;
-        route6_res->pack++;
-        route6_res->byte += bufS;
+        route6_res->packTx++;
+        route6_res->byteTx += bufS;
         switch (route6_res->command) {
         case 1: // route
             neigh_ntry.id = route6_res->nexthop;

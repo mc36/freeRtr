@@ -1212,6 +1212,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
+            prf.cntr.rx(pck);
         }
         if (lower.inspect != null) {
             if (lower.inspect.doPack(pck, false)) {
@@ -2012,9 +2013,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             doDrop(pck, rxIfc, counter.reasons.noRoute);
             return;
         }
-        if (prf.cntr != null) {
-            prf.cntr.tx(pck);
-        }
+        prf.cntr.tx(pck);
         if (prf.best.rouTab != null) {
             cntrT.tx(pck);
             if (prf.best.segrouPrf != null) {

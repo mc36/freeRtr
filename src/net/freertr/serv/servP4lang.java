@@ -2077,6 +2077,8 @@ class servP4langConn implements Runnable {
         ntry.hwCntr = new counter();
         ntry.hwCntr.packTx = bits.str2long(cmd.word());
         ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+        ntry.hwCntr.packRx = bits.str2long(cmd.word());
+        ntry.hwCntr.byteRx = bits.str2long(cmd.word());
     }
 
     private void updatePbr(cmds cmd, tabListing<tabPbrN, addrIP> pbr) {

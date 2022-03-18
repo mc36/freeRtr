@@ -26,13 +26,8 @@ addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
-route-map rm1
- action permit
- exit
 vrf def v1
  rd 1:1
- counter4map rm1
- counter6map rm1
  exit
 int lo0
  vrf for v1
