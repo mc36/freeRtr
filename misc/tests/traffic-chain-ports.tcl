@@ -5,7 +5,7 @@ for {set a 1} {$a <= $hops} {incr a} {
   set c [expr (($a+2)/2)+100]
   set d "sdn$p"
   set e "inter $d"
-  set f "router pvrp4 $c"
+  set f "router lsrp4 $c"
   config "vrf def big$c" "rd $b:$c"
   config "$f" "vrf big$c"
   config "$f" "router-id 253.252.$a.1"
@@ -24,7 +24,7 @@ for {set a 1} {$a <= $hops} {incr a} {
   set c [expr (($a+1)/2)+500]
   set d "sdn$p"
   set e "inter $d"
-  set f "router pvrp4 $c"
+  set f "router lsrp4 $c"
   config "vrf def big$c" "rd $b:$c"
   config "$f" "vrf big$c"
   config "$f" "router-id 253.252.$a.2"
