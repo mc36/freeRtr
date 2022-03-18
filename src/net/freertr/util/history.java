@@ -134,20 +134,24 @@ public class history {
     private static void show(List<String> res, List<counter> la, List<counter> lm, int mod) {
         long[] aa = new long[limit];
         long[] am = new long[limit];
-        long lima = show(aa, la, mod);
-        long limm = show(am, lm, mod);
-        if (lima > limm) {
-            limm = lima;
+        long[] lima = show(aa, la, mod);
+        long[] limm = show(am, lm, mod);
+        if (lima[1] > limm[1]) {
+            limm[1] = lima[1];
         }
+        if (lima[0] < limm[0]) {
+            limm[0] = lima[0];
+        }
+        long step = (limm[1] - limm[0]) / 10;
         for (int o = 10; o >= 0; o--) {
-            long p = (o * limm) / 10;
+            long p = (o * step) + limm[0];
             String s = bits.padBeg("" + bits.toUser(p), 12, " ") + "|";
             for (int i = 0; i < limit; i++) {
                 String a = " ";
-                if (am[i] > p) {
+                if (am[i] >= p) {
                     a = "*";
                 }
-                if (aa[i] > p) {
+                if (aa[i] >= p) {
                     a = "#";
                 }
                 s += a;
@@ -195,9 +199,13 @@ public class history {
         res.add("");
     }
 
-    private static long show(long[] trg, List<counter> src, int mod) {
-        long res = 1;
+    private static long[] show(long[] trg, List<counter> src, int mod) {
         int siz = src.size();
+        if (siz < 1) {
+            return new long[2];
+        }
+        long max = Long.MIN_VALUE;
+        long min = Long.MAX_VALUE;
         for (int i = 0; i < limit; i++) {
             long o = siz - i - 1;
             if (o < 0) {
@@ -235,11 +243,16 @@ public class history {
                     break;
             }
             trg[i] = o;
-            if (o < res) {
-                continue;
+            if (o > max) {
+                max = o;
             }
-            res = o;
+            if (o < min) {
+                min = o;
+            }
         }
+        long[] res = new long[2];
+        res[0] = min;
+        res[1] = max;
         return res;
     }
 
