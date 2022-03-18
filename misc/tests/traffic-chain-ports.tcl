@@ -10,9 +10,11 @@ for {set a 1} {$a <= $hops} {incr a} {
   config "$f" "vrf big$c"
   config "$f" "router-id 253.252.$a.1"
   config "$f" "red conn"
+  config "$f" "segrout 300 [expr ($a*2)+120]"
   config "$e" "vrf for big$c"
   config "$e" "ipv4 addr 253.252.$a.1 /30"
   config "$e" "$f ena"
+  config "$e" "mpls ena"
   config "serv p4la p4" "export-vrf big$c $c"
   }
 }
@@ -29,9 +31,11 @@ for {set a 1} {$a <= $hops} {incr a} {
   config "$f" "vrf big$c"
   config "$f" "router-id 253.252.$a.2"
   config "$f" "red conn"
+  config "$f" "segrout 300 [expr ($a*2)+121]"
   config "$e" "vrf for big$c"
   config "$e" "ipv4 addr 253.252.$a.2 /30"
   config "$e" "$f ena"
+  config "$e" "mpls ena"
   config "serv p4la p4" "export-vrf big$c $c"
   }
 }
