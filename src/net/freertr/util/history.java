@@ -202,7 +202,10 @@ public class history {
     private static long[] show(long[] trg, List<counter> src, int mod) {
         int siz = src.size();
         if (siz < 1) {
-            return new long[2];
+            long[] res = new long[2];
+            res[0] = 0;
+            res[1] = 10;
+            return res;
         }
         long max = Long.MIN_VALUE;
         long min = Long.MAX_VALUE;
