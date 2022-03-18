@@ -1,6 +1,6 @@
 proc trafficMultiplierA { hops } {
 for {set a 1} {$a <= $hops} {incr a} {
-  set p [expr ($a*2)+5]
+  set p [expr ($a*2)+19]
   set b [expr $a+100]
   set c [expr (($a+2)/2)+100]
   set d "sdn$p"
@@ -22,7 +22,7 @@ for {set a 1} {$a <= $hops} {incr a} {
 
 proc trafficMultiplierB { hops } {
 for {set a 1} {$a <= $hops} {incr a} {
-  set p [expr ($a*2)+6]
+  set p [expr ($a*2)+20]
   set b [expr $a+100]
   set c [expr (($a+1)/2)+500]
   set d "sdn$p"
