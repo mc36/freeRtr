@@ -789,28 +789,36 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return show
      */
-    public List<String> getShowIface(cfgIfc ifc) {
+    public userFormat getShowIface(cfgIfc ifc) {
+        userFormat res = new userFormat("|", "category|value");
         if (conn == null) {
-            return bits.str2lst("dataplane not connected");
+            res.add("error|dataplane not connected");
+            return res;
         }
         servP4langIfc ntry = findIfc(ifc);
         if (ntry == null) {
-            return bits.str2lst("interface not exported");
+            res.add("error|interface not exported");
+            return res;
         }
         if (ntry.suppressState()) {
-            return bits.str2lst("not a physical port");
+            res.add("error|not a physical port");
+            return res;
         }
         statsTxt = null;
         statsNtf = new notifier();
         statsPrt = ntry.id;
         sendLine("stats " + ntry.id);
         statsNtf.misleep(5000);
-        List<String> res = statsTxt;
+        List<String> txt = statsTxt;
         statsTxt = null;
         statsNtf = null;
         statsPrt = -4;
-        if (res == null) {
-            return bits.str2lst("no answer from dataplane");
+        if (txt == null) {
+            res.add("error|no answer from dataplane");
+            return res;
+        }
+        for (int i = 0; i < txt.size(); i++) {
+            res.add(txt.get(i).replaceAll(" ", "|"));
         }
         return res;
     }

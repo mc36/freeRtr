@@ -1583,3 +1583,6 @@ def run(self):
                 list(splt[2:]),
             )
             continue
+
+        if cmds[0] == "stats":
+            self.portStats(int(splt[1]))

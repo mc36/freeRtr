@@ -942,7 +942,7 @@ public class userShow {
                 cmd.error("no such interface");
                 return null;
             }
-            rdr.putStrArr(srv.getShowIface(ifc));
+            rdr.putStrTab(srv.getShowIface(ifc));
             return null;
         }
         if (a.equals("bmp")) {
