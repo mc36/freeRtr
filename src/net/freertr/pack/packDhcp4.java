@@ -333,6 +333,7 @@ public class packDhcp4 {
                 return false;
             }
             if (i == 0) {
+                pck.getSkip(1);
                 continue;
             }
             if (tlv.getBytes(pck)) {
