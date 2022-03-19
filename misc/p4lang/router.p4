@@ -79,6 +79,8 @@
 #include "include/ig_ctl_ipv6.p4"
 #include "include/ig_ctl_ipv4b.p4"
 #include "include/ig_ctl_ipv6b.p4"
+#include "include/ig_ctl_ipv4c.p4"
+#include "include/ig_ctl_ipv6c.p4"
 #include "include/ig_ctl_copp.p4"
 #include "include/ig_ctl_acl_in.p4"
 #include "include/ig_ctl_acl_out.p4"

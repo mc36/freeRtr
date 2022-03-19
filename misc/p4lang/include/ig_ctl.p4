@@ -32,6 +32,8 @@ control ig_ctl(inout headers hdr,
     IngressControlIPv6() ig_ctl_ipv6;
     IngressControlIPv4b() ig_ctl_ipv4b;
     IngressControlIPv6b() ig_ctl_ipv6b;
+    IngressControlIPv4c() ig_ctl_ipv4c;
+    IngressControlIPv6c() ig_ctl_ipv6c;
     IngressControlVlanIn() ig_ctl_vlan_in;
     IngressControlSgt() ig_ctl_sgt;
     IngressControlVRF() ig_ctl_vrf;
@@ -91,6 +93,11 @@ control ig_ctl(inout headers hdr,
             return;
         }
         ig_ctl_vrf.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_ipv4c.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_ipv6c.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            return;
+        }
         ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_llc.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_polka.apply(hdr,ig_md,ig_intr_md);

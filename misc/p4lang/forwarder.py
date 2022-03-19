@@ -117,6 +117,36 @@ def writeNhop2portRules(delete, p4info_helper, ingress_sw, nhop, subif, port):
         ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry3, False)
+    table_entry4 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_nexthop",
+        match_fields={
+            "neigh": nhop,
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_set_port_nexthop",
+        action_params={
+            "subif": subif,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry4, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry4, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry4, False)
+    table_entry5 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_nexthop",
+        match_fields={
+            "neigh": nhop,
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_set_port_nexthop",
+        action_params={
+            "subif": subif,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry5, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry5, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry5, False)
 
 
 def writeBunVlanRules(delete, p4info_helper, ingress_sw, main, vlan, port):
@@ -1236,15 +1266,28 @@ def writeForwardRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
         action_params={
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeForwardRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
@@ -1268,15 +1311,28 @@ def writeForwardRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_m
         action_params={
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeGlobRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label):
@@ -1302,15 +1358,28 @@ def writeGlobRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask
             "egress_label": egress_label,
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeGlobRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label):
@@ -1336,15 +1405,28 @@ def writeGlobRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask
             "egress_label": egress_label,
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label, vpn_label):
@@ -1372,15 +1454,28 @@ def writeVpnRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "egress_label": egress_label,
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeVpnRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, egress_label, vpn_label):
@@ -1408,15 +1503,28 @@ def writeVpnRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "egress_label": egress_label,
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeSrvRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, target):
@@ -1442,15 +1550,28 @@ def writeSrvRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "target": target,
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeSrvRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf, target):
@@ -1476,21 +1597,72 @@ def writeSrvRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
             "target": target,
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def add2dictIfNot(dic, key, val, msk, cnd):
     if msk == cnd:
         return;
     dic[key] = (val,msk)
+
+
+
+def writeVerifyRules4(delete, p4info_helper, ingress_sw, port, mode):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_port_verify",
+        match_fields={
+            "ig_md.source_id": port
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_set_mode",
+        action_params={
+            "mod": mode
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeVerifyRules6(delete, p4info_helper, ingress_sw, port, mode):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_port_verify",
+        match_fields={
+            "ig_md.source_id": port
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_set_mode",
+        action_params={
+            "mod": mode
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
 
 
 def writeSgtTagRules(delete, p4info_helper, ingress_sw, port):
@@ -2261,7 +2433,7 @@ def writeFlowspecRules6(delete, p4info_helper, ingress_sw, vrf, meter, bytes, in
 
 
 
-def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
+def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
         match_fields={
@@ -2289,9 +2461,27 @@ def writeMyaddrRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+    if port < 0:
+        return
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_ours",
+        action_params={
+            "subif": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
-def writeMyaddrRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
+def writeMyaddrRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, port, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_lpm",
         match_fields={
@@ -2319,6 +2509,24 @@ def writeMyaddrRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_ma
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+    if port < 0:
+        return
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_ours",
+        action_params={
+                "subif": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeNexthopRules(delete, p4info_helper, ingress_sw, nexthop, dst_mac_addr, src_mac_addr, port):
@@ -2362,15 +2570,28 @@ def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
         action_params={
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,32),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_ipv4_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeNeighborRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
@@ -2394,15 +2615,28 @@ def writeNeighborRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vr
         action_params={
             "nexthop_id": port
         })
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,128),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_ipv6_cpl_found",
+        action_params={
+            "hop": port
+        })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry1, False)
         ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
     elif delete == 2:
         ingress_sw.ModifyTableEntry(table_entry1, False)
         ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
         ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
 def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port):
@@ -2950,7 +3184,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
-    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc\r\n");
     for x in range(0, 10):
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)
@@ -3005,7 +3239,15 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "myaddr4":
             addr = splt[1].split("/");
-            writeMyaddrRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
+            writeMyaddrRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "verify4":
+            writeVerifyRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "verify6":
+            writeVerifyRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
         if cmds[0] == "sgttag":
@@ -3296,7 +3538,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "myaddr6":
             addr = splt[1].split("/");
-            writeMyaddrRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[3]))
+            writeMyaddrRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[3]))
             continue
 
         if cmds[0] == "label6":
