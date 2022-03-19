@@ -18,8 +18,8 @@
 #define _IG_CTL_IPv6c_P4_
 
 control IngressControlIPv6c(inout headers hdr,
-                           inout ingress_metadata_t ig_md,
-                           inout standard_metadata_t ig_intr_md) {
+                            inout ingress_metadata_t ig_md,
+                            inout standard_metadata_t ig_intr_md) {
 
 
 
