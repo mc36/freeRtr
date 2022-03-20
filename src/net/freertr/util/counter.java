@@ -607,24 +607,28 @@ public class counter implements Comparator<counter> {
     /**
      * get statistics
      *
-     * @param hw hw counter
+     * @param hwc hw counter
+     * @param hws hw substract
      * @param wht what: 1=tx, 2=rx, 4=drop
      * @return summary for table
      */
-    public String getShHwStat(counter hw, int wht) {
+    public String getShHwStat(counter hwc, counter hws, int wht) {
         String tb = "";
         String rb = "";
         String db = "";
         String tp = "";
         String rp = "";
         String dp = "";
-        if (hw != null) {
-            tb = "+" + hw.byteTx;
-            rb = "+" + hw.byteRx;
-            db = "+" + hw.byteDr;
-            tp = "+" + hw.packTx;
-            rp = "+" + hw.packRx;
-            dp = "+" + hw.packDr;
+        if (hwc != null) {
+            if (hws != null) {
+                hwc = hwc.minus(hws);
+            }
+            tb = "+" + hwc.byteTx;
+            rb = "+" + hwc.byteRx;
+            db = "+" + hwc.byteDr;
+            tp = "+" + hwc.packTx;
+            rp = "+" + hwc.packRx;
+            dp = "+" + hwc.packDr;
         }
         String a = "";
         if ((wht & 1) != 0) {

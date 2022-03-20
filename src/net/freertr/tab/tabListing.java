@@ -126,6 +126,9 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
+            if (ntry.hwCntr != null) {
+                ntry.hwSub = ntry.hwCntr.copyBytes();
+            }
             ntry.cntr.clear();
             ntry.lastMatch = 0;
         }

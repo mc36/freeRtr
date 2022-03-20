@@ -101,6 +101,11 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     public counter hwCntr;
 
     /**
+     * hardware substract counter
+     */
+    public counter hwSub;
+
+    /**
      * last matched
      */
     public long lastMatch;
@@ -170,7 +175,7 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * @return counters
      */
     public String getCounters(int wht) {
-        return cntr.getShHwStat(hwCntr, wht);
+        return cntr.getShHwStat(hwCntr, hwSub, wht);
     }
 
     /**
