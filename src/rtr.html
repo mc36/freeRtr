@@ -11,7 +11,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.3.21-cur, done by cs@nop.<br/>
-tested: 2022-03-21 22:03:46, took 00:07:14, with 100 workers, on 2780 cases, 0 failed, 0 traces, 7 retries<br/>
+tested: 2022-03-21 22:23:31, took 00:14:51, with 100 workers, on 2780 cases, 1 failed, 16 traces, 24 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -350,7 +350,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-ppp11.tst">conn-ppp11.tst</a></td><td>success</td><td>ppp with long multilink fragmentation</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-ppp12.tst">conn-ppp12.tst</a></td><td>success</td><td>ppp with asymmetric multilink fragmentation</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-ppp13.tst">conn-ppp13.tst</a></td><td>success</td><td>ppp with asymmetric multilink</td></tr>
-<tr><td><a href="http://sources.freertr.net/cfg/conn-ppp14.tst">conn-ppp14.tst</a></td><td>success</td><td>ppp address propagation</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-ppp14.tst">conn-ppp14.tst</a></td><td>#6-run-r1 tping 100 15 1234::2 /vrf v1</td><td>ppp address propagation</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-pppoe01.tst">conn-pppoe01.tst</a></td><td>success</td><td>pppoe over ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-pppoe02.tst">conn-pppoe02.tst</a></td><td>success</td><td>pppoe over bridge encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-pppoe03.tst">conn-pppoe03.tst</a></td><td>success</td><td>ppp relay over pppoe</td></tr>

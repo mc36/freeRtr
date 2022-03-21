@@ -1,5 +1,6 @@
 package net.freertr.clnt;
 
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrMac;
@@ -11,6 +12,8 @@ import net.freertr.ip.ipIcmp6;
 import net.freertr.ip.ipIfc6;
 import net.freertr.ip.ipPrt;
 import net.freertr.pack.packHolder;
+import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -30,6 +33,16 @@ public class clntSlaac implements Runnable, ipPrt {
      */
     public cfgIfc cfger;
 
+    /**
+     * minimum lease time
+     */
+    public int leaseMin = 60;
+
+    /**
+     * maximum lease time
+     */
+    public int leaseMax = 7200;
+
     private ipFwd lower;
 
     private ipFwdIface iface;
@@ -43,6 +56,8 @@ public class clntSlaac implements Runnable, ipPrt {
     private boolean gotAddr;
 
     private notifier notif = new notifier();
+
+    private long validFor;
 
     /**
      * my address
@@ -115,6 +130,9 @@ public class clntSlaac implements Runnable, ipPrt {
     }
 
     private boolean doWork() {
+        if (bits.getTime() > validFor) {
+            gotAddr = false;
+        }
         if (gotAddr) {
             notif.sleep(10000);
             if (cfger.addr6 == null) {
@@ -229,12 +247,14 @@ public class clntSlaac implements Runnable, ipPrt {
             logger.debug("got advertisement");
         }
         int pl = -1;
+        int lt = -1;
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
             }
             switch (tlv.valTyp) {
                 case 3:
+                    lt = bits.msbGetD(tlv.valDat, 6);
                     pl = tlv.valDat[0] & 0xff;
                     locAddr.fromBuf(tlv.valDat, 14);
                     break;
@@ -250,11 +270,18 @@ public class clntSlaac implements Runnable, ipPrt {
         locMask.fromNetmask(pl);
         gwAddr = pck.IPsrc.toIPv6();
         if (debugger.clntSlaacTraf) {
-            logger.debug("addr=" + locAddr + "/" + locMask + " gw=" + gwAddr + " dns1=" + dns1addr + " dns2=" + dns2addr);
+            logger.debug("addr=" + locAddr + "/" + locMask + " gw=" + gwAddr + " dns1=" + dns1addr + " dns2=" + dns2addr + " valid=" + lt);
         }
         if (locAddr.isLinkLocal()) {
             return;
         }
+        if (lt > leaseMax) {
+            lt = leaseMax;
+        }
+        if (lt < leaseMin) {
+            lt = leaseMin;
+        }
+        validFor = (lt * 700) + bits.getTime();
         gotAddr = true;
         notif.wakeup();
     }
@@ -288,6 +315,37 @@ public class clntSlaac implements Runnable, ipPrt {
      */
     public counter getCounter() {
         return new counter();
+    }
+
+    /**
+     * get configuration
+     *
+     * @param l storage
+     * @param beg beginning
+     * @param cmd command
+     */
+    public void getConfig(List<String> l, String beg, String cmd) {
+        l.add(beg + cmd + "renew-min " + leaseMin);
+        l.add(beg + cmd + "renew-max " + leaseMax);
+    }
+
+    /**
+     * do configuration
+     *
+     * @param a command
+     * @param cmd commands
+     * @return result code, true on error, false on success
+     */
+    public boolean doConfig(String a, cmds cmd) {
+        if (a.equals("renew-min")) {
+            leaseMin = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("renew-max")) {
+            leaseMax = bits.str2num(cmd.word());
+            return false;
+        }
+        return true;
     }
 
 }

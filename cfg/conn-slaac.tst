@@ -28,7 +28,7 @@ prefix-list p6
 int eth1
  vrf for v1
  ipv6 addr 3333::3 ffff::
- ipv6 slaac
+ ipv6 slaac ena
  ipv6 gateway-prefix p6
  exit
 !

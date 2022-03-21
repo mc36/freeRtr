@@ -41,7 +41,7 @@ int ser1
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.255
  ipv6 addr 3333::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- ipv6 slaac
+ ipv6 slaac ena
  exit
 !
 

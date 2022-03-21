@@ -13075,3 +13075,6 @@ no todo: tcp window scale
 ---------------------------------- 2022-03-11 09:59:39
 qc pass: secondary dns server
 qc pass: sdwan with mixed addresses
+---------------------------------- 2022-03-21 22:08:40
+no qc pass: ppp address propagation
+failed: ppp address propagation
