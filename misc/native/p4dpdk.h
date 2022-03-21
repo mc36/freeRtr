@@ -449,7 +449,7 @@ int main(int argc, char **argv) {
         if (ret != 0) strcpy((char*)&buf[0], "unknown");
         int sock = rte_eth_dev_socket_id(port);
         port2pool[port] = sock;
-        printf("opening port %i on lcore (rx %i tx %i) on socket %i...\n", port, port2rx[port], port2tx[port], sock);
+        printf("opening port %i named %s on socket %i on lcore %i for rx and %i for tx...\n", port, (char*)&buf[0], sock, port2rx[port], port2tx[port]);
         initIface(port, (char*)&buf[0]);
         sprintf((char*)&buf[0], "dpdk-port%i", port);
 
