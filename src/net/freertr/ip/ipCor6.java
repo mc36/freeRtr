@@ -173,7 +173,7 @@ public class ipCor6 implements ipCor {
             pck.msbPutW(pck.IPsiz + 0, oldPrt << 8);
             pck.msbPutW(pck.IPsiz + 2, 0x0502);
             pck.msbPutW(pck.IPsiz + 4, pck.IPalrt);
-            pck.msbPutW(pck.IPsiz + 6, 0);
+            pck.msbPutW(pck.IPsiz + 6, 0x0100);
             pck.IPsiz += 8;
             oldPrt = exthdrHopByHop;
         }
