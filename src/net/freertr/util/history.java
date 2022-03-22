@@ -253,6 +253,9 @@ public class history {
                 min = o;
             }
         }
+        if (max <= min) {
+            max = min + 10;
+        }
         long[] res = new long[2];
         res[0] = min;
         res[1] = max;
