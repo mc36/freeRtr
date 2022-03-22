@@ -13081,3 +13081,5 @@ failed: ppp address propagation
 ---------------------------------- 2022-03-21 22:44:12
 no failed: ppp address propagation
 qc pass: ppp address propagation
+---------------------------------- 2022-03-22 05:33:09
+todo: incremental fib calculation from bgp change list
