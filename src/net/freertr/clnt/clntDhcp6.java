@@ -40,12 +40,12 @@ public class clntDhcp6 implements prtServP {
     /**
      * minimum lease time
      */
-    public int leaseMin = 60;
+    public int leaseMin = 60 * 1000;
 
     /**
      * maximum lease time
      */
-    public int leaseMax = 7200;
+    public int leaseMax = 43200 * 1000;
 
     /**
      * config class
@@ -365,7 +365,7 @@ public class clntDhcp6 implements prtServP {
                 servId = pckd.servId;
                 dns1addr = pckd.dns1srv;
                 dns2addr = pckd.dns2srv;
-                leaseTime = pckd.lifetimV;
+                leaseTime = pckd.lifetimV * 700;
                 if (leaseTime > leaseMax) {
                     leaseTime = leaseMax;
                 }
@@ -473,7 +473,7 @@ public class clntDhcp6 implements prtServP {
                         break;
                     }
                 }
-                if ((bits.getTime() - lastTime) < (leaseTime * 700)) {
+                if ((bits.getTime() - lastTime) < leaseTime) {
                     break;
                 }
                 if (debugger.clntDhcp6traf) {

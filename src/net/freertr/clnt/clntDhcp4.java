@@ -39,12 +39,12 @@ public class clntDhcp4 implements prtServP {
     /**
      * minimum lease time
      */
-    public int leaseMin = 60;
+    public int leaseMin = 60 * 1000;
 
     /**
      * maximum lease time
      */
-    public int leaseMax = 7200;
+    public int leaseMax = 43200 * 1000;
 
     /**
      * config class
@@ -347,7 +347,7 @@ public class clntDhcp4 implements prtServP {
                 gwAddr = pckd.dhcpGateway;
                 dns1addr = pckd.dhcpDns1srv;
                 dns2addr = pckd.dhcpDns2srv;
-                leaseTime = pckd.dhcpLeaseTime;
+                leaseTime = pckd.dhcpLeaseTime * 700;
                 if (leaseTime > leaseMax) {
                     leaseTime = leaseMax;
                 }
@@ -446,7 +446,7 @@ public class clntDhcp4 implements prtServP {
                         break;
                     }
                 }
-                if ((bits.getTime() - lastTime) < (leaseTime * 700)) {
+                if ((bits.getTime() - lastTime) < leaseTime) {
                     break;
                 }
                 if (debugger.clntDhcp4traf) {

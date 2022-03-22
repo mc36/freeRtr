@@ -36,12 +36,12 @@ public class clntSlaac implements Runnable, ipPrt {
     /**
      * minimum lease time
      */
-    public int leaseMin = 60;
+    public int leaseMin = 60 * 1000;
 
     /**
      * maximum lease time
      */
-    public int leaseMax = 7200;
+    public int leaseMax = 43200 * 1000;
 
     private ipFwd lower;
 
@@ -275,13 +275,14 @@ public class clntSlaac implements Runnable, ipPrt {
         if (locAddr.isLinkLocal()) {
             return;
         }
+        lt = lt * 700;
         if (lt > leaseMax) {
             lt = leaseMax;
         }
         if (lt < leaseMin) {
             lt = leaseMin;
         }
-        validFor = (lt * 700) + bits.getTime();
+        validFor = lt + bits.getTime();
         gotAddr = true;
         notif.wakeup();
     }

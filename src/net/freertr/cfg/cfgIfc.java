@@ -1532,13 +1532,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! ipv4 dhcp-client broadcast",
         "interface .*! no ipv6 dhcp-client prefix",
         "interface .*! no ipv[4|6] dhcp-client early",
-        "interface .*! ipv[4|6] dhcp-client renew-min 60",
-        "interface .*! ipv[4|6] dhcp-client renew-max 7200",
+        "interface .*! ipv[4|6] dhcp-client renew-min 60000",
+        "interface .*! ipv[4|6] dhcp-client renew-max 43200000",
         "interface .*! no ipv[4|6] dhcp-client enable",
         "interface .*! no ipv6 prefix-suppress",
-        "interface .*! no ipv6 slaac enable",
-        "interface .*! ipv6 slaac renew-min 60",
-        "interface .*! ipv6 slaac renew-max 7200",
+        "interface .*! no ipv6 slaac-client enable",
+        "interface .*! ipv6 slaac-client renew-min 60000",
+        "interface .*! ipv6 slaac-client renew-max 43200000",
         "interface .*! no ipv6 prefix-dns",
         "interface .*! no ipv6 prefix-domain",
         "interface .*! ipv6 prefix-interval 120000",
@@ -5950,9 +5950,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if (fwdIf6 != null) {
                 fwdIf6.getConfig(l, vrfFor.fwd6, "ipv6 ", filter);
                 cmds.cfgLine(l, ipIf6.redirect == null, cmds.tabulator, "ipv6 redirection", "" + ipIf6.redirect);
-                cmds.cfgLine(l, slaac == null, cmds.tabulator, "ipv6 slaac enable", "");
+                cmds.cfgLine(l, slaac == null, cmds.tabulator, "ipv6 slaac-client enable", "");
                 if (slaac != null) {
-                    slaac.getConfig(l, cmds.tabulator, "ipv6 slaac ");
+                    slaac.getConfig(l, cmds.tabulator, "ipv6 slaac-client ");
                 }
                 cmds.cfgLine(l, dhcp6c == null, cmds.tabulator, "ipv6 dhcp-client enable", "");
                 if (dhcp6c != null) {
@@ -6264,28 +6264,28 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       broadcast                 set broadcast flag");
         l.add(null, "3 .       early                     pick up address early");
         l.add(null, "3 4       renew-min                 minimum renew time");
-        l.add(null, "4 .         <num>                   time in seconds");
+        l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "3 4       renew-max                 maximum renew time");
-        l.add(null, "4 .         <num>                   time in seconds");
+        l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "2 3     pool                        peer address pool");
         l.add(null, "3 .       <name:pl4>                name of address pool");
         l.add(null, "1 2   ipv6                          interface internet protocol config commands");
         ipFwdIface.getHelp(l);
-        l.add(null, "2 3     slaac                       stateless address autoconfiguration");
+        l.add(null, "2 3     slaac-client                stateless address autoconfiguration");
         l.add(null, "3 .       enable                    start address acquision");
         l.add(null, "3 4       renew-min                 minimum renew time");
-        l.add(null, "4 .         <num>                   time in seconds");
+        l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "3 4       renew-max                 maximum renew time");
-        l.add(null, "4 .         <num>                   time in seconds");
+        l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "2 .     enable                      link local address routing");
         l.add(null, "2 3     dhcp-client                 acquire address by dhcp");
         l.add(null, "3 .       enable                    start address acquision");
         l.add(null, "3 .       prefix                    request prefix");
         l.add(null, "3 .       early                     pick up address early");
         l.add(null, "3 4       renew-min                 minimum renew time");
-        l.add(null, "4 .         <num>                   time in seconds");
+        l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "3 4       renew-max                 maximum renew time");
-        l.add(null, "4 .         <num>                   time in seconds");
+        l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "2 .     prefix-suppress             suppress router advertisements");
         l.add(null, "2 3     prefix-dns                  name server in router advertisements");
         l.add(null, "3 4,.     <addr>                    name server address");
@@ -8075,7 +8075,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ip6polC = cfgAll.poolFind(cfgAll.ip6pool, cmd.word(), false);
             return;
         }
-        if (a.equals("slaac")) {
+        if (a.equals("slaac-client")) {
             a = cmd.word();
             if (a.equals("enable")) {
                 slaac = new clntSlaac(vrfFor.fwd6, fwdIf6, ipIf6, ethtyp, this);
@@ -8172,7 +8172,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ip6polC = null;
             return;
         }
-        if (a.equals("slaac")) {
+        if (a.equals("slaac-client")) {
             a = cmd.word();
             if (slaac == null) {
                 cmd.error("not enabled");
