@@ -3626,11 +3626,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunGRE = null;
         }
         if (tunUdpGre != null) {
-            tunUdpGre.closeDn();
+            tunUdpGre.workStop();
             tunUdpGre = null;
         }
         if (tunAmt != null) {
-            tunAmt.closeDn();
+            tunAmt.workStop();
             tunAmt = null;
         }
         if (tunICMP != null) {
@@ -3642,7 +3642,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunPIM = null;
         }
         if (tunLisp != null) {
-            tunLisp.closeDn();
+            tunLisp.workStop();
             tunLisp = null;
         }
         if (tunMinenc != null) {
@@ -3674,7 +3674,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunMplsip = null;
         }
         if (tunMplsudp != null) {
-            tunMplsudp.closeDn();
+            tunMplsudp.workStop();
             tunMplsudp = null;
         }
         if (tunSwipe != null) {
