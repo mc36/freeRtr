@@ -3,6 +3,7 @@ package net.freertr.ip;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
@@ -666,10 +667,15 @@ public class ipFwdTab {
                 prf.best.rouTyp = tabRouteAttr.routeType.local;
             }
             if (ifc.linkLocal) {
-                addrIPv6 adr6 = addrIPv6.genLinkLocal(new addrMac());
-                addrIP adr = new addrIP();
-                adr.fromIPv6addr(adr6);
-                prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(adr, 64), null);
+                addrPrefix<addrIP> pre;
+                if (lower.ipCore.getVersion() == ipCor4.protocolVersion) {
+                    addrIPv4 adr4 = addrIPv4.genLinkLocal();
+                    pre = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(adr4, 16));
+                } else {
+                    addrIPv6 adr6 = addrIPv6.genLinkLocal(new addrMac());
+                    pre = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(adr6, 64));
+                }
+                prf = tabC.add(tabRoute.addType.always, pre, null);
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.conn;
             }

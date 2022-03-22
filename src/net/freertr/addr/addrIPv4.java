@@ -161,6 +161,20 @@ public class addrIPv4 extends addrType {
     }
 
     /**
+     * generate link local address
+     *
+     * @return ipv4 link local address
+     */
+    public static addrIPv4 genLinkLocal() {
+        addrIPv4 adr = new addrIPv4();
+        adr.addr[0] = (byte) 169;
+        adr.addr[1] = (byte) 254;
+        adr.addr[2] = (byte) bits.random(1, 254);
+        adr.addr[3] = (byte) bits.randomB();
+        return adr;
+    }
+
+    /**
      * get empty address
      *
      * @return bytes of address

@@ -6277,7 +6277,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "3 4       renew-max                 maximum renew time");
         l.add(null, "4 .         <num>                   time in ms");
-        l.add(null, "2 .     enable                      link local address routing");
         l.add(null, "2 3     dhcp-client                 acquire address by dhcp");
         l.add(null, "3 .       enable                    start address acquision");
         l.add(null, "3 .       prefix                    request prefix");
@@ -7909,6 +7908,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (addr4 == null) {
             cmd.error("protocol not enabled");
             return;
+        }
+        if (a.equals("enable")) {
+            addr4changed(addrIPv4.genLinkLocal(), mask4, null);
         }
         if (a.equals("redirection")) {
             cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);

@@ -466,6 +466,7 @@ public class ipFwdIface extends tabRouteIface {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
+        l.add(null, "2 .     enable                      link local address routing");
         l.add(null, "2 3     address                     set the ip address of an interface");
         l.add(null, "3 4       dynamic                   dynamic address");
         l.add(null, "3 4       <addr>                    address of interface");
