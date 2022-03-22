@@ -108,7 +108,7 @@ public class ipMhost6 extends ipMhost {
         pck.IPtos = 0;
         pck.IPid = 0;
         pck.IPalrt = 0;
-        pck.IPsrc.setAddr(rxIfc.addr);
+        pck.IPsrc.setAddr(rxIfc.lower.getLinkLocalAddr());
         if (query) {
             pck.IPtrg.fromString("ff02::1");
         } else {
