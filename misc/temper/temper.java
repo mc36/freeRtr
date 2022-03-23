@@ -461,7 +461,7 @@ public class temper implements Runnable {
                 a = measDat[i].getMeas();
                 buf.write(a.getBytes());
             }
-            a = "</tbody></table><br/><br/>";
+            a = "</tbody></table><br/>";
             buf.write(a.getBytes());
             a = "tolerance: " + tempTol + " celsius, window: " + windowTol + " celsius, " + temperUtil.timePast(windowMin, 0) + "-" + temperUtil.timePast(windowMax, 0) + "<br/>";
             buf.write(a.getBytes());

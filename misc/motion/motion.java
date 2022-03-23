@@ -258,7 +258,7 @@ public class motion {
             String a = cams[i].getMeas();
             buf.write(a.getBytes());
         }
-        buf.write(("</tbody></table><br/><br/>armed=" + alarmed + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
+        buf.write(("</tbody></table><br/>armed=" + alarmed + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
         return 0;
     }
 
