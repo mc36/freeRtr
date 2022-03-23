@@ -27,7 +27,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn> {
+public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clntSdwanConn> {
 
     /**
      * parent
@@ -80,6 +80,8 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
     private boolean noMacsec;
 
     private boolean noSgt;
+
+    private boolean need2work = true;
 
     /**
      * create instance
@@ -141,6 +143,7 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         if (debugger.clntSdwanTraf) {
             logger.debug("stopping peer " + addr + " " + port);
         }
+        need2work = false;
         if (ifc != null) {
             ifc.cloneStop();
         }
@@ -151,12 +154,9 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         conn = null;
     }
 
-    /**
-     * stop connection
-     */
-    public void workStart() {
-        if (debugger.clntSdwanTraf) {
-            logger.debug("starting peer " + addr + " " + port);
+    private void doReconnect() {
+        if (conn != null) {
+            conn.setClosing();
         }
         conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.dataPort, addr, port, "sdwan", null, -1);
         if (conn == null) {
@@ -167,7 +167,17 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
         conn.sendFLW = lower.sendingFLW;
         conn.sendTOS = lower.sendingTOS;
         conn.sendTTL = lower.sendingTTL;
+    }
+
+    /**
+     * stop connection
+     */
+    public void workStart() {
+        if (debugger.clntSdwanTraf) {
+            logger.debug("starting peer " + addr + " " + port);
+        }
         upper = new ifcNull();
+        doReconnect();
         ifc = lower.clonIfc.cloneStart(this);
         ifc.addr4changed(lower.myAddr4, ifc.mask4, peer4.toIPv4());
         ifc.addr6changed(lower.myAddr6, ifc.mask6, peer6.toIPv6());
@@ -180,6 +190,7 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
             ifc.disableSgt = true;
             ifc.ethtyp.sgtHnd = null;
         }
+        new Thread(this).start();
     }
 
     /**
@@ -226,6 +237,10 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
     }
 
     public void sendPack(packHolder pck) {
+        if (conn == null) {
+            cntr.drop(pck, counter.reasons.notUp);
+            return;
+        }
         packL2tp2 tx = new packL2tp2();
         tx.ctrl = false;
         tx.sesID = num;
@@ -344,6 +359,23 @@ public class clntSdwanConn implements ifcDn, prtServP, Comparator<clntSdwanConn>
      */
     public int getTunnRem() {
         return lower.myNum;
+    }
+
+    public void run() {
+        for (;;) {
+            bits.sleep(1000);
+            if (!need2work) {
+                break;
+            }
+            if (conn == null) {
+                doReconnect();
+                continue;
+            }
+            if (conn.txBytesFree() < 0) {
+                doReconnect();
+                continue;
+            }
+        }
     }
 
 }
