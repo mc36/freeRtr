@@ -26,6 +26,11 @@ public class motionData implements Runnable {
     protected final motion parent;
 
     /**
+     * my number
+     */
+    protected int myNum;
+
+    /**
      * name of camera
      */
     protected String myName;
@@ -157,6 +162,15 @@ public class motionData implements Runnable {
             default:
                 return false;
         }
+    }
+
+    /**
+     * get web line
+     *
+     * @return string
+     */
+    public String getMeas() {
+        return "<tr><td>" + (myNum + 1) + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     public void run() {

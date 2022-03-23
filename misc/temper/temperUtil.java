@@ -43,7 +43,7 @@ public class temperUtil {
             i = i / 24;
         }
         if (i > 0) {
-            a = i + "d" + a;
+            a = i + "d";
         }
         return a;
     }

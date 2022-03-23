@@ -176,14 +176,7 @@ public class temperData {
      * @return string
      */
     public String getMeas() {
-        String s = "";
-        if (!isWorking) {
-            s += ", discard";
-        }
-        if (isWindow) {
-            s += ", window (" + lastWindow + " celsius, " + temperUtil.timePast(temperUtil.getTime(), timeWindow) + " ago)";
-        }
-        return "measure #" + myNum + "-" + myNam + ": " + lastMeasure + " celsius, " + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + " ago" + s + ", heating=" + lastCalc;
+        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + isWorking + "</td><td>" + lastCalc + "</td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
     }
 
 }

@@ -455,10 +455,14 @@ public class temper implements Runnable {
             a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head><body>";
             buf.write(a.getBytes());
             long tim = temperUtil.getTime();
+            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>work</b></td><td><b>calc</b></td><td><b>win</b></td><td><b>when</b></td></tr></thead><tbody>";
+            buf.write(a.getBytes());
             for (int i = 0; i < measDat.length; i++) {
-                a = measDat[i].getMeas() + "<br/>";
+                a = measDat[i].getMeas();
                 buf.write(a.getBytes());
             }
+            a = "</tbody></table><br/><br/>";
+            buf.write(a.getBytes());
             a = "tolerance: " + tempTol + " celsius, window: " + windowTol + " celsius, " + temperUtil.timePast(windowMin, 0) + "-" + temperUtil.timePast(windowMax, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";

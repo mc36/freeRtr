@@ -99,7 +99,7 @@ public class motion {
     /**
      * cameras
      */
-    protected List<motionData> cams = new ArrayList<motionData>();
+    protected motionData[] cams;
 
     /**
      * initialize
@@ -109,6 +109,7 @@ public class motion {
     }
 
     private void readConfig() {
+        List<motionData> lst = new ArrayList<motionData>();
         int sleep = 100;
         int pre = 10;
         int post = 20;
@@ -174,6 +175,7 @@ public class motion {
                 if (s.equals("camera")) {
                     motionData ntry = new motionData(this);
                     i = a.indexOf(" ");
+                    ntry.myNum = lst.size();
                     ntry.myName = a.substring(0, i);
                     ntry.myUrl = a.substring(i + 1, a.length());
                     ntry.sleep = sleep;
@@ -183,12 +185,16 @@ public class motion {
                     ntry.trigger = trigr;
                     ntry.alarm = alarm;
                     new Thread(ntry).start();
-                    cams.add(ntry);
+                    lst.add(ntry);
                     continue;
                 }
             }
             f.close();
         } catch (Exception e) {
+        }
+        cams = new motionData[lst.size()];
+        for (int i = 0; i < cams.length; i++) {
+            cams[i] = lst.get(i);
         }
     }
 
@@ -235,7 +241,7 @@ public class motion {
             }
         }
         if (cmd.equals("img")) {
-            motionData ntry = cams.get(motionUtil.str2num(nam));
+            motionData ntry = cams[motionUtil.str2num(nam)];
             ntry.getImage(buf);
             return 1;
         }
@@ -247,10 +253,10 @@ public class motion {
             return 0;
         }
         buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"30;url=" + url + "\"><title>motion</title></head><body>").getBytes());
-        buf.write("<table><thead><tr><td><b>name</b></td><td><b>armed</b></td><td><b>events</b></td><td><b>errors</b></td><td><b>fetches</b></td><td><b>saved</b></td><td><b>image</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
-        for (int i = 0; i < cams.size(); i++) {
-            motionData ntry = cams.get(i);
-            buf.write(("<tr><td>" + ntry.myName + "</td><td>" + ntry.needAlert() + "</td><td>" + ntry.events + "</td><td>" + ntry.errors + "</td><td>" + ntry.fetches + "</td><td>" + ntry.saved + "</td><td><a href=\"" + url + "?cmd=img&nam=" + i + "\">here</a></td><td>" + ntry.difMin + "</td><td>" + ntry.difLst + "</td><td>" + ntry.difMax + "</td><td>" + ntry.difAvg + "</td></tr>").getBytes());
+        buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>armed</b></td><td><b>events</b></td><td><b>errors</b></td><td><b>fetches</b></td><td><b>saved</b></td><td><b>image</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
+        for (int i = 0; i < cams.length; i++) {
+            String a = cams[i].getMeas();
+            buf.write(a.getBytes());
         }
         buf.write(("</tbody></table><br/><br/>armed=" + alarmed + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
         return 0;
