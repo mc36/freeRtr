@@ -87,6 +87,16 @@ public class motion {
     protected String tzdata = "Z";
 
     /**
+     * command to use
+     */
+    protected String command = "echo motion detected";
+
+    /**
+     * alarmed
+     */
+    protected boolean alarmed = true;
+
+    /**
      * cameras
      */
     protected List<motionData> cams = new ArrayList<motionData>();
@@ -104,6 +114,7 @@ public class motion {
         int post = 20;
         int ignor = 50;
         int trigr = 1000;
+        int alarm = 1;
         try {
             BufferedReader f = new BufferedReader(new FileReader(path + ".cfg"));
             for (;;) {
@@ -128,6 +139,10 @@ public class motion {
                     tzdata = a;
                     continue;
                 }
+                if (s.equals("command")) {
+                    command = a;
+                    continue;
+                }
                 if (s.equals("sleep")) {
                     sleep = motionUtil.str2num(a);
                     continue;
@@ -148,6 +163,14 @@ public class motion {
                     trigr = motionUtil.str2num(a);
                     continue;
                 }
+                if (s.equals("alarm")) {
+                    alarm = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("alarmed")) {
+                    alarmed = motionUtil.str2num(a) == 1;
+                    continue;
+                }
                 if (s.equals("camera")) {
                     motionData ntry = new motionData(this);
                     i = a.indexOf(" ");
@@ -158,6 +181,7 @@ public class motion {
                     ntry.imgPost = post;
                     ntry.ignore = ignor;
                     ntry.trigger = trigr;
+                    ntry.alarm = alarm;
                     new Thread(ntry).start();
                     cams.add(ntry);
                     continue;
@@ -166,6 +190,21 @@ public class motion {
             f.close();
         } catch (Exception e) {
         }
+    }
+
+    /**
+     * do one request
+     *
+     * @param nam name
+     */
+    protected void sendAlert(String nam) throws Exception {
+        String[] cmd = new String[3];
+        cmd[0] = "/bin/sh";
+        cmd[1] = "-c";
+        cmd[2] = command.replaceAll("%", nam);
+        Runtime rtm = Runtime.getRuntime();
+        Process prc = rtm.exec(cmd);
+        prc.waitFor();
     }
 
     /**
@@ -200,11 +239,18 @@ public class motion {
             ntry.getImage(buf);
             return 1;
         }
+        if (cmd.equals("arm")) {
+            alarmed = motionUtil.str2num(nam) == 1;
+            buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>motion</title></head><body>".getBytes());
+            buf.write(("armed=" + alarmed + "<br/>").getBytes());
+            buf.write("</body></html>".getBytes());
+            return 0;
+        }
         buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>motion</title></head><body>".getBytes());
-        buf.write("<table><thead><tr><td><b>name</b></td><td><b>events</b></td><td><b>errors</b></td><td><b>fetches</b></td><td><b>saved</b></td><td><b>image</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
+        buf.write("<table><thead><tr><td><b>name</b></td><td><b>armed</b></td><td><b>events</b></td><td><b>errors</b></td><td><b>fetches</b></td><td><b>saved</b></td><td><b>image</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
         for (int i = 0; i < cams.size(); i++) {
             motionData ntry = cams.get(i);
-            buf.write(("<tr><td>" + ntry.myName + "</td><td>" + ntry.events + "</td><td>" + ntry.errors + "</td><td>" + ntry.fetches + "</td><td>" + ntry.saved + "</td><td><a href=\"" + url + "?cmd=img&nam=" + i + "\">here</a></td><td>" + ntry.difMin + "</td><td>" + ntry.difLst + "</td><td>" + ntry.difMax + "</td><td>" + ntry.difAvg + "</td></tr>").getBytes());
+            buf.write(("<tr><td>" + ntry.myName + "</td><td>" + ntry.needAlert() + "</td><td>" + ntry.events + "</td><td>" + ntry.errors + "</td><td>" + ntry.fetches + "</td><td>" + ntry.saved + "</td><td><a href=\"" + url + "?cmd=img&nam=" + i + "\">here</a></td><td>" + ntry.difMin + "</td><td>" + ntry.difLst + "</td><td>" + ntry.difMax + "</td><td>" + ntry.difAvg + "</td></tr>").getBytes());
         }
         buf.write("</tbody></table></body></html>".getBytes());
         return 0;

@@ -71,6 +71,11 @@ public class motionData implements Runnable {
     protected int trigger;
 
     /**
+     * alarm mode
+     */
+    protected int alarm;
+
+    /**
      * exceptions happened
      */
     protected int errors;
@@ -136,9 +141,21 @@ public class motionData implements Runnable {
         ImageIO.write(imgLst, "jpeg", buf);
     }
 
-    private void sleep() throws Exception {
-        synchronized (sleeper) {
-            sleeper.wait(sleep);
+    /**
+     * get alert needed
+     *
+     * @return true if yes, false if no
+     */
+    protected boolean needAlert() {
+        switch (alarm) {
+            case 0:
+                return false;
+            case 1:
+                return true;
+            case 2:
+                return parent.alarmed;
+            default:
+                return false;
         }
     }
 
@@ -150,6 +167,12 @@ public class motionData implements Runnable {
             } catch (Exception e) {
                 errors++;
             }
+        }
+    }
+
+    private void sleep() throws Exception {
+        synchronized (sleeper) {
+            sleeper.wait(sleep);
         }
     }
 
@@ -246,6 +269,10 @@ public class motionData implements Runnable {
             return;
         }
         events++;
+        if (needAlert()) {
+            motionSend snd = new motionSend(this);
+            new Thread(snd).start();
+        }
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone(parent.tzdata));
         cal.setTime(new Date());
         String date = cal.get(Calendar.YEAR) + motionUtil.padBeg("" + (cal.get(Calendar.MONTH) + 1), 2, "0") + motionUtil.padBeg("" + cal.get(Calendar.DAY_OF_MONTH), 2, "0");
@@ -278,6 +305,24 @@ public class motionData implements Runnable {
         }
         output.flush();
         output.close();
+    }
+
+}
+
+class motionSend implements Runnable {
+
+    private motionData parent;
+
+    public motionSend(motionData lower) {
+        parent = lower;
+    }
+
+    public void run() {
+        try {
+            parent.parent.sendAlert(parent.myName);
+        } catch (Exception e) {
+            parent.errors++;
+        }
     }
 
 }
