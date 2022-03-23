@@ -71,6 +71,7 @@ public class version {
         "xbm    image/x-xbitmap",
         "xpm    image/x-xpixmap",
         // video
+        "mjpeg  video/x-motion-jpeg",
         "avi    video/msvideo",
         "mov    video/quicktime",
         "qt     video/quicktime",

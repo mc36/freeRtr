@@ -14,6 +14,7 @@ echo -n `cd misc/temper;./d.sh`
 echo -n `cd misc/trackmap;./d.sh`
 echo -n `cd misc/voice;./d.sh`
 echo -n `cd misc/mailer;./d.sh`
+echo -n `cd misc/motion;./d.sh`
 echo `cd src;./d.sh`
 rm rtr.zip 2> /dev/null
 zip -r rtr.zip src cfg misc *.sh *.txt *.md >/dev/null

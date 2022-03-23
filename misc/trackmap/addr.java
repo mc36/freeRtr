@@ -18,7 +18,7 @@ public class addr {
         String a;
         try {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            a = "" + app.getClass();
+            a = "" + app.getClass().getName() + ".";
             a = app.httpRequest("http://localhost/" + a, "./" + a, "cli",
                     "clibrowser", "user", args, buf);
             a = "type=" + a + "\r\ndata:\r\n" + buf;

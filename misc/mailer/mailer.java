@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * web temperature setter
+ * web mail reader
  *
  * @author matecsaba
  */
@@ -25,7 +25,7 @@ public class mailer {
         String a;
         try {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            a = "" + app.getClass();
+            a = "" + app.getClass().getName() + ".";
             a = mailer.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", "user", args, buf);
             a = "type=" + a + "\r\ndata:\r\n" + buf.toString();
         } catch (Exception e) {
