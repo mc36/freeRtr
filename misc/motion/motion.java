@@ -253,7 +253,7 @@ public class motion {
             return 0;
         }
         buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"30;url=" + url + "\"><title>motion</title></head><body>").getBytes());
-        buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>armed</b></td><td><b>events</b></td><td><b>errors</b></td><td><b>fetches</b></td><td><b>saved</b></td><td><b>image</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
+        buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>armed</b></td><td><b>event</b></td><td><b>error</b></td><td><b>read</b></td><td><b>saved</b></td><td><b>pic</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
         for (int i = 0; i < cams.length; i++) {
             String a = cams[i].getMeas();
             buf.write(a.getBytes());
