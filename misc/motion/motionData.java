@@ -207,9 +207,12 @@ public class motionData implements Runnable {
         output.write(crlf);
         output.write("Content-Type: image/jpeg".getBytes());
         output.write(crlf);
+        output.write(("X-TimeStamp: " + motionUtil.getTime()).getBytes());
+        output.write(crlf);
+        output.write(("X-Differences: last=" + difLst + " average=" + difAvg).getBytes());
+        output.write(crlf);
         output.write(("Content-Length: " + buf.size()).getBytes());
         output.write(crlf);
-        output.write(("X-TimeStamp: " + motionUtil.getTime()).getBytes());
         output.write(crlf);
         output.write(buf.toByteArray());
         output.write(crlf);
@@ -246,7 +249,6 @@ public class motionData implements Runnable {
                 res++;
             }
         }
-        difLst = res;
         if (res < difMin) {
             difMin = res;
         }
@@ -254,6 +256,7 @@ public class motionData implements Runnable {
             difMax = res;
         }
         difAvg = tot / cnt;
+        difLst = res;
         return res;
     }
 
