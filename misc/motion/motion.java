@@ -252,7 +252,7 @@ public class motion {
             motionData ntry = cams.get(i);
             buf.write(("<tr><td>" + ntry.myName + "</td><td>" + ntry.needAlert() + "</td><td>" + ntry.events + "</td><td>" + ntry.errors + "</td><td>" + ntry.fetches + "</td><td>" + ntry.saved + "</td><td><a href=\"" + url + "?cmd=img&nam=" + i + "\">here</a></td><td>" + ntry.difMin + "</td><td>" + ntry.difLst + "</td><td>" + ntry.difMax + "</td><td>" + ntry.difAvg + "</td></tr>").getBytes());
         }
-        buf.write("</tbody></table></body></html>".getBytes());
+        buf.write(("</tbody></table><br/><br/>armed=" + alarmed + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
         return 0;
     }
 
