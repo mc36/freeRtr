@@ -1,15 +1,19 @@
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 import javax.imageio.ImageIO;
 
@@ -122,7 +126,13 @@ public class motionData implements Runnable {
 
     private final static Object sleeper = new Object();
 
-    private BufferedImage imgDat[];
+    private byte[][] imgDat;
+
+    private long[] imgTim;
+
+    private int[] imgDif;
+
+    private int[] imgCol;
 
     private BufferedImage imgLst;
 
@@ -143,7 +153,7 @@ public class motionData implements Runnable {
      * @param buf where to write
      */
     protected void getImage(ByteArrayOutputStream buf) throws Exception {
-        ImageIO.write(imgLst, "jpeg", buf);
+        buf.write(imgDat[imgPos]);
     }
 
     /**
@@ -174,7 +184,10 @@ public class motionData implements Runnable {
     }
 
     public void run() {
-        imgDat = new BufferedImage[imgPre];
+        imgDat = new byte[imgPre][];
+        imgTim = new long[imgPre];
+        imgDif = new int[imgPre];
+        imgCol = new int[imgPre];
         for (;;) {
             try {
                 doRound();
@@ -200,20 +213,35 @@ public class motionData implements Runnable {
             String auth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
             testConn.setRequestProperty("Authorization", auth);
         }
-        BufferedImage result = ImageIO.read(testConn.getInputStream());
+        InputStream testStream = testConn.getInputStream();
+        List<Byte> buf1 = new ArrayList<Byte>();
+        for (;;) {
+            byte[] buf0 = new byte[4096];
+            int len = testStream.read(buf0);
+            if (len < 0) {
+                break;
+            }
+            for (int i = 0; i < len; i++) {
+                buf1.add(buf0[i]);
+            }
+        }
+        byte[] buf2 = new byte[buf1.size()];
+        for (int i = 0; i < buf2.length; i++) {
+            buf2[i] = buf1.get(i);
+        }
+        BufferedImage result = ImageIO.read(new ByteArrayInputStream(buf2​));
         fetches++;
         imgPos = (imgPos + 1) % imgDat.length;
-        imgDat[imgPos] = result;
+        imgDat[imgPos] = buf2;
+        imgTim[imgPos] = motionUtil.getTime();
         imgLst = result;
         return result;
     }
 
-    private void saveImage(BufferedImage img, OutputStream output) throws Exception {
-        if (img == null) {
+    private void saveImage(int seq, OutputStream output) throws Exception {
+        if (imgDat[seq] == null) {
             return;
         }
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        ImageIO.write(img, "jpeg", buf);
         byte[] crlf = new byte[2];
         crlf[0] = 13;
         crlf[1] = 10;
@@ -221,14 +249,14 @@ public class motionData implements Runnable {
         output.write(crlf);
         output.write("Content-Type: image/jpeg".getBytes());
         output.write(crlf);
-        output.write(("X-TimeStamp: " + motionUtil.getTime()).getBytes());
+        output.write(("X-TimeStamp: " + imgTim[seq]).getBytes());
         output.write(crlf);
-        output.write(("X-Differences: last=" + difLst + " average=" + difAvg).getBytes());
+        output.write(("X-Differences: pixels=" + imgDif[seq] + " colors=" + imgCol[seq]).getBytes());
         output.write(crlf);
-        output.write(("Content-Length: " + buf.size()).getBytes());
+        output.write(("Content-Length: " + imgDat[seq].length).getBytes());
         output.write(crlf);
         output.write(crlf);
-        output.write(buf.toByteArray());
+        output.write(imgDat[seq]);
         output.write(crlf);
         saved++;
     }
@@ -271,6 +299,8 @@ public class motionData implements Runnable {
         }
         difAvg = tot / cnt;
         difLst = res;
+        imgDif[imgPos] = difLst;
+        imgCol[imgPos] = difAvg;
         return res;
     }
 
@@ -298,7 +328,7 @@ public class motionData implements Runnable {
         new File(path).mkdir();
         OutputStream output = new FileOutputStream(new File(path + "/" + myName + "-" + date + "-" + time + "-" + dif + ".mjpeg"));
         for (int i = 0; i < imgDat.length; i++) {
-            saveImage(imgDat[(imgPos + 1 + i) % imgDat.length], output);
+            saveImage((imgPos + 1 + i) % imgDat.length, output);
         }
         int ago = 0;
         for (;;) {
@@ -311,7 +341,7 @@ public class motionData implements Runnable {
                 old = imgLst;
                 cur = fetchImage();
                 dif = getDiff(cur, old);
-                saveImage(cur, output);
+                saveImage(imgPos, output);
             } catch (Exception e) {
                 break;
             }
