@@ -276,7 +276,7 @@ public class clntTrack implements rtrBfdClnt {
     /**
      * time when went to this state
      */
-    protected long finalTime;
+    protected long finalTime = 0;
 
     /**
      * number of changes
@@ -373,7 +373,7 @@ public class clntTrack implements rtrBfdClnt {
     }
 
     public void bfdPeerDown() {
-        haveResult(false, true);
+        haveResult(false);
     }
 
     /**
@@ -452,7 +452,7 @@ public class clntTrack implements rtrBfdClnt {
         }
         keepTimer = null;
         working = false;
-        haveResult(false, true);
+        haveResult(false);
     }
 
     /**
@@ -512,64 +512,64 @@ public class clntTrack implements rtrBfdClnt {
             bits.sleep(bits.random(1, randInt));
         }
         if (mode == null) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         switch (mode) {
             case iface:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 cfgIfc ifc = cfgAll.ifcFind(target, false);
                 if (ifc == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
-                haveResult(ifc.ethtyp.getState() == state.states.up, false);
+                haveResult(ifc.ethtyp.getState() == state.states.up);
                 return;
             case route:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 if (vrf == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 addrIP adr = new addrIP();
                 adr.fromString(target);
                 ipFwd fwdCor = vrf.getFwd(adr);
                 if (fwdCor == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
-                haveResult(fwdCor.actualU.route(adr) != null, false);
+                haveResult(fwdCor.actualU.route(adr) != null);
                 return;
             case prefix:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 if (vrf == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 addrPrefix<addrIP> prf = addrPrefix.str2ip(target);
                 if (prf == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 fwdCor = vrf.getFwd(prf.network);
                 if (fwdCor == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
-                haveResult(fwdCor.actualU.find(prf) != null, false);
+                haveResult(fwdCor.actualU.find(prf) != null);
                 return;
             case script:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 String a = doScript(target, true);
@@ -577,52 +577,52 @@ public class clntTrack implements rtrBfdClnt {
                     logger.info("got " + a + " from script");
                 }
                 if (a == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
-                haveResult(bits.str2num(a) > 0, false);
+                haveResult(bits.str2num(a) > 0);
                 return;
             case other:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 cfgTrack other = cfgAll.trackFind(target, false);
                 if (other == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
-                haveResult(other.worker.getStatus(), false);
+                haveResult(other.worker.getStatus());
                 return;
             case check:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 cfgCheck check = cfgAll.checkFind(target, false);
                 if (check == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
-                haveResult(check.doCheckBinary(), false);
+                haveResult(check.doCheckBinary());
                 return;
             case nrpe:
                 if (target == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 if (vrf == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 int i = target.indexOf("/");
                 if (i < 0) {
-                    haveResult(false, false);
+                    haveResult(false);
                     return;
                 }
                 clntNrpe nrpe = new clntNrpe(null, vrf, srcIfc, target.substring(0, i));
                 nrpe.timeout = timeout;
-                haveResult(!nrpe.doCheck(target.substring(i + 1, target.length())), false);
+                haveResult(!nrpe.doCheck(target.substring(i + 1, target.length())));
                 if (logging) {
                     a = "";
                     for (i = 0; i < nrpe.text.size(); i++) {
@@ -635,24 +635,24 @@ public class clntTrack implements rtrBfdClnt {
                 break;
         }
         if (timeout < 1) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         if (size < 1) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         if (target == null) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         if (vrf == null) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         addrIP fwdTrg = userTerminal.justResolv(target, prefer);
         if (fwdTrg == null) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         ipFwd fwdCor = vrf.getFwd(fwdTrg);
@@ -665,54 +665,54 @@ public class clntTrack implements rtrBfdClnt {
             fwdIfc = ipFwdTab.findSendingIface(fwdCor, fwdTrg);
         }
         if (fwdIfc == null) {
-            haveResult(false, false);
+            haveResult(false);
             return;
         }
         switch (mode) {
             case icmp:
                 ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, size, tim2liv, secGrp, typOsrv, flowLab, 0, false);
                 if (ping == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
                 ping.notif.sleep(timeout);
                 if (ping.notif.totalNotifies() < 1) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
                 if (ping.res.size() < 1) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
-                haveResult(ping.res.get(0).err == null, false);
+                haveResult(ping.res.get(0).err == null);
                 break;
             case tcp:
                 prtGen tcp = vrf.getTcp(fwdTrg);
                 if (tcp == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
                 pipeSide pipe = tcp.streamConnect(new pipeLine(65536, false), fwdIfc, 0, fwdTrg, size, "track", null, -1);
                 if (pipe == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
                 if (pipe.wait4ready(timeout)) {
-                    haveResult(false, false);
+                    haveResult(false);
                     pipe.setClose();
                     break;
                 }
                 pipe.setTime(timeout);
                 pipe = secClient.openSec(pipe, secProto, null, null, null);
                 if (pipe == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
                 pipe.setTime(timeout);
                 if (chats == null) {
-                    haveResult(true, false);
+                    haveResult(true);
                 } else {
-                    haveResult(!chats.doScript(pipe), false);
+                    haveResult(!chats.doScript(pipe));
                 }
                 pipe.setClose();
                 break;
@@ -725,10 +725,10 @@ public class clntTrack implements rtrBfdClnt {
                 ech.doWork();
                 ech.notif.sleep(timeout);
                 if (ech.notif.totalNotifies() < 1) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
-                haveResult(true, false);
+                haveResult(true);
                 break;
             case twamp:
                 clntTwamp twm = new clntTwamp();
@@ -739,19 +739,19 @@ public class clntTrack implements rtrBfdClnt {
                 twm.doWork();
                 twm.notif.sleep(timeout);
                 if (twm.notif.totalNotifies() < 1) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
-                haveResult(true, false);
+                haveResult(true);
                 break;
             case bfd:
                 fwdIfc.bfdAdd(fwdTrg, this, "tracker");
                 rtrBfdNeigh bfd = fwdIfc.bfdFind(fwdTrg);
                 if (bfd == null) {
-                    haveResult(false, false);
+                    haveResult(false);
                     break;
                 }
-                haveResult(bfd.getState(), false);
+                haveResult(bfd.getState());
                 break;
             default:
                 break;
@@ -765,11 +765,10 @@ public class clntTrack implements rtrBfdClnt {
      * have result
      *
      * @param succ successful
-     * @param imm need immediate action
      */
-    public synchronized void haveResult(boolean succ, boolean imm) {
+    protected synchronized void haveResult(boolean succ) {
         if (logging) {
-            logger.info("result=" + succ + " immediate=" + imm);
+            logger.info("result=" + succ);
         }
         if (succ) {
             totalUp++;
@@ -783,12 +782,12 @@ public class clntTrack implements rtrBfdClnt {
         } else {
             lastCount++;
         }
-        if (!imm) {
-            if (succ) {
-                if (lastCount < delayUp) {
-                    return;
-                }
-            } else if (lastCount < delayDn) {
+        if (succ) {
+            if (lastCount < delayUp) {
+                return;
+            }
+        } else {
+            if (lastCount < delayDn) {
                 return;
             }
         }
@@ -803,7 +802,7 @@ public class clntTrack implements rtrBfdClnt {
                 succ = bits.str2num(a) > 0;
             }
         }
-        if (finalState == succ) {
+        if ((finalState == succ) && (finalTime != 0)) {
             return;
         }
         finalState = succ;
@@ -830,6 +829,9 @@ public class clntTrack implements rtrBfdClnt {
         }
         if (cmd == null) {
             return;
+        }
+        if (logging) {
+            logger.info("executing " + cmd);
         }
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());

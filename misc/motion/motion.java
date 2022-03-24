@@ -59,7 +59,7 @@ public class motion {
             staticMotion.url = new URL(url).getPath();
             staticMotion.doInit();
         }
-        if (staticMotion.doRequest(par, buf) == 1) {
+        if (staticMotion.doRequest(par, buf, peer) == 1) {
             return "jpeg";
         } else {
             return "html";
@@ -97,6 +97,16 @@ public class motion {
     protected boolean alarmed = true;
 
     /**
+     * last setter peer
+     */
+    protected String lastSetter = "nobody";
+
+    /**
+     * time needed temperature
+     */
+    protected long timeNeeded = 0;
+
+    /**
      * cameras
      */
     protected motionData[] cams;
@@ -109,6 +119,8 @@ public class motion {
     }
 
     private void readConfig() {
+        lastSetter = "boot";
+        timeNeeded = motionUtil.getTime();
         List<motionData> lst = new ArrayList<motionData>();
         int sleep = 100;
         int pre = 10;
@@ -218,9 +230,11 @@ public class motion {
      *
      * @param par parameters
      * @param buf buffer to use
+     * @param peer address
+     * @return 1 on html result
      * @throws Exception if something went wrong
      */
-    public int doRequest(String[] par, ByteArrayOutputStream buf) throws Exception {
+    public int doRequest(String[] par, ByteArrayOutputStream buf, String peer) throws Exception {
         String cmd = "";
         String nam = "";
         for (int i = 0; i < par.length; i++) {
@@ -246,6 +260,8 @@ public class motion {
             return 1;
         }
         if (cmd.equals("arm")) {
+            lastSetter = peer;
+            timeNeeded = motionUtil.getTime();
             alarmed = motionUtil.str2num(nam) == 1;
             buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
             buf.write(("armed=" + alarmed + "<br/>").getBytes());
@@ -253,12 +269,13 @@ public class motion {
             return 0;
         }
         buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"30;url=" + url + "\"><title>motion</title></head><body>").getBytes());
-        buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>arm</b></td><td><b>hit</b></td><td><b>err</b></td><td><b>read</b></td><td><b>sav</b></td><td><b>pic</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
+        buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>arm</b></td><td><b>hit</b></td><td><b>ago</b></td><td><b>err</b></td><td><b>read</b></td><td><b>sav</b></td><td><b>pic</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
+        long tim = motionUtil.getTime();
         for (int i = 0; i < cams.length; i++) {
-            String a = cams[i].getMeas();
+            String a = cams[i].getMeas(tim);
             buf.write(a.getBytes());
         }
-        buf.write(("</tbody></table><br/>armed=" + alarmed + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
+        buf.write(("</tbody></table><br/>armed=" + alarmed + ", " + motionUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
         return 0;
     }
 

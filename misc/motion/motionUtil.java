@@ -48,4 +48,29 @@ public class motionUtil {
         return new Date().getTime();
     }
 
+    /**
+     * convert time to string
+     *
+     * @param tim current time
+     * @param when time to write
+     * @return nice string
+     */
+    public static String timePast(long tim, long when) {
+        long i = (tim - when) / 1000;
+        String a = (i % 60) + "s";
+        i = i / 60;
+        if (i > 0) {
+            a = (i % 60) + "m" + a;
+            i = i / 60;
+        }
+        if (i > 0) {
+            a = (i % 24) + "h" + a;
+            i = i / 24;
+        }
+        if (i > 0) {
+            a = i + "d";
+        }
+        return a;
+    }
+
 }

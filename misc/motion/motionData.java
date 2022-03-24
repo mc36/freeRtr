@@ -100,6 +100,11 @@ public class motionData implements Runnable {
     protected int events;
 
     /**
+     * last event time
+     */
+    protected long last;
+
+    /**
      * images saved
      */
     protected int saved;
@@ -177,10 +182,11 @@ public class motionData implements Runnable {
     /**
      * get web line
      *
+     * @param tim current time
      * @return string
      */
-    public String getMeas() {
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
+    public String getMeas(long tim) {
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + motionUtil.timePast(tim, last) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     public void run() {
@@ -316,6 +322,7 @@ public class motionData implements Runnable {
             return;
         }
         events++;
+        last = motionUtil.getTime();
         if (needAlert()) {
             motionSend snd = new motionSend(this);
             new Thread(snd).start();
