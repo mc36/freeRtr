@@ -175,7 +175,7 @@ public class motion {
                 if (s.equals("camera")) {
                     motionData ntry = new motionData(this);
                     i = a.indexOf(" ");
-                    ntry.myNum = lst.size();
+                    ntry.myNum = lst.size() + 1;
                     ntry.myName = a.substring(0, i);
                     ntry.myUrl = a.substring(i + 1, a.length());
                     ntry.sleep = sleep;
@@ -241,7 +241,7 @@ public class motion {
             }
         }
         if (cmd.equals("img")) {
-            motionData ntry = cams[motionUtil.str2num(nam)];
+            motionData ntry = cams[motionUtil.str2num(nam) - 1];
             ntry.getImage(buf);
             return 1;
         }

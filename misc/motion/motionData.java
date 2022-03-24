@@ -180,7 +180,7 @@ public class motionData implements Runnable {
      * @return string
      */
     public String getMeas() {
-        return "<tr><td>" + (myNum + 1) + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     public void run() {
