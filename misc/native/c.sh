@@ -52,6 +52,10 @@ for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" ""
   done
 
+for fn in ptyRun; do
+  compileFile $fn "" "-lutil" ""
+  done
+
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" ""
   done
