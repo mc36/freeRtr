@@ -3,7 +3,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -102,7 +104,12 @@ public class motionData implements Runnable {
     /**
      * last event time
      */
-    protected long last;
+    protected long lastEvnt;
+
+    /**
+     * last event file
+     */
+    protected String lastPath;
 
     /**
      * images saved
@@ -162,6 +169,17 @@ public class motionData implements Runnable {
     }
 
     /**
+     * get last video
+     *
+     * @param buf where to write
+     */
+    protected void getVideo(ByteArrayOutputStream buf) throws Exception {
+        buf.write(lastPath.getBytes());
+        buf.write("\n\n".getBytes());
+        buf.write("//multipart/x-mixed-replace;boundary=ThisRandomString".getBytes());
+    }
+
+    /**
      * get alert needed
      *
      * @return true if yes, false if no
@@ -185,8 +203,14 @@ public class motionData implements Runnable {
      * @param tim current time
      * @return string
      */
-    public String getMeas(long tim) {
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + motionUtil.timePast(tim, last) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
+    protected String getMeas(long tim) {
+        String a;
+        if (lastPath == null) {
+            a = "never";
+        } else {
+            a = "<a href=\"" + parent.url + "?cmd=vid&nam=" + myNum + "\">" + motionUtil.timePast(tim, lastEvnt) + "</a>";
+        }
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     /**
@@ -332,7 +356,7 @@ public class motionData implements Runnable {
             return;
         }
         events++;
-        last = motionUtil.getTime();
+        lastEvnt = motionUtil.getTime();
         if (needAlert()) {
             motionSend snd = new motionSend(this);
             new Thread(snd).start();
@@ -343,7 +367,9 @@ public class motionData implements Runnable {
         String time = motionUtil.padBeg("" + cal.get(Calendar.HOUR_OF_DAY), 2, "0") + motionUtil.padBeg("" + cal.get(Calendar.MINUTE), 2, "0") + motionUtil.padBeg("" + cal.get(Calendar.SECOND), 2, "0");
         String path = parent.target + date;
         new File(path).mkdir();
-        OutputStream output = new FileOutputStream(new File(path + "/" + myName + "-" + date + "-" + time + "-" + dif + ".mjpeg"));
+        path = path + "/" + myName + "-" + date + "-" + time + "-" + dif + ".mjpeg";
+        OutputStream output = new FileOutputStream(new File(path));
+        lastPath = path;
         for (int i = 0; i < imgDat.length; i++) {
             saveImage((imgPos + 1 + i) % imgDat.length, output);
         }

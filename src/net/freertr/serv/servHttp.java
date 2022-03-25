@@ -1613,18 +1613,30 @@ class servHttpConn implements Runnable {
         if (s == null) {
             return true;
         }
-        if (res.length == 0) {
-            int i = s.lastIndexOf("\"");
-            String a = s.substring(0, i);
+        if (s.equals("//file//")) {
+            s = new String(res);
+            int i = s.indexOf("\n");
+            String a;
             if (i < 0) {
-                return true;
+                a = s;
+            } else {
+                a = s.substring(0, i);
+                s = s.substring(i + 1, s.length());
             }
-            s = s.substring(i + 1, s.length());
-            s = parseFileName(s);
+            i = s.indexOf("\n");
+            String c;
+            if (i < 0) {
+                s = parseFileName(s);
+                c = "." + s;
+            } else {
+                c = s.substring(i + 1, s.length());
+                s = s.substring(0, i);
+                s = parseFileName(s);
+            }
             if (!a.startsWith("/")) {
                 a = gotHost.path + a;
             }
-            return sendBinFile(a, "." + s);
+            return sendBinFile(a, c);
         }
         s = parseFileName(s);
         sendTextHeader("200 ok", cfgInit.findMimeType(s), res);

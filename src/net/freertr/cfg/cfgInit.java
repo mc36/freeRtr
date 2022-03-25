@@ -268,6 +268,9 @@ public class cfgInit implements Runnable {
      * @return mime type
      */
     public static String findMimeType(String s) {
+        if (s.startsWith("//")) {
+            return s.substring(2, s.length());
+        }
         s = s.trim().toLowerCase();
         int i = s.lastIndexOf(".");
         if (i >= 0) {

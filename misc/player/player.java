@@ -124,15 +124,19 @@ public class player implements Runnable {
             return "html";
         }
         playerSong sng = staticPlayer.playlist.get(i);
+        buf.write(sng.file.getBytes());
         String s = new File(sng.file).getName();
         i = s.lastIndexOf(".");
         if (i < 0) {
-            return sng.file + "\"" + s;
+            return "//file//";
         }
         if (sng.title.length() < 0) {
-            return sng.file + "\"" + s;
+            return "//file//";
         }
-        return sng.file + "\"" + sng.title + s.substring(i, s.length());
+        buf.write("\n".getBytes());
+        s = sng.title + s.substring(i, s.length());
+        buf.write(s.getBytes());
+        return "//file//";
     }
 
     private void runProc(String cmd[]) {

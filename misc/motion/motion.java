@@ -59,10 +59,13 @@ public class motion {
             staticMotion.url = new URL(url).getPath();
             staticMotion.doInit();
         }
-        if (staticMotion.doRequest(par, buf, peer) == 1) {
-            return "jpeg";
-        } else {
-            return "html";
+        switch (staticMotion.doRequest(par, buf, peer)) {
+            case 1:
+                return "jpeg";
+            case 2:
+                return "//file//";
+            default:
+                return "html";
         }
     }
 
@@ -231,7 +234,7 @@ public class motion {
      * @param par parameters
      * @param buf buffer to use
      * @param peer address
-     * @return 1 on html result
+     * @return 0 on html result
      * @throws Exception if something went wrong
      */
     public int doRequest(String[] par, ByteArrayOutputStream buf, String peer) throws Exception {
@@ -258,6 +261,11 @@ public class motion {
             motionData ntry = cams[motionUtil.str2num(nam) - 1];
             ntry.getImage(buf);
             return 1;
+        }
+        if (cmd.equals("vid")) {
+            motionData ntry = cams[motionUtil.str2num(nam) - 1];
+            ntry.getVideo(buf);
+            return 2;
         }
         if (cmd.equals("arm")) {
             lastSetter = peer;
