@@ -1613,34 +1613,31 @@ class servHttpConn implements Runnable {
         if (s == null) {
             return true;
         }
-        if (s.equals("//file//")) {
-            s = new String(res);
-            int i = s.indexOf("\n");
-            String a;
-            if (i < 0) {
-                a = s;
-            } else {
-                a = s.substring(0, i);
-                s = s.substring(i + 1, s.length());
-            }
-            i = s.indexOf("\n");
-            String c;
-            if (i < 0) {
-                s = parseFileName(s);
-                c = "." + s;
-            } else {
-                c = s.substring(i + 1, s.length());
-                s = s.substring(0, i);
-                s = parseFileName(s);
-            }
-            if (!a.startsWith("/")) {
-                a = gotHost.path + a;
-            }
-            return sendBinFile(a, c);
+        if (!s.equals("//file//")) {
+            s = parseFileName(s);
+            sendTextHeader("200 ok", cfgInit.findMimeType(s), res);
+            return false;
         }
-        s = parseFileName(s);
-        sendTextHeader("200 ok", cfgInit.findMimeType(s), res);
-        return false;
+        s = new String(res);
+        int i = s.indexOf("\n");
+        String a;
+        if (i < 0) {
+            a = s;
+        } else {
+            a = s.substring(0, i);
+            s = s.substring(i + 1, s.length());
+        }
+        i = s.indexOf("\n");
+        if (i < 0) {
+            s = "." + parseFileName(s);
+        } else {
+            parseFileName(s.substring(0, i));
+            s = s.substring(i + 1, s.length());
+        }
+        if (!a.startsWith("/")) {
+            a = gotHost.path + a;
+        }
+        return sendBinFile(a, s);
     }
 
     private boolean sendOneImgMap(String s) {
