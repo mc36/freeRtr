@@ -458,7 +458,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         if (cpuPinning != null) {
             cmd = "taskset " + cpuPinning + " " + cmd;
         }
-        proc = pipeShell.exec(pl.getSide(), cmd, null, true, true);
+        proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false);
         if (proc == null) {
             return;
         }

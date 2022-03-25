@@ -1726,6 +1726,9 @@ public class userExec {
         hl.add(null, ".2 3     shell2                       run outputting shell process");
         hl.add(null, ".3 4,.     <cmd>                      name of process");
         hl.add(null, ".4 4,.       [param]                  parameter of process");
+        hl.add(null, ".2 3     shell3                       run interactive shell with crlf");
+        hl.add(null, ".3 4,.     <cmd>                      name of process");
+        hl.add(null, ".4 4,.       [param]                  parameter of process");
         hl.add(null, "2 3      line                         access physical line");
         hl.add(null, "3 .        <name:lin>                 name of line");
         hl.add(null, "1 2    packet                         packet related things");
@@ -3946,7 +3949,7 @@ public class userExec {
             return;
         }
         if (a.equals("shell1")) {
-            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true);
+            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true, false);
             if (sh == null) {
                 return;
             }
@@ -3954,7 +3957,15 @@ public class userExec {
             return;
         }
         if (a.equals("shell2")) {
-            reader.putStrArr(pipeShell.exec(cmd.getRemaining(), null, true));
+            reader.putStrArr(pipeShell.exec(cmd.getRemaining(), null, true, false));
+            return;
+        }
+        if (a.equals("shell3")) {
+            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true, true);
+            if (sh == null) {
+                return;
+            }
+            sh.waitFor();
             return;
         }
         if (a.equals("line")) {

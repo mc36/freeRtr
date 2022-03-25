@@ -41,9 +41,10 @@ public class pipeShell {
      * @param fincmd final long command
      * @param closeOnExit close on exit
      * @param needStderr need stderr
+     * @param convertCrLf convert cr to crlf
      * @return shell container
      */
-    public static pipeShell exec(pipeSide console, String command, String fincmd, boolean closeOnExit, boolean needStderr) {
+    public static pipeShell exec(pipeSide console, String command, String fincmd, boolean closeOnExit, boolean needStderr, boolean convertCrLf) {
         List<String> l = new ArrayList<String>();
         cmds cmd = new cmds("", command);
         for (;;) {
@@ -63,7 +64,7 @@ public class pipeShell {
         try {
             Runtime rtm = Runtime.getRuntime();
             Process prc = rtm.exec(cm);
-            return new pipeShell(console, prc, closeOnExit, needStderr);
+            return new pipeShell(console, prc, closeOnExit, needStderr, convertCrLf);
         } catch (Exception ex) {
             return null;
         }
@@ -75,12 +76,13 @@ public class pipeShell {
      * @param command command to execute
      * @param fincmd final long command
      * @param needStderr need stderr
+     * @param convertCrLf convert cr to crlf
      * @return resulting lines
      */
-    public static List<String> exec(String command, String fincmd, boolean needStderr) {
+    public static List<String> exec(String command, String fincmd, boolean needStderr, boolean convertCrLf) {
         pipeReader rd = new pipeReader();
         rd.setLineMode(pipeSide.modTyp.modeCRorLF);
-        pipeShell sh = pipeShell.exec(rd.getPipe(), command, fincmd, true, needStderr);
+        pipeShell sh = pipeShell.exec(rd.getPipe(), command, fincmd, true, needStderr, convertCrLf);
         if (sh == null) {
             return null;
         }
@@ -96,8 +98,9 @@ public class pipeShell {
      * @param prc process to view
      * @param closeOnExit close on exit
      * @param needStderr need stderr
+     * @param convertCrLf convert cr to crlf
      */
-    protected pipeShell(pipeSide con, Process prc, boolean closeOnExit, boolean needStderr) {
+    protected pipeShell(pipeSide con, Process prc, boolean closeOnExit, boolean needStderr, boolean convertCrLf) {
         console = con;
         process = prc;
         stdIn = prc.getInputStream();
@@ -107,9 +110,9 @@ public class pipeShell {
         if (closeOnExit) {
             running |= 0x40;
         }
-        new pipeShellInput(this, stdIn, 1);
+        new pipeShellInput(this, stdIn, 1, convertCrLf);
         if (needStderr) {
-            new pipeShellInput(this, stdErr, 2);
+            new pipeShellInput(this, stdErr, 2, convertCrLf);
         }
         new pipeShellOutput(this, stdOut, 4);
     }
@@ -250,18 +253,22 @@ class pipeShellInput implements Runnable {
 
     private int stat;
 
-    public pipeShellInput(pipeShell parent, InputStream stream, int state) {
+    private boolean crlf;
+
+    public pipeShellInput(pipeShell parent, InputStream stream, int state, boolean convert) {
         prnt = parent;
         strm = stream;
         stat = state;
+        crlf = convert;
         new Thread(this).start();
     }
 
     public void run() {
         for (;;) {
             byte[] buf = null;
+            int siz = 0;
             try {
-                int siz = strm.available();
+                siz = strm.available();
                 if (siz < 1) {
                     if (!prnt.isRunning()) {
                         break;
@@ -272,15 +279,30 @@ class pipeShellInput implements Runnable {
                     siz = maxBuf;
                 }
                 buf = new byte[siz];
-                if (strm.read(buf) != siz) {
-                    break;
-                }
+                siz = strm.read(buf);
             } catch (Exception e) {
             }
             if (buf == null) {
                 break;
             }
-            prnt.console.blockingPut(buf, 0, buf.length);
+            if (siz < 0) {
+                break;
+            }
+            if (!crlf) {
+                prnt.console.blockingPut(buf, 0, siz);
+                continue;
+            }
+            byte[] lf = new byte[2];
+            lf[0] = 13;
+            lf[1] = 10;
+            for (int i = 0; i < siz; i++) {
+                int ch = buf[i] & 0xff;
+                if ((ch != 13) && (ch != 10)) {
+                    prnt.console.blockingPut(buf, i, 1);
+                    continue;
+                }
+                prnt.console.blockingPut(lf, 0, lf.length);
+            }
         }
         prnt.kill(stat);
     }

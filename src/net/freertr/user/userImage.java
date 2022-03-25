@@ -99,7 +99,7 @@ public class userImage {
 
     private int execCmd(String s) {
         pip.linePut("!" + s + ".");
-        pipeShell sh = pipeShell.exec(pip, "sh -c", s, false, true);
+        pipeShell sh = pipeShell.exec(pip, "sh -c", s, false, true, false);
         sh.waitFor();
         return sh.resultNum();
     }

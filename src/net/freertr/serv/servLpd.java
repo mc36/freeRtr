@@ -284,7 +284,7 @@ class servLpdDoer implements Runnable {
         pipeSide p1 = pl.getSide();
         pipeSide p2 = pl.getSide();
         pipeDiscard.discard(p1);
-        pipeShell sh = pipeShell.exec(p2, lower.printScript + " " + fn, null, true, true);
+        pipeShell sh = pipeShell.exec(p2, lower.printScript + " " + fn, null, true, true, false);
         sh.waitFor();
     }
 

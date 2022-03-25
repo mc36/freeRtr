@@ -168,7 +168,7 @@ public class prtWatch implements Runnable {
         }
         pipeLine pl = new pipeLine(65536, false);
         pipeDiscard.discard(pl.getSide());
-        pipeShell sh = pipeShell.exec(pl.getSide(), cmd, null, true, true);
+        pipeShell sh = pipeShell.exec(pl.getSide(), cmd, null, true, true, false);
         if (sh == null) {
             return null;
         }
