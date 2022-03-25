@@ -189,6 +189,16 @@ public class motionData implements Runnable {
         return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + motionUtil.timePast(tim, last) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">here</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
+    /**
+     * clear statistics
+     */
+    protected void doClear() {
+        difMin = Integer.MAX_VALUE;
+        difMax = Integer.MIN_VALUE;
+        difLst = -1;
+        difAvg = -1;
+    }
+
     public void run() {
         imgDat = new byte[imgPre][];
         imgTim = new long[imgPre];
@@ -344,13 +354,13 @@ public class motionData implements Runnable {
                 break;
             }
             sleep();
+            dif = 0;
             try {
                 old = imgLst;
                 cur = fetchImage();
                 dif = getDiff(cur, old);
                 saveImage(imgPos, output);
             } catch (Exception e) {
-                break;
             }
             if (dif < trigger) {
                 continue;

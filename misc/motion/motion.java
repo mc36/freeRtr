@@ -268,6 +268,15 @@ public class motion {
             buf.write("</body></html>".getBytes());
             return 0;
         }
+        if (cmd.equals("clear")) {
+            for (int i = 0; i < cams.length; i++) {
+                cams[i].doClear();
+            }
+            buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
+            buf.write(("statistics cleared<br/>").getBytes());
+            buf.write("</body></html>".getBytes());
+            return 0;
+        }
         buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"30;url=" + url + "\"><title>motion</title></head><body>").getBytes());
         buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>arm</b></td><td><b>hit</b></td><td><b>ago</b></td><td><b>err</b></td><td><b>read</b></td><td><b>sav</b></td><td><b>pic</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
         long tim = motionUtil.getTime();
@@ -275,7 +284,7 @@ public class motion {
             String a = cams[i].getMeas(tim);
             buf.write(a.getBytes());
         }
-        buf.write(("</tbody></table><br/>armed=" + alarmed + ", " + motionUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))</body></html>").getBytes());
+        buf.write(("</tbody></table><br/>armed=" + alarmed + ", " + motionUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + " ((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))((<a href=\"" + url + "?cmd=clear\">clear</a>))<br/></body></html>").getBytes());
         return 0;
     }
 
