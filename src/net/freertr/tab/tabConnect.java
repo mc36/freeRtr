@@ -105,15 +105,12 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @return stored value, null if not found
      */
     public Td get(int i) {
-        if (i < 0) {
+        tabConnectEntry<Ta, Td> ntry = conns.get(i);
+        if (ntry == null) {
             return null;
         }
-        if (i > conns.size()) {
-            return null;
-        }
-        return conns.get(i).data;
+        return ntry.data;
     }
-
 
     /**
      * read one entry
@@ -122,12 +119,6 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
      * @return value, null if not found
      */
     public tabConnectEntry<Ta, Td> read(int i) {
-        if (i < 0) {
-            return null;
-        }
-        if (i > conns.size()) {
-            return null;
-        }
         return conns.get(i);
     }
 
@@ -155,7 +146,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
             if (ntry == null) {
                 continue;
             }
-            if (locInt !=null) {
+            if (locInt != null) {
                 if (locInt != ntry.iface) {
                     continue;
                 }
