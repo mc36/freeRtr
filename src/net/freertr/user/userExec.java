@@ -1469,6 +1469,9 @@ public class userExec {
         hl.add(null, "4 3,.        <num>                    flow");
         hl.add(null, "1 2    sleep                          do nothing for a while");
         hl.add(null, "2 .      <num>                        milliseconds for sleep");
+        hl.add(null, "1 2    echo                           print out a line");
+        hl.add(null, "2 2,.    [str]                        string to write");
+        getHelpPipes(hl, 110, privileged);
         hl.add(null, "1 2    whois                          perform whois query");
         hl.add(null, "2 3      <host>                       name of host to query");
         hl.add(null, "3 3,.      <text>                     query string");
@@ -2077,6 +2080,11 @@ public class userExec {
         }
         if (a.equals("telnet")) {
             doTelnet(0);
+            return cmdRes.command;
+        }
+        if (a.equals("echo")) {
+            cmd = reader.setFilter(cmd);
+            reader.putStrArr(bits.str2lst(cmd.getRemaining()));
             return cmdRes.command;
         }
         if (a.equals("sleep")) {
