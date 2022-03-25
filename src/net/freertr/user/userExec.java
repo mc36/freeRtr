@@ -1471,7 +1471,6 @@ public class userExec {
         hl.add(null, "2 .      <num>                        milliseconds for sleep");
         hl.add(null, "1 2    echo                           print out a line");
         hl.add(null, "2 2,.    [str]                        string to write");
-        getHelpPipes(hl, 110, privileged);
         hl.add(null, "1 2    whois                          perform whois query");
         hl.add(null, "2 3      <host>                       name of host to query");
         hl.add(null, "3 3,.      <text>                     query string");
@@ -1661,7 +1660,7 @@ public class userExec {
         hlp.add(null, "3 .        <file>                     filename");
         hlp.add(null, "2 3      bintype                      type one binary file");
         hlp.add(null, "3 .        <file>                     filename");
-        userExec.getHelpPipes(hlp, 120, privileged);
+        getHelpPipes(hlp, 120, privileged);
         hl.addOther(hlp);
         hl.add(null, "2 3      receive                      receive file from network");
         hl.add(null, "3 4        <file>                     target file");
