@@ -485,6 +485,7 @@ public class userEditor {
         l.add("ctrl+y - delete line");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
+        l.add("ctrl+c - exit");
         console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 

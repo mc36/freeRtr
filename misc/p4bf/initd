@@ -13,7 +13,7 @@
 case "$1" in
   start)
         cd /home/mc36
-        start-stop-daemon -S -b -x /home/mc36/cons.sh
+        start-stop-daemon -S -b -x /home/mc36/dummyCon.sh
         start-stop-daemon -S -b -x /home/mc36/r1.sh
         start-stop-daemon -S -b -x /home/mc36/r2.sh
         start-stop-daemon -S -b -x /home/mc36/f.sh
