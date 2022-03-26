@@ -1033,7 +1033,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
         }
         if (srvAccRat > 0) {
-            if ((bits.getTime() - srvAccLst) > srvAccInt) {
+            long tim = bits.getTime();
+            if ((tim - srvAccLst) > srvAccInt) {
                 srvAccCnt = 0;
             }
             if (srvAccCnt >= srvAccRat) {
@@ -1042,7 +1043,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 }
                 return true;
             }
-            srvAccLst = bits.getTime();
+            srvAccLst = tim;
             srvAccCnt++;
         }
         if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {

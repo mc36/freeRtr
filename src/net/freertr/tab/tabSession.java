@@ -382,11 +382,6 @@ public class tabSession implements Runnable {
                 return sessDrop(ses);
             }
         }
-        if (maxSess > 0) {
-            if (connects.size() >= maxSess) {
-                return sessDrop(ses);
-            }
-        }
         tabSessionEntry res;
         res = connects.find(ses);
         if ((res == null) && bidir) {
@@ -397,6 +392,11 @@ public class tabSession implements Runnable {
             res.lastTime = bits.getTime();
             ses.dir = res.dir;
             return res;
+        }
+        if (maxSess > 0) {
+            if (connects.size() >= maxSess) {
+                return sessDrop(ses);
+            }
         }
         if (!dropRx && !dropTx) {
             return sessPass(ses);
