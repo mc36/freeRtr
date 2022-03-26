@@ -994,6 +994,8 @@ public class userScreen {
                     return;
                 case 0x0278: // ctrl+x
                     return;
+                case 0x0263: // ctrl+c
+                    return;
                 case 0x8014: // f1
                     return;
                 case 0x801d: // f10

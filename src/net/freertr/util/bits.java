@@ -857,32 +857,45 @@ public class bits {
      * @param num number to convert
      * @return converted number
      */
+    public static String toPrecise(long num) {
+        if (num >= 1000) {
+            return "" + (num / 10);
+        }
+        return (num / 10) + "." + (num % 10);
+    }
+
+    /**
+     * number to string
+     *
+     * @param num number to convert
+     * @return converted number
+     */
     public static String toUser(long num) {
         if (num < 10000) {
             return num + "";
         }
-        num /= 1000;
-        if (num < 10000) {
-            return num + "k";
+        num /= 100;
+        if (num < 100000) {
+            return toPrecise(num) + "k";
         }
         num /= 1000;
-        if (num < 10000) {
-            return num + "m";
+        if (num < 100000) {
+            return toPrecise(num) + "m";
         }
         num /= 1000;
-        if (num < 10000) {
-            return num + "g";
+        if (num < 100000) {
+            return toPrecise(num) + "g";
         }
         num /= 1000;
-        if (num < 10000) {
-            return num + "t";
+        if (num < 100000) {
+            return toPrecise(num) + "t";
         }
         num /= 1000;
-        if (num < 10000) {
-            return num + "p";
+        if (num < 100000) {
+            return toPrecise(num) + "p";
         }
         num /= 1000;
-        return num + "e";
+        return toPrecise(num) + "e";
     }
 
     /**

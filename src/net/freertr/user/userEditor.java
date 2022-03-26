@@ -208,6 +208,8 @@ public class userEditor {
                 return true;
             case 0x0278: // ctrl+x
                 return true;
+            case 0x0263: // ctrl+c
+                return true;
             case 0x8003: // backspace
                 doKeyBs();
                 return false;
