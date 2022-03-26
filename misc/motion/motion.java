@@ -217,6 +217,7 @@ public class motion {
      * do one request
      *
      * @param nam name
+     * @throws java.lang.Exception
      */
     protected void sendAlert(String nam) throws Exception {
         String[] cmd = new String[3];

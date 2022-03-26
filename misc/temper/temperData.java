@@ -62,6 +62,16 @@ public class temperData {
     protected boolean isWindow;
 
     /**
+     * exceptions happened
+     */
+    protected int errors;
+
+    /**
+     * images got
+     */
+    protected int fetches;
+
+    /**
      * last calculated value
      */
     protected int lastCalc;
@@ -94,11 +104,14 @@ public class temperData {
             BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
             String testLine = testReader.readLine();
             if (!testReader.readLine().equals("done")) {
+                errors++;
                 return;
             }
             lastMeasure = Float.parseFloat(testLine);
             timeMeasure = temperUtil.getTime();
+            fetches++;
         } catch (Exception e) {
+            errors++;
         }
     }
 
@@ -176,7 +189,7 @@ public class temperData {
      * @return string
      */
     public String getMeas() {
-        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + isWorking + "</td><td>" + lastCalc + "</td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + isWorking + "</td><td>" + lastCalc + "</td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
     }
 
 }

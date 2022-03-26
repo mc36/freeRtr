@@ -3,9 +3,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -163,6 +161,7 @@ public class motionData implements Runnable {
      * get last image
      *
      * @param buf where to write
+     * @throws java.lang.Exception on error
      */
     protected void getImage(ByteArrayOutputStream buf) throws Exception {
         buf.write(imgDat[imgPos]);
@@ -172,6 +171,7 @@ public class motionData implements Runnable {
      * get last video
      *
      * @param buf where to write
+     * @throws java.lang.Exception on error
      */
     protected void getVideo(ByteArrayOutputStream buf) throws Exception {
         buf.write(lastPath.getBytes());

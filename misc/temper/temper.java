@@ -159,6 +159,11 @@ public class temper implements Runnable {
     protected int measTime = 5 * 60 * 1000;
 
     /**
+     * measure interval
+     */
+    protected int collTime = 60 * 1000;
+
+    /**
      * temperature minimum
      */
     protected float tempMin = 10;
@@ -278,7 +283,7 @@ public class temper implements Runnable {
             rangeCheck();
             setValue(doCalc());
             writeLog(null);
-            temperUtil.sleep(60 * 1000);
+            temperUtil.sleep(collTime);
         }
     }
 
@@ -339,6 +344,10 @@ public class temper implements Runnable {
             }
             if (a.equals("win-tol")) {
                 windowTol = temperUtil.str2num(s);
+                continue;
+            }
+            if (a.equals("collect")) {
+                collTime = (int) (temperUtil.str2num(s) * 1000);
                 continue;
             }
             if (a.equals("timeout")) {
@@ -455,7 +464,7 @@ public class temper implements Runnable {
             a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head><body>";
             buf.write(a.getBytes());
             long tim = temperUtil.getTime();
-            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>work</b></td><td><b>calc</b></td><td><b>win</b></td><td><b>when</b></td></tr></thead><tbody>";
+            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>err</b></td><td><b>read</b></td><td><b>work</b></td><td><b>res</b></td><td><b>win</b></td><td><b>when</b></td></tr></thead><tbody>";
             buf.write(a.getBytes());
             for (int i = 0; i < measDat.length; i++) {
                 a = measDat[i].getMeas();
