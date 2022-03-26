@@ -14,7 +14,7 @@ void err(char*buf) {
 
 int main(int argc, char **argv) {
 
-    if (argc < 1) err("using: pty <bin> [args]");
+    if (argc < 2) err("using: pty <bin> [args]");
 
     struct pollfd* fds = malloc(sizeof(struct pollfd)*2);
     if (fds == NULL) err("error allocating memory");
