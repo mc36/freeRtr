@@ -59,3 +59,7 @@ for fn in ptyRun; do
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" ""
   done
+
+for fn in dummyCon; do
+  compileFile $fn "" "-lutil" ""
+  done
