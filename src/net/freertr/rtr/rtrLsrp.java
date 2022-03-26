@@ -320,7 +320,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return list
      */
     public userFormat showMetrics() {
-        userFormat res = new userFormat("|", "iface|router|name|peer|metric|delay|gotmet");
+        userFormat res = new userFormat("|", "iface|router|name|peer|metric|gotmet|delay");
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
             ifc.showMetrics(res);
