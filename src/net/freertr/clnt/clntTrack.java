@@ -244,6 +244,11 @@ public class clntTrack implements rtrBfdClnt {
     public int size = 80;
 
     /**
+     * delay for start
+     */
+    public int delaySt;
+
+    /**
      * delay for up
      */
     public int delayUp;
@@ -468,7 +473,7 @@ public class clntTrack implements rtrBfdClnt {
         working = true;
         keepTimer = new Timer();
         clntTrackTimer task = new clntTrackTimer(this);
-        int del = 100;
+        int del = delaySt + 100;
         if (randIni > 0) {
             del += bits.random(1, randIni);
         }

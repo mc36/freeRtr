@@ -66,6 +66,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! flow 0",
         "tracker .*! ttl 255",
         "tracker .*! size 80",
+        "tracker .*! delay-start 0",
         "tracker .*! delay-up 0",
         "tracker .*! delay-down 0"
     };
@@ -151,6 +152,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "2  .        <num>                    value");
         l.add(null, "1  2      size                       size of payload");
         l.add(null, "2  .        <num>                    value");
+        l.add(null, "1  2      delay-start                time before start");
+        l.add(null, "2  .        <num>                    ms");
         l.add(null, "1  2      delay-up                   number of successes before up");
         l.add(null, "2  .        <num>                    value");
         l.add(null, "1  2      delay-down                 number of failures before down");
@@ -221,6 +224,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(cmds.tabulator + "flow " + worker.flowLab);
         l.add(cmds.tabulator + "ttl " + worker.tim2liv);
         l.add(cmds.tabulator + "size " + worker.size);
+        l.add(cmds.tabulator + "delay-start " + worker.delaySt);
         l.add(cmds.tabulator + "delay-up " + worker.delayUp);
         l.add(cmds.tabulator + "delay-down " + worker.delayDn);
         if (worker.working) {
@@ -431,6 +435,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             worker.size = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("delay-start")) {
+            worker.delaySt = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("delay-up")) {
             worker.delayUp = bits.str2num(cmd.word());
             return;
@@ -530,6 +538,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("timeout")) {
             worker.timeout = 0;
+            return;
+        }
+        if (a.equals("delay-start")) {
+            worker.delaySt = 0;
             return;
         }
         if (a.equals("delay-up")) {
