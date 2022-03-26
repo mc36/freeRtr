@@ -22,11 +22,11 @@ int main(int argc, char **argv) {
     int childPid = forkpty(&commSock, NULL, NULL, NULL);
     if (childPid == -1) err("error creating pty");
     if (childPid == 0) {
-        printf("child started\n");
+        printf("child started\r\n");
         execvp(argv[1], &(argv[1]));
         return 0;
     }
-    printf("child %i created on %i\n", childPid, commSock);
+    printf("child %i created on %i\r\n", childPid, commSock);
     fflush(stdout);
 
     int i;
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
         if ((i & POLLHUP) != 0) break;
     }
 
-    printf("\nchild stopped\n");
+    printf("\r\nchild stopped\r\n");
     fflush(stdout);
     sleep(1);
 }
