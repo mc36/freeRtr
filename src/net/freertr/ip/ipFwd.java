@@ -1910,6 +1910,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                             return;
                         }
                     }
+                    if (natC.maxRate != null) {
+                        if (natC.maxRate.checkPacket(bits.getTime(), pck)) {
+                            cntrT.drop(pck, counter.reasons.noBuffer);
+                            return;
+                        }
+                    }
                     natT = natC.createEntry(pck, icmpCore);
                     natTrns.add(natT);
                     natTrns.add(natT.reverseEntry());

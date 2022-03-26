@@ -517,6 +517,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "4 3,.       <num>                   timeout in ms");
         l.add(null, "3 4       sessions                  set session limit");
         l.add(null, "4 3,.       <num>                   number of sessions");
+        l.add(null, "3 4       rate                      specify translation rate");
+        l.add(null, "4 3,.       <nam:pm>                name of policy map");
         l.add(null, "3 3,.     mac                       with mac addresses");
         l.add(null, "3 3,.     before                    log on session start");
         l.add(null, "3 3,.     after                     log on session stop");

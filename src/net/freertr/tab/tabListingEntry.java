@@ -116,11 +116,6 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
     public int timeout;
 
     /**
-     * session limit on this entry
-     */
-    public int maxSess;
-
-    /**
      * log matches
      */
     public boolean logMatch;

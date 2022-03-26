@@ -63,6 +63,10 @@ public class tabQos {
         ip6cor = new ipCor6();
     }
 
+    public String toString() {
+        return policyName;
+    }
+
     /**
      * get one class
      *

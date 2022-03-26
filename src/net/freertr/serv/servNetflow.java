@@ -41,6 +41,7 @@ public class servNetflow extends servGeneric implements prtServS {
         "server netflow .*! protocol " + proto2string(protoAllDgrm),
         "server netflow .*! no timeout",
         "server netflow .*! no sessions",
+        "server netflow .*! no rate",
         "server netflow .*! no mac",
         "server netflow .*! no before",
         "server netflow .*! no after",

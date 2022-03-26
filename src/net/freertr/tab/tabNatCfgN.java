@@ -9,6 +9,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgPlymp;
 import net.freertr.ip.ipIcmp;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
@@ -103,6 +104,16 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public int rangeMax = -1;
 
     /**
+     * session limit on this entry
+     */
+    public int maxSess;
+
+    /**
+     * maximum rate of sessions
+     */
+    public tabQos maxRate = null;
+
+    /**
      * log translations
      */
     public boolean logTrans = false;
@@ -118,7 +129,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * convert string to address
      *
      * @param s string to convert
-     * @return 0=ok, 1=error, 2=time, 3=range, 4=log
+     * @return 0=ok, 1=error, 2=time, 3=range, 4=log, 5=limit, 6=rate
      */
     public int fromString(String s) {
         cmds cmd = new cmds("", s);
@@ -132,9 +143,18 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             timeout = bits.str2num(cmd.word());
             return 2;
         }
+        if (s.equals("rate")) {
+            cfgPlymp plc = cfgAll.plmpFind(cmd.word(), false);
+            if (plc == null) {
+                cmd.error("no such policy map");
+                return 1;
+            }
+            maxRate = tabQos.convertPolicy(plc.plcmap);
+            return 6;
+        }
         if (s.equals("sessions")) {
             maxSess = bits.str2num(cmd.word());
-            return 2;
+            return 5;
         }
         if (s.equals("randomize")) {
             rangeMin = bits.str2num(cmd.word());
@@ -334,6 +354,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         String s = beg + "sequence " + sequence;
         l.add(s + " timeout " + timeout);
         l.add(s + " sessions " + maxSess);
+        if (maxRate != null) {
+            l.add(s + " rate " + maxRate);
+        }
         if (rangeMin > 0) {
             l.add(s + " randomize " + rangeMin + " " + rangeMax);
         }

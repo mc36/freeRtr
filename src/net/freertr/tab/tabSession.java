@@ -7,6 +7,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
+import net.freertr.cfg.cfgPlymp;
 import net.freertr.cfg.cfgSessn;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.pack.packHolder;
@@ -108,6 +109,11 @@ public class tabSession implements Runnable {
      * maximum number of sessions
      */
     public int maxSess = 0;
+
+    /**
+     * maximum rate of sessions
+     */
+    public tabQos maxRate = null;
 
     /**
      * allow routing multicast
@@ -213,6 +219,7 @@ public class tabSession implements Runnable {
         cmds.cfgLine(res, allowUrl == null, beg, "allow-url", "" + allowUrl);
         cmds.cfgLine(res, timeout == defTim, beg, "timeout", "" + timeout);
         cmds.cfgLine(res, maxSess < 1, beg, "sessions", "" + maxSess);
+        cmds.cfgLine(res, maxRate == null, beg, "rate", "" + maxRate);
     }
 
     /**
@@ -325,6 +332,19 @@ public class tabSession implements Runnable {
                     continue;
                 }
                 maxSess = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("rate")) {
+                if (negated) {
+                    maxRate = null;
+                    continue;
+                }
+                cfgPlymp plc = cfgAll.plmpFind(cmd.word(), false);
+                if (plc == null) {
+                    cmd.error("no such policy map");
+                    continue;
+                }
+                maxRate = tabQos.convertPolicy(plc.plcmap);
                 continue;
             }
         }

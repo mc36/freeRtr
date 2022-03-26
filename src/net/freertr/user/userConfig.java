@@ -3038,6 +3038,8 @@ public class userConfig {
         l.add(null, "7  .              <num>                    time in ms");
         l.add(null, "6  7            sessions                   specify translation limit");
         l.add(null, "7  .              <num>                    number of translations");
+        l.add(null, "6  7            rate                       specify translation rate");
+        l.add(null, "7  .              <nam:pm>                 name of policy map");
         l.add(null, "6  7            randomize                  randomize source port");
         l.add(null, "7  8              <num>                    lowest port number");
         l.add(null, "8  .                <num>                  highest port number");
