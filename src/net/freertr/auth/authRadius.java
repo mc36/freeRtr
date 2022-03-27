@@ -6,6 +6,8 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgProxy;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntRadius;
+import net.freertr.cry.cryHashGeneric;
+import net.freertr.cry.cryKeyGeneric;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -120,6 +122,10 @@ public class authRadius extends authGeneric {
     }
 
     public authResult authUserApop(String cookie, String user, String resp) {
+        return new authResult(this, authResult.authServerError, user, "");
+    }
+
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
         return new authResult(this, authResult.authServerError, user, "");
     }
 

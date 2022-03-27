@@ -5,6 +5,8 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
+import net.freertr.cry.cryHashGeneric;
+import net.freertr.cry.cryKeyGeneric;
 import net.freertr.tab.tabAuthlstN;
 import net.freertr.tab.tabListing;
 import net.freertr.user.userHelping;
@@ -148,6 +150,24 @@ public class authList extends authGeneric {
                 continue;
             }
             authResult res = ntry.auth.authUserApop(cookie, user, resp);
+            if (res == null) {
+                continue;
+            }
+            if (res.result == authResult.authServerError) {
+                continue;
+            }
+            return res;
+        }
+        return new authResult(this, authResult.authServerError, user, "");
+    }
+
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            authResult res = ntry.auth.authUserPkey(key, algo, chal, user, resp);
             if (res == null) {
                 continue;
             }

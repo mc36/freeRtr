@@ -15,6 +15,7 @@ import net.freertr.cry.cryHashHmac;
 import net.freertr.cry.cryHashSha1;
 import net.freertr.cry.cryHashSha2224;
 import net.freertr.cry.cryHashSha2256;
+import net.freertr.cry.cryKeyGeneric;
 import net.freertr.cry.cryOtp;
 import net.freertr.serv.servPop3;
 import net.freertr.tab.tabGen;
@@ -277,6 +278,8 @@ public class authLocal extends authGeneric {
         l.add(lst, "2 3,.  <name:loc>        name of user, * for any");
         l.add(null, "3 4      password        set password of user");
         l.add(null, "4 4,.      [text]        password of user");
+        l.add(null, "3 4      pubkey          set ssh key of user");
+        l.add(null, "4 4,.      [text]        public key of user");
         l.add(null, "3 4      secret          set secret of user");
         l.add(null, "4 4,.      [text]        secret of user");
         l.add(null, "3 4      otpseed         set seed of user");
@@ -543,6 +546,53 @@ public class authLocal extends authGeneric {
         return createPassed(ntry, user, "");
     }
 
+    /**
+     * authenticate user by username/pubkey
+     *
+     * @param key public key
+     * @param algo hash algorithm
+     * @param chal challenge
+     * @param user username
+     * @param resp response received
+     * @return authentication value
+     */
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
+        authLocalEntry ntry = new authLocalEntry();
+        ntry.username = user;
+        ntry = users.find(ntry);
+        if (ntry == null) {
+            ntry = new authLocalEntry();
+            ntry.username = "*";
+            ntry = users.find(ntry);
+        }
+        if (ntry == null) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (ntry.countdown == 0) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (ntry.countdown >= 0) {
+            ntry.countdown--;
+        }
+        if (ntry.anyPass) {
+            return createPassed(ntry, user, "");
+        }
+        if (ntry.pubkey == null) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        byte[] buf = key.sshWriter();
+        if (buf.length != ntry.pubkey.length) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (bits.byteComp(ntry.pubkey, 0, buf, 0, buf.length) != 0) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (key.sshVerify(algo, user, chal, resp)) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        return createPassed(ntry, user, "");
+    }
+
 }
 
 /**
@@ -571,6 +621,11 @@ class authLocalEntry implements Comparator<authLocalEntry> {
      * one time password
      */
     public byte[] otpseed;
+
+    /**
+     * ssh public key
+     */
+    public byte[] pubkey;
 
     public boolean anyPass;
 
@@ -638,6 +693,9 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         if (otpseed != null) {
             lst.add(beg + "otpseed " + authLocal.passwdEncode(new String(otpseed), (filter & 2) != 0));
         }
+        if (pubkey != null) {
+            lst.add(beg + "pubkey " + cryBase64.encodeBytes(pubkey));
+        }
         if (autoHangup) {
             lst.add(beg + "autohangup");
         }
@@ -692,6 +750,14 @@ class authLocalEntry implements Comparator<authLocalEntry> {
                 return false;
             }
             secret = authLocal.secretDecode(cmd.getRemaining());
+            return false;
+        }
+        if (s.equals("pubkey")) {
+            if (neg) {
+                pubkey = null;
+                return false;
+            }
+            pubkey = cryBase64.decodeBytes(cmd.getRemaining());
             return false;
         }
         if (s.equals("otpseed")) {

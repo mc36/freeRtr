@@ -296,7 +296,8 @@ public class cryKeyECDSA extends cryKeyGeneric {
         packSsh.stringWrite(p, sshName());
         packSsh.stringWrite(p, "" + curve);
         packSsh.bytesWrite(p, pub.toBytes2());
-        return null;
+        p.merge2beg();
+        return p.getCopy();
     }
 
     private BigInteger calcZ(BigInteger n, byte[] msg) {

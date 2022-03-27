@@ -2,6 +2,8 @@ package net.freertr.auth;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cry.cryHashGeneric;
+import net.freertr.cry.cryKeyGeneric;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
@@ -12,7 +14,7 @@ import net.freertr.util.cmds;
  */
 public class authConstant extends authGeneric {
 
-    private boolean res;
+    private final boolean res;
 
     /**
      * create authenticator
@@ -40,6 +42,10 @@ public class authConstant extends authGeneric {
     }
 
     public authResult authUserApop(String cookie, String user, String resp) {
+        return authUserPass(user, "");
+    }
+
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
         return authUserPass(user, "");
     }
 

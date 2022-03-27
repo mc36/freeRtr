@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cry.cryHashGeneric;
+import net.freertr.cry.cryKeyGeneric;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabPrfxlstN;
@@ -108,6 +110,18 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      * @return authentication value
      */
     public abstract authResult authUserApop(String cookie, String user, String resp);
+
+    /**
+     * authenticate user by username/pubkey
+     *
+     * @param key public key
+     * @param algo hash algorithm
+     * @param chal challenge
+     * @param user username
+     * @param resp response received
+     * @return authentication value
+     */
+    public abstract authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp);
 
     /**
      * get running configuration
