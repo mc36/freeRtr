@@ -12,6 +12,11 @@ import java.net.URLConnection;
 public class temperData {
 
     /**
+     * parent
+     */
+    protected final temper lower;
+
+    /**
      * my number
      */
     protected final int myNum;
@@ -79,10 +84,12 @@ public class temperData {
     /**
      * create instance
      *
+     * @param prnt parent
      * @param num my number
      * @param nam my name
      */
-    protected temperData(int num, String nam) {
+    protected temperData(temper prnt, int num, String nam) {
+        lower = prnt;
         myNum = num;
         usable = temperUtil.str2num(nam.substring(0, 1)) == 1;
         int i = nam.indexOf(";");
@@ -124,10 +131,8 @@ public class temperData {
 
     /**
      * calculate
-     *
-     * @param cl parent
      */
-    protected void doCalc(temper cl) {
+    protected void doCalc() {
         isWindow = false;
         if (!usable) {
             isWorking = false;
@@ -135,15 +140,15 @@ public class temperData {
         }
         isWorking = true;
         long tim = temperUtil.getTime();
-        lastCalc = cl.currValue & cl.tempPin;
+        lastCalc = lower.currValue & lower.tempPin;
         int old = lastCalc;
-        if (cl.lastNeeded > (lastMeasure + cl.tempTol)) {
-            lastCalc = cl.tempPin;
+        if (lower.lastNeeded > (lastMeasure + lower.tempTol)) {
+            lastCalc = lower.tempPin;
         }
-        if (cl.lastNeeded < (lastMeasure - cl.tempTol)) {
+        if (lower.lastNeeded < (lastMeasure - lower.tempTol)) {
             lastCalc = 0;
         }
-        if ((tim - timeMeasure) > cl.measTime) {
+        if ((tim - timeMeasure) > lower.measTime) {
             isWorking = false;
             lastCalc = 0;
             return;
@@ -151,22 +156,22 @@ public class temperData {
         if (timeWindow > 0) {
             isWindow = true;
             lastCalc = 0;
-            if (lastMeasure < (lastWindow - cl.windowTol)) {
+            if (lastMeasure < (lastWindow - lower.windowTol)) {
                 lastWindow = lastMeasure;
                 timeWindow = tim;
             }
-            if ((tim - timeWindow) < cl.windowMin) {
+            if ((tim - timeWindow) < lower.windowMin) {
                 return;
             }
-            if (lastMeasure > (lastWindow + cl.windowTol)) {
+            if (lastMeasure > (lastWindow + lower.windowTol)) {
                 timeWindow = 0;
             }
-            if ((tim - timeWindow) > cl.windowMax) {
+            if ((tim - timeWindow) > lower.windowMax) {
                 timeWindow = 0;
             }
             return;
         }
-        if ((old == cl.tempPin) && (lastMeasure < (lastWindow - cl.windowTol))) {
+        if ((old == lower.tempPin) && (lastMeasure < (lastWindow - lower.windowTol))) {
             isWindow = true;
             lastCalc = 0;
             timeWindow = tim;

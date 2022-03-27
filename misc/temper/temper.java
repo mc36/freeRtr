@@ -249,7 +249,7 @@ public class temper implements Runnable {
     private int doCalc() {
         for (int i = 0; i < measDat.length; i++) {
             measDat[i].getValue();
-            measDat[i].doCalc(this);
+            measDat[i].doCalc();
         }
         measUse = -1;
         boolean win = false;
@@ -393,7 +393,7 @@ public class temper implements Runnable {
         }
         measDat = new temperData[m.size()];
         for (int i = 0; i < measDat.length; i++) {
-            measDat[i] = new temperData(i + 1, m.get(i));
+            measDat[i] = new temperData(this, i + 1, m.get(i));
         }
     }
 
