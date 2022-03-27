@@ -486,13 +486,17 @@ public class clntSmtp implements Runnable {
      * @return false on success, true on error
      */
     public boolean doSend(int retry) {
-        for (; retry > 0; retry--) {
+        for (;;) {
             String a = doSend();
             if (a == null) {
                 return false;
             }
             errors.add(logger.getTimestamp() + " remote=" + serv + " issue=" + a + " sent=" + lastT + " received=" + lastR);
             logger.warn("error sending email from " + from + " to " + rcpt);
+            retry--;
+            if (retry < 1) {
+                break;
+            }
             bits.sleep(bits.random(60 * 1000, 600 * 1000));
         }
         return true;
