@@ -197,4 +197,22 @@ public class authList extends authGeneric {
         return new authResult(this, authResult.authServerError, user, "");
     }
 
+    public authResult authUserNone(String user) {
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            authResult res = ntry.auth.authUserNone(user);
+            if (res == null) {
+                continue;
+            }
+            if (res.result == authResult.authServerError) {
+                continue;
+            }
+            return res;
+        }
+        return new authResult(this, authResult.authServerError, user, "");
+    }
+
 }

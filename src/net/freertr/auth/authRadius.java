@@ -133,6 +133,10 @@ public class authRadius extends authGeneric {
         return new authResult(this, authResult.authServerError, user, "");
     }
 
+    public authResult authUserNone(String user) {
+        return new authResult(this, authResult.authServerError, user, "");
+    }
+
     public authResult authUserCommand(String user, String cmd) {
         return new authResult(this, authResult.authServerError, user, cmd);
     }

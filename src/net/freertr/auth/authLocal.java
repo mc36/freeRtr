@@ -293,6 +293,7 @@ public class authLocal extends authGeneric {
         l.add(null, "4 .        <num>         login counter");
         l.add(null, "3 .      anypass         any password will be accepted");
         l.add(null, "3 .      anykey          any pubkey will be accepted");
+        l.add(null, "3 .      anything        refused auth will be accepted");
         l.add(null, "3 .      autohangup      disconnect user after autocommand");
         l.add(null, "3 4      ipv4addr        specify ipv4 address");
         l.add(null, "4 .        <addr>        address");
@@ -399,14 +400,7 @@ public class authLocal extends authGeneric {
         return res;
     }
 
-    /**
-     * authenticate with password
-     *
-     * @param user username
-     * @param pass password
-     * @return result
-     */
-    public authResult authUserPass(String user, String pass) {
+    private authLocalEntry findUser(String user) {
         authLocalEntry ntry = new authLocalEntry();
         ntry.username = user;
         ntry = users.find(ntry);
@@ -416,13 +410,28 @@ public class authLocal extends authGeneric {
             ntry = users.find(ntry);
         }
         if (ntry == null) {
-            return new authResult(this, authResult.authBadUserPass, user, pass);
+            return null;
         }
         if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user, pass);
+            return null;
         }
         if (ntry.countdown >= 0) {
             ntry.countdown--;
+        }
+        return ntry;
+    }
+
+    /**
+     * authenticate with password
+     *
+     * @param user username
+     * @param pass password
+     * @return result
+     */
+    public authResult authUserPass(String user, String pass) {
+        authLocalEntry ntry = findUser(user);
+        if (ntry == null) {
+            return new authResult(this, authResult.authBadUserPass, user, pass);
         }
         if (ntry.anyPass) {
             return createPassed(ntry, user, pass);
@@ -478,22 +487,9 @@ public class authLocal extends authGeneric {
      * @return result
      */
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
-        authLocalEntry ntry = new authLocalEntry();
-        ntry.username = user;
-        ntry = users.find(ntry);
-        if (ntry == null) {
-            ntry = new authLocalEntry();
-            ntry.username = "*";
-            ntry = users.find(ntry);
-        }
+        authLocalEntry ntry = findUser(user);
         if (ntry == null) {
             return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown >= 0) {
-            ntry.countdown--;
         }
         if (ntry.anyPass) {
             return createPassed(ntry, user, "");
@@ -517,22 +513,9 @@ public class authLocal extends authGeneric {
      * @return result
      */
     public authResult authUserApop(String cookie, String user, String resp) {
-        authLocalEntry ntry = new authLocalEntry();
-        ntry.username = user;
-        ntry = users.find(ntry);
-        if (ntry == null) {
-            ntry = new authLocalEntry();
-            ntry.username = "*";
-            ntry = users.find(ntry);
-        }
+        authLocalEntry ntry = findUser(user);
         if (ntry == null) {
             return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown >= 0) {
-            ntry.countdown--;
         }
         if (ntry.anyPass) {
             return createPassed(ntry, user, "");
@@ -555,18 +538,8 @@ public class authLocal extends authGeneric {
      * @return authentication value
      */
     public authResult authUserPkey(cryKeyGeneric key, String user) {
-        authLocalEntry ntry = new authLocalEntry();
-        ntry.username = user;
-        ntry = users.find(ntry);
+        authLocalEntry ntry = findUser(user);
         if (ntry == null) {
-            ntry = new authLocalEntry();
-            ntry.username = "*";
-            ntry = users.find(ntry);
-        }
-        if (ntry == null) {
-            return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown == 0) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (ntry.anyKey) {
@@ -593,22 +566,9 @@ public class authLocal extends authGeneric {
      * @return authentication value
      */
     public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, String algn, byte[] chal, String user, byte[] resp) {
-        authLocalEntry ntry = new authLocalEntry();
-        ntry.username = user;
-        ntry = users.find(ntry);
-        if (ntry == null) {
-            ntry = new authLocalEntry();
-            ntry.username = "*";
-            ntry = users.find(ntry);
-        }
+        authLocalEntry ntry = findUser(user);
         if (ntry == null) {
             return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown == 0) {
-            return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (ntry.countdown >= 0) {
-            ntry.countdown--;
         }
         if (ntry.anyKey) {
             return createPassed(ntry, user, "");
@@ -617,6 +577,23 @@ public class authLocal extends authGeneric {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (key.sshVerify(algo, algn, chal, resp)) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        return createPassed(ntry, user, "");
+    }
+
+    /**
+     * authenticate user by username
+     *
+     * @param user username
+     * @return authentication value
+     */
+    public authResult authUserNone(String user) {
+        authLocalEntry ntry = findUser(user);
+        if (ntry == null) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (!ntry.nothing) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
         return createPassed(ntry, user, "");
@@ -656,9 +633,20 @@ class authLocalEntry implements Comparator<authLocalEntry> {
      */
     public byte[] pubkey;
 
+    /**
+     * accept any password
+     */
     public boolean anyPass;
 
+    /**
+     * accept any public key
+     */
     public boolean anyKey;
+
+    /**
+     * accept refused authentication
+     */
+    public boolean nothing;
 
     /**
      * command to use on login
@@ -738,6 +726,9 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         }
         if (anyKey) {
             lst.add(beg + "anykey");
+        }
+        if (nothing) {
+            lst.add(beg + "anything");
         }
         if (ipv4addr != null) {
             lst.add(beg + "ipv4addr " + ipv4addr);
@@ -820,6 +811,10 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         }
         if (s.equals("anykey")) {
             anyKey = !neg;
+            return false;
+        }
+        if (s.equals("anything")) {
+            nothing = !neg;
             return false;
         }
         if (s.equals("countdown")) {

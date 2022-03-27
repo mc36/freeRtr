@@ -134,6 +134,14 @@ public abstract class authGeneric implements Comparator<authGeneric> {
     public abstract authResult authUserPkey(cryKeyGeneric key, String user);
 
     /**
+     * authenticate user by username
+     *
+     * @param user username
+     * @return authentication value
+     */
+    public abstract authResult authUserNone(String user);
+
+    /**
      * get running configuration
      *
      * @param beg beginning string

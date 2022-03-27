@@ -197,6 +197,13 @@ public class secSsh implements Runnable {
 
     private int serverAuther(packSsh p, packSshAuth pa) {
         if (pa.method.equals(packSsh.authenNone)) {
+            servUser = servAuth.authUserNone(pa.username);
+            if (servUser == null) {
+                return 2;
+            }
+            if (servUser.result == authResult.authSuccessful) {
+                return 1;
+            }
             return 2;
         }
         if (pa.method.equals(packSsh.authenPass)) {
