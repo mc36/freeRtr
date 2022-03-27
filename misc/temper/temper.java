@@ -94,6 +94,11 @@ public class temper implements Runnable {
     protected temperData measDat[] = new temperData[0];
 
     /**
+     * time zone to use
+     */
+    protected String tzdata = "Z";
+
+    /**
      * reading used
      */
     protected int measUse = -1;
@@ -208,6 +213,11 @@ public class temper implements Runnable {
      */
     protected String lastOpener = "nobody";
 
+    /**
+     * last opener message
+     */
+    protected String lastOpened = "nothing";
+
     private synchronized void setValue(int val) {
         val &= (tempPin | doorPin | relayPin);
         if (currValue == val) {
@@ -317,6 +327,10 @@ public class temper implements Runnable {
             }
             String a = s.substring(0, o).trim().toLowerCase();
             s = s.substring(o + 1, s.length()).trim();
+            if (a.equals("tzdata")) {
+                tzdata = s;
+                continue;
+            }
             if (a.equals("door-code")) {
                 doorCode.add(s);
                 continue;
@@ -397,8 +411,8 @@ public class temper implements Runnable {
         buf.write("</body></html>".getBytes());
     }
 
-    private String getDoorStats() {
-        return "opened " + cntrOpened + " times, last " + temperUtil.timePast(tim, timeOpened) + " ago by " + lastOpener + "<br/>";
+    private String getDoorStats(long tim) {
+        return "opened " + cntrOpened + " times, last " + temperUtil.time2str(tzdata, timeOpened) + ", " + temperUtil.timePast(tim, timeOpened) + " ago by " + lastOpener;
     }
 
     /**
@@ -477,11 +491,11 @@ public class temper implements Runnable {
             temperUtil.sleep(doorTime);
             setValue(currValue & (~doorPin));
             writeLog(peer);
-            String a = getDoorStats();
+            lastOpened = getDoorStats(temperUtil.getTime());
             timeOpened = temperUtil.getTime();
             lastOpener = peer;
             cntrOpened++;
-            putStart(buf, "door", "door opened! before: " + a);
+            putStart(buf, "door", "door opened<br/>before: " + lastOpened);
             return 1;
         }
         if (!cmd.equals("graph")) {
@@ -505,7 +519,9 @@ public class temper implements Runnable {
             buf.write(a.getBytes());
             a = "heating: " + currValue + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
             buf.write(a.getBytes());
-            a = "door: " + getDoorStats();
+            a = "door: " + getDoorStats(tim) + "<br/>";
+            buf.write(a.getBytes());
+            a = "before: " + lastOpened + "<br/>";
             buf.write(a.getBytes());
             a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
             buf.write(a.getBytes());

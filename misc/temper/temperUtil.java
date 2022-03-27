@@ -4,8 +4,11 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * utils
@@ -21,6 +24,36 @@ public class temperUtil {
      */
     public static long getTime() {
         return new Date().getTime();
+    }
+
+    /**
+     * pad up to beginning for a minimum size
+     *
+     * @param str string to pad up
+     * @param min minimum size to use
+     * @param pad padding string
+     * @return padded string
+     */
+    public static String padBeg(String str, int min, String pad) {
+        for (; str.length() < min;) {
+            str = pad + str;
+        }
+        return str;
+    }
+
+    /**
+     * convert time to string
+     *
+     * @param tzd time zone to use
+     * @param tim time to convert
+     * @return string
+     */
+    public static String time2str(String tzd, long tim) {
+        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone(tzd));
+        cal.setTime(new Date(tim));
+        String date = cal.get(Calendar.YEAR) + padBeg("" + (cal.get(Calendar.MONTH) + 1), 2, "0") + padBeg("" + cal.get(Calendar.DAY_OF_MONTH), 2, "0");
+        String time = padBeg("" + cal.get(Calendar.HOUR_OF_DAY), 2, "0") + padBeg("" + cal.get(Calendar.MINUTE), 2, "0") + padBeg("" + cal.get(Calendar.SECOND), 2, "0");
+        return date + " " + time;
     }
 
     /**
