@@ -83,6 +83,21 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
     public tabGen<addrMac> statAddr;
 
     /**
+     * stp ingress filter
+     */
+    public boolean fltrStpIn;
+
+    /**
+     * stp egress filter
+     */
+    public boolean fltrStpOut;
+
+    /**
+     * stp root filter
+     */
+    public boolean fltrStpRoot;
+
+    /**
      * ipv4 ingress acl
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> filter4in;

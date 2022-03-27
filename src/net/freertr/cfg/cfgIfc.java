@@ -1422,6 +1422,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no eapol client",
         "interface .*! no eapol server",
         "interface .*! no bridge-group",
+        "interface .*! no bridge-filter stp-in",
+        "interface .*! no bridge-filter stp-out",
+        "interface .*! no bridge-filter stp-root",
         "interface .*! no bridge-filter ipv4in",
         "interface .*! no bridge-filter ipv4out",
         "interface .*! no bridge-filter ipv6in",
@@ -5865,6 +5868,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "no bridge-group");
         } else {
             l.add(cmds.tabulator + "bridge-group " + bridgeHed.name);
+            cmds.cfgLine(l, !bridgeIfc.fltrStpIn, cmds.tabulator, "bridge-filter stp-in", "");
+            cmds.cfgLine(l, !bridgeIfc.fltrStpOut, cmds.tabulator, "bridge-filter stp-out", "");
+            cmds.cfgLine(l, !bridgeIfc.fltrStpRoot, cmds.tabulator, "bridge-filter stp-root", "");
             cmds.cfgLine(l, bridgeIfc.filter4in == null, cmds.tabulator, "bridge-filter ipv4in", "" + bridgeIfc.filter4in);
             cmds.cfgLine(l, bridgeIfc.filter4out == null, cmds.tabulator, "bridge-filter ipv4out", "" + bridgeIfc.filter4out);
             cmds.cfgLine(l, bridgeIfc.filter6in == null, cmds.tabulator, "bridge-filter ipv6in", "" + bridgeIfc.filter6in);
@@ -6241,6 +6247,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "1 2   bridge-macrewrite             transparent bridging interface parameters");
         l.add(null, "2 .     <addr>                      address to use");
         l.add(null, "1 2   bridge-filter                 transparent bridging filtering parameters");
+        l.add(null, "2 .     stp-in                      bpdu ingress guard");
+        l.add(null, "2 .     stp-out                     bpdu egress filter");
+        l.add(null, "2 .     stp-root                    bpdu root guard");
         l.add(null, "2 3     ipv4in                      ipv4 ingress filter");
         l.add(null, "3 .       <name:acl>                name of access list");
         l.add(null, "2 3     ipv4out                     ipv4 egress filter");
@@ -6931,6 +6940,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmd.error("not bridged");
                 return;
             }
+            if (a.equals("stp-in")) {
+                bridgeIfc.fltrStpIn = true;
+                return;
+            }
+            if (a.equals("stp-out")) {
+                bridgeIfc.fltrStpOut = true;
+                return;
+            }
+            if (a.equals("stp-root")) {
+                bridgeIfc.fltrStpRoot = true;
+                return;
+            }
             cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such access list");
@@ -7550,6 +7571,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("bridge-filter")) {
             a = cmd.word();
             if (bridgeIfc == null) {
+                return;
+            }
+            if (a.equals("stp-in")) {
+                bridgeIfc.fltrStpIn = false;
+                return;
+            }
+            if (a.equals("stp-out")) {
+                bridgeIfc.fltrStpOut = false;
+                return;
+            }
+            if (a.equals("stp-root")) {
+                bridgeIfc.fltrStpRoot = false;
                 return;
             }
             if (a.equals("ipv4in")) {

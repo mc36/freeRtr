@@ -853,6 +853,9 @@ public class ifcBridge implements ifcDn {
             if (ntry.ifcNum == stpPort) {
                 rootTime = ntry.stpTime;
             }
+            if (ntry.fltrStpOut) {
+                continue;
+            }
             packStp pckS = ntry.getStpId();
             if (debugger.ifcBridgeTraf) {
                 logger.debug("tx " + pckS);
@@ -1158,14 +1161,22 @@ public class ifcBridge implements ifcDn {
         if (debugger.ifcBridgeTraf) {
             logger.debug("rx " + stp);
         }
-        int cst = stp.rootCost + addrBridge.bandwidth2cost(ifc.lowerIf.getBandwidth());
         ifc.stpTime = currTim;
+        if (ifc.fltrStpIn) {
+            ifc.blocked = true;
+            return false;
+        }
+        int cst = stp.rootCost + addrBridge.bandwidth2cost(ifc.lowerIf.getBandwidth());
         int i = stpRoot.compare(stpRoot, stp.rootId);
         if (i < 0) { // worst root
             ifc.blocked = true;
             return false;
         }
         if (i > 0) { // better root
+            if (ifc.fltrStpRoot) {
+                ifc.blocked = true;
+                return false;
+            }
             setBlocking(true);
             stpRoot = stp.rootId.copyBytes();
             stpCost = cst;
