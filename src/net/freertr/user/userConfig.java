@@ -3799,7 +3799,7 @@ public class userConfig {
     }
 
     private <T extends servGeneric> void daemonMake(T srv, servGenList<T> lst) {
-        srv.rename(cmd.word());
+        srv.srvRename(cmd.word());
         modeDserver = lst.find(srv, true);
         if (modeDserver == null) {
             cmd.error("invalid server name");
@@ -3810,7 +3810,7 @@ public class userConfig {
     }
 
     private <T extends servGeneric> void daemonErase(T srv, servGenList<T> lst) {
-        srv.rename(cmd.word());
+        srv.srvRename(cmd.word());
         if (lst.del(srv) == null) {
             cmd.error("invalid server name");
             return;

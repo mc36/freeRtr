@@ -3134,7 +3134,7 @@ public class cfgAll {
      * @return instance, null if not found
      */
     public static <T extends servGeneric> T srvrFind(T srv, servGenList<T> lst, String nam) {
-        srv.rename(nam);
+        srv.srvRename(nam);
         return lst.find(srv, false);
     }
 

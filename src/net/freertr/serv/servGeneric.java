@@ -341,7 +341,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      *
      * @param s name of server
      */
-    public void rename(String s) {
+    public void srvRename(String s) {
         srvName = s;
     }
 
@@ -1271,6 +1271,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * @param l help text
      */
     public void getHelp(userHelping l) {
+        l.add(null, "1 2  rename                 rename this server");
+        l.add(null, "2 .    <str>                set new name");
         l.add(null, "1 2  vrf                    set vrf to use");
         l.add(null, "2 .    <name:vrf>           name of vrf");
         l.add(null, "1 2  port                   set port to listen on");
@@ -1443,6 +1445,11 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("rename")) {
+            a = cmd.word();
+            srvRename(a);
+            return;
+        }
         if (a.equals("vrf")) {
             srvDeinit();
             srvVrf = cfgAll.vrfFind(cmd.word(), false);
@@ -1730,43 +1737,43 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 srvRouPol = null;
                 return;
             }
-        }
-        if (a.equals("security")) {
-            String s = cmd.word();
-            if (s.equals("protocol")) {
-                secProto = 0;
+            if (a.equals("security")) {
+                String s = cmd.word();
+                if (s.equals("protocol")) {
+                    secProto = 0;
+                    return;
+                }
+                if (s.equals("authentication")) {
+                    srvAuther = null;
+                    return;
+                }
+                if (s.equals("rsakey")) {
+                    keyrsa = null;
+                    return;
+                }
+                if (s.equals("dsakey")) {
+                    keydsa = null;
+                    return;
+                }
+                if (s.equals("ecdsakey")) {
+                    keyecdsa = null;
+                    return;
+                }
+                if (s.equals("rsacert")) {
+                    certrsa = null;
+                    return;
+                }
+                if (s.equals("dsacert")) {
+                    certdsa = null;
+                    return;
+                }
+                if (s.equals("ecdsacert")) {
+                    certecdsa = null;
+                    return;
+                }
+                cmd.badCmd();
                 return;
             }
-            if (s.equals("authentication")) {
-                srvAuther = null;
-                return;
-            }
-            if (s.equals("rsakey")) {
-                keyrsa = null;
-                return;
-            }
-            if (s.equals("dsakey")) {
-                keydsa = null;
-                return;
-            }
-            if (s.equals("ecdsakey")) {
-                keyecdsa = null;
-                return;
-            }
-            if (s.equals("rsacert")) {
-                certrsa = null;
-                return;
-            }
-            if (s.equals("dsacert")) {
-                certdsa = null;
-                return;
-            }
-            if (s.equals("ecdsacert")) {
-                certecdsa = null;
-                return;
-            }
-            cmd.badCmd();
-            return;
         }
         if (srvCfgStr(cmd.copyBytes(true))) {
             cmd.badCmd();
