@@ -51,9 +51,7 @@ public class temperUtil {
     public static String time2str(String tzd, long tim) {
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone(tzd));
         cal.setTime(new Date(tim));
-        String date = cal.get(Calendar.YEAR) + padBeg("" + (cal.get(Calendar.MONTH) + 1), 2, "0") + padBeg("" + cal.get(Calendar.DAY_OF_MONTH), 2, "0");
-        String time = padBeg("" + cal.get(Calendar.HOUR_OF_DAY), 2, "0") + padBeg("" + cal.get(Calendar.MINUTE), 2, "0") + padBeg("" + cal.get(Calendar.SECOND), 2, "0");
-        return date + " " + time;
+        return cal.get(Calendar.YEAR) + "-" + padBeg("" + (cal.get(Calendar.MONTH) + 1), 2, "0") + "-" + padBeg("" + cal.get(Calendar.DAY_OF_MONTH), 2, "0") + " " + padBeg("" + cal.get(Calendar.HOUR_OF_DAY), 2, "0") + ":" + padBeg("" + cal.get(Calendar.MINUTE), 2, "0") + ":" + padBeg("" + cal.get(Calendar.SECOND), 2, "0");
     }
 
     /**

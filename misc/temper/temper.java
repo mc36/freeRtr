@@ -119,16 +119,6 @@ public class temper implements Runnable {
     protected long timeNeeded = 0;
 
     /**
-     * time opened door
-     */
-    protected long timeOpened = 0;
-
-    /**
-     * number opened door
-     */
-    protected long cntrOpened = 0;
-
-    /**
      * time heating temperature
      */
     protected long timeHeating = 0;
@@ -142,6 +132,21 @@ public class temper implements Runnable {
      * door codes
      */
     protected List<String> doorCode = new ArrayList<String>();
+
+    /**
+     * door log
+     */
+    protected List<temperLog> doorLog = new ArrayList<temperLog>();
+
+    /**
+     * door max
+     */
+    protected int doorMax = 5;
+
+    /**
+     * door count
+     */
+    protected int doorCnt = 0;
 
     /**
      * door time
@@ -207,16 +212,6 @@ public class temper implements Runnable {
      * last setter peer
      */
     protected String lastSetter = "nobody";
-
-    /**
-     * last opener peer
-     */
-    protected String lastOpener = "nobody";
-
-    /**
-     * last opener message
-     */
-    protected String lastOpened = "nothing";
 
     private synchronized void setValue(int val) {
         val &= (tempPin | doorPin | relayPin);
@@ -331,6 +326,10 @@ public class temper implements Runnable {
                 tzdata = s;
                 continue;
             }
+            if (a.equals("door-count")) {
+                doorMax = (int) temperUtil.str2num(s);
+                continue;
+            }
             if (a.equals("door-code")) {
                 doorCode.add(s);
                 continue;
@@ -404,15 +403,11 @@ public class temper implements Runnable {
     }
 
     private static void putStart(ByteArrayOutputStream buf, String tit, String res) throws Exception {
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"5;url=/index.html\"><title>".getBytes());
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>".getBytes());
         buf.write(tit.getBytes());
         buf.write("</title><body>".getBytes());
         buf.write(res.getBytes());
         buf.write("</body></html>".getBytes());
-    }
-
-    private String getDoorStats(long tim) {
-        return "opened " + cntrOpened + " times, last " + temperUtil.time2str(tzdata, timeOpened) + ", " + temperUtil.timePast(tim, timeOpened) + " ago by " + lastOpener;
     }
 
     /**
@@ -475,14 +470,15 @@ public class temper implements Runnable {
             return 1;
         }
         if (cmd.equals("door")) {
-            boolean b = false;
+            int o = -1;
             for (int i = 0; i < doorCode.size(); i++) {
-                b |= tmp.equals(doorCode.get(i));
-                if (b) {
-                    break;
+                if (!tmp.equals(doorCode.get(i))) {
+                    continue;
                 }
+                o = i;
+                break;
             }
-            if (!b) {
+            if (o < 0) {
                 putStart(buf, "door", "bad code");
                 return 1;
             }
@@ -491,11 +487,15 @@ public class temper implements Runnable {
             temperUtil.sleep(doorTime);
             setValue(currValue & (~doorPin));
             writeLog(peer);
-            lastOpened = getDoorStats(temperUtil.getTime());
-            timeOpened = temperUtil.getTime();
-            lastOpener = peer;
-            cntrOpened++;
-            putStart(buf, "door", "door opened<br/>before: " + lastOpened);
+            doorLog.add(new temperLog(this, peer, o));
+            for (;;) {
+                if (doorLog.size() <= doorMax) {
+                    break;
+                }
+                doorLog.remove(0);
+            }
+            doorCnt++;
+            putStart(buf, "door", "door opened");
             return 1;
         }
         if (!cmd.equals("graph")) {
@@ -517,11 +517,7 @@ public class temper implements Runnable {
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
-            a = "heating: " + currValue + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
-            buf.write(a.getBytes());
-            a = "door: " + getDoorStats(tim) + "<br/>";
-            buf.write(a.getBytes());
-            a = "before: " + lastOpened + "<br/>";
+            a = "heating: " + currValue + ", since " + temperUtil.time2str(tzdata, timeHeating) + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
             buf.write(a.getBytes());
@@ -535,6 +531,16 @@ public class temper implements Runnable {
                 a = "((<a href=\"" + url + "?temp=" + o + ".5&cmd=heat\">" + o + ".5</a>))";
                 buf.write(a.getBytes());
             }
+            a = "<br/><br/>the door was opened " + doorCnt + " times:<br/>";
+            buf.write(a.getBytes());
+            a = "<table><thead><tr><td><b>num</b></td><td><b>when</b></td><td><b>ago</b></td><td><b>code</b></td><td><b>peer</b></td></tr></thead><tbody>";
+            buf.write(a.getBytes());
+            for (int i = doorLog.size() - 1; i >= 0; i--) {
+                a = doorLog.get(i).getMeas(i, tim);
+                buf.write(a.getBytes());
+            }
+            a = "</tbody></table><br/>";
+            buf.write(a.getBytes());
             buf.write("</body></html>".getBytes());
             return 1;
         }
