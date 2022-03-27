@@ -455,7 +455,6 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         if (trfEng != null) {
             fwdCor.tetunDel(trfEng);
         }
-        trfEng = null;
         protStat(state.states.down);
     }
 
