@@ -114,6 +114,16 @@ public class temper implements Runnable {
     protected long timeNeeded = 0;
 
     /**
+     * time opened door
+     */
+    protected long timeOpened = 0;
+
+    /**
+     * number opened door
+     */
+    protected long cntrOpened = 0;
+
+    /**
      * time heating temperature
      */
     protected long timeHeating = 0;
@@ -192,6 +202,11 @@ public class temper implements Runnable {
      * last setter peer
      */
     protected String lastSetter = "nobody";
+
+    /**
+     * last opener peer
+     */
+    protected String lastOpener = "nobody";
 
     private synchronized void setValue(int val) {
         val &= (tempPin | doorPin | relayPin);
@@ -375,11 +390,15 @@ public class temper implements Runnable {
     }
 
     private static void putStart(ByteArrayOutputStream buf, String tit, String res) throws Exception {
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>".getBytes());
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"5;url=/index.html\"><title>".getBytes());
         buf.write(tit.getBytes());
         buf.write("</title><body>".getBytes());
         buf.write(res.getBytes());
         buf.write("</body></html>".getBytes());
+    }
+
+    private String getDoorStats() {
+        return "opened " + cntrOpened + " times, last " + temperUtil.timePast(tim, timeOpened) + " ago by " + lastOpener + "<br/>";
     }
 
     /**
@@ -431,6 +450,10 @@ public class temper implements Runnable {
             cmd = "relayset";
         }
         if (cmd.equals("relayset")) {
+            if (relayPin == 0) {
+                putStart(buf, "relay", "relay not set");
+                return 1;
+            }
             int i = ((int) temperUtil.str2num(tmp)) & relayPin;
             setValue((currValue & (~relayPin)) | i);
             writeLog(peer);
@@ -445,16 +468,20 @@ public class temper implements Runnable {
                     break;
                 }
             }
-            String a = "bad code";
-            if (b) {
-                setValue(currValue | doorPin);
-                writeLog(peer);
-                temperUtil.sleep(doorTime);
-                setValue(currValue & (~doorPin));
-                writeLog(peer);
-                a = "door opened";
+            if (!b) {
+                putStart(buf, "door", "bad code");
+                return 1;
             }
-            putStart(buf, "door", a);
+            setValue(currValue | doorPin);
+            writeLog(peer);
+            temperUtil.sleep(doorTime);
+            setValue(currValue & (~doorPin));
+            writeLog(peer);
+            String a = getDoorStats();
+            timeOpened = temperUtil.getTime();
+            lastOpener = peer;
+            cntrOpened++;
+            putStart(buf, "door", "door opened! before: " + a);
             return 1;
         }
         if (!cmd.equals("graph")) {
@@ -477,6 +504,8 @@ public class temper implements Runnable {
             a = "needed: " + lastNeeded + " celsius, " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
             a = "heating: " + currValue + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
+            buf.write(a.getBytes());
+            a = "door: " + getDoorStats();
             buf.write(a.getBytes());
             a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
             buf.write(a.getBytes());
