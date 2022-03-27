@@ -2186,6 +2186,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ntry.src = src.copyBytes();
         ntry.trg = trg.copyBytes();
         ntry.multi = mul;
+        ntry.created = bits.getTime();
         for (;;) {
             nextEchoNumber = (nextEchoNumber & 0x3fffffff) + 1;
             ntry.echoNum = nextEchoNumber + 10000;
@@ -2194,7 +2195,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         echoSent++;
-        ntry.created = bits.getTime();
         if (icmpCore.createEcho(pck, src, trg, ntry.echoNum)) {
             return null;
         }
