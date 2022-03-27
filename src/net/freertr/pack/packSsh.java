@@ -97,6 +97,11 @@ public class packSsh {
     public final static int typeSrvAcc = 6;
 
     /**
+     * extensions info
+     */
+    public final static int typeExtInfo = 7;
+
+    /**
      * key exchange init
      */
     public final static int typeKexInit = 20;
@@ -313,6 +318,8 @@ public class packSsh {
                 return "service request";
             case typeSrvAcc:
                 return "service accept";
+            case typeExtInfo:
+                return "extensions info";
             case typeKexInit:
                 return "key exchange";
             case typeNewKeys:

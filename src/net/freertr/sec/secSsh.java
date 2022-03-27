@@ -283,13 +283,19 @@ public class secSsh implements Runnable {
     }
 
     private void doPackRecv(packSsh p) {
-        packSshChan pc = new packSshChan(p);
         for (;;) {
             p.packRecv();
             switch (p.pckTyp) {
                 case packSsh.typeChanWin:
+                    packSshChan pc = new packSshChan(p);
                     if (pc.chanWindowParse()) {
                         return;
+                    }
+                    break;
+                case packSsh.typeExtInfo:
+                    packSshInit pi = new packSshInit(p);
+                    if (pi.extensInfoParse()) {
+                        break;
                     }
                     break;
                 case packSsh.typeGlobReq:
@@ -435,14 +441,14 @@ public class secSsh implements Runnable {
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashSwap();
         pi.kexInitFill();
-        pi.kexInitCreate();
+        pi.kexInitCreate(false);
         pg.hashPck();
         p.packSend();
         doPackRecv(p);
         pg.hashSwap();
         pg.hashPck();
         pg.hashMerge();
-        if (pi.kexInitParse()) {
+        if (pi.kexInitParse(false)) {
             return;
         }
         if (pi.kexInitChoose(pi, null)) {
@@ -491,6 +497,10 @@ public class secSsh implements Runnable {
             return;
         }
         pg.encSetup(pi, false);
+        if (pi.kexExts) {
+            pi.extensInfoCreate();
+            p.packSend();
+        }
         packSshAuth pa = new packSshAuth(p, pg);
         doPackRecv(p);
         if (pa.servReqParse()) {
@@ -604,13 +614,13 @@ public class secSsh implements Runnable {
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashStr(pi.remoteVersion);
         pi.kexInitFill();
-        pi.kexInitCreate();
+        pi.kexInitCreate(true);
         pg.hashPck();
         p.packSend();
         doPackRecv(p);
         pg.hashPck();
         pg.hashSwap();
-        if (pi.kexInitParse()) {
+        if (pi.kexInitParse(true)) {
             return;
         }
         if (pi.kexInitChoose(null, pi)) {

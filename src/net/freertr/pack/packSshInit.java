@@ -45,6 +45,11 @@ public class packSshInit {
     public byte[] kexCookie;
 
     /**
+     * key exchange extensions
+     */
+    public boolean kexExts;
+
+    /**
      * key exchange algorithm
      */
     public int[] kexAlgo;
@@ -239,6 +244,28 @@ public class packSshInit {
      * key algorithms
      *
      * @param s stirng to read
+     * @param alg algorithm to find
+     * @return true if found, false if not
+     */
+    public static boolean algoFindList(String s, String alg) {
+        cmds cmd = new cmds("", s);
+        for (;;) {
+            s = cmd.word(",");
+            if (s.length() < 1) {
+                break;
+            }
+            s = s.trim();
+            if (s.equals(alg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * key algorithms
+     *
+     * @param s stirng to read
      * @param alg list of available algorithms
      * @return list of supported algorithms
      */
@@ -302,9 +329,10 @@ public class packSshInit {
     /**
      * parse key exchange message
      *
+     * @param client set true if client, false on server
      * @return false on success, true on error
      */
-    public boolean kexInitParse() {
+    public boolean kexInitParse(boolean client) {
         if (lower.pckTyp != packSsh.typeKexInit) {
             return true;
         }
@@ -313,7 +341,13 @@ public class packSshInit {
             kexCookie[i] = (byte) lower.pckDat.getByte(i);
         }
         lower.pckDat.getSkip(kexCookie.length);
-        kexAlgo = algoParseList(lower.stringRead(), keyXchgAlgs);
+        String a = lower.stringRead();
+        if (client) {
+            kexExts = algoFindList(a, "ext-info-s");
+        } else {
+            kexExts = algoFindList(a, "ext-info-c");
+        }
+        kexAlgo = algoParseList(a, keyXchgAlgs);
         kexKeys = new packSshSign(lower.stringRead());
         kexEncCS = algoParseList(lower.stringRead(), cipherAlgs);
         kexEncSC = algoParseList(lower.stringRead(), cipherAlgs);
@@ -341,6 +375,7 @@ public class packSshInit {
             kexCookie[i] = (byte) bits.randomB();
         }
         kexAlgo = algoFillFull(keyXchgAlgs);
+        kexExts = true;
         kexKeys = new packSshSign("");
         kexKeys.algo = algoFillFull(packSshSign.keySignAlgs);
         kexEncCS = algoFillFull(cipherAlgs);
@@ -395,15 +430,25 @@ public class packSshInit {
 
     /**
      * create key exchange message
+     *
+     * @param client set true if client, false on server
      */
-    public void kexInitCreate() {
+    public void kexInitCreate(boolean client) {
         lower.pckTyp = packSsh.typeKexInit;
         lower.pckDat.clear();
         for (int i = 0; i < kexCookie.length; i++) {
             lower.pckDat.putByte(i, kexCookie[i]);
         }
         lower.pckDat.putSkip(kexCookie.length);
-        lower.stringWrite(altoCreateList(kexAlgo, keyXchgAlgs));
+        String a = "";
+        if (kexExts) {
+            if (client) {
+                a += "ext-info-c,";
+            } else {
+                a += "ext-info-s,";
+            }
+        }
+        lower.stringWrite(a + altoCreateList(kexAlgo, keyXchgAlgs));
         lower.stringWrite(altoCreateList(kexKeys.algo, packSshSign.keySignAlgs));
         lower.stringWrite(altoCreateList(kexEncCS, cipherAlgs));
         lower.stringWrite(altoCreateList(kexEncSC, cipherAlgs));
@@ -426,7 +471,7 @@ public class packSshInit {
     }
 
     private void kexInitDump(String dir) {
-        logger.debug(dir + " kex=" + altoCreateList(kexAlgo, keyXchgAlgs) + " sng=" + altoCreateList(kexKeys.algo, packSshSign.keySignAlgs)
+        logger.debug(dir + " ext=" + kexExts + " kex=" + altoCreateList(kexAlgo, keyXchgAlgs) + " sng=" + altoCreateList(kexKeys.algo, packSshSign.keySignAlgs)
                 + " encCS=" + altoCreateList(kexEncCS, cipherAlgs) + " encSC=" + altoCreateList(kexEncSC, cipherAlgs) + " macCS="
                 + altoCreateList(kexMacCS, hasherAlgs) + " macSC=" + altoCreateList(kexMacSC, hasherAlgs) + " cmpCS="
                 + altoCreateList(kexCompCS, compressAlgs) + " cmpSC=" + altoCreateList(kexCompSC, compressAlgs) + " frst="
@@ -521,6 +566,32 @@ public class packSshInit {
         lower.packSend();
         lower.packRecv();
         return newKeysParse();
+    }
+
+    /**
+     * parse extension info message
+     *
+     * @return false on success, true on error
+     */
+    public boolean extensInfoParse() {
+        if (lower.pckTyp != packSsh.typeExtInfo) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * create extension info message
+     */
+    public void extensInfoCreate() {
+        lower.pckDat.clear();
+        lower.pckTyp = packSsh.typeExtInfo;
+        lower.pckDat.msbPutD(0, 1); // number of extensions
+        lower.pckDat.putSkip(4);
+        lower.stringWrite("server-sig-algs");
+        packSshSign algs = new packSshSign("");
+        algs.algo = algoFillFull(packSshSign.keySignAlgs);
+        lower.stringWrite(altoCreateList(algs.algo, packSshSign.keySignAlgs));
     }
 
 }
