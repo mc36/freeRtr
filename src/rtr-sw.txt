@@ -25,6 +25,7 @@ crypto certificate rsa import rsa rsa $w10$N3+TUxmeweRsgJlFaUrGFEE7VlQh7ygg8kL9A
 aaa userlist access
  username *
  username * anypass
+ username * anykey
  username * privilege 1
  username mc36
  username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
