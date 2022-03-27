@@ -68,7 +68,6 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
-import net.freertr.util.logger;
 import net.freertr.util.uniResLoc;
 
 /**

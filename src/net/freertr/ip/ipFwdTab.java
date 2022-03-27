@@ -33,7 +33,6 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRtrplc;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
-import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 

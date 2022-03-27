@@ -22,7 +22,6 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.logger;
 
 /**
  * local user database
@@ -293,6 +292,7 @@ public class authLocal extends authGeneric {
         l.add(null, "3 4      countdown       set counter");
         l.add(null, "4 .        <num>         login counter");
         l.add(null, "3 .      anypass         any password will be accepted");
+        l.add(null, "3 .      anykey          any pubkey will be accepted");
         l.add(null, "3 .      autohangup      disconnect user after autocommand");
         l.add(null, "3 4      ipv4addr        specify ipv4 address");
         l.add(null, "4 .        <addr>        address");
@@ -548,6 +548,40 @@ public class authLocal extends authGeneric {
     }
 
     /**
+     * check user by username/pubkey
+     *
+     * @param key public key
+     * @param user username
+     * @return authentication value
+     */
+    public authResult authUserPkey(cryKeyGeneric key, String user) {
+        authLocalEntry ntry = new authLocalEntry();
+        ntry.username = user;
+        ntry = users.find(ntry);
+        if (ntry == null) {
+            ntry = new authLocalEntry();
+            ntry.username = "*";
+            ntry = users.find(ntry);
+        }
+        if (ntry == null) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (ntry.countdown == 0) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (ntry.anyKey) {
+            return createPassed(ntry, user, "");
+        }
+        if (ntry.pubkey == null) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        if (ntry.checkPkey(key)) {
+            return new authResult(this, authResult.authBadUserPass, user, "");
+        }
+        return createPassed(ntry, user, "");
+    }
+
+    /**
      * authenticate user by username/pubkey
      *
      * @param key public key
@@ -576,17 +610,10 @@ public class authLocal extends authGeneric {
         if (ntry.countdown >= 0) {
             ntry.countdown--;
         }
-        if (ntry.anyPass) {
+        if (ntry.anyKey) {
             return createPassed(ntry, user, "");
         }
-        if (ntry.pubkey == null) {
-            return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        byte[] buf = key.sshWriter();
-        if (buf.length != ntry.pubkey.length) {
-            return new authResult(this, authResult.authBadUserPass, user, "");
-        }
-        if (bits.byteComp(ntry.pubkey, 0, buf, 0, buf.length) != 0) {
+        if (ntry.checkPkey(key)) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
         if (key.sshVerify(algo, algn, chal, resp)) {
@@ -630,6 +657,8 @@ class authLocalEntry implements Comparator<authLocalEntry> {
     public byte[] pubkey;
 
     public boolean anyPass;
+
+    public boolean anyKey;
 
     /**
      * command to use on login
@@ -706,6 +735,9 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         }
         if (anyPass) {
             lst.add(beg + "anypass");
+        }
+        if (anyKey) {
+            lst.add(beg + "anykey");
         }
         if (ipv4addr != null) {
             lst.add(beg + "ipv4addr " + ipv4addr);
@@ -784,6 +816,10 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         }
         if (s.equals("anypass")) {
             anyPass = !neg;
+            return false;
+        }
+        if (s.equals("anykey")) {
+            anyKey = !neg;
             return false;
         }
         if (s.equals("countdown")) {
@@ -885,6 +921,20 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             lst.add(pref + a);
         }
         return lst;
+    }
+
+    public boolean checkPkey(cryKeyGeneric key) {
+        if (pubkey == null) {
+            return true;
+        }
+        byte[] buf = key.sshWriter();
+        if (buf.length != pubkey.length) {
+            return true;
+        }
+        if (bits.byteComp(pubkey, 0, buf, 0, buf.length) != 0) {
+            return true;
+        }
+        return false;
     }
 
 }

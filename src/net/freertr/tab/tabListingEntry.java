@@ -5,7 +5,6 @@ import java.util.List;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.pack.packHolder;
-import net.freertr.util.bits;
 import net.freertr.util.counter;
 
 /**

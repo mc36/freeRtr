@@ -195,46 +195,69 @@ public class secSsh implements Runnable {
         }
     }
 
-    private boolean serverAuther(packSsh p, packSshAuth pa) {
+    private int serverAuther(packSsh p, packSshAuth pa) {
+        if (pa.method.equals(packSsh.authenNone)) {
+            return 2;
+        }
         if (pa.method.equals(packSsh.authenPass)) {
             servUser = servAuth.authUserPass(pa.username, pa.password);
             if (servUser == null) {
-                return false;
+                return 0;
             }
-            return servUser.result == authResult.authSuccessful;
+            if (servUser.result == authResult.authSuccessful) {
+                return 1;
+            }
+            return 0;
         }
         if (!pa.method.equals(packSsh.authenPkey)) {
-            return false;
+            return 0;
         }
+        packSshSign sgn = new packSshSign(pa.password);
         if (pa.pkeySign == null) {
+            cryKeyGeneric vrf = sgn.getKeyVerifier();
+            if (vrf == null) {
+                return 2;
+            }
+            if (vrf.sshReader(pa.pkeyBlob)) {
+                return 2;
+            }
+            servUser = servAuth.authUserPkey(vrf, pa.username);
+            if (servUser == null) {
+                return 2;
+            }
+            if (servUser.result != authResult.authSuccessful) {
+                return 2;
+            }
             pa.authPkeyCreate();
             p.packSend();
             doPackRecv(p);
             if (pa.authReqParse()) {
-                return false;
+                return 0;
             }
         }
-        packSshSign sgn = new packSshSign(pa.password);
         cryKeyGeneric vrf = sgn.getKeyVerifier();
         if (vrf == null) {
-            return false;
+            return 0;
         }
         cryHashGeneric hsh = sgn.getKeyHashAlgo();
         if (hsh == null) {
-            return false;
+            return 0;
         }
         String alg = sgn.getKeyHashAlgn();
         if (alg == null) {
-            return false;
+            return 0;
         }
         if (vrf.sshReader(pa.pkeyBlob)) {
-            return false;
+            return 0;
         }
         servUser = servAuth.authUserPkey(vrf, hsh, alg, pa.getAuthen2signed(), pa.username, pa.pkeySign);
         if (servUser == null) {
-            return false;
+            return 0;
         }
-        return servUser.result == authResult.authSuccessful;
+        if (servUser.result == authResult.authSuccessful) {
+            return 1;
+        }
+        return 0;
     }
 
     private void workerThreads(packSsh p) {
@@ -486,11 +509,14 @@ public class secSsh implements Runnable {
             if (pa.authReqParse()) {
                 continue;
             }
-            if (serverAuther(p, pa)) {
+            int res = serverAuther(p, pa);
+            if (res == 1) {
                 break;
             }
-            if (!pa.method.equals(packSsh.authenNone)) {
-                bits.sleep(3000);
+            if (res == 0) {
+                bits.sleep(3000 + bits.random(1, 1000));
+            } else {
+                retry--;
             }
             pa.authFailCreate();
             p.packSend();
