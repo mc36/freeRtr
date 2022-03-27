@@ -272,7 +272,7 @@ public class motion {
             lastSetter = peer;
             timeNeeded = motionUtil.getTime();
             alarmed = motionUtil.str2num(nam) == 1;
-            buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
+            buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
             buf.write(("armed=" + alarmed + "<br/>").getBytes());
             buf.write("</body></html>".getBytes());
             return 0;
@@ -281,12 +281,12 @@ public class motion {
             for (int i = 0; i < cams.length; i++) {
                 cams[i].doClear();
             }
-            buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
+            buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
             buf.write(("statistics cleared<br/>").getBytes());
             buf.write("</body></html>".getBytes());
             return 0;
         }
-        buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"30;url=" + url + "\"><title>motion</title></head><body>").getBytes());
+        buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"30;url=" + url + "\"><title>motion</title></head><body>").getBytes());
         buf.write("<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>arm</b></td><td><b>hit</b></td><td><b>ago</b></td><td><b>err</b></td><td><b>read</b></td><td><b>sav</b></td><td><b>pic</b></td><td><b>min</b></td><td><b>cur</b></td><td><b>max</b></td><td><b>avg</b></td></tr></thead><tbody>".getBytes());
         long tim = motionUtil.getTime();
         for (int i = 0; i < cams.length; i++) {
