@@ -31,7 +31,7 @@ the following directories could be found here:
 * lookingglass web based looking glass
 * sniffer web based packet capture
 * mailer web based mail reader
-* motion web based alarm
+* motion web based alarm/recorder
 * player web based music player/streamer/receiver
 * temper web based thermostat/controller
 * trackmap web based monitoring
