@@ -2,6 +2,7 @@ package net.freertr.sec;
 
 import net.freertr.auth.authGeneric;
 import net.freertr.auth.authResult;
+import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyGeneric;
@@ -11,6 +12,7 @@ import net.freertr.pack.packSshAuth;
 import net.freertr.pack.packSshChan;
 import net.freertr.pack.packSshInit;
 import net.freertr.pack.packSshKex;
+import net.freertr.pack.packSshSign;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
@@ -193,11 +195,42 @@ public class secSsh implements Runnable {
         }
     }
 
-    private boolean serverAuther(packSshAuth pa) {
-        if (!pa.method.equals(packSsh.authenPass)) {
+    private boolean serverAuther(packSsh p, packSshAuth pa) {
+        if (pa.method.equals(packSsh.authenPass)) {
+            servUser = servAuth.authUserPass(pa.username, pa.password);
+            if (servUser == null) {
+                return false;
+            }
+            return servUser.result == authResult.authSuccessful;
+        }
+        if (!pa.method.equals(packSsh.authenPkey)) {
             return false;
         }
-        servUser = servAuth.authUserPass(pa.username, pa.password);
+        if (pa.pkeySign == null) {
+            pa.authPkeyCreate();
+            p.packSend();
+            doPackRecv(p);
+            if (pa.authReqParse()) {
+                return false;
+            }
+        }
+        packSshSign sgn = new packSshSign(pa.password);
+        cryKeyGeneric vrf = sgn.getKeyVerifier();
+        if (vrf == null) {
+            return false;
+        }
+        cryHashGeneric hsh = sgn.getKeyHashAlgo();
+        if (hsh == null) {
+            return false;
+        }
+        String alg = sgn.getKeyHashAlgn();
+        if (alg == null) {
+            return false;
+        }
+        if (vrf.sshReader(pa.pkeyBlob)) {
+            return false;
+        }
+        servUser = servAuth.authUserPkey(vrf, hsh, alg, pa.getAuthen2signed(), pa.username, pa.pkeySign);
         if (servUser == null) {
             return false;
         }
@@ -394,7 +427,7 @@ public class secSsh implements Runnable {
         }
         pg.difHel = pi.getDHgroup();
         pg.hasher = pi.getDHhash();
-        cryKeyGeneric key = pi.getKeySigner(keydsa, keyrsa);
+        cryKeyGeneric key = pi.kexKeys.getKeySigner(keydsa, keyrsa);
         pg.cert = key.sshWriter();
         pg.hashInt(pg.cert.length);
         pg.hashBuf(pg.cert);
@@ -416,7 +449,7 @@ public class secSsh implements Runnable {
             pg.difHel.servXchg();
             pg.difHel.servKey();
             pg.hashCalc();
-            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
+            pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.gexReplyCreate();
             p.packSend();
         } else {
@@ -427,7 +460,7 @@ public class secSsh implements Runnable {
             pg.difHel.servXchg();
             pg.difHel.servKey();
             pg.hashCalc();
-            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
+            pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.kexReplyCreate();
             p.packSend();
         }
@@ -435,7 +468,7 @@ public class secSsh implements Runnable {
             return;
         }
         pg.encSetup(pi, false);
-        packSshAuth pa = new packSshAuth(p);
+        packSshAuth pa = new packSshAuth(p, pg);
         doPackRecv(p);
         if (pa.servReqParse()) {
             return;
@@ -453,7 +486,7 @@ public class secSsh implements Runnable {
             if (pa.authReqParse()) {
                 continue;
             }
-            if (serverAuther(pa)) {
+            if (serverAuther(p, pa)) {
                 break;
             }
             if (!pa.method.equals(packSsh.authenNone)) {
@@ -600,25 +633,27 @@ public class secSsh implements Runnable {
                 return;
             }
         }
-        cryKeyGeneric key = pi.getKeyVerifier();
+        cryKeyGeneric key = pi.kexKeys.getKeyVerifier();
         if (key.sshReader(pg.cert)) {
             return;
         }
-        if (key.sshVerify(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
+        if (key.sshVerify(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
             return;
         }
         if (pi.newKeysExchange()) {
             return;
         }
         pg.encSetup(pi, true);
-        packSshAuth pa = new packSshAuth(p);
+        packSshAuth pa = new packSshAuth(p, pg);
         pa.servReqCreate(packSsh.serviceAuth);
         p.packSend();
         doPackRecv(p);
         if (pa.servAcptParse()) {
             return;
         }
-        pa.authReqCreate(packSsh.serviceConn, clntUser, clntPass);
+        pa.username = clntUser;
+        pa.password = clntPass;
+        pa.authReqCreate(packSsh.serviceConn);
         p.packSend();
         doPackRecv(p);
         if (pa.authSuccParse()) {

@@ -161,13 +161,13 @@ public class authList extends authGeneric {
         return new authResult(this, authResult.authServerError, user, "");
     }
 
-    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, String algn, byte[] chal, String user, byte[] resp) {
         for (int i = 0; i < methods.size(); i++) {
             tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
                 continue;
             }
-            authResult res = ntry.auth.authUserPkey(key, algo, chal, user, resp);
+            authResult res = ntry.auth.authUserPkey(key, algo, algn, chal, user, resp);
             if (res == null) {
                 continue;
             }

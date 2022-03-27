@@ -162,6 +162,11 @@ public class packSsh {
     public final static int typeAuthBann = 53;
 
     /**
+     * auth pubkey
+     */
+    public final static int typeAuthPkey = 60;
+
+    /**
      * global request
      */
     public final static int typeGlobReq = 80;
@@ -252,6 +257,11 @@ public class packSsh {
     public final static String authenPass = "password";
 
     /**
+     * pubkey authentication mode
+     */
+    public final static String authenPkey = "publickey";
+
+    /**
      * type of session
      */
     public final static String sessType = "session";
@@ -325,6 +335,8 @@ public class packSsh {
                 return "auth success";
             case typeAuthBann:
                 return "auth banner";
+            case typeAuthPkey:
+                return "auth pubkey";
             case typeGlobReq:
                 return "global request";
             case typeGlobSucc:

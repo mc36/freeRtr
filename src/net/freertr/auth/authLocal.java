@@ -22,6 +22,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logger;
 
 /**
  * local user database
@@ -551,12 +552,13 @@ public class authLocal extends authGeneric {
      *
      * @param key public key
      * @param algo hash algorithm
+     * @param algn sign algorithm
      * @param chal challenge
      * @param user username
      * @param resp response received
      * @return authentication value
      */
-    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, String algn, byte[] chal, String user, byte[] resp) {
         authLocalEntry ntry = new authLocalEntry();
         ntry.username = user;
         ntry = users.find(ntry);
@@ -587,7 +589,7 @@ public class authLocal extends authGeneric {
         if (bits.byteComp(ntry.pubkey, 0, buf, 0, buf.length) != 0) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
-        if (key.sshVerify(algo, user, chal, resp)) {
+        if (key.sshVerify(algo, algn, chal, resp)) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
         return createPassed(ntry, user, "");

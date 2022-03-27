@@ -116,12 +116,13 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      *
      * @param key public key
      * @param algo hash algorithm
+     * @param algn sign algorithm
      * @param chal challenge
      * @param user username
      * @param resp response received
      * @return authentication value
      */
-    public abstract authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp);
+    public abstract authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, String algn, byte[] chal, String user, byte[] resp);
 
     /**
      * get running configuration

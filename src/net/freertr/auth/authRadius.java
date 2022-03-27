@@ -125,7 +125,7 @@ public class authRadius extends authGeneric {
         return new authResult(this, authResult.authServerError, user, "");
     }
 
-    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, byte[] chal, String user, byte[] resp) {
+    public authResult authUserPkey(cryKeyGeneric key, cryHashGeneric algo, String algn, byte[] chal, String user, byte[] resp) {
         return new authResult(this, authResult.authServerError, user, "");
     }
 
