@@ -980,6 +980,7 @@ public class userShow {
                 return null;
             }
             rdr.putStrTab(brdg.bridgeHed.getShowIfc());
+            rdr.putStrTab(brdg.bridgeHed.getShowStp());
             rdr.putStrTab(brdg.bridgeHed.getShowAdr());
             rdr.putStrTab(brdg.bridgeHed.getShowInsp());
             return null;

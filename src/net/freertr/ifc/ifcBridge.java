@@ -240,7 +240,24 @@ public class ifcBridge implements ifcDn {
         userFormat lst = new userFormat("|", "iface|fwd|phys|tx|rx|drop|tx|rx|drop|grp", "3|3packet|3byte|1");
         lst.add("" + upNtry);
         for (int i = 0; i < ifaces.size(); i++) {
-            lst.add("" + ifaces.get(i).getShow());
+            lst.add("" + ifaces.get(i).getShowIfc());
+        }
+        return lst;
+    }
+
+    /**
+     * get show output
+     *
+     * @return list of interface
+     */
+    public userFormat getShowStp() {
+        if (needStp == 0) {
+            return null;
+        }
+        userFormat lst = new userFormat("|", "iface|fwd|phys|tx|rx|drop");
+        lst.add("" + upNtry);
+        for (int i = 0; i < ifaces.size(); i++) {
+            lst.add("" + ifaces.get(i).getShowStp());
         }
         return lst;
     }
@@ -862,6 +879,7 @@ public class ifcBridge implements ifcDn {
             }
             packHolder pckB = new packHolder(true, true);
             pckS.createHeader(pckB);
+            ntry.stpCntr.tx(pckB);
             ntry.doTxPack(pckB);
         }
         if (stpPort == 0) {
@@ -1148,14 +1166,18 @@ public class ifcBridge implements ifcDn {
     }
 
     private boolean doRxStp(ifcBridgeIfc ifc, packHolder pck) {
+        ifc.stpCntr.rx(pck);
         if (needStp == 0) {
+            ifc.stpCntr.drop(pck, counter.reasons.notUp);
             return true;
         }
         packStp stp = new packStp();
         if (stp.parseHeader(pck)) {
+            ifc.stpCntr.drop(pck, counter.reasons.badHdr);
             return true;
         }
         if (needStp == 2) {
+            ifc.stpCntr.drop(pck, counter.reasons.noBuffer);
             return false;
         }
         if (debugger.ifcBridgeTraf) {
@@ -1185,6 +1207,10 @@ public class ifcBridge implements ifcDn {
             return false;
         }
         if (stpCost > cst) { // better cost
+            if (ifc.fltrStpRoot) {
+                ifc.blocked = true;
+                return false;
+            }
             stpCost = cst;
             stpPort = ifc.ifcNum;
             ifc.blocked = false;

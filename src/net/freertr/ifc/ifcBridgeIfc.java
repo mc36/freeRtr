@@ -124,6 +124,11 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
 
     private counter cntr = new counter();
 
+    /**
+     * stp counters
+     */
+    protected counter stpCntr = new counter();
+
     public counter getCounter() {
         return cntr;
     }
@@ -319,7 +324,7 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
      *
      * @return show
      */
-    public String getShow() {
+    public String getShowIfc() {
         String a = "";
         if (groups != null) {
             for (int i = 0; i < groups.size(); i++) {
@@ -327,6 +332,15 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
             }
         }
         return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + cntr.getShPsum() + "|" + cntr.getShBsum() + "|" + a;
+    }
+
+    /**
+     * get interface show
+     *
+     * @return show
+     */
+    public String getShowStp() {
+        return getIfcName() + "|" + (!blocked) + "|" + physical + "|" + stpCntr.getShPsum();
     }
 
 }
