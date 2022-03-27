@@ -3624,11 +3624,9 @@ public class userConfig {
             }
             for (;;) {
                 if (key.keyMake(i)) {
-                    cmd.error("error generating key");
                     continue;
                 }
                 if (key.keyVerify()) {
-                    cmd.error("bad key generated");
                     continue;
                 }
                 break;
