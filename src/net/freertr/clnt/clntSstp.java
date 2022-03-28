@@ -56,6 +56,11 @@ public class clntSstp implements Runnable, ifcDn {
     public String unique;
 
     /**
+     * client pubkey
+     */
+    public byte[] pubkey;
+
+    /**
      * username to use
      */
     public String username = null;
@@ -251,7 +256,7 @@ public class clntSstp implements Runnable, ifcDn {
         if (pipe == null) {
             return;
         }
-        pipe = secClient.openSec(pipe, url.getSecurity(), null, url.username, url.password);
+        pipe = secClient.openSec(pipe, url.getSecurity(), pubkey, url.username, url.password);
         if (pipe == null) {
             return;
         }

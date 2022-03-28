@@ -42,6 +42,11 @@ public class clntHttp {
      */
     public clntProxy proxy;
 
+    /**
+     * client pubkey
+     */
+    public byte[] pubkey;
+
     private pipeProgress cons;
 
     private RandomAccessFile fr;
@@ -237,10 +242,12 @@ public class clntHttp {
      *
      * @param console console to use
      * @param vrfPrx proxy
+     * @param pubKey pubkey to use
      * @param debugging debug enabled
      */
-    public clntHttp(pipeSide console, clntProxy vrfPrx, boolean debugging) {
+    public clntHttp(pipeSide console, clntProxy vrfPrx, byte[] pubKey, boolean debugging) {
         proxy = vrfPrx;
+        pubkey = pubKey;
         cons = new pipeProgress(pipeDiscard.needAny(console));
         debug = debugger.clntHttpTraf | debugging;
     }
@@ -323,7 +330,7 @@ public class clntHttp {
         if (debug) {
             logger.debug("securing " + url.dump());
         }
-        pipe = secClient.openSec(pipe, url.getSecurity(), null, url.username, url.password);
+        pipe = secClient.openSec(pipe, url.getSecurity(), pubkey, url.username, url.password);
         if (pipe == null) {
             return true;
         }

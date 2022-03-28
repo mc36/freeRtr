@@ -146,11 +146,12 @@ public class secWebsock {
      * start connection
      *
      * @param prx proxy profile to use
+     * @param pubkey pubkey to use
      * @param trg target url
      * @param prt protocol
      * @return pipe if success, null on error
      */
-    public final static pipeSide doConnect(clntProxy prx, uniResLoc trg, String prt) {
+    public final static pipeSide doConnect(clntProxy prx, byte[] pubkey, uniResLoc trg, String prt) {
         addrIP adr = userTerminal.justResolv(trg.server, prx.prefer);
         if (adr == null) {
             return null;
@@ -163,7 +164,7 @@ public class secWebsock {
             if (pipe == null) {
                 return null;
             }
-            pipe = secClient.openSec(pipe, servGeneric.protoTls, null, null, null);
+            pipe = secClient.openSec(pipe, servGeneric.protoTls, pubkey, "", "");
         }
         if (pipe == null) {
             return null;

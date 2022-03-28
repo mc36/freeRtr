@@ -51,6 +51,11 @@ public class clntAnyconn implements Runnable, ifcDn {
     public clntProxy proxy;
 
     /**
+     * public key
+     */
+    public byte[] pubkey;
+
+    /**
      * username to use
      */
     public String username = null;
@@ -233,7 +238,7 @@ public class clntAnyconn implements Runnable, ifcDn {
 
     private void workDoer() {
         url = uniResLoc.parseOne(target);
-        clntHttp cln = new clntHttp(null, proxy, debugger.clntAnyconnTraf);
+        clntHttp cln = new clntHttp(null, proxy, pubkey, debugger.clntAnyconnTraf);
         if (cln.doConnect(url)) {
             return;
         }
@@ -254,7 +259,7 @@ public class clntAnyconn implements Runnable, ifcDn {
             return;
         }
         cookie1 = cln.cookies.get(i).getNamVal();
-        cln = new clntHttp(null, proxy, debugger.clntAnyconnTraf);
+        cln = new clntHttp(null, proxy, pubkey, debugger.clntAnyconnTraf);
         if (cln.doConnect(url)) {
             return;
         }

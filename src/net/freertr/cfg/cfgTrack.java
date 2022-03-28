@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.auth.authLocal;
 import net.freertr.clnt.clntTrack;
+import net.freertr.cry.cryBase64;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
@@ -53,6 +54,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! no exec-up",
         "tracker .*! no exec-down",
         "tracker .*! no chat-script",
+        "tracker .*! no pubkey",
         "tracker .*! no security",
         "tracker .*! no vrf",
         "tracker .*! no source",
@@ -127,6 +129,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "2  2,.      <addr>                   address of target");
         l.add(null, "1  2      vrf                        specify vrf of test");
         l.add(null, "2  .        <name:vrf>               vrf to use");
+        l.add(null, "1  2      pubkey                     specify public key");
+        l.add(null, "2  2,.      <str>                    public key");
         l.add(null, "1  2      security                   select security protocol");
         l.add(null, "2  .        ssh                      use secure shell");
         l.add(null, "2  .        tls                      use transport layer security");
@@ -198,6 +202,11 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             l.add(cmds.tabulator + "wake-vrf " + worker.wakeVrf.name);
         } else {
             l.add(cmds.tabulator + "no wake-vrf");
+        }
+        if (worker.pubkey == null) {
+            l.add(cmds.tabulator + "no pubkey");
+        } else {
+            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(worker.pubkey));
         }
         cmds.cfgLine(l, worker.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(worker.secProto));
         if (worker.chats != null) {
@@ -362,6 +371,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             worker.execDn = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
+        if (a.equals("pubkey")) {
+            worker.pubkey = cryBase64.decodeBytes(cmd.getRemaining());
+            return;
+        }
         if (a.equals("security")) {
             worker.secProto = servGeneric.string2proto(cmd.word());
             return;
@@ -502,6 +515,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("exec-down")) {
             worker.execDn = null;
+            return;
+        }
+        if (a.equals("pubkey")) {
+            worker.pubkey = null;
             return;
         }
         if (a.equals("security")) {

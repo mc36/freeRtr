@@ -1236,6 +1236,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sstp.target = target;
                 sstp.proxy = proxy;
                 sstp.unique = name;
+                sstp.pubkey = pubkey;
                 sstp.username = username;
                 sstp.password = password;
                 sstp.setUpper(ifaceDialer.getEncapProto());
@@ -1276,6 +1277,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 anycon.cfger = ifaceDialer;
                 anycon.target = target;
                 anycon.proxy = proxy;
+                anycon.pubkey = pubkey;
                 anycon.username = username;
                 anycon.password = password;
                 anycon.setUpper(ifaceDialer.getEncapProto());
@@ -1290,6 +1292,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 forti.cfger = ifaceDialer;
                 forti.target = target;
                 forti.proxy = proxy;
+                forti.pubkey = pubkey;
                 forti.username = username;
                 forti.password = password;
                 forti.setUpper(ifaceDialer.getEncapProto());
@@ -1304,6 +1307,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 pulse.cfger = ifaceDialer;
                 pulse.target = target;
                 pulse.proxy = proxy;
+                pulse.pubkey = pubkey;
                 pulse.username = username;
                 pulse.password = password;
                 pulse.setUpper(ifaceDialer.getEncapProto());

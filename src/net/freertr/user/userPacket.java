@@ -1354,7 +1354,7 @@ public class userPacket {
                 cmd.error("bad url");
                 return null;
             }
-            pipeSide strm = secWebsock.doConnect(cfgAll.getClntPrx(null), url, cmd.getRemaining());
+            pipeSide strm = secWebsock.doConnect(cfgAll.getClntPrx(null), null, url, cmd.getRemaining());
             if (strm == null) {
                 cmd.error("failed to connect");
                 return null;

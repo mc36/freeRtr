@@ -184,6 +184,11 @@ public class clntTrack implements rtrBfdClnt {
     public lineScript chats = null;
 
     /**
+     * client pubkey
+     */
+    public byte[] pubkey;
+
+    /**
      * security protocol to use
      */
     public int secProto = 0;
@@ -708,7 +713,7 @@ public class clntTrack implements rtrBfdClnt {
                     break;
                 }
                 pipe.setTime(timeout);
-                pipe = secClient.openSec(pipe, secProto, null, null, null);
+                pipe = secClient.openSec(pipe, secProto, pubkey, "", "");
                 if (pipe == null) {
                     haveResult(false);
                     break;

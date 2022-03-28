@@ -56,6 +56,11 @@ public class clntPulse implements Runnable, ifcDn {
     public clntProxy proxy;
 
     /**
+     * public key
+     */
+    public byte[] pubkey;
+
+    /**
      * username to use
      */
     public String username = null;
@@ -279,7 +284,7 @@ public class clntPulse implements Runnable, ifcDn {
 
     private void workDoer() {
         url = uniResLoc.parseOne(target);
-        clntHttp cln = new clntHttp(null, proxy, debugger.clntPulseTraf);
+        clntHttp cln = new clntHttp(null, proxy, pubkey, debugger.clntPulseTraf);
         if (cln.doConnect(url)) {
             return;
         }
@@ -291,7 +296,7 @@ public class clntPulse implements Runnable, ifcDn {
         cln.doHeaders(url);
         cln.doBody();
         cln.cleanUp();
-        cln = new clntHttp(null, proxy, debugger.clntPulseTraf);
+        cln = new clntHttp(null, proxy, pubkey, debugger.clntPulseTraf);
         if (cln.doConnect(url)) {
             return;
         }
@@ -333,7 +338,7 @@ public class clntPulse implements Runnable, ifcDn {
         if (realm == null) {
             return;
         }
-        cln = new clntHttp(null, proxy, debugger.clntPulseTraf);
+        cln = new clntHttp(null, proxy, pubkey, debugger.clntPulseTraf);
         if (cln.doConnect(url)) {
             return;
         }
@@ -355,7 +360,7 @@ public class clntPulse implements Runnable, ifcDn {
             return;
         }
         cookie = cln.cookies.get(i).value;
-        cln = new clntHttp(null, proxy, debugger.clntPulseTraf);
+        cln = new clntHttp(null, proxy, pubkey, debugger.clntPulseTraf);
         if (cln.doConnect(url)) {
             return;
         }
@@ -533,6 +538,5 @@ public class clntPulse implements Runnable, ifcDn {
         res.add("cookie|" + cookie);
         return res;
     }
-
 
 }
