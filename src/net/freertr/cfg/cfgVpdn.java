@@ -37,6 +37,7 @@ import net.freertr.clnt.clntTdmOudp;
 import net.freertr.clnt.clntTelnet;
 import net.freertr.clnt.clntUti;
 import net.freertr.clnt.clntVxlan;
+import net.freertr.cry.cryBase64;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
@@ -108,6 +109,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
      * calling telephone number
      */
     public String calling;
+
+    /**
+     * public key
+     */
+    public byte[] pubkey;
 
     /**
      * username
@@ -392,6 +398,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         "vpdn .*! no target",
         "vpdn .*! no called",
         "vpdn .*! no calling",
+        "vpdn .*! no pubkey",
         "vpdn .*! no username",
         "vpdn .*! no password",
         "vpdn .*! no mtu",
@@ -642,6 +649,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         } else {
             l.add(cmds.tabulator + "script " + script.name);
         }
+        if (pubkey == null) {
+            l.add(cmds.tabulator + "no pubkey");
+        } else {
+            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(pubkey));
+        }
         cmds.cfgLine(l, target == null, cmds.tabulator, "target", target);
         cmds.cfgLine(l, username == null, cmds.tabulator, "username", username);
         cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
@@ -736,6 +748,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    <str>                        called number");
         l.add(null, "1 2  calling                        specify calling number");
         l.add(null, "2 .    <str>                        calling number");
+        l.add(null, "1 2  pubkey                         specify public key");
+        l.add(null, "2 2,.  <str>                        public key");
         l.add(null, "1 2  username                       specify username");
         l.add(null, "2 .    <str>                        username");
         l.add(null, "1 2  password                       specify password");
@@ -892,6 +906,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             vcid = bits.str2num(cmd.word());
             return;
         }
+        if (s.equals("pubkey")) {
+            pubkey = cryBase64.decodeBytes(cmd.getRemaining());
+            return;
+        }
         if (s.equals("username")) {
             username = cmd.word();
             return;
@@ -966,6 +984,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("vcid")) {
             vcid = 0;
+            return;
+        }
+        if (s.equals("pubkey")) {
+            pubkey = null;
             return;
         }
         if (s.equals("username")) {
@@ -1235,7 +1257,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sdwan.ctrlPort = vcid;
                 sdwan.dataRand = ctrlWrd;
                 sdwan.dataPort = bits.str2num("" + calling);
-                sdwan.pubkey = called;
+                sdwan.pubkey = pubkey;
                 sdwan.prefer = prefer;
                 sdwan.srcVrf = proxy.vrf;
                 sdwan.srcIfc = proxy.srcIfc;
@@ -1356,6 +1378,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 telnet.target = target;
                 telnet.proxy = proxy;
                 telnet.port = vcid;
+                telnet.pubkey = pubkey;
                 telnet.security = servGeneric.protoTls;
                 telnet.script = script.script;
                 telnet.setUpper(ifaceDialer.getEncapProto());
@@ -1370,6 +1393,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 telnet.target = target;
                 telnet.proxy = proxy;
                 telnet.port = vcid;
+                telnet.pubkey = pubkey;
                 telnet.username = username;
                 telnet.password = password;
                 telnet.security = servGeneric.protoSsh;

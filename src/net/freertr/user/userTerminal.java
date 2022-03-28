@@ -91,11 +91,12 @@ public class userTerminal {
      *
      * @param stream connection to use
      * @param proto protocol to use
+     * @param pubkey public key
      * @param user username
      * @param pass password
      * @return pipeline of this connection, null=error
      */
-    public pipeSide startSecurity(pipeSide stream, int proto, String user, String pass) {
+    public pipeSide startSecurity(pipeSide stream, int proto, byte[] pubkey, String user, String pass) {
         proto &= servGeneric.protoSec;
         if (stream == null) {
             return null;
@@ -112,7 +113,7 @@ public class userTerminal {
             }
         }
         console.strPut("securing connection");
-        stream = secClient.openSec(stream, proto, null, user, pass);
+        stream = secClient.openSec(stream, proto, pubkey, user, pass);
         if (stream == null) {
             console.linePut(" failed!");
             return null;

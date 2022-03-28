@@ -1405,7 +1405,7 @@ public class userPacket {
                 return null;
             }
             a = cmd.word();
-            conn = trm.startSecurity(conn, servGeneric.protoSsh, a, cmd.word());
+            conn = trm.startSecurity(conn, servGeneric.protoSsh, null, a, cmd.word());
             if (conn == null) {
                 return null;
             }

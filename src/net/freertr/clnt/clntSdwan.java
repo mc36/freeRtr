@@ -89,7 +89,7 @@ public class clntSdwan implements Runnable, ifcDn {
     /**
      * pubkey to use
      */
-    public String pubkey = null;
+    public byte[] pubkey = null;
 
     /**
      * username to use
@@ -381,11 +381,7 @@ public class clntSdwan implements Runnable, ifcDn {
             logger.error("unable to validate " + trg);
             return;
         }
-        byte[] pkey = null;
-        if (pubkey != null) {
-            pkey = cryBase64.decodeBytes(pubkey);
-        }
-        conn = secClient.openSec(conn, servGeneric.protoSsh, pkey, username, password);
+        conn = secClient.openSec(conn, servGeneric.protoSsh, pubkey, username, password);
         if (conn == null) {
             logger.error("unable to authenticate " + trg);
             return;

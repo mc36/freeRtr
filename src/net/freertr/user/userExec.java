@@ -1272,6 +1272,8 @@ public class userExec {
         hl.add(null, "4 4,.        /ipv6               specify ipv6 to use");
         hl.add(null, "4 5          /vrf                specify vrf to use");
         hl.add(null, "5 4,.          <name:vrf>        name of vrf");
+        hl.add(null, "4 5          /pubkey             specify public key to expect");
+        hl.add(null, "5 4,.          <str>             public key");
         hl.add(null, "4 5          /user               specify username to use");
         hl.add(null, "5 4,.          <str>             username");
         hl.add(null, "4 5          /pass               specify password to use");
@@ -3765,6 +3767,7 @@ public class userExec {
         cfgChat cht = null;
         String user = null;
         String pass = null;
+        byte[] pubkey = null;
         int proto = 0;
         int dgrm = servGeneric.protoTcp;
         for (;;) {
@@ -3791,6 +3794,10 @@ public class userExec {
             }
             if (a.equals("/interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
+                continue;
+            }
+            if (a.equals("/pubkey")) {
+                pubkey = cryBase64.decodeBytes(cmd.word());
                 continue;
             }
             if (a.equals("/proxy")) {
@@ -3868,7 +3875,7 @@ public class userExec {
             return;
         }
         pipe.linePut(" ok!");
-        strm = term.startSecurity(strm, secur, user, pass);
+        strm = term.startSecurity(strm, secur, pubkey, user, pass);
         if (strm == null) {
             return;
         }

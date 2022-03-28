@@ -43,6 +43,11 @@ public class clntTelnet implements Runnable, ifcDn {
     public int security;
 
     /**
+     * pubkey to use
+     */
+    public byte[] pubkey = null;
+
+    /**
      * username
      */
     public String username;
@@ -223,7 +228,7 @@ public class clntTelnet implements Runnable, ifcDn {
         }
         conn.setTime(120000);
         if (security > 0) {
-            conn = secClient.openSec(conn, security, null, username, password);
+            conn = secClient.openSec(conn, security, pubkey, username, password);
         }
         if (conn == null) {
             return;
