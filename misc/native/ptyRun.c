@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     if (childPid == -1) err("error creating pty");
     if (childPid == 0) {
         printf("child started\r\n");
-        execvp(argv[1], &(argv[1]));
+        if (execvp(argv[1], &(argv[1])) == -1) err("error executing process");
         return 0;
     }
     printf("child %i created on %i\r\n", childPid, commSock);
