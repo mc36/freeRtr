@@ -60,6 +60,6 @@ for fn in ptyRun; do
   compileFile $fn "" "-lutil" ""
   done
 
-for fn in dummyCon; do
+for fn in dummyCon daemonRun; do
   compileFile $fn "" "" ""
   done
