@@ -14,7 +14,6 @@ traffic through bgp sr-policy
 traffic through bgp nsh
 parse privilege levels from tacacs
 ldap client, server
-trustpoint for certificates
 dhcp relay support
 tcp selective ack
 xot, x75 switching

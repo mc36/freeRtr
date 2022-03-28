@@ -963,7 +963,7 @@ public class userTest {
         clnH.minVer = srvH.minVer;
         clnH.maxVer = srvH.maxVer;
         srvH.startServer(rsa, dss, ecdss, null, null, null);
-        clnH.startClient();
+        clnH.startClient(null);
         pipeSide pip = srvH.getPipe();
         pip.wait4ready(5000);
         doTestPipe(packTls.version2string(dtls, srvH.minVer), pip, clnH.getPipe(), 1024);

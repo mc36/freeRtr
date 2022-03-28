@@ -51,7 +51,7 @@ public class secClient {
                 if (a.length() > 1) {
                     tls.serverName = a;
                 }
-                tls.startClient();
+                tls.startClient(pubkey);
                 pipe = tls.getPipe();
                 break;
             case servGeneric.protoTelnet:

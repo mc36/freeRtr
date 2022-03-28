@@ -116,6 +116,11 @@ public class packTlsHndshk {
      * list of certificates
      */
     public List<byte[]> certificates;
+    
+    /**
+     * certificate used
+     */
+    public cryCertificate certUsed;
 
     /**
      * diffie hellman parameters
@@ -1300,16 +1305,16 @@ public class packTlsHndshk {
         paramHsh = getSignerHash(signHsh);
         paramHash = cryHashGeneric.compute(paramHsh, paramHash);
         servKexDump();
-        cryCertificate crt = new cryCertificate();
-        if (crt.asn1ReadBuf(certificates.get(0))) {
+        certUsed = new cryCertificate();
+        if (certUsed.asn1ReadBuf(certificates.get(0))) {
             logger.info("cert error");
             return true;
         }
         if (debugger.secTlsTraf) {
-            logger.debug("cert=" + crt);
+            logger.debug("cert=" + certUsed);
         }
-        if (crt.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
-            logger.info("sign error on " + crt);
+        if (certUsed.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
+            logger.info("sign error on " + certUsed);
             return true;
         }
         return false;
@@ -1491,21 +1496,21 @@ public class packTlsHndshk {
         }
         signDat = lower.getBytes(2);
         servKexDump("rx");
-        cryCertificate crt = new cryCertificate();
-        if (crt.asn1ReadBuf(certificates.get(0))) {
+        certUsed = new cryCertificate();
+        if (certUsed.asn1ReadBuf(certificates.get(0))) {
             logger.info("cert error");
             return true;
         }
         if (debugger.secTlsTraf) {
-            logger.debug("cert=" + crt);
+            logger.debug("cert=" + certUsed);
         }
         servKexHash();
         if (paramHash == null) {
             return true;
         }
         servKexDump();
-        if (crt.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
-            logger.info("sign error on " + crt);
+        if (certUsed.key.tlsVerify(signHsh, paramHsh, paramHash, signDat)) {
+            logger.info("sign error on " + certUsed);
             return true;
         }
         return false;

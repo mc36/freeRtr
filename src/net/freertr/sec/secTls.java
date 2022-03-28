@@ -76,6 +76,11 @@ public class secTls implements Runnable {
     protected cryCertificate certecdsa;
 
     /**
+     * client pubkey
+     */
+    protected byte[] clntPubkey;
+
+    /**
      * minimum version
      */
     public int minVer = -1;
@@ -121,9 +126,12 @@ public class secTls implements Runnable {
 
     /**
      * start client connection
+     *
+     * @param pubkey pubkey
      */
-    public void startClient() {
+    public void startClient(byte[] pubkey) {
         client = true;
+        clntPubkey = pubkey;
         workerStart();
     }
 
@@ -295,6 +303,29 @@ public class secTls implements Runnable {
         }
     }
 
+    private packTls verifyCerts(packTls p, packTlsHndshk ph) {
+        if (p == null) {
+            return null;
+        }
+        if (clntPubkey == null) {
+            return p;
+        }
+        if (debugger.secTlsTraf) {
+            logger.debug("verify trust");
+        }
+        if (ph.certUsed == null) {
+            return null;
+        }
+        cryCertificate crt = new cryCertificate();
+        if (crt.asn1ReadBuf(clntPubkey)) {
+            return null;
+        }
+        if (cryCertificate.testClientCert(ph.certUsed, crt)) {
+            return null;
+        }
+        return p;
+    }
+
     private packTls workerClient() {
         if (debugger.secTlsTraf) {
             logger.debug("starting");
@@ -397,7 +428,7 @@ public class secTls implements Runnable {
             p.apackSend();
             ph.applyKeys(true, true);
             p.verCurr = ph.minVer;
-            return p;
+            return verifyCerts(p, ph);
         }
         p.packRecv();
         if (ph.headerParse()) {
@@ -450,7 +481,7 @@ public class secTls implements Runnable {
         if (ph.finishedParse()) {
             return null;
         }
-        return p;
+        return verifyCerts(p, ph);
     }
 
     private packTls workerServer() {
