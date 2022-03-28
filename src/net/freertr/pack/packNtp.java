@@ -144,6 +144,10 @@ public class packNtp {
         }
     }
 
+    private static final long base0 = 2085978496000L;
+
+    private static final long base1 = -2208988800000L;
+
     /**
      * decode ntp time
      *
@@ -151,7 +155,14 @@ public class packNtp {
      * @return decoded
      */
     public static long decode(long tim) {
-        return ((tim >>> 32) * 1000) - timDif;
+        long sec = (tim >>> 32) & 0xffffffffL;
+        long frc = tim & 0xffffffffL;
+        frc = (1000L * frc) / 0x100000000L;
+        if ((sec & 0x80000000L) == 0) {
+            return base0 + (sec * 1000) + frc;
+        } else {
+            return base1 + (sec * 1000) + frc;
+        }
     }
 
     /**
@@ -161,7 +172,19 @@ public class packNtp {
      * @return encoded
      */
     public static long encode(long tim) {
-        return ((tim + timDif) / 1000) << 32;
+        boolean msb = tim < base0;
+        long base;
+        if (msb) {
+            base = tim - base1;
+        } else {
+            base = tim - base0;
+        }
+        long sec = base / 1000;
+        long frc = ((base % 1000) * 0x100000000L) / 1000;
+        if (msb) {
+            sec |= 0x80000000L;
+        }
+        return sec << 32 | frc;
     }
 
     public String toString() {
