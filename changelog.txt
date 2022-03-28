@@ -13083,3 +13083,5 @@ no failed: ppp address propagation
 qc pass: ppp address propagation
 ---------------------------------- 2022-03-22 05:33:09
 todo: incremental fib calculation from bgp change list
+---------------------------------- 2022-03-28 14:51:21
+no todo: trustpoint for certificates

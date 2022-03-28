@@ -2794,7 +2794,6 @@ todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: parse privilege levels from tacacs
 todo: ldap client, server
-todo: trustpoint for certificates
 todo: dhcp relay support
 todo: tcp selective ack
 todo: xot, x75 switching
