@@ -328,9 +328,13 @@ class servVoiceScr implements Runnable {
         new Thread(this).start();
     }
 
+    public void doWork() {
+        s.cmdAll();
+    }
+
     public void run() {
         try {
-            s.cmdAll();
+            doWork();
         } catch (Exception e) {
             logger.traceback(e);
         }

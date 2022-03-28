@@ -560,12 +560,9 @@ public class userUpgrade {
         userScript s = new userScript(pip, "");
         s.allowExec = true;
         s.allowConfig = true;
+        s.addLine("set path \"" + version.getRWpath() + "\"");
         s.addLines(scr);
-        try {
-            s.cmdAll();
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
+        s.cmdAll();
         pl.setClose();
         return false;
     }
