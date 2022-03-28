@@ -50,6 +50,11 @@ public class clntProxy {
     public int port;
 
     /**
+     * public key
+     */
+    public byte[] pubkey;
+
+    /**
      * username to use
      */
     public String username = null;
@@ -238,7 +243,7 @@ public class clntProxy {
                 return null;
             }
             pip.setTime(120000);
-            pip = secClient.openSec(pip, secProto, null, username, password);
+            pip = secClient.openSec(pip, secProto, pubkey, username, password);
             if (pip == null) {
                 return null;
             }
@@ -291,7 +296,7 @@ public class clntProxy {
                 pip.setClose();
                 return null;
             }
-            pip = secClient.openSec(pip, secProto, null, username, password);
+            pip = secClient.openSec(pip, secProto, pubkey, username, password);
             if (pip == null) {
                 return null;
             }
@@ -316,7 +321,7 @@ public class clntProxy {
         if (pip == null) {
             return null;
         }
-        pip = secClient.openSec(pip, secProto, null, username, password);
+        pip = secClient.openSec(pip, secProto, pubkey, username, password);
         if (pip == null) {
             return null;
         }

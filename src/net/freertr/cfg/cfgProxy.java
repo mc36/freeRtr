@@ -6,6 +6,7 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.auth.authLocal;
 import net.freertr.clnt.clntProxy;
+import net.freertr.cry.cryBase64;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
@@ -43,6 +44,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         "proxy-profile .*! no description",
         "proxy-profile .*! protocol local",
         "proxy-profile .*! no security",
+        "proxy-profile .*! no pubkey",
         "proxy-profile .*! no username",
         "proxy-profile .*! no password",
         "proxy-profile .*! no recursive",
@@ -92,10 +94,12 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "2 .    tls                          use transport layer security");
         l.add(null, "2 .    dtls                         use datagram transport layer security");
         l.add(null, "2 .    telnet                       use telnet protocol");
+        l.add(null, "1 2  pubkey                         public key to expect");
+        l.add(null, "2 2,.  <str>                        public key");
         l.add(null, "1 2  username                       username to send");
         l.add(null, "2 .    <str>                        username");
         l.add(null, "1 2  password                       password to send");
-        l.add(null, "2 .    <str>                        username");
+        l.add(null, "2 .    <str>                        password");
         l.add(null, "1 2  recursive                      name of profile to use");
         l.add(null, "2 .    <name:prx>                   profile name");
         l.add(null, "1 2  vrf                            name of vrf to find target in");
@@ -121,6 +125,11 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add("proxy-profile " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", "" + description);
         l.add(cmds.tabulator + "protocol " + clntProxy.type2string(proxy.prxProto));
+        if (proxy.pubkey == null) {
+            l.add(cmds.tabulator + "no pubkey");
+        } else {
+            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(proxy.pubkey));
+        }
         cmds.cfgLine(l, proxy.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(proxy.secProto));
         cmds.cfgLine(l, proxy.username == null, cmds.tabulator, "username", proxy.username);
         cmds.cfgLine(l, proxy.password == null, cmds.tabulator, "password", authLocal.passwdEncode(proxy.password, (filter & 2) != 0));
@@ -179,6 +188,10 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         }
         if (s.equals("security")) {
             proxy.secProto = servGeneric.string2proto(cmd.word());
+            return;
+        }
+        if (s.equals("pubkey")) {
+            proxy.pubkey = cryBase64.decodeBytes(cmd.getRemaining());
             return;
         }
         if (s.equals("username")) {
@@ -252,6 +265,10 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         }
         if (s.equals("security")) {
             proxy.secProto = 0;
+            return;
+        }
+        if (s.equals("pubkey")) {
+            proxy.pubkey = null;
             return;
         }
         if (s.equals("username")) {

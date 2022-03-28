@@ -98,7 +98,7 @@ public class servForwarder extends servGeneric implements prtServS {
     /**
      * public key
      */
-    public String trgKey = null;
+    public byte[] trgKey = null;
 
     /**
      * defaults text
@@ -137,7 +137,11 @@ public class servForwarder extends servGeneric implements prtServS {
         } else {
             l.add(beg + "target interface " + trgIface.name);
         }
-        cmds.cfgLine(l, trgKey == null, beg, "target pubkey", "" + trgKey);
+        if (trgKey == null) {
+            l.add(beg + "no target pubkey");
+        } else {
+            l.add(beg + "target pubkey " + cryBase64.encodeBytes(trgKey));
+        }
         cmds.cfgLine(l, trgAddr == null, beg, "target address", "" + trgAddr);
         l.add(beg + "target port " + trgPort);
         l.add(beg + "target protocol " + proto2string(trgProto));
@@ -165,7 +169,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (a.equals("target")) {
             a = cmd.word();
             if (a.equals("pubkey")) {
-                trgKey = cmd.getRemaining();
+                trgKey = cryBase64.decodeBytes(cmd.getRemaining());
                 return false;
             }
             if (a.equals("vrf")) {
@@ -365,11 +369,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (con2.wait4ready(timeOut)) {
             return true;
         }
-        byte[] pkey = null;
-        if (trgKey != null) {
-            pkey = cryBase64.decodeBytes(trgKey);
-        }
-        pipeSide con3 = secClient.openSec(con2, trgSecur, null, trgUser, trgPass);
+        pipeSide con3 = secClient.openSec(con2, trgSecur, trgKey, trgUser, trgPass);
         if (con3 == null) {
             con2.setClose();
             return true;

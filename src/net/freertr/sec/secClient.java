@@ -21,12 +21,12 @@ public class secClient {
      *
      * @param pipe pipeline to use
      * @param proto protocol to use
-     * @param pkey pubkey to use
+     * @param pubkey pubkey to use
      * @param user username to send
      * @param pass password to send
      * @return secure pipeline, null on error
      */
-    public static pipeSide openSec(pipeSide pipe, int proto, byte[] pkey, String user, String pass) {
+    public static pipeSide openSec(pipeSide pipe, int proto, byte[] pubkey, String user, String pass) {
         if (pipe == null) {
             return null;
         }
@@ -39,7 +39,7 @@ public class secClient {
         switch (proto & servGeneric.protoSec) {
             case servGeneric.protoSsh:
                 secSsh ssh = new secSsh(pipe, new pipeLine(65536, false));
-                ssh.startClient(pkey, user, pass);
+                ssh.startClient(pubkey, user, pass);
                 pipe = ssh.getPipe();
                 break;
             case servGeneric.protoTls:

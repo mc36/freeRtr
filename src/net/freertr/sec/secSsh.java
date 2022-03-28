@@ -81,7 +81,7 @@ public class secSsh implements Runnable {
     /**
      * client pubkey
      */
-    protected byte[] clntPkey;
+    protected byte[] clntPubkey;
 
     /**
      * client username
@@ -145,15 +145,15 @@ public class secSsh implements Runnable {
     /**
      * start client connection
      *
-     * @param pkey pubkey
+     * @param pubkey pubkey
      * @param user username
      * @param pass password
      */
-    public void startClient(byte[] pkey, String user, String pass) {
+    public void startClient(byte[] pubkey, String user, String pass) {
         client = true;
         clntUser = user;
         clntPass = pass;
-        clntPkey = pkey;
+        clntPubkey = pubkey;
         workerStart();
     }
 
@@ -668,11 +668,11 @@ public class secSsh implements Runnable {
         pg.hashBuf(pg.cert);
         pg.hashMerge();
         pg.hashCalc();
-        if (clntPkey != null) {
-            if (clntPkey.length != pg.cert.length) {
+        if (clntPubkey != null) {
+            if (clntPubkey.length != pg.cert.length) {
                 return;
             }
-            if (bits.byteComp(clntPkey, 0, pg.cert, 0, clntPkey.length) != 0) {
+            if (bits.byteComp(clntPubkey, 0, pg.cert, 0, clntPubkey.length) != 0) {
                 return;
             }
         }
