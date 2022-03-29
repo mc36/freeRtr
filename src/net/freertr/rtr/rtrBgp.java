@@ -1976,14 +1976,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             oldAggr = true;
             return true;
-        } else {
-            if (oldAggr) {
-                if (debugger.rtrBgpFull) {
-                    logger.debug("old aggregation");
-                }
-                oldAggr = false;
-                return true;
+        }
+        if (oldAggr) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("old aggregation");
             }
+            oldAggr = false;
+            return true;
         }
         if ((segrouLab != null) || (bierLab != null)) {
             return true;

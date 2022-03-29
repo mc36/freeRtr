@@ -689,11 +689,11 @@ public class tabRoute<T extends addrType> {
     /**
      * fix nexthops on a route entry
      *
+     * @param <T> class of address
      * @param imp route entry to update
      * @param recurs where to look up nexthops recursively
      * @param nexthops table where look up resolved nexthops
      * @param recurn maximum recursion depth
-     * @param distan highest allowed distance
      * @return true if failed, false if ready
      */
     public static <T extends addrType> boolean doNexthopFix(tabRouteEntry<T> imp, tabRoute<T> recurs, tabRoute<T> nexthops, int recurn) {

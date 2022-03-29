@@ -537,7 +537,7 @@ public class userClear {
                     cmd.error("no such vrf");
                     return null;
                 }
-                vrf.fwd4.routerStaticChg();
+                vrf.fwd4.routerConfigChg();
                 return null;
             }
             if (a.equals("nat")) {
@@ -630,7 +630,7 @@ public class userClear {
                     cmd.error("no such vrf");
                     return null;
                 }
-                vrf.fwd6.routerStaticChg();
+                vrf.fwd6.routerConfigChg();
                 return null;
             }
             if (a.equals("nat")) {

@@ -435,10 +435,11 @@ public class ipFwdTab {
      * notify routers about table change
      *
      * @param lower forwarder
+     * @param ful full recomputation
      * @param chg main table changed
      * @param tim time
      */
-    protected static void notifyRouters(ipFwd lower, boolean chg, long tim) {
+    protected static void notifyRouters(ipFwd lower, boolean ful, boolean chg, long tim) {
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -474,12 +475,14 @@ public class ipFwdTab {
                 ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM);
                 ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF);
             }
-            boolean diff = tabU.differs(tabRoute.addType.alters, rtr.routerRedistedU) || tabM.differs(tabRoute.addType.alters, rtr.routerRedistedM) || tabF.differs(tabRoute.addType.alters, rtr.routerRedistedF);
-            if (chg) {
-                rtr.routerOthersChanged();
-            }
-            if (!diff) {
-                continue;
+            if (!ful) {
+                boolean diff = tabU.differs(tabRoute.addType.alters, rtr.routerRedistedU) || tabM.differs(tabRoute.addType.alters, rtr.routerRedistedM) || tabF.differs(tabRoute.addType.alters, rtr.routerRedistedF);
+                if (chg) {
+                    rtr.routerOthersChanged();
+                }
+                if (!diff) {
+                    continue;
+                }
             }
             tabU.optimize4lookup();
             tabM.optimize4lookup();
@@ -1650,7 +1653,8 @@ public class ipFwdTab {
      */
     protected static boolean updateEverything(ipFwd lower) {
         long tim = bits.getTime();
-        boolean chg = lower.needFull.set(0) > 0;
+        int ful = lower.needFull.set(0);
+        boolean chg = ful > 0;
         chg |= (lower.changedUni.size() + lower.changedMlt.size() + lower.changedFlw.size()) > lower.incrLimit;
         chg |= !lower.incrCandid;
         if (chg) {
@@ -1667,7 +1671,7 @@ public class ipFwdTab {
         updateTableEcho(lower, tim);
         updateTableTrfng(lower, tim);
         updateTableMplsp(lower);
-        notifyRouters(lower, chg, tim);
+        notifyRouters(lower, (ful & 2) != 0, chg, tim);
         lower.tableChanger();
         lower.updateLast = bits.getTime();
         lower.updateCount++;

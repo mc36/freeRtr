@@ -438,7 +438,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * candidate for incrementals
      */
     protected boolean incrCandid;
-    
+
     /**
      * should compute tables
      */
@@ -569,7 +569,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         hstryT = new history();
         cntrL = new counter();
         hstryL = new history();
-        needFull = new syncInt(1);
+        needFull = new syncInt(3);
         triggerUpdate = new notifier();
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
@@ -582,7 +582,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void stopThisVrf() {
         untriggeredRecomputation = -1;
-        needFull.add(1);
+        needFull.or(3);
         triggerUpdate.wakeup();
         prefixMode = labelMode.common;
         for (int i = 0; i < labeldR.size(); i++) {
@@ -715,7 +715,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             mp.updateState(this);
         }
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -757,7 +757,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry != null) {
             ntry.workStop();
         }
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -1004,7 +1004,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (rou.track != null) {
             rou.track.clients.del(this);
         }
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -1024,7 +1024,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (rou.track != null) {
             rou.track.clients.add(this);
         }
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -1052,7 +1052,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         lower.setUpper(this, ntry);
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
         return ntry;
     }
@@ -1085,7 +1085,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             grp.flood.del(ifc);
         }
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -1116,7 +1116,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 prt.upper.setState(ifc, stat);
             }
         }
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -1135,7 +1135,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ifc.mask = mask;
         ifc.network = new addrPrefix<addrIP>(addr, mask);
         ifc.point2point = mask >= (addrIP.size * 8 - 1);
-        needFull.add(1);
+        needFull.or(1);
         triggerUpdate.wakeup();
     }
 
@@ -1597,7 +1597,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         rtr.routerProtoTyp = typ;
         rtr.routerProcNum = id;
         routers.add(rtr);
-        needFull.add(1);
+        needFull.or(3);
         triggerUpdate.wakeup();
     }
 
@@ -1613,7 +1613,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (routers.del(rtr) == null) {
             return;
         }
-        needFull.add(1);
+        needFull.or(3);
         triggerUpdate.wakeup();
         rtr.routerCloseNow();
     }
@@ -1640,7 +1640,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             rtr.routerChangedM = null;
             rtr.routerChangedF = null;
         } else {
-            needFull.add(1);
+            needFull.or(1);
         }
         triggerUpdate.wakeup();
     }
@@ -1649,7 +1649,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * static route change happened
      */
     public void routerStaticChg() {
-        needFull.add(1);
+        needFull.or(1);
+        triggerUpdate.wakeup();
+    }
+
+    /**
+     * router config change happened
+     */
+    public void routerConfigChg() {
+        needFull.or(3);
         triggerUpdate.wakeup();
     }
 

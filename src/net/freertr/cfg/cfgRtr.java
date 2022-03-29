@@ -840,7 +840,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     public static boolean doCfgRedist(ipRtr rtr, ipFwd fwd, boolean neg, String a, cmds cmd) {
         if (a.equals("ecmp")) {
             rtr.routerEcmp = !neg;
-            fwd.routerStaticChg();
+            fwd.routerConfigChg();
             return false;
         }
         if (a.equals("redistribute")) {
@@ -853,7 +853,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 rtr.routerRedisting.put(ntry);
             }
-            fwd.routerStaticChg();
+            fwd.routerConfigChg();
             return false;
         }
         if (a.equals("justadvert")) {
@@ -870,7 +870,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } catch (Exception e) {
                 cmd.error("no such iface");
             }
-            fwd.routerStaticChg();
+            fwd.routerConfigChg();
             return false;
         }
         if (a.equals("advertise")) {
@@ -883,7 +883,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 rtr.routerAdverting.put(ntry);
             }
-            fwd.routerStaticChg();
+            fwd.routerConfigChg();
             return false;
         }
         if (a.equals("aggregate")) {
@@ -896,7 +896,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 rtr.routerAggregating.put(ntry);
             }
-            fwd.routerStaticChg();
+            fwd.routerConfigChg();
             return false;
         }
         return true;
