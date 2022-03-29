@@ -329,7 +329,9 @@ public class rtrEigrp extends ipRtr implements Runnable {
             }
         }
         tab2.setProto(routerProtoTyp, routerProcNum);
-        tab2.preserveTime(routerComputedU);
+        if (tab2.preserveTime(routerComputedU)) {
+            return;
+        }
         routerComputedU = tab2;
         routerComputedM = tab2;
         routerComputedF = new tabRoute<addrIP>("rx");

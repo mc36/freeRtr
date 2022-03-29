@@ -135,7 +135,9 @@ public class rtrMobile extends ipRtr implements Runnable {
             }
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, res, res, fwdCore.commonLabel, null, 0);
-        res.preserveTime(routerComputedU);
+        if (res.preserveTime(routerComputedU)) {
+            return;
+        }
         routerComputedU = res;
         fwdCore.routerChg(this);
     }

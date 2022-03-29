@@ -226,7 +226,9 @@ public class rtrOspf6 extends ipRtr {
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
-        tab1.preserveTime(routerComputedU);
+        if (tab1.preserveTime(routerComputedU)) {
+            return;
+        }
         routerComputedU = tab1;
         routerComputedM = tab1;
         routerComputedF = new tabRoute<addrIP>("rx");

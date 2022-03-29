@@ -853,7 +853,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         lastSpf = spf;
         tab2.setProto(routerProtoTyp, routerProcNum);
-        tab2.preserveTime(routerComputedU);
+        if (tab2.preserveTime(routerComputedU)) {
+            return;
+        }
         routerComputedU = tab2;
         routerComputedM = tab2;
         routerComputedF = new tabRoute<addrIP>("rx");

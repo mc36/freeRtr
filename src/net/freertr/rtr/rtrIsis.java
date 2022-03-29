@@ -1041,17 +1041,19 @@ public class rtrIsis extends ipRtr {
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
-        tab1.preserveTime(routerComputedU);
-        routerComputedU = tab1;
-        routerComputedM = tab1;
-        routerComputedF = new tabRoute<addrIP>("rx");
-        routerComputedI = tab3;
-        fwdCore.routerChg(this);
+        if (!tab1.preserveTime(routerComputedU)) {
+            routerComputedU = tab1;
+            routerComputedM = tab1;
+            routerComputedF = new tabRoute<addrIP>("rx");
+            routerComputedI = tab3;
+            fwdCore.routerChg(this);
+        }
         tab2.setProto(routerProtoTyp, routerProcNum);
-        tab2.preserveTime(other.routerComputedU);
-        other.routerComputedU = tab2;
-        other.routerComputedM = tab2;
-        other.fwd.routerChg(other);
+        if (!tab2.preserveTime(other.routerComputedU)) {
+            other.routerComputedU = tab2;
+            other.routerComputedM = tab2;
+            other.fwd.routerChg(other);
+        }
     }
 
     /**

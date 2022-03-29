@@ -136,8 +136,11 @@ public class rtrAggreg extends ipRtr {
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, resU, resU, fwdCore.commonLabel, null, 0);
         routerDoAggregates(rtrBgpUtil.sfiMulticast, resM, resM, fwdCore.commonLabel, null, 0);
-        resU.preserveTime(routerComputedU);
-        resM.preserveTime(routerComputedM);
+        boolean same = resU.preserveTime(routerComputedU);
+        same &= resM.preserveTime(routerComputedM);
+        if (same) {
+            return;
+        }
         routerComputedU = resU;
         routerComputedM = resM;
         fwdCore.routerChg(this);
