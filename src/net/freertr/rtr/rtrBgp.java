@@ -1962,6 +1962,27 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
 
     private boolean computeIncr() {
         long tim = bits.getTime();
+        if (changedCur > incrLimit) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("limit exceeded");
+            }
+            return true;
+        }
+        if (routerAggregating.size() > 0) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("aggregation");
+            }
+            oldAggr = true;
+            return true;
+        } else {
+            if (oldAggr) {
+                if (debugger.rtrBgpFull) {
+                    logger.debug("old aggregation");
+                }
+                oldAggr = false;
+                return true;
+            }
+        }
         if ((segrouLab != null) || (bierLab != null)) {
             return true;
         }
@@ -2202,34 +2223,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " start");
         }
-        int chg = changedUni.size() + changedMlt.size() + changedOtrU.size()
+        changedCur = changedUni.size() + changedMlt.size() + changedOtrU.size()
                 + changedOtrM.size() + changedOtrF.size() + changedOtrS.size() + changedFlw.size()
                 + changedVpnU.size() + changedVpnM.size() + changedVpnF.size()
                 + changedVpoU.size() + changedVpoM.size() + changedVpoF.size()
                 + changedVpls.size() + changedMspw.size() + changedEvpn.size()
                 + changedMdt.size() + changedNsh.size() + changedSrte.size()
                 + changedLnks.size() + changedMvpn.size() + changedMvpo.size();
-        if (chg > incrLimit) {
-            if (debugger.rtrBgpFull) {
-                logger.debug("limit exceeded");
-            }
-            needFull.add(1);
-        }
-        if (oldAggr) {
-            if (debugger.rtrBgpFull) {
-                logger.debug("aggregation");
-            }
-            needFull.add(1);
-        }
-        if (routerAggregating.size() > 0) {
-            if (debugger.rtrBgpFull) {
-                logger.debug("aggregation");
-            }
-            needFull.add(1);
-            oldAggr = true;
-        } else {
-            oldAggr = false;
-        }
+        changedTot += changedCur;
         if (needFull.get() > 0) {
             computeFull();
         } else if (computeIncr()) {
@@ -2250,8 +2251,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.transmit.wakeup();
         }
-        changedCur = chg;
-        changedTot += chg;
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " done");
         }
