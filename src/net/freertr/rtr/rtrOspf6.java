@@ -226,7 +226,9 @@ public class rtrOspf6 extends ipRtr {
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
-        if (tab1.preserveTime(routerComputedU)) {
+        boolean same = tab1.preserveTime(routerComputedU);
+        same &= !tabIndex.compareTables(routerComputedI, tab2);
+        if (same) {
             return;
         }
         routerComputedU = tab1;

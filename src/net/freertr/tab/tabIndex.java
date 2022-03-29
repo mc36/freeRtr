@@ -194,7 +194,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     }
 
     /**
-     * merge tables
+     * convert tables
      *
      * @param <T> type of address
      * @param src source list
@@ -215,7 +215,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
     }
 
     /**
-     * merge tables
+     * convert tables
      *
      * @param <T> type of address
      * @param cmd source list
@@ -232,6 +232,36 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
             res.put(ntry);
         }
         return res;
+    }
+
+    /**
+     * compare tables
+     *
+     * @param <T> type of address
+     * @param t1 first table
+     * @param t2 second table
+     * @return true if differs, false if equals
+     */
+    public static <T extends addrType> boolean compareTables(tabGen<tabIndex<T>> t1, tabGen<tabIndex<T>> t2) {
+        if ((t1 == null) && (t2 == null)) {
+            return false;
+        }
+        if (t1 == null) {
+            return true;
+        }
+        if (t2 == null) {
+            return true;
+        }
+        if (t1.size() != t2.size()) {
+            return true;
+        }
+        for (int i = 0; i < t1.size(); i++) {
+            tabIndex<T> ntry = t1.get(i);
+            if (ntry.differs(t2.get(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

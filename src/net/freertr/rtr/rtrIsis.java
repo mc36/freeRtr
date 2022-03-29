@@ -1041,7 +1041,9 @@ public class rtrIsis extends ipRtr {
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
-        if (!tab1.preserveTime(routerComputedU)) {
+        boolean same = tab1.preserveTime(routerComputedU);
+        same &= !tabIndex.compareTables(routerComputedI, tab3);
+        if (!same) {
             routerComputedU = tab1;
             routerComputedM = tab1;
             routerComputedF = new tabRoute<addrIP>("rx");
