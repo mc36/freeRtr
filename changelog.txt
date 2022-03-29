@@ -13087,3 +13087,6 @@ todo: incremental fib calculation from bgp change list
 no todo: trustpoint for certificates
 ---------------------------------- 2022-03-29 13:09:15
 no todo: incremental fib calculation from bgp change list
+---------------------------------- 2022-03-29 13:48:35
+todo: aliases with sticky parameters
+todo: disableable door code in temper

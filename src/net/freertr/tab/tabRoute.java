@@ -557,8 +557,10 @@ public class tabRoute<T extends addrType> {
      * preserve time info
      *
      * @param src source
+     * @return true if the same, false if differs
      */
-    public void preserveTime(tabRoute<T> src) {
+    public boolean preserveTime(tabRoute<T> src) {
+        boolean res = prefixes.size() == src.prefixes.size();
         for (int i = 0; i < prefixes.size(); i++) {
             tabRouteEntry<T> prf = prefixes.get(i);
             if (prf == null) {
@@ -574,7 +576,9 @@ public class tabRoute<T extends addrType> {
             for (int o = 0; o < prf.alts.size(); o++) {
                 prf.alts.get(o).time = old.best.time;
             }
+            res = false;
         }
+        return res;
     }
 
     /**
