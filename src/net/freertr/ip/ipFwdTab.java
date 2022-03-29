@@ -351,7 +351,7 @@ public class ipFwdTab {
         res.add("change run|" + lower.changeCount + "|times");
         res.add("change last|" + bits.timePast(lower.changeLast) + "|" + bits.time2str(cfgAll.timeZoneName, lower.changeLast + cfgAll.timeServerOffset, 3));
         res.add("connected|" + lower.connedR.size() + "|routes");
-        res.add("direct|" + lower.directR.size() + "|routes");
+        res.add("directly|" + lower.directR.size() + "|routes");
         res.add("labeled|" + lower.labeldR.size() + "|routes");
         res.add("unicast|" + lower.actualU.size() + "|routes");
         res.add("multicast|" + lower.actualM.size() + "|routes");

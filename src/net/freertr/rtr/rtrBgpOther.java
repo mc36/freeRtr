@@ -205,6 +205,9 @@ public class rtrBgpOther extends ipRtr {
      */
     public boolean doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         if (!enabled) {
+            routerChangedU = null;
+            routerChangedM = null;
+            routerChangedF = null;
             return false;
         }
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("bgp");

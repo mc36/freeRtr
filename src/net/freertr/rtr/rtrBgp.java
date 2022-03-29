@@ -1518,6 +1518,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         routerChangedU = null;
         routerChangedM = null;
         routerChangedF = null;
+        other.routerChangedU = null;
+        other.routerChangedM = null;
+        other.routerChangedF = null;
         changedUni.clear();
         changedMlt.clear();
         changedOtrU.clear();
@@ -1944,10 +1947,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
-    private void computeIncrUpdate(int afi, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private void computeIncrUpdate(int afi, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+        if (don == null) {
+            don = new tabRoute<addrIP>("chg");
+        }
         for (int i = chg.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = chg.get(i);
             chg.del(ntry);
+            don.add(tabRoute.addType.always, ntry, false, false);
             computeIncrEntry(afi, ntry, cmp, org);
         }
     }
@@ -2075,31 +2082,34 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " changes");
         }
-        routerChangedU = new tabRoute<addrIP>(changedUni);
-        routerChangedM = new tabRoute<addrIP>(changedMlt);
-        routerChangedF = new tabRoute<addrIP>(changedFlw);
-        computeIncrUpdate(afiUni, changedUni, routerComputedU, routerRedistedU);
-        computeIncrUpdate(afiMlt, changedMlt, routerComputedM, routerRedistedM);
-        computeIncrUpdate(afiOtrU, changedOtrU, computedOtrU, origntedOtrU);
-        computeIncrUpdate(afiOtrM, changedOtrM, computedOtrM, origntedOtrM);
-        computeIncrUpdate(afiOtrF, changedOtrF, computedOtrF, origntedOtrF);
-        computeIncrUpdate(afiOtrS, changedOtrS, computedOtrS, origntedOtrS);
-        computeIncrUpdate(afiFlw, changedFlw, routerComputedF, origntedFlw);
-        computeIncrUpdate(afiVpnU, changedVpnU, computedVpnU, origntedVpnU);
-        computeIncrUpdate(afiVpnM, changedVpnM, computedVpnM, origntedVpnM);
-        computeIncrUpdate(afiVpnF, changedVpnF, computedVpnF, origntedVpnF);
-        computeIncrUpdate(afiVpoU, changedVpoU, computedVpoU, origntedVpoU);
-        computeIncrUpdate(afiVpoM, changedVpoM, computedVpoM, origntedVpoM);
-        computeIncrUpdate(afiVpoF, changedVpoF, computedVpoF, origntedVpoF);
-        computeIncrUpdate(afiVpls, changedVpls, computedVpls, origntedVpls);
-        computeIncrUpdate(afiMspw, changedMspw, computedMspw, origntedMspw);
-        computeIncrUpdate(afiEvpn, changedEvpn, computedEvpn, origntedEvpn);
-        computeIncrUpdate(afiMdt, changedMdt, computedMdt, origntedMdt);
-        computeIncrUpdate(afiNsh, changedNsh, computedNsh, origntedNsh);
-        computeIncrUpdate(afiSrte, changedSrte, computedSrte, origntedSrte);
-        computeIncrUpdate(afiLnks, changedLnks, computedLnks, origntedLnks);
-        computeIncrUpdate(afiMvpn, changedMvpn, computedMvpn, origntedMvpn);
-        computeIncrUpdate(afiMvpo, changedMvpo, computedMvpo, origntedMvpo);
+        routerChangedU = new tabRoute<addrIP>("chg");
+        routerChangedM = new tabRoute<addrIP>("chg");
+        routerChangedF = new tabRoute<addrIP>("chg");
+        other.routerChangedU = new tabRoute<addrIP>("chg");
+        other.routerChangedM = new tabRoute<addrIP>("chg");
+        other.routerChangedF = new tabRoute<addrIP>("chg");
+        computeIncrUpdate(afiUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
+        computeIncrUpdate(afiMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
+        computeIncrUpdate(afiOtrU, other.routerChangedU, changedOtrU, computedOtrU, origntedOtrU);
+        computeIncrUpdate(afiOtrM, other.routerChangedM, changedOtrM, computedOtrM, origntedOtrM);
+        computeIncrUpdate(afiOtrF, other.routerChangedF, changedOtrF, computedOtrF, origntedOtrF);
+        computeIncrUpdate(afiOtrS, null, changedOtrS, computedOtrS, origntedOtrS);
+        computeIncrUpdate(afiFlw, routerChangedF, changedFlw, routerComputedF, origntedFlw);
+        computeIncrUpdate(afiVpnU, null, changedVpnU, computedVpnU, origntedVpnU);
+        computeIncrUpdate(afiVpnM, null, changedVpnM, computedVpnM, origntedVpnM);
+        computeIncrUpdate(afiVpnF, null, changedVpnF, computedVpnF, origntedVpnF);
+        computeIncrUpdate(afiVpoU, null, changedVpoU, computedVpoU, origntedVpoU);
+        computeIncrUpdate(afiVpoM, null, changedVpoM, computedVpoM, origntedVpoM);
+        computeIncrUpdate(afiVpoF, null, changedVpoF, computedVpoF, origntedVpoF);
+        computeIncrUpdate(afiVpls, null, changedVpls, computedVpls, origntedVpls);
+        computeIncrUpdate(afiMspw, null, changedMspw, computedMspw, origntedMspw);
+        computeIncrUpdate(afiEvpn, null, changedEvpn, computedEvpn, origntedEvpn);
+        computeIncrUpdate(afiMdt, null, changedMdt, computedMdt, origntedMdt);
+        computeIncrUpdate(afiNsh, null, changedNsh, computedNsh, origntedNsh);
+        computeIncrUpdate(afiSrte, null, changedSrte, computedSrte, origntedSrte);
+        computeIncrUpdate(afiLnks, null, changedLnks, computedLnks, origntedLnks);
+        computeIncrUpdate(afiMvpn, null, changedMvpn, computedMvpn, origntedMvpn);
+        computeIncrUpdate(afiMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
