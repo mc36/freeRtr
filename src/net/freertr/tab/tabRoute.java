@@ -571,12 +571,12 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             if (prf.differs(addType.notyet, old)) {
+                res = false;
                 continue;
             }
             for (int o = 0; o < prf.alts.size(); o++) {
                 prf.alts.get(o).time = old.best.time;
             }
-            res = false;
         }
         return res;
     }
