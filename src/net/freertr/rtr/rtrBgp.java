@@ -2858,7 +2858,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
-            if (cfgRtr.doCfgRedist(other, negated, s, cmd)) {
+            if (cfgRtr.doCfgRedist(other, other.fwd, negated, s, cmd)) {
                 cmd.badCmd();
             }
             needFull.add(1);
@@ -2954,7 +2954,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
-            if (cfgRtr.doCfgRedist(cur.doer, negated, s, cmd)) {
+            if (cfgRtr.doCfgRedist(cur.doer, cur.doer.fwd, negated, s, cmd)) {
                 cmd.badCmd();
             }
             needFull.add(1);
@@ -3050,7 +3050,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 compute.wakeup();
                 return false;
             }
-            if (cfgRtr.doCfgRedist(cur.doer, negated, s, cmd)) {
+            if (cfgRtr.doCfgRedist(cur.doer, cur.doer.fwd, negated, s, cmd)) {
                 cmd.badCmd();
             }
             needFull.add(1);

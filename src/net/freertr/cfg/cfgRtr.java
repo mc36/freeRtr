@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.ip.ipRtrAdv;
 import net.freertr.ip.ipRtrAgr;
@@ -60,6 +61,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * vrf of this router
      */
     public cfgVrf vrf;
+
+    /**
+     * forwarder of this router
+     */
+    public ipFwd fwd;
 
     /**
      * rip handler
@@ -288,7 +294,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! nexthop recursion 1",
         "router bgp[4|6].*! incremental 1000",
         "router bgp[4|6].*! no conquer",
-//        "router bgp[4|6].*! no safe-ebgp",
+        //        "router bgp[4|6].*! no safe-ebgp",
         "router bgp[4|6].*! no flapstat",
         "router bgp[4|6].*! no flowspec-advert",
         "router bgp[4|6].*! no flowspec-install",
@@ -825,15 +831,16 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * do redistribution config
      *
      * @param rtr router to update
+     * @param fwd forwarder to update
      * @param neg negated
      * @param a command word
      * @param cmd command to parse
      * @return false on success, true on error
      */
-    public static boolean doCfgRedist(ipRtr rtr, boolean neg, String a, cmds cmd) {
+    public static boolean doCfgRedist(ipRtr rtr, ipFwd fwd, boolean neg, String a, cmds cmd) {
         if (a.equals("ecmp")) {
             rtr.routerEcmp = !neg;
-            rtr.routerCreateComputed();
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("redistribute")) {
@@ -846,7 +853,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 rtr.routerRedisting.put(ntry);
             }
-            rtr.routerCreateComputed();
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("justadvert")) {
@@ -863,7 +870,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } catch (Exception e) {
                 cmd.error("no such iface");
             }
-            rtr.routerCreateComputed();
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("advertise")) {
@@ -876,7 +883,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 rtr.routerAdverting.put(ntry);
             }
-            rtr.routerCreateComputed();
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("aggregate")) {
@@ -889,7 +896,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             } else {
                 rtr.routerAggregating.put(ntry);
             }
-            rtr.routerCreateComputed();
+            fwd.routerStaticChg();
             return false;
         }
         return true;
@@ -1416,120 +1423,159 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (vrf == null) {
             return true;
         }
+        fwd = null;
         running = true;
         switch (type) {
             case rip4:
+                fwd = vrf.fwd4;
                 rip4 = new rtrRip4(vrf.fwd4, vrf.udp4, number);
                 break;
             case rip6:
+                fwd = vrf.fwd6;
                 rip6 = new rtrRip6(vrf.fwd6, vrf.udp6, number);
                 break;
             case babel4:
+                fwd = vrf.fwd4;
                 babel = new rtrBabel(vrf.fwd4, vrf.udp4, number);
                 break;
             case babel6:
+                fwd = vrf.fwd6;
                 babel = new rtrBabel(vrf.fwd6, vrf.udp6, number);
                 break;
             case blackhole4:
+                fwd = vrf.fwd4;
                 blackhole = new rtrBlackhole(vrf.fwd4, number);
                 break;
             case blackhole6:
+                fwd = vrf.fwd6;
                 blackhole = new rtrBlackhole(vrf.fwd6, number);
                 break;
             case olsr4:
+                fwd = vrf.fwd4;
                 olsr = new rtrOlsr(vrf.fwd4, vrf.udp4, number);
                 break;
             case olsr6:
+                fwd = vrf.fwd6;
                 olsr = new rtrOlsr(vrf.fwd6, vrf.udp6, number);
                 break;
             case ospf4:
+                fwd = vrf.fwd4;
                 ospf4 = new rtrOspf4(vrf.fwd4, vrf.udp4, number);
                 break;
             case ospf6:
+                fwd = vrf.fwd6;
                 ospf6 = new rtrOspf6(vrf.fwd6, vrf.udp6, number);
                 break;
             case isis4:
+                fwd = vrf.fwd4;
                 isis = new rtrIsis(vrf.fwd4, vrf.fwd6, vrf.udp4, number);
                 break;
             case isis6:
+                fwd = vrf.fwd6;
                 isis = new rtrIsis(vrf.fwd6, vrf.fwd4, vrf.udp6, number);
                 break;
             case pvrp4:
+                fwd = vrf.fwd4;
                 pvrp = new rtrPvrp(vrf.fwd4, vrf.udp4, vrf.tcp4, number);
                 break;
             case pvrp6:
+                fwd = vrf.fwd6;
                 pvrp = new rtrPvrp(vrf.fwd6, vrf.udp6, vrf.tcp6, number);
                 break;
             case lsrp4:
+                fwd = vrf.fwd4;
                 lsrp = new rtrLsrp(vrf.fwd4, vrf.udp4, vrf.tcp4, number);
                 break;
             case lsrp6:
+                fwd = vrf.fwd6;
                 lsrp = new rtrLsrp(vrf.fwd6, vrf.udp6, vrf.tcp6, number);
                 break;
             case eigrp4:
+                fwd = vrf.fwd4;
                 eigrp = new rtrEigrp(vrf.fwd4, number);
                 break;
             case eigrp6:
+                fwd = vrf.fwd6;
                 eigrp = new rtrEigrp(vrf.fwd6, number);
                 break;
             case bgp4:
+                fwd = vrf.fwd4;
                 bgp = new rtrBgp(vrf.fwd4, vrf, vrf.tcp4, number);
                 break;
             case bgp6:
+                fwd = vrf.fwd6;
                 bgp = new rtrBgp(vrf.fwd6, vrf, vrf.tcp6, number);
                 break;
             case msdp4:
+                fwd = vrf.fwd4;
                 msdp = new rtrMsdp(vrf.fwd4, vrf.tcp4, number);
                 break;
             case msdp6:
+                fwd = vrf.fwd6;
                 msdp = new rtrMsdp(vrf.fwd6, vrf.tcp6, number);
                 break;
             case flwspc4:
+                fwd = vrf.fwd4;
                 flwspc = new rtrFlowspec(vrf.fwd4, number);
                 break;
             case flwspc6:
+                fwd = vrf.fwd6;
                 flwspc = new rtrFlowspec(vrf.fwd6, number);
                 break;
             case uni2multi4:
+                fwd = vrf.fwd4;
                 uni2multi = new rtrUni2multi(vrf.fwd4, number);
                 break;
             case uni2multi6:
+                fwd = vrf.fwd6;
                 uni2multi = new rtrUni2multi(vrf.fwd6, number);
                 break;
             case uni2flow4:
+                fwd = vrf.fwd4;
                 uni2flow = new rtrUni2flow(vrf.fwd4, number);
                 break;
             case uni2flow6:
+                fwd = vrf.fwd6;
                 uni2flow = new rtrUni2flow(vrf.fwd6, number);
                 break;
             case logger4:
+                fwd = vrf.fwd4;
                 logger = new rtrLogger(vrf.fwd4, number);
                 break;
             case logger6:
+                fwd = vrf.fwd6;
                 logger = new rtrLogger(vrf.fwd6, number);
                 break;
             case download4:
+                fwd = vrf.fwd4;
                 download = new rtrDownload(vrf.fwd4, number);
                 break;
             case download6:
+                fwd = vrf.fwd6;
                 download = new rtrDownload(vrf.fwd6, number);
                 break;
             case deaggr4:
+                fwd = vrf.fwd4;
                 deaggr = new rtrDeaggr(vrf.fwd4, number);
                 break;
             case deaggr6:
+                fwd = vrf.fwd6;
                 deaggr = new rtrDeaggr(vrf.fwd6, number);
                 break;
             case aggreg4:
+                fwd = vrf.fwd4;
                 aggreg = new rtrAggreg(vrf.fwd4, number);
                 break;
             case aggreg6:
+                fwd = vrf.fwd6;
                 aggreg = new rtrAggreg(vrf.fwd6, number);
                 break;
             case mobile4:
+                fwd = vrf.fwd4;
                 mobile = new rtrMobile(vrf.fwd4, number);
                 break;
             case mobile6:
+                fwd = vrf.fwd6;
                 mobile = new rtrMobile(vrf.fwd6, number);
                 break;
             default:
@@ -1812,7 +1858,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             rtr.routerAutoMesh = prf.prflst;
             return;
         }
-        if (doCfgRedist(rtr, neg, a, cmd)) {
+        if (doCfgRedist(rtr, fwd, neg, a, cmd)) {
             cmd.badCmd();
         }
     }

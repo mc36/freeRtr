@@ -1311,7 +1311,7 @@ public class rtrIsis extends ipRtr {
                 other.distantExt = bits.str2num(cmd.word());
                 return false;
             }
-            if (cfgRtr.doCfgRedist(other, false, s, cmd)) {
+            if (cfgRtr.doCfgRedist(other, other.fwd, false, s, cmd)) {
                 cmd.badCmd();
             }
             genLsps(3);
@@ -1376,7 +1376,7 @@ public class rtrIsis extends ipRtr {
                 genLsps(3);
                 return false;
             }
-            if (cfgRtr.doCfgRedist(other, true, s, cmd)) {
+            if (cfgRtr.doCfgRedist(other, other.fwd, true, s, cmd)) {
                 cmd.badCmd();
             }
             genLsps(3);

@@ -728,6 +728,9 @@ public class ipFwdTab {
         if (best == null) {
             return !cmp.del(ntry);
         }
+        if (mode == 1) {
+            updateTableRouteLabels(lower, lower.actualU, best, lower.labeldR.find(ntry));
+        }
         cmp.add(tabRoute.addType.always, best, false, false);
         return true;
     }
@@ -938,7 +941,6 @@ public class ipFwdTab {
             rstatic2table(lower.staticM.get(i), tabM, 3);
         }
         lower.incrCandid = true;
-        //////////////////////anything fancy that disables incremental updates
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (ifc == null) {
@@ -1035,15 +1037,7 @@ public class ipFwdTab {
         }
         for (int i = 0; i < tabU.size(); i++) {
             tabRouteEntry<addrIP> ntry = tabU.get(i);
-            tabRouteEntry<addrIP> locN = tabL.find(ntry);
-            for (int o = 0; o < ntry.alts.size(); o++) {
-                tabRouteAttr<addrIP> alt = ntry.alts.get(o);
-                tabRouteAttr<addrIP> loc = null;
-                if (locN != null) {
-                    loc = locN.sameFwder(alt);
-                }
-                updateTableRouteLabels(lower, tabU, ntry, alt, loc);
-            }
+            updateTableRouteLabels(lower, tabU, ntry, tabL.find(ntry));
         }
         lower.commonLabel.setFwdCommon(1, lower);
         tabRoute<addrIP> tabT = new tabRoute<addrIP>("amt");
@@ -1186,6 +1180,17 @@ public class ipFwdTab {
         lower.actualIU = tabIU;
         lower.actualIC = tabIC;
         return true;
+    }
+
+    private static void updateTableRouteLabels(ipFwd lower, tabRoute<addrIP> tabU, tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> locN) {
+        for (int o = 0; o < ntry.alts.size(); o++) {
+            tabRouteAttr<addrIP> alt = ntry.alts.get(o);
+            tabRouteAttr<addrIP> loc = null;
+            if (locN != null) {
+                loc = locN.sameFwder(alt);
+            }
+            updateTableRouteLabels(lower, tabU, ntry, alt, loc);
+        }
     }
 
     private static void updateTableRouteLabels(ipFwd lower, tabRoute<addrIP> tabU, tabRouteEntry<addrIP> prefix, tabRouteAttr<addrIP> ntry, tabRouteAttr<addrIP> loc) {
