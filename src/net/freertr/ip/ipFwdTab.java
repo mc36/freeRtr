@@ -661,7 +661,6 @@ public class ipFwdTab {
                 sta = new tabGen<ipFwdRoute>();
         }
         tabRouteEntry<addrIP> best = lower.connedR.find(ntry);
-        tabRoute.addType adm = tabRoute.addType.ecmp;
         for (int i = 0; i < sta.size(); i++) {
             ipFwdRoute cur = sta.get(i);
             if (cur == null) {
@@ -711,8 +710,7 @@ public class ipFwdTab {
             if (imp.best.distance >= tabRouteAttr.distanMax) {
                 continue;
             }
-            tabRoute.addType cam = rtr.getAddMode();
-            imp = imp.copyBytes(cam);
+            imp = imp.copyBytes(rtr.getAddMode());
             if ((mode < 3) && (rtr.isBGP() == 1)) {
                 if (tabRoute.doNexthopFix(imp, res, lower.directR, rtr.routerRecursions())) {
                     continue;
@@ -726,13 +724,11 @@ public class ipFwdTab {
                 continue;
             }
             best = imp;
-            adm = cam;
         }
         if (best == null) {
             return !cmp.del(ntry);
         }
-        cmp.del(ntry);
-        cmp.add(adm, best, false, false);
+        cmp.add(tabRoute.addType.always, best, false, false);
         return true;
     }
 
