@@ -2783,7 +2783,6 @@ todo: update gtp stack to the latest standards
 todo: p4dpdk multiseg rx/tx loop
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server
-todo: incremental fib calculation from bgp change list
 todo: bgp optimal route reflection
 todo: bgp peer autoconfig
 todo: bgp layer2 flowspec

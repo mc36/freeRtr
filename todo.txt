@@ -3,7 +3,6 @@ update gtp stack to the latest standards
 p4dpdk multiseg rx/tx loop
 nat and pbr config to have reindex
 bridge security from dhcp, slaac, whatever server
-incremental fib calculation from bgp change list
 bgp optimal route reflection
 bgp peer autoconfig
 bgp layer2 flowspec

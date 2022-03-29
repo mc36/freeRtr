@@ -40,6 +40,7 @@ import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.state;
+import net.freertr.util.syncInt;
 
 /**
  * does ip forwarding, services protocols
@@ -82,6 +83,26 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * time of update
      */
     public long updateLast;
+
+    /**
+     * number of full updates
+     */
+    public int updateFullCnt;
+
+    /**
+     * number of incremental updates
+     */
+    public int updateIncrCnt;
+
+    /**
+     * last full update
+     */
+    public long updateFullLst;
+
+    /**
+     * last incremental update
+     */
+    public long updateIncrLst;
 
     /**
      * number of changes
@@ -137,6 +158,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * the computed connected table
      */
     public tabRoute<addrIP> connedR;
+
+    /**
+     * the computed direct table
+     */
+    public tabRoute<addrIP> directR;
 
     /**
      * the labeled table
@@ -374,6 +400,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public int untriggeredRecomputation = 120 * 1000;
 
     /**
+     * incremental limit
+     */
+    public int incrLimit = 1000;
+
+    /**
      * notify when table changed
      */
     public notifier tableChanged;
@@ -404,9 +435,34 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public int nextIfaceNumber = bits.randomD();
 
     /**
+     * candidate for incrementals
+     */
+    protected boolean incrCandid;
+    
+    /**
      * should compute tables
      */
-    protected notifier triggerUpdate;
+    protected final notifier triggerUpdate;
+
+    /**
+     * need full round
+     */
+    protected final syncInt needFull;
+
+    /**
+     * the changed unicast routes
+     */
+    protected final tabRoute<addrIP> changedUni;
+
+    /**
+     * the changed multicast routes
+     */
+    protected final tabRoute<addrIP> changedMlt;
+
+    /**
+     * the changed flowspec routes
+     */
+    protected final tabRoute<addrIP> changedFlw;
 
     private static int nextVrfNumber = bits.randomD();
 
@@ -488,6 +544,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ldpTarget = new tabGen<rtrLdpTrgtd>();
         autoMesh = new tabGen<clntMplsTeP2p>();
         connedR = new tabRoute<addrIP>("conn");
+        directR = new tabRoute<addrIP>("direct");
         labeldR = new tabRoute<addrIP>("labeled");
         actualU = new tabRoute<addrIP>("computed");
         actualM = new tabRoute<addrIP>("computed");
@@ -503,12 +560,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         natCfg = new tabListing<tabNatCfgN, addrIP>();
         natCfg.myCor = ipCore;
         natCfg.myIcmp = icc;
+        changedUni = new tabRoute<addrIP>("chg");
+        changedMlt = new tabRoute<addrIP>("chg");
+        changedFlw = new tabRoute<addrIP>("chg");
         cntrH = new counter();
         hstryH = new history();
         cntrT = new counter();
         hstryT = new history();
         cntrL = new counter();
         hstryL = new history();
+        needFull = new syncInt(1);
         triggerUpdate = new notifier();
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
@@ -521,6 +582,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void stopThisVrf() {
         untriggeredRecomputation = -1;
+        needFull.add(1);
         triggerUpdate.wakeup();
         prefixMode = labelMode.common;
         for (int i = 0; i < labeldR.size(); i++) {
@@ -653,6 +715,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             mp.updateState(this);
         }
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -694,6 +757,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry != null) {
             ntry.workStop();
         }
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -934,11 +998,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         } else {
             rou = staticM.del(rou);
         }
-        if (rou != null) {
-            if (rou.track != null) {
-                rou.track.clients.del(this);
-            }
+        if (rou == null) {
+            return;
         }
+        if (rou.track != null) {
+            rou.track.clients.del(this);
+        }
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -958,6 +1024,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (rou.track != null) {
             rou.track.clients.add(this);
         }
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -985,6 +1052,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         lower.setUpper(this, ntry);
+        needFull.add(1);
         triggerUpdate.wakeup();
         return ntry;
     }
@@ -1017,6 +1085,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             grp.flood.del(ifc);
         }
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -1047,6 +1116,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 prt.upper.setState(ifc, stat);
             }
         }
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -1065,6 +1135,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ifc.mask = mask;
         ifc.network = new addrPrefix<addrIP>(addr, mask);
         ifc.point2point = mask >= (addrIP.size * 8 - 1);
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -1526,6 +1597,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         rtr.routerProtoTyp = typ;
         rtr.routerProcNum = id;
         routers.add(rtr);
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 
@@ -1541,6 +1613,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (routers.del(rtr) == null) {
             return;
         }
+        needFull.add(1);
         triggerUpdate.wakeup();
         rtr.routerCloseNow();
     }
@@ -1559,6 +1632,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         rtr.routerComputeChg++;
         rtr.routerComputeTim = bits.getTime();
+        if ((rtr.routerChangedU != null) && (rtr.routerChangedM != null) && (rtr.routerChangedF != null)) {
+            changedUni.mergeFrom(tabRoute.addType.always, rtr.routerChangedU, tabRouteAttr.distanLim);
+            changedMlt.mergeFrom(tabRoute.addType.always, rtr.routerChangedM, tabRouteAttr.distanLim);
+            changedFlw.mergeFrom(tabRoute.addType.always, rtr.routerChangedF, tabRouteAttr.distanLim);
+            rtr.routerChangedU = null;
+            rtr.routerChangedM = null;
+            rtr.routerChangedF = null;
+        } else {
+            needFull.add(1);
+        }
         triggerUpdate.wakeup();
     }
 
@@ -1566,6 +1649,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * static route change happened
      */
     public void routerStaticChg() {
+        needFull.add(1);
         triggerUpdate.wakeup();
     }
 

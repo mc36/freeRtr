@@ -374,6 +374,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no copp6out",
         "vrf definition .*! no packet4filter",
         "vrf definition .*! no packet6filter",
+        "vrf definition .*! incremental4 1000",
+        "vrf definition .*! incremental6 1000",
         "!ipv[4|6] nat .* sequence .* timeout 300000",
         "!ipv[4|6] nat .* sequence .* sessions 0"
     };
@@ -683,6 +685,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
         cmds.cfgLine(l, !mdt4, cmds.tabulator, "mdt4", "");
         cmds.cfgLine(l, !mdt6, cmds.tabulator, "mdt6", "");
+        l.add(cmds.tabulator + "incremental4 " + fwd4.incrLimit);
+        l.add(cmds.tabulator + "incremental6 " + fwd6.incrLimit);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -815,6 +819,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 .    all-igp           label for all igp prefixes");
         l.add(null, "2 .    host-route        label for host routes");
         l.add(null, "2 .    per-vrf           common label for the vrf");
+        l.add(null, "1 2  incremental4        specify ipv4 incremental limit");
+        l.add(null, "2 .    <num>             routes");
+        l.add(null, "1 2  incremental6        specify ipv6 incremental limit");
+        l.add(null, "2 .    <num>             routes");
     }
 
     public synchronized void doCfgStr(cmds cmd) {
@@ -1218,6 +1226,14 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             packet6fltr.aceslst.myCor = core6;
             packet6fltr.aceslst.myIcmp = icmp6;
             fwd6.packetFilter = packet6fltr.aceslst;
+            return;
+        }
+        if (a.equals("incremental4")) {
+            fwd4.incrLimit = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("route6limit")) {
+            fwd6.incrLimit = bits.str2num(cmd.word());
             return;
         }
         if (!a.equals("no")) {

@@ -174,6 +174,7 @@ public class tabRoute<T extends addrType> {
         }
         prefixes.clear();
         version++;
+        lookupTrie = null;
     }
 
     /**
@@ -201,11 +202,17 @@ public class tabRoute<T extends addrType> {
             case altEcmp:
                 tabRouteEntry<T> own = prefixes.add(prefix);
                 if (own == null) {
+                    if (lookupTrie != null) {
+                        lookupTrie.add(prefix);
+                    }
                     version++;
                     return;
                 }
                 if (own.best.isOtherBetter(prefix.best, false)) {
                     prefixes.put(prefix);
+                    if (lookupTrie != null) {
+                        lookupTrie.add(prefix);
+                    }
                     version++;
                     return;
                 }
@@ -224,11 +231,17 @@ public class tabRoute<T extends addrType> {
             case ecmp:
                 own = prefixes.add(prefix);
                 if (own == null) {
+                    if (lookupTrie != null) {
+                        lookupTrie.add(prefix);
+                    }
                     version++;
                     return;
                 }
                 if (own.best.isOtherBetter(prefix.best, false)) {
                     prefixes.put(prefix);
+                    if (lookupTrie != null) {
+                        lookupTrie.add(prefix);
+                    }
                     version++;
                     return;
                 }
@@ -255,6 +268,9 @@ public class tabRoute<T extends addrType> {
                 }
                 own = prefixes.add(prefix);
                 if (own == null) {
+                    if (lookupTrie != null) {
+                        lookupTrie.add(prefix);
+                    }
                     version++;
                     return;
                 }
@@ -262,10 +278,16 @@ public class tabRoute<T extends addrType> {
                     return;
                 }
                 prefixes.put(prefix);
+                if (lookupTrie != null) {
+                    lookupTrie.add(prefix);
+                }
                 version++;
                 return;
             case always:
                 prefixes.put(prefix);
+                if (lookupTrie != null) {
+                    lookupTrie.add(prefix);
+                }
                 version++;
                 return;
             case notyet:
@@ -275,12 +297,18 @@ public class tabRoute<T extends addrType> {
                 if (prefixes.add(prefix) != null) {
                     return;
                 }
+                if (lookupTrie != null) {
+                    lookupTrie.add(prefix);
+                }
                 version++;
                 return;
             case lnkAlters:
             case alters:
                 own = prefixes.add(prefix);
                 if (own == null) {
+                    if (lookupTrie != null) {
+                        lookupTrie.add(prefix);
+                    }
                     version++;
                     return;
                 }
@@ -333,6 +361,9 @@ public class tabRoute<T extends addrType> {
         if (prefixes.del(prf) == null) {
             return true;
         }
+        if (lookupTrie != null) {
+            lookupTrie.del(prf);
+        }
         version++;
         return false;
     }
@@ -349,6 +380,9 @@ public class tabRoute<T extends addrType> {
         }
         if (prefixes.del(prf) == null) {
             return true;
+        }
+        if (lookupTrie != null) {
+            lookupTrie.del(prf);
         }
         version++;
         return false;
@@ -415,6 +449,9 @@ public class tabRoute<T extends addrType> {
                 logger.debug("deldst " + prf);
             }
             prefixes.del(prf);
+            if (lookupTrie != null) {
+                lookupTrie.del(prf);
+            }
             cnt++;
         }
         if (cnt > 0) {
@@ -443,6 +480,9 @@ public class tabRoute<T extends addrType> {
                 logger.debug("delmet " + prf);
             }
             prefixes.del(prf);
+            if (lookupTrie != null) {
+                lookupTrie.del(prf);
+            }
             cnt++;
         }
         if (cnt > 0) {
@@ -471,6 +511,9 @@ public class tabRoute<T extends addrType> {
                 logger.debug("delprt " + prf);
             }
             prefixes.del(prf);
+            if (lookupTrie != null) {
+                lookupTrie.del(prf);
+            }
             cnt++;
         }
         if (cnt > 0) {
@@ -499,6 +542,9 @@ public class tabRoute<T extends addrType> {
                 logger.debug("delifc " + prf);
             }
             prefixes.del(prf);
+            if (lookupTrie != null) {
+                lookupTrie.del(prf);
+            }
             cnt++;
         }
         if (cnt > 0) {
@@ -594,17 +640,9 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             imp = imp.copyBytes(mod);
-            for (int o = imp.alts.size() - 1; o >= 0; o--) {
-                tabRouteAttr<T> attr = imp.alts.get(o);
-                if (!doNexthopFix(attr, other, recur, nexthops)) {
-                    continue;
-                }
-                imp.delAlt(o);
-            }
-            if (imp.alts.size() < 1) {
+            if (doNexthopFix(imp, other, nexthops, recur)) {
                 continue;
             }
-            imp.hashBest();
             add(mod, imp, false, false);
         }
         if (debugger.tabRouteEvnt) {
@@ -613,7 +651,7 @@ public class tabRoute<T extends addrType> {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> recurs, int recurn, tabRoute<T> nexthops) {
+    private static <T extends addrType> boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> recurs, int recurn, tabRoute<T> nexthops) {
         T hop = attr.nextHop;
         T orig = hop;
         if (hop == null) {
@@ -642,6 +680,31 @@ public class tabRoute<T extends addrType> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * fix nexthops on a route entry
+     *
+     * @param imp route entry to update
+     * @param recurs where to look up nexthops recursively
+     * @param nexthops table where look up resolved nexthops
+     * @param recurn maximum recursion depth
+     * @param distan highest allowed distance
+     * @return true if failed, false if ready
+     */
+    public static <T extends addrType> boolean doNexthopFix(tabRouteEntry<T> imp, tabRoute<T> recurs, tabRoute<T> nexthops, int recurn) {
+        for (int o = imp.alts.size() - 1; o >= 0; o--) {
+            tabRouteAttr<T> attr = imp.alts.get(o);
+            if (!doNexthopFix(attr, recurs, recurn, nexthops)) {
+                continue;
+            }
+            imp.delAlt(o);
+        }
+        if (imp.alts.size() < 1) {
+            return true;
+        }
+        imp.hashBest();
+        return false;
     }
 
     /**

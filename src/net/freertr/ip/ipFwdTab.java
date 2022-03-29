@@ -344,9 +344,14 @@ public class ipFwdTab {
         res.add("update run|" + lower.updateCount + "|times");
         res.add("update last|" + bits.timePast(lower.updateLast) + "|" + bits.time2str(cfgAll.timeZoneName, lower.updateLast + cfgAll.timeServerOffset, 3));
         res.add("update time|" + lower.updateTime + "|ms");
+        res.add("full run|" + lower.updateFullCnt + "|times");
+        res.add("full last|" + bits.timePast(lower.updateFullLst) + "|" + bits.time2str(cfgAll.timeZoneName, lower.updateFullLst + cfgAll.timeServerOffset, 3));
+        res.add("incr run|" + lower.updateIncrCnt + "|times");
+        res.add("incr last|" + bits.timePast(lower.updateIncrLst) + "|" + bits.time2str(cfgAll.timeZoneName, lower.updateIncrLst + cfgAll.timeServerOffset, 3));
         res.add("change run|" + lower.changeCount + "|times");
         res.add("change last|" + bits.timePast(lower.changeLast) + "|" + bits.time2str(cfgAll.timeZoneName, lower.changeLast + cfgAll.timeServerOffset, 3));
         res.add("connected|" + lower.connedR.size() + "|routes");
+        res.add("direct|" + lower.directR.size() + "|routes");
         res.add("labeled|" + lower.labeldR.size() + "|routes");
         res.add("unicast|" + lower.actualU.size() + "|routes");
         res.add("multicast|" + lower.actualM.size() + "|routes");
@@ -368,9 +373,9 @@ public class ipFwdTab {
      * update nat table
      *
      * @param lower forwarder
+     * @param tim time
      */
-    protected static void updateTableNat(ipFwd lower) {
-        long tim = bits.getTime();
+    protected static void updateTableNat(ipFwd lower, long tim) {
         for (int i = lower.natTrns.size() - 1; i >= 0; i--) {
             tabNatTraN ntry = lower.natTrns.get(i);
             if (ntry == null) {
@@ -431,8 +436,9 @@ public class ipFwdTab {
      *
      * @param lower forwarder
      * @param chg main table changed
+     * @param tim time
      */
-    protected static void notifyRouters(ipFwd lower, boolean chg) {
+    protected static void notifyRouters(ipFwd lower, boolean chg, long tim) {
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -485,9 +491,58 @@ public class ipFwdTab {
             rtr.routerRedistedM = tabM;
             rtr.routerRedistedF = tabF;
             rtr.routerRedistChg++;
-            rtr.routerRedistTim = bits.getTime();
+            rtr.routerRedistTim = tim;
             rtr.routerRedistChanged();
         }
+    }
+
+    private static tabRouteEntry<addrIP> convStaticRoute(ipFwdRoute ntry, tabRouteEntry<addrIP> imp, ipFwd lower, tabRoute<addrIP> trg, tabRoute<addrIP> conn) {
+        if (imp.best.distance >= tabRouteAttr.distanMax) {
+            return null;
+        }
+        if (ntry.recur == 0) {
+            if (ntry.iface == null) {
+                tabRouteEntry<addrIP> nh = conn.route(imp.best.nextHop);
+                if (nh == null) {
+                    return null;
+                }
+                imp.best.iface = nh.best.iface;
+                return imp;
+            }
+            ipFwdIface ifc = new ipFwdIface(ntry.iface.ifwNum, null);
+            ifc = lower.ifaces.find(ifc);
+            if (ifc == null) {
+                return null;
+            }
+            if (!ifc.ready) {
+                return null;
+            }
+            if (!ifc.network.matches(imp.best.nextHop)) {
+                return null;
+            }
+            imp.best.iface = ifc;
+            return imp;
+        }
+        tabRouteEntry<addrIP> nh = trg.route(imp.best.nextHop);
+        if (nh == null) {
+            return null;
+        }
+        imp.best.iface = nh.best.iface;
+        if (nh.best.rouTyp != tabRouteAttr.routeType.conn) {
+            if (nh.best.nextHop == null) {
+                return null;
+            }
+            imp.best.nextHop = nh.best.nextHop.copyBytes();
+        }
+        imp.best.time = nh.best.time;
+        imp.best.rouTab = nh.best.rouTab;
+        if (nh.best.segrouPrf != null) {
+            imp.best.segrouPrf = nh.best.segrouPrf.copyBytes();
+        }
+        if (nh.best.labelRem != null) {
+            imp.best.labelRem = tabLabel.prependLabels(imp.best.labelRem, nh.best.labelRem);
+        }
+        return imp;
     }
 
     private static void rstatic2table(ipFwdRoute ntry, tabRoute<addrIP> trg, int mode) {
@@ -501,27 +556,9 @@ public class ipFwdTab {
         if (imp == null) {
             return;
         }
-        if (imp.best.distance >= tabRouteAttr.distanMax) {
+        imp = convStaticRoute(ntry, imp, null, trg, null);
+        if (imp == null) {
             return;
-        }
-        tabRouteEntry<addrIP> nh = trg.route(imp.best.nextHop);
-        if (nh == null) {
-            return;
-        }
-        imp.best.iface = nh.best.iface;
-        if (nh.best.rouTyp != tabRouteAttr.routeType.conn) {
-            if (nh.best.nextHop == null) {
-                return;
-            }
-            imp.best.nextHop = nh.best.nextHop.copyBytes();
-        }
-        imp.best.time = nh.best.time;
-        imp.best.rouTab = nh.best.rouTab;
-        if (nh.best.segrouPrf != null) {
-            imp.best.segrouPrf = nh.best.segrouPrf.copyBytes();
-        }
-        if (nh.best.labelRem != null) {
-            imp.best.labelRem = tabLabel.prependLabels(imp.best.labelRem, nh.best.labelRem);
         }
         trg.add(tabRoute.addType.ecmp, imp, false, true);
     }
@@ -537,25 +574,9 @@ public class ipFwdTab {
         if (imp == null) {
             return;
         }
-        if (ntry.iface == null) {
-            tabRouteEntry<addrIP> nh = conn.route(imp.best.nextHop);
-            if (nh == null) {
-                return;
-            }
-            imp.best.iface = nh.best.iface;
-        } else {
-            ipFwdIface ifc = new ipFwdIface(ntry.iface.ifwNum, null);
-            ifc = lower.ifaces.find(ifc);
-            if (ifc == null) {
-                return;
-            }
-            if (!ifc.ready) {
-                return;
-            }
-            if (!ifc.network.matches(imp.best.nextHop)) {
-                return;
-            }
-            imp.best.iface = ifc;
+        imp = convStaticRoute(ntry, imp, lower, trg, conn);
+        if (imp == null) {
+            return;
         }
         trg.add(tabRoute.addType.ecmp, imp, false, true);
     }
@@ -627,13 +648,128 @@ public class ipFwdTab {
         }
     }
 
+    private static boolean updateTableRouteEntry(ipFwd lower, int mode, tabRoute<addrIP> cmp, tabRouteEntry<addrIP> ntry) {
+        tabGen<ipFwdRoute> sta = null;
+        switch (mode) {
+            case 1:
+                sta = lower.staticU;
+                break;
+            case 2:
+                sta = lower.staticM;
+                break;
+            case 3:
+                sta = new tabGen<ipFwdRoute>();
+        }
+        tabRouteEntry<addrIP> best = lower.connedR.find(ntry);
+        tabRoute.addType adm = tabRoute.addType.ecmp;
+        for (int i = 0; i < sta.size(); i++) {
+            ipFwdRoute cur = sta.get(i);
+            if (cur == null) {
+                continue;
+            }
+            if (ntry.prefix.compare(ntry.prefix, cur.pref) != 0) {
+                continue;
+            }
+            tabRouteEntry<addrIP> imp = cur.getPrefix();
+            if (imp == null) {
+                continue;
+            }
+            imp = convStaticRoute(cur, imp, lower, cmp, lower.directR);
+            if (imp == null) {
+                continue;
+            }
+            if (best == null) {
+                best = imp;
+                continue;
+            }
+            if (!best.best.isOtherBetter(imp.best, false)) {
+                continue;
+            }
+            best = imp;
+        }
+        for (int i = 0; i < lower.routers.size(); i++) {
+            ipRtr rtr = lower.routers.get(i);
+            if (rtr == null) {
+                continue;
+            }
+            tabRoute<addrIP> res = null;
+            switch (mode) {
+                case 1:
+                    res = rtr.routerComputedU;
+                    break;
+                case 2:
+                    res = rtr.routerComputedM;
+                    break;
+                case 3:
+                    res = rtr.routerComputedF;
+                    break;
+            }
+            tabRouteEntry<addrIP> imp = res.find(ntry);
+            if (imp == null) {
+                continue;
+            }
+            if (imp.best.distance >= tabRouteAttr.distanMax) {
+                continue;
+            }
+            tabRoute.addType cam = rtr.getAddMode();
+            imp = imp.copyBytes(cam);
+            if ((mode < 3) && (rtr.isBGP() == 1)) {
+                if (tabRoute.doNexthopFix(imp, res, lower.directR, rtr.routerRecursions())) {
+                    continue;
+                }
+            }
+            if (best == null) {
+                best = imp;
+                continue;
+            }
+            if (!best.best.isOtherBetter(imp.best, false)) {
+                continue;
+            }
+            best = imp;
+            adm = cam;
+        }
+        if (best == null) {
+            return !cmp.del(ntry);
+        }
+        cmp.del(ntry);
+        cmp.add(adm, best, false, false);
+        return true;
+    }
+
+    private static boolean updateTableRouteIncr(ipFwd lower, int mode, tabRoute<addrIP> chg, tabRoute<addrIP> cmp) {
+        boolean chgd = false;
+        for (int i = chg.size() - 1; i >= 0; i--) {
+            tabRouteEntry<addrIP> ntry = chg.get(i);
+            chg.del(ntry);
+            chgd |= updateTableRouteEntry(lower, mode, cmp, ntry);
+        }
+        return chgd;
+    }
+
+    /**
+     * update route table parts
+     *
+     * @param lower forwarder
+     * @return false if no change, true if updated
+     */
+    protected static boolean updateTableRouteIncr(ipFwd lower) {
+        boolean chg = false;
+        chg |= updateTableRouteIncr(lower, 1, lower.changedUni, lower.actualU);
+        chg |= updateTableRouteIncr(lower, 2, lower.changedMlt, lower.actualM);
+        chg |= updateTableRouteIncr(lower, 3, lower.changedFlw, lower.actualF);
+        return chg;
+    }
+
     /**
      * update route table
      *
      * @param lower forwarder
      * @return false if no change, true if updated
      */
-    protected static boolean updateTableRoute(ipFwd lower) {
+    protected static boolean updateTableRouteFull(ipFwd lower) {
+        lower.changedUni.clear();
+        lower.changedMlt.clear();
+        lower.changedFlw.clear();
         tabRoute<addrIP> tabC = new tabRoute<addrIP>("connected");
         tabC.defDist = 0;
         tabC.defMetr = 0;
@@ -762,6 +898,8 @@ public class ipFwdTab {
         }
         tabU = new tabRoute<addrIP>("locals");
         tabU.mergeFrom(tabRoute.addType.ecmp, tabL, tabRouteAttr.distanLim);
+        tabRoute<addrIP> tabD = new tabRoute<addrIP>("locals");
+        tabD.mergeFrom(tabRoute.addType.ecmp, tabL, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {
@@ -803,6 +941,8 @@ public class ipFwdTab {
         for (int i = 0; i < lower.staticM.size(); i++) {
             rstatic2table(lower.staticM.get(i), tabM, 3);
         }
+        lower.incrCandid = true;
+        //////////////////////anything fancy that disables incremental updates
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
             if (ifc == null) {
@@ -818,9 +958,11 @@ public class ipFwdTab {
                 continue;
             }
             if (!ifc.autRouUnic) {
+                lower.incrCandid = false;
                 autoRouteTable(tabU, ifc);
             }
             if (ifc.autRouMcst) {
+                lower.incrCandid = false;
                 autoRouteTable(tabM, ifc);
             }
         }
@@ -849,6 +991,7 @@ public class ipFwdTab {
                 }
                 break;
             case all:
+                lower.incrCandid = false;
                 tabL = new tabRoute<addrIP>("labeled");
                 tabL.mergeFrom(tabRoute.addType.ecmp, tabU, tabRouteAttr.distanLim);
                 break;
@@ -916,6 +1059,7 @@ public class ipFwdTab {
             if (rtr.routerAutoMesh == null) {
                 continue;
             }
+            lower.incrCandid = false;
             rtr.routerNeighList(tabT);
         }
         for (int i = lower.autoMesh.size(); i >= 0; i--) {
@@ -1007,8 +1151,9 @@ public class ipFwdTab {
                 tabRouteEntry<addrIP> ntry = tabU.get(i);
                 tabU.del(ntry);
             }
+            lower.incrCandid = false;
         }
-        if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
+        if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabD.differs(tabRoute.addType.alters, lower.directR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }
         tabGen<tabIndex<addrIP>> tabIC = new tabGen<tabIndex<addrIP>>();
@@ -1025,6 +1170,7 @@ public class ipFwdTab {
             ntry.hwCntr = old.hwCntr;
         }
         tabC.optimize4lookup();
+        tabD.optimize4lookup();
         tabL.optimize4lookup();
         tabU.optimize4lookup();
         tabM.optimize4lookup();
@@ -1032,9 +1178,11 @@ public class ipFwdTab {
         tabU.version = lower.actualU.version + 1;
         tabL.version = tabU.version;
         tabC.version = tabU.version;
+        tabD.version = tabU.version;
         tabM.version = tabU.version;
         tabF.version = tabU.version;
         lower.connedR = tabC;
+        lower.directR = tabD;
         lower.labeldR = tabL;
         lower.actualU = tabU;
         lower.actualM = tabM;
@@ -1176,9 +1324,9 @@ public class ipFwdTab {
      * update group table
      *
      * @param lower forwarder
+     * @param tim time
      */
-    protected static void updateTableGroup(ipFwd lower) {
-        long tim = bits.getTime();
+    protected static void updateTableGroup(ipFwd lower, long tim) {
         for (int o = lower.groups.size(); o >= 0; o--) {
             ipFwdMcast grp = lower.groups.get(o);
             if (grp == null) {
@@ -1246,9 +1394,9 @@ public class ipFwdTab {
      * update echo table
      *
      * @param lower forwarder
+     * @param tim time
      */
-    protected static void updateTableEcho(ipFwd lower) {
-        long tim = bits.getTime();
+    protected static void updateTableEcho(ipFwd lower, long tim) {
         for (int i = lower.echoes.size(); i >= 0; i--) {
             ipFwdEcho ntry = lower.echoes.get(i);
             if (ntry == null) {
@@ -1266,9 +1414,9 @@ public class ipFwdTab {
      * update traffic engineering table
      *
      * @param lower forwarder
+     * @param tim time
      */
-    protected static void updateTableTrfng(ipFwd lower) {
-        long tim = bits.getTime();
+    protected static void updateTableTrfng(ipFwd lower, long tim) {
         for (int i = lower.trafEngs.size(); i >= 0; i--) {
             ipFwdTrfng ntry = lower.trafEngs.get(i);
             if (ntry == null) {
@@ -1501,13 +1649,24 @@ public class ipFwdTab {
      */
     protected static boolean updateEverything(ipFwd lower) {
         long tim = bits.getTime();
-        boolean chg = updateTableRoute(lower);
-        updateTableNat(lower);
-        updateTableGroup(lower);
-        updateTableEcho(lower);
-        updateTableTrfng(lower);
+        boolean chg = lower.needFull.set(0) > 0;
+        chg |= (lower.changedUni.size() + lower.changedMlt.size() + lower.changedFlw.size()) > lower.incrLimit;
+        chg |= !lower.incrCandid;
+        if (chg) {
+            lower.updateFullCnt++;
+            lower.updateFullLst = tim;
+            chg = updateTableRouteFull(lower);
+        } else {
+            lower.updateIncrCnt++;
+            lower.updateIncrLst = tim;
+            chg = updateTableRouteIncr(lower);
+        }
+        updateTableNat(lower, tim);
+        updateTableGroup(lower, tim);
+        updateTableEcho(lower, tim);
+        updateTableTrfng(lower, tim);
         updateTableMplsp(lower);
-        notifyRouters(lower, chg);
+        notifyRouters(lower, chg, tim);
         lower.tableChanger();
         lower.updateLast = bits.getTime();
         lower.updateCount++;

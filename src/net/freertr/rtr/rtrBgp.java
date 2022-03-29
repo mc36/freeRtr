@@ -1514,8 +1514,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for everything");
         }
-        needFull.set(0);
         tabGen<rtrBgpNeigh> lstn = new tabGen<rtrBgpNeigh>(lstnNei);
+        routerChangedU = null;
+        routerChangedM = null;
+        routerChangedF = null;
         changedUni.clear();
         changedMlt.clear();
         changedOtrU.clear();
@@ -2074,6 +2076,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " changes");
         }
+        routerChangedU = new tabRoute<addrIP>(changedUni);
+        routerChangedM = new tabRoute<addrIP>(changedMlt);
+        routerChangedF = new tabRoute<addrIP>(changedFlw);
         computeIncrUpdate(afiUni, changedUni, routerComputedU, routerRedistedU);
         computeIncrUpdate(afiMlt, changedMlt, routerComputedM, routerRedistedM);
         computeIncrUpdate(afiOtrU, changedOtrU, computedOtrU, origntedOtrU);
@@ -2231,7 +2236,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 + changedMdt.size() + changedNsh.size() + changedSrte.size()
                 + changedLnks.size() + changedMvpn.size() + changedMvpo.size();
         changedTot += changedCur;
-        if (needFull.get() > 0) {
+        if (needFull.set(0) > 0) {
             computeFull();
         } else if (computeIncr()) {
             computeFull();

@@ -109,6 +109,21 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     public tabRoute<addrIP> routerRedistedF = new tabRoute<addrIP>("imported");
 
     /**
+     * the unicast routes changed from protocol
+     */
+    public tabRoute<addrIP> routerChangedU = null;
+
+    /**
+     * the multicast routes changed from protocol
+     */
+    public tabRoute<addrIP> routerChangedM = null;
+
+    /**
+     * the flowspec routes changed from protocol
+     */
+    public tabRoute<addrIP> routerChangedF = null;
+
+    /**
      * list of route imports
      */
     public tabGen<ipRtrRed> routerRedisting = new tabGen<ipRtrRed>();
@@ -299,5 +314,5 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      * @param adv advertiser
      */
     public abstract void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv);
-    
+
 }
