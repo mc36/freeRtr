@@ -117,7 +117,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
                 return true;
             }
             for (int i = 0; i < neighs.size(); i++) {
-                if (neighs.get(i) != o.neighs.get(i)) {
+                if (neighs.get(i).index != o.neighs.get(i).index) {
                     return true;
                 }
             }
@@ -186,7 +186,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
         int cnt = 0;
         for (int i = 0; i < src.size(); i++) {
             tabIndex<T> ntry = src.get(i);
-            if (add2table(trg, ntry)) {
+            if (add2table(trg, ntry.copyBytes())) {
                 cnt++;
             }
         }

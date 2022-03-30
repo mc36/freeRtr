@@ -8,7 +8,6 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.cry.cryBase64;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
