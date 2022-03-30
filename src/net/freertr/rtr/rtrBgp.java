@@ -1947,7 +1947,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
-    private void computeIncrUpdate(int afi, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private int computeIncrUpdate(int afi, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+        int res = 0;
         if (don == null) {
             don = new tabRoute<addrIP>("chg");
         }
@@ -1956,7 +1957,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             chg.del(ntry);
             don.add(tabRoute.addType.always, ntry, false, false);
             computeIncrEntry(afi, ntry, cmp, org);
+            res++;
         }
+        return res;
     }
 
     private void computeIncrPurge(int ver, tabRoute<addrIP> chg) {
@@ -2090,20 +2093,20 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         other.routerChangedF = new tabRoute<addrIP>("chg");
         computeIncrUpdate(afiUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
         computeIncrUpdate(afiMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
-        computeIncrUpdate(afiOtrU, other.routerChangedU, changedOtrU, computedOtrU, origntedOtrU);
-        computeIncrUpdate(afiOtrM, other.routerChangedM, changedOtrM, computedOtrM, origntedOtrM);
-        computeIncrUpdate(afiOtrF, other.routerChangedF, changedOtrF, computedOtrF, origntedOtrF);
+        int cntOth = computeIncrUpdate(afiOtrU, other.routerChangedU, changedOtrU, computedOtrU, origntedOtrU);
+        cntOth += computeIncrUpdate(afiOtrM, other.routerChangedM, changedOtrM, computedOtrM, origntedOtrM);
+        cntOth += computeIncrUpdate(afiOtrF, other.routerChangedF, changedOtrF, computedOtrF, origntedOtrF);
         computeIncrUpdate(afiOtrS, null, changedOtrS, computedOtrS, origntedOtrS);
-        computeIncrUpdate(afiFlw, routerChangedF, changedFlw, routerComputedF, origntedFlw);
-        computeIncrUpdate(afiVpnU, null, changedVpnU, computedVpnU, origntedVpnU);
-        computeIncrUpdate(afiVpnM, null, changedVpnM, computedVpnM, origntedVpnM);
-        computeIncrUpdate(afiVpnF, null, changedVpnF, computedVpnF, origntedVpnF);
-        computeIncrUpdate(afiVpoU, null, changedVpoU, computedVpoU, origntedVpoU);
-        computeIncrUpdate(afiVpoM, null, changedVpoM, computedVpoM, origntedVpoM);
-        computeIncrUpdate(afiVpoF, null, changedVpoF, computedVpoF, origntedVpoF);
-        computeIncrUpdate(afiVpls, null, changedVpls, computedVpls, origntedVpls);
+        int cntFlw = computeIncrUpdate(afiFlw, routerChangedF, changedFlw, routerComputedF, origntedFlw);
+        int cntVpn = computeIncrUpdate(afiVpnU, null, changedVpnU, computedVpnU, origntedVpnU);
+        cntVpn += computeIncrUpdate(afiVpnM, null, changedVpnM, computedVpnM, origntedVpnM);
+        cntVpn += computeIncrUpdate(afiVpnF, null, changedVpnF, computedVpnF, origntedVpnF);
+        int cntVpo = computeIncrUpdate(afiVpoU, null, changedVpoU, computedVpoU, origntedVpoU);
+        cntVpo += computeIncrUpdate(afiVpoM, null, changedVpoM, computedVpoM, origntedVpoM);
+        cntVpo += computeIncrUpdate(afiVpoF, null, changedVpoF, computedVpoF, origntedVpoF);
+        int cntVpls = computeIncrUpdate(afiVpls, null, changedVpls, computedVpls, origntedVpls);
         computeIncrUpdate(afiMspw, null, changedMspw, computedMspw, origntedMspw);
-        computeIncrUpdate(afiEvpn, null, changedEvpn, computedEvpn, origntedEvpn);
+        int cntEvpn = computeIncrUpdate(afiEvpn, null, changedEvpn, computedEvpn, origntedEvpn);
         computeIncrUpdate(afiMdt, null, changedMdt, computedMdt, origntedMdt);
         computeIncrUpdate(afiNsh, null, changedNsh, computedNsh, origntedNsh);
         computeIncrUpdate(afiSrte, null, changedSrte, computedSrte, origntedSrte);
@@ -2113,21 +2116,31 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
-        if (flowInst) {
+        if (flowInst && (cntFlw > 0)) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
-        other.doPeers(computedOtrU, computedOtrM, computedOtrF);
-        for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeers(computedVpnU, computedVpnM, computedVpnF);
+        if (cntOth > 0) {
+            other.doPeers(computedOtrU, computedOtrM, computedOtrF);
         }
-        for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeers(computedVpoU, computedVpoM, computedVpoF);
+        if (cntVpn > 0) {
+            for (int i = 0; i < vrfs.size(); i++) {
+                vrfs.get(i).doer.doPeers(computedVpnU, computedVpnM, computedVpnF);
+            }
         }
-        for (int i = 0; i < vpls.size(); i++) {
-            vpls.get(i).doPeers(computedVpls);
+        if (cntVpo > 0) {
+            for (int i = 0; i < ovrfs.size(); i++) {
+                ovrfs.get(i).doer.doPeers(computedVpoU, computedVpoM, computedVpoF);
+            }
         }
-        for (int i = 0; i < evpn.size(); i++) {
-            evpn.get(i).doPeers(computedEvpn);
+        if (cntVpls > 0) {
+            for (int i = 0; i < vpls.size(); i++) {
+                vpls.get(i).doPeers(computedVpls);
+            }
+        }
+        if (cntEvpn > 0) {
+            for (int i = 0; i < evpn.size(); i++) {
+                evpn.get(i).doPeers(computedEvpn);
+            }
         }
         incrLast = bits.getTime();
         incrTime = (int) (incrLast - tim);

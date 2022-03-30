@@ -100,7 +100,6 @@ public class rtrIsisOther extends ipRtr {
      */
     public void routerRedistChanged() {
         parent.routerRedistChanged();
-        fwd.routerChg(this);
     }
 
     /**

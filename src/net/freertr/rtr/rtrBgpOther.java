@@ -116,7 +116,6 @@ public class rtrBgpOther extends ipRtr {
      */
     public void routerRedistChanged() {
         parent.routerRedistChanged();
-        fwd.routerChg(this);
     }
 
     /**
@@ -127,7 +126,6 @@ public class rtrBgpOther extends ipRtr {
             return;
         }
         parent.routerRedistChanged();
-        fwd.routerChg(this);
     }
 
     private void doExportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg) {
