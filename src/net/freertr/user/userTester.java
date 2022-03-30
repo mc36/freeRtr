@@ -272,9 +272,11 @@ public class userTester {
 
     private void dumpOneChange(userTesterChg cur, List<String> lst) {
         if (summary) {
+            lst.add("");
             lst.addAll(cur.txt);
             return;
         }
+        lst.add("");
         lst.add(releaseN + " (" + cur.ver + ") " + jvn + "; urgency=" + jvp);
         lst.add("");
         for (int i = 0; i < cur.txt.size(); i++) {
@@ -282,7 +284,6 @@ public class userTester {
         }
         lst.add("");
         lst.add(" -- " + releaseV + "  " + bits.time2str(cfgAll.timeZoneName, cur.tim, 4));
-        lst.add("");
     }
 
     /**
