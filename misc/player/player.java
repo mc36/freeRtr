@@ -87,6 +87,8 @@ public class player implements Runnable {
 
     private List<Integer> nextSong = new ArrayList<Integer>();
 
+    private List<Integer> pastSong = new ArrayList<Integer>();
+
     private playerLyric currLyrc = null;
 
     private long currTime = 0;
@@ -206,6 +208,23 @@ public class player implements Runnable {
         runProc(cmd);
     }
 
+    private synchronized boolean setPlaylist(List<playerSong> lst, boolean pre) {
+        if (lst == null) {
+            return true;
+        }
+        if (lst.size() < 1) {
+            return true;
+        }
+        playlist = lst;
+        if (pre) {
+            prelock = lst;
+        }
+        pastSong.clear();
+        nextSong.clear();
+        nextSong.add(rndSeed.nextInt(playlist.size()));
+        return false;
+    }
+
     private synchronized void startPlayDlna() {
         currSong = 0;
         currTime = new Date().getTime();
@@ -263,6 +282,13 @@ public class player implements Runnable {
     private synchronized void startPlayNormal(int ntry, String ss) {
         if ((currSong >= 0) && (prevSong != currSong)) {
             prevSong = currSong;
+            for (;;) {
+                if (pastSong.size() < 10) {
+                    break;
+                }
+                pastSong.remove(0);
+            }
+            pastSong.add(currSong);
         }
         for (;;) {
             if (!nextSong.remove(Integer.valueOf(ntry))) {
@@ -681,11 +707,10 @@ public class player implements Runnable {
                 }
                 res.add(ntry);
             }
-            if (res.size() < 1) {
+            if (setPlaylist(res, false)) {
                 buf.write("nothing selected!<br/>".getBytes());
                 return -1;
             }
-            playlist = res;
             buf.write("lockin successfully finished!<br/>".getBytes());
             return -1;
         }
@@ -782,7 +807,7 @@ public class player implements Runnable {
             putMenu(buf);
             String a = "<br/>unlock successful.<br/>";
             buf.write(a.getBytes());
-            playlist = prelock;
+            setPlaylist(prelock, false);
             return -1;
         }
         if (cmd.equals("resync")) {
@@ -803,6 +828,13 @@ public class player implements Runnable {
                 int num = nextSong.get(i);
                 playerSong ntry = playlist.get(num);
                 String a = "((<a href=\"" + urlR + "?cmd=dequeue&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
+                buf.write(a.getBytes());
+            }
+            buf.write("<br/>previous songs:<br/>".getBytes());
+            for (int i = pastSong.size() - 1; i >= 0; i--) {
+                int num = pastSong.get(i);
+                playerSong ntry = playlist.get(num);
+                String a = "((<a href=\"" + urlR + "?cmd=play&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
                 buf.write(a.getBytes());
             }
             return -1;
@@ -834,13 +866,11 @@ public class player implements Runnable {
             fnd.doFind("/media");
             fnd.doFind("/mnt");
             fnd.doSort();
-            if (fnd.lst.size() < 1) {
+            if (setPlaylist(fnd.lst, true)) {
                 buf.write("nothing selected!<br/>".getBytes());
                 return -1;
             }
-            playlist = fnd.lst;
-            prelock = playlist;
-            String a = "media scanned, " + playlist.size() + " songs found.<br/><br/>";
+            String a = "media scan completed, " + playlist.size() + " songs found.<br/><br/>";
             buf.write(a.getBytes());
             return -1;
         }
@@ -850,12 +880,10 @@ public class player implements Runnable {
             int i = playerUtil.str2int(song);
             if (i > 0) {
                 List<playerSong> res = playerSong.txt2pls(null, playerUtil.readup(playlists.get(i - 1)));
-                if (res.size() < 1) {
+                if (setPlaylist(res, true)) {
                     buf.write("nothing selected!<br/>".getBytes());
                     return -1;
                 }
-                playlist = res;
-                prelock = playlist;
                 String a = "playlist #" + song + " selected with " + playlist.size() + " songs.<br/><br/>";
                 buf.write(a.getBytes());
             }
