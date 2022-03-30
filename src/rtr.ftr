@@ -2780,7 +2780,6 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: aliases with sticky parameters
 todo: disableable door code in temper
-todo: changelog converter with start point
 todo: quic
 todo: update gtp stack to the latest standards
 todo: p4dpdk multiseg rx/tx loop
