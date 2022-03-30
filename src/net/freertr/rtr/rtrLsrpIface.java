@@ -116,6 +116,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public int dynamicMetric = 0;
 
     /**
+     * dynamic forbidden
+     */
+    public boolean dynamicForbid = false;
+
+    /**
      * suppress interface address
      */
     public boolean suppressAddr = false;
@@ -337,6 +342,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
+        cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-forbid", "");
         switch (dynamicMetric) {
             case 0:
                 a = "disabled";
@@ -400,6 +406,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 .           strict                    enable strict mode");
         l.add(null, "4 .         passive                     do not form neighborship");
         l.add(null, "4 .         accept-metric               accept peer metric");
+        l.add(null, "4 .         dynamic-forbid              forbid peer measurement");
         l.add(null, "4 5         dynamic-metric              dynamic peer metric");
         l.add(null, "5 .           disabled                  forbid echo requests");
         l.add(null, "5 .           inband                    inband echo requests");
@@ -590,6 +597,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("dynamic-forbid")) {
+            dynamicForbid = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             dynamicMetric = 0;
@@ -765,6 +778,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("dynamic-forbid")) {
+            dynamicForbid = false;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

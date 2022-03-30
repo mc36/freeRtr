@@ -75,6 +75,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     public int gotMetric;
 
     /**
+     * permission of peer
+     */
+    public boolean gotMeasure;
+
+    /**
      * time echo sent
      */
     public long echoTime;
@@ -119,6 +124,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      */
     protected int sentMet;
 
+    /**
+     * advertised metric
+     */
+    protected boolean sentMed;
+
     private String signRx;
 
     private String signTx;
@@ -146,7 +156,9 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         peer = peerAd.copyBytes();
         lastHeard = bits.getTime();
         sentMet = -1;
+        sentMed = false;
         gotMetric = 10;
+        gotMeasure = true;
     }
 
     public int compare(rtrPvrpNeigh o1, rtrPvrpNeigh o2) {
@@ -225,6 +237,9 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         }
         if (met < 1) {
             met = 1;
+        }
+        if (!gotMeasure) {
+            return met;
         }
         if (iface.dynamicMetric < 1) {
             return met;
@@ -583,6 +598,10 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             sentMet = i;
             sendLn("metric " + sentMet);
         }
+        if (sentMed != iface.dynamicForbid) {
+            sentMed = iface.dynamicForbid;
+            sendLn("measme " + (!sentMed));
+        }
         int sent = 0;
         for (i = 0; i < adverted.size(); i++) {
             tabRouteEntry<addrIP> ntry = adverted.get(i);
@@ -777,6 +796,10 @@ class rtrPvrpNeighRcvr implements Runnable {
             }
             if (a.equals("keepalive")) {
                 lower.lastHeard += bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("measme")) {
+                lower.gotMeasure = cmd.word().equals("true");
                 continue;
             }
             if (a.equals("metric")) {

@@ -109,6 +109,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     public int dynamicMetric = 0;
 
     /**
+     * dynamic forbidden
+     */
+    public boolean dynamicForbid = false;
+
+    /**
      * advertise default route
      */
     public boolean defOrigin = false;
@@ -373,6 +378,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
         cmds.cfgLine(l, !acceptMetric, cmds.tabulator, beg + "accept-metric", "");
+        cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-forbid", "");
         String a;
         switch (dynamicMetric) {
             case 0:
@@ -448,6 +454,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "4 .         split-horizon               dont advertise back on rx interface");
         l.add(null, "4 .         passive                     do not form neighborship");
         l.add(null, "4 .         accept-metric               accept peer metric");
+        l.add(null, "4 .         dynamic-forbid              forbid peer measurement");
         l.add(null, "4 5         dynamic-metric              dynamic peer metric");
         l.add(null, "5 .           disabled                  forbid echo requests");
         l.add(null, "5 .           inband                    inband echo requests");
@@ -625,6 +632,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("accept-metric")) {
             acceptMetric = true;
+            return;
+        }
+        if (a.equals("dynamic-forbid")) {
+            dynamicForbid = true;
             return;
         }
         if (a.equals("dynamic-metric")) {
@@ -866,6 +877,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("dynamic-metric")) {
             dynamicMetric = 0;
+            return;
+        }
+        if (a.equals("dynamic-forbid")) {
+            dynamicForbid = false;
             return;
         }
         if (a.equals("accept-metric")) {

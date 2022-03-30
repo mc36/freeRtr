@@ -62,6 +62,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
     public int gotMetric;
 
     /**
+     * permission of peer
+     */
+    public boolean gotMeasure;
+
+    /**
      * time echo sent
      */
     public long echoTime;
@@ -126,6 +131,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      */
     protected int sentMet;
 
+    /**
+     * advertised metric
+     */
+    protected boolean sentMed;
+
     private String signRx;
 
     private String signTx;
@@ -154,7 +164,9 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         lastHeard = bits.getTime();
         advert = new tabGen<rtrLsrpData>();
         sentMet = -1;
+        sentMed = false;
         gotMetric = 10;
+        gotMeasure = true;
     }
 
     public int compare(rtrLsrpNeigh o1, rtrLsrpNeigh o2) {
@@ -230,6 +242,9 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         if (met < 1) {
             met = 1;
+        }
+        if (!gotMeasure) {
+            return met;
         }
         if (iface.dynamicMetric < 1) {
             return met;
@@ -591,6 +606,10 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             sentMet = i;
             sendLn("metric " + sentMet);
         }
+        if (sentMed != iface.dynamicForbid) {
+            sentMed = iface.dynamicForbid;
+            sendLn("measme " + (!sentMed));
+        }
         for (i = 0; i < advert.size(); i++) {
             rtrLsrpData ntry = advert.get(i);
             if (ntry == null) {
@@ -707,6 +726,12 @@ class rtrLsrpNeighRcvr implements Runnable {
             }
             if (a.equals("keepalive")) {
                 lower.lastHeard += bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("measme")) {
+                lower.gotMeasure = cmd.word().equals("true");
+                lower.lower.todo.set(0);
+                lower.lower.notif.wakeup();
                 continue;
             }
             if (a.equals("metric")) {
