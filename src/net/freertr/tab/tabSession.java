@@ -723,7 +723,7 @@ public class tabSession implements Runnable {
      */
     public void doInspect() {
         long tim = bits.getTime();
-        int o = 0;
+        int cnt = 0;
         for (int i = connects.size() - 1; i >= 0; i--) {
             tabSessionEntry cur = connects.get(i);
             if (cur == null) {
@@ -733,12 +733,12 @@ public class tabSession implements Runnable {
                 continue;
             }
             connects.del(cur);
-            o++;
+            cnt++;
             if (logAfter) {
                 logger.info("finished " + cur);
             }
         }
-        if ((o > 0) && (notif != null)) {
+        if ((cnt > 0) && (notif != null)) {
             notif.wakeup();
         }
     }
@@ -773,7 +773,7 @@ public class tabSession implements Runnable {
         List<tabSessionEntry> lst = new ArrayList<tabSessionEntry>();
         boolean tmp = true;
         packHolder pck = new packHolder(true, true);
-        int o = 0;
+        int cnt = 0;
         for (int i = connects.size() - 1; i >= 0; i--) {
             tabSessionEntry cur = connects.get(i);
             if (cur == null) {
@@ -790,7 +790,7 @@ public class tabSession implements Runnable {
                 continue;
             }
             connects.del(cur);
-            o++;
+            cnt++;
             if (logAfter) {
                 logger.info("finished " + cur);
             }
@@ -798,7 +798,7 @@ public class tabSession implements Runnable {
         if (lst.size() > 0) {
             doNetflow(pck, pipe, lst, tmp);
         }
-        if ((o > 0) && (notif != null)) {
+        if ((cnt > 0) && (notif != null)) {
             notif.wakeup();
         }
     }

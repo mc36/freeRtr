@@ -581,6 +581,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * stop this routing table completely
      */
     public void stopThisVrf() {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("stop vrf");
+        }
         untriggeredRecomputation = -1;
         needFull.or(3);
         triggerUpdate.wakeup();
@@ -692,6 +695,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param ntry entry to delete
      */
     public void ldpNeighDel(rtrLdpNeigh ntry) {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("delete ldp " + ntry);
+        }
         rtrLdpNeigh old = ldpNeighs.del(ntry);
         if (old != null) {
             old.stopPeer();
@@ -753,6 +759,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param ntry entry to delete
      */
     public void ldpTargetDel(rtrLdpTrgtd ntry) {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("delete ldp " + ntry);
+        }
         ntry = ldpTarget.del(ntry);
         if (ntry != null) {
             ntry.workStop();
@@ -993,6 +1002,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param rou route
      */
     public void staticDel(boolean uni, ipFwdRoute rou) {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("delete static " + rou);
+        }
         if (uni) {
             rou = staticU.del(rou);
         } else {
@@ -1015,6 +1027,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param rou route
      */
     public void staticAdd(boolean uni, ipFwdRoute rou) {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("install static " + rou);
+        }
         rou.fwdCor = this;
         if (uni) {
             staticU.add(rou);
@@ -1652,6 +1667,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * static route change happened
      */
     public void routerStaticChg() {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("static changed");
+        }
         needFull.or(1);
         triggerUpdate.wakeup();
     }
@@ -1660,6 +1678,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * router config change happened
      */
     public void routerConfigChg() {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("config changed");
+        }
         needFull.or(3);
         triggerUpdate.wakeup();
     }
