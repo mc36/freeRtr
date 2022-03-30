@@ -11,6 +11,7 @@ MD="-O3 -g"                             #debug
 MD="-O3"                                #release
 #gdb xxx.bin core
 #bt full
+#p *((struct <type> *)(<addr>))
 mkdir -p $TR
 
 compileBpf()
