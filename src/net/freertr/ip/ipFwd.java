@@ -1632,13 +1632,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         rtr.routerComputeChg++;
         rtr.routerComputeTim = bits.getTime();
-        if ((rtr.routerChangedU != null) && (rtr.routerChangedM != null) && (rtr.routerChangedF != null)) {
-            changedUni.mergeFrom(tabRoute.addType.always, rtr.routerChangedU, tabRouteAttr.distanLim);
-            changedMlt.mergeFrom(tabRoute.addType.always, rtr.routerChangedM, tabRouteAttr.distanLim);
-            changedFlw.mergeFrom(tabRoute.addType.always, rtr.routerChangedF, tabRouteAttr.distanLim);
-            rtr.routerChangedU = null;
-            rtr.routerChangedM = null;
-            rtr.routerChangedF = null;
+        tabRoute<addrIP> chgU = rtr.routerChangedU;
+        tabRoute<addrIP> chgM = rtr.routerChangedM;
+        tabRoute<addrIP> chgF = rtr.routerChangedF;
+        rtr.routerChangedU = null;
+        rtr.routerChangedM = null;
+        rtr.routerChangedF = null;
+        if ((chgU != null) && (chgM != null) && (chgF != null)) {
+            changedUni.mergeFrom(tabRoute.addType.always, chgU, tabRouteAttr.distanLim);
+            changedMlt.mergeFrom(tabRoute.addType.always, chgM, tabRouteAttr.distanLim);
+            changedFlw.mergeFrom(tabRoute.addType.always, chgF, tabRouteAttr.distanLim);
         } else {
             needFull.or(1);
         }
