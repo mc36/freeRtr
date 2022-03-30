@@ -153,6 +153,7 @@ public class userTester {
         String source = "../changelog.txt";
         String target = "";
         String state = "";
+        summary = false;
         releaseN = verCore.name;
         jvn = "sid";
         jvp = "medium";
@@ -164,6 +165,14 @@ public class userTester {
             String s = cmd.word();
             if (s.length() < 1) {
                 break;
+            }
+            if (s.equals("pure")) {
+                summary = true;
+                continue;
+            }
+            if (s.equals("header")) {
+                summary = false;
+                continue;
             }
             if (s.equals("forward")) {
                 forward = true;
@@ -262,6 +271,10 @@ public class userTester {
     }
 
     private void dumpOneChange(userTesterChg cur, List<String> lst) {
+        if (summary) {
+            lst.addAll(cur.txt);
+            return;
+        }
         lst.add(releaseN + " (" + cur.ver + ") " + jvn + "; urgency=" + jvp);
         lst.add("");
         for (int i = 0; i < cur.txt.size(); i++) {
