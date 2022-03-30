@@ -21,6 +21,7 @@ import net.freertr.util.cmds;
 import net.freertr.util.logger;
 import net.freertr.util.shrtPthFrst;
 import net.freertr.util.syncInt;
+import net.freertr.util.verCore;
 import net.freertr.util.version;
 
 /**
@@ -35,7 +36,6 @@ public class userTester {
      */
     public userTester() {
     }
-
     /**
      * port base
      */
@@ -45,6 +45,11 @@ public class userTester {
      * slot increment
      */
     protected final static int portSlot = 100;
+
+    /**
+     * changelog separator
+     */
+    protected final static String chgLogSep = "---------------------------------- ";
 
     private pipeProgress rdr;
 
@@ -102,7 +107,9 @@ public class userTester {
 
     private tabIntMatcher chatty;
 
-    private String release = "unknown";
+    private String releaseN = "unknown";
+
+    private String releaseV = "unknown";
 
     private int maxTry = 1;
 
@@ -137,11 +144,140 @@ public class userTester {
     private userTesterOne[] workers;
 
     /**
-     * do the work
+     * do the changelog work
      *
      * @param c command to do
      */
-    public void doer(cmds c) {
+    public void doChanges(cmds c) {
+        cmd = c;
+        String source = "../changelog.txt";
+        String target = "";
+        String state = "";
+        releaseN = verCore.name;
+        jvn = "sid";
+        jvp = "medium";
+        releaseV = verCore.author;
+        String startS = "";
+        boolean forward = true;
+        int startI = 0;
+        for (;;) {
+            String s = cmd.word();
+            if (s.length() < 1) {
+                break;
+            }
+            if (s.equals("forward")) {
+                forward = true;
+                continue;
+            }
+            if (s.equals("backward")) {
+                forward = false;
+                continue;
+            }
+            if (s.equals("source")) {
+                source = cmd.word();
+                continue;
+            }
+            if (s.equals("packge")) {
+                releaseN = cmd.word();
+                continue;
+            }
+            if (s.equals("mntner")) {
+                releaseV = cmd.word().replaceAll("_", " ");
+                continue;
+            }
+            if (s.equals("distro")) {
+                jvn = cmd.word();
+                continue;
+            }
+            if (s.equals("urgent")) {
+                jvp = cmd.word();
+                continue;
+            }
+            if (s.equals("target")) {
+                target = cmd.word();
+                continue;
+            }
+            if (s.equals("state")) {
+                state = cmd.word();
+                continue;
+            }
+            if (s.equals("since")) {
+                startS = cmd.word();
+                continue;
+            }
+        }
+        List<String> lst = bits.txt2buf(state);
+        if (lst != null) {
+            startS = lst.get(0);
+        }
+        lst = bits.txt2buf(source);
+        if (lst == null) {
+            cmd.error("error reading source");
+            return;
+        }
+        List<userTesterChg> res = new ArrayList<userTesterChg>();
+        userTesterChg cur = new userTesterChg();
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
+            if (!a.startsWith(chgLogSep)) {
+                cur.txt.add(a);
+                continue;
+            }
+            cur = new userTesterChg();
+            a = a.substring(chgLogSep.length(), a.length());
+            cmds cm = new cmds("hed", a);
+            a = cm.word() + " ";
+            a += cm.word();
+            cur.str = a.replaceAll(" ", "_");
+            cur.tim = bits.str2time(cfgAll.timeZoneName, a);
+            a = cm.word();
+            if (a.length() < 1) {
+                a = bits.time2str(cfgAll.timeZoneName, cur.tim, 1);
+                a = a.substring(2, a.length());
+                a = a.replaceAll("-", ".");
+            }
+            cur.ver = a;
+            if (startS.compareTo(cur.str) >= 0) {
+                startI = res.size();
+            }
+            res.add(cur);
+        }
+        lst = new ArrayList<String>();
+        startI += 1;
+        if (forward) {
+            for (int i = startI; i < res.size(); i++) {
+                dumpOneChange(res.get(i), lst);
+            }
+        } else {
+            for (int i = res.size() - 1; i >= startI; i--) {
+                dumpOneChange(res.get(i), lst);
+            }
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            cmd.pipe.linePut(lst.get(i));
+        }
+        cur = res.get(res.size() - 1);
+        bits.buf2txt(true, lst, target);
+        bits.buf2txt(true, bits.str2lst(cur.str), state);
+    }
+
+    private void dumpOneChange(userTesterChg cur, List<String> lst) {
+        lst.add(releaseN + " (" + cur.ver + ") " + jvn + "; urgency=" + jvp);
+        lst.add("");
+        for (int i = 0; i < cur.txt.size(); i++) {
+            lst.add("  * " + cur.txt.get(i));
+        }
+        lst.add("");
+        lst.add(" -- " + releaseV + "  " + bits.time2str(cfgAll.timeZoneName, cur.tim, 4));
+        lst.add("");
+    }
+
+    /**
+     * do the testing work
+     *
+     * @param c command to do
+     */
+    public void doTesting(cmds c) {
         cmd = c;
         rdr = new pipeProgress(cmd.pipe);
         int mem = 256;
@@ -354,8 +490,11 @@ public class userTester {
             s = "";
         }
         jvp = jvp.replaceAll("XmxZZZm", s);
-        userTesterPrc prc = new userTesterPrc(rdr, slot, "version", jvn + jvp + " show version");
-        release = prc.getLine();
+        userTesterPrc prc = new userTesterPrc(rdr, slot, "release", jvn + jvp + " show version brief");
+        releaseN = prc.getLine();
+        prc.stopNow();
+        prc = new userTesterPrc(rdr, slot, "version", jvn + jvp + " show version number");
+        releaseV = prc.getLine();
         prc.stopNow();
         if (beg.length() < 2) {
             beg = "";
@@ -418,7 +557,8 @@ public class userTester {
         rdr.debugStat("slot=" + slot);
         rdr.debugStat("paralell=" + paralell);
         rdr.debugStat("jvm=" + jvn + jvp);
-        rdr.debugStat("release=" + release);
+        rdr.debugStat("release=" + releaseN);
+        rdr.debugStat("version=" + releaseV);
         rdr.debugStat("url=" + url);
         rdr.debugStat("path=" + path);
         rdr.debugStat("discard=" + discard);
@@ -551,7 +691,7 @@ public class userTester {
         txt.add(" :active { color: white }");
         txt.add("</style>");
         txt.add("<title>tester</title></head><body>");
-        txt.add("release: " + release + "<br/>");
+        txt.add("release: " + releaseN + "<br/>");
         txt.add("tested: " + a + "<br/>");
         txt.add("jvm: " + jvn + jvp + "<br/>");
         txt.add("<br/>");
@@ -561,7 +701,7 @@ public class userTester {
         bits.buf2txt(true, txt, "rtr" + beg + ".html");
         txt = new ArrayList<String>();
         txt.add("url;file;result;test");
-        txt.add("-;-;-;" + release);
+        txt.add("-;-;-;" + releaseN);
         txt.add("-;-;-;" + a);
         txt.add("-;-;-;" + jvn + jvp);
         txt.addAll(features2list(finished, 4));
@@ -576,7 +716,7 @@ public class userTester {
         if (txt.size() < 1) {
             return;
         }
-        txt.add(0, "---------------------------------- " + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
+        txt.add(0, chgLogSep + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3) + " " + releaseV);
         bits.buf2txt(false, txt, "../changelog" + beg + ".txt");
     }
 
@@ -698,6 +838,18 @@ public class userTester {
         }
         return res;
     }
+
+}
+
+class userTesterChg {
+
+    public String str;
+
+    public String ver;
+
+    public long tim;
+
+    public List<String> txt = new ArrayList<String>();
 
 }
 

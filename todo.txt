@@ -1,4 +1,3 @@
-lsrp pvrp forbid remote dynamic metric
 aliases with sticky parameters
 disableable door code in temper
 changelog converter with start point

@@ -1957,6 +1957,8 @@ public class userExec {
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    tester                       perform image tests");
         hl.add(null, "3 3,.      <str>                      parameter");
+        hl.add(null, "2 3,.    changelog                    perform changelog conversion");
+        hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    template                     perform image templates");
         hl.add(null, "3 3,.      <str>                      parameter");
         cfgAll.aliasHelps(cfgAlias.aliasType.test, 2, hl);

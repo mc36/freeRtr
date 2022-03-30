@@ -760,7 +760,12 @@ public class userTest {
         }
         if (a.equals("tester")) {
             userTester t = new userTester();
-            t.doer(cmd);
+            t.doTesting(cmd);
+            return null;
+        }
+        if (a.equals("changelog")) {
+            userTester t = new userTester();
+            t.doChanges(cmd);
             return null;
         }
         if (a.equals("template")) {
