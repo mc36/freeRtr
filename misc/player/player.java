@@ -323,6 +323,8 @@ public class player implements Runnable {
         playlists = playerUtil.readup("/etc/asound.conf");
         int volDef = 50;
         int autoPlay = 0;
+        int defList = 0;
+        playerLyric locList = new playerLyric();
         if (playlists != null) {
             for (int i = 0; i < playlists.size(); i++) {
                 String a = playlists.get(i);
@@ -332,38 +334,52 @@ public class player implements Runnable {
                 }
                 String b = a.substring(o + 1, a.length()).trim();
                 a = a.substring(0, o).trim();
-                if (a.equals("#player.class mixer")) {
+                o = a.indexOf(" ");
+                if (!a.substring(0, o).startsWith("#player.class")) {
+                    continue;
+                }
+                a = a.substring(o, a.length()).trim();
+                if (a.equals("mixer")) {
                     mixer = b;
                     continue;
                 }
-                if (a.equals("#player.class headend")) {
+                if (a.equals("headend")) {
                     headEnd = true;
                     continue;
                 }
-                if (a.equals("#player.class autoplay")) {
+                if (a.equals("autoplay")) {
                     autoPlay = playerUtil.str2int(b);
                     continue;
                 }
-                if (a.equals("#player.class srate")) {
+                if (a.equals("deflist")) {
+                    defList = playerUtil.str2int(b);
+                    continue;
+                }
+                if (a.equals("loclist")) {
+                    locList.add(b);
+                    continue;
+                }
+                if (a.equals("srate")) {
                     srate = b;
                     continue;
                 }
-                if (a.equals("#player.class volmin")) {
+                if (a.equals("volmin")) {
                     volMin = playerUtil.str2int(b);
                     continue;
                 }
-                if (a.equals("#player.class volmax")) {
+                if (a.equals("volmax")) {
                     volMax = playerUtil.str2int(b);
                     continue;
                 }
-                if (a.equals("#player.class voldef")) {
+                if (a.equals("voldef")) {
                     volDef = playerUtil.str2int(b);
                     continue;
                 }
             }
         }
         playlists = playerUtil.readup(path + ".cfg");
-        playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(0)));
+        playlists.addAll(locList);
+        playlist = playerSong.txt2pls(null, playerUtil.readup(playlists.get(defList)));
         prelock = playlist;
         stopFull();
         setVolume(volDef);
