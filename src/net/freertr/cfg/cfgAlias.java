@@ -52,7 +52,12 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     /**
      * sticky parameter
      */
-    public String sticky = "";
+    public String sticky = null;
+
+    /**
+     * default parameter
+     */
+    public String defParam = null;
 
     /**
      * help description text
@@ -254,8 +259,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (parameter != paraMode.allow) {
             l.add(a + " parameter " + param2string(parameter));
         }
-        if (sticky.length() > 0) {
-            l.add(a + " sticky " + sticky);
+        if (defParam != null) {
+            l.add(a + " default-param " + defParam);
+        }
+        if (sticky != null) {
+            l.add(a + " sticky-param " + sticky);
         }
         if (description.length() > 0) {
             l.add(a + " description " + description);
@@ -290,12 +298,16 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             hidden = true;
             return;
         }
-        if (a.equals("sticky")) {
+        if (a.equals("sticky-param")) {
             sticky = cmd.getRemaining();
             userReader rdr = new userReader(cmd.pipe, null);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
             doCommands(exe, cmd);
+            return;
+        }
+        if (a.equals("default-param")) {
+            defParam = cmd.getRemaining();
             return;
         }
         cmd.badCmd();
@@ -340,50 +352,27 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * @param par parameters
      */
     public void doCommands(userExec exe, cmds par) {
-        cmds orig = par.copyBytes(false);
-        if (sticky.length() > 0) {
+        if ((defParam != null) && (par.getRemaining().length() < 1)) {
+            par = new cmds("def", defParam);
+        }
+        if (sticky != null) {
             sticky = par.getRemaining();
         }
-        String a = getCommand(orig);
+        String a = command;
+        if (parameter != paraMode.never) {
+            a += " " + par.getRemaining();
+        }
         a = exe.repairCommand(a);
         exe.executeCommand(a);
-        a = getCmd2nd(orig);
+        a = cmd2nd;
         if (a == null) {
             return;
         }
+        if (parameter != paraMode.never) {
+            a += " " + par.getRemaining();
+        }
         a = exe.repairCommand(a);
         exe.executeCommand(a);
-    }
-
-    /**
-     * get command line
-     *
-     * @param cmd parameters
-     * @return command line
-     */
-    public String getCommand(cmds cmd) {
-        String s = command;
-        if (parameter != paraMode.never) {
-            s += " " + cmd.getRemaining();
-        }
-        return s;
-    }
-
-    /**
-     * get 2nd command line
-     *
-     * @param cmd parameters
-     * @return command line
-     */
-    public String getCmd2nd(cmds cmd) {
-        String s = cmd2nd;
-        if (s == null) {
-            return null;
-        }
-        if (parameter != paraMode.never) {
-            s += " " + cmd.getRemaining();
-        }
-        return s;
     }
 
 }

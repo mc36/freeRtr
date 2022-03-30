@@ -683,7 +683,9 @@ public class userConfig {
         l.add(null, "5  5,.        <cmd>                  command");
         l.add(null, "4  5        description              specify help description");
         l.add(null, "5  5,.        <text>                 help text");
-        l.add(null, "4  5        sticky                   specify sticky parameter");
+        l.add(null, "4  5        sticky-param             specify sticky parameter");
+        l.add(null, "5  5,.        <text>                 parameter text");
+        l.add(null, "4  5        default-param            specify default parameter");
         l.add(null, "5  5,.        <text>                 parameter text");
         l.add(null, "4  5        parameter                specify parameter existence");
         l.add(null, "5  .          forbidden              no parameters");
