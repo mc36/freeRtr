@@ -131,12 +131,17 @@ public class temper implements Runnable {
     /**
      * door codes
      */
-    protected List<String> doorCode = new ArrayList<String>();
+    protected List<temperCode> doorCode = new ArrayList<temperCode>();
 
     /**
      * door log
      */
     protected List<temperLog> doorLog = new ArrayList<temperLog>();
+
+    /**
+     * door temporary codes allowed
+     */
+    protected boolean doorTemp = false;
 
     /**
      * door max
@@ -331,7 +336,15 @@ public class temper implements Runnable {
                 continue;
             }
             if (a.equals("door-code")) {
-                doorCode.add(s);
+                doorCode.add(new temperCode(doorCode.size() + 1, s, false));
+                continue;
+            }
+            if (a.equals("door-tcode")) {
+                doorCode.add(new temperCode(doorCode.size() + 1, s, true));
+                continue;
+            }
+            if (a.equals("door-temp")) {
+                doorTemp = s.equals("on");
                 continue;
             }
             if (a.equals("door-time")) {
@@ -410,6 +423,17 @@ public class temper implements Runnable {
         buf.write("</body></html>".getBytes());
     }
 
+    private temperCode findCode(String s) {
+        for (int i = 0; i < doorCode.size(); i++) {
+            temperCode cur = doorCode.get(i);
+            if (!s.equals(cur.code)) {
+                continue;
+            }
+            return cur;
+        }
+        return null;
+    }
+
     /**
      * do one request
      *
@@ -469,17 +493,42 @@ public class temper implements Runnable {
             putStart(buf, "relay", "relay set to " + i + " from range " + relayPin);
             return 1;
         }
-        if (cmd.equals("door")) {
-            int o = -1;
-            for (int i = 0; i < doorCode.size(); i++) {
-                if (!tmp.equals(doorCode.get(i))) {
-                    continue;
-                }
-                o = i;
-                break;
+        if (cmd.equals("guests")) {
+            temperCode res = findCode(tmp);
+            if (res == null) {
+                putStart(buf, "door", "invalid code");
+                return 1;
             }
-            if (o < 0) {
-                putStart(buf, "door", "bad code");
+            if (res.temp) {
+                putStart(buf, "door", "disabled code");
+                return 1;
+            }
+            doorTemp = true;
+            putStart(buf, "door", "guests enabled");
+            return 1;
+        }
+        if (cmd.equals("closed")) {
+            temperCode res = findCode(tmp);
+            if (res == null) {
+                putStart(buf, "door", "invalid code");
+                return 1;
+            }
+            if (res.temp) {
+                putStart(buf, "door", "disabled code");
+                return 1;
+            }
+            doorTemp = false;
+            putStart(buf, "door", "guests disabled");
+            return 1;
+        }
+        if (cmd.equals("door")) {
+            temperCode res = findCode(tmp);
+            if (res == null) {
+                putStart(buf, "door", "invalid code");
+                return 1;
+            }
+            if (res.temp && (!doorTemp)) {
+                putStart(buf, "door", "disabled code");
                 return 1;
             }
             setValue(currValue | doorPin);
@@ -487,7 +536,7 @@ public class temper implements Runnable {
             temperUtil.sleep(doorTime);
             setValue(currValue & (~doorPin));
             writeLog(peer);
-            doorLog.add(new temperLog(this, peer, o));
+            doorLog.add(new temperLog(this, peer, res.myNum));
             for (;;) {
                 if (doorLog.size() <= doorMax) {
                     break;

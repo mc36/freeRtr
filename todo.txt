@@ -1,4 +1,3 @@
-disableable door code in temper
 quic
 update gtp stack to the latest standards
 p4dpdk multiseg rx/tx loop

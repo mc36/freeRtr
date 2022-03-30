@@ -13103,3 +13103,5 @@ no todo: aliases with sticky parameters
 todo: default playlist in player
 ---------------------------------- 2022-03-30 10:07:16 22.3.30
 no todo: default playlist in player
+---------------------------------- 2022-03-30 10:55:30 22.3.30
+no todo: disableable door code in temper
