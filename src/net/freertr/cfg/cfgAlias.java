@@ -8,6 +8,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
+import net.freertr.user.userReader;
 import net.freertr.util.cmds;
 
 /**
@@ -47,6 +48,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * hide commands
      */
     public boolean hidden = false;
+
+    /**
+     * sticky parameter
+     */
+    public String sticky = "";
 
     /**
      * help description text
@@ -248,6 +254,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (parameter != paraMode.allow) {
             l.add(a + " parameter " + param2string(parameter));
         }
+        if (sticky.length() > 0) {
+            l.add(a + " sticky " + sticky);
+        }
         if (description.length() > 0) {
             l.add(a + " description " + description);
         }
@@ -279,6 +288,14 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         if (a.equals("hidden")) {
             hidden = true;
+            return;
+        }
+        if (a.equals("sticky")) {
+            sticky = cmd.getRemaining();
+            userReader rdr = new userReader(cmd.pipe, null);
+            userExec exe = new userExec(cmd.pipe, rdr);
+            exe.privileged = true;
+            doCommands(exe, cmd);
             return;
         }
         cmd.badCmd();
@@ -324,6 +341,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      */
     public void doCommands(userExec exe, cmds par) {
         cmds orig = par.copyBytes(false);
+        if (sticky.length() > 0) {
+            sticky = par.getRemaining();
+        }
         String a = getCommand(orig);
         a = exe.repairCommand(a);
         exe.executeCommand(a);
