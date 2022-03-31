@@ -1,5 +1,13 @@
-name: SonarQube CI
-on: push
+name: SonarQube
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '43 15 * * 3'
+
 jobs:
   sonarQubeTrigger:
     name: SonarQube Trigger
