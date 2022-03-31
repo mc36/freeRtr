@@ -7,3 +7,4 @@ java -Xmx256m -jar rtr.jar test verfile http://keystore.local:8080/freertr3.key
 java -Xmx256m -jar rtr.jar test vercore http://keystore.local:8080/freertr3.key http://keystore.local:8080/freertr3.key
 echo verifying
 java -Xmx256m -jar rtr.jar exec flash verify
+exit 0
