@@ -343,7 +343,9 @@ public class rtrBgpVrfRtr extends ipRtr {
             if (res == null) {
                 return;
             }
-            doImportRoute(afi, res, trg, rt);
+            if (doImportRoute(afi, res, trg, rt)) {
+                return;
+            }
             chg.add(tabRoute.addType.always, ntry.prefix, null);
             return;
         }
@@ -386,6 +388,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         for (int i = 0; i < chgF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerChangedF, routerComputedF, cmpF, rt);
+        }
+        if ((routerChangedU.size() + routerChangedM.size() + routerChangedF.size()) < 1) {
+            return fwd.prefixMode != ipFwd.labelMode.common;
         }
         fwd.routerChg(this);
         if (flowInst && (chgF.size() > 0)) {
