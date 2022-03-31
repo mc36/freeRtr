@@ -13120,3 +13120,10 @@ qc pass: bgp vpns change in metric
 qc pass: ibgp rr vpns prefix movement
 qc pass: bgp othervpns change in metric
 qc pass: ibgp rr othervpns prefix movement
+---------------------------------- 2022-03-31 19:16:12 22.3.31
+qc pass: ibgp rr prefix withdraw with labels
+qc pass: ouni ibgp rr prefix withdraw
+qc pass: olab ibgp rr prefix withdraw
+qc pass: ibgp rr vpns prefix withdraw
+qc pass: ibgp rr othervpns prefix withdraw
+qc pass: olab ibgp fullmesh prefix withdraw
