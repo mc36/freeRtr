@@ -1359,7 +1359,9 @@ public class userReader implements Comparator<String> {
         if (i < 0) {
             return cmd;
         }
+        pipeSide pipe = cmd.pipe;
         cmd = new cmds("exec", a.substring(0, i - 1).trim());
+        cmd.pipe = pipe;
         a = a.substring(i + 1, a.length()).trim();
         i = a.indexOf(" ");
         if (i < 0) {
