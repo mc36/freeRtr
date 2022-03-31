@@ -51,11 +51,17 @@ jobs:
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
 
-    - run: |
-       cd src
-       ./c.sh
-       cd ../misc/native
-       ./c.sh
+    - if: matrix.language == 'cpp'
+      name: build cpp
+      run: |
+        cd misc/native
+        ./c.sh
+
+    - if: matrix.language == 'java'
+      name: build cpp
+      run: |
+        cd src
+        ./c.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
