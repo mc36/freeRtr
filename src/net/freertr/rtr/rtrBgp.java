@@ -1680,6 +1680,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neigroups");
         }
+        boolean diffs = nUni.differs(tabRoute.addType.alters, routerComputedU) || nMlt.differs(tabRoute.addType.alters, routerComputedM) || nFlw.differs(tabRoute.addType.alters, routerComputedF);
         routerComputedU = nUni;
         routerComputedM = nMlt;
         computedOtrU = nOtrU;
@@ -1702,6 +1703,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computedLnks = nLnks;
         computedMvpn = nMvpn;
         computedMvpo = nMvpo;
+        if (diffs) {
+            fwdCore.routerChg(this);
+        }
         for (int i = 0; i < lstn.size(); i++) {
             rtrBgpNeigh nei = lstn.get(i);
             if (nei == null) {
@@ -2097,8 +2101,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRoute<addrIP> chgVpoU = new tabRoute<addrIP>("chg");
         tabRoute<addrIP> chgVpoM = new tabRoute<addrIP>("chg");
         tabRoute<addrIP> chgVpoF = new tabRoute<addrIP>("chg");
-        computeIncrUpdate(afiUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
-        computeIncrUpdate(afiMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
+        int cntGlb = computeIncrUpdate(afiUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
+        cntGlb += computeIncrUpdate(afiMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
         computeIncrUpdate(afiOtrU, other.routerChangedU, changedOtrU, computedOtrU, origntedOtrU);
         computeIncrUpdate(afiOtrM, other.routerChangedM, changedOtrM, computedOtrM, origntedOtrM);
         computeIncrUpdate(afiOtrF, other.routerChangedF, changedOtrF, computedOtrF, origntedOtrF);
@@ -2119,6 +2123,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiLnks, null, changedLnks, computedLnks, origntedLnks);
         computeIncrUpdate(afiMvpn, null, changedMvpn, computedMvpn, origntedMvpn);
         computeIncrUpdate(afiMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
+        if ((cntGlb + cntFlw) > 0) {
+            fwdCore.routerChg(this);
+        }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
@@ -2281,7 +2288,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " done");
         }
-        fwdCore.routerChg(this);
     }
 
     /**

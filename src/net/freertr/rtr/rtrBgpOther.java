@@ -222,6 +222,9 @@ public class rtrBgpOther extends ipRtr {
         for (int i = 0; i < cmpF.size(); i++) {
             doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpF.get(i), tabF);
         }
+        if ((!tabU.differs(tabRoute.addType.alters, routerComputedU)) && (!tabU.differs(tabRoute.addType.alters, routerComputedM)) && (!tabF.differs(tabRoute.addType.alters, routerComputedF))) {
+            return fwd.prefixMode != ipFwd.labelMode.common;
+        }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
         }
