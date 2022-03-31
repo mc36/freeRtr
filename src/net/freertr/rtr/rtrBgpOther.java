@@ -171,6 +171,7 @@ public class rtrBgpOther extends ipRtr {
 
     private void doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg) {
         if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
+            trg.del(ntry);
             return;
         }
         ntry = ntry.copyBytes(tabRoute.addType.ecmp);
@@ -186,7 +187,7 @@ public class rtrBgpOther extends ipRtr {
                 attr.distance = distance;
             }
         }
-        tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, 0, ntry, false, null, null, null);
+        tabRoute.addUpdatedEntry(tabRoute.addType.always, trg, afi, 0, ntry, false, null, null, null);
         if (parent.routerAutoMesh == null) {
             return;
         }
@@ -194,14 +195,14 @@ public class rtrBgpOther extends ipRtr {
     }
 
     /**
-     * import routes from table
+     * full import routes from table
      *
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeers(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+    public boolean doPeersFull(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         if (!enabled) {
             routerChangedU = null;
             routerChangedM = null;
@@ -231,6 +232,50 @@ public class rtrBgpOther extends ipRtr {
         fwd.routerChg(this);
         if (flowInst) {
             fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));
+        }
+        return fwd.prefixMode != ipFwd.labelMode.common;
+    }
+
+    private tabRouteEntry<addrIP> doRemoveRoute(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, tabRoute<addrIP> cmp) {
+        tabRouteEntry<addrIP> res = cmp.find(ntry);
+        if (res == null) {
+            trg.del(ntry);
+            return null;
+        }
+        return res;
+    }
+
+    /**
+     * incremental import routes from table
+     *
+     * @return other changes trigger full recomputation
+     */
+    public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+        if (!enabled) {
+            routerChangedU = null;
+            routerChangedM = null;
+            routerChangedF = null;
+            return false;
+        }
+        for (int i = 0; i < routerChangedU.size(); i++) {
+            tabRouteEntry<addrIP> ntry = doRemoveRoute(routerChangedU.get(i), routerComputedU, cmpU);
+            if (ntry == null) {
+                continue;
+            }
+            doImportRoute(rtrBgpUtil.sfiUnicast, ntry, routerComputedU);
+        }
+        for (int i = 0; i < routerChangedM.size(); i++) {
+            tabRouteEntry<addrIP> ntry = doRemoveRoute(routerChangedM.get(i), routerComputedM, cmpM);
+            if (ntry == null) {
+                continue;
+            }
+            doImportRoute(rtrBgpUtil.sfiMulticast, ntry, routerComputedM);
+        }
+        fwd.routerChg(this);
+        if (flowInst && (routerChangedF.size() > 0)) {
+            tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
+            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));
+            routerComputedF = tabF;
         }
         return fwd.prefixMode != ipFwd.labelMode.common;
     }

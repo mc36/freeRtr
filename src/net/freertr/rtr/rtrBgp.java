@@ -1790,7 +1790,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
-        other.doPeers(nOtrU, nOtrM, nOtrF);
+        other.doPeersFull(nOtrU, nOtrM, nOtrF);
         for (int i = 0; i < vrfs.size(); i++) {
             otherTrigger |= vrfs.get(i).doer.doPeers(nVpnU, nVpnM, nVpnF);
         }
@@ -2093,9 +2093,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         other.routerChangedF = new tabRoute<addrIP>("chg");
         computeIncrUpdate(afiUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
         computeIncrUpdate(afiMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
-        int cntOth = computeIncrUpdate(afiOtrU, other.routerChangedU, changedOtrU, computedOtrU, origntedOtrU);
-        cntOth += computeIncrUpdate(afiOtrM, other.routerChangedM, changedOtrM, computedOtrM, origntedOtrM);
-        cntOth += computeIncrUpdate(afiOtrF, other.routerChangedF, changedOtrF, computedOtrF, origntedOtrF);
+        computeIncrUpdate(afiOtrU, other.routerChangedU, changedOtrU, computedOtrU, origntedOtrU);
+        computeIncrUpdate(afiOtrM, other.routerChangedM, changedOtrM, computedOtrM, origntedOtrM);
+        computeIncrUpdate(afiOtrF, other.routerChangedF, changedOtrF, computedOtrF, origntedOtrF);
         computeIncrUpdate(afiOtrS, null, changedOtrS, computedOtrS, origntedOtrS);
         int cntFlw = computeIncrUpdate(afiFlw, routerChangedF, changedFlw, routerComputedF, origntedFlw);
         int cntVpn = computeIncrUpdate(afiVpnU, null, changedVpnU, computedVpnU, origntedVpnU);
@@ -2119,9 +2119,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowInst && (cntFlw > 0)) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
-        if (cntOth > 0) {
-            other.doPeers(computedOtrU, computedOtrM, computedOtrF);
-        }
+        other.doPeersIncr(computedOtrU, computedOtrM, computedOtrF);
         if (cntVpn > 0) {
             for (int i = 0; i < vrfs.size(); i++) {
                 vrfs.get(i).doer.doPeers(computedVpnU, computedVpnM, computedVpnF);
