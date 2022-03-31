@@ -169,10 +169,9 @@ public class rtrBgpOther extends ipRtr {
         }
     }
 
-    private void doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg) {
+    private boolean doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg) {
         if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
-            trg.del(ntry);
-            return;
+            return true;
         }
         ntry = ntry.copyBytes(tabRoute.addType.ecmp);
         for (int i = 0; i < ntry.alts.size(); i++) {
@@ -189,9 +188,10 @@ public class rtrBgpOther extends ipRtr {
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.always, trg, afi, 0, ntry, false, null, null, null);
         if (parent.routerAutoMesh == null) {
-            return;
+            return false;
         }
         peers.add(ntry.best.nextHop);
+        return false;
     }
 
     /**
@@ -236,13 +236,15 @@ public class rtrBgpOther extends ipRtr {
         return fwd.prefixMode != ipFwd.labelMode.common;
     }
 
-    private tabRouteEntry<addrIP> doRemoveRoute(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, tabRoute<addrIP> cmp) {
+    private void doUpdateRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, tabRoute<addrIP> cmp) {
         tabRouteEntry<addrIP> res = cmp.find(ntry);
         if (res == null) {
             trg.del(ntry);
-            return null;
+            return;
         }
-        return res;
+        if (doImportRoute(afi, res, trg)) {
+            trg.del(ntry);
+        }
     }
 
     /**
@@ -258,18 +260,13 @@ public class rtrBgpOther extends ipRtr {
             return false;
         }
         for (int i = 0; i < routerChangedU.size(); i++) {
-            tabRouteEntry<addrIP> ntry = doRemoveRoute(routerChangedU.get(i), routerComputedU, cmpU);
-            if (ntry == null) {
-                continue;
-            }
-            doImportRoute(rtrBgpUtil.sfiUnicast, ntry, routerComputedU);
+            doUpdateRoute(rtrBgpUtil.sfiUnicast, routerChangedU.get(i), routerComputedU, cmpU);
         }
         for (int i = 0; i < routerChangedM.size(); i++) {
-            tabRouteEntry<addrIP> ntry = doRemoveRoute(routerChangedM.get(i), routerComputedM, cmpM);
-            if (ntry == null) {
-                continue;
-            }
-            doImportRoute(rtrBgpUtil.sfiMulticast, ntry, routerComputedM);
+            doUpdateRoute(rtrBgpUtil.sfiMulticast, routerChangedM.get(i), routerComputedM, cmpM);
+        }
+        for (int i = 0; i < routerChangedF.size(); i++) {
+            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, routerChangedF.get(i), routerComputedF, cmpF);
         }
         fwd.routerChg(this);
         if (flowInst && (routerChangedF.size() > 0)) {

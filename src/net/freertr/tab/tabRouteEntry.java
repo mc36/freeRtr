@@ -25,6 +25,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public long rouDst;
 
     /**
+     * old route distinguisher
+     */
+    public long oldDst;
+
+    /**
      * prefix
      */
     public addrPrefix<T> prefix;
@@ -148,6 +153,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public tabRouteEntry<T> copyBytes(tabRoute.addType mod) {
         tabRouteEntry<T> prf = new tabRouteEntry<T>();
         prf.rouDst = rouDst;
+        prf.oldDst = oldDst;
         prf.cntr = cntr;
         prf.hwCntr = hwCntr;
         if (nlri != null) {
@@ -488,6 +494,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             l.add("ipver|" + fwd.ipVersion);
         }
         l.add("rd|" + tabRtrmapN.rd2string(rouDst));
+        l.add("original rd|" + tabRtrmapN.rd2string(oldDst));
         l.add("prefix|" + prefix);
         l.add("prefix network|" + prefix.network);
         l.add("prefix broadcast|" + prefix.broadcast);
