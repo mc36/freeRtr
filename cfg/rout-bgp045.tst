@@ -64,6 +64,7 @@ ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpls
  local-as 1
  router-id 4.4.4.1
@@ -77,6 +78,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpls
  local-as 1
  router-id 6.6.6.1
@@ -154,6 +156,7 @@ ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
 ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpls
  local-as 2
  router-id 4.4.4.2
@@ -167,6 +170,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpls
  local-as 2
  router-id 6.6.6.2

@@ -852,7 +852,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         evpnUni.setFwdPwe(10, fwdCore, evpnRcv, 0, null);
         evpnMul.setFwdPwe(10, fwdCore, evpnRcv, 0, null);
         routerID = new addrIPv4();
-        safeEbgp = false;
+        safeEbgp = true;
         addrFams = rtrBgpParam.mskUni;
         rtrNum = id;
         switch (fwdCore.ipVersion) {

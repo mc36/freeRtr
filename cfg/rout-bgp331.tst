@@ -35,6 +35,7 @@ ipv4 route v1 2.2.2.3 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 4.4.4.1
@@ -46,6 +47,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 6.6.6.1
@@ -101,6 +103,7 @@ ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
 ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 4.4.4.2
@@ -117,6 +120,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 6.6.6.2
@@ -175,6 +179,7 @@ ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.5
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 4.4.4.3
@@ -187,6 +192,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 6.6.6.3
@@ -199,6 +205,7 @@ router bgp6 1
  exit
 router bgp4 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 4.4.4.3
@@ -210,6 +217,7 @@ router bgp4 2
  exit
 router bgp6 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 1
  router-id 6.6.6.3
@@ -263,6 +271,7 @@ ipv4 route v1 2.2.2.6 255.255.255.255 1.1.1.14
 ipv6 route v1 4321::6 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 router bgp4 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 4.4.4.4
@@ -275,6 +284,7 @@ router bgp4 2
  exit
 router bgp6 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 6.6.6.4
@@ -287,6 +297,7 @@ router bgp6 2
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 4.4.4.3
@@ -298,6 +309,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 6.6.6.3
@@ -353,6 +365,7 @@ ipv4 route v1 2.2.2.6 255.255.255.255 1.1.1.18
 ipv6 route v1 4321::6 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:5::2
 router bgp4 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 4.4.4.5
@@ -369,6 +382,7 @@ router bgp4 2
  exit
 router bgp6 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 6.6.6.5
@@ -420,6 +434,7 @@ ipv4 route v1 2.2.2.5 255.255.255.255 1.1.1.17
 ipv6 route v1 4321::5 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:5::1
 router bgp4 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 4.4.4.6
@@ -431,6 +446,7 @@ router bgp4 2
  exit
 router bgp6 2
  vrf v1
+ no safe-ebgp
  address vpnuni
  local-as 2
  router-id 6.6.6.6

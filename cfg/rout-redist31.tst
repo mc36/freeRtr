@@ -68,20 +68,22 @@ router isis6 1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address olab
  local-as 1
  router 4.4.4.2
- neigh 1.1.1.6 remote 2
+ neigh 1.1.1.6 remote-as 2
  afi-other ena
  afi-other red conn
  afi-other red isis6 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address olab
  local-as 1
  router 6.6.6.2
- neigh 1234:2::2 remote 2
+ neigh 1234:2::2 remote-as 2
  afi-other ena
  afi-other red conn
  afi-other red isis4 1
@@ -127,19 +129,21 @@ vrf def v1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address olab
  local-as 2
  router 4.4.4.3
- neigh 1.1.1.5 remote 1
+ neigh 1.1.1.5 remote-as 1
  afi-other ena
  afi-other red conn
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address olab
  local-as 2
  router 6.6.6.3
- neigh 1234:2::1 remote 1
+ neigh 1234:2::1 remote-as 1
  afi-other ena
  afi-other red conn
  exit

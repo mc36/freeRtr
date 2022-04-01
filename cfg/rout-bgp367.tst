@@ -49,6 +49,7 @@ int tun1
 ipv6 route v1 4321:2:: ffff:ffff:: 1234::2
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni ovpnuni
  local-as 1
  router-id 4.4.4.1
@@ -64,6 +65,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni ovpnuni
  local-as 1
  router-id 6.6.6.1
@@ -134,6 +136,7 @@ int tun1
 ipv6 route v1 4321:1:: ffff:ffff:: 1234::1
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni ovpnuni
  local-as 2
  router-id 4.4.4.2
@@ -149,6 +152,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni ovpnuni
  local-as 2
  router-id 6.6.6.3
@@ -193,6 +197,7 @@ int bvi1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address vpnuni ovpnuni
  local-as 3
  router-id 4.4.4.3
@@ -207,6 +212,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address vpnuni ovpnuni
  local-as 3
  router-id 4.4.4.3

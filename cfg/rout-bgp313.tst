@@ -20,6 +20,7 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  local-as 1
  bier 256 10 1
  router-id 4.4.4.1
@@ -29,6 +30,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  local-as 1
  bier 256 10 1
  router-id 6.6.6.1
@@ -97,6 +99,7 @@ int eth2
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  local-as 2
  bier 256 10 2
  router-id 4.4.4.2
@@ -108,6 +111,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  local-as 2
  bier 256 10 2
  router-id 6.6.6.2
@@ -158,6 +162,7 @@ int eth2
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  local-as 3
  bier 256 10 3
  router-id 4.4.4.3
@@ -169,6 +174,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  local-as 3
  bier 256 10 3
  router-id 6.6.6.3
@@ -200,6 +206,7 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  local-as 4
  bier 256 10 4
  router-id 4.4.4.4
@@ -209,6 +216,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  local-as 4
  bier 256 10 4
  router-id 6.6.6.4

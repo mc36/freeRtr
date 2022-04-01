@@ -18,6 +18,7 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  graceful 10000
  local-as 1
@@ -28,6 +29,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  graceful 10000
  local-as 1
@@ -62,6 +64,7 @@ int eth2
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  graceful 10000
  local-as 2
@@ -74,6 +77,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  graceful 10000
  local-as 2
@@ -110,6 +114,7 @@ int eth2
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 3
  router-id 4.4.4.3
@@ -119,6 +124,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 3
  router-id 6.6.6.3
@@ -146,6 +152,7 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  graceful 10000
  local-as 4
@@ -156,6 +163,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  graceful 10000
  local-as 4

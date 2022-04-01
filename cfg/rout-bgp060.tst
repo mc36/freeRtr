@@ -30,6 +30,7 @@ route-map rm2
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 1
  router-id 4.4.4.1
@@ -42,6 +43,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 1
  router-id 6.6.6.1
@@ -81,6 +83,7 @@ route-map rm1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 2
  router-id 4.4.4.2
@@ -91,6 +94,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 2
  router-id 6.6.6.2

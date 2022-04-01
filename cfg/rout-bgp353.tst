@@ -19,6 +19,7 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni olab
  local-as 1
  router-id 4.4.4.1
@@ -28,6 +29,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni olab
  local-as 1
  router-id 6.6.6.1
@@ -56,6 +58,7 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni olab
  local-as 2
  router-id 4.4.4.2
@@ -65,6 +68,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni olab
  local-as 2
  router-id 6.6.6.2
@@ -97,6 +101,7 @@ int bvi1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni olab
  local-as 3
  router-id 4.4.4.3
@@ -109,6 +114,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni olab
  local-as 3
  router-id 6.6.6.3

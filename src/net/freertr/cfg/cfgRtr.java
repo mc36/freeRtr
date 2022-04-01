@@ -294,7 +294,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! nexthop recursion 1",
         "router bgp[4|6].*! incremental 1000",
         "router bgp[4|6].*! no conquer",
-        //        "router bgp[4|6].*! no safe-ebgp",
+        "router bgp[4|6].*! safe-ebgp",
         "router bgp[4|6].*! no flapstat",
         "router bgp[4|6].*! no flowspec-advert",
         "router bgp[4|6].*! no flowspec-install",

@@ -248,10 +248,11 @@ router olsr6 1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 1
  router 4.4.4.1
- neigh 1.1.1.14 remote 2
+ neigh 1.1.1.14 remote-as 2
  red conn
  red isis4 1
  red ospf4 1
@@ -265,10 +266,11 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 1
  router 6.6.6.1
- neigh 1234:4::2 remote 2
+ neigh 1234:4::2 remote-as 2
  red conn
  red isis6 1
  red ospf6 1
@@ -282,10 +284,11 @@ router bgp6 1
  exit
 router bgp4 2
  vrf v2
+ no safe-ebgp
  address vpnuni
  local-as 1
  router 4.4.4.1
- neigh 1.1.1.18 remote 3
+ neigh 1.1.1.18 remote-as 3
  neigh 1.1.1.18 send-comm both
  afi-vrf v1 ena
  afi-vrf v1 red conn
@@ -301,10 +304,11 @@ router bgp4 2
  exit
 router bgp6 2
  vrf v2
+ no safe-ebgp
  address vpnuni
  local-as 1
  router 6.6.6.2
- neigh 1234:5::2 remote 3
+ neigh 1234:5::2 remote-as 3
  neigh 1234:5::2 send-comm both
  afi-vrf v1 ena
  afi-vrf v1 red conn
@@ -534,18 +538,20 @@ vrf def v1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 2
  router 4.4.4.5
- neigh 1.1.1.13 remote 1
+ neigh 1.1.1.13 remote-as 1
  red conn
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 2
  router 6.6.6.5
- neigh 1234:4::1 remote 1
+ neigh 1234:4::1 remote-as 1
  red conn
  exit
 int lo1
@@ -577,20 +583,22 @@ vrf def v2
  exit
 router bgp4 2
  vrf v2
+ no safe-ebgp
  address vpnuni
  local-as 3
  router 4.4.4.6
- neigh 1.1.1.17 remote 1
+ neigh 1.1.1.17 remote-as 1
  neigh 1.1.1.17 send-comm both
  afi-vrf v1 ena
  afi-vrf v1 red conn
  exit
 router bgp6 2
  vrf v2
+ no safe-ebgp
  address vpnuni
  local-as 3
  router 6.6.6.6
- neigh 1234:5::1 remote 1
+ neigh 1234:5::1 remote-as 1
  neigh 1234:5::1 send-comm both
  afi-vrf v1 ena
  afi-vrf v1 red conn

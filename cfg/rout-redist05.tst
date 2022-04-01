@@ -81,7 +81,7 @@ router bgp4 1
  address vpnuni
  local-as 1
  router 4.4.4.2
- neigh 2.2.2.3 remote 1
+ neigh 2.2.2.3 remote-as 1
  neigh 2.2.2.3 update lo1
  neigh 2.2.2.3 send-comm both
  afi-vrf v2 ena
@@ -93,7 +93,7 @@ router bgp6 1
  address vpnuni
  local-as 1
  router 6.6.6.2
- neigh 4321::3 remote 1
+ neigh 4321::3 remote-as 1
  neigh 4321::3 update lo1
  neigh 4321::3 send-comm both
  afi-vrf v2 ena
@@ -153,7 +153,7 @@ router bgp4 1
  address vpnuni
  local-as 1
  router 4.4.4.3
- neigh 2.2.2.2 remote 1
+ neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo1
  neigh 2.2.2.2 send-comm both
  afi-vrf v2 ena
@@ -164,7 +164,7 @@ router bgp6 1
  address vpnuni
  local-as 1
  router 6.6.6.3
- neigh 4321::2 remote 1
+ neigh 4321::2 remote-as 1
  neigh 4321::2 update lo1
  neigh 4321::2 send-comm both
  afi-vrf v2 ena
