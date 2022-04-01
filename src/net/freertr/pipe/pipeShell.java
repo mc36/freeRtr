@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
@@ -129,7 +130,7 @@ public class pipeShell {
     /**
      * kill the whole process
      */
-    public synchronized void kill() {
+    public void kill() {
         kill(0);
     }
 
@@ -140,9 +141,21 @@ public class pipeShell {
      */
     protected synchronized void kill(int stat) {
         running &= 0x7f - stat;
+        ProcessHandle[] childs = new ProcessHandle[0];
+        try {
+            Stream<ProcessHandle> descends = process.descendants();
+            childs = (ProcessHandle[]) descends.toArray();
+        } catch (Exception e) {
+        }
         try {
             process.destroy();
         } catch (Exception e) {
+        }
+        for (int i = 0; i < childs.length; i++) {
+            try {
+                childs[i].destroy();
+            } catch (Exception e) {
+            }
         }
         bits.sleep(100);
         try {
@@ -216,7 +229,7 @@ public class pipeShell {
         ProcessHandle hnd = null;
         try {
             hnd = process.toHandle();
-            a = "" + hnd.pid();
+            a = hnd.pid() + "|" + hnd.descendants().count();
         } catch (Exception e) {
         }
         try {
