@@ -8,4 +8,5 @@ int eth8 eth 0000.1111.3333 127.0.0.1 22702 127.0.0.1 22701
 int eth9 eth 0000.1111.4444 127.0.0.1 22701 127.0.0.1 22702
 !line tty1 127.0.0.1 21001 127.0.0.1 21002
 tcp2vrf 8080 v1 80
-def alias test bash command attach shell1 socat - exec:bash,ctty,pty,stderr
+def alias test bash command attach shell1 /rtr/ptyRun.bin /bin/bash
+cfg alias test bash command attach shell1 /rtr/ptyRun.bin /bin/bash

@@ -735,7 +735,7 @@ public class userTest {
             return null;
         }
         if (a.equals("hwcfg")) {
-            cfgInit.executeHWcommands(bits.str2lst(cmd.getRemaining()), new ArrayList<String>(), new ArrayList<String>());
+            cfgInit.executeHWcommands(bits.str2lst(cmd.getRemaining()), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
             return null;
         }
         if (a.equals("hwext")) {

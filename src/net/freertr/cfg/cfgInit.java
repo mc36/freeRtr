@@ -359,8 +359,9 @@ public class cfgInit implements Runnable {
      * @param cmds commands
      * @param defs defaults
      * @param inhs inheritables
+     * @param cfgs configs
      */
-    public static void executeHWcommands(List<String> cmds, List<String> defs, List<String> inhs) {
+    public static void executeHWcommands(List<String> cmds, List<String> defs, List<String> inhs, List<String> cfgs) {
         if (cmds == null) {
             return;
         }
@@ -434,6 +435,11 @@ public class cfgInit implements Runnable {
                 s = cmd.getRemaining();
                 defs.add(s);
                 cfgAll.defaultF.add(new userFilter("", s, null));
+                continue;
+            }
+            if (s.equals("cfg")) {
+                s = cmd.getRemaining();
+                cfgs.add(s);
                 continue;
             }
             if (s.equals("port")) {
@@ -899,11 +905,12 @@ public class cfgInit implements Runnable {
             inis.addAll(userFilter.getSecList(secs, needInit[i], cmds.tabulator + cmds.finish));
         }
         List<String> ints = userFilter.section2text(userFilter.filter2text(secs, createFilter(needIface)), true);
+        List<String> hcfgs = new ArrayList<String>();
         List<String> hdefs = new ArrayList<String>();
         List<String> inhs = new ArrayList<String>();
         logger.info("initializing hardware");
         try {
-            executeHWcommands(hw, hdefs, inhs);
+            executeHWcommands(hw, hdefs, inhs, hcfgs);
         } catch (Exception e) {
             logger.exception(e);
         }
@@ -937,6 +944,11 @@ public class cfgInit implements Runnable {
         }
         if (res > 0) {
             logger.error(res + " errors found");
+        }
+        try {
+            executeSWcommands(hcfgs, true);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
         int step = cfgAll.vdcs.size();
         if (step > 0) {

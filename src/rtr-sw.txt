@@ -787,7 +787,6 @@ dial-peer 1
  direction both
  exit
 !
-alias test bash command attach shell1 /rtr/ptyRun.bin /bin/bash
 !
 server telnet tel
  security authentication access
