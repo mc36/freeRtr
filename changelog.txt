@@ -13127,3 +13127,12 @@ qc pass: olab ibgp rr prefix withdraw
 qc pass: ibgp rr vpns prefix withdraw
 qc pass: ibgp rr othervpns prefix withdraw
 qc pass: olab ibgp fullmesh prefix withdraw
+---------------------------------- 2022-04-01 05:31:47 22.4.1
+qc pass: ebgp with safe policy
+qc pass: ibgp with safe policy
+qc pass: confed bgp with safe policy
+qc pass: ibgp rr with safe policy
+qc pass: bgp route server with safe policy
+qc pass: safe ebgp policy with prefixlist
+qc pass: safe ebgp policy with routemap
+qc pass: safe ebgp policy with routepolicy

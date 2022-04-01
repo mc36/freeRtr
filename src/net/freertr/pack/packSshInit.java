@@ -410,7 +410,7 @@ public class packSshInit {
         kexMacSC = algoChoose(c.kexMacSC, s.kexMacSC);
         kexCompCS = algoChoose(c.kexCompCS, s.kexCompCS);
         kexCompSC = algoChoose(c.kexCompSC, s.kexCompSC);
-        if ((kexAlgo == null) || (kexKeys == null)) {
+        if ((kexAlgo == null) || (kexKeys.algo == null)) {
             return true;
         }
         if ((kexEncCS == null) || (kexEncSC == null)) {
