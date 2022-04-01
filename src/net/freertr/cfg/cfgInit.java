@@ -442,6 +442,13 @@ public class cfgInit implements Runnable {
                 cfgs.add(s);
                 continue;
             }
+            if (s.equals("dcfg")) {
+                s = cmd.getRemaining();
+                cfgs.add(s);
+                defs.add(s);
+                cfgAll.defaultF.add(new userFilter("", s, null));
+                continue;
+            }
             if (s.equals("port")) {
                 vdcPortBeg = bits.str2num(cmd.word());
                 vdcPortEnd = bits.str2num(cmd.word());
