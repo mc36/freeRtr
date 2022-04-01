@@ -234,6 +234,12 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
                 if (usd == null) {
                     continue;
                 }
+                if (ntry.veId < 1) {
+                    continue;
+                }
+                if (ntry.veId > veMax) {
+                    continue;
+                }
                 veLab[ntry.veId - 1].setFwdPwe(12, parent.fwdCore, ntry.brdg, 0, null);
                 usd[ntry.veId - 1] = true;
                 continue;
