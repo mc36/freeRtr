@@ -43,6 +43,7 @@ public class pipeShell {
      * @param closeOnExit close on exit
      * @param needStderr need stderr
      * @param convertCrLf convert cr or lf to crlf
+     * @param killChilds kill children on termination
      * @return shell container
      */
     public static pipeShell exec(pipeSide console, String command, String fincmd, boolean closeOnExit, boolean needStderr, boolean convertCrLf, boolean killChilds) {
@@ -78,6 +79,7 @@ public class pipeShell {
      * @param fincmd final long command
      * @param needStderr need stderr
      * @param convertCrLf convert cr or lf to crlf
+     * @param killChilds kill children on termination
      * @return resulting lines
      */
     public static List<String> exec(String command, String fincmd, boolean needStderr, boolean convertCrLf, boolean killChilds) {

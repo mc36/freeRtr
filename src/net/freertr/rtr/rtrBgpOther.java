@@ -253,6 +253,9 @@ public class rtrBgpOther extends ipRtr {
     /**
      * incremental import routes from table
      *
+     * @param cmpU unicast table to read
+     * @param cmpM multicast table to read
+     * @param cmpF flowspec table to read
      * @return other changes trigger full recomputation
      */
     public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
