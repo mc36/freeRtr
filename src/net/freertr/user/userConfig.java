@@ -2196,7 +2196,13 @@ public class userConfig {
         }
         if (a.equals("alias")) {
             a = cmd.word();
-            cfgAll.aliasDel(cmd.word(), cfgAlias.string2type(a));
+            cfgAlias ntry = cfgAll.aliasFind(cmd.word(), cfgAlias.string2type(a), true);
+            cmd = new cmds("c", "no " + cmd.getRemaining());
+            ntry.doCfgStr(cmd);
+            if (ntry.command.length() > 0) {
+                return;
+            }
+            cfgAll.aliasDel(ntry.name, cfgAlias.string2type(a));
             return;
         }
         if (a.equals("logging")) {

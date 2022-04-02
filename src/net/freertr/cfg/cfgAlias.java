@@ -278,27 +278,51 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
+        boolean neg = a.equals("no");
+        if (neg) {
+            a = cmd.word();
+        }
         if (a.equals("command")) {
-            command = authLocal.passwdDecode(cmd.getRemaining());
+            if (neg) {
+                command = "";
+            } else {
+                command = authLocal.passwdDecode(cmd.getRemaining());
+            }
             return;
         }
         if (a.equals("cmd2nd")) {
-            cmd2nd = authLocal.passwdDecode(cmd.getRemaining());
+            if (neg) {
+                cmd2nd = null;
+            } else {
+                cmd2nd = authLocal.passwdDecode(cmd.getRemaining());
+            }
             return;
         }
         if (a.equals("description")) {
-            description = cmd.getRemaining();
+            if (neg) {
+                description = null;
+            } else {
+                description = cmd.getRemaining();
+            }
             return;
         }
         if (a.equals("parameter")) {
-            parameter = string2param(cmd.word());
+            if (neg) {
+                parameter = paraMode.allow;
+            } else {
+                parameter = string2param(cmd.word());
+            }
             return;
         }
         if (a.equals("hidden")) {
-            hidden = true;
+            hidden = !neg;
             return;
         }
         if (a.equals("sticky-param")) {
+            if (neg) {
+                sticky = null;
+                return;
+            }
             sticky = cmd.getRemaining();
             userReader rdr = new userReader(cmd.pipe, null);
             userExec exe = new userExec(cmd.pipe, rdr);
@@ -307,7 +331,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             return;
         }
         if (a.equals("default-param")) {
-            defParam = cmd.getRemaining();
+            if (neg) {
+                defParam = null;
+            } else {
+                defParam = cmd.getRemaining();
+            }
             return;
         }
         cmd.badCmd();
