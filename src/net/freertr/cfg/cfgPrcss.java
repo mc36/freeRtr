@@ -475,7 +475,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         if (userValue != null) {
             cmd = "sudo -u " + userValue + " " + cmd;
         }
-        proc = pipeShell.exec(pl.getSide(), cmd, execFinal, true, true, false);
+        proc = pipeShell.exec(pl.getSide(), cmd, execFinal, true, true, false, true);
         if (proc == null) {
             return;
         }

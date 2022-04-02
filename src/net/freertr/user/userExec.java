@@ -3957,7 +3957,7 @@ public class userExec {
             return;
         }
         if (a.equals("shell1")) {
-            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true, false);
+            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true, false, true);
             if (sh == null) {
                 return;
             }
@@ -3965,11 +3965,11 @@ public class userExec {
             return;
         }
         if (a.equals("shell2")) {
-            reader.putStrArr(pipeShell.exec(cmd.getRemaining(), null, true, false));
+            reader.putStrArr(pipeShell.exec(cmd.getRemaining(), null, true, false, true));
             return;
         }
         if (a.equals("shell3")) {
-            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true, true);
+            pipeShell sh = pipeShell.exec(pipe, cmd.getRemaining(), null, false, true, true, true);
             if (sh == null) {
                 return;
             }

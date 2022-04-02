@@ -1020,7 +1020,7 @@ class userTesterPrc {
         final int tim = 600 * 1000;
         pipe = pl.getSide();
         pipe.setTime(tim);
-        shell = pipeShell.exec(pipe, command, null, true, false, false);
+        shell = pipeShell.exec(pipe, command, null, true, false, false, true);
         pipe = pl.getSide();
         pipe.setTime(tim);
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1786,7 +1786,7 @@ class userTesterOne {
             if (img.otherI.endsWith(".vmdk")) {
                 f = "vmdk";
             }
-            pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + ",backing_fmt=" + f + " " + s, null, true, false);
+            pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + ",backing_fmt=" + f + " " + s, null, true, false, true);
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -drive file=" + s + ",format=qcow2,cache=unsafe -m " + img.otherM;
             for (int i = 0; i < cfg.size(); i++) {
                 String a = cfg.get(i);

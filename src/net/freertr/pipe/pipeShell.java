@@ -42,10 +42,10 @@ public class pipeShell {
      * @param fincmd final long command
      * @param closeOnExit close on exit
      * @param needStderr need stderr
-     * @param convertCrLf convert cr to crlf
+     * @param convertCrLf convert cr or lf to crlf
      * @return shell container
      */
-    public static pipeShell exec(pipeSide console, String command, String fincmd, boolean closeOnExit, boolean needStderr, boolean convertCrLf) {
+    public static pipeShell exec(pipeSide console, String command, String fincmd, boolean closeOnExit, boolean needStderr, boolean convertCrLf, boolean killChilds) {
         List<String> l = new ArrayList<String>();
         cmds cmd = new cmds("", command);
         for (;;) {
@@ -65,7 +65,7 @@ public class pipeShell {
         try {
             Runtime rtm = Runtime.getRuntime();
             Process prc = rtm.exec(cm);
-            return new pipeShell(console, prc, closeOnExit, needStderr, convertCrLf);
+            return new pipeShell(console, prc, closeOnExit, needStderr, convertCrLf, killChilds);
         } catch (Exception ex) {
             return null;
         }
@@ -77,13 +77,13 @@ public class pipeShell {
      * @param command command to execute
      * @param fincmd final long command
      * @param needStderr need stderr
-     * @param convertCrLf convert cr to crlf
+     * @param convertCrLf convert cr or lf to crlf
      * @return resulting lines
      */
-    public static List<String> exec(String command, String fincmd, boolean needStderr, boolean convertCrLf) {
+    public static List<String> exec(String command, String fincmd, boolean needStderr, boolean convertCrLf, boolean killChilds) {
         pipeReader rd = new pipeReader();
         rd.setLineMode(pipeSide.modTyp.modeCRorLF);
-        pipeShell sh = pipeShell.exec(rd.getPipe(), command, fincmd, true, needStderr, convertCrLf);
+        pipeShell sh = pipeShell.exec(rd.getPipe(), command, fincmd, true, needStderr, convertCrLf, killChilds);
         if (sh == null) {
             return null;
         }
@@ -99,9 +99,10 @@ public class pipeShell {
      * @param prc process to view
      * @param closeOnExit close on exit
      * @param needStderr need stderr
-     * @param convertCrLf convert cr to crlf
+     * @param convertCrLf convert cr or lf to crlf
+     * @param killChilds kill children on termination
      */
-    protected pipeShell(pipeSide con, Process prc, boolean closeOnExit, boolean needStderr, boolean convertCrLf) {
+    protected pipeShell(pipeSide con, Process prc, boolean closeOnExit, boolean needStderr, boolean convertCrLf, boolean killChilds) {
         console = con;
         process = prc;
         stdIn = prc.getInputStream();
@@ -110,6 +111,9 @@ public class pipeShell {
         running = 0x87;
         if (closeOnExit) {
             running |= 0x40;
+        }
+        if (killChilds) {
+            running |= 0x20;
         }
         new pipeShellInput(this, stdIn, 1, convertCrLf);
         if (needStderr) {
@@ -151,11 +155,14 @@ public class pipeShell {
             process.destroy();
         } catch (Exception e) {
         }
-        for (int i = 0; i < childs.length; i++) {
-            try {
-                childs[i].destroy();
-            } catch (Exception e) {
+        if ((running & 0x20) != 0) {
+            for (int i = 0; i < childs.length; i++) {
+                try {
+                    childs[i].destroy();
+                } catch (Exception e) {
+                }
             }
+            running &= ~0x20;
         }
         bits.sleep(100);
         try {
