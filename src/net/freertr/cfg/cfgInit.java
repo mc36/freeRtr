@@ -356,18 +356,21 @@ public class cfgInit implements Runnable {
     /**
      * execute hw commands
      *
-     * @param cmds commands
+     * @param read commands
      * @param defs defaults
      * @param inhs inheritables
      * @param cfgs configs
      */
-    public static void executeHWcommands(List<String> cmds, List<String> defs, List<String> inhs, List<String> cfgs) {
-        if (cmds == null) {
+    public static void executeHWcommands(List<String> read, List<String> defs, List<String> inhs, List<String> cfgs) {
+        if (read == null) {
             return;
         }
-        for (int cnt = 0; cnt < cmds.size(); cnt++) {
-            String s = doTrimmer(cmds.get(cnt));
+        for (int cnt = 0; cnt < read.size(); cnt++) {
+            String s = doTrimmer(read.get(cnt));
             if (s.length() < 1) {
+                continue;
+            }
+            if (s.startsWith(cmds.comment)) {
                 continue;
             }
             if (debugger.cfgInitHw) {
