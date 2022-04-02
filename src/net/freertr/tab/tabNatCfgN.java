@@ -106,7 +106,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     /**
      * session limit on this entry
      */
-    public int maxSess;
+    public int maxSess = 0;
 
     /**
      * maximum rate of sessions
@@ -129,11 +129,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * convert string to address
      *
      * @param s string to convert
+     * @param neg parse negated
      * @return 0=ok, 1=error, 2=time, 3=range, 4=log, 5=limit, 6=rate
      */
-    public int fromString(String s) {
+    public int fromString(String s, boolean neg) {
         cmds cmd = new cmds("", s);
-        int what = 0; // 1=source, 2=target
         s = cmd.word();
         if (s.equals("sequence")) {
             sequence = bits.str2num(cmd.word());
@@ -144,6 +144,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             return 2;
         }
         if (s.equals("rate")) {
+            if (neg) {
+                maxRate = null;
+                return 6;
+            }
             cfgPlymp plc = cfgAll.plmpFind(cmd.word(), false);
             if (plc == null) {
                 cmd.error("no such policy map");
@@ -153,18 +157,28 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             return 6;
         }
         if (s.equals("sessions")) {
-            maxSess = bits.str2num(cmd.word());
+            if (neg) {
+                maxSess = 0;
+            } else {
+                maxSess = bits.str2num(cmd.word());
+            }
             return 5;
         }
         if (s.equals("randomize")) {
-            rangeMin = bits.str2num(cmd.word());
-            rangeMax = bits.str2num(cmd.word());
+            if (neg) {
+                rangeMin = -1;
+                rangeMax = -1;
+            } else {
+                rangeMin = bits.str2num(cmd.word());
+                rangeMax = bits.str2num(cmd.word());
+            }
             return 3;
         }
         if (s.equals("log-translations")) {
-            logTrans = true;
+            logTrans = !neg;
             return 4;
         }
+        int what = 0; // 1=source, 2=target
         if (s.equals("source")) {
             what = 1;
         }

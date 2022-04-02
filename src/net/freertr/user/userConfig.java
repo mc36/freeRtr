@@ -2884,7 +2884,7 @@ public class userConfig {
         return vrf;
     }
 
-    private cfgVrf parseUpNat(int p, tabNatCfgN ntry) {
+    private cfgVrf parseUpNat(int p, tabNatCfgN ntry, boolean neg) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
             cmd.error("no such vrf");
@@ -2898,7 +2898,7 @@ public class userConfig {
         }
         String s = cmd.getRemaining();
         ntry.sequence = fwd.natCfg.nextseq();
-        int res = ntry.fromString(s);
+        int res = ntry.fromString(s, neg);
         switch (res) {
             case 0: // entry
                 if (ntry.origSrcList != null) {
@@ -2914,7 +2914,7 @@ public class userConfig {
         if (old == null) {
             return null;
         }
-        old.fromString(s);
+        old.fromString(s, neg);
         return null;
     }
 
@@ -3212,7 +3212,7 @@ public class userConfig {
         }
         if (a.equals("nat")) {
             tabNatCfgN red = new tabNatCfgN();
-            cfgVrf vrf = parseUpNat(4, red);
+            cfgVrf vrf = parseUpNat(4, red, false);
             if (vrf == null) {
                 return;
             }
@@ -3276,7 +3276,7 @@ public class userConfig {
         }
         if (a.equals("nat")) {
             tabNatCfgN red = new tabNatCfgN();
-            cfgVrf vrf = parseUpNat(4, red);
+            cfgVrf vrf = parseUpNat(4, red, true);
             if (vrf == null) {
                 return;
             }
@@ -3337,7 +3337,7 @@ public class userConfig {
         }
         if (a.equals("nat")) {
             tabNatCfgN red = new tabNatCfgN();
-            cfgVrf vrf = parseUpNat(6, red);
+            cfgVrf vrf = parseUpNat(6, red, false);
             if (vrf == null) {
                 return;
             }
@@ -3401,7 +3401,7 @@ public class userConfig {
         }
         if (a.equals("nat")) {
             tabNatCfgN red = new tabNatCfgN();
-            cfgVrf vrf = parseUpNat(6, red);
+            cfgVrf vrf = parseUpNat(6, red, true);
             if (vrf == null) {
                 return;
             }
