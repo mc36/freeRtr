@@ -915,11 +915,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 cmd += " -device usb-host,hostbus=" + dev.bus + ",hostport=" + dev.prt;
             }
         }
-        if (userValue != null) {
-            cmd = "sudo -u " + userValue + " " + cmd;
-        }
         if (cpuPinning != null) {
             cmd = "taskset " + cpuPinning + " " + cmd;
+        }
+        if (userValue != null) {
+            cmd = "sudo -u " + userValue + " " + cmd;
         }
         proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false);
         if (proc == null) {

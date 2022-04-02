@@ -64,6 +64,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public String execName = null;
 
     /**
+     * final long parameter
+     */
+    public String execFinal = null;
+
+    /**
      * user to use
      */
     public String userValue = null;
@@ -128,6 +133,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         "process definition .*! pinning null",
         "process definition .*! user null",
         "process definition .*! exec null",
+        "process definition .*! final null",
         "process definition .*! time 1000",
         "process definition .*! delay 1000",
         "process definition .*! random-time 0",
@@ -201,6 +207,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "2  .        <str>                    set new name of process");
         l.add(null, "1  2      exec                       set external binary to use");
         l.add(null, "2  2,.      <str>                    name of image");
+        l.add(null, "1  2      final                      set final long parameter");
+        l.add(null, "2  2,.      <str>                    parameter");
         l.add(null, "1  2      user                       set user to use");
         l.add(null, "2  .        <str>                    user value");
         l.add(null, "1  2      pinning                    set pinning mask");
@@ -233,6 +241,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         l.add(cmds.tabulator + "exec " + execName);
+        l.add(cmds.tabulator + "final " + execFinal);
         l.add(cmds.tabulator + "user " + userValue);
         l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "delay " + initial);
@@ -278,6 +287,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         if (a.equals("exec")) {
             execName = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("final")) {
+            execFinal = cmd.getRemaining();
             return;
         }
         if (a.equals("user")) {
@@ -377,6 +390,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             execName = null;
             return;
         }
+        if (a.equals("final")) {
+            execFinal = null;
+            return;
+        }
         if (a.equals("user")) {
             userValue = null;
             return;
@@ -452,13 +469,13 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         String cmd = execName;
-        if (userValue != null) {
-            cmd = "sudo -u " + userValue + " " + cmd;
-        }
         if (cpuPinning != null) {
             cmd = "taskset " + cpuPinning + " " + cmd;
         }
-        proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false);
+        if (userValue != null) {
+            cmd = "sudo -u " + userValue + " " + cmd;
+        }
+        proc = pipeShell.exec(pl.getSide(), cmd, execFinal, true, true, false);
         if (proc == null) {
             return;
         }
