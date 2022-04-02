@@ -67,6 +67,11 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     }
 
     /**
+     * description of this server
+     */
+    public String srvDescr = null;
+
+    /**
      * name of server
      */
     public String srvName;
@@ -311,6 +316,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      */
     public final static String[] srvdefsL = {
         // generic server
+        "server .*! no description",
         "server .*! no security protocol",
         "server .*! no security authentication",
         "server .*! no security rsakey",
@@ -1273,6 +1279,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     public void getHelp(userHelping l) {
         l.add(null, "1 2  rename                 rename this server");
         l.add(null, "2 .    <str>                set new name");
+        l.add(null, "1 2  description            specify description");
+        l.add(null, "2 2,.  <str>                description");
         l.add(null, "1 2  vrf                    set vrf to use");
         l.add(null, "2 .    <name:vrf>           name of vrf");
         l.add(null, "1 2  port                   set port to listen on");
@@ -1345,6 +1353,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("server " + srvName() + " " + srvName);
+        cmds.cfgLine(l, srvDescr == null, cmds.tabulator, "description", srvDescr);
         cmds.cfgLine(l, secProto == 0, cmds.tabulator, "security protocol", proto2string(secProto));
         if (srvAuther == null) {
             l.add(cmds.tabulator + "no security authentication");
@@ -1448,6 +1457,10 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (a.equals("rename")) {
             a = cmd.word();
             srvRename(a);
+            return;
+        }
+        if (a.equals("description")) {
+            srvDescr = cmd.getRemaining();
             return;
         }
         if (a.equals("vrf")) {
@@ -1661,6 +1674,10 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
         if (a.equals("no")) {
             a = cmd.word();
+            if (a.equals("description")) {
+                srvDescr = null;
+                return;
+            }
             if (a.equals("vrf")) {
                 srvDeinit();
                 srvVrf = null;

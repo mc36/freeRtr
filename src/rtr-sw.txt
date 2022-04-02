@@ -429,7 +429,6 @@ router bgp4 65535
  monitor bmp p1 10.10.10.227 17971
  dump mrt bgp4.log
  template r remote-as 65535
- no template r description
  template r local-as 65535
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh srte osrt linkstate mvpn omvpn
  template r distance 200
@@ -485,7 +484,6 @@ router bgp6 65535
  monitor bmp p1 2001:db8:1101::227:227 17971
  dump mrt bgp6.log
  template r remote-as 65535
- no template r description
  template r local-as 65535
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh srte osrt linkstate mvpn omvpn
  template r distance 200

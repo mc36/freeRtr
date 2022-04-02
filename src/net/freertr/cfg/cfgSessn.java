@@ -22,6 +22,11 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     public String name;
 
     /**
+     * description of this dialpeer
+     */
+    public String description = null;
+
+    /**
      * sessions
      */
     public tabSession connects = new tabSession(true, 180000);
@@ -30,6 +35,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
+        "session .*! no description",
         "session .*! no timeout",
         "session .*! no sessions",
         "session .*! no rate",
@@ -73,6 +79,10 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
+        l.add(null, "1 2  rename                       rename this session");
+        l.add(null, "2 .    <str>                      set new name");
+        l.add(null, "1 2  description                  specify description");
+        l.add(null, "2 2,.  <str>                      description");
         l.add(null, "1 2  timeout                      set timeout");
         l.add(null, "2 .    <num>                      timeout in ms");
         l.add(null, "1 2  sessions                     set session limit");
@@ -102,12 +112,36 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
     }
 
     public void doCfgStr(cmds cmd) {
-        connects.fromString(cmd);
+        String a = cmd.word();
+        boolean neg = a.equals("no");
+        if (neg) {
+            a = cmd.word();
+        }
+        if (a.equals("rename")) {
+            a = cmd.word();
+            cfgSessn v = cfgAll.sessnFind(a, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            name = a;
+            connects.name = a;
+            return;
+        }
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            if (neg) {
+                description = null;
+            }
+            return;
+        }
+        connects.fromString(cmd.copyBytes(true));
     }
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("session " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         connects.getConfig(l, cmds.tabulator);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);

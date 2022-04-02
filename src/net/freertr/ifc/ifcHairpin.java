@@ -22,6 +22,11 @@ import net.freertr.util.state;
 public class ifcHairpin {
 
     /**
+     * description of this bridge
+     */
+    public String description = "";
+
+    /**
      * interface is not ethernet
      */
     public boolean notEther;
@@ -93,9 +98,11 @@ public class ifcHairpin {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "1 .  ethernet                       specify type of hairpin");
-        l.add(null, "1 2  buffer                         specify buffer size");
-        l.add(null, "2 .    <num>                        buffer size in bytes");
+        l.add(null, "1 2,.   description                 description of this hairpin");
+        l.add(null, "2 2,.     [text]                    text describing this hairpin");
+        l.add(null, "1 .     ethernet                    specify type of hairpin");
+        l.add(null, "1 2     buffer                      specify buffer size");
+        l.add(null, "2 .       <num>                     buffer size in bytes");
     }
 
     /**
@@ -105,6 +112,7 @@ public class ifcHairpin {
      * @param beg beginning
      */
     public void getConfig(List<String> l, String beg) {
+        cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
         l.add(beg + "buffer " + bufSiz);
     }
@@ -116,6 +124,10 @@ public class ifcHairpin {
      */
     public void doConfig(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (s.equals("ethernet")) {
             notEther = false;
             return;
@@ -136,6 +148,10 @@ public class ifcHairpin {
             return;
         }
         s = cmd.word();
+        if (s.equals("description")) {
+            description = "";
+            return;
+        }
         if (s.equals("ethernet")) {
             notEther = true;
             return;

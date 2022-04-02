@@ -31,6 +31,11 @@ import net.freertr.util.state.states;
 public class ifcBundle implements Runnable, ifcDn {
 
     /**
+     * description of this bridge
+     */
+    public String description = "";
+
+    /**
      * hardware address of the bundle that this class presents
      */
     public addrType hwaddr;
@@ -302,32 +307,34 @@ public class ifcBundle implements Runnable, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "1 .  ethernet                       specify type of bundle");
-        l.add(null, "1 .  replicate                      specify replicator mode");
-        l.add(null, "1 .  logging                        enable logging");
-        l.add(null, "1 2  backup                         specify backup mode");
-        l.add(null, "2 .    <num>                        timeout in ms");
-        l.add(null, "1 2  sequence                       specify sequence mode");
-        l.add(null, "2 .    <num>                        window in packets");
-        l.add(null, "1 2  dejitter                       specify dejitter timer");
-        l.add(null, "2 .    <num>                        dejitter in ms");
-        l.add(null, "1 2  reporter                       specify reporter timer");
-        l.add(null, "2 .    <num>                        reports in ms");
-        l.add(null, "1 2  dynamic                        specify quota dynamically");
-        l.add(null, "2 .    <num>                        reports to average");
-        l.add(null, "1 2  peering                        specify peering interface");
-        l.add(null, "2 3    <name:ifc>                   name of interface");
-        l.add(null, "3 .      <num>                      local priority");
-        l.add(null, "1 2  loadbalance                    specify load balance method");
-        l.add(null, "2 .    layer2                       xor source and destination mac");
-        l.add(null, "2 .    layer3                       xor source and destination ip");
-        l.add(null, "2 .    layer4                       xor source and destination port");
-        l.add(null, "2 .    addr                         xor addresses");
-        l.add(null, "2 .    all                          xor everything");
-        l.add(null, "2 .    random                       randomize");
-        l.add(null, "2 .    none                         nothing");
-        l.add(null, "2 .    round                        round robin");
-        l.add(null, "2 .    share                        share by bandwidth");
+        l.add(null, "1 2,.   description                 description of this bundle");
+        l.add(null, "2 2,.     [text]                    text describing this bundle");
+        l.add(null, "1 .    ethernet                     specify type of bundle");
+        l.add(null, "1 .    replicate                    specify replicator mode");
+        l.add(null, "1 .    logging                      enable logging");
+        l.add(null, "1 2    backup                       specify backup mode");
+        l.add(null, "2 .      <num>                      timeout in ms");
+        l.add(null, "1 2    sequence                     specify sequence mode");
+        l.add(null, "2 .      <num>                      window in packets");
+        l.add(null, "1 2    dejitter                     specify dejitter timer");
+        l.add(null, "2 .      <num>                      dejitter in ms");
+        l.add(null, "1 2    reporter                     specify reporter timer");
+        l.add(null, "2 .      <num>                      reports in ms");
+        l.add(null, "1 2    dynamic                      specify quota dynamically");
+        l.add(null, "2 .      <num>                      reports to average");
+        l.add(null, "1 2    peering                      specify peering interface");
+        l.add(null, "2 3      <name:ifc>                 name of interface");
+        l.add(null, "3 .        <num>                    local priority");
+        l.add(null, "1 2    loadbalance                  specify load balance method");
+        l.add(null, "2 .      layer2                     xor source and destination mac");
+        l.add(null, "2 .      layer3                     xor source and destination ip");
+        l.add(null, "2 .      layer4                     xor source and destination port");
+        l.add(null, "2 .      addr                       xor addresses");
+        l.add(null, "2 .      all                        xor everything");
+        l.add(null, "2 .      random                     randomize");
+        l.add(null, "2 .      none                       nothing");
+        l.add(null, "2 .      round                      round robin");
+        l.add(null, "2 .      share                      share by bandwidth");
     }
 
     /**
@@ -337,6 +344,7 @@ public class ifcBundle implements Runnable, ifcDn {
      * @param beg beginning
      */
     public void getConfig(List<String> l, String beg) {
+        cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
         cmds.cfgLine(l, backup < 1, beg, "backup", "" + backup);
@@ -385,6 +393,10 @@ public class ifcBundle implements Runnable, ifcDn {
      */
     public void doConfig(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            return;
+        }
         if (s.equals("ethernet")) {
             setEtherMode(true);
             return;
@@ -478,6 +490,10 @@ public class ifcBundle implements Runnable, ifcDn {
             return;
         }
         s = cmd.word();
+        if (s.equals("description")) {
+            description = "";
+            return;
+        }
         if (s.equals("ethernet")) {
             setEtherMode(false);
             return;

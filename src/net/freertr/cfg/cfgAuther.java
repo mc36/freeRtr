@@ -27,6 +27,11 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
     public String name;
 
     /**
+     * description of this dialpeer
+     */
+    public String description = null;
+
+    /**
      * method type
      */
     public enum methodType {
@@ -80,6 +85,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         "aaa tacacs .*! no secret",
         "aaa tacacs .*! no proxy",
         "aaa tacacs .*! privilege 15",
+        "aaa .*! no description",
         "aaa .*! no log-error",
         "aaa .*! no log-failure",
         "aaa .*! no log-success",
@@ -195,6 +201,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
             return l;
         }
         l.add("aaa " + aut.getCfgName() + " " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !aut.logFail, cmds.tabulator, "log-failure", "");
         cmds.cfgLine(l, !aut.logErr, cmds.tabulator, "log-error", "");
         cmds.cfgLine(l, !aut.logOk, cmds.tabulator, "log-success", "");
@@ -211,6 +218,8 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1 2    rename              rename this authenticator");
         l.add(null, "2 .      <str>             set new name");
+        l.add(null, "1 2    description         specify description");
+        l.add(null, "2 2,.    <str>             description");
         l.add(null, "1 .    log-failure         log failure");
         l.add(null, "1 .    log-success         log success");
         l.add(null, "1 .    log-error           log error");
@@ -243,6 +252,13 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
             }
             name = a;
             aut.autName = a;
+            return;
+        }
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            if (neg) {
+                description = null;
+            }
             return;
         }
         if (a.equals("log-failure")) {

@@ -353,8 +353,8 @@ public class ifcBridge implements ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "1 2,.   description                 description of this vrf");
-        l.add(null, "2 2,.     [text]                    text describing this vrf");
+        l.add(null, "1 2,.   description                 description of this bridge");
+        l.add(null, "2 2,.     [text]                    text describing this bridge");
         l.add(null, "1 2     rd                          specify route distinguisher");
         l.add(null, "2 .       <rd>                      rd in ASnum:IDnum format");
         l.add(null, "1 2     rt-import                   specify route target import");

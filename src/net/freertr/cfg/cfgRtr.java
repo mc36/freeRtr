@@ -48,6 +48,11 @@ import net.freertr.util.cmds;
 public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
 
     /**
+     * description of this dialpeer
+     */
+    public String description = null;
+
+    /**
      * type of routing process
      */
     public tabRouteAttr.routeType type;
@@ -183,6 +188,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     public final static String[] defaultL = {
         // router *
         "router .*! no automesh",
+        "router .*! no description",
         // router pvrp
         "router pvrp[4|6] .*! no suppress-prefix",
         "router pvrp[4|6] .*! no labels",
@@ -306,6 +312,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no nexthop route-policy",
         "router bgp[4|6].*! no nexthop prefix-list",
         "router bgp[4|6].*! no neighbor .* template",
+        "router bgp[4|6].*! no neighbor .* description",
         "router bgp[4|6].*! neighbor .* dmz-link-bw -1",
         "router bgp[4|6].*! neighbor .* timer 60000 180000",
         "router bgp[4|6].*! neighbor .* connection-mode both",
@@ -387,6 +394,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no neighbor .* ovpn-route-policy-in",
         "router bgp[4|6].*! no neighbor .* ovpn-route-policy-out",
         "router bgp[4|6].*! no template .* template",
+        "router bgp[4|6].*! no template .* description",
         "router bgp[4|6].*! template .* dmz-link-bw -1",
         "router bgp[4|6].*! template .* timer 60000 180000",
         "router bgp[4|6].*! template .* connection-mode both",
@@ -483,6 +491,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! afi-vpls .* ve-id 0 0",
         // router msdp
         "router msdp[4|6] .*! neighbor .* timer 30000 75000 60000 120000",
+        "router msdp[4|6] .*! no neighbor .* description",
         "router msdp[4|6] .*! no neighbor .* shutdown",
         "router msdp[4|6] .*! no neighbor .* update-source",
         "router msdp[4|6] .*! no neighbor .* password",
@@ -1615,6 +1624,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return l;
         }
         l.add("router " + num2name(type) + " " + number);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         if (vrf == null) {
             l.add(cmds.tabulator + "no vrf");
         } else {
@@ -1798,6 +1808,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
+        l.add(null, "1 2   description             specify description");
+        l.add(null, "2 2,.   <str>                 description");
         l.add(null, "1 2   vrf                     specify vrf to use");
         l.add(null, "2 .     <name:vrf>            name of table");
         l.add(null, "1 2   automesh                specify auto mesh te tunnels");
@@ -1820,6 +1832,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         boolean neg = a.equals("no");
         if (neg) {
             a = cmd.word();
+        }
+        if (a.equals("description")) {
+            description = cmd.getRemaining();
+            if (neg) {
+                description = null;
+            }
+            return;
         }
         if (a.equals("vrf")) {
             if (neg) {

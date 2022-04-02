@@ -39,6 +39,7 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
+        "hairpin .*! no description",
         "hairpin .*! ethernet",
         "hairpin .*! buffer 65536"
     };

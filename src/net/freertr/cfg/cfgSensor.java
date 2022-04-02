@@ -41,6 +41,11 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     public String name;
 
     /**
+     * description of this dialpeer
+     */
+    public String description = null;
+
+    /**
      * hidden sensor
      */
     public boolean hidden;
@@ -175,6 +180,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
      */
     public final static String[] defaultL = {
         "sensor .*! no command",
+        "sensor .*! no description",
         "sensor .*! name 0",
         "sensor .*! no labels",
         "sensor .*! addname -1 null",
@@ -228,6 +234,8 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, "1 2      rename                   rename this sensor");
         l.add(null, "2 .        <str>                  set new name");
+        l.add(null, "1 2      description              specify description");
+        l.add(null, "2 2,.      <str>                  description");
         l.add(null, "1 2      command                  specify command to execute");
         l.add(null, "2 2,.      <str>                  command");
         l.add(null, "1 2      prepend                  specify prepend");
@@ -300,6 +308,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             return l;
         }
         l.add("sensor " + name);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         l.add(cmds.tabulator + "path " + path);
         l.add(cmds.tabulator + "prefix " + prefix);
         l.add(cmds.tabulator + "prepend " + prepend);
@@ -370,6 +379,13 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 return;
             }
             name = s;
+            return;
+        }
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            if (negated) {
+                description = null;
+            }
             return;
         }
         if (s.equals("local")) {

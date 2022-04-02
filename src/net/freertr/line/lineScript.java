@@ -87,6 +87,8 @@ public class lineScript {
     public void getHelp(userHelping l) {
         l.add(null, "1 2  sequence            set sequence number");
         l.add(null, "2 1    <num>             sequence number");
+        l.add(null, "1 2  description         specify description");
+        l.add(null, "2 2,.  <str>             description");
         l.add(null, "1 2  tcl                 execute tcl commands");
         l.add(null, "2 2,.  <text>            tcl command");
         l.add(null, "1 2  sleep               wait some time");
@@ -201,12 +203,11 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
     public String str;
 
     public enum command {
-
+        descr,
         txtTx, txtRx, passwd,
         binTx, binRx,
         sleep, tcl,
         success, failure, onerror, gotoo, disconn
-
     }
 
     public int compare(lineScriptNtry o1, lineScriptNtry o2) {
@@ -222,6 +223,9 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
     public String getCfg(int filter) {
         String s;
         switch (act) {
+            case descr:
+                s = "description " + str;
+                break;
             case txtTx:
                 s = "send " + str;
                 break;
@@ -270,6 +274,11 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
         if (s.equals("sequence")) {
             seq = bits.str2num(cmd.word());
             s = cmd.word();
+        }
+        if (s.equals("description")) {
+            act = command.descr;
+            str = cmd.getRemaining();
+            return false;
         }
         if (s.equals("send")) {
             act = command.txtTx;
@@ -411,6 +420,8 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
                 return "";
             case gotoo:
                 return "";
+            case descr:
+                return null;
             default:
                 return "bad command";
         }
