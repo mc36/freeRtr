@@ -62,7 +62,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     /**
      * help description text
      */
-    public String description = "";
+    public String description = null;
 
     /**
      * parameter existence
@@ -265,7 +265,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (sticky != null) {
             l.add(a + " sticky-param " + sticky);
         }
-        if (description.length() > 0) {
+        if (description != null) {
             l.add(a + " description " + description);
         }
         l.add(cmds.comment);
@@ -360,8 +360,8 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
                 s = ".";
                 break;
         }
-        String a = "" + description;
-        if (a.length() < 1) {
+        String a = description;
+        if (a == null) {
             a = "execute " + command;
         }
         a = lev + " " + s + " " + name + " " + a;

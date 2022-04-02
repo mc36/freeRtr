@@ -1382,6 +1382,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public final static String[] defaultL = {
         // globals
+        "interface .*! no description",
         "interface .*! no mtu",
         "interface .*! no macaddr",
         "interface .*! no template",

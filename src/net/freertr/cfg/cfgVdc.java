@@ -45,6 +45,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public boolean respawn = true;
 
     /**
+     * kill children on termination
+     */
+    public boolean children = true;
+
+    /**
      * action logging
      */
     public boolean logAct = false;
@@ -218,6 +223,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public final static String[] defaultL = {
         "vdc definition .*! no description",
         "vdc definition .*! respawn",
+        "vdc definition .*! children",
         "vdc definition .*! config null",
         "vdc definition .*! image null",
         "vdc definition .*! disk2 null",
@@ -274,6 +280,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.description = description;
         n.redunPrio = redunPrio;
         n.respawn = respawn;
+        n.children = children;
         n.uuidValue = uuidValue;
         n.userValue = userValue;
         n.cpuPinning = cpuPinning;
@@ -331,6 +338,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  2,.    description                description of this vdc");
         l.add(null, "2  2,.      [text]                   text describing this vdc");
         l.add(null, "1  .      respawn                    restart on termination");
+        l.add(null, "1  .      children                   kill children on termination");
         l.add(null, "1  2      rename                     rename this vdc");
         l.add(null, "2  .        <str>                    set new name of vdc");
         l.add(null, "1  2      interface                  add interface to this vdc");
@@ -404,6 +412,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("vdc definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
+        cmds.cfgLine(l, !children, cmds.tabulator, "children", "");
         for (int i = 0; i < ifaces.size(); i++) {
             l.add(cmds.tabulator + "interface " + ifaces.get(i));
         }
@@ -467,6 +476,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("respawn")) {
             respawn = true;
+            return;
+        }
+        if (a.equals("children")) {
+            children = true;
             return;
         }
         if (a.equals("description")) {
@@ -678,6 +691,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         a = cmd.word();
         if (a.equals("respawn")) {
             respawn = false;
+            return;
+        }
+        if (a.equals("children")) {
+            children = false;
             return;
         }
         if (a.equals("description")) {
@@ -921,7 +938,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (userValue != null) {
             cmd = "sudo -u " + userValue + " " + cmd;
         }
-        proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false, true);
+        proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false, children);
         if (proc == null) {
             return;
         }

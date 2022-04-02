@@ -44,6 +44,11 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public boolean respawn = true;
 
     /**
+     * kill children on termination
+     */
+    public boolean children = true;
+
+    /**
      * action logging
      */
     public boolean logAct = false;
@@ -130,6 +135,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     public final static String[] defaultL = {
         "process definition .*! no description",
         "process definition .*! respawn",
+        "process definition .*! children",
         "process definition .*! pinning null",
         "process definition .*! user null",
         "process definition .*! exec null",
@@ -203,6 +209,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "1  2,.    description                description of this process");
         l.add(null, "2  2,.      [text]                   text describing this process");
         l.add(null, "1  .      respawn                    restart on termination");
+        l.add(null, "1  .      children                   kill children on termination");
         l.add(null, "1  2      rename                     rename this process");
         l.add(null, "2  .        <str>                    set new name of process");
         l.add(null, "1  2      exec                       set external binary to use");
@@ -240,6 +247,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add("process definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
+        cmds.cfgLine(l, !children, cmds.tabulator, "children", "");
         l.add(cmds.tabulator + "exec " + execName);
         l.add(cmds.tabulator + "final " + execFinal);
         l.add(cmds.tabulator + "user " + userValue);
@@ -279,6 +287,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         if (a.equals("respawn")) {
             respawn = true;
+            return;
+        }
+        if (a.equals("children")) {
+            children = true;
             return;
         }
         if (a.equals("description")) {
@@ -382,6 +394,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
             respawn = false;
             return;
         }
+        if (a.equals("children")) {
+            children = false;
+            return;
+        }
         if (a.equals("description")) {
             description = "";
             return;
@@ -475,7 +491,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         if (userValue != null) {
             cmd = "sudo -u " + userValue + " " + cmd;
         }
-        proc = pipeShell.exec(pl.getSide(), cmd, execFinal, true, true, false, true);
+        proc = pipeShell.exec(pl.getSide(), cmd, execFinal, true, true, false, children);
         if (proc == null) {
             return;
         }
