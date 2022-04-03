@@ -1,10 +1,11 @@
 name: SonarQube
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#disabled until fixed
+#  push:
+#    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
   schedule:
     - cron: '43 15 * * 3'
 
