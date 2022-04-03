@@ -2057,6 +2057,10 @@ class userTesterOne {
             p.putLine(cmd.getRemaining());
             return;
         }
+        if (s.equals("pcap")) {
+            p.putLine("packet capture " + cmd.getRemaining());
+            return;
+        }
         if (s.equals("char")) {
             p.putChar(bits.str2num(cmd.word()));
             return;
