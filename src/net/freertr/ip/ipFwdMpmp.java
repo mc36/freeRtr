@@ -464,6 +464,9 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         }
         for (int i = 0; i < neighs.size(); i++) {
             ipFwdMpNe curr = neighs.get(i);
+            if (curr == null) {
+                continue;
+            }
             if (curr.labelL == null) {
                 continue;
             }
@@ -603,6 +606,9 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
     public void updateState(ipFwd fwd) {
         for (int i = neighs.size() - 1; i >= 0; i--) {
             ipFwdMpNe ntry = neighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
             if (fwd.ldpNeighFind(null, ntry.addr, false) != null) {
                 continue;
             }
@@ -637,6 +643,9 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         boolean ned = false;
         for (int o = 0; o < neighs.size(); o++) {
             ipFwdMpNe curr = neighs.get(o);
+            if (curr == null) {
+                continue;
+            }
             if (curr.labelL == null) {
                 continue;
             }
@@ -653,6 +662,9 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                     continue;
                 }
                 ipFwdMpNe ntry = neighs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
                 if (ntry.labelR < 0) {
                     continue;
                 }
