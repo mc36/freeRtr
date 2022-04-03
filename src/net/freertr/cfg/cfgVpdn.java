@@ -19,6 +19,7 @@ import net.freertr.clnt.clntGtp;
 import net.freertr.clnt.clntL2f;
 import net.freertr.clnt.clntL2tp2;
 import net.freertr.clnt.clntL2tp3;
+import net.freertr.clnt.clntLlcudp;
 import net.freertr.clnt.clntLwapp;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntNvGre;
@@ -35,6 +36,7 @@ import net.freertr.clnt.clntSstp;
 import net.freertr.clnt.clntStun;
 import net.freertr.clnt.clntTdmOudp;
 import net.freertr.clnt.clntTelnet;
+import net.freertr.clnt.clntTzsp;
 import net.freertr.clnt.clntUti;
 import net.freertr.clnt.clntVxlan;
 import net.freertr.cry.cryBase64;
@@ -308,6 +310,14 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
          */
         prGeneve,
         /**
+         * llcudp
+         */
+        prLlcudp,
+        /**
+         * tzsp
+         */
+        prTzsp,
+        /**
          * capwap
          */
         prCapwap,
@@ -363,6 +373,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     private clntVxlan vxl;
 
     private clntGeneve gnv;
+
+    private clntLlcudp lcu;
+
+    private clntTzsp tzs;
 
     private clntCapwap cpw;
 
@@ -493,6 +507,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 return "vxlan";
             case prGeneve:
                 return "geneve";
+            case prLlcudp:
+                return "llcudp";
+            case prTzsp:
+                return "tzsp";
             case prCapwap:
                 return "capwap";
             case prLwapp:
@@ -608,6 +626,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (s.equals("geneve")) {
             return protocolType.prGeneve;
         }
+        if (s.equals("llcudp")) {
+            return protocolType.prLlcudp;
+        }
+        if (s.equals("tzsp")) {
+            return protocolType.prTzsp;
+        }
         if (s.equals("capwap")) {
             return protocolType.prCapwap;
         }
@@ -721,6 +745,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    nvgre                        select nvgre");
         l.add(null, "2 .    vxlan                        select vxlan");
         l.add(null, "2 .    geneve                       select geneve");
+        l.add(null, "2 .    llcudp                       select llcudp");
+        l.add(null, "2 .    tzsp                         select tzsp");
         l.add(null, "2 .    capwap                       select capwap");
         l.add(null, "2 .    lwapp                        select lwapp");
         l.add(null, "1 2  prefer                         prefer ip protocol");
@@ -1696,6 +1722,34 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 gnv.setUpper(brdgIfc);
                 gnv.workStart();
                 lower = gnv;
+                break;
+            case prLlcudp:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                lcu = new clntLlcudp();
+                lcu.target = target;
+                lcu.prefer = prefer;
+                lcu.vrf = proxy.vrf;
+                lcu.srcIfc = proxy.srcIfc;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
+                lcu.setUpper(brdgIfc);
+                lcu.workStart();
+                lower = lcu;
+                break;
+            case prTzsp:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                tzs = new clntTzsp();
+                tzs.target = target;
+                tzs.prefer = prefer;
+                tzs.vrf = proxy.vrf;
+                tzs.srcIfc = proxy.srcIfc;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
+                tzs.setUpper(brdgIfc);
+                tzs.workStart();
+                lower = tzs;
                 break;
             case prCapwap:
                 if (ifaceBridge == null) {

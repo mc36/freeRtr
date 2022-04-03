@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.4.3-cur, done by cs@nop.
--;-;-;2022-04-03 03:56:46, took 00:08:38, with 80 workers, on 2804 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2022-04-03 05:52:27, took 00:08:16, with 80 workers, on 2830 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.net/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.net/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -232,6 +232,19 @@ http://sources.freertr.net/cfg/conn-lisp02.tst;conn-lisp02.tst;success;lisp over
 http://sources.freertr.net/cfg/conn-lisp03.tst;conn-lisp03.tst;success;lisp over lisp
 http://sources.freertr.net/cfg/conn-lisp04.tst;conn-lisp04.tst;success;lisp over loopback
 http://sources.freertr.net/cfg/conn-lisp05.tst;conn-lisp05.tst;success;lisp over asymmetric ports
+http://sources.freertr.net/cfg/conn-llcudp01.tst;conn-llcudp01.tst;success;llcudp over ipv4
+http://sources.freertr.net/cfg/conn-llcudp02.tst;conn-llcudp02.tst;success;llcudp over ipv6
+http://sources.freertr.net/cfg/conn-llcudp03.tst;conn-llcudp03.tst;success;llcudp over loopback
+http://sources.freertr.net/cfg/conn-llcudp04.tst;conn-llcudp04.tst;success;hdlc tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp05.tst;conn-llcudp05.tst;success;ppp tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp06.tst;conn-llcudp06.tst;success;lapb tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp07.tst;conn-llcudp07.tst;success;framerelay tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp08.tst;conn-llcudp08.tst;success;atmdxi tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp09.tst;conn-llcudp09.tst;success;isdn tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp10.tst;conn-llcudp10.tst;success;sep tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp11.tst;conn-llcudp11.tst;success;ethernet tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp12.tst;conn-llcudp12.tst;success;vlan tunneling with llcudp
+http://sources.freertr.net/cfg/conn-llcudp13.tst;conn-llcudp13.tst;success;tunnel interface with llcudp
 http://sources.freertr.net/cfg/conn-lwapp01.tst;conn-lwapp01.tst;success;lwapp over ipv4
 http://sources.freertr.net/cfg/conn-lwapp02.tst;conn-lwapp02.tst;success;lwapp over ipv6
 http://sources.freertr.net/cfg/conn-lwapp03.tst;conn-lwapp03.tst;success;lwapp over loopback
@@ -378,6 +391,19 @@ http://sources.freertr.net/cfg/conn-tmux01.tst;conn-tmux01.tst;success;tmux over
 http://sources.freertr.net/cfg/conn-tmux02.tst;conn-tmux02.tst;success;tmux over ipv6
 http://sources.freertr.net/cfg/conn-tmux03.tst;conn-tmux03.tst;success;tmux over tmux
 http://sources.freertr.net/cfg/conn-tmux04.tst;conn-tmux04.tst;success;tmux over loopback
+http://sources.freertr.net/cfg/conn-tzsp01.tst;conn-tzsp01.tst;success;tzsp over ipv4
+http://sources.freertr.net/cfg/conn-tzsp02.tst;conn-tzsp02.tst;success;tzsp over ipv6
+http://sources.freertr.net/cfg/conn-tzsp03.tst;conn-tzsp03.tst;success;tzsp over loopback
+http://sources.freertr.net/cfg/conn-tzsp04.tst;conn-tzsp04.tst;success;hdlc tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp05.tst;conn-tzsp05.tst;success;ppp tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp06.tst;conn-tzsp06.tst;success;lapb tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp07.tst;conn-tzsp07.tst;success;framerelay tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp08.tst;conn-tzsp08.tst;success;atmdxi tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp09.tst;conn-tzsp09.tst;success;isdn tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp10.tst;conn-tzsp10.tst;success;sep tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp11.tst;conn-tzsp11.tst;success;ethernet tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp12.tst;conn-tzsp12.tst;success;vlan tunneling with tzsp
+http://sources.freertr.net/cfg/conn-tzsp13.tst;conn-tzsp13.tst;success;tunnel interface with tzsp
 http://sources.freertr.net/cfg/conn-udpgre01.tst;conn-udpgre01.tst;success;udpgre over ipv4
 http://sources.freertr.net/cfg/conn-udpgre02.tst;conn-udpgre02.tst;success;udpgre over ipv6
 http://sources.freertr.net/cfg/conn-udpgre03.tst;conn-udpgre03.tst;success;udpgre over udpgre

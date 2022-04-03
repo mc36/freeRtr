@@ -20,6 +20,7 @@ import net.freertr.clnt.clntGeneve;
 import net.freertr.clnt.clntGtp;
 import net.freertr.clnt.clntL2tp3;
 import net.freertr.clnt.clntLisp;
+import net.freertr.clnt.clntLlcudp;
 import net.freertr.clnt.clntLwapp;
 import net.freertr.clnt.clntMplsBier;
 import net.freertr.clnt.clntMplsExp;
@@ -41,6 +42,7 @@ import net.freertr.clnt.clntSatp;
 import net.freertr.clnt.clntSlaac;
 import net.freertr.clnt.clntSrEth;
 import net.freertr.clnt.clntSrExt;
+import net.freertr.clnt.clntTzsp;
 import net.freertr.clnt.clntUdpGre;
 import net.freertr.clnt.clntUti;
 import net.freertr.clnt.clntVxlan;
@@ -770,6 +772,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public clntGeneve tunGeneve;
 
     /**
+     * llcudp tunnel handler
+     */
+    public clntLlcudp tunLlcudp;
+
+    /**
+     * llcudp tunnel handler
+     */
+    public clntTzsp tunTzsp;
+
+    /**
      * capwap tunnel handler
      */
     public clntCapwap tunCapwap;
@@ -1310,6 +1322,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * geneve tunnel interface
          */
         geneve,
+        /**
+         * llcudp tunnel interface
+         */
+        llcudp,
+        /**
+         * tzsp tunnel interface
+         */
+        tzsp,
         /**
          * capwap tunnel interface
          */
@@ -2235,6 +2255,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "vxlan";
             case geneve:
                 return "geneve";
+            case llcudp:
+                return "llcudp";
+            case tzsp:
+                return "tzsp";
             case capwap:
                 return "capwap";
             case lwapp:
@@ -2386,6 +2410,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("geneve")) {
             return tunnelType.geneve;
+        }
+        if (s.equals("llcudp")) {
+            return tunnelType.llcudp;
+        }
+        if (s.equals("tzsp")) {
+            return tunnelType.tzsp;
         }
         if (s.equals("capwap")) {
             return tunnelType.capwap;
@@ -3795,6 +3825,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tunGeneve.workStop();
             tunGeneve = null;
         }
+        if (tunLlcudp != null) {
+            tunLlcudp.workStop();
+            tunLlcudp = null;
+        }
+        if (tunTzsp != null) {
+            tunTzsp.workStop();
+            tunTzsp = null;
+        }
         if (tunCapwap != null) {
             tunCapwap.workStop();
             tunCapwap = null;
@@ -4506,6 +4544,30 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunGeneve.setUpper(ethtyp);
                 tunGeneve.workStart();
                 lower = tunGeneve;
+                break;
+            case llcudp:
+                tunLlcudp = new clntLlcudp();
+                tunLlcudp.target = "" + tunTrg;
+                tunLlcudp.vrf = tunVrf;
+                tunLlcudp.srcIfc = tunSrc;
+                tunLlcudp.sendingTOS = tunTOS;
+                tunLlcudp.sendingFLW = tunFLW;
+                tunLlcudp.sendingTTL = tunTTL;
+                tunLlcudp.setUpper(ethtyp);
+                tunLlcudp.workStart();
+                lower = tunLlcudp;
+                break;
+            case tzsp:
+                tunTzsp = new clntTzsp();
+                tunTzsp.target = "" + tunTrg;
+                tunTzsp.vrf = tunVrf;
+                tunTzsp.srcIfc = tunSrc;
+                tunTzsp.sendingTOS = tunTOS;
+                tunTzsp.sendingFLW = tunFLW;
+                tunTzsp.sendingTTL = tunTTL;
+                tunTzsp.setUpper(ethtyp);
+                tunTzsp.workStart();
+                lower = tunTzsp;
                 break;
             case capwap:
                 tunCapwap = new clntCapwap();
@@ -6335,6 +6397,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       l2tp3                     l2tp v3 encapsulation");
         l.add(null, "3 .       vxlan                     vxlan encapsulation");
         l.add(null, "3 .       geneve                    geneve encapsulation");
+        l.add(null, "3 .       llcudp                    llc over udp encapsulation");
+        l.add(null, "3 .       tzsp                      tazman sniffer protocol encapsulation");
         l.add(null, "3 .       capwap                    capwap encapsulation");
         l.add(null, "3 .       lwapp                     lwapp encapsulation");
         l.add(null, "3 .       erspan                    erspan encapsulation");

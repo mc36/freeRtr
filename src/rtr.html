@@ -12,7 +12,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.4.3-cur, done by cs@nop.<br/>
-tested: 2022-04-03 03:56:46, took 00:08:38, with 80 workers, on 2804 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2022-04-03 05:52:27, took 00:08:16, with 80 workers, on 2830 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -246,6 +246,19 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-lisp03.tst">conn-lisp03.tst</a></td><td>success</td><td>lisp over lisp</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-lisp04.tst">conn-lisp04.tst</a></td><td>success</td><td>lisp over loopback</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-lisp05.tst">conn-lisp05.tst</a></td><td>success</td><td>lisp over asymmetric ports</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp01.tst">conn-llcudp01.tst</a></td><td>success</td><td>llcudp over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp02.tst">conn-llcudp02.tst</a></td><td>success</td><td>llcudp over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp03.tst">conn-llcudp03.tst</a></td><td>success</td><td>llcudp over loopback</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp04.tst">conn-llcudp04.tst</a></td><td>success</td><td>hdlc tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp05.tst">conn-llcudp05.tst</a></td><td>success</td><td>ppp tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp06.tst">conn-llcudp06.tst</a></td><td>success</td><td>lapb tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp07.tst">conn-llcudp07.tst</a></td><td>success</td><td>framerelay tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp08.tst">conn-llcudp08.tst</a></td><td>success</td><td>atmdxi tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp09.tst">conn-llcudp09.tst</a></td><td>success</td><td>isdn tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp10.tst">conn-llcudp10.tst</a></td><td>success</td><td>sep tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp11.tst">conn-llcudp11.tst</a></td><td>success</td><td>ethernet tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp12.tst">conn-llcudp12.tst</a></td><td>success</td><td>vlan tunneling with llcudp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-llcudp13.tst">conn-llcudp13.tst</a></td><td>success</td><td>tunnel interface with llcudp</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-lwapp01.tst">conn-lwapp01.tst</a></td><td>success</td><td>lwapp over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-lwapp02.tst">conn-lwapp02.tst</a></td><td>success</td><td>lwapp over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-lwapp03.tst">conn-lwapp03.tst</a></td><td>success</td><td>lwapp over loopback</td></tr>
@@ -392,6 +405,19 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-tmux02.tst">conn-tmux02.tst</a></td><td>success</td><td>tmux over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-tmux03.tst">conn-tmux03.tst</a></td><td>success</td><td>tmux over tmux</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-tmux04.tst">conn-tmux04.tst</a></td><td>success</td><td>tmux over loopback</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp01.tst">conn-tzsp01.tst</a></td><td>success</td><td>tzsp over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp02.tst">conn-tzsp02.tst</a></td><td>success</td><td>tzsp over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp03.tst">conn-tzsp03.tst</a></td><td>success</td><td>tzsp over loopback</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp04.tst">conn-tzsp04.tst</a></td><td>success</td><td>hdlc tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp05.tst">conn-tzsp05.tst</a></td><td>success</td><td>ppp tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp06.tst">conn-tzsp06.tst</a></td><td>success</td><td>lapb tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp07.tst">conn-tzsp07.tst</a></td><td>success</td><td>framerelay tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp08.tst">conn-tzsp08.tst</a></td><td>success</td><td>atmdxi tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp09.tst">conn-tzsp09.tst</a></td><td>success</td><td>isdn tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp10.tst">conn-tzsp10.tst</a></td><td>success</td><td>sep tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp11.tst">conn-tzsp11.tst</a></td><td>success</td><td>ethernet tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp12.tst">conn-tzsp12.tst</a></td><td>success</td><td>vlan tunneling with tzsp</td></tr>
+<tr><td><a href="http://sources.freertr.net/cfg/conn-tzsp13.tst">conn-tzsp13.tst</a></td><td>success</td><td>tunnel interface with tzsp</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-udpgre01.tst">conn-udpgre01.tst</a></td><td>success</td><td>udpgre over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-udpgre02.tst">conn-udpgre02.tst</a></td><td>success</td><td>udpgre over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.net/cfg/conn-udpgre03.tst">conn-udpgre03.tst</a></td><td>success</td><td>udpgre over udpgre</td></tr>

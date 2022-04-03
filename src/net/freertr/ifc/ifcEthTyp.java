@@ -167,6 +167,21 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public final static int snap = 0xaaaa;
 
     /**
+     * control code
+     */
+    public final static int ctrl = 0x03;
+
+    /**
+     * ieee code
+     */
+    public final static int ieee = 0x80c2;
+
+    /**
+     * ieee ethernet code
+     */
+    public final static int ieth = 0x7;
+
+    /**
      * ipv4 core
      */
     public ipCor ip4cor;
@@ -1565,7 +1580,7 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
         cntr.tx(pck);
         pck.msbPutW(0, pck.dataSize() + 3); // size of packet
         pck.msbPutW(2, llcTyp); // llc type
-        pck.putByte(4, 0x03); // control flags
+        pck.putByte(4, ifcEthTyp.ctrl); // control flags
         pck.putSkip(5);
         pck.merge2beg();
         pck.ETHtype = llcTyp;
@@ -1672,7 +1687,7 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
         cntr.tx(pck);
         pck.msbPutW(0, pck.dataSize() + 6); // size of packet
         pck.msbPutW(2, ifcEthTyp.snap); // llc type
-        pck.putByte(4, 0x03); // control flags
+        pck.putByte(4, ifcEthTyp.ctrl); // control flags
         pck.msbPutD(5, snapTyp << 8); // organization code
         pck.putSkip(8);
         pck.merge2beg();

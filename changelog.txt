@@ -13136,3 +13136,30 @@ qc pass: bgp route server with safe policy
 qc pass: safe ebgp policy with prefixlist
 qc pass: safe ebgp policy with routemap
 qc pass: safe ebgp policy with routepolicy
+---------------------------------- 2022-04-03 05:44:11 22.4.3
+qc pass: llcudp over ipv4
+qc pass: llcudp over ipv6
+qc pass: llcudp over loopback
+qc pass: hdlc tunneling with llcudp
+qc pass: ppp tunneling with llcudp
+qc pass: lapb tunneling with llcudp
+qc pass: framerelay tunneling with llcudp
+qc pass: atmdxi tunneling with llcudp
+qc pass: isdn tunneling with llcudp
+qc pass: sep tunneling with llcudp
+qc pass: ethernet tunneling with llcudp
+qc pass: vlan tunneling with llcudp
+qc pass: tunnel interface with llcudp
+qc pass: tzsp over ipv4
+qc pass: tzsp over ipv6
+qc pass: tzsp over loopback
+qc pass: hdlc tunneling with tzsp
+qc pass: ppp tunneling with tzsp
+qc pass: lapb tunneling with tzsp
+qc pass: framerelay tunneling with tzsp
+qc pass: atmdxi tunneling with tzsp
+qc pass: isdn tunneling with tzsp
+qc pass: sep tunneling with tzsp
+qc pass: ethernet tunneling with tzsp
+qc pass: vlan tunneling with tzsp
+qc pass: tunnel interface with tzsp

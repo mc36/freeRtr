@@ -228,6 +228,19 @@ qc pass: lisp over ipv6
 qc pass: lisp over lisp
 qc pass: lisp over loopback
 qc pass: lisp over asymmetric ports
+qc pass: llcudp over ipv4
+qc pass: llcudp over ipv6
+qc pass: llcudp over loopback
+qc pass: hdlc tunneling with llcudp
+qc pass: ppp tunneling with llcudp
+qc pass: lapb tunneling with llcudp
+qc pass: framerelay tunneling with llcudp
+qc pass: atmdxi tunneling with llcudp
+qc pass: isdn tunneling with llcudp
+qc pass: sep tunneling with llcudp
+qc pass: ethernet tunneling with llcudp
+qc pass: vlan tunneling with llcudp
+qc pass: tunnel interface with llcudp
 qc pass: lwapp over ipv4
 qc pass: lwapp over ipv6
 qc pass: lwapp over loopback
@@ -374,6 +387,19 @@ qc pass: tmux over ipv4
 qc pass: tmux over ipv6
 qc pass: tmux over tmux
 qc pass: tmux over loopback
+qc pass: tzsp over ipv4
+qc pass: tzsp over ipv6
+qc pass: tzsp over loopback
+qc pass: hdlc tunneling with tzsp
+qc pass: ppp tunneling with tzsp
+qc pass: lapb tunneling with tzsp
+qc pass: framerelay tunneling with tzsp
+qc pass: atmdxi tunneling with tzsp
+qc pass: isdn tunneling with tzsp
+qc pass: sep tunneling with tzsp
+qc pass: ethernet tunneling with tzsp
+qc pass: vlan tunneling with tzsp
+qc pass: tunnel interface with tzsp
 qc pass: udpgre over ipv4
 qc pass: udpgre over ipv6
 qc pass: udpgre over udpgre

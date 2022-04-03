@@ -12,12 +12,14 @@ import net.freertr.clnt.clntGreTap;
 import net.freertr.clnt.clntL2f;
 import net.freertr.clnt.clntL2tp2;
 import net.freertr.clnt.clntL2tp3;
+import net.freertr.clnt.clntLlcudp;
 import net.freertr.clnt.clntLwapp;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntNvGre;
 import net.freertr.clnt.clntPckOudp;
 import net.freertr.clnt.clntPptp;
 import net.freertr.clnt.clntSrEth;
+import net.freertr.clnt.clntTzsp;
 import net.freertr.clnt.clntUti;
 import net.freertr.clnt.clntVxlan;
 import net.freertr.ifc.ifcDn;
@@ -143,6 +145,16 @@ public class cfgXconnSide {
     public clntGeneve gnv;
 
     /**
+     * llcudp
+     */
+    public clntLlcudp lcu;
+
+    /**
+     * tzsp
+     */
+    public clntTzsp tzs;
+
+    /**
      * capwap
      */
     public clntCapwap cpw;
@@ -233,6 +245,8 @@ public class cfgXconnSide {
         l.add(null, (p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         geneve                  geneve encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         llcudp                  llcudp encapsulation");
+        l.add(null, (p + 2) + " " + (p + 3) + "         tzsp                    tzsp encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         capwap                  capwap encapsulation");
         l.add(null, (p + 2) + " " + (p + 3) + "         lwapp                   lwapp encapsulation");
         l.add(null, (p + 3) + " " + (p + 4) + "           <addr>                address of target");
@@ -436,6 +450,24 @@ public class cfgXconnSide {
                 gnv.setUpper(upper);
                 gnv.workStart();
                 lower = gnv;
+                break;
+            case prLlcudp:
+                lcu = new clntLlcudp();
+                lcu.target = "" + adr;
+                lcu.vrf = vrf;
+                lcu.srcIfc = ifc;
+                lcu.setUpper(upper);
+                lcu.workStart();
+                lower = lcu;
+                break;
+            case prTzsp:
+                tzs = new clntTzsp();
+                tzs.target = "" + adr;
+                tzs.vrf = vrf;
+                tzs.srcIfc = ifc;
+                tzs.setUpper(upper);
+                tzs.workStart();
+                lower = tzs;
                 break;
             case prCapwap:
                 cpw = new clntCapwap();
