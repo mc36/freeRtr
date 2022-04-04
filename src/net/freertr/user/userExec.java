@@ -709,7 +709,10 @@ public class userExec {
         hl.add(null, "5 6,.          flapstat             prefix flap statistics");
         hl.add(null, "6 .              [num]              minimum count");
         hl.add(null, "3 4        ghosthunt                host route hunter");
-        hl.add(null, "4 .          <num>                  process id");
+        hl.add(null, "4 5          <num>                  process id");
+        hl.add(null, "5 .            status               current status");
+        hl.add(null, "5 .            attrib               attribute difference");
+        hl.add(null, "5 .            ghost                last recorded ghost");
     }
 
     /**

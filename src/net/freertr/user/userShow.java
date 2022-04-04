@@ -2466,8 +2466,20 @@ public class userShow {
             cmd.error("uninitialized process");
             return;
         }
-        rdr.putStrTab(r.ghosthunt.getStats());
-        rdr.putStrArr(r.ghosthunt.getDiffs(cmd.pipe.settingsGet(pipeSetting.width, 80)));
+        String a = cmd.word();
+        if (a.equals("status")) {
+            rdr.putStrTab(r.ghosthunt.getStats());
+            return;
+        }
+        if (a.equals("attrib")) {
+            rdr.putStrArr(r.ghosthunt.getDiffs(cmd.pipe.settingsGet(pipeSetting.width, 80)));
+            return;
+        }
+        if (a.equals("ghost")) {
+            rdr.putStrArr(r.ghosthunt.getRecord());
+            return;
+        }
+        cmd.badCmd();
     }
 
     private void doShowIpXlogger(tabRouteAttr.routeType afi) {

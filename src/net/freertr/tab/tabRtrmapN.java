@@ -1179,6 +1179,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         userScript t = new userScript(pip, "");
         t.allowExec = true;
+        t.addLine("set seconds " + (bits.getTime() / 1000));
         t.addLine("set afi " + (afi & rtrBgpUtil.afiMask));
         t.addLine("set safi " + (afi & rtrBgpUtil.sfiMask));
         t.addLine("set peerasn " + asn);
@@ -1189,6 +1190,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         t.addLine("set wildcard " + net.prefix.wildcard);
         t.addLine("set broadcast " + net.prefix.broadcast);
         t.addLine("set rd " + rd2string(net.rouDst));
+        t.addLine("set oldrd " + rd2string(net.oldDst));
         t.addLine("set nexthop " + attr.nextHop);
         t.addLine("set oldhop " + attr.oldHop);
         t.addLine("set distance " + attr.distance);

@@ -102,9 +102,14 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected int ignore;
 
     /**
-     * grace time
+     * advertise grace time
      */
-    protected int grace;
+    protected int graceAdv;
+
+    /**
+     * withdraw grace time
+     */
+    protected int graceWdr;
 
     /**
      * redistributed
@@ -177,9 +182,14 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected tabRouteEntry<addrIP> sent;
 
     /**
-     * received unicast prefix
+     * received prefix
      */
     protected tabRouteEntry<addrIP> rcvd;
+
+    /**
+     * recorded prefix
+     */
+    protected tabRouteEntry<addrIP> recd;
 
     private notifier notif = new notifier();
 
@@ -212,7 +222,8 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         distance = 254;
         originator = false;
         ignore = 0;
-        grace = 0;
+        graceAdv = 0;
+        graceWdr = 0;
         forwrdr = true;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
@@ -310,21 +321,31 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                     break;
             }
         }
+        tabRouteEntry<addrIP> orig = rcvd;
         if (rcvd != null) {
             rcvd = rcvd.copyBytes(tabRoute.addType.notyet);
             tabRouteAttr.ignoreAttribs(rcvd.best, ignore);
             tabRouteAttr.ignoreAttribs(sent.best, ignore);
         }
         curGhst = needed != (rcvd != null);
-        if (needed == timap.matches(timExec - grace)) {
+        int period;
+        if (needed) {
+            period = graceAdv;
+        } else {
+            period = graceWdr;
+        }
+        if (needed == timap.matches(timExec - period)) {
             curGhst = false;
         }
-        if (needed == timap.matches(timExec + grace)) {
+        if (needed == timap.matches(timExec + period)) {
             curGhst = false;
         }
         if (curGhst) {
             cntGhst++;
             timGhst = timExec;
+            if (orig != null) {
+                recd = orig.copyBytes(tabRoute.addType.alters);
+            }
         } else {
             cntPass++;
             timPass = timExec;
@@ -377,8 +398,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     public void routerGetHelp(userHelping l) {
         l.add(null, "1 2   distance                    specify default distance");
         l.add(null, "2 .     <num>                     distance");
-        l.add(null, "1 2   grace                       specify grace interval");
-        l.add(null, "2 .     <num>                     time in ms");
+        l.add(null, "1 2   grace                       specify grace interval in ms");
+        l.add(null, "2 3     <num>                     for advertisement");
+        l.add(null, "3 .       <num>                   for withdrawal");
         l.add(null, "1 2   mode                        set mode");
         l.add(null, "2 .     originator                select originator");
         l.add(null, "2 .     observer                  select observer");
@@ -395,6 +417,10 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(null, "2 .     <str>                     prefix");
         l.add(null, "1 2   time-map                    specify time map to use");
         l.add(null, "2 .     <nam:tm>                  time map");
+        l.add(null, "1 2   route-map                   specify route map to use");
+        l.add(null, "2 .     <nam:rm>                  route map");
+        l.add(null, "1 2   route-policy                specify route policy to use");
+        l.add(null, "2 .     <nam:rpl>                 route policy");
         l.add(null, "1 2   ignore                      specify attributes to ignore");
         tabRouteAttr.ignoreHelp(l, 2);
     }
@@ -435,7 +461,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 break;
         }
         l.add(beg + "afi " + a);
-        l.add(beg + "grace " + grace);
+        l.add(beg + "grace " + graceAdv + " " + graceWdr);
         if (originator) {
             a = "originator";
         } else {
@@ -490,10 +516,12 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         if (s.equals("grace")) {
             if (negated) {
-                grace = 0;
+                graceAdv = 0;
+                graceWdr = 0;
                 return false;
             }
-            grace = bits.str2num(cmd.word());
+            graceAdv = bits.str2num(cmd.word());
+            graceWdr = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("lookup")) {
@@ -558,6 +586,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         if (s.equals("route-map")) {
             if (negated) {
+                roumap = null;
                 notif.wakeup();
                 return false;
             }
@@ -702,6 +731,18 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         differ df = new differ();
         df.calc(dump1, dump2);
         return df.getText(wid, 0);
+    }
+
+    /**
+     * get recorded
+     *
+     * @return list of recorded
+     */
+    public List<String> getRecord() {
+        if (recd == null) {
+            return null;
+        }
+        return recd.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
     }
 
 }
