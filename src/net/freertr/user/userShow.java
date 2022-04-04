@@ -32,6 +32,7 @@ import net.freertr.cfg.cfgSched;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgSensor;
 import net.freertr.cfg.cfgSessn;
+import net.freertr.cfg.cfgTime;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVdcIfc;
@@ -1228,6 +1229,22 @@ public class userShow {
                 return null;
             }
             rdr.putStrTab(acl.aceslst.getStats(3));
+            return null;
+        }
+        if (a.equals("time-map")) {
+            cfgTime rtmp = cfgAll.timeFind(cmd.word(), false);
+            if (rtmp == null) {
+                cmd.error("no such route map");
+                return null;
+            }
+            long tim;
+            a = cmd.word();
+            if (a.length() < 1) {
+                tim = bits.getTime();
+            } else {
+                tim = bits.str2time(cfgAll.timeZoneName, a);
+            }
+            rdr.putStrArr(bits.str2lst(bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 3) + " returns " + rtmp.matches(tim)));
             return null;
         }
         if (a.equals("route-map")) {

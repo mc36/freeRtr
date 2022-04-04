@@ -505,7 +505,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router flowspec
         "router flowspec[4|6] .*! distance 254",
         // router ghosthunt
-        "router ghosthunt[4|6] .*! distance 254",
+        "router ghosthunt[4|6] .*! distance 10",
         "router ghosthunt[4|6] .*! afi unicast",
         "router ghosthunt[4|6] .*! grace 0 0",
         "router ghosthunt[4|6] .*! mode observer",

@@ -219,7 +219,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 break;
         }
         afi = 1;
-        distance = 254;
+        distance = 10;
         originator = false;
         ignore = 0;
         graceAdv = 0;

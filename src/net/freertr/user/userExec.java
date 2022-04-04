@@ -1032,6 +1032,9 @@ public class userExec {
         hl.add(null, "3 .        <name:rpl>            name of list");
         hl.add(null, "2 3      prefix-list             prefix list statistics");
         hl.add(null, "3 .        <name:pl>             name of list");
+        hl.add(null, "2 3      time-map                time map statistics");
+        hl.add(null, "3 4,.      <name:tm>             name of list");
+        hl.add(null, "4 4,.        <str>               time to test");
         hl.add(null, "2 3      session                 stateful session information");
         hl.add(null, "3 4        <name:ses>            name of session");
         hl.add(null, "4 .          session             list of sessions");
