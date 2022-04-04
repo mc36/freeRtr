@@ -770,7 +770,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 continue;
             }
             tabRouteEntry<addrIP> don = done.find(wil);
-            if (!wil.differs(tabRoute.addType.alters, don)) {
+            if (wil.differs(tabRoute.addType.alters, don) == 0) {
                 continue;
             }
             conn.sendUpdate(safi, wil, don);
@@ -905,7 +905,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 done.del(don);
                 conn.sendUpdate(safi, wil, don);
             } else {
-                if (!wil.differs(tabRoute.addType.alters, don)) {
+                if (wil.differs(tabRoute.addType.alters, don) == 0) {
                     continue;
                 }
                 done.add(tabRoute.addType.always, wil, false, false);

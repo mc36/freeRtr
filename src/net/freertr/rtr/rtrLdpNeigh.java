@@ -886,7 +886,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.differs(tabRoute.addType.notyet, prefAdvert.find(ntry))) {
+            if (ntry.differs(tabRoute.addType.notyet, prefAdvert.find(ntry)) == 0) {
                 continue;
             }
             if (ntry.best.labelLoc == null) {

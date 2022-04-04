@@ -268,26 +268,27 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      *
      * @param mod mode to use
      * @param other other to test
-     * @return false on equals, true on differs
+     * @return 0 if equals, greater than 0 if differs
      */
-    public boolean differs(tabRoute.addType mod, tabRouteEntry<T> other) {
+    public int differs(tabRoute.addType mod, tabRouteEntry<T> other) {
         if (other == null) {
-            return true;
+            return 1001;
         }
         if (compare(this, other) != 0) {
-            return true;
+            return 1002;
         }
         switch (mod) {
             case alters:
                 if (alts.size() != other.alts.size()) {
-                    return true;
+                    return 1003;
                 }
                 for (int i = 0; i < alts.size(); i++) {
-                    if (alts.get(i).differs(other.alts.get(i))) {
-                        return true;
+                    int o = alts.get(i).differs(other.alts.get(i));
+                    if (o != 0) {
+                        return o;
                     }
                 }
-                return false;
+                return 0;
             default:
                 return best.differs(other.best);
         }

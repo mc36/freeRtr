@@ -1943,7 +1943,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 chg.add(tabRoute.addType.always, best, false, false);
                 continue;
             }
-            if (!ntry.differs(tabRoute.addType.alters, old)) {
+            if (ntry.differs(tabRoute.addType.alters, old) == 0) {
                 continue;
             }
             wil.add(tabRoute.addType.always, ntry, false, false);

@@ -491,7 +491,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.differs(tabRoute.addType.notyet, adverted.find(ntry))) {
+            if (ntry.differs(tabRoute.addType.notyet, adverted.find(ntry)) == 0) {
                 continue;
             }
             ntry = ntry.copyBytes(tabRoute.addType.notyet);

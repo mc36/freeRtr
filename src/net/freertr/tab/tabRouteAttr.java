@@ -787,299 +787,299 @@ public class tabRouteAttr<T extends addrType> {
      * check if differs from other
      *
      * @param other other to test
-     * @return false on equals, true on differs
+     * @return 0 if equals, greater than 0 if differs
      */
-    public boolean differs(tabRouteAttr<T> other) {
+    public int differs(tabRouteAttr<T> other) {
         if (other == null) {
-            return true;
+            return 1;
         }
         if (rouTyp != other.rouTyp) {
-            return true;
+            return 2;
         }
         if (iface != other.iface) {
-            return true;
+            return 3;
         }
         if (rouSrc != other.rouSrc) {
-            return true;
+            return 4;
         }
         if (protoNum != other.protoNum) {
-            return true;
+            return 5;
         }
         if (distance != other.distance) {
-            return true;
+            return 6;
         }
         if (metric != other.metric) {
-            return true;
+            return 7;
         }
         if (ident != other.ident) {
-            return true;
+            return 8;
         }
         if (hops != other.hops) {
-            return true;
+            return 9;
         }
         if (tag != other.tag) {
-            return true;
+            return 10;
         }
         if (segrouIdx != other.segrouIdx) {
-            return true;
+            return 11;
         }
         if (segrouBeg != other.segrouBeg) {
-            return true;
+            return 12;
         }
         if (segrouOld != other.segrouOld) {
-            return true;
+            return 13;
         }
         if (segrouSiz != other.segrouSiz) {
-            return true;
+            return 14;
         }
         if (segrouOfs != other.segrouOfs) {
-            return true;
+            return 15;
         }
         if (bierIdx != other.bierIdx) {
-            return true;
+            return 16;
         }
         if (bierBeg != other.bierBeg) {
-            return true;
+            return 17;
         }
         if (bierOld != other.bierOld) {
-            return true;
+            return 18;
         }
         if (bierSiz != other.bierSiz) {
-            return true;
+            return 19;
         }
         if (bierHdr != other.bierHdr) {
-            return true;
+            return 20;
         }
         if (validity != other.validity) {
-            return true;
+            return 21;
         }
         if (onlyCust != other.onlyCust) {
-            return true;
+            return 21;
         }
         if (origin != other.origin) {
-            return true;
+            return 22;
         }
         if (locPref != other.locPref) {
-            return true;
+            return 23;
         }
         if (accIgp != other.accIgp) {
-            return true;
+            return 24;
         }
         if (attribAs != other.attribAs) {
-            return true;
+            return 25;
         }
         if (tunelTyp != other.tunelTyp) {
-            return true;
+            return 26;
         }
         if (pmsiTyp != other.pmsiTyp) {
-            return true;
+            return 27;
         }
         if (pmsiLab != other.pmsiLab) {
-            return true;
+            return 28;
         }
         if (evpnLab != other.evpnLab) {
-            return true;
+            return 29;
         }
         if (bandwidth != other.bandwidth) {
-            return true;
+            return 30;
         }
         if (atomicAggr != other.atomicAggr) {
-            return true;
+            return 31;
         }
         if (aggrAs != other.aggrAs) {
-            return true;
+            return 32;
         }
         if (segrouPrf != null) {
             if (other.segrouPrf == null) {
-                return true;
+                return 33;
             }
             if (segrouPrf.compare(segrouPrf, other.segrouPrf) != 0) {
-                return true;
+                return 34;
             }
         } else if (other.segrouPrf != null) {
-            return true;
+            return 35;
         }
         if (labelLoc != null) {
             if (other.labelLoc == null) {
-                return true;
+                return 36;
             }
             if (labelLoc.compare(labelLoc, other.labelLoc) != 0) {
-                return true;
+                return 37;
             }
         } else if (other.labelLoc != null) {
-            return true;
+            return 38;
         }
         if (srcRtr != null) {
             if (other.srcRtr == null) {
-                return true;
+                return 39;
             }
             if (srcRtr.getSize() != other.srcRtr.getSize()) {
-                return true;
+                return 40;
             }
             if (srcRtr.compare(srcRtr, other.srcRtr) != 0) {
-                return true;
+                return 41;
             }
         } else if (other.srcRtr != null) {
-            return true;
+            return 42;
         }
         if (aggrRtr != null) {
             if (other.aggrRtr == null) {
-                return true;
+                return 43;
             }
             if (aggrRtr.compare(aggrRtr, other.aggrRtr) != 0) {
-                return true;
+                return 44;
             }
         } else if (other.aggrRtr != null) {
-            return true;
+            return 45;
         }
         if (nextHop != null) {
             if (other.nextHop == null) {
-                return true;
+                return 46;
             }
             if (nextHop.compare(nextHop, other.nextHop) != 0) {
-                return true;
+                return 47;
             }
         } else if (other.nextHop != null) {
-            return true;
+            return 48;
         }
         if (oldHop != null) {
             if (other.oldHop == null) {
-                return true;
+                return 49;
             }
             if (oldHop.compare(oldHop, other.oldHop) != 0) {
-                return true;
+                return 50;
             }
         } else if (other.oldHop != null) {
-            return true;
+            return 51;
         }
         if (originator != null) {
             if (other.originator == null) {
-                return true;
+                return 52;
             }
             if (originator.compare(originator, other.originator) != 0) {
-                return true;
+                return 53;
             }
         } else if (other.originator != null) {
-            return true;
+            return 54;
         }
         if (diffIntList(labelRem, other.labelRem)) {
-            return true;
+            return 55;
         }
         if (diffIntList(stdComm, other.stdComm)) {
-            return true;
+            return 56;
         }
         if (diffIntList(pathSeq, other.pathSeq)) {
-            return true;
+            return 57;
         }
         if (diffIntList(pathSet, other.pathSet)) {
-            return true;
+            return 58;
         }
         if (diffIntList(confSeq, other.confSeq)) {
-            return true;
+            return 59;
         }
         if (diffIntList(confSet, other.confSet)) {
-            return true;
+            return 60;
         }
         if (attribVal != null) {
             if (other.attribVal == null) {
-                return true;
+                return 61;
             }
             if (attribVal.length != other.attribVal.length) {
-                return true;
+                return 62;
             }
             if (bits.byteComp(attribVal, 0, other.attribVal, 0, attribVal.length) != 0) {
-                return true;
+                return 63;
             }
         } else if (other.attribVal != null) {
-            return true;
+            return 64;
         }
         if (tunelVal != null) {
             if (other.tunelVal == null) {
-                return true;
+                return 65;
             }
             if (tunelVal.length != other.tunelVal.length) {
-                return true;
+                return 66;
             }
             if (bits.byteComp(tunelVal, 0, other.tunelVal, 0, tunelVal.length) != 0) {
-                return true;
+                return 67;
             }
         } else if (other.tunelVal != null) {
-            return true;
+            return 68;
         }
         if (linkStat != null) {
             if (other.linkStat == null) {
-                return true;
+                return 69;
             }
             if (linkStat.length != other.linkStat.length) {
-                return true;
+                return 70;
             }
             if (bits.byteComp(linkStat, 0, other.linkStat, 0, linkStat.length) != 0) {
-                return true;
+                return 71;
             }
         } else if (other.linkStat != null) {
-            return true;
+            return 72;
         }
         if (pmsiTun != null) {
             if (other.pmsiTun == null) {
-                return true;
+                return 73;
             }
             if (pmsiTun.length != other.pmsiTun.length) {
-                return true;
+                return 74;
             }
             if (bits.byteComp(pmsiTun, 0, other.pmsiTun, 0, pmsiTun.length) != 0) {
-                return true;
+                return 75;
             }
         } else if (other.pmsiTun != null) {
-            return true;
+            return 76;
         }
         if (clustList != null) {
             if (other.clustList == null) {
-                return true;
+                return 77;
             }
             if (clustList.size() != other.clustList.size()) {
-                return true;
+                return 78;
             }
             for (int i = 0; i < clustList.size(); i++) {
                 T cmp = clustList.get(i);
                 if (cmp.compare(cmp, other.clustList.get(i)) != 0) {
-                    return true;
+                    return 79;
                 }
             }
         } else if (other.clustList != null) {
-            return true;
+            return 80;
         }
         if (extComm != null) {
             if (other.extComm == null) {
-                return true;
+                return 90;
             }
             if (extComm.size() != other.extComm.size()) {
-                return true;
+                return 91;
             }
             for (int i = 0; i < extComm.size(); i++) {
                 if (extComm.get(i).compareTo(other.extComm.get(i)) != 0) {
-                    return true;
+                    return 92;
                 }
             }
         } else if (other.extComm != null) {
-            return true;
+            return 93;
         }
         if (lrgComm != null) {
             if (other.lrgComm == null) {
-                return true;
+                return 94;
             }
             if (lrgComm.size() != other.lrgComm.size()) {
-                return true;
+                return 95;
             }
             for (int i = 0; i < lrgComm.size(); i++) {
                 tabLargeComm cmp = lrgComm.get(i);
                 if (cmp.compare(cmp, other.lrgComm.get(i)) != 0) {
-                    return true;
+                    return 96;
                 }
             }
         } else if (other.lrgComm != null) {
-            return true;
+            return 97;
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -1314,6 +1314,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
         hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
         hl.add(null, lv + " " + lv + ",.    tunnel       ignore tunnel");
+        hl.add(null, lv + " " + lv + ",.    empty        ignore empty lists");
     }
 
     /**
@@ -1397,6 +1398,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if (a.equals("lnksta")) {
             return 0x1000000;
+        }
+        if (a.equals("empty")) {
+            return 0x2000000;
         }
         return 0;
     }
@@ -1486,6 +1490,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((i & 0x1000000) != 0) {
             a += " lnksta";
+        }
+        if ((i & 0x2000000) != 0) {
+            a += " empty";
         }
         return a.substring(1, a.length());
     }
@@ -1604,6 +1611,27 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x1000000) != 0) {
             ntry.linkStat = null;
         }
+        if ((ign & 0x2000000) != 0) {
+            ntry.clustList = nullEmptyList(ntry.clustList);
+            ntry.confSeq = nullEmptyList(ntry.confSeq);
+            ntry.confSet = nullEmptyList(ntry.confSet);
+            ntry.extComm = nullEmptyList(ntry.extComm);
+            ntry.labelRem = nullEmptyList(ntry.labelRem);
+            ntry.lrgComm = nullEmptyList(ntry.lrgComm);
+            ntry.pathSeq = nullEmptyList(ntry.pathSeq);
+            ntry.pathSet = nullEmptyList(ntry.pathSet);
+            ntry.stdComm = nullEmptyList(ntry.stdComm);
+        }
+    }
+
+    private static <E extends Object> List<E> nullEmptyList(List<E> o) {
+        if (o == null) {
+            return null;
+        }
+        if (o.size() < 1) {
+            return null;
+        }
+        return o;
     }
 
     /**

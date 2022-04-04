@@ -570,7 +570,7 @@ public class tabRoute<T extends addrType> {
             if (old == null) {
                 continue;
             }
-            if (prf.differs(addType.notyet, old)) {
+            if (prf.differs(addType.notyet, old) != 0) {
                 res = false;
                 continue;
             }
@@ -752,7 +752,7 @@ public class tabRoute<T extends addrType> {
             if (prf == null) {
                 continue;
             }
-            if (prf.differs(mod, other.prefixes.get(i))) {
+            if (prf.differs(mod, other.prefixes.get(i)) != 0) {
                 return true;
             }
         }

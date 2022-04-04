@@ -1933,7 +1933,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (!addpath) {
             if (don != null) {
-                if (!wil.best.differs(don.best)) {
+                if (wil.best.differs(don.best) == 0) {
                     return;
                 }
             }
@@ -1959,7 +1959,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         for (int i = 0; i < wil.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = wil.alts.get(i);
             if (i < don.alts.size()) {
-                if (!attr.differs(don.alts.get(i))) {
+                if (attr.differs(don.alts.get(i)) == 0) {
                     continue;
                 }
             }

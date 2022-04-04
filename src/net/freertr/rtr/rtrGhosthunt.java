@@ -124,7 +124,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     /**
      * current failed on attribute
      */
-    protected boolean curAtrF;
+    protected int curAtrF;
 
     /**
      * times executed
@@ -352,15 +352,13 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         if (rcvd != null) {
             curAtrF = sent.differs(tabRoute.addType.notyet, rcvd);
-            if (curAtrF) {
+            if (curAtrF != 0) {
                 cntAtrF++;
                 timAtrF = timExec;
             } else {
                 cntAtrP++;
                 timAtrP = timExec;
             }
-        } else {
-            curAtrF = false;
         }
         routerDoAggregates(rtrBgpUtil.sfiMulticast, tabU, tabU, fwdCore.commonLabel, null, 0);
         routerDoAggregates(rtrBgpUtil.sfiMulticast, tabM, tabM, fwdCore.commonLabel, null, 0);
@@ -709,7 +707,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add("ghosted|" + curGhst + "|" + cntGhst + "|" + bits.time2str(cfgAll.timeZoneName, timGhst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timGhst));
         l.add("passed|" + !curGhst + "|" + cntPass + "|" + bits.time2str(cfgAll.timeZoneName, timPass + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timPass));
         l.add("attrib err|" + curAtrF + "|" + cntAtrF + "|" + bits.time2str(cfgAll.timeZoneName, timAtrF + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timAtrF));
-        l.add("attrib ok|" + !curAtrF + "|" + cntAtrP + "|" + bits.time2str(cfgAll.timeZoneName, timAtrP + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timAtrP));
+        l.add("attrib ok|" + curAtrF + "|" + cntAtrP + "|" + bits.time2str(cfgAll.timeZoneName, timAtrP + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timAtrP));
         return l;
     }
 
@@ -723,14 +721,16 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (rcvd == null) {
             return null;
         }
-        if (!curAtrF) {
+        if (curAtrF == 0) {
             return null;
         }
         List<String> dump1 = sent.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
         List<String> dump2 = rcvd.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
         df.calc(dump1, dump2);
-        return df.getText(wid, 0);
+        List<String> res = df.getText(wid, 0);
+        res.add(0, "difference=" + curAtrF);
+        return res;
     }
 
     /**

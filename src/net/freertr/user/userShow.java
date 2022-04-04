@@ -3326,7 +3326,7 @@ public class userShow {
                 upd.update(safi, asn1, prf1, false);
                 upd.update(safi, asn2, prf2, false);
             }
-            if (!prf1.differs(tabRoute.addType.alters, prf2)) {
+            if (prf1.differs(tabRoute.addType.alters, prf2) == 0) {
                 continue;
             }
             diff.add(tabRoute.addType.alters, prf1, false, false);
@@ -3643,9 +3643,12 @@ public class userShow {
             }
             List<String> dump1 = ntry1.fullDump(r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
             List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
+            int dif = ntry1.differs(tabRoute.addType.alters, ntry2);
             differ df = new differ();
             df.calc(dump1, dump2);
-            rdr.putStrArr(df.getText(cmd.pipe.settingsGet(pipeSetting.width, 80), 0));
+            List<String> res = df.getText(cmd.pipe.settingsGet(pipeSetting.width, 80), 0);
+            res.add(0, "difference=" + dif);
+            rdr.putStrArr(res);
             return;
         }
         if (a.equals("compare")) {

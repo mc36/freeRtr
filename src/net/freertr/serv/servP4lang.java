@@ -5340,7 +5340,7 @@ class servP4langConn implements Runnable {
                 str.store = hop.id;
                 String act = "add";
                 if (old != null) {
-                    if (!ntry.differs(tabRoute.addType.notyet, old) && !str.differs(store)) {
+                    if ((ntry.differs(tabRoute.addType.notyet, old) == 0) && !str.differs(store)) {
                         continue;
                     }
                     act = "mod";
@@ -5365,7 +5365,7 @@ class servP4langConn implements Runnable {
                 if (ntry.best.nextHop != null) {
                     lower.findNei(ntry.best.iface, ntry.best.nextHop);
                 }
-                if (!ntry.differs(tabRoute.addType.notyet, old)) {
+                if (ntry.differs(tabRoute.addType.notyet, old) == 0) {
                     continue;
                 }
                 act = "mod";
