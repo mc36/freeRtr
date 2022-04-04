@@ -114,7 +114,6 @@ bridge 4
 !
 vrf definition bvi
  rd 65535:2
- label-mode per-prefix
  exit
 !
 vrf definition dn42
@@ -197,7 +196,6 @@ vrf definition vpn
  rd 65535:1
  rt-import 65535:1
  rt-export 65535:1
- label-mode per-prefix
  mdt4
  mdt6
  exit
