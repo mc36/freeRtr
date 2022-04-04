@@ -150,7 +150,7 @@ public class pipeShell {
         ProcessHandle[] childs = new ProcessHandle[0];
         try {
             Stream<ProcessHandle> descends = process.descendants();
-            childs = (ProcessHandle[]) descends.toArray();
+            childs = descends.toArray(ProcessHandle[]::new);
         } catch (Exception e) {
         }
         try {
