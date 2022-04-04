@@ -1,11 +1,13 @@
 package net.freertr.tab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.ip.ipFwd;
 import net.freertr.user.userFormat;
+import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 
 /**
@@ -147,6 +149,14 @@ public class tabRouteAttr<T extends addrType> {
          * ipv6 flowspec
          */
         flwspc6,
+        /**
+         * ipv4 ghost hunter
+         */
+        ghosthunt4,
+        /**
+         * ipv6 ghost hunter
+         */
+        ghosthunt6,
         /**
          * ipv4 unicast to multicast
          */
@@ -586,6 +596,9 @@ public class tabRouteAttr<T extends addrType> {
             case flwspc4:
             case flwspc6:
                 return "FLW";
+            case ghosthunt4:
+            case ghosthunt6:
+                return "GHT";
             case uni2multi4:
             case uni2multi6:
                 return "UNI";
@@ -1267,6 +1280,330 @@ public class tabRouteAttr<T extends addrType> {
             s += " " + l.get(i);
         }
         return s.substring(1, s.length());
+    }
+
+    /**
+     * get ignore help
+     *
+     * @param hl help to append
+     * @param lv level to add
+     */
+    public static void ignoreHelp(userHelping hl, int lv) {
+        hl.add(null, lv + " " + lv + ",.    bier         ignore bier");
+        hl.add(null, lv + " " + lv + ",.    attrset      ignore attribute set");
+        hl.add(null, lv + " " + lv + ",.    cluster      ignore cluster list");
+        hl.add(null, lv + " " + lv + ",.    nexthop      ignore nexthop");
+        hl.add(null, lv + " " + lv + ",.    origin       ignore origin");
+        hl.add(null, lv + " " + lv + ",.    metric       ignore metric");
+        hl.add(null, lv + " " + lv + ",.    locpref      ignore local preference");
+        hl.add(null, lv + " " + lv + ",.    distance     ignore distance");
+        hl.add(null, lv + " " + lv + ",.    tag          ignore tag");
+        hl.add(null, lv + " " + lv + ",.    validity     ignore validity");
+        hl.add(null, lv + " " + lv + ",.    aspath       ignore as path");
+        hl.add(null, lv + " " + lv + ",.    asconf       ignore confed path");
+        hl.add(null, lv + " " + lv + ",.    stdcomm      ignore standard community");
+        hl.add(null, lv + " " + lv + ",.    extcomm      ignore extended community");
+        hl.add(null, lv + " " + lv + ",.    lrgcomm      ignore large community");
+        hl.add(null, lv + " " + lv + ",.    sortcomm     sort communities");
+        hl.add(null, lv + " " + lv + ",.    lnksta       ignore link state");
+        hl.add(null, lv + " " + lv + ",.    aigp         ignore accumulated igp");
+        hl.add(null, lv + " " + lv + ",.    bandwidth    ignore bandwidth");
+        hl.add(null, lv + " " + lv + ",.    label        ignore labels");
+        hl.add(null, lv + " " + lv + ",.    aggregate    ignore aggregator");
+        hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
+        hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
+        hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
+        hl.add(null, lv + " " + lv + ",.    tunnel       ignore tunnel");
+    }
+
+    /**
+     * convert string to ignore bitmap
+     *
+     * @param a string
+     * @return bitmap
+     */
+    public static int string2ignore(String a) {
+        if (a.equals("cluster")) {
+            return 0x1;
+        }
+        if (a.equals("nexthop")) {
+            return 0x2;
+        }
+        if (a.equals("origin")) {
+            return 0x4;
+        }
+        if (a.equals("metric")) {
+            return 0x8;
+        }
+        if (a.equals("locpref")) {
+            return 0x10;
+        }
+        if (a.equals("distance")) {
+            return 0x20;
+        }
+        if (a.equals("tag")) {
+            return 0x40;
+        }
+        if (a.equals("validity")) {
+            return 0x80;
+        }
+        if (a.equals("aspath")) {
+            return 0x100;
+        }
+        if (a.equals("asconf")) {
+            return 0x200;
+        }
+        if (a.equals("stdcomm")) {
+            return 0x400;
+        }
+        if (a.equals("extcomm")) {
+            return 0x800;
+        }
+        if (a.equals("aigp")) {
+            return 0x1000;
+        }
+        if (a.equals("bandwidth")) {
+            return 0x2000;
+        }
+        if (a.equals("label")) {
+            return 0x4000;
+        }
+        if (a.equals("aggregate")) {
+            return 0x8000;
+        }
+        if (a.equals("orignted")) {
+            return 0x10000;
+        }
+        if (a.equals("pmsi")) {
+            return 0x20000;
+        }
+        if (a.equals("segrout")) {
+            return 0x40000;
+        }
+        if (a.equals("lrgcomm")) {
+            return 0x80000;
+        }
+        if (a.equals("tunnel")) {
+            return 0x100000;
+        }
+        if (a.equals("attrset")) {
+            return 0x200000;
+        }
+        if (a.equals("bier")) {
+            return 0x400000;
+        }
+        if (a.equals("sortcomm")) {
+            return 0x800000;
+        }
+        if (a.equals("lnksta")) {
+            return 0x1000000;
+        }
+        return 0;
+    }
+
+    /**
+     * convert ignore bitmap to string
+     *
+     * @param i bitmap
+     * @return string
+     */
+    public static String ignore2string(int i) {
+        if (i == 0) {
+            return "";
+        }
+        String a = "";
+        if ((i & 0x1) != 0) {
+            a += " cluster";
+        }
+        if ((i & 0x2) != 0) {
+            a += " nexthop";
+        }
+        if ((i & 0x4) != 0) {
+            a += " origin";
+        }
+        if ((i & 0x8) != 0) {
+            a += " metric";
+        }
+        if ((i & 0x10) != 0) {
+            a += " locpref";
+        }
+        if ((i & 0x20) != 0) {
+            a += " distance";
+        }
+        if ((i & 0x40) != 0) {
+            a += " tag";
+        }
+        if ((i & 0x80) != 0) {
+            a += " validity";
+        }
+        if ((i & 0x100) != 0) {
+            a += " aspath";
+        }
+        if ((i & 0x200) != 0) {
+            a += " asconf";
+        }
+        if ((i & 0x400) != 0) {
+            a += " stdcomm";
+        }
+        if ((i & 0x800) != 0) {
+            a += " extcomm";
+        }
+        if ((i & 0x1000) != 0) {
+            a += " aigp";
+        }
+        if ((i & 0x2000) != 0) {
+            a += " bandwidth";
+        }
+        if ((i & 0x4000) != 0) {
+            a += " label";
+        }
+        if ((i & 0x8000) != 0) {
+            a += " aggregate";
+        }
+        if ((i & 0x10000) != 0) {
+            a += " orignted";
+        }
+        if ((i & 0x20000) != 0) {
+            a += " pmsi";
+        }
+        if ((i & 0x40000) != 0) {
+            a += " segrout";
+        }
+        if ((i & 0x80000) != 0) {
+            a += " lrgcomm";
+        }
+        if ((i & 0x100000) != 0) {
+            a += " tunnel";
+        }
+        if ((i & 0x200000) != 0) {
+            a += " attrset";
+        }
+        if ((i & 0x400000) != 0) {
+            a += " bier";
+        }
+        if ((i & 0x800000) != 0) {
+            a += " sortcomm";
+        }
+        if ((i & 0x1000000) != 0) {
+            a += " lnksta";
+        }
+        return a.substring(1, a.length());
+    }
+
+    /**
+     * ignore attributes
+     *
+     * @param <T> class of address
+     * @param ntry route entry
+     * @param ign ignore bitmap
+     */
+    public static <T extends addrType> void ignoreAttribs(tabRouteAttr<T> ntry, int ign) {
+        ntry.srcRtr = null;
+        ntry.rouSrc = 0;
+        ntry.rouTyp = tabRouteAttr.routeType.bgp4;
+        ntry.protoNum = 0;
+        ntry.iface = null;
+        ntry.ident = 0;
+        if ((ign & 0x1) != 0) {
+            ntry.clustList = null;
+        }
+        if ((ign & 0x2) != 0) {
+            ntry.nextHop = null;
+            ntry.oldHop = null;
+        }
+        if ((ign & 0x4) != 0) {
+            ntry.origin = 0;
+        }
+        if ((ign & 0x8) != 0) {
+            ntry.metric = 0;
+        }
+        if ((ign & 0x10) != 0) {
+            ntry.locPref = 0;
+        }
+        if ((ign & 0x20) != 0) {
+            ntry.distance = 0;
+        }
+        if ((ign & 0x40) != 0) {
+            ntry.tag = 0;
+        }
+        if ((ign & 0x80) != 0) {
+            ntry.validity = 0;
+        }
+        if ((ign & 0x100) != 0) {
+            ntry.pathSeq = null;
+            ntry.pathSet = null;
+        }
+        if ((ign & 0x200) != 0) {
+            ntry.confSeq = null;
+            ntry.confSet = null;
+        }
+        if ((ign & 0x400) != 0) {
+            ntry.stdComm = null;
+        }
+        if ((ign & 0x800) != 0) {
+            ntry.extComm = null;
+        }
+        if ((ign & 0x1000) != 0) {
+            ntry.accIgp = 0;
+        }
+        if ((ign & 0x2000) != 0) {
+            ntry.bandwidth = 0;
+        }
+        if ((ign & 0x4000) != 0) {
+            ntry.labelLoc = null;
+            ntry.labelRem = null;
+        }
+        if ((ign & 0x8000) != 0) {
+            ntry.atomicAggr = false;
+            ntry.aggrAs = 0;
+            ntry.aggrRtr = null;
+        }
+        if ((ign & 0x10000) != 0) {
+            ntry.originator = null;
+        }
+        if ((ign & 0x20000) != 0) {
+            ntry.pmsiLab = 0;
+            ntry.pmsiTyp = 0;
+            ntry.pmsiTun = null;
+        }
+        if ((ign & 0x40000) != 0) {
+            ntry.segrouIdx = 0;
+            ntry.segrouBeg = 0;
+            ntry.segrouOld = 0;
+            ntry.segrouSiz = 0;
+        }
+        if ((ign & 0x80000) != 0) {
+            ntry.lrgComm = null;
+        }
+        if ((ign & 0x100000) != 0) {
+            ntry.tunelTyp = 0;
+            ntry.tunelVal = null;
+        }
+        if ((ign & 0x200000) != 0) {
+            ntry.attribAs = 0;
+            ntry.attribVal = null;
+        }
+        if ((ign & 0x400000) != 0) {
+            ntry.bierIdx = 0;
+            ntry.bierBeg = 0;
+            ntry.bierOld = 0;
+            ntry.bierSiz = 0;
+            ntry.bierHdr = 0;
+        }
+        if ((ign & 0x800000) != 0) {
+            if (ntry.stdComm != null) {
+                Collections.sort(ntry.stdComm);
+            }
+            if (ntry.extComm != null) {
+                Collections.sort(ntry.extComm);
+            }
+            if (ntry.lrgComm != null) {
+                Collections.sort(ntry.lrgComm, new tabLargeComm());
+            }
+        }
+        if ((ign & 0x1000000) != 0) {
+            ntry.linkStat = null;
+        }
     }
 
     /**

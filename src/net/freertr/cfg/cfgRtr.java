@@ -19,6 +19,7 @@ import net.freertr.rtr.rtrDeaggr;
 import net.freertr.rtr.rtrDownload;
 import net.freertr.rtr.rtrEigrp;
 import net.freertr.rtr.rtrFlowspec;
+import net.freertr.rtr.rtrGhosthunt;
 import net.freertr.rtr.rtrIsis;
 import net.freertr.rtr.rtrLogger;
 import net.freertr.rtr.rtrLsrp;
@@ -141,6 +142,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * flowspec handler
      */
     public rtrFlowspec flwspc;
+
+    /**
+     * ghost hunter
+     */
+    public rtrGhosthunt ghosthunt;
 
     /**
      * unicast to multicast handler
@@ -498,6 +504,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router msdp[4|6] .*! no neighbor .* bfd",
         // router flowspec
         "router flowspec[4|6] .*! distance 254",
+        // router ghosthunt
+        "router ghosthunt[4|6] .*! distance 254",
+        "router ghosthunt[4|6] .*! afi unicast",
+        "router ghosthunt[4|6] .*! grace 0",
+        "router ghosthunt[4|6] .*! observer",
+        "router ghosthunt[4|6] .*! no route-map",
+        "router ghosthunt[4|6] .*! no route-policy",
+        "router ghosthunt[4|6] .*! no ignore",
         // router uni2multi
         "router uni2multi[4|6] .*! distance 254",
         // router deaggr
@@ -632,6 +646,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("flowspec6")) {
             return tabRouteAttr.routeType.flwspc6;
         }
+        if (a.equals("ghosthunt4")) {
+            return tabRouteAttr.routeType.ghosthunt4;
+        }
+        if (a.equals("ghosthunt6")) {
+            return tabRouteAttr.routeType.ghosthunt6;
+        }
         if (a.equals("uni2multi4")) {
             return tabRouteAttr.routeType.uni2multi4;
         }
@@ -733,6 +753,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "flowspec4";
             case flwspc6:
                 return "flowspec6";
+            case ghosthunt4:
+                return "ghosthunt4";
+            case ghosthunt6:
+                return "ghosthunt6";
             case uni2multi4:
                 return "uni2multi4";
             case uni2multi6:
@@ -1322,6 +1346,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             flwspc.routerCloseNow();
             flwspc = null;
         }
+        if (ghosthunt != null) {
+            ghosthunt.routerCloseNow();
+            ghosthunt = null;
+        }
         if (uni2multi != null) {
             uni2multi.routerCloseNow();
             uni2multi = null;
@@ -1397,6 +1425,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case flwspc4:
             case flwspc6:
                 return flwspc;
+            case ghosthunt4:
+            case ghosthunt6:
+                return ghosthunt;
             case uni2multi4:
             case uni2multi6:
                 return uni2multi;
@@ -1530,6 +1561,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case flwspc6:
                 fwd = vrf.fwd6;
                 flwspc = new rtrFlowspec(vrf.fwd6, number);
+                break;
+            case ghosthunt4:
+                fwd = vrf.fwd4;
+                ghosthunt = new rtrGhosthunt(vrf.fwd4, number);
+                break;
+            case ghosthunt6:
+                fwd = vrf.fwd6;
+                ghosthunt = new rtrGhosthunt(vrf.fwd6, number);
                 break;
             case uni2multi4:
                 fwd = vrf.fwd4;
@@ -1704,6 +1743,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 2) + " " + (p + 3) + "     msdp6                 multicast source discovery protocol" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     flowspec4             flowspec to flowspec rewriter" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     flowspec6             flowspec to flowspec rewriter" + e);
+        l.add(null, (p + 2) + " " + (p + 3) + "     ghosthunt4            ghost/zombie route hunter" + e);
+        l.add(null, (p + 2) + " " + (p + 3) + "     ghosthunt6            ghost/zombie route hunter" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     uni2multi4            unicast to multicast converter" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     uni2multi6            unicast to multicast converter" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     uni2flow4             unicast to flowspec converter" + e);

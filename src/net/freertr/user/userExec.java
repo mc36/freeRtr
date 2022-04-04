@@ -689,31 +689,7 @@ public class userExec {
         hl.add(null, "6 7              dcompare           double compare routes from neighbors");
         hl.add(null, "7 8                <addr>           neighbor address");
         hl.add(null, "8 9,.                <addr>         neighbor address");
-        hl.add(null, "9 9,.                  bier         ignore bier");
-        hl.add(null, "9 9,.                  attrset      ignore attribute set");
-        hl.add(null, "9 9,.                  cluster      ignore cluster list");
-        hl.add(null, "9 9,.                  nexthop      ignore nexthop");
-        hl.add(null, "9 9,.                  origin       ignore origin");
-        hl.add(null, "9 9,.                  metric       ignore metric");
-        hl.add(null, "9 9,.                  locpref      ignore local preference");
-        hl.add(null, "9 9,.                  distance     ignore distance");
-        hl.add(null, "9 9,.                  tag          ignore tag");
-        hl.add(null, "9 9,.                  validity     ignore validity");
-        hl.add(null, "9 9,.                  aspath       ignore as path");
-        hl.add(null, "9 9,.                  asconf       ignore confed path");
-        hl.add(null, "9 9,.                  stdcomm      ignore standard community");
-        hl.add(null, "9 9,.                  extcomm      ignore extended community");
-        hl.add(null, "9 9,.                  lrgcomm      ignore large community");
-        hl.add(null, "9 9,.                  sortcomm     sort communities");
-        hl.add(null, "9 9,.                  lnksta       ignore link state");
-        hl.add(null, "9 9,.                  aigp         ignore accumulated igp");
-        hl.add(null, "9 9,.                  bandwidth    ignore bandwidth");
-        hl.add(null, "9 9,.                  label        ignore labels");
-        hl.add(null, "9 9,.                  aggregate    ignore aggregator");
-        hl.add(null, "9 9,.                  orignted     ignore originator");
-        hl.add(null, "9 9,.                  pmsi         ignore pmsi");
-        hl.add(null, "9 9,.                  segrout      ignore segment routing");
-        hl.add(null, "9 9,.                  tunnel       ignore tunnel");
+        tabRouteAttr.ignoreHelp(hl, 9);
         hl.add(null, "9 10                   time         specify time");
         hl.add(null, "10 9,.                   <num>      milliseconds");
         hl.add(null, "9 10                   exclude      exclude prefixes from compare");
@@ -732,6 +708,8 @@ public class userExec {
         hl.add(null, "6 .              [addr]             entry to view");
         hl.add(null, "5 6,.          flapstat             prefix flap statistics");
         hl.add(null, "6 .              [num]              minimum count");
+        hl.add(null, "3 4        ghosthunt                host route hunter");
+        hl.add(null, "4 .          <num>                  process id");
     }
 
     /**

@@ -103,23 +103,22 @@ public class rtrBgpFlow {
     /**
      * advertise target network
      *
-     * @param tab table to update
      * @param trg target to match
      * @param ipv6 ipv6 route
      * @param dir direction
      * @param attr attributes
-     * @return false on success, true on error
+     * @return route on success, null on error
      */
-    public static boolean advertNetwork(tabRoute<addrIP> tab, addrPrefix<addrIP> trg, boolean ipv6, int dir, tabRouteEntry<addrIP> attr) {
+    public static tabRouteEntry<addrIP> advertNetwork(addrPrefix<addrIP> trg, boolean ipv6, int dir, tabRouteEntry<addrIP> attr) {
         packHolder pck = new packHolder(true, true);
         encodeAddrMtch(pck, dir, ipv6, trg.network, trg.mask);
-        return advertEntry(tab, pck, attr, 0, -1);
+        return convertNetwork(pck, attr, 0, -1);
     }
 
-    private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
+    private static tabRouteEntry<addrIP> convertNetwork(packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
         int o = pck.dataSize();
         if (o < 1) {
-            return true;
+            return null;
         }
         attr = attr.copyBytes(tabRoute.addType.notyet);
         for (int i = 0; i < ((4 * addrIP.size) - o); i++) {
@@ -144,6 +143,14 @@ public class rtrBgpFlow {
         }
         if (rate >= 0) {
             attr.best.extComm.add(tabRtrmapN.rate2comm(as, rate));
+        }
+        return attr;
+    }
+
+    private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
+        attr = convertNetwork(pck, attr, as, rate);
+        if (attr == null) {
+            return true;
         }
         tab.add(tabRoute.addType.better, attr, true, true);
         return false;

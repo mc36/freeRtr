@@ -139,7 +139,10 @@ public class rtrUni2flow extends ipRtr {
                 }
                 attr.best.extComm.add(tabRtrmapN.rate2comm(trgAs, trgRate));
             }
-            rtrBgpFlow.advertNetwork(res, ntry.prefix, ipv6, direction, attr);
+            attr = rtrBgpFlow.advertNetwork(ntry.prefix, ipv6, direction, attr);
+            if (attr != null) {
+                res.add(tabRoute.addType.better, attr, true, true);
+            }
         }
         if (res.preserveTime(routerComputedF)) {
             return;

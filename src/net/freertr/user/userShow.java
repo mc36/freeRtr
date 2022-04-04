@@ -1,7 +1,6 @@
 package net.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
@@ -1732,6 +1731,10 @@ public class userShow {
                 doShowIpXlogger(tabRouteAttr.routeType.logger4);
                 return null;
             }
+            if (a.equals("ghosthunt")) {
+                doShowIpXghosthunt(tabRouteAttr.routeType.ghosthunt4);
+                return null;
+            }
             if (a.equals("isis")) {
                 doShowIpXisis(tabRouteAttr.routeType.isis4);
                 return null;
@@ -2073,6 +2076,10 @@ public class userShow {
             }
             if (a.equals("logger")) {
                 doShowIpXlogger(tabRouteAttr.routeType.logger6);
+                return null;
+            }
+            if (a.equals("ghosthunt")) {
+                doShowIpXghosthunt(tabRouteAttr.routeType.ghosthunt6);
                 return null;
             }
             if (a.equals("isis")) {
@@ -2447,6 +2454,20 @@ public class userShow {
             return;
         }
         cmd.badCmd();
+    }
+
+    private void doShowIpXghosthunt(tabRouteAttr.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        if (r.ghosthunt == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
+        rdr.putStrTab(r.ghosthunt.getStats());
+        rdr.putStrArr(r.ghosthunt.getDiffs(cmd.pipe.settingsGet(pipeSetting.width, 80)));
     }
 
     private void doShowIpXlogger(tabRouteAttr.routeType afi) {
@@ -3260,112 +3281,6 @@ public class userShow {
         }
     }
 
-    private void ignoreAttribs(tabRouteAttr<addrIP> ntry, int ign) {
-        ntry.srcRtr = null;
-        ntry.rouSrc = 0;
-        ntry.rouTyp = tabRouteAttr.routeType.bgp4;
-        ntry.protoNum = 0;
-        ntry.iface = null;
-        ntry.ident = 0;
-        if ((ign & 0x1) != 0) {
-            ntry.clustList = null;
-        }
-        if ((ign & 0x2) != 0) {
-            ntry.nextHop = null;
-            ntry.oldHop = null;
-        }
-        if ((ign & 0x4) != 0) {
-            ntry.origin = 0;
-        }
-        if ((ign & 0x8) != 0) {
-            ntry.metric = 0;
-        }
-        if ((ign & 0x10) != 0) {
-            ntry.locPref = 0;
-        }
-        if ((ign & 0x20) != 0) {
-            ntry.distance = 0;
-        }
-        if ((ign & 0x40) != 0) {
-            ntry.tag = 0;
-        }
-        if ((ign & 0x80) != 0) {
-            ntry.validity = 0;
-        }
-        if ((ign & 0x100) != 0) {
-            ntry.pathSeq = null;
-            ntry.pathSet = null;
-        }
-        if ((ign & 0x200) != 0) {
-            ntry.confSeq = null;
-            ntry.confSet = null;
-        }
-        if ((ign & 0x400) != 0) {
-            ntry.stdComm = null;
-        }
-        if ((ign & 0x800) != 0) {
-            ntry.extComm = null;
-        }
-        if ((ign & 0x1000) != 0) {
-            ntry.accIgp = 0;
-        }
-        if ((ign & 0x2000) != 0) {
-            ntry.bandwidth = 0;
-        }
-        if ((ign & 0x4000) != 0) {
-            ntry.labelLoc = null;
-            ntry.labelRem = null;
-        }
-        if ((ign & 0x8000) != 0) {
-            ntry.atomicAggr = false;
-            ntry.aggrAs = 0;
-            ntry.aggrRtr = null;
-        }
-        if ((ign & 0x10000) != 0) {
-            ntry.originator = null;
-        }
-        if ((ign & 0x20000) != 0) {
-            ntry.pmsiLab = 0;
-            ntry.pmsiTyp = 0;
-            ntry.pmsiTun = null;
-        }
-        if ((ign & 0x40000) != 0) {
-            ntry.segrouIdx = 0;
-            ntry.segrouBeg = 0;
-            ntry.segrouOld = 0;
-            ntry.segrouSiz = 0;
-        }
-        if ((ign & 0x80000) != 0) {
-            ntry.lrgComm = null;
-        }
-        if ((ign & 0x100000) != 0) {
-            ntry.tunelTyp = 0;
-            ntry.tunelVal = null;
-        }
-        if ((ign & 0x200000) != 0) {
-            ntry.attribAs = 0;
-            ntry.attribVal = null;
-        }
-        if ((ign & 0x400000) != 0) {
-            ntry.bierIdx = 0;
-            ntry.bierBeg = 0;
-            ntry.bierOld = 0;
-            ntry.bierSiz = 0;
-            ntry.bierHdr = 0;
-        }
-        if ((ign & 0x800000) != 0) {
-            if (ntry.stdComm != null) {
-                Collections.sort(ntry.stdComm);
-            }
-            if (ntry.extComm != null) {
-                Collections.sort(ntry.extComm);
-            }
-        }
-        if ((ign & 0x1000000) != 0) {
-            ntry.linkStat = null;
-        }
-    }
-
     private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
@@ -3390,10 +3305,10 @@ public class userShow {
             }
             prf2 = prf2.copyBytes(tabRoute.addType.alters);
             for (int i = 0; i < prf1.alts.size(); i++) {
-                ignoreAttribs(prf1.alts.get(i), ign);
+                tabRouteAttr.ignoreAttribs(prf1.alts.get(i), ign);
             }
             for (int i = 0; i < prf2.alts.size(); i++) {
-                ignoreAttribs(prf2.alts.get(i), ign);
+                tabRouteAttr.ignoreAttribs(prf2.alts.get(i), ign);
             }
             if (upd != null) {
                 upd.update(safi, asn1, prf1, false);
@@ -3405,85 +3320,6 @@ public class userShow {
             diff.add(tabRoute.addType.alters, prf1, false, false);
             diff.add(tabRoute.addType.alters, prf2, false, false);
         }
-    }
-
-    private int str2ignore(String a) {
-        if (a.equals("cluster")) {
-            return 0x1;
-        }
-        if (a.equals("nexthop")) {
-            return 0x2;
-        }
-        if (a.equals("origin")) {
-            return 0x4;
-        }
-        if (a.equals("metric")) {
-            return 0x8;
-        }
-        if (a.equals("locpref")) {
-            return 0x10;
-        }
-        if (a.equals("distance")) {
-            return 0x20;
-        }
-        if (a.equals("tag")) {
-            return 0x40;
-        }
-        if (a.equals("validity")) {
-            return 0x80;
-        }
-        if (a.equals("aspath")) {
-            return 0x100;
-        }
-        if (a.equals("asconf")) {
-            return 0x200;
-        }
-        if (a.equals("stdcomm")) {
-            return 0x400;
-        }
-        if (a.equals("extcomm")) {
-            return 0x800;
-        }
-        if (a.equals("aigp")) {
-            return 0x1000;
-        }
-        if (a.equals("bandwidth")) {
-            return 0x2000;
-        }
-        if (a.equals("label")) {
-            return 0x4000;
-        }
-        if (a.equals("aggregate")) {
-            return 0x8000;
-        }
-        if (a.equals("orignted")) {
-            return 0x10000;
-        }
-        if (a.equals("pmsi")) {
-            return 0x20000;
-        }
-        if (a.equals("segrout")) {
-            return 0x40000;
-        }
-        if (a.equals("lrgcomm")) {
-            return 0x80000;
-        }
-        if (a.equals("tunnel")) {
-            return 0x100000;
-        }
-        if (a.equals("attrset")) {
-            return 0x200000;
-        }
-        if (a.equals("bier")) {
-            return 0x400000;
-        }
-        if (a.equals("sortcomm")) {
-            return 0x800000;
-        }
-        if (a.equals("lnksta")) {
-            return 0x1000000;
-        }
-        return 0;
     }
 
     private void doShowIpXbgp(tabRouteAttr.routeType afi) {
@@ -3839,7 +3675,7 @@ public class userShow {
                     upd = res.roumap;
                     continue;
                 }
-                ign |= str2ignore(a);
+                ign |= tabRouteAttr.string2ignore(a);
             }
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
             tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
@@ -3903,7 +3739,7 @@ public class userShow {
                     upd = res.roumap;
                     continue;
                 }
-                ign |= str2ignore(a);
+                ign |= tabRouteAttr.string2ignore(a);
             }
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
             tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
