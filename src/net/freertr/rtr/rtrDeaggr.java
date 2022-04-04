@@ -35,6 +35,11 @@ public class rtrDeaggr extends ipRtr {
     public int distance2;
 
     /**
+     * address family
+     */
+    protected int afi;
+
+    /**
      * lower half nexthop
      */
     public addrIP nextHop1;
@@ -79,6 +84,7 @@ public class rtrDeaggr extends ipRtr {
                 rouTyp = null;
                 break;
         }
+        afi = 1;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -137,11 +143,17 @@ public class rtrDeaggr extends ipRtr {
     public synchronized void routerCreateComputed() {
         tabRoute<addrIP> resU = new tabRoute<addrIP>("computed");
         tabRoute<addrIP> resM = new tabRoute<addrIP>("computed");
-        for (int i = 0; i < routerRedistedU.size(); i++) {
-            doPrefix(routerRedistedU.get(i), resU);
-        }
-        for (int i = 0; i < routerRedistedM.size(); i++) {
-            doPrefix(routerRedistedM.get(i), resM);
+        switch (afi) {
+            case 1:
+                for (int i = 0; i < routerRedistedU.size(); i++) {
+                    doPrefix(routerRedistedU.get(i), resU);
+                }
+                break;
+            case 2:
+                for (int i = 0; i < routerRedistedM.size(); i++) {
+                    doPrefix(routerRedistedM.get(i), resM);
+                }
+                break;
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, resU, resU, fwdCore.commonLabel, null, 0);
         routerDoAggregates(rtrBgpUtil.sfiMulticast, resM, resM, fwdCore.commonLabel, null, 0);
@@ -180,6 +192,9 @@ public class rtrDeaggr extends ipRtr {
         l.add(null, "1 2   nexthop                     specify default nexthop");
         l.add(null, "2 3     <addr>                    lower half nexthop");
         l.add(null, "3 .       <addr>                  upper half nexthop");
+        l.add(null, "1 2   afi                         set address family");
+        l.add(null, "2 .     unicast                   select unicast");
+        l.add(null, "2 .     multicast                 select multicast");
     }
 
     /**
@@ -190,6 +205,7 @@ public class rtrDeaggr extends ipRtr {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
+        l.add(beg + "afi " + rtrLogger.afi2str(afi));
         l.add(beg + "distance " + distance1 + " " + distance2);
         l.add(beg + "nexthop " + nextHop1 + " " + nextHop2);
     }
@@ -206,6 +222,14 @@ public class rtrDeaggr extends ipRtr {
         if (s.equals("no")) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("afi")) {
+            if (negated) {
+                afi = 1;
+                return false;
+            }
+            afi = rtrLogger.str2afi(cmd.word());
+            return false;
         }
         if (s.equals("distance")) {
             distance1 = bits.str2num(cmd.word());

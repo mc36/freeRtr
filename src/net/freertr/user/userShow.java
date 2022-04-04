@@ -2514,16 +2514,8 @@ public class userShow {
             rdr.putStrTab(r.logger.getFlapstat(bits.str2num(cmd.word())));
             return;
         }
-        if (a.equals("unicast")) {
-            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(1), 1);
-            return;
-        }
-        if (a.equals("multicast")) {
-            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(2), 1);
-            return;
-        }
-        if (a.equals("flowspec")) {
-            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(3), 5);
+        if (a.equals("database")) {
+            doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(), r.logger.getDispMod());
             return;
         }
         if (a.equals("prefix-lengths")) {

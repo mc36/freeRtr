@@ -70,6 +70,11 @@ public class rtrLogger extends ipRtr {
     protected boolean logging;
 
     /**
+     * address family
+     */
+    protected int afi;
+
+    /**
      * create logger process
      *
      * @param forwarder forwarder to update
@@ -89,6 +94,7 @@ public class rtrLogger extends ipRtr {
                 rouTyp = null;
                 break;
         }
+        afi = 1;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -265,10 +271,9 @@ public class rtrLogger extends ipRtr {
     /**
      * get routes
      *
-     * @param afi afi
      * @return routes
      */
-    public tabRoute<addrIP> getRoutes(int afi) {
+    public tabRoute<addrIP> getRoutes() {
         switch (afi) {
             case 1:
                 return oldU;
@@ -278,6 +283,24 @@ public class rtrLogger extends ipRtr {
                 return oldF;
             default:
                 return null;
+        }
+    }
+
+    /**
+     * get display mode
+     *
+     * @return mode
+     */
+    public int getDispMod() {
+        switch (afi) {
+            case 1:
+                return 1;
+            case 2:
+                return 1;
+            case 3:
+                return 5;
+            default:
+                return 0;
         }
     }
 
@@ -329,9 +352,17 @@ public class rtrLogger extends ipRtr {
      * create computed
      */
     public synchronized void routerCreateComputed() {
-        doDiff(1, oldU, routerRedistedU);
-        doDiff(2, oldM, routerRedistedM);
-        doDiff(3, oldF, routerRedistedF);
+        switch (afi) {
+            case 1:
+                doDiff(1, oldU, routerRedistedU);
+                break;
+            case 2:
+                doDiff(2, oldM, routerRedistedM);
+                break;
+            case 3:
+                doDiff(3, oldF, routerRedistedF);
+                break;
+        }
         oldU = routerRedistedU;
         oldM = routerRedistedM;
         oldF = routerRedistedF;
@@ -358,6 +389,10 @@ public class rtrLogger extends ipRtr {
     public void routerGetHelp(userHelping l) {
         l.add(null, "1 .   flapstat                    count flap statistics");
         l.add(null, "1 .   logging                     log events");
+        l.add(null, "1 2   afi                         set address family");
+        l.add(null, "2 .     unicast                   select unicast");
+        l.add(null, "2 .     multicast                 select multicast");
+        l.add(null, "2 .     flowspec                  select flowspec");
     }
 
     /**
@@ -368,6 +403,7 @@ public class rtrLogger extends ipRtr {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
+        l.add(beg + "afi " + afi2str(afi));
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
@@ -384,6 +420,14 @@ public class rtrLogger extends ipRtr {
         if (s.equals("no")) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("afi")) {
+            if (negated) {
+                afi = 1;
+                return false;
+            }
+            afi = str2afi(cmd.word());
+            return false;
         }
         if (s.equals("logging")) {
             logging = !negated;

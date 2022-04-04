@@ -700,11 +700,7 @@ public class userExec {
         hl.add(null, "4 5          <num>                  process id");
         hl.add(null, "5 .            prefix-lengths       list of prefix lengths");
         hl.add(null, "5 .            interfaces           list of outgoing interface");
-        hl.add(null, "5 6,.          unicast              list of database");
-        hl.add(null, "6 .              [addr]             entry to view");
-        hl.add(null, "5 6,.          multicast            list of database");
-        hl.add(null, "6 .              [addr]             entry to view");
-        hl.add(null, "5 6,.          flowspec             list of database");
+        hl.add(null, "5 6,.          database             list of database");
         hl.add(null, "6 .              [addr]             entry to view");
         hl.add(null, "5 6,.          flapstat             prefix flap statistics");
         hl.add(null, "6 .              [num]              minimum count");

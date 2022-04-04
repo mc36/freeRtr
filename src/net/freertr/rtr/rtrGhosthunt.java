@@ -57,12 +57,17 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected final boolean ipv6;
 
     /**
+     * logging
+     */
+    protected boolean logging;
+
+    /**
      * originator mode
      */
     protected boolean originator;
 
     /**
-     * address familiy, 1=uni, 2=multi, 3=flowspec
+     * address family
      */
     protected int afi;
 
@@ -346,6 +351,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             if (orig != null) {
                 recd = orig.copyBytes(tabRoute.addType.alters);
             }
+            if (logging) {
+                logger.info("ghosting " + rtrLogger.afi2str(afi) + " " + rtrLogger.prf2str(afi, sent.prefix));
+            }
         } else {
             cntPass++;
             timPass = timExec;
@@ -394,6 +402,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
+        l.add(null, "1 .   logging                     log events");
         l.add(null, "1 2   distance                    specify default distance");
         l.add(null, "2 .     <num>                     distance");
         l.add(null, "1 2   grace                       specify grace interval in ms");
@@ -431,6 +440,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
+        cmds.cfgLine(l, !logging, beg, "logging", "");
         l.add(beg + "distance " + distance);
         if (prefix == null) {
             l.add(beg + "no prefix");
@@ -443,23 +453,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         } else {
             l.add(beg + "time-map " + timap.name);
         }
-        String a;
-        switch (afi) {
-            case 1:
-                a = "unicast";
-                break;
-            case 2:
-                a = "multicast";
-                break;
-            case 3:
-                a = "flowspec";
-                break;
-            default:
-                a = "unknown=" + afi;
-                break;
-        }
-        l.add(beg + "afi " + a);
+        l.add(beg + "afi " + rtrLogger.afi2str(afi));
         l.add(beg + "grace " + graceAdv + " " + graceWdr);
+        String a;
         if (forwrdr) {
             a = "vrf";
         } else {
@@ -490,6 +486,10 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             s = cmd.word();
             negated = true;
         }
+        if (s.equals("logging")) {
+            logging = !negated;
+            return false;
+        }
         if (s.equals("distance")) {
             distance = bits.str2num(cmd.word());
             notif.wakeup();
@@ -500,16 +500,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 afi = 1;
                 return false;
             }
-            s = cmd.word();
-            if (s.equals("unicast")) {
-                afi = 1;
-            }
-            if (s.equals("multicast")) {
-                afi = 2;
-            }
-            if (s.equals("flowspec")) {
-                afi = 3;
-            }
+            afi = rtrLogger.str2afi(cmd.word());
             return false;
         }
         if (s.equals("grace")) {

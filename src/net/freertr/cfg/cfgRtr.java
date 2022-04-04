@@ -516,9 +516,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router uni2multi
         "router uni2multi[4|6] .*! distance 254",
         // router deaggr
+        "router deaggr[4|6] .*! afi unicast",
         "router deaggr[4|6] .*! distance 254 254",
         "router deaggr[4|6] .*! nexthop :: ::",
         // router aggreg
+        "router aggreg[4|6] .*! afi unicast",
         "router aggreg[4|6] .*! distance 254",
         "router aggreg[4|6] .*! nexthop ::",
         "router aggreg[4|6] .*! netmask 0",
@@ -545,6 +547,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router mobile
         "router mobile[4|6] .*! distance 254",
         // router logger
+        "router logger[4|6] .*! afi unicast",
         "router logger[4|6] .*! no flapstat",
         "router logger[4|6] .*! no logging",};
 
