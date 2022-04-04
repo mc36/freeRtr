@@ -351,7 +351,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             timPass = timExec;
         }
         if (rcvd != null) {
-            curAtrF = sent.differs(tabRoute.addType.alters, rcvd);
+            curAtrF = sent.differs(tabRoute.addType.notyet, rcvd);
             if (curAtrF) {
                 cntAtrF++;
                 timAtrF = timExec;
@@ -462,12 +462,6 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         l.add(beg + "afi " + a);
         l.add(beg + "grace " + graceAdv + " " + graceWdr);
-        if (originator) {
-            a = "originator";
-        } else {
-            a = "observer";
-        }
-        l.add(beg + "mode " + a);
         if (forwrdr) {
             a = "vrf";
         } else {
@@ -477,6 +471,12 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         cmds.cfgLine(l, roumap == null, beg, "route-map", "" + roumap);
         cmds.cfgLine(l, rouplc == null, beg, "route-policy", "" + rouplc);
         cmds.cfgLine(l, ignore == 0, beg, "ignore", tabRouteAttr.ignore2string(ignore));
+        if (originator) {
+            a = "originator";
+        } else {
+            a = "observer";
+        }
+        l.add(beg + "mode " + a);
     }
 
     /**
