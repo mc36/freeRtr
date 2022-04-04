@@ -107,6 +107,11 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected int grace;
 
     /**
+     * redistributed
+     */
+    protected boolean forwrdr;
+
+    /**
      * current failed on existence
      */
     protected boolean curGhst;
@@ -208,6 +213,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         originator = false;
         ignore = 0;
         grace = 0;
+        forwrdr = true;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -278,19 +284,31 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                     break;
             }
         }
-        switch (afi) {
-            case 1:
-                rcvd = fwdCore.actualU.find(sent);
-                break;
-            case 2:
-                rcvd = fwdCore.actualM.find(sent);
-                break;
-            case 3:
-                rcvd = fwdCore.actualF.find(sent);
-                break;
-            default:
-                rcvd = null;
-                break;
+        rcvd = null;
+        if (forwrdr) {
+            switch (afi) {
+                case 1:
+                    rcvd = fwdCore.actualU.find(sent);
+                    break;
+                case 2:
+                    rcvd = fwdCore.actualM.find(sent);
+                    break;
+                case 3:
+                    rcvd = fwdCore.actualF.find(sent);
+                    break;
+            }
+        } else {
+            switch (afi) {
+                case 1:
+                    rcvd = routerRedistedU.find(sent);
+                    break;
+                case 2:
+                    rcvd = routerRedistedM.find(sent);
+                    break;
+                case 3:
+                    rcvd = routerRedistedF.find(sent);
+                    break;
+            }
         }
         if (rcvd != null) {
             rcvd = rcvd.copyBytes(tabRoute.addType.notyet);
@@ -361,8 +379,12 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(null, "2 .     <num>                     distance");
         l.add(null, "1 2   grace                       specify grace interval");
         l.add(null, "2 .     <num>                     time in ms");
-        l.add(null, "1 .   originator                  set originator mode");
-        l.add(null, "1 .   observer                    set observer mode");
+        l.add(null, "1 2   mode                        set mode");
+        l.add(null, "2 .     originator                select originator");
+        l.add(null, "2 .     observer                  select observer");
+        l.add(null, "1 2   lookup                      set lookup");
+        l.add(null, "2 .     vrf                       select vrf routes");
+        l.add(null, "2 .     redist                    select redistribted");
         l.add(null, "1 2   afi                         set address family");
         l.add(null, "2 .     unicast                   select unicast");
         l.add(null, "2 .     multicast                 select multicast");
@@ -386,6 +408,17 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "distance " + distance);
+        if (prefix == null) {
+            l.add(beg + "no prefix");
+        } else {
+            l.add(beg + "prefix " + addrPrefix.ip2str(prefix));
+        }
+        cmds.cfgLine(l, nextHop == null, beg, "nexthop", "" + nextHop);
+        if (timap == null) {
+            l.add(beg + "no time-map");
+        } else {
+            l.add(beg + "time-map " + timap.name);
+        }
         String a;
         switch (afi) {
             case 1:
@@ -403,22 +436,18 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         l.add(beg + "afi " + a);
         l.add(beg + "grace " + grace);
-        if (prefix == null) {
-            l.add(beg + "no prefix");
-        } else {
-            l.add(beg + "prefix " + addrPrefix.ip2str(prefix));
-        }
-        cmds.cfgLine(l, nextHop == null, beg, "nexthop", "" + nextHop);
-        if (timap == null) {
-            l.add(beg + "no time-map");
-        } else {
-            l.add(beg + "time-map " + timap.name);
-        }
         if (originator) {
-            l.add(beg + "originator");
+            a = "originator";
         } else {
-            l.add(beg + "observer");
+            a = "observer";
         }
+        l.add(beg + "mode " + a);
+        if (forwrdr) {
+            a = "vrf";
+        } else {
+            a = "redist";
+        }
+        l.add(beg + "lookup " + a);
         cmds.cfgLine(l, roumap == null, beg, "route-map", "" + roumap);
         cmds.cfgLine(l, rouplc == null, beg, "route-policy", "" + rouplc);
         cmds.cfgLine(l, ignore == 0, beg, "ignore", tabRouteAttr.ignore2string(ignore));
@@ -467,13 +496,20 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             grace = bits.str2num(cmd.word());
             return false;
         }
-        if (s.equals("originator")) {
-            originator = !negated;
-            notif.wakeup();
+        if (s.equals("lookup")) {
+            if (negated) {
+                forwrdr = true;
+                return false;
+            }
+            forwrdr = cmd.word().equals("vrf");
             return false;
         }
-        if (s.equals("observer")) {
-            originator = negated;
+        if (s.equals("mode")) {
+            if (negated) {
+                originator = false;
+                return false;
+            }
+            originator = cmd.word().equals("originator");
             notif.wakeup();
             return false;
         }
