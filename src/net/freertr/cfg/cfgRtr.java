@@ -514,6 +514,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router ghosthunt[4|6] .*! no route-policy",
         "router ghosthunt[4|6] .*! no ignore",
         "router ghosthunt[4|6] .*! no logging",
+        "router ghosthunt[4|6] .*! start",
         // router uni2multi
         "router uni2multi[4|6] .*! distance 254",
         // router deaggr

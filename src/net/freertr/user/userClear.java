@@ -598,7 +598,11 @@ public class userClear {
                 return null;
             }
             if (a.equals("logger")) {
-                doClearIpXlogger4();
+                doClearIpXlogger(tabRouteAttr.routeType.logger4);
+                return null;
+            }
+            if (a.equals("ghosthunt")) {
+                doClearIpXghosthunt(tabRouteAttr.routeType.ghosthunt4);
                 return null;
             }
             cmd.badCmd();
@@ -691,7 +695,11 @@ public class userClear {
                 return null;
             }
             if (a.equals("logger")) {
-                doClearIpXlogger6();
+                doClearIpXlogger(tabRouteAttr.routeType.logger6);
+                return null;
+            }
+            if (a.equals("ghosthunt")) {
+                doClearIpXghosthunt(tabRouteAttr.routeType.ghosthunt6);
                 return null;
             }
             cmd.badCmd();
@@ -1023,8 +1031,8 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
-    private void doClearIpXlogger4() {
-        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.logger4, bits.str2num(cmd.word()), false);
+    private void doClearIpXlogger(tabRouteAttr.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
             return;
@@ -1032,13 +1040,14 @@ public class userClear {
         r.logger.clearFlapstat();
     }
 
-    private void doClearIpXlogger6() {
-        cfgRtr r = cfgAll.rtrFind(tabRouteAttr.routeType.logger6, bits.str2num(cmd.word()), false);
+    private void doClearIpXghosthunt(tabRouteAttr.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
             cmd.error("no such process");
             return;
         }
-        r.logger.clearFlapstat();
+        r.ghosthunt.setPaused(cmd.word().equals("stop"));
     }
+
 
 }

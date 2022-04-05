@@ -214,6 +214,10 @@ public class userExec {
         hl.add(null, "5 .            <addr>            neighbor address");
         hl.add(null, "3 4        logger                route flap collector");
         hl.add(null, "4 .          <num>               process id");
+        hl.add(null, "3 4        ghosthunt             ghost hunter");
+        hl.add(null, "4 5          <num>               process id");
+        hl.add(null, "5 .            stop              stop processing");
+        hl.add(null, "5 .            start             start processing");
     }
 
     private static void getHelpShowIpX(userHelping hl) {
@@ -704,7 +708,7 @@ public class userExec {
         hl.add(null, "6 .              [addr]             entry to view");
         hl.add(null, "5 6,.          flapstat             prefix flap statistics");
         hl.add(null, "6 .              [num]              minimum count");
-        hl.add(null, "3 4        ghosthunt                host route hunter");
+        hl.add(null, "3 4        ghosthunt                ghost route hunter");
         hl.add(null, "4 5          <num>                  process id");
         hl.add(null, "5 .            status               current status");
         hl.add(null, "5 .            attrib               attribute difference");

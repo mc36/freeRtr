@@ -62,6 +62,11 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected boolean logging;
 
     /**
+     * paused
+     */
+    protected boolean stopped;
+
+    /**
      * originator mode
      */
     protected boolean originator;
@@ -261,6 +266,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (timap == null) {
             return;
         }
+        if (stopped) {
+            return;
+        }
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("computed");
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("computed");
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("computed");
@@ -387,7 +395,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * redistribution changed
      */
     public void routerRedistChanged() {
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**
@@ -403,6 +411,8 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      */
     public void routerGetHelp(userHelping l) {
         l.add(null, "1 .   logging                     log events");
+        l.add(null, "1 .   start                       start running");
+        l.add(null, "1 .   stop                        stop running");
         l.add(null, "1 2   distance                    specify default distance");
         l.add(null, "2 .     <num>                     distance");
         l.add(null, "1 2   grace                       specify grace interval in ms");
@@ -471,6 +481,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             a = "observer";
         }
         l.add(beg + "mode " + a);
+        cmds.cfgLine(l, stopped, beg, "start", "");
     }
 
     /**
@@ -488,6 +499,14 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         if (s.equals("logging")) {
             logging = !negated;
+            return false;
+        }
+        if (s.equals("stop")) {
+            stopped = !negated;
+            return false;
+        }
+        if (s.equals("start")) {
+            stopped = negated;
             return false;
         }
         if (s.equals("distance")) {
@@ -734,6 +753,15 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             return null;
         }
         return recd.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+    }
+
+    /**
+     * set paused
+     *
+     * @param need pause state
+     */
+    public void setPaused(boolean need) {
+        stopped = need;
     }
 
 }
