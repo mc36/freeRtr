@@ -7,6 +7,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTime;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -122,9 +123,24 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected int graceWdr;
 
     /**
-     * redistributed
+     * lookup: 1=vrf, 2=redist, 3=router
      */
-    protected boolean forwrdr;
+    protected int lookMod;
+
+    /**
+     * router for lookup
+     */
+    protected ipRtr lookRtr;
+
+    /**
+     * type of router
+     */
+    protected tabRouteAttr.routeType lookTyp;
+
+    /**
+     * number of router
+     */
+    protected int lookNum;
 
     /**
      * current failed on existence
@@ -234,7 +250,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         ignore = 0;
         graceAdv = 0;
         graceWdr = 0;
-        forwrdr = true;
+        lookMod = 1;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -309,30 +325,46 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             }
         }
         rcvd = null;
-        if (forwrdr) {
-            switch (afi) {
-                case 1:
-                    rcvd = fwdCore.actualU.find(sent);
-                    break;
-                case 2:
-                    rcvd = fwdCore.actualM.find(sent);
-                    break;
-                case 3:
-                    rcvd = fwdCore.actualF.find(sent);
-                    break;
-            }
-        } else {
-            switch (afi) {
-                case 1:
-                    rcvd = routerRedistedU.find(sent);
-                    break;
-                case 2:
-                    rcvd = routerRedistedM.find(sent);
-                    break;
-                case 3:
-                    rcvd = routerRedistedF.find(sent);
-                    break;
-            }
+        switch (lookMod) {
+            case 1:
+                switch (afi) {
+                    case 1:
+                        rcvd = fwdCore.actualU.find(sent);
+                        break;
+                    case 2:
+                        rcvd = fwdCore.actualM.find(sent);
+                        break;
+                    case 3:
+                        rcvd = fwdCore.actualF.find(sent);
+                        break;
+                }
+                break;
+            case 2:
+                switch (afi) {
+                    case 1:
+                        rcvd = routerRedistedU.find(sent);
+                        break;
+                    case 2:
+                        rcvd = routerRedistedM.find(sent);
+                        break;
+                    case 3:
+                        rcvd = routerRedistedF.find(sent);
+                        break;
+                }
+                break;
+            case 3:
+                switch (afi) {
+                    case 1:
+                        rcvd = lookRtr.routerComputedU.find(sent);
+                        break;
+                    case 2:
+                        rcvd = lookRtr.routerComputedM.find(sent);
+                        break;
+                    case 3:
+                        rcvd = lookRtr.routerComputedF.find(sent);
+                        break;
+                }
+                break;
         }
         tabRouteEntry<addrIP> orig = rcvd;
         if (rcvd != null) {
@@ -424,6 +456,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(null, "1 2   lookup                      set lookup");
         l.add(null, "2 .     vrf                       select vrf routes");
         l.add(null, "2 .     redist                    select redistribted");
+        l.add(null, "2 3     router                    select an other router");
+        cfgRtr.getRouterList(l, 1, "");
+        l.add(null, "4 .         <num>                 process id");
         l.add(null, "1 2   afi                         set address family");
         l.add(null, "2 .     unicast                   select unicast");
         l.add(null, "2 .     multicast                 select multicast");
@@ -466,10 +501,19 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(beg + "afi " + rtrLogger.afi2str(afi));
         l.add(beg + "grace " + graceAdv + " " + graceWdr);
         String a;
-        if (forwrdr) {
-            a = "vrf";
-        } else {
-            a = "redist";
+        switch (lookMod) {
+            case 1:
+                a = "vrf";
+                break;
+            case 2:
+                a = "redist";
+                break;
+            case 3:
+                a = "router " + cfgRtr.num2name(lookTyp) + " " + lookNum;
+                break;
+            default:
+                a = "unknown=" + lookMod;
+                break;
         }
         l.add(beg + "lookup " + a);
         cmds.cfgLine(l, roumap == null, beg, "route-map", "" + roumap);
@@ -534,10 +578,39 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         if (s.equals("lookup")) {
             if (negated) {
-                forwrdr = true;
+                lookMod = 1;
                 return false;
             }
-            forwrdr = cmd.word().equals("vrf");
+            s = cmd.word();
+            lookMod = 1;
+            if (s.equals("vrf")) {
+                lookMod = 1;
+                return false;
+            }
+            if (s.equals("redist")) {
+                lookMod = 2;
+                return false;
+            }
+            if (!s.equals("router")) {
+                return false;
+            }
+            lookTyp = cfgRtr.name2num(cmd.word());
+            if (lookTyp == null) {
+                cmd.error("invalid routing protocol");
+                return true;
+            }
+            lookNum = bits.str2num(cmd.word());
+            cfgRtr rp = cfgAll.rtrFind(lookTyp, lookNum, false);
+            if (rp == null) {
+                cmd.error("bad process number");
+                return true;
+            }
+            lookRtr = rp.getRouter();
+            if (lookRtr == null) {
+                cmd.error("router not initializer");
+                return true;
+            }
+            lookMod = 3;
             return false;
         }
         if (s.equals("mode")) {
