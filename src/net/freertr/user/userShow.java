@@ -1238,7 +1238,7 @@ public class userShow {
                 return null;
             }
             long tim;
-            a = cmd.word();
+            a = cmd.getRemaining();
             if (a.length() < 1) {
                 tim = bits.getTime();
             } else {
