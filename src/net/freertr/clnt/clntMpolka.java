@@ -163,7 +163,8 @@ public class clntMpolka implements Runnable, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
-        if (outputs == null) {
+        clntMpolkaOut[] outs = outputs;
+        if (outs == null) {
             return;
         }
         pck.IPprt = pck.msbGetW(0);
@@ -174,9 +175,9 @@ public class clntMpolka implements Runnable, ifcDn {
         } else {
             pck.NSHttl = pck.IPttl;
         }
-        for (int i = 0; i < outputs.length; i++) {
-            pck.NSHmdv = outputs[i].rou;
-            outputs[i].ifc.lower.sendMpolka(pck.copyBytes(true, true), outputs[i].hop);
+        for (int i = 0; i < outs.length; i++) {
+            pck.NSHmdv = outs[i].rou;
+            outs[i].ifc.lower.sendMpolka(pck.copyBytes(true, true), outs[i].hop);
         }
     }
 
