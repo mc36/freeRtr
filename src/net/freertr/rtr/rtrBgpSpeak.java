@@ -1406,7 +1406,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private byte[] encodeHostname(String s) {
-        byte[] buf = s.getBytes();
+        byte[] buf;
+        if (s == null) {
+            buf = new byte[0];
+        } else {
+            buf = s.getBytes();
+        }
         byte[] tmp = new byte[1];
         tmp[0] = (byte) buf.length;
         return bits.byteConcat(tmp, buf);
