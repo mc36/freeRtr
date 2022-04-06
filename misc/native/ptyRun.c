@@ -17,8 +17,6 @@ int main(int argc, char **argv) {
 
     if (argc < 2) err("using: pty <bin> [args]");
 
-    int status = 1;
-
     struct pollfd* fds = malloc(sizeof(struct pollfd)*2);
     if (fds == NULL) err("error allocating memory");
     int commSock = 0;
@@ -30,18 +28,10 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    int i = fork();
-    if ((i != -1) && (i != 0)) {
-        if (waitpid(childPid, &status, 0) == -1) err("error waiting for process");
-        sleep(1);
-        printf("\r\nchild exited with %i code\r\n", status);
-        fflush(stdout);
-        return WEXITSTATUS(status);
-    }
-
     printf("child %i created on %i\r\n", childPid, commSock);
     fflush(stdout);
 
+    int i;
     unsigned char buf[1024];
     for (;;) {
         fds[0].fd = commSock;
@@ -64,8 +54,10 @@ int main(int argc, char **argv) {
         if ((i & POLLHUP) != 0) break;
     }
 
-    printf("\r\nchild closed stdio lines\r\n");
-    fflush(stdout);
+    int status = 1;
+    if (waitpid(childPid, &status, 0) == -1) err("error waiting for process");
     sleep(1);
-    return status;
+    printf("\r\nprocess exited with %i code\r\n", status);
+    fflush(stdout);
+    return WEXITSTATUS(status);
 }
