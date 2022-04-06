@@ -308,6 +308,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @return other changes trigger full recomputation
      */
     public boolean doPeersFull(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+        routerChangedU = null;
+        routerChangedM = null;
+        routerChangedF = null;
         final List<Long> rt = getRtList();
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("bgp");
