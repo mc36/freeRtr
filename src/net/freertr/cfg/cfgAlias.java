@@ -45,6 +45,16 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public String cmd2nd = null;
 
     /**
+     * 3rd command to execute
+     */
+    public String cmd3rd = null;
+
+    /**
+     * 4th command to execute
+     */
+    public String cmd4th = null;
+
+    /**
      * hide commands
      */
     public boolean hidden = false;
@@ -246,21 +256,24 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         return "alias";
     }
 
+    private void getShCmds(List<String> l, int filter, String a, String k, String c) {
+        if (c == null) {
+            return;
+        }
+        if (hidden) {
+            l.add(a + k + authLocal.passwdEncode(c, (filter & 2) != 0));
+        } else {
+            l.add(a + k + c);
+        }
+    }
+
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         String a = "alias " + type2string(type) + " " + name;
-        if (hidden) {
-            l.add(a + " command " + authLocal.passwdEncode(command, (filter & 2) != 0));
-            if (cmd2nd != null) {
-                l.add(a + " cmd2nd " + authLocal.passwdEncode(cmd2nd, (filter & 2) != 0));
-            }
-            l.add(a + " hidden");
-        } else {
-            l.add(a + " command " + command);
-            if (cmd2nd != null) {
-                l.add(a + " cmd2nd " + cmd2nd);
-            }
-        }
+        getShCmds(l, filter, a, " command ", command);
+        getShCmds(l, filter, a, " cmd2nd ", cmd2nd);
+        getShCmds(l, filter, a, " cmd3rd ", cmd3rd);
+        getShCmds(l, filter, a, " cmd4th ", cmd4th);
         if (parameter != paraMode.allow) {
             l.add(a + " parameter " + param2string(parameter));
         }
@@ -303,6 +316,22 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
                 cmd2nd = null;
             } else {
                 cmd2nd = authLocal.passwdDecode(cmd.getRemaining());
+            }
+            return;
+        }
+        if (a.equals("cmd3rd")) {
+            if (neg) {
+                cmd3rd = null;
+            } else {
+                cmd3rd = authLocal.passwdDecode(cmd.getRemaining());
+            }
+            return;
+        }
+        if (a.equals("cmd4th")) {
+            if (neg) {
+                cmd4th = null;
+            } else {
+                cmd4th = authLocal.passwdDecode(cmd.getRemaining());
             }
             return;
         }
@@ -385,6 +414,21 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         l.add(null, s + " " + s + ",. <text>   parameter");
     }
 
+    private boolean doOneCmd(userExec exe, String a, cmds par) {
+        if (a == null) {
+            return false;
+        }
+        if (parameter != paraMode.never) {
+            a += " " + par.getRemaining();
+        }
+        a = exe.repairCommand(a);
+        exe.executeCommand(a);
+        if (!errorFree) {
+            return false;
+        }
+        return exe.cmd.barked != 0;
+    }
+
     /**
      * execute commands
      *
@@ -398,24 +442,18 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (sticky != null) {
             sticky = par.getRemaining();
         }
-        String a = command;
-        if (parameter != paraMode.never) {
-            a += " " + par.getRemaining();
-        }
-        a = exe.repairCommand(a);
-        exe.executeCommand(a);
-        a = cmd2nd;
-        if (a == null) {
+        if (doOneCmd(exe, command, par)) {
             return;
         }
-        if (errorFree && (exe.cmd.barked != 0)) {
+        if (doOneCmd(exe, cmd2nd, par)) {
             return;
         }
-        if (parameter != paraMode.never) {
-            a += " " + par.getRemaining();
+        if (doOneCmd(exe, cmd3rd, par)) {
+            return;
         }
-        a = exe.repairCommand(a);
-        exe.executeCommand(a);
+        if (doOneCmd(exe, cmd4th, par)) {
+            return;
+        }
     }
 
 }

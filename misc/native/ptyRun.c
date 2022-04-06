@@ -66,6 +66,6 @@ int main(int argc, char **argv) {
 
     printf("\r\nchild closed stdio lines\r\n");
     fflush(stdout);
-    sleep(10);
+    sleep(1);
     return status;
 }

@@ -682,6 +682,10 @@ public class userConfig {
         l.add(null, "5  5,.        <cmd>                  command");
         l.add(null, "4  5        cmd2nd                   specify 2nd command to execute");
         l.add(null, "5  5,.        <cmd>                  command");
+        l.add(null, "4  5        cmd3rd                   specify 3rd command to execute");
+        l.add(null, "5  5,.        <cmd>                  command");
+        l.add(null, "4  5        cmd4th                   specify 4th command to execute");
+        l.add(null, "5  5,.        <cmd>                  command");
         l.add(null, "4  5        description              specify help description");
         l.add(null, "5  5,.        <text>                 help text");
         l.add(null, "4  5        sticky-param             specify sticky parameter");
