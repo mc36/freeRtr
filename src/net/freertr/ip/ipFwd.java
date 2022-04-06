@@ -1597,6 +1597,30 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     /**
+     * find one routing protocol
+     *
+     * @param typ route type that it provides
+     * @param id process id
+     * @return router process, null if not found
+     */
+    public ipRtr routerFind(tabRouteAttr.routeType typ, int id) {
+        for (int i = 0; i < routers.size(); i++) {
+            ipRtr ntry = routers.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.routerProtoTyp != typ) {
+                continue;
+            }
+            if (ntry.routerProcNum != id) {
+                continue;
+            }
+            return ntry;
+        }
+        return null;
+    }
+
+    /**
      * add one routing protocol
      *
      * @param rtr routing protocol handle

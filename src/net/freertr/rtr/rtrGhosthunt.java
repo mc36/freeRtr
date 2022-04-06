@@ -128,11 +128,6 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected int lookMod;
 
     /**
-     * router for lookup
-     */
-    protected ipRtr lookRtr;
-
-    /**
      * type of router
      */
     protected tabRouteAttr.routeType lookTyp;
@@ -385,15 +380,19 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 }
                 break;
             case 3:
+                ipRtr rtr = fwdCore.routerFind(lookTyp, lookNum);
+                if (rtr == null) {
+                    return;
+                }
                 switch (afi) {
                     case 1:
-                        rcvd = lookRtr.routerComputedU.find(sent);
+                        rcvd = rtr.routerComputedU.find(sent);
                         break;
                     case 2:
-                        rcvd = lookRtr.routerComputedM.find(sent);
+                        rcvd = rtr.routerComputedM.find(sent);
                         break;
                     case 3:
-                        rcvd = lookRtr.routerComputedF.find(sent);
+                        rcvd = rtr.routerComputedF.find(sent);
                         break;
                 }
                 break;
@@ -632,16 +631,6 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 return true;
             }
             lookNum = bits.str2num(cmd.word());
-            cfgRtr rp = cfgAll.rtrFind(lookTyp, lookNum, false);
-            if (rp == null) {
-                cmd.error("bad process number");
-                return true;
-            }
-            lookRtr = rp.getRouter();
-            if (lookRtr == null) {
-                cmd.error("router not initializer");
-                return true;
-            }
             lookMod = 3;
             return false;
         }
