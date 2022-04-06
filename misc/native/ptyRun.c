@@ -4,6 +4,7 @@
 #include <string.h>
 #include <poll.h>
 #include <pty.h>
+#include <sys/wait.h>
 
 
 void err(char*buf) {
@@ -16,6 +17,8 @@ int main(int argc, char **argv) {
 
     if (argc < 2) err("using: pty <bin> [args]");
 
+    int status = 1;
+
     struct pollfd* fds = malloc(sizeof(struct pollfd)*2);
     if (fds == NULL) err("error allocating memory");
     int commSock = 0;
@@ -26,10 +29,19 @@ int main(int argc, char **argv) {
         if (execvp(argv[1], &(argv[1])) == -1) err("error executing process");
         return 0;
     }
+
+    int i = fork();
+    if ((i != -1) && (i != 0)) {
+        if (waitpid(childPid, &status, 0) == -1) err("error waiting for process");
+        sleep(1);
+        printf("\r\nchild exited with %i code\r\n", status);
+        fflush(stdout);
+        return WEXITSTATUS(status);
+    }
+
     printf("child %i created on %i\r\n", childPid, commSock);
     fflush(stdout);
 
-    int i;
     unsigned char buf[1024];
     for (;;) {
         fds[0].fd = commSock;
@@ -52,7 +64,8 @@ int main(int argc, char **argv) {
         if ((i & POLLHUP) != 0) break;
     }
 
-    printf("\r\nchild stopped\r\n");
+    printf("\r\nchild closed stdio lines\r\n");
     fflush(stdout);
-    sleep(1);
+    sleep(10);
+    return status;
 }
