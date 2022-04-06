@@ -31,6 +31,11 @@ public class cmds {
      */
     public pipeSide pipe;
 
+    /**
+     * error counter
+     */
+    public int barked;
+
     private String orig;
 
     private String curr;
@@ -186,6 +191,7 @@ public class cmds {
      * @param s text to display
      */
     public void error(String s) {
+        barked++;
         if (pipe == null) {
             return;
         }

@@ -50,6 +50,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public boolean hidden = false;
 
     /**
+     * error free execution
+     */
+    public boolean errorFree = false;
+
+    /**
      * sticky parameter
      */
     public String sticky = null;
@@ -259,6 +264,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (parameter != paraMode.allow) {
             l.add(a + " parameter " + param2string(parameter));
         }
+        if (errorFree) {
+            l.add(a + " error-free");
+        }
         if (defParam != null) {
             l.add(a + " default-param " + defParam);
         }
@@ -316,6 +324,10 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         if (a.equals("hidden")) {
             hidden = !neg;
+            return;
+        }
+        if (a.equals("error-free")) {
+            errorFree = !neg;
             return;
         }
         if (a.equals("sticky-param")) {
@@ -395,6 +407,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         a = cmd2nd;
         if (a == null) {
             return;
+        }
+        if (errorFree) {
+            if (exe.cmd.barked > 0) {
+                return;
+            }
         }
         if (parameter != paraMode.never) {
             a += " " + par.getRemaining();

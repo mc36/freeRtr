@@ -78,7 +78,10 @@ public class userExec {
      */
     protected final userReader reader;
 
-    private cmds cmd; // currently processed string
+    /**
+     * currently processed string
+     */
+    public cmds cmd;
 
     /**
      * privileged commands allowed
@@ -3946,6 +3949,10 @@ public class userExec {
                 return;
             }
             sh.waitFor();
+            int i = sh.resultNum();
+            if (i != 0) {
+                cmd.error("returned " + i);
+            }
             return;
         }
         if (a.equals("shell2")) {
@@ -3958,6 +3965,10 @@ public class userExec {
                 return;
             }
             sh.waitFor();
+            int i = sh.resultNum();
+            if (i != 0) {
+                cmd.error("returned " + i);
+            }
             return;
         }
         if (a.equals("line")) {

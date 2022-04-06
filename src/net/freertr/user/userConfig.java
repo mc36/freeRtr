@@ -677,6 +677,7 @@ public class userConfig {
         l.add(null, "2  3    test                         test alias");
         l.add(null, "3  4      <str>                      name of new command");
         l.add(null, "4  .        hidden                   hide the command");
+        l.add(null, "4  .        error-free               check errors before the 2nd command");
         l.add(null, "4  5        command                  specify command to execute");
         l.add(null, "5  5,.        <cmd>                  command");
         l.add(null, "4  5        cmd2nd                   specify 2nd command to execute");
