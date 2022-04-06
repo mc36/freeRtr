@@ -406,28 +406,26 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         curGhst = needed != (rcvd != null);
         int period;
         if (needed) {
-            period = graceAdv;
+            period = +graceAdv;
         } else {
-            period = graceWdr;
-        }
-        if (needed == timap.matches(timExec - period)) {
-            curGhst = false;
+            period = -graceWdr;
         }
         if (needed == timap.matches(timExec + period)) {
             curGhst = false;
-        }
-        if (curGhst) {
-            cntGhst++;
-            timGhst = timExec;
-            if (orig != null) {
-                recd = orig.copyBytes(tabRoute.addType.alters);
-            }
-            if (logging) {
-                logger.info("ghosting " + rtrLogger.afi2str(afi) + " " + rtrLogger.prf2str(afi, sent.prefix));
-            }
         } else {
-            cntPass++;
-            timPass = timExec;
+            if (curGhst) {
+                cntGhst++;
+                timGhst = timExec;
+                if (orig != null) {
+                    recd = orig.copyBytes(tabRoute.addType.alters);
+                }
+                if (logging) {
+                    logger.info("ghosting " + rtrLogger.afi2str(afi) + " " + rtrLogger.prf2str(afi, sent.prefix));
+                }
+            } else {
+                cntPass++;
+                timPass = timExec;
+            }
         }
         if (rcvd != null) {
             curAtrF = sent.differs(tabRoute.addType.notyet, rcvd);
