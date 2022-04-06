@@ -408,10 +408,8 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (a == null) {
             return;
         }
-        if (errorFree) {
-            if (exe.cmd.barked > 0) {
-                return;
-            }
+        if (errorFree && (exe.cmd.barked != 0)) {
+            return;
         }
         if (parameter != paraMode.never) {
             a += " " + par.getRemaining();
