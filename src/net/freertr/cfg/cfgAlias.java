@@ -428,8 +428,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * @param lev starting level
      */
     public void getLines(userHelping l, int lev) {
+        paraMode p = maxOfParams(parameter, param2nd, cmd2nd);
+        p = maxOfParams(p, param3rd, cmd3rd);
+        p = maxOfParams(p, param4th, cmd4th);
         String s = ".";
-        switch (parameter) {
+        switch (p) {
             case always:
                 s = "" + (lev + 1);
                 break;
@@ -446,11 +449,30 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         a = lev + " " + s + " " + name + " " + a;
         l.add(null, a);
-        if (parameter == paraMode.never) {
+        if (p == paraMode.never) {
             return;
         }
         s = "" + (lev + 1);
         l.add(null, s + " " + s + ",. <text>   parameter");
+    }
+
+    private static paraMode maxOfParams(paraMode a, paraMode b, String c) {
+        if (c == null) {
+            return a;
+        }
+        if (a == paraMode.always) {
+            return paraMode.always;
+        }
+        if (b == paraMode.always) {
+            return paraMode.always;
+        }
+        if (a == paraMode.allow) {
+            return paraMode.allow;
+        }
+        if (b == paraMode.allow) {
+            return paraMode.allow;
+        }
+        return paraMode.never;
     }
 
     private boolean doOneCmd(userExec exe, String a, cmds par, paraMode p) {
