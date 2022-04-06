@@ -696,6 +696,18 @@ public class userConfig {
         l.add(null, "5  .          forbidden              no parameters");
         l.add(null, "5  .          required               need parameters");
         l.add(null, "5  .          optional               parameters allowed");
+        l.add(null, "4  5        param2nd                 specify 2nd parameter existence");
+        l.add(null, "5  .          forbidden              no parameters");
+        l.add(null, "5  .          required               need parameters");
+        l.add(null, "5  .          optional               parameters allowed");
+        l.add(null, "4  5        param3rd                 specify 3rd parameter existence");
+        l.add(null, "5  .          forbidden              no parameters");
+        l.add(null, "5  .          required               need parameters");
+        l.add(null, "5  .          optional               parameters allowed");
+        l.add(null, "4  5        param4th                 specify 4th parameter existence");
+        l.add(null, "5  .          forbidden              no parameters");
+        l.add(null, "5  .          required               need parameters");
+        l.add(null, "5  .          optional               parameters allowed");
         l.add(null, "1  2  router                         enable a routing protocol");
         cfgRtr.getRouterList(l, 0, "");
         l.add(null, "3  .      <num>                      process id");

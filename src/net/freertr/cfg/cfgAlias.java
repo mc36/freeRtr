@@ -85,6 +85,21 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public paraMode parameter = paraMode.allow;
 
     /**
+     * 2nd parameter existence
+     */
+    public paraMode param2nd = paraMode.allow;
+
+    /**
+     * 3rd parameter existence
+     */
+    public paraMode param3rd = paraMode.allow;
+
+    /**
+     * 4th parameter existence
+     */
+    public paraMode param4th = paraMode.allow;
+
+    /**
      * alias types
      */
     public enum aliasType {
@@ -256,7 +271,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         return "alias";
     }
 
-    private void getShCmds(List<String> l, int filter, String a, String k, String c) {
+    private void getShCmds(List<String> l, int filter, String a, String k, String m, String c, paraMode p) {
         if (c == null) {
             return;
         }
@@ -265,18 +280,18 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         } else {
             l.add(a + k + c);
         }
+        if (p != paraMode.allow) {
+            l.add(a + m + param2string(p));
+        }
     }
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         String a = "alias " + type2string(type) + " " + name;
-        getShCmds(l, filter, a, " command ", command);
-        getShCmds(l, filter, a, " cmd2nd ", cmd2nd);
-        getShCmds(l, filter, a, " cmd3rd ", cmd3rd);
-        getShCmds(l, filter, a, " cmd4th ", cmd4th);
-        if (parameter != paraMode.allow) {
-            l.add(a + " parameter " + param2string(parameter));
-        }
+        getShCmds(l, filter, a, " command ", " parameter ", command, parameter);
+        getShCmds(l, filter, a, " cmd2nd ", " param2nd ", cmd2nd, param2nd);
+        getShCmds(l, filter, a, " cmd3rd ", " param3rd ", cmd3rd, param3rd);
+        getShCmds(l, filter, a, " cmd4th ", " param4th ", cmd4th, param4th);
         if (errorFree) {
             l.add(a + " error-free");
         }
@@ -351,6 +366,30 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             }
             return;
         }
+        if (a.equals("param2nd")) {
+            if (neg) {
+                param2nd = paraMode.allow;
+            } else {
+                param2nd = string2param(cmd.word());
+            }
+            return;
+        }
+        if (a.equals("param3rd")) {
+            if (neg) {
+                param3rd = paraMode.allow;
+            } else {
+                param3rd = string2param(cmd.word());
+            }
+            return;
+        }
+        if (a.equals("param4th")) {
+            if (neg) {
+                param4th = paraMode.allow;
+            } else {
+                param4th = string2param(cmd.word());
+            }
+            return;
+        }
         if (a.equals("hidden")) {
             hidden = !neg;
             return;
@@ -414,11 +453,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         l.add(null, s + " " + s + ",. <text>   parameter");
     }
 
-    private boolean doOneCmd(userExec exe, String a, cmds par) {
+    private boolean doOneCmd(userExec exe, String a, cmds par, paraMode p) {
         if (a == null) {
             return false;
         }
-        if (parameter != paraMode.never) {
+        if (p != paraMode.never) {
             a += " " + par.getRemaining();
         }
         a = exe.repairCommand(a);
@@ -442,16 +481,16 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (sticky != null) {
             sticky = par.getRemaining();
         }
-        if (doOneCmd(exe, command, par)) {
+        if (doOneCmd(exe, command, par, parameter)) {
             return;
         }
-        if (doOneCmd(exe, cmd2nd, par)) {
+        if (doOneCmd(exe, cmd2nd, par, param2nd)) {
             return;
         }
-        if (doOneCmd(exe, cmd3rd, par)) {
+        if (doOneCmd(exe, cmd3rd, par, param3rd)) {
             return;
         }
-        if (doOneCmd(exe, cmd4th, par)) {
+        if (doOneCmd(exe, cmd4th, par, param4th)) {
             return;
         }
     }

@@ -56,7 +56,6 @@ int main(int argc, char **argv) {
 
     int status = 1;
     if (waitpid(childPid, &status, 0) == -1) err("error waiting for process");
-    sleep(1);
     printf("\r\nprocess exited with %i code\r\n", status);
     fflush(stdout);
     return WEXITSTATUS(status);
