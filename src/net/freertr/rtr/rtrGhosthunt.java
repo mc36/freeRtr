@@ -331,6 +331,13 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         cntExec++;
         timExec = bits.getTime();
         boolean needed = !timap.matches(timExec);
+        boolean grace;
+        if (needed) {
+            grace = timap.matches(timExec - graceAdv);
+        } else {
+            grace = timap.matches(timExec - graceWdr);
+        }
+        grace = needed == grace;
         if (originator && needed) {
             switch (afi) {
                 case 1:
@@ -404,13 +411,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             tabRouteAttr.ignoreAttribs(sent.best, ignore);
         }
         curGhst = needed != (rcvd != null);
-        int period;
-        if (needed) {
-            period = +graceAdv;
-        } else {
-            period = -graceWdr;
-        }
-        if (needed == timap.matches(timExec + period)) {
+        if (grace) {
             curGhst = false;
         } else {
             if (curGhst) {
