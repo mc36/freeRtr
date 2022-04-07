@@ -821,14 +821,14 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * @return list of statistics
      */
     public userFormat getStats() {
-        userFormat l = new userFormat("|", "category|curr|times|last|ago");
-        l.add("execute|" + need2run + "|" + cntExec + "|" + bits.time2str(cfgAll.timeZoneName, timExec + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timExec));
-        l.add("advertise|" + curAdv + "|" + cntAdv + "|" + bits.time2str(cfgAll.timeZoneName, timAdv + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timAdv));
-        l.add("withdraw|" + !curAdv + "|" + cntWdr + "|" + bits.time2str(cfgAll.timeZoneName, timWdr + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timWdr));
-        l.add("ghost|" + curGhst + "|" + cntGhst + "|" + bits.time2str(cfgAll.timeZoneName, timGhst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timGhst));
-        l.add("pass|" + !curGhst + "|" + cntPass + "|" + bits.time2str(cfgAll.timeZoneName, timPass + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timPass));
-        l.add("attrib err|" + curAtrF + "|" + cntAtrF + "|" + bits.time2str(cfgAll.timeZoneName, timAtrF + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timAtrF));
-        l.add("attrib ok|" + curAtrF + "|" + cntAtrP + "|" + bits.time2str(cfgAll.timeZoneName, timAtrP + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(timAtrP));
+        userFormat l = new userFormat("|", "category|curr|times|ago|last");
+        l.add("execute|" + need2run + "|" + cntExec + "|" + bits.timePast(timExec) + "|" + bits.time2str(cfgAll.timeZoneName, timExec + cfgAll.timeServerOffset, 3));
+        l.add("advertise|" + curAdv + "|" + cntAdv + "|" + bits.timePast(timAdv) + "|" + bits.time2str(cfgAll.timeZoneName, timAdv + cfgAll.timeServerOffset, 3));
+        l.add("withdraw|" + !curAdv + "|" + cntWdr + "|" + bits.timePast(timWdr) + "|" + bits.time2str(cfgAll.timeZoneName, timWdr + cfgAll.timeServerOffset, 3));
+        l.add("ghost|" + curGhst + "|" + cntGhst + "|" + bits.timePast(timGhst) + "|" + bits.time2str(cfgAll.timeZoneName, timGhst + cfgAll.timeServerOffset, 3));
+        l.add("pass|" + !curGhst + "|" + cntPass + "|" + bits.timePast(timPass) + "|" + bits.time2str(cfgAll.timeZoneName, timPass + cfgAll.timeServerOffset, 3));
+        l.add("attrib err|" + curAtrF + "|" + cntAtrF + "|" + bits.timePast(timAtrF) + "|" + bits.time2str(cfgAll.timeZoneName, timAtrF + cfgAll.timeServerOffset, 3));
+        l.add("attrib ok|" + curAtrF + "|" + cntAtrP + "|" + bits.timePast(timAtrP) + "|" + bits.time2str(cfgAll.timeZoneName, timAtrP + cfgAll.timeServerOffset, 3));
         return l;
     }
 

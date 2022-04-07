@@ -5646,7 +5646,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case 27:
                 counter cntr = ethtyp.getCounter();
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(cntr.lastChgd));
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.timePast(cntr.lastChgd) + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3));
                 break;
             case 28:
                 cntr = ethtyp.getCounter();

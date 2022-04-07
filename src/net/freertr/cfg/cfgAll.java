@@ -3229,7 +3229,7 @@ public class cfgAll {
                 l = new userFormat("|", "interface|system|port|state");
                 break;
             case 27:
-                l = new userFormat("|", "interface|state|mtu|macsec|sgt|changes|since|for");
+                l = new userFormat("|", "interface|state|mtu|macsec|sgt|changes|for|since");
                 break;
             case 28:
                 l = new userFormat("|", "interface|state|input|output|drop");
