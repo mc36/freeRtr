@@ -7,7 +7,7 @@ prepend flaps_ipv4_
 name 1 prefix=
 replace \. _
 replace \- _
-column 1 name count
+column 2 name count
 .
 exit
 
@@ -20,6 +20,6 @@ prepend flaps_ipv6_
 name 1 prefix=
 replace \. _
 replace \- _
-column 1 name count
+column 2 name count
 .
 exit
