@@ -278,13 +278,13 @@ public class servVxlan extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|iface|since|for");
+        userFormat res = new userFormat("|", "addr|port|iface|for|since");
         for (int i = 0; i < conns.size(); i++) {
             servVxlanConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.brdgIfc.getIfcName() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.brdgIfc.getIfcName() + "|" + bits.timePast(ntry.created) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3));
         }
         return res;
     }

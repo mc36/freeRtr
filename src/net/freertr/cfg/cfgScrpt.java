@@ -447,6 +447,15 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         }
     }
 
+    /**
+     * get info
+     *
+     * @return info
+     */
+    public String getShow() {
+        return name + "|" + restartC + "|" + bits.timePast(restartT) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3);
+    }
+
 }
 
 class cfgScrptTimer extends TimerTask {

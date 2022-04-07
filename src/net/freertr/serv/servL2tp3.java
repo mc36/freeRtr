@@ -303,13 +303,13 @@ public class servL2tp3 extends servGeneric implements ipPrt {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|conloc|conrem|sess|since|for");
+        userFormat res = new userFormat("|", "addr|conloc|conrem|sess|for|since");
         for (int i = 0; i < conns.size(); i++) {
             servL2tp3conn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.peer + "|" + ntry.conLoc + "|" + ntry.conRem + "|" + ntry.session.size() + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
+            res.add(ntry.peer + "|" + ntry.conLoc + "|" + ntry.conRem + "|" + ntry.session.size() + "|" + bits.timePast(ntry.created) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3));
         }
         return res;
     }

@@ -453,6 +453,15 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
     }
 
+    /**
+     * get info
+     *
+     * @return info
+     */
+    public String getShow() {
+        return name + "|" + restartC + "|" + bits.timePast(restartT) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3);
+    }
+
 }
 
 class cfgSchedTimer extends TimerTask {

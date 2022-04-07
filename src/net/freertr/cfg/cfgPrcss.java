@@ -523,7 +523,7 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
      * @return info
      */
     public String getShow() {
-        return name + "|" + restartC + "|" + pipeShell.info(proc) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(restartT);
+        return name + "|" + restartC + "|" + pipeShell.info(proc) + "|" + bits.timePast(restartT) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3);
     }
 
 }

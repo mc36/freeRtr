@@ -290,13 +290,13 @@ public class servPckOudp extends servGeneric implements prtServP {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|dial|bridge|since|for");
+        userFormat res = new userFormat("|", "addr|port|dial|bridge|for|since");
         for (int i = 0; i < conns.size(); i++) {
             servPckOudpConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.dialIfc + "|" + ntry.brdgIfc + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.created));
+            res.add(ntry.conn.peerAddr + "|" + ntry.conn.portRem + "|" + ntry.dialIfc + "|" + ntry.brdgIfc + "|" + bits.timePast(ntry.created) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3));
         }
         return res;
     }
