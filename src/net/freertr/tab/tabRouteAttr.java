@@ -1684,8 +1684,8 @@ public class tabRouteAttr<T extends addrType> {
         l.add("aggregator router|" + aggrRtr);
         l.add("originator|" + originator);
         l.add("cluster list|" + dumpAddrList(clustList));
-        l.add("as path|" + asPathStr());
-        l.add("as path length|" + asPathLen());
+        l.add("aspath|" + asPathStr());
+        l.add("path length|" + asPathLen());
         l.add("standard community|" + tabRtrmapN.stdComms2string(stdComm));
         l.add("extended community|" + tabRtrmapN.extComms2string(extComm));
         l.add("large community|" + tabRtrmapN.lrgComms2string(lrgComm));
