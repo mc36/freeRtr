@@ -9,6 +9,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgTime;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -188,6 +189,9 @@ public class rtrDownload extends ipRtr {
      * do one timer round
      */
     protected void doRound() {
+        if (cfgInit.booting) {
+            return;
+        }
         if (url == null) {
             return;
         }

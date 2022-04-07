@@ -382,6 +382,9 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
      * @param beg extra commands
      */
     public synchronized void doRound(List<String> beg) {
+        if (cfgInit.booting) {
+            return;
+        }
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
                 return;

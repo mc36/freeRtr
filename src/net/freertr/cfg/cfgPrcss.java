@@ -464,6 +464,9 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     }
 
     private synchronized void doRound() {
+        if (cfgInit.booting) {
+            return;
+        }
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
                 return;

@@ -495,7 +495,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(null, "2 .     <str>                     prefix");
         l.add(null, "1 2   nexthop                     specify nexthop to use");
         l.add(null, "2 .     <str>                     prefix");
-        l.add(null, "1 2   time-map                    specify time map to use");
+        l.add(null, "1 2   range                       specify time map to use");
         l.add(null, "2 .     <nam:tm>                  time map");
         l.add(null, "1 2   route-map                   specify route map to use");
         l.add(null, "2 .     <nam:rm>                  route map");
@@ -522,9 +522,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         cmds.cfgLine(l, nextHop == null, beg, "nexthop", "" + nextHop);
         if (timap == null) {
-            l.add(beg + "no time-map");
+            l.add(beg + "no range");
         } else {
-            l.add(beg + "time-map " + timap.name);
+            l.add(beg + "range " + timap.name);
         }
         l.add(beg + "afi " + rtrLogger.afi2str(afi));
         l.add(beg + "grace " + graceAdv + " " + graceWdr);
@@ -669,7 +669,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             notif.wakeup();
             return false;
         }
-        if (s.equals("time-map")) {
+        if (s.equals("range")) {
             if (negated) {
                 timap = null;
                 notif.wakeup();

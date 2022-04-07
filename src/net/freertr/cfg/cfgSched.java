@@ -390,6 +390,9 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
      * do one timer round
      */
     public synchronized void doRound() {
+        if (cfgInit.booting) {
+            return;
+        }
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
                 return;

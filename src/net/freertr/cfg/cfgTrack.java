@@ -70,7 +70,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         "tracker .*! size 80",
         "tracker .*! delay-start 0",
         "tracker .*! delay-up 0",
-        "tracker .*! delay-down 0"
+        "tracker .*! delay-down 0",
+        "tracker .*! no range"
     };
 
     /**
@@ -144,6 +145,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      random-initial             specify random time before run");
         l.add(null, "2  .        <num>                    milliseconds between runs");
+        l.add(null, "1  2      range                      specify time range");
+        l.add(null, "2  .        <name:tm>                name of time map");
         l.add(null, "1  2      interval                   specify time between runs");
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      timeout                    specify timeout value");
@@ -236,6 +239,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         l.add(cmds.tabulator + "delay-start " + worker.delaySt);
         l.add(cmds.tabulator + "delay-up " + worker.delayUp);
         l.add(cmds.tabulator + "delay-down " + worker.delayDn);
+        cmds.cfgLine(l, worker.time == null, cmds.tabulator, "range", "" + worker.time);
         if (worker.working) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -428,6 +432,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             worker.timeout = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("range")) {
+            worker.time = cfgAll.timeFind(cmd.word(), false);
+            return;
+        }
         if (a.equals("sgt")) {
             worker.secGrp = bits.str2num(cmd.word());
             return;
@@ -555,6 +563,10 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         }
         if (a.equals("timeout")) {
             worker.timeout = 0;
+            return;
+        }
+        if (a.equals("range")) {
+            worker.time = null;
             return;
         }
         if (a.equals("delay-start")) {

@@ -9,6 +9,8 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgCheck;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgInit;
+import net.freertr.cfg.cfgTime;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
@@ -217,6 +219,11 @@ public class clntTrack implements rtrBfdClnt {
      * random on startup
      */
     public int randIni;
+
+    /**
+     * time range when allowed
+     */
+    public cfgTime time;
 
     /**
      * timeout value
@@ -515,6 +522,14 @@ public class clntTrack implements rtrBfdClnt {
      * do one timer round
      */
     public synchronized void doRound() {
+        if (cfgInit.booting) {
+            return;
+        }
+        if (time != null) {
+            if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+                return;
+            }
+        }
         if (logging) {
             logger.info("starting action " + name);
         }

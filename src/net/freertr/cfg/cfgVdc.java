@@ -165,6 +165,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public int randIni;
 
     /**
+     * time range when allowed
+     */
+    public cfgTime time;
+
+    /**
      * list of interfaces
      */
     public final tabGen<cfgVdcIfc> ifaces = new tabGen<cfgVdcIfc>();
@@ -246,7 +251,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! no log-console",
         "vdc definition .*! no log-collect",
         "vdc definition .*! random-time 0",
-        "vdc definition .*! random-delay 0",};
+        "vdc definition .*! random-delay 0",
+        "vdc definition .*! no range"
+    };
 
     /**
      * defaults filter
@@ -287,6 +294,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.cpuType = cpuType;
         n.initial = initial;
         n.interval = interval;
+        n.randIni = randIni;
+        n.randInt = randInt;
+        n.time = time;
         n.configFile = configFile;
         n.image1name = image1name;
         n.image2name = image2name;
@@ -401,6 +411,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    milliseconds between runs");
         l.add(null, "1  2      random-delay               specify random initial delay");
         l.add(null, "2  .        <num>                    milliseconds before start");
+        l.add(null, "1  2      range                      specify time range");
+        l.add(null, "2  .        <name:tm>                name of time map");
         l.add(null, "1  .      log-actions                log actions");
         l.add(null, "1  .      log-console                log console activity");
         l.add(null, "1  2      log-collect                collect console activity");
@@ -454,6 +466,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "random-time " + randInt);
         l.add(cmds.tabulator + "random-delay " + randIni);
+        cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -684,6 +697,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             randIni = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("range")) {
+            time = cfgAll.timeFind(cmd.word(), false);
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
@@ -820,6 +837,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             randIni = 0;
             return;
         }
+        if (a.equals("range")) {
+            time = null;
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -853,6 +874,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     }
 
     private synchronized void doRound() {
+        if (cfgInit.booting) {
+            return;
+        }
+        if (time != null) {
+            if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+                return;
+            }
+        }
         if (logAct) {
             logger.info("restarting vdc " + name);
         }
