@@ -267,6 +267,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         afi = 1;
         distance = 10;
         originator = false;
+        stopped = true;
         ignore = 0;
         graceAdv = 0;
         graceWdr = 0;
@@ -553,7 +554,11 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             a = "observer";
         }
         l.add(beg + "mode " + a);
-        cmds.cfgLine(l, stopped, beg, "start", "");
+        if (stopped) {
+            l.add(cmds.tabulator + "stop");
+        } else {
+            l.add(cmds.tabulator + "start");
+        }
     }
 
     /**
