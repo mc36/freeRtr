@@ -55,6 +55,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public String cmd4th = null;
 
     /**
+     * 5th command to execute
+     */
+    public String cmd5th = null;
+
+    /**
      * hide commands
      */
     public boolean hidden = false;
@@ -98,6 +103,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * 4th parameter existence
      */
     public paraMode param4th = paraMode.allow;
+
+    /**
+     * 5th parameter existence
+     */
+    public paraMode param5th = paraMode.allow;
 
     /**
      * alias types
@@ -292,6 +302,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         getShCmds(l, filter, a, " cmd2nd ", " param2nd ", cmd2nd, param2nd);
         getShCmds(l, filter, a, " cmd3rd ", " param3rd ", cmd3rd, param3rd);
         getShCmds(l, filter, a, " cmd4th ", " param4th ", cmd4th, param4th);
+        getShCmds(l, filter, a, " cmd5th ", " param5th ", cmd5th, param5th);
         if (errorFree) {
             l.add(a + " error-free");
         }
@@ -350,6 +361,14 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             }
             return;
         }
+        if (a.equals("cmd5th")) {
+            if (neg) {
+                cmd5th = null;
+            } else {
+                cmd5th = authLocal.passwdDecode(cmd.getRemaining());
+            }
+            return;
+        }
         if (a.equals("description")) {
             if (neg) {
                 description = null;
@@ -387,6 +406,14 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
                 param4th = paraMode.allow;
             } else {
                 param4th = string2param(cmd.word());
+            }
+            return;
+        }
+        if (a.equals("param5th")) {
+            if (neg) {
+                param5th = paraMode.allow;
+            } else {
+                param5th = string2param(cmd.word());
             }
             return;
         }
@@ -431,6 +458,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         paraMode p = maxOfParams(parameter, param2nd, cmd2nd);
         p = maxOfParams(p, param3rd, cmd3rd);
         p = maxOfParams(p, param4th, cmd4th);
+        p = maxOfParams(p, param5th, cmd5th);
         String s = ".";
         switch (p) {
             case always:
@@ -513,6 +541,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             return;
         }
         if (doOneCmd(exe, cmd4th, par, param4th)) {
+            return;
+        }
+        if (doOneCmd(exe, cmd5th, par, param5th)) {
             return;
         }
     }

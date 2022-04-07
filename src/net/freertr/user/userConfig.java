@@ -686,6 +686,8 @@ public class userConfig {
         l.add(null, "5  5,.        <cmd>                  command");
         l.add(null, "4  5        cmd4th                   specify 4th command to execute");
         l.add(null, "5  5,.        <cmd>                  command");
+        l.add(null, "4  5        cmd5th                   specify 5th command to execute");
+        l.add(null, "5  5,.        <cmd>                  command");
         l.add(null, "4  5        description              specify help description");
         l.add(null, "5  5,.        <text>                 help text");
         l.add(null, "4  5        sticky-param             specify sticky parameter");
@@ -705,6 +707,10 @@ public class userConfig {
         l.add(null, "5  .          required               need parameters");
         l.add(null, "5  .          optional               parameters allowed");
         l.add(null, "4  5        param4th                 specify 4th parameter existence");
+        l.add(null, "5  .          forbidden              no parameters");
+        l.add(null, "5  .          required               need parameters");
+        l.add(null, "5  .          optional               parameters allowed");
+        l.add(null, "4  5        param5th                 specify 5th parameter existence");
         l.add(null, "5  .          forbidden              no parameters");
         l.add(null, "5  .          required               need parameters");
         l.add(null, "5  .          optional               parameters allowed");
