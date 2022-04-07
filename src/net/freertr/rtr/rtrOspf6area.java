@@ -163,7 +163,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         need2adv = new tabGen<rtrOspf6lsa>();
         routes = new tabRoute<addrIP>("computed");
         notif = new notifier();
-        hostname = true;
+        hostname = false;
     }
 
     public String toString() {
