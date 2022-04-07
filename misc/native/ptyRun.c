@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
         if ((i & POLLHUP) != 0) break;
     }
 
-    int status = 1;
+    int status;
     if (waitpid(childPid, &status, 0) == -1) err("error waiting for process");
     printf("\r\nprocess exited with %i code\r\n", status);
     fflush(stdout);

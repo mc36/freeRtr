@@ -223,19 +223,19 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected long timAtrP;
 
     /**
-     * sent prefix
+     * recorded found prefix
      */
-    protected tabRouteEntry<addrIP> sent;
+    protected tabRouteEntry<addrIP> lastFond;
 
     /**
-     * received prefix
+     * recorded ghost prefix
      */
-    protected tabRouteEntry<addrIP> rcvd;
+    protected tabRouteEntry<addrIP> lastGhst;
 
     /**
-     * recorded prefix
+     * recorded attrib prefix
      */
-    protected tabRouteEntry<addrIP> recd;
+    protected tabRouteEntry<addrIP> lastAttr;
 
     private notifier notif = new notifier();
 
@@ -290,45 +290,53 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         return "ghosthunt on " + fwdCore;
     }
 
+    private tabRouteEntry<addrIP> createPrefix() {
+        if (prefix == null) {
+            return null;
+        }
+        if (nextHop == null) {
+            return null;
+        }
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = prefix.copyBytes();
+        ntry.best.rouTyp = rouTyp;
+        ntry.best.protoNum = rtrNum;
+        ntry.best.distance = distance;
+        ntry.best.nextHop = nextHop.copyBytes();
+        ntry.best.rouTyp = routerProtoTyp;
+        ntry.best.protoNum = routerProcNum;
+        if (afi == 3) {
+            ntry = rtrBgpFlow.advertNetwork(prefix, ipv6, 2, ntry);
+            if (ntry == null) {
+                return null;
+            }
+        }
+        if (roumap != null) {
+            roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
+        }
+        if (rouplc != null) {
+            tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, ntry, rouplc, false);
+        }
+        return ntry;
+    }
+
     /**
      * create computed
      */
     public synchronized void routerCreateComputed() {
-        if (prefix == null) {
-            return;
-        }
-        if (nextHop == null) {
-            return;
-        }
         if (timap == null) {
             return;
         }
         if (stopped) {
             return;
         }
+        tabRouteEntry<addrIP> sent = createPrefix();
+        if (sent == null) {
+            return;
+        }
         tabRoute<addrIP> tabU = new tabRoute<addrIP>("computed");
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("computed");
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("computed");
-        sent = new tabRouteEntry<addrIP>();
-        sent.prefix = prefix.copyBytes();
-        sent.best.rouTyp = rouTyp;
-        sent.best.protoNum = rtrNum;
-        sent.best.distance = distance;
-        sent.best.nextHop = nextHop.copyBytes();
-        sent.best.rouTyp = routerProtoTyp;
-        sent.best.protoNum = routerProcNum;
-        if (afi == 3) {
-            sent = rtrBgpFlow.advertNetwork(prefix, ipv6, 2, sent);
-            if (sent == null) {
-                return;
-            }
-        }
-        if (roumap != null) {
-            roumap.update(rtrBgpUtil.sfiUnicast, 0, sent, false);
-        }
-        if (rouplc != null) {
-            tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, sent, rouplc, false);
-        }
         cntExec++;
         timExec = bits.getTime();
         boolean needed = !timap.matches(timExec);
@@ -357,7 +365,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                     break;
             }
         }
-        rcvd = null;
+        tabRouteEntry<addrIP> rcvd = null;
         switch (lookMod) {
             case 1:
                 switch (afi) {
@@ -403,11 +411,13 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 }
                 break;
         }
-        tabRouteEntry<addrIP> orig = rcvd;
         if (rcvd != null) {
+            lastFond = rcvd.copyBytes(tabRoute.addType.alters);
             rcvd = rcvd.copyBytes(tabRoute.addType.notyet);
             tabRouteAttr.ignoreAttribs(rcvd.best, ignore);
             tabRouteAttr.ignoreAttribs(sent.best, ignore);
+        } else {
+            lastFond = null;
         }
         curGhst = needed != (rcvd != null);
         if (grace) {
@@ -416,8 +426,8 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             if (curGhst) {
                 cntGhst++;
                 timGhst = timExec;
-                if (orig != null) {
-                    recd = orig.copyBytes(tabRoute.addType.alters);
+                if (lastFond != null) {
+                    lastGhst = lastFond;
                 }
                 if (logging) {
                     logger.info("ghosting " + rtrLogger.afi2str(afi) + " " + rtrLogger.prf2str(afi, sent.prefix));
@@ -432,6 +442,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             if (curAtrF != 0) {
                 cntAtrF++;
                 timAtrF = timExec;
+                if (lastFond != null) {
+                    lastAttr = lastFond;
+                }
             } else {
                 cntAtrP++;
                 timAtrP = timExec;
@@ -820,37 +833,85 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     }
 
     /**
-     * get diffs
+     * get attrib
      *
+     * @param cmd attribs to ignore
      * @param wid screen width
      * @return list of differences
      */
-    public List<String> getDiffs(int wid) {
-        if (rcvd == null) {
+    public List<String> getDiffer(cmds cmd, int wid) {
+        if (lastFond == null) {
             return null;
         }
-        if (curAtrF == 0) {
+        tabRouteEntry<addrIP> ntry2 = lastFond.copyBytes(tabRoute.addType.notyet);
+        tabRouteEntry<addrIP> ntry1 = createPrefix();
+        if (ntry1 == null) {
             return null;
         }
-        List<String> dump1 = sent.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
-        List<String> dump2 = rcvd.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        int ign = 0;
+        for (;;) {
+            String s = cmd.word();
+            if (s.length() < 1) {
+                break;
+            }
+            ign |= tabRouteAttr.string2ignore(s);
+        }
+        tabRouteAttr.ignoreAttribs(ntry1.best, ign);
+        tabRouteAttr.ignoreAttribs(ntry2.best, ign);
+        List<String> dump1 = ntry1.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        List<String> dump2 = ntry2.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
         df.calc(dump1, dump2);
         List<String> res = df.getText(wid, 0);
-        res.add(0, "difference=" + curAtrF);
+        res.add(0, "difference=" + ntry1.differs(tabRoute.addType.notyet, ntry2));
         return res;
     }
 
     /**
-     * get recorded
+     * get attrib
+     *
+     * @param wid screen width
+     * @return list of differences
+     */
+    public List<String> getAttribed(int wid) {
+        if (lastAttr == null) {
+            return null;
+        }
+        tabRouteEntry<addrIP> ntry = createPrefix();
+        if (ntry == null) {
+            return null;
+        }
+        List<String> dump1 = ntry.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        List<String> dump2 = lastAttr.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        differ df = new differ();
+        df.calc(dump1, dump2);
+        List<String> res = df.getText(wid, 0);
+        res.add(0, "difference=" + ntry.differs(tabRoute.addType.notyet, lastAttr));
+        return res;
+    }
+
+    /**
+     * get ghost
      *
      * @return list of recorded
      */
-    public List<String> getRecord() {
-        if (recd == null) {
+    public List<String> getGhosted() {
+        if (lastGhst == null) {
             return null;
         }
-        return recd.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        return lastGhst.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+    }
+
+    /**
+     * get found
+     *
+     * @return list of recorded
+     */
+    public List<String> getFound() {
+        if (lastFond == null) {
+            return null;
+        }
+        return lastFond.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
     }
 
     /**

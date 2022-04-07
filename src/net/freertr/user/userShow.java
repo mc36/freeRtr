@@ -2489,11 +2489,19 @@ public class userShow {
             return;
         }
         if (a.equals("attrib")) {
-            rdr.putStrArr(r.ghosthunt.getDiffs(cmd.pipe.settingsGet(pipeSetting.width, 80)));
+            rdr.putStrArr(r.ghosthunt.getAttribed(cmd.pipe.settingsGet(pipeSetting.width, 80)));
+            return;
+        }
+        if (a.equals("differ")) {
+            rdr.putStrArr(r.ghosthunt.getDiffer(cmd, cmd.pipe.settingsGet(pipeSetting.width, 80)));
             return;
         }
         if (a.equals("ghost")) {
-            rdr.putStrArr(r.ghosthunt.getRecord());
+            rdr.putStrArr(r.ghosthunt.getGhosted());
+            return;
+        }
+        if (a.equals("found")) {
+            rdr.putStrArr(r.ghosthunt.getFound());
             return;
         }
         cmd.badCmd();

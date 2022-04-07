@@ -714,8 +714,11 @@ public class userExec {
         hl.add(null, "3 4        ghosthunt                ghost route hunter");
         hl.add(null, "4 5          <num>                  process id");
         hl.add(null, "5 .            status               current status");
-        hl.add(null, "5 .            attrib               attribute difference");
+        hl.add(null, "5 .            found                last found entry");
+        hl.add(null, "5 .            attrib               last attribute difference");
         hl.add(null, "5 .            ghost                last recorded ghost");
+        hl.add(null, "5 6,.          differ               test difference");
+        tabRouteAttr.ignoreHelp(hl, 6);
     }
 
     /**
