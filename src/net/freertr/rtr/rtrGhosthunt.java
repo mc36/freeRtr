@@ -333,12 +333,17 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         boolean needed = !timap.matches(timExec);
         boolean grace;
         if (needed) {
-            grace = timap.matches(timExec - graceAdv);
+            curAdv = originator;
+            cntAdv++;
+            timAdv = timExec;
+            grace = (timWdr + graceAdv) > timExec;
         } else {
-            grace = timap.matches(timExec - graceWdr);
+            curAdv = false;
+            cntWdr++;
+            timWdr = timExec;
+            grace = (timAdv + graceWdr) > timExec;
         }
-        grace = needed == grace;
-        if (originator && needed) {
+        if (curAdv) {
             switch (afi) {
                 case 1:
                     tabU.add(tabRoute.addType.better, sent, true, true);
@@ -350,13 +355,6 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                     tabF.add(tabRoute.addType.better, sent, true, true);
                     break;
             }
-            curAdv = true;
-            cntAdv++;
-            timAdv = timExec;
-        } else {
-            curAdv = false;
-            cntWdr++;
-            timWdr = timExec;
         }
         rcvd = null;
         switch (lookMod) {
