@@ -1,6 +1,7 @@
 package net.freertr.cfg;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.tab.tabGen;
@@ -30,6 +31,11 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     public String description;
 
     /**
+     * time zone of access list
+     */
+    public String timeZone;
+
+    /**
      * current sequence number
      */
     public int seq;
@@ -39,6 +45,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
      */
     public final static String[] defaultL = {
         "time-map .*! no description",
+        "time-map .*! no time-zone",
         "time-map .*! sequence .* match year all",
         "time-map .*! sequence .* match month all",
         "time-map .*! sequence .* match day all",
@@ -100,6 +107,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("time-map " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", "" + description);
+        cmds.cfgLine(l, timeZone == null, cmds.tabulator, "time-zone", "" + timeZone);
         for (int i = 0; i < timemap.size(); i++) {
             l.addAll(timemap.get(i).dump(cmds.tabulator));
         }
@@ -116,6 +124,8 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "2 1,.   <num>               sequence number");
         l.add(null, "1 3,. description           specify description");
         l.add(null, "3 3,.   <str>               text");
+        l.add(null, "1 3,. time-zone             specify time zone");
+        l.add(null, "3 .     <str>               text");
         l.add(null, "1 2   rename                rename this time map");
         l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 2,. reindex               reindex route map");
@@ -152,6 +162,10 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         String a = cmd.word();
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("time-zone")) {
+            timeZone = cmd.word();
             return;
         }
         if (a.equals("rename")) {
@@ -234,6 +248,10 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             description = null;
             return;
         }
+        if (a.equals("time-zone")) {
+            timeZone = null;
+            return;
+        }
         if (a.equals("match")) {
             a = cmd.word();
             tabTime ntry = getCurr();
@@ -299,9 +317,15 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
      * @return false if matches, true if not
      */
     public boolean matches(long tim) {
+        Calendar cal;
+        if (timeZone != null) {
+            cal = tabTime.time2calendar(timeZone, tim);
+        } else {
+            cal = tabTime.time2calendar(cfgAll.timeZoneName, tim);
+        }
         for (int i = 0; i < timemap.size(); i++) {
             tabTime ntry = timemap.get(i);
-            if (!ntry.matches(cfgAll.timeZoneName, tim)) {
+            if (!ntry.matches(cal)) {
                 continue;
             }
             return ntry.act != tabListingEntry.actionType.actPermit;

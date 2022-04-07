@@ -73,15 +73,25 @@ public class tabTime implements Comparator<tabTime> {
     }
 
     /**
-     * matches a date or not
+     * set calendar from time
      *
      * @param zoNam name
      * @param tim time
      * @return true if matched
      */
-    public boolean matches(String zoNam, long tim) {
+    public static Calendar time2calendar(String zoNam, long tim) {
         Calendar cal = bits.getCalendar(zoNam);
         cal.setTime(new Date(tim));
+        return cal;
+    }
+
+    /**
+     * matches a date or not
+     *
+     * @param cal calendar
+     * @return true if matched
+     */
+    public boolean matches(Calendar cal) {
         if (!year.matches(cal.get(Calendar.YEAR))) {
             return false;
         }
