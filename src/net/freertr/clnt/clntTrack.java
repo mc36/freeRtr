@@ -359,6 +359,9 @@ public class clntTrack implements rtrBfdClnt {
      * @return string
      */
     public static String mode2string(operMod m) {
+        if (m == null) {
+            return "null";
+        }
         switch (m) {
             case icmp:
                 return "icmp";
