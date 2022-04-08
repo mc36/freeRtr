@@ -70,9 +70,29 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     public boolean errorFree = false;
 
     /**
+     * stickyness
+     */
+    public boolean stickyness = false;
+
+    /**
      * sticky parameter
      */
-    public String sticky = null;
+    public String stickyPar = "";
+
+    /**
+     * sticky changed
+     */
+    public boolean stickyChgd = false;
+
+    /**
+     * sticky succeeded
+     */
+    public boolean stickySucc = false;
+
+    /**
+     * sticky persistence
+     */
+    public boolean stickyPrst = false;
 
     /**
      * default parameter
@@ -309,8 +329,17 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (defParam != null) {
             l.add(a + " default-param " + defParam);
         }
-        if (sticky != null) {
-            l.add(a + " sticky-param " + sticky);
+        if (stickyChgd) {
+            l.add(a + " sticky-onlychanged");
+        }
+        if (stickySucc) {
+            l.add(a + " sticky-onlysuccess");
+        }
+        if (stickyPrst) {
+            l.add(a + " sticky-persistent");
+        }
+        if (stickyness) {
+            l.add(a + " sticky-param " + stickyPar);
         }
         if (description != null) {
             l.add(a + " description " + description);
@@ -425,12 +454,24 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             errorFree = !neg;
             return;
         }
+        if (a.equals("sticky-onlychanged")) {
+            stickyChgd = !neg;
+            return;
+        }
+        if (a.equals("sticky-onlysuccess")) {
+            stickySucc = !neg;
+            return;
+        }
+        if (a.equals("sticky-persistent")) {
+            stickyPrst = !neg;
+            return;
+        }
         if (a.equals("sticky-param")) {
+            stickyness = !neg;
             if (neg) {
-                sticky = null;
+                stickyPar = "";
                 return;
             }
-            sticky = cmd.getRemaining();
             userReader rdr = new userReader(cmd.pipe, null);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
@@ -528,8 +569,19 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if ((defParam != null) && (par.getRemaining().length() < 1)) {
             par = new cmds("def", defParam);
         }
-        if (sticky != null) {
-            sticky = par.getRemaining();
+        String pr = par.getRemaining().trim();
+        if (stickyness) {
+            if (stickyPrst && cfgInit.booting) {
+                return;
+            }
+            if (stickyChgd) {
+                if (stickyPar.equals(pr)) {
+                    return;
+                }
+            }
+            if (!stickySucc) {
+                stickyPar = pr;
+            }
         }
         if (doOneCmd(exe, command, par, parameter)) {
             return;
@@ -545,6 +597,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         if (doOneCmd(exe, cmd5th, par, param5th)) {
             return;
+        }
+        if (stickyness) {
+            stickyPar = pr;
         }
     }
 
