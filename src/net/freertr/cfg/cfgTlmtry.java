@@ -38,9 +38,9 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
      */
     public final static String[] defaultL = {
         "telemetry .*! port " + servStreamingMdt.port,
-        "telemetry .*! time 5000",
+        "telemetry .*! interval 5000",
         "telemetry .*! delay 0",
-        "telemetry .*! random-time 0",
+        "telemetry .*! random-interval 0",
         "telemetry .*! random-delay 0",
         "telemetry .*! no range",
         "telemetry .*! no description",};
@@ -76,11 +76,11 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         l.add(null, "2  .        <num>                  lines to skip");
         l.add(null, "1  2      sensor                   specify sensor to export");
         l.add(null, "2  .        <name:sns>             name of sensor");
-        l.add(null, "1  2      time                     specify time between runs");
+        l.add(null, "1  2      interval                 specify time between runs");
         l.add(null, "2  .        <num>                  milliseconds between runs");
         l.add(null, "1  2      delay                    specify initial delay");
         l.add(null, "2  .        <num>                  milliseconds before start");
-        l.add(null, "1  2      random-time              specify random time between runs");
+        l.add(null, "1  2      random-interval          specify random time between runs");
         l.add(null, "2  .        <num>                  milliseconds between runs");
         l.add(null, "1  2      random-delay             specify random initial delay");
         l.add(null, "2  .        <num>                  milliseconds before start");
@@ -98,9 +98,9 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
         l.add(cmds.tabulator + "port " + worker.port);
-        l.add(cmds.tabulator + "time " + worker.interval);
+        l.add(cmds.tabulator + "interval " + worker.interval);
         l.add(cmds.tabulator + "delay " + worker.initial);
-        l.add(cmds.tabulator + "random-time " + worker.randInt);
+        l.add(cmds.tabulator + "random-interval " + worker.randInt);
         l.add(cmds.tabulator + "random-delay " + worker.randIni);
         cmds.cfgLine(l, worker.time == null, cmds.tabulator, "range", "" + worker.time);
         cmds.cfgLine(l, worker.proxy == null, cmds.tabulator, "proxy", "" + worker.proxy);
@@ -164,7 +164,7 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
             }
             return;
         }
-        if (s.equals("time")) {
+        if (s.equals("interval")) {
             if (negated) {
                 worker.interval = 5000;
             } else {
@@ -172,7 +172,7 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
             }
             return;
         }
-        if (s.equals("random-time")) {
+        if (s.equals("random-interval")) {
             if (negated) {
                 worker.randInt = 0;
             } else {
