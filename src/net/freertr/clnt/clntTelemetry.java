@@ -1,7 +1,9 @@
 package net.freertr.clnt;
 
 import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgSensor;
+import net.freertr.cfg.cfgTime;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packStreamingMdt;
 import net.freertr.pipe.pipeSide;
@@ -35,6 +37,26 @@ public class clntTelemetry implements Runnable {
      * interval
      */
     public int interval = 5000;
+
+    /**
+     * initial delay
+     */
+    public int initial = 0;
+
+    /**
+     * random time between runs
+     */
+    public int randInt;
+
+    /**
+     * random initial delay
+     */
+    public int randIni;
+
+    /**
+     * time range when allowed
+     */
+    public cfgTime time;
 
     /**
      * sensors
@@ -92,6 +114,13 @@ public class clntTelemetry implements Runnable {
         if (pipe != null) {
             pipe.setClose();
         }
+        int del = initial;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        if (del > 0) {
+            bits.sleep(del);
+        }
         pipe = null;
         if (proxy == null) {
             return;
@@ -109,9 +138,18 @@ public class clntTelemetry implements Runnable {
         }
         pipe.setTime(120000);
         for (;;) {
-            bits.sleep(interval);
             if (!need2run) {
                 break;
+            }
+            del = interval;
+            if (randInt > 0) {
+                del += bits.random(1, randInt);
+            }
+            bits.sleep(del);
+            if (time != null) {
+                if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+                    continue;
+                }
             }
             if (pipe.isClosed() != 0) {
                 break;
