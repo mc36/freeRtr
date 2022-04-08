@@ -1556,9 +1556,13 @@ public class userExec {
         hl.add(null, "3 4        <num>                      number of dial peer");
         hl.add(null, "4 .          <str>                    call id");
         hl.add(null, "2 3      scheduler                    run one scheduler round");
-        hl.add(null, "3 .        <name:sch>                 name of scheduler");
+        hl.add(null, "3 4,.      <name:sch>                 name of scheduler");
+        hl.add(null, "4 .          stop                     stop");
+        hl.add(null, "4 .          start                    start");
         hl.add(null, "2 3      script                       run one script round");
-        hl.add(null, "3 .        <name:scr>                 name of script");
+        hl.add(null, "3 4,.      <name:scr>                 name of script");
+        hl.add(null, "4 .          stop                     stop");
+        hl.add(null, "4 .          start                    start");
         hl.add(null, "2 3      vpdn                         reconnect vpdn peer");
         hl.add(null, "3 4,.      <name:vpd>                 name of vpdn");
         hl.add(null, "4 .          [num]                    downtime in milliseconds");
@@ -1968,6 +1972,14 @@ public class userExec {
         hl.add(null, "4 .          start                    start");
         hl.add(null, "2 3      process                      reboot external process");
         hl.add(null, "3 4,.      <name:prc>                 name of process");
+        hl.add(null, "4 .          stop                     stop");
+        hl.add(null, "4 .          start                    start");
+        hl.add(null, "2 3      scheduler                    run one scheduler round");
+        hl.add(null, "3 4,.      <name:sch>                 name of scheduler");
+        hl.add(null, "4 .          stop                     stop");
+        hl.add(null, "4 .          start                    start");
+        hl.add(null, "2 3      script                       run one script round");
+        hl.add(null, "3 4,.      <name:scr>                 name of script");
         hl.add(null, "4 .          stop                     stop");
         hl.add(null, "4 .          start                    start");
         return hl;
@@ -2567,6 +2579,42 @@ public class userExec {
         }
         if (a.equals("reload")) {
             a = cmd.word();
+            if (a.equals("scheduler")) {
+                cfgSched sch = cfgAll.schedFind(cmd.word(), false);
+                if (sch == null) {
+                    cmd.error("no such scheduler");
+                    return null;
+                }
+                a = cmd.word();
+                if (a.equals("start")) {
+                    sch.startNow();
+                }
+                if (a.equals("stop")) {
+                    sch.stopNow();
+                }
+                if (a.equals("")) {
+                    sch.doRound();
+                }
+                return null;
+            }
+            if (a.equals("script")) {
+                cfgScrpt sch = cfgAll.scrptFind(cmd.word(), false);
+                if (sch == null) {
+                    cmd.error("no such script");
+                    return null;
+                }
+                a = cmd.word();
+                if (a.equals("start")) {
+                    sch.startNow();
+                }
+                if (a.equals("stop")) {
+                    sch.stopNow();
+                }
+                if (a.equals("")) {
+                    sch.doRound(null);
+                }
+                return null;
+            }
             if (a.equals("vdc")) {
                 cfgVdc ntry = cfgInit.vdcLst.find(new cfgVdc(cmd.word()));
                 if (ntry == null) {

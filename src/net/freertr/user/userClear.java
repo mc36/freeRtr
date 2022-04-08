@@ -464,7 +464,16 @@ public class userClear {
                 cmd.error("no such scheduler");
                 return null;
             }
-            sch.doRound();
+            a = cmd.word();
+            if (a.equals("start")) {
+                sch.startNow();
+            }
+            if (a.equals("stop")) {
+                sch.stopNow();
+            }
+            if (a.equals("")) {
+                sch.doRound();
+            }
             return null;
         }
         if (a.equals("script")) {
@@ -473,7 +482,16 @@ public class userClear {
                 cmd.error("no such script");
                 return null;
             }
-            sch.doRound(null);
+            a = cmd.word();
+            if (a.equals("start")) {
+                sch.startNow();
+            }
+            if (a.equals("stop")) {
+                sch.stopNow();
+            }
+            if (a.equals("")) {
+                sch.doRound(null);
+            }
             return null;
         }
         if (a.equals("name-cache")) {
@@ -1048,6 +1066,5 @@ public class userClear {
         }
         r.ghosthunt.setPaused(cmd.word().equals("stop"));
     }
-
 
 }
