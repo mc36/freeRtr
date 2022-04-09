@@ -973,6 +973,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         packHolder pck = new packHolder(true, true);
         protoBuf pb = new protoBuf();
         pb.putField(servStreamingMdt.rpStart, protoBufEntry.tpInt, last);
+        pb.putField(servStreamingMdt.rpTime, protoBufEntry.tpInt, last);
         pb.putField(servStreamingMdt.rpNodeStr, protoBufEntry.tpBuf, cfgAll.hostName.getBytes());
         pb.putField(servStreamingMdt.rpSubsStr, protoBufEntry.tpBuf, name.getBytes());
         pb.putField(servStreamingMdt.rpEnc, protoBufEntry.tpBuf, (prefix + ":" + path).getBytes());
