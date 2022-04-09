@@ -3509,7 +3509,6 @@ public class cfgAll {
         servGenList.listGetRun(l, vpdns, filter);
         servGenList.listGetRun(l, trackers, filter);
         servGenList.listGetRun(l, mtrackers, filter);
-        servGenList.listGetRun(l, tlmtrydst, filter);
         for (int i = 0; i < vrfs.size(); i++) {
             l.addAll(vrfs.get(i).getShRun2(filter));
         }
@@ -3518,6 +3517,7 @@ public class cfgAll {
         servGenList.listGetRun(l, tabNshEntry.services, filter);
         servGenList.listGetRun(l, checks, filter);
         servGenList.listGetRun(l, sensors, filter);
+        servGenList.listGetRun(l, tlmtrydst, filter);
         servGenList.listGetRun(l, trnsltns, filter);
         servGenList.listGetRun(l, dials, filter);
         servGenList.listGetRun(l, aliases, filter);
