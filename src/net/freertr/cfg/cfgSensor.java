@@ -1,6 +1,5 @@
 package net.freertr.cfg;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +12,6 @@ import net.freertr.serv.servStreamingMdt;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
-import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.user.userReader;
@@ -23,6 +21,7 @@ import net.freertr.util.counter;
 import net.freertr.util.extMrkLng;
 import net.freertr.util.extMrkLngEntry;
 import net.freertr.util.history;
+import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.protoBuf;
 import net.freertr.util.protoBufEntry;
@@ -153,27 +152,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     /**
      * collection file
      */
-    public String locFil;
-
-    /**
-     * collection backup
-     */
-    public String locBak;
-
-    /**
-     * collection bytes
-     */
-    public int locByt;
-
-    /**
-     * collection time
-     */
-    public int locTim;
-
-    /**
-     * collection start
-     */
-    public long locStr;
+    public logFil locFil;
 
     /**
      * defaults text
@@ -194,8 +173,9 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         "sensor .*! no local memory",
         "sensor .*! no local file",
         "sensor .*! no local backup",
-        "sensor .*! no local max-byte",
-        "sensor .*! no local max-time",};
+        "sensor .*! local max-byte 0",
+        "sensor .*! local max-pack 0",
+        "sensor .*! local max-time 0",};
 
     /**
      * defaults filter
@@ -294,6 +274,8 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         l.add(null, "2 .        memory                 collect to memory");
         l.add(null, "2 3        file                   collect to file");
         l.add(null, "3 .          <str>                file name");
+        l.add(null, "2 3        max-pack               maximum packets");
+        l.add(null, "3 .          <num>                packets between backups");
         l.add(null, "2 3        max-byte               maximum bytes");
         l.add(null, "3 .          <num>                bytes");
         l.add(null, "2 3        max-time               maximum time");
@@ -353,10 +335,15 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         }
         cmds.cfgLine(l, locInt < 1, cmds.tabulator, "local interval", "" + locInt);
         cmds.cfgLine(l, locMem == null, cmds.tabulator, "local memory", "");
-        cmds.cfgLine(l, locFil == null, cmds.tabulator, "local file", "" + locFil);
-        cmds.cfgLine(l, locBak == null, cmds.tabulator, "local backup", "" + locBak);
-        cmds.cfgLine(l, locByt < 1, cmds.tabulator, "local max-byte", "" + locByt);
-        cmds.cfgLine(l, locTim < 1, cmds.tabulator, "local max-time", "" + locTim);
+        if (locFil == null) {
+            l.add(cmds.tabulator + "no local file");
+        } else {
+            l.add(cmds.tabulator + "local file " + locFil.name());
+            cmds.cfgLine(l, locFil.rotateN() == null, cmds.tabulator, "local backup", locFil.rotateN());
+            l.add(cmds.tabulator + "local max-time " + locFil.rotateT());
+            l.add(cmds.tabulator + "local max-pack " + locFil.rotateL());
+            l.add(cmds.tabulator + "local max-byte " + locFil.rotateS());
+        }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -408,36 +395,48 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 return;
             }
             if (s.equals("file")) {
-                locStr = bits.getTime();
-                locFil = cmd.word();
+                try {
+                    locFil.close();
+                } catch (Exception e) {
+                }
                 if (negated) {
                     locFil = null;
                     return;
                 }
+                locFil = new logFil(cmd.getRemaining());
+                locFil.open(false);
                 return;
             }
             if (s.equals("backup")) {
-                locBak = cmd.word();
                 if (negated) {
-                    locBak = null;
+                    locFil.rotate(null, 0, 0, 0);
                     return;
                 }
+                locFil.rotate(cmd.getRemaining(), locFil.rotateS(), locFil.rotateT(), locFil.rotateL());
+                return;
+            }
+            if (s.equals("max-pack")) {
+                if (negated) {
+                    locFil.rotate(locFil.rotateN(), locFil.rotateS(), locFil.rotateT(), 0);
+                    return;
+                }
+                locFil.rotate(locFil.rotateN(), locFil.rotateS(), locFil.rotateT(), bits.str2num(cmd.word()));
                 return;
             }
             if (s.equals("max-byte")) {
-                locByt = bits.str2num(cmd.word());
                 if (negated) {
-                    locByt = 0;
+                    locFil.rotate(locFil.rotateN(), 0, locFil.rotateT(), locFil.rotateL());
                     return;
                 }
+                locFil.rotate(locFil.rotateN(), bits.str2num(cmd.word()), locFil.rotateT(), locFil.rotateL());
                 return;
             }
             if (s.equals("max-time")) {
-                locTim = bits.str2num(cmd.word());
                 if (negated) {
-                    locTim = 0;
+                    locFil.rotate(locFil.rotateN(), locFil.rotateS(), 0, locFil.rotateL());
                     return;
                 }
+                locFil.rotate(locFil.rotateN(), locFil.rotateS(), bits.str2num(cmd.word()), locFil.rotateL());
                 return;
             }
             cmd.badCmd();
@@ -1237,23 +1236,10 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         if (locFil == null) {
             return;
         }
-        bits.buf2txt(false, getReportCsv(), locFil);
-        if (locBak == null) {
-            return;
+        List<String> res = getReportCsv();
+        for (int i = 0; i < res.size(); i++) {
+            locFil.add(res.get(i));
         }
-        boolean ned = false;
-        long tim = bits.getTime();
-        if (locTim > 0) {
-            ned |= (tim - locStr) > locTim;
-        }
-        if (locByt > 0) {
-            ned |= new File(locFil).length() > locByt;
-        }
-        if (!ned) {
-            return;
-        }
-        userFlash.rename(locFil, locBak, true, false);
-        locStr = tim;
     }
 
     public void run() {
