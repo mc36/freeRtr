@@ -147,10 +147,10 @@ public class pipeShell {
      */
     protected synchronized void kill(int stat) {
         running &= 0x7f - stat;
-        ProcessHandle[] childs = new ProcessHandle[0];
+        Object[] childs = new ProcessHandle[0];
         try {
             Stream<ProcessHandle> descends = process.descendants();
-            childs = descends.toArray(ProcessHandle[]::new);
+            childs = descends.toArray();
         } catch (Exception e) {
         }
         try {
@@ -160,7 +160,8 @@ public class pipeShell {
         if ((running & 0x20) != 0) {
             for (int i = 0; i < childs.length; i++) {
                 try {
-                    childs[i].destroy();
+                    ProcessHandle chld = (ProcessHandle) (childs[i]);
+                    chld.destroy();
                 } catch (Exception e) {
                 }
             }
