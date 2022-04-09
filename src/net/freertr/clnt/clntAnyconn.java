@@ -242,13 +242,13 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (cln.doConnect(url)) {
             return;
         }
-        String cntx = extMrkLng.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(false, true) + "</group-access></config-auth>";
-        cln.sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
-        cln.sendLine("connection: keep-alive");
-        cln.sendLine("content-length: " + (cntx.length() + 2));
-        cln.sendLine("content-type: application/x-www-form-urlencoded");
+        String cntx = extMrkLng.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true) + "</group-access></config-auth>";
+        cln.sendLine("POST " + url.toURL(false, false, false) + " HTTP/1.1");
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
+        cln.sendLine("Connection: keep-alive");
+        cln.sendLine("Content-Length: " + (cntx.length() + 2));
+        cln.sendLine("Content-Type: application/x-www-form-urlencoded");
         cln.sendLine("");
         cln.sendLine(cntx);
         cln.doHeaders(url);
@@ -264,18 +264,18 @@ public class clntAnyconn implements Runnable, ifcDn {
             return;
         }
         cntx = "username=" + uniResLoc.percentEncode(username) + "&password=" + uniResLoc.percentEncode(password);
-        cln.sendLine("POST " + url.toURL(false, false) + " HTTP/1.1");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
-        cln.sendLine("cookie: " + cookie1);
-        cln.sendLine("content-length: " + cntx.length());
-        cln.sendLine("content-Type: application/x-www-form-urlencoded");
-        cln.sendLine("accept: */*");
-        cln.sendLine("accept-encoding: identity");
-        cln.sendLine("connection: keep-alive");
-        cln.sendLine("x-transcend-version: 1");
-        cln.sendLine("x-support-http-auth: true");
-        cln.sendLine("x-pad: 0000000000000000000000000000000000");
+        cln.sendLine("POST " + url.toURL(false, false, false) + " HTTP/1.1");
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
+        cln.sendLine("Cookie: " + cookie1);
+        cln.sendLine("Content-Length: " + cntx.length());
+        cln.sendLine("Content-Type: application/x-www-form-urlencoded");
+        cln.sendLine("Accept: */*");
+        cln.sendLine("Accept-Encoding: identity");
+        cln.sendLine("Connection: keep-alive");
+        cln.sendLine("X-transcend-version: 1");
+        cln.sendLine("X-support-http-auth: true");
+        cln.sendLine("X-pad: 0000000000000000000000000000000000");
         cln.sendLine("");
         cln.pipe.strPut(cntx);
         cln.doHeaders(url);
@@ -287,14 +287,14 @@ public class clntAnyconn implements Runnable, ifcDn {
         }
         cookie2 = cln.cookies.get(i).getNamVal();
         cln.sendLine("CONNECT /CSCOSSLC/tunnel HTTP/1.1");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
-        cln.sendLine("cookie: " + cookie2);
-        cln.sendLine("x-cstp-version: 1");
-        cln.sendLine("x-cstp-hostname: " + cfgAll.hostName);
-        cln.sendLine("x-cstp-base-mtu: 1500");
-        cln.sendLine("x-cstp-mtu: 1500");
-        cln.sendLine("x-cstp-address-type: ipv6,ipv4");
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
+        cln.sendLine("Cookie: " + cookie2);
+        cln.sendLine("X-cstp-version: 1");
+        cln.sendLine("X-cstp-hostname: " + cfgAll.hostName);
+        cln.sendLine("X-cstp-base-mtu: 1500");
+        cln.sendLine("X-cstp-mtu: 1500");
+        cln.sendLine("X-cstp-address-type: ipv6,ipv4");
         cln.sendLine("");
         cln.doHeaders(url);
         i = extMrkLng.findParam(cln.headers, "|x-cstp-address|");

@@ -506,7 +506,7 @@ public class clntHttp {
         if (doConnect(src)) {
             return true;
         }
-        sendLine("GET " + src.toURL(false, true) + " HTTP/1.1");
+        sendLine("GET " + src.toURL(false, false, true) + " HTTP/1.1");
         sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Host: " + src.server);
         sendLine("Accept: */*");
@@ -622,7 +622,7 @@ public class clntHttp {
         } catch (Exception e) {
             return true;
         }
-        sendLine("PUT " + trg.toURL(false, true) + " HTTP/1.1");
+        sendLine("PUT " + trg.toURL(false, false, true) + " HTTP/1.1");
         sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Host: " + trg.server);
         sendLine("Accept: */*");

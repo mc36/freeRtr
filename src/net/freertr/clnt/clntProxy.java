@@ -479,7 +479,7 @@ public class clntProxy {
         }
         pip.strPut(":" + cPort);
         pip.linePut(" HTTP/1.1");
-        pip.linePut("user-agent: " + version.usrAgnt);
+        pip.linePut("User-Agent: " + version.usrAgnt);
         String s = clntHttp.getAuthor(username, password);
         if (s != null) {
             pip.linePut(s);

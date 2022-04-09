@@ -263,10 +263,10 @@ public class clntSstp implements Runnable, ifcDn {
         pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        sendLine("SSTP_DUPLEX_POST " + url.toURL(false, true) + " HTTP/1.1");
-        sendLine("user-agent: " + version.usrAgnt);
-        sendLine("content-Length: 18446744073709551615");
-        sendLine("host: " + url.server);
+        sendLine("SSTP_DUPLEX_POST " + url.toURL(false, false, true) + " HTTP/1.1");
+        sendLine("User-Agent: " + version.usrAgnt);
+        sendLine("Content-Length: 18446744073709551615");
+        sendLine("Host: " + url.server);
         sendLine("sstpCorrelationID: /os/" + verCore.name + "/{" + cfgAll.hostName + "_" + unique + "}");
         sendAuth(url);
         sendLine("");

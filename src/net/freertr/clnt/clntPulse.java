@@ -289,9 +289,9 @@ public class clntPulse implements Runnable, ifcDn {
             return;
         }
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("connection: keep-alive");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
+        cln.sendLine("Connection: keep-alive");
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
         cln.sendLine("");
         cln.doHeaders(url);
         cln.doBody();
@@ -301,8 +301,8 @@ public class clntPulse implements Runnable, ifcDn {
             return;
         }
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
         cln.sendLine("");
         cln.doHeaders(url);
         List<Byte> buf = cln.doBody();
@@ -346,10 +346,10 @@ public class clntPulse implements Runnable, ifcDn {
         url.filExt = ".cgi";
         String s = "tz_offset=60&username=" + uniResLoc.percentEncode(username) + "&password=" + uniResLoc.percentEncode(password) + "&realm=" + uniResLoc.percentEncode(realm) + "&btnSubmit=Sign+In";
         cln.sendLine("POST /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
-        cln.sendLine("content-length: " + s.length());
-        cln.sendLine("content-type: application/x-www-form-urlencoded");
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
+        cln.sendLine("Content-Length: " + s.length());
+        cln.sendLine("Content-Type: application/x-www-form-urlencoded");
         cln.sendLine("");
         cln.pipe.strPut(s);
         cln.doHeaders(url);
@@ -366,11 +366,11 @@ public class clntPulse implements Runnable, ifcDn {
         }
         url = uniResLoc.parseOne(target);
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("user-agent: " + version.usrAgnt);
-        cln.sendLine("host: " + url.server);
-        cln.sendLine("content-length: 0");
-        cln.sendLine("content-type: EAP");
-        cln.sendLine("upgrade: IF-T/TLS 1.0");
+        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("Host: " + url.server);
+        cln.sendLine("Content-Length: 0");
+        cln.sendLine("content-Type: EAP");
+        cln.sendLine("Upgrade: IF-T/TLS 1.0");
         cln.sendLine("");
         cln.doHeaders(url);
         pipe = cln.pipe;

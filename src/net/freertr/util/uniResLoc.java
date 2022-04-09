@@ -421,11 +421,12 @@ public class uniResLoc {
     /**
      * convert to url
      *
+     * @param hostname put hostname
      * @param userpass put password
      * @param params put parameters
      * @return url format
      */
-    public String toURL(boolean userpass, boolean params) {
+    public String toURL(boolean hostname, boolean userpass, boolean params) {
         String a;
         String b;
         String c;
@@ -449,7 +450,11 @@ public class uniResLoc {
         if (c.length() > 0) {
             c = "?" + c;
         }
-        return percentEncode(proto) + "://" + b + a + "/" + percentEncode(filPath) + percentEncode(filName) + percentEncode(filExt) + c;
+        c = "/" + percentEncode(filPath) + percentEncode(filName) + percentEncode(filExt) + c;
+        if (!hostname) {
+            return c;
+        }
+        return percentEncode(proto) + "://" + b + a + c;
     }
 
     /**
@@ -531,7 +536,7 @@ public class uniResLoc {
      */
     public List<String> show() {
         List<String> l = new ArrayList<String>();
-        l.add("url=" + toURL(true, true));
+        l.add("url=" + toURL(true, true, true));
         l.add("dump=" + dump());
         l.add("filename=" + toFileName());
         l.add("pathname=" + toPathName());
