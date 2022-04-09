@@ -43,11 +43,11 @@ int main(int argc, char **argv) {
         if (poll(fds, 2, 100) < 0) err("error in poll");
         if ((fds[0].revents&POLLIN) != 0) {
             i = read(commSock, buf, sizeof(buf));
-            write(STDOUT_FILENO, buf, i);
+            if (write(STDOUT_FILENO, buf, i) < 0) err("error writing");
         }
         if ((fds[1].revents&POLLIN) != 0) {
             i = read(STDIN_FILENO, buf, sizeof(buf));
-            write(commSock, buf, i);
+            if (write(commSock, buf, i) < 0) err("error writing");
         }
         i = fds[0].revents|fds[1].revents;
         if ((i & POLLERR) != 0) err("error on sockets");
