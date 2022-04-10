@@ -69,4 +69,4 @@ vpdn l2tp
 
 
 r2 tping 100 60 2.2.2.0 /vrf v1
-r2 tping 100 5 4.4.4.4 /vrf v1
+r2 tping 100 60 4.4.4.4 /vrf v1

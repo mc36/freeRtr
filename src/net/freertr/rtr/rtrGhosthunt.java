@@ -20,7 +20,6 @@ import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRtrmapN;
-import net.freertr.tab.tabRtrplc;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -98,14 +97,26 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected cfgTime timap;
 
     /**
+     * f
      * route map to use
      */
-    protected tabListing<tabRtrmapN, addrIP> roumap;
+    protected tabListing<tabRtrmapN, addrIP> sndMap;
 
     /**
      * route policy to use
      */
-    protected tabListing<tabRtrplcN, addrIP> rouplc;
+    protected tabListing<tabRtrplcN, addrIP> sndPlc;
+
+    /**
+     * f
+     * route map to use
+     */
+    protected tabListing<tabRtrmapN, addrIP> rcvMap;
+
+    /**
+     * route policy to use
+     */
+    protected tabListing<tabRtrplcN, addrIP> rcvPlc;
 
     /**
      * ignore attributes
@@ -311,12 +322,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 return null;
             }
         }
-        if (roumap != null) {
-            roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
-        }
-        if (rouplc != null) {
-            tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, ntry, rouplc, false);
-        }
+        ntry = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, ntry, sndMap, sndPlc, null);
         return ntry;
     }
 
@@ -414,7 +420,10 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (rcvd != null) {
             lastFond = rcvd.copyBytes(tabRoute.addType.alters);
             rcvd = rcvd.copyBytes(tabRoute.addType.notyet);
-            tabRouteAttr.ignoreAttribs(rcvd.best, ignore);
+            rcvd = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, rcvd, rcvMap, rcvPlc, null);
+            if (rcvd != null) {
+                tabRouteAttr.ignoreAttribs(rcvd.best, ignore);
+            }
             tabRouteAttr.ignoreAttribs(sent.best, ignore);
         } else {
             lastFond = null;
@@ -511,9 +520,13 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(null, "2 .     <str>                     prefix");
         l.add(null, "1 2   range                       specify time map to use");
         l.add(null, "2 .     <nam:tm>                  time map");
-        l.add(null, "1 2   route-map                   specify route map to use");
+        l.add(null, "1 2   send-map                    specify route map for advertisement");
         l.add(null, "2 .     <nam:rm>                  route map");
-        l.add(null, "1 2   route-policy                specify route policy to use");
+        l.add(null, "1 2   send-policy                 specify route policy for advertisement");
+        l.add(null, "2 .     <nam:rpl>                 route policy");
+        l.add(null, "1 2   recv-map                    specify route map for comparison");
+        l.add(null, "2 .     <nam:rm>                  route map");
+        l.add(null, "1 2   recv-policy                 specify route policy for comparison");
         l.add(null, "2 .     <nam:rpl>                 route policy");
         l.add(null, "1 2   ignore                      specify attributes to ignore");
         tabRouteAttr.ignoreHelp(l, 2);
@@ -558,8 +571,10 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 break;
         }
         l.add(beg + "lookup " + a);
-        cmds.cfgLine(l, roumap == null, beg, "route-map", "" + roumap);
-        cmds.cfgLine(l, rouplc == null, beg, "route-policy", "" + rouplc);
+        cmds.cfgLine(l, sndMap == null, beg, "send-map", "" + sndMap);
+        cmds.cfgLine(l, sndPlc == null, beg, "send-policy", "" + sndPlc);
+        cmds.cfgLine(l, rcvMap == null, beg, "recv-map", "" + rcvMap);
+        cmds.cfgLine(l, rcvPlc == null, beg, "recv-policy", "" + rcvPlc);
         cmds.cfgLine(l, ignore == 0, beg, "ignore", tabRouteAttr.ignore2string(ignore));
         if (originator) {
             a = "originator";
@@ -701,9 +716,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             notif.wakeup();
             return false;
         }
-        if (s.equals("route-map")) {
+        if (s.equals("send-map")) {
             if (negated) {
-                roumap = null;
+                sndMap = null;
                 notif.wakeup();
                 return false;
             }
@@ -712,13 +727,13 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 cmd.error("no such route map");
                 return false;
             }
-            roumap = ntry.roumap;
+            sndMap = ntry.roumap;
             notif.wakeup();
             return false;
         }
-        if (s.equals("route-policy")) {
+        if (s.equals("send-policy")) {
             if (negated) {
-                rouplc = null;
+                sndPlc = null;
                 notif.wakeup();
                 return false;
             }
@@ -727,8 +742,34 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 cmd.error("no such route policy");
                 return false;
             }
-            rouplc = ntry.rouplc;
+            sndPlc = ntry.rouplc;
             notif.wakeup();
+            return false;
+        }
+        if (s.equals("recv-map")) {
+            if (negated) {
+                rcvMap = null;
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            rcvMap = ntry.roumap;
+            return false;
+        }
+        if (s.equals("recv-policy")) {
+            if (negated) {
+                rcvPlc = null;
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            rcvPlc = ntry.rouplc;
             return false;
         }
         if (s.equals("ignore")) {

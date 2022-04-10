@@ -511,8 +511,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router ghosthunt[4|6] .*! grace 0 0",
         "router ghosthunt[4|6] .*! mode observer",
         "router ghosthunt[4|6] .*! lookup vrf",
-        "router ghosthunt[4|6] .*! no route-map",
-        "router ghosthunt[4|6] .*! no route-policy",
+        "router ghosthunt[4|6] .*! no send-map",
+        "router ghosthunt[4|6] .*! no send-policy",
+        "router ghosthunt[4|6] .*! no recv-map",
+        "router ghosthunt[4|6] .*! no recv-policy",
         "router ghosthunt[4|6] .*! no ignore",
         "router ghosthunt[4|6] .*! no logging",
         // router uni2multi
