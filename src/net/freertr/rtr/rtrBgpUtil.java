@@ -12,9 +12,8 @@ import net.freertr.addr.addrType;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLargeComm;
-import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -1529,51 +1528,6 @@ public class rtrBgpUtil {
     }
 
     /**
-     * convert as number to 16 bits
-     *
-     * @param i as number to convert
-     * @return converted
-     */
-    public static int asNum16bit(int i) {
-        if ((i & 0xffff) == i) {
-            return i;
-        }
-        return 23456;
-    }
-
-    /**
-     * test if private as number
-     *
-     * @param i as number to test
-     * @return false if not, true if yes
-     */
-    public static boolean asNumPrivate(int i) {
-        if ((i >= 64512) && (i <= 65534)) {
-            return true;
-        }
-        if ((i >= -94967296) && (i < -2)) { // 4200000000 - 4294967294
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * test if documentary as number
-     *
-     * @param i as number to test
-     * @return false if not, true if yes
-     */
-    public static boolean asNumDocumentary(int i) {
-        if ((i >= 64496) && (i <= 64511)) {
-            return true;
-        }
-        if ((i >= 65536) && (i <= 65551)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * convert safi to string
      *
      * @param i safi to convert
@@ -2550,7 +2504,7 @@ public class rtrBgpUtil {
                     pck.msbPutD(0, i);
                     pck.putSkip(4);
                 } else {
-                    pck.msbPutW(0, asNum16bit(i));
+                    pck.msbPutW(0, tabRouteUtil.asNum16bit(i));
                     pck.putSkip(2);
                 }
             }
@@ -2654,7 +2608,7 @@ public class rtrBgpUtil {
             hlp.msbPutD(0, ntry.best.aggrAs);
             hlp.putSkip(4);
         } else {
-            hlp.msbPutW(0, asNum16bit(ntry.best.aggrAs));
+            hlp.msbPutW(0, tabRouteUtil.asNum16bit(ntry.best.aggrAs));
             hlp.putSkip(2);
         }
         hlp.putAddr(0, ntry.best.aggrRtr.toIPv4());
@@ -3064,266 +3018,6 @@ public class rtrBgpUtil {
             writePrefix(safi, hlp, ntry);
         }
         placeAttrib(flagOptional, attrUnReach, trg, hlp);
-    }
-
-    /**
-     * find in address list
-     *
-     * @param <T> address type
-     * @param lst list of addresses
-     * @param adr address to find
-     * @return index of entry, -1 if not found
-     */
-    public static <T extends addrType> int findAddrList(List<T> lst, T adr) {
-        for (int i = 0; i < lst.size(); i++) {
-            if (adr.compare(lst.get(i), adr) == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * find on integer list
-     *
-     * @param lst list to use
-     * @param val value to find
-     * @return position, -1 if not found
-     */
-    public static int findIntList(List<Integer> lst, int val) {
-        if (lst == null) {
-            return -1;
-        }
-        for (int i = 0; i < lst.size(); i++) {
-            if (lst.get(i) == val) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * first on integer list
-     *
-     * @param lst list to use
-     * @param val value to check
-     * @return false if yes, true if not
-     */
-    public static boolean firstIntList(List<Integer> lst, int val) {
-        if (lst == null) {
-            return true;
-        }
-        if (lst.size() < 1) {
-            return true;
-        }
-        if (lst.get(0) != val) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * find on long list
-     *
-     * @param lst list to use
-     * @param val value to find
-     * @return position, -1 if not found
-     */
-    public static int findLongList(List<Long> lst, long val) {
-        if (lst == null) {
-            return -1;
-        }
-        for (int i = 0; i < lst.size(); i++) {
-            if (lst.get(i) == val) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * find on large list
-     *
-     * @param lst list to use
-     * @param val value to find
-     * @return position, -1 if not found
-     */
-    public static int findLrgList(List<tabLargeComm> lst, tabLargeComm val) {
-        if (lst == null) {
-            return -1;
-        }
-        for (int i = 0; i < lst.size(); i++) {
-            if (val.compare(val, lst.get(i)) == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * replace on integer list
-     *
-     * @param lst list to use
-     * @param src source to replace
-     * @param trg target to replace
-     */
-    public static void replaceIntList(List<Integer> lst, int src, int trg) {
-        if (lst == null) {
-            return;
-        }
-        for (int i = 0; i < lst.size(); i++) {
-            if (lst.get(i) == src) {
-                lst.set(i, trg);
-            }
-        }
-    }
-
-    /**
-     * replace on integer list
-     *
-     * @param lst list to use
-     * @param src source to replace
-     * @return number of occurences removed
-     */
-    public static int removeIntList(List<Integer> lst, int src) {
-        if (lst == null) {
-            return 0;
-        }
-        int o = 0;
-        for (int i = lst.size() - 1; i >= 0; i--) {
-            if (lst.get(i) == src) {
-                lst.remove(i);
-                o++;
-            }
-        }
-        return o;
-    }
-
-    /**
-     * remove private as numbers
-     *
-     * @param lst list to use
-     * @return number of occurences removed
-     */
-    public static int removePrivateAs(List<Integer> lst) {
-        if (lst == null) {
-            return 0;
-        }
-        int o = 0;
-        for (int i = lst.size() - 1; i >= 0; i--) {
-            if (asNumPrivate(lst.get(i))) {
-                lst.remove(i);
-                o++;
-            }
-        }
-        return o;
-    }
-
-    /**
-     * remove first as numbers
-     *
-     * @param attr attribute to update
-     * @return number of occurences removed
-     */
-    public static int removeFirstAs(tabRouteAttr<addrIP> attr) {
-        if (attr.pathSeq == null) {
-            return 0;
-        }
-        if (attr.pathSeq.size() < 1) {
-            return 0;
-        }
-        int o = attr.pathSeq.get(0);
-        int i = removeIntList(attr.pathSeq, o);
-        i += removeIntList(attr.pathSet, o);
-        return i;
-    }
-
-    /**
-     * remove from standard community
-     *
-     * @param attr attribute to update
-     * @param mtch match to remove
-     * @return number of occurences removed
-     */
-    public static int removeStdComm(tabRouteAttr<addrIP> attr, String mtch) {
-        if (attr.stdComm == null) {
-            return 0;
-        }
-        int o = 0;
-        for (int i = attr.stdComm.size() - 1; i >= 0; i--) {
-            if (!tabRtrmapN.stdComm2string(attr.stdComm.get(i)).matches(mtch)) {
-                continue;
-            }
-            attr.stdComm.remove(i);
-            o++;
-        }
-        return o;
-    }
-
-    /**
-     * remove from extended community
-     *
-     * @param attr attribute to update
-     * @param mtch match to remove
-     * @return number of occurences removed
-     */
-    public static int removeExtComm(tabRouteAttr<addrIP> attr, String mtch) {
-        if (attr.extComm == null) {
-            return 0;
-        }
-        int o = 0;
-        for (int i = attr.extComm.size() - 1; i >= 0; i--) {
-            if (!tabRtrmapN.extComm2string(attr.extComm.get(i)).matches(mtch)) {
-                continue;
-            }
-            attr.extComm.remove(i);
-            o++;
-        }
-        return o;
-    }
-
-    /**
-     * remove from large community
-     *
-     * @param attr attribute to update
-     * @param mtch match to remove
-     * @return number of occurences removed
-     */
-    public static int removeLrgComm(tabRouteAttr<addrIP> attr, String mtch) {
-        if (attr.lrgComm == null) {
-            return 0;
-        }
-        int o = 0;
-        for (int i = attr.lrgComm.size() - 1; i >= 0; i--) {
-            if (!("" + attr.lrgComm.get(i)).matches(mtch)) {
-                continue;
-            }
-            attr.lrgComm.remove(i);
-            o++;
-        }
-        return o;
-    }
-
-    /**
-     * remove from cluster list
-     *
-     * @param attr attribute to update
-     * @param mtch match to remove
-     * @return number of occurences removed
-     */
-    public static int removeClstLst(tabRouteAttr<addrIP> attr, String mtch) {
-        if (attr.clustList == null) {
-            return 0;
-        }
-        int o = 0;
-        for (int i = attr.clustList.size() - 1; i >= 0; i--) {
-            if (!("" + attr.clustList.get(i)).matches(mtch)) {
-                continue;
-            }
-            attr.clustList.remove(i);
-            o++;
-        }
-        return o;
     }
 
 }

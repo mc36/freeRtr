@@ -23,8 +23,8 @@ import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
-import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userUpgrade;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -656,7 +656,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 a = "";
             }
         }
-        sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteAttr.dumpAddrList(ntry.best.clustList));
+        sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteUtil.dumpAddrList(ntry.best.clustList));
     }
 
 }
@@ -814,7 +814,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 int cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
                 addrIP adr = new addrIP();
                 adr.fromIPv4addr(lower.lower.routerID);
-                if (rtrBgpUtil.findAddrList(ntry.best.clustList, adr) >= 0) {
+                if (tabRouteUtil.findAddrList(ntry.best.clustList, adr) >= 0) {
                     if (cnt > 0) {
                         lower.lower.notif.wakeup();
                     }

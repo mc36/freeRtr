@@ -105,6 +105,7 @@ import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabSession;
 import net.freertr.util.bits;
@@ -3598,7 +3599,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry, false));
+            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRouteUtil.string2rd(cmd.word()), ntry, false));
             return;
         }
         if (a.equals("flaprevpath")) {
@@ -3607,7 +3608,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRtrmapN.string2rd(cmd.word()), ntry, true));
+            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRouteUtil.string2rd(cmd.word()), ntry, true));
             return;
         }
         if (a.equals("allroute")) {
@@ -3617,7 +3618,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
             rdr.putStrTab(r.bgp.getAllRoutes(sfi, ntry));
             return;
         }
@@ -3642,7 +3643,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
             tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
             tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
             if ((acc1 == null) || (acc2 == null)) {
@@ -3811,7 +3812,7 @@ public class userShow {
                     return;
                 }
             }
-            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
             ntry = tab.find(ntry);
             if (ntry == null) {
                 cmd.error("no such prefix");
@@ -3852,7 +3853,7 @@ public class userShow {
                     return;
                 }
             }
-            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
             ntry = tab.find(ntry);
             if (ntry == null) {
                 cmd.error("no such prefix");
@@ -3947,7 +3948,7 @@ public class userShow {
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
-            ntry.stdCommMatch = tabRtrmapN.string2stdComms(a);
+            ntry.stdCommMatch = tabRouteUtil.string2stdComms(a);
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -3960,7 +3961,7 @@ public class userShow {
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
-            ntry.extCommMatch = tabRtrmapN.string2extComms(a);
+            ntry.extCommMatch = tabRouteUtil.string2extComms(a);
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -3973,7 +3974,7 @@ public class userShow {
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
-            ntry.lrgCommMatch = tabRtrmapN.string2lrgComms(a);
+            ntry.lrgCommMatch = tabRouteUtil.string2lrgComms(a);
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -3986,7 +3987,7 @@ public class userShow {
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
-            ntry.rouDstMatch = tabRtrmapN.string2rd(a);
+            ntry.rouDstMatch = tabRouteUtil.string2rd(a);
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4632,7 +4633,7 @@ public class userShow {
                     return;
                 }
             }
-            ntry.rouDst = tabRtrmapN.string2rd(cmd.word());
+            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
             ntry = tab.find(ntry);
             if (ntry == null) {
                 cmd.error("no such prefix");
@@ -4823,7 +4824,7 @@ public class userShow {
         userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2ifc|2uni|2mlt|2flw|2lab|2con");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
-            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + v.fwd4.actualU.size() + "|" + v.fwd6.actualU.size() + "|" + v.fwd4.actualM.size() + "|" + v.fwd6.actualM.size() + "|" + v.fwd4.actualF.size() + "|" + v.fwd6.actualF.size() + "|" + v.fwd4.labeldR.size() + "|" + v.fwd6.labeldR.size() + "|" + v.fwd4.connedR.size() + "|" + v.fwd6.connedR.size());
+            l.add(v.name + "|" + tabRouteUtil.rd2string(v.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + v.fwd4.actualU.size() + "|" + v.fwd6.actualU.size() + "|" + v.fwd4.actualM.size() + "|" + v.fwd6.actualM.size() + "|" + v.fwd4.actualF.size() + "|" + v.fwd6.actualF.size() + "|" + v.fwd4.labeldR.size() + "|" + v.fwd6.labeldR.size() + "|" + v.fwd4.connedR.size() + "|" + v.fwd6.connedR.size());
         }
         rdr.putStrTab(l);
     }
@@ -4832,7 +4833,7 @@ public class userShow {
         userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2echSnt|2echGot|2echOk|2echPnd|2errSnt|2errGot");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
-            l.add(v.name + "|" + tabRtrmapN.rd2string(v.rd) + "|" + v.fwd4.echoSent + "|" + v.fwd6.echoSent + "|" + v.fwd4.echoRcvd + "|" + v.fwd6.echoRcvd + "|" + v.fwd4.echoRply + "|" + v.fwd6.echoRply + "|" + v.fwd4.echoes.size() + "|" + v.fwd6.echoes.size() + "|" + v.fwd4.errorSent + "|" + v.fwd6.errorSent + "|" + v.fwd4.errorRcvd + "|" + v.fwd6.errorRcvd);
+            l.add(v.name + "|" + tabRouteUtil.rd2string(v.rd) + "|" + v.fwd4.echoSent + "|" + v.fwd6.echoSent + "|" + v.fwd4.echoRcvd + "|" + v.fwd6.echoRcvd + "|" + v.fwd4.echoRply + "|" + v.fwd6.echoRply + "|" + v.fwd4.echoes.size() + "|" + v.fwd6.echoes.size() + "|" + v.fwd4.errorSent + "|" + v.fwd6.errorSent + "|" + v.fwd4.errorRcvd + "|" + v.fwd6.errorRcvd);
         }
         rdr.putStrTab(l);
     }
@@ -4841,7 +4842,7 @@ public class userShow {
         counter ch = f.cntrH.sumUp(false);
         counter ct = f.cntrT.sumUp(false);
         counter cl = f.cntrL.sumUp(false);
-        return f.cfgName + ":" + f.ipVersion + "|" + tabRtrmapN.rd2string(f.rd) + "|" + ch.packRx + "|" + ch.byteRx + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx;
+        return f.cfgName + ":" + f.ipVersion + "|" + tabRouteUtil.rd2string(f.rd) + "|" + ch.packRx + "|" + ch.byteRx + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx;
     }
 
     private void doShowVrfTraff() {

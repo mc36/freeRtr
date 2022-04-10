@@ -759,31 +759,6 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
-     * compare two integer lists
-     *
-     * @param l1 first list
-     * @param l2 second list
-     * @return true if differs
-     */
-    public static boolean diffIntList(List<Integer> l1, List<Integer> l2) {
-        if (l1 == null) {
-            return l2 != null;
-        }
-        if (l2 == null) {
-            return true;
-        }
-        if (l1.size() != l2.size()) {
-            return true;
-        }
-        for (int i = 0; i < l1.size(); i++) {
-            if (l1.get(i).compareTo(l2.get(i)) != 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * check if differs from other
      *
      * @param other other to test
@@ -962,22 +937,22 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.originator != null) {
             return 54;
         }
-        if (diffIntList(labelRem, other.labelRem)) {
+        if (tabRouteUtil.diffIntList(labelRem, other.labelRem)) {
             return 55;
         }
-        if (diffIntList(stdComm, other.stdComm)) {
+        if (tabRouteUtil.diffIntList(stdComm, other.stdComm)) {
             return 56;
         }
-        if (diffIntList(pathSeq, other.pathSeq)) {
+        if (tabRouteUtil.diffIntList(pathSeq, other.pathSeq)) {
             return 57;
         }
-        if (diffIntList(pathSet, other.pathSet)) {
+        if (tabRouteUtil.diffIntList(pathSet, other.pathSet)) {
             return 58;
         }
-        if (diffIntList(confSeq, other.confSeq)) {
+        if (tabRouteUtil.diffIntList(confSeq, other.confSeq)) {
             return 59;
         }
-        if (diffIntList(confSet, other.confSet)) {
+        if (tabRouteUtil.diffIntList(confSet, other.confSet)) {
             return 60;
         }
         if (attribVal != null) {
@@ -1134,8 +1109,8 @@ public class tabRouteAttr<T extends addrType> {
         if (imp.metric > metric) {
             return false;
         }
-        il = listLen(imp.clustList);
-        ol = listLen(clustList);
+        il = tabRouteUtil.listLen(imp.clustList);
+        ol = tabRouteUtil.listLen(clustList);
         if (il < ol) {
             return true;
         }
@@ -1149,26 +1124,13 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
-     * size of list
-     *
-     * @param lst list to check
-     * @return size of list
-     */
-    public static int listLen(List<?> lst) {
-        if (lst == null) {
-            return 0;
-        }
-        return lst.size();
-    }
-
-    /**
      * size of as path
      *
      * @return size of as path
      */
     public int asPathLen() {
-        int i = listLen(pathSeq);
-        if (listLen(pathSet) > 0) {
+        int i = tabRouteUtil.listLen(pathSeq);
+        if (tabRouteUtil.listLen(pathSet) > 0) {
             i++;
         }
         return i;
@@ -1233,53 +1195,10 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted string
      */
     public String asPathStr() {
-        return dumpIntList(confSeq, "(", ") ")
-                + dumpIntList(confSet, "[", "] ")
-                + dumpIntList(pathSeq, "", "")
-                + dumpIntList(pathSet, " {", "}");
-    }
-
-    /**
-     * dump integer list
-     *
-     * @param l list to dump
-     * @param beg beginning
-     * @param end ending
-     * @return dumped list
-     */
-    public static String dumpIntList(List<Integer> l, String beg, String end) {
-        if (l == null) {
-            return "";
-        }
-        if (l.size() < 1) {
-            return "";
-        }
-        String s = "";
-        for (int i = 0; i < l.size(); i++) {
-            s += " " + bits.num2str(l.get(i));
-        }
-        return beg + s.substring(1, s.length()) + end;
-    }
-
-    /**
-     * dump address list
-     *
-     * @param <T> type of address
-     * @param l address list
-     * @return dumped list
-     */
-    public static <T extends addrType> String dumpAddrList(List<T> l) {
-        if (l == null) {
-            return "";
-        }
-        if (l.size() < 1) {
-            return "";
-        }
-        String s = "";
-        for (int i = 0; i < l.size(); i++) {
-            s += " " + l.get(i);
-        }
-        return s.substring(1, s.length());
+        return tabRouteUtil.dumpIntList(confSeq, "(", ") ")
+                + tabRouteUtil.dumpIntList(confSet, "[", "] ")
+                + tabRouteUtil.dumpIntList(pathSeq, "", "")
+                + tabRouteUtil.dumpIntList(pathSet, " {", "}");
     }
 
     /**
@@ -1612,26 +1531,16 @@ public class tabRouteAttr<T extends addrType> {
             ntry.linkStat = null;
         }
         if ((ign & 0x2000000) != 0) {
-            ntry.clustList = nullEmptyList(ntry.clustList);
-            ntry.confSeq = nullEmptyList(ntry.confSeq);
-            ntry.confSet = nullEmptyList(ntry.confSet);
-            ntry.extComm = nullEmptyList(ntry.extComm);
-            ntry.labelRem = nullEmptyList(ntry.labelRem);
-            ntry.lrgComm = nullEmptyList(ntry.lrgComm);
-            ntry.pathSeq = nullEmptyList(ntry.pathSeq);
-            ntry.pathSet = nullEmptyList(ntry.pathSet);
-            ntry.stdComm = nullEmptyList(ntry.stdComm);
+            ntry.clustList = tabRouteUtil.nullEmptyList(ntry.clustList);
+            ntry.confSeq = tabRouteUtil.nullEmptyList(ntry.confSeq);
+            ntry.confSet = tabRouteUtil.nullEmptyList(ntry.confSet);
+            ntry.extComm = tabRouteUtil.nullEmptyList(ntry.extComm);
+            ntry.labelRem = tabRouteUtil.nullEmptyList(ntry.labelRem);
+            ntry.lrgComm = tabRouteUtil.nullEmptyList(ntry.lrgComm);
+            ntry.pathSeq = tabRouteUtil.nullEmptyList(ntry.pathSeq);
+            ntry.pathSet = tabRouteUtil.nullEmptyList(ntry.pathSet);
+            ntry.stdComm = tabRouteUtil.nullEmptyList(ntry.stdComm);
         }
-    }
-
-    private static <E extends Object> List<E> nullEmptyList(List<E> o) {
-        if (o == null) {
-            return null;
-        }
-        if (o.size() < 1) {
-            return null;
-        }
-        return o;
     }
 
     /**
@@ -1683,15 +1592,15 @@ public class tabRouteAttr<T extends addrType> {
         l.add("aggregator as|" + bits.num2str(aggrAs));
         l.add("aggregator router|" + aggrRtr);
         l.add("originator|" + originator);
-        l.add("cluster list|" + dumpAddrList(clustList));
+        l.add("cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         l.add("aspath|" + asPathStr());
         l.add("path length|" + asPathLen());
-        l.add("standard community|" + tabRtrmapN.stdComms2string(stdComm));
-        l.add("extended community|" + tabRtrmapN.extComms2string(extComm));
-        l.add("large community|" + tabRtrmapN.lrgComms2string(lrgComm));
+        l.add("standard community|" + tabRouteUtil.stdComms2string(stdComm));
+        l.add("extended community|" + tabRouteUtil.extComms2string(extComm));
+        l.add("large community|" + tabRouteUtil.lrgComms2string(lrgComm));
         l.add("internal source|" + rouSrc);
         l.add("local label|" + labelLoc);
-        l.add("remote label|" + dumpIntList(labelRem, "", ""));
+        l.add("remote label|" + tabRouteUtil.dumpIntList(labelRem, "", ""));
     }
 
     /**
@@ -1731,7 +1640,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShBgpLabels() {
-        return labelLoc + "|" + evpnLab + "|" + pmsiLab + "|" + dumpIntList(labelRem, "", "") + "|" + nextHop;
+        return labelLoc + "|" + evpnLab + "|" + pmsiLab + "|" + tabRouteUtil.dumpIntList(labelRem, "", "") + "|" + nextHop;
     }
 
     /**
@@ -1749,7 +1658,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShLdp() {
-        return labelLoc + "|" + dumpIntList(labelRem, "", "") + "|" + nextHop;
+        return labelLoc + "|" + tabRouteUtil.dumpIntList(labelRem, "", "") + "|" + nextHop;
     }
 
     /**

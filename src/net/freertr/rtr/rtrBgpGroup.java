@@ -13,6 +13,7 @@ import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
@@ -625,12 +626,12 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.onlyCust = 0;
         }
         if (removePrivAsOut) {
-            rtrBgpUtil.removePrivateAs(ntry.pathSeq);
-            rtrBgpUtil.removePrivateAs(ntry.pathSet);
+            tabRouteUtil.removePrivateAs(ntry.pathSeq);
+            tabRouteUtil.removePrivateAs(ntry.pathSet);
         }
         if (overridePeerOut) {
-            rtrBgpUtil.replaceIntList(ntry.pathSeq, remoteAs, localAs);
-            rtrBgpUtil.replaceIntList(ntry.pathSet, remoteAs, localAs);
+            tabRouteUtil.replaceIntList(ntry.pathSeq, remoteAs, localAs);
+            tabRouteUtil.replaceIntList(ntry.pathSet, remoteAs, localAs);
         }
         ntry.srcRtr = null;
         ntry.oldHop = null;
@@ -769,19 +770,19 @@ public class rtrBgpGroup extends rtrBgpParam {
                 break;
         }
         if (!allowAsOut) {
-            if (rtrBgpUtil.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {
+            if (tabRouteUtil.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {
                 return null;
             }
-            if (rtrBgpUtil.findIntList(ntry.best.pathSet, remoteAs) >= 0) {
+            if (tabRouteUtil.findIntList(ntry.best.pathSet, remoteAs) >= 0) {
                 return null;
             }
         }
-        if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoAdvertise) >= 0) {
+        if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoAdvertise) >= 0) {
             return null;
         }
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
-                if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
+                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
@@ -797,7 +798,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerCnfed:
-                if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
+                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
                     return null;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
@@ -842,7 +843,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerServr:
-                if (rtrBgpUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
+                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);

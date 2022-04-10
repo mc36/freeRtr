@@ -462,17 +462,17 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case clrFirstas:
                 return "clear firstas";
             case setStdcomm:
-                return "set stdcomm " + tabRtrmapN.stdComms2string(intLst);
+                return "set stdcomm " + tabRouteUtil.stdComms2string(intLst);
             case setExtcomm:
-                return "set extcomm " + tabRtrmapN.extComms2string(lngLst);
+                return "set extcomm " + tabRouteUtil.extComms2string(lngLst);
             case setLrgcomm:
-                return "set lrgcomm " + tabRtrmapN.lrgComms2string(lrgLst);
+                return "set lrgcomm " + tabRouteUtil.lrgComms2string(lrgLst);
             case setNexthop:
                 return "set nexthop " + nexthopSet;
             case setAspath:
-                return "set aspath " + tabRouteAttr.dumpIntList(intLst, "", "");
+                return "set aspath " + tabRouteUtil.dumpIntList(intLst, "", "");
             case setAsconf:
-                return "set asconfed " + tabRouteAttr.dumpIntList(intLst, "", "");
+                return "set asconfed " + tabRouteUtil.dumpIntList(intLst, "", "");
             case setDistance:
                 return "set distance " + intSet;
             case setMetric:
@@ -523,17 +523,17 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case aspath:
                 return "aspath " + strVal;
             case peerstd:
-                return "peerstd " + tabRtrmapN.stdComms2string(intLst);
+                return "peerstd " + tabRouteUtil.stdComms2string(intLst);
             case peerlrg:
-                return "peerlrg " + tabRtrmapN.lrgComms2string(lrgLst);
+                return "peerlrg " + tabRouteUtil.lrgComms2string(lrgLst);
             case stdcomm:
-                return "stdcomm " + tabRtrmapN.stdComms2string(intLst);
+                return "stdcomm " + tabRouteUtil.stdComms2string(intLst);
             case extcomm:
-                return "extcomm " + tabRtrmapN.extComms2string(lngLst);
+                return "extcomm " + tabRouteUtil.extComms2string(lngLst);
             case lrgcomm:
-                return "lrgcomm " + tabRtrmapN.lrgComms2string(lrgLst);
+                return "lrgcomm " + tabRouteUtil.lrgComms2string(lrgLst);
             case roudst:
-                return "rd " + tabRtrmapN.rd2string(rouDstMatch);
+                return "rd " + tabRouteUtil.rd2string(rouDstMatch);
             case network:
                 return "network " + networkMatch;
             case nostdcomm:
@@ -612,35 +612,35 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case aspath:
                 return net.best.asPathStr().matches(strVal);
             case peerstd:
-                int i = tabRtrmapN.stdcommAsn(intLst.get(0), asn);
-                if (rtrBgpUtil.findIntList(net.best.stdComm, i) < 0) {
+                int i = tabRouteUtil.stdCommAsn(intLst.get(0), asn);
+                if (tabRouteUtil.findIntList(net.best.stdComm, i) < 0) {
                     return false;
                 }
                 return true;
             case peerlrg:
                 tabLargeComm lrg = lrgLst.get(0).copyBytes();
                 lrg.d2 = asn;
-                if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrg) < 0) {
+                if (tabRouteUtil.findLrgList(net.best.lrgComm, lrg) < 0) {
                     return false;
                 }
                 return true;
             case stdcomm:
                 for (i = 0; i < intLst.size(); i++) {
-                    if (rtrBgpUtil.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
+                    if (tabRouteUtil.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
                         return false;
                     }
                 }
                 return true;
             case extcomm:
                 for (i = 0; i < lngLst.size(); i++) {
-                    if (rtrBgpUtil.findLongList(net.best.extComm, lngLst.get(i)) < 0) {
+                    if (tabRouteUtil.findLongList(net.best.extComm, lngLst.get(i)) < 0) {
                         return false;
                     }
                 }
                 return true;
             case lrgcomm:
                 for (i = 0; i < lrgLst.size(); i++) {
-                    if (rtrBgpUtil.findLrgList(net.best.lrgComm, lrgLst.get(i)) < 0) {
+                    if (tabRouteUtil.findLrgList(net.best.lrgComm, lrgLst.get(i)) < 0) {
                         return false;
                     }
                 }
@@ -677,8 +677,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 return res.worker.getStatus();
             case privas:
-                i = rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
-                i += rtrBgpUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
+                i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
+                i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
             case prfxlst:
                 return prfxlst.matches(afi, asn, net.prefix);
@@ -755,31 +755,31 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     private void doUpdate(tabRouteAttr<addrIP> attr, int asn) {
         switch (doMode) {
             case clrStdcomm:
-                rtrBgpUtil.removeStdComm(attr, strVal);
+                tabRouteUtil.removeStdComm(attr, strVal);
                 return;
             case clrExtcomm:
-                rtrBgpUtil.removeExtComm(attr, strVal);
+                tabRouteUtil.removeExtComm(attr, strVal);
                 return;
             case clrLrgcomm:
-                rtrBgpUtil.removeLrgComm(attr, strVal);
+                tabRouteUtil.removeLrgComm(attr, strVal);
                 return;
             case clrClstlst:
-                rtrBgpUtil.removeClstLst(attr, strVal);
+                tabRouteUtil.removeClstLst(attr, strVal);
                 return;
             case clrPrivas:
-                rtrBgpUtil.removePrivateAs(attr.pathSeq);
-                rtrBgpUtil.removePrivateAs(attr.pathSet);
+                tabRouteUtil.removePrivateAs(attr.pathSeq);
+                tabRouteUtil.removePrivateAs(attr.pathSet);
                 return;
             case clrPeeras:
-                rtrBgpUtil.removeIntList(attr.pathSeq, asn);
-                rtrBgpUtil.removeIntList(attr.pathSet, asn);
+                tabRouteUtil.removeIntList(attr.pathSeq, asn);
+                tabRouteUtil.removeIntList(attr.pathSet, asn);
                 return;
             case clrExactas:
-                rtrBgpUtil.removeIntList(attr.pathSeq, intVal);
-                rtrBgpUtil.removeIntList(attr.pathSet, intVal);
+                tabRouteUtil.removeIntList(attr.pathSeq, intVal);
+                tabRouteUtil.removeIntList(attr.pathSet, intVal);
                 return;
             case clrFirstas:
-                rtrBgpUtil.removeFirstAs(attr);
+                tabRouteUtil.removeFirstAs(attr);
                 return;
             case setStdcomm:
                 attr.stdComm = tabLabel.prependLabels(attr.stdComm, intLst);

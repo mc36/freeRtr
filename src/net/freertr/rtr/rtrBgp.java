@@ -43,6 +43,7 @@ import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
@@ -1857,7 +1858,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
 
     private void computeIncrEntry(int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
-            logger.debug("bestpath for " + tabRtrmapN.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
+            logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
         }
         tabRouteEntry<addrIP> best = org.find(curr);
         if (best != null) {
@@ -3087,7 +3088,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("afi-vpls")) {
             rtrBgpVpls cur = new rtrBgpVpls(this);
-            cur.id = tabRtrmapN.string2rd(cmd.word());
+            cur.id = tabRouteUtil.string2rd(cmd.word());
             s = cmd.word();
             if (s.equals("bridge-group")) {
                 rtrBgpVpls old = vpls.del(cur);

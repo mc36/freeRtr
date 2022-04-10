@@ -16,7 +16,7 @@ import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -90,7 +90,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      * @param beg beginning
      */
     public void getConfig(List<String> l, String beg) {
-        beg = beg + "afi-vpls " + tabRtrmapN.rd2string(id) + " ";
+        beg = beg + "afi-vpls " + tabRouteUtil.rd2string(id) + " ";
         l.add(beg + "bridge-group " + bridge.name);
         l.add(beg + "ve-id " + veId + " " + veMax);
         if (iface != null) {
@@ -138,7 +138,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
                 }
                 ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(adr, adr.maxBits()));
             }
-            ntry.best.extComm.add(tabRtrmapN.agi2comm(id));
+            ntry.best.extComm.add(tabRouteUtil.agi2comm(id));
         } else {
             if (veLab == null) {
                 veLab = tabLabel.allocate(12, veMax);
@@ -155,9 +155,9 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             bits.msbPutD(buf, 2, (veLab[0].label << 4) | 1);
             bits.msbPutW(buf, 1, veMax);
             ntry.prefix.wildcard.fromBuf(buf, 0);
-            ntry.best.extComm.add(tabRtrmapN.l2info2comm(19, 0, bridge.bridgeHed.getMTUsize()));
+            ntry.best.extComm.add(tabRouteUtil.l2info2comm(19, 0, bridge.bridgeHed.getMTUsize()));
         }
-        ntry.best.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
+        ntry.best.extComm.add(tabRouteUtil.rt2comm(bridge.bridgeHed.rtExp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         ntry.rouDst = bridge.bridgeHed.rd;
         tab.add(tabRoute.addType.better, ntry, true, true);
@@ -173,7 +173,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         for (int i = 0; i < peers.size(); i++) {
             peers.get(i).needed = false;
         }
-        long rt = tabRtrmapN.rt2comm(bridge.bridgeHed.rtImp);
+        long rt = tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp);
         byte[] buf = new byte[addrIP.size];
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
@@ -183,7 +183,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             if (ntry.best.extComm == null) {
                 continue;
             }
-            if (rtrBgpUtil.findLongList(ntry.best.extComm, rt) < 0) {
+            if (tabRouteUtil.findLongList(ntry.best.extComm, rt) < 0) {
                 continue;
             }
             rtrBgpVplsPeer per = new rtrBgpVplsPeer(parent, this);
@@ -217,7 +217,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             pwom.target = "" + per.peer;
             pwom.vrf = parent.vrfCore;
             pwom.srcIfc = iface;
-            pwom.vcid = tabRtrmapN.agi2comm(id);
+            pwom.vcid = tabRouteUtil.agi2comm(id);
             pwom.general = true;
             pwom.descr = null;
             per.brdg = bridge.bridgeHed.newIface(false, true, false);
@@ -270,7 +270,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      */
     public void doStop() {
         if (debugger.rtrBgpEvnt) {
-            logger.debug("stop " + tabRtrmapN.rd2string(id));
+            logger.debug("stop " + tabRouteUtil.rd2string(id));
         }
         if (veLab != null) {
             tabLabel.release(veLab, 12);

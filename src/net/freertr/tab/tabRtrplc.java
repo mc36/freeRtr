@@ -179,7 +179,7 @@ public class tabRtrplc {
                         scr.add(ntry.strVal);
                     }
                     pos--;
-                    tabRtrmapN.doTcl(afi, asn, net.best, net, scr);
+                    tabRouteUtil.doTcl(afi, asn, net.best, net, scr);
                     continue;
                 default:
                     if (copy) {

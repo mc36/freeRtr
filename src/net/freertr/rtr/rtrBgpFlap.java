@@ -5,7 +5,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 
 /**
@@ -68,7 +68,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     }
 
     public String toString() {
-        return addrPrefix.ip2str(prefix) + " " + tabRtrmapN.rd2string(rd) + "|" + count + "|" + paths.size() + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + count + "|" + paths.size() + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
     /**
@@ -77,7 +77,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
      * @return paths
      */
     public String toIncons() {
-        return addrPrefix.ip2str(prefix) + " " + tabRtrmapN.rd2string(rd) + "|" + getPaths();
+        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + getPaths();
     }
 
     /**

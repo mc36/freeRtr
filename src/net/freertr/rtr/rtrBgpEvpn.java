@@ -22,7 +22,7 @@ import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -254,7 +254,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         }
         ntry.rouDst = bridge.bridgeHed.rd;
         ntry.best.extComm = new ArrayList<Long>();
-        ntry.best.extComm.add(tabRtrmapN.rt2comm(bridge.bridgeHed.rtExp));
+        ntry.best.extComm.add(tabRouteUtil.rt2comm(bridge.bridgeHed.rtExp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         byte[] buf = new byte[addrIP.size];
         ntry.prefix.wildcard.fromBuf(buf, 0);
@@ -285,7 +285,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 break;
             case vxlan:
                 buf[0] = 2; // mac advertisement
-                ntry.best.extComm.add(tabRtrmapN.tuntyp2comm(8));
+                ntry.best.extComm.add(tabRouteUtil.tunTyp2comm(8));
                 ntry.best.evpnLab = id;
                 List<addrMac> cmac = bridge.bridgeHed.getMacList();
                 for (int i = 0; i < cmac.size(); i++) {
@@ -368,7 +368,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         for (int i = 0; i < peers.size(); i++) {
             peers.get(i).needed = 0;
         }
-        long rt = tabRtrmapN.rt2comm(bridge.bridgeHed.rtImp);
+        long rt = tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp);
         byte[] buf = new byte[addrIP.size];
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
@@ -378,7 +378,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
             if (ntry.best.extComm == null) {
                 continue;
             }
-            if (rtrBgpUtil.findLongList(ntry.best.extComm, rt) < 0) {
+            if (tabRouteUtil.findLongList(ntry.best.extComm, rt) < 0) {
                 continue;
             }
             rtrBgpEvpnPeer per;

@@ -27,7 +27,7 @@ import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabQos;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -624,15 +624,15 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         l.add("vrf definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
-        l.add(cmds.tabulator + "rd " + tabRtrmapN.rd2string(rd));
+        l.add(cmds.tabulator + "rd " + tabRouteUtil.rd2string(rd));
         String s = "";
         for (int i = 0; i < rtImp.size(); i++) {
-            s += " " + tabRtrmapN.rd2string(rtImp.get(i));
+            s += " " + tabRouteUtil.rd2string(rtImp.get(i));
         }
         l.add(cmds.tabulator + "rt-import" + s);
         s = "";
         for (int i = 0; i < rtExp.size(); i++) {
-            s += " " + tabRtrmapN.rd2string(rtExp.get(i));
+            s += " " + tabRouteUtil.rd2string(rtExp.get(i));
         }
         l.add(cmds.tabulator + "rt-export" + s);
         s = "unknown";
@@ -842,7 +842,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("rd")) {
-            rd = tabRtrmapN.string2rd(cmd.word());
+            rd = tabRouteUtil.string2rd(cmd.word());
             fwd4.rd = rd;
             fwd6.rd = rd;
             return;
@@ -854,7 +854,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 if (a.length() < 1) {
                     break;
                 }
-                rtImp.add(tabRtrmapN.string2rd(a));
+                rtImp.add(tabRouteUtil.string2rd(a));
             }
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
@@ -867,7 +867,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 if (a.length() < 1) {
                     break;
                 }
-                rtExp.add(tabRtrmapN.string2rd(a));
+                rtExp.add(tabRouteUtil.string2rd(a));
             }
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
@@ -881,8 +881,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
                 if (a.length() < 1) {
                     break;
                 }
-                rtImp.add(tabRtrmapN.string2rd(a));
-                rtExp.add(tabRtrmapN.string2rd(a));
+                rtImp.add(tabRouteUtil.string2rd(a));
+                rtExp.add(tabRouteUtil.string2rd(a));
             }
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();

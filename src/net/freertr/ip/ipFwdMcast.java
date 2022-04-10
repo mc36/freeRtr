@@ -4,7 +4,7 @@ import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -227,7 +227,7 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
     public void getDump(userFormat res) {
         res.add("source|" + source);
         res.add("group|" + group);
-        res.add("rd|" + tabRtrmapN.rd2string(rd));
+        res.add("rd|" + tabRouteUtil.rd2string(rd));
         res.add("created|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3));
         res.add("lasted|" + bits.timePast(created));
         res.add("iface|" + iface);

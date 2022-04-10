@@ -9,6 +9,7 @@ import net.freertr.tab.tabLargeComm;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.user.userEditor;
 import net.freertr.user.userFilter;
@@ -466,7 +467,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 return;
             }
             if (a.equals("peerstd")) {
-                ntry.peerStdMatch = tabRtrmapN.string2stdComm(cmd.word());
+                ntry.peerStdMatch = tabRouteUtil.string2stdComm(cmd.word());
                 return;
             }
             if (a.equals("peerlrg")) {
@@ -478,19 +479,19 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 return;
             }
             if (a.equals("stdcomm")) {
-                ntry.stdCommMatch = tabRtrmapN.string2stdComms(cmd.getRemaining());
+                ntry.stdCommMatch = tabRouteUtil.string2stdComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("extcomm")) {
-                ntry.extCommMatch = tabRtrmapN.string2extComms(cmd.getRemaining());
+                ntry.extCommMatch = tabRouteUtil.string2extComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("lrgcomm")) {
-                ntry.lrgCommMatch = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+                ntry.lrgCommMatch = tabRouteUtil.string2lrgComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("rd")) {
-                ntry.rouDstMatch = tabRtrmapN.string2rd(cmd.word());
+                ntry.rouDstMatch = tabRouteUtil.string2rd(cmd.word());
                 return;
             }
             if (a.equals("network")) {
@@ -714,15 +715,15 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
             if (a.equals("stdcomm")) {
-                ntry.stdCommSet = tabRtrmapN.string2stdComms(cmd.getRemaining());
+                ntry.stdCommSet = tabRouteUtil.string2stdComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("extcomm")) {
-                ntry.extCommSet = tabRtrmapN.string2extComms(cmd.getRemaining());
+                ntry.extCommSet = tabRouteUtil.string2extComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("lrgcomm")) {
-                ntry.lrgCommSet = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+                ntry.lrgCommSet = tabRouteUtil.string2lrgComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("nexthop")) {
@@ -731,11 +732,11 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 return;
             }
             if (a.equals("aspath")) {
-                ntry.aspathSet = tabRtrmapN.string2intList(cmd.getRemaining());
+                ntry.aspathSet = tabRouteUtil.string2intList(cmd.getRemaining());
                 return;
             }
             if (a.equals("asconfed")) {
-                ntry.aspathCnf = tabRtrmapN.string2intList(cmd.getRemaining());
+                ntry.aspathCnf = tabRouteUtil.string2intList(cmd.getRemaining());
                 return;
             }
             if (a.equals("distance")) {

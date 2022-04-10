@@ -17,6 +17,7 @@ import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.util.bits;
@@ -1520,7 +1521,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             i = 0xfe;
         }
         pck.putByte(0, rtrBgpUtil.version);
-        pck.msbPutW(1, rtrBgpUtil.asNum16bit(neigh.localAs));
+        pck.msbPutW(1, tabRouteUtil.asNum16bit(neigh.localAs));
         pck.msbPutW(3, neigh.holdTimer / 1000);
         buf = parent.routerID.getBytes();
         pck.putCopy(buf, 0, 5, buf.length);
@@ -1550,7 +1551,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return true;
         }
         int i = pck.msbGetW(1);
-        if ((neigh.remoteAs != -1) && (i != rtrBgpUtil.asNum16bit(neigh.remoteAs))) {
+        if ((neigh.remoteAs != -1) && (i != tabRouteUtil.asNum16bit(neigh.remoteAs))) {
             logger.info("neighbor " + neigh.peerAddr + " in wrong (" + i + ") as");
             sendNotify(2, 2);
             return true;
@@ -1908,10 +1909,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             String s;
             if (wil == null) {
                 a = "withdraw";
-                s = tabRtrmapN.rd2string(don.rouDst) + " " + don.prefix;
+                s = tabRouteUtil.rd2string(don.rouDst) + " " + don.prefix;
             } else {
                 a = "reachable";
-                s = tabRtrmapN.rd2string(wil.rouDst) + " " + wil.prefix;
+                s = tabRouteUtil.rd2string(wil.rouDst) + " " + wil.prefix;
             }
             logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + a + " " + s);
         }
@@ -2239,7 +2240,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected void prefixWithdraw(int safi, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
+            logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
         if (!afiMsk(peerAfis, safi)) {
             if (debugger.rtrBgpError) {
@@ -2281,7 +2282,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected void prefixReach(int safi, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
+            logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
         if (!afiMsk(peerAfis, safi)) {
             if (debugger.rtrBgpError) {
@@ -2373,7 +2374,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
 
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int safi) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("processing " + tabRtrmapN.rd2string(ntry.rouDst) + " " + ntry.prefix);
+            logger.debug("processing " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }
         switch (neigh.leakRole) {
             case rtrBgpUtil.roleProv:
@@ -2414,13 +2415,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             switch (neigh.peerType) {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
-                    if (rtrBgpUtil.firstIntList(ntry.best.pathSeq, neigh.remoteAs)) {
+                    if (tabRouteUtil.firstIntList(ntry.best.pathSeq, neigh.remoteAs)) {
                         repAsPath++;
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
-                    if (rtrBgpUtil.firstIntList(ntry.best.confSeq, neigh.remoteAs)) {
+                    if (tabRouteUtil.firstIntList(ntry.best.confSeq, neigh.remoteAs)) {
                         repAsConf++;
                         return true;
                     }
@@ -2433,21 +2434,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             switch (neigh.peerType) {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
-                    if (rtrBgpUtil.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
                         repAsPath++;
                         return true;
                     }
-                    if (rtrBgpUtil.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
                         repAsPath++;
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
-                    if (rtrBgpUtil.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
                         repAsConf++;
                         return true;
                     }
-                    if (rtrBgpUtil.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
                         repAsConf++;
                         return true;
                     }
@@ -2467,7 +2468,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     }
                 }
                 if (ntry.best.clustList != null) {
-                    if (rtrBgpUtil.findAddrList(ntry.best.clustList, a) >= 0) {
+                    if (tabRouteUtil.findAddrList(ntry.best.clustList, a) >= 0) {
                         repClstrL++;
                         return true;
                     }
@@ -2488,7 +2489,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 if (ntry.best.clustList == null) {
                     ntry.best.clustList = new ArrayList<addrIP>();
                 }
-                if (rtrBgpUtil.findAddrList(ntry.best.clustList, a) >= 0) {
+                if (tabRouteUtil.findAddrList(ntry.best.clustList, a) >= 0) {
                     repClstrL++;
                     return true;
                 }
@@ -2514,15 +2515,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (ntry.best.extComm == null) {
                 ntry.best.extComm = new ArrayList<Long>();
             }
-            ntry.best.extComm.add(tabRtrmapN.dmzbw2comm(neigh.localAs, neigh.dmzLinkBw));
+            ntry.best.extComm.add(tabRouteUtil.dmzBw2comm(neigh.localAs, neigh.dmzLinkBw));
         }
         if (neigh.removePrivAsIn) {
-            rtrBgpUtil.removePrivateAs(ntry.best.pathSeq);
-            rtrBgpUtil.removePrivateAs(ntry.best.pathSet);
+            tabRouteUtil.removePrivateAs(ntry.best.pathSeq);
+            tabRouteUtil.removePrivateAs(ntry.best.pathSet);
         }
         if (neigh.overridePeerIn) {
-            rtrBgpUtil.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
-            rtrBgpUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
+            tabRouteUtil.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
+            tabRouteUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
         }
         if (neigh.intVpnClnt) {
             rtrBgpUtil.encodeAttribSet(neigh.localAs, ntry);

@@ -197,7 +197,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
                 return true;
             }
         }
-        if (tabRouteAttr.diffIntList(remoteLab, o.remoteLab)) {
+        if (tabRouteUtil.diffIntList(remoteLab, o.remoteLab)) {
             return true;
         }
         if (duplicate == null) {

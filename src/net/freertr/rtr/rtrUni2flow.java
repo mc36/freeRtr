@@ -13,7 +13,7 @@ import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -137,7 +137,7 @@ public class rtrUni2flow extends ipRtr {
                 if (attr.best.extComm == null) {
                     attr.best.extComm = new ArrayList<Long>();
                 }
-                attr.best.extComm.add(tabRtrmapN.rate2comm(trgAs, trgRate));
+                attr.best.extComm.add(tabRouteUtil.rate2comm(trgAs, trgRate));
             }
             attr = rtrBgpFlow.advertNetwork(ntry.prefix, ipv6, direction, attr);
             if (attr != null) {

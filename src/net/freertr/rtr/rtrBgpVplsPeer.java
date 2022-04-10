@@ -11,7 +11,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.counter;
 import net.freertr.util.state;
 
@@ -79,7 +79,7 @@ public class rtrBgpVplsPeer implements ifcDn, Comparator<rtrBgpVplsPeer> {
     }
 
     public String toString() {
-        return "vpls " + peer + " " + tabRtrmapN.rd2string(parentV.id);
+        return "vpls " + peer + " " + tabRouteUtil.rd2string(parentV.id);
     }
 
     /**

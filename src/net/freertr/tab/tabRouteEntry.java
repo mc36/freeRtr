@@ -373,7 +373,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param prf entry to dump
      */
     public static void toShEvpn(userFormat l, tabRouteEntry<addrIP> prf) {
-        String a = addrPrefix.ip2evpn(prf.prefix) + " " + tabRtrmapN.rd2string(prf.rouDst);
+        String a = addrPrefix.ip2evpn(prf.prefix) + " " + tabRouteUtil.rd2string(prf.rouDst);
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
             l.add(a + attr.toShBgpLast());
@@ -429,7 +429,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     public static String toShBgpFirst(tabRouteEntry<addrIP> prf) {
         String s = "";
         if (prf.rouDst != 0) {
-            s = " " + tabRtrmapN.rd2string(prf.rouDst);
+            s = " " + tabRouteUtil.rd2string(prf.rouDst);
         }
         return addrPrefix.ip2str(prf.prefix) + s;
     }
@@ -494,8 +494,8 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             l.add("vrf|" + fwd.vrfName);
             l.add("ipver|" + fwd.ipVersion);
         }
-        l.add("rd|" + tabRtrmapN.rd2string(rouDst));
-        l.add("original rd|" + tabRtrmapN.rd2string(oldDst));
+        l.add("rd|" + tabRouteUtil.rd2string(rouDst));
+        l.add("original rd|" + tabRouteUtil.rd2string(oldDst));
         l.add("prefix|" + prefix);
         l.add("prefix network|" + prefix.network);
         l.add("prefix broadcast|" + prefix.broadcast);

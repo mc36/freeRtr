@@ -65,6 +65,7 @@ import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -615,7 +616,7 @@ public class userPacket {
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
-            pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
+            pck.msbPutW(1, tabRouteUtil.asNum16bit(nei.localAs));
             pck.msbPutW(3, nei.holdTimer / 1000);
             buf = ifc.addr4.getBytes();
             pck.putCopy(buf, 0, 5, buf.length);
@@ -749,7 +750,7 @@ public class userPacket {
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
-            pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
+            pck.msbPutW(1, tabRouteUtil.asNum16bit(nei.localAs));
             pck.msbPutW(3, nei.holdTimer / 1000);
             buf = ifc.addr4.getBytes();
             pck.putCopy(buf, 0, 5, buf.length);
@@ -858,7 +859,7 @@ public class userPacket {
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
-            pck.msbPutW(1, rtrBgpUtil.asNum16bit(nei.localAs));
+            pck.msbPutW(1, tabRouteUtil.asNum16bit(nei.localAs));
             pck.msbPutW(3, nei.holdTimer / 1000);
             buf = ifc.addr4.getBytes();
             pck.putCopy(buf, 0, 5, buf.length);

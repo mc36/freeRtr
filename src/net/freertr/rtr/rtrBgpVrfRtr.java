@@ -20,7 +20,7 @@ import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
@@ -180,7 +180,7 @@ public class rtrBgpVrfRtr extends ipRtr {
     public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < vrf.rtExp.size(); i++) {
-            rt.add(tabRtrmapN.rt2comm(vrf.rtExp.get(i)));
+            rt.add(tabRouteUtil.rt2comm(vrf.rtExp.get(i)));
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -256,7 +256,7 @@ public class rtrBgpVrfRtr extends ipRtr {
     private List<Long> getRtList() {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < vrf.rtImp.size(); i++) {
-            rt.add(tabRtrmapN.rt2comm(vrf.rtImp.get(i)));
+            rt.add(tabRouteUtil.rt2comm(vrf.rtImp.get(i)));
         }
         return rt;
     }
@@ -270,7 +270,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         boolean needed = false;
         for (int i = 0; i < rt.size(); i++) {
-            needed |= rtrBgpUtil.findLongList(ntry.best.extComm, rt.get(i)) >= 0;
+            needed |= tabRouteUtil.findLongList(ntry.best.extComm, rt.get(i)) >= 0;
             if (needed) {
                 break;
             }

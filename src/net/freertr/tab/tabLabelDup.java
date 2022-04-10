@@ -56,7 +56,7 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
         if (hop.compare(hop, o.hop) != 0) {
             return true;
         }
-        return tabRouteAttr.diffIntList(label, o.label);
+        return tabRouteUtil.diffIntList(label, o.label);
     }
 
     public int compare(tabLabelDup o1, tabLabelDup o2) {

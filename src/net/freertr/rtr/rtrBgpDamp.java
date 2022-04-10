@@ -4,7 +4,7 @@ import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 
 /**
@@ -67,7 +67,7 @@ public class rtrBgpDamp implements Comparator<rtrBgpDamp> {
     }
 
     public String toString() {
-        return rtrBgpUtil.safi2string(afi) + "|" + addrPrefix.ip2str(prefix) + " " + tabRtrmapN.rd2string(rd) + "|" + penalty + "|" + dampened + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+        return rtrBgpUtil.safi2string(afi) + "|" + addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + penalty + "|" + dampened + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
 }

@@ -8,7 +8,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrplc;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFilter;
@@ -333,32 +333,32 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("peerstd")) {
             ntry.ifMode = tabRtrplcN.ifType.peerstd;
-            ntry.intLst = tabRtrmapN.string2stdComms(cmd.getRemaining());
+            ntry.intLst = tabRouteUtil.string2stdComms(cmd.getRemaining());
             return;
         }
         if (a.equals("peerlrg")) {
             ntry.ifMode = tabRtrplcN.ifType.peerlrg;
-            ntry.lrgLst = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+            ntry.lrgLst = tabRouteUtil.string2lrgComms(cmd.getRemaining());
             return;
         }
         if (a.equals("stdcomm")) {
             ntry.ifMode = tabRtrplcN.ifType.stdcomm;
-            ntry.intLst = tabRtrmapN.string2stdComms(cmd.getRemaining());
+            ntry.intLst = tabRouteUtil.string2stdComms(cmd.getRemaining());
             return;
         }
         if (a.equals("extcomm")) {
             ntry.ifMode = tabRtrplcN.ifType.extcomm;
-            ntry.lngLst = tabRtrmapN.string2extComms(cmd.getRemaining());
+            ntry.lngLst = tabRouteUtil.string2extComms(cmd.getRemaining());
             return;
         }
         if (a.equals("lrgcomm")) {
             ntry.ifMode = tabRtrplcN.ifType.lrgcomm;
-            ntry.lrgLst = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+            ntry.lrgLst = tabRouteUtil.string2lrgComms(cmd.getRemaining());
             return;
         }
         if (a.equals("rd")) {
             ntry.ifMode = tabRtrplcN.ifType.roudst;
-            ntry.rouDstMatch = tabRtrmapN.string2rd(cmd.word());
+            ntry.rouDstMatch = tabRouteUtil.string2rd(cmd.word());
             return;
         }
         if (a.equals("network")) {
@@ -741,17 +741,17 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             indent();
             if (a.equals("stdcomm")) {
                 ntry.doMode = tabRtrplcN.doType.setStdcomm;
-                ntry.intLst = tabRtrmapN.string2stdComms(cmd.getRemaining());
+                ntry.intLst = tabRouteUtil.string2stdComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("extcomm")) {
                 ntry.doMode = tabRtrplcN.doType.setExtcomm;
-                ntry.lngLst = tabRtrmapN.string2extComms(cmd.getRemaining());
+                ntry.lngLst = tabRouteUtil.string2extComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("lrgcomm")) {
                 ntry.doMode = tabRtrplcN.doType.setLrgcomm;
-                ntry.lrgLst = tabRtrmapN.string2lrgComms(cmd.getRemaining());
+                ntry.lrgLst = tabRouteUtil.string2lrgComms(cmd.getRemaining());
                 return;
             }
             if (a.equals("nexthop")) {
@@ -762,12 +762,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.doMode = tabRtrplcN.doType.setAspath;
-                ntry.intLst = tabRtrmapN.string2intList(cmd.getRemaining());
+                ntry.intLst = tabRouteUtil.string2intList(cmd.getRemaining());
                 return;
             }
             if (a.equals("asconfed")) {
                 ntry.doMode = tabRtrplcN.doType.setAsconf;
-                ntry.intLst = tabRtrmapN.string2intList(cmd.getRemaining());
+                ntry.intLst = tabRouteUtil.string2intList(cmd.getRemaining());
                 return;
             }
             if (a.equals("distance")) {

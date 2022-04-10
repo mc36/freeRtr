@@ -21,7 +21,7 @@ import net.freertr.pack.packPim;
 import net.freertr.pack.packPimGrp;
 import net.freertr.pack.packStp;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabSession;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -397,9 +397,9 @@ public class ifcBridge implements ifcDn {
      */
     public void getConfig(List<String> l, String beg) {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
-        l.add(cmds.tabulator + "rd " + tabRtrmapN.rd2string(rd));
-        l.add(cmds.tabulator + "rt-import " + tabRtrmapN.rd2string(rtImp));
-        l.add(cmds.tabulator + "rt-export " + tabRtrmapN.rd2string(rtExp));
+        l.add(cmds.tabulator + "rd " + tabRouteUtil.rd2string(rd));
+        l.add(cmds.tabulator + "rt-import " + tabRouteUtil.rd2string(rtImp));
+        l.add(cmds.tabulator + "rt-export " + tabRouteUtil.rd2string(rtExp));
         cmds.cfgLine(l, !staticAddr, beg, "mac-address", "" + hwaddr);
         cmds.cfgLine(l, learned == null, beg, "mac-learn", "");
         cmds.cfgLine(l, inspect == null, beg, "inspect", "" + inspect);
@@ -441,19 +441,19 @@ public class ifcBridge implements ifcDn {
             return;
         }
         if (a.equals("rd")) {
-            rd = tabRtrmapN.string2rd(cmd.word());
+            rd = tabRouteUtil.string2rd(cmd.word());
             return;
         }
         if (a.equals("rt-import")) {
-            rtImp = tabRtrmapN.string2rd(cmd.word());
+            rtImp = tabRouteUtil.string2rd(cmd.word());
             return;
         }
         if (a.equals("rt-export")) {
-            rtExp = tabRtrmapN.string2rd(cmd.word());
+            rtExp = tabRouteUtil.string2rd(cmd.word());
             return;
         }
         if (a.equals("rt-both")) {
-            rtExp = tabRtrmapN.string2rd(cmd.word());
+            rtExp = tabRouteUtil.string2rd(cmd.word());
             rtImp = rtExp;
             return;
         }

@@ -16,7 +16,7 @@ import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrplc;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -1450,7 +1450,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (!ntry.dampened && (ntry.penalty > dampenSupp)) {
             ntry.dampened = true;
             if (debugger.rtrBgpDamp) {
-                logger.debug("suppressing " + tabRtrmapN.rd2string(ntry.rd) + " " + ntry.prefix);
+                logger.debug("suppressing " + tabRouteUtil.rd2string(ntry.rd) + " " + ntry.prefix);
             }
         }
         ntry.last = bits.getTime();
@@ -1477,13 +1477,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             if (ntry.dampened && (ntry.penalty < dampenReus)) {
                 ntry.dampened = false;
                 if (debugger.rtrBgpDamp) {
-                    logger.debug("unsuppressing " + tabRtrmapN.rd2string(ntry.rd) + " " + ntry.prefix);
+                    logger.debug("unsuppressing " + tabRouteUtil.rd2string(ntry.rd) + " " + ntry.prefix);
                 }
             }
             if (ntry.penalty < dampenMinp) {
                 dampenPfxs.del(ntry);
                 if (debugger.rtrBgpDamp) {
-                    logger.debug("forgetting " + tabRtrmapN.rd2string(ntry.rd) + " " + ntry.prefix);
+                    logger.debug("forgetting " + tabRouteUtil.rd2string(ntry.rd) + " " + ntry.prefix);
                 }
             }
         }

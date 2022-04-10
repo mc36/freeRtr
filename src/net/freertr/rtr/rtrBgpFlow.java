@@ -13,7 +13,7 @@ import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabPlcmapN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 
 /**
@@ -142,7 +142,7 @@ public class rtrBgpFlow {
             attr.best.extComm = new ArrayList<Long>();
         }
         if (rate >= 0) {
-            attr.best.extComm.add(tabRtrmapN.rate2comm(as, rate));
+            attr.best.extComm.add(tabRouteUtil.rate2comm(as, rate));
         }
         return attr;
     }
@@ -323,7 +323,7 @@ public class rtrBgpFlow {
         }
         for (i = 0; i < rou.best.extComm.size(); i++) {
             long rate = rou.best.extComm.get(i);
-            rate = tabRtrmapN.comm2rate(rate);
+            rate = tabRouteUtil.comm2rate(rate);
             if (rate < 0) {
                 continue;
             }
