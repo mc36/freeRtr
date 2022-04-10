@@ -27,7 +27,7 @@ int bvi1
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
 route-policy rm1
- clear stdcomm
+ clear stdcomm 1234:4321
  pass
  exit
 router bgp4 1

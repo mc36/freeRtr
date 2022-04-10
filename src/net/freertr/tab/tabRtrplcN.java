@@ -446,13 +446,13 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case tcl:
                 return "tcl " + strVal;
             case clrStdcomm:
-                return "clear stdcomm";
+                return "clear stdcomm " + strVal;
             case clrExtcomm:
-                return "clear extcomm";
+                return "clear extcomm " + strVal;
             case clrLrgcomm:
-                return "clear lrgcomm";
+                return "clear lrgcomm " + strVal;
             case clrClstlst:
-                return "clear clustlist";
+                return "clear clustlist " + strVal;
             case clrPrivas:
                 return "clear privateas";
             case clrPeeras:
@@ -755,16 +755,16 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     private void doUpdate(tabRouteAttr<addrIP> attr, int asn) {
         switch (doMode) {
             case clrStdcomm:
-                attr.stdComm = null;
+                rtrBgpUtil.removeStdComm(attr, strVal);
                 return;
             case clrExtcomm:
-                attr.extComm = null;
+                rtrBgpUtil.removeExtComm(attr, strVal);
                 return;
             case clrLrgcomm:
-                attr.lrgComm = null;
+                rtrBgpUtil.removeLrgComm(attr, strVal);
                 return;
             case clrClstlst:
-                attr.clustList = null;
+                rtrBgpUtil.removeClstLst(attr, strVal);
                 return;
             case clrPrivas:
                 rtrBgpUtil.removePrivateAs(attr.pathSeq);

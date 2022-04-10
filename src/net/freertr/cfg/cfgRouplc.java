@@ -212,11 +212,15 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "1 2   tcl                   add tcl line");
         l.add(null, "2 2,.   [text]              script");
         l.add(null, "1 2   clear                 clear values in destination routing protocol");
-        l.add(null, "2 .     stdcomm             clear standard community");
-        l.add(null, "2 .     extcomm             clear extended community");
-        l.add(null, "2 .     lrgcomm             clear large community");
+        l.add(null, "2 3     stdcomm             clear standard community");
+        l.add(null, "3 3,.     <str>             regexp to match");
+        l.add(null, "2 3     extcomm             clear extended community");
+        l.add(null, "3 3,.     <str>             regexp to match");
+        l.add(null, "2 3     lrgcomm             clear large community");
+        l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, "2 .     privateas           clear private asn");
-        l.add(null, ".2 .    clustlist           clear cluster list");
+        l.add(null, ".2 3    clustlist           clear cluster list");
+        l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 .    peeras              clear peer asn");
         l.add(null, ".2 3    exactas             clear exact asn");
         l.add(null, ".3 .      <num>             as number to remove");
@@ -693,18 +697,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             indent();
             if (a.equals("stdcomm")) {
                 ntry.doMode = tabRtrplcN.doType.clrStdcomm;
+                ntry.strVal = cmd.getRemaining();
                 return;
             }
             if (a.equals("extcomm")) {
                 ntry.doMode = tabRtrplcN.doType.clrExtcomm;
+                ntry.strVal = cmd.getRemaining();
                 return;
             }
             if (a.equals("lrgcomm")) {
                 ntry.doMode = tabRtrplcN.doType.clrLrgcomm;
+                ntry.strVal = cmd.getRemaining();
                 return;
             }
             if (a.equals("clustlist")) {
                 ntry.doMode = tabRtrplcN.doType.clrClstlst;
+                ntry.strVal = cmd.getRemaining();
                 return;
             }
             if (a.equals("privateas")) {

@@ -267,11 +267,15 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     route-policy        match route policy");
         l.add(null, "3 .       <name:rpl>        name of route policy");
         l.add(null, "1 2   clear                 clear values in destination routing protocol");
-        l.add(null, "2 .     stdcomm             clear standard community");
-        l.add(null, "2 .     extcomm             clear extended community");
-        l.add(null, "2 .     lrgcomm             clear large community");
+        l.add(null, "2 3     stdcomm             clear standard community");
+        l.add(null, "3 3,.     <str>             regexp to match");
+        l.add(null, "2 3     extcomm             clear extended community");
+        l.add(null, "3 3,.     <str>             regexp to match");
+        l.add(null, "2 3     lrgcomm             clear large community");
+        l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, "2 .     privateas           clear private asn");
-        l.add(null, ".2 .    clustlist           clear cluster list");
+        l.add(null, ".2 3    clustlist           clear cluster list");
+        l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 .    peeras              clear peer asn");
         l.add(null, ".2 3    exactas             clear exact asn");
         l.add(null, ".3 .      <num>             as number to remove");
@@ -672,19 +676,19 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
             if (a.equals("stdcomm")) {
-                ntry.stdCommClear = true;
+                ntry.stdCommClear = cmd.getRemaining();
                 return;
             }
             if (a.equals("extcomm")) {
-                ntry.extCommClear = true;
+                ntry.extCommClear = cmd.getRemaining();
                 return;
             }
             if (a.equals("lrgcomm")) {
-                ntry.lrgCommClear = true;
+                ntry.lrgCommClear = cmd.getRemaining();
                 return;
             }
             if (a.equals("clustlist")) {
-                ntry.clstLstClear = true;
+                ntry.clstLstClear = cmd.getRemaining();
                 return;
             }
             if (a.equals("privateas")) {
@@ -997,19 +1001,19 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
             if (a.equals("stdcomm")) {
-                ntry.stdCommClear = false;
+                ntry.stdCommClear = null;
                 return;
             }
             if (a.equals("extcomm")) {
-                ntry.extCommClear = false;
+                ntry.extCommClear = null;
                 return;
             }
             if (a.equals("lrgcomm")) {
-                ntry.lrgCommClear = false;
+                ntry.lrgCommClear = null;
                 return;
             }
             if (a.equals("clustlist")) {
-                ntry.clstLstClear = false;
+                ntry.clstLstClear = null;
                 return;
             }
             if (a.equals("privateas")) {

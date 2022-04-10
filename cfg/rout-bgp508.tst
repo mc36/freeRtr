@@ -27,7 +27,7 @@ int bvi1
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
 route-map rm1
- clear extcomm
+ clear extcomm 1:1234:4321
  exit
 router bgp4 1
  vrf v1

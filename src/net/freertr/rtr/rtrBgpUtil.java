@@ -14,6 +14,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLargeComm;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRtrmapN;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -3235,6 +3236,94 @@ public class rtrBgpUtil {
         int i = removeIntList(attr.pathSeq, o);
         i += removeIntList(attr.pathSet, o);
         return i;
+    }
+
+    /**
+     * remove from standard community
+     *
+     * @param attr attribute to update
+     * @param mtch match to remove
+     * @return number of occurences removed
+     */
+    public static int removeStdComm(tabRouteAttr<addrIP> attr, String mtch) {
+        if (attr.stdComm == null) {
+            return 0;
+        }
+        int o = 0;
+        for (int i = attr.stdComm.size() - 1; i >= 0; i--) {
+            if (!tabRtrmapN.stdComm2string(attr.stdComm.get(i)).matches(mtch)) {
+                continue;
+            }
+            attr.stdComm.remove(i);
+            o++;
+        }
+        return o;
+    }
+
+    /**
+     * remove from extended community
+     *
+     * @param attr attribute to update
+     * @param mtch match to remove
+     * @return number of occurences removed
+     */
+    public static int removeExtComm(tabRouteAttr<addrIP> attr, String mtch) {
+        if (attr.extComm == null) {
+            return 0;
+        }
+        int o = 0;
+        for (int i = attr.extComm.size() - 1; i >= 0; i--) {
+            if (!tabRtrmapN.extComm2string(attr.extComm.get(i)).matches(mtch)) {
+                continue;
+            }
+            attr.extComm.remove(i);
+            o++;
+        }
+        return o;
+    }
+
+    /**
+     * remove from large community
+     *
+     * @param attr attribute to update
+     * @param mtch match to remove
+     * @return number of occurences removed
+     */
+    public static int removeLrgComm(tabRouteAttr<addrIP> attr, String mtch) {
+        if (attr.lrgComm == null) {
+            return 0;
+        }
+        int o = 0;
+        for (int i = attr.lrgComm.size() - 1; i >= 0; i--) {
+            if (!("" + attr.lrgComm.get(i)).matches(mtch)) {
+                continue;
+            }
+            attr.lrgComm.remove(i);
+            o++;
+        }
+        return o;
+    }
+
+    /**
+     * remove from cluster list
+     *
+     * @param attr attribute to update
+     * @param mtch match to remove
+     * @return number of occurences removed
+     */
+    public static int removeClstLst(tabRouteAttr<addrIP> attr, String mtch) {
+        if (attr.clustList == null) {
+            return 0;
+        }
+        int o = 0;
+        for (int i = attr.clustList.size() - 1; i >= 0; i--) {
+            if (!("" + attr.clustList.get(i)).matches(mtch)) {
+                continue;
+            }
+            attr.clustList.remove(i);
+            o++;
+        }
+        return o;
     }
 
 }

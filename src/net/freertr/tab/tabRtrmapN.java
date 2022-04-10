@@ -267,7 +267,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community updater
      */
-    public boolean stdCommClear;
+    public String stdCommClear;
 
     /**
      * community updater
@@ -282,7 +282,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community updater
      */
-    public boolean extCommClear;
+    public String extCommClear;
 
     /**
      * community updater
@@ -297,7 +297,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community updater
      */
-    public boolean lrgCommClear;
+    public String lrgCommClear;
 
     /**
      * community updater
@@ -307,7 +307,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * cluster list updater
      */
-    public boolean clstLstClear;
+    public String clstLstClear;
 
     /**
      * community matcher
@@ -839,10 +839,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, trackMatch == null, beg, "match tracker", "" + trackMatch);
         cmds.cfgLine(l, !privasMatch, beg, "match privateas", "");
         cmds.cfgLine(l, !logMatch, beg, "log", "");
-        cmds.cfgLine(l, !stdCommClear, beg, "clear stdcomm", "");
-        cmds.cfgLine(l, !extCommClear, beg, "clear extcomm", "");
-        cmds.cfgLine(l, !lrgCommClear, beg, "clear lrgcomm", "");
-        cmds.cfgLine(l, !clstLstClear, beg, "clear clustlist", "");
+        cmds.cfgLine(l, stdCommClear == null, beg, "clear stdcomm", stdCommClear);
+        cmds.cfgLine(l, extCommClear == null, beg, "clear extcomm", extCommClear);
+        cmds.cfgLine(l, lrgCommClear == null, beg, "clear lrgcomm", lrgCommClear);
+        cmds.cfgLine(l, clstLstClear == null, beg, "clear clustlist", clstLstClear);
         cmds.cfgLine(l, !privasClear, beg, "clear privateas", "");
         cmds.cfgLine(l, !peerasClear, beg, "clear peeras", "");
         cmds.cfgLine(l, exactasClear == 0, beg, "clear exactas", "" + bits.num2str(exactasClear));
@@ -1101,17 +1101,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.bierIdx = bierSet.update(attr.bierIdx);
         attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, aspathSet);
         attr.confSeq = tabLabel.prependLabels(attr.confSeq, aspathCnf);
-        if (stdCommClear) {
-            attr.stdComm = null;
+        if (stdCommClear != null) {
+            rtrBgpUtil.removeStdComm(attr, stdCommClear);
         }
-        if (extCommClear) {
-            attr.extComm = null;
+        if (extCommClear != null) {
+            rtrBgpUtil.removeExtComm(attr, extCommClear);
         }
-        if (lrgCommClear) {
-            attr.lrgComm = null;
+        if (lrgCommClear != null) {
+            rtrBgpUtil.removeLrgComm(attr, lrgCommClear);
         }
-        if (clstLstClear) {
-            attr.clustList = null;
+        if (clstLstClear != null) {
+            rtrBgpUtil.removeClstLst(attr, clstLstClear);
         }
         if (privasClear) {
             rtrBgpUtil.removePrivateAs(attr.pathSeq);
