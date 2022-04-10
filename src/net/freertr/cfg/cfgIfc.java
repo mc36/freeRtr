@@ -1443,6 +1443,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no eapol client",
         "interface .*! no eapol server",
         "interface .*! no bridge-group",
+        "interface .*! no bridge-filter private-port",
+        "interface .*! no bridge-filter public-port",
         "interface .*! no bridge-filter stp-in",
         "interface .*! no bridge-filter stp-out",
         "interface .*! no bridge-filter stp-root",
@@ -5933,6 +5935,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "no bridge-group");
         } else {
             l.add(cmds.tabulator + "bridge-group " + bridgeHed.name);
+            cmds.cfgLine(l, !bridgeIfc.privatePort, cmds.tabulator, "bridge-filter private-port", "");
+            cmds.cfgLine(l, !bridgeIfc.publicPort, cmds.tabulator, "bridge-filter public-port", "");
             cmds.cfgLine(l, !bridgeIfc.fltrStpIn, cmds.tabulator, "bridge-filter stp-in", "");
             cmds.cfgLine(l, !bridgeIfc.fltrStpOut, cmds.tabulator, "bridge-filter stp-out", "");
             cmds.cfgLine(l, !bridgeIfc.fltrStpRoot, cmds.tabulator, "bridge-filter stp-root", "");
@@ -6312,6 +6316,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "1 2   bridge-macrewrite             transparent bridging interface parameters");
         l.add(null, "2 .     <addr>                      address to use");
         l.add(null, "1 2   bridge-filter                 transparent bridging filtering parameters");
+        l.add(null, "2 .     private-port                isolate port");
+        l.add(null, "2 .     public-port                 unisolate port");
         l.add(null, "2 .     stp-in                      bpdu ingress guard");
         l.add(null, "2 .     stp-out                     bpdu egress filter");
         l.add(null, "2 .     stp-root                    bpdu root guard");
@@ -7007,6 +7013,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmd.error("not bridged");
                 return;
             }
+            if (a.equals("private-port")) {
+                bridgeIfc.privatePort = true;
+                return;
+            }
+            if (a.equals("public-port")) {
+                bridgeIfc.publicPort = true;
+                return;
+            }
             if (a.equals("stp-in")) {
                 bridgeIfc.fltrStpIn = true;
                 return;
@@ -7638,6 +7652,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("bridge-filter")) {
             a = cmd.word();
             if (bridgeIfc == null) {
+                return;
+            }
+            if (a.equals("private-port")) {
+                bridgeIfc.privatePort = false;
+                return;
+            }
+            if (a.equals("public-port")) {
+                bridgeIfc.publicPort = false;
                 return;
             }
             if (a.equals("stp-in")) {

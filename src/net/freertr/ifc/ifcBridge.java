@@ -692,8 +692,8 @@ public class ifcBridge implements ifcDn {
         }
     }
 
-    private void send2upper(int ifn, packHolder pck) {
-        if (ifn == 0) {
+    private void send2upper(ifcBridgeIfc ifc, packHolder pck) {
+        if (ifc.ifcNum == 0) {
             return;
         }
         cntr.tx(pck);
@@ -890,28 +890,27 @@ public class ifcBridge implements ifcDn {
         }
     }
 
-    private void floodPack(int ifn, boolean phy, packHolder pck) {
-        if (privateBridge && (ifn != 0)) {
-            send2upper(ifn, pck);
-            return;
-        }
+    private void floodPack(ifcBridgeIfc ifc, packHolder pck) {
         for (int i = 0; i < ifaces.size(); i++) {
             ifcBridgeIfc ntry = ifaces.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (ifn == ntry.ifcNum) {
+            if (ifc.ifcNum == ntry.ifcNum) {
                 continue;
             }
             if (ntry.blocked) {
                 continue;
             }
-            if (!(phy | ntry.physical)) {
+            if (!(ifc.physical | ntry.physical)) {
+                continue;
+            }
+            if ((privateBridge | ifc.privatePort | ntry.privatePort) && !ifc.publicPort && !ntry.publicPort && (ifc.ifcNum != 0)) {
                 continue;
             }
             ntry.doTxPack(pck.copyBytes(true, true));
         }
-        send2upper(ifn, pck);
+        send2upper(ifc, pck);
     }
 
     /**
@@ -965,7 +964,7 @@ public class ifcBridge implements ifcDn {
             }
         }
         if (learned == null) {
-            floodPack(ifc.ifcNum, ifc.physical, pck);
+            floodPack(ifc, pck);
             return;
         }
         ifcBridgeAdr lrn = new ifcBridgeAdr(pck.ETHsrc.copyBytes());
@@ -996,7 +995,7 @@ public class ifcBridge implements ifcDn {
         lrn.cntr.rx(pck);
         if (pck.ETHtrg.isFloodable()) {
             if (!blockMulticast) {
-                floodPack(ifc.ifcNum, ifc.physical, pck);
+                floodPack(ifc, pck);
                 return;
             }
             int i = pck.dataSize();
@@ -1050,25 +1049,21 @@ public class ifcBridge implements ifcDn {
             int o = pck.dataSize();
             pck.getSkip(o - i);
             if (b) {
-                floodPack(ifc.ifcNum, ifc.physical, pck);
+                floodPack(ifc, pck);
                 return;
             }
             if (pck.IPbrd) {
-                floodPack(ifc.ifcNum, ifc.physical, pck);
+                floodPack(ifc, pck);
                 return;
             }
             if (!pck.IPmlt) {
                 return;
             }
             if (!pck.IPmlr) {
-                floodPack(ifc.ifcNum, ifc.physical, pck);
+                floodPack(ifc, pck);
                 return;
             }
             ifcBridgeGrp grp = new ifcBridgeGrp(pck.IPtrg);
-            if (privateBridge && (ifc.ifcNum != 0)) {
-                send2upper(ifc.ifcNum, pck);
-                return;
-            }
             for (i = 0; i < ifaces.size(); i++) {
                 ifcBridgeIfc ntry = ifaces.get(i);
                 if (ntry == null) {
@@ -1086,12 +1081,15 @@ public class ifcBridge implements ifcDn {
                 if (ntry.groups == null) {
                     continue;
                 }
+                if ((privateBridge | ifc.privatePort | ntry.privatePort) && !ifc.publicPort && !ntry.publicPort && (ifc.ifcNum != 0)) {
+                    continue;
+                }
                 if (ntry.groups.find(grp) == null) {
                     continue;
                 }
                 ntry.doTxPack(pck.copyBytes(true, true));
             }
-            send2upper(ifc.ifcNum, pck);
+            send2upper(ifc, pck);
             return;
         }
         lrn = new ifcBridgeAdr(pck.ETHtrg.copyBytes());
@@ -1099,11 +1097,11 @@ public class ifcBridge implements ifcDn {
         if (lrn == null) {
             if (blockUnicast) {
                 if (upProm) {
-                    send2upper(ifc.ifcNum, pck);
+                    send2upper(ifc, pck);
                 }
                 return;
             }
-            floodPack(ifc.ifcNum, ifc.physical, pck);
+            floodPack(ifc, pck);
             return;
         }
         if (lrn.ifc.ifcNum == ifc.ifcNum) {
@@ -1111,13 +1109,13 @@ public class ifcBridge implements ifcDn {
         }
         lrn.cntr.tx(pck);
         if (lrn.ifc.ifcNum == 0) {
-            send2upper(ifc.ifcNum, pck);
+            send2upper(ifc, pck);
             return;
         }
         if (upProm) {
-            send2upper(ifc.ifcNum, pck.copyBytes(true, true));
+            send2upper(ifc, pck.copyBytes(true, true));
         }
-        if (privateBridge && (ifc.ifcNum != 0)) {
+        if ((privateBridge | ifc.privatePort | lrn.ifc.privatePort) && !ifc.publicPort && !lrn.ifc.publicPort && (ifc.ifcNum != 0)) {
             return;
         }
         if (!(ifc.physical | lrn.ifc.physical)) {

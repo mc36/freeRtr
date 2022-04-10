@@ -83,6 +83,16 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
     public tabGen<addrMac> statAddr;
 
     /**
+     * disable peer communication
+     */
+    public boolean privatePort;
+
+    /**
+     * enable peer communication
+     */
+    public boolean publicPort;
+
+    /**
      * stp ingress filter
      */
     public boolean fltrStpIn;
