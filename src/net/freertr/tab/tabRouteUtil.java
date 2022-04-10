@@ -540,11 +540,12 @@ public class tabRouteUtil {
     /**
      * remove from standard community
      *
+     * @param <T> class of address
      * @param attr attribute to update
      * @param mtch match to remove
      * @return number of occurences removed
      */
-    public static int removeStdComm(tabRouteAttr<addrIP> attr, String mtch) {
+    public static <T extends addrType> int removeStdComm(tabRouteAttr<T> attr, String mtch) {
         if (attr.stdComm == null) {
             return 0;
         }
@@ -562,11 +563,12 @@ public class tabRouteUtil {
     /**
      * remove from cluster list
      *
+     * @param <T> class of address
      * @param attr attribute to update
      * @param mtch match to remove
      * @return number of occurences removed
      */
-    public static int removeClstLst(tabRouteAttr<addrIP> attr, String mtch) {
+    public static <T extends addrType> int removeClstLst(tabRouteAttr<T> attr, String mtch) {
         if (attr.clustList == null) {
             return 0;
         }
@@ -622,11 +624,12 @@ public class tabRouteUtil {
     /**
      * remove from extended community
      *
+     * @param <T> class of address
      * @param attr attribute to update
      * @param mtch match to remove
      * @return number of occurences removed
      */
-    public static int removeExtComm(tabRouteAttr<addrIP> attr, String mtch) {
+    public static <T extends addrType> int removeExtComm(tabRouteAttr<T> attr, String mtch) {
         if (attr.extComm == null) {
             return 0;
         }
@@ -692,11 +695,12 @@ public class tabRouteUtil {
     /**
      * remove from large community
      *
+     * @param <T> class of address
      * @param attr attribute to update
      * @param mtch match to remove
      * @return number of occurences removed
      */
-    public static int removeLrgComm(tabRouteAttr<addrIP> attr, String mtch) {
+    public static <T extends addrType> int removeLrgComm(tabRouteAttr<T> attr, String mtch) {
         if (attr.lrgComm == null) {
             return 0;
         }
@@ -750,10 +754,11 @@ public class tabRouteUtil {
     /**
      * remove first as numbers
      *
+     * @param <T> class of address
      * @param attr attribute to update
      * @return number of occurences removed
      */
-    public static int removeFirstAs(tabRouteAttr<addrIP> attr) {
+    public static <T extends addrType> int removeFirstAs(tabRouteAttr<T> attr) {
         if (attr.pathSeq == null) {
             return 0;
         }
