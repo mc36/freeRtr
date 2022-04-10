@@ -167,7 +167,7 @@ public class ifcBridge implements ifcDn {
 
     private boolean upProm;
 
-    private ifcBridgeIfc upNtry;
+    private final ifcBridgeIfc upNtry;
 
     private ipCor core4 = new ipCor4();
 
@@ -228,6 +228,7 @@ public class ifcBridge implements ifcDn {
         ifaces = new tabGen<ifcBridgeIfc>();
         upNtry = new ifcBridgeIfc(null, true, false, false);
         upNtry.ifcNum = 0;
+        upNtry.publicPort = true;
         upNtry.lowerIf = null;
     }
 
@@ -905,7 +906,7 @@ public class ifcBridge implements ifcDn {
             if (!(ifc.physical | ntry.physical)) {
                 continue;
             }
-            if ((privateBridge | ifc.privatePort | ntry.privatePort) && !ifc.publicPort && !ntry.publicPort && (ifc.ifcNum != 0)) {
+            if ((privateBridge | ifc.privatePort | ntry.privatePort) && !ifc.publicPort && !ntry.publicPort) {
                 continue;
             }
             ntry.doTxPack(pck.copyBytes(true, true));
@@ -1081,7 +1082,7 @@ public class ifcBridge implements ifcDn {
                 if (ntry.groups == null) {
                     continue;
                 }
-                if ((privateBridge | ifc.privatePort | ntry.privatePort) && !ifc.publicPort && !ntry.publicPort && (ifc.ifcNum != 0)) {
+                if ((privateBridge | ifc.privatePort | ntry.privatePort) && !ifc.publicPort && !ntry.publicPort) {
                     continue;
                 }
                 if (ntry.groups.find(grp) == null) {
@@ -1115,7 +1116,7 @@ public class ifcBridge implements ifcDn {
         if (upProm) {
             send2upper(ifc, pck.copyBytes(true, true));
         }
-        if ((privateBridge | ifc.privatePort | lrn.ifc.privatePort) && !ifc.publicPort && !lrn.ifc.publicPort && (ifc.ifcNum != 0)) {
+        if ((privateBridge | ifc.privatePort | lrn.ifc.privatePort) && !ifc.publicPort && !lrn.ifc.publicPort) {
             return;
         }
         if (!(ifc.physical | lrn.ifc.physical)) {

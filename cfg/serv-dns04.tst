@@ -49,6 +49,6 @@ client name-server 1.1.1.1
 !
 
 
-r2 tping 100 5 1.1.1.1 /vrf v1
-r2 tping 100 5 1234::1111:1111 /vrf v1
-r1 tping 100 5 www.test.corp /vrf v1 /ipv6
+r2 tping 100 15 1.1.1.1 /vrf v1
+r2 tping 100 15 1234::1111:1111 /vrf v1
+r1 tping 100 15 www.test.corp /vrf v1 /ipv6
