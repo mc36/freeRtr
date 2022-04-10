@@ -13163,3 +13163,6 @@ qc pass: sep tunneling with tzsp
 qc pass: ethernet tunneling with tzsp
 qc pass: vlan tunneling with tzsp
 qc pass: tunnel interface with tzsp
+---------------------------------- 2022-04-10 10:09:04 22.4.10
+qc pass: bridge port split horizon
+qc pass: bridge port unsplit horizon
