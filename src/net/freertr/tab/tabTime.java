@@ -45,6 +45,26 @@ public class tabTime implements Comparator<tabTime> {
     public tabIntMatcher dow;
 
     /**
+     * week of month to match
+     */
+    public tabIntMatcher wom;
+
+    /**
+     * week of year to match
+     */
+    public tabIntMatcher woy;
+
+    /**
+     * day of month to match
+     */
+    public tabIntMatcher dom;
+
+    /**
+     * day of year to match
+     */
+    public tabIntMatcher doy;
+
+    /**
      * hour to match
      */
     public tabIntMatcher hour;
@@ -60,6 +80,26 @@ public class tabTime implements Comparator<tabTime> {
     public tabIntMatcher sec;
 
     /**
+     * millisecond to match
+     */
+    public tabIntMatcher mil;
+
+    /**
+     * period length
+     */
+    public int perL;
+
+    /**
+     * period begin
+     */
+    public int perB;
+
+    /**
+     * period end
+     */
+    public int perE;
+
+    /**
      * create new
      */
     public tabTime() {
@@ -67,9 +107,17 @@ public class tabTime implements Comparator<tabTime> {
         month = new tabIntMatcher();
         day = new tabIntMatcher();
         dow = new tabIntMatcher();
+        wom = new tabIntMatcher();
+        woy = new tabIntMatcher();
+        dom = new tabIntMatcher();
+        doy = new tabIntMatcher();
         hour = new tabIntMatcher();
         min = new tabIntMatcher();
         sec = new tabIntMatcher();
+        mil = new tabIntMatcher();
+        perL = 0;
+        perB = 0;
+        perE = 0;
     }
 
     /**
@@ -89,9 +137,10 @@ public class tabTime implements Comparator<tabTime> {
      * matches a date or not
      *
      * @param cal calendar
+     * @param tim time
      * @return true if matched
      */
-    public boolean matches(Calendar cal) {
+    public boolean matches(Calendar cal, long tim) {
         if (!year.matches(cal.get(Calendar.YEAR))) {
             return false;
         }
@@ -104,6 +153,18 @@ public class tabTime implements Comparator<tabTime> {
         if (!dow.matches(cal.get(Calendar.DAY_OF_WEEK))) {
             return false;
         }
+        if (!wom.matches(cal.get(Calendar.WEEK_OF_MONTH))) {
+            return false;
+        }
+        if (!woy.matches(cal.get(Calendar.WEEK_OF_YEAR))) {
+            return false;
+        }
+        if (!dom.matches(cal.get(Calendar.DAY_OF_MONTH))) {
+            return false;
+        }
+        if (!doy.matches(cal.get(Calendar.DAY_OF_YEAR))) {
+            return false;
+        }
         if (!hour.matches(cal.get(Calendar.HOUR_OF_DAY))) {
             return false;
         }
@@ -113,7 +174,14 @@ public class tabTime implements Comparator<tabTime> {
         if (!sec.matches(cal.get(Calendar.SECOND))) {
             return false;
         }
-        return true;
+        if (!mil.matches(cal.get(Calendar.MILLISECOND))) {
+            return false;
+        }
+        if (perL < 1) {
+            return true;
+        }
+        tim %= perL;
+        return (tim > perB) && (tim < perE);
     }
 
     public int compare(tabTime o1, tabTime o2) {
@@ -140,9 +208,15 @@ public class tabTime implements Comparator<tabTime> {
         l.add(beg + "match month " + month);
         l.add(beg + "match day " + day);
         l.add(beg + "match dow " + dow);
+        l.add(beg + "match wom " + wom);
+        l.add(beg + "match woy " + woy);
+        l.add(beg + "match dom " + dom);
+        l.add(beg + "match doy " + doy);
         l.add(beg + "match hour " + hour);
         l.add(beg + "match minute " + min);
         l.add(beg + "match second " + sec);
+        l.add(beg + "match milli " + mil);
+        l.add(beg + "match periodic " + perL + " " + perB + " " + perE);
         return l;
     }
 

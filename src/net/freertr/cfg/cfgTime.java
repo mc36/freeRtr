@@ -36,6 +36,21 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     public String timeZone;
 
     /**
+     * random offset of access list
+     */
+    public int randomMin;
+
+    /**
+     * random offset of access list
+     */
+    public int randomMax;
+
+    /**
+     * random offset of access list
+     */
+    public int randomCur;
+
+    /**
      * current sequence number
      */
     public int seq;
@@ -46,13 +61,20 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
     public final static String[] defaultL = {
         "time-map .*! no description",
         "time-map .*! no time-zone",
+        "time-map .*! random 0 0",
         "time-map .*! sequence .* match year all",
         "time-map .*! sequence .* match month all",
         "time-map .*! sequence .* match day all",
         "time-map .*! sequence .* match dow all",
+        "time-map .*! sequence .* match wom all",
+        "time-map .*! sequence .* match woy all",
+        "time-map .*! sequence .* match dom all",
+        "time-map .*! sequence .* match doy all",
         "time-map .*! sequence .* match hour all",
         "time-map .*! sequence .* match minute all",
-        "time-map .*! sequence .* match second all"};
+        "time-map .*! sequence .* match second all",
+        "time-map .*! sequence .* match milli all",
+        "time-map .*! sequence .* match periodic 0 0 0"};
 
     /**
      * defaults filter
@@ -108,6 +130,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add("time-map " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", "" + description);
         cmds.cfgLine(l, timeZone == null, cmds.tabulator, "time-zone", "" + timeZone);
+        l.add(cmds.tabulator + "random " + randomMin + " " + randomMax);
         for (int i = 0; i < timemap.size(); i++) {
             l.addAll(timemap.get(i).dump(cmds.tabulator));
         }
@@ -124,8 +147,6 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "2 1,.   <num>               sequence number");
         l.add(null, "1 3,. description           specify description");
         l.add(null, "3 3,.   <str>               text");
-        l.add(null, "1 3,. time-zone             specify time zone");
-        l.add(null, "3 .     <str>               text");
         l.add(null, "1 2   rename                rename this time map");
         l.add(null, "2 .     <str>               set new name");
         l.add(null, "1 2,. reindex               reindex route map");
@@ -134,6 +155,11 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "1 2   action                set action to do");
         l.add(null, "2 .     deny                specify to forbid");
         l.add(null, "2 .     permit              specify to allow");
+        l.add(null, "1 3   time-zone             specify time zone");
+        l.add(null, "3 .     <str>               text");
+        l.add(null, "1 3   random                specify random offset in ms");
+        l.add(null, "3 4     <num>               minimum");
+        l.add(null, "4 .       <num>             maximum");
         l.add(null, "1 2   match                 match values");
         l.add(null, "2 3     year                match year");
         l.add(null, "3 .       <num>             value");
@@ -147,6 +173,18 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "2 3     dow                 match day of week");
         l.add(null, "3 .       <num>             value");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     wom                 match week of month");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     woy                 match week of year");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     dom                 match day of month");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     doy                 match day of year");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
         l.add(null, "2 3     hour                match hour");
         l.add(null, "3 .       <num>             value");
         l.add(null, "3 .       all               any value");
@@ -156,6 +194,13 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         l.add(null, "2 3     second              match second");
         l.add(null, "3 .       <num>             value");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     milli               match millisecond");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     periodic            match periodically in ms");
+        l.add(null, "3 4       <num>             length");
+        l.add(null, "4 5         <num>           begin");
+        l.add(null, "5 .           <num>         end");
     }
 
     public synchronized void doCfgStr(cmds cmd) {
@@ -166,6 +211,12 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         }
         if (a.equals("time-zone")) {
             timeZone = cmd.word();
+            return;
+        }
+        if (a.equals("random")) {
+            randomMin = bits.str2num(cmd.word());
+            randomMax = bits.str2num(cmd.word());
+            randomCur = bits.random(randomMin, randomMax);
             return;
         }
         if (a.equals("rename")) {
@@ -209,6 +260,22 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
                 ntry.dow.fromString(cmd.getRemaining());
                 return;
             }
+            if (a.equals("wom")) {
+                ntry.wom.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("woy")) {
+                ntry.woy.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("dom")) {
+                ntry.dom.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("doy")) {
+                ntry.doy.fromString(cmd.getRemaining());
+                return;
+            }
             if (a.equals("hour")) {
                 ntry.hour.fromString(cmd.getRemaining());
                 return;
@@ -219,6 +286,16 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             }
             if (a.equals("second")) {
                 ntry.sec.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("milli")) {
+                ntry.mil.fromString(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("periodic")) {
+                ntry.perL = bits.str2num(cmd.word());
+                ntry.perB = bits.str2num(cmd.word());
+                ntry.perE = bits.str2num(cmd.word());
                 return;
             }
             cmd.badCmd();
@@ -252,6 +329,12 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             timeZone = null;
             return;
         }
+        if (a.equals("random")) {
+            randomMin = 0;
+            randomMax = 0;
+            randomCur = 0;
+            return;
+        }
         if (a.equals("match")) {
             a = cmd.word();
             tabTime ntry = getCurr();
@@ -271,6 +354,22 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
                 ntry.dow = new tabIntMatcher();
                 return;
             }
+            if (a.equals("wom")) {
+                ntry.wom = new tabIntMatcher();
+                return;
+            }
+            if (a.equals("woy")) {
+                ntry.woy = new tabIntMatcher();
+                return;
+            }
+            if (a.equals("dom")) {
+                ntry.dom = new tabIntMatcher();
+                return;
+            }
+            if (a.equals("doy")) {
+                ntry.doy = new tabIntMatcher();
+                return;
+            }
             if (a.equals("hour")) {
                 ntry.hour = new tabIntMatcher();
                 return;
@@ -281,6 +380,16 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             }
             if (a.equals("second")) {
                 ntry.sec = new tabIntMatcher();
+                return;
+            }
+            if (a.equals("milli")) {
+                ntry.mil = new tabIntMatcher();
+                return;
+            }
+            if (a.equals("periodic")) {
+                ntry.perL = 0;
+                ntry.perB = 0;
+                ntry.perE = 0;
                 return;
             }
             cmd.badCmd();
@@ -318,6 +427,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
      */
     public boolean matches(long tim) {
         Calendar cal;
+        tim += randomCur;
         if (timeZone != null) {
             cal = tabTime.time2calendar(timeZone, tim);
         } else {
@@ -325,7 +435,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         }
         for (int i = 0; i < timemap.size(); i++) {
             tabTime ntry = timemap.get(i);
-            if (!ntry.matches(cal)) {
+            if (!ntry.matches(cal, tim)) {
                 continue;
             }
             return ntry.act != tabListingEntry.actionType.actPermit;
