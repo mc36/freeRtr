@@ -59,6 +59,11 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     public long errTim;
 
     /**
+     * last error
+     */
+    public List<String> errLst;
+
+    /**
      * command to execute
      */
     public String command;
@@ -654,6 +659,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         } else {
             errNum++;
             errTim = tim;
+            errLst = lst;
         }
         return res;
     }
@@ -770,6 +776,10 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.add("reply=" + time + " ms");
         res.add("passed=" + okNum + " times, last " + bits.time2str(cfgAll.timeZoneName, okTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(okTim) + " ago)");
         res.add("failed=" + errNum + " times, last " + bits.time2str(cfgAll.timeZoneName, errTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(errTim) + " ago)");
+        res.add("last error:");
+        if (errLst != null) {
+            res.addAll(errLst);
+        }
         res.add("output:");
         res.addAll(getResult());
         res.add("result:");
