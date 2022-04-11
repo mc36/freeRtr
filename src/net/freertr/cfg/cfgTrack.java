@@ -188,63 +188,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("tracker " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
-        cmds.cfgLine(l, !worker.hidden, cmds.tabulator, "hidden", "");
-        cmds.cfgLine(l, !worker.logging, cmds.tabulator, "log", "");
-        l.add(cmds.tabulator + "mode " + clntTrack.mode2string(worker.mode));
-        l.add(cmds.tabulator + "force " + clntTrack.force2string(worker.force));
-        cmds.cfgLine(l, worker.script == null, cmds.tabulator, "script", worker.script);
-        cmds.cfgLine(l, worker.target == null, cmds.tabulator, "target", worker.target);
-        if (worker.hidden) {
-            cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", authLocal.passwdEncode(worker.execUp, (filter & 2) != 0));
-            cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", authLocal.passwdEncode(worker.execDn, (filter & 2) != 0));
-        } else {
-            cmds.cfgLine(l, worker.execUp == null, cmds.tabulator, "exec-up", worker.execUp);
-            cmds.cfgLine(l, worker.execDn == null, cmds.tabulator, "exec-down", worker.execDn);
-        }
-        if (worker.wakeVrf != null) {
-            l.add(cmds.tabulator + "wake-vrf " + worker.wakeVrf.name);
-        } else {
-            l.add(cmds.tabulator + "no wake-vrf");
-        }
-        if (worker.pubkey == null) {
-            l.add(cmds.tabulator + "no pubkey");
-        } else {
-            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(worker.pubkey));
-        }
-        cmds.cfgLine(l, worker.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(worker.secProto));
-        if (worker.chats != null) {
-            l.add(cmds.tabulator + "chat-script " + worker.chats.scrName);
-        } else {
-            l.add(cmds.tabulator + "no chat-script");
-        }
-        if (worker.vrf != null) {
-            l.add(cmds.tabulator + "vrf " + worker.vrf.name);
-        } else {
-            l.add(cmds.tabulator + "no vrf");
-        }
-        if (worker.srcIfc != null) {
-            l.add(cmds.tabulator + "source " + worker.srcIfc.name);
-        } else {
-            l.add(cmds.tabulator + "no source");
-        }
-        l.add(cmds.tabulator + "random-interval " + worker.randInt);
-        l.add(cmds.tabulator + "random-initial " + worker.randIni);
-        l.add(cmds.tabulator + "interval " + worker.interval);
-        l.add(cmds.tabulator + "timeout " + worker.timeout);
-        l.add(cmds.tabulator + "sgt " + worker.secGrp);
-        l.add(cmds.tabulator + "tos " + worker.typOsrv);
-        l.add(cmds.tabulator + "flow " + worker.flowLab);
-        l.add(cmds.tabulator + "ttl " + worker.tim2liv);
-        l.add(cmds.tabulator + "size " + worker.size);
-        l.add(cmds.tabulator + "delay-start " + worker.delaySt);
-        l.add(cmds.tabulator + "delay-up " + worker.delayUp);
-        l.add(cmds.tabulator + "delay-down " + worker.delayDn);
-        cmds.cfgLine(l, worker.time == null, cmds.tabulator, "range", "" + worker.time);
-        if (worker.working) {
-            l.add(cmds.tabulator + "start");
-        } else {
-            l.add(cmds.tabulator + "stop");
-        }
+        worker.getConfig(l, filter);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

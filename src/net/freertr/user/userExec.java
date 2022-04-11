@@ -19,6 +19,7 @@ import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgSched;
 import net.freertr.cfg.cfgScrpt;
+import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntDns;
@@ -1574,6 +1575,10 @@ public class userExec {
         hl.add(null, "3 4,.      <name:prc>                 name of process");
         hl.add(null, "4 .          stop                     stop");
         hl.add(null, "4 .          start                    start");
+        hl.add(null, "2 3      tracker                      run one tracker round");
+        hl.add(null, "3 4,.      <name:trk>                 name of tracker");
+        hl.add(null, "4 .          stop                     stop");
+        hl.add(null, "4 .          start                    start");
         hl.add(null, "2 .      logging                      logged messages");
         hl.add(null, "2 .      auto-bandwidth               set auto bandwidth values");
         hl.add(null, "2 .      follow-tracker               set interfaces based on trackers");
@@ -1972,6 +1977,10 @@ public class userExec {
         hl.add(null, "4 .          start                    start");
         hl.add(null, "2 3      process                      reboot external process");
         hl.add(null, "3 4,.      <name:prc>                 name of process");
+        hl.add(null, "4 .          stop                     stop");
+        hl.add(null, "4 .          start                    start");
+        hl.add(null, "2 3      tracker                      run one tracker round");
+        hl.add(null, "3 4,.      <name:trk>                 name of tracker");
         hl.add(null, "4 .          stop                     stop");
         hl.add(null, "4 .          start                    start");
         hl.add(null, "2 3      scheduler                    run one scheduler round");
@@ -2645,6 +2654,24 @@ public class userExec {
                     ntry.stopNow();
                 }
                 ntry.restartNow();
+                return cmdRes.command;
+            }
+            if (a.equals("tracker")) {
+                cfgTrack ntry = cfgAll.trackFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such tracker");
+                    return cmdRes.command;
+                }
+                a = cmd.word();
+                if (a.equals("start")) {
+                    ntry.worker.startNow();
+                }
+                if (a.equals("stop")) {
+                    ntry.worker.stopNow();
+                }
+                if (a.equals("")) {
+                    ntry.worker.doRound();
+                }
                 return cmdRes.command;
             }
             if (a.equals("peer")) {

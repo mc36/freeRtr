@@ -24,6 +24,7 @@ import net.freertr.cfg.cfgSched;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgSensor;
 import net.freertr.cfg.cfgTlmtry;
+import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
@@ -184,6 +185,24 @@ public class userClear {
                 ntry.stopNow();
             }
             ntry.restartNow();
+            return null;
+        }
+        if (a.equals("tracker")) {
+            cfgTrack ntry = cfgAll.trackFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such tracker");
+                return null;
+            }
+            a = cmd.word();
+            if (a.equals("start")) {
+                ntry.worker.startNow();
+            }
+            if (a.equals("stop")) {
+                ntry.worker.stopNow();
+            }
+            if (a.equals("")) {
+                ntry.worker.doRound();
+            }
             return null;
         }
         if (a.equals("bridge")) {

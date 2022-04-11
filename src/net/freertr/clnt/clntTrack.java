@@ -2,10 +2,9 @@ package net.freertr.clnt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgCheck;
 import net.freertr.cfg.cfgIfc;
@@ -13,6 +12,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgTime;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.cry.cryBase64;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
 import net.freertr.ip.ipFwdIface;
@@ -27,12 +27,14 @@ import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBfdClnt;
 import net.freertr.rtr.rtrBfdNeigh;
 import net.freertr.sec.secClient;
+import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userExec;
 import net.freertr.user.userReader;
 import net.freertr.user.userScript;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.state;
@@ -42,7 +44,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntTrack implements rtrBfdClnt {
+public class clntTrack implements Runnable, rtrBfdClnt {
 
     /**
      * create instance
@@ -276,11 +278,6 @@ public class clntTrack implements rtrBfdClnt {
     public boolean logging = false;
 
     /**
-     * status, false=stopped, true=running
-     */
-    public boolean working = false;
-
-    /**
      * clients
      */
     public final tabGen<ipFwd> clients = new tabGen<ipFwd>();
@@ -310,8 +307,6 @@ public class clntTrack implements rtrBfdClnt {
      */
     protected int totalDn;
 
-    private Timer keepTimer;
-
     /**
      * last state
      */
@@ -327,8 +322,78 @@ public class clntTrack implements rtrBfdClnt {
      */
     protected long lastTime;
 
+    private boolean working = false;
+
+    private final notifier notif = new notifier();
+
     public String toString() {
         return "" + name;
+    }
+
+    /**
+     * get config
+     *
+     * @param l list to append
+     * @param filter filter
+     */
+    public void getConfig(List<String> l, int filter) {
+        cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
+        cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
+        l.add(cmds.tabulator + "mode " + clntTrack.mode2string(mode));
+        l.add(cmds.tabulator + "force " + clntTrack.force2string(force));
+        cmds.cfgLine(l, script == null, cmds.tabulator, "script", script);
+        cmds.cfgLine(l, target == null, cmds.tabulator, "target", target);
+        if (hidden) {
+            cmds.cfgLine(l, execUp == null, cmds.tabulator, "exec-up", authLocal.passwdEncode(execUp, (filter & 2) != 0));
+            cmds.cfgLine(l, execDn == null, cmds.tabulator, "exec-down", authLocal.passwdEncode(execDn, (filter & 2) != 0));
+        } else {
+            cmds.cfgLine(l, execUp == null, cmds.tabulator, "exec-up", execUp);
+            cmds.cfgLine(l, execDn == null, cmds.tabulator, "exec-down", execDn);
+        }
+        if (wakeVrf != null) {
+            l.add(cmds.tabulator + "wake-vrf " + wakeVrf.name);
+        } else {
+            l.add(cmds.tabulator + "no wake-vrf");
+        }
+        if (pubkey == null) {
+            l.add(cmds.tabulator + "no pubkey");
+        } else {
+            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(pubkey));
+        }
+        cmds.cfgLine(l, secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(secProto));
+        if (chats != null) {
+            l.add(cmds.tabulator + "chat-script " + chats.scrName);
+        } else {
+            l.add(cmds.tabulator + "no chat-script");
+        }
+        if (vrf != null) {
+            l.add(cmds.tabulator + "vrf " + vrf.name);
+        } else {
+            l.add(cmds.tabulator + "no vrf");
+        }
+        if (srcIfc != null) {
+            l.add(cmds.tabulator + "source " + srcIfc.name);
+        } else {
+            l.add(cmds.tabulator + "no source");
+        }
+        l.add(cmds.tabulator + "random-interval " + randInt);
+        l.add(cmds.tabulator + "random-initial " + randIni);
+        l.add(cmds.tabulator + "interval " + interval);
+        l.add(cmds.tabulator + "timeout " + timeout);
+        l.add(cmds.tabulator + "sgt " + secGrp);
+        l.add(cmds.tabulator + "tos " + typOsrv);
+        l.add(cmds.tabulator + "flow " + flowLab);
+        l.add(cmds.tabulator + "ttl " + tim2liv);
+        l.add(cmds.tabulator + "size " + size);
+        l.add(cmds.tabulator + "delay-start " + delaySt);
+        l.add(cmds.tabulator + "delay-up " + delayUp);
+        l.add(cmds.tabulator + "delay-down " + delayDn);
+        cmds.cfgLine(l, time == null, cmds.tabulator, "range", "" + time);
+        if (working) {
+            l.add(cmds.tabulator + "start");
+        } else {
+            l.add(cmds.tabulator + "stop");
+        }
     }
 
     /**
@@ -465,20 +530,16 @@ public class clntTrack implements rtrBfdClnt {
     /**
      * stop running
      */
-    public synchronized void stopNow() {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
-        keepTimer = null;
+    public void stopNow() {
         working = false;
+        notif.wakeup();
         haveResult(false);
     }
 
     /**
      * start running
      */
-    public synchronized void startNow() {
+    public void startNow() {
         if (working) {
             return;
         }
@@ -486,13 +547,7 @@ public class clntTrack implements rtrBfdClnt {
             return;
         }
         working = true;
-        keepTimer = new Timer();
-        clntTrackTimer task = new clntTrackTimer(this);
-        int del = delaySt + 100;
-        if (randIni > 0) {
-            del += bits.random(1, randIni);
-        }
-        keepTimer.schedule(task, del, interval);
+        new Thread(this).start();
     }
 
     private static String doScript(String scrptTxt, boolean selfVal) {
@@ -525,9 +580,6 @@ public class clntTrack implements rtrBfdClnt {
      * do one timer round
      */
     public synchronized void doRound() {
-        if (cfgInit.booting) {
-            return;
-        }
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
                 haveResult(false);
@@ -536,9 +588,6 @@ public class clntTrack implements rtrBfdClnt {
         }
         if (logging) {
             logger.info("starting action " + name);
-        }
-        if (randInt > 0) {
-            bits.sleep(bits.random(1, randInt));
         }
         if (mode == null) {
             haveResult(false);
@@ -878,21 +927,32 @@ public class clntTrack implements rtrBfdClnt {
         }
     }
 
-}
-
-class clntTrackTimer extends TimerTask {
-
-    private clntTrack lower;
-
-    public clntTrackTimer(clntTrack parent) {
-        lower = parent;
-    }
-
     public void run() {
-        try {
-            lower.doRound();
-        } catch (Exception e) {
-            logger.traceback(e);
+        for (;;) {
+            if (!cfgInit.booting) {
+                break;
+            }
+            notif.sleep(1000);
+        }
+        int del = delaySt + 100;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        notif.sleep(del);
+        for (;;) {
+            if (!working) {
+                break;
+            }
+            try {
+                doRound();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+            del = interval;
+            if (randInt > 0) {
+                del += bits.random(1, randInt);
+            }
+            notif.sleep(del);
         }
     }
 
