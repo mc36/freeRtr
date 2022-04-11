@@ -5,6 +5,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
@@ -334,6 +335,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
             return;
         }
         if (stopped) {
+            return;
+        }
+        if (cfgInit.booting) {
             return;
         }
         tabRouteEntry<addrIP> sent = createPrefix();

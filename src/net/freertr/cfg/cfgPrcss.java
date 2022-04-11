@@ -434,6 +434,12 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     }
 
     public void run() {
+        for (;;) {
+            if (!cfgInit.booting) {
+                break;
+            }
+            bits.sleep(1000);
+        }
         int del = initial;
         if (randIni > 0) {
             del += bits.random(1, randIni);
@@ -464,9 +470,6 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
     }
 
     private synchronized void doRound() {
-        if (cfgInit.booting) {
-            return;
-        }
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
                 return;
