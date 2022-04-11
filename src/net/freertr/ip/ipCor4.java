@@ -217,11 +217,18 @@ public class ipCor4 implements ipCor {
             addrIPv4 adr = src.toIPv4();
             pck.putAddr(12, adr); // source address
             pck.IPsrc.setAddr(src);
+            pck.IPlnk = adr.isLinkLocal();
+        } else {
+            pck.IPlnk = pck.IPsrc.toIPv4().isLinkLocal();
         }
         if (trg != null) {
             addrIPv4 adr = trg.toIPv4();
             pck.putAddr(16, adr); // destination address
             pck.IPtrg.setAddr(trg);
+            pck.IPbrd = adr.isBroadcast();
+            pck.IPmlt = adr.isMulticast();
+            pck.IPmlr = adr.isRoutedMcast();
+            pck.IPlnk |= adr.isLinkLocal();
         }
         pck.msbPutW(10, 0); // header checksum
         if (cfgAll.ipv4ChecksumTx) {

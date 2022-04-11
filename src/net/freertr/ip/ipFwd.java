@@ -2045,6 +2045,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 natT.reverse.lastUsed = tim;
                 natT.updatePack(pck);
                 natCfg.packUpdate(pck);
+                if (debugger.ipFwdTraf) {
+                    logger.debug("nat " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
+                }
             } else {
                 tabNatCfgN natC = natCfg.find(pck);
                 if (natC != null) {
@@ -2065,6 +2068,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     natTrns.add(natT.reverseEntry());
                     natT.updatePack(pck);
                     natCfg.packUpdate(pck);
+                    if (debugger.ipFwdTraf) {
+                        logger.debug("nat " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
+                    }
                     tableChanger();
                 }
             }

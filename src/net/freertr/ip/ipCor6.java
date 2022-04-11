@@ -249,11 +249,18 @@ public class ipCor6 implements ipCor {
             addrIPv6 adr = src.toIPv6();
             pck.putAddr(8, adr); // source address
             pck.IPsrc.setAddr(src);
+            pck.IPlnk = adr.isLinkLocal();
+        } else {
+            pck.IPlnk = pck.IPsrc.toIPv6().isLinkLocal();
         }
         if (trg != null) {
             addrIPv6 adr = trg.toIPv6();
             pck.putAddr(24, adr); // destination address
             pck.IPtrg.setAddr(trg);
+            pck.IPbrd = adr.isBroadcast();
+            pck.IPmlt = adr.isMulticast();
+            pck.IPmlr = adr.isRoutedMcast();
+            pck.IPlnk |= adr.isLinkLocal();
         }
         pck.putSkip(size);
         pck.mergeHeader(-1, pck.headSize() - size);
