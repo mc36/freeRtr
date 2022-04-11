@@ -530,6 +530,7 @@ public class clntTrack implements rtrBfdClnt {
         }
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+                haveResult(false);
                 return;
             }
         }
