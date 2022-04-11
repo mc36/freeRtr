@@ -646,6 +646,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             case host:
                 s = "host-route";
                 break;
+            case conn:
+                s = "connected";
+                break;
             case common:
                 s = "per-vrf";
                 break;
@@ -818,6 +821,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 .    per-prefix        label for all prefixes");
         l.add(null, "2 .    all-igp           label for all igp prefixes");
         l.add(null, "2 .    host-route        label for host routes");
+        l.add(null, "2 .    connected         label for connected routes");
         l.add(null, "2 .    per-vrf           common label for the vrf");
         l.add(null, "1 2  incremental4        specify ipv4 incremental limit");
         l.add(null, "2 .    <num>             routes");
@@ -920,6 +924,9 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             }
             if (a.equals("host-route")) {
                 labelMode = ipFwd.labelMode.host;
+            }
+            if (a.equals("connected")) {
+                labelMode = ipFwd.labelMode.conn;
             }
             if (a.equals("per-vrf")) {
                 labelMode = ipFwd.labelMode.common;

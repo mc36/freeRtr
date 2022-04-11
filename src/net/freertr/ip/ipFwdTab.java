@@ -996,6 +996,18 @@ public class ipFwdTab {
                 tabL = new tabRoute<addrIP>("labeled");
                 tabL.mergeFrom(tabRoute.addType.ecmp, tabU, tabRouteAttr.distanLim);
                 break;
+            case conn:
+                for (int i = tabL.size() - 1; i >= 0; i--) {
+                    tabRouteEntry<addrIP> ntry = tabL.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    if (ntry.best.rouTyp == tabRouteAttr.routeType.conn) {
+                        continue;
+                    }
+                    tabL.del(ntry);
+                }
+                break;
             default:
                 tabL = new tabRoute<addrIP>("labeled");
                 break;

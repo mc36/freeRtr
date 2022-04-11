@@ -480,6 +480,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
          */
         common,
         /**
+         * label for connected routes
+         */
+        conn,
+        /**
          * label for host routes
          */
         host,
