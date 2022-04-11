@@ -3,8 +3,6 @@ package net.freertr.cfg;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
@@ -20,13 +18,14 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logBuf;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 
 /**
  * one script configuration
  *
  * @author matecsaba
  */
-public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
+public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
 
     /**
      * create instance
@@ -90,11 +89,6 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
     public logBuf logCol;
 
     /**
-     * status, false=stopped, true=running
-     */
-    public boolean working = false;
-
-    /**
      * time range when allowed
      */
     public cfgTime time;
@@ -116,7 +110,15 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
 
     private pipeSide loc;
 
-    private Timer keepTimer;
+    /**
+     * status, false=stopped, true=running
+     */
+    protected boolean working = false;
+
+    /**
+     * notifier in use
+     */
+    protected final notifier notif = new notifier();
 
     /**
      * defaults text
@@ -344,12 +346,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
      * stop running
      */
     public void stopNow() {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
-        keepTimer = null;
         working = false;
+        notif.wakeup();
     }
 
     /**
@@ -363,17 +361,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
             return;
         }
         working = true;
-        keepTimer = new Timer();
-        cfgScrptTimer task = new cfgScrptTimer(this);
-        int del = initial;
-        if (randIni > 0) {
-            del += bits.random(1, randIni);
-        }
-        if (respawn) {
-            keepTimer.schedule(task, del, interval);
-        } else {
-            keepTimer.schedule(task, del);
-        }
+        new Thread(new cfgScrptWork(this)).start();
     }
 
     /**
@@ -393,14 +381,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         if (logAct) {
             logger.info("starting " + name);
         }
-        if (randInt > 0) {
-            bits.sleep(bits.random(1, randInt));
-        }
         restartC++;
         restartT = bits.getTime();
         pipeLine pl = new pipeLine(32768, false);
         loc = pl.getSide();
-        new Thread(this).start();
+        new Thread(new cfgScrptRead(this)).start();
         pipeSide pip = pl.getSide();
         pip.setTime(120000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
@@ -419,7 +404,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         }
     }
 
-    private void doReader(pipeSide pipe) {
+    /**
+     * do read rounds
+     */
+    protected void doReader() {
+        pipeSide pipe = loc;
         for (;;) {
             if (pipe.isClosed() != 0) {
                 break;
@@ -439,14 +428,6 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
         }
     }
 
-    public void run() {
-        try {
-            doReader(loc);
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-    }
-
     /**
      * get info
      *
@@ -458,19 +439,58 @@ public class cfgScrpt implements Comparator<cfgScrpt>, Runnable, cfgGeneric {
 
 }
 
-class cfgScrptTimer extends TimerTask {
+class cfgScrptRead implements Runnable {
 
     private cfgScrpt lower;
 
-    public cfgScrptTimer(cfgScrpt parent) {
+    public cfgScrptRead(cfgScrpt parent) {
         lower = parent;
     }
 
     public void run() {
         try {
-            lower.doRound(null);
+            lower.doReader();
         } catch (Exception e) {
             logger.traceback(e);
+        }
+    }
+
+}
+
+class cfgScrptWork implements Runnable {
+
+    private cfgScrpt lower;
+
+    public cfgScrptWork(cfgScrpt parent) {
+        lower = parent;
+    }
+
+    public void run() {
+        int del = lower.initial;
+        if (lower.randIni > 0) {
+            del += bits.random(1, lower.randIni);
+        }
+        if (del > 0) {
+            lower.notif.sleep(del);
+        }
+        if (!lower.respawn) {
+            lower.doRound(null);
+            return;
+        }
+        for (;;) {
+            if (!lower.working) {
+                break;
+            }
+            try {
+                lower.doRound(null);
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+            del = lower.interval;
+            if (lower.randInt > 0) {
+                del += bits.random(1, lower.randInt);
+            }
+            lower.notif.sleep(del);
         }
     }
 

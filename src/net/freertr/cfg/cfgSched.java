@@ -3,8 +3,6 @@ package net.freertr.cfg;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import net.freertr.auth.authLocal;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
@@ -20,13 +18,14 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logBuf;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 
 /**
  * scheduler configuration
  *
  * @author matecsaba
  */
-public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
+public class cfgSched implements Comparator<cfgSched>, cfgGeneric {
 
     /**
      * create instance
@@ -95,11 +94,6 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
     public logBuf logCol;
 
     /**
-     * status, false=stopped, true=running
-     */
-    public boolean working = false;
-
-    /**
      * time range when allowed
      */
     public cfgTime time;
@@ -121,7 +115,15 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
 
     private pipeSide loc;
 
-    private Timer keepTimer;
+    /**
+     * status, false=stopped, true=running
+     */
+    protected boolean working = false;
+
+    /**
+     * notifier in use
+     */
+    protected final notifier notif = new notifier();
 
     /**
      * defaults text
@@ -354,12 +356,8 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
      * stop running
      */
     public void stopNow() {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
-        keepTimer = null;
         working = false;
+        notif.wakeup();
     }
 
     /**
@@ -373,17 +371,7 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
             return;
         }
         working = true;
-        keepTimer = new Timer();
-        cfgSchedTimer task = new cfgSchedTimer(this);
-        int del = initial;
-        if (randIni > 0) {
-            del += bits.random(1, randIni);
-        }
-        if (respawn) {
-            keepTimer.schedule(task, del, interval);
-        } else {
-            keepTimer.schedule(task, del);
-        }
+        new Thread(new cfgSchedWork(this)).start();
     }
 
     /**
@@ -401,14 +389,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         if (logAct) {
             logger.info("starting " + name);
         }
-        if (randInt > 0) {
-            bits.sleep(bits.random(1, randInt));
-        }
         restartC++;
         restartT = bits.getTime();
         pipeLine pipe = new pipeLine(32768, false);
         loc = pipe.getSide();
-        new Thread(this).start();
+        new Thread(new cfgSchedRead(this)).start();
         pipeSide pip = pipe.getSide();
         userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
@@ -425,7 +410,11 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
     }
 
-    private void doReader(pipeSide pipe) {
+    /**
+     * do read rounds
+     */
+    protected void doReader() {
+        pipeSide pipe = loc;
         for (;;) {
             if (pipe.isClosed() != 0) {
                 break;
@@ -445,14 +434,6 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
         }
     }
 
-    public void run() {
-        try {
-            doReader(loc);
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-    }
-
     /**
      * get info
      *
@@ -464,19 +445,58 @@ public class cfgSched implements Comparator<cfgSched>, Runnable, cfgGeneric {
 
 }
 
-class cfgSchedTimer extends TimerTask {
+class cfgSchedRead implements Runnable {
 
     private cfgSched lower;
 
-    public cfgSchedTimer(cfgSched parent) {
+    public cfgSchedRead(cfgSched parent) {
         lower = parent;
     }
 
     public void run() {
         try {
-            lower.doRound();
+            lower.doReader();
         } catch (Exception e) {
             logger.traceback(e);
+        }
+    }
+
+}
+
+class cfgSchedWork implements Runnable {
+
+    private cfgSched lower;
+
+    public cfgSchedWork(cfgSched parent) {
+        lower = parent;
+    }
+
+    public void run() {
+        int del = lower.initial;
+        if (lower.randIni > 0) {
+            del += bits.random(1, lower.randIni);
+        }
+        if (del > 0) {
+            lower.notif.sleep(del);
+        }
+        if (!lower.respawn) {
+            lower.doRound();
+            return;
+        }
+        for (;;) {
+            if (!lower.working) {
+                break;
+            }
+            try {
+                lower.doRound();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+            del = lower.interval;
+            if (lower.randInt > 0) {
+                del += bits.random(1, lower.randInt);
+            }
+            lower.notif.sleep(del);
         }
     }
 

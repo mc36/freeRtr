@@ -444,7 +444,9 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         if (randIni > 0) {
             del += bits.random(1, randIni);
         }
-        bits.sleep(del);
+        if (del > 0) {
+            bits.sleep(del);
+        }
         try {
             doRound();
         } catch (Exception e) {

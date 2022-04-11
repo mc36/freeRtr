@@ -938,7 +938,9 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         if (randIni > 0) {
             del += bits.random(1, randIni);
         }
-        notif.sleep(del);
+        if (del > 0) {
+            notif.sleep(del);
+        }
         for (;;) {
             if (!working) {
                 break;

@@ -859,7 +859,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (randIni > 0) {
             del += bits.random(1, randIni);
         }
-        bits.sleep(del);
+        if (del > 0) {
+            bits.sleep(del);
+        }
         for (;;) {
             bits.sleep(interval);
             if (!need2run) {
