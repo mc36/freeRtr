@@ -693,6 +693,8 @@ public class userConfig {
         l.add(null, "4  .        sticky-onlychanged       execute only if change happened");
         l.add(null, "4  .        sticky-onlysuccess       remember the choice only if succeeded");
         l.add(null, "4  .        sticky-persistent        no need to execute during bootup");
+        l.add(null, "4  5        sticky-extpersist        read state from file during bootup");
+        l.add(null, "5  5,.        <text>                 file name");
         l.add(null, "4  5        sticky-param             specify sticky parameter");
         l.add(null, "5  5,.        <text>                 parameter text");
         l.add(null, "4  5        default-param            specify default parameter");

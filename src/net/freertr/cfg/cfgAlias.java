@@ -9,6 +9,7 @@ import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.user.userReader;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
 /**
@@ -93,6 +94,11 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * sticky persistence
      */
     public boolean stickyPrst = false;
+
+    /**
+     * sticky external file
+     */
+    public String stickyExtr = null;
 
     /**
      * default parameter
@@ -338,6 +344,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         if (stickyPrst) {
             l.add(a + " sticky-persistent");
         }
+        if (stickyExtr != null) {
+            l.add(a + " sticky-extpersist " + stickyExtr);
+        }
         if (stickyness) {
             l.add(a + " sticky-param " + stickyPar);
         }
@@ -464,6 +473,22 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         if (a.equals("sticky-persistent")) {
             stickyPrst = !neg;
+            return;
+        }
+        if (a.equals("sticky-extpersist")) {
+            if (neg) {
+                stickyExtr = null;
+                return;
+            }
+            stickyExtr = cmd.getRemaining();
+            List<String> res = bits.txt2buf(stickyExtr);
+            if (res == null) {
+                return;
+            }
+            if (res.size() < 1) {
+                return;
+            }
+            stickyPar = res.get(0);
             return;
         }
         if (a.equals("sticky-param")) {
