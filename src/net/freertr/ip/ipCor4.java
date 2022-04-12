@@ -164,21 +164,29 @@ public class ipCor4 implements ipCor {
         pck.msbPutW(10, 0); // header checksum
         addrIPv4 adr = pck.IPsrc.toIPv4();
         pck.putAddr(12, adr); // source address
-        pck.IPlnk = adr.isLinkLocal();
+        checkAddrSrc(pck, adr);
         adr = pck.IPtrg.toIPv4();
         pck.putAddr(16, adr); // destination address
         if (cfgAll.ipv4ChecksumTx) {
             pck.lsbPutW(10, 0xffff - pck.putIPsum(0, pck.IPsiz, 0)); // header checksum
         }
-        pck.IPbrd = adr.isBroadcast();
-        pck.IPmlt = adr.isMulticast();
-        pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk |= adr.isLinkLocal();
+        checkAddrTrg(pck, adr);
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;
         pck.putSkip(pck.IPsiz);
         pck.merge2beg();
+    }
+
+    private static void checkAddrSrc(packHolder pck, addrIPv4 adr) {
+        pck.IPlnk = adr.isLinkLocal();
+    }
+
+    private static void checkAddrTrg(packHolder pck, addrIPv4 adr) {
+        pck.IPbrd = adr.isBroadcast();
+        pck.IPmlt = adr.isMulticast();
+        pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk |= adr.isLinkLocal();
     }
 
     public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int id, int len) {
@@ -217,18 +225,17 @@ public class ipCor4 implements ipCor {
             addrIPv4 adr = src.toIPv4();
             pck.putAddr(12, adr); // source address
             pck.IPsrc.setAddr(src);
-            pck.IPlnk = adr.isLinkLocal();
+            checkAddrSrc(pck, adr);
         } else {
-            pck.IPlnk = pck.IPsrc.toIPv4().isLinkLocal();
+            checkAddrSrc(pck, pck.IPsrc.toIPv4());
         }
         if (trg != null) {
             addrIPv4 adr = trg.toIPv4();
             pck.putAddr(16, adr); // destination address
             pck.IPtrg.setAddr(trg);
-            pck.IPbrd = adr.isBroadcast();
-            pck.IPmlt = adr.isMulticast();
-            pck.IPmlr = adr.isRoutedMcast();
-            pck.IPlnk |= adr.isLinkLocal();
+            checkAddrTrg(pck, adr);
+        } else {
+            checkAddrTrg(pck, pck.IPtrg.toIPv4());
         }
         pck.msbPutW(10, 0); // header checksum
         if (cfgAll.ipv4ChecksumTx) {

@@ -195,18 +195,26 @@ public class ipCor6 implements ipCor {
         pck.putByte(7, pck.IPttl); // hop limit
         addrIPv6 adr = pck.IPsrc.toIPv6();
         pck.putAddr(8, adr); // source address
-        pck.IPlnk = adr.isLinkLocal();
+        checkAddrSrc(pck, adr);
         adr = pck.IPtrg.toIPv6();
         pck.putAddr(24, adr); // destination address
-        pck.IPbrd = adr.isBroadcast();
-        pck.IPmlt = adr.isMulticast();
-        pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk |= adr.isLinkLocal();
+        checkAddrTrg(pck, adr);
         pck.IPver = protocolVersion;
         pck.IPmf = false;
         pck.IPfrg = 0;
         pck.putSkip(pck.IPsiz);
         pck.merge2beg();
+    }
+
+    private static void checkAddrSrc(packHolder pck, addrIPv6 adr) {
+        pck.IPlnk = adr.isLinkLocal();
+    }
+
+    private static void checkAddrTrg(packHolder pck, addrIPv6 adr) {
+        pck.IPbrd = adr.isBroadcast();
+        pck.IPmlt = adr.isMulticast();
+        pck.IPmlr = adr.isRoutedMcast();
+        pck.IPlnk |= adr.isLinkLocal();
     }
 
     public void updateIPheader(packHolder pck, addrIP src, addrIP trg, int prt, int ttl, int tos, int id, int len) {
@@ -249,18 +257,17 @@ public class ipCor6 implements ipCor {
             addrIPv6 adr = src.toIPv6();
             pck.putAddr(8, adr); // source address
             pck.IPsrc.setAddr(src);
-            pck.IPlnk = adr.isLinkLocal();
+            checkAddrSrc(pck, adr);
         } else {
-            pck.IPlnk = pck.IPsrc.toIPv6().isLinkLocal();
+            checkAddrSrc(pck, pck.IPsrc.toIPv6());
         }
         if (trg != null) {
             addrIPv6 adr = trg.toIPv6();
             pck.putAddr(24, adr); // destination address
             pck.IPtrg.setAddr(trg);
-            pck.IPbrd = adr.isBroadcast();
-            pck.IPmlt = adr.isMulticast();
-            pck.IPmlr = adr.isRoutedMcast();
-            pck.IPlnk |= adr.isLinkLocal();
+            checkAddrTrg(pck, adr);
+        } else {
+            checkAddrTrg(pck, pck.IPtrg.toIPv6());
         }
         pck.putSkip(size);
         pck.mergeHeader(-1, pck.headSize() - size);
