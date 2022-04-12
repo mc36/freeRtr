@@ -628,7 +628,9 @@ class servSmtpRbler implements Runnable {
             return 2;
         }
         dns = new clntDns();
-        if (dns.doResolvOne(srvA, packDnsRec.generateReverse(addr, serv.server), false, packDnsRec.typeA) == 1) {
+        List<addrIP> srvL = new ArrayList<addrIP>();
+        srvL.add(srvA);
+        if (dns.doResolvList(srvL, packDnsRec.generateReverse(addr, serv.server), false, packDnsRec.typeA) == 1) {
             return 2;
         }
         if (dns.getAddr(4) != null) {

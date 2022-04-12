@@ -110,7 +110,7 @@ public class clntDns {
         }
     }
 
-    private int doResolv(addrIP srv, String nam, int typ) {
+    private int doResolvSingle(addrIP srv, String nam, int typ) {
         reply = new packDns();
         packDnsRec cac = loNcache.findUser(nam, typ);
         if (cac != null) {
@@ -196,36 +196,16 @@ public class clntDns {
             if (reply.result != packDns.resultSuccess) {
                 return 1;
             }
-            if (findAnswer(typ) == null) {
-                loNcache.addBin(rr);
-                return 2;
+            if (findAnswer(typ) != null) {
+                return 0;
             }
-            return 0;
+            if (findAnswer(packDnsRec.typeCNAME) != null) {
+                return 3;
+            }
+            loNcache.addBin(rr);
+            return 2;
         }
         return 1;
-    }
-
-    /**
-     * resolve a query
-     *
-     * @param srv server to use
-     * @param nam name to query
-     * @param dom try appending domain
-     * @param typ type of record
-     * @return 0 on success, 1 on error, 2 on notfound
-     */
-    public int doResolvOne(addrIP srv, String nam, boolean dom, int typ) {
-        int i = doResolv(srv, nam, typ);
-        if (i == 0) {
-            return i;
-        }
-        if (!dom) {
-            return i;
-        }
-        if (cfgAll.domainName == null) {
-            return i;
-        }
-        return doResolv(srv, nam + "." + cfgAll.domainName, typ);
     }
 
     /**
@@ -237,6 +217,7 @@ public class clntDns {
      * @return false on success, true on error
      */
     public packDnsZone doRecursive(List<addrIP> srv, String nam, int typ) {
+        List<addrIP> orig = srv;
         packDnsZone res = new packDnsZone("results");
         String dom = "";
         for (;;) {
@@ -257,7 +238,16 @@ public class clntDns {
             }
             dom = a + dom;
             int ned = (nam.length() > 0) ? packDnsRec.typeNS : typ;
-            if (doResolvList(srv, dom, false, ned) != 0) {
+            i = doResolvList(srv, dom, false, ned);
+            if (i == 3) {
+                packDnsRec rec = findAnswer(packDnsRec.typeCNAME);
+                dom = "";
+                nam = rec.res.get(bits.random(0, rec.res.size())).target;
+                res.addBin(rec);
+                srv = orig;
+                continue;
+            }
+            if (i != 0) {
                 return null;
             }
             packDnsRec rec = findAnswer(ned);
@@ -376,18 +366,38 @@ public class clntDns {
      * @param nam name to query
      * @param dom try appending domain
      * @param typ type of query
-     * @return 0 on success, 1 on error, 2 on notfound
+     * @return 0 on success, 1 on error, 2 on notfound, 3 on redirect
      */
     public int doResolvList(List<addrIP> srv, String nam, boolean dom, int typ) {
         if (srv == null) {
             return 1;
         }
+        if (cfgAll.domainName == null) {
+            dom = false;
+        }
         for (int o = 0; o < srv.size(); o++) {
-            int i = doResolvOne(srv.get(o), nam, dom, typ);
-            if (i == 1) {
-                continue;
+            int i = doResolvSingle(srv.get(o), nam, typ);
+            switch (i) {
+                case 0:
+                    return 0;
+                case 1:
+                    continue;
+                case 3:
+                    return 3;
             }
-            return i;
+            if (!dom) {
+                return 2;
+            }
+            i = doResolvSingle(srv.get(o), nam + "." + cfgAll.domainName, typ);
+            switch (i) {
+                case 0:
+                    return 0;
+                case 1:
+                    continue;
+                case 3:
+                    return 3;
+            }
+            return 2;
         }
         return 1;
     }

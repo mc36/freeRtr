@@ -164,7 +164,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "2  .     6to4nothing             clear 6to4 prefix");
         l.add(null, "1  2   resolver                  define resolver");
         l.add(null, "2  3     <str>                   zone name");
-        l.add(null, "3  .       <addr>                address of resolver");
+        l.add(null, "3  3,.     <addr>                address of resolver");
         l.add(null, "1  2   zone                      name of a zone");
         List<String> lst = new ArrayList<String>();
         for (int i = 0; i < zones.size(); i++) {
@@ -380,7 +380,7 @@ class servDnsResolv implements Comparator<servDnsResolv> {
 
     public final String name;
 
-    public addrIP addr;
+    public List<addrIP> addr;
 
     public servDnsResolv(String nam) {
         name = nam.toLowerCase();
@@ -391,12 +391,27 @@ class servDnsResolv implements Comparator<servDnsResolv> {
     }
 
     public String toString() {
-        return name + " " + addr;
+        String a = "";
+        for (int i = 0; i < addr.size(); i++) {
+            a += " " + addr.get(i);
+        }
+        return name + a;
     }
 
     public boolean fromString(cmds cmd) {
-        addr = new addrIP();
-        return addr.fromString(cmd.word());
+        addr = new ArrayList<addrIP>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(a)) {
+                continue;
+            }
+            addr.add(adr);
+        }
+        return addr.size() < 1;
     }
 
 }
@@ -444,7 +459,7 @@ class servDnsDoer implements Runnable {
 
     private boolean doSlaves(servDnsResolv ntry, List<packDnsRec> res, int typ, String nam) {
         clntDns clnt = new clntDns();
-        if (clnt.doResolvOne(ntry.addr, nam, false, typ) != 0) {
+        if (clnt.doResolvList(ntry.addr, nam, false, typ) != 0) {
             return false;
         }
         if (typ == packDnsRec.typeANY) {
