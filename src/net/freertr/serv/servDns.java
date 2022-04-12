@@ -424,8 +424,9 @@ class servDnsResolv implements Comparator<servDnsResolv> {
         }
         if (name.length() < 1) {
             return "." + a;
+        } else {
+            return name + a;
         }
-        return name + a;
     }
 
     public boolean fromString(cmds cmd) {
