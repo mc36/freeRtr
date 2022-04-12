@@ -572,6 +572,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         String pr = par.getRemaining().trim();
         if (stickyness) {
             if (stickyPrst && cfgInit.booting) {
+                stickyPar = pr;
                 return;
             }
             if (stickyChgd) {
