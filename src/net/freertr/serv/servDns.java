@@ -52,6 +52,11 @@ public class servDns extends servGeneric implements prtServS {
     public tabGen<servDnsResolv> resolvs = new tabGen<servDnsResolv>();
 
     /**
+     * list of recursions
+     */
+    public tabGen<servDnsResolv> rcrsvia = new tabGen<servDnsResolv>();
+
+    /**
      * name of last
      */
     public String lastZone = "";
@@ -145,6 +150,10 @@ public class servDns extends servGeneric implements prtServS {
             servDnsResolv res = resolvs.get(i);
             lst.add(beg + "resolver " + res);
         }
+        for (int i = 0; i < rcrsvia.size(); i++) {
+            servDnsResolv res = rcrsvia.get(i);
+            lst.add(beg + "recursion via " + res);
+        }
         for (int i = 0; i < zones.size(); i++) {
             packDnsZone zon = zones.get(i);
             lst.addAll(zon.saveZone(beg + "zone " + zon.name));
@@ -162,6 +171,9 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "2  3     6to4prefix              setup 6to4 prefix");
         l.add(null, "3  .       <addr>                address to prepend");
         l.add(null, "2  .     6to4nothing             clear 6to4 prefix");
+        l.add(null, "2  3     via                     define root");
+        l.add(null, "3  4       <str>                 zone name");
+        l.add(null, "4  4,.       <addr>              address of resolver");
         l.add(null, "1  2   resolver                  define resolver");
         l.add(null, "2  3     <str>                   zone name");
         l.add(null, "3  3,.     <addr>                address of resolver");
@@ -261,6 +273,18 @@ public class servDns extends servGeneric implements prtServS {
         }
         if (s.equals("recursion")) {
             s = cmd.word();
+            if (s.equals("via")) {
+                servDnsResolv res = new servDnsResolv(cmd.word());
+                if (res.fromString(cmd)) {
+                    return false;
+                }
+                if (negated) {
+                    rcrsvia.del(res);
+                    return false;
+                }
+                rcrsvia.put(res);
+                return false;
+            }
             if (s.equals("enable")) {
                 recursEna = !negated;
                 return false;
