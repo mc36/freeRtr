@@ -158,7 +158,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
          * flash alias
          */
         flsh,
-        
+
     }
 
     /**
@@ -178,7 +178,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
          * parameters allowed
          */
         allow
-        
+
     }
 
     /**
@@ -271,7 +271,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         return paraMode.allow;
     }
-    
+
     public String toString() {
         return type2string(type) + "|" + name + "|" + command;
     }
@@ -285,7 +285,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
      * defaults filter
      */
     public static tabGen<userFilter> defaultF;
-    
+
     public int compare(cfgAlias o1, cfgAlias o2) {
         int i = o1.type.compareTo(o2.type);
         if (i != 0) {
@@ -293,14 +293,14 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
-    
+
     public void getHelp(userHelping l) {
     }
-    
+
     public String getPrompt() {
         return "alias";
     }
-    
+
     private void getShCmds(List<String> l, int filter, String a, String k, String m, String c, paraMode p) {
         if (c == null) {
             return;
@@ -314,7 +314,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             l.add(a + m + param2string(p));
         }
     }
-    
+
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         String a = "alias " + type2string(type) + " " + name;
@@ -351,7 +351,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         l = userFilter.filterText(l, cfgAll.defaultF);
         return userFilter.filterText(l, defaultF);
     }
-    
+
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
         boolean neg = a.equals("no");
@@ -524,7 +524,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         s = "" + (lev + 1);
         l.add(null, s + " " + s + ",. <text>   parameter");
     }
-    
+
     private static paraMode maxOfParams(paraMode a, paraMode b, String c) {
         if (c == null) {
             return a;
@@ -543,7 +543,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
         }
         return paraMode.never;
     }
-    
+
     private boolean doOneCmd(userExec exe, String a, cmds par, paraMode p) {
         if (a == null) {
             return false;
@@ -577,9 +577,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             }
             if (stickyChgd) {
                 if (stickyPar.equals(pr)) {
-                    if (!cfgInit.booting) {
-                        par.error("already selected");
-                    }
+                    par.error("already selected");
                     return;
                 }
             }
@@ -606,5 +604,5 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             stickyPar = pr;
         }
     }
-    
+
 }
