@@ -1,4 +1,3 @@
-tcpmss on bridges
 allow command to be a substring of an other
 quic
 update gtp stack to the latest standards

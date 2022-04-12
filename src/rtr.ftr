@@ -2830,7 +2830,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: tcpmss on bridges
 todo: allow command to be a substring of an other
 todo: quic
 todo: update gtp stack to the latest standards

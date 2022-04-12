@@ -3991,6 +3991,26 @@ class servP4langConn implements Runnable {
                 br = new servP4langBr(0);
             }
             if (!br.routed) {
+                i = ifc.ifc.bridgeIfc.tcp4mssIn;
+                int o = ifc.ifc.bridgeIfc.tcp4mssOut;
+                if (i != ifc.sentMss4in) {
+                    lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + i);
+                    ifc.sentMss4in = i;
+                }
+                if (o != ifc.sentMss4out) {
+                    lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + o);
+                    ifc.sentMss4out = o;
+                }
+                i = ifc.ifc.bridgeIfc.tcp6mssIn;
+                o = ifc.ifc.bridgeIfc.tcp6mssOut;
+                if (i != ifc.sentMss6in) {
+                    lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + i);
+                    ifc.sentMss6in = i;
+                }
+                if (o != ifc.sentMss6out) {
+                    lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + o);
+                    ifc.sentMss6out = o;
+                }
                 if (needAcl(ifc.sentAcl4in1, ifc.ifc.bridgeIfc.filter4in, null, null, null, ifc.sentAcl4inF)) {
                     sendAcl(0, "inacl4_del " + ifc.id + " ", "", "", "", "", true, false, ifc.sentAcl4inF, null, null, null);
                     ifc.sentAcl4in1 = ifc.ifc.bridgeIfc.filter4in;

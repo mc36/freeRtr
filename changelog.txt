@@ -13169,3 +13169,5 @@ qc pass: bridge port unsplit horizon
 ---------------------------------- 2022-04-12 16:04:05 22.4.12
 todo: tcpmss on bridges
 todo: allow command to be a substring of an other
+---------------------------------- 2022-04-12 17:33:21 22.4.12
+no todo: tcpmss on bridges

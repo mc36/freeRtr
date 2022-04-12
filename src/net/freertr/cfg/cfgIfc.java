@@ -1455,6 +1455,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no bridge-macrewrite",
         "interface .*! no bridge-portsecurity",
         "interface .*! no bridge-staticaddr",
+        "interface .*! no bridge-tcp-mss ipv4in",
+        "interface .*! no bridge-tcp-mss ipv4out",
+        "interface .*! no bridge-tcp-mss ipv6in",
+        "interface .*! no bridge-tcp-mss ipv6out",
         "interface .*! no bundle-group",
         "interface .*! bundle-priority 0",
         "interface .*! no service-policy-in",
@@ -5945,6 +5949,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             cmds.cfgLine(l, bridgeIfc.filter6in == null, cmds.tabulator, "bridge-filter ipv6in", "" + bridgeIfc.filter6in);
             cmds.cfgLine(l, bridgeIfc.filter6out == null, cmds.tabulator, "bridge-filter ipv6out", "" + bridgeIfc.filter6out);
             cmds.cfgLine(l, bridgeIfc.macRewrite == null, cmds.tabulator, "bridge-macrewrite", "" + bridgeIfc.macRewrite);
+            cmds.cfgLine(l, bridgeIfc.tcp4mssIn == 0, cmds.tabulator, "bridge-tcp-mss ipv4in", "" + bridgeIfc.tcp4mssIn);
+            cmds.cfgLine(l, bridgeIfc.tcp4mssOut == 0, cmds.tabulator, "bridge-tcp-mss ipv4out", "" + bridgeIfc.tcp4mssOut);
+            cmds.cfgLine(l, bridgeIfc.tcp6mssIn == 0, cmds.tabulator, "bridge-tcp-mss ipv6in", "" + bridgeIfc.tcp6mssIn);
+            cmds.cfgLine(l, bridgeIfc.tcp6mssOut == 0, cmds.tabulator, "bridge-tcp-mss ipv6out", "" + bridgeIfc.tcp6mssOut);
             if (bridgeIfc.statAddr == null) {
                 l.add(cmds.tabulator + "no bridge-staticaddr");
             } else {
@@ -6315,6 +6323,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 2,.   <addr>                      address to forward");
         l.add(null, "1 2   bridge-macrewrite             transparent bridging interface parameters");
         l.add(null, "2 .     <addr>                      address to use");
+        l.add(null, "1 2   bridge-tcp-mss                specify rewrite tcp mss");
+        l.add(null, "2 3     ipv4in                      for ipv4 ingress");
+        l.add(null, "3 .       <num>                     max mss to allow");
+        l.add(null, "2 3     ipv4out                     for ipv4 egress");
+        l.add(null, "3 .       <num>                     max mss to allow");
+        l.add(null, "2 3     ipv6in                      for ipv6 ingress");
+        l.add(null, "3 .       <num>                     max mss to allow");
+        l.add(null, "2 3     ipv6out                     for ipv6 egress");
+        l.add(null, "3 .       <num>                     max mss to allow");
         l.add(null, "1 2   bridge-filter                 transparent bridging filtering parameters");
         l.add(null, "2 .     private-port                isolate port");
         l.add(null, "2 .     public-port                 unisolate port");
@@ -7007,6 +7024,30 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             bridgeIfc.macRewrite.fromString(a);
             return;
         }
+        if (a.equals("bridge-tcp-mss")) {
+            a = cmd.word();
+            if (bridgeIfc == null) {
+                cmd.error("not bridged");
+                return;
+            }
+            if (a.equals("ipv4in")) {
+                bridgeIfc.ipCore4 = new ipCor4();
+                bridgeIfc.tcp4mssIn = bits.str2num(cmd.word());
+            }
+            if (a.equals("ipv4out")) {
+                bridgeIfc.ipCore4 = new ipCor4();
+                bridgeIfc.tcp4mssOut = bits.str2num(cmd.word());
+            }
+            if (a.equals("ipv6in")) {
+                bridgeIfc.ipCore6 = new ipCor6();
+                bridgeIfc.tcp6mssIn = bits.str2num(cmd.word());
+            }
+            if (a.equals("ipv6out")) {
+                bridgeIfc.ipCore6 = new ipCor6();
+                bridgeIfc.tcp6mssOut = bits.str2num(cmd.word());
+            }
+            return;
+        }
         if (a.equals("bridge-filter")) {
             a = cmd.word();
             if (bridgeIfc == null) {
@@ -7647,6 +7688,26 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             bridgeIfc.macRewrite = null;
+            return;
+        }
+        if (a.equals("bridge-tcp-mss")) {
+            a = cmd.word();
+            if (bridgeIfc == null) {
+                cmd.error("not bridged");
+                return;
+            }
+            if (a.equals("ipv4in")) {
+                bridgeIfc.tcp4mssIn = 0;
+            }
+            if (a.equals("ipv4out")) {
+                bridgeIfc.tcp4mssOut = 0;
+            }
+            if (a.equals("ipv6in")) {
+                bridgeIfc.tcp6mssIn = 0;
+            }
+            if (a.equals("ipv6out")) {
+                bridgeIfc.tcp6mssOut = 0;
+            }
             return;
         }
         if (a.equals("bridge-filter")) {

@@ -3,11 +3,13 @@ package net.freertr.ifc;
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
+import net.freertr.ip.ipCor;
 import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
 import net.freertr.ip.ipMhostHndl;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packStp;
+import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
@@ -73,6 +75,26 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
     public addrMac macRewrite;
 
     /**
+     * ipv4 tcp mss in rewrite
+     */
+    public int tcp4mssIn;
+
+    /**
+     * ipv4 tcp mss out rewrite
+     */
+    public int tcp4mssOut;
+
+    /**
+     * ipv6 tcp mss in rewrite
+     */
+    public int tcp6mssIn;
+
+    /**
+     * ipv6 tcp mss out rewrite
+     */
+    public int tcp6mssOut;
+
+    /**
      * port security
      */
     public tabGen<addrMac> portSec;
@@ -131,6 +153,16 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
      * joined groups
      */
     public tabGen<ifcBridgeGrp> groups;
+
+    /**
+     * ipv4 core
+     */
+    public ipCor ipCore4;
+
+    /**
+     * ipv6 core
+     */
+    public ipCor ipCore6;
 
     private counter cntr = new counter();
 
@@ -216,6 +248,7 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
                 return;
             }
         }
+        ifaceAdjustMss(pck, tcp4mssIn, tcp6mssIn);
         lowerBr.doRxPack(this, pck);
     }
 
@@ -249,6 +282,7 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
             }
             pck.getSkip(-2);
         }
+        ifaceAdjustMss(pck, tcp4mssOut, tcp6mssOut);
         if (notEther) {
             pck.merge2beg();
             ifcEther.createETHheader(pck, false);
@@ -260,6 +294,43 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
             pck.merge2beg();
         }
         lowerIf.sendPack(pck);
+    }
+
+    private void ifaceAdjustMss(packHolder pck, int mss4, int mss6) {
+        ipCor ipCore = null;
+        int mss = 0;
+        switch (pck.ETHtype) {
+            case ipIfc4.type:
+                ipCore = ipCore4;
+                mss = mss4;
+                break;
+            case ipIfc6.type:
+                ipCore = ipCore6;
+                mss = mss6;
+                break;
+            default:
+                return;
+        }
+        if (mss < 1) {
+            return;
+        }
+        pck.getSkip(2);
+        ipCore.parseIPheader(pck, false);
+        if (pck.IPprt != prtTcp.protoNum) {
+            pck.getSkip(-2);
+            return;
+        }
+        pck.getSkip(pck.IPsiz);
+        prtTcp.parseTCPports(pck);
+        if ((pck.TCPflg & prtTcp.flagSYN) == 0) {
+            pck.getSkip(-2);
+            pck.getSkip(-pck.IPsiz);
+            return;
+        }
+        prtTcp.updateTCPheader(pck, pck.UDPsrc, pck.UDPtrg, -1, -1, mss);
+        pck.getSkip(-pck.IPsiz);
+        ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, -1, pck.UDPsiz);
+        pck.getSkip(-2);
     }
 
     /**
