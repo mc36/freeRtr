@@ -14,7 +14,6 @@ import net.freertr.pack.packSize;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
 import net.freertr.user.userFormat;
-import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -135,6 +134,7 @@ public class clntDns {
             if (debugger.clntDnsTraf) {
                 logger.debug("cache redir " + cac);
             }
+            reply.answers.add(cac);
             nam = cac.res.get(bits.random(0, cac.res.size())).target;
             cac = loPcache.findUser(nam, typ);
         }
@@ -239,18 +239,20 @@ public class clntDns {
             dom = a + dom;
             int ned = (nam.length() > 0) ? packDnsRec.typeNS : typ;
             i = doResolvList(srv, dom, false, ned);
+            packDnsRec rec = findAnswer(packDnsRec.typeCNAME);
+            if (rec != null) {
+                res.addBin(rec);
+            }
             if (i == 3) {
-                packDnsRec rec = findAnswer(packDnsRec.typeCNAME);
                 dom = "";
                 nam = rec.res.get(bits.random(0, rec.res.size())).target;
-                res.addBin(rec);
                 srv = orig;
                 continue;
             }
             if (i != 0) {
                 return null;
             }
-            packDnsRec rec = findAnswer(ned);
+            rec = findAnswer(ned);
             if (rec == null) {
                 return null;
             }
@@ -258,7 +260,10 @@ public class clntDns {
             if (nam.length() < 1) {
                 break;
             }
-            addrIP adr = userTerminal.justResolv(rec.res.get(bits.random(0, rec.res.size())).target, curPrx.proxy.prefer);
+            if (doResolvAddr(cfgAll.nameServerAddr, rec.res.get(bits.random(0, rec.res.size())).target, curPrx.proxy.prefer)) {
+                return null;
+            }
+            addrIP adr = getAddr(curPrx.proxy.prefer);
             if (adr == null) {
                 return null;
             }

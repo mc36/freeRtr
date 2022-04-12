@@ -507,14 +507,43 @@ class servDnsDoer implements Runnable {
         return true;
     }
 
+    private boolean doSlaver(servDnsResolv ntry, List<packDnsRec> res, int typ, String nam) {
+        clntDns clnt = new clntDns();
+        packDnsZone zon = clnt.doRecursive(ntry.addr, nam, typ);
+        if (zon == null) {
+            return false;
+        }
+        packDnsRec rec = zon.findUser(nam, typ);
+        if (rec == null) {
+            rec = zon.findUser(nam, packDnsRec.typeCNAME);
+            if (rec == null) {
+                return false;
+            }
+            res.add(rec);
+            rec = zon.findUser(rec.res.get(bits.random(0, rec.res.size())).target, typ);
+            if (rec == null) {
+                return false;
+            }
+            res.add(rec);
+            return true;
+        }
+        res.add(rec);
+        return true;
+    }
+
     private boolean doResolve(List<packDnsRec> res, int typ, String nam) { // true if authoritative
         packDnsZone zon = parent.zones.find(new packDnsZone(nam));
         servDnsResolv rslvr = parent.resolvs.find(new servDnsResolv(nam));
+        servDnsResolv rcrsr = parent.rcrsvia.find(new servDnsResolv(nam));
         String old = nam;
         String a = "";
         for (; zon == null;) {
             if (rslvr != null) {
                 doSlaves(rslvr, res, typ, old);
+                return true;
+            }
+            if (rcrsr != null) {
+                doSlaver(rcrsr, res, typ, old);
                 return true;
             }
             int i = nam.indexOf(".");
@@ -527,6 +556,7 @@ class servDnsDoer implements Runnable {
             }
             zon = parent.zones.find(new packDnsZone(nam));
             rslvr = parent.resolvs.find(new servDnsResolv(nam));
+            rcrsr = parent.rcrsvia.find(new servDnsResolv(nam));
             if (i < 0) {
                 break;
             }
@@ -534,6 +564,10 @@ class servDnsDoer implements Runnable {
         if (zon == null) {
             if (rslvr != null) {
                 doSlaves(rslvr, res, typ, old);
+                return true;
+            }
+            if (rcrsr != null) {
+                doSlaver(rcrsr, res, typ, old);
                 return true;
             }
             if (!recurse) {

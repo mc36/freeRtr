@@ -13166,3 +13166,6 @@ qc pass: tunnel interface with tzsp
 ---------------------------------- 2022-04-10 10:09:04 22.4.10
 qc pass: bridge port split horizon
 qc pass: bridge port unsplit horizon
+---------------------------------- 2022-04-12 16:04:05 22.4.12
+todo: tcpmss on bridges
+todo: allow command to be a substring of an other
