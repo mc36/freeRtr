@@ -213,7 +213,7 @@ public class ipFwdTab {
      * @return list of neighbors
      */
     public static userFormat bfdNeighShow(ipFwd lower) {
-        userFormat l = new userFormat("|", "interface|address|state|uptime|clients");
+        userFormat l = new userFormat("|", "interface|address|state|timeout|uptime|clients");
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ntry = lower.ifaces.get(i);
             if (ntry == null) {

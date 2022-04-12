@@ -83,7 +83,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
      * @return string
      */
     public String getShNeigh() {
-        String s = peer + "|" + packBfd.state2string(currState) + "|" + bits.timePast(upTime) + "|";
+        String s = peer + "|" + packBfd.state2string(currState) + "|" + packBfd.getRxInt(lastRxPack, iface.intervalRx) + "|" + bits.timePast(upTime) + "|";
         for (int i = 0; i < clients.size(); i++) {
             rtrBfdNeighClnt clnt = clients.get(i);
             if (clnt == null) {
@@ -217,7 +217,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
             pckB.password = iface.password;
             currState = packBfd.stDown;
             if (lastRxPack != null) {
-                if ((bits.getTime() - lastRxTime) > pckB.getRxInt(lastRxPack, iface.intervalRx)) {
+                if ((bits.getTime() - lastRxTime) > packBfd.getRxInt(lastRxPack, iface.intervalRx)) {
                     stopNow();
                     return;
                 }
@@ -301,4 +301,3 @@ class rtrBfdNeighClnt implements Comparator<rtrBfdNeighClnt> {
     }
 
 }
-

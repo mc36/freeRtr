@@ -255,7 +255,7 @@ public class packBfd {
      * @param needed needed interval
      * @return rx interval in ms
      */
-    public long getRxInt(packBfd peer, int needed) {
+    public static long getRxInt(packBfd peer, int needed) {
         if (peer == null) {
             return 10000;
         }
