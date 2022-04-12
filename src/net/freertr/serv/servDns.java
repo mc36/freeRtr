@@ -407,6 +407,9 @@ class servDnsResolv implements Comparator<servDnsResolv> {
     public List<addrIP> addr;
 
     public servDnsResolv(String nam) {
+        if (nam.equals(".")) {
+            nam = "";
+        }
         name = nam.toLowerCase();
     }
 
@@ -418,6 +421,9 @@ class servDnsResolv implements Comparator<servDnsResolv> {
         String a = "";
         for (int i = 0; i < addr.size(); i++) {
             a += " " + addr.get(i);
+        }
+        if (name.length() < 1) {
+            return "." + a;
         }
         return name + a;
     }
