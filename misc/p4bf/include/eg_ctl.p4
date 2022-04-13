@@ -73,6 +73,21 @@ control eg_ctl(
         eg_ctl_sgt.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 #endif
 
+#ifdef NEED_PKTLEN
+#ifdef HAVE_MPLS
+        if (hdr.mpls1.isValid()) eg_md.pktlen = eg_md.pktlen + 8;
+        else if (hdr.mpls0.isValid()) eg_md.pktlen = eg_md.pktlen + 4;
+#endif
+#ifdef HAVE_POLKA
+        if (hdr.polka.isValid()) eg_md.pktlen = eg_md.pktlen + 20;
+#endif
+#ifdef HAVE_NSH
+        if (hdr.nsh.isValid()) eg_md.pktlen = eg_md.pktlen + 8;
+#endif
+#ifdef HAVE_SGT
+        if (hdr.sgt.isValid()) eg_md.pktlen = eg_md.pktlen + 8;
+#endif
+#endif
         eg_ctl_nexthop.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
         eg_ctl_vlan_out.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
         eg_ctl_hairpin.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);

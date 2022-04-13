@@ -111,16 +111,6 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef NEED_PKTLEN
         if (hdr.ipv6.isValid()) ig_md.pktlen = hdr.ipv6.payload_len + 40;
-#ifdef HAVE_MPLS
-        if (hdr.mpls1.isValid()) ig_md.pktlen = ig_md.pktlen + 8;
-        else if (hdr.mpls0.isValid()) ig_md.pktlen = ig_md.pktlen + 4;
-#endif
-#ifdef HAVE_POLKA
-        if (hdr.polka.isValid()) ig_md.pktlen = ig_md.pktlen + 20;
-#endif
-#ifdef HAVE_NSH
-        if (hdr.polka.isValid()) ig_md.pktlen = ig_md.pktlen + 8;
-#endif
 #endif
 
         ig_ctl_vlan_in.apply(hdr, ig_md, ig_intr_md);
