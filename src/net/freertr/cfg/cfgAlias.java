@@ -602,7 +602,9 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
             }
             if (stickyChgd) {
                 if (stickyPar.equals(pr)) {
-                    par.error("already selected");
+                    if (!cfgInit.booting) {
+                        par.error("already selected");
+                    }
                     return;
                 }
             }
