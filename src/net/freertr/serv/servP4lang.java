@@ -3201,6 +3201,17 @@ class servP4langConn implements Runnable {
             lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_" + act + " " + vr.id + " " + adr + " " + vrf.id);
             return;
         }
+        if (ntry.forwarder != null) {
+            tabRouteEntry<addrIP> rou = ntry.forwarder.actualU.route(ntry.nextHop);
+            rou = lower.convRou(rou, false);
+            if (rou != null) {
+                if (rou.best.attribAs == ipMpls.typeU) {
+                    ntry.iface = (ipFwdIface) rou.best.iface;
+                    ntry.nextHop = rou.best.nextHop;
+                    ntry.remoteLab = rou.best.labelRem;
+                }
+            }
+        }
         servP4langNei hop = lower.findNei(ntry.iface, ntry.nextHop);
         if (hop == null) {
             return;
