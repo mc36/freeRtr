@@ -8,6 +8,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -191,6 +192,7 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
         if (prf.best.nextHop != null) {
             src.best.nextHop = prf.best.nextHop;
         }
+        src.best.labelRem = tabLabel.prependLabels(src.best.labelRem, prf.best.labelRem);
         return src;
     }
 
