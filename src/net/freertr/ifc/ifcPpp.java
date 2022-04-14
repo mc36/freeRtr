@@ -449,7 +449,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "3 .       chap                      challenge handshake authentication protocol");
         l.add(null, "3 .       eap                       extensible authentication protocol");
         l.add(null, "2 3     authentication              set peer authentication list");
-        l.add(null, "3 .       <text>                    name of list");
+        l.add(null, "3 .       <name:aaa>                name of list");
         l.add(null, "2 3     multilink                   multilink operation");
         l.add(null, "3 4       <num>                     mrru");
         l.add(null, "4 .         none                    disable operation");
