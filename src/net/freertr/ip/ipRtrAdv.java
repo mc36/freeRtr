@@ -61,20 +61,23 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
      * @param afi address family
      * @param trg target table to append
      * @param src source table to use
+     * @param chk check if mine
      */
-    public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
+    public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src, boolean chk) {
         tabRouteEntry<addrIP> ntry = src.find(prefix);
         if (ntry == null) {
             return;
         }
-        switch (ntry.best.rouTyp) {
-            case conn:
-            case staticRoute:
-            case local:
-            case defpref:
-                break;
-            default:
-                return;
+        if (chk) {
+            switch (ntry.best.rouTyp) {
+                case conn:
+                case staticRoute:
+                case local:
+                case defpref:
+                    break;
+                default:
+                    return;
+            }
         }
         if (prefix.compare(prefix, ntry.prefix) != 0) {
             return;

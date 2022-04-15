@@ -849,6 +849,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             }
             lst.add(beg + "advertise " + advert2str(ntry));
         }
+        for (int i = 0; i < rtr.routerReadvrtng.size(); i++) {
+            ipRtrAdv ntry = rtr.routerReadvrtng.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            lst.add(beg + "readvertise " + advert2str(ntry));
+        }
         for (int i = 0; i < rtr.routerAdvInter.size(); i++) {
             ipRtrInt ntry = rtr.routerAdvInter.get(i);
             if (ntry == null) {
@@ -923,6 +930,19 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 rtr.routerAdverting.del(ntry);
             } else {
                 rtr.routerAdverting.put(ntry);
+            }
+            fwd.routerConfigChg();
+            return false;
+        }
+        if (a.equals("readvertise")) {
+            ipRtrAdv ntry = str2advert(cmd);
+            if (ntry == null) {
+                return true;
+            }
+            if (neg) {
+                rtr.routerReadvrtng.del(ntry);
+            } else {
+                rtr.routerReadvrtng.put(ntry);
             }
             fwd.routerConfigChg();
             return false;
@@ -1810,7 +1830,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
         l.add(null, (p + 5) + " " + (p + 6) + "           sub             substract value to current value");
         l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
-        l.add(null, (p + 1) + " " + (p + 2) + "   advertise               advertise one prefix");
+        l.add(null, (p + 1) + " " + (p + 2) + "   advertise               advertise one prefix of mine");
+        l.add(null, (p + 1) + " " + (p + 2) + "   readvertise             readvertise one prefix from anywhere");
         l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
         l.add(null, (p + 3) + " " + (p + 3) + ",.     ecmp                process ecmp alternatives also");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");

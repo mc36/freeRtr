@@ -134,6 +134,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     public tabGen<ipRtrAdv> routerAdverting = new tabGen<ipRtrAdv>();
 
     /**
+     * list of prefix redistributions
+     */
+    public tabGen<ipRtrAdv> routerReadvrtng = new tabGen<ipRtrAdv>();
+
+    /**
      * list of interface imports
      */
     public tabGen<ipRtrInt> routerAdvInter = new tabGen<ipRtrInt>();

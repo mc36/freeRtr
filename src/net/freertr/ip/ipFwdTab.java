@@ -471,9 +471,18 @@ public class ipFwdTab {
                 if (ntry == null) {
                     continue;
                 }
-                ntry.filter(rtrBgpUtil.sfiUnicast, tabU, lower.actualU);
-                ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM);
-                ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF);
+                ntry.filter(rtrBgpUtil.sfiUnicast, tabU, lower.actualU, true);
+                ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM, true);
+                ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF, true);
+            }
+            for (int o = 0; o < rtr.routerReadvrtng.size(); o++) {
+                ipRtrAdv ntry = rtr.routerReadvrtng.get(o);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry.filter(rtrBgpUtil.sfiUnicast, tabU, lower.actualU, false);
+                ntry.filter(rtrBgpUtil.sfiMulticast, tabM, lower.actualM, false);
+                ntry.filter(rtrBgpUtil.sfiFlwSpc, tabF, lower.actualF, false);
             }
             if (!ful) {
                 boolean diff = tabU.differs(tabRoute.addType.alters, rtr.routerRedistedU) || tabM.differs(tabRoute.addType.alters, rtr.routerRedistedM) || tabF.differs(tabRoute.addType.alters, rtr.routerRedistedF);
