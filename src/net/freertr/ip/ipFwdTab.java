@@ -1620,7 +1620,7 @@ public class ipFwdTab {
                     vrf = lower;
                 } else {
                     ntry.vrfUpl = lower;
-                    cfgVrf v = cfgAll.findRd(grp.rd);
+                    cfgVrf v = cfgAll.findRd(grp.group.isIPv4(), grp.rd);
                     if (v != null) {
                         vrf = v.getFwd(grp.group);
                         if (!vrf.mdt) {

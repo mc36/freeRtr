@@ -1168,16 +1168,20 @@ public class cfgAll {
     /**
      * find vrf by rd
      *
+     * @param ipv4 ipv4
      * @param rd rd to find
      * @return vrf, null on error
      */
-    public static cfgVrf findRd(long rd) {
+    public static cfgVrf findRd(boolean ipv4, long rd) {
         for (int i = 0; i < vrfs.size(); i++) {
             cfgVrf ntry = vrfs.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (ntry.rd == rd) {
+            if (ipv4 && (ntry.fwd4.rd == rd)) {
+                return ntry;
+            }
+            if (!ipv4 && (ntry.fwd6.rd == rd)) {
                 return ntry;
             }
         }

@@ -1,5 +1,6 @@
 package net.freertr.ip;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
@@ -118,6 +119,16 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * route distinguisher
      */
     public long rd;
+
+    /**
+     * route target import
+     */
+    public List<Long> rtImp = new ArrayList<Long>();
+
+    /**
+     * route target export
+     */
+    public List<Long> rtExp = new ArrayList<Long>();
 
     /**
      * multicast distribution tree

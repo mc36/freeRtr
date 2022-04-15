@@ -153,7 +153,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             return;
         }
         ntry = ntry.copyBytes(tabRoute.addType.ecmp);
-        ntry.rouDst = vrf.rd;
+        ntry.rouDst = fwd.rd;
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             if (attr.labelLoc == null) {
@@ -179,8 +179,8 @@ public class rtrBgpVrfRtr extends ipRtr {
      */
     public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
         final List<Long> rt = new ArrayList<Long>();
-        for (int i = 0; i < vrf.rtExp.size(); i++) {
-            rt.add(tabRouteUtil.rt2comm(vrf.rtExp.get(i)));
+        for (int i = 0; i < fwd.rtExp.size(); i++) {
+            rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -218,7 +218,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (flowSpec != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.best.extComm = new ArrayList<Long>();
-            ntry.rouDst = vrf.rd;
+            ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, ntry, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni), parent.localAs);
         }
@@ -246,7 +246,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix.wildcard.fromBuf(buf, 32);
             ntry.prefix.mask.fromBuf(buf, 48);
             ntry.best.extComm = new ArrayList<Long>();
-            ntry.rouDst = vrf.rd;
+            ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, other ? parent.afiVpoM : parent.afiVpnM, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
@@ -255,8 +255,8 @@ public class rtrBgpVrfRtr extends ipRtr {
 
     private List<Long> getRtList() {
         final List<Long> rt = new ArrayList<Long>();
-        for (int i = 0; i < vrf.rtImp.size(); i++) {
-            rt.add(tabRouteUtil.rt2comm(vrf.rtImp.get(i)));
+        for (int i = 0; i < fwd.rtImp.size(); i++) {
+            rt.add(tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
         }
         return rt;
     }

@@ -57,31 +57,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     protected boolean hidden = false;
 
     /**
-     * route distinguisher
-     */
-    public long rd;
-
-    /**
-     * multicast distribution tree ipv4
-     */
-    public boolean mdt4;
-
-    /**
-     * multicast distribution tree ipv6
-     */
-    public boolean mdt6;
-
-    /**
-     * route target import
-     */
-    public List<Long> rtImp = new ArrayList<Long>();
-
-    /**
-     * route target export
-     */
-    public List<Long> rtExp = new ArrayList<Long>();
-
-    /**
      * ipx forwarder
      */
     public ipxFwd ipx;
@@ -175,31 +150,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
      * tcp for ipv6
      */
     public prtTcp tcp6;
-
-    /**
-     * allocate label for prefix
-     */
-    public ipFwd.labelMode labelMode = ipFwd.labelMode.common;
-
-    /**
-     * mpls propagate ip ttl
-     */
-    public boolean mplsPropTtl = true;
-
-    /**
-     * mpls extended report
-     */
-    public boolean mplsExtRep = true;
-
-    /**
-     * unreachable interval
-     */
-    public int unreachInt = 0;
-
-    /**
-     * ruin remote pmtud
-     */
-    public boolean ruinPmtuD = false;
 
     /**
      * ipv4 label filter
@@ -337,13 +287,20 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public final static String[] defaultL = {
         "vrf definition .*! no description",
         "vrf definition .*! rd 0:0",
-        "vrf definition .*! rt-import",
-        "vrf definition .*! rt-export",
-        "vrf definition .*! label-mode per-vrf",
-        "vrf definition .*! propagate-ttl",
-        "vrf definition .*! report-labels",
-        "vrf definition .*! unreach-interval 0",
-        "vrf definition .*! no punish-pmtud",
+        "vrf definition .*! rt4import",
+        "vrf definition .*! rt4export",
+        "vrf definition .*! rt6import",
+        "vrf definition .*! rt6export",
+        "vrf definition .*! label4mode per-vrf",
+        "vrf definition .*! label6mode per-vrf",
+        "vrf definition .*! propagate4ttl",
+        "vrf definition .*! report4labels",
+        "vrf definition .*! unreach4interval 0",
+        "vrf definition .*! no punish4pmtud",
+        "vrf definition .*! propagate6ttl",
+        "vrf definition .*! report6labels",
+        "vrf definition .*! unreach6interval 0",
+        "vrf definition .*! no punish6pmtud",
         "vrf definition .*! no mdt4",
         "vrf definition .*! no mdt6",
         "vrf definition .*! no label4filter",
@@ -617,6 +574,42 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("ipv" + p + " flow " + name + " " + f.netflow);
     }
 
+    private static ipFwd.labelMode string2labmod(String a) {
+        if (a.equals("per-prefix")) {
+            return ipFwd.labelMode.all;
+        }
+        if (a.equals("all-igp")) {
+            return ipFwd.labelMode.igp;
+        }
+        if (a.equals("host-route")) {
+            return ipFwd.labelMode.host;
+        }
+        if (a.equals("connected")) {
+            return ipFwd.labelMode.conn;
+        }
+        if (a.equals("per-vrf")) {
+            return ipFwd.labelMode.common;
+        }
+        return ipFwd.labelMode.common;
+    }
+
+    private static String labmod2string(ipFwd.labelMode lm) {
+        switch (lm) {
+            case all:
+                return "per-prefix";
+            case igp:
+                return "all-igp";
+            case host:
+                return "host-route";
+            case conn:
+                return "connected";
+            case common:
+                return "per-vrf";
+            default:
+                return "unknown";
+        }
+    }
+
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         if (hidden) {
@@ -624,44 +617,41 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         l.add("vrf definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
-        l.add(cmds.tabulator + "rd " + tabRouteUtil.rd2string(rd));
+        l.add(cmds.tabulator + "rd " + tabRouteUtil.rd2string(fwd4.rd));
         String s = "";
-        for (int i = 0; i < rtImp.size(); i++) {
-            s += " " + tabRouteUtil.rd2string(rtImp.get(i));
+        for (int i = 0; i < fwd4.rtImp.size(); i++) {
+            s += " " + tabRouteUtil.rd2string(fwd4.rtImp.get(i));
         }
-        l.add(cmds.tabulator + "rt-import" + s);
+        l.add(cmds.tabulator + "rt4import" + s);
         s = "";
-        for (int i = 0; i < rtExp.size(); i++) {
-            s += " " + tabRouteUtil.rd2string(rtExp.get(i));
+        for (int i = 0; i < fwd4.rtExp.size(); i++) {
+            s += " " + tabRouteUtil.rd2string(fwd4.rtExp.get(i));
         }
-        l.add(cmds.tabulator + "rt-export" + s);
-        s = "unknown";
-        switch (labelMode) {
-            case all:
-                s = "per-prefix";
-                break;
-            case igp:
-                s = "all-igp";
-                break;
-            case host:
-                s = "host-route";
-                break;
-            case conn:
-                s = "connected";
-                break;
-            case common:
-                s = "per-vrf";
-                break;
+        l.add(cmds.tabulator + "rt4export" + s);
+        s = "";
+        for (int i = 0; i < fwd6.rtImp.size(); i++) {
+            s += " " + tabRouteUtil.rd2string(fwd6.rtImp.get(i));
         }
+        l.add(cmds.tabulator + "rt6import" + s);
+        s = "";
+        for (int i = 0; i < fwd6.rtExp.size(); i++) {
+            s += " " + tabRouteUtil.rd2string(fwd6.rtExp.get(i));
+        }
+        l.add(cmds.tabulator + "rt6export" + s);
         l.add(cmds.tabulator + "iface4start " + iface4start);
         l.add(cmds.tabulator + "iface6start " + iface6start);
-        l.add(cmds.tabulator + "label-mode " + s);
+        l.add(cmds.tabulator + "label4mode " + labmod2string(fwd4.prefixMode));
+        l.add(cmds.tabulator + "label6mode " + labmod2string(fwd6.prefixMode));
         l.add(cmds.tabulator + "label4common " + label4comm);
         l.add(cmds.tabulator + "label6common " + label6comm);
-        cmds.cfgLine(l, !mplsPropTtl, cmds.tabulator, "propagate-ttl", "");
-        cmds.cfgLine(l, !mplsExtRep, cmds.tabulator, "report-labels", "");
-        l.add(cmds.tabulator + "unreach-interval " + unreachInt);
-        cmds.cfgLine(l, !ruinPmtuD, cmds.tabulator, "punish-pmtud", "");
+        cmds.cfgLine(l, !fwd4.mplsPropTtl, cmds.tabulator, "propagate4ttl", "");
+        cmds.cfgLine(l, !fwd6.mplsPropTtl, cmds.tabulator, "propagate6ttl", "");
+        cmds.cfgLine(l, !fwd4.mplsExtRep, cmds.tabulator, "report4labels", "");
+        cmds.cfgLine(l, !fwd6.mplsExtRep, cmds.tabulator, "report6labels", "");
+        l.add(cmds.tabulator + "unreach4interval " + fwd4.unreachInt);
+        l.add(cmds.tabulator + "unreach6interval " + fwd6.unreachInt);
+        cmds.cfgLine(l, !fwd4.ruinPmtuD, cmds.tabulator, "punish4pmtud", "");
+        cmds.cfgLine(l, !fwd6.ruinPmtuD, cmds.tabulator, "punish6pmtud", "");
         cmds.cfgLine(l, label4fltr == null, cmds.tabulator, "label4filter", "" + label4fltr);
         cmds.cfgLine(l, label6fltr == null, cmds.tabulator, "label6filter", "" + label6fltr);
         cmds.cfgLine(l, import4list == null, cmds.tabulator, "import4list", "" + import4list);
@@ -686,8 +676,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, copp6out == null, cmds.tabulator, "copp6out", "" + copp6out);
         cmds.cfgLine(l, packet4fltr == null, cmds.tabulator, "packet4filter", "" + packet4fltr);
         cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
-        cmds.cfgLine(l, !mdt4, cmds.tabulator, "mdt4", "");
-        cmds.cfgLine(l, !mdt6, cmds.tabulator, "mdt6", "");
+        cmds.cfgLine(l, !fwd4.mdt, cmds.tabulator, "mdt4", "");
+        cmds.cfgLine(l, !fwd6.mdt, cmds.tabulator, "mdt6", "");
         l.add(cmds.tabulator + "incremental4 " + fwd4.incrLimit);
         l.add(cmds.tabulator + "incremental6 " + fwd6.incrLimit);
         l.add(cmds.tabulator + cmds.finish);
@@ -754,8 +744,26 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
         l.add(null, "1 2  rt-export           specify route target export");
         l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  rt4both             specify route target");
+        l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  rt4import           specify route target import");
+        l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  rt4export           specify route target export");
+        l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  rt6both             specify route target");
+        l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  rt6import           specify route target import");
+        l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  rt6export           specify route target export");
+        l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
         l.add(null, ".1 . punish-pmtud        send back mtu exceeded if needed");
+        l.add(null, ".1 . punish4pmtud        send back mtu exceeded if needed");
+        l.add(null, ".1 . punish6pmtud        send back mtu exceeded if needed");
         l.add(null, "1 2  unreach-interval    rate limit icmp generation");
+        l.add(null, "2 .    <num>             millisecs between them");
+        l.add(null, "1 2  unreach4interval    rate limit icmp generation");
+        l.add(null, "2 .    <num>             millisecs between them");
+        l.add(null, "1 2  unreach6interval    rate limit icmp generation");
         l.add(null, "2 .    <num>             millisecs between them");
         l.add(null, "1 2  route4limit         maximum ipv4 routes allowed");
         l.add(null, "2 .    <num>             number of routes");
@@ -814,10 +822,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "1 2  packet6filter       specify ipv6 packet filter");
         l.add(null, "2 .    <name:acl>        name of access list");
         l.add(null, "1 .  propagate-ttl       specify to copy ip ttl to mpls ttl");
+        l.add(null, "1 .  propagate4ttl       specify to copy ip ttl to mpls ttl");
+        l.add(null, "1 .  propagate6ttl       specify to copy ip ttl to mpls ttl");
         l.add(null, "1 .  report-labels       append icmp extension with labels");
+        l.add(null, "1 .  report4labels       append icmp extension with labels");
+        l.add(null, "1 .  report6labels       append icmp extension with labels");
         l.add(null, "1 .  mdt4                enable multicast distribution tree for ipv4");
         l.add(null, "1 .  mdt6                enable multicast distribution tree for ipv6");
         l.add(null, "1 2  label-mode          specify label allocation mode");
+        l.add(null, "1 2  label4mode          specify label allocation mode");
+        l.add(null, "1 2  label6mode          specify label allocation mode");
         l.add(null, "2 .    per-prefix        label for all prefixes");
         l.add(null, "2 .    all-igp           label for all igp prefixes");
         l.add(null, "2 .    host-route        label for host routes");
@@ -827,6 +841,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 .    <num>             routes");
         l.add(null, "1 2  incremental6        specify ipv6 incremental limit");
         l.add(null, "2 .    <num>             routes");
+    }
+
+    private List<Long> string2rts(cmds cmd) {
+        List<Long> res = new ArrayList<Long>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            res.add(tabRouteUtil.string2rd(a));
+        }
+        return res;
     }
 
     public synchronized void doCfgStr(cmds cmd) {
@@ -846,49 +872,68 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("rd")) {
-            rd = tabRouteUtil.string2rd(cmd.word());
-            fwd4.rd = rd;
-            fwd6.rd = rd;
+            long res = tabRouteUtil.string2rd(cmd.word());
+            fwd4.rd = res;
+            fwd6.rd = res;
             return;
         }
         if (a.equals("rt-import")) {
-            rtImp = new ArrayList<Long>();
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                rtImp.add(tabRouteUtil.string2rd(a));
-            }
+            List<Long> res = string2rts(cmd);
+            fwd4.rtImp = res;
+            fwd6.rtImp = res;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-export")) {
-            rtExp = new ArrayList<Long>();
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                rtExp.add(tabRouteUtil.string2rd(a));
-            }
+            List<Long> res = string2rts(cmd);
+            fwd4.rtExp = res;
+            fwd6.rtExp = res;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-both")) {
-            rtImp = new ArrayList<Long>();
-            rtExp = new ArrayList<Long>();
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                rtImp.add(tabRouteUtil.string2rd(a));
-                rtExp.add(tabRouteUtil.string2rd(a));
-            }
+            List<Long> res = string2rts(cmd);
+            fwd4.rtImp = res;
+            fwd6.rtImp = res;
+            fwd4.rtExp = res;
+            fwd6.rtExp = res;
             fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt4import")) {
+            fwd4.rtImp = string2rts(cmd);
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt4export")) {
+            fwd4.rtExp = string2rts(cmd);
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt4both")) {
+            List<Long> res = string2rts(cmd);
+            fwd4.rtImp = res;
+            fwd4.rtExp = res;
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt6import")) {
+            fwd6.rtImp = string2rts(cmd);
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt6export")) {
+            fwd6.rtExp = string2rts(cmd);
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt6both")) {
+            List<Long> res = string2rts(cmd);
+            fwd6.rtImp = res;
+            fwd6.rtExp = res;
             fwd6.routerStaticChg();
             return;
         }
@@ -903,37 +948,32 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("mdt4")) {
-            mdt4 = true;
             fwd4.mdt = true;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
-            mdt6 = true;
             fwd6.mdt = true;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("label-mode")) {
             a = cmd.word();
-            if (a.equals("per-prefix")) {
-                labelMode = ipFwd.labelMode.all;
-            }
-            if (a.equals("all-igp")) {
-                labelMode = ipFwd.labelMode.igp;
-            }
-            if (a.equals("host-route")) {
-                labelMode = ipFwd.labelMode.host;
-            }
-            if (a.equals("connected")) {
-                labelMode = ipFwd.labelMode.conn;
-            }
-            if (a.equals("per-vrf")) {
-                labelMode = ipFwd.labelMode.common;
-            }
-            fwd4.prefixMode = labelMode;
-            fwd6.prefixMode = labelMode;
+            fwd4.prefixMode = string2labmod(a);
+            fwd6.prefixMode = string2labmod(a);
             fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("label4mode")) {
+            a = cmd.word();
+            fwd4.prefixMode = string2labmod(a);
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("label6mode")) {
+            a = cmd.word();
+            fwd6.prefixMode = string2labmod(a);
             fwd6.routerStaticChg();
             return;
         }
@@ -966,26 +1006,57 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("unreach-interval")) {
-            unreachInt = bits.str2num(cmd.word());
-            fwd4.unreachInt = unreachInt;
-            fwd6.unreachInt = unreachInt;
+            int res = bits.str2num(cmd.word());
+            fwd4.unreachInt = res;
+            fwd6.unreachInt = res;
             return;
         }
         if (a.equals("punish-pmtud")) {
-            ruinPmtuD = true;
             fwd4.ruinPmtuD = true;
             fwd6.ruinPmtuD = true;
             return;
         }
         if (a.equals("report-labels")) {
-            mplsExtRep = true;
             fwd4.mplsExtRep = true;
             fwd6.mplsExtRep = true;
             return;
         }
         if (a.equals("propagate-ttl")) {
-            mplsPropTtl = true;
             fwd4.mplsPropTtl = true;
+            fwd6.mplsPropTtl = true;
+            return;
+        }
+        if (a.equals("unreach4interval")) {
+            int res = bits.str2num(cmd.word());
+            fwd4.unreachInt = res;
+            return;
+        }
+        if (a.equals("punish4pmtud")) {
+            fwd4.ruinPmtuD = true;
+            return;
+        }
+        if (a.equals("report4labels")) {
+            fwd4.mplsExtRep = true;
+            return;
+        }
+        if (a.equals("propagate4ttl")) {
+            fwd4.mplsPropTtl = true;
+            return;
+        }
+        if (a.equals("unreach6interval")) {
+            int res = bits.str2num(cmd.word());
+            fwd6.unreachInt = res;
+            return;
+        }
+        if (a.equals("punish6pmtud")) {
+            fwd6.ruinPmtuD = true;
+            return;
+        }
+        if (a.equals("report6labels")) {
+            fwd6.mplsExtRep = true;
+            return;
+        }
+        if (a.equals("propagate6ttl")) {
             fwd6.mplsPropTtl = true;
             return;
         }
@@ -1249,27 +1320,62 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         a = cmd.word();
         if (a.equals("rd")) {
-            rd = 0;
             fwd4.rd = 0;
             fwd6.rd = 0;
             return;
         }
         if (a.equals("rt-import")) {
-            rtImp = new ArrayList<Long>();
+            fwd4.rtImp = new ArrayList<Long>();
+            fwd6.rtImp = new ArrayList<Long>();
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-export")) {
-            rtExp = new ArrayList<Long>();
+            fwd4.rtExp = new ArrayList<Long>();
+            fwd6.rtExp = new ArrayList<Long>();
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("rt-both")) {
-            rtImp = new ArrayList<Long>();
-            rtExp = new ArrayList<Long>();
+            fwd4.rtImp = new ArrayList<Long>();
+            fwd6.rtImp = new ArrayList<Long>();
+            fwd4.rtExp = new ArrayList<Long>();
+            fwd6.rtExp = new ArrayList<Long>();
             fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt4import")) {
+            fwd4.rtImp = new ArrayList<Long>();
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt4export")) {
+            fwd4.rtExp = new ArrayList<Long>();
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt4both")) {
+            fwd4.rtImp = new ArrayList<Long>();
+            fwd4.rtExp = new ArrayList<Long>();
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt6import")) {
+            fwd6.rtImp = new ArrayList<Long>();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt6export")) {
+            fwd6.rtExp = new ArrayList<Long>();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("rt6both")) {
+            fwd6.rtImp = new ArrayList<Long>();
+            fwd6.rtExp = new ArrayList<Long>();
             fwd6.routerStaticChg();
             return;
         }
@@ -1288,38 +1394,81 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("mdt4")) {
-            mdt4 = false;
             fwd4.mdt = false;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
-            mdt6 = false;
             fwd6.mdt = false;
             fwd6.routerStaticChg();
             return;
         }
+        if (a.equals("label-mode")) {
+            fwd4.prefixMode = ipFwd.labelMode.common;
+            fwd6.prefixMode = ipFwd.labelMode.common;
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("label4mode")) {
+            fwd4.prefixMode = ipFwd.labelMode.common;
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("label6mode")) {
+            fwd6.prefixMode = ipFwd.labelMode.common;
+            fwd6.routerStaticChg();
+            return;
+        }
         if (a.equals("unreach-interval")) {
-            unreachInt = 0;
             fwd4.unreachInt = 0;
             fwd6.unreachInt = 0;
             return;
         }
         if (a.equals("punish-pmtud")) {
-            ruinPmtuD = false;
             fwd4.ruinPmtuD = false;
             fwd6.ruinPmtuD = false;
             return;
         }
         if (a.equals("report-labels")) {
-            mplsExtRep = false;
             fwd4.mplsExtRep = false;
             fwd6.mplsExtRep = false;
             return;
         }
         if (a.equals("propagate-ttl")) {
-            mplsPropTtl = false;
             fwd4.mplsPropTtl = false;
+            fwd6.mplsPropTtl = false;
+            return;
+        }
+        if (a.equals("unreach4interval")) {
+            fwd4.unreachInt = 0;
+            return;
+        }
+        if (a.equals("punish4pmtud")) {
+            fwd4.ruinPmtuD = false;
+            return;
+        }
+        if (a.equals("report4labels")) {
+            fwd4.mplsExtRep = false;
+            return;
+        }
+        if (a.equals("propagate4ttl")) {
+            fwd4.mplsPropTtl = false;
+            return;
+        }
+        if (a.equals("unreach6interval")) {
+            fwd6.unreachInt = 0;
+            return;
+        }
+        if (a.equals("punish6pmtud")) {
+            fwd6.ruinPmtuD = false;
+            return;
+        }
+        if (a.equals("report6labels")) {
+            fwd6.mplsExtRep = false;
+            return;
+        }
+        if (a.equals("propagate6ttl")) {
             fwd6.mplsPropTtl = false;
             return;
         }

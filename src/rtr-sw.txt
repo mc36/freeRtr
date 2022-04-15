@@ -118,84 +118,116 @@ vrf definition bvi
 !
 vrf definition dn42
  rd 65535:42
- rt-import 65535:42
- rt-export 65535:42
+ rt4import 65535:42
+ rt4export 65535:42
+ rt6import 65535:42
+ rt6export 65535:42
  mdt4
  mdt6
  exit
 !
 vrf definition rtbh
  rd 65535:666
- rt-import 65535:666
- rt-export 65535:666
+ rt4import 65535:666
+ rt4export 65535:666
+ rt6import 65535:666
+ rt6export 65535:666
  exit
 !
 vrf definition v1
  rd 1:1
- rt-import 1:1
- rt-export 1:1
+ rt4import 1:1
+ rt4export 1:1
+ rt6import 1:1
+ rt6export 1:1
  exit
 !
 vrf definition v2
  rd 1:2
- rt-import 1:2
- rt-export 1:2
- label-mode per-prefix
+ rt4import 1:2
+ rt4export 1:2
+ rt6import 1:2
+ rt6export 1:2
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v3
  rd 1:3
- rt-import 1:3
- rt-export 1:3
- label-mode per-prefix
+ rt4import 1:3
+ rt4export 1:3
+ rt6import 1:3
+ rt6export 1:3
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v4
  rd 1:4
- rt-import 1:4
- rt-export 1:4
- label-mode per-prefix
+ rt4import 1:4
+ rt4export 1:4
+ rt6import 1:4
+ rt6export 1:4
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v5
  rd 1:5
- rt-import 1:5
- rt-export 1:5
- label-mode per-prefix
+ rt4import 1:5
+ rt4export 1:5
+ rt6import 1:5
+ rt6export 1:5
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v6
  rd 1:6
- rt-import 1:6
- rt-export 1:6
- label-mode per-prefix
+ rt4import 1:6
+ rt4export 1:6
+ rt6import 1:6
+ rt6export 1:6
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v7
  rd 1:7
- rt-import 1:7
- rt-export 1:7
- label-mode per-prefix
+ rt4import 1:7
+ rt4export 1:7
+ rt6import 1:7
+ rt6export 1:7
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v8
  rd 1:8
- rt-import 1:8
- rt-export 1:8
- label-mode per-prefix
+ rt4import 1:8
+ rt4export 1:8
+ rt6import 1:8
+ rt6export 1:8
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition v9
  rd 1:9
- rt-import 1:9
- rt-export 1:9
- label-mode per-prefix
+ rt4import 1:9
+ rt4export 1:9
+ rt6import 1:9
+ rt6export 1:9
+ label4mode per-prefix
+ label6mode per-prefix
  exit
 !
 vrf definition vpn
  rd 65535:1
- rt-import 65535:1
- rt-export 65535:1
+ rt4import 65535:1
+ rt4export 65535:1
+ rt6import 65535:1
+ rt6export 65535:1
  mdt4
  mdt6
  exit
