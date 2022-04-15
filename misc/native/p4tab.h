@@ -8,6 +8,12 @@
 #define minBuff 128
 #define maxBuff 1024
 
+#ifdef debugging
+
+int dropStat[4096];
+
+#endif
+
 int ports = 0;
 int cpuport = 0;
 int punts = 0;

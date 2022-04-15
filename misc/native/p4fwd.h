@@ -3,9 +3,11 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
 
 #ifdef debugging
 
-#define doDropper {printf("dropping at %s:%i\n", __FILE__, __LINE__);goto drop;}
-#define doPunting {printf("punting at %s:%i\n", __FILE__, __LINE__);goto punt;}
-#define doCpuing {printf("cpuing at %s:%i\n", __FILE__, __LINE__);goto cpu;}
+int dropStat[4096];
+
+#define doDropper {dropStat[__LINE__]++;goto drop;}
+#define doPunting {dropStat[__LINE__]++;goto punt;}
+#define doCpuing {dropStat[__LINE__]++;goto cpu;}
 
 #else
 

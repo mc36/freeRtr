@@ -2531,6 +2531,12 @@ void doStatRound(FILE *commands, int round) {
         if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port, commands);
     }
 #endif
+#ifdef debugging
+    for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
+        if (dropStat[i] != 0) fprintf(commands, "dataplane-say hit line %i with %i packets\r\n", i, dropStat[i]);
+        dropStat[i] = 0;
+    }
+#endif
     fflush(commands);
 }
 
