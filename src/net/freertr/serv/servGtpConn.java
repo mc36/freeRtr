@@ -271,8 +271,8 @@ public class servGtpConn implements Comparator<servGtpConn> {
                 }
                 ses.teidCtr = gtp.valTeidCp;
                 ses.teidDat = gtp.valTeid1;
-                sesAdd(ses);
                 ses.doStartup();
+                sesAdd(ses);
                 i = gtp.seqNum;
                 gtp = new packGtp();
                 gtp.msgTyp = packGtp.typCreateRep;
