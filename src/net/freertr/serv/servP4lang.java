@@ -1251,7 +1251,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         int lab = labs.get(0);
         if (lab == ipMpls.labelImp) {
-            return -1;
+            return ipMpls.labelExp4;
         } else {
             return lab;
         }
