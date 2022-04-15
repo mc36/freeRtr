@@ -89,10 +89,16 @@ public class history {
             }
             return;
         }
-        for (int i = cnt; i < lst.size(); i++) {
+        if (lst.size() < limit) {
+            for (int i = lst.size(); i < limit; i++) {
+                lst.add(cur);
+                cnt--;
+            }
+        }
+        for (int i = cnt; i < limit; i++) {
             lst.set(i - cnt, lst.get(i));
         }
-        for (int i = lst.size() - cnt; i < lst.size(); i++) {
+        for (int i = limit - cnt; i < limit; i++) {
             lst.set(i, cur);
         }
     }

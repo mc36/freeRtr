@@ -2533,7 +2533,8 @@ void doStatRound(FILE *commands, int round) {
 #endif
 #ifdef debugging
     for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
-        if (dropStat[i] != 0) fprintf(commands, "dataplane-say hit line %i with %i packets\r\n", i, dropStat[i]);
+        if (dropStat[i] == 0) continue;
+        fprintf(commands, "dataplane-say curiosity hit line %i with %i packets\r\n", i, dropStat[i]);
         dropStat[i] = 0;
     }
 #endif
