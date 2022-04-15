@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.4.15-cur, done by cs@nop.
--;-;-;2022-04-15 15:24:50, took 00:08:49, with 80 workers, on 2832 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2022-04-15 16:06:41, took 00:08:27, with 80 workers, on 2832 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.net/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.net/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
