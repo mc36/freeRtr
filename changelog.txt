@@ -13179,3 +13179,5 @@ todo: rt4/6import/export under vrfs
 no todo: rt4/6import/export under vrfs
 ---------------------------------- 2022-04-15 16:53:32 22.4.15
 no todo: readvertise knob under routers
+---------------------------------- 2022-04-15 17:04:59 22.4.15
+qc pass: redistribution by prefix

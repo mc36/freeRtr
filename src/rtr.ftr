@@ -2757,6 +2757,7 @@ qc pass: redistribution with ouni bgp
 qc pass: redistribution with bgp labels
 qc pass: redistribution with olab bgp
 qc pass: vrf route limit
+qc pass: redistribution by prefix
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist
