@@ -6592,13 +6592,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 .     label4pop                   advertise php");
         l.add(null, "2 .     label6pop                   advertise php");
         l.add(null, "2 3     label4in                    set label filter");
-        l.add(null, "3 .       <addr>                    name of prefix list");
+        l.add(null, "3 .       <name:pl>                 name of prefix list");
         l.add(null, "2 3     label4out                   set label filter");
-        l.add(null, "3 .       <addr>                    name of prefix list");
+        l.add(null, "3 .       <name:pl>                 name of prefix list");
         l.add(null, "2 3     label6in                    set label filter");
-        l.add(null, "3 .       <addr>                    name of prefix list");
+        l.add(null, "3 .       <name:pl>                 name of prefix list");
         l.add(null, "2 3     label6out                   set label filter");
-        l.add(null, "3 .       <addr>                    name of prefix list");
+        l.add(null, "3 .       <name:pl>                 name of prefix list");
         l.add(null, "2 3     ldppassword                 set ldp password for peer");
         l.add(null, "3 4       <addr>                    address of peer");
         l.add(null, "4 .         <text>                  password");
