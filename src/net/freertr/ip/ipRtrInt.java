@@ -40,6 +40,11 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
     public tabIntUpdater metric;
 
     /**
+     * tag
+     */
+    public tabIntUpdater tag;
+
+    /**
      * create advertisement
      *
      * @param ifc interface to redistribute
@@ -88,6 +93,10 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
         if (metric != null) {
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.metric = metric.update(ntry.best.metric);
+        }
+        if (tag != null) {
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
+            ntry.best.tag = tag.update(ntry.best.tag);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, 0, ntry, true, roumap, rouplc, null);
     }

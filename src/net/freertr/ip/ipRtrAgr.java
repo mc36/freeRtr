@@ -49,6 +49,11 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
     public tabIntUpdater metric;
 
     /**
+     * tag
+     */
+    public tabIntUpdater tag;
+
+    /**
      * as path
      */
     public boolean aspath;
@@ -140,6 +145,9 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         ntry.best.protoNum = rtrN;
         if (metric != null) {
             ntry.best.metric = metric.update(ntry.best.metric);
+        }
+        if (tag != null) {
+            ntry.best.tag = tag.update(ntry.best.tag);
         }
         tabRoute.addUpdatedEntry(tabRoute.addType.better, trg, afi, 0, ntry, true, roumap, rouplc, null);
     }

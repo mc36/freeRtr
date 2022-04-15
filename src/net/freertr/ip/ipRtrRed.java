@@ -49,6 +49,11 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
     public tabIntUpdater metric;
 
     /**
+     * tag
+     */
+    public tabIntUpdater tag;
+
+    /**
      * ecmp mode
      */
     public boolean ecmp;
@@ -101,6 +106,10 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
             if (metric != null) {
                 ntry = ntry.copyBytes(tabRoute.addType.notyet);
                 ntry.best.metric = metric.update(ntry.best.metric);
+            }
+            if (tag != null) {
+                ntry = ntry.copyBytes(tabRoute.addType.notyet);
+                ntry.best.tag = tag.update(ntry.best.tag);
             }
             tabRoute.addUpdatedEntry(mod, trg, afi, 0, ntry, true, roumap, rouplc, prflst);
         }

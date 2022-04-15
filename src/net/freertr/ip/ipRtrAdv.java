@@ -38,6 +38,11 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
     public tabIntUpdater metric;
 
     /**
+     * tag
+     */
+    public tabIntUpdater tag;
+
+    /**
      * ecmp mode
      */
     public boolean ecmp;
@@ -85,6 +90,10 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         if (metric != null) {
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.metric = metric.update(ntry.best.metric);
+        }
+        if (tag != null) {
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
+            ntry.best.tag = tag.update(ntry.best.tag);
         }
         tabRoute.addUpdatedEntry(ecmp ? tabRoute.addType.altEcmp : tabRoute.addType.better, trg, afi, 0, ntry, true, roumap, rouplc, null);
     }

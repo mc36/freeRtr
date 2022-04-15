@@ -977,6 +977,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (red.metric != null) {
             a += " metric " + red.metric;
         }
+        if (red.tag != null) {
+            a += " tag " + red.tag;
+        }
         if (red.prflst != null) {
             a += " prefix-list " + red.prflst.listName;
         }
@@ -1003,6 +1006,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (adv.metric != null) {
             a += " metric " + adv.metric;
         }
+        if (adv.tag != null) {
+            a += " tag " + adv.tag;
+        }
         if (adv.roumap != null) {
             a += " route-map " + adv.roumap.listName;
         }
@@ -1025,6 +1031,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         String a = "" + addrPrefix.ip2str(agr.prefix);
         if (agr.metric != null) {
             a += " metric " + agr.metric;
+        }
+        if (agr.tag != null) {
+            a += " tag " + agr.tag;
         }
         if (agr.prflst != null) {
             a += " prefix-list " + agr.prflst.listName;
@@ -1054,6 +1063,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         String a = "" + ifc.iface.name;
         if (ifc.metric != null) {
             a += " metric " + ifc.metric;
+        }
+        if (ifc.tag != null) {
+            a += " tag " + ifc.tag;
         }
         if (ifc.roumap != null) {
             a += " route-map " + ifc.roumap.listName;
@@ -1093,6 +1105,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 red.metric = new tabIntUpdater();
                 s = cmd.word();
                 if (red.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
+            }
+            if (s.equals("tag")) {
+                red.tag = new tabIntUpdater();
+                s = cmd.word();
+                if (red.tag.fromString(s + " " + cmd.word())) {
                     return null;
                 }
                 continue;
@@ -1151,6 +1171,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 }
                 continue;
             }
+            if (s.equals("tag")) {
+                adv.tag = new tabIntUpdater();
+                s = cmd.word();
+                if (adv.tag.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
+            }
             if (s.equals("ecmp")) {
                 adv.ecmp = true;
                 continue;
@@ -1197,6 +1225,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 agr.metric = new tabIntUpdater();
                 s = cmd.word();
                 if (agr.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
+            }
+            if (s.equals("tag")) {
+                agr.tag = new tabIntUpdater();
+                s = cmd.word();
+                if (agr.tag.fromString(s + " " + cmd.word())) {
                     return null;
                 }
                 continue;
@@ -1259,6 +1295,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 adv.metric = new tabIntUpdater();
                 s = cmd.word();
                 if (adv.metric.fromString(s + " " + cmd.word())) {
+                    return null;
+                }
+                continue;
+            }
+            if (s.equals("tag")) {
+                adv.tag = new tabIntUpdater();
+                s = cmd.word();
+                if (adv.tag.fromString(s + " " + cmd.word())) {
                     return null;
                 }
                 continue;
@@ -1830,6 +1874,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
         l.add(null, (p + 5) + " " + (p + 6) + "           sub             substract value to current value");
         l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         tag               set tag");
+        l.add(null, (p + 5) + " " + (p + 6) + "           set             set value to a specific value");
+        l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
+        l.add(null, (p + 5) + " " + (p + 6) + "           add             add value to current value");
+        l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
+        l.add(null, (p + 5) + " " + (p + 6) + "           sub             substract value to current value");
+        l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
         l.add(null, (p + 1) + " " + (p + 2) + "   advertise               advertise one prefix of mine");
         l.add(null, (p + 1) + " " + (p + 2) + "   readvertise             readvertise one prefix from anywhere");
         l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
@@ -1839,6 +1890,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
         l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
         l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
+        l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         add               add value to current value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         sub               substract value to current value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 3) + " " + (p + 4) + "       tag                 set tag");
         l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add(null, (p + 4) + " " + (p + 5) + "         add               add value to current value");
@@ -1858,6 +1916,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add(null, (p + 4) + " " + (p + 5) + "         sub               substract value to current value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 3) + " " + (p + 4) + "       tag                 set tag");
+        l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         add               add value to current value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         sub               substract value to current value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add(null, (p + 1) + " " + (p + 2) + "   aggregate               aggregate more prefixes");
         l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
         l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
@@ -1867,6 +1932,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 3) + " " + (p + 4) + "       prefix-list         filter prefixes for aggregation");
         l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:pl>         name of prefix list");
         l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
+        l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         add               add value to current value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         sub               substract value to current value");
+        l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
+        l.add(null, (p + 3) + " " + (p + 4) + "       tag                 set tag");
         l.add(null, (p + 4) + " " + (p + 5) + "         set               set value to a specific value");
         l.add(null, (p + 5) + " " + (p + 3) + ",.         <num>           value");
         l.add(null, (p + 4) + " " + (p + 5) + "         add               add value to current value");
