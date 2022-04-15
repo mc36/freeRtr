@@ -211,6 +211,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
         case 17:                                                \
             put16msb(bufD, bufT + 0, ntry->nSrcPort);           \
             put16msb(bufD, bufT + 2, ntry->nTrgPort);           \
+            if (get16msb(bufD, bufT + 6) == 0) break;           \
             update_chksum(bufT + 6, ntry->sum4);                \
             break;                                              \
     }
