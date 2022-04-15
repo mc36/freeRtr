@@ -2734,10 +2734,18 @@ public class userExec {
             return true;
         }
         boolean brk = false;
-        for (; pipe.ready2rx() > 0;) {
+        for (;;) {
             byte[] buf = new byte[1];
-            pipe.nonBlockGet(buf, 0, buf.length);
-            brk |= buf[0] == 3;
+            if (pipe.nonBlockGet(buf, 0, buf.length) != buf.length) {
+                break;
+            }
+            switch (buf[0]) {
+                case 0x03: // ctrl+c;
+                case 0x11: // ctrl+q;
+                case 0x18: // ctrl+x;
+                    brk = true;
+                    break;
+            }
         }
         return brk;
     }

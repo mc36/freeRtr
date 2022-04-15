@@ -65,29 +65,35 @@ public class history {
         counter res = cur.minus(ocnt).div(pst);
         ocnt = cur.copyBytes();
         otim = tim;
-        for (int i = 0; i < pst; i++) {
-            update(secs, res);
-            secc++;
-        }
+        update(secs, res, pst);
+        secc += pst;
         if (secc <= limit) {
             return;
         }
         secc = 0;
         minc++;
-        update(mina, counter.average(secs));
-        update(minm, counter.maximum(secs));
+        update(mina, counter.average(secs), 1);
+        update(minm, counter.maximum(secs), 1);
         if (minc <= limit) {
             return;
         }
         minc = 0;
-        update(hora, counter.average(mina));
-        update(horm, counter.maximum(minm));
+        update(hora, counter.average(mina), 1);
+        update(horm, counter.maximum(minm), 1);
     }
 
-    private static void update(List<counter> lst, counter cur) {
-        lst.add(cur);
-        for (; lst.size() > limit;) {
-            lst.remove(0);
+    private static void update(List<counter> lst, counter cur, int cnt) {
+        if ((lst.size() + cnt) <= limit) {
+            for (int i = 0; i < cnt; i++) {
+                lst.add(cur);
+            }
+            return;
+        }
+        for (int i = cnt; i < lst.size(); i++) {
+            lst.set(i - cnt, lst.get(i));
+        }
+        for (int i = lst.size() - cnt; i < lst.size(); i++) {
+            lst.set(i, cur);
         }
     }
 
