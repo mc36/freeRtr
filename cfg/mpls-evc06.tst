@@ -91,16 +91,16 @@ exit
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1111::2 /vrf v1
-r1 tping 100 10 1.1.2.2 /vrf v1
-r1 tping 100 10 1112::2 /vrf v1
-r1 tping 100 10 1.1.3.2 /vrf v1
-r1 tping 100 10 1113::2 /vrf v1
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 10 1111::2 vrf v1
+r1 tping 100 10 1.1.2.2 vrf v1
+r1 tping 100 10 1112::2 vrf v1
+r1 tping 100 10 1.1.3.2 vrf v1
+r1 tping 100 10 1113::2 vrf v1
 
-r4 tping 100 10 1.1.1.1 /vrf v1
-r4 tping 100 10 1111::1 /vrf v1
-r4 tping 100 10 1.1.2.1 /vrf v1
-r4 tping 100 10 1112::1 /vrf v1
-r4 tping 100 10 1.1.3.1 /vrf v1
-r4 tping 100 10 1113::1 /vrf v1
+r4 tping 100 10 1.1.1.1 vrf v1
+r4 tping 100 10 1111::1 vrf v1
+r4 tping 100 10 1.1.2.1 vrf v1
+r4 tping 100 10 1112::1 vrf v1
+r4 tping 100 10 1.1.3.1 vrf v1
+r4 tping 100 10 1113::1 vrf v1

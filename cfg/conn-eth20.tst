@@ -55,11 +55,11 @@ int eth2
 !
 
 
-r3 tping 100 5 1.1.1.2 /vrf v1
-r3 tping 100 5 1234::2 /vrf v1
-r3 tping 100 5 1.1.1.6 /vrf v1
-r3 tping 100 5 1234::6 /vrf v1
-r3 tping 200 5 1.1.1.1 /vrf v1 /multi
-r3 tping 200 5 1234::1 /vrf v1 /multi
-r3 tping 100 5 1.1.1.5 /vrf v1 /multi
-r3 tping 100 5 1234::5 /vrf v1 /multi
+r3 tping 100 5 1.1.1.2 vrf v1
+r3 tping 100 5 1234::2 vrf v1
+r3 tping 100 5 1.1.1.6 vrf v1
+r3 tping 100 5 1234::6 vrf v1
+r3 tping 200 5 1.1.1.1 vrf v1 multi
+r3 tping 200 5 1234::1 vrf v1 multi
+r3 tping 100 5 1.1.1.5 vrf v1 multi
+r3 tping 100 5 1234::5 vrf v1 multi

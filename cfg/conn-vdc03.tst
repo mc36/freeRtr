@@ -19,7 +19,7 @@ int lo0
  exit
 !
 
-r1 tping 100 5 9.9.9.9 /vrf v1
+r1 tping 100 5 9.9.9.9 vrf v1
 
 r1 send att vdc a
 r1 send conf t
@@ -33,7 +33,7 @@ r1 send  ipv6 addr 1234::1 ffff::
 r1 send  exit
 r1 send end
 
-r1 tping 100 5 1.1.1.1 /vrf v1
+r1 tping 100 5 1.1.1.1 vrf v1
 
 sleep 1000
 r1 char 3
@@ -41,7 +41,7 @@ sleep 1000
 r1 char 24
 sleep 1000
 r1 read closed
-r1 tping 100 5 9.9.9.9 /vrf v1
+r1 tping 100 5 9.9.9.9 vrf v1
 
 r1 send att vdc b
 r1 send conf t
@@ -55,5 +55,5 @@ r1 send  ipv6 addr 1234::2 ffff::
 r1 send  exit
 r1 send end
 
-r1 tping 100 5 1.1.1.1 /vrf v1
-r1 tping 100 5 1234::1 /vrf v1
+r1 tping 100 5 1.1.1.1 vrf v1
+r1 tping 100 5 1234::1 vrf v1

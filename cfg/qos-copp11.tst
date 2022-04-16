@@ -52,7 +52,7 @@ router bgp6 1
 
 
 
-r2 tping 100 5 1.1.1.1 /vrf v1 /siz 200
-r2 tping 100 5 1234::1 /vrf v1 /siz 200
-r1 tping 100 5 1.1.1.2 /vrf v1 /siz 200
-r1 tping 100 5 1234::2 /vrf v1 /siz 200
+r2 tping 100 5 1.1.1.1 vrf v1 siz 200
+r2 tping 100 5 1234::1 vrf v1 siz 200
+r1 tping 100 5 1.1.1.2 vrf v1 siz 200
+r1 tping 100 5 1234::2 vrf v1 siz 200

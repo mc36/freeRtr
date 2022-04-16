@@ -148,17 +148,17 @@ int pweth2
 !
 
 
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 0 10 1.1.1.3 /vrf v1
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
-!r1 tping 0 10 4321::2 /vrf v1
+r1 tping 100 60 2.2.2.2 vrf v1 int lo0
+r1 tping 0 10 1.1.1.3 vrf v1
+r1 tping 100 60 4321::2 vrf v1 int lo0
+!r1 tping 0 10 4321::2 vrf v1
 
-r3 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r3 tping 0 10 1.1.2.2 /vrf v1
-r3 tping 100 60 4321::2 /vrf v1 /int lo0
-!r3 tping 0 10 4321::2 /vrf v1
+r3 tping 100 60 2.2.2.2 vrf v1 int lo0
+r3 tping 0 10 1.1.2.2 vrf v1
+r3 tping 100 60 4321::2 vrf v1 int lo0
+!r3 tping 0 10 4321::2 vrf v1
 
-r1 tping 100 40 3.3.3.2 /vrf v1
-r3 tping 100 40 3.3.3.1 /vrf v1
-r1 tping 100 40 3.3.3.6 /vrf v1
-r3 tping 100 40 3.3.3.5 /vrf v1
+r1 tping 100 40 3.3.3.2 vrf v1
+r3 tping 100 40 3.3.3.1 vrf v1
+r1 tping 100 40 3.3.3.6 vrf v1
+r3 tping 100 40 3.3.3.5 vrf v1

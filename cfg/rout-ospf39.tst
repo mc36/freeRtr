@@ -211,15 +211,15 @@ int tun2
 !
 
 
-r1 tping 0 40 2.2.2.3 /vrf v1 /int lo1
-r3 tping 0 40 2.2.2.1 /vrf v1 /int lo1
-r1 tping 0 40 4321::3 /vrf v1 /int lo1
-r3 tping 0 40 4321::1 /vrf v1 /int lo1
+r1 tping 0 40 2.2.2.3 vrf v1 int lo1
+r3 tping 0 40 2.2.2.1 vrf v1 int lo1
+r1 tping 0 40 4321::3 vrf v1 int lo1
+r3 tping 0 40 4321::1 vrf v1 int lo1
 
-r1 tping 100 40 3.3.3.2 /vrf v1
-r1 tping 100 40 4321::1112 /vrf v1
-r3 tping 100 40 3.3.3.1 /vrf v1
-r3 tping 100 40 4321::1111 /vrf v1
+r1 tping 100 40 3.3.3.2 vrf v1
+r1 tping 100 40 4321::1112 vrf v1
+r3 tping 100 40 3.3.3.1 vrf v1
+r3 tping 100 40 4321::1111 vrf v1
 
 r2 output show ipv4 ospf 1 nei
 r2 output show ipv6 ospf 1 nei

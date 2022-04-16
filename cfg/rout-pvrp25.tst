@@ -62,11 +62,11 @@ int eth1
 
 
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 4321::2 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 4321::1 vrf v1
 
 r1 send conf t
 r1 send int lo1
@@ -74,11 +74,11 @@ r1 send no router pvrp4 1 ena
 r1 send no router pvrp6 1 ena
 r1 send end
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 4321::2 vrf v1
 
-r2 tping 0 40 2.2.2.1 /vrf v1
-r2 tping 0 40 4321::1 /vrf v1
+r2 tping 0 40 2.2.2.1 vrf v1
+r2 tping 0 40 4321::1 vrf v1
 
 r1 send conf t
 r1 send int lo1
@@ -86,11 +86,11 @@ r1 send router pvrp4 1 ena
 r1 send router pvrp6 1 ena
 r1 send end
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 4321::2 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 4321::1 vrf v1
 
 r2 output show ipv4 pvrp 1 sum
 r2 output show ipv6 pvrp 1 sum

@@ -17,7 +17,7 @@ r1 send sh ver
 r1 read place
 r1 read #
 r1 send sh plat
-r1 tping 100 5 1.1.1.1 /vrf v1 /rep 1
+r1 tping 100 5 1.1.1.1 vrf v1 rep 1
 
 r1 output show version
 r1 output show platform

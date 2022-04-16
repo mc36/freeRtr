@@ -187,30 +187,30 @@ int eth1
 !
 
 
-r1 tping 100 20 2.2.2.2 /vrf v1 /int lo1
-r1 tping 100 20 2.2.2.3 /vrf v1 /int lo1
-r1 tping 100 20 2.2.2.4 /vrf v1 /int lo1
-r1 tping 100 20 4321::2 /vrf v1 /int lo1
-r1 tping 100 20 4321::3 /vrf v1 /int lo1
-r1 tping 100 20 4321::4 /vrf v1 /int lo1
+r1 tping 100 20 2.2.2.2 vrf v1 int lo1
+r1 tping 100 20 2.2.2.3 vrf v1 int lo1
+r1 tping 100 20 2.2.2.4 vrf v1 int lo1
+r1 tping 100 20 4321::2 vrf v1 int lo1
+r1 tping 100 20 4321::3 vrf v1 int lo1
+r1 tping 100 20 4321::4 vrf v1 int lo1
 
-r2 tping 100 20 2.2.2.1 /vrf v1 /int lo1
-r2 tping 100 20 2.2.2.3 /vrf v1 /int lo1
-r2 tping 100 20 2.2.2.4 /vrf v1 /int lo1
-r2 tping 100 20 4321::1 /vrf v1 /int lo1
-r2 tping 100 20 4321::3 /vrf v1 /int lo1
-r2 tping 100 20 4321::4 /vrf v1 /int lo1
+r2 tping 100 20 2.2.2.1 vrf v1 int lo1
+r2 tping 100 20 2.2.2.3 vrf v1 int lo1
+r2 tping 100 20 2.2.2.4 vrf v1 int lo1
+r2 tping 100 20 4321::1 vrf v1 int lo1
+r2 tping 100 20 4321::3 vrf v1 int lo1
+r2 tping 100 20 4321::4 vrf v1 int lo1
 
-r3 tping 100 20 2.2.2.1 /vrf v1 /int lo1
-r3 tping 100 20 2.2.2.2 /vrf v1 /int lo1
-r3 tping 100 20 2.2.2.4 /vrf v1 /int lo1
-r3 tping 100 20 4321::1 /vrf v1 /int lo1
-r3 tping 100 20 4321::2 /vrf v1 /int lo1
-r3 tping 100 20 4321::4 /vrf v1 /int lo1
+r3 tping 100 20 2.2.2.1 vrf v1 int lo1
+r3 tping 100 20 2.2.2.2 vrf v1 int lo1
+r3 tping 100 20 2.2.2.4 vrf v1 int lo1
+r3 tping 100 20 4321::1 vrf v1 int lo1
+r3 tping 100 20 4321::2 vrf v1 int lo1
+r3 tping 100 20 4321::4 vrf v1 int lo1
 
-r4 tping 100 20 2.2.2.1 /vrf v1 /int lo1
-r4 tping 100 20 2.2.2.2 /vrf v1 /int lo1
-r4 tping 100 20 2.2.2.3 /vrf v1 /int lo1
-r4 tping 100 20 4321::1 /vrf v1 /int lo1
-r4 tping 100 20 4321::2 /vrf v1 /int lo1
-r4 tping 100 20 4321::3 /vrf v1 /int lo1
+r4 tping 100 20 2.2.2.1 vrf v1 int lo1
+r4 tping 100 20 2.2.2.2 vrf v1 int lo1
+r4 tping 100 20 2.2.2.3 vrf v1 int lo1
+r4 tping 100 20 4321::1 vrf v1 int lo1
+r4 tping 100 20 4321::2 vrf v1 int lo1
+r4 tping 100 20 4321::3 vrf v1 int lo1

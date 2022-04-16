@@ -35,7 +35,7 @@ puts $x " protocol pckotcp"
 puts $x " exit"
 puts $x "end"
 puts $x "!"
-puts $x "r1 tping 100 10 1.1.1.5 /vrf v2"
+puts $x "r1 tping 100 10 1.1.1.5 vrf v2"
 close $x
 }
 
@@ -76,7 +76,7 @@ puts $x " protocol pckotcp"
 puts $x " exit"
 puts $x "end"
 puts $x "!"
-puts $x "r1 tping 100 10 1.1.1.6 /vrf v1"
+puts $x "r1 tping 100 10 1.1.1.6 vrf v1"
 close $x
 }
 

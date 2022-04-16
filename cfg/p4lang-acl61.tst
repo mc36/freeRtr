@@ -249,112 +249,112 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234:1::2 /vrf v1
-r1 tping 100 10 1.1.2.2 /vrf v1
-r1 tping 100 10 1234:2::2 /vrf v1
-r1 tping 100 10 1.1.2.3 /vrf v1
-r1 tping 100 10 1234:2::3 /vrf v1
-r1 tping 100 10 1.1.2.4 /vrf v1
-r1 tping 100 10 1234:2::4 /vrf v1
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 10 1234:1::2 vrf v1
+r1 tping 100 10 1.1.2.2 vrf v1
+r1 tping 100 10 1234:2::2 vrf v1
+r1 tping 100 10 1.1.2.3 vrf v1
+r1 tping 100 10 1234:2::3 vrf v1
+r1 tping 100 10 1.1.2.4 vrf v1
+r1 tping 100 10 1234:2::4 vrf v1
 
-r3 tping 100 10 1.1.1.2 /vrf v1
-r3 tping 100 10 1234:1::2 /vrf v1
-r3 tping 100 10 1.1.2.2 /vrf v1
-r3 tping 100 10 1234:2::2 /vrf v1
-r3 tping 100 10 1.1.2.3 /vrf v1
-r3 tping 100 10 1234:2::3 /vrf v1
-r3 tping 100 10 1.1.2.4 /vrf v1
-r3 tping 100 10 1234:2::4 /vrf v1
+r3 tping 100 10 1.1.1.2 vrf v1
+r3 tping 100 10 1234:1::2 vrf v1
+r3 tping 100 10 1.1.2.2 vrf v1
+r3 tping 100 10 1234:2::2 vrf v1
+r3 tping 100 10 1.1.2.3 vrf v1
+r3 tping 100 10 1234:2::3 vrf v1
+r3 tping 100 10 1.1.2.4 vrf v1
+r3 tping 100 10 1234:2::4 vrf v1
 
-r4 tping 100 10 1.1.1.2 /vrf v1
-r4 tping 100 10 1234:1::2 /vrf v1
-r4 tping 100 10 1.1.2.2 /vrf v1
-r4 tping 100 10 1234:2::2 /vrf v1
-r4 tping 100 10 1.1.2.3 /vrf v1
-r4 tping 100 10 1234:2::3 /vrf v1
-r4 tping 100 10 1.1.2.4 /vrf v1
-r4 tping 100 10 1234:2::4 /vrf v1
+r4 tping 100 10 1.1.1.2 vrf v1
+r4 tping 100 10 1234:1::2 vrf v1
+r4 tping 100 10 1.1.2.2 vrf v1
+r4 tping 100 10 1234:2::2 vrf v1
+r4 tping 100 10 1.1.2.3 vrf v1
+r4 tping 100 10 1234:2::3 vrf v1
+r4 tping 100 10 1.1.2.4 vrf v1
+r4 tping 100 10 1234:2::4 vrf v1
 
-r5 tping 100 10 1.1.1.2 /vrf v1
-r5 tping 100 10 1234:1::2 /vrf v1
-r5 tping 100 10 1.1.2.2 /vrf v1
-r5 tping 100 10 1234:2::2 /vrf v1
-r5 tping 100 10 1.1.2.3 /vrf v1
-r5 tping 100 10 1234:2::3 /vrf v1
-r5 tping 100 10 1.1.2.4 /vrf v1
-r5 tping 100 10 1234:2::4 /vrf v1
+r5 tping 100 10 1.1.1.2 vrf v1
+r5 tping 100 10 1234:1::2 vrf v1
+r5 tping 100 10 1.1.2.2 vrf v1
+r5 tping 100 10 1234:2::2 vrf v1
+r5 tping 100 10 1.1.2.3 vrf v1
+r5 tping 100 10 1234:2::3 vrf v1
+r5 tping 100 10 1.1.2.4 vrf v1
+r5 tping 100 10 1234:2::4 vrf v1
 
-r6 tping 100 10 1.1.1.2 /vrf v1
-r6 tping 100 10 1234:1::2 /vrf v1
-r6 tping 100 10 1.1.2.2 /vrf v1
-r6 tping 100 10 1234:2::2 /vrf v1
-r6 tping 100 10 1.1.2.3 /vrf v1
-r6 tping 100 10 1234:2::3 /vrf v1
-r6 tping 100 10 1.1.2.4 /vrf v1
-r6 tping 100 10 1234:2::4 /vrf v1
+r6 tping 100 10 1.1.1.2 vrf v1
+r6 tping 100 10 1234:1::2 vrf v1
+r6 tping 100 10 1.1.2.2 vrf v1
+r6 tping 100 10 1234:2::2 vrf v1
+r6 tping 100 10 1.1.2.3 vrf v1
+r6 tping 100 10 1234:2::3 vrf v1
+r6 tping 100 10 1.1.2.4 vrf v1
+r6 tping 100 10 1234:2::4 vrf v1
 
-r1 tping 100 10 2.2.2.101 /vrf v1 /int lo0
-r1 tping 100 10 4321::101 /vrf v1 /int lo0
-r1 tping 100 10 2.2.2.103 /vrf v1 /int lo0
-r1 tping 100 10 4321::103 /vrf v1 /int lo0
-r1 tping 100 10 2.2.2.104 /vrf v1 /int lo0
-r1 tping 100 10 4321::104 /vrf v1 /int lo0
-r1 tping 100 10 2.2.2.105 /vrf v1 /int lo0
-r1 tping 100 10 4321::105 /vrf v1 /int lo0
-r1 tping 100 10 2.2.2.106 /vrf v1 /int lo0
-r1 tping 100 10 4321::106 /vrf v1 /int lo0
+r1 tping 100 10 2.2.2.101 vrf v1 int lo0
+r1 tping 100 10 4321::101 vrf v1 int lo0
+r1 tping 100 10 2.2.2.103 vrf v1 int lo0
+r1 tping 100 10 4321::103 vrf v1 int lo0
+r1 tping 100 10 2.2.2.104 vrf v1 int lo0
+r1 tping 100 10 4321::104 vrf v1 int lo0
+r1 tping 100 10 2.2.2.105 vrf v1 int lo0
+r1 tping 100 10 4321::105 vrf v1 int lo0
+r1 tping 100 10 2.2.2.106 vrf v1 int lo0
+r1 tping 100 10 4321::106 vrf v1 int lo0
 
-r3 tping 100 10 2.2.2.101 /vrf v1 /int lo0
-r3 tping 100 10 4321::101 /vrf v1 /int lo0
-r3 tping 100 10 2.2.2.103 /vrf v1 /int lo0
-r3 tping 100 10 4321::103 /vrf v1 /int lo0
-r3 tping 100 10 2.2.2.104 /vrf v1 /int lo0
-r3 tping 100 10 4321::104 /vrf v1 /int lo0
-r3 tping 100 10 2.2.2.105 /vrf v1 /int lo0
-r3 tping 100 10 4321::105 /vrf v1 /int lo0
-r3 tping 100 10 2.2.2.106 /vrf v1 /int lo0
-r3 tping 100 10 4321::106 /vrf v1 /int lo0
+r3 tping 100 10 2.2.2.101 vrf v1 int lo0
+r3 tping 100 10 4321::101 vrf v1 int lo0
+r3 tping 100 10 2.2.2.103 vrf v1 int lo0
+r3 tping 100 10 4321::103 vrf v1 int lo0
+r3 tping 100 10 2.2.2.104 vrf v1 int lo0
+r3 tping 100 10 4321::104 vrf v1 int lo0
+r3 tping 100 10 2.2.2.105 vrf v1 int lo0
+r3 tping 100 10 4321::105 vrf v1 int lo0
+r3 tping 100 10 2.2.2.106 vrf v1 int lo0
+r3 tping 100 10 4321::106 vrf v1 int lo0
 
-r4 tping 100 10 2.2.2.101 /vrf v1 /int lo0
-r4 tping 100 10 4321::101 /vrf v1 /int lo0
-r4 tping 100 10 2.2.2.103 /vrf v1 /int lo0
-r4 tping 100 10 4321::103 /vrf v1 /int lo0
-r4 tping 100 10 2.2.2.104 /vrf v1 /int lo0
-r4 tping 100 10 4321::104 /vrf v1 /int lo0
-r4 tping 100 10 2.2.2.105 /vrf v1 /int lo0
-r4 tping 100 10 4321::105 /vrf v1 /int lo0
-r4 tping 100 10 2.2.2.106 /vrf v1 /int lo0
-r4 tping 100 10 4321::106 /vrf v1 /int lo0
+r4 tping 100 10 2.2.2.101 vrf v1 int lo0
+r4 tping 100 10 4321::101 vrf v1 int lo0
+r4 tping 100 10 2.2.2.103 vrf v1 int lo0
+r4 tping 100 10 4321::103 vrf v1 int lo0
+r4 tping 100 10 2.2.2.104 vrf v1 int lo0
+r4 tping 100 10 4321::104 vrf v1 int lo0
+r4 tping 100 10 2.2.2.105 vrf v1 int lo0
+r4 tping 100 10 4321::105 vrf v1 int lo0
+r4 tping 100 10 2.2.2.106 vrf v1 int lo0
+r4 tping 100 10 4321::106 vrf v1 int lo0
 
-r5 tping 100 10 2.2.2.101 /vrf v1 /int lo0
-r5 tping 100 10 4321::101 /vrf v1 /int lo0
-r5 tping 100 10 2.2.2.103 /vrf v1 /int lo0
-r5 tping 100 10 4321::103 /vrf v1 /int lo0
-r5 tping 100 10 2.2.2.104 /vrf v1 /int lo0
-r5 tping 100 10 4321::104 /vrf v1 /int lo0
-r5 tping 100 10 2.2.2.105 /vrf v1 /int lo0
-r5 tping 100 10 4321::105 /vrf v1 /int lo0
-r5 tping 100 10 2.2.2.106 /vrf v1 /int lo0
-r5 tping 100 10 4321::106 /vrf v1 /int lo0
+r5 tping 100 10 2.2.2.101 vrf v1 int lo0
+r5 tping 100 10 4321::101 vrf v1 int lo0
+r5 tping 100 10 2.2.2.103 vrf v1 int lo0
+r5 tping 100 10 4321::103 vrf v1 int lo0
+r5 tping 100 10 2.2.2.104 vrf v1 int lo0
+r5 tping 100 10 4321::104 vrf v1 int lo0
+r5 tping 100 10 2.2.2.105 vrf v1 int lo0
+r5 tping 100 10 4321::105 vrf v1 int lo0
+r5 tping 100 10 2.2.2.106 vrf v1 int lo0
+r5 tping 100 10 4321::106 vrf v1 int lo0
 
-r6 tping 100 10 2.2.2.101 /vrf v1 /int lo0
-r6 tping 100 10 4321::101 /vrf v1 /int lo0
-r6 tping 100 10 2.2.2.103 /vrf v1 /int lo0
-r6 tping 100 10 4321::103 /vrf v1 /int lo0
-r6 tping 100 10 2.2.2.104 /vrf v1 /int lo0
-r6 tping 100 10 4321::104 /vrf v1 /int lo0
-r6 tping 100 10 2.2.2.105 /vrf v1 /int lo0
-r6 tping 100 10 4321::105 /vrf v1 /int lo0
-r6 tping 100 10 2.2.2.106 /vrf v1 /int lo0
-r6 tping 100 10 4321::106 /vrf v1 /int lo0
+r6 tping 100 10 2.2.2.101 vrf v1 int lo0
+r6 tping 100 10 4321::101 vrf v1 int lo0
+r6 tping 100 10 2.2.2.103 vrf v1 int lo0
+r6 tping 100 10 4321::103 vrf v1 int lo0
+r6 tping 100 10 2.2.2.104 vrf v1 int lo0
+r6 tping 100 10 4321::104 vrf v1 int lo0
+r6 tping 100 10 2.2.2.105 vrf v1 int lo0
+r6 tping 100 10 4321::105 vrf v1 int lo0
+r6 tping 100 10 2.2.2.106 vrf v1 int lo0
+r6 tping 100 10 4321::106 vrf v1 int lo0
 
-r4 tping 0 10 3.3.1.1 /vrf v1
-r4 tping 0 10 3.3.2.1 /vrf v1
-r3 tping 100 10 3.3.1.2 /vrf v1
-r3 tping 100 10 3.3.2.2 /vrf v1
-r4 tping 100 10 3.3.1.1 /vrf v1
-r4 tping 100 10 3.3.2.1 /vrf v1
+r4 tping 0 10 3.3.1.1 vrf v1
+r4 tping 0 10 3.3.2.1 vrf v1
+r3 tping 100 10 3.3.1.2 vrf v1
+r3 tping 100 10 3.3.2.2 vrf v1
+r4 tping 100 10 3.3.1.1 vrf v1
+r4 tping 100 10 3.3.2.1 vrf v1
 
-r1 dping sdn . r4 3.3.1.1 /vrf v1
-r1 dping sdn . r4 3.3.2.1 /vrf v1
+r1 dping sdn . r4 3.3.1.1 vrf v1
+r1 dping sdn . r4 3.3.2.1 vrf v1

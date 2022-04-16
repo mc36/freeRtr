@@ -23,10 +23,10 @@ int hairpin12
 !
 
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r1 tping 100 5 1.1.1.1 /vrf v2
-r1 tping 100 5 1234::2 /vrf v1
-r1 tping 100 5 1234::1 /vrf v2
+r1 tping 100 5 1.1.1.2 vrf v1
+r1 tping 100 5 1.1.1.1 vrf v2
+r1 tping 100 5 1234::2 vrf v1
+r1 tping 100 5 1234::1 vrf v2
 
 r1 output show inter ha11 full
 output ../binTmp/conn-hairpin.html

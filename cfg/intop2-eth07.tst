@@ -28,5 +28,5 @@ commit
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234::2 /vrf v1
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 10 1234::2 vrf v1

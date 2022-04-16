@@ -154,13 +154,13 @@ int tun1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 60 2.2.2.2 vrf v1 int lo0
+r1 tping 100 60 4321::2 vrf v1 int lo0
 
-r3 tping 100 10 1.1.2.2 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r3 tping 100 60 4321::2 /vrf v1 /int lo0
+r3 tping 100 10 1.1.2.2 vrf v1
+r3 tping 100 60 2.2.2.2 vrf v1 int lo0
+r3 tping 100 60 4321::2 vrf v1 int lo0
 
-r1 tping 100 60 3.3.3.10 /vrf v1
-r3 tping 100 60 3.3.3.9 /vrf v1
+r1 tping 100 60 3.3.3.10 vrf v1
+r3 tping 100 60 3.3.3.9 vrf v1

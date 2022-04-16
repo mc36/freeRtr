@@ -74,13 +74,13 @@ server tel tel
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234::2 /vrf v1
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 10 1234::2 vrf v1
 
-r3 tping 100 10 2.2.2.1 /vrf v1
-r3 tping 100 10 4321::1 /vrf v1
+r3 tping 100 10 2.2.2.1 vrf v1
+r3 tping 100 10 4321::1 vrf v1
 
-r1 send telnet 1.1.1.2 /vrf v1 /telnet
+r1 send telnet 1.1.1.2 vrf v1 telnet
 sleep 1000
 r1 send usr
 sleep 1000
@@ -90,4 +90,4 @@ r1 char 13
 r1 read vxe#
 r1 send telnet 2.2.2.2
 sleep 3000
-r1 tping 100 10 3.3.3.3 /vrf v1
+r1 tping 100 10 3.3.3.3 vrf v1

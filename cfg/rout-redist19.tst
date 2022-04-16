@@ -134,20 +134,20 @@ int eth1.12
 !
 
 
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
-r2 tping 100 20 2.2.2.3 /vrf v1
-r2 tping 100 20 4321::3 /vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1
+r2 tping 100 20 2.2.2.3 vrf v1
+r2 tping 100 20 4321::3 vrf v1
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r1 tping 100 20 2.2.2.3 /vrf v1
-r1 tping 100 20 4321::3 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r1 tping 100 20 2.2.2.3 vrf v1
+r1 tping 100 20 4321::3 vrf v1
 
-r3 tping 100 20 2.2.2.2 /vrf v1
-r3 tping 100 20 4321::2 /vrf v1
-r3 tping 100 20 2.2.2.1 /vrf v1
-r3 tping 100 20 4321::1 /vrf v1
+r3 tping 100 20 2.2.2.2 vrf v1
+r3 tping 100 20 4321::2 vrf v1
+r3 tping 100 20 2.2.2.1 vrf v1
+r3 tping 100 20 4321::1 vrf v1
 
 r1 send conf t
 r1 send int lo1
@@ -157,20 +157,20 @@ r1 send int lo2
 r1 send no router isis6 1 ena
 r1 send end
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r1 tping 100 20 2.2.2.3 /vrf v1
-r1 tping 100 20 4321::3 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r1 tping 100 20 2.2.2.3 vrf v1
+r1 tping 100 20 4321::3 vrf v1
 
-r2 tping 0 20 2.2.2.1 /vrf v1
-r2 tping 0 20 4321::1 /vrf v1
-r2 tping 100 20 2.2.2.3 /vrf v1
-r2 tping 100 20 4321::3 /vrf v1
+r2 tping 0 20 2.2.2.1 vrf v1
+r2 tping 0 20 4321::1 vrf v1
+r2 tping 100 20 2.2.2.3 vrf v1
+r2 tping 100 20 4321::3 vrf v1
 
-r3 tping 0 20 2.2.2.1 /vrf v1
-r3 tping 0 20 4321::1 /vrf v1
-r3 tping 100 20 2.2.2.2 /vrf v1
-r3 tping 100 20 4321::2 /vrf v1
+r3 tping 0 20 2.2.2.1 vrf v1
+r3 tping 0 20 4321::1 vrf v1
+r3 tping 100 20 2.2.2.2 vrf v1
+r3 tping 100 20 4321::2 vrf v1
 
 r1 send conf t
 r1 send int lo1
@@ -180,17 +180,17 @@ r1 send int lo2
 r1 send router isis6 1 ena
 r1 send end
 
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
-r2 tping 100 20 2.2.2.3 /vrf v1
-r2 tping 100 20 4321::3 /vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1
+r2 tping 100 20 2.2.2.3 vrf v1
+r2 tping 100 20 4321::3 vrf v1
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r1 tping 100 20 2.2.2.3 /vrf v1
-r1 tping 100 20 4321::3 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r1 tping 100 20 2.2.2.3 vrf v1
+r1 tping 100 20 4321::3 vrf v1
 
-r3 tping 100 20 2.2.2.2 /vrf v1
-r3 tping 100 20 4321::2 /vrf v1
-r3 tping 100 20 2.2.2.1 /vrf v1
-r3 tping 100 20 4321::1 /vrf v1
+r3 tping 100 20 2.2.2.2 vrf v1
+r3 tping 100 20 4321::2 vrf v1
+r3 tping 100 20 2.2.2.1 vrf v1
+r3 tping 100 20 4321::1 vrf v1

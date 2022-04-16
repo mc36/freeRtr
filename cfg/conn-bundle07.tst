@@ -47,7 +47,7 @@ int bun1
 !
 
 
-r1 tping 400 5 1.1.1.2 /vrf v1 /multi
-r2 tping 400 5 1.1.1.1 /vrf v1 /multi
-r1 tping 400 5 1234::2 /vrf v1 /multi
-r2 tping 400 5 1234::1 /vrf v1 /multi
+r1 tping 400 5 1.1.1.2 vrf v1 multi
+r2 tping 400 5 1.1.1.1 vrf v1 multi
+r1 tping 400 5 1234::2 vrf v1 multi
+r2 tping 400 5 1234::1 vrf v1 multi

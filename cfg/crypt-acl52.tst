@@ -68,7 +68,7 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.1
 ipv6 route v1 :: :: 1234::1
 !
 
-r1 tping 100 5 2.2.2.201 /vrf v1 /int lo0
-r1 tping 100 5 4321::201 /vrf v1 /int lo0
-r1 tping 0 5 2.2.2.201 /vrf v1 /int lo1
-r1 tping 0 5 4321::201 /vrf v1 /int lo1
+r1 tping 100 5 2.2.2.201 vrf v1 int lo0
+r1 tping 100 5 4321::201 vrf v1 int lo0
+r1 tping 0 5 2.2.2.201 vrf v1 int lo1
+r1 tping 0 5 4321::201 vrf v1 int lo1

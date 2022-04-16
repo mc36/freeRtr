@@ -206,61 +206,61 @@ router bgp6 1
  exit
 !
 
-r1 tping 100 60 2.2.2.2 /vrf v1
-r1 tping 100 60 4321::2 /vrf v1
-r1 tping 100 60 2.2.2.3 /vrf v1
-r1 tping 100 60 4321::3 /vrf v1
-r1 tping 100 60 2.2.2.4 /vrf v1
-r1 tping 100 60 4321::4 /vrf v1
-r1 tping 100 60 2.2.2.222 /vrf v1
-r1 tping 100 60 4321::222 /vrf v1
-r1 tping 0 60 2.2.2.102 /vrf v1
-r1 tping 0 60 4321::102 /vrf v1
-r1 tping 0 60 2.2.2.103 /vrf v1
-r1 tping 0 60 4321::103 /vrf v1
+r1 tping 100 60 2.2.2.2 vrf v1
+r1 tping 100 60 4321::2 vrf v1
+r1 tping 100 60 2.2.2.3 vrf v1
+r1 tping 100 60 4321::3 vrf v1
+r1 tping 100 60 2.2.2.4 vrf v1
+r1 tping 100 60 4321::4 vrf v1
+r1 tping 100 60 2.2.2.222 vrf v1
+r1 tping 100 60 4321::222 vrf v1
+r1 tping 0 60 2.2.2.102 vrf v1
+r1 tping 0 60 4321::102 vrf v1
+r1 tping 0 60 2.2.2.103 vrf v1
+r1 tping 0 60 4321::103 vrf v1
 
-r2 tping 100 60 2.2.2.1 /vrf v1
-r2 tping 100 60 4321::1 /vrf v1
-r2 tping 100 60 2.2.2.3 /vrf v1
-r2 tping 100 60 4321::3 /vrf v1
-r2 tping 100 60 2.2.2.4 /vrf v1
-r2 tping 100 60 4321::4 /vrf v1
-r2 tping 100 60 2.2.2.222 /vrf v1
-r2 tping 100 60 4321::222 /vrf v1
+r2 tping 100 60 2.2.2.1 vrf v1
+r2 tping 100 60 4321::1 vrf v1
+r2 tping 100 60 2.2.2.3 vrf v1
+r2 tping 100 60 4321::3 vrf v1
+r2 tping 100 60 2.2.2.4 vrf v1
+r2 tping 100 60 4321::4 vrf v1
+r2 tping 100 60 2.2.2.222 vrf v1
+r2 tping 100 60 4321::222 vrf v1
 
-r3 tping 100 60 2.2.2.1 /vrf v1
-r3 tping 100 60 4321::1 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1
-r3 tping 100 60 4321::2 /vrf v1
-r3 tping 100 60 2.2.2.4 /vrf v1
-r3 tping 100 60 4321::4 /vrf v1
-r3 tping 100 60 2.2.2.222 /vrf v1
-r3 tping 100 60 4321::222 /vrf v1
+r3 tping 100 60 2.2.2.1 vrf v1
+r3 tping 100 60 4321::1 vrf v1
+r3 tping 100 60 2.2.2.2 vrf v1
+r3 tping 100 60 4321::2 vrf v1
+r3 tping 100 60 2.2.2.4 vrf v1
+r3 tping 100 60 4321::4 vrf v1
+r3 tping 100 60 2.2.2.222 vrf v1
+r3 tping 100 60 4321::222 vrf v1
 
-r4 tping 100 60 2.2.2.1 /vrf v1
-r4 tping 100 60 4321::1 /vrf v1
-r4 tping 100 60 2.2.2.2 /vrf v1
-r4 tping 100 60 4321::2 /vrf v1
-r4 tping 100 60 2.2.2.3 /vrf v1
-r4 tping 100 60 4321::3 /vrf v1
-r4 tping 100 60 2.2.2.222 /vrf v1
-r4 tping 100 60 4321::222 /vrf v1
-r4 tping 0 60 2.2.2.102 /vrf v1
-r4 tping 0 60 4321::102 /vrf v1
-r4 tping 0 60 2.2.2.103 /vrf v1
-r4 tping 0 60 4321::103 /vrf v1
+r4 tping 100 60 2.2.2.1 vrf v1
+r4 tping 100 60 4321::1 vrf v1
+r4 tping 100 60 2.2.2.2 vrf v1
+r4 tping 100 60 4321::2 vrf v1
+r4 tping 100 60 2.2.2.3 vrf v1
+r4 tping 100 60 4321::3 vrf v1
+r4 tping 100 60 2.2.2.222 vrf v1
+r4 tping 100 60 4321::222 vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1
+r4 tping 0 60 4321::102 vrf v1
+r4 tping 0 60 2.2.2.103 vrf v1
+r4 tping 0 60 4321::103 vrf v1
 
-r4 send telnet 2.2.2.222 666 /vrf v1
-r4 tping 100 60 2.2.2.102 /vrf v1
+r4 send telnet 2.2.2.222 666 vrf v1
+r4 tping 100 60 2.2.2.102 vrf v1
 r4 send exit
 r4 read closed
-r4 tping 0 60 2.2.2.102 /vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1
 
-r4 send telnet 4321::222 666 /vrf v1
-r4 tping 100 60 2.2.2.102 /vrf v1
+r4 send telnet 4321::222 666 vrf v1
+r4 tping 100 60 2.2.2.102 vrf v1
 r4 send exit
 r4 read closed
-r4 tping 0 60 2.2.2.102 /vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1
 
 r2 send conf t
 r2 send route-map rm1
@@ -269,61 +269,61 @@ r2 send end
 r2 send clear ipv4 route v1
 r2 send clear ipv6 route v1
 
-r1 tping 100 60 2.2.2.2 /vrf v1
-r1 tping 100 60 4321::2 /vrf v1
-r1 tping 100 60 2.2.2.3 /vrf v1
-r1 tping 100 60 4321::3 /vrf v1
-r1 tping 100 60 2.2.2.4 /vrf v1
-r1 tping 100 60 4321::4 /vrf v1
-r1 tping 100 60 2.2.2.222 /vrf v1
-r1 tping 100 60 4321::222 /vrf v1
-r1 tping 0 60 2.2.2.102 /vrf v1
-r1 tping 0 60 4321::102 /vrf v1
-r1 tping 0 60 2.2.2.103 /vrf v1
-r1 tping 0 60 4321::103 /vrf v1
+r1 tping 100 60 2.2.2.2 vrf v1
+r1 tping 100 60 4321::2 vrf v1
+r1 tping 100 60 2.2.2.3 vrf v1
+r1 tping 100 60 4321::3 vrf v1
+r1 tping 100 60 2.2.2.4 vrf v1
+r1 tping 100 60 4321::4 vrf v1
+r1 tping 100 60 2.2.2.222 vrf v1
+r1 tping 100 60 4321::222 vrf v1
+r1 tping 0 60 2.2.2.102 vrf v1
+r1 tping 0 60 4321::102 vrf v1
+r1 tping 0 60 2.2.2.103 vrf v1
+r1 tping 0 60 4321::103 vrf v1
 
-r2 tping 100 60 2.2.2.1 /vrf v1
-r2 tping 100 60 4321::1 /vrf v1
-r2 tping 100 60 2.2.2.3 /vrf v1
-r2 tping 100 60 4321::3 /vrf v1
-r2 tping 100 60 2.2.2.4 /vrf v1
-r2 tping 100 60 4321::4 /vrf v1
-r2 tping 100 60 2.2.2.222 /vrf v1
-r2 tping 100 60 4321::222 /vrf v1
+r2 tping 100 60 2.2.2.1 vrf v1
+r2 tping 100 60 4321::1 vrf v1
+r2 tping 100 60 2.2.2.3 vrf v1
+r2 tping 100 60 4321::3 vrf v1
+r2 tping 100 60 2.2.2.4 vrf v1
+r2 tping 100 60 4321::4 vrf v1
+r2 tping 100 60 2.2.2.222 vrf v1
+r2 tping 100 60 4321::222 vrf v1
 
-r3 tping 100 60 2.2.2.1 /vrf v1
-r3 tping 100 60 4321::1 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1
-r3 tping 100 60 4321::2 /vrf v1
-r3 tping 100 60 2.2.2.4 /vrf v1
-r3 tping 100 60 4321::4 /vrf v1
-r3 tping 100 60 2.2.2.222 /vrf v1
-r3 tping 100 60 4321::222 /vrf v1
+r3 tping 100 60 2.2.2.1 vrf v1
+r3 tping 100 60 4321::1 vrf v1
+r3 tping 100 60 2.2.2.2 vrf v1
+r3 tping 100 60 4321::2 vrf v1
+r3 tping 100 60 2.2.2.4 vrf v1
+r3 tping 100 60 4321::4 vrf v1
+r3 tping 100 60 2.2.2.222 vrf v1
+r3 tping 100 60 4321::222 vrf v1
 
-r4 tping 100 60 2.2.2.1 /vrf v1
-r4 tping 100 60 4321::1 /vrf v1
-r4 tping 100 60 2.2.2.2 /vrf v1
-r4 tping 100 60 4321::2 /vrf v1
-r4 tping 100 60 2.2.2.3 /vrf v1
-r4 tping 100 60 4321::3 /vrf v1
-r4 tping 100 60 2.2.2.222 /vrf v1
-r4 tping 100 60 4321::222 /vrf v1
-r4 tping 0 60 2.2.2.102 /vrf v1
-r4 tping 0 60 4321::102 /vrf v1
-r4 tping 0 60 2.2.2.103 /vrf v1
-r4 tping 0 60 4321::103 /vrf v1
+r4 tping 100 60 2.2.2.1 vrf v1
+r4 tping 100 60 4321::1 vrf v1
+r4 tping 100 60 2.2.2.2 vrf v1
+r4 tping 100 60 4321::2 vrf v1
+r4 tping 100 60 2.2.2.3 vrf v1
+r4 tping 100 60 4321::3 vrf v1
+r4 tping 100 60 2.2.2.222 vrf v1
+r4 tping 100 60 4321::222 vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1
+r4 tping 0 60 4321::102 vrf v1
+r4 tping 0 60 2.2.2.103 vrf v1
+r4 tping 0 60 4321::103 vrf v1
 
-r4 send telnet 2.2.2.222 666 /vrf v1
-r4 tping 100 60 2.2.2.103 /vrf v1
+r4 send telnet 2.2.2.222 666 vrf v1
+r4 tping 100 60 2.2.2.103 vrf v1
 r4 send exit
 r4 read closed
-r4 tping 0 60 2.2.2.103 /vrf v1
+r4 tping 0 60 2.2.2.103 vrf v1
 
-r4 send telnet 4321::222 666 /vrf v1
-r4 tping 100 60 2.2.2.103 /vrf v1
+r4 send telnet 4321::222 666 vrf v1
+r4 tping 100 60 2.2.2.103 vrf v1
 r4 send exit
 r4 read closed
-r4 tping 0 60 2.2.2.103 /vrf v1
+r4 tping 0 60 2.2.2.103 vrf v1
 
 r2 send conf t
 r2 send route-map rm1
@@ -332,58 +332,58 @@ r2 send end
 r2 send clear ipv4 route v1
 r2 send clear ipv6 route v1
 
-r1 tping 100 60 2.2.2.2 /vrf v1
-r1 tping 100 60 4321::2 /vrf v1
-r1 tping 100 60 2.2.2.3 /vrf v1
-r1 tping 100 60 4321::3 /vrf v1
-r1 tping 100 60 2.2.2.4 /vrf v1
-r1 tping 100 60 4321::4 /vrf v1
-r1 tping 100 60 2.2.2.222 /vrf v1
-r1 tping 100 60 4321::222 /vrf v1
-r1 tping 0 60 2.2.2.102 /vrf v1
-r1 tping 0 60 4321::102 /vrf v1
-r1 tping 0 60 2.2.2.103 /vrf v1
-r1 tping 0 60 4321::103 /vrf v1
+r1 tping 100 60 2.2.2.2 vrf v1
+r1 tping 100 60 4321::2 vrf v1
+r1 tping 100 60 2.2.2.3 vrf v1
+r1 tping 100 60 4321::3 vrf v1
+r1 tping 100 60 2.2.2.4 vrf v1
+r1 tping 100 60 4321::4 vrf v1
+r1 tping 100 60 2.2.2.222 vrf v1
+r1 tping 100 60 4321::222 vrf v1
+r1 tping 0 60 2.2.2.102 vrf v1
+r1 tping 0 60 4321::102 vrf v1
+r1 tping 0 60 2.2.2.103 vrf v1
+r1 tping 0 60 4321::103 vrf v1
 
-r2 tping 100 60 2.2.2.1 /vrf v1
-r2 tping 100 60 4321::1 /vrf v1
-r2 tping 100 60 2.2.2.3 /vrf v1
-r2 tping 100 60 4321::3 /vrf v1
-r2 tping 100 60 2.2.2.4 /vrf v1
-r2 tping 100 60 4321::4 /vrf v1
-r2 tping 100 60 2.2.2.222 /vrf v1
-r2 tping 100 60 4321::222 /vrf v1
+r2 tping 100 60 2.2.2.1 vrf v1
+r2 tping 100 60 4321::1 vrf v1
+r2 tping 100 60 2.2.2.3 vrf v1
+r2 tping 100 60 4321::3 vrf v1
+r2 tping 100 60 2.2.2.4 vrf v1
+r2 tping 100 60 4321::4 vrf v1
+r2 tping 100 60 2.2.2.222 vrf v1
+r2 tping 100 60 4321::222 vrf v1
 
-r3 tping 100 60 2.2.2.1 /vrf v1
-r3 tping 100 60 4321::1 /vrf v1
-r3 tping 100 60 2.2.2.2 /vrf v1
-r3 tping 100 60 4321::2 /vrf v1
-r3 tping 100 60 2.2.2.4 /vrf v1
-r3 tping 100 60 4321::4 /vrf v1
-r3 tping 100 60 2.2.2.222 /vrf v1
-r3 tping 100 60 4321::222 /vrf v1
+r3 tping 100 60 2.2.2.1 vrf v1
+r3 tping 100 60 4321::1 vrf v1
+r3 tping 100 60 2.2.2.2 vrf v1
+r3 tping 100 60 4321::2 vrf v1
+r3 tping 100 60 2.2.2.4 vrf v1
+r3 tping 100 60 4321::4 vrf v1
+r3 tping 100 60 2.2.2.222 vrf v1
+r3 tping 100 60 4321::222 vrf v1
 
-r4 tping 100 60 2.2.2.1 /vrf v1
-r4 tping 100 60 4321::1 /vrf v1
-r4 tping 100 60 2.2.2.2 /vrf v1
-r4 tping 100 60 4321::2 /vrf v1
-r4 tping 100 60 2.2.2.3 /vrf v1
-r4 tping 100 60 4321::3 /vrf v1
-r4 tping 100 60 2.2.2.222 /vrf v1
-r4 tping 100 60 4321::222 /vrf v1
-r4 tping 0 60 2.2.2.102 /vrf v1
-r4 tping 0 60 4321::102 /vrf v1
-r4 tping 0 60 2.2.2.103 /vrf v1
-r4 tping 0 60 4321::103 /vrf v1
+r4 tping 100 60 2.2.2.1 vrf v1
+r4 tping 100 60 4321::1 vrf v1
+r4 tping 100 60 2.2.2.2 vrf v1
+r4 tping 100 60 4321::2 vrf v1
+r4 tping 100 60 2.2.2.3 vrf v1
+r4 tping 100 60 4321::3 vrf v1
+r4 tping 100 60 2.2.2.222 vrf v1
+r4 tping 100 60 4321::222 vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1
+r4 tping 0 60 4321::102 vrf v1
+r4 tping 0 60 2.2.2.103 vrf v1
+r4 tping 0 60 4321::103 vrf v1
 
-r4 send telnet 2.2.2.222 666 /vrf v1
-r4 tping 100 60 2.2.2.102 /vrf v1
+r4 send telnet 2.2.2.222 666 vrf v1
+r4 tping 100 60 2.2.2.102 vrf v1
 r4 send exit
 r4 read closed
-r4 tping 0 60 2.2.2.102 /vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1
 
-r4 send telnet 4321::222 666 /vrf v1
-r4 tping 100 60 2.2.2.102 /vrf v1
+r4 send telnet 4321::222 666 vrf v1
+r4 tping 100 60 2.2.2.102 vrf v1
 r4 send exit
 r4 read closed
-r4 tping 0 60 2.2.2.102 /vrf v1
+r4 tping 0 60 2.2.2.102 vrf v1

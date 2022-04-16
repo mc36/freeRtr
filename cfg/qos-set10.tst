@@ -100,17 +100,17 @@ ipv6 route v1 3333::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 4321::1
 !
 
 
-r1 tping 100 5 3.3.3.2 /vrf v1 /int lo0 /siz 200
-r3 tping 100 5 3.3.3.1 /vrf v1 /int lo0 /siz 200
-r1 tping 100 5 3333::2 /vrf v1 /int lo0 /siz 200
-r3 tping 100 5 3333::1 /vrf v1 /int lo0 /siz 200
+r1 tping 100 5 3.3.3.2 vrf v1 int lo0 siz 200
+r3 tping 100 5 3.3.3.1 vrf v1 int lo0 siz 200
+r1 tping 100 5 3333::2 vrf v1 int lo0 siz 200
+r3 tping 100 5 3333::1 vrf v1 int lo0 siz 200
 
-r1 tping 0 15 3.3.3.2 /vrf v1 /int lo0 /siz 400
-r3 tping 0 15 3.3.3.1 /vrf v1 /int lo0 /siz 400
-r1 tping 0 15 3333::2 /vrf v1 /int lo0 /siz 400
-r3 tping 0 15 3333::1 /vrf v1 /int lo0 /siz 400
+r1 tping 0 15 3.3.3.2 vrf v1 int lo0 siz 400
+r3 tping 0 15 3.3.3.1 vrf v1 int lo0 siz 400
+r1 tping 0 15 3333::2 vrf v1 int lo0 siz 400
+r3 tping 0 15 3333::1 vrf v1 int lo0 siz 400
 
-r1 tping 100 5 3.3.3.2 /vrf v1 /int lo0 /siz 600
-r3 tping 100 5 3.3.3.1 /vrf v1 /int lo0 /siz 600
-r1 tping 100 5 3333::2 /vrf v1 /int lo0 /siz 600
-r3 tping 100 5 3333::1 /vrf v1 /int lo0 /siz 600
+r1 tping 100 5 3.3.3.2 vrf v1 int lo0 siz 600
+r3 tping 100 5 3.3.3.1 vrf v1 int lo0 siz 600
+r1 tping 100 5 3333::2 vrf v1 int lo0 siz 600
+r3 tping 100 5 3333::1 vrf v1 int lo0 siz 600

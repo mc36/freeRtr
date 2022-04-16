@@ -75,11 +75,11 @@ int temp1
 !
 
 
-r1 tping 100 130 2.2.2.2 /vrf v1
-r1 tping 100 130 4321::2 /vrf v1
+r1 tping 100 130 2.2.2.2 vrf v1
+r1 tping 100 130 4321::2 vrf v1
 
-r2 tping 100 130 2.2.2.1 /vrf v1
-r2 tping 100 130 4321::1 /vrf v1
+r2 tping 100 130 2.2.2.1 vrf v1
+r2 tping 100 130 4321::1 vrf v1
 
 r2 output show ipv4 babel 1 sum
 r2 output show ipv6 babel 1 sum

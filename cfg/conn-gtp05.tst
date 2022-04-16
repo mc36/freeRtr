@@ -55,5 +55,5 @@ int tun1
 !
 
 
-r2 tping 100 60 4.4.4.4 /vrf v1
-r2 tping 100 5 4444::4 /vrf v1
+r2 tping 100 60 4.4.4.4 vrf v1
+r2 tping 100 5 4444::4 vrf v1

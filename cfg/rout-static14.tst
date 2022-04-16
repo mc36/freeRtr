@@ -72,10 +72,10 @@ ipv6 route v1 :: :: 1234:2::1 dist 11 track t1
 !
 
 
-r2 tping 100 5 2.2.2.101 /vrf v1
-r2 tping 100 5 4321::101 /vrf v1
-r1 tping 100 5 2.2.2.201 /vrf v1
-r1 tping 100 5 4321::201 /vrf v1
+r2 tping 100 5 2.2.2.101 vrf v1
+r2 tping 100 5 4321::101 vrf v1
+r1 tping 100 5 2.2.2.201 vrf v1
+r1 tping 100 5 4321::201 vrf v1
 
 r1 send conf t
 r1 send int eth1
@@ -90,10 +90,10 @@ r2 send int eth2
 r2 send shut
 r2 send end
 
-r2 tping 100 5 2.2.2.101 /vrf v1
-r2 tping 100 5 4321::101 /vrf v1
-r1 tping 100 5 2.2.2.201 /vrf v1
-r1 tping 100 5 4321::201 /vrf v1
+r2 tping 100 5 2.2.2.101 vrf v1
+r2 tping 100 5 4321::101 vrf v1
+r1 tping 100 5 2.2.2.201 vrf v1
+r1 tping 100 5 4321::201 vrf v1
 
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1

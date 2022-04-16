@@ -61,18 +61,18 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.5
 ipv6 route v1 :: :: 1234:2::1
 !
 
-r2 tping 100 5 1.1.1.1 /vrf v1
-r2 tping 100 5 1234:1::1 /vrf v1
-r2 tping 100 5 1.1.1.6 /vrf v1
-r2 tping 100 5 1234:2::2 /vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r2 tping 100 5 1234:1::1 vrf v1
+r2 tping 100 5 1.1.1.6 vrf v1
+r2 tping 100 5 1234:2::2 vrf v1
 
-r3 send telnet 1.1.1.1 666 /vrf v1
-r3 tping 100 5 1.1.1.1 /vrf v1
+r3 send telnet 1.1.1.1 666 vrf v1
+r3 tping 100 5 1.1.1.1 vrf v1
 r3 send exit
 r3 read closed
 
-r3 send telnet 1234:1::1 666 /vrf v1
-r3 tping 100 5 1234:1::1 /vrf v1
+r3 send telnet 1234:1::1 666 vrf v1
+r3 tping 100 5 1234:1::1 vrf v1
 r3 send exit
 r3 read closed
 

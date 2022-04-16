@@ -76,12 +76,12 @@ server p4lang p4
 !
 
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r2 tping 100 5 1.1.1.1 /vrf v1
-r1 tping 100 5 1234::2 /vrf v1
-r2 tping 100 5 1234::1 /vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r2 tping 100 5 1234::1 vrf v1
 
-r3 tping 100 5 2.2.2.2 /vrf v1
-r2 tping 100 5 2.2.2.1 /vrf v1
-r3 tping 100 5 4321::2 /vrf v1
-r2 tping 100 5 4321::1 /vrf v1
+r3 tping 100 5 2.2.2.2 vrf v1
+r2 tping 100 5 2.2.2.1 vrf v1
+r3 tping 100 5 4321::2 vrf v1
+r2 tping 100 5 4321::1 vrf v1

@@ -54,7 +54,7 @@ ipv6 route v1 :: :: 1234::101:106
 !
 
 
-r2 tping 100 5 1.1.1.1 /vrf v1
-r2 tping 100 5 1234::101:105 /vrf v1
-r1 tping 100 5 1.1.1.5 /vrf v1
-r3 tping 100 5 1234::101:101 /vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r2 tping 100 5 1234::101:105 vrf v1
+r1 tping 100 5 1.1.1.5 vrf v1
+r3 tping 100 5 1234::101:101 vrf v1

@@ -33,8 +33,8 @@ interface ens3
 
 
 
-r1 tping 100 15 1.1.1.2 /vrf v1 /siz 222
-r1 tping 100 15 1234::2 /vrf v1 /siz 222
+r1 tping 100 15 1.1.1.2 vrf v1 siz 222
+r1 tping 100 15 1234::2 vrf v1 siz 222
 
-r1 tping 100 15 1.1.1.2 /vrf v1 /siz 2222
-r1 tping 100 15 1234::2 /vrf v1 /siz 2222
+r1 tping 100 15 1.1.1.2 vrf v1 siz 2222
+r1 tping 100 15 1234::2 vrf v1 siz 2222

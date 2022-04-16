@@ -32,13 +32,13 @@ int eth1
 !
 
 
-r2 tping 100 5 1.1.1.1 /vrf v1
-r2 tping 100 5 1234::1 /vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r2 tping 100 5 1234::1 vrf v1
 
-r2 tping 100 5 1.1.1.1 /vrf v1 /rep 100 /tim 500 /siz 100
-r2 tping 100 5 1234::1 /vrf v1 /rep 100 /tim 500 /siz 100
-r1 tping 100 5 1.1.1.2 /vrf v1 /rep 100 /tim 500 /siz 100
-r1 tping 100 5 1234::2 /vrf v1 /rep 100 /tim 500 /siz 100
+r2 tping 100 5 1.1.1.1 vrf v1 rep 100 tim 500 siz 100
+r2 tping 100 5 1234::1 vrf v1 rep 100 tim 500 siz 100
+r1 tping 100 5 1.1.1.2 vrf v1 rep 100 tim 500 siz 100
+r1 tping 100 5 1234::2 vrf v1 rep 100 tim 500 siz 100
 
 r2 output show policy int eth1 in
 output ../binTmp/qos-bandwidth.html

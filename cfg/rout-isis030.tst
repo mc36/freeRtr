@@ -109,27 +109,27 @@ int eth2.12
 !
 
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1
 
 sleep 3000
 
-r1 tping 100 5 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 5 4321::2 /vrf v1 /int lo0
-r2 tping 100 5 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 5 4321::1 /vrf v1 /int lo0
+r1 tping 100 5 2.2.2.2 vrf v1 int lo0
+r1 tping 100 5 4321::2 vrf v1 int lo0
+r2 tping 100 5 2.2.2.1 vrf v1 int lo0
+r2 tping 100 5 4321::1 vrf v1 int lo0
 
 r2 send conf t
 r2 send int eth1
 r2 send shut
 r2 send end
 
-r1 tping 100 5 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 5 4321::2 /vrf v1 /int lo0
-r2 tping 100 5 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 5 4321::1 /vrf v1 /int lo0
+r1 tping 100 5 2.2.2.2 vrf v1 int lo0
+r1 tping 100 5 4321::2 vrf v1 int lo0
+r2 tping 100 5 2.2.2.1 vrf v1 int lo0
+r2 tping 100 5 4321::1 vrf v1 int lo0
 
 r2 output show ipv4 isis 1 nei
 r2 output show ipv6 isis 1 nei

@@ -52,6 +52,6 @@ interface virtual-ppp1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 60 2.2.2.2 /vrf v1
-r1 tping 100 60 fe80::4321 /vrf v1
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 60 2.2.2.2 vrf v1
+r1 tping 100 60 fe80::4321 vrf v1

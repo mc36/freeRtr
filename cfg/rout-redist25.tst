@@ -84,11 +84,11 @@ int eth1.12
 
 
 
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
 
 
 r1 send conf t
@@ -99,11 +99,11 @@ r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
 
-r2 tping 0 20 2.2.2.1 /vrf v1
-r2 tping 0 20 4321::1 /vrf v1
+r2 tping 0 20 2.2.2.1 vrf v1
+r2 tping 0 20 4321::1 vrf v1
 
 r1 send conf t
 r1 send track t
@@ -113,8 +113,8 @@ r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
 
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1

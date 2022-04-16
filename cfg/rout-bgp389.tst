@@ -222,24 +222,24 @@ router bgp6 1
 
 
 
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
+r1 tping 100 60 2.2.2.2 vrf v1 int lo0
+r1 tping 100 60 4321::2 vrf v1 int lo0
 
-r2 tping 100 60 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 60 4321::1 /vrf v1 /int lo0
+r2 tping 100 60 2.2.2.1 vrf v1 int lo0
+r2 tping 100 60 4321::1 vrf v1 int lo0
 
-r1 tping 100 60 4.4.4.2 /vrf v1 /int lo1
-r1 tping 100 60 4444::2 /vrf v1 /int lo1
+r1 tping 100 60 4.4.4.2 vrf v1 int lo1
+r1 tping 100 60 4444::2 vrf v1 int lo1
 
-r2 tping 100 60 4.4.4.1 /vrf v1 /int lo1
-r2 tping 100 60 4444::1 /vrf v1 /int lo1
+r2 tping 100 60 4.4.4.1 vrf v1 int lo1
+r2 tping 100 60 4444::1 vrf v1 int lo1
 
-r1 tping 100 60 3.3.3.2 /vrf v1
-r1 tping 100 60 3333::2 /vrf v1
-r1 tping 100 60 4.4.4.2 /vrf v1
-r1 tping 100 60 4444::2 /vrf v1
+r1 tping 100 60 3.3.3.2 vrf v1
+r1 tping 100 60 3333::2 vrf v1
+r1 tping 100 60 4.4.4.2 vrf v1
+r1 tping 100 60 4444::2 vrf v1
 
-r2 tping 100 60 3.3.3.1 /vrf v1
-r2 tping 100 60 3333::1 /vrf v1
-r2 tping 100 60 4.4.4.1 /vrf v1
-r2 tping 100 60 4444::1 /vrf v1
+r2 tping 100 60 3.3.3.1 vrf v1
+r2 tping 100 60 3333::1 vrf v1
+r2 tping 100 60 4.4.4.1 vrf v1
+r2 tping 100 60 4444::1 vrf v1

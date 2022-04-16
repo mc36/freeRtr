@@ -139,8 +139,8 @@ dial-peer 1
 !
 
 
-r2 tping 100 10 1.1.1.1 /vrf v1
-r2 tping 100 10 1.1.2.2 /vrf v1
-r4 tping 100 10 1.1.3.1 /vrf v1
+r2 tping 100 10 1.1.1.1 vrf v1
+r2 tping 100 10 1.1.2.2 vrf v1
+r4 tping 100 10 1.1.3.1 vrf v1
 r4 send pack modem 22 33
-r4 tping 100 5 2.2.2.2 /vrf v1
+r4 tping 100 5 2.2.2.2 vrf v1

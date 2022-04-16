@@ -112,14 +112,14 @@ router bgp6 1
 
 
 
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
+r1 tping 100 60 2.2.2.2 vrf v1 int lo0
+r1 tping 100 60 4321::2 vrf v1 int lo0
 
-r2 tping 100 60 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 60 4321::1 /vrf v1 /int lo0
+r2 tping 100 60 2.2.2.1 vrf v1 int lo0
+r2 tping 100 60 4321::1 vrf v1 int lo0
 
-r2 tping 0 60 2.2.2.101 /vrf v1 /int lo0
-r2 tping 0 60 4321::101 /vrf v1 /int lo0
+r2 tping 0 60 2.2.2.101 vrf v1 int lo0
+r2 tping 0 60 4321::101 vrf v1 int lo0
 
-r2 tping 100 60 2.2.2.201 /vrf v1 /int lo0
-r2 tping 100 60 4321::201 /vrf v1 /int lo0
+r2 tping 100 60 2.2.2.201 vrf v1 int lo0
+r2 tping 100 60 4321::201 vrf v1 int lo0

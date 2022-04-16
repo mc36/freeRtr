@@ -142,11 +142,11 @@ int eth1
 !
 
 
-r1 tping 100 10 1.1.1.3 /vrf v1 /multi
-r1 tping 100 10 1234::3 /vrf v1 /multi
+r1 tping 100 10 1.1.1.3 vrf v1 multi
+r1 tping 100 10 1234::3 vrf v1 multi
 
-r1 tping 100 10 2.2.2.4 /vrf v1
-r1 tping 100 10 4321::4 /vrf v1
+r1 tping 100 10 2.2.2.4 vrf v1
+r1 tping 100 10 4321::4 vrf v1
 
 r2 send conf t
 r2 send int eth2
@@ -159,16 +159,16 @@ r2 send int eth32
 r2 send no shut
 r2 send end
 
-r1 tping 100 10 1.1.1.3 /vrf v1 /multi
-r1 tping 100 10 1234::3 /vrf v1 /multi
+r1 tping 100 10 1.1.1.3 vrf v1 multi
+r1 tping 100 10 1234::3 vrf v1 multi
 
-r1 tping 100 10 2.2.2.3 /vrf v1
-r1 tping 100 10 4321::3 /vrf v1
+r1 tping 100 10 2.2.2.3 vrf v1
+r1 tping 100 10 4321::3 vrf v1
 
 r3 send relo forc
 
-r1 tping 100 10 1.1.1.3 /vrf v1 /multi
-r1 tping 100 10 1234::3 /vrf v1 /multi
+r1 tping 100 10 1.1.1.3 vrf v1 multi
+r1 tping 100 10 1234::3 vrf v1 multi
 
-r1 tping 100 10 2.2.2.5 /vrf v1
-r1 tping 100 10 4321::5 /vrf v1
+r1 tping 100 10 2.2.2.5 vrf v1
+r1 tping 100 10 4321::5 vrf v1

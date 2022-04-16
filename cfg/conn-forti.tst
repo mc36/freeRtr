@@ -59,8 +59,8 @@ vpdn forti
 !
 
 
-r2 tping 100 60 2.2.2.1 /vrf v1
-r2 tping 100 60 2222::1 /vrf v1
+r2 tping 100 60 2.2.2.1 vrf v1
+r2 tping 100 60 2222::1 vrf v1
 
 r2 output show inter dia1 full
 output ../binTmp/conn-forti.html

@@ -59,8 +59,8 @@ ipv6 route v1 :: :: 1234:2::1
 
 
 
-r3 tping 100 5 8.8.8.8 /vrf v1
-r3 tping 100 5 8888::1 /vrf v1
+r3 tping 100 5 8.8.8.8 vrf v1
+r3 tping 100 5 8888::1 vrf v1
 
 r2 output show ipv4 nat v1 tran
 r2 output show ipv6 nat v1 tran

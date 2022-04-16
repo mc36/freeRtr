@@ -67,7 +67,7 @@ int eth1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1111::2 /vrf v1
-r4 tping 100 10 1.1.1.1 /vrf v1
-r4 tping 100 10 1111::1 /vrf v1
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 10 1111::2 vrf v1
+r4 tping 100 10 1.1.1.1 vrf v1
+r4 tping 100 10 1111::1 vrf v1

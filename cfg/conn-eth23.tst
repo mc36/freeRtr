@@ -33,18 +33,18 @@ int eth1
 !
 
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r2 tping 100 5 1.1.1.1 /vrf v1
-r1 tping 100 5 1234::2 /vrf v1
-r2 tping 100 5 1234::1 /vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r2 tping 100 5 1234::1 vrf v1
 
-r2 tping 100 5 1.1.1.111 /vrf v1
-r2 tping 100 5 1.1.1.112 /vrf v1
-r2 tping 100 5 1.1.1.113 /vrf v1
+r2 tping 100 5 1.1.1.111 vrf v1
+r2 tping 100 5 1.1.1.112 vrf v1
+r2 tping 100 5 1.1.1.113 vrf v1
 
-r2 tping 100 5 1234::111 /vrf v1
-r2 tping 100 5 1234::112 /vrf v1
-r2 tping 100 5 1234::113 /vrf v1
+r2 tping 100 5 1234::111 vrf v1
+r2 tping 100 5 1234::112 vrf v1
+r2 tping 100 5 1234::113 vrf v1
 
 r1 output show inter eth1 full
 r1 output show ipv4 arp eth1

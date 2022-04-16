@@ -36,7 +36,7 @@ proc testCaseA2B { port } {
 set x [open port-udp-a2b-$port.tst w]
 puts $x "description udp inet2suli $port"
 makeConfig $x $port
-puts $x "r1 tping 100 10 1.1.1.1 /vrf v2"
+puts $x "r1 tping 100 10 1.1.1.1 vrf v2"
 close $x
 }
 
@@ -44,7 +44,7 @@ proc testCaseB2A { port } {
 set x [open port-udp-b2a-$port.tst w]
 puts $x "description udp suli2inet $port"
 makeConfig $x $port
-puts $x "r1 tping 100 10 1.1.1.2 /vrf v1"
+puts $x "r1 tping 100 10 1.1.1.2 vrf v1"
 close $x
 }
 

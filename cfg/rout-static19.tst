@@ -95,19 +95,19 @@ ipv6 route v1 :: :: 1234:2::2
 !
 
 
-r2 tping 100 5 2.2.2.201 /vrf v1
-r2 tping 100 5 2.2.2.101 /vrf v1
-r2 tping 100 5 4321::201 /vrf v1
-r2 tping 100 5 4321::101 /vrf v1
-r1 tping 100 5 2.2.2.201 /vrf v1
-r1 tping 100 5 4321::201 /vrf v1
-r3 tping 100 5 2.2.2.101 /vrf v1
-r3 tping 100 5 4321::101 /vrf v1
+r2 tping 100 5 2.2.2.201 vrf v1
+r2 tping 100 5 2.2.2.101 vrf v1
+r2 tping 100 5 4321::201 vrf v1
+r2 tping 100 5 4321::101 vrf v1
+r1 tping 100 5 2.2.2.201 vrf v1
+r1 tping 100 5 4321::201 vrf v1
+r3 tping 100 5 2.2.2.101 vrf v1
+r3 tping 100 5 4321::101 vrf v1
 
-r1 tping 100 5 2.2.2.99 /vrf v1
-r1 tping 100 5 4321::99 /vrf v1
-r1 tping 0 5 2.2.2.99 /vrf v1 /int lo0
-r1 tping 0 5 4321::99 /vrf v1 /int lo0
+r1 tping 100 5 2.2.2.99 vrf v1
+r1 tping 100 5 4321::99 vrf v1
+r1 tping 0 5 2.2.2.99 vrf v1 int lo0
+r1 tping 0 5 4321::99 vrf v1 int lo0
 
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1

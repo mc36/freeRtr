@@ -330,33 +330,33 @@ router bgp6 1
  exit
 !
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r1 tping 100 60 9.9.4.3 /vrf v4
-r1 tping 100 60 9994::3 /vrf v4
-r1 tping 100 60 9.9.4.4 /vrf v4
-r1 tping 100 60 9994::4 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r1 tping 100 60 9.9.4.3 vrf v4
+r1 tping 100 60 9994::3 vrf v4
+r1 tping 100 60 9.9.4.4 vrf v4
+r1 tping 100 60 9994::4 vrf v4
 
-r2 tping 100 60 9.9.4.1 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-r2 tping 100 60 9.9.4.3 /vrf v4
-r2 tping 100 60 9994::3 /vrf v4
-r2 tping 100 60 9.9.4.4 /vrf v4
-r2 tping 100 60 9994::4 /vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r2 tping 100 60 9994::1 vrf v4
+r2 tping 100 60 9.9.4.3 vrf v4
+r2 tping 100 60 9994::3 vrf v4
+r2 tping 100 60 9.9.4.4 vrf v4
+r2 tping 100 60 9994::4 vrf v4
 
-r3 tping 100 60 9.9.4.1 /vrf v4
-r3 tping 100 60 9994::1 /vrf v4
-r3 tping 100 60 9.9.4.2 /vrf v4
-r3 tping 100 60 9994::2 /vrf v4
-r3 tping 100 60 9.9.4.4 /vrf v4
-r3 tping 100 60 9994::4 /vrf v4
+r3 tping 100 60 9.9.4.1 vrf v4
+r3 tping 100 60 9994::1 vrf v4
+r3 tping 100 60 9.9.4.2 vrf v4
+r3 tping 100 60 9994::2 vrf v4
+r3 tping 100 60 9.9.4.4 vrf v4
+r3 tping 100 60 9994::4 vrf v4
 
-r4 tping 100 60 9.9.4.1 /vrf v4
-r4 tping 100 60 9994::1 /vrf v4
-r4 tping 100 60 9.9.4.2 /vrf v4
-r4 tping 100 60 9994::2 /vrf v4
-r4 tping 100 60 9.9.4.3 /vrf v4
-r4 tping 100 60 9994::3 /vrf v4
+r4 tping 100 60 9.9.4.1 vrf v4
+r4 tping 100 60 9994::1 vrf v4
+r4 tping 100 60 9.9.4.2 vrf v4
+r4 tping 100 60 9994::2 vrf v4
+r4 tping 100 60 9.9.4.3 vrf v4
+r4 tping 100 60 9994::3 vrf v4
 
 r3 send conf t
 r3 send router bgp4 1
@@ -366,33 +366,33 @@ r3 send router bgp6 1
 r3 send no afi-vrf v4 red conn
 r3 send end
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r1 tping 0 60 9.9.4.3 /vrf v4
-r1 tping 0 60 9994::3 /vrf v4
-r1 tping 100 60 9.9.4.4 /vrf v4
-r1 tping 100 60 9994::4 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r1 tping 0 60 9.9.4.3 vrf v4
+r1 tping 0 60 9994::3 vrf v4
+r1 tping 100 60 9.9.4.4 vrf v4
+r1 tping 100 60 9994::4 vrf v4
 
-r2 tping 100 60 9.9.4.1 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-r2 tping 0 60 9.9.4.3 /vrf v4
-r2 tping 0 60 9994::3 /vrf v4
-r2 tping 100 60 9.9.4.4 /vrf v4
-r2 tping 100 60 9994::4 /vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r2 tping 100 60 9994::1 vrf v4
+r2 tping 0 60 9.9.4.3 vrf v4
+r2 tping 0 60 9994::3 vrf v4
+r2 tping 100 60 9.9.4.4 vrf v4
+r2 tping 100 60 9994::4 vrf v4
 
-r3 tping 0 60 9.9.4.1 /vrf v4
-r3 tping 0 60 9994::1 /vrf v4
-r3 tping 0 60 9.9.4.2 /vrf v4
-r3 tping 0 60 9994::2 /vrf v4
-r3 tping 0 60 9.9.4.4 /vrf v4
-r3 tping 0 60 9994::4 /vrf v4
+r3 tping 0 60 9.9.4.1 vrf v4
+r3 tping 0 60 9994::1 vrf v4
+r3 tping 0 60 9.9.4.2 vrf v4
+r3 tping 0 60 9994::2 vrf v4
+r3 tping 0 60 9.9.4.4 vrf v4
+r3 tping 0 60 9994::4 vrf v4
 
-r4 tping 100 60 9.9.4.1 /vrf v4
-r4 tping 100 60 9994::1 /vrf v4
-r4 tping 100 60 9.9.4.2 /vrf v4
-r4 tping 100 60 9994::2 /vrf v4
-r4 tping 0 60 9.9.4.3 /vrf v4
-r4 tping 0 60 9994::3 /vrf v4
+r4 tping 100 60 9.9.4.1 vrf v4
+r4 tping 100 60 9994::1 vrf v4
+r4 tping 100 60 9.9.4.2 vrf v4
+r4 tping 100 60 9994::2 vrf v4
+r4 tping 0 60 9.9.4.3 vrf v4
+r4 tping 0 60 9994::3 vrf v4
 
 r3 send conf t
 r3 send router bgp4 1
@@ -402,30 +402,30 @@ r3 send router bgp6 1
 r3 send afi-vrf v4 red conn
 r3 send end
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r1 tping 100 60 9.9.4.3 /vrf v4
-r1 tping 100 60 9994::3 /vrf v4
-r1 tping 100 60 9.9.4.4 /vrf v4
-r1 tping 100 60 9994::4 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r1 tping 100 60 9.9.4.3 vrf v4
+r1 tping 100 60 9994::3 vrf v4
+r1 tping 100 60 9.9.4.4 vrf v4
+r1 tping 100 60 9994::4 vrf v4
 
-r2 tping 100 60 9.9.4.1 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-r2 tping 100 60 9.9.4.3 /vrf v4
-r2 tping 100 60 9994::3 /vrf v4
-r2 tping 100 60 9.9.4.4 /vrf v4
-r2 tping 100 60 9994::4 /vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r2 tping 100 60 9994::1 vrf v4
+r2 tping 100 60 9.9.4.3 vrf v4
+r2 tping 100 60 9994::3 vrf v4
+r2 tping 100 60 9.9.4.4 vrf v4
+r2 tping 100 60 9994::4 vrf v4
 
-r3 tping 100 60 9.9.4.1 /vrf v4
-r3 tping 100 60 9994::1 /vrf v4
-r3 tping 100 60 9.9.4.2 /vrf v4
-r3 tping 100 60 9994::2 /vrf v4
-r3 tping 100 60 9.9.4.4 /vrf v4
-r3 tping 100 60 9994::4 /vrf v4
+r3 tping 100 60 9.9.4.1 vrf v4
+r3 tping 100 60 9994::1 vrf v4
+r3 tping 100 60 9.9.4.2 vrf v4
+r3 tping 100 60 9994::2 vrf v4
+r3 tping 100 60 9.9.4.4 vrf v4
+r3 tping 100 60 9994::4 vrf v4
 
-r4 tping 100 60 9.9.4.1 /vrf v4
-r4 tping 100 60 9994::1 /vrf v4
-r4 tping 100 60 9.9.4.2 /vrf v4
-r4 tping 100 60 9994::2 /vrf v4
-r4 tping 100 60 9.9.4.3 /vrf v4
-r4 tping 100 60 9994::3 /vrf v4
+r4 tping 100 60 9.9.4.1 vrf v4
+r4 tping 100 60 9994::1 vrf v4
+r4 tping 100 60 9.9.4.2 vrf v4
+r4 tping 100 60 9994::2 vrf v4
+r4 tping 100 60 9.9.4.3 vrf v4
+r4 tping 100 60 9994::3 vrf v4

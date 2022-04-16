@@ -49,5 +49,5 @@ interface gigabit1
 !
 
 
-r1 tping 100 30 1.1.1.2 /vrf v1
-!r1 tping 100 30 1234::2 /vrf v1
+r1 tping 100 30 1.1.1.2 vrf v1
+!r1 tping 100 30 1234::2 vrf v1

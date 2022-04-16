@@ -33,12 +33,12 @@ int eth1
 !
 
 
-r1 tping 100 5 3.3.3.1 /vrf v1
-r1 tping 100 5 3333::1 /vrf v1
-r2 tping 100 5 3.3.3.2 /vrf v1
-r2 tping 100 5 3333::2 /vrf v1
+r1 tping 100 5 3.3.3.1 vrf v1
+r1 tping 100 5 3333::1 vrf v1
+r2 tping 100 5 3.3.3.2 vrf v1
+r2 tping 100 5 3333::2 vrf v1
 
-r2 tping 0 5 3.3.3.1 /vrf v1
-r2 tping 100 5 3333::1 /vrf v1
-r1 tping 0 5 3.3.3.2 /vrf v1
-r1 tping 100 5 3333::2 /vrf v1
+r2 tping 0 5 3.3.3.1 vrf v1
+r2 tping 100 5 3333::1 vrf v1
+r1 tping 0 5 3.3.3.2 vrf v1
+r1 tping 100 5 3333::2 vrf v1

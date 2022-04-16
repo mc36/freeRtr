@@ -252,53 +252,53 @@ router bgp6 1
 
 
 
-r1 tping 100 60 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 60 4321::2 /vrf v1 /int lo0
+r1 tping 100 60 2.2.2.2 vrf v1 int lo0
+r1 tping 100 60 4321::2 vrf v1 int lo0
 
-r2 tping 100 60 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 60 4321::1 /vrf v1 /int lo0
+r2 tping 100 60 2.2.2.1 vrf v1 int lo0
+r2 tping 100 60 4321::1 vrf v1 int lo0
 
-r1 tping 100 60 9.9.2.2 /vrf v2
-r2 tping 100 60 9.9.2.1 /vrf v2
-r1 tping 100 60 9992::2 /vrf v2
-r2 tping 100 60 9992::1 /vrf v2
+r1 tping 100 60 9.9.2.2 vrf v2
+r2 tping 100 60 9.9.2.1 vrf v2
+r1 tping 100 60 9992::2 vrf v2
+r2 tping 100 60 9992::1 vrf v2
 
-r1 tping 100 60 9.9.3.2 /vrf v3
-r2 tping 100 60 9.9.3.1 /vrf v3
-r1 tping 100 60 9993::2 /vrf v3
-r2 tping 100 60 9993::1 /vrf v3
+r1 tping 100 60 9.9.3.2 vrf v3
+r2 tping 100 60 9.9.3.1 vrf v3
+r1 tping 100 60 9993::2 vrf v3
+r2 tping 100 60 9993::1 vrf v3
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r2 tping 100 60 9.9.4.1 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r2 tping 100 60 9994::1 vrf v4
 
-r1 tping 0 60 9.9.2.22 /vrf v2
-r2 tping 100 60 9.9.2.11 /vrf v2
-r1 tping 0 60 9992::22 /vrf v2
-r2 tping 100 60 9992::11 /vrf v2
+r1 tping 0 60 9.9.2.22 vrf v2
+r2 tping 100 60 9.9.2.11 vrf v2
+r1 tping 0 60 9992::22 vrf v2
+r2 tping 100 60 9992::11 vrf v2
 
-r1 tping 0 60 9.9.3.22 /vrf v3
-r2 tping 100 60 9.9.3.11 /vrf v3
-r1 tping 0 60 9993::22 /vrf v3
-r2 tping 100 60 9993::11 /vrf v3
+r1 tping 0 60 9.9.3.22 vrf v3
+r2 tping 100 60 9.9.3.11 vrf v3
+r1 tping 0 60 9993::22 vrf v3
+r2 tping 100 60 9993::11 vrf v3
 
-r1 tping 0 60 9.9.4.22 /vrf v4
-r2 tping 100 60 9.9.4.11 /vrf v4
-r1 tping 0 60 9994::22 /vrf v4
-r2 tping 100 60 9994::11 /vrf v4
+r1 tping 0 60 9.9.4.22 vrf v4
+r2 tping 100 60 9.9.4.11 vrf v4
+r1 tping 0 60 9994::22 vrf v4
+r2 tping 100 60 9994::11 vrf v4
 
-r1 tping 100 60 9.9.2.222 /vrf v2
-r2 tping 100 60 9.9.2.111 /vrf v2
-r1 tping 100 60 9992::222 /vrf v2
-r2 tping 100 60 9992::111 /vrf v2
+r1 tping 100 60 9.9.2.222 vrf v2
+r2 tping 100 60 9.9.2.111 vrf v2
+r1 tping 100 60 9992::222 vrf v2
+r2 tping 100 60 9992::111 vrf v2
 
-r1 tping 100 60 9.9.3.222 /vrf v3
-r2 tping 100 60 9.9.3.111 /vrf v3
-r1 tping 100 60 9993::222 /vrf v3
-r2 tping 100 60 9993::111 /vrf v3
+r1 tping 100 60 9.9.3.222 vrf v3
+r2 tping 100 60 9.9.3.111 vrf v3
+r1 tping 100 60 9993::222 vrf v3
+r2 tping 100 60 9993::111 vrf v3
 
-r1 tping 100 60 9.9.4.222 /vrf v4
-r2 tping 100 60 9.9.4.111 /vrf v4
-r1 tping 100 60 9994::222 /vrf v4
-r2 tping 100 60 9994::111 /vrf v4
+r1 tping 100 60 9.9.4.222 vrf v4
+r2 tping 100 60 9.9.4.111 vrf v4
+r1 tping 100 60 9994::222 vrf v4
+r2 tping 100 60 9994::111 vrf v4

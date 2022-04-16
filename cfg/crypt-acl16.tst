@@ -36,12 +36,12 @@ int eth1
  exit
 !
 
-r2 tping 100 5 1.1.1.1 /vrf v1 /tos 63
-r2 tping 100 5 1234::1 /vrf v1 /tos 63
-r1 tping 100 5 1.1.1.2 /vrf v1 /tos 63
-r1 tping 100 5 1234::2 /vrf v1 /tos 63
+r2 tping 100 5 1.1.1.1 vrf v1 tos 63
+r2 tping 100 5 1234::1 vrf v1 tos 63
+r1 tping 100 5 1.1.1.2 vrf v1 tos 63
+r1 tping 100 5 1234::2 vrf v1 tos 63
 
-r2 tping 0 5 1.1.1.1 /vrf v1 /tos 64
-r2 tping 0 5 1234::1 /vrf v1 /tos 64
-r1 tping 0 5 1.1.1.2 /vrf v1 /tos 64
-r1 tping 0 5 1234::2 /vrf v1 /tos 64
+r2 tping 0 5 1.1.1.1 vrf v1 tos 64
+r2 tping 0 5 1234::1 vrf v1 tos 64
+r1 tping 0 5 1.1.1.2 vrf v1 tos 64
+r1 tping 0 5 1234::2 vrf v1 tos 64

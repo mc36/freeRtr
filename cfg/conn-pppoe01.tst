@@ -47,8 +47,8 @@ int eth1
 !
 
 
-r2 tping 100 30 2.2.2.0 /vrf v1
-r2 tping 100 30 1.1.1.1 /vrf v1
+r2 tping 100 30 2.2.2.0 vrf v1
+r2 tping 100 30 1.1.1.1 vrf v1
 
 r2 output show inter dia1 full
 output ../binTmp/conn-pppoe.html

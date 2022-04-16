@@ -1250,30 +1250,30 @@ public class userExec {
     private void getHelpTelnet(userHelping hl) {
         hl.add(null, "2 3,4,.  <host>                  name of host");
         hl.add(null, "3 4,.      [port]                port on host");
-        hl.add(null, "4 4,.        /tcp                transmission control protocol");
-        hl.add(null, "4 4,.        /udp                user datagram protocol");
-        hl.add(null, "4 4,.        /ludp               lightweight user datagram protocol");
-        hl.add(null, "4 4,.        /dccp               user datagram congestion control protocol");
-        hl.add(null, "4 4,.        /sctp               stream control transmission protocol");
-        hl.add(null, "4 4,.        /ssh                specify secure shell");
-        hl.add(null, "4 4,.        /tls                specify transport layer security");
-        hl.add(null, "4 4,.        /dtls               specify datagram transport layer security");
-        hl.add(null, "4 4,.        /telnet             specify telnet protocol");
-        hl.add(null, "4 4,.        /ipv4               specify ipv4 to use");
-        hl.add(null, "4 4,.        /ipv6               specify ipv6 to use");
-        hl.add(null, "4 5          /vrf                specify vrf to use");
+        hl.add(null, "4 4,.        tcp                 transmission control protocol");
+        hl.add(null, "4 4,.        udp                 user datagram protocol");
+        hl.add(null, "4 4,.        ludp                lightweight user datagram protocol");
+        hl.add(null, "4 4,.        dccp                user datagram congestion control protocol");
+        hl.add(null, "4 4,.        sctp                stream control transmission protocol");
+        hl.add(null, "4 4,.        ssh                 specify secure shell");
+        hl.add(null, "4 4,.        tls                 specify transport layer security");
+        hl.add(null, "4 4,.        dtls                specify datagram transport layer security");
+        hl.add(null, "4 4,.        telnet              specify telnet protocol");
+        hl.add(null, "4 4,.        ipv4                specify ipv4 to use");
+        hl.add(null, "4 4,.        ipv6                specify ipv6 to use");
+        hl.add(null, "4 5          vrf                 specify vrf to use");
         hl.add(null, "5 4,.          <name:vrf>        name of vrf");
-        hl.add(null, "4 5          /pubkey             specify public key to expect");
+        hl.add(null, "4 5          pubkey              specify public key to expect");
         hl.add(null, "5 4,.          <str>             public key");
-        hl.add(null, "4 5          /user               specify username to use");
+        hl.add(null, "4 5          user                specify username to use");
         hl.add(null, "5 4,.          <str>             username");
-        hl.add(null, "4 5          /pass               specify password to use");
+        hl.add(null, "4 5          pass                specify password to use");
         hl.add(null, "5 4,.          <str>             password");
-        hl.add(null, "4 5          /proxy              specify proxy to use");
+        hl.add(null, "4 5          proxy               specify proxy to use");
         hl.add(null, "5 4,.          <name:prx>        name of proxy profile");
-        hl.add(null, "4 5          /interface          specify interface to use");
+        hl.add(null, "4 5          interface           specify interface to use");
         hl.add(null, "5 4,.          <name:ifc>        name of interface");
-        hl.add(null, "4 5          /chat               specify chat script to use");
+        hl.add(null, "4 5          chat                specify chat script to use");
         hl.add(null, "5 4,.          <name:cht>        name of chat script");
     }
 
@@ -1346,40 +1346,40 @@ public class userExec {
         hl.add(null, "2 3      <host>                       starting host");
         hl.add(null, "3 4        <host>                     increment host");
         hl.add(null, "4 5,.        <host>                   number of hosts");
-        hl.add(null, "5 6            /vrf                   specify vrf to use");
+        hl.add(null, "5 6            vrf                    specify vrf to use");
         hl.add(null, "6 5,.            <name:vrf>           name of vrf");
-        hl.add(null, "5 6            /interface             specify interface to use");
+        hl.add(null, "5 6            interface              specify interface to use");
         hl.add(null, "6 5,.            <name:ifc>           name of interface");
-        hl.add(null, "5 6            /timeout               specify timeout");
+        hl.add(null, "5 6            timeout                specify timeout");
         hl.add(null, "6 5,.            <num>                timeout in milliseconds");
-        hl.add(null, "5 6            /data                  specify data to send");
+        hl.add(null, "5 6            data                   specify data to send");
         hl.add(null, "6 5,.            <num>                payload byte");
-        hl.add(null, "5 6            /ttl                   specify ttl value");
+        hl.add(null, "5 6            ttl                    specify ttl value");
         hl.add(null, "6 5,.            <num>                ttl");
-        hl.add(null, "5 6            /tos                   specify tos value");
+        hl.add(null, "5 6            tos                    specify tos value");
         hl.add(null, "6 5,.            <num>                tos");
-        hl.add(null, "5 6            /sgt                   specify sgt value");
+        hl.add(null, "5 6            sgt                    specify sgt value");
         hl.add(null, "6 5,.            <num>                sgt");
-        hl.add(null, "5 6            /flow                  specify flow value");
+        hl.add(null, "5 6            flow                   specify flow value");
         hl.add(null, "6 5,.            <num>                flow");
-        hl.add(null, "5 6            /size                  specify payload size");
+        hl.add(null, "5 6            size                   specify payload size");
         hl.add(null, "6 5,.            <num>                byte count");
-        hl.add(null, "5 6            /port                  specify tcp port");
+        hl.add(null, "5 6            port                   specify tcp port");
         hl.add(null, "6 5,.            <num>                port number");
-        hl.add(null, "5 .            /lookup                perform reverse lookup to");
+        hl.add(null, "5 .            lookup                 perform reverse lookup to");
         hl.add(null, "1 2    portscan                       scan ports on remote");
         hl.add(null, "2 3,.    <host>                       name of host");
-        hl.add(null, "3 3,.      /ipv4                      specify ipv4 to use");
-        hl.add(null, "3 3,.      /ipv6                      specify ipv6 to use");
-        hl.add(null, "3 4        /vrf                       specify vrf to use");
+        hl.add(null, "3 3,.      ipv4                       specify ipv4 to use");
+        hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
+        hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        /interface                 specify interface to use");
+        hl.add(null, "3 4        interface                  specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
-        hl.add(null, "3 4        /timeout                   specify timeout");
+        hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
-        hl.add(null, "3 4        /min                       specify lower port number");
+        hl.add(null, "3 4        min                        specify lower port number");
         hl.add(null, "4 3,.        <num>                    port number");
-        hl.add(null, "3 4        /max                       specify upper port number");
+        hl.add(null, "3 4        max                        specify upper port number");
         hl.add(null, "4 3,.        <num>                    port number");
         hl.add(null, "1 2    lookup                         domain name lookup");
         hl.add(null, "2 3      ipv4                         ipv4 address record");
@@ -1407,58 +1407,58 @@ public class userExec {
         hl.add(null, "1 2    traceroute                     trace route to target");
         hl.add(null, "1 2    mtr                            trace route to target");
         hl.add(null, "2 3,.    <host>                       name of host");
-        hl.add(null, "3 3,.      /ipv4                      specify ipv4 to use");
-        hl.add(null, "3 3,.      /ipv6                      specify ipv6 to use");
-        hl.add(null, "3 4        /vrf                       specify vrf to use");
+        hl.add(null, "3 3,.      ipv4                       specify ipv4 to use");
+        hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
+        hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        /interface                 specify interface to use");
+        hl.add(null, "3 4        interface                  specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
-        hl.add(null, "3 4        /timeout                   specify timeout");
+        hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
-        hl.add(null, "3 4        /delay                     specify delay between packets");
+        hl.add(null, "3 4        delay                      specify delay between packets");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
-        hl.add(null, "3 4        /tos                       specify tos value");
+        hl.add(null, "3 4        tos                        specify tos value");
         hl.add(null, "4 3,.        <num>                    tos");
-        hl.add(null, "3 4        /flow                      specify flow value");
+        hl.add(null, "3 4        flow                       specify flow value");
         hl.add(null, "4 3,.        <num>                    tos");
-        hl.add(null, "3 4        /port                      specify port value");
+        hl.add(null, "3 4        port                       specify port value");
         hl.add(null, "4 3,.        <num>                    port");
-        hl.add(null, "3 4        /protocol                  specify protocol value");
+        hl.add(null, "3 4        protocol                   specify protocol value");
         hl.add(null, "4 3,.        <num>                    port");
-        hl.add(null, "3 4        /size                      specify payload size");
+        hl.add(null, "3 4        size                       specify payload size");
         hl.add(null, "4 3,.        <num>                    byte count");
-        hl.add(null, "3 4        /router                    lookup intermediate hops");
+        hl.add(null, "3 4        router                     lookup intermediate hops");
         cfgRtr.getRouterList(hl, 2, "");
         hl.add(null, "5 3,.          <num>                  process id");
-        hl.add(null, "3 3,.      /lookup                    lookup intermediate hops");
+        hl.add(null, "3 3,.      lookup                     lookup intermediate hops");
         hl.add(null, "1 2    ping                           send echo request");
         hl.add(null, "2 3,.    <host>                       name of host");
-        hl.add(null, "3 3,.      /multi                     wait for multiple responses");
-        hl.add(null, "3 3,.      /detail                    specify detail mode");
-        hl.add(null, "3 4        /data                      specify data to send");
+        hl.add(null, "3 3,.      multi                      wait for multiple responses");
+        hl.add(null, "3 3,.      detail                     specify detail mode");
+        hl.add(null, "3 4        data                       specify data to send");
         hl.add(null, "4 3,.        <num>                    payload byte");
-        hl.add(null, "3 3,.      /ipv4                      specify ipv4 to use");
-        hl.add(null, "3 3,.      /ipv6                      specify ipv6 to use");
-        hl.add(null, "3 4        /vrf                       specify vrf to use");
+        hl.add(null, "3 3,.      ipv4                       specify ipv4 to use");
+        hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
+        hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        /interface                 specify interface to use");
+        hl.add(null, "3 4        interface                  specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
-        hl.add(null, "3 4        /timeout                   specify timeout");
+        hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
-        hl.add(null, "3 4        /delay                     specify delay between packets");
+        hl.add(null, "3 4        delay                      specify delay between packets");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
-        hl.add(null, "3 3,.      /sweep                     specify increasing payload size");
-        hl.add(null, "3 4        /size                      specify payload size");
+        hl.add(null, "3 3,.      sweep                      specify increasing payload size");
+        hl.add(null, "3 4        size                       specify payload size");
         hl.add(null, "4 3,.        <num>                    byte count");
-        hl.add(null, "3 4        /repeat                    specify repeat count");
+        hl.add(null, "3 4        repeat                     specify repeat count");
         hl.add(null, "4 3,.        <num>                    repeat count");
-        hl.add(null, "3 4        /ttl                       specify ttl value");
+        hl.add(null, "3 4        ttl                        specify ttl value");
         hl.add(null, "4 3,.        <num>                    ttl");
-        hl.add(null, "3 4        /tos                       specify tos value");
+        hl.add(null, "3 4        tos                        specify tos value");
         hl.add(null, "4 3,.        <num>                    tos");
-        hl.add(null, "3 4        /sgt                       specify sgt value");
+        hl.add(null, "3 4        sgt                        specify sgt value");
         hl.add(null, "4 3,.        <num>                    sgt");
-        hl.add(null, "3 4        /flow                      specify flow value");
+        hl.add(null, "3 4        flow                       specify flow value");
         hl.add(null, "4 3,.        <num>                    flow");
         hl.add(null, "1 2    sleep                          do nothing for a while");
         hl.add(null, "2 .      <num>                        milliseconds for sleep");
@@ -1491,17 +1491,17 @@ public class userExec {
         }
         hl.add(null, "1 2    listen                         start listen session");
         hl.add(null, "2 3,.    <port>                       port number");
-        hl.add(null, "3 3,.        /tcp                     transmission control protocol");
-        hl.add(null, "3 3,.        /udp                     user datagram protocol");
-        hl.add(null, "3 3,.        /ludp                    lightweight user datagram protocol");
-        hl.add(null, "3 3,.        /dccp                    user datagram congestion control protocol");
-        hl.add(null, "3 3,.        /sctp                    stream control transmission protocol");
-        hl.add(null, "3 3,.        /ipv4                    specify ipv4 to use");
-        hl.add(null, "3 3,.        /ipv6                    specify ipv6 to use");
-        hl.add(null, "3 4          /vrf                     specify vrf to use");
-        hl.add(null, "4 3,.          <name:vrf>             name of vrf");
-        hl.add(null, "3 4          /interface               specify interface to use");
-        hl.add(null, "4 3,.          <name:ifc>             name of interface");
+        hl.add(null, "3 3,.      tcp                        transmission control protocol");
+        hl.add(null, "3 3,.      udp                        user datagram protocol");
+        hl.add(null, "3 3,.      ludp                       lightweight user datagram protocol");
+        hl.add(null, "3 3,.      dccp                       user datagram congestion control protocol");
+        hl.add(null, "3 3,.      sctp                       stream control transmission protocol");
+        hl.add(null, "3 3,.      ipv4                       specify ipv4 to use");
+        hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
+        hl.add(null, "3 4        vrf                        specify vrf to use");
+        hl.add(null, "4 3,.        <name:vrf>               name of vrf");
+        hl.add(null, "3 4        interface                  specify interface to use");
+        hl.add(null, "4 3,.        <name:ifc>               name of interface");
         hl.add(null, "1 2    telnet                         start telnet session");
         getHelpTelnet(hl);
         hl.add(null, "1 2    tls                            start tls session");
@@ -2841,32 +2841,32 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/ipv4")) {
+            if (a.equals("ipv4")) {
                 proto = 4;
                 continue;
             }
-            if (a.equals("/ipv6")) {
+            if (a.equals("ipv6")) {
                 proto = 6;
                 continue;
             }
-            if (a.equals("/timeout")) {
+            if (a.equals("timeout")) {
                 timeout = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/min")) {
+            if (a.equals("min")) {
                 min = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/max")) {
+            if (a.equals("max")) {
                 max = bits.str2num(cmd.word());
                 continue;
             }
@@ -2988,48 +2988,48 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/timeout")) {
+            if (a.equals("timeout")) {
                 timeout = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/port")) {
+            if (a.equals("port")) {
                 port = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/protocol")) {
+            if (a.equals("protocol")) {
                 proto = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/ipv4")) {
+            if (a.equals("ipv4")) {
                 ipver = 4;
                 continue;
             }
-            if (a.equals("/ipv6")) {
+            if (a.equals("ipv6")) {
                 ipver = 6;
                 continue;
             }
-            if (a.equals("/tos")) {
+            if (a.equals("tos")) {
                 tos = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/flow")) {
+            if (a.equals("flow")) {
                 flow = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/size")) {
+            if (a.equals("size")) {
                 len = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/router")) {
+            if (a.equals("router")) {
                 tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
                 if (typ == null) {
                     continue;
@@ -3041,7 +3041,7 @@ public class userExec {
                 rtr = cfg.getRouter();
                 continue;
             }
-            if (a.equals("/lookup")) {
+            if (a.equals("lookup")) {
                 resolv = true;
                 continue;
             }
@@ -3174,52 +3174,52 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/timeout")) {
+            if (a.equals("timeout")) {
                 timeout = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/port")) {
+            if (a.equals("port")) {
                 port = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/protocol")) {
+            if (a.equals("protocol")) {
                 proto = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/delay")) {
+            if (a.equals("delay")) {
                 delay = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/ipv4")) {
+            if (a.equals("ipv4")) {
                 ipver = 4;
                 continue;
             }
-            if (a.equals("/ipv6")) {
+            if (a.equals("ipv6")) {
                 ipver = 6;
                 continue;
             }
-            if (a.equals("/tos")) {
+            if (a.equals("tos")) {
                 tos = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/flow")) {
+            if (a.equals("flow")) {
                 flow = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/size")) {
+            if (a.equals("size")) {
                 len = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/router")) {
+            if (a.equals("router")) {
                 tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
                 if (typ == null) {
                     continue;
@@ -3231,7 +3231,7 @@ public class userExec {
                 rtr = cfg.getRouter();
                 continue;
             }
-            if (a.equals("/lookup")) {
+            if (a.equals("lookup")) {
                 resolv = true;
                 continue;
             }
@@ -3328,48 +3328,48 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/timeout")) {
+            if (a.equals("timeout")) {
                 tim = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/data")) {
+            if (a.equals("data")) {
                 data = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/ttl")) {
+            if (a.equals("ttl")) {
                 ttl = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/sgt")) {
+            if (a.equals("sgt")) {
                 sgt = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/tos")) {
+            if (a.equals("tos")) {
                 tos = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/flow")) {
+            if (a.equals("flow")) {
                 flow = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/size")) {
+            if (a.equals("size")) {
                 len = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/port")) {
+            if (a.equals("port")) {
                 prt = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/lookup")) {
+            if (a.equals("lookup")) {
                 lok = true;
                 continue;
             }
@@ -3462,68 +3462,68 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/multi")) {
+            if (a.equals("multi")) {
                 multi = true;
                 continue;
             }
-            if (a.equals("/sweep")) {
+            if (a.equals("sweep")) {
                 sweep = true;
                 continue;
             }
-            if (a.equals("/data")) {
+            if (a.equals("data")) {
                 data = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/detail")) {
+            if (a.equals("detail")) {
                 detail = true;
                 continue;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/timeout")) {
+            if (a.equals("timeout")) {
                 timeout = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/delay")) {
+            if (a.equals("delay")) {
                 delay = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/size")) {
+            if (a.equals("size")) {
                 size = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/repeat")) {
+            if (a.equals("repeat")) {
                 repeat = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/ttl")) {
+            if (a.equals("ttl")) {
                 ttl = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/sgt")) {
+            if (a.equals("sgt")) {
                 sgt = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/tos")) {
+            if (a.equals("tos")) {
                 tos = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/flow")) {
+            if (a.equals("flow")) {
                 flow = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("/ipv4")) {
+            if (a.equals("ipv4")) {
                 proto = 4;
                 continue;
             }
-            if (a.equals("/ipv6")) {
+            if (a.equals("ipv6")) {
                 proto = 6;
                 continue;
             }
@@ -3559,7 +3559,7 @@ public class userExec {
         int tosMax = 0;
         int tosSum = 0;
         long timBeg = bits.getTime();
-        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi + ", detail=" + detail);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
@@ -3716,44 +3716,44 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/tcp")) {
+            if (a.equals("tcp")) {
                 trns = servGeneric.protoTcp;
                 continue;
             }
-            if (a.equals("/udp")) {
+            if (a.equals("udp")) {
                 trns = servGeneric.protoUdp;
                 continue;
             }
-            if (a.equals("/ludp")) {
+            if (a.equals("ludp")) {
                 trns = servGeneric.protoLudp;
                 continue;
             }
-            if (a.equals("/dccp")) {
+            if (a.equals("dccp")) {
                 trns = servGeneric.protoDccp;
                 continue;
             }
-            if (a.equals("/sctp")) {
+            if (a.equals("sctp")) {
                 trns = servGeneric.protoSctp;
                 continue;
             }
-            if (a.equals("/ipv4")) {
+            if (a.equals("ipv4")) {
                 proto = 4;
                 continue;
             }
-            if (a.equals("/ipv6")) {
+            if (a.equals("ipv6")) {
                 proto = 6;
                 continue;
             }
-            if (a.equals("/remote")) {
+            if (a.equals("remote")) {
                 rem = new addrIP();
                 rem.fromString(cmd.word());
                 continue;
@@ -3850,32 +3850,32 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("/vrf")) {
+            if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
                 ifc = null;
                 continue;
             }
-            if (a.equals("/chat")) {
+            if (a.equals("chat")) {
                 cht = cfgAll.chatFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/user")) {
+            if (a.equals("user")) {
                 user = cmd.word();
                 continue;
             }
-            if (a.equals("/pass")) {
+            if (a.equals("pass")) {
                 pass = cmd.word();
                 continue;
             }
-            if (a.equals("/interface")) {
+            if (a.equals("interface")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
-            if (a.equals("/pubkey")) {
+            if (a.equals("pubkey")) {
                 pubkey = cryBase64.decodeBytes(cmd.word());
                 continue;
             }
-            if (a.equals("/proxy")) {
+            if (a.equals("proxy")) {
                 cfgProxy prox = cfgAll.proxyFind(cmd.word(), false);
                 if (prox == null) {
                     continue;
@@ -3883,51 +3883,51 @@ public class userExec {
                 prx = prox.proxy;
                 continue;
             }
-            if (a.equals("/tcp")) {
+            if (a.equals("tcp")) {
                 dgrm = servGeneric.protoTcp;
                 continue;
             }
-            if (a.equals("/udp")) {
+            if (a.equals("udp")) {
                 dgrm = servGeneric.protoUdp;
                 continue;
             }
-            if (a.equals("/ludp")) {
+            if (a.equals("ludp")) {
                 dgrm = servGeneric.protoLudp;
                 continue;
             }
-            if (a.equals("/dccp")) {
+            if (a.equals("dccp")) {
                 dgrm = servGeneric.protoDccp;
                 continue;
             }
-            if (a.equals("/sctp")) {
+            if (a.equals("sctp")) {
                 dgrm = servGeneric.protoSctp;
                 continue;
             }
-            if (a.equals("/ssh")) {
+            if (a.equals("ssh")) {
                 secur = servGeneric.protoSsh;
                 dgrm = servGeneric.protoTcp;
                 continue;
             }
-            if (a.equals("/tls")) {
+            if (a.equals("tls")) {
                 secur = servGeneric.protoTls;
                 dgrm = servGeneric.protoTcp;
                 continue;
             }
-            if (a.equals("/dtls")) {
+            if (a.equals("dtls")) {
                 secur = servGeneric.protoDtls;
                 dgrm = servGeneric.protoUdp;
                 continue;
             }
-            if (a.equals("/telnet")) {
+            if (a.equals("telnet")) {
                 secur = servGeneric.protoTelnet;
                 dgrm = servGeneric.protoTcp;
                 continue;
             }
-            if (a.equals("/ipv4")) {
+            if (a.equals("ipv4")) {
                 proto = 4;
                 continue;
             }
-            if (a.equals("/ipv6")) {
+            if (a.equals("ipv6")) {
                 proto = 6;
                 continue;
             }

@@ -75,10 +75,10 @@ int eth1.12
 
 
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1
 
 r1 send conf t
 r1 send router isis4 1
@@ -89,10 +89,10 @@ r1 send red conn metric set 3000
 r1 send exit
 r1 send end
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r2 tping 0 20 2.2.2.1 /vrf v1
-r2 tping 0 20 4321::1 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r2 tping 0 20 2.2.2.1 vrf v1
+r2 tping 0 20 4321::1 vrf v1
 
 r1 send conf t
 r1 send router isis4 1
@@ -103,7 +103,7 @@ r1 send red conn metric set 5000
 r1 send exit
 r1 send end
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r2 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r2 tping 100 20 4321::1 vrf v1

@@ -134,29 +134,29 @@ ipv6 route v1 :: :: 1234:2::1
 
 
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 2.2.2.12 /vrf v1
-r1 tping 100 40 2.2.2.22 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
-r1 tping 100 40 4321::12 /vrf v1
-r1 tping 100 40 4321::22 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 2.2.2.12 vrf v1
+r1 tping 100 40 2.2.2.22 vrf v1
+r1 tping 100 40 4321::2 vrf v1
+r1 tping 100 40 4321::12 vrf v1
+r1 tping 100 40 4321::22 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 2.2.2.11 /vrf v1
-r2 tping 100 40 2.2.2.21 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
-r2 tping 100 40 4321::11 /vrf v1
-r2 tping 100 40 4321::21 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 2.2.2.11 vrf v1
+r2 tping 100 40 2.2.2.21 vrf v1
+r2 tping 100 40 4321::1 vrf v1
+r2 tping 100 40 4321::11 vrf v1
+r2 tping 100 40 4321::21 vrf v1
 
-r3 tping 100 40 2.2.2.1 /vrf v1
-r3 tping 100 40 2.2.2.11 /vrf v1
-r3 tping 100 40 2.2.2.21 /vrf v1
-r3 tping 100 40 2.2.2.2 /vrf v1
-r3 tping 100 40 2.2.2.12 /vrf v1
-r3 tping 100 40 2.2.2.22 /vrf v1
-r3 tping 100 40 4321::1 /vrf v1
-r3 tping 100 40 4321::11 /vrf v1
-r3 tping 100 40 4321::21 /vrf v1
-r3 tping 100 40 4321::2 /vrf v1
-r3 tping 100 40 4321::12 /vrf v1
-r3 tping 100 40 4321::22 /vrf v1
+r3 tping 100 40 2.2.2.1 vrf v1
+r3 tping 100 40 2.2.2.11 vrf v1
+r3 tping 100 40 2.2.2.21 vrf v1
+r3 tping 100 40 2.2.2.2 vrf v1
+r3 tping 100 40 2.2.2.12 vrf v1
+r3 tping 100 40 2.2.2.22 vrf v1
+r3 tping 100 40 4321::1 vrf v1
+r3 tping 100 40 4321::11 vrf v1
+r3 tping 100 40 4321::21 vrf v1
+r3 tping 100 40 4321::2 vrf v1
+r3 tping 100 40 4321::12 vrf v1
+r3 tping 100 40 4321::22 vrf v1

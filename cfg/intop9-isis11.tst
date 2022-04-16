@@ -206,7 +206,7 @@ int tun2
 !
 
 
-r1 tping 100 60 3.3.3.2 /vrf v1
-r3 tping 100 60 3.3.3.1 /vrf v1
-r1 tping 100 60 3.3.3.6 /vrf v1
-r3 tping 100 60 3.3.3.5 /vrf v1
+r1 tping 100 60 3.3.3.2 vrf v1
+r3 tping 100 60 3.3.3.1 vrf v1
+r1 tping 100 60 3.3.3.6 vrf v1
+r3 tping 100 60 3.3.3.5 vrf v1

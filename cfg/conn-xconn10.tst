@@ -36,7 +36,7 @@ connect con
 
 
 
-r1 tping 100 30 2.2.2.2 /vrf v1
-r1 tping 100 30 4321::2 /vrf v1
-r1 tping 100 30 2.2.2.1 /vrf v2
-r1 tping 100 30 4321::1 /vrf v2
+r1 tping 100 30 2.2.2.2 vrf v1
+r1 tping 100 30 4321::2 vrf v1
+r1 tping 100 30 2.2.2.1 vrf v2
+r1 tping 100 30 4321::1 vrf v2

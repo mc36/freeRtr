@@ -60,20 +60,20 @@ server telnet telnet
 !
 
 
-r2 tping 100 10 2.2.2.3 /vrf v1
-r1 tping 0 5 3.3.3.3 /vrf v1
+r2 tping 100 10 2.2.2.3 vrf v1
+r1 tping 0 5 3.3.3.3 vrf v1
 
-r1 send telnet 2.2.2.3 /prox p1
-r1 tping 100 5 3.3.3.3 /vrf v1
+r1 send telnet 2.2.2.3 prox p1
+r1 tping 100 5 3.3.3.3 vrf v1
 r1 send exit
 r1 read closed
-r1 tping 0 60 3.3.3.3 /vrf v1
+r1 tping 0 60 3.3.3.3 vrf v1
 
-r1 send telnet 4321::3 /prox p1
-r1 tping 100 5 3.3.3.3 /vrf v1
+r1 send telnet 4321::3 prox p1
+r1 tping 100 5 3.3.3.3 vrf v1
 r1 send exit
 r1 read closed
-r1 tping 0 60 3.3.3.3 /vrf v1
+r1 tping 0 60 3.3.3.3 vrf v1
 
 r2 output show transprox ser1
 output ../binTmp/crypt-proxy.html

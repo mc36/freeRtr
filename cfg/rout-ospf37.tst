@@ -147,43 +147,43 @@ int eth1
 
 
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
-r1 tping 100 40 2.2.2.3 /vrf v1
-r1 tping 100 40 4321::3 /vrf v1
-r1 tping 100 40 2.2.2.222 /vrf v1
-r1 tping 100 40 4321::222 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 4321::2 vrf v1
+r1 tping 100 40 2.2.2.3 vrf v1
+r1 tping 100 40 4321::3 vrf v1
+r1 tping 100 40 2.2.2.222 vrf v1
+r1 tping 100 40 4321::222 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
-r2 tping 100 40 2.2.2.3 /vrf v1
-r2 tping 100 40 4321::3 /vrf v1
-r2 tping 100 40 2.2.2.222 /vrf v1
-r2 tping 100 40 4321::222 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 4321::1 vrf v1
+r2 tping 100 40 2.2.2.3 vrf v1
+r2 tping 100 40 4321::3 vrf v1
+r2 tping 100 40 2.2.2.222 vrf v1
+r2 tping 100 40 4321::222 vrf v1
 
-r3 tping 100 40 2.2.2.1 /vrf v1
-r3 tping 100 40 4321::1 /vrf v1
-r3 tping 100 40 2.2.2.3 /vrf v1
-r3 tping 100 40 4321::3 /vrf v1
-r3 tping 100 40 2.2.2.222 /vrf v1
-r3 tping 100 40 4321::222 /vrf v1
+r3 tping 100 40 2.2.2.1 vrf v1
+r3 tping 100 40 4321::1 vrf v1
+r3 tping 100 40 2.2.2.3 vrf v1
+r3 tping 100 40 4321::3 vrf v1
+r3 tping 100 40 2.2.2.222 vrf v1
+r3 tping 100 40 4321::222 vrf v1
 
-r2 tping 0 40 2.2.2.101 /vrf v1
-r2 tping 0 40 4321::101 /vrf v1
-r2 tping 0 40 2.2.2.103 /vrf v1
-r2 tping 0 40 4321::103 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
+r2 tping 0 40 4321::101 vrf v1
+r2 tping 0 40 2.2.2.103 vrf v1
+r2 tping 0 40 4321::103 vrf v1
 
-r2 send telnet 2.2.2.222 666 /vrf v1
-r2 tping 100 40 2.2.2.101 /vrf v1
+r2 send telnet 2.2.2.222 666 vrf v1
+r2 tping 100 40 2.2.2.101 vrf v1
 r2 send exit
 r2 read closed
-r2 tping 0 40 2.2.2.101 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
 
-r2 send telnet 4321::222 666 /vrf v1
-r2 tping 100 40 2.2.2.101 /vrf v1
+r2 send telnet 4321::222 666 vrf v1
+r2 tping 100 40 2.2.2.101 vrf v1
 r2 send exit
 r2 read closed
-r2 tping 0 40 2.2.2.101 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
@@ -192,43 +192,43 @@ r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
-r1 tping 100 40 2.2.2.3 /vrf v1
-r1 tping 100 40 4321::3 /vrf v1
-r1 tping 100 40 2.2.2.222 /vrf v1
-r1 tping 100 40 4321::222 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 4321::2 vrf v1
+r1 tping 100 40 2.2.2.3 vrf v1
+r1 tping 100 40 4321::3 vrf v1
+r1 tping 100 40 2.2.2.222 vrf v1
+r1 tping 100 40 4321::222 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
-r2 tping 100 40 2.2.2.3 /vrf v1
-r2 tping 100 40 4321::3 /vrf v1
-r2 tping 100 40 2.2.2.222 /vrf v1
-r2 tping 100 40 4321::222 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 4321::1 vrf v1
+r2 tping 100 40 2.2.2.3 vrf v1
+r2 tping 100 40 4321::3 vrf v1
+r2 tping 100 40 2.2.2.222 vrf v1
+r2 tping 100 40 4321::222 vrf v1
 
-r3 tping 100 40 2.2.2.1 /vrf v1
-r3 tping 100 40 4321::1 /vrf v1
-r3 tping 100 40 2.2.2.3 /vrf v1
-r3 tping 100 40 4321::3 /vrf v1
-r3 tping 100 40 2.2.2.222 /vrf v1
-r3 tping 100 40 4321::222 /vrf v1
+r3 tping 100 40 2.2.2.1 vrf v1
+r3 tping 100 40 4321::1 vrf v1
+r3 tping 100 40 2.2.2.3 vrf v1
+r3 tping 100 40 4321::3 vrf v1
+r3 tping 100 40 2.2.2.222 vrf v1
+r3 tping 100 40 4321::222 vrf v1
 
-r2 tping 0 40 2.2.2.101 /vrf v1
-r2 tping 0 40 4321::101 /vrf v1
-r2 tping 0 40 2.2.2.103 /vrf v1
-r2 tping 0 40 4321::103 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
+r2 tping 0 40 4321::101 vrf v1
+r2 tping 0 40 2.2.2.103 vrf v1
+r2 tping 0 40 4321::103 vrf v1
 
-r2 send telnet 2.2.2.222 666 /vrf v1
-r2 tping 100 40 2.2.2.103 /vrf v1
+r2 send telnet 2.2.2.222 666 vrf v1
+r2 tping 100 40 2.2.2.103 vrf v1
 r2 send exit
 r2 read closed
-r2 tping 0 40 2.2.2.103 /vrf v1
+r2 tping 0 40 2.2.2.103 vrf v1
 
-r2 send telnet 4321::222 666 /vrf v1
-r2 tping 100 40 2.2.2.103 /vrf v1
+r2 send telnet 4321::222 666 vrf v1
+r2 tping 100 40 2.2.2.103 vrf v1
 r2 send exit
 r2 read closed
-r2 tping 0 40 2.2.2.103 /vrf v1
+r2 tping 0 40 2.2.2.103 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
@@ -237,43 +237,43 @@ r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
-r1 tping 100 40 2.2.2.3 /vrf v1
-r1 tping 100 40 4321::3 /vrf v1
-r1 tping 100 40 2.2.2.222 /vrf v1
-r1 tping 100 40 4321::222 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 4321::2 vrf v1
+r1 tping 100 40 2.2.2.3 vrf v1
+r1 tping 100 40 4321::3 vrf v1
+r1 tping 100 40 2.2.2.222 vrf v1
+r1 tping 100 40 4321::222 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
-r2 tping 100 40 2.2.2.3 /vrf v1
-r2 tping 100 40 4321::3 /vrf v1
-r2 tping 100 40 2.2.2.222 /vrf v1
-r2 tping 100 40 4321::222 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 4321::1 vrf v1
+r2 tping 100 40 2.2.2.3 vrf v1
+r2 tping 100 40 4321::3 vrf v1
+r2 tping 100 40 2.2.2.222 vrf v1
+r2 tping 100 40 4321::222 vrf v1
 
-r3 tping 100 40 2.2.2.1 /vrf v1
-r3 tping 100 40 4321::1 /vrf v1
-r3 tping 100 40 2.2.2.3 /vrf v1
-r3 tping 100 40 4321::3 /vrf v1
-r3 tping 100 40 2.2.2.222 /vrf v1
-r3 tping 100 40 4321::222 /vrf v1
+r3 tping 100 40 2.2.2.1 vrf v1
+r3 tping 100 40 4321::1 vrf v1
+r3 tping 100 40 2.2.2.3 vrf v1
+r3 tping 100 40 4321::3 vrf v1
+r3 tping 100 40 2.2.2.222 vrf v1
+r3 tping 100 40 4321::222 vrf v1
 
-r2 tping 0 40 2.2.2.101 /vrf v1
-r2 tping 0 40 4321::101 /vrf v1
-r2 tping 0 40 2.2.2.103 /vrf v1
-r2 tping 0 40 4321::103 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
+r2 tping 0 40 4321::101 vrf v1
+r2 tping 0 40 2.2.2.103 vrf v1
+r2 tping 0 40 4321::103 vrf v1
 
-r2 send telnet 2.2.2.222 666 /vrf v1
-r2 tping 100 40 2.2.2.101 /vrf v1
+r2 send telnet 2.2.2.222 666 vrf v1
+r2 tping 100 40 2.2.2.101 vrf v1
 r2 send exit
 r2 read closed
-r2 tping 0 40 2.2.2.101 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
 
-r2 send telnet 4321::222 666 /vrf v1
-r2 tping 100 40 2.2.2.101 /vrf v1
+r2 send telnet 4321::222 666 vrf v1
+r2 tping 100 40 2.2.2.101 vrf v1
 r2 send exit
 r2 read closed
-r2 tping 0 40 2.2.2.101 /vrf v1
+r2 tping 0 40 2.2.2.101 vrf v1
 
 r2 output show ipv4 ospf 1 nei
 r2 output show ipv6 ospf 1 nei

@@ -90,10 +90,10 @@ ipv6 route v1 :: :: 1234:2::1 dist 11 track t2
 !
 
 
-r2 tping 100 5 2.2.2.101 /vrf v1
-r2 tping 100 5 4321::101 /vrf v1
-r1 tping 100 5 2.2.2.201 /vrf v1
-r1 tping 100 5 4321::201 /vrf v1
+r2 tping 100 5 2.2.2.101 vrf v1
+r2 tping 100 5 4321::101 vrf v1
+r1 tping 100 5 2.2.2.201 vrf v1
+r1 tping 100 5 4321::201 vrf v1
 
 r2 output show tracker
 r2 output show ipv4 route v1
@@ -107,10 +107,10 @@ r1 send int eth2
 r1 send shut
 r1 send end
 
-r2 tping 100 5 2.2.2.101 /vrf v1
-r2 tping 100 5 4321::101 /vrf v1
-r1 tping 100 5 2.2.2.201 /vrf v1
-r1 tping 100 5 4321::201 /vrf v1
+r2 tping 100 5 2.2.2.101 vrf v1
+r2 tping 100 5 4321::101 vrf v1
+r1 tping 100 5 2.2.2.201 vrf v1
+r1 tping 100 5 4321::201 vrf v1
 
 output ../binTmp/rout-track.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">

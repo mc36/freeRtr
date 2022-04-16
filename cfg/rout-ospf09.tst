@@ -123,24 +123,24 @@ int eth1
 
 
 
-r1 tping 100 40 2.2.2.2 /vrf v1
-r1 tping 100 40 2.2.2.3 /vrf v1
-r1 tping 100 40 2.2.2.33 /vrf v1
-r1 tping 100 40 4321::2 /vrf v1
-r1 tping 100 40 4321::3 /vrf v1
-r1 tping 100 40 4321::33 /vrf v1
+r1 tping 100 40 2.2.2.2 vrf v1
+r1 tping 100 40 2.2.2.3 vrf v1
+r1 tping 100 40 2.2.2.33 vrf v1
+r1 tping 100 40 4321::2 vrf v1
+r1 tping 100 40 4321::3 vrf v1
+r1 tping 100 40 4321::33 vrf v1
 
-r2 tping 100 40 2.2.2.1 /vrf v1
-r2 tping 100 40 2.2.2.3 /vrf v1
-r2 tping 100 40 2.2.2.33 /vrf v1
-r2 tping 100 40 4321::1 /vrf v1
-r2 tping 100 40 4321::3 /vrf v1
-r2 tping 100 40 4321::33 /vrf v1
+r2 tping 100 40 2.2.2.1 vrf v1
+r2 tping 100 40 2.2.2.3 vrf v1
+r2 tping 100 40 2.2.2.33 vrf v1
+r2 tping 100 40 4321::1 vrf v1
+r2 tping 100 40 4321::3 vrf v1
+r2 tping 100 40 4321::33 vrf v1
 
-r3 tping 100 40 2.2.2.1 /vrf v1
-r3 tping 100 40 2.2.2.2 /vrf v1
-r3 tping 100 40 4321::1 /vrf v1
-r3 tping 100 40 4321::2 /vrf v1
+r3 tping 100 40 2.2.2.1 vrf v1
+r3 tping 100 40 2.2.2.2 vrf v1
+r3 tping 100 40 4321::1 vrf v1
+r3 tping 100 40 4321::2 vrf v1
 
 r2 output show ipv4 ospf 1 nei
 r2 output show ipv6 ospf 1 nei

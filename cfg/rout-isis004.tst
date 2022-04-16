@@ -77,10 +77,10 @@ int ser2
 !
 
 
-r1 tping 100 20 2.2.2.2 /vrf v1
-r2 tping 100 20 2.2.2.1 /vrf v1
-r1 tping 100 20 4321::2 /vrf v1
-r2 tping 100 20 4321::1 /vrf v1
+r1 tping 100 20 2.2.2.2 vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r1 tping 100 20 4321::2 vrf v1
+r2 tping 100 20 4321::1 vrf v1
 
 r2 output show ipv4 isis 1 nei
 r2 output show ipv6 isis 1 nei

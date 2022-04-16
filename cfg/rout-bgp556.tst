@@ -368,61 +368,61 @@ router bgp6 1
  exit
 !
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r1 tping 100 60 9.9.4.3 /vrf v4
-r1 tping 100 60 9994::3 /vrf v4
-r1 tping 100 60 9.9.4.4 /vrf v4
-r1 tping 100 60 9994::4 /vrf v4
-r1 tping 100 60 9.9.4.222 /vrf v4
-r1 tping 100 60 9994::222 /vrf v4
-r1 tping 0 60 9.9.4.102 /vrf v4
-r1 tping 0 60 9994::102 /vrf v4
-r1 tping 0 60 9.9.4.103 /vrf v4
-r1 tping 0 60 9994::103 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r1 tping 100 60 9.9.4.3 vrf v4
+r1 tping 100 60 9994::3 vrf v4
+r1 tping 100 60 9.9.4.4 vrf v4
+r1 tping 100 60 9994::4 vrf v4
+r1 tping 100 60 9.9.4.222 vrf v4
+r1 tping 100 60 9994::222 vrf v4
+r1 tping 0 60 9.9.4.102 vrf v4
+r1 tping 0 60 9994::102 vrf v4
+r1 tping 0 60 9.9.4.103 vrf v4
+r1 tping 0 60 9994::103 vrf v4
 
-r2 tping 100 60 9.9.4.1 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-r2 tping 100 60 9.9.4.3 /vrf v4
-r2 tping 100 60 9994::3 /vrf v4
-r2 tping 100 60 9.9.4.4 /vrf v4
-r2 tping 100 60 9994::4 /vrf v4
-r2 tping 100 60 9.9.4.222 /vrf v4
-r2 tping 100 60 9994::222 /vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r2 tping 100 60 9994::1 vrf v4
+r2 tping 100 60 9.9.4.3 vrf v4
+r2 tping 100 60 9994::3 vrf v4
+r2 tping 100 60 9.9.4.4 vrf v4
+r2 tping 100 60 9994::4 vrf v4
+r2 tping 100 60 9.9.4.222 vrf v4
+r2 tping 100 60 9994::222 vrf v4
 
-r3 tping 100 60 9.9.4.1 /vrf v4
-r3 tping 100 60 9994::1 /vrf v4
-r3 tping 100 60 9.9.4.2 /vrf v4
-r3 tping 100 60 9994::2 /vrf v4
-r3 tping 100 60 9.9.4.4 /vrf v4
-r3 tping 100 60 9994::4 /vrf v4
-r3 tping 100 60 9.9.4.222 /vrf v4
-r3 tping 100 60 9994::222 /vrf v4
+r3 tping 100 60 9.9.4.1 vrf v4
+r3 tping 100 60 9994::1 vrf v4
+r3 tping 100 60 9.9.4.2 vrf v4
+r3 tping 100 60 9994::2 vrf v4
+r3 tping 100 60 9.9.4.4 vrf v4
+r3 tping 100 60 9994::4 vrf v4
+r3 tping 100 60 9.9.4.222 vrf v4
+r3 tping 100 60 9994::222 vrf v4
 
-r4 tping 100 60 9.9.4.1 /vrf v4
-r4 tping 100 60 9994::1 /vrf v4
-r4 tping 100 60 9.9.4.2 /vrf v4
-r4 tping 100 60 9994::2 /vrf v4
-r4 tping 100 60 9.9.4.3 /vrf v4
-r4 tping 100 60 9994::3 /vrf v4
-r4 tping 100 60 9.9.4.222 /vrf v4
-r4 tping 100 60 9994::222 /vrf v4
-r4 tping 0 60 9.9.4.102 /vrf v4
-r4 tping 0 60 9994::102 /vrf v4
-r4 tping 0 60 9.9.4.103 /vrf v4
-r4 tping 0 60 9994::103 /vrf v4
+r4 tping 100 60 9.9.4.1 vrf v4
+r4 tping 100 60 9994::1 vrf v4
+r4 tping 100 60 9.9.4.2 vrf v4
+r4 tping 100 60 9994::2 vrf v4
+r4 tping 100 60 9.9.4.3 vrf v4
+r4 tping 100 60 9994::3 vrf v4
+r4 tping 100 60 9.9.4.222 vrf v4
+r4 tping 100 60 9994::222 vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4
+r4 tping 0 60 9994::102 vrf v4
+r4 tping 0 60 9.9.4.103 vrf v4
+r4 tping 0 60 9994::103 vrf v4
 
-r4 send telnet 9.9.4.222 666 /vrf v4
-r4 tping 100 60 9.9.4.102 /vrf v4
+r4 send telnet 9.9.4.222 666 vrf v4
+r4 tping 100 60 9.9.4.102 vrf v4
 r4 send exit
 r4 read closed
-r4 tping 0 60 9.9.4.102 /vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4
 
-r4 send telnet 9994::222 666 /vrf v4
-r4 tping 100 60 9.9.4.102 /vrf v4
+r4 send telnet 9994::222 666 vrf v4
+r4 tping 100 60 9.9.4.102 vrf v4
 r4 send exit
 r4 read closed
-r4 tping 0 60 9.9.4.102 /vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4
 
 r2 send conf t
 r2 send route-map rm1
@@ -431,61 +431,61 @@ r2 send end
 r2 send clear ipv4 route v1
 r2 send clear ipv6 route v1
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r1 tping 100 60 9.9.4.3 /vrf v4
-r1 tping 100 60 9994::3 /vrf v4
-r1 tping 100 60 9.9.4.4 /vrf v4
-r1 tping 100 60 9994::4 /vrf v4
-r1 tping 100 60 9.9.4.222 /vrf v4
-r1 tping 100 60 9994::222 /vrf v4
-r1 tping 0 60 9.9.4.102 /vrf v4
-r1 tping 0 60 9994::102 /vrf v4
-r1 tping 0 60 9.9.4.103 /vrf v4
-r1 tping 0 60 9994::103 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r1 tping 100 60 9.9.4.3 vrf v4
+r1 tping 100 60 9994::3 vrf v4
+r1 tping 100 60 9.9.4.4 vrf v4
+r1 tping 100 60 9994::4 vrf v4
+r1 tping 100 60 9.9.4.222 vrf v4
+r1 tping 100 60 9994::222 vrf v4
+r1 tping 0 60 9.9.4.102 vrf v4
+r1 tping 0 60 9994::102 vrf v4
+r1 tping 0 60 9.9.4.103 vrf v4
+r1 tping 0 60 9994::103 vrf v4
 
-r2 tping 100 60 9.9.4.1 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-r2 tping 100 60 9.9.4.3 /vrf v4
-r2 tping 100 60 9994::3 /vrf v4
-r2 tping 100 60 9.9.4.4 /vrf v4
-r2 tping 100 60 9994::4 /vrf v4
-r2 tping 100 60 9.9.4.222 /vrf v4
-r2 tping 100 60 9994::222 /vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r2 tping 100 60 9994::1 vrf v4
+r2 tping 100 60 9.9.4.3 vrf v4
+r2 tping 100 60 9994::3 vrf v4
+r2 tping 100 60 9.9.4.4 vrf v4
+r2 tping 100 60 9994::4 vrf v4
+r2 tping 100 60 9.9.4.222 vrf v4
+r2 tping 100 60 9994::222 vrf v4
 
-r3 tping 100 60 9.9.4.1 /vrf v4
-r3 tping 100 60 9994::1 /vrf v4
-r3 tping 100 60 9.9.4.2 /vrf v4
-r3 tping 100 60 9994::2 /vrf v4
-r3 tping 100 60 9.9.4.4 /vrf v4
-r3 tping 100 60 9994::4 /vrf v4
-r3 tping 100 60 9.9.4.222 /vrf v4
-r3 tping 100 60 9994::222 /vrf v4
+r3 tping 100 60 9.9.4.1 vrf v4
+r3 tping 100 60 9994::1 vrf v4
+r3 tping 100 60 9.9.4.2 vrf v4
+r3 tping 100 60 9994::2 vrf v4
+r3 tping 100 60 9.9.4.4 vrf v4
+r3 tping 100 60 9994::4 vrf v4
+r3 tping 100 60 9.9.4.222 vrf v4
+r3 tping 100 60 9994::222 vrf v4
 
-r4 tping 100 60 9.9.4.1 /vrf v4
-r4 tping 100 60 9994::1 /vrf v4
-r4 tping 100 60 9.9.4.2 /vrf v4
-r4 tping 100 60 9994::2 /vrf v4
-r4 tping 100 60 9.9.4.3 /vrf v4
-r4 tping 100 60 9994::3 /vrf v4
-r4 tping 100 60 9.9.4.222 /vrf v4
-r4 tping 100 60 9994::222 /vrf v4
-r4 tping 0 60 9.9.4.102 /vrf v4
-r4 tping 0 60 9994::102 /vrf v4
-r4 tping 0 60 9.9.4.103 /vrf v4
-r4 tping 0 60 9994::103 /vrf v4
+r4 tping 100 60 9.9.4.1 vrf v4
+r4 tping 100 60 9994::1 vrf v4
+r4 tping 100 60 9.9.4.2 vrf v4
+r4 tping 100 60 9994::2 vrf v4
+r4 tping 100 60 9.9.4.3 vrf v4
+r4 tping 100 60 9994::3 vrf v4
+r4 tping 100 60 9.9.4.222 vrf v4
+r4 tping 100 60 9994::222 vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4
+r4 tping 0 60 9994::102 vrf v4
+r4 tping 0 60 9.9.4.103 vrf v4
+r4 tping 0 60 9994::103 vrf v4
 
-r4 send telnet 9.9.4.222 666 /vrf v4
-r4 tping 100 60 9.9.4.103 /vrf v4
+r4 send telnet 9.9.4.222 666 vrf v4
+r4 tping 100 60 9.9.4.103 vrf v4
 r4 send exit
 r4 read closed
-r4 tping 0 60 9.9.4.103 /vrf v4
+r4 tping 0 60 9.9.4.103 vrf v4
 
-r4 send telnet 9994::222 666 /vrf v4
-r4 tping 100 60 9.9.4.103 /vrf v4
+r4 send telnet 9994::222 666 vrf v4
+r4 tping 100 60 9.9.4.103 vrf v4
 r4 send exit
 r4 read closed
-r4 tping 0 60 9.9.4.103 /vrf v4
+r4 tping 0 60 9.9.4.103 vrf v4
 
 r2 send conf t
 r2 send route-map rm1
@@ -494,58 +494,58 @@ r2 send end
 r2 send clear ipv4 route v1
 r2 send clear ipv6 route v1
 
-r1 tping 100 60 9.9.4.2 /vrf v4
-r1 tping 100 60 9994::2 /vrf v4
-r1 tping 100 60 9.9.4.3 /vrf v4
-r1 tping 100 60 9994::3 /vrf v4
-r1 tping 100 60 9.9.4.4 /vrf v4
-r1 tping 100 60 9994::4 /vrf v4
-r1 tping 100 60 9.9.4.222 /vrf v4
-r1 tping 100 60 9994::222 /vrf v4
-r1 tping 0 60 9.9.4.102 /vrf v4
-r1 tping 0 60 9994::102 /vrf v4
-r1 tping 0 60 9.9.4.103 /vrf v4
-r1 tping 0 60 9994::103 /vrf v4
+r1 tping 100 60 9.9.4.2 vrf v4
+r1 tping 100 60 9994::2 vrf v4
+r1 tping 100 60 9.9.4.3 vrf v4
+r1 tping 100 60 9994::3 vrf v4
+r1 tping 100 60 9.9.4.4 vrf v4
+r1 tping 100 60 9994::4 vrf v4
+r1 tping 100 60 9.9.4.222 vrf v4
+r1 tping 100 60 9994::222 vrf v4
+r1 tping 0 60 9.9.4.102 vrf v4
+r1 tping 0 60 9994::102 vrf v4
+r1 tping 0 60 9.9.4.103 vrf v4
+r1 tping 0 60 9994::103 vrf v4
 
-r2 tping 100 60 9.9.4.1 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
-r2 tping 100 60 9.9.4.3 /vrf v4
-r2 tping 100 60 9994::3 /vrf v4
-r2 tping 100 60 9.9.4.4 /vrf v4
-r2 tping 100 60 9994::4 /vrf v4
-r2 tping 100 60 9.9.4.222 /vrf v4
-r2 tping 100 60 9994::222 /vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r2 tping 100 60 9994::1 vrf v4
+r2 tping 100 60 9.9.4.3 vrf v4
+r2 tping 100 60 9994::3 vrf v4
+r2 tping 100 60 9.9.4.4 vrf v4
+r2 tping 100 60 9994::4 vrf v4
+r2 tping 100 60 9.9.4.222 vrf v4
+r2 tping 100 60 9994::222 vrf v4
 
-r3 tping 100 60 9.9.4.1 /vrf v4
-r3 tping 100 60 9994::1 /vrf v4
-r3 tping 100 60 9.9.4.2 /vrf v4
-r3 tping 100 60 9994::2 /vrf v4
-r3 tping 100 60 9.9.4.4 /vrf v4
-r3 tping 100 60 9994::4 /vrf v4
-r3 tping 100 60 9.9.4.222 /vrf v4
-r3 tping 100 60 9994::222 /vrf v4
+r3 tping 100 60 9.9.4.1 vrf v4
+r3 tping 100 60 9994::1 vrf v4
+r3 tping 100 60 9.9.4.2 vrf v4
+r3 tping 100 60 9994::2 vrf v4
+r3 tping 100 60 9.9.4.4 vrf v4
+r3 tping 100 60 9994::4 vrf v4
+r3 tping 100 60 9.9.4.222 vrf v4
+r3 tping 100 60 9994::222 vrf v4
 
-r4 tping 100 60 9.9.4.1 /vrf v4
-r4 tping 100 60 9994::1 /vrf v4
-r4 tping 100 60 9.9.4.2 /vrf v4
-r4 tping 100 60 9994::2 /vrf v4
-r4 tping 100 60 9.9.4.3 /vrf v4
-r4 tping 100 60 9994::3 /vrf v4
-r4 tping 100 60 9.9.4.222 /vrf v4
-r4 tping 100 60 9994::222 /vrf v4
-r4 tping 0 60 9.9.4.102 /vrf v4
-r4 tping 0 60 9994::102 /vrf v4
-r4 tping 0 60 9.9.4.103 /vrf v4
-r4 tping 0 60 9994::103 /vrf v4
+r4 tping 100 60 9.9.4.1 vrf v4
+r4 tping 100 60 9994::1 vrf v4
+r4 tping 100 60 9.9.4.2 vrf v4
+r4 tping 100 60 9994::2 vrf v4
+r4 tping 100 60 9.9.4.3 vrf v4
+r4 tping 100 60 9994::3 vrf v4
+r4 tping 100 60 9.9.4.222 vrf v4
+r4 tping 100 60 9994::222 vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4
+r4 tping 0 60 9994::102 vrf v4
+r4 tping 0 60 9.9.4.103 vrf v4
+r4 tping 0 60 9994::103 vrf v4
 
-r4 send telnet 9.9.4.222 666 /vrf v4
-r4 tping 100 60 9.9.4.102 /vrf v4
+r4 send telnet 9.9.4.222 666 vrf v4
+r4 tping 100 60 9.9.4.102 vrf v4
 r4 send exit
 r4 read closed
-r4 tping 0 60 9.9.4.102 /vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4
 
-r4 send telnet 9994::222 666 /vrf v4
-r4 tping 100 60 9.9.4.102 /vrf v4
+r4 send telnet 9994::222 666 vrf v4
+r4 tping 100 60 9.9.4.102 vrf v4
 r4 send exit
 r4 read closed
-r4 tping 0 60 9.9.4.102 /vrf v4
+r4 tping 0 60 9.9.4.102 vrf v4

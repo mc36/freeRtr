@@ -85,32 +85,32 @@ int lo0
 
 
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r1 tping 100 5 1.1.1.3 /vrf v1
-r1 tping 100 5 1234::2 /vrf v1
-r1 tping 100 5 1234::3 /vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r1 tping 100 5 1.1.1.3 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r1 tping 100 5 1234::3 vrf v1
 
-r2 tping 100 5 1.1.1.1 /vrf v1
-r2 tping 100 5 1.1.1.3 /vrf v1
-r2 tping 100 5 1234::1 /vrf v1
-r2 tping 100 5 1234::3 /vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r2 tping 100 5 1.1.1.3 vrf v1
+r2 tping 100 5 1234::1 vrf v1
+r2 tping 100 5 1234::3 vrf v1
 
-r3 tping 100 5 1.1.1.1 /vrf v1
-r3 tping 100 5 1.1.1.2 /vrf v1
-r3 tping 100 5 1234::1 /vrf v1
-r3 tping 100 5 1234::2 /vrf v1
+r3 tping 100 5 1.1.1.1 vrf v1
+r3 tping 100 5 1.1.1.2 vrf v1
+r3 tping 100 5 1234::1 vrf v1
+r3 tping 100 5 1234::2 vrf v1
 
-r1 tping 100 5 2.2.2.2 /vrf v1
-r1 tping 100 5 4321::2 /vrf v1
-r1 tping 0 5 2.2.2.3 /vrf v1
-r1 tping 0 5 4321::3 /vrf v1
+r1 tping 100 5 2.2.2.2 vrf v1
+r1 tping 100 5 4321::2 vrf v1
+r1 tping 0 5 2.2.2.3 vrf v1
+r1 tping 0 5 4321::3 vrf v1
 
 r1 send conf t
 r1 send int eth1
 r1 send shut
 r1 send end
 
-r1 tping 0 5 2.2.2.2 /vrf v1
-r1 tping 0 5 4321::2 /vrf v1
-r1 tping 100 5 2.2.2.3 /vrf v1
-r1 tping 100 5 4321::3 /vrf v1
+r1 tping 0 5 2.2.2.2 vrf v1
+r1 tping 0 5 4321::2 vrf v1
+r1 tping 100 5 2.2.2.3 vrf v1
+r1 tping 100 5 4321::3 vrf v1

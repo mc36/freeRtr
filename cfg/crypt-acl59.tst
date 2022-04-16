@@ -114,9 +114,9 @@ int tun4
  exit
 !
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r1 tping 100 5 1234::2 /vrf v1
-r1 tping 0 5 2.2.1.2 /vrf v1
-r1 tping 0 5 2.2.2.2 /vrf v1
-r1 tping 100 5 2.2.3.2 /vrf v1
-r1 tping 100 5 2.2.4.2 /vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r1 tping 0 5 2.2.1.2 vrf v1
+r1 tping 0 5 2.2.2.2 vrf v1
+r1 tping 100 5 2.2.3.2 vrf v1
+r1 tping 100 5 2.2.4.2 vrf v1

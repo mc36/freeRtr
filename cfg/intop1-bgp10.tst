@@ -59,10 +59,10 @@ router bgp 1
 !
 
 
-r1 tping 100 10 1.1.1.2 /vrf v1
-r1 tping 100 10 1234::2 /vrf v1
-r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 120 4321::2 /vrf v1 /int lo0
+r1 tping 100 10 1.1.1.2 vrf v1
+r1 tping 100 10 1234::2 vrf v1
+r1 tping 100 120 2.2.2.2 vrf v1 int lo0
+r1 tping 100 120 4321::2 vrf v1 int lo0
 
 r1 send conf t
 r1 send router bgp4 1
@@ -72,8 +72,8 @@ r1 send router bgp6 1
 r1 send no red conn
 r1 send end
 
-r1 tping 0 120 2.2.2.2 /vrf v1 /int lo0
-r1 tping 0 120 4321::2 /vrf v1 /int lo0
+r1 tping 0 120 2.2.2.2 vrf v1 int lo0
+r1 tping 0 120 4321::2 vrf v1 int lo0
 
 r1 send conf t
 r1 send router bgp4 1
@@ -83,5 +83,5 @@ r1 send router bgp6 1
 r1 send red conn
 r1 send end
 
-r1 tping 100 120 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 120 4321::2 /vrf v1 /int lo0
+r1 tping 100 120 2.2.2.2 vrf v1 int lo0
+r1 tping 100 120 4321::2 vrf v1 int lo0

@@ -120,25 +120,25 @@ int tun2
 !
 
 
-r1 tping 100 10 2.2.2.2 /vrf v1 /int lo0
-r1 tping 100 10 2.2.2.3 /vrf v1 /int lo0
-r1 tping 100 10 4321::2 /vrf v1 /int lo0
-r1 tping 100 10 4321::3 /vrf v1 /int lo0
+r1 tping 100 10 2.2.2.2 vrf v1 int lo0
+r1 tping 100 10 2.2.2.3 vrf v1 int lo0
+r1 tping 100 10 4321::2 vrf v1 int lo0
+r1 tping 100 10 4321::3 vrf v1 int lo0
 
-r2 tping 100 10 2.2.2.1 /vrf v1 /int lo0
-r2 tping 100 10 2.2.2.3 /vrf v1 /int lo0
-r2 tping 100 10 4321::1 /vrf v1 /int lo0
-r2 tping 100 10 4321::3 /vrf v1 /int lo0
+r2 tping 100 10 2.2.2.1 vrf v1 int lo0
+r2 tping 100 10 2.2.2.3 vrf v1 int lo0
+r2 tping 100 10 4321::1 vrf v1 int lo0
+r2 tping 100 10 4321::3 vrf v1 int lo0
 
-r3 tping 100 10 2.2.2.1 /vrf v1 /int lo0
-r3 tping 100 10 2.2.2.2 /vrf v1 /int lo0
-r3 tping 100 10 4321::1 /vrf v1 /int lo0
-r3 tping 100 10 4321::2 /vrf v1 /int lo0
+r3 tping 100 10 2.2.2.1 vrf v1 int lo0
+r3 tping 100 10 2.2.2.2 vrf v1 int lo0
+r3 tping 100 10 4321::1 vrf v1 int lo0
+r3 tping 100 10 4321::2 vrf v1 int lo0
 
-r1 tping 100 10 3.3.3.3 /vrf v1 /int tun1
-r1 tping 100 10 3333::3 /vrf v1 /int tun2
-r3 tping 100 10 3.3.3.1 /vrf v1 /int tun1
-r3 tping 100 10 3333::1 /vrf v1 /int tun2
+r1 tping 100 10 3.3.3.3 vrf v1 int tun1
+r1 tping 100 10 3333::3 vrf v1 int tun2
+r3 tping 100 10 3.3.3.1 vrf v1 int tun1
+r3 tping 100 10 3333::1 vrf v1 int tun2
 
 r1 output show mpls forw
 r1 output show ipv4 ldp v1 sum

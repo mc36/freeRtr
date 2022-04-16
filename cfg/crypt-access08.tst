@@ -100,57 +100,57 @@ int eth1
 !
 
 
-r1 tping 100 20 1.1.1.2 /vrf v1
-r1 tping 100 20 1234::2 /vrf v1
-r1 tping 100 20 1.1.1.3 /vrf v1
-r1 tping 100 20 1234::3 /vrf v1
-r1 tping 100 20 1.1.1.4 /vrf v1
-r1 tping 100 20 1234::4 /vrf v1
+r1 tping 100 20 1.1.1.2 vrf v1
+r1 tping 100 20 1234::2 vrf v1
+r1 tping 100 20 1.1.1.3 vrf v1
+r1 tping 100 20 1234::3 vrf v1
+r1 tping 100 20 1.1.1.4 vrf v1
+r1 tping 100 20 1234::4 vrf v1
 
-r2 tping 100 20 1.1.1.1 /vrf v1
-r2 tping 100 20 1234::1 /vrf v1
-r3 tping 100 20 1.1.1.1 /vrf v1
-r3 tping 100 20 1234::1 /vrf v1
-r4 tping 100 20 1.1.1.1 /vrf v1
-r4 tping 100 20 1234::1 /vrf v1
+r2 tping 100 20 1.1.1.1 vrf v1
+r2 tping 100 20 1234::1 vrf v1
+r3 tping 100 20 1.1.1.1 vrf v1
+r3 tping 100 20 1234::1 vrf v1
+r4 tping 100 20 1.1.1.1 vrf v1
+r4 tping 100 20 1234::1 vrf v1
 
-r1 tping 100 20 2.2.2.1 /vrf v1
-r2 tping 0 20 2.2.2.1 /vrf v1
-r3 tping 0 20 2.2.2.1 /vrf v1
-r4 tping 0 20 2.2.2.1 /vrf v1
+r1 tping 100 20 2.2.2.1 vrf v1
+r2 tping 0 20 2.2.2.1 vrf v1
+r3 tping 0 20 2.2.2.1 vrf v1
+r4 tping 0 20 2.2.2.1 vrf v1
 
-r2 send telnet 1.1.1.1 666 /vrf v1
-r2 tping 0 20 2.2.2.1 /vrf v1
-r3 send telnet 1.1.1.1 666 /vrf v1
-r3 tping 0 20 2.2.2.1 /vrf v1
-r4 send telnet 1.1.1.1 666 /vrf v1
-r4 tping 0 20 2.2.2.1 /vrf v1
+r2 send telnet 1.1.1.1 666 vrf v1
+r2 tping 0 20 2.2.2.1 vrf v1
+r3 send telnet 1.1.1.1 666 vrf v1
+r3 tping 0 20 2.2.2.1 vrf v1
+r4 send telnet 1.1.1.1 666 vrf v1
+r4 tping 0 20 2.2.2.1 vrf v1
 
-r2 send telnet 1234::1 666 /vrf v1
-r2 tping 0 20 2.2.2.1 /vrf v1
-r3 send telnet 1234::1 666 /vrf v1
-r3 tping 0 20 2.2.2.1 /vrf v1
-r4 send telnet 1234::1 666 /vrf v1
-r4 tping 0 20 2.2.2.1 /vrf v1
+r2 send telnet 1234::1 666 vrf v1
+r2 tping 0 20 2.2.2.1 vrf v1
+r3 send telnet 1234::1 666 vrf v1
+r3 tping 0 20 2.2.2.1 vrf v1
+r4 send telnet 1234::1 666 vrf v1
+r4 tping 0 20 2.2.2.1 vrf v1
 
 r1 send conf t
 r1 send ipv4 route v1 2.2.2.4 255.255.255.255 1.1.1.4
 r1 send ipv6 route v1 4321::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::4
 r1 send end
 
-r1 tping 0 20 1.1.1.2 /vrf v1 /int lo1
-r1 tping 0 20 1234::2 /vrf v1 /int lo1
-r1 tping 0 20 1.1.1.3 /vrf v1 /int lo1
-r1 tping 0 20 1234::3 /vrf v1 /int lo1
-r1 tping 0 20 1.1.1.4 /vrf v1 /int lo1
-r1 tping 0 20 1234::4 /vrf v1 /int lo1
+r1 tping 0 20 1.1.1.2 vrf v1 int lo1
+r1 tping 0 20 1234::2 vrf v1 int lo1
+r1 tping 0 20 1.1.1.3 vrf v1 int lo1
+r1 tping 0 20 1234::3 vrf v1 int lo1
+r1 tping 0 20 1.1.1.4 vrf v1 int lo1
+r1 tping 0 20 1234::4 vrf v1 int lo1
 
-r2 send telnet 1.1.1.1 666 /vrf v1
-r2 tping 100 20 2.2.2.1 /vrf v1
-r3 send telnet 1.1.1.1 666 /vrf v1
-r3 tping 100 20 2.2.2.1 /vrf v1
-r4 send telnet 1.1.1.1 666 /vrf v1
-r4 tping 100 20 2.2.2.1 /vrf v1
+r2 send telnet 1.1.1.1 666 vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r3 send telnet 1.1.1.1 666 vrf v1
+r3 tping 100 20 2.2.2.1 vrf v1
+r4 send telnet 1.1.1.1 666 vrf v1
+r4 tping 100 20 2.2.2.1 vrf v1
 r2 send exit
 r2 read closed
 r3 send exit
@@ -158,12 +158,12 @@ r3 read closed
 r4 send exit
 r4 read closed
 
-r2 send telnet 1234::1 666 /vrf v1
-r2 tping 100 20 2.2.2.1 /vrf v1
-r3 send telnet 1234::1 666 /vrf v1
-r3 tping 100 20 2.2.2.1 /vrf v1
-r4 send telnet 1234::1 666 /vrf v1
-r4 tping 100 20 2.2.2.1 /vrf v1
+r2 send telnet 1234::1 666 vrf v1
+r2 tping 100 20 2.2.2.1 vrf v1
+r3 send telnet 1234::1 666 vrf v1
+r3 tping 100 20 2.2.2.1 vrf v1
+r4 send telnet 1234::1 666 vrf v1
+r4 tping 100 20 2.2.2.1 vrf v1
 r2 send exit
 r2 read closed
 r3 send exit

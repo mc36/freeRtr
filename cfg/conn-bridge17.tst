@@ -86,47 +86,47 @@ int eth1
 !
 
 
-r2 tping 100 5 1.1.1.1 /vrf v1
-r2 tping 100 5 1.1.1.3 /vrf v1
-r2 tping 100 5 1.1.1.4 /vrf v1
-r2 tping 100 5 1.1.1.5 /vrf v1
-r2 tping 100 5 1234::1 /vrf v1
-r2 tping 100 5 1234::3 /vrf v1
-r2 tping 100 5 1234::4 /vrf v1
-r2 tping 100 5 1234::5 /vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r2 tping 100 5 1.1.1.3 vrf v1
+r2 tping 100 5 1.1.1.4 vrf v1
+r2 tping 100 5 1.1.1.5 vrf v1
+r2 tping 100 5 1234::1 vrf v1
+r2 tping 100 5 1234::3 vrf v1
+r2 tping 100 5 1234::4 vrf v1
+r2 tping 100 5 1234::5 vrf v1
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r1 tping 0 5 1.1.1.3 /vrf v1
-r1 tping 0 5 1.1.1.4 /vrf v1
-r1 tping 0 5 1.1.1.5 /vrf v1
-r1 tping 100 5 1234::2 /vrf v1
-r1 tping 0 5 1234::3 /vrf v1
-r1 tping 0 5 1234::4 /vrf v1
-r1 tping 0 5 1234::5 /vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r1 tping 0 5 1.1.1.3 vrf v1
+r1 tping 0 5 1.1.1.4 vrf v1
+r1 tping 0 5 1.1.1.5 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r1 tping 0 5 1234::3 vrf v1
+r1 tping 0 5 1234::4 vrf v1
+r1 tping 0 5 1234::5 vrf v1
 
-r3 tping 100 5 1.1.1.2 /vrf v1
-r3 tping 0 5 1.1.1.1 /vrf v1
-r3 tping 0 5 1.1.1.4 /vrf v1
-r3 tping 0 5 1.1.1.5 /vrf v1
-r3 tping 100 5 1234::2 /vrf v1
-r3 tping 0 5 1234::1 /vrf v1
-r3 tping 0 5 1234::4 /vrf v1
-r3 tping 0 5 1234::5 /vrf v1
+r3 tping 100 5 1.1.1.2 vrf v1
+r3 tping 0 5 1.1.1.1 vrf v1
+r3 tping 0 5 1.1.1.4 vrf v1
+r3 tping 0 5 1.1.1.5 vrf v1
+r3 tping 100 5 1234::2 vrf v1
+r3 tping 0 5 1234::1 vrf v1
+r3 tping 0 5 1234::4 vrf v1
+r3 tping 0 5 1234::5 vrf v1
 
-r4 tping 0 5 1.1.1.1 /vrf v1
-r4 tping 100 5 1.1.1.2 /vrf v1
-r4 tping 0 5 1.1.1.3 /vrf v1
-r4 tping 100 5 1.1.1.5 /vrf v1
-r4 tping 0 5 1234::1 /vrf v1
-r4 tping 100 5 1234::2 /vrf v1
-r4 tping 0 5 1234::3 /vrf v1
-r4 tping 100 5 1234::5 /vrf v1
+r4 tping 0 5 1.1.1.1 vrf v1
+r4 tping 100 5 1.1.1.2 vrf v1
+r4 tping 0 5 1.1.1.3 vrf v1
+r4 tping 100 5 1.1.1.5 vrf v1
+r4 tping 0 5 1234::1 vrf v1
+r4 tping 100 5 1234::2 vrf v1
+r4 tping 0 5 1234::3 vrf v1
+r4 tping 100 5 1234::5 vrf v1
 
-r5 tping 0 5 1.1.1.1 /vrf v1
-r5 tping 100 5 1.1.1.2 /vrf v1
-r5 tping 0 5 1.1.1.3 /vrf v1
-r5 tping 100 5 1.1.1.4 /vrf v1
-r5 tping 0 5 1234::1 /vrf v1
-r5 tping 100 5 1234::2 /vrf v1
-r5 tping 0 5 1234::3 /vrf v1
-r5 tping 100 5 1234::4 /vrf v1
+r5 tping 0 5 1.1.1.1 vrf v1
+r5 tping 100 5 1.1.1.2 vrf v1
+r5 tping 0 5 1.1.1.3 vrf v1
+r5 tping 100 5 1.1.1.4 vrf v1
+r5 tping 0 5 1234::1 vrf v1
+r5 tping 100 5 1234::2 vrf v1
+r5 tping 0 5 1234::3 vrf v1
+r5 tping 100 5 1234::4 vrf v1

@@ -83,7 +83,7 @@ ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
 ipv6 route v1 4321::102 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
 !
 
-r1 tping 100 10 2.2.2.201 /vrf v1 /int lo0
-r1 tping 100 10 4321::201 /vrf v1 /int lo0
-r1 tping 0 10 2.2.2.201 /vrf v1 /int lo1
-r1 tping 0 10 4321::201 /vrf v1 /int lo1
+r1 tping 100 10 2.2.2.201 vrf v1 int lo0
+r1 tping 100 10 4321::201 vrf v1 int lo0
+r1 tping 0 10 2.2.2.201 vrf v1 int lo1
+r1 tping 0 10 4321::201 vrf v1 int lo1

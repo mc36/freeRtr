@@ -55,17 +55,17 @@ ipv6 route v1 :: :: 4321::1
 !
 
 
-r1 tping 100 5 2.2.2.2 /vrf v1 /sgt 0
-r3 tping 100 5 1.1.1.1 /vrf v1 /sgt 0
-r1 tping 100 5 4321::2 /vrf v1 /sgt 0
-r3 tping 100 5 1234::1 /vrf v1 /sgt 0
+r1 tping 100 5 2.2.2.2 vrf v1 sgt 0
+r3 tping 100 5 1.1.1.1 vrf v1 sgt 0
+r1 tping 100 5 4321::2 vrf v1 sgt 0
+r3 tping 100 5 1234::1 vrf v1 sgt 0
 
-r1 tping 0 5 2.2.2.2 /vrf v1 /sgt 1
-r3 tping 0 5 1.1.1.1 /vrf v1 /sgt 1
-r1 tping 0 5 4321::2 /vrf v1 /sgt 1
-r3 tping 0 5 1234::1 /vrf v1 /sgt 1
+r1 tping 0 5 2.2.2.2 vrf v1 sgt 1
+r3 tping 0 5 1.1.1.1 vrf v1 sgt 1
+r1 tping 0 5 4321::2 vrf v1 sgt 1
+r3 tping 0 5 1234::1 vrf v1 sgt 1
 
-r1 tping 100 5 2.2.2.2 /vrf v1 /sgt 2
-r3 tping 100 5 1.1.1.1 /vrf v1 /sgt 2
-r1 tping 100 5 4321::2 /vrf v1 /sgt 2
-r3 tping 100 5 1234::1 /vrf v1 /sgt 2
+r1 tping 100 5 2.2.2.2 vrf v1 sgt 2
+r3 tping 100 5 1.1.1.1 vrf v1 sgt 2
+r1 tping 100 5 4321::2 vrf v1 sgt 2
+r3 tping 100 5 1234::1 vrf v1 sgt 2

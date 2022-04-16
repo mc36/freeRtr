@@ -58,32 +58,32 @@ int eth1
 !
 
 
-r1 tping 100 5 1.1.1.2 /vrf v1 /siz 200
-r3 tping 100 5 1.1.1.1 /vrf v1 /siz 200
-r1 tping 100 5 1234::2 /vrf v1 /siz 200
-r3 tping 100 5 1234::1 /vrf v1 /siz 200
+r1 tping 100 5 1.1.1.2 vrf v1 siz 200
+r3 tping 100 5 1.1.1.1 vrf v1 siz 200
+r1 tping 100 5 1234::2 vrf v1 siz 200
+r3 tping 100 5 1234::1 vrf v1 siz 200
 
-r1 tping 0 5 1.1.1.2 /vrf v1 /siz 400
-r3 tping 0 5 1.1.1.1 /vrf v1 /siz 400
-r1 tping 0 5 1234::2 /vrf v1 /siz 400
-r3 tping 0 5 1234::1 /vrf v1 /siz 400
+r1 tping 0 5 1.1.1.2 vrf v1 siz 400
+r3 tping 0 5 1.1.1.1 vrf v1 siz 400
+r1 tping 0 5 1234::2 vrf v1 siz 400
+r3 tping 0 5 1234::1 vrf v1 siz 400
 
-r1 tping 100 5 1.1.1.2 /vrf v1 /siz 600
-r3 tping 100 5 1.1.1.1 /vrf v1 /siz 600
-r1 tping 100 5 1234::2 /vrf v1 /siz 600
-r3 tping 100 5 1234::1 /vrf v1 /siz 600
+r1 tping 100 5 1.1.1.2 vrf v1 siz 600
+r3 tping 100 5 1.1.1.1 vrf v1 siz 600
+r1 tping 100 5 1234::2 vrf v1 siz 600
+r3 tping 100 5 1234::1 vrf v1 siz 600
 
-r2 tping 100 5 1.1.1.2 /vrf v1 /siz 200
-r2 tping 100 5 1.1.1.1 /vrf v1 /siz 200
-r2 tping 100 5 1234::2 /vrf v1 /siz 200
-r2 tping 100 5 1234::1 /vrf v1 /siz 200
+r2 tping 100 5 1.1.1.2 vrf v1 siz 200
+r2 tping 100 5 1.1.1.1 vrf v1 siz 200
+r2 tping 100 5 1234::2 vrf v1 siz 200
+r2 tping 100 5 1234::1 vrf v1 siz 200
 
-r2 tping 0 5 1.1.1.2 /vrf v1 /siz 400
-r2 tping 0 5 1.1.1.1 /vrf v1 /siz 400
-r2 tping 0 5 1234::2 /vrf v1 /siz 400
-r2 tping 0 5 1234::1 /vrf v1 /siz 400
+r2 tping 0 5 1.1.1.2 vrf v1 siz 400
+r2 tping 0 5 1.1.1.1 vrf v1 siz 400
+r2 tping 0 5 1234::2 vrf v1 siz 400
+r2 tping 0 5 1234::1 vrf v1 siz 400
 
-r2 tping 100 5 1.1.1.2 /vrf v1 /siz 600
-r2 tping 100 5 1.1.1.1 /vrf v1 /siz 600
-r2 tping 100 5 1234::2 /vrf v1 /siz 600
-r2 tping 100 5 1234::1 /vrf v1 /siz 600
+r2 tping 100 5 1.1.1.2 vrf v1 siz 600
+r2 tping 100 5 1.1.1.1 vrf v1 siz 600
+r2 tping 100 5 1234::2 vrf v1 siz 600
+r2 tping 100 5 1234::1 vrf v1 siz 600

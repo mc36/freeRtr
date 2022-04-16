@@ -177,20 +177,20 @@ router bgp6 1
 
 
 
-r1 tping 100 60 1234::2 /vrf v1
-r2 tping 100 60 1234::1 /vrf v1
+r1 tping 100 60 1234::2 vrf v1
+r2 tping 100 60 1234::1 vrf v1
 
-r1 tping 100 60 9.9.2.3 /vrf v2
-r2 tping 100 60 9.9.2.1 /vrf v2
-r1 tping 100 60 9992::3 /vrf v2
-r2 tping 100 60 9992::1 /vrf v2
+r1 tping 100 60 9.9.2.3 vrf v2
+r2 tping 100 60 9.9.2.1 vrf v2
+r1 tping 100 60 9992::3 vrf v2
+r2 tping 100 60 9992::1 vrf v2
 
-r1 tping 100 60 9.9.3.3 /vrf v3
-r2 tping 100 60 9.9.3.1 /vrf v3
-r1 tping 100 60 9993::3 /vrf v3
-r2 tping 100 60 9993::1 /vrf v3
+r1 tping 100 60 9.9.3.3 vrf v3
+r2 tping 100 60 9.9.3.1 vrf v3
+r1 tping 100 60 9993::3 vrf v3
+r2 tping 100 60 9993::1 vrf v3
 
-r1 tping 100 60 9.9.4.3 /vrf v4
-r2 tping 100 60 9.9.4.1 /vrf v4
-r1 tping 100 60 9994::3 /vrf v4
-r2 tping 100 60 9994::1 /vrf v4
+r1 tping 100 60 9.9.4.3 vrf v4
+r2 tping 100 60 9.9.4.1 vrf v4
+r1 tping 100 60 9994::3 vrf v4
+r2 tping 100 60 9994::1 vrf v4

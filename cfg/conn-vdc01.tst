@@ -31,7 +31,7 @@ int eth1
  exit
 !
 
-r1 tping 100 5 9.9.9.9 /vrf v1
+r1 tping 100 5 9.9.9.9 vrf v1
 
 r1 send att vdc a
 r1 send conf t
@@ -45,7 +45,7 @@ r1 send  ipv6 addr 1234::1 ffff::
 r1 send  exit
 r1 send end
 
-r1 tping 100 5 1.1.1.2 /vrf v1
-r2 tping 100 5 1.1.1.1 /vrf v1
-r1 tping 100 5 1234::2 /vrf v1
-r2 tping 100 5 1234::1 /vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r2 tping 100 5 1234::1 vrf v1

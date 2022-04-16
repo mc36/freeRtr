@@ -2104,11 +2104,11 @@ class userTesterOne {
                 return;
             }
             String org = cmd.getRemaining();
-            String add = " /size 1111 /repeat 1111";
+            String add = " size 1111 repeat 1111";
             addrIP adr = new addrIP();
             adr.fromString(cmd.word());
             if (adr.isMulticast()) {
-                add += " /delay 11";
+                add += " delay 11";
             }
             bits.buf2txt(false, bits.str2lst("cmd:" + org + add), op.getLogName(4));
             p.putLine("terminal table raw");
