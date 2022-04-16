@@ -175,6 +175,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean gateRem = true;
 
     /**
+     * install with this distance
+     */
+    public int gateDst = 0;
+
+    /**
      * install labeled route, 0=none, 1=implicit, 2=explicit
      */
     public int gateLab = 0;
@@ -510,6 +515,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       none                      disable per packet source checking");
         l.add(null, "2 .     gateway-local               install local route");
         l.add(null, "2 .     gateway-remote              install remote route");
+        l.add(null, "2 3     gateway-distance            install with this distance");
+        l.add(null, "3 .       <num>                     distance");
         l.add(null, "2 3     gateway-labeled             install labeled route");
         l.add(null, "3 .       none                      unlabelled");
         l.add(null, "3 .       implicit                  implicit null");
@@ -736,6 +743,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, pmtuds < 1, cmds.tabulator, beg + "pmtud-reply", "" + pmtuds);
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
+        l.add(cmds.tabulator + beg + "gateway-distance " + gateDst);
         switch (gateLab) {
             case 0:
                 a = "none";
@@ -1130,6 +1138,11 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("gateway-remote")) {
             gateRem = true;
+            fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-distance")) {
+            gateDst = bits.str2num(cmd.word());
             fwd.routerStaticChg();
             return false;
         }
@@ -1687,6 +1700,11 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("gateway-remote")) {
             gateRem = false;
+            fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-distance")) {
+            gateDst = 0;
             fwd.routerStaticChg();
             return false;
         }
