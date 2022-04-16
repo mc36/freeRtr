@@ -175,12 +175,27 @@ public class ipFwdIface extends tabRouteIface {
     public boolean gateRem = true;
 
     /**
-     * install with this distance
+     * install connected with this distance
      */
-    public int gateDst = 0;
+    public int gateDstC = 0;
 
     /**
-     * install labeled route, 0=none, 1=implicit, 2=explicit
+     * install local with this distance
+     */
+    public int gateDstL = 0;
+
+    /**
+     * install remote with this distance
+     */
+    public int gateDstR = 0;
+
+    /**
+     * install prefixes with this distance
+     */
+    public int gateDstP = 0;
+
+    /**
+     * install labeled route, 0=unlabeled, 1=implicit, 2=explicit
      */
     public int gateLab = 0;
 
@@ -516,11 +531,14 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 .     gateway-local               install local route");
         l.add(null, "2 .     gateway-remote              install remote route");
         l.add(null, "2 3     gateway-distance            install with this distance");
-        l.add(null, "3 .       <num>                     distance");
+        l.add(null, "3 4       <num>                     connected distance");
+        l.add(null, "4 5         <num>                   local distance");
+        l.add(null, "5 6           <num>                 remote distance");
+        l.add(null, "6 .             <num>               prefixes distance");
         l.add(null, "2 3     gateway-labeled             install labeled route");
-        l.add(null, "3 .       none                      unlabelled");
-        l.add(null, "3 .       implicit                  implicit null");
-        l.add(null, "3 .       explicit                  explicit null");
+        l.add(null, "3 .       unlabeled                 no label");
+        l.add(null, "3 .       implicit-null             implicit null");
+        l.add(null, "3 .       explicit-null             explicit null");
         l.add(null, "2 3     gateway-prefix              prefix list to install throught gateway");
         l.add(null, "3 .       <name:pl>                 name of prefix list");
         l.add(null, "2 3     gateway-map                 route map to set throught gateway");
@@ -743,16 +761,16 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, pmtuds < 1, cmds.tabulator, beg + "pmtud-reply", "" + pmtuds);
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
-        l.add(cmds.tabulator + beg + "gateway-distance " + gateDst);
+        l.add(cmds.tabulator + beg + "gateway-distance " + gateDstC + " " + gateDstL + " " + gateDstR + " " + gateDstP);
         switch (gateLab) {
             case 0:
-                a = "none";
+                a = "unlabeled";
                 break;
             case 1:
-                a = "implicit";
+                a = "implicit-null";
                 break;
             case 2:
-                a = "explicit";
+                a = "explicit-null";
                 break;
             default:
                 a = "unknown=" + gateLab;
@@ -1142,20 +1160,23 @@ public class ipFwdIface extends tabRouteIface {
             return false;
         }
         if (a.equals("gateway-distance")) {
-            gateDst = bits.str2num(cmd.word());
+            gateDstC = bits.str2num(cmd.word());
+            gateDstL = bits.str2num(cmd.word());
+            gateDstR = bits.str2num(cmd.word());
+            gateDstP = bits.str2num(cmd.word());
             fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-labeled")) {
             a = cmd.word();
             gateLab = 0;
-            if (a.equals("none")) {
+            if (a.equals("unlabeled")) {
                 gateLab = 0;
             }
-            if (a.equals("implicit")) {
+            if (a.equals("implicit-null")) {
                 gateLab = 1;
             }
-            if (a.equals("explicit")) {
+            if (a.equals("explicit-null")) {
                 gateLab = 2;
             }
             fwd.routerStaticChg();
@@ -1704,7 +1725,10 @@ public class ipFwdIface extends tabRouteIface {
             return false;
         }
         if (a.equals("gateway-distance")) {
-            gateDst = 0;
+            gateDstC = 0;
+            gateDstL = 0;
+            gateDstR = 0;
+            gateDstP = 0;
             fwd.routerStaticChg();
             return false;
         }

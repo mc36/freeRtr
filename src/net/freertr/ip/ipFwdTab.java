@@ -807,12 +807,12 @@ public class ipFwdTab {
             tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
             prf.best.iface = ifc;
             prf.best.rouTyp = tabRouteAttr.routeType.conn;
-            prf.best.distance = ifc.gateDst;
+            prf.best.distance = ifc.gateDstC;
             if (ifc.gateLoc) {
                 prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.local;
-                prf.best.distance = ifc.gateDst;
+                prf.best.distance = ifc.gateDstL;
             }
             if (ifc.linkLocal) {
                 addrPrefix<addrIP> pre;
@@ -826,7 +826,7 @@ public class ipFwdTab {
                 prf = tabC.add(tabRoute.addType.always, pre, null);
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.conn;
-                prf.best.distance = ifc.gateDst;
+                prf.best.distance = ifc.gateDstC;
             }
             addrIP gtw = ifc.gateAddr;
             if (gtw == null) {
@@ -852,7 +852,7 @@ public class ipFwdTab {
                 }
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.remote;
-                prf.best.distance = ifc.gateDst;
+                prf.best.distance = ifc.gateDstR;
                 prf.best.nextHop = gtw.copyBytes();
             }
             tabListing<tabPrfxlstN, addrIP> pfl = ifc.gatePrfx;
@@ -869,7 +869,7 @@ public class ipFwdTab {
                 prf.prefix = pfl.get(o).getPrefix();
                 prf.best.nextHop = gtw.copyBytes();
                 prf.best.rouTyp = tabRouteAttr.routeType.defpref;
-                prf.best.distance = ifc.gateDst;
+                prf.best.distance = ifc.gateDstP;
                 prf.best.iface = ifc;
                 tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.sfiUnicast, 0, prf, true, ifc.gateRtmp, ifc.gateRplc, null);
             }
