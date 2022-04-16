@@ -76,6 +76,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match origin all",
         "route-map .*! sequence .* match metric all",
         "route-map .*! sequence .* match tag all",
+        "route-map .*! sequence .* match label-local all",
+        "route-map .*! sequence .* match label-remote all",
         "route-map .*! sequence .* match segrout all",
         "route-map .*! sequence .* match bier all",
         "route-map .*! sequence .* match afi all",
@@ -106,6 +108,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* set origin leave",
         "route-map .*! sequence .* set metric leave",
         "route-map .*! sequence .* set tag leave",
+        "route-map .*! sequence .* set label-local leave",
+        "route-map .*! sequence .* set label-remote leave",
         "route-map .*! sequence .* set segrout leave",
         "route-map .*! sequence .* set bier leave",
         "route-map .*! sequence .* no log"
@@ -235,6 +239,12 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     tag                 match tag");
         l.add(null, "3 .       <num>             tag");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     label-local         match local label");
+        l.add(null, "3 .       <num>             label");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     label-remote        match remote label");
+        l.add(null, "3 .       <num>             label");
+        l.add(null, "3 .       all               any value");
         l.add(null, "2 3     segrout             match sr index");
         l.add(null, "3 .       <num>             index");
         l.add(null, "3 .       all               any value");
@@ -343,6 +353,22 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "3 4       sub               substract value to current value");
         l.add(null, "4 .         <num>           value");
         l.add(null, "2 3     tag                 set tag");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 4       set               set value to a specific value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "3 4       add               add value to current value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "3 4       sub               substract value to current value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "2 3     label-local         set local label");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 4       set               set value to a specific value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "3 4       add               add value to current value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "3 4       sub               substract value to current value");
+        l.add(null, "4 .         <num>           value");
+        l.add(null, "2 3     label-remote        set remote label");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 4       set               set value to a specific value");
         l.add(null, "4 .         <num>           value");
@@ -642,6 +668,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("label-local")) {
+                if (ntry.lablocMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("label-remote")) {
+                if (ntry.labremMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("segrout")) {
                 if (ntry.segrouMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -783,6 +823,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tag")) {
                 if (ntry.tagSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("label-local")) {
+                if (ntry.lablocSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("label-remote")) {
+                if (ntry.labremSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
                 }
@@ -979,6 +1033,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.tagMatch.set2always();
                 return;
             }
+            if (a.equals("label-local")) {
+                ntry.lablocMatch.set2always();
+                return;
+            }
+            if (a.equals("label-remote")) {
+                ntry.labremMatch.set2always();
+                return;
+            }
             if (a.equals("segrout")) {
                 ntry.segrouMatch.set2always();
                 return;
@@ -1089,6 +1151,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tag")) {
                 ntry.tagSet.set2unchange();
+                return;
+            }
+            if (a.equals("label-local")) {
+                ntry.lablocSet.set2unchange();
+                return;
+            }
+            if (a.equals("label-remote")) {
+                ntry.labremSet.set2unchange();
                 return;
             }
             if (a.equals("segrout")) {

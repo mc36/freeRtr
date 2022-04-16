@@ -154,6 +154,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setTag,
         /**
+         * set local label
+         */
+        setLabloc,
+        /**
+         * set remote label
+         */
+        setLabrem,
+        /**
          * set segrou
          */
         setSegrou,
@@ -299,6 +307,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * tag
          */
         tag,
+        /**
+         * local label
+         */
+        labrem,
+        /**
+         * remote label
+         */
+        labloc,
         /**
          * segrou
          */
@@ -487,6 +503,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set bandwidth " + intSet;
             case setTag:
                 return "set tag " + intSet;
+            case setLabloc:
+                return "set label-local " + intSet;
+            case setLabrem:
+                return "set label-remote " + intSet;
             case setSegrou:
                 return "set segrout " + intSet;
             case setBier:
@@ -578,6 +598,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "bandwidth " + intMatch;
             case tag:
                 return "tag " + intMatch;
+            case labloc:
+                return "label-local " + intMatch;
+            case labrem:
+                return "label-remote " + intMatch;
             case segrou:
                 return "segrout " + intMatch;
             case bier:
@@ -712,6 +736,19 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.bandwidth);
             case tag:
                 return intMatch.matches(net.best.tag);
+            case labloc:
+                if (net.best.labelLoc == null) {
+                    return false;
+                }
+                return intMatch.matches(net.best.labelLoc.label);
+            case labrem:
+                if (net.best.labelRem == null) {
+                    return false;
+                }
+                if (net.best.labelRem.size() < 1) {
+                    return false;
+                }
+                return intMatch.matches(net.best.labelRem.get(0));
             case segrou:
                 return intMatch.matches(net.best.segrouIdx);
             case bier:
@@ -825,6 +862,12 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setTag:
                 attr.tag = intSet.update(attr.tag);
+                return;
+            case setLabloc:
+                tabRouteUtil.updateLabloc(attr, intSet);
+                return;
+            case setLabrem:
+                tabRouteUtil.updateLabrem(attr, intSet);
                 return;
             case setSegrou:
                 attr.segrouIdx = intSet.update(attr.segrouIdx);

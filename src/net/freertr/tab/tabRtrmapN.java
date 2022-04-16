@@ -152,9 +152,29 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater tagSet = new tabIntUpdater();
 
     /**
+     * local label matcher
+     */
+    public tabIntMatcher lablocMatch = new tabIntMatcher();
+
+    /**
+     * remote label matcher
+     */
+    public tabIntMatcher labremMatch = new tabIntMatcher();
+
+    /**
      * segrou matcher
      */
     public tabIntMatcher segrouMatch = new tabIntMatcher();
+
+    /**
+     * local label updater
+     */
+    public tabIntUpdater lablocSet = new tabIntUpdater();
+
+    /**
+     * remote label updater
+     */
+    public tabIntUpdater labremSet = new tabIntUpdater();
 
     /**
      * segrou updater
@@ -442,6 +462,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match origin " + originMatch);
         l.add(beg + "match metric " + metricMatch);
         l.add(beg + "match tag " + tagMatch);
+        l.add(beg + "match label-local " + lablocMatch);
+        l.add(beg + "match label-remote " + labremMatch);
         l.add(beg + "match segrout " + segrouMatch);
         l.add(beg + "match bier " + bierMatch);
         cmds.cfgLine(l, !noStdComm, beg, "match nostdcomm", "");
@@ -497,6 +519,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set origin " + originSet);
         l.add(beg + "set metric " + metricSet);
         l.add(beg + "set tag " + tagSet);
+        l.add(beg + "set label-local " + lablocSet);
+        l.add(beg + "set label-remote " + labremSet);
         l.add(beg + "set segrout " + segrouSet);
         l.add(beg + "set bier " + bierSet);
         return l;
@@ -543,6 +567,25 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (!tagMatch.matches(net.best.tag)) {
             return false;
+        }
+        if (lablocMatch.action != tabIntMatcher.actionType.always) {
+            if (net.best.labelLoc == null) {
+                return false;
+            }
+            if (!lablocMatch.matches(net.best.labelLoc.label)) {
+                return false;
+            }
+        }
+        if (labremMatch.action != tabIntMatcher.actionType.always) {
+            if (net.best.labelRem == null) {
+                return false;
+            }
+            if (net.best.labelRem.size() < 1) {
+                return false;
+            }
+            if (!labremMatch.matches(net.best.labelRem.get(0))) {
+                return false;
+            }
         }
         if (!segrouMatch.matches(net.best.segrouIdx)) {
             return false;
@@ -708,6 +751,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.origin = originSet.update(attr.origin);
         attr.metric = metricSet.update(attr.metric);
         attr.tag = tagSet.update(attr.tag);
+        tabRouteUtil.updateLabloc(attr, lablocSet);
+        tabRouteUtil.updateLabrem(attr, labremSet);
         attr.segrouIdx = segrouSet.update(attr.segrouIdx);
         attr.bierIdx = bierSet.update(attr.bierIdx);
         attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, aspathSet);

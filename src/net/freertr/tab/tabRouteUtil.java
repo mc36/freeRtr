@@ -946,4 +946,49 @@ public class tabRouteUtil {
         return l;
     }
 
+    /**
+     * update local label
+     *
+     * @param <T> class of address
+     * @param attr attribute to update
+     * @param setter updater
+     */
+    public static <T extends addrType> void updateLabloc(tabRouteAttr<T> attr, tabIntUpdater setter) {
+        if (setter.action == tabIntUpdater.actionType.nothing) {
+            return;
+        }
+        int lab = -1;
+        if (attr.labelLoc != null) {
+            lab = attr.labelLoc.label;
+        }
+        lab = setter.update(lab);
+        attr.labelLoc = tabLabel.find(lab);
+    }
+
+    /**
+     * update remote label
+     *
+     * @param <T> class of address
+     * @param attr attribute to update
+     * @param setter updater
+     */
+    public static <T extends addrType> void updateLabrem(tabRouteAttr<T> attr, tabIntUpdater setter) {
+        switch (setter.action) {
+            case nothing:
+                break;
+            case setter:
+                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.value);
+                if (attr.labelRem.size() > 1) {
+                    attr.labelRem.remove(1);
+                }
+                break;
+            case adder:
+                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.value);
+                break;
+            case suber:
+                tabRouteUtil.removeIntList(attr.labelRem, setter.value);
+                break;
+        }
+    }
+
 }

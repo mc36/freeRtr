@@ -20,13 +20,26 @@ public class tabIntUpdater {
      */
     public actionType action = actionType.nothing;
 
-    private enum actionType {
-
+    /**
+     * possible actions
+     */
+    public enum actionType {
+        /**
+         * do nothing
+         */
         nothing,
+        /**
+         * constant
+         */
         setter,
+        /**
+         * addition
+         */
         adder,
+        /**
+         * subtract
+         */
         suber
-
     }
 
     /**
