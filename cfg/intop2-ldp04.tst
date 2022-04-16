@@ -139,11 +139,11 @@ int tun1
 !
 
 
-r1 tping 100 60 2.2.2.2 vrf v1 int lo0
-r1 tping 100 60 2.2.2.3 vrf v1 int lo0
+r1 tping 100 60 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 60 2.2.2.3 vrf v1 sou lo0
 
-r3 tping 100 60 2.2.2.2 vrf v1 int lo0
-r3 tping 100 60 2.2.2.1 vrf v1 int lo0
+r3 tping 100 60 2.2.2.2 vrf v1 sou lo0
+r3 tping 100 60 2.2.2.1 vrf v1 sou lo0
 
-r1 tping 100 60 3.3.3.3 vrf v1 int lo0
-r3 tping 100 60 3.3.3.1 vrf v1 int lo0
+r1 tping 100 60 3.3.3.3 vrf v1 sou lo0
+r3 tping 100 60 3.3.3.1 vrf v1 sou lo0

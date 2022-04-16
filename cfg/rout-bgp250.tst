@@ -114,10 +114,10 @@ r2 tping 100 60 4321::1 vrf v1
 
 sleep 3000
 
-r1 tping 100 5 2.2.2.2 vrf v1 int lo0
-r1 tping 100 5 4321::2 vrf v1 int lo0
-r2 tping 100 5 2.2.2.1 vrf v1 int lo0
-r2 tping 100 5 4321::1 vrf v1 int lo0
+r1 tping 100 5 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 5 4321::2 vrf v1 sou lo0
+r2 tping 100 5 2.2.2.1 vrf v1 sou lo0
+r2 tping 100 5 4321::1 vrf v1 sou lo0
 
 r1 send conf t
 r1 send int eth2
@@ -129,7 +129,7 @@ r2 send int eth2
 r2 send shut
 r2 send end
 
-r1 tping 100 5 2.2.2.2 vrf v1 int lo0
-r1 tping 100 5 4321::2 vrf v1 int lo0
-r2 tping 100 5 2.2.2.1 vrf v1 int lo0
-r2 tping 100 5 4321::1 vrf v1 int lo0
+r1 tping 100 5 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 5 4321::2 vrf v1 sou lo0
+r2 tping 100 5 2.2.2.1 vrf v1 sou lo0
+r2 tping 100 5 4321::1 vrf v1 sou lo0

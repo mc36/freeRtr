@@ -64,8 +64,8 @@ ipv6 route v1 :: :: 1234:2::1
 
 
 
-r3 tping 100 5 1.1.1.1 vrf v1 int lo1
-r3 tping 100 5 1234:1::1 vrf v1 int lo1
+r3 tping 100 5 1.1.1.1 vrf v1 sou lo1
+r3 tping 100 5 1234:1::1 vrf v1 sou lo1
 
 r2 output show ipv4 nat v1 tran
 r2 output show ipv6 nat v1 tran

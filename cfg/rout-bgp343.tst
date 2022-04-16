@@ -204,37 +204,37 @@ router bgp6 1
 !
 
 
-r1 tping 100 60 2.2.2.2 vrf v1 int lo0
-r1 tping 100 60 4321::2 vrf v1 int lo0
-r1 tping 100 60 2.2.2.3 vrf v1 int lo0
-r1 tping 100 60 4321::3 vrf v1 int lo0
+r1 tping 100 60 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 60 4321::2 vrf v1 sou lo0
+r1 tping 100 60 2.2.2.3 vrf v1 sou lo0
+r1 tping 100 60 4321::3 vrf v1 sou lo0
 
-r2 tping 100 60 2.2.2.1 vrf v1 int lo0
-r2 tping 100 60 4321::1 vrf v1 int lo0
-r2 tping 100 60 2.2.2.3 vrf v1 int lo0
-r2 tping 100 60 4321::3 vrf v1 int lo0
+r2 tping 100 60 2.2.2.1 vrf v1 sou lo0
+r2 tping 100 60 4321::1 vrf v1 sou lo0
+r2 tping 100 60 2.2.2.3 vrf v1 sou lo0
+r2 tping 100 60 4321::3 vrf v1 sou lo0
 
-r3 tping 100 60 2.2.2.1 vrf v1 int lo0
-r3 tping 100 60 4321::1 vrf v1 int lo0
-r3 tping 100 60 2.2.2.2 vrf v1 int lo0
-r3 tping 100 60 4321::2 vrf v1 int lo0
+r3 tping 100 60 2.2.2.1 vrf v1 sou lo0
+r3 tping 100 60 4321::1 vrf v1 sou lo0
+r3 tping 100 60 2.2.2.2 vrf v1 sou lo0
+r3 tping 100 60 4321::2 vrf v1 sou lo0
 
-r1 tping 100 60 3.3.3.2 vrf v3 int lo2
-r1 tping 100 60 3333::2 vrf v3 int lo2
-r1 tping 100 60 3.3.3.3 vrf v3 int lo2
-r1 tping 100 60 3333::3 vrf v3 int lo2
+r1 tping 100 60 3.3.3.2 vrf v3 sou lo2
+r1 tping 100 60 3333::2 vrf v3 sou lo2
+r1 tping 100 60 3.3.3.3 vrf v3 sou lo2
+r1 tping 100 60 3333::3 vrf v3 sou lo2
 
-r2 tping 100 60 3.3.3.1 vrf v3 int lo2
-r2 tping 100 60 3333::1 vrf v3 int lo2
-r2 tping 100 60 3.3.3.3 vrf v3 int lo2
-r2 tping 100 60 3333::3 vrf v3 int lo2
+r2 tping 100 60 3.3.3.1 vrf v3 sou lo2
+r2 tping 100 60 3333::1 vrf v3 sou lo2
+r2 tping 100 60 3.3.3.3 vrf v3 sou lo2
+r2 tping 100 60 3333::3 vrf v3 sou lo2
 
-r3 tping 100 60 3.3.3.1 vrf v3 int lo2
-r3 tping 100 60 3333::1 vrf v3 int lo2
-r3 tping 100 60 3.3.3.2 vrf v3 int lo2
-r3 tping 100 60 3333::2 vrf v3 int lo2
+r3 tping 100 60 3.3.3.1 vrf v3 sou lo2
+r3 tping 100 60 3333::1 vrf v3 sou lo2
+r3 tping 100 60 3.3.3.2 vrf v3 sou lo2
+r3 tping 100 60 3333::2 vrf v3 sou lo2
 
-r2 tping 0 60 3.3.3.1 vrf v3 int lo3
-r2 tping 0 60 3333::1 vrf v3 int lo3
-r2 tping 0 60 3.3.3.3 vrf v3 int lo3
-r2 tping 0 60 3333::3 vrf v3 int lo3
+r2 tping 0 60 3.3.3.1 vrf v3 sou lo3
+r2 tping 0 60 3333::1 vrf v3 sou lo3
+r2 tping 0 60 3.3.3.3 vrf v3 sou lo3
+r2 tping 0 60 3333::3 vrf v3 sou lo3

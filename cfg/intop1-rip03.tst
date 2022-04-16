@@ -63,5 +63,5 @@ interface gigabit1
 
 
 r1 tping 100 10 1.1.1.2 vrf v1
-r1 tping 100 120 2.2.2.2 vrf v1 int lo0
-r1 tping 100 120 4321::2 vrf v1 int lo0
+r1 tping 100 120 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 120 4321::2 vrf v1 sou lo0

@@ -178,7 +178,7 @@ r2 tping 0 10 1.1.1.1 vrf v1
 r2 tping 0 10 1.1.2.2 vrf v1
 r3 tping 0 10 1.1.2.1 vrf v1
 
-r1 tping 100 60 3.3.3.3 vrf v1 int lo1
-r3 tping 100 60 3.3.3.1 vrf v1 int lo1
-r1 tping 100 60 3333::3 vrf v1 int lo1
-r3 tping 100 60 3333::1 vrf v1 int lo1
+r1 tping 100 60 3.3.3.3 vrf v1 sou lo1
+r3 tping 100 60 3.3.3.1 vrf v1 sou lo1
+r1 tping 100 60 3333::3 vrf v1 sou lo1
+r3 tping 100 60 3333::1 vrf v1 sou lo1

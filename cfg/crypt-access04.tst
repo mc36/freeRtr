@@ -119,7 +119,7 @@ r3 send telnet 1.1.1.1 666 vrf v1
 r3 tping 100 20 2.2.2.1 vrf v1
 r4 send telnet 1.1.1.1 666 vrf v1
 r4 tping 0 20 2.2.2.1 vrf v1
-r4 send telnet 1.1.1.1 666 vrf v1 int lo1
+r4 send telnet 1.1.1.1 666 vrf v1 sou lo1
 r4 tping 100 20 2.2.2.1 vrf v1
 r2 send exit
 r2 read closed
@@ -134,7 +134,7 @@ r3 send telnet 1234::1 666 vrf v1
 r3 tping 100 20 2.2.2.1 vrf v1
 r4 send telnet 1234::1 666 vrf v1
 r4 tping 0 20 2.2.2.1 vrf v1
-r4 send telnet 1234::1 666 vrf v1 int lo1
+r4 send telnet 1234::1 666 vrf v1 sou lo1
 r4 tping 100 20 2.2.2.1 vrf v1
 r2 send exit
 r2 read closed

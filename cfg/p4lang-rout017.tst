@@ -248,41 +248,41 @@ ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 
 
 
-r1 tping 100 10 2.2.2.101 vrf v1 int lo0
-r1 tping 100 10 4321::101 vrf v1 int lo0
-r1 tping 100 10 2.2.2.103 vrf v1 int lo0
-r1 tping 100 10 4321::103 vrf v1 int lo0
-r1 tping 100 10 2.2.2.104 vrf v1 int lo0
-r1 tping 100 10 4321::104 vrf v1 int lo0
-r1 tping 100 10 2.2.2.105 vrf v1 int lo0
-r1 tping 100 10 4321::105 vrf v1 int lo0
+r1 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r1 tping 100 10 4321::101 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r1 tping 100 10 4321::103 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r1 tping 100 10 4321::104 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r1 tping 100 10 4321::105 vrf v1 sou lo0
 
-r3 tping 100 10 2.2.2.101 vrf v1 int lo0
-r3 tping 100 10 4321::101 vrf v1 int lo0
-r3 tping 100 10 2.2.2.103 vrf v1 int lo0
-r3 tping 100 10 4321::103 vrf v1 int lo0
-r3 tping 100 10 2.2.2.104 vrf v1 int lo0
-r3 tping 100 10 4321::104 vrf v1 int lo0
-r3 tping 100 10 2.2.2.105 vrf v1 int lo0
-r3 tping 100 10 4321::105 vrf v1 int lo0
+r3 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r3 tping 100 10 4321::101 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r3 tping 100 10 4321::103 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r3 tping 100 10 4321::104 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r3 tping 100 10 4321::105 vrf v1 sou lo0
 
-r4 tping 100 10 2.2.2.101 vrf v1 int lo0
-r4 tping 100 10 4321::101 vrf v1 int lo0
-r4 tping 100 10 2.2.2.103 vrf v1 int lo0
-r4 tping 100 10 4321::103 vrf v1 int lo0
-r4 tping 100 10 2.2.2.104 vrf v1 int lo0
-r4 tping 100 10 4321::104 vrf v1 int lo0
-r4 tping 100 10 2.2.2.105 vrf v1 int lo0
-r4 tping 100 10 4321::105 vrf v1 int lo0
+r4 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r4 tping 100 10 4321::101 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r4 tping 100 10 4321::103 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r4 tping 100 10 4321::104 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r4 tping 100 10 4321::105 vrf v1 sou lo0
 
-r5 tping 100 10 2.2.2.101 vrf v1 int lo0
-r5 tping 100 10 4321::101 vrf v1 int lo0
-r5 tping 100 10 2.2.2.103 vrf v1 int lo0
-r5 tping 100 10 4321::103 vrf v1 int lo0
-r5 tping 100 10 2.2.2.104 vrf v1 int lo0
-r5 tping 100 10 4321::104 vrf v1 int lo0
-r5 tping 100 10 2.2.2.105 vrf v1 int lo0
-r5 tping 100 10 4321::105 vrf v1 int lo0
+r5 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r5 tping 100 10 4321::101 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r5 tping 100 10 4321::103 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r5 tping 100 10 4321::104 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r5 tping 100 10 4321::105 vrf v1 sou lo0
 
-r1 dping sdn . r4 2.2.2.105 vrf v1 int lo0
-r1 dping sdn . r4 4321::105 vrf v1 int lo0
+r1 dping sdn . r4 2.2.2.105 vrf v1 sou lo0
+r1 dping sdn . r4 4321::105 vrf v1 sou lo0

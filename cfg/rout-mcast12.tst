@@ -94,5 +94,5 @@ r1 tping 100 5 1234:2::1 vrf v1
 r3 tping 100 5 1.1.1.1 vrf v1
 r3 tping 100 5 1234:1::1 vrf v1
 
-r1 tping 100 5 232.2.2.2 vrf v1 int eth1
-r1 tping 100 5 ff06::1 vrf v1 int eth1
+r1 tping 100 5 232.2.2.2 vrf v1 sou eth1
+r1 tping 100 5 ff06::1 vrf v1 sou eth1

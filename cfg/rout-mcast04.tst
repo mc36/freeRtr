@@ -125,5 +125,5 @@ r3 tping 100 5 1234:1::1 vrf v1
 r4 tping 100 5 1.1.1.1 vrf v1
 r4 tping 100 5 1234:1::1 vrf v1
 
-r1 tping 200 5 232.2.2.2 vrf v1 int eth1 multi
-r1 tping 200 5 ff06::1 vrf v1 int eth1 multi
+r1 tping 200 5 232.2.2.2 vrf v1 sou eth1 multi
+r1 tping 200 5 ff06::1 vrf v1 sou eth1 multi

@@ -209,40 +209,40 @@ ipv6 route v1 4321::2221 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 4321::1111 mpls
 !
 
 
-r1 tping 100 20 2.2.2.2 vrf v1 int lo1
-r1 tping 100 20 4321::2 vrf v1 int lo1
-r1 tping 100 20 2.2.2.3 vrf v1 int lo1
-r1 tping 100 20 4321::3 vrf v1 int lo1
-r1 tping 100 20 2.2.2.4 vrf v1 int lo1
-r1 tping 100 20 4321::4 vrf v1 int lo1
+r1 tping 100 20 2.2.2.2 vrf v1 sou lo1
+r1 tping 100 20 4321::2 vrf v1 sou lo1
+r1 tping 100 20 2.2.2.3 vrf v1 sou lo1
+r1 tping 100 20 4321::3 vrf v1 sou lo1
+r1 tping 100 20 2.2.2.4 vrf v1 sou lo1
+r1 tping 100 20 4321::4 vrf v1 sou lo1
 
-r2 tping 100 20 2.2.2.1 vrf v1 int lo1
-r2 tping 100 20 4321::1 vrf v1 int lo1
-r2 tping 100 20 2.2.2.3 vrf v1 int lo1
-r2 tping 100 20 4321::3 vrf v1 int lo1
-r2 tping 100 20 2.2.2.4 vrf v1 int lo1
-r2 tping 100 20 4321::4 vrf v1 int lo1
+r2 tping 100 20 2.2.2.1 vrf v1 sou lo1
+r2 tping 100 20 4321::1 vrf v1 sou lo1
+r2 tping 100 20 2.2.2.3 vrf v1 sou lo1
+r2 tping 100 20 4321::3 vrf v1 sou lo1
+r2 tping 100 20 2.2.2.4 vrf v1 sou lo1
+r2 tping 100 20 4321::4 vrf v1 sou lo1
 
-r3 tping 100 20 2.2.2.1 vrf v1 int lo1
-r3 tping 100 20 4321::1 vrf v1 int lo1
-r3 tping 100 20 2.2.2.2 vrf v1 int lo1
-r3 tping 100 20 4321::2 vrf v1 int lo1
-r3 tping 100 20 2.2.2.4 vrf v1 int lo1
-r3 tping 100 20 4321::4 vrf v1 int lo1
+r3 tping 100 20 2.2.2.1 vrf v1 sou lo1
+r3 tping 100 20 4321::1 vrf v1 sou lo1
+r3 tping 100 20 2.2.2.2 vrf v1 sou lo1
+r3 tping 100 20 4321::2 vrf v1 sou lo1
+r3 tping 100 20 2.2.2.4 vrf v1 sou lo1
+r3 tping 100 20 4321::4 vrf v1 sou lo1
 
-r4 tping 100 20 2.2.2.1 vrf v1 int lo1
-r4 tping 100 20 4321::1 vrf v1 int lo1
-r4 tping 100 20 2.2.2.2 vrf v1 int lo1
-r4 tping 100 20 4321::2 vrf v1 int lo1
-r4 tping 100 20 2.2.2.3 vrf v1 int lo1
-r4 tping 100 20 4321::3 vrf v1 int lo1
+r4 tping 100 20 2.2.2.1 vrf v1 sou lo1
+r4 tping 100 20 4321::1 vrf v1 sou lo1
+r4 tping 100 20 2.2.2.2 vrf v1 sou lo1
+r4 tping 100 20 4321::2 vrf v1 sou lo1
+r4 tping 100 20 2.2.2.3 vrf v1 sou lo1
+r4 tping 100 20 4321::3 vrf v1 sou lo1
 
-r1 tping 100 20 3.3.3.4 vrf v1 int lo1
-r1 tping 100 20 4321::1114 vrf v1 int lo1
-r4 tping 100 20 3.3.3.1 vrf v1 int lo1
-r4 tping 100 20 4321::1111 vrf v1 int lo1
+r1 tping 100 20 3.3.3.4 vrf v1 sou lo1
+r1 tping 100 20 4321::1114 vrf v1 sou lo1
+r4 tping 100 20 3.3.3.1 vrf v1 sou lo1
+r4 tping 100 20 4321::1111 vrf v1 sou lo1
 
-r1 tping 100 20 4.4.4.1 vrf v1 int lo2
-r1 tping 100 20 4321::2221 vrf v1 int lo2
-r4 tping 100 20 4.4.4.2 vrf v1 int lo2
-r4 tping 100 20 4321::2222 vrf v1 int lo2
+r1 tping 100 20 4.4.4.1 vrf v1 sou lo2
+r1 tping 100 20 4321::2221 vrf v1 sou lo2
+r4 tping 100 20 4.4.4.2 vrf v1 sou lo2
+r4 tping 100 20 4321::2222 vrf v1 sou lo2

@@ -1271,7 +1271,7 @@ public class userExec {
         hl.add(null, "5 4,.          <str>             password");
         hl.add(null, "4 5          proxy               specify proxy to use");
         hl.add(null, "5 4,.          <name:prx>        name of proxy profile");
-        hl.add(null, "4 5          interface           specify interface to use");
+        hl.add(null, "4 5          source              specify interface to use");
         hl.add(null, "5 4,.          <name:ifc>        name of interface");
         hl.add(null, "4 5          chat                specify chat script to use");
         hl.add(null, "5 4,.          <name:cht>        name of chat script");
@@ -1348,7 +1348,7 @@ public class userExec {
         hl.add(null, "4 5,.        <host>                   number of hosts");
         hl.add(null, "5 6            vrf                    specify vrf to use");
         hl.add(null, "6 5,.            <name:vrf>           name of vrf");
-        hl.add(null, "5 6            interface              specify interface to use");
+        hl.add(null, "5 6            source                 specify interface to use");
         hl.add(null, "6 5,.            <name:ifc>           name of interface");
         hl.add(null, "5 6            timeout                specify timeout");
         hl.add(null, "6 5,.            <num>                timeout in milliseconds");
@@ -1373,7 +1373,7 @@ public class userExec {
         hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
         hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        interface                  specify interface to use");
+        hl.add(null, "3 4        source                     specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
         hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
@@ -1411,7 +1411,7 @@ public class userExec {
         hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
         hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        interface                  specify interface to use");
+        hl.add(null, "3 4        source                     specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
         hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
@@ -1441,7 +1441,7 @@ public class userExec {
         hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
         hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        interface                  specify interface to use");
+        hl.add(null, "3 4        source                     specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
         hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
@@ -1500,7 +1500,7 @@ public class userExec {
         hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
         hl.add(null, "3 4        vrf                        specify vrf to use");
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
-        hl.add(null, "3 4        interface                  specify interface to use");
+        hl.add(null, "3 4        source                     specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
         hl.add(null, "1 2    telnet                         start telnet session");
         getHelpTelnet(hl);
@@ -2846,7 +2846,7 @@ public class userExec {
                 ifc = null;
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
@@ -2993,7 +2993,7 @@ public class userExec {
                 ifc = null;
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
@@ -3179,7 +3179,7 @@ public class userExec {
                 ifc = null;
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
@@ -3333,7 +3333,7 @@ public class userExec {
                 ifc = null;
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
@@ -3483,7 +3483,7 @@ public class userExec {
                 ifc = null;
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
@@ -3721,7 +3721,7 @@ public class userExec {
                 ifc = null;
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }
@@ -3867,7 +3867,7 @@ public class userExec {
                 pass = cmd.word();
                 continue;
             }
-            if (a.equals("interface")) {
+            if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), false);
                 continue;
             }

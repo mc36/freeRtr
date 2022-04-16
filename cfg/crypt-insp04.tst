@@ -77,20 +77,20 @@ ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 !
 
 
-r1 tping 100 5 2.2.2.2 vrf v1 int lo0
-r1 tping 100 5 4321::2 vrf v1 int lo0
-r1 tping 100 5 2.2.2.3 vrf v1 int lo0
-r1 tping 100 5 4321::3 vrf v1 int lo0
+r1 tping 100 5 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 5 4321::2 vrf v1 sou lo0
+r1 tping 100 5 2.2.2.3 vrf v1 sou lo0
+r1 tping 100 5 4321::3 vrf v1 sou lo0
 
-r2 tping 100 5 2.2.2.1 vrf v1 int lo0
-r2 tping 100 5 4321::1 vrf v1 int lo0
-r2 tping 100 5 2.2.2.3 vrf v1 int lo0
-r2 tping 100 5 4321::3 vrf v1 int lo0
+r2 tping 100 5 2.2.2.1 vrf v1 sou lo0
+r2 tping 100 5 4321::1 vrf v1 sou lo0
+r2 tping 100 5 2.2.2.3 vrf v1 sou lo0
+r2 tping 100 5 4321::3 vrf v1 sou lo0
 
-r3 tping 100 5 2.2.2.1 vrf v1 int lo0
-r3 tping 100 5 4321::1 vrf v1 int lo0
-r3 tping 100 5 2.2.2.2 vrf v1 int lo0
-r3 tping 100 5 4321::2 vrf v1 int lo0
+r3 tping 100 5 2.2.2.1 vrf v1 sou lo0
+r3 tping 100 5 4321::1 vrf v1 sou lo0
+r3 tping 100 5 2.2.2.2 vrf v1 sou lo0
+r3 tping 100 5 4321::2 vrf v1 sou lo0
 
 r2 output show bridge 1
 output ../binTmp/crypt-insp04.html

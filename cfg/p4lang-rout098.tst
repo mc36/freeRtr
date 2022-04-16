@@ -331,62 +331,62 @@ ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
 !
 
 
-r1 tping 100 10 2.2.2.101 vrf v1 int lo0
-r1 tping 100 10 4321::101 vrf v1 int lo0
-r1 tping 100 10 2.2.2.103 vrf v1 int lo0
-r1 tping 100 10 4321::103 vrf v1 int lo0
-r1 tping 100 10 2.2.2.104 vrf v1 int lo0
-r1 tping 100 10 4321::104 vrf v1 int lo0
+r1 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r1 tping 100 10 4321::101 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r1 tping 100 10 4321::103 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r1 tping 100 10 4321::104 vrf v1 sou lo0
 
-r3 tping 100 10 2.2.2.101 vrf v1 int lo0
-r3 tping 100 10 4321::101 vrf v1 int lo0
-r3 tping 100 10 2.2.2.103 vrf v1 int lo0
-r3 tping 100 10 4321::103 vrf v1 int lo0
-r3 tping 100 10 2.2.2.104 vrf v1 int lo0
-r3 tping 100 10 4321::104 vrf v1 int lo0
+r3 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r3 tping 100 10 4321::101 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r3 tping 100 10 4321::103 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r3 tping 100 10 4321::104 vrf v1 sou lo0
 
-r4 tping 100 10 2.2.2.101 vrf v1 int lo0
-r4 tping 100 10 4321::101 vrf v1 int lo0
-r4 tping 100 10 2.2.2.103 vrf v1 int lo0
-r4 tping 100 10 4321::103 vrf v1 int lo0
-r4 tping 100 10 2.2.2.104 vrf v1 int lo0
-r4 tping 100 10 4321::104 vrf v1 int lo0
+r4 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r4 tping 100 10 4321::101 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r4 tping 100 10 4321::103 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r4 tping 100 10 4321::104 vrf v1 sou lo0
 
-r5 tping 100 10 3.3.3.103 vrf v1 int lo0
-r5 tping 100 10 3333::103 vrf v1 int lo0
-r5 tping 100 10 3.3.3.104 vrf v1 int lo0
-r5 tping 100 10 3333::104 vrf v1 int lo0
-r5 tping 100 10 3.3.3.105 vrf v1 int lo0
-r5 tping 100 10 3333::105 vrf v1 int lo0
-r5 tping 100 10 3.3.3.106 vrf v1 int lo0
-r5 tping 100 10 3333::106 vrf v1 int lo0
+r5 tping 100 10 3.3.3.103 vrf v1 sou lo0
+r5 tping 100 10 3333::103 vrf v1 sou lo0
+r5 tping 100 10 3.3.3.104 vrf v1 sou lo0
+r5 tping 100 10 3333::104 vrf v1 sou lo0
+r5 tping 100 10 3.3.3.105 vrf v1 sou lo0
+r5 tping 100 10 3333::105 vrf v1 sou lo0
+r5 tping 100 10 3.3.3.106 vrf v1 sou lo0
+r5 tping 100 10 3333::106 vrf v1 sou lo0
 
-r6 tping 100 10 3.3.3.103 vrf v1 int lo0
-r6 tping 100 10 3333::103 vrf v1 int lo0
-r6 tping 100 10 3.3.3.104 vrf v1 int lo0
-r6 tping 100 10 3333::104 vrf v1 int lo0
-r6 tping 100 10 3.3.3.105 vrf v1 int lo0
-r6 tping 100 10 3333::105 vrf v1 int lo0
-r6 tping 100 10 3.3.3.106 vrf v1 int lo0
-r6 tping 100 10 3333::106 vrf v1 int lo0
+r6 tping 100 10 3.3.3.103 vrf v1 sou lo0
+r6 tping 100 10 3333::103 vrf v1 sou lo0
+r6 tping 100 10 3.3.3.104 vrf v1 sou lo0
+r6 tping 100 10 3333::104 vrf v1 sou lo0
+r6 tping 100 10 3.3.3.105 vrf v1 sou lo0
+r6 tping 100 10 3333::105 vrf v1 sou lo0
+r6 tping 100 10 3.3.3.106 vrf v1 sou lo0
+r6 tping 100 10 3333::106 vrf v1 sou lo0
 
-r3 tping 100 10 3.3.3.103 vrf v1 int lo1
-r3 tping 100 10 3333::103 vrf v1 int lo1
-r3 tping 100 10 3.3.3.104 vrf v1 int lo1
-r3 tping 100 10 3333::104 vrf v1 int lo1
-r3 tping 100 10 3.3.3.105 vrf v1 int lo1
-r3 tping 100 10 3333::105 vrf v1 int lo1
-r3 tping 100 10 3.3.3.106 vrf v1 int lo1
-r3 tping 100 10 3333::106 vrf v1 int lo1
+r3 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r3 tping 100 10 3333::103 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r3 tping 100 10 3333::104 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r3 tping 100 10 3333::105 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r3 tping 100 10 3333::106 vrf v1 sou lo1
 
-r4 tping 100 10 3.3.3.103 vrf v1 int lo1
-r4 tping 100 10 3333::103 vrf v1 int lo1
-r4 tping 100 10 3.3.3.104 vrf v1 int lo1
-r4 tping 100 10 3333::104 vrf v1 int lo1
-r4 tping 100 10 3.3.3.105 vrf v1 int lo1
-r4 tping 100 10 3333::105 vrf v1 int lo1
-r4 tping 100 10 3.3.3.106 vrf v1 int lo1
-r4 tping 100 10 3333::106 vrf v1 int lo1
+r4 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r4 tping 100 10 3333::103 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r4 tping 100 10 3333::104 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r4 tping 100 10 3333::105 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r4 tping 100 10 3333::106 vrf v1 sou lo1
 
-r1 dping sdn . r3 3.3.3.106 vrf v1 int lo1
-r1 dping sdn . r3 3333::106 vrf v1 int lo1
+r1 dping sdn . r3 3.3.3.106 vrf v1 sou lo1
+r1 dping sdn . r3 3333::106 vrf v1 sou lo1

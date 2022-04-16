@@ -230,15 +230,15 @@ ipv6 multi v2 join ff06::1 3333::1
 !
 
 
-r1 tping 100 60 2.2.2.3 vrf v1 int lo0
-r1 tping 100 60 4321::3 vrf v1 int lo0
-r1 tping 100 60 2.2.2.4 vrf v1 int lo0
-r1 tping 100 60 4321::4 vrf v1 int lo0
+r1 tping 100 60 2.2.2.3 vrf v1 sou lo0
+r1 tping 100 60 4321::3 vrf v1 sou lo0
+r1 tping 100 60 2.2.2.4 vrf v1 sou lo0
+r1 tping 100 60 4321::4 vrf v1 sou lo0
 
-r3 tping 100 60 2.2.2.1 vrf v1 int lo0
-r3 tping 100 60 4321::1 vrf v1 int lo0
-r4 tping 100 60 2.2.2.1 vrf v1 int lo0
-r4 tping 100 60 4321::1 vrf v1 int lo0
+r3 tping 100 60 2.2.2.1 vrf v1 sou lo0
+r3 tping 100 60 4321::1 vrf v1 sou lo0
+r4 tping 100 60 2.2.2.1 vrf v1 sou lo0
+r4 tping 100 60 4321::1 vrf v1 sou lo0
 
 r1 tping 100 60 3.3.3.3 vrf v2
 r1 tping 100 60 3333::3 vrf v2
@@ -250,5 +250,5 @@ r3 tping 100 60 3333::1 vrf v2
 r4 tping 100 60 3.3.3.1 vrf v2
 r4 tping 100 60 3333::1 vrf v2
 
-r1 tping 200 10 232.2.2.2 vrf v2 int lo1 multi
-r1 tping 200 10 ff06::1 vrf v2 int lo1 multi
+r1 tping 200 10 232.2.2.2 vrf v2 sou lo1 multi
+r1 tping 200 10 ff06::1 vrf v2 sou lo1 multi

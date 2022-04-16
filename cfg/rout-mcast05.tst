@@ -182,11 +182,11 @@ ipv6 multi v1 join ff06::1 1234:1::1
 !
 
 
-r2 tping 100 60 2.2.2.3 vrf v1 int lo0
-r2 tping 100 60 4321::3 vrf v1 int lo0
+r2 tping 100 60 2.2.2.3 vrf v1 sou lo0
+r2 tping 100 60 4321::3 vrf v1 sou lo0
 
-r4 tping 100 60 2.2.2.1 vrf v1 int lo0
-r4 tping 100 60 4321::1 vrf v1 int lo0
+r4 tping 100 60 2.2.2.1 vrf v1 sou lo0
+r4 tping 100 60 4321::1 vrf v1 sou lo0
 
 r1 tping 100 60 2.2.2.1 vrf v1
 r1 tping 100 60 4321::1 vrf v1
@@ -204,5 +204,5 @@ r1 tping 100 60 1234:4::1 vrf v1
 r5 tping 100 60 1.1.1.1 vrf v1
 r5 tping 100 60 1234:1::1 vrf v1
 
-r1 tping 100 10 232.2.2.2 vrf v1 int eth1
-r1 tping 100 10 ff06::1 vrf v1 int eth1
+r1 tping 100 10 232.2.2.2 vrf v1 sou eth1
+r1 tping 100 10 ff06::1 vrf v1 sou eth1

@@ -176,18 +176,18 @@ int pweth2
 !
 
 
-r1 tping 0 20 2.2.2.2 vrf v1 int lo1
-r1 tping 0 20 4321::2 vrf v1 int lo1
-r1 tping 0 20 2.2.2.3 vrf v1 int lo1
-r1 tping 0 20 4321::3 vrf v1 int lo1
-r2 tping 0 20 2.2.2.1 vrf v1 int lo1
-r2 tping 0 20 4321::1 vrf v1 int lo1
-r2 tping 0 20 2.2.2.3 vrf v1 int lo1
-r2 tping 0 20 4321::3 vrf v1 int lo1
-r3 tping 0 20 2.2.2.1 vrf v1 int lo1
-r3 tping 0 20 4321::1 vrf v1 int lo1
-r3 tping 0 20 2.2.2.2 vrf v1 int lo1
-r3 tping 0 20 4321::2 vrf v1 int lo1
+r1 tping 0 20 2.2.2.2 vrf v1 sou lo1
+r1 tping 0 20 4321::2 vrf v1 sou lo1
+r1 tping 0 20 2.2.2.3 vrf v1 sou lo1
+r1 tping 0 20 4321::3 vrf v1 sou lo1
+r2 tping 0 20 2.2.2.1 vrf v1 sou lo1
+r2 tping 0 20 4321::1 vrf v1 sou lo1
+r2 tping 0 20 2.2.2.3 vrf v1 sou lo1
+r2 tping 0 20 4321::3 vrf v1 sou lo1
+r3 tping 0 20 2.2.2.1 vrf v1 sou lo1
+r3 tping 0 20 4321::1 vrf v1 sou lo1
+r3 tping 0 20 2.2.2.2 vrf v1 sou lo1
+r3 tping 0 20 4321::2 vrf v1 sou lo1
 
 r1 tping 100 40 3.3.3.2 vrf v1
 r3 tping 100 40 3.3.3.1 vrf v1
