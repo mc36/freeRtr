@@ -407,6 +407,10 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 locFil.open(false);
                 return;
             }
+            if (locFil == null) {
+                cmd.error("not enabled");
+                return;
+            }
             if (s.equals("backup")) {
                 if (negated) {
                     locFil.rotate(null, 0, 0, 0);
