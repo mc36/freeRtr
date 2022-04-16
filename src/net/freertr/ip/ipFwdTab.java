@@ -829,8 +829,24 @@ public class ipFwdTab {
             if (gtw == null) {
                 continue;
             }
+            int lab = -1;
+            switch (ifc.gateLab) {
+                case 1:
+                    lab = ipMpls.labelImp;
+                    break;
+                case 2:
+                    if (lower.ipVersion == 4) {
+                        lab = ipMpls.labelExp4;
+                    } else {
+                        lab = ipMpls.labelExp6;
+                    }
+                    break;
+            }
             if (ifc.gateRem) {
                 prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
+                if (lab >= 0) {
+                    prf.best.labelRem = tabLabel.int2labels(lab);
+                }
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.remote;
                 prf.best.nextHop = gtw.copyBytes();
@@ -841,13 +857,16 @@ public class ipFwdTab {
             }
             for (int o = 0; o < pfl.size(); o++) {
                 prf = new tabRouteEntry<addrIP>();
+                if (lab >= 0) {
+                    prf.best.labelRem = tabLabel.int2labels(lab);
+                }
                 prf.best.distance = 0;
                 prf.best.metric = 2;
                 prf.prefix = pfl.get(o).getPrefix();
                 prf.best.nextHop = gtw.copyBytes();
                 prf.best.rouTyp = tabRouteAttr.routeType.defpref;
                 prf.best.iface = ifc;
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.sfiUnicast, 0, prf, true, ifc.gateRtmp, null, null);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tabU, rtrBgpUtil.sfiUnicast, 0, prf, true, ifc.gateRtmp, ifc.gateRplc, null);
             }
         }
         tabL.mergeFrom(tabRoute.addType.better, tabC, tabRouteAttr.distanLim);

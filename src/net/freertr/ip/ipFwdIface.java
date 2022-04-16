@@ -175,6 +175,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean gateRem = true;
 
     /**
+     * install labeled route, 0=none, 1=implicit, 2=explicit
+     */
+    public int gateLab = 0;
+
+    /**
      * gateway
      */
     public addrIP gateAddr;
@@ -188,6 +193,11 @@ public class ipFwdIface extends tabRouteIface {
      * routemap through gateway
      */
     public tabListing<tabRtrmapN, addrIP> gateRtmp;
+
+    /**
+     * routepolicy through gateway
+     */
+    public tabListing<tabRtrplcN, addrIP> gateRplc;
 
     /**
      * fragmentation payload size
@@ -500,10 +510,16 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       none                      disable per packet source checking");
         l.add(null, "2 .     gateway-local               install local route");
         l.add(null, "2 .     gateway-remote              install remote route");
+        l.add(null, "2 3     gateway-labeled             install labeled route");
+        l.add(null, "3 .       none                      unlabelled");
+        l.add(null, "3 .       implicit                  implicit null");
+        l.add(null, "3 .       explicit                  explicit null");
         l.add(null, "2 3     gateway-prefix              prefix list to install throught gateway");
         l.add(null, "3 .       <name:pl>                 name of prefix list");
-        l.add(null, "2 3     gateway-routemap            route map to set throught gateway");
+        l.add(null, "2 3     gateway-map                 route map to set throught gateway");
         l.add(null, "3 .       <name:rm>                 name of route map");
+        l.add(null, "2 3     gateway-policy              route policy to set throught gateway");
+        l.add(null, "3 .       <name:rpl>                name of route policy");
         l.add(null, "2 3     access-group-in             access list to apply to ingress packets");
         l.add(null, "3 .       <name:acl>                name of access list");
         l.add(null, "2 3     access-group-out            access list to apply to egress packets");
@@ -720,8 +736,24 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, pmtuds < 1, cmds.tabulator, beg + "pmtud-reply", "" + pmtuds);
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
+        switch (gateLab) {
+            case 0:
+                a = "none";
+                break;
+            case 1:
+                a = "implicit";
+                break;
+            case 2:
+                a = "explicit";
+                break;
+            default:
+                a = "unknown=" + gateLab;
+                break;
+        }
+        cmds.cfgLine(l, gateLab == 0, cmds.tabulator, beg + "gateway-labeled", a);
         cmds.cfgLine(l, gatePrfx == null, cmds.tabulator, beg + "gateway-prefix", "" + gatePrfx);
-        cmds.cfgLine(l, gateRtmp == null, cmds.tabulator, beg + "gateway-routemap", "" + gateRtmp);
+        cmds.cfgLine(l, gateRtmp == null, cmds.tabulator, beg + "gateway-map", "" + gateRtmp);
+        cmds.cfgLine(l, gateRplc == null, cmds.tabulator, beg + "gateway-policy", "" + gateRplc);
         cmds.cfgLine(l, cfilterIn == null, cmds.tabulator, beg + "access-group-common-in", "" + cfilterIn);
         cmds.cfgLine(l, cfilterOut == null, cmds.tabulator, beg + "access-group-common-out", "" + cfilterOut);
         cmds.cfgLine(l, filterIn == null, cmds.tabulator, beg + "access-group-in", "" + filterIn);
@@ -1101,6 +1133,21 @@ public class ipFwdIface extends tabRouteIface {
             fwd.routerStaticChg();
             return false;
         }
+        if (a.equals("gateway-labeled")) {
+            a = cmd.word();
+            gateLab = 0;
+            if (a.equals("none")) {
+                gateLab = 0;
+            }
+            if (a.equals("implicit")) {
+                gateLab = 1;
+            }
+            if (a.equals("explicit")) {
+                gateLab = 2;
+            }
+            fwd.routerStaticChg();
+            return false;
+        }
         if (a.equals("gateway-prefix")) {
             cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
             if (ntry == null) {
@@ -1111,13 +1158,23 @@ public class ipFwdIface extends tabRouteIface {
             fwd.routerStaticChg();
             return false;
         }
-        if (a.equals("gateway-routemap")) {
+        if (a.equals("gateway-map")) {
             cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such route map");
                 return false;
             }
             gateRtmp = ntry.roumap;
+            fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-policy")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            gateRplc = ntry.rouplc;
             fwd.routerStaticChg();
             return false;
         }
@@ -1633,13 +1690,23 @@ public class ipFwdIface extends tabRouteIface {
             fwd.routerStaticChg();
             return false;
         }
+        if (a.equals("gateway-labeled")) {
+            gateLab = 0;
+            fwd.routerStaticChg();
+            return false;
+        }
         if (a.equals("gateway-prefix")) {
             gatePrfx = null;
             fwd.routerStaticChg();
             return false;
         }
-        if (a.equals("gateway-routemap")) {
+        if (a.equals("gateway-map")) {
             gateRtmp = null;
+            fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-policy")) {
+            gateRplc = null;
             fwd.routerStaticChg();
             return false;
         }
