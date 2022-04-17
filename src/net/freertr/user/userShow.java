@@ -3782,10 +3782,12 @@ public class userShow {
             tabRoute<addrIP> dif1 = new tabRoute<addrIP>("tab");
             compareTables(dif1, dif1, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
             compareTables(dif1, dif1, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
-            bits.sleep(tim);
             tabRoute<addrIP> dif2 = new tabRoute<addrIP>("tab");
-            compareTables(dif2, dif2, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
-            compareTables(dif2, dif2, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
+            if (dif1.size() > 0) {
+                bits.sleep(tim);
+                compareTables(dif2, dif2, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+                compareTables(dif2, dif2, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
+            }
             tabRoute<addrIP> dif3 = new tabRoute<addrIP>("tab");
             cmd.error("constant differences");
             compareDiffs(dif3, dif1, dif2);
