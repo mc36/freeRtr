@@ -526,6 +526,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         ntry.best.labelRem = tabLabel.int2labels(pck.label);
         ntry.best.nextHop = peer.copyBytes();
         ntry.best.iface = ifc;
+        boolean wake = pck.pmpLst.size() > 0;
         for (int i = 0; i < pck.prfLst.size(); i++) {
             ntry.prefix = pck.prfLst.get(i);
             if (debugger.rtrLdpTraf) {
@@ -537,6 +538,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 }
             }
             prefLearn.add(tabRoute.addType.always, ntry, true, true);
+            wake |= ip.labeldR.find(ntry.prefix) != null;
         }
         for (int i = 0; i < pck.pweLst.size(); i++) {
             packLdpPwe pwe = pck.pweLst.get(i);
@@ -570,10 +572,13 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             pmpAdvert.put(pmp);
             sendLabelMap(pmp);
         }
+        if (wake) {
+            ip.routerStaticChg();
+        }
     }
 
     /**
-     * got label mapping
+     * got label withdraw
      *
      * @param pck packet
      */
@@ -582,12 +587,14 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         if (pck.getFEClist()) {
             return;
         }
+        boolean wake = pck.pmpLst.size() > 0;
         for (int i = 0; i < pck.prfLst.size(); i++) {
             addrPrefix<addrIP> ntry = pck.prfLst.get(i);
             if (debugger.rtrLdpTraf) {
                 logger.debug("rx withdraw prefix=" + ntry);
             }
             prefLearn.del(ntry);
+            wake |= ip.labeldR.find(ntry) != null;
         }
         for (int i = 0; i < pck.pweLst.size(); i++) {
             packLdpPwe pwe = pck.pweLst.get(i);
@@ -627,6 +634,9 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         }
         for (int i = 0; i < pck.pmpLst.size(); i++) {
             sendLabelRlse(pck.pmpLst.get(i));
+        }
+        if (wake) {
+            ip.routerStaticChg();
         }
     }
 
@@ -808,11 +818,9 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
             switch (pck.msgTyp) {
                 case packLdp.msgTlabMap:
                     gotLabelMap(pck);
-                    ip.routerStaticChg();
                     break;
                 case packLdp.msgTlabWdr:
                     gotLabelWdrw(pck);
-                    ip.routerStaticChg();
                     break;
                 case packLdp.msgTlabRel:
                     gotLabelRlse(pck);

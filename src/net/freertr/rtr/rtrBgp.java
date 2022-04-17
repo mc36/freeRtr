@@ -1705,7 +1705,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computedMvpn = nMvpn;
         computedMvpo = nMvpo;
         if (diffs) {
-            fwdCore.routerChg(this);
+            fwdCore.routerChg(this, true);
         }
         for (int i = 0; i < lstn.size(); i++) {
             rtrBgpNeigh nei = lstn.get(i);
@@ -2008,6 +2008,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return true;
             }
         }
+        boolean labPer = routerAutoMesh != null;
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
             if (nei == null) {
@@ -2020,6 +2021,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.reachOld != nei.reachable) {
                 return true;
             }
+            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2033,6 +2035,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.reachOld != nei.reachable) {
                 return true;
             }
+            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " purge");
@@ -2124,8 +2127,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiLnks, null, changedLnks, computedLnks, origntedLnks);
         computeIncrUpdate(afiMvpn, null, changedMvpn, computedMvpn, origntedMvpn);
         computeIncrUpdate(afiMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
-        if ((cntGlb + cntFlw) > 0) {
-            fwdCore.routerChg(this);
+        if (labPer || ((cntGlb + cntFlw) > 0)) {
+            fwdCore.routerChg(this, labPer);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");

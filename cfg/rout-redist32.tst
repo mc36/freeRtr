@@ -156,8 +156,8 @@ r2 tping 100 60 4321::21 vrf v1
 
 r1 send conf t
 r1 send vrf def v1
-r1 send route4lim 5
-r1 send route6lim 5
+r1 send route4lim 5 5 5 5
+r1 send route6lim 5 5 5 5
 r1 send end
 
 r1 tping 100 60 2.2.2.2 vrf v1
@@ -170,8 +170,8 @@ r2 tping 100 60 4321::1 vrf v1
 
 r1 send conf t
 r1 send vrf def v1
-r1 send no route4lim 5
-r1 send no route6lim 5
+r1 send no route4lim 5 5 5 5
+r1 send no route6lim 5 5 5 5
 r1 send end
 
 r1 tping 100 60 2.2.2.2 vrf v1

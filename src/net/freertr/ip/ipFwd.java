@@ -1691,10 +1691,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * routing protocol notified that change happened
      *
      * @param rtr routing protocol handle
+     * @param lab provided labels changed
      */
-    public void routerChg(ipRtr rtr) {
+    public void routerChg(ipRtr rtr, boolean lab) {
         if (debugger.ipFwdEvnt) {
-            logger.debug("chgd rtr " + rtr);
+            logger.debug("chgd rtr " + rtr + " " + lab);
         }
         if (routers.find(rtr) == null) {
             return;
@@ -1707,6 +1708,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         rtr.routerChangedU = null;
         rtr.routerChangedM = null;
         rtr.routerChangedF = null;
+        if (lab) {
+            needFull.or(1);
+            triggerUpdate.wakeup();
+            return;
+        }
         if ((chgU != null) && (chgM != null) && (chgF != null)) {
             changedUni.mergeFrom(tabRoute.addType.always, chgU, tabRouteAttr.distanLim);
             changedMlt.mergeFrom(tabRoute.addType.always, chgM, tabRouteAttr.distanLim);

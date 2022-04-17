@@ -235,7 +235,7 @@ public class rtrOspf6 extends ipRtr {
         routerComputedM = tab1;
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = tab2;
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

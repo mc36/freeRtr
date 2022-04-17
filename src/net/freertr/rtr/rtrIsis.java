@@ -1048,13 +1048,13 @@ public class rtrIsis extends ipRtr {
             routerComputedM = tab1;
             routerComputedF = new tabRoute<addrIP>("rx");
             routerComputedI = tab3;
-            fwdCore.routerChg(this);
+            fwdCore.routerChg(this, false);
         }
         tab2.setProto(routerProtoTyp, routerProcNum);
         if (!tab2.preserveTime(other.routerComputedU)) {
             other.routerComputedU = tab2;
             other.routerComputedM = tab2;
-            other.fwd.routerChg(other);
+            other.fwd.routerChg(other, false);
         }
     }
 

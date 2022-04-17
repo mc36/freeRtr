@@ -336,7 +336,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
         routerComputedM = tab2;
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = new tabGen<tabIndex<addrIP>>();
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

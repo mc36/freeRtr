@@ -475,7 +475,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         routerComputedM = tabM;
         routerComputedF = tabF;
         routerComputedI = new tabGen<tabIndex<addrIP>>();
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

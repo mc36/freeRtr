@@ -260,7 +260,7 @@ public class rtrDownload extends ipRtr {
             return;
         }
         routerComputedU = res;
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

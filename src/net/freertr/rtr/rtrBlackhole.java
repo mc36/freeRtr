@@ -120,7 +120,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
             return;
         }
         routerComputedU = res;
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

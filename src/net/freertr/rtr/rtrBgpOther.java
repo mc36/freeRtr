@@ -232,7 +232,7 @@ public class rtrBgpOther extends ipRtr {
         routerComputedM = tabM;
         routerComputedF = tabF;
         routerComputedI = new tabGen<tabIndex<addrIP>>();
-        fwd.routerChg(this);
+        fwd.routerChg(this, true);
         if (flowInst) {
             fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));
         }
@@ -274,7 +274,7 @@ public class rtrBgpOther extends ipRtr {
         for (int i = 0; i < routerChangedF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, routerChangedF.get(i), routerComputedF, cmpF);
         }
-        fwd.routerChg(this);
+        fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
         if (flowInst && (routerChangedF.size() > 0)) {
             tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
             fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));

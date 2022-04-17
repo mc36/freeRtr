@@ -488,7 +488,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
         routerComputedM = tab;
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = new tabGen<tabIndex<addrIP>>();
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

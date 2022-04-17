@@ -155,7 +155,7 @@ public class rtrAggreg extends ipRtr {
         }
         routerComputedU = resU;
         routerComputedM = resM;
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

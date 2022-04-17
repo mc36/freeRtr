@@ -104,7 +104,7 @@ public class rtrUni2multi extends ipRtr {
             return;
         }
         routerComputedM = res;
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**

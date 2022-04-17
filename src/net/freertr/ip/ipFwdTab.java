@@ -1050,7 +1050,6 @@ public class ipFwdTab {
                 }
                 break;
             case all:
-                lower.incrCandid = false;
                 tabL = new tabRoute<addrIP>("labeled");
                 tabL.mergeFrom(tabRoute.addType.ecmp, tabU, tabRouteAttr.distanLim);
                 break;
@@ -1212,10 +1211,10 @@ public class ipFwdTab {
                 logger.debug("starting " + clnt);
             }
         }
-        doRouteLimitFull(lower, lower.actualU, lower.routeLimitU);
-        doRouteLimitFull(lower, lower.labeldR, lower.routeLimitL);
-        doRouteLimitFull(lower, lower.actualM, lower.routeLimitM);
-        doRouteLimitFull(lower, lower.actualF, lower.routeLimitF);
+        doRouteLimitFull(lower, tabU, lower.routeLimitU);
+        doRouteLimitFull(lower, tabL, lower.routeLimitL);
+        doRouteLimitFull(lower, tabM, lower.routeLimitM);
+        doRouteLimitFull(lower, tabF, lower.routeLimitF);
         if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabD.differs(tabRoute.addType.alters, lower.directR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }
@@ -1728,7 +1727,7 @@ public class ipFwdTab {
         chg |= (lower.changedUni.size() + lower.changedMlt.size() + lower.changedFlw.size()) > lower.incrLimit;
         chg |= !lower.incrCandid;
         if (debugger.ipFwdEvnt) {
-            logger.debug("update tables " + lower.vrfName + " chg=" + chg);
+            logger.debug("update tables " + lower.vrfName + " " + chg);
         }
         if (chg) {
             lower.updateFullCnt++;

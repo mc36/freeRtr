@@ -130,7 +130,7 @@ public class rtrFlowspec extends ipRtr {
             return;
         }
         routerComputedF = res;
-        fwdCore.routerChg(this);
+        fwdCore.routerChg(this, false);
     }
 
     /**
