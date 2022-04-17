@@ -748,7 +748,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             changeTim = tim;
         }
         ned |= (old.time - tim) < (lifetime - refresh);
-        ned &= !routerID.isEmpty();
+        ned &= !dat.rtrId.isEmpty();
         if (ned) {
             if (debugger.rtrLsrpEvnt) {
                 logger.debug("originate");
