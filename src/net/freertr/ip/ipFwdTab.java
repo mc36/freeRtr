@@ -747,6 +747,27 @@ public class ipFwdTab {
         return true;
     }
 
+    private static void doRouteLimitFull(ipFwd lower, tabRoute<addrIP> tab, int lim) {
+        if (lim < 1) {
+            return;
+        }
+        for (int i = tab.size() - 1; i > lim; i--) {
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            tab.del(ntry);
+            lower.incrCandid = false;
+        }
+    }
+
+    private static void doRouteLimitIncr(ipFwd lower, tabRoute<addrIP> tab, int lim) {
+        if (lim < 1) {
+            return;
+        }
+        if (tab.size() < lim) {
+            return;
+        }
+        lower.incrCandid = false;
+    }
+
     private static boolean updateTableRouteIncr(ipFwd lower, int mode, tabRoute<addrIP> chg, tabRoute<addrIP> cmp) {
         boolean chgd = false;
         for (int i = chg.size() - 1; i >= 0; i--) {
@@ -768,6 +789,10 @@ public class ipFwdTab {
         chg |= updateTableRouteIncr(lower, 1, lower.changedUni, lower.actualU);
         chg |= updateTableRouteIncr(lower, 2, lower.changedMlt, lower.actualM);
         chg |= updateTableRouteIncr(lower, 3, lower.changedFlw, lower.actualF);
+        doRouteLimitIncr(lower, lower.actualU, lower.routeLimitU);
+        doRouteLimitIncr(lower, lower.labeldR, lower.routeLimitL);
+        doRouteLimitIncr(lower, lower.actualM, lower.routeLimitM);
+        doRouteLimitIncr(lower, lower.actualF, lower.routeLimitF);
         return chg;
     }
 
@@ -1187,13 +1212,10 @@ public class ipFwdTab {
                 logger.debug("starting " + clnt);
             }
         }
-        if (lower.routeLimit > 0) {
-            for (int i = tabU.size() - 1; i > lower.routeLimit; i--) {
-                tabRouteEntry<addrIP> ntry = tabU.get(i);
-                tabU.del(ntry);
-            }
-            lower.incrCandid = false;
-        }
+        doRouteLimitFull(lower, lower.actualU, lower.routeLimitU);
+        doRouteLimitFull(lower, lower.labeldR, lower.routeLimitL);
+        doRouteLimitFull(lower, lower.actualM, lower.routeLimitM);
+        doRouteLimitFull(lower, lower.actualF, lower.routeLimitF);
         if ((!tabC.differs(tabRoute.addType.alters, lower.connedR)) && (!tabD.differs(tabRoute.addType.alters, lower.directR)) && (!tabL.differs(tabRoute.addType.alters, lower.labeldR)) && (!tabU.differs(tabRoute.addType.alters, lower.actualU)) && (!tabM.differs(tabRoute.addType.alters, lower.actualM)) && (!tabF.differs(tabRoute.addType.alters, lower.actualF))) {
             return false;
         }

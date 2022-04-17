@@ -136,9 +136,24 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public boolean mdt;
 
     /**
-     * route limit
+     * unicast route limit
      */
-    public int routeLimit;
+    public int routeLimitU;
+
+    /**
+     * labeled route limit
+     */
+    public int routeLimitL;
+
+    /**
+     * multicast route limit
+     */
+    public int routeLimitM;
+
+    /**
+     * flowspec route limit
+     */
+    public int routeLimitF;
 
     /**
      * current list of routers

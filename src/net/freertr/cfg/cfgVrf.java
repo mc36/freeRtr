@@ -309,6 +309,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! label6common 0",
         "vrf definition .*! iface4start 0",
         "vrf definition .*! iface6start 0",
+        "vrf definition .*! route4limit 0 0 0 0",
+        "vrf definition .*! route6limit 0 0 0 0",
         "vrf definition .*! no import4list",
         "vrf definition .*! no import6list",
         "vrf definition .*! no export4list",
@@ -321,8 +323,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no import6policy",
         "vrf definition .*! no export4policy",
         "vrf definition .*! no export6policy",
-        "vrf definition .*! no route4limit",
-        "vrf definition .*! no route6limit",
         "vrf definition .*! no dapp4",
         "vrf definition .*! no dapp6",
         "vrf definition .*! no copp4in",
@@ -644,6 +644,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "label6mode " + labmod2string(fwd6.prefixMode));
         l.add(cmds.tabulator + "label4common " + label4comm);
         l.add(cmds.tabulator + "label6common " + label6comm);
+        l.add(cmds.tabulator + "route4limit " + fwd4.routeLimitU + " " + fwd4.routeLimitL + " " + fwd4.routeLimitM + " " + fwd4.routeLimitF);
+        l.add(cmds.tabulator + "route6limit " + fwd6.routeLimitU + " " + fwd6.routeLimitL + " " + fwd6.routeLimitM + " " + fwd6.routeLimitF);
         cmds.cfgLine(l, !fwd4.mplsPropTtl, cmds.tabulator, "propagate4ttl", "");
         cmds.cfgLine(l, !fwd6.mplsPropTtl, cmds.tabulator, "propagate6ttl", "");
         cmds.cfgLine(l, !fwd4.mplsExtRep, cmds.tabulator, "report4labels", "");
@@ -666,8 +668,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, import6pol == null, cmds.tabulator, "import6policy", "" + import6pol);
         cmds.cfgLine(l, export4pol == null, cmds.tabulator, "export4policy", "" + export4pol);
         cmds.cfgLine(l, export6pol == null, cmds.tabulator, "export6policy", "" + export6pol);
-        cmds.cfgLine(l, fwd4.routeLimit < 1, cmds.tabulator, "route4limit", "" + fwd4.routeLimit);
-        cmds.cfgLine(l, fwd6.routeLimit < 1, cmds.tabulator, "route6limit", "" + fwd6.routeLimit);
         cmds.cfgLine(l, dapp4 == null, cmds.tabulator, "dapp4", "" + dapp4);
         cmds.cfgLine(l, dapp6 == null, cmds.tabulator, "dapp6", "" + dapp6);
         cmds.cfgLine(l, copp4in == null, cmds.tabulator, "copp4in", "" + copp4in);
@@ -766,9 +766,15 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "1 2  unreach6interval    rate limit icmp generation");
         l.add(null, "2 .    <num>             millisecs between them");
         l.add(null, "1 2  route4limit         maximum ipv4 routes allowed");
-        l.add(null, "2 .    <num>             number of routes");
+        l.add(null, "2 3    <num>             number of unicast routes");
+        l.add(null, "3 4      <num>           number of labeled routes");
+        l.add(null, "4 5        <num>         number of multicast routes");
+        l.add(null, "5 .          <num>       number of flowspec routes");
         l.add(null, "1 2  route6limit         maximum ipv6 routes allowed");
-        l.add(null, "2 .    <num>             number of routes");
+        l.add(null, "2 3    <num>             number of unicast routes");
+        l.add(null, "3 4      <num>           number of labeled routes");
+        l.add(null, "4 5        <num>         number of multicast routes");
+        l.add(null, "5 .          <num>       number of flowspec routes");
         l.add(null, "1 2  label4filter        specify ipv4 label filter");
         l.add(null, "2 .    <name:pl>         name of prefix list");
         l.add(null, "1 2  label6filter        specify ipv6 label filter");
@@ -938,12 +944,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("route4limit")) {
-            fwd4.routeLimit = bits.str2num(cmd.word());
+            fwd4.routeLimitU = bits.str2num(cmd.word());
+            fwd4.routeLimitL = bits.str2num(cmd.word());
+            fwd4.routeLimitM = bits.str2num(cmd.word());
+            fwd4.routeLimitF = bits.str2num(cmd.word());
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("route6limit")) {
-            fwd6.routeLimit = bits.str2num(cmd.word());
+            fwd6.routeLimitU = bits.str2num(cmd.word());
+            fwd6.routeLimitL = bits.str2num(cmd.word());
+            fwd6.routeLimitM = bits.str2num(cmd.word());
+            fwd6.routeLimitF = bits.str2num(cmd.word());
             fwd6.routerStaticChg();
             return;
         }
@@ -1380,12 +1392,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("route4limit")) {
-            fwd4.routeLimit = 0;
+            fwd4.routeLimitU = 0;
+            fwd4.routeLimitL = 0;
+            fwd4.routeLimitM = 0;
+            fwd4.routeLimitF = 0;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("route6limit")) {
-            fwd6.routeLimit = 0;
+            fwd6.routeLimitU = 0;
+            fwd6.routeLimitL = 0;
+            fwd6.routeLimitM = 0;
+            fwd6.routeLimitF = 0;
             fwd6.routerStaticChg();
             return;
         }
