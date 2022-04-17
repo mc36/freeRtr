@@ -2452,9 +2452,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 if (untriggeredRecomputation <= 0) {
                     break;
                 }
-                if (debugger.ipFwdEvnt) {
-                    logger.debug("update tables");
-                }
                 ipFwdTab.updateEverything(this);
             }
             untriggeredRecomputation -= 1;

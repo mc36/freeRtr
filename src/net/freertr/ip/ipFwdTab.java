@@ -1035,8 +1035,11 @@ public class ipFwdTab {
                     if (ntry == null) {
                         continue;
                     }
-                    if (ntry.best.rouTyp == tabRouteAttr.routeType.conn) {
-                        continue;
+                    switch (ntry.best.rouTyp) {
+                        case conn:
+                        case local:
+                        case remote:
+                            continue;
                     }
                     tabL.del(ntry);
                 }
@@ -1702,6 +1705,9 @@ public class ipFwdTab {
         boolean chg = ful > 0;
         chg |= (lower.changedUni.size() + lower.changedMlt.size() + lower.changedFlw.size()) > lower.incrLimit;
         chg |= !lower.incrCandid;
+        if (debugger.ipFwdEvnt) {
+            logger.debug("update tables " + lower.vrfName + " chg=" + chg);
+        }
         if (chg) {
             lower.updateFullCnt++;
             lower.updateFullLst = tim;
