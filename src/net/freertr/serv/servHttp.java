@@ -312,6 +312,9 @@ public class servHttp extends servGeneric implements prtServS {
             if (ntry.allowMarkdown) {
                 l.add(a + " markdown");
             }
+            if (ntry.speedLimit > 0) {
+                l.add(a + " speed-limit " + ntry.speedLimit);
+            }
             if (!ntry.autoIndex) {
                 l.add(a + " noindex");
             }
@@ -587,6 +590,14 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.multiAccT = cmd.getRemaining();
             return false;
         }
+        if (a.equals("speed-limit")) {
+            if (negated) {
+                ntry.speedLimit = 0;
+                return false;
+            }
+            ntry.speedLimit = bits.str2num(cmd.word());
+            return false;
+        }
         if (a.equals("noindex")) {
             ntry.autoIndex = negated;
             return false;
@@ -821,6 +832,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "5 5,.        <str>                  server to access");
         l.add(null, "3 .      markdown                   allow markdown conversion");
         l.add(null, "3 .      noindex                    disallow index for directory");
+        l.add(null, "3 4      speed-limit                limit download speeds");
+        l.add(null, "4 .        <num>                    bytes per second");
         l.add(null, "3 4,.    dirlist                    allow directory listing");
         l.add(null, "4 4,.      readme                   put readme in front of listing");
         l.add(null, "4 4,.      stats                    put statistics after listing");
@@ -1023,6 +1036,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * page style
      */
     public List<String> style;
+
+    /**
+     * speed limit
+     */
+    public int speedLimit;
 
     /**
      * serve index for dirs
@@ -1642,10 +1660,18 @@ class servHttpConn implements Runnable {
             parseFileName(s.substring(0, i));
             s = s.substring(i + 1, s.length());
         }
+        i = s.indexOf("\n");
+        int m;
+        if (i < 0) {
+            m = gotHost.speedLimit;
+        } else {
+            m = bits.str2num(s.substring(i + 1, s.length()));
+            s = s.substring(0, i);
+        }
         if (!a.startsWith("/")) {
             a = gotHost.path + a;
         }
-        return sendBinFile(a, s);
+        return sendBinFile(a, s, m);
     }
 
     private boolean sendOneImgMap(String s) {
@@ -1792,7 +1818,7 @@ class servHttpConn implements Runnable {
         return false;
     }
 
-    private boolean sendBinFile(String s, String a) {
+    private boolean sendBinFile(String s, String a, int m) {
         RandomAccessFile fr;
         long siz;
         try {
@@ -1859,6 +1885,7 @@ class servHttpConn implements Runnable {
         if (gotHead) {
             siz = 0;
         }
+        int don = 0;
         for (; pos < siz;) {
             final int max = 8192;
             long rndl = siz - pos;
@@ -1879,6 +1906,15 @@ class servHttpConn implements Runnable {
                 break;
             }
             pos += buf.length;
+            if (m < 1) {
+                continue;
+            }
+            don += rndi;
+            if (don < m) {
+                continue;
+            }
+            bits.sleep(1000);
+            don = 0;
         }
         try {
             fr.close();
@@ -1909,7 +1945,7 @@ class servHttpConn implements Runnable {
         if ((gotHost.allowMediaStrm) && a.startsWith(".motion-")) {
             return sendOneMotion(s, "." + a.substring(8, a.length()));
         }
-        return sendBinFile(gotHost.path + s, a);
+        return sendBinFile(gotHost.path + s, a, gotHost.speedLimit);
     }
 
     private boolean sendOneDir(String s) {

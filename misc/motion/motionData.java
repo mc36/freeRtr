@@ -110,6 +110,11 @@ public class motionData implements Runnable {
     protected String lastPath;
 
     /**
+     * last event speed
+     */
+    protected int lastBps;
+
+    /**
      * images saved
      */
     protected int saved;
@@ -177,6 +182,7 @@ public class motionData implements Runnable {
         buf.write(lastPath.getBytes());
         buf.write("\n\n".getBytes());
         buf.write("//multipart/x-mixed-replace;boundary=ThisRandomString".getBytes());
+        buf.write(("\n" + lastBps + "\n").getBytes());
     }
 
     /**
@@ -278,9 +284,9 @@ public class motionData implements Runnable {
         return result;
     }
 
-    private void saveImage(int seq, OutputStream output) throws Exception {
+    private int saveImage(int seq, OutputStream output) throws Exception {
         if (imgDat[seq] == null) {
-            return;
+            return -1;
         }
         byte[] crlf = new byte[2];
         crlf[0] = 13;
@@ -299,6 +305,7 @@ public class motionData implements Runnable {
         output.write(imgDat[seq]);
         output.write(crlf);
         saved++;
+        return imgDat[seq].length;
     }
 
     private static int getDiff(int p1, int p2, int rot) {
@@ -374,6 +381,7 @@ public class motionData implements Runnable {
             saveImage((imgPos + 1 + i) % imgDat.length, output);
         }
         int ago = 0;
+        int sav = 0;
         for (;;) {
             ago++;
             if (ago > imgPost) {
@@ -385,7 +393,7 @@ public class motionData implements Runnable {
                 old = imgLst;
                 cur = fetchImage();
                 dif = getDiff(cur, old);
-                saveImage(imgPos, output);
+                sav += saveImage(imgPos, output);
             } catch (Exception e) {
             }
             if (dif < trigger) {
@@ -395,6 +403,7 @@ public class motionData implements Runnable {
         }
         output.flush();
         output.close();
+        lastBps = (int) ((motionUtil.getTime() - lastEvnt) / 1000 / sav);
     }
 
 }
