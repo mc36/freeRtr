@@ -382,6 +382,7 @@ public class ifcPppLcp extends ifcPppNcp {
         pck.msbPutD(4, lastEchoId);
         pck.putSkip(8);
         lastEchoId &= 0xff;
+        cntr.tx(pck);
         parent.sendNcpCtrl(pck, pppCtrl, codeEchoReq, lastEchoId);
     }
 
@@ -562,6 +563,7 @@ public class ifcPppLcp extends ifcPppNcp {
                 pck.getSkip(4);
                 pck.msbPutD(0, cfg.magic);
                 pck.putSkip(4);
+                cntr.tx(pck);
                 parent.sendNcpCtrl(pck, pppCtrl, codeEchoRep, id);
                 echoesSent = 0;
                 break;

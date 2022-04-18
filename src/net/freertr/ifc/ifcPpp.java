@@ -21,6 +21,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.pack.packHolder;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -1575,6 +1576,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             default:
                 cntr.drop(pck, counter.reasons.badCmd);
                 pck.getSkip(-2);
+                ctrlLcp.cntr.tx(pck);
                 sendNcpCtrl(pck, ifcPppLcp.pppCtrl, ifcPppNcp.codeProtRej, bits.randomB());
                 break;
         }
@@ -1701,6 +1703,32 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             }
             bits.sleep(fragGap);
         }
+    }
+
+    private void getShow(userFormat res, ifcPppNcp nc) {
+        res.add(nc.getPPPname() + "|" + nc.sawBit + "|" + nc.cntr.getShStat());
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "ncp|state|cntr");
+        getShow(res, ctrlLcp);
+        getShow(res, ctrlIp4);
+        getShow(res, ctrlIp6);
+        getShow(res, ctrlBrdg);
+        getShow(res, ctrlMpls);
+        getShow(res, ctrlOsi);
+        getShow(res, ctrlIpx);
+        getShow(res, ctrlCrypt);
+        getShow(res, ctrlNsh);
+        getShow(res, ctrlSgt);
+        getShow(res, ctrlPolka);
+        getShow(res, ctrlMpolka);
+        return res;
     }
 
 }

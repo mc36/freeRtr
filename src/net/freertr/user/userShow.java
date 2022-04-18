@@ -916,6 +916,19 @@ public class userShow {
             }
             return null;
         }
+        if (a.equals("p2p")) {
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            if (ntry.ppp == null) {
+                cmd.error("not enabled");
+                return null;
+            }
+            rdr.putStrTab(ntry.ppp.getShow());
+            return null;
+        }
         if (a.equals("vpdn")) {
             cfgVpdn cln = cfgAll.vpdnFind(cmd.word(), false);
             if (cln == null) {

@@ -23,7 +23,7 @@ public abstract class ifcPppNcp {
     /**
      * bitmap value of sawn events
      */
-    private int sawBit;
+    protected int sawBit;
 
     /**
      * confreqs seen
@@ -312,6 +312,7 @@ public abstract class ifcPppNcp {
         pck.clear();
         pck.putStart();
         writeOptions(pck, txReq);
+        cntr.tx(pck);
         parent.sendNcpCtrl(pck, getPPPctrl(), codeConfReq, lastTxIdnt);
         if (debugger.ifcPppEvnt) {
             logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + txReq);
@@ -328,6 +329,7 @@ public abstract class ifcPppNcp {
     public void recvPck(packHolder pck, int code, int id) {
         if ((sawBit & sawFrcClsd) != 0) {
             pck.getSkip(-2 - ifcPpp.size);
+            cntr.drop(pck, counter.reasons.notUp);
             parent.sendNcpCtrl(pck, ifcPppLcp.pppCtrl, ifcPppNcp.codeProtRej, bits.randomB());
             return;
         }
@@ -342,6 +344,7 @@ public abstract class ifcPppNcp {
                 sawBit |= sawRemNeed;
                 Object tmp2 = readOptions(pck);
                 if (tmp2 == null) {
+                    cntr.tx(pck);
                     parent.sendNcpCtrl(pck, getPPPctrl(), codeConfRej, id);
                     return;
                 }
@@ -353,6 +356,7 @@ public abstract class ifcPppNcp {
                     sawNakC = 0;
                     writeOptions(rej, tmp1);
                     rej = copyOptions(rej, pck);
+                    cntr.tx(pck);
                     parent.sendNcpCtrl(rej, getPPPctrl(), codeConfRej, id);
                     if (debugger.ifcPppEvnt) {
                         logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp1);
@@ -371,9 +375,11 @@ public abstract class ifcPppNcp {
                         sawNakS = siz;
                     }
                     if (sawNakC < parent.nakRetryLimit) {
+                        cntr.tx(pck);
                         parent.sendNcpCtrl(rej, getPPPctrl(), codeConfNak, id);
                     } else {
                         rej = copyOptions(rej, pck);
+                        cntr.tx(pck);
                         parent.sendNcpCtrl(rej, getPPPctrl(), codeConfRej, id);
                     }
                     if (debugger.ifcPppEvnt) {
@@ -382,6 +388,7 @@ public abstract class ifcPppNcp {
                     break;
                 }
                 sawBit |= sawTxAck;
+                cntr.tx(pck);
                 parent.sendNcpCtrl(rej, getPPPctrl(), codeConfAck, id);
                 if (debugger.ifcPppEvnt) {
                     logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp2);
@@ -436,6 +443,7 @@ public abstract class ifcPppNcp {
             case codeTermReq:
                 pck.clear();
                 pck.putStart();
+                cntr.tx(pck);
                 parent.sendNcpCtrl(pck, getPPPctrl(), codeTermAck, id);
                 parent.clearState();
                 break;
@@ -443,6 +451,7 @@ public abstract class ifcPppNcp {
                 if (!gotUnknownCode(pck, code, id)) {
                     break;
                 }
+                cntr.drop(pck, counter.reasons.badCod);
                 parent.sendNcpCtrl(pck, getPPPctrl(), codeCodeRej, id);
                 break;
         }

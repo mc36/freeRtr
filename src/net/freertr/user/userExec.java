@@ -1179,6 +1179,8 @@ public class userExec {
         hl.add(null, "2 3      p4lang                  p4lang protocol information");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4,.      <name:loc>            server name");
         hl.add(null, "4 .          <name:ifc>          name of interface");
+        hl.add(null, "2 3      p2p                     ppp protocol information");
+        hl.add(null, "3 .        <name:ifc>            name of interface");
         hl.add(null, "2 3      vpdn                    vpdn protocol information");
         hl.add(null, "3 .        <name:vpd>            name of vpdn");
         hl.add(null, "2 3      bridge                  bridging information");
