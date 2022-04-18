@@ -403,7 +403,7 @@ public class motionData implements Runnable {
         }
         output.flush();
         output.close();
-        lastBps = (int) ((motionUtil.getTime() - lastEvnt) / 1000 / sav);
+        lastBps = sav / (int) ((motionUtil.getTime() - lastEvnt) / 1000);
     }
 
 }
