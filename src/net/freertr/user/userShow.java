@@ -290,7 +290,7 @@ public class userShow {
             rdr.putStrTab(aaa.getShowSpec());
             return null;
         }
-        if (a.equals("pppoe")) {
+        if (a.equals("p2poe")) {
             a = cmd.word();
             cfgIfc ifc = cfgAll.ifcFind(a, false);
             if (ifc == null) {
@@ -916,7 +916,7 @@ public class userShow {
             }
             return null;
         }
-        if (a.equals("p2p")) {
+        if (a.equals("ppp")) {
             cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such interface");
