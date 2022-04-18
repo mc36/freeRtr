@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyGeneric;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
@@ -70,6 +71,10 @@ public class authConstant extends authGeneric {
 
     public boolean fromString(cmds cmd) {
         return true;
+    }
+
+    public userFormat getShowSpec() {
+        return null;
     }
 
 }

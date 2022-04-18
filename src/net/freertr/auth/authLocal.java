@@ -19,6 +19,7 @@ import net.freertr.cry.cryKeyGeneric;
 import net.freertr.cry.cryOtp;
 import net.freertr.serv.servPop3;
 import net.freertr.tab.tabGen;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -370,6 +371,23 @@ public class authLocal extends authGeneric {
     }
 
     /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShowSpec() {
+        userFormat res = new userFormat("|", "user|times|ago|last");
+        for (int i = 0; i < users.size(); i++) {
+            authLocalEntry ntry = users.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.username + "|" + ntry.matches + "|" + bits.timePast(ntry.lastMatch) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.lastMatch + cfgAll.timeServerOffset, 3));
+        }
+        return res;
+    }
+
+    /**
      * create passed result
      *
      * @param ntry entry
@@ -412,6 +430,8 @@ public class authLocal extends authGeneric {
         if (ntry == null) {
             return null;
         }
+        ntry.matches++;
+        ntry.lastMatch = bits.getTime();
         if (ntry.countdown == 0) {
             return null;
         }
@@ -607,6 +627,16 @@ public class authLocal extends authGeneric {
  * @author matecsaba
  */
 class authLocalEntry implements Comparator<authLocalEntry> {
+
+    /**
+     * times matched
+     */
+    public int matches;
+
+    /**
+     * last matched
+     */
+    public long lastMatch;
 
     /**
      * name of user

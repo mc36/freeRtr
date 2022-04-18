@@ -13183,3 +13183,16 @@ no todo: readvertise knob under routers
 qc pass: redistribution by prefix
 ---------------------------------- 2022-04-15 17:34:03 22.4.15
 qc pass: redistribution with tag
+---------------------------------- 2022-04-18 06:00:54 22.4.18
+qc pass: ppp labeled gateway
+qc pass: ppp no remote address
+qc pass: p4lang: bundle mpls pop
+qc pass: p4lang: bundle vlan mpls pop
+qc pass: p4lang: pppoe mpls pop
+qc pass: p4lang: gre mpls pop
+qc pass: p4lang: l2tp mpls pop
+qc pass: p4lang: bundle mpls push
+qc pass: p4lang: bundle vlan mpls push
+qc pass: p4lang: pppoe mpls push
+qc pass: p4lang: gre mpls push
+qc pass: p4lang: l2tp mpls push

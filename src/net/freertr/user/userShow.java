@@ -286,7 +286,8 @@ public class userShow {
                 cmd.error("no such aaa");
                 return null;
             }
-            rdr.putStrTab(aaa.getShow());
+            rdr.putStrTab(aaa.getShowGlob());
+            rdr.putStrTab(aaa.getShowSpec());
             return null;
         }
         if (a.equals("pppoe")) {

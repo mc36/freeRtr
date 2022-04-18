@@ -172,6 +172,14 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      */
     public abstract boolean fromString(cmds cmd);
 
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public abstract userFormat getShowSpec();
+    
     /**
      * convert to string
      *
@@ -197,7 +205,7 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      *
      * @return show
      */
-    public userFormat getShow() {
+    public userFormat getShowGlob() {
         userFormat res = new userFormat("|", "category|value");
         res.add("ok|" + sawOk);
         res.add("fail|" + sawFail);

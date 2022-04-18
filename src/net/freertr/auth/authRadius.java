@@ -8,6 +8,7 @@ import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntRadius;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyGeneric;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -109,6 +110,10 @@ public class authRadius extends authGeneric {
             return false;
         }
         return true;
+    }
+
+    public userFormat getShowSpec() {
+        return null;
     }
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {

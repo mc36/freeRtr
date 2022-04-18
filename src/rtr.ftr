@@ -349,6 +349,8 @@ qc pass: ppp with long multilink fragmentation
 qc pass: ppp with asymmetric multilink fragmentation
 qc pass: ppp with asymmetric multilink
 qc pass: ppp address propagation
+qc pass: ppp labeled gateway
+qc pass: ppp no remote address
 qc pass: pppoe over ethernet encapsulation
 qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe
@@ -1718,6 +1720,16 @@ qc pass: p4lang: gtp server over ipv4
 qc pass: p4lang: gtp server over ipv6
 qc pass: p4lang: gtp server over ipv4 loopback
 qc pass: p4lang: gtp server over ipv6 loopback
+qc pass: p4lang: bundle mpls pop
+qc pass: p4lang: bundle vlan mpls pop
+qc pass: p4lang: pppoe mpls pop
+qc pass: p4lang: gre mpls pop
+qc pass: p4lang: l2tp mpls pop
+qc pass: p4lang: bundle mpls push
+qc pass: p4lang: bundle vlan mpls push
+qc pass: p4lang: pppoe mpls push
+qc pass: p4lang: gre mpls push
+qc pass: p4lang: l2tp mpls push
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

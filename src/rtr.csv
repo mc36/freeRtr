@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v22.4.17-cur, done by cs@nop.
--;-;-;2022-04-17 22:12:00, took 00:09:42, with 80 workers, on 2834 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter v22.4.18-cur, done by cs@nop.
+-;-;-;2022-04-18 06:09:48, took 00:08:53, with 80 workers, on 2846 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.net/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.net/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -353,6 +353,8 @@ http://sources.freertr.net/cfg/conn-ppp11.tst;conn-ppp11.tst;success;ppp with lo
 http://sources.freertr.net/cfg/conn-ppp12.tst;conn-ppp12.tst;success;ppp with asymmetric multilink fragmentation
 http://sources.freertr.net/cfg/conn-ppp13.tst;conn-ppp13.tst;success;ppp with asymmetric multilink
 http://sources.freertr.net/cfg/conn-ppp14.tst;conn-ppp14.tst;success;ppp address propagation
+http://sources.freertr.net/cfg/conn-ppp15.tst;conn-ppp15.tst;success;ppp labeled gateway
+http://sources.freertr.net/cfg/conn-ppp16.tst;conn-ppp16.tst;success;ppp no remote address
 http://sources.freertr.net/cfg/conn-pppoe01.tst;conn-pppoe01.tst;success;pppoe over ethernet encapsulation
 http://sources.freertr.net/cfg/conn-pppoe02.tst;conn-pppoe02.tst;success;pppoe over bridge encapsulation
 http://sources.freertr.net/cfg/conn-pppoe03.tst;conn-pppoe03.tst;success;ppp relay over pppoe
@@ -1722,6 +1724,16 @@ http://sources.freertr.net/cfg/p4lang-rout186.tst;p4lang-rout186.tst;success;p4l
 http://sources.freertr.net/cfg/p4lang-rout187.tst;p4lang-rout187.tst;success;p4lang: gtp server over ipv6
 http://sources.freertr.net/cfg/p4lang-rout188.tst;p4lang-rout188.tst;success;p4lang: gtp server over ipv4 loopback
 http://sources.freertr.net/cfg/p4lang-rout189.tst;p4lang-rout189.tst;success;p4lang: gtp server over ipv6 loopback
+http://sources.freertr.net/cfg/p4lang-rout190.tst;p4lang-rout190.tst;success;p4lang: bundle mpls pop
+http://sources.freertr.net/cfg/p4lang-rout191.tst;p4lang-rout191.tst;success;p4lang: bundle vlan mpls pop
+http://sources.freertr.net/cfg/p4lang-rout192.tst;p4lang-rout192.tst;success;p4lang: pppoe mpls pop
+http://sources.freertr.net/cfg/p4lang-rout193.tst;p4lang-rout193.tst;success;p4lang: gre mpls pop
+http://sources.freertr.net/cfg/p4lang-rout194.tst;p4lang-rout194.tst;success;p4lang: l2tp mpls pop
+http://sources.freertr.net/cfg/p4lang-rout195.tst;p4lang-rout195.tst;success;p4lang: bundle mpls push
+http://sources.freertr.net/cfg/p4lang-rout196.tst;p4lang-rout196.tst;success;p4lang: bundle vlan mpls push
+http://sources.freertr.net/cfg/p4lang-rout197.tst;p4lang-rout197.tst;success;p4lang: pppoe mpls push
+http://sources.freertr.net/cfg/p4lang-rout198.tst;p4lang-rout198.tst;success;p4lang: gre mpls push
+http://sources.freertr.net/cfg/p4lang-rout199.tst;p4lang-rout199.tst;success;p4lang: l2tp mpls push
 http://sources.freertr.net/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.net/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.net/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

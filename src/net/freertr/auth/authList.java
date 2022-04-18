@@ -9,6 +9,7 @@ import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyGeneric;
 import net.freertr.tab.tabAuthlstN;
 import net.freertr.tab.tabListing;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -89,12 +90,26 @@ public class authList extends authGeneric {
         return false;
     }
 
+    public userFormat getShowSpec() {
+        userFormat res = new userFormat("|", "aaa|times|ago|last");
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add(ntry.auth.autName + "|" + ntry.timeout + "|" + bits.timePast(ntry.lastMatch) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.lastMatch + cfgAll.timeServerOffset, 3));
+        }
+        return res;
+    }
+
     public authResult authUserPass(String user, String pass) {
         for (int i = 0; i < methods.size(); i++) {
             tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             authResult res = ntry.auth.authUserPass(user, pass);
             if (res == null) {
                 continue;
@@ -113,6 +128,8 @@ public class authList extends authGeneric {
             if (ntry == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             authResult res = ntry.auth.authUserCommand(user, cmd);
             if (res == null) {
                 continue;
@@ -131,6 +148,8 @@ public class authList extends authGeneric {
             if (ntry == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             authResult res = ntry.auth.authUserChap(user, id, chal, resp);
             if (res == null) {
                 continue;
@@ -149,6 +168,8 @@ public class authList extends authGeneric {
             if (ntry == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             authResult res = ntry.auth.authUserApop(cookie, user, resp);
             if (res == null) {
                 continue;
@@ -167,6 +188,8 @@ public class authList extends authGeneric {
             if (ntry == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             authResult res = ntry.auth.authUserPkey(key, user);
             if (res == null) {
                 continue;
@@ -189,6 +212,8 @@ public class authList extends authGeneric {
             if (res == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             if (res.result == authResult.authServerError) {
                 continue;
             }
@@ -203,6 +228,8 @@ public class authList extends authGeneric {
             if (ntry == null) {
                 continue;
             }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
             authResult res = ntry.auth.authUserNone(user);
             if (res == null) {
                 continue;
