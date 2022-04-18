@@ -829,12 +829,14 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 continue;
             }
-            tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
-            prf.best.iface = ifc;
-            prf.best.rouTyp = tabRouteAttr.routeType.conn;
-            prf.best.distance = ifc.gateDstC;
+            if (ifc.gateCon) {
+                tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
+                prf.best.iface = ifc;
+                prf.best.rouTyp = tabRouteAttr.routeType.conn;
+                prf.best.distance = ifc.gateDstC;
+            }
             if (ifc.gateLoc) {
-                prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
+                tabRouteEntry<addrIP> prf = tabU.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.addr, ifc.addr.maxBits()), null);
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.local;
                 prf.best.distance = ifc.gateDstL;
@@ -848,7 +850,7 @@ public class ipFwdTab {
                     addrIPv6 adr6 = addrIPv6.genLinkLocal(new addrMac());
                     pre = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(adr6, 64));
                 }
-                prf = tabC.add(tabRoute.addType.always, pre, null);
+                tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, pre, null);
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.conn;
                 prf.best.distance = ifc.gateDstC;
@@ -871,7 +873,7 @@ public class ipFwdTab {
                     break;
             }
             if (ifc.gateRem) {
-                prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
+                tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
                 if (lab >= 0) {
                     prf.best.labelRem = tabLabel.int2labels(lab);
                 }
@@ -885,7 +887,7 @@ public class ipFwdTab {
                 continue;
             }
             for (int o = 0; o < pfl.size(); o++) {
-                prf = new tabRouteEntry<addrIP>();
+                tabRouteEntry<addrIP> prf = new tabRouteEntry<addrIP>();
                 if (lab >= 0) {
                     prf.best.labelRem = tabLabel.int2labels(lab);
                 }

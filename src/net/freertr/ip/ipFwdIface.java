@@ -165,6 +165,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean ready = true;
 
     /**
+     * install connected route
+     */
+    public boolean gateCon = true;
+
+    /**
      * install local route
      */
     public boolean gateLoc = true;
@@ -528,6 +533,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       any                       source is reachable via any interface");
         l.add(null, "3 .       rx                        source is reachable via this interface");
         l.add(null, "3 .       none                      disable per packet source checking");
+        l.add(null, "2 .     gateway-connected           install connected route");
         l.add(null, "2 .     gateway-local               install local route");
         l.add(null, "2 .     gateway-remote              install remote route");
         l.add(null, "2 3     gateway-distance            install with this distance");
@@ -759,6 +765,7 @@ public class ipFwdIface extends tabRouteIface {
         }
         cmds.cfgLine(l, fragments < 1, cmds.tabulator, beg + "fragmentation", "" + fragments);
         cmds.cfgLine(l, pmtuds < 1, cmds.tabulator, beg + "pmtud-reply", "" + pmtuds);
+        cmds.cfgLine(l, !gateCon, cmds.tabulator, beg + "gateway-connected", "");
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
         l.add(cmds.tabulator + beg + "gateway-distance " + gateDstC + " " + gateDstL + " " + gateDstR + " " + gateDstP);
@@ -1147,6 +1154,11 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             cmd.error("invalid mode");
+            return false;
+        }
+        if (a.equals("gateway-connected")) {
+            gateCon = true;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-local")) {
@@ -1712,6 +1724,11 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("verify-source")) {
             verifySource = false;
             verifyStricht = false;
+            return false;
+        }
+        if (a.equals("gateway-connected")) {
+            gateCon = false;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("gateway-local")) {
