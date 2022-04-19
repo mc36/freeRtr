@@ -13196,3 +13196,6 @@ qc pass: p4lang: bundle vlan mpls push
 qc pass: p4lang: pppoe mpls push
 qc pass: p4lang: gre mpls push
 qc pass: p4lang: l2tp mpls push
+---------------------------------- 2022-04-19 07:36:59 22.4.19
+qc pass: ppp no local address
+qc pass: ebgp over common subnet

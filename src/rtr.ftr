@@ -351,6 +351,7 @@ qc pass: ppp with asymmetric multilink
 qc pass: ppp address propagation
 qc pass: ppp labeled gateway
 qc pass: ppp no remote address
+qc pass: ppp no local address
 qc pass: pppoe over ethernet encapsulation
 qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe
@@ -2401,6 +2402,7 @@ qc pass: bgp route server with safe policy
 qc pass: safe ebgp policy with prefixlist
 qc pass: safe ebgp policy with routemap
 qc pass: safe ebgp policy with routepolicy
+qc pass: ebgp over common subnet
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
