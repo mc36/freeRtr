@@ -2229,7 +2229,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         ipFwdIface txIfc = (ipFwdIface) prf.best.iface;
-        if (rxIfc.gateLoc) {
+        if (txIfc.gateLoc) {
             if (txIfc.lower.checkMyAddress(pck.IPtrg)) {
                 protoSend(txIfc, pck);
                 return;
