@@ -3,8 +3,8 @@ TR=../../binTmp
 UM=`uname -m`
 CC="tcc"                                #tcc
 CC="llc"                                #llc
-CC="gcc"                                #gcc
 CC="clang"                              #clang
+CC="gcc"                                #gcc
 
 MD="-O0 -g"                             #devel
 MD="-O3 -g"                             #debug
