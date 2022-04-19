@@ -1405,8 +1405,8 @@ ipv4_rx:
         acl4_ntry.protV = bufD[bufP + 9];
         acl4_ntry.tosV = bufD[bufP + 1];
         acl4_ntry.flowV = get16msb(bufD, bufP + 4);
-        acl4_ntry.srcAddr = mroute4_ntry.src = get32msb(bufD, bufP + 12);
-        acl4_ntry.trgAddr = mroute4_ntry.grp = get32msb(bufD, bufP + 16);
+        acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
+        route4_ntry.addr = acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
         hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
         ttl = bufD[bufP + 8] - 1;
         if (ttl <= 1) doPunting;
@@ -1427,8 +1427,8 @@ ipv4_rx:
                 neigh_res = table_get(&neigh_table, index);
                 if (neigh_res->aclport != prt) doPunting;
             }
+            route4_ntry.addr = acl4_ntry.trgAddr;
         }
-        route4_ntry.addr = acl4_ntry.trgAddr;
         acls_ntry.dir = 1;
         acls_ntry.port = prt;
         index = table_find(&acls4_table, &acls_ntry);
@@ -1498,8 +1498,8 @@ ipv4_flwed:
             nat4_res = table_get(&vrf2rib_res->nat, index);
             nat4_res->pack++;
             nat4_res->byte += bufS;
-            acl4_ntry.srcAddr = mroute4_ntry.src = nat4_res->nSrcAddr;
-            acl4_ntry.trgAddr = mroute4_ntry.grp = route4_ntry.addr = nat4_res->nTrgAddr;
+            acl4_ntry.srcAddr = nat4_res->nSrcAddr;
+            acl4_ntry.trgAddr = route4_ntry.addr = nat4_res->nTrgAddr;
             acl4_ntry.srcPortV = nat4_res->nSrcPort;
             acl4_ntry.trgPortV = nat4_res->nTrgPort;
             put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
@@ -1610,6 +1610,8 @@ ipv4_tx:
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
         case 2: // punt
+            tun4_ntry.srcAddr = mroute4_ntry.src = acl4_ntry.srcAddr;
+            tun4_ntry.trgAddr = mroute4_ntry.grp = acl4_ntry.trgAddr;
             index = table_find(&vrf2rib_res->mcst, &mroute4_ntry);
             if (index >= 0) {
                 mroute4_res = table_get(&vrf2rib_res->mcst, index);
@@ -1621,8 +1623,6 @@ ipv4_tx:
                 return;
             }
             tun4_ntry.prot = acl4_ntry.protV;
-            tun4_ntry.srcAddr = acl4_ntry.srcAddr;
-            tun4_ntry.trgAddr = acl4_ntry.trgAddr;
             tun4_ntry.srcPort = acl4_ntry.srcPortV;
             tun4_ntry.trgPort = acl4_ntry.trgPortV;
             index = table_find(&vrf2rib_res->tun, &tun4_ntry);
@@ -1668,14 +1668,14 @@ ipv6_rx:
         } else {
             frag = 0;
         }
-        acl6_ntry.srcAddr1 = mroute6_ntry.src1 = get32msb(bufD, bufP + 8);
-        acl6_ntry.srcAddr2 = mroute6_ntry.src2 = get32msb(bufD, bufP + 12);
-        acl6_ntry.srcAddr3 = mroute6_ntry.src3 = get32msb(bufD, bufP + 16);
-        acl6_ntry.srcAddr4 = mroute6_ntry.src4 = get32msb(bufD, bufP + 20);
-        acl6_ntry.trgAddr1 = mroute6_ntry.grp1 = get32msb(bufD, bufP + 24);
-        acl6_ntry.trgAddr2 = mroute6_ntry.grp2 = get32msb(bufD, bufP + 28);
-        acl6_ntry.trgAddr3 = mroute6_ntry.grp3 = get32msb(bufD, bufP + 32);
-        acl6_ntry.trgAddr4 = mroute6_ntry.grp4 = get32msb(bufD, bufP + 36);
+        acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
+        acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
+        acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
+        acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
+        route6_ntry.addr1 = acl6_ntry.trgAddr1 = get32msb(bufD, bufP + 24);
+        route6_ntry.addr2 = acl6_ntry.trgAddr2 = get32msb(bufD, bufP + 28);
+        route6_ntry.addr3 = acl6_ntry.trgAddr3 = get32msb(bufD, bufP + 32);
+        route6_ntry.addr4 = acl6_ntry.trgAddr4 = get32msb(bufD, bufP + 36);
         hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1;
         hash ^= acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2;
         hash ^= acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3;
@@ -1701,11 +1701,11 @@ ipv6_rx:
                 neigh_res = table_get(&neigh_table, index);
                 if (neigh_res->aclport != prt) doPunting;
             }
+            route6_ntry.addr1 = acl6_ntry.trgAddr1;
+            route6_ntry.addr2 = acl6_ntry.trgAddr2;
+            route6_ntry.addr3 = acl6_ntry.trgAddr3;
+            route6_ntry.addr4 = acl6_ntry.trgAddr4;
         }
-        route6_ntry.addr1 = acl6_ntry.trgAddr1;
-        route6_ntry.addr2 = acl6_ntry.trgAddr2;
-        route6_ntry.addr3 = acl6_ntry.trgAddr3;
-        route6_ntry.addr4 = acl6_ntry.trgAddr4;
         acls_ntry.dir = 1;
         acls_ntry.port = prt;
         index = table_find(&acls6_table, &acls_ntry);
@@ -1787,14 +1787,14 @@ ipv6_flwed:
             nat6_res = table_get(&vrf2rib_res->nat, index);
             nat6_res->pack++;
             nat6_res->byte += bufS;
-            acl6_ntry.srcAddr1 = mroute6_ntry.src1 = nat6_res->nSrcAddr1;
-            acl6_ntry.srcAddr2 = mroute6_ntry.src2 = nat6_res->nSrcAddr2;
-            acl6_ntry.srcAddr3 = mroute6_ntry.src3 = nat6_res->nSrcAddr3;
-            acl6_ntry.srcAddr4 = mroute6_ntry.src4 = nat6_res->nSrcAddr4;
-            acl6_ntry.trgAddr1 = mroute6_ntry.grp1 = route6_ntry.addr1 = nat6_res->nTrgAddr1;
-            acl6_ntry.trgAddr2 = mroute6_ntry.grp2 = route6_ntry.addr2 = nat6_res->nTrgAddr2;
-            acl6_ntry.trgAddr3 = mroute6_ntry.grp3 = route6_ntry.addr3 = nat6_res->nTrgAddr3;
-            acl6_ntry.trgAddr4 = mroute6_ntry.grp4 = route6_ntry.addr4 = nat6_res->nTrgAddr4;
+            acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
+            acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
+            acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
+            acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
+            acl6_ntry.trgAddr1 = route6_ntry.addr1 = nat6_res->nTrgAddr1;
+            acl6_ntry.trgAddr2 = route6_ntry.addr2 = nat6_res->nTrgAddr2;
+            acl6_ntry.trgAddr3 = route6_ntry.addr3 = nat6_res->nTrgAddr3;
+            acl6_ntry.trgAddr4 = route6_ntry.addr4 = nat6_res->nTrgAddr4;
             acl6_ntry.srcPortV = nat6_res->nSrcPort;
             acl6_ntry.trgPortV = nat6_res->nTrgPort;
             put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);
@@ -1916,6 +1916,14 @@ ipv6_tx:
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
         case 2: // punt
+            tun6_ntry.srcAddr1 = mroute6_ntry.src1 = acl6_ntry.srcAddr1;
+            tun6_ntry.srcAddr2 = mroute6_ntry.src2 = acl6_ntry.srcAddr2;
+            tun6_ntry.srcAddr3 = mroute6_ntry.src3 = acl6_ntry.srcAddr3;
+            tun6_ntry.srcAddr4 = mroute6_ntry.src4 = acl6_ntry.srcAddr4;
+            tun6_ntry.trgAddr1 = mroute6_ntry.grp1 = acl6_ntry.trgAddr1;
+            tun6_ntry.trgAddr2 = mroute6_ntry.grp2 = acl6_ntry.trgAddr2;
+            tun6_ntry.trgAddr3 = mroute6_ntry.grp3 = acl6_ntry.trgAddr3;
+            tun6_ntry.trgAddr4 = mroute6_ntry.grp4 = acl6_ntry.trgAddr4;
             index = table_find(&vrf2rib_res->mcst, &mroute6_ntry);
             if (index >= 0) {
                 mroute6_res = table_get(&vrf2rib_res->mcst, index);
@@ -1927,14 +1935,6 @@ ipv6_tx:
                 return;
             }
             tun6_ntry.prot = acl6_ntry.protV;
-            tun6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
-            tun6_ntry.srcAddr2 = acl6_ntry.srcAddr2;
-            tun6_ntry.srcAddr3 = acl6_ntry.srcAddr3;
-            tun6_ntry.srcAddr4 = acl6_ntry.srcAddr4;
-            tun6_ntry.trgAddr1 = acl6_ntry.trgAddr1;
-            tun6_ntry.trgAddr2 = acl6_ntry.trgAddr2;
-            tun6_ntry.trgAddr3 = acl6_ntry.trgAddr3;
-            tun6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
             tun6_ntry.srcPort = acl6_ntry.srcPortV;
             tun6_ntry.trgPort = acl6_ntry.trgPortV;
             index = table_find(&vrf2rib_res->tun, &tun6_ntry);
