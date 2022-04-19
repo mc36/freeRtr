@@ -425,10 +425,13 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, bufP + 2, dprt);                             \
     put16msb(bufD, bufP + 4, (bufS - bufP + preBuff));          \
     put16msb(bufD, bufP + 6, 0);                                \
+
+/* dont fill udp chksum
     putPseudoSum(bufH, 16, 17, (bufS - bufP + preBuff), sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);    \
     tmp = calcIPsum(bufH, 16, 36, 0);                           \
     tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);    \
     put16lsb(bufD, bufP + 6, (0xffff - tmp));
+*/
 
 
 
