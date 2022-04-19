@@ -2116,13 +2116,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             ifaceProto(rxIfc, pck, hop);
             return;
         }
-        if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
-            protoSend(rxIfc, pck);
-            return;
-        }
-        if (rxIfc.lower.checkMyAlias(pck.IPtrg) != null) {
-            protoSend(rxIfc, pck);
-            return;
+        if (rxIfc.gateLoc) {
+            if (rxIfc.lower.checkMyAddress(pck.IPtrg)) {
+                protoSend(rxIfc, pck);
+                return;
+            }
+            if (rxIfc.lower.checkMyAlias(pck.IPtrg) != null) {
+                protoSend(rxIfc, pck);
+                return;
+            }
         }
         if (pck.IPlnk) {
             if ((from & 1) != 0) {
@@ -2227,13 +2229,15 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         ipFwdIface txIfc = (ipFwdIface) prf.best.iface;
-        if (txIfc.lower.checkMyAddress(pck.IPtrg)) {
-            protoSend(txIfc, pck);
-            return;
-        }
-        if (txIfc.lower.checkMyAlias(pck.IPtrg) != null) {
-            protoSend(txIfc, pck);
-            return;
+        if (rxIfc.gateLoc) {
+            if (txIfc.lower.checkMyAddress(pck.IPtrg)) {
+                protoSend(txIfc, pck);
+                return;
+            }
+            if (txIfc.lower.checkMyAlias(pck.IPtrg) != null) {
+                protoSend(txIfc, pck);
+                return;
+            }
         }
         if (pck.MPLSttl < 2) {
             doDrop(pck, rxIfc, counter.reasons.ttlExceed);
