@@ -388,34 +388,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     neigh_res->seq++;
 
 
-#define decapEsp(tun_res)                                       \
-    bufP = bufT;                                                \
-    if (get32msb(bufD, bufP + 0) != tun_res->spi) doDropper;    \
-    tun_res->seq = get32msb(bufD, bufP + 4);                    \
-    tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
-    if (tmp < 1) doDropper;                                     \
-    if (tun_res->hashBlkLen > 0) {                              \
-        if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;          \
-        if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
-        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
-        sizt = preBuff;                                         \
-        if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
-        if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
-        bufS -= tun_res->hashBlkLen;                            \
-    }                                                           \
-    bufP += 8;                                                  \
-    tmp -= 8;                                                   \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-    bufP += tun_res->encrBlkLen;                                \
-    tmp -= tun_res->encrBlkLen;                                 \
-    ethtyp = bufD[bufP + tmp - 1];                              \
-    bufS -= bufD[bufP + tmp - 2] + 2;                           \
-    ipip2ethtyp;                                                \
-    bufP -= 2;                                                  \
-    put16msb(bufD, bufP, ethtyp);
 
 
 
@@ -501,30 +473,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     }
 
 
-#define decapOpenvpn(tun_res)                                   \
-    bufP = bufT + 8;                                            \
-    bufP += tun_res->hashBlkLen;                                \
-    tmp = bufS - bufP + preBuff;                                \
-    if (tmp < 1) doDropper;                                     \
-    if (tun_res->hashBlkLen > 0) {                              \
-        if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;          \
-        if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
-        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
-        sizt = preBuff;                                         \
-        if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
-        if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
-    }                                                           \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-    if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-    bufP += tun_res->encrBlkLen;                                \
-    tmp -= tun_res->encrBlkLen;                                 \
-    bufP += 8;                                                  \
-    guessEthtyp;                                                \
-    bufP -= 2;                                                  \
-    put16msb(bufD, bufP, ethtyp);
-
 
 #define putWireguardHeader(bufP, bufS)                          \
     bufP += 2;                                                  \
@@ -553,25 +501,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put32lsb(bufD, bufP + 12, 0);                               \
     neigh_res->seq++;
 
-
-#define decapWireguard(tun_res)                                 \
-    bufP = bufT + 8;                                            \
-    if (get32lsb(bufD, bufP) != 4) doCpuing;                    \
-    tmp = bufS - bufP + preBuff;                                \
-    if (tmp < 32) doDropper;                                    \
-    put32msb(bufD, bufP + 4, 0);                                \
-    bufP += 16;                                                 \
-    bufS -= 16;                                                 \
-    tmp -= 32;                                                  \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-    if (EVP_DecryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) doDropper;  \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
-    if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-    if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper; \
-    guessEthtyp;                                                \
-    bufP -= 2;                                                  \
-    put16msb(bufD, bufP, ethtyp);
 
 
 #define putGtpHeader                                            \
@@ -1000,7 +929,33 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         put16msb(bufD, bufP, ETHERTYPE_IPV6);                       \
         break;                                                      \
     case 6:                                                         \
-        decapEsp(tun_res);                                          \
+        bufP = bufT;                                                \
+        if (get32msb(bufD, bufP + 0) != tun_res->spi) doDropper;    \
+        tun_res->seq = get32msb(bufD, bufP + 4);                    \
+        tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
+        if (tmp < 1) doDropper;                                     \
+        if (tun_res->hashBlkLen > 0) {                              \
+            if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;          \
+            if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+            sizt = preBuff;                                         \
+            if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
+            if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
+            bufS -= tun_res->hashBlkLen;                            \
+        }                                                           \
+        bufP += 8;                                                  \
+        tmp -= 8;                                                   \
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+        if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+        bufP += tun_res->encrBlkLen;                                \
+        tmp -= tun_res->encrBlkLen;                                 \
+        ethtyp = bufD[bufP + tmp - 1];                              \
+        bufS -= bufD[bufP + tmp - 2] + 2;                           \
+        ipip2ethtyp;                                                \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
     case 7:                                                         \
         bufP = bufT + 8;                                            \
@@ -1008,10 +963,47 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
         break;                                                      \
     case 8:                                                         \
-        decapOpenvpn(tun_res);                                      \
+        bufP = bufT + 8;                                            \
+        bufP += tun_res->hashBlkLen;                                \
+        tmp = bufS - bufP + preBuff;                                \
+        if (tmp < 1) doDropper;                                     \
+        if (tun_res->hashBlkLen > 0) {                              \
+            if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;          \
+            if (EVP_DigestSignInit(hashCtx, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
+            if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
+            sizt = preBuff;                                         \
+            if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;      \
+            if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
+        }                                                           \
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+        if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+        bufP += tun_res->encrBlkLen;                                \
+        tmp -= tun_res->encrBlkLen;                                 \
+        bufP += 8;                                                  \
+        guessEthtyp;                                                \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
     case 9:                                                         \
-        decapWireguard(tun_res);                                    \
+        bufP = bufT + 8;                                            \
+        if (get32lsb(bufD, bufP) != 4) doCpuing;                    \
+        tmp = bufS - bufP + preBuff;                                \
+        if (tmp < 32) doDropper;                                    \
+        put32msb(bufD, bufP + 4, 0);                                \
+        bufP += 16;                                                 \
+        bufS -= 16;                                                 \
+        tmp -= 32;                                                  \
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
+        if (EVP_DecryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) doDropper;  \
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
+        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
+        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+        if (EVP_DecryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper; \
+        guessEthtyp;                                                \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
     case 10:                                                        \
         bufP = bufT + 8;                                            \
