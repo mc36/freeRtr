@@ -289,9 +289,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, bufP + 6, 0);                                \
     bufD[bufP + 8] = 0xff;                                      \
     bufD[bufP + 9] = proto;                                     \
-    ethtyp += (sip >> 16) + (sip & 0xffff);                     \
-    ethtyp += (dip >> 16) + (dip & 0xffff);                     \
     ethtyp += 0x4500 + 0xff00 + proto;                          \
+    ethtyp += ((sip >> 16) & 0xffff) + (sip & 0xffff);          \
+    ethtyp += ((dip >> 16) & 0xffff) + (dip & 0xffff);          \
     ethtyp = (ethtyp >> 16) + (ethtyp & 0xffff);                \
     ethtyp += (ethtyp >> 16);                                   \
     ethtyp = 0xffff - ethtyp;                                   \
@@ -331,13 +331,13 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putIpipHeader(bufP, ethtyp)                             \
+#define putIpipHeader(bufP, ethtyp, res)                        \
     switch (ethtyp) {                                           \
     case ETHERTYPE_IPV4:                                        \
-        ethtyp = 4;                                             \
+        res = 4;                                                \
         break;                                                  \
     case ETHERTYPE_IPV6:                                        \
-        ethtyp = 41;                                            \
+        res = 41;                                               \
         break;                                                  \
     default:                                                    \
         doDropper;                                              \
@@ -694,20 +694,20 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 7: // ipip4
-        putIpipHeader(*bufP, *ethtyp);
-        putIpv4header(*bufP, *bufS, *ethtyp, *ethtyp, neigh_res->sip1, neigh_res->dip1);
+        putIpipHeader(*bufP, *ethtyp, tmp);
+        putIpv4header(*bufP, *bufS, *ethtyp, tmp, neigh_res->sip1, neigh_res->dip1);
         break;
     case 8: // ipip6
-        putIpipHeader(*bufP, *ethtyp);
-        putIpv6header(*bufP, *bufS, *ethtyp, *ethtyp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpipHeader(*bufP, *ethtyp, tmp);
+        putIpv6header(*bufP, *bufS, *ethtyp, tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 9: // esp4
-        putIpipHeader(*bufP, *ethtyp);
+        putIpipHeader(*bufP, *ethtyp, *ethtyp);
         putEspHeader(*bufP, *bufS, *ethtyp);
         putIpv4header(*bufP, *bufS, *ethtyp, 50, neigh_res->sip1, neigh_res->dip1);
         break;
     case 10: // esp6
-        putIpipHeader(*bufP, *ethtyp);
+        putIpipHeader(*bufP, *ethtyp, *ethtyp);
         putEspHeader(*bufP, *bufS, *ethtyp);
         putIpv6header(*bufP, *bufS, *ethtyp, 50, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
