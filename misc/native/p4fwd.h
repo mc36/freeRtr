@@ -283,17 +283,21 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 #define putIpv4header(bufP, bufS, ethtyp, proto, sip, dip)      \
     bufP -= 20;                                                 \
     put16msb(bufD, bufP + 0, 0x4500);                           \
-    put16msb(bufD, bufP + 2, (bufS - bufP + preBuff));          \
-    ipids++;                                                    \
-    put16msb(bufD, bufP + 4, ipids);                            \
+    ethtyp = bufS - bufP + preBuff;                             \
+    put16msb(bufD, bufP + 2, ethtyp);                           \
+    put16msb(bufD, bufP + 4, 0);                                \
     put16msb(bufD, bufP + 6, 0);                                \
     bufD[bufP + 8] = 0xff;                                      \
     bufD[bufP + 9] = proto;                                     \
-    put16msb(bufD, bufP + 10, 0);                               \
+    ethtyp += (sip >> 16) + (sip & 0xffff);                     \
+    ethtyp += (dip >> 16) + (dip & 0xffff);                     \
+    ethtyp += 0x4500 + 0xff00 + proto;                          \
+    ethtyp = (ethtyp >> 16) + (ethtyp & 0xffff);                \
+    ethtyp += (ethtyp >> 16);                                   \
+    ethtyp = 0xffff - ethtyp;                                   \
+    put16msb(bufD, bufP + 10, ethtyp);                          \
     put32msb(bufD, bufP + 12, sip);                             \
     put32msb(bufD, bufP + 16, dip);                             \
-    ethtyp = 0xffff - calcIPsum(bufD, bufP, 20, 0);             \
-    put16lsb(bufD, bufP + 10, ethtyp);                          \
     ethtyp = ETHERTYPE_IPV4;                                    \
     bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);

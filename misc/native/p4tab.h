@@ -17,7 +17,6 @@ int dropStat[4096];
 int ports = 0;
 int cpuport = 0;
 int punts = 0;
-int ipids = 0;
 
 char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
