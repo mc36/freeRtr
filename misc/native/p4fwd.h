@@ -504,11 +504,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define putGtpHeader                                            \
-        *bufP -= 6;                                             \
-        put16msb(bufD, *bufP + 0, 0x30ff);                      \
-        tmp = *bufS - *bufP + preBuff - 8;                      \
-        put16msb(bufD, *bufP + 2, tmp);                         \
-        put32msb(bufD, *bufP + 4, neigh_res->tid);
+    *bufP -= 6;                                                 \
+    put16msb(bufD, *bufP + 0, 0x30ff);                          \
+    tmp = *bufS - *bufP + preBuff - 8;                          \
+    put16msb(bufD, *bufP + 2, tmp);                             \
+    put32msb(bufD, *bufP + 4, neigh_res->tid);
 
 
 
