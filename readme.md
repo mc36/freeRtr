@@ -1,6 +1,6 @@
 # freeRouter source tree
 
-more about the project at [www.freertr.net](http://www.freertr.net/)
+more about the project at [www.freertr.org](http://www.freertr.org/)
 
 ## dependencies
 
