@@ -171,10 +171,22 @@ help :
     if (ifaceName == NULL) err("error allocating memory");
     strcpy(ifaceName, argv[1]);
     printf("creating interface %s.\n", ifaceName);
-    for (int i=0; i<strlen(ifaceName); i++) switch (ifaceName[i]) {
-    case ';':
-    case '&':
-       err("special char in interface name");
+
+    if (strlen(ifaceName) > 128) err("interface name too long");
+    for (int i=0; i<strlen(ifaceName); i++) {
+        switch (ifaceName[i]) {
+        case '&':
+        case '|':
+        case ';':
+        case '$':
+        case '>':
+        case '<':
+        case '`':
+        case '\':
+        case '!':
+        case ' ':
+            err("special char in interface name");
+        }
     }
 
     if ((ifaceSock = open("/dev/net/tun", O_RDWR)) < 0) err("unable to open interface");
