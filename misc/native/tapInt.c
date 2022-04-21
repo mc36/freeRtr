@@ -205,7 +205,7 @@ help :
         doCmd(buf);
     }
     if (argc > 7) {
-        sprintf(buf, "ip route add 0.0.0.0/0 via %s dev %s", argv[7], ifaceQuot);
+        sprintf(buf, "ip route add 0.0.0.0/0 via %s dev %s", quoteString(argv[7]), ifaceQuot);
         doCmd(buf);
     }
 
