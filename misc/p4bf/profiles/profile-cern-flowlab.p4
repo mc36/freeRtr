@@ -1,4 +1,4 @@
-#ifdef PROFILE_CERN_FLOWSPEC
+#ifdef PROFILE_CERN_FLOWLAB
 #define HAVE_ALPM
 #define HAVE_PBR
 
