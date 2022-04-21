@@ -58,7 +58,7 @@ public class verCore {
     /**
      * url of product
      */
-    public final static String homeUrl = "http://www.freertr.net/";
+    public final static String homeUrl = "http://www.freertr.org/";
 
     /**
      * license text
