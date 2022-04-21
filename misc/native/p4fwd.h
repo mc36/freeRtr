@@ -28,9 +28,12 @@ void send2port(unsigned char *bufD, int bufS, int port) {
 
 
 
-void send2cpu(unsigned char *bufD, int bufS, int port) {
-    put16msb(bufD, preBuff - 2, port);
-    send2port(&bufD[preBuff - 2], bufS + 2, cpuport);
+void send2cpu(unsigned char *bufD, int bufP, int bufS, int port) {
+    bufP -= 12;
+    memmove(&bufD[bufP], &bufD[preBuff], 12);
+    bufP -= 2;
+    put16msb(bufD, bufP, port);
+    send2port(&bufD[bufP], bufS - bufP + preBuff, cpuport);
 }
 
 
@@ -48,7 +51,7 @@ int hashDataPacket(unsigned char *bufP) {
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
-    send2cpu(bufD, bufS, port);
+    send2cpu(bufD, preBuff, bufS, port);
 }
 
 
@@ -636,6 +639,7 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
         putMacAddr;
         *bufS = *bufS - *bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[*bufP], *bufS);
+        *bufP = preBuff + 12;
         return prt;
     }
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
@@ -1027,14 +1031,10 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
     default:                                                        \
         doDropper;                                                  \
     }                                                               \
-    bufP -= 12;                                                     \
-    memset(&bufD[bufP], 0, 12);                                     \
     tun_res->pack++;                                                \
     tun_res->byte += bufS;                                          \
-    bufS = bufS - bufP + preBuff;                                   \
-    memmove(&bufD[preBuff], &bufD[bufP], bufS);                     \
-    prt2 = prt = tun_res->aclport;                                  \
-    goto ether_rx;                                                  \
+    prt = tun_res->aclport;                                         \
+    goto ethtyp_rx;                                                 \
 
 
 #define doRouted(route_res, proto)                                  \
@@ -1156,18 +1156,18 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     int ttl = 0;
     int hash = 0;
     int bufP = 0;
+    int bufE = 0;
     int bufT = 0;
     int frag = 0;
     int ethtyp = 0;
-    int prt2 = prt;
     int tmp = 0;
     int tmp2 = 0;
     int i = 0;
     size_t sizt = 0;
-ether_rx:
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
+    bufE = bufP;
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     port2vrf_ntry.port = prt;
@@ -1223,10 +1223,8 @@ ethtyp_rx:
         }
         bufP += port2vrf_res->mcscEncrBlkLen;
         tmp -= port2vrf_res->mcscEncrBlkLen;
-        memmove(&bufD[preBuff + 12], &bufD[bufP], tmp);
-        bufP = preBuff + 12;
-        bufS = tmp + 12;
-        prt2 = prt;
+        bufS = tmp + bufP - preBuff;
+        bufE = bufP;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
         port2vrf_res->mcscPackOk++;
@@ -1336,15 +1334,15 @@ nethtyp_tx:
             if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            prt2 = prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
-            if (prt2 >= 0) goto ether_rx;
+            prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            if (prt >= 0) goto ethtyp_rx;
             return;
         case 4: // xconn
             memmove(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
             prt = mpls_res->port;
-            prt2 = prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
-            if (prt2 >= 0) goto ether_rx;
+            prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            if (prt >= 0) goto ethtyp_rx;
             return;
         case 5: // vpls
             memmove(&bufH[0], &bufD[bufP], 12);
@@ -1963,18 +1961,13 @@ ipv6_tx:
         pppoe_res = table_get(&pppoe_table, index);
         pppoe_res->pack++;
         pppoe_res->byte += bufS;
-        prt = pppoe_res->aclport;
         bufP += 6;
         ethtyp = get16msb(bufD, bufP);
         if ((ethtyp & 0x8000) != 0) doCpuing;
         ppptyp2ethtyp;
         put16msb(bufD, bufP, ethtyp);
-        bufP -= 12;
-        memset(&bufD[bufP], 0, 12);
-        bufS = bufS - bufP + preBuff;
-        memmove(&bufD[preBuff], &bufD[bufP], bufS);
-        prt2 = prt;
-        goto ether_rx;
+        prt = pppoe_res->aclport;
+        goto ethtyp_rx;
     case ETHERTYPE_ROUTEDMAC: // routed bridge
         if (port2vrf_res == NULL) doDropper;
         packBridge[port]++;
@@ -2085,8 +2078,8 @@ ipv6_tx:
             put16msb(bufD, bufP, ethtyp);
             memmove(&bufH[0], &nsh_res->dmac, 6);
             memmove(&bufH[6], &nsh_res->smac, 6);
-            prt2 = prt = send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
-            if (prt2 >= 0) goto ether_rx;
+            prt = send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            if (prt >= 0) goto ethtyp_rx;
             return;
         case 2: // vrf
             bufP += ((ttl & 0x3f) * 4);
@@ -2200,8 +2193,8 @@ bridgevpls_rx:
             return;
         }
         prt = bridge_res->port;
-        prt2 = prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
-        if (prt2 >= 0) goto ether_rx;
+        prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+        if (prt >= 0) goto ethtyp_rx;
         return;
     case ETHERTYPE_ARP: // arp
         doCpuing;
@@ -2224,7 +2217,7 @@ drop:
         }
         punts--;
 cpu:
-        send2cpu(bufD, bufS, prt2);
+        send2cpu(bufD, bufE, bufS, prt);
         return;
     }
 }
