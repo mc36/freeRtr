@@ -13,9 +13,9 @@ RUN mkdir -p /opt/freertr/run
 
 WORKDIR /opt/freertr/
 
-RUN wget http://www.freertr.net/rtr.zip
-RUN wget http://www.freertr.net/rtr.jar
-RUN wget http://www.freertr.net/rtr.tar
+RUN wget http://www.freertr.org/rtr.zip
+RUN wget http://www.freertr.org/rtr.jar
+RUN wget http://www.freertr.org/rtr.tar
 RUN mv ./rtr.jar ./bin
 RUN unzip ./rtr.zip -d /opt/freertr/src
 WORKDIR /opt/freertr/bin

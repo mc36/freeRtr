@@ -2,7 +2,7 @@
   <name>rtr-dsk</name>
   <uuid>41bffa92-a072-44ca-8073-455b82c990b5</uuid>
   <title>freeRouter</title>
-  <description>http://www.freertr.net/</description>
+  <description>http://www.freertr.org/</description>
   <memory unit='KiB'>1048576</memory>
   <currentMemory unit='KiB'>1048576</currentMemory>
   <vcpu placement='static'>1</vcpu>

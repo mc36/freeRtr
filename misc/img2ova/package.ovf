@@ -18,12 +18,12 @@
     <ProductSection>
       <Info>Meta-information about the installed software</Info>
       <Product>freeRouter</Product>
-      <ProductUrl>http://www.freertr.net/</ProductUrl>
+      <ProductUrl>http://www.freertr.org/</ProductUrl>
     </ProductSection>
     <AnnotationSection>
       <Info>A human-readable annotation</Info>
       <Annotation>freeRouter distribution
-more info at http://www.freertr.net/
+more info at http://www.freertr.org/
 </Annotation>
     </AnnotationSection>
     <OperatingSystemSection ovf:id="95">
@@ -128,7 +128,7 @@ more info at http://www.freertr.net/
     <vbox:Machine ovf:required="false" version="1.15-linux" uuid="{61722d0c-5197-4d81-b9c4-99e656182c6e}" name="rtr" OSType="Debian" snapshotFolder="Snapshots" lastStateChange="2018-03-02T06:02:55Z">
       <ovf:Info>Complete VirtualBox machine configuration in VirtualBox format</ovf:Info>
       <Description>rtros distribution
-more info at http://www.freertr.net/
+more info at http://www.freertr.org/
 </Description>
       <ExtraData>
         <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
