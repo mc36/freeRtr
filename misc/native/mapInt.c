@@ -247,7 +247,7 @@ help :
     rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;
     rrq.tp_retire_blk_tov = 2;
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_RX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable ring buffer");
-    ifaceMem = mmap(NULL, rrq.tp_block_size * rrq.tp_block_nr, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED, ifaceSock, 0);
+    ifaceMem = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED, ifaceSock, 0);
     if (ifaceMem == MAP_FAILED) err("failed to mmap ring buffer");
     ifaceIov = malloc(rrq.tp_block_nr * sizeof (*ifaceIov));
     if (ifaceIov == NULL) err("failed to allocate iovec memory");
