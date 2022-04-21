@@ -765,9 +765,22 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             tabAceslstN<addrIP> ace = src.get(i);
             if (ace.evaluate != null) {
                 o += sizeofAcl(ace.evaluate);
-            } else {
-                o++;
+                continue;
             }
+            int p = 1;
+            if (ace.srcOGnet != null) {
+                p *= ace.srcOGnet.size();
+            }
+            if (ace.srcOGprt != null) {
+                p *= ace.srcOGprt.size();
+            }
+            if (ace.trgOGnet != null) {
+                p *= ace.trgOGnet.size();
+            }
+            if (ace.trgOGprt != null) {
+                p *= ace.trgOGprt.size();
+            }
+            o += p;
         }
         return o;
     }
