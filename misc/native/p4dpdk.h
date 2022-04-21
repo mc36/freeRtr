@@ -351,7 +351,8 @@ int main(int argc, char **argv) {
     int ring_fwd = 512;
     burst_size = 32;
     burst_sleep = 100;
-    for (int i = 4; i< argc; i += 3) {
+    for (int i = 4;; i += 3) {
+        if ((i+2) >= argc) break;
         int p = atoi(argv[i + 0]);
         int r = atoi(argv[i + 1]);
         int t = atoi(argv[i + 2]);
