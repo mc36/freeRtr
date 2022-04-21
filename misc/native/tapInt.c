@@ -13,6 +13,7 @@
 #include "utils.h"
 
 char *ifaceName;
+char *ifaceQuot;
 int ifaceSock;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
@@ -117,6 +118,17 @@ void doCmd(char *cmd) {
     if (system(cmd) < 0) err("error executing command");
 }
 
+char* quoteString(char*src) {
+    int o = strlen(src);
+    if (o > 128) err("parameter too long");
+    char* res=malloc((o*2) + 1);
+    if (res == NULL) err("error allocating memory");
+    for (int i=0; i<o; i++) {
+        res[(i*2)+0] = '\\';
+        res[(i*2)+1] = src[i];
+    }
+    return res;
+}
 
 int main(int argc, char **argv) {
 
@@ -170,24 +182,8 @@ help :
     ifaceName = malloc(strlen(argv[1]) + 1);
     if (ifaceName == NULL) err("error allocating memory");
     strcpy(ifaceName, argv[1]);
+    ifaceQuot = quoteString(ifaceName);
     printf("creating interface %s.\n", ifaceName);
-
-    if (strlen(ifaceName) > 128) err("interface name too long");
-    for (int i=0; i<strlen(ifaceName); i++) {
-        switch (ifaceName[i]) {
-        case '&':
-        case '|':
-        case ';':
-        case '$':
-        case '>':
-        case '<':
-        case '`':
-        case '\':
-        case '!':
-        case ' ':
-            err("special char in interface name");
-        }
-    }
 
     if ((ifaceSock = open("/dev/net/tun", O_RDWR)) < 0) err("unable to open interface");
     struct ifreq ifr;
@@ -197,18 +193,18 @@ help :
     if (ioctl(ifaceSock, TUNSETIFF, &ifr) < 0) err("unable to create interface");
 
     char buf[1024];
-    sprintf(buf, "ip link set %s address 00:00:%02x:%02x:%02x:%02x mtu 1500", ifaceName, portLoc >> 8, portLoc & 0xff, portRem >> 8, portRem & 0xff);
+    sprintf(buf, "ip link set %s address 00:00:%02x:%02x:%02x:%02x mtu 1500", ifaceQuot, portLoc >> 8, portLoc & 0xff, portRem >> 8, portRem & 0xff);
     doCmd(buf);
-    sprintf(buf, "ip link set %s up", ifaceName);
+    sprintf(buf, "ip link set %s up", ifaceQuot);
     doCmd(buf);
     if (argc > 6) {
-        sprintf(buf, "ip addr add %s dev %s", argv[6], ifaceName);
+        sprintf(buf, "ip addr add %s dev %s", quoteString(argv[6]), ifaceQuot);
         doCmd(buf);
-        sprintf(buf, "echo 0 > /proc/sys/net/ipv6/conf/%s/disable_ipv6", ifaceName);
+        sprintf(buf, "echo 0 > /proc/sys/net/ipv6/conf/%s/disable_ipv6", ifaceQuot);
         doCmd(buf);
     }
     if (argc > 7) {
-        sprintf(buf, "ip route add 0.0.0.0/0 via %s dev %s", argv[7], ifaceName);
+        sprintf(buf, "ip route add 0.0.0.0/0 via %s dev %s", argv[7], ifaceQuot);
         doCmd(buf);
     }
 
