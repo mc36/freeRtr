@@ -1306,7 +1306,9 @@ class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr
 
     public final T data;
 
-    public int store;
+    public int stor1;
+
+    public int stor2;
 
     public servP4langStr(T dat) {
         data = dat;
@@ -1321,7 +1323,7 @@ class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr
         if (o == null) {
             return true;
         }
-        return store != o.store;
+        return (stor1 != o.stor1) || (stor2 != o.stor2);
     }
 
 }
@@ -5314,7 +5316,7 @@ class servP4langConn implements Runnable {
                 continue;
             }
             servP4langStr<tabIndex<addrIP>> str = new servP4langStr<tabIndex<addrIP>>(ntry);
-            str.store = hop.id;
+            str.stor1 = hop.id;
             tabIndex<addrIP> old = done.find(ntry);
             String act = "add";
             if (old != null) {
@@ -5368,7 +5370,8 @@ class servP4langConn implements Runnable {
                     continue;
                 }
                 servP4langStr<tabRouteEntry<addrIP>> str = new servP4langStr<tabRouteEntry<addrIP>>(ntry);
-                str.store = hop.id;
+                str.stor1 = hop.id;
+                str.stor2 = servP4lang.getLabel(recur);
                 String act = "add";
                 if (old != null) {
                     if ((ntry.differs(tabRoute.addType.notyet, old) == 0) && !str.differs(store)) {
