@@ -3,12 +3,13 @@ TR=../../binTmp
 UM=`uname -m`
 CC="tcc"                                #tcc
 CC="llc"                                #llc
-CC="gcc"                                #gcc
 CC="clang"                              #clang
+CC="gcc"                                #gcc
 
 MD="-O0 -g"                             #devel
 MD="-O3 -g"                             #debug
 MD="-O3"                                #release
+MD="-Ofast"                             #release
 #gdb xxx.bin core
 #bt full
 #p *((struct <type> *)(<addr>))
