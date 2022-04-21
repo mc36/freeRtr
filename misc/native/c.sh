@@ -9,6 +9,7 @@ CC="gcc"                                #gcc
 MD="-O0 -g"                             #devel
 MD="-O3 -g"                             #debug
 MD="-O3"                                #release
+MD="-Ofast -g"                          #debug
 MD="-Ofast"                             #release
 #gdb xxx.bin core
 #bt full
