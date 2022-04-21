@@ -121,12 +121,13 @@ void doCmd(char *cmd) {
 char* quoteString(char*src) {
     int o = strlen(src);
     if (o > 128) err("parameter too long");
-    char* res=malloc((o*2) + 1);
+    char* res=malloc((o*2) + 2);
     if (res == NULL) err("error allocating memory");
     for (int i=0; i<o; i++) {
         res[(i*2)+0] = '\\';
         res[(i*2)+1] = src[i];
     }
+    res[o*2] = 0;
     return res;
 }
 
