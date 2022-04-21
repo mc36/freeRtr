@@ -150,7 +150,7 @@ void doMainLoop() {
     for (;;) {
         printf("> ");
         buf[0] = 0;
-        int i = scanf("%1024s", buf);
+        int i = scanf("%1023s", buf);
         if (i < 1) {
             sleep(1);
             continue;
