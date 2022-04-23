@@ -843,8 +843,6 @@ struct tun4_entry {
 int tun4_compare(void *ptr1, void *ptr2) {
     struct tun4_entry *ntry1 = ptr1;
     struct tun4_entry *ntry2 = ptr2;
-    if (ntry1->prot < ntry2->prot) return -1;
-    if (ntry1->prot > ntry2->prot) return +1;
     if (ntry1->srcPort < ntry2->srcPort) return -1;
     if (ntry1->srcPort > ntry2->srcPort) return +1;
     if (ntry1->trgPort < ntry2->trgPort) return -1;
@@ -853,6 +851,8 @@ int tun4_compare(void *ptr1, void *ptr2) {
     if (ntry1->srcAddr > ntry2->srcAddr) return +1;
     if (ntry1->trgAddr < ntry2->trgAddr) return -1;
     if (ntry1->trgAddr > ntry2->trgAddr) return +1;
+    if (ntry1->prot < ntry2->prot) return -1;
+    if (ntry1->prot > ntry2->prot) return +1;
     return 0;
 }
 
@@ -889,8 +889,6 @@ struct tun6_entry {
 int tun6_compare(void *ptr1, void *ptr2) {
     struct tun6_entry *ntry1 = ptr1;
     struct tun6_entry *ntry2 = ptr2;
-    if (ntry1->prot < ntry2->prot) return -1;
-    if (ntry1->prot > ntry2->prot) return +1;
     if (ntry1->srcPort < ntry2->srcPort) return -1;
     if (ntry1->srcPort > ntry2->srcPort) return +1;
     if (ntry1->trgPort < ntry2->trgPort) return -1;
@@ -911,6 +909,8 @@ int tun6_compare(void *ptr1, void *ptr2) {
     if (ntry1->trgAddr3 > ntry2->trgAddr3) return +1;
     if (ntry1->trgAddr4 < ntry2->trgAddr4) return -1;
     if (ntry1->trgAddr4 > ntry2->trgAddr4) return +1;
+    if (ntry1->prot < ntry2->prot) return -1;
+    if (ntry1->prot > ntry2->prot) return +1;
     return 0;
 }
 
