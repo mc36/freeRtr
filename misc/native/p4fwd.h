@@ -136,19 +136,6 @@ int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
 }
 
 
-#define putPseudoSum(buf, pos, prt, len, ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8)    \
-    put32msb(buf, pos + 0, ip1);                                            \
-    put32msb(buf, pos + 4, ip2);                                            \
-    put32msb(buf, pos + 8, ip3);                                            \
-    put32msb(buf, pos + 12, ip4);                                           \
-    put32msb(buf, pos + 16, ip5);                                           \
-    put32msb(buf, pos + 20, ip6);                                           \
-    put32msb(buf, pos + 24, ip7);                                           \
-    put32msb(buf, pos + 28, ip8);                                           \
-    put16msb(buf, pos + 32, prt);                                           \
-    put16msb(buf, pos + 34, len);
-
-
 
 
 
@@ -278,6 +265,17 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     }
 
 
+#define putPppoeHeader                                          \
+    put16msb(bufD, *bufP, *ethtyp);                             \
+    tmp = *bufS - *bufP + preBuff;                              \
+    *bufP -= 6;                                                 \
+    put16msb(bufD, *bufP + 0, 0x1100);                          \
+    put16msb(bufD, *bufP + 2, neigh_res->session);              \
+    put16msb(bufD, *bufP + 4, tmp);                             \
+    *ethtyp = ETHERTYPE_PPPOE_DATA;                             \
+    *bufP -= 2;                                                 \
+    put16msb(bufD, *bufP, *ethtyp);
+
 
 
 
@@ -311,7 +309,8 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     bufP -= 40;                                                 \
     put16msb(bufD, bufP + 0, 0x6000);                           \
     put16msb(bufD, bufP + 2, 0);                                \
-    put16msb(bufD, bufP + 4, (bufS - bufP + preBuff - 40));     \
+    ethtyp = bufS - bufP + preBuff - 40;                        \
+    put16msb(bufD, bufP + 4, ethtyp);                           \
     bufD[bufP + 6] = proto;                                     \
     bufD[bufP + 7] = 0xff;                                      \
     put32msb(bufD, bufP + 8, sip1);                             \
@@ -347,18 +346,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     }                                                           \
     bufP += 2;
 
-
-#define ipip2ethtyp                                             \
-    switch (ethtyp) {                                           \
-        case 4:                                                 \
-            ethtyp = ETHERTYPE_IPV4;                            \
-            break;                                              \
-        case 41:                                                \
-            ethtyp = ETHERTYPE_IPV6;                            \
-            break;                                              \
-    default:                                                    \
-        doDropper;                                              \
-    }
 
 
 #define putEspHeader(bufP, bufS, ethtyp)                        \
@@ -402,15 +389,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     bufP -= 8;                                                  \
     put16msb(bufD, bufP + 0, sprt);                             \
     put16msb(bufD, bufP + 2, dprt);                             \
-    put16msb(bufD, bufP + 4, (bufS - bufP + preBuff));          \
-    put16msb(bufD, bufP + 6, 0);                                \
-
-/* dont fill udp chksum
-    putPseudoSum(bufH, 16, 17, (bufS - bufP + preBuff), sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4);    \
-    tmp = calcIPsum(bufH, 16, 36, 0);                           \
-    tmp = calcIPsum(bufD, bufP, bufS - bufP + preBuff, tmp);    \
-    put16lsb(bufD, bufP + 6, (0xffff - tmp));
-*/
+    tmp = bufS - bufP + preBuff;                                \
+    put16msb(bufD, bufP + 4, tmp);                              \
+    put16msb(bufD, bufP + 6, 0);
 
 
 
@@ -429,7 +410,8 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     bufP -= 8;                                                  \
     put16msb(bufD, bufP + 0, 0x800);                            \
     put16msb(bufD, bufP + 2, 0);                                \
-    put32msb(bufD, bufP + 4, bridge_res->instance << 8);
+    tmp = bridge_res->instance << 8;                            \
+    put32msb(bufD, bufP + 4, tmp);
 
 
 #define putPckoudpHeader                                        \
@@ -667,15 +649,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         break;
     case 2: // pppoe
         ethtyp2ppptyp(*bufP, *ethtyp);
-        put16msb(bufD, *bufP, *ethtyp);
-        tmp = *bufS - *bufP + preBuff;
-        *bufP -= 6;
-        put16msb(bufD, *bufP + 0, 0x1100);
-        put16msb(bufD, *bufP + 2, neigh_res->session);
-        put16msb(bufD, *bufP + 4, tmp);
-        *ethtyp = ETHERTYPE_PPPOE_DATA;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, *ethtyp);
+        putPppoeHeader;
         break;
     case 3: // gre4
         putGreHeader(*bufP);
@@ -961,7 +935,16 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         tmp -= tun_res->encrBlkLen;                                 \
         ethtyp = bufD[bufP + tmp - 1];                              \
         bufS -= bufD[bufP + tmp - 2] + 2;                           \
-        ipip2ethtyp;                                                \
+        switch (ethtyp) {                                           \
+            case 4:                                                 \
+                ethtyp = ETHERTYPE_IPV4;                            \
+                break;                                              \
+            case 41:                                                \
+                ethtyp = ETHERTYPE_IPV6;                            \
+                break;                                              \
+        default:                                                    \
+            doDropper;                                              \
+        }                                                           \
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
@@ -2071,7 +2054,8 @@ ipv6_tx:
         nsh_res->byte += bufS;
         switch (nsh_res->command) {
         case 1: // fwd
-            put16msb(bufD, bufP + 0, (ttl - 0x40));
+            ttl = ttl - 0x40;
+            put16msb(bufD, bufP + 0, ttl);
             put32msb(bufD, bufP + 4, nsh_res->trg);
             ethtyp = ETHERTYPE_NSH;
             bufP -= 2;
