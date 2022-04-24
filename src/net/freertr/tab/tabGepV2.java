@@ -62,15 +62,12 @@ public class tabGepV2<T extends addrType> {
                 return old;
             }
             if (val.prefix.network.bitValue(p)) {
-                if (cur.one == null) {
-                    return null;
-                }
                 cur = cur.one;
             } else {
-                if (cur.zero == null) {
-                    return null;
-                }
                 cur = cur.zero;
+            }
+            if (cur == null) {
+                return null;
             }
         }
     }
@@ -92,15 +89,12 @@ public class tabGepV2<T extends addrType> {
                 return lst;
             }
             if (val.prefix.network.bitValue(p)) {
-                if (cur.one == null) {
-                    return lst;
-                }
                 cur = cur.one;
             } else {
-                if (cur.zero == null) {
-                    return lst;
-                }
                 cur = cur.zero;
+            }
+            if (cur == null) {
+                return lst;
             }
         }
     }

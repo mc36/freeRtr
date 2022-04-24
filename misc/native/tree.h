@@ -48,64 +48,70 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
         if (cur->value != NULL) lst = cur->value;
         if (p >= msk) return lst;
         if (tab->bitter(ntry, p) != 0) {
-            if (cur->one == NULL) return lst;
             cur = cur->one;
         } else {
-            if (cur->zero == NULL) return lst;
             cur = cur->zero;
         }
+        if (cur == NULL) return lst;
     }
 }
 
-void* tree_add(struct tree_head *tab, void *ntry) {
+void tree_add(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     int msk = tab->masker(ntry);
     for (int p = 0;; p++) {
         if (p >= msk) {
-            void* old = cur->value;
-            if (old == NULL) {
-                cur->value = malloc(tab->reclen);
-                if (cur->value == NULL) err("error allocating memory");
+            if (cur->value != NULL) {
+                memcpy(cur->value, ntry, tab->reclen);
+                return;
             }
-            memcpy(cur->value, ntry, tab->reclen);
-            return old;
+            void* nxt = malloc(tab->reclen);
+            if (nxt == NULL) err("error allocating memory");
+            memcpy(nxt, ntry, tab->reclen);
+            cur->value = nxt;
+            return;
         }
         if (tab->bitter(ntry, p) != 0) {
-            if (cur->one == NULL) {
-                cur->one = malloc(sizeof(struct tree_node));
-                if (cur->one == NULL) err("error allocating memory");
-                memset(cur->one, 0, sizeof(struct tree_node));
+            if (cur->one != NULL) {
+                cur = cur->one;
+                continue;
             }
-            cur = cur->one;
+            struct tree_node* nxt = malloc(sizeof(struct tree_node));
+            if (nxt == NULL) err("error allocating memory");
+            memset(nxt, 0, sizeof(struct tree_node));
+            cur->one = nxt;
+            cur = nxt;
         } else {
-            if (cur->zero == NULL) {
-                cur->zero = malloc(sizeof(struct tree_node));
-                if (cur->zero == NULL) err("error allocating memory");
-                memset(cur->zero, 0, sizeof(struct tree_node));
+            if (cur->zero != NULL) {
+                cur = cur->zero;
+                continue;
             }
-            cur = cur->zero;
+            struct tree_node* nxt = malloc(sizeof(struct tree_node));
+            if (nxt == NULL) err("error allocating memory");
+            memset(nxt, 0, sizeof(struct tree_node));
+            cur->zero = nxt;
+            cur = nxt;
         }
     }
 }
 
-void* tree_del(struct tree_head *tab, void *ntry) {
+void tree_del(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     int msk = tab->masker(ntry);
     for (int p = 0;; p++) {
         if (p >= msk) {
             void* old = cur->value;
-            if (old == NULL) return NULL;
+            if (old == NULL) return;
             cur->value = NULL;
             free(old);
-            return old;
+            return;
         }
         if (tab->bitter(ntry, p) != 0) {
-            if (cur->one == NULL) return NULL;
             cur = cur->one;
         } else {
-            if (cur->zero == NULL) return NULL;
             cur = cur->zero;
         }
+        if (cur == NULL) return;
     }
 }
 
