@@ -63,7 +63,16 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
     *len += snprintf((char*)&buf[*len], 128, "%s imissed %li\r\n", (char*)pre, stat.imissed);
     *len += snprintf((char*)&buf[*len], 128, "%s ierrors %li\r\n", (char*)pre, stat.ierrors);
     *len += snprintf((char*)&buf[*len], 128, "%s oerrors %li\r\n", (char*)pre, stat.oerrors);
-    *len += snprintf((char*)&buf[*len], 128, "%s rx_nombuf %li\r\n", (char*)pre, stat.rx_nombuf);
+    *len += snprintf((char*)&buf[*len], 128, "%s nombuf %li\r\n", (char*)pre, stat.rx_nombuf);
+    for (int i = 0;; i++) {
+        uint64_t xstat_id;
+        uint64_t xstat_val;
+        struct rte_eth_xstat_name xstat_nam;
+        xstat_id = i;
+        if (rte_eth_xstats_get_by_id(port, &xstat_id, &xstat_val, 1) != 1) return;
+        if (rte_eth_xstats_get_names_by_id(port, &xstat_nam, 1, &xstat_id) != 1) return;
+        *len += snprintf((char*)&buf[*len], 128, "%s %s %li\r\n", (char*)pre, xstat_nam.name, xstat_val);
+    }
     return;
 }
 

@@ -1,4 +1,4 @@
-unsigned char portStatsBuf[1024];
+unsigned char portStatsBuf[16384];
 int portStatsLen = 0;
 
 void str2mac(unsigned char *dst, char *src) {
