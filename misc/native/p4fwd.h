@@ -512,7 +512,6 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
-    size_t sizt;
     port2vrf_ntry.port = prt;
     int index = table_find(&port2vrf_table, &port2vrf_ntry);
     if (index < 0) return 0;
@@ -570,7 +569,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
             if (EVP_DigestSignUpdate(hashCtx, &bufH[0], 6) != 1) return 1;
         }
         if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
-        sizt = preBuff;
+        size_t sizt = preBuff;
         if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
         *bufS += port2vrf_res->mcscHashBlkLen;
     }
