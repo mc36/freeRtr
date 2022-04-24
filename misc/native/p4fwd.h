@@ -398,32 +398,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putWireguardHeader(bufP, bufS)                          \
-    bufP += 2;                                                  \
-    tmp = bufS - bufP + preBuff;                                \
-    tmp2 = 16 - (tmp % 16);                                     \
-    for (int i=0; i<tmp2; i++) {                                \
-        bufD[bufP + tmp + i] = 0;                               \
-    }                                                           \
-    tmp += tmp2;                                                \
-    bufS += tmp2;                                               \
-    put32lsb(bufH, 16, 0);                                      \
-    put32lsb(bufH, 20, neigh_res->seq);                         \
-    put32lsb(bufH, 24, 0);                                      \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufH[16]) != 1) doDropper;   \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-    if (EVP_EncryptFinal_ex(encrCtx, &bufD[bufP + tmp], &tmp2) != 1) doDropper; \
-    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
-    tmp += 16;                                                  \
-    bufS += 16;                                                 \
-    bufP -= 16;                                                 \
-    put32lsb(bufD, bufP + 0, 4);                                \
-    put32msb(bufD, bufP + 4, neigh_res->tid);                   \
-    put32lsb(bufD, bufP + 8, neigh_res->seq);                   \
-    put32lsb(bufD, bufP + 12, 0);                               \
-    neigh_res->seq++;
 
 
 
@@ -434,6 +408,37 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, *bufP + 2, tmp);                             \
     put32msb(bufD, *bufP + 4, neigh_res->tid);
 
+
+
+int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS) {
+    int seq = neigh_res->seq;
+    neigh_res->seq++;
+    *bufP += 2;
+    int tmp = *bufS - *bufP + preBuff;
+    int tmp2 = 16 - (tmp % 16);
+    for (int i=0; i<tmp2; i++) {
+        bufD[*bufP + tmp + i] = 0;
+    }
+    tmp += tmp2;
+    *bufS += tmp2;
+    put32lsb(bufD, 0, 0);
+    put32lsb(bufD, 4, seq);
+    put32lsb(bufD, 8, 0);
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
+    if (EVP_EncryptInit_ex(encrCtx, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufD[0]) != 1) return 1;
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+    if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
+    if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[*bufP + tmp]) != 1) return 1;
+    tmp += 16;
+    *bufS += 16;
+    *bufP -= 16;
+    put32lsb(bufD, *bufP + 0, 4);
+    put32msb(bufD, *bufP + 4, neigh_res->tid);
+    put32lsb(bufD, *bufP + 8, seq);
+    put32lsb(bufD, *bufP + 12, 0);
+    return 0;
+}
 
 
 int putOpenvpnHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS) {
@@ -637,7 +642,6 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
 
 int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     int tmp;
-    int tmp2;
     neigh_res->pack++;
     neigh_res->byte += *bufS;
     int prt = neigh_res->port;
@@ -702,12 +706,12 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 13: // wireguard4
-        putWireguardHeader(*bufP, *bufS);
+        if (putWireguardHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
         putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
         break;
     case 14: // wireguard6
-        putWireguardHeader(*bufP, *bufS);
+        if (putWireguardHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
