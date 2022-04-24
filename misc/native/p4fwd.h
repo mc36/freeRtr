@@ -383,35 +383,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     memmove(&bufD[bufP], &bufH[0], 12);
 
 
-#define putOpenvpnHeader(bufP, bufS)                            \
-    bufP += 2;                                                  \
-    bufP -= 8;                                                  \
-    put32msb(bufD, bufP + 0, neigh_res->seq);                   \
-    put32msb(bufD, bufP + 4, neigh_res->tid);                   \
-    tmp = bufS - bufP + preBuff;                                \
-    tmp2 = neigh_res->encrBlkLen - (tmp % neigh_res->encrBlkLen);   \
-    for (int i=0; i<tmp2; i++) {                                \
-        bufD[bufP + tmp + i] = tmp2;                            \
-    }                                                           \
-    tmp += tmp2;                                                \
-    bufS += tmp2;                                               \
-    bufP -= neigh_res->encrBlkLen;                              \
-    RAND_bytes(&bufD[bufP], neigh_res->encrBlkLen);             \
-    tmp += neigh_res->encrBlkLen;                               \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;    \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-    if (neigh_res->hashBlkLen > 0) {                            \
-        if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;          \
-        if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) doDropper;   \
-        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
-        bufP -= neigh_res->hashBlkLen;                          \
-        sizt = preBuff;                                         \
-        if (EVP_DigestSignFinal(hashCtx, &bufD[bufP], &sizt) != 1) doDropper; \
-    }                                                           \
-    neigh_res->seq++;
-
 
 #define guessEthtyp                                             \
     switch (bufD[bufP] & 0xf0) {                                \
@@ -463,6 +434,38 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, *bufP + 2, tmp);                             \
     put32msb(bufD, *bufP + 4, neigh_res->tid);
 
+
+
+int putOpenvpnHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS) {
+    int seq = neigh_res->seq;
+    neigh_res->seq++;
+    *bufP += 2;
+    *bufP -= 8;
+    put32msb(bufD, *bufP + 0, seq);
+    put32msb(bufD, *bufP + 4, neigh_res->tid);
+    int tmp = *bufS - *bufP + preBuff;
+    int tmp2 = neigh_res->encrBlkLen - (tmp % neigh_res->encrBlkLen);
+    for (int i=0; i<tmp2; i++) {
+        bufD[*bufP + tmp + i] = tmp2;
+    }
+    tmp += tmp2;
+    *bufS += tmp2;
+    *bufP -= neigh_res->encrBlkLen;
+    RAND_bytes(&bufD[*bufP], neigh_res->encrBlkLen);
+    tmp += neigh_res->encrBlkLen;
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
+    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) return 1;
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+    if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    if (neigh_res->hashBlkLen < 1) return 0;
+    if (EVP_MD_CTX_reset(hashCtx) != 1) return 1;
+    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) return 1;
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
+    *bufP -= neigh_res->hashBlkLen;
+    size_t sizt = preBuff;
+    if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP], &sizt) != 1) return 1;
+    return 0;
+}
 
 
 int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, int ethtyp) {
@@ -635,7 +638,6 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
 int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     int tmp;
     int tmp2;
-    size_t sizt;
     neigh_res->pack++;
     neigh_res->byte += *bufS;
     int prt = neigh_res->port;
@@ -690,12 +692,12 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putIpv6header(*bufP, *bufS, *ethtyp, 50, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 11: // openvpn4
-        putOpenvpnHeader(*bufP, *bufS);
+        if (putOpenvpnHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, 0, 0, 0, neigh_res->dip1, 0, 0, 0);
         putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
         break;
     case 12: // openvpn6
-        putOpenvpnHeader(*bufP, *bufS);
+        if (putOpenvpnHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
