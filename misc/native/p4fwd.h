@@ -348,42 +348,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putEspHeader(bufP, bufS, ethtyp)                        \
-    tmp = bufS - bufP + preBuff;                                \
-    tmp2 = neigh_res->encrBlkLen - ((tmp + 2) % neigh_res->encrBlkLen); \
-    for (int i=0; i<tmp2; i++) {                                \
-        bufD[bufP + tmp + i] = i+1;                             \
-    }                                                           \
-    tmp += tmp2;                                                \
-    bufS += tmp2;                                               \
-    bufD[bufP + tmp + 0] = tmp2;                                \
-    bufD[bufP + tmp + 1] = ethtyp;                              \
-    tmp += 2;                                                   \
-    bufS += 2;                                                  \
-    bufP -= neigh_res->encrBlkLen;                              \
-    RAND_bytes(&bufD[bufP], neigh_res->encrBlkLen);             \
-    tmp += neigh_res->encrBlkLen;                               \
-    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;    \
-    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-    if (EVP_EncryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-    bufP -= 8;                                                  \
-    put32msb(bufD, bufP + 0, neigh_res->spi);                   \
-    put32msb(bufD, bufP + 4, neigh_res->seq);                   \
-    tmp += 8;                                                   \
-    if (neigh_res->hashBlkLen > 0) {                            \
-        if (EVP_MD_CTX_reset(hashCtx) != 1) doDropper;          \
-        if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) doDropper;   \
-        if (EVP_DigestSignUpdate(hashCtx, &bufD[bufP], tmp) != 1) doDropper;    \
-        sizt = preBuff;                                         \
-        if (EVP_DigestSignFinal(hashCtx, &bufD[bufP + tmp], &sizt) != 1) doDropper; \
-        bufS += neigh_res->hashBlkLen;                          \
-    }                                                           \
-    neigh_res->seq++;
-
-
-
-
 
 #define putUdpHeader(bufP, bufS, sprt, dprt, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)    \
     bufP -= 8;                                                  \
@@ -499,6 +463,42 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, *bufP + 2, tmp);                             \
     put32msb(bufD, *bufP + 4, neigh_res->tid);
 
+
+
+int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, int ethtyp) {
+    int seq = neigh_res->seq;
+    neigh_res->seq++;
+    int tmp = *bufS - *bufP + preBuff;
+    int tmp2 = neigh_res->encrBlkLen - ((tmp + 2) % neigh_res->encrBlkLen);
+    for (int i=0; i<tmp2; i++) {
+        bufD[*bufP + tmp + i] = i+1;
+    }
+    tmp += tmp2;
+    *bufS += tmp2;
+    bufD[*bufP + tmp + 0] = tmp2;
+    bufD[*bufP + tmp + 1] = ethtyp;
+    tmp += 2;
+    *bufS += 2;
+    *bufP -= neigh_res->encrBlkLen;
+    RAND_bytes(&bufD[*bufP], neigh_res->encrBlkLen);
+    tmp += neigh_res->encrBlkLen;
+    if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
+    if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) return 1;
+    if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+    if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    *bufP -= 8;
+    put32msb(bufD, *bufP + 0, neigh_res->spi);
+    put32msb(bufD, *bufP + 4, seq);
+    if (neigh_res->hashBlkLen < 1) return 0;
+    tmp += 8;
+    if (EVP_MD_CTX_reset(hashCtx) != 1) return 1;
+    if (EVP_DigestSignInit(hashCtx, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) return 1;
+    if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
+    size_t sizt = preBuff;
+    if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
+    *bufS += neigh_res->hashBlkLen;
+    return 0;
+}
 
 
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
@@ -681,12 +681,12 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         break;
     case 9: // esp4
         putIpipHeader(*bufP, *ethtyp, *ethtyp);
-        putEspHeader(*bufP, *bufS, *ethtyp);
+        if (putEspHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS, *ethtyp) != 0) doDropper;
         putIpv4header(*bufP, *bufS, *ethtyp, 50, neigh_res->sip1, neigh_res->dip1);
         break;
     case 10: // esp6
         putIpipHeader(*bufP, *ethtyp, *ethtyp);
-        putEspHeader(*bufP, *bufS, *ethtyp);
+        if (putEspHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS, *ethtyp) != 0) doDropper;
         putIpv6header(*bufP, *bufS, *ethtyp, 50, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 11: // openvpn4
