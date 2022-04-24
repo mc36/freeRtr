@@ -447,7 +447,7 @@ int main(int argc, char **argv) {
         printf("opening forwarder %i on lcore %i on socket %i...\n", o, i, sock);
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-pack%i", i);
-        lcore_ring[o] = rte_ring_create((char*)&buf[0], ring_fwd, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        lcore_ring[o] = rte_ring_create((char*)&buf[0], ring_fwd, sock, RING_F_SC_DEQ);
         if (lcore_ring[o] == NULL) err("error allocating pack ring");
     }
 
@@ -522,7 +522,7 @@ int main(int argc, char **argv) {
         ret = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
         if (ret != 0) err("error setting up tx queue");
 
-        tx_ring[port] = rte_ring_create((char*)&buf[0], ring_tx, sock, RING_F_SP_ENQ | RING_F_SC_DEQ);
+        tx_ring[port] = rte_ring_create((char*)&buf[0], ring_tx, sock, RING_F_SC_DEQ);
         if (tx_ring[port] == NULL) err("error allocating tx ring");
 
         ret = rte_eth_dev_start(port);
