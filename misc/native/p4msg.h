@@ -531,8 +531,8 @@ int doOneCommand(unsigned char* buf) {
         vrf2rib_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[9]);
-        tun4_ntry.srcPort = 4789;
-        tun4_ntry.trgPort = 4789;
+        tun4_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[10]);
+        tun4_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
         tun4_ntry.prot = 17;
         tun4_ntry.command = 3;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
@@ -562,8 +562,8 @@ int doOneCommand(unsigned char* buf) {
         vrf2rib_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[9]);
-        tun6_ntry.srcPort = 4789;
-        tun6_ntry.trgPort = 4789;
+        tun6_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[10]);
+        tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
         tun6_ntry.prot = 17;
         tun6_ntry.command = 3;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);

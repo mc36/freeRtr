@@ -71,7 +71,7 @@ public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
      *
      * @return address
      */
-    public addrIP getRemote() {
+    public addrIP getRemAddr() {
         return conn.peerAddr.copyBytes();
     }
 
@@ -80,8 +80,26 @@ public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
      *
      * @return address
      */
-    public addrIP getLocal() {
+    public addrIP getLocAddr() {
         return conn.iface.addr.copyBytes();
+    }
+
+    /**
+     * get remote port
+     *
+     * @return address
+     */
+    public int getRemPort() {
+        return conn.portRem;
+    }
+
+    /**
+     * get local port
+     *
+     * @return address
+     */
+    public int getLocPort() {
+        return conn.portLoc;
     }
 
     /**

@@ -112,7 +112,7 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
      *
      * @return address
      */
-    public addrIP getRemote() {
+    public addrIP getRemAddr() {
         if (conn == null) {
             return null;
         }
@@ -124,11 +124,35 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
      *
      * @return address
      */
-    public addrIP getLocal() {
+    public addrIP getLocAddr() {
         if (conn == null) {
             return null;
         }
         return conn.iface.addr.copyBytes();
+    }
+
+    /**
+     * get remote port
+     *
+     * @return address
+     */
+    public int getRemPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portRem;
+    }
+
+    /**
+     * get local port
+     *
+     * @return address
+     */
+    public int getLocPort() {
+        if (conn == null) {
+            return 0;
+        }
+        return conn.portLoc;
     }
 
     /**

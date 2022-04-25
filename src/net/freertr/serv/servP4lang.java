@@ -3457,11 +3457,11 @@ class servP4langConn implements Runnable {
                 if (brif == null) {
                     continue;
                 }
-                adr = iface.getRemote();
+                adr = iface.getRemAddr();
                 if (adr == null) {
                     continue;
                 }
-                addrIP src = iface.getLocal();
+                addrIP src = iface.getLocAddr();
                 if (src == null) {
                     continue;
                 }
@@ -3474,7 +3474,7 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + brif.id;
+                a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + brif.id + " " + iface.getLocPort() + " " + iface.getRemPort();
                 brif.sentBrTun = a;
                 lower.sendLine(a);
                 continue;
@@ -3486,11 +3486,11 @@ class servP4langConn implements Runnable {
                 if (brif == null) {
                     continue;
                 }
-                adr = iface.getRemote();
+                adr = iface.getRemAddr();
                 if (adr == null) {
                     continue;
                 }
-                addrIP src = iface.getLocal();
+                addrIP src = iface.getLocAddr();
                 if (src == null) {
                     continue;
                 }
@@ -3503,7 +3503,7 @@ class servP4langConn implements Runnable {
                 if (hop == null) {
                     continue;
                 }
-                a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.getInst() + " " + ovrf.id + " " + brif.id;
+                a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.getInst() + " " + ovrf.id + " " + brif.id + " " + iface.getLocPort() + " " + iface.getRemPort();
                 brif.sentBrTun = a;
                 lower.sendLine(a);
                 continue;
