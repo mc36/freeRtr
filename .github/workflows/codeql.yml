@@ -34,6 +34,7 @@ jobs:
     - if: matrix.language == 'cpp'
       name: build cpp
       run: |
+        sudo apt-get -y install clang libbpf-dev libpcap-dev libssl-dev dpdk-dev
         cd misc/native
         ./c.sh
 
