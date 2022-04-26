@@ -34,13 +34,14 @@ jobs:
     - if: matrix.language == 'cpp'
       name: build cpp
       run: |
-        sudo apt-get -y install clang libbpf-dev libpcap-dev libssl-dev dpdk-dev
+        sudo apt-get -y install gcc clang libpcap-dev libssl-dev dpdk-dev
         cd misc/native
         ./c.sh
 
     - if: matrix.language == 'java'
       name: build cpp
       run: |
+        sudo apt-get -y install default-jdk-headless
         cd src
         ./c.sh
 
