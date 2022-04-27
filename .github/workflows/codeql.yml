@@ -34,6 +34,7 @@ jobs:
     - if: matrix.language == 'cpp'
       name: build cpp
       run: |
+        sudo apt-get update
         sudo apt-get -y install gcc clang libpcap-dev libssl-dev dpdk-dev
         cd misc/native
         ./c.sh
@@ -41,6 +42,7 @@ jobs:
     - if: matrix.language == 'java'
       name: build cpp
       run: |
+        sudo apt-get update
         sudo apt-get -y install default-jdk-headless
         cd src
         ./c.sh

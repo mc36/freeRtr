@@ -1253,7 +1253,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (i != ipMpls.labelImp) {
             return i;
         }
-        if (labs.size() < 1) {
+        if (labs.size() < 2) {
             return ipMpls.labelExp4;
         }
         i = labs.get(1);
@@ -1280,7 +1280,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (i != ipMpls.labelImp) {
             return i;
         }
-        if (ntry.best.labelRem.size() < 1) {
+        if (ntry.best.labelRem.size() < 2) {
             return getNullLabel(ntry);
         }
         i = ntry.best.labelRem.get(1);
