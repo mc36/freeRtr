@@ -1281,7 +1281,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return i;
         }
         if (ntry.best.labelRem.size() < 1) {
-            return ipMpls.labelExp4;
+            return getNullLabel(ntry);
         }
         i = ntry.best.labelRem.get(1);
         if (i != ipMpls.labelImp) {
