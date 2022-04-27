@@ -1731,6 +1731,7 @@ qc pass: p4lang: bundle vlan mpls push
 qc pass: p4lang: pppoe mpls push
 qc pass: p4lang: gre mpls push
 qc pass: p4lang: l2tp mpls push
+qc pass: p4lang: lpm routing
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -2823,6 +2824,7 @@ qc pass: static routing with check tracker
 qc pass: static routing with nrpe tracker
 qc pass: verify source with static routing
 qc pass: loose verify source with static routing
+qc pass: static routing with lpm
 qc pass: static bmp peer
 qc pass: dynamic bmp peer
 qc pass: authoritative dns server
