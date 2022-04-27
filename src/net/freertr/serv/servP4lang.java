@@ -1249,12 +1249,18 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         if (labs.size() < 1) {
             return -1;
         }
-        int lab = labs.get(0);
-        if (lab == ipMpls.labelImp) {
-            return ipMpls.labelExp4;
-        } else {
-            return lab;
+        int i = labs.get(0);
+        if (i != ipMpls.labelImp) {
+            return i;
         }
+        if (labs.size() < 1) {
+            return ipMpls.labelExp4;
+        }
+        i = labs.get(1);
+        if (i != ipMpls.labelImp) {
+            return i;
+        }
+        return ipMpls.labelExp4;
     }
 
     /**
@@ -1271,10 +1277,17 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return getNullLabel(ntry);
         }
         int i = ntry.best.labelRem.get(0);
-        if (i == ipMpls.labelImp) {
-            return getNullLabel(ntry);
+        if (i != ipMpls.labelImp) {
+            return i;
         }
-        return i;
+        if (ntry.best.labelRem.size() < 1) {
+            return ipMpls.labelExp4;
+        }
+        i = ntry.best.labelRem.get(1);
+        if (i != ipMpls.labelImp) {
+            return i;
+        }
+        return getNullLabel(ntry);
     }
 
     /**
