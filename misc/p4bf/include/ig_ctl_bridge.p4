@@ -88,9 +88,6 @@ hdr.ethernet.src_mac_addr:
         hdr.eth2.ethertype = ig_md.ethertype + ig_md.always_zero; // hack
         ig_md.nexthop_id = nexthop;
         ig_md.ethertype = ETHERTYPE_ROUTEDMAC_INT;
-#ifdef NEED_PKTLEN
-        ig_md.pktlen = ig_md.pktlen + 14;
-#endif
     }
 #endif
 

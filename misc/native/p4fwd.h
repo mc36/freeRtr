@@ -170,14 +170,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 }
 
 
-#define extract_layer4(ntry, mss)                               \
+#define extract_layer4(ntry)                                    \
     switch (ntry.protV) {                                       \
         case 6:                                                 \
             ntry.srcPortV = get16msb(bufD, bufT + 0);           \
             ntry.trgPortV = get16msb(bufD, bufT + 2);           \
-            if (mss < 1) break;                                 \
-            if ((bufD[bufT + 13] & 2) == 0) break;              \
-            adjustMss(bufD, bufT, mss);                         \
             break;                                              \
         case 17:                                                \
             ntry.srcPortV = get16msb(bufD, bufT + 0);           \
@@ -189,6 +186,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
             break;                                              \
     }                                                           \
     hash ^= ntry.protV ^ ntry.srcPortV ^ ntry.trgPortV;
+
+
+#define update_tcpMss(ntry, mss)                                \
+    if ((ntry.protV == 6) && (mss > 0))                         \
+        if ((bufD[bufT + 13] & 2) != 0) adjustMss(bufD, bufT, mss);
 
 
 
@@ -1400,7 +1402,8 @@ ipv4_rx:
         if (ttl <= 1) doPunting;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
-        extract_layer4(acl4_ntry, port2vrf_res->tcpmss4);
+        extract_layer4(acl4_ntry);
+        update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
         if (port2vrf_res->verify4 > 0) {
             sroute4_ntry.addr = acl4_ntry.srcAddr;
             sroute4_ntry.mask = 32;
@@ -1671,7 +1674,8 @@ ipv6_rx:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
         bufD[bufP + 7] = ttl;
-        extract_layer4(acl6_ntry, port2vrf_res->tcpmss6);
+        extract_layer4(acl6_ntry);
+        update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
         if (port2vrf_res->verify6 > 0) {
             sroute6_ntry.addr1 = acl6_ntry.srcAddr1;
             sroute6_ntry.addr2 = acl6_ntry.srcAddr2;
@@ -2104,6 +2108,20 @@ xconn_rx:
 bridge_rx:
         bridge_ntry.id = port2vrf_res->bridge;
         memmove(&bufH[0], &bufD[preBuff], 12);
+        tmp = get16msb(bufD, bufP - 2);
+        switch (tmp) {
+        case ETHERTYPE_IPV4: // ipv4
+            bufT = bufD[bufP + 0] & 0xf;
+            bufT = bufP + (bufT << 2);
+            acl4_ntry.protV = bufD[bufP + 9];
+            update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
+            break;
+        case ETHERTYPE_IPV6: // ipv6
+            bufT = bufP + 40;
+            acl6_ntry.protV = bufD[bufP + 6];
+            update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
+            break;
+        }
         goto bridgevpls_rx;
 bridgevpls_rx:
         bridge_ntry.mac1 = get16msb(bufH, 6);
@@ -2125,7 +2143,10 @@ bridgevpls_rx:
         bufP -= 2;
         switch (bridge_res->command) {
         case 1: // port
-            break;
+            prt = bridge_res->port;
+            prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            if (prt >= 0) goto ethtyp_rx;
+            return;
         case 2: // vpls
             bufP -= 12;
             memmove(&bufD[bufP], &bufH[0], 12);
@@ -2181,10 +2202,6 @@ bridgevpls_rx:
         default:
             return;
         }
-        prt = bridge_res->port;
-        prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
-        if (prt >= 0) goto ethtyp_rx;
-        return;
     case ETHERTYPE_ARP: // arp
         doCpuing;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl
