@@ -23,9 +23,9 @@
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256
 
-#define NEXTHOP_TABLE_SIZE                     512
+#define NEXTHOP_TABLE_SIZE             49152
 
 
-#define PPPOE_TABLE_SIZE               294912
+#define PPPOE_TABLE_SIZE               49152
 #define _TABLE_SIZE_P4_
 #endif

@@ -24,10 +24,10 @@
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256
 
-#define NEXTHOP_TABLE_SIZE                     512
+#define NEXTHOP_TABLE_SIZE             28672
 
 
-#define IPV4_TUNNEL_TABLE_SIZE         32768
-#define IPV6_TUNNEL_TABLE_SIZE         16384
+#define IPV4_TUNNEL_TABLE_SIZE         28672
+#define IPV6_TUNNEL_TABLE_SIZE         14336
 #define _TABLE_SIZE_P4_
 #endif
