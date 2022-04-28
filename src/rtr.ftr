@@ -1732,6 +1732,16 @@ qc pass: p4lang: pppoe mpls push
 qc pass: p4lang: gre mpls push
 qc pass: p4lang: l2tp mpls push
 qc pass: p4lang: lpm routing
+qc pass: p4lang: l2vpn over bundle mpls
+qc pass: p4lang: l2vpn over bundle vlan mpls
+qc pass: p4lang: l2vpn over pppoe mpls
+qc pass: p4lang: l2vpn over gre mpls
+qc pass: p4lang: l2vpn over l2tp mpls
+qc pass: p4lang: l3vpn over bundle mpls
+qc pass: p4lang: l3vpn over bundle vlan mpls
+qc pass: p4lang: l3vpn over pppoe mpls
+qc pass: p4lang: l3vpn over gre mpls
+qc pass: p4lang: l3vpn over l2tp mpls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v22.4.27-cur, done by cs@nop.
--;-;-;2022-04-27 20:20:14, took 00:15:09, with 80 workers, on 2850 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter v22.4.28-cur, done by cs@nop.
+-;-;-;2022-04-28 04:26:31, took 00:10:52, with 80 workers, on 2860 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.org/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1736,6 +1736,16 @@ http://sources.freertr.org/cfg/p4lang-rout197.tst;p4lang-rout197.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout198.tst;p4lang-rout198.tst;success;p4lang: gre mpls push
 http://sources.freertr.org/cfg/p4lang-rout199.tst;p4lang-rout199.tst;success;p4lang: l2tp mpls push
 http://sources.freertr.org/cfg/p4lang-rout200.tst;p4lang-rout200.tst;success;p4lang: lpm routing
+http://sources.freertr.org/cfg/p4lang-rout201.tst;p4lang-rout201.tst;success;p4lang: l2vpn over bundle mpls
+http://sources.freertr.org/cfg/p4lang-rout202.tst;p4lang-rout202.tst;success;p4lang: l2vpn over bundle vlan mpls
+http://sources.freertr.org/cfg/p4lang-rout203.tst;p4lang-rout203.tst;success;p4lang: l2vpn over pppoe mpls
+http://sources.freertr.org/cfg/p4lang-rout204.tst;p4lang-rout204.tst;success;p4lang: l2vpn over gre mpls
+http://sources.freertr.org/cfg/p4lang-rout205.tst;p4lang-rout205.tst;success;p4lang: l2vpn over l2tp mpls
+http://sources.freertr.org/cfg/p4lang-rout206.tst;p4lang-rout206.tst;success;p4lang: l3vpn over bundle mpls
+http://sources.freertr.org/cfg/p4lang-rout207.tst;p4lang-rout207.tst;success;p4lang: l3vpn over bundle vlan mpls
+http://sources.freertr.org/cfg/p4lang-rout208.tst;p4lang-rout208.tst;success;p4lang: l3vpn over pppoe mpls
+http://sources.freertr.org/cfg/p4lang-rout209.tst;p4lang-rout209.tst;success;p4lang: l3vpn over gre mpls
+http://sources.freertr.org/cfg/p4lang-rout210.tst;p4lang-rout210.tst;success;p4lang: l3vpn over l2tp mpls
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

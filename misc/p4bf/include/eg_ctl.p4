@@ -74,6 +74,8 @@ control eg_ctl(
 #endif
 
 #ifdef NEED_PKTLEN
+        if (hdr.eth2.isValid()) eg_md.pktlen = eg_md.pktlen + 14;
+        if (hdr.vlan2.isValid()) eg_md.pktlen = eg_md.pktlen + 4;
 #ifdef HAVE_MPLS
         if (hdr.mpls1.isValid()) eg_md.pktlen = eg_md.pktlen + 8;
         else if (hdr.mpls0.isValid()) eg_md.pktlen = eg_md.pktlen + 4;

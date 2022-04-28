@@ -44,6 +44,7 @@ struct headers {
     ipv4_t		ipv4c;
     ipv6_t		ipv6c;
     ethernet_t		eth2;
+    vlan_t		vlan2;
     arp_t		arp;
     llc_t		llc;
     ipv4_t		ipv4;

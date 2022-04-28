@@ -67,6 +67,7 @@ struct headers {
 #endif
 #endif
     ethernet_t eth2;
+    vlan_t vlan2;
     arp_t arp;
     llc_t llc;
     ipv4_t ipv4;
