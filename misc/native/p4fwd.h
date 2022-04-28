@@ -1281,7 +1281,7 @@ mpls_rx:
             goto ipv6_rx;
         }
         index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) doPunting;
+        if (index < 0) doDropper;
         mpls_res = table_get(&mpls_table, index);
         mpls_res->pack++;
         mpls_res->byte += bufS;

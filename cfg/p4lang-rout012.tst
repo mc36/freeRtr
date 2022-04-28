@@ -421,5 +421,5 @@ r6 tping 100 10 3333::105 vrf v1 sou lo0
 r6 tping 100 10 3.3.3.106 vrf v1 sou lo0
 r6 tping 100 10 3333::106 vrf v1 sou lo0
 
-r1 dping sdn . r6 3.3.3.105 vrf v1 sou lo0
-r1 dping sdn . r6 3333::105 vrf v1 sou lo0
+r1 dping sdn . r6 3.3.3.104 vrf v1 sou lo0
+r1 dping sdn . r6 3333::104 vrf v1 sou lo0

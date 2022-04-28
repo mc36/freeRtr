@@ -3331,6 +3331,26 @@ class servP4langConn implements Runnable {
             if (ntry == null) {
                 break;
             }
+            int l = -1;
+            try {
+                clntMplsPwe ifc = (clntMplsPwe) ntry.lowerIf;
+                if (ifc.getLabelRem() < 0) {
+                    continue;
+                }
+                l = ifc.getLabelLoc();
+            } catch (Exception e) {
+            }
+            try {
+                rtrBgpEvpnPeer ifc = (rtrBgpEvpnPeer) ntry.lowerIf;
+                if (ifc.getLabelRem() < 0) {
+                    continue;
+                }
+                l = ifc.getLabelLoc();
+                if (br.findIfc(l)) {
+                    continue;
+                }
+            } catch (Exception e) {
+            }
             seenI.put(ntry);
             if (br.ifcs.find(ntry) != null) {
                 continue;
@@ -3357,26 +3377,6 @@ class servP4langConn implements Runnable {
                 servPckOudpConn ifc = (servPckOudpConn) ntry.lowerIf;
                 addDynBr(br, ntry, ifc);
                 continue;
-            } catch (Exception e) {
-            }
-            int l = -1;
-            try {
-                clntMplsPwe ifc = (clntMplsPwe) ntry.lowerIf;
-                if (ifc.getLabelRem() < 0) {
-                    continue;
-                }
-                l = ifc.getLabelLoc();
-            } catch (Exception e) {
-            }
-            try {
-                rtrBgpEvpnPeer ifc = (rtrBgpEvpnPeer) ntry.lowerIf;
-                if (ifc.getLabelRem() < 0) {
-                    continue;
-                }
-                l = ifc.getLabelLoc();
-                if (br.findIfc(l)) {
-                    continue;
-                }
             } catch (Exception e) {
             }
             if (l < 1) {
