@@ -12,7 +12,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.4.29-cur, done by cs@nop.<br/>
-tested: 2022-04-29 17:33:51, took 00:09:02, with 80 workers, on 2860 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2022-04-29 18:01:10, took 00:09:58, with 80 workers, on 2872 cases, 0 failed, 0 traces, 0 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -889,6 +889,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-bgp19.tst">intop1-bgp19.tst</a></td><td>success</td><td>interop1: bgp aigp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-bgp20.tst">intop1-bgp20.tst</a></td><td>success</td><td>interop1: bgp with php labels</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-bgp21.tst">intop1-bgp21.tst</a></td><td>success</td><td>interop1: bgp large community</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-bgp22.tst">intop1-bgp22.tst</a></td><td>success</td><td>interop1: vpls/ldp cw over bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-dhcp01.tst">intop1-dhcp01.tst</a></td><td>success</td><td>interop1: dhcp server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-dhcp02.tst">intop1-dhcp02.tst</a></td><td>success</td><td>interop1: dhcp client</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-dns.tst">intop1-dns.tst</a></td><td>success</td><td>interop1: dns</td></tr>
@@ -959,6 +960,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ldp04.tst">intop1-ldp04.tst</a></td><td>success</td><td>interop1: ldp mp2mp lsp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ldp05.tst">intop1-ldp05.tst</a></td><td>success</td><td>interop1: ldp php lsp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ldp06.tst">intop1-ldp06.tst</a></td><td>success</td><td>interop1: ldp over point2point ethernet</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ldp07.tst">intop1-ldp07.tst</a></td><td>success</td><td>interop1: ethernet over mpls cw</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-mcast01.tst">intop1-mcast01.tst</a></td><td>success</td><td>interop1: igmp3/mld2</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-mcast02.tst">intop1-mcast02.tst</a></td><td>success</td><td>interop1: pim</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-modem01.tst">intop1-modem01.tst</a></td><td>success</td><td>interop1: modem with alaw</td></tr>
@@ -2432,6 +2434,16 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp569.tst">rout-bgp569.tst</a></td><td>success</td><td>safe ebgp policy with routemap</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp570.tst">rout-bgp570.tst</a></td><td>success</td><td>safe ebgp policy with routepolicy</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp571.tst">rout-bgp571.tst</a></td><td>success</td><td>ebgp over common subnet</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp572.tst">rout-bgp572.tst</a></td><td>success</td><td>vpls/ldp cw over ebgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp573.tst">rout-bgp573.tst</a></td><td>success</td><td>vpls/ldp cw over ibgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp574.tst">rout-bgp574.tst</a></td><td>success</td><td>vpls/ldp cw over bgp additional path</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp575.tst">rout-bgp575.tst</a></td><td>success</td><td>vpls/ldp cw over ibgp rr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp576.tst">rout-bgp576.tst</a></td><td>success</td><td>vpls/ldp cw over confed bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp577.tst">rout-bgp577.tst</a></td><td>success</td><td>vpls/ldp cw over bgp route server</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp578.tst">rout-bgp578.tst</a></td><td>success</td><td>vpls/ldp cw over bgp with soft-reconfig</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp579.tst">rout-bgp579.tst</a></td><td>success</td><td>unicast+vpls/ldp cw over bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp580.tst">rout-bgp580.tst</a></td><td>success</td><td>unicast+vpls/ldp cw over bgp with soft-reconfig</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp581.tst">rout-bgp581.tst</a></td><td>success</td><td>unicast+vpls/ldp cw over bgp additional path</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>success</td><td>eigrp point2point connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>success</td><td>eigrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>success</td><td>eigrp point2point chain</td></tr>

@@ -13213,3 +13213,16 @@ qc pass: p4lang: l3vpn over bundle vlan mpls
 qc pass: p4lang: l3vpn over pppoe mpls
 qc pass: p4lang: l3vpn over gre mpls
 qc pass: p4lang: l3vpn over l2tp mpls
+---------------------------------- 2022-04-29 17:51:12 22.4.29
+qc pass: interop1: vpls/ldp cw over bgp
+qc pass: interop1: ethernet over mpls cw
+qc pass: vpls/ldp cw over ebgp
+qc pass: vpls/ldp cw over ibgp
+qc pass: vpls/ldp cw over bgp additional path
+qc pass: vpls/ldp cw over ibgp rr
+qc pass: vpls/ldp cw over confed bgp
+qc pass: vpls/ldp cw over bgp route server
+qc pass: vpls/ldp cw over bgp with soft-reconfig
+qc pass: unicast+vpls/ldp cw over bgp
+qc pass: unicast+vpls/ldp cw over bgp with soft-reconfig
+qc pass: unicast+vpls/ldp cw over bgp additional path

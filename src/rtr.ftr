@@ -871,6 +871,7 @@ qc pass: interop1: bgp 6pe
 qc pass: interop1: bgp aigp
 qc pass: interop1: bgp with php labels
 qc pass: interop1: bgp large community
+qc pass: interop1: vpls/ldp cw over bgp
 qc pass: interop1: dhcp server
 qc pass: interop1: dhcp client
 qc pass: interop1: dns
@@ -941,6 +942,7 @@ qc pass: interop1: ldp p2mp lsp
 qc pass: interop1: ldp mp2mp lsp
 qc pass: interop1: ldp php lsp
 qc pass: interop1: ldp over point2point ethernet
+qc pass: interop1: ethernet over mpls cw
 qc pass: interop1: igmp3/mld2
 qc pass: interop1: pim
 qc pass: interop1: modem with alaw
@@ -2414,6 +2416,16 @@ qc pass: safe ebgp policy with prefixlist
 qc pass: safe ebgp policy with routemap
 qc pass: safe ebgp policy with routepolicy
 qc pass: ebgp over common subnet
+qc pass: vpls/ldp cw over ebgp
+qc pass: vpls/ldp cw over ibgp
+qc pass: vpls/ldp cw over bgp additional path
+qc pass: vpls/ldp cw over ibgp rr
+qc pass: vpls/ldp cw over confed bgp
+qc pass: vpls/ldp cw over bgp route server
+qc pass: vpls/ldp cw over bgp with soft-reconfig
+qc pass: unicast+vpls/ldp cw over bgp
+qc pass: unicast+vpls/ldp cw over bgp with soft-reconfig
+qc pass: unicast+vpls/ldp cw over bgp additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
