@@ -2484,6 +2484,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "4 .         <num>                 bridge group number");
         l.add(null, "3 4       update-source           select source to advertise");
         l.add(null, "4 .         <name:ifc>            name of interface");
+        l.add(null, "3 .       control-word            specify control word");
         l.add(null, "3 4       ve-id                   specify ve id");
         l.add(null, "4 5         <num>                 ve id number");
         l.add(null, "5 .           <num>               ve maximum number");
@@ -3114,6 +3115,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             cur = vpls.find(cur);
             if (cur == null) {
                 cmd.error("vpls not enabled");
+                return false;
+            }
+            if (s.equals("control-word")) {
+                cur.ctrlWrd = !negated;
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             if (s.equals("ve-id")) {

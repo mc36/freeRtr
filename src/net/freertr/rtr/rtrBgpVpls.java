@@ -44,6 +44,11 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
     public cfgIfc iface;
 
     /**
+     * control word
+     */
+    public boolean ctrlWrd;
+
+    /**
      * ve id
      */
     public int veId;
@@ -93,6 +98,9 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         beg = beg + "afi-vpls " + tabRouteUtil.rd2string(id) + " ";
         l.add(beg + "bridge-group " + bridge.name);
         l.add(beg + "ve-id " + veId + " " + veMax);
+        if (ctrlWrd) {
+            l.add(beg + "control-word");
+        }
         if (iface != null) {
             l.add(beg + "update-source " + iface.name);
         }
@@ -218,6 +226,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             pwom.vrf = parent.vrfCore;
             pwom.srcIfc = iface;
             pwom.vcid = tabRouteUtil.agi2comm(id);
+            pwom.ctrlWrd = ctrlWrd;
             pwom.general = true;
             pwom.descr = null;
             per.brdg = bridge.bridgeHed.newIface(false, true, false);
