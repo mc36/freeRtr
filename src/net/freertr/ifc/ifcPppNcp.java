@@ -111,6 +111,11 @@ public abstract class ifcPppNcp {
     public final static int sawFrcClsd = 0x80;
 
     /**
+     * preserve state
+     */
+    public final static int sawPreserv = 0x10;
+
+    /**
      * Configure-Request
      */
     public final static int codeConfReq = 1;
@@ -169,7 +174,11 @@ public abstract class ifcPppNcp {
      * clear this state
      */
     public void clearUpperState() {
+        int i = sawBit;
         sawBit &= (sawFrcOpen | sawFrcClsd);
+        if ((i & sawPreserv) != 0) {
+            sawBit = i & ~sawPreserv;
+        }
         if ((sawBit & sawFrcOpen) != 0) {
             sawBit |= sawLocNeed;
         }
@@ -394,8 +403,9 @@ public abstract class ifcPppNcp {
                     logger.debug("saw=" + bits.toHexB(sawBit) + " options: " + tmp2);
                 }
                 sawReq1++;
-                if (sawReq1 > 3) {
+                if (sawReq1 > parent.reqResetLimit) {
                     clearState();
+                    sawBit |= sawTxAck | sawRxReq | sawRemNeed | sawPreserv;
                     break;
                 }
                 if (!getReady()) {

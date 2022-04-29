@@ -203,6 +203,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public int nakRetryLimit = 16;
 
     /**
+     * req reset limit
+     */
+    public int reqResetLimit = 5;
+
+    /**
      * server that handler received packets
      */
     public ifcUp upper = new ifcNull();
@@ -462,6 +467,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "3 .       <num>                     milliseconds");
         l.add(null, "2 3     naktry                      nak retry limit");
         l.add(null, "3 .       <num>                     number of tries");
+        l.add(null, "2 3     reqrst                      req reset limit");
+        l.add(null, "3 .       <num>                     number of tries");
         l.add(null, "2 3     ip4cp                       ipv4 control protocol");
         l.add(null, "3 .       open                      force to open state");
         l.add(null, "3 .       close                     force to close state");
@@ -542,6 +549,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         cmds.cfgLine(l, !refuseChap, cmds.tabulator, "ppp refuseauth chap", "");
         cmds.cfgLine(l, !refuseEap, cmds.tabulator, "ppp refuseauth eap", "");
         l.add(beg + "naktry " + nakRetryLimit);
+        l.add(beg + "reqrst " + reqResetLimit);
         l.add(beg + "accm " + sentAccm);
         l.add(beg + "mru " + sentMru);
         cmds.cfgLine(l, !ctrlIp4.forced2close(), cmds.tabulator, "ppp ip4cp close", "");
@@ -829,6 +837,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
         if (a.equals("naktry")) {
             nakRetryLimit = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("reqrst")) {
+            reqResetLimit = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("authentication")) {
@@ -1706,7 +1718,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     }
 
     private void getShow(userFormat res, ifcPppNcp nc) {
-        res.add(nc.getPPPname() + "|" + nc.sawBit + "|" + nc.cntr.getShStat());
+        res.add(nc.getPPPname() + "|" + bits.toHexB(nc.sawBit) + "|" + nc.cntr.getShStat());
     }
 
     /**

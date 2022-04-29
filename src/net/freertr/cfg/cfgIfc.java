@@ -1844,6 +1844,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! ppp fragment 0",
         "interface .*! ppp frgap 0",
         "interface .*! ppp keepalive 5000",
+        "interface .*! ppp reqrst 5",
         "interface .*! ppp naktry 16",
         "interface .*! no ppp username",
         "interface .*! no ppp password",
