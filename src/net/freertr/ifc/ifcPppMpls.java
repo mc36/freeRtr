@@ -90,7 +90,7 @@ public class ifcPppMpls extends ifcPppNcp {
      * clear state
      */
     public void clearState() {
-        clearUpperState();
+        clearUpperState(false);
     }
 
     /**

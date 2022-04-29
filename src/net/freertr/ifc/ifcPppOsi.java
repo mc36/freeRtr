@@ -80,7 +80,7 @@ public class ifcPppOsi extends ifcPppNcp {
      * clear state
      */
     public void clearState() {
-        clearUpperState();
+        clearUpperState(false);
     }
 
     /**

@@ -174,7 +174,7 @@ public class ifcPppLcp extends ifcPppNcp {
         authRem = 0;
         multiLoc = 0;
         multiRem = 0;
-        clearUpperState();
+        clearUpperState(true);
     }
 
     /**

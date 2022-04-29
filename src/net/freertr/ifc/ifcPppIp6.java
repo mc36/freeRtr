@@ -89,7 +89,7 @@ public class ifcPppIp6 extends ifcPppNcp {
         } else {
             remAddrCur = new addrEui();
         }
-        clearUpperState();
+        clearUpperState(false);
     }
 
     public Object getOneConfig(boolean txReq) {

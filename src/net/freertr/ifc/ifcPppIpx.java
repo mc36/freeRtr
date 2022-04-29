@@ -57,7 +57,7 @@ public class ifcPppIpx extends ifcPppNcp {
     }
 
     public void clearState() {
-        clearUpperState();
+        clearUpperState(false);
     }
 
     public Object getOneConfig(boolean txReq) {

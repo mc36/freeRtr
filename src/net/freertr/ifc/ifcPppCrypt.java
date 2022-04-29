@@ -56,7 +56,7 @@ public class ifcPppCrypt extends ifcPppNcp {
     }
 
     public void clearState() {
-        clearUpperState();
+        clearUpperState(false);
     }
 
     public Object getOneConfig(boolean txReq) {

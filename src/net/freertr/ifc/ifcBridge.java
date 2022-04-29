@@ -544,6 +544,18 @@ public class ifcBridge implements ifcDn {
             description = "";
             return;
         }
+        if (a.equals("rd")) {
+            rd = 0;
+            return;
+        }
+        if (a.equals("rt-import")) {
+            rtImp = 0;
+            return;
+        }
+        if (a.equals("rt-export")) {
+            rtExp = 0;
+            return;
+        }
         if (a.equals("mac-learn")) {
             learned = null;
             return;

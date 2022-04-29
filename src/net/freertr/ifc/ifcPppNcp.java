@@ -172,11 +172,13 @@ public abstract class ifcPppNcp {
 
     /**
      * clear this state
+     *
+     * @param prs preserve state if requested
      */
-    public void clearUpperState() {
+    public void clearUpperState(boolean prs) {
         int i = sawBit;
         sawBit &= (sawFrcOpen | sawFrcClsd);
-        if ((i & sawPreserv) != 0) {
+        if (prs && ((i & sawPreserv) != 0)) {
             sawBit = i & ~sawPreserv;
         }
         if ((sawBit & sawFrcOpen) != 0) {

@@ -168,7 +168,7 @@ public class ifcPppIp4 extends ifcPppNcp {
             dns2addrCur = parent.dns2addrCfg.copyBytes();
         }
         locAddrReq = parent.locAddrReq;
-        clearUpperState();
+        clearUpperState(false);
     }
 
     /**

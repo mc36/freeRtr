@@ -79,7 +79,7 @@ public class ifcPppPolka extends ifcPppNcp {
      * clear state
      */
     public void clearState() {
-        clearUpperState();
+        clearUpperState(false);
     }
 
     /**
