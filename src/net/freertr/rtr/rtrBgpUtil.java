@@ -1191,6 +1191,10 @@ public class rtrBgpUtil {
         }
         int o = (i + 7) / 8;
         byte[] buf = new byte[128];
+        if (o > buf.length) {
+            logger.info("too long (" + o + ") nlri");
+            return null;
+        }
         bits.byteFill(buf, 0, buf.length, 0);
         pck.getCopy(buf, 0, 0, o);
         pck.getSkip(o);
