@@ -99,6 +99,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             }
         }
         String s = "";
+        long t = bits.getTime();
         for (int i = cfgAll.ifaces.size() - 1; i >= 0; i--) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
             if (ntry == null) {
@@ -108,7 +109,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             if (ntry.thread == null) {
                 continue;
             }
-            if (!ntry.thread.checkStalled()) {
+            if (!ntry.thread.checkStalled(t)) {
                 continue;
             }
             s += ntry + "=" + ntry.thread.stallPoint() + " ";
@@ -160,13 +161,13 @@ public abstract class ifcThread implements ifcDn, Runnable {
     /**
      * check for watchdog
      *
+     * @param t time
      * @return true if interface stalled
      */
-    public boolean checkStalled() {
+    public boolean checkStalled(long t) {
         if (procRun != started.length) {
             return true;
         }
-        long t = bits.getTime();
         if (procLst != procCnt) {
             procLst = procCnt;
             procTim = t;
@@ -176,7 +177,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             procTim = t;
             return false;
         }
-        return (t - procTim) > 10000;
+        return (t - procTim) > 30000;
     }
 
     /**

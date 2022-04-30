@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrMac;
+import net.freertr.util.bits;
 import net.freertr.util.logger;
 
 /**
@@ -108,7 +109,7 @@ public class ifcUdpInt extends ifcThread {
         } else {
             hwaddr = new addrEmpty();
         }
-        checkStalled();
+        checkStalled(bits.getTime());
     }
 
     public void rxtxClose() throws Exception {
