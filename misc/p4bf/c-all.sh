@@ -10,7 +10,7 @@
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-bf2556x-1t.git
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-nix.git
-#wget http://src.nop.hu/misc/p4bf/ports.json
+#wget http://src.freertr.org/misc/p4bf/ports.json
 #gcc -O3 -o dummyCon.bin ../native/dummyCon.c
 #cp initd /etc/init.d/rtr
 #chmod 755 /etc/init.d/rtr
@@ -28,7 +28,7 @@
 #fallocate -d p4bf.img
 #
 cd ~/rare/p4src
-export SDE=/home/mc36/bf-sde-9.8.0
+export SDE=/home/mc36/bf-sde-9.9.0
 export SDE_INSTALL=$SDE/install
 $SDE/install/bin/bf-p4c -I. -I../profiles $@ -Xp4c="--disable-parse-depth-limit" bf_router.p4
 if [ -f bf_router.tofino/pipe/tofino.bin ] ; then

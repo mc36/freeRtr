@@ -45,6 +45,7 @@ control eg_ctl(
 
 
     apply {
+        eg_dprsr_md.drop_ctl = 0; // hack for odd/even packet lengths
 
 #ifdef NEED_PKTLEN
         eg_md.pktlen = hdr.internal.pktlen;

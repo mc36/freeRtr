@@ -108,6 +108,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
     apply {
 
         ig_dprsr_md.drop_ctl = 0; // hack for odd/even ports
+        ig_tm_md.bypass_egress = 0; // hack for odd/deven packet lengths
 
 #ifdef NEED_PKTLEN
         if (hdr.ipv6.isValid()) ig_md.pktlen = hdr.ipv6.payload_len + 40;
