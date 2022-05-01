@@ -23,6 +23,7 @@
  * User defined metadata type
  */
 struct ingress_metadata_t {
+    port_metadata_t port_md;
 
 #ifdef NEED_PKTLEN
     bit<16> pktlen;

@@ -28,7 +28,8 @@ parser ig_prs_main(packet_in pkt,
 
     state start {
         pkt.extract(ig_intr_md);
-        pkt.advance(PORT_METADATA_SIZE);
+        //pkt.advance(PORT_METADATA_SIZE);
+        ig_md.port_md = port_metadata_unpack<port_metadata_t>(pkt);
 
 #include "include/ig_prs_clr.p4"
 
@@ -48,7 +49,7 @@ RECIR_PORT:
 
 
     state meta_init2 {
-        ig_md.ingress_id = (SubIntId_t)ig_intr_md.ingress_port;
+        ig_md.ingress_id = ig_md.port_md.portid;
         transition select(ig_intr_md.resubmit_flag) {
 1w1:
             prs_resub;

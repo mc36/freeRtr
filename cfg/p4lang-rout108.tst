@@ -79,10 +79,10 @@ server p4lang p4
  export-vrf v1 1
  export-vrf v2 2
  export-br 1
- export-port sdn1 1
- export-port sdn2 2
- export-port sdn3 3
- export-port sdn4 4
+ export-port sdn1 1 10
+ export-port sdn2 2 10
+ export-port sdn3 3 10
+ export-port sdn4 4 10
  vrf v9
  exit
 ipv6 route v2 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::2

@@ -61,6 +61,7 @@
 #include "include/hdr_ig_headers.p4"
 
 /*------------------ I N G R E S S  G L O B A L  M E T A D A T A ------------ */
+#include "include/mtd_port_metadata.p4"
 #include "include/mtd_ig_metadata.p4"
 
 /*------------------ I N G R E S S   P A R S E R -----------------------------*/

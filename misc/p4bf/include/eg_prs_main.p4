@@ -36,6 +36,8 @@ parser eg_prs_main(packet_in pkt,
         ig_md.nexthop_id = hdr.internal.nexthop_id;
         ig_md.aclport_id = hdr.internal.aclport_id;
         ig_md.ingress_id = 0;
+        ig_md.port_md._padding1 = 0;
+        ig_md.port_md.portid = 0;
         transition prs_ethernet;
     }
 

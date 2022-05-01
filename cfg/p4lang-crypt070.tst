@@ -98,10 +98,10 @@ server p4lang p4
  export-vrf v1 1
  export-vrf v2 2
  export-vrf v3 3
- export-port sdn1 1
- export-port sdn2 2
- export-port sdn3 3
- export-port sdn4 4
+ export-port sdn1 1 10
+ export-port sdn2 2 10
+ export-port sdn3 3 10
+ export-port sdn4 4 10
  export-port hair11 dynamic -1
  export-port hair12 dynamic -1
  export-port tun1 dynamic

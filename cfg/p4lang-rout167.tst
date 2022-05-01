@@ -122,10 +122,10 @@ ipv6 mroute v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 server p4lang p4
  interconnect eth2
  export-vrf v1 1
- export-port sdn1 1
- export-port sdn2 2
- export-port sdn3 3
- export-port sdn4 4
+ export-port sdn1 1 10
+ export-port sdn2 2 10
+ export-port sdn3 3 10
+ export-port sdn4 4 10
  vrf v9
  exit
 router bgp4 1

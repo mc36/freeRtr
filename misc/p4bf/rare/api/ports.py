@@ -54,6 +54,17 @@ def managePort(self, platform, mode, port_id, port_speed=10,
                         )
                     ],
                 )
+            self.bfgc.metadata_table.entry_add(
+                self.bfgc.target,
+                [self.bfgc.metadata_table.make_key([gc.KeyTuple("ig_intr_md.ingress_port", port_id)])],
+                [
+                    self.bfgc.metadata_table.make_data(
+                        [
+                            gc.DataTuple("portid", port_id),
+                        ]
+                    )
+                ],
+            )
         except Exception as e:
             self.controlPlaneMsg(
                 "%s:%s - Error in adding port [%s] with parameters:[%s,%s,%s,%s]: %s"
@@ -86,6 +97,10 @@ def managePort(self, platform, mode, port_id, port_speed=10,
                     self.bfgc.target,
                     [self.bfgc.port_table.make_key([gc.KeyTuple("$DEV_PORT", port_id)])],
                 )
+            self.bfgc.metadata_table.entry_del(
+                self.bfgc.target,
+                [self.bfgc.metadata_table.make_key([gc.KeyTuple("ig_intr_md.ingress_port", port_id)])],
+            )
         except Exception as e:
             self.controlPlaneMsg(
                 "%s:%s - Error in deleting port [%s]: %s"
