@@ -23,7 +23,9 @@
 #define INTREAS_MCAST 3
 
 header internal_header_t {
+#ifdef NEED_PKTLEN
     bit<16> pktlen;
+#endif
     bit<16> clone_session;
 #ifdef HAVE_SGT
     bit<16> sec_grp_id;

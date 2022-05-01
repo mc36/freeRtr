@@ -21,7 +21,7 @@ def writeOutQos6Rules(
     if self.sgt == True:
         key_field_list.append(gc.KeyTuple("ig_md.sec_grp_id", gr, grm))
     if act == "permit":
-        data_field_list = [  gc.DataTuple("metid", (meter+1)),  ]
+        data_field_list = [  gc.DataTuple("metid", meter),  ]
     else:
         data_field_list = []
     key_annotation_fields = {
