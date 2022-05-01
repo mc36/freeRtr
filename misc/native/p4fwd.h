@@ -297,7 +297,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     ethtyp += ((dip >> 16) & 0xffff) + (dip & 0xffff);          \
     ethtyp = (ethtyp >> 16) + (ethtyp & 0xffff);                \
     ethtyp += (ethtyp >> 16);                                   \
-    ethtyp = 0xffff - ethtyp;                                   \
+    ethtyp = 0xffff & (~ethtyp);                                \
     put16msb(bufD, bufP + 10, ethtyp);                          \
     put32msb(bufD, bufP + 12, sip);                             \
     put32msb(bufD, bufP + 16, dip);                             \
