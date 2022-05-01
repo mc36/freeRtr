@@ -23,7 +23,6 @@
  * User defined metadata type
  */
 struct port_metadata_t {
-    bit<48> _padding1;
     SubIntId_t portid;
 }
 #endif	// _PORT_METADATA_P4_
