@@ -27,7 +27,7 @@ control IngressControlQosIn(inout headers hdr, inout ingress_metadata_t ig_md,
 
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
 
-    action act_deny(SubIntId_t metid) {
+    action act_deny() {
     }
 
     action act_permit(SubIntId_t metid) {
