@@ -20,9 +20,10 @@ def writeFlowspec4Rules(
     ]
     if self.sgt == True:
         key_field_list.append(gc.KeyTuple("ig_md.sec_grp_id", gr, grm))
-    data_field_list = [
-         gc.DataTuple("metid", (meter+1)),
-    ]
+    if act == "permit":
+        data_field_list = [  gc.DataTuple("metid", (meter+1)),  ]
+    else:
+        data_field_list = []
     key_annotation_fields = {
         "hdr.ipv4.src_addr": "ipv4",
         "hdr.ipv4.dst_addr": "ipv4",

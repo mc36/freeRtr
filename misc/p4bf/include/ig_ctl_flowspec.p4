@@ -30,7 +30,7 @@ control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md
     DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
     DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
 
-    action act4_deny(SubIntId_t metid) {
+    action act4_deny() {
         stats4.count();
     }
 
@@ -39,7 +39,7 @@ control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md
         ig_md.flowspec_id = metid;
     }
 
-    action act6_deny(SubIntId_t metid) {
+    action act6_deny() {
         stats6.count();
     }
 
