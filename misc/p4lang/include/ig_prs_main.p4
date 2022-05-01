@@ -269,9 +269,9 @@ ETHERTYPE_IPV6:
         pkt.extract(hdr.eth2);
         transition select(hdr.eth2.ethertype) {
 ETHERTYPE_VLAN:
-        prs_vlan2;
+            prs_vlan2;
 ETHERTYPE_ARP:
-        prs_arp2;
+            prs_arp2;
 ETHERTYPE_IPV4:
             prs_ipv4;
 ETHERTYPE_IPV6:
@@ -281,23 +281,23 @@ ETHERTYPE_IPV6:
         }
     }
 
-state prs_vlan2 {
-    pkt.extract(hdr.vlan2);
-    transition select(hdr.vlan2.ethertype) {
+    state prs_vlan2 {
+        pkt.extract(hdr.vlan2);
+        transition select(hdr.vlan2.ethertype) {
 ETHERTYPE_ARP:
-        prs_arp2;
+            prs_arp2;
 ETHERTYPE_IPV4:
-        prs_ipv4;
+            prs_ipv4;
 ETHERTYPE_IPV6:
-        prs_ipv6;
-    default:
-        accept;
+            prs_ipv6;
+        default:
+            accept;
+        }
     }
-}
 
-state prs_arp2 {
-    transition accept;
-}
+    state prs_arp2 {
+        transition accept;
+    }
 
     state prs_bier {
         pkt.extract(hdr.bier);
