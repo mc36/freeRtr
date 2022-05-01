@@ -3,8 +3,9 @@
 #sudo $SDE/p4studio/install-p4studio-dependencies.sh
 #$SDE/p4studio/p4studio interactive
 #rm -rf $SDE/build
-#rm -rf $SDE/p4studio/dependencies
 #rm -rf $SDE/packages
+#rm -rf $SDE/install/p4i
+#rm -rf $SDE/p4studio/dependencies
 #rm -f `find $SDE -name *.a`
 #
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
