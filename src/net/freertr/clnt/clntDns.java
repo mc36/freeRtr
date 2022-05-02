@@ -220,10 +220,10 @@ public class clntDns {
         List<addrIP> orig = srv;
         packDnsZone res = new packDnsZone("results");
         String dom = "";
+        String odm = "!";
         for (;;) {
-            if (nam.length() < 1) {
-                break;
-            }
+            boolean fin = dom.equals(odm);
+            odm = dom;
             String a;
             int i = nam.lastIndexOf(".");
             if (i < 1) {
@@ -233,11 +233,11 @@ public class clntDns {
                 a = nam.substring(i + 1, nam.length());
                 nam = nam.substring(0, i);
             }
-            if (dom.length() > 0) {
+            if ((dom.length() > 0) && (a.length() > 0)) {
                 a += ".";
             }
             dom = a + dom;
-            int ned = (nam.length() > 0) ? packDnsRec.typeNS : typ;
+            int ned = fin ? typ : packDnsRec.typeNS;
             i = doResolvList(srv, dom, false, ned);
             packDnsRec rec = findAnswer(packDnsRec.typeCNAME);
             if (rec != null) {
@@ -245,19 +245,23 @@ public class clntDns {
             }
             if (i == 3) {
                 dom = "";
+                odm = "!";
                 nam = rec.res.get(bits.random(0, rec.res.size())).target;
                 srv = orig;
                 continue;
             }
-            if (i != 0) {
-                return null;
-            }
             rec = findAnswer(ned);
-            if (rec == null) {
+            if ((i != 0) || (rec == null)) {
+                if (fin) {
+                    return null;
+                }
+                if (nam.length() < 1) {
+                    continue;
+                }
                 return null;
             }
             res.addBin(rec);
-            if (nam.length() < 1) {
+            if (fin) {
                 break;
             }
             if (doResolvAddr(cfgAll.nameServerAddr, rec.res.get(bits.random(0, rec.res.size())).target, curPrx.proxy.prefer)) {
