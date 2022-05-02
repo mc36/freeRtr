@@ -77,7 +77,7 @@ public class ipxFwd implements Runnable {
     /**
      * start this vrf now
      */
-    public void startNow() {
+    public void startThisVrf() {
         new Thread(this).start();
     }
 

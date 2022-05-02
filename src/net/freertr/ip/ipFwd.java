@@ -609,7 +609,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     /**
      * start this vrf now
      */
-    public void startNow() {
+    public void startThisVrf() {
         new Thread(this).start();
     }
 

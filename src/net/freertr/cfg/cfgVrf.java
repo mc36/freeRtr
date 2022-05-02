@@ -498,16 +498,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     /**
      * start this vrf now
      */
-    public synchronized void startNow() {
-        ipx.startNow();
-        fwd4.startNow();
-        fwd6.startNow();
+    public synchronized void startThisVrf() {
+        ipx.startThisVrf();
+        fwd4.startThisVrf();
+        fwd6.startThisVrf();
     }
 
     /**
      * destroy this vrf
      */
-    public synchronized void closeUp() {
+    public synchronized void stopThisVrf() {
         ipx.stopThisVrf();
         fwd4.stopThisVrf();
         fwd6.stopThisVrf();
@@ -516,7 +516,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     /**
      * close connections
      */
-    public synchronized void closeConns() {
+    public synchronized void closeAllConns() {
         udp4.closeConns();
         udp6.closeConns();
         ludp4.closeConns();

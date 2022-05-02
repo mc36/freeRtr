@@ -1760,7 +1760,7 @@ public class cfgAll {
         if (old != null) {
             return old;
         }
-        ntry.startNow();
+        ntry.startThisVrf();
         return ntry;
     }
 
@@ -1787,8 +1787,8 @@ public class cfgAll {
             ifc.clear2routing(true, true);
             ifc.clear2vrf();
         }
-        ntry.closeConns();
-        ntry.closeUp();
+        ntry.closeAllConns();
+        ntry.stopThisVrf();
         return ntry;
     }
 
