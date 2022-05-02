@@ -62,7 +62,7 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
 
 #ifdef HAVE_NAT
 
-        if (ig_md.ipv4_valid==1) {
+        if (ig_md.natted_ipv4tcp==1) {
             hdr.tcp.checksum = tcp_checksum.update(data = {
                 hdr.ipv4.src_addr,
                 hdr.ipv4.dst_addr,
@@ -70,6 +70,9 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
                 hdr.tcp.dst_port,
                 ig_md.checksum_tcp_tmp
             }, zeros_as_ones = true);
+        }
+
+        if (ig_md.natted_ipv4udp==1) {
             hdr.udp.checksum = udp_checksum.update(data = {
                 hdr.ipv4.src_addr,
                 hdr.ipv4.dst_addr,
@@ -78,8 +81,8 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
                 ig_md.checksum_udp_tmp
             }, zeros_as_ones = true);
         }
-        //else
-        if (ig_md.ipv6_valid==1) {
+
+        if (ig_md.natted_ipv6tcp==1) {
             hdr.tcp.checksum = tcp_checksum.update(data = {
                 hdr.ipv6.src_addr,
                 hdr.ipv6.dst_addr,
@@ -87,6 +90,9 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
                 hdr.tcp.dst_port,
                 ig_md.checksum_tcp_tmp
             }, zeros_as_ones = true);
+        }
+
+        if (ig_md.natted_ipv6udp==1) {
             hdr.udp.checksum = udp_checksum.update(data = {
                 hdr.ipv6.src_addr,
                 hdr.ipv6.dst_addr,

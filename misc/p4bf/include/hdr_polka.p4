@@ -22,7 +22,7 @@
 header polka_t {
     bit<8>          version;
     bit<8>          ttl;
-    bit<16>         proto;
+    ethertype_t     proto;
     polka_route_t   routeid;
 }
 #endif

@@ -102,10 +102,10 @@ struct ingress_metadata_t {
     bit <1> arp_valid;
     bit <1> ipv4_valid;
     bit <1> ipv6_valid;
-    bit <16> layer4_srcprt;
-    bit <16> layer4_dstprt;
+    layer4_port_t layer4_srcprt;
+    layer4_port_t layer4_dstprt;
 #ifdef HAVE_SGT
-    bit<16> sec_grp_id;
+    sec_grp_t sec_grp_id;
 #endif
     bit <1> srv_encap_l3vpn_valid;
     bit <1> mpls_encap_rawip_valid;
@@ -114,8 +114,12 @@ struct ingress_metadata_t {
     bit <1> mpls_encap_xconnect_valid;
     bit <4> mpls_encap_decap_sap_type;	// service access point type
 #ifdef HAVE_NAT
-    bit<16> checksum_tcp_tmp;
-    bit<16> checksum_udp_tmp;
+    bit<1> natted_ipv4tcp;
+    bit<1> natted_ipv4udp;
+    bit<1> natted_ipv6tcp;
+    bit<1> natted_ipv6udp;
+    checksum_t checksum_tcp_tmp;
+    checksum_t checksum_udp_tmp;
 #endif
     l4_lookup_t   l4_lookup;
     ethertype_t always_zero; // hack

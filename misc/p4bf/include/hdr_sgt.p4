@@ -24,7 +24,7 @@ header sgt_t {
     bit<8>      version;
     bit<8>      length;
     bit<16>     options;
-    bit<16>     groupid;
+    sec_grp_t   groupid;
     ethertype_t ethertype;
 }
 

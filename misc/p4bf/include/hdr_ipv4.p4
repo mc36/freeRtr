@@ -27,7 +27,7 @@ header ipv4_t {
     bit <13> frag_offset;
     bit <8> ttl;
     bit <8> protocol;
-    bit <16> hdr_checksum;
+    checksum_t hdr_checksum;
     ipv4_addr_t src_addr;
     ipv4_addr_t dst_addr;
 }

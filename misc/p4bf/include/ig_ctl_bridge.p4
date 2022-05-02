@@ -210,7 +210,7 @@ hdr.ethernet.src_mac_addr:
 
 
 #ifdef HAVE_PCKOUDP
-    action act_set_bridge_pckoudp4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port) {
+    action act_set_bridge_pckoudp4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port) {
         statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;
@@ -258,7 +258,7 @@ hdr.ethernet.src_mac_addr:
 
 
 #ifdef HAVE_PCKOUDP
-    action act_set_bridge_pckoudp6(NextHopId_t nexthop, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port) {
+    action act_set_bridge_pckoudp6(NextHopId_t nexthop, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port) {
         statsTx.count();
         ig_md.bridge_trg = MAX_PORT;
         ig_md.vrf = 0;

@@ -34,7 +34,6 @@
 #include "include/cst_ip_protocol.p4"
 #include "include/hdr_cpu.p4"
 #include "include/hdr_bier.p4"
-#include "include/hdr_internal.p4"
 #include "include/hdr_ethernet.p4"
 #include "include/hdr_sgt.p4"
 #include "include/hdr_arp.p4"
@@ -57,12 +56,13 @@
  *                   I N G R E S S   P R O C E S S I N G                      *
  *----------------------------------------------------------------------------*/
 
-/*------------------ I N G R E S S  H E A D E R S --------------------------- */
-#include "include/hdr_ig_headers.p4"
-
 /*------------------ I N G R E S S  G L O B A L  M E T A D A T A ------------ */
+#include "include/mtd_bridged_metadata.p4"
 #include "include/mtd_port_metadata.p4"
 #include "include/mtd_ig_metadata.p4"
+
+/*------------------ I N G R E S S  H E A D E R S --------------------------- */
+#include "include/hdr_ig_headers.p4"
 
 /*------------------ I N G R E S S   P A R S E R -----------------------------*/
 #include "include/ig_prs_main.p4"

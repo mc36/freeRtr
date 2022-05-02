@@ -15,8 +15,8 @@
  */
 
 
-#ifndef _INTERNAL_
-#define _INTERNAL_
+#ifndef _BRIDGED_METADATA_P4_
+#define _BRIDGED_METADATA_P4_
 
 #define INTREAS_UCAST 1
 #define INTREAS_RECIR 2
@@ -28,7 +28,7 @@ header internal_header_t {
 #endif
     bit<16> clone_session;
 #ifdef HAVE_SGT
-    bit<16> sec_grp_id;
+    sec_grp_t sec_grp_id;
 #endif
     NextHopId_t nexthop_id;
     bit<6> _padding1;
@@ -40,4 +40,4 @@ header internal_header_t {
     bit<8> reason;
 }
 
-#endif // _INTERNAL_
+#endif // _BRIDGED_METADATA_P4_

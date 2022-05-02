@@ -245,7 +245,7 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
 #ifdef HAVE_L2TP
 
 
-    action act_ipv4_l2tp4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port, bit<32> tunnel_id) {
+    action act_ipv4_l2tp4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port, bit<32> tunnel_id) {
         /*
          * the packet header src_mac is now set to the previous header dst_mac
          */
@@ -293,7 +293,7 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
     }
 
 
-    action act_ipv4_l2tp6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port, bit<32> tunnel_id) {
+    action act_ipv4_l2tp6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port, bit<32> tunnel_id) {
         /*
          * the packet header src_mac is now set to the previous header dst_mac
          */
@@ -345,7 +345,7 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
 #ifdef HAVE_GTP
 
 
-    action act_ipv4_gtp4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port, bit<32> teid) {
+    action act_ipv4_gtp4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port, bit<32> teid) {
         /*
          * the packet header src_mac is now set to the previous header dst_mac
          */
@@ -393,7 +393,7 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
     }
 
 
-    action act_ipv4_gtp6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<16> src_port, bit<16> dst_port, bit<32> teid) {
+    action act_ipv4_gtp6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port, bit<32> teid) {
         /*
          * the packet header src_mac is now set to the previous header dst_mac
          */

@@ -79,6 +79,12 @@ ig_md.gtp_type = 0;
 ig_md.mpls0_valid = 0;
 ig_md.mpls1_valid = 0;
 #endif
+#ifdef HAVE_NAT
+ig_md.natted_ipv4tcp = 0;
+ig_md.natted_ipv4udp = 0;
+ig_md.natted_ipv6tcp = 0;
+ig_md.natted_ipv6udp = 0;
+#endif
 ig_md.arp_valid = 0;
 ig_md.ipv4_valid = 0;
 ig_md.ipv6_valid = 0;

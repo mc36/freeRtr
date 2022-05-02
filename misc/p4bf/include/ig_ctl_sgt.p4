@@ -47,7 +47,7 @@ ig_md.source_id:
     }
 
 
-    action act_set_tag(bit<16> group) {
+    action act_set_tag(sec_grp_t group) {
         ig_md.sec_grp_id = group;
     }
 
