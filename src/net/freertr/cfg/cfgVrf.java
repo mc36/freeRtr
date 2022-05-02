@@ -474,6 +474,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
      */
     public cfgVrf(String nam) {
         name = nam.trim();
+    }
+
+    /**
+     * allocate this vrf now
+     */
+    public synchronized void allocThisVrf() {
         core4 = new ipCor4();
         core6 = new ipCor6();
         icmp4 = new ipIcmp4();

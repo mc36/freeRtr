@@ -1756,6 +1756,7 @@ public class cfgAll {
         if (!create) {
             return vrfs.find(ntry);
         }
+        ntry.allocThisVrf();
         cfgVrf old = vrfs.add(ntry);
         if (old != null) {
             return old;
