@@ -72,6 +72,12 @@ public class ipxFwd implements Runnable {
         staticR = new tabGen<tabRouteEntry<addrIpx>>();
         triggerUpdate = new notifier();
         updateEverything();
+    }
+
+    /**
+     * start this vrf now
+     */
+    public void startNow() {
         new Thread(this).start();
     }
 

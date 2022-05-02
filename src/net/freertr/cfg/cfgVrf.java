@@ -474,12 +474,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
      */
     public cfgVrf(String nam) {
         name = nam.trim();
-    }
-
-    /**
-     * start this vrf now
-     */
-    public synchronized void startNow() {
         core4 = new ipCor4();
         core6 = new ipCor6();
         icmp4 = new ipIcmp4();
@@ -499,6 +493,15 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         sctp6 = new prtSctp(fwd6);
         tcp4 = new prtTcp(fwd4);
         tcp6 = new prtTcp(fwd6);
+    }
+
+    /**
+     * start this vrf now
+     */
+    public synchronized void startNow() {
+        ipx.startNow();
+        fwd4.startNow();
+        fwd6.startNow();
     }
 
     /**

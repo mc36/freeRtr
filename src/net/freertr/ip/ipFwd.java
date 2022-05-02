@@ -604,6 +604,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
         mhst.setForwarder(this, icc);
+    }
+
+    /**
+     * start this vrf now
+     */
+    public void startNow() {
         new Thread(this).start();
     }
 
