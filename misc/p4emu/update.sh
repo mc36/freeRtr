@@ -1,6 +1,7 @@
 #!/bin/sh
 sudo apt update
 sudo apt dist-upgrade
+sudo apt -t experimental install dpdk dpdk-dev openssl libssl-dev libpcap-dev
 sudo apt remove apparmor
 sudo apt autoremove
 sudo apt clean
