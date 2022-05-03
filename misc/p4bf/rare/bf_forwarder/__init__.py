@@ -125,6 +125,13 @@ class BfForwarder(Thread, RareApi):
         self._delTableKeys(mgid_name, table_dict, mgid_keys)
         self._delTableKeys(node_name, table_dict, node_keys)
 
+        logger.warning("Port metadata specific clearing: (Order not matters)")
+
+        mtdt_name = "%s.ig_prs_main.$PORT_METADATA" % self.bfgc.pipe_name
+        mtdt_keys = []
+        self._getTableKeys(mtdt_name, table_dict, mtdt_keys)
+        self._delTableKeys(mtdt_name, table_dict, mtdt_keys)
+
         self._getDataplaneCapability()
         self._setDataplaneCapability()
 
