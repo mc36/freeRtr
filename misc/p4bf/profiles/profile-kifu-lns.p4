@@ -12,7 +12,7 @@
 ##define HAVE_OUTQOS
 ##define HAVE_PBR
 
-#define PORT_TABLE_SIZE                        512
+#define PORT_TABLE_SIZE                24576
 
 #define BUNDLE_TABLE_SIZE                      128
 
