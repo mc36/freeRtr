@@ -31,9 +31,9 @@ struct ingress_metadata_t {
     bit<16> clone_session;
 #endif
     NextHopId_t nexthop_id;
-    bit<6> _padding1;
+    SubIntPad_t _padding1;
     SubIntId_t target_id;
-    bit<6> _padding2;
+    SubIntPad_t _padding2;
     SubIntId_t source_id;
     SubIntId_t ingress_id;
     SubIntId_t aclport_id;

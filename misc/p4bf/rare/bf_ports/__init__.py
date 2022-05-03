@@ -350,7 +350,7 @@ class BfPorts(Thread):
                     data = "portname %s frontpanel-%s/%s \n" % (dev_port, conn, chnl)
                     logger.warning("tx: %s" % data.split(" "))
                     self.file.write(data)
-        self.file.write("dynrange 512 1023 \n")
+        self.file.write("dynrange 512 16383 \n")
         self.file.flush()
 
     def run(self):

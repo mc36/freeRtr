@@ -31,11 +31,11 @@ header internal_header_t {
     sec_grp_t sec_grp_id;
 #endif
     NextHopId_t nexthop_id;
-    bit<6> _padding1;
+    SubIntPad_t _padding1;
     SubIntId_t target_id;
-    bit<6> _padding2;
+    SubIntPad_t _padding2;
     SubIntId_t source_id;
-    bit<6> _padding3;
+    SubIntPad_t _padding3;
     SubIntId_t aclport_id;
     bit<8> reason;
 }
