@@ -370,7 +370,7 @@ public class ifcPppLcp extends ifcPppNcp {
      */
     public void sendEchoReq() {
         echoesSent++;
-        if (echoesSent > 10) {
+        if (echoesSent > parent.keepaliveRetry) {
             clearState();
             parent.checkPeerState(state.states.up);
             return;

@@ -198,6 +198,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public int keepaliveInterval = 5000;
 
     /**
+     * current keepalive retries
+     */
+    public int keepaliveRetry = 10;
+
+    /**
      * nak retry limit
      */
     public int nakRetryLimit = 16;
@@ -442,6 +447,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public static void getHelp(userHelping l) {
         l.add(null, "2 3     keepalive                   keepalive timer");
         l.add(null, "3 .       <num>                     time in ms");
+        l.add(null, "2 3     retry                       keepalive retry");
+        l.add(null, "3 .       <num>                     count");
         l.add(null, "2 3     username                    name of user to send");
         l.add(null, "3 .       <text>                    username");
         l.add(null, "2 3     password                    password of user to send");
@@ -527,6 +534,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public void getConfig(List<String> l, String beg, int filter) {
         l.add(beg + "keepalive " + keepaliveInterval);
+        l.add(beg + "retry " + keepaliveRetry);
         cmds.cfgLine(l, authenRem == null, cmds.tabulator, "ppp authentication", "" + authenRem);
         cmds.cfgLine(l, sentUser == null, cmds.tabulator, "ppp username", sentUser);
         cmds.cfgLine(l, sentPass == null, cmds.tabulator, "ppp password", authLocal.passwdEncode(sentPass, (filter & 2) != 0));
@@ -797,6 +805,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if (a.equals("keepalive")) {
             keepaliveInterval = bits.str2num(cmd.word());
             restartTimer(false);
+            return;
+        }
+        if (a.equals("retry")) {
+            keepaliveRetry = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("username")) {
