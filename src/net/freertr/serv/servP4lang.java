@@ -1313,6 +1313,18 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         return a;
     }
 
+    /**
+     * negate dataplane command
+     *
+     * @param s string to negate
+     * @return negated string
+     */
+    protected static String negateOneCommand(String s) {
+        s = s.replaceAll("_add ", "_del ");
+        s = s.replaceAll("_mod ", "_del ");
+        return s;
+    }
+
 }
 
 class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr<T>> {
@@ -1418,6 +1430,8 @@ class servP4langNei implements Comparator<servP4langNei> {
     public int id;
 
     public int need;
+
+    public String sentEnc;
 
     public servP4langNei(servP4langIfc ifc, addrIP per) {
         adr = per;
@@ -3417,8 +3431,7 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("lin", s);
             s = cmd.word() + " ";
-            s = s.replaceAll("_add ", "_del ");
-            s = s.replaceAll("_mod ", "_del ");
+            s = servP4lang.negateOneCommand(s);
             s += cmd.word();
             cmd.word();
             lower.sendLine(s + " " + addrMac.getRandom().toEmuStr() + " " + cmd.getRemaining());
@@ -4258,6 +4271,10 @@ class servP4langConn implements Runnable {
             if (ntry.sentIgNhop >= 0) {
                 lower.sendLine("nhop2port_del " + ntry.id + " " + ntry.iface.id + " " + ntry.sentIgNhop);
             }
+            if (ntry.sentEnc != null) {
+                lower.sendLine(servP4lang.negateOneCommand(ntry.sentEnc));
+                return;
+            }
             if (ntry.mac == null) {
                 return;
             }
@@ -4408,7 +4425,9 @@ class servP4langConn implements Runnable {
                 } else {
                     afi = "6";
                 }
-                lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
+                String a = "l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun;
+                nei.sentEnc = a;
+                lower.sendLine(a);
             } catch (Exception e) {
             }
             try {
@@ -4469,7 +4488,9 @@ class servP4langConn implements Runnable {
                 } else {
                     afi = "6";
                 }
-                lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
+                String a = "l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun;
+                nei.sentEnc = a;
+                lower.sendLine(a);
             } catch (Exception e) {
             }
             try {
@@ -4521,7 +4542,9 @@ class servP4langConn implements Runnable {
                 } else {
                     afi = "6";
                 }
-                lower.sendLine("amt" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp);
+                String a = "amt" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp;
+                nei.sentEnc = a;
+                lower.sendLine(a);
             } catch (Exception e) {
             }
             try {
@@ -4573,7 +4596,9 @@ class servP4langConn implements Runnable {
                 } else {
                     afi = "6";
                 }
-                lower.sendLine("gtp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + ntry.teidDat);
+                String a = "gtp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + ntry.teidDat;
+                nei.sentEnc = a;
+                lower.sendLine(a);
             } catch (Exception e) {
             }
             return;
