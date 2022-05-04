@@ -3150,6 +3150,7 @@ class servP4langConn implements Runnable {
         }
         servP4langNei hop = lower.findNei(ntry.iface, ntry.nextHop);
         if (hop == null) {
+            lower.sendLine("cpulabel_del " + ntry.label);
             return;
         }
         int lab = servP4lang.getLabel(ntry.remoteLab);
@@ -5540,6 +5541,12 @@ class servP4langConn implements Runnable {
             }
             servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
+                servP4langIfc fif = lower.findIfc(ntry.best.iface);
+                String sif = "-1";
+                if (fif != null) {
+                    sif = "" + fif.id;
+                }
+                lower.sendLine("myaddr" + afi + "_del " + a + " " + sif + " " + vrf);
                 continue;
             }
             if (ntry.best.labelRem != null) {
