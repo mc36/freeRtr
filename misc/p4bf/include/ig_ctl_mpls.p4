@@ -114,9 +114,9 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 
 
-    action act_mpls_decap_vpls(SubIntId_t bridge) {
+    action act_mpls_decap_vpls(switch_vrf_t bridge) {
         ig_md.bridge_id = bridge;
-        ig_md.bridge_src = bridge;
+        ig_md.bridge_src = 1;
         ig_md.ethertype = hdr.eth2.ethertype;
         hdr.ethernet.dst_mac_addr = hdr.eth2.dst_mac_addr;
         hdr.ethernet.src_mac_addr = hdr.eth2.src_mac_addr;

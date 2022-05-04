@@ -54,7 +54,7 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
 #endif
 
 #ifdef HAVE_BRIDGE
-    action act_set_bridge(SubIntId_t bridge) {
+    action act_set_bridge(switch_vrf_t bridge) {
         ig_md.bridge_id = bridge;
     }
 #endif

@@ -38,7 +38,7 @@ struct ingress_metadata_t {
     SubIntId_t ingress_id;
     SubIntId_t aclport_id;
 #ifdef HAVE_BRIDGE
-    SubIntId_t bridge_id;
+    switch_vrf_t bridge_id;
     SubIntId_t bridge_src;
     SubIntId_t bridge_trg;
 #endif
