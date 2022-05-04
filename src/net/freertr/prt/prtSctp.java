@@ -192,7 +192,7 @@ public class prtSctp extends prtGen {
     }
 
     protected int getRandomPortNum() {
-        return bits.random(0x8000, 0xf000);
+        return bits.random(cfgAll.sctpRangeMin, cfgAll.sctpRangeMax);
     }
 
     /**

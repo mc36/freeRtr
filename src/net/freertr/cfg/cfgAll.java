@@ -934,6 +934,16 @@ public class cfgAll {
     public static boolean udpChecksumRx = true;
 
     /**
+     * udp range beginning
+     */
+    public static int udpRangeMin = 0x8000;
+
+    /**
+     * udp range beginning
+     */
+    public static int udpRangeMax = 0xf000;
+
+    /**
      * ludp checksum tx
      */
     public static boolean ludpChecksumTx = true;
@@ -942,6 +952,16 @@ public class cfgAll {
      * ludp checksum rx
      */
     public static boolean ludpChecksumRx = true;
+
+    /**
+     * ludp range beginning
+     */
+    public static int ludpRangeMin = 0x8000;
+
+    /**
+     * ludp range beginning
+     */
+    public static int ludpRangeMax = 0xf000;
 
     /**
      * tcp maximum segment
@@ -969,6 +989,16 @@ public class cfgAll {
     public static boolean tcpChecksumRx = true;
 
     /**
+     * tcp range beginning
+     */
+    public static int tcpRangeMin = 0x8000;
+
+    /**
+     * tcp range beginning
+     */
+    public static int tcpRangeMax = 0xf000;
+
+    /**
      * dccp checksum tx
      */
     public static boolean dccpChecksumTx = true;
@@ -979,6 +1009,16 @@ public class cfgAll {
     public static boolean dccpChecksumRx = true;
 
     /**
+     * dccp range beginning
+     */
+    public static int dccpRangeMin = 0x8000;
+
+    /**
+     * dccp range beginning
+     */
+    public static int dccpRangeMax = 0xf000;
+
+    /**
      * sctp checksum tx
      */
     public static boolean sctpChecksumTx = true;
@@ -987,6 +1027,16 @@ public class cfgAll {
      * sctp checksum rx
      */
     public static boolean sctpChecksumRx = true;
+
+    /**
+     * sctp range beginning
+     */
+    public static int sctpRangeMin = 0x8000;
+
+    /**
+     * sctp range beginning
+     */
+    public static int sctpRangeMax = 0xf000;
 
     /**
      * shame texts
@@ -1096,13 +1146,18 @@ public class cfgAll {
         "!client icmp4-checksum both",
         "!client icmp6-checksum both",
         "!client udp-checksum both",
+        "!client udp-portrange 32768 61440",
         "!client tcp-segments 1024",
         "!client tcp-winscale 1",
         "!client tcp-timestamp",
         "!client tcp-checksum both",
+        "!client tcp-portrange 32768 61440",
         "!client ludp-checksum both",
+        "!client ludp-portrange 32768 61440",
         "!client dccp-checksum both",
-        "!client sctp-checksum both",};
+        "!client dccp-portrange 32768 61440",
+        "!client sctp-checksum both",
+        "!client sctp-portrange 32768 61440",};
 
     /**
      * defaults filter
@@ -3404,13 +3459,18 @@ public class cfgAll {
         l.add("client icmp4-checksum " + rxtx2string(icmp4ChecksumRx, icmp4ChecksumTx));
         l.add("client icmp6-checksum " + rxtx2string(icmp6ChecksumRx, icmp6ChecksumTx));
         l.add("client udp-checksum " + rxtx2string(udpChecksumRx, udpChecksumTx));
+        l.add("client udp-portrange " + udpRangeMin+" "+ udpRangeMax);
         l.add("client tcp-checksum " + rxtx2string(tcpChecksumRx, tcpChecksumTx));
         l.add("client tcp-segments " + tcpMaxSegment);
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
+        l.add("client tcp-portrange " + tcpRangeMin+" "+ tcpRangeMax);
         l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
+        l.add("client ludp-portrange " + ludpRangeMin+" "+ ludpRangeMax);
         l.add("client dccp-checksum " + rxtx2string(dccpChecksumRx, dccpChecksumTx));
+        l.add("client dccp-portrange " + dccpRangeMin+" "+ dccpRangeMax);
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));
+        l.add("client sctp-portrange " + sctpRangeMin+" "+ sctpRangeMax);
         String a = "";
         for (int i = 0; i < nameServerAddr.size(); i++) {
             a += " " + nameServerAddr.get(i);

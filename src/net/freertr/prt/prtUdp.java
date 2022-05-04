@@ -184,7 +184,7 @@ public class prtUdp extends prtGen {
      * @return port
      */
     protected int getRandomPortNum() {
-        return bits.random(0x8000, 0xf000);
+        return bits.random(cfgAll.udpRangeMin, cfgAll.udpRangeMax);
     }
 
     /**

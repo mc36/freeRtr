@@ -169,7 +169,7 @@ public class prtLudp extends prtGen {
     }
 
     protected int getRandomPortNum() {
-        return bits.random(0x8000, 0xf000);
+        return bits.random(cfgAll.ludpRangeMin, cfgAll.ludpRangeMax);
     }
 
     /**

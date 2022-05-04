@@ -266,7 +266,7 @@ public class prtDccp extends prtGen {
     }
 
     protected int getRandomPortNum() {
-        return bits.random(0x8000, 0xf000);
+        return bits.random(cfgAll.dccpRangeMin, cfgAll.dccpRangeMax);
     }
 
     protected boolean connectionStart(prtGenConn clnt, packHolder pck) {

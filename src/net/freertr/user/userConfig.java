@@ -611,6 +611,21 @@ public class userConfig {
         l.add(null, ".3  .      <num>                      bytes");
         l.add(null, ".2  3    tcp-winscale                set tcp window scale");
         l.add(null, ".3  .      <num>                      factor");
+        l.add(null, "2  3    udp-portrange                set udp client range");
+        l.add(null, "3  4      <num>                      lower bound");
+        l.add(null, "4  .        <num>                    upper bound");
+        l.add(null, "2  3    tcp-portrange                set tcp client range");
+        l.add(null, "3  4      <num>                      lower bound");
+        l.add(null, "4  .        <num>                    upper bound");
+        l.add(null, "2  3    ludp-portrange               set ludp client range");
+        l.add(null, "3  4      <num>                      lower bound");
+        l.add(null, "4  .        <num>                    upper bound");
+        l.add(null, "2  3    dccp-portrange               set dccp client range");
+        l.add(null, "3  4      <num>                      lower bound");
+        l.add(null, "4  .        <num>                    upper bound");
+        l.add(null, "2  3    sctp-portrange               set sctp client range");
+        l.add(null, "3  4      <num>                      lower bound");
+        l.add(null, "4  .        <num>                    upper bound");
         l.add(null, "2  3    access-subnet-ipv4           access subnet length");
         l.add(null, "3  .      <num>                      bits");
         l.add(null, "2  3    access-subnet-ipv6           access subnet length");
@@ -1790,6 +1805,11 @@ public class userConfig {
                 cfgAll.udpChecksumTx = (i & 2) != 0;
                 return;
             }
+            if (a.equals("udp-portrange")) {
+                cfgAll.udpRangeMin = bits.str2num(cmd.word());
+                cfgAll.udpRangeMax = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("tcp-timestamp")) {
                 cfgAll.tcpTimStmp = true;
                 return;
@@ -1808,10 +1828,20 @@ public class userConfig {
                 cfgAll.tcpChecksumTx = (i & 2) != 0;
                 return;
             }
+            if (a.equals("tcp-portrange")) {
+                cfgAll.tcpRangeMin = bits.str2num(cmd.word());
+                cfgAll.tcpRangeMax = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("ludp-checksum")) {
                 int i = parseUpRxtx();
                 cfgAll.ludpChecksumRx = (i & 1) != 0;
                 cfgAll.ludpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("ludp-portrange")) {
+                cfgAll.ludpRangeMin = bits.str2num(cmd.word());
+                cfgAll.ludpRangeMax = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("dccp-checksum")) {
@@ -1820,10 +1850,20 @@ public class userConfig {
                 cfgAll.dccpChecksumTx = (i & 2) != 0;
                 return;
             }
+            if (a.equals("dccp-portrange")) {
+                cfgAll.dccpRangeMin = bits.str2num(cmd.word());
+                cfgAll.dccpRangeMax = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("sctp-checksum")) {
                 int i = parseUpRxtx();
                 cfgAll.sctpChecksumRx = (i & 1) != 0;
                 cfgAll.sctpChecksumTx = (i & 2) != 0;
+                return;
+            }
+            if (a.equals("sctp-portrange")) {
+                cfgAll.sctpRangeMin = bits.str2num(cmd.word());
+                cfgAll.sctpRangeMax = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("ftp-passive")) {
