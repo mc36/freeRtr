@@ -1744,7 +1744,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public userFormat getShow() {
         userFormat res = new userFormat("|", "ncp|state|cntr");
-        res.add("auth|-|" + ctrlAuth);
+        res.add("auth|" + ctrlAuth);
         getShow(res, ctrlLcp);
         getShow(res, ctrlIp4);
         getShow(res, ctrlIp6);

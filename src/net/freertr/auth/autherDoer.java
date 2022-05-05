@@ -94,7 +94,7 @@ public abstract class autherDoer implements Runnable {
     private int pendId;
 
     public String toString() {
-        return working + " " + result;
+        return working + "|" + result;
     }
 
     /**
