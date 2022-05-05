@@ -83,6 +83,21 @@ public class userClear {
      */
     public userReader rdr;
 
+    private void doOneCrashFile(File fl) {
+        String a = fl.getName();
+        if (a.endsWith(".bak")) {
+            return;
+        }
+        boolean need = a.startsWith("core");
+        need |= a.startsWith("hs_err");
+        if (!need) {
+            return;
+        }
+        a = fl.getAbsolutePath();
+        userFlash.rename(a, a + ".bak", true, true);
+        bits.buf2txt(false, bits.str2lst("core dump detected at " + a), version.myErrorFile());
+    }
+
     /**
      * do the work
      *
@@ -95,10 +110,11 @@ public class userClear {
             return alias;
         }
         if (a.equals("errors")) {
-            a = version.getRWpath() + "core";
-            if (new File(a).exists()) {
-                userFlash.rename(a, a + ".bak", true, true);
-                bits.buf2txt(false, bits.str2lst("core dump detected"), version.myErrorFile());
+            File[] fls = userFlash.dirList(version.getRWpath());
+            if (fls != null) {
+                for (int i = 0; i < fls.length; i++) {
+                    doOneCrashFile(fls[i]);
+                }
             }
             List<String> err = bits.txt2buf(version.myErrorFile());
             if (err == null) {
