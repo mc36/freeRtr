@@ -1398,6 +1398,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 if (debugger.ifcPppEvnt) {
                     logger.debug("sending auth request");
                 }
+                if (ctrlAuth == null) {
+                    curMode = modeUp;
+                    break;
+                }
                 ctrlAuth.sendReq();
                 checkAuthUp();
                 break;
@@ -1740,6 +1744,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public userFormat getShow() {
         userFormat res = new userFormat("|", "ncp|state|cntr");
+        res.add("auth|-|" + ctrlAuth);
         getShow(res, ctrlLcp);
         getShow(res, ctrlIp4);
         getShow(res, ctrlIp6);

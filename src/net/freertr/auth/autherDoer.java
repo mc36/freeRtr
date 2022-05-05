@@ -93,6 +93,10 @@ public abstract class autherDoer implements Runnable {
 
     private int pendId;
 
+    public String toString() {
+        return working + " " + result;
+    }
+
     /**
      * 9
      * received one packet
