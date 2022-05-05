@@ -478,6 +478,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("p2p|" + point2point);
         l.add("addr|" + addr);
         l.add("mask|" + mask);
+        l.add("gate|" + gateAddr);
         l.add("net|" + network);
         l.add("ll|" + lower.getLinkLocalAddr());
         for (int i = 0; i < adrs.size(); i++) {
