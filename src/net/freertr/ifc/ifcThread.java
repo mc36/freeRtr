@@ -177,7 +177,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
             procTim = t;
             return false;
         }
-        return (t - procTim) > 30000;
+        return (t - procTim) > cfgAll.ifaceStallCheck;
     }
 
     /**

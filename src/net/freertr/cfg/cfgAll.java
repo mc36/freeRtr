@@ -869,6 +869,11 @@ public class cfgAll {
     public static int cpuhogCheck = 0;
 
     /**
+     * interface stall check
+     */
+    public static int ifaceStallCheck = 60000;
+
+    /**
      * redundancy keepalive time
      */
     public static int redundancyKeep = 500;
@@ -1102,6 +1107,7 @@ public class cfgAll {
         "!no enable",
         // client
         "!client cpuhog 0",
+        "!client ifacestall 60000",
         "!client redundancy 500 2500 5000",
         "!no client bullying",
         "!no client proxy",
@@ -3432,6 +3438,7 @@ public class cfgAll {
 
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
+        l.add("client ifacestall " + ifaceStallCheck);
         l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
         l.add("client cpuhog " + cpuhogCheck);
         if (clientShamer == null) {

@@ -545,6 +545,8 @@ public class userConfig {
         l.add(null, "1  2  client                         specify address of name server");
         l.add(null, "2  3    cpuhog                       specify cpuhog parameters");
         l.add(null, "3  .      <num>                      percentage");
+        l.add(null, "2  3    ifacestall                   specify interface stall check");
+        l.add(null, "3  .      <num>                      timeout in ms");
         l.add(null, "2  3    redundancy                   specify redundancy parameters");
         l.add(null, "3  4      <num>                      keepalive in ms");
         l.add(null, "4  5        <num>                    hold time in ms");
@@ -1718,6 +1720,10 @@ public class userConfig {
             }
             if (a.equals("cpuhog")) {
                 cfgAll.cpuhogCheck = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("ifacestall")) {
+                cfgAll.ifaceStallCheck = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("redundancy")) {
