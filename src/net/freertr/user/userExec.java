@@ -100,6 +100,11 @@ public class userExec {
     public authGeneric authorization;
 
     /**
+     * expand variables
+     */
+    public boolean needExpand;
+
+    /**
      * framed interface handler
      */
     public cfgIfc framedIface;
@@ -1292,6 +1297,7 @@ public class userExec {
      */
     public userHelping getHelping() {
         userHelping hl = new userHelping();
+        hl.expand = needExpand;
         hl.add(null, "1 2    show                           running system information");
         getHelpShow(hl, privileged);
         getHelpPipes(hl, 110, privileged);

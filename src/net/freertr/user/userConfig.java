@@ -165,6 +165,11 @@ public class userConfig {
      */
     public authGeneric authorization;
 
+    /**
+     * expand variables
+     */
+    public boolean needExpand;
+    
     private pipeSide pipe; // pipe to use
 
     private userReader reader; // reader of the user
@@ -214,6 +219,7 @@ public class userConfig {
      */
     public userHelping getHelping(boolean needEdit, boolean needShow, boolean needGen) {
         userHelping l = new userHelping();
+        l.expand = needExpand;
         if (needEdit) {
             l.add(null, "1 .    editor              edit the current section");
         }

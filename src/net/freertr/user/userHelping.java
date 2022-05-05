@@ -68,6 +68,11 @@ public class userHelping {
     public List<userHelpingData> lines = new ArrayList<userHelpingData>();
 
     /**
+     * need to expand lists
+     */
+    public boolean expand;
+
+    /**
      * get generic config help
      *
      * @param l help text
@@ -146,6 +151,9 @@ public class userHelping {
         userHelpingData d = new userHelpingData();
         d.set(s);
         lines.add(d);
+        if (!expand) {
+            return;
+        }
         int i = d.command.indexOf(":");
         if (i < 0) {
             return;

@@ -776,6 +776,8 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         cfg.authorization = parent.authorizeList;
         exe.username = user.user;
         cfg.username = user.user;
+        exe.needExpand = true;
+        cfg.needExpand = true;
         s = parent.autoCommand;
         if (s.length() > 0) {
             s = exe.repairCommand(s);
