@@ -59,6 +59,7 @@ import net.freertr.rtr.rtrBgpSpeak;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.sec.secWebsock;
 import net.freertr.serv.servGeneric;
+import net.freertr.serv.servP4lang;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
@@ -216,6 +217,15 @@ public class userPacket {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.pckt, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("p4lang")) {
+            servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            srv.sendLine(cmd.getRemaining());
+            return null;
         }
         if (a.equals("mrt2pcap")) {
             RandomAccessFile fs;

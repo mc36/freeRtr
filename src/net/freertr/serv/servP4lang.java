@@ -607,7 +607,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      *
      * @param a line
      */
-    protected synchronized void sendLine(String a) {
+    public synchronized void sendLine(String a) {
         if (conn == null) {
             return;
         }
