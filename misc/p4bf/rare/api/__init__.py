@@ -110,4 +110,5 @@ class RareApi(BfRtRare):
     from .vpnroute4 import writeVpnRules4
     from .vpnroute6 import writeVpnRules6
     from .xconnect import writeXconnRules
+    from .profiler import writeProfilerRules
     from .stats import portStats

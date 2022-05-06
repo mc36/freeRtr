@@ -1586,3 +1586,9 @@ def run(self):
 
         if cmds[0] == "stats":
             self.portStats(int(splt[1]))
+
+        if cmds[0] == "profiler":
+            self.writeProfilerRules(
+                mode,
+            )
+            continue
