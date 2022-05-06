@@ -4,6 +4,9 @@ def writeProfilerRules(self, op_type):
     if op_type == 1:
         yappi.start()
         return
+    if op_type == 2:
+        yappi.clear_stats()
+        return
     if op_type != 3:
         return
     yappi.stop()
