@@ -1250,10 +1250,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     /**
      * received authentication packet
      *
+     * @param auth authenticator
      * @param pck received packet
      */
-    public void recvAuthPack(packHolder pck) {
-        if (ctrlAuth == null) {
+    public void recvAuthPack(autherDoer auth, packHolder pck) {
+        if (auth == null) {
             return;
         }
         authenHead cis = new authenHead();
@@ -1264,7 +1265,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if (debugger.ifcPppEvnt) {
             logger.debug("rx " + cis);
         }
-        ctrlAuth.recvPck(pck, cis.code, cis.id);
+        auth.recvPck(pck, cis.code, cis.id);
     }
 
     /**
@@ -1295,17 +1296,32 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     }
 
     /**
-     * check for authentication up
+     * send authentication message
+     *
+     * @param auth authenticator
      */
-    public void checkAuthUp() {
-        if (ctrlAuth == null) {
+    public void sendAuthMsg(autherDoer auth) {
+        if (auth == null) {
+            curMode = modeUp;
             return;
         }
-        if (ctrlAuth.working) {
+        auth.sendReq();
+    }
+
+    /**
+     * check for authentication up
+     *
+     * @param auth authenticator
+     */
+    public void checkAuthUp(autherDoer auth) {
+        if (auth == null) {
             return;
         }
-        boolean b = ctrlAuth.result.result == authResult.authSuccessful;
-        ctrlAuth.stopThread();
+        if (auth.working) {
+            return;
+        }
+        boolean b = auth.result.result == authResult.authSuccessful;
+        auth.stopThread();
         if (debugger.ifcPppEvnt) {
             logger.debug("authentication passed=" + b);
         }
@@ -1314,19 +1330,19 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             return;
         }
         curMode = modeUp;
-        if (ctrlAuth.result.ipv4addr != null) {
-            remAddrCfg = ctrlAuth.result.ipv4addr;
+        if (auth.result.ipv4addr != null) {
+            remAddrCfg = auth.result.ipv4addr;
             ctrlIp4.clearState();
         }
-        if (ctrlAuth.result.ipv6ifid != null) {
-            remIfIdCfg = ctrlAuth.result.ipv6ifid;
+        if (auth.result.ipv6ifid != null) {
+            remIfIdCfg = auth.result.ipv6ifid;
             ctrlIp6.clearState();
         }
-        if ((ctrlAuth.result.ipv4route != null) && (cfger.fwdIf4 != null)) {
-            cfger.fwdIf4.gatePrfx = authGeneric.route2prefixes(ctrlAuth.result.ipv4route);
+        if ((auth.result.ipv4route != null) && (cfger.fwdIf4 != null)) {
+            cfger.fwdIf4.gatePrfx = authGeneric.route2prefixes(auth.result.ipv4route);
         }
-        if ((ctrlAuth.result.ipv6route != null) && (cfger.fwdIf6 != null)) {
-            cfger.fwdIf6.gatePrfx = authGeneric.route2prefixes(ctrlAuth.result.ipv6route);
+        if ((auth.result.ipv6route != null) && (cfger.fwdIf6 != null)) {
+            cfger.fwdIf6.gatePrfx = authGeneric.route2prefixes(auth.result.ipv6route);
         }
         sendKeepReq();
     }
@@ -1398,12 +1414,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 if (debugger.ifcPppEvnt) {
                     logger.debug("sending auth request");
                 }
-                if (ctrlAuth == null) {
-                    curMode = modeUp;
-                    break;
-                }
-                ctrlAuth.sendReq();
-                checkAuthUp();
+                sendAuthMsg(ctrlAuth);
+                checkAuthUp(ctrlAuth);
                 break;
             case modeUp:
                 reqSent = 0;
@@ -1598,8 +1610,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 if (!ctrlLcp.getReady()) {
                     break;
                 }
-                recvAuthPack(pck);
-                checkAuthUp();
+                recvAuthPack(ctrlAuth, pck);
+                checkAuthUp(ctrlAuth);
                 break;
             default:
                 cntr.drop(pck, counter.reasons.badCmd);
