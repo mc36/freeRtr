@@ -47,9 +47,9 @@ control IngressControlPPPOE(inout headers hdr, inout ingress_metadata_t ig_md,
 
     table tbl_pppoe {
         key = {
-ig_md.source_id:
-            exact;
 hdr.pppoeD.session:
+            exact;
+ig_md.source_id:
             exact;
         }
         actions = {

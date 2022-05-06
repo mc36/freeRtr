@@ -43,9 +43,9 @@ control IngressControlBridge(inout headers hdr, inout ingress_metadata_t ig_md,
 
     table tbl_bridge_learn {
         key = {
-ig_md.bridge_id:
-            exact;
 hdr.ethernet.src_mac_addr:
+            exact;
+ig_md.bridge_id:
             exact;
         } actions = {
             act_set_bridge_port;
@@ -312,9 +312,9 @@ hdr.ethernet.src_mac_addr:
 
     table tbl_bridge_target {
         key = {
-ig_md.bridge_id:
-            exact;
 hdr.ethernet.dst_mac_addr:
+            exact;
+ig_md.bridge_id:
             exact;
         } actions = {
             act_set_bridge_out;

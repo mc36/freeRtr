@@ -87,17 +87,17 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
 
     table tbl_ipv4_nat_trns {
         key = {
-ig_md.vrf:
+ig_md.layer4_srcprt:
             exact;
-hdr.ipv4.protocol:
+ig_md.layer4_dstprt:
             exact;
 hdr.ipv4.src_addr:
             exact;
 hdr.ipv4.dst_addr:
             exact;
-ig_md.layer4_srcprt:
+ig_md.vrf:
             exact;
-ig_md.layer4_dstprt:
+hdr.ipv4.protocol:
             exact;
         }
         actions = {
@@ -112,17 +112,17 @@ ig_md.layer4_dstprt:
 
     table tbl_ipv6_nat_trns {
         key = {
-ig_md.vrf:
+ig_md.layer4_srcprt:
             exact;
-hdr.ipv6.next_hdr:
+ig_md.layer4_dstprt:
             exact;
 hdr.ipv6.src_addr:
             exact;
 hdr.ipv6.dst_addr:
             exact;
-ig_md.layer4_srcprt:
+ig_md.vrf:
             exact;
-ig_md.layer4_dstprt:
+hdr.ipv6.next_hdr:
             exact;
         }
         actions = {

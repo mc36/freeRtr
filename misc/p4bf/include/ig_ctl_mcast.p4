@@ -63,11 +63,11 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
 
     table tbl_mcast4 {
         key = {
-ig_md.vrf:
-            exact;
 hdr.ipv4.src_addr:
             exact;
 hdr.ipv4.dst_addr:
+            exact;
+ig_md.vrf:
             exact;
         }
         actions = {
@@ -82,11 +82,11 @@ hdr.ipv4.dst_addr:
 
     table tbl_mcast6 {
         key = {
-ig_md.vrf:
-            exact;
 hdr.ipv6.src_addr:
             exact;
 hdr.ipv6.dst_addr:
+            exact;
+ig_md.vrf:
             exact;
         }
         actions = {
