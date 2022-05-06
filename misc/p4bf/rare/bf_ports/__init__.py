@@ -101,7 +101,7 @@ class BfPorts(Thread):
             key_list = []
         return table.entry_get(self.bfgc.target,
                                key_list,
-                               { "from_hw": fromHw },
+                               #{ "from_hw": fromHw },
                                p4_name = self.bfgc.p4_name)
 
     def entryGetDict(self, table, keys = None, fromHw = True):
