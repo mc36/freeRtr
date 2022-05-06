@@ -1,5 +1,8 @@
 #include <linux/bpf.h>
 #include <bpf/bpf_helpers.h>
+#ifndef NULL
+#include <stdio.h>
+#endif
 #include "utils.h"
 #include "types.h"
 #include "p4xdp_tab.h"
