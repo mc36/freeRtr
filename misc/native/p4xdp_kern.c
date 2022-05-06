@@ -2,6 +2,7 @@
 #include <bpf/bpf_helpers.h>
 #include "utils.h"
 #include "types.h"
+#include "stdio.h"
 #include "p4xdp_tab.h"
 
 
