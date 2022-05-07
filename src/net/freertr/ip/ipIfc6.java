@@ -450,7 +450,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
      *
      * @param needRun true if needed
      */
-    public void resetTimer(boolean needRun) {
+    public synchronized void resetTimer(boolean needRun) {
         try {
             timer.cancel();
         } catch (Exception e) {
