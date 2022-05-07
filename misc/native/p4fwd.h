@@ -51,7 +51,7 @@ int hashDataPacket(unsigned char *bufP) {
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
-    send2cpu(bufD, preBuff, bufS, port);
+    send2cpu(bufD, preBuff + 12, bufS, port);
 }
 
 
