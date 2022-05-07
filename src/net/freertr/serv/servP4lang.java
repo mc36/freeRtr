@@ -110,6 +110,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public tabGen<servP4langVrf> expVrf = new tabGen<servP4langVrf>();
 
     /**
+     * export sockets
+     */
+    public boolean expSck;
+
+    /**
      * exported interfaces
      */
     public tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
@@ -235,6 +240,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         "server p4lang .*! no export-srv6",
         "server p4lang .*! no export-copp4",
         "server p4lang .*! no export-copp6",
+        "server p4lang .*! no export-socket",
         "server p4lang .*! no interconnect",
         "server p4lang .*! export-interval 1000",};
 
@@ -279,6 +285,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         } else {
             l.add(beg + "export-copp6 " + expCopp6.listName);
         }
+        cmds.cfgLine(l, !expSck, beg, "export-socket", "");
         l.add(beg + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
         for (int i = 0; i < downLinks.size(); i++) {
@@ -360,6 +367,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             expCopp6 = acl.aceslst;
+            return false;
+        }
+        if (s.equals("export-socket")) {
+            expSck = true;
             return false;
         }
         if (s.equals("export-interval")) {
@@ -482,6 +493,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expCopp6 = null;
             return false;
         }
+        if (s.equals("export-socket")) {
+            expSck = false;
+            return false;
+        }
         if (s.equals("export-bridge")) {
             servP4langBr ntry = new servP4langBr(bits.str2num(cmd.word()));
             ntry = expBr.del(ntry);
@@ -556,6 +571,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         l.add(null, "7 .              <num>         flowctrl, see hw vendor manual");
         l.add(null, "1 2  export-srv6               specify srv6 to export");
         l.add(null, "2 .    <name:ifc>              interface name");
+        l.add(null, "1 .  export-socket             specify sockets to be exported");
         l.add(null, "1 2  export-copp4              specify copp acl to export");
         l.add(null, "2 .    <name:acl>              acl name");
         l.add(null, "1 2  export-copp6              specify copp acl to export");
@@ -2946,10 +2962,6 @@ class servP4langConn implements Runnable {
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
             doVrf(vrf);
-            doSockets(false, vrf.id, vrf.vrf.udp4.getProtoNum(), vrf.vrf.udp4.srvrs, vrf.udp4);
-            doSockets(true, vrf.id, vrf.vrf.udp6.getProtoNum(), vrf.vrf.udp6.srvrs, vrf.udp6);
-            doSockets(false, vrf.id, vrf.vrf.tcp4.getProtoNum(), vrf.vrf.tcp4.srvrs, vrf.tcp4);
-            doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
             doIndexes("", vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexUd4, vrf.vrf.fwd4.actualU, vrf.indexUs4);
@@ -2966,6 +2978,13 @@ class servP4langConn implements Runnable {
             doPbrCfg(false, vrf, vrf.vrf.fwd6.pbrCfg, vrf.pbrCfg6);
             vrf.flwSpc4 = doFlwSpc(true, vrf, vrf.vrf.fwd4, vrf.flwSpc4);
             vrf.flwSpc6 = doFlwSpc(false, vrf, vrf.vrf.fwd6, vrf.flwSpc6);
+            if (!lower.expSck) {
+                continue;
+            }
+            doSockets(false, vrf.id, vrf.vrf.udp4.getProtoNum(), vrf.vrf.udp4.srvrs, vrf.udp4);
+            doSockets(true, vrf.id, vrf.vrf.udp6.getProtoNum(), vrf.vrf.udp6.srvrs, vrf.udp6);
+            doSockets(false, vrf.id, vrf.vrf.tcp4.getProtoNum(), vrf.vrf.tcp4.srvrs, vrf.tcp4);
+            doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
         }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             doLab1(tabLabel.labels.get(i));
