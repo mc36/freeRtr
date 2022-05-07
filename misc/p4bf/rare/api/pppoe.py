@@ -10,8 +10,8 @@ def writePppoeRules(
     tbl_name_1 = "%s.tbl_pppoe" % (tbl_global_path_1)
     tbl_action_name_1 = "%s.act_pppoe_data" % (tbl_global_path_1)
     key_field_list_1 = [
-        gc.KeyTuple("ig_md.source_id", phport),
         gc.KeyTuple("hdr.pppoeD.session", ses),
+        gc.KeyTuple("ig_md.source_id", phport),
     ]
     data_field_list_1 = [
         gc.DataTuple("port", port),

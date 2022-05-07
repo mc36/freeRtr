@@ -13,8 +13,8 @@ def writeRoumacRules(self, op_type, bridge, addr, nexthop, ppp):
     tbl_name_1 = "%s.tbl_bridge_learn" % (tbl_global_path_1)
     tbl_action_name_1 = "%s.act_set_bridge_port" % (tbl_global_path_1)
     key_field_list_1 = [
-        gc.KeyTuple("ig_md.bridge_id", bridge),
         gc.KeyTuple("hdr.ethernet.src_mac_addr", addr),
+        gc.KeyTuple("ig_md.bridge_id", bridge),
     ]
     data_field_list_1 = []
     key_annotation_fields_1 = {"hdr.ethernet.src_mac_addr": "mac"}
@@ -34,9 +34,9 @@ def writeRoumacRules(self, op_type, bridge, addr, nexthop, ppp):
     tbl_action_name_2 = "%s.act_set_bridge_routed" % (tbl_global_path_2)
     sap_type = 4
     key_field_list_2 = [
-        gc.KeyTuple("ig_md.bridge_id", bridge),
         # gc.KeyTuple('ig_md.sap_type', sap_type),
         gc.KeyTuple("hdr.ethernet.dst_mac_addr", addr),
+        gc.KeyTuple("ig_md.bridge_id", bridge),
     ]
     data_field_list_2 = [gc.DataTuple("nexthop", nexthop)]
     key_annotation_fields_2 = {"hdr.ethernet.dst_mac_addr": "mac"}

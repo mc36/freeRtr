@@ -10,12 +10,12 @@ def writeGtp6rules(
     tbl_name_1 = "%s.tbl_tunnel6" % (tbl_global_path_1)
     tbl_action_name_1 = "%s.act_tunnel_gtp" % (tbl_global_path_1)
     key_field_list_1 = [
-        gc.KeyTuple("ig_md.vrf", vrf),
-        gc.KeyTuple("hdr.ipv6.next_hdr", 17),
-        gc.KeyTuple("hdr.ipv6.src_addr", dip),
-        gc.KeyTuple("hdr.ipv6.dst_addr", sip),
         gc.KeyTuple("ig_md.layer4_srcprt", dprt),
         gc.KeyTuple("ig_md.layer4_dstprt", sprt),
+        gc.KeyTuple("hdr.ipv6.src_addr", dip),
+        gc.KeyTuple("hdr.ipv6.dst_addr", sip),
+        gc.KeyTuple("ig_md.vrf", vrf),
+        gc.KeyTuple("hdr.ipv6.next_hdr", 17),
     ]
     data_field_list_1 = [
         gc.DataTuple("port", port),

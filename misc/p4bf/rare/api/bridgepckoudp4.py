@@ -13,8 +13,8 @@ def writePckoudp4rules(
     tbl_name_1 = "%s.tbl_bridge_learn" % (tbl_global_path_1)
     tbl_action_name_1 = "%s.act_set_bridge_port" % (tbl_global_path_1)
     key_field_list_1 = [
-        gc.KeyTuple("ig_md.bridge_id", bridge),
         gc.KeyTuple("hdr.ethernet.src_mac_addr", addr),
+        gc.KeyTuple("ig_md.bridge_id", bridge),
     ]
     data_field_list_1 = []
     key_annotation_fields_1 = {"hdr.ethernet.src_mac_addr": "mac"}
@@ -34,9 +34,9 @@ def writePckoudp4rules(
     sap_type = 4
     tbl_action_name_2 = "%s.act_set_bridge_pckoudp4" % (tbl_global_path_2)
     key_field_list_2 = [
-        gc.KeyTuple("ig_md.bridge_id", bridge),
         # gc.KeyTuple('ig_md.sap_type', sap_type),
         gc.KeyTuple("hdr.ethernet.dst_mac_addr", addr),
+        gc.KeyTuple("ig_md.bridge_id", bridge),
     ]
     data_field_list_2 = [
         gc.DataTuple("nexthop", nexthop),
@@ -64,12 +64,12 @@ def writePckoudp4rules(
     tbl_name_3 = "%s.tbl_tunnel4" % (tbl_global_path_3)
     tbl_action_name_3 = "%s.act_tunnel_pckoudp" % (tbl_global_path_3)
     key_field_list_3 = [
-        gc.KeyTuple("ig_md.vrf", vrf),
-        gc.KeyTuple("hdr.ipv4.protocol", 17),
-        gc.KeyTuple("hdr.ipv4.src_addr", dip),
-        gc.KeyTuple("hdr.ipv4.dst_addr", sip),
         gc.KeyTuple("ig_md.layer4_srcprt", dprt),
         gc.KeyTuple("ig_md.layer4_dstprt", sprt),
+        gc.KeyTuple("hdr.ipv4.src_addr", dip),
+        gc.KeyTuple("hdr.ipv4.dst_addr", sip),
+        gc.KeyTuple("ig_md.vrf", vrf),
+        gc.KeyTuple("hdr.ipv4.protocol", 17),
     ]
     data_field_list_3 = [
         gc.DataTuple("port", port),

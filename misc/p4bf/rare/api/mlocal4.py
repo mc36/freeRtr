@@ -14,9 +14,9 @@ def writeMlocal4rules(
     tbl_name = "%s.tbl_mcast4" % (tbl_global_path)
     tbl_action_name = "%s.%s" % (tbl_global_path, act)
     key_field_list = [
-        gc.KeyTuple("ig_md.vrf", vrf),
         gc.KeyTuple("hdr.ipv4.src_addr", sip),
         gc.KeyTuple("hdr.ipv4.dst_addr", dip),
+        gc.KeyTuple("ig_md.vrf", vrf),
     ]
     data_field_list = [
          gc.DataTuple("ingr", ingr),

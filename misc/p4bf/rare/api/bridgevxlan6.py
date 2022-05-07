@@ -13,8 +13,8 @@ def writeVxlan6rules(
     tbl_name_1 = "%s.tbl_bridge_learn" % (tbl_global_path_1)
     tbl_action_name_1 = "%s.act_set_bridge_port" % (tbl_global_path_1)
     key_field_list_1 = [
-        gc.KeyTuple("ig_md.bridge_id", bridge),
         gc.KeyTuple("hdr.ethernet.src_mac_addr", addr),
+        gc.KeyTuple("ig_md.bridge_id", bridge),
     ]
     data_field_list_1 = []
     key_annotation_fields_1 = {"hdr.ethernet.src_mac_addr": "mac"}
@@ -34,9 +34,9 @@ def writeVxlan6rules(
     sap_type = 4
     tbl_action_name_2 = "%s.act_set_bridge_vxlan6" % (tbl_global_path_2)
     key_field_list_2 = [
-        gc.KeyTuple("ig_md.bridge_id", bridge),
         # gc.KeyTuple('ig_md.sap_type', sap_type),
         gc.KeyTuple("hdr.ethernet.dst_mac_addr", addr),
+        gc.KeyTuple("ig_md.bridge_id", bridge),
     ]
     data_field_list_2 = [
         gc.DataTuple("nexthop", nexthop),
@@ -63,12 +63,12 @@ def writeVxlan6rules(
     tbl_name_3 = "%s.tbl_tunnel6" % (tbl_global_path_3)
     tbl_action_name_3 = "%s.act_tunnel_vxlan" % (tbl_global_path_3)
     key_field_list_3 = [
-        gc.KeyTuple("ig_md.vrf", vrf),
-        gc.KeyTuple("hdr.ipv6.next_hdr", 17),
-        gc.KeyTuple("hdr.ipv6.src_addr", dip),
-        gc.KeyTuple("hdr.ipv6.dst_addr", sip),
         gc.KeyTuple("ig_md.layer4_srcprt", 4789),
         gc.KeyTuple("ig_md.layer4_dstprt", 4789),
+        gc.KeyTuple("hdr.ipv6.src_addr", dip),
+        gc.KeyTuple("hdr.ipv6.dst_addr", sip),
+        gc.KeyTuple("ig_md.vrf", vrf),
+        gc.KeyTuple("hdr.ipv6.next_hdr", 17),
     ]
     data_field_list_3 = [
         gc.DataTuple("port", port),

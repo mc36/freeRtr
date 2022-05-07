@@ -10,12 +10,12 @@ def writeNatTrnsRules4(
     tbl_name = "%s.tbl_ipv4_nat_trns" % (tbl_global_path)
     tbl_action_name = "%s.act_rewrite_ipv4prt%s" % (tbl_global_path, str(proto))
     key_field_list = [
-        gc.KeyTuple("ig_md.vrf", vrf),
-        gc.KeyTuple("hdr.ipv4.protocol", proto),
-        gc.KeyTuple("hdr.ipv4.src_addr", osa),
-        gc.KeyTuple("hdr.ipv4.dst_addr", ota),
         gc.KeyTuple("ig_md.layer4_srcprt", osp),
         gc.KeyTuple("ig_md.layer4_dstprt", otp),
+        gc.KeyTuple("hdr.ipv4.src_addr", osa),
+        gc.KeyTuple("hdr.ipv4.dst_addr", ota),
+        gc.KeyTuple("ig_md.vrf", vrf),
+        gc.KeyTuple("hdr.ipv4.protocol", proto),
     ]
     data_field_list = [
         gc.DataTuple("srcadr", nsa),

@@ -10,12 +10,12 @@ def writeNatTrnsRules6(
     tbl_name = "%s.tbl_ipv6_nat_trns" % (tbl_global_path)
     tbl_action_name = "%s.act_rewrite_ipv6prt%s" % (tbl_global_path, str(proto))
     key_field_list = [
-        gc.KeyTuple("ig_md.vrf", vrf),
-        gc.KeyTuple("hdr.ipv6.next_hdr", proto),
-        gc.KeyTuple("hdr.ipv6.src_addr", osa),
-        gc.KeyTuple("hdr.ipv6.dst_addr", ota),
         gc.KeyTuple("ig_md.layer4_srcprt", osp),
         gc.KeyTuple("ig_md.layer4_dstprt", otp),
+        gc.KeyTuple("hdr.ipv6.src_addr", osa),
+        gc.KeyTuple("hdr.ipv6.dst_addr", ota),
+        gc.KeyTuple("ig_md.vrf", vrf),
+        gc.KeyTuple("hdr.ipv6.next_hdr", proto),
     ]
     data_field_list = [
         gc.DataTuple("srcadr", nsa),
