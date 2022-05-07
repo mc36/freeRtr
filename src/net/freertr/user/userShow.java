@@ -945,14 +945,31 @@ public class userShow {
                 return null;
             }
             a = cmd.word();
-            if (a.length() < 1) {
+            if (a.equals("status")) {
                 rdr.putStrTab(srv.getShowGen());
+                return null;
+            }
+            if (a.equals("api")) {
                 rdr.putStrTab(srv.getShowApi());
+                return null;
+            }
+            if (a.equals("frontpanel")) {
                 rdr.putStrTab(srv.getShowFront());
+                return null;
+            }
+            if (a.equals("sent-interface")) {
                 rdr.putStrTab(srv.getShowIfaces());
+                return null;
+            }
+            if (a.equals("sent-neighbor")) {
                 rdr.putStrTab(srv.getShowNeighs());
                 return null;
             }
+            if (!a.equals("port-counters")) {
+                cmd.badCmd();
+                return null;
+            }
+            a = cmd.word();
             cfgIfc ifc = cfgAll.ifcFind(a, false);
             if (ifc == null) {
                 cmd.error("no such interface");

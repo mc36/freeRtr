@@ -1182,8 +1182,14 @@ public class userExec {
         hl.add(null, "4 5,.        <addr>              from");
         hl.add(null, "5 .            <addr>            peer");
         hl.add(null, "2 3      p4lang                  p4lang protocol information");
-        hl.add(cfgAll.dmnP4lang.listServers(), "3 4,.      <name:loc>            server name");
-        hl.add(null, "4 .          <name:ifc>          name of interface");
+        hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
+        hl.add(null, "4 .          status              current status");
+        hl.add(null, "4 .          api                 api message statistics");
+        hl.add(null, "4 .          frontpanel          front panel information");
+        hl.add(null, "4 .          sent-interface      exported interfaces");
+        hl.add(null, "4 .          sent-neighbor       exported neighbors");
+        hl.add(null, "4 5          port-counters       dataplane counters");
+        hl.add(null, "5 .            <name:ifc>        name of interface");
         hl.add(null, "2 3      ppp                     ppp protocol information");
         hl.add(null, "3 .        <name:ifc>            name of interface");
         hl.add(null, "2 3      vpdn                    vpdn protocol information");
