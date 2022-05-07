@@ -947,6 +947,7 @@ public class userShow {
             a = cmd.word();
             if (a.length() < 1) {
                 rdr.putStrTab(srv.getShowGen());
+                rdr.putStrTab(srv.getShowApi());
                 rdr.putStrTab(srv.getShowFront());
                 rdr.putStrTab(srv.getShowIfaces());
                 rdr.putStrTab(srv.getShowNeighs());
