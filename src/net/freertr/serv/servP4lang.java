@@ -229,6 +229,36 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      */
     protected int statsPrt;
 
+    /**
+     * rounds done
+     */
+    protected int rndDoneNum;
+
+    /**
+     * rounds skiped
+     */
+    protected int rndSkipNum;
+
+    /**
+     * rounds time
+     */
+    protected int rndDoneTime;
+
+    /**
+     * rounds time
+     */
+    protected long rndDoneLast;
+
+    /**
+     * rounds time
+     */
+    protected long rndSkipLast;
+
+    /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+
     private ifcDn intercon;
 
     /**
@@ -598,7 +628,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(32768, false), 0);
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
 
     public boolean srvDeinit() {
@@ -750,6 +780,11 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         res.add("platform|" + platform);
         res.add("cpuport|" + cpuport);
         res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
+        res.add("rounds done|" + rndDoneNum);
+        res.add("last done|" + bits.time2str(cfgAll.timeZoneName, rndDoneLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndDoneLast) + " ago)");
+        res.add("done time|" + rndDoneTime);
+        res.add("rounds skip|" + rndSkipNum);
+        res.add("last skip|" + bits.time2str(cfgAll.timeZoneName, rndSkipLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndSkipLast) + " ago)");
         return res;
     }
 
@@ -2015,9 +2050,8 @@ class servP4langConn implements Runnable {
                 if (doReports()) {
                     break;
                 }
-                if (doExports()) {
-                    break;
-                }
+                doExports();
+                lower.notif.sleep(lower.expDelay);
             }
         } catch (Exception e) {
             logger.traceback(e);
@@ -2922,7 +2956,13 @@ class servP4langConn implements Runnable {
         }
     }
 
-    private boolean doExports() {
+    private void doExports() {
+        if (pipe.ready2rx() < (lower.bufSiz / 2)) {
+            lower.rndSkipLast = bits.getTime();
+            lower.rndSkipNum++;
+            return;
+        }
+        long tim = bits.getTime();
         for (int i = 0; i < lower.neighs.size(); i++) {
             lower.neighs.get(i).need = 0;
         }
@@ -3001,8 +3041,10 @@ class servP4langConn implements Runnable {
         for (int i = lower.neighs.size() - 1; i >= 0; i--) {
             doNeighs(lower.neighs.get(i));
         }
-        lower.notif.sleep(lower.expDelay);
-        return false;
+        lower.rndDoneLast = bits.getTime();
+        lower.rndDoneTime = (int) (lower.rndDoneLast - tim);
+        lower.rndDoneNum++;
+        return;
     }
 
     private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
