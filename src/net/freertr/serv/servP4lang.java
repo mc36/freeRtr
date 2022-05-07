@@ -267,6 +267,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public final static String[] defaultL = {
         "server p4lang .*! port " + port,
         "server p4lang .*! protocol " + proto2string(protoAllStrm),
+        "server p4lang .*! buffer 65536",
         "server p4lang .*! no export-srv6",
         "server p4lang .*! no export-copp4",
         "server p4lang .*! no export-copp6",
@@ -284,6 +285,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        l.add(beg + "buffer " + bufSiz);
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
             l.add(beg + "export-vrf " + ntry.vrf.name + " " + ntry.id);
@@ -326,6 +328,10 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
+            return false;
+        }
         if (s.equals("export-vrf")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
@@ -586,6 +592,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         for (int i = 0; i < fronts.size(); i++) {
             lst.add(fronts.get(i).nam);
         }
+        l.add(null, "1 2  buffer                    set buffer size on connection");
+        l.add(null, "2 .    <num>                   buffer in bytes");
         l.add(null, "1 2  export-vrf                specify vrf to export");
         l.add(null, "2 3    <name:vrf>              vrf name");
         l.add(null, "3 .      <num>                 p4lang vrf number");
@@ -782,7 +790,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
         res.add("rounds done|" + rndDoneNum);
         res.add("last done|" + bits.time2str(cfgAll.timeZoneName, rndDoneLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndDoneLast) + " ago)");
-        res.add("done time|" + rndDoneTime);
+        res.add("time took|" + rndDoneTime);
         res.add("rounds skip|" + rndSkipNum);
         res.add("last skip|" + bits.time2str(cfgAll.timeZoneName, rndSkipLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndSkipLast) + " ago)");
         return res;
@@ -2957,7 +2965,7 @@ class servP4langConn implements Runnable {
     }
 
     private void doExports() {
-        if (pipe.ready2rx() < (lower.bufSiz / 2)) {
+        if (pipe.ready2tx() < (lower.bufSiz / 2)) {
             lower.rndSkipLast = bits.getTime();
             lower.rndSkipNum++;
             return;
@@ -3044,7 +3052,6 @@ class servP4langConn implements Runnable {
         lower.rndDoneLast = bits.getTime();
         lower.rndDoneTime = (int) (lower.rndDoneLast - tim);
         lower.rndDoneNum++;
-        return;
     }
 
     private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
