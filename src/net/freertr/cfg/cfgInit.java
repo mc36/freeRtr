@@ -786,6 +786,26 @@ public class cfgInit implements Runnable {
             s = s.substring(0, i).trim();
             types.add(new cfgInitMime(s, a));
         }
+        cfgIfc.ifaceNames = new userHelping();
+        cfgIfc.ifaceNames.add(null, "1 . loopback      ifc");
+        cfgIfc.ifaceNames.add(null, "1 . null          ifc");
+        cfgIfc.ifaceNames.add(null, "1 . template      ifc");
+        cfgIfc.ifaceNames.add(null, "1 . dialer        ifc");
+        cfgIfc.ifaceNames.add(null, "1 . sdn           ifc");
+        cfgIfc.ifaceNames.add(null, "1 . pwether       ifc");
+        cfgIfc.ifaceNames.add(null, "1 . virtualppp    ifc");
+        cfgIfc.ifaceNames.add(null, "1 . access        ifc");
+        cfgIfc.ifaceNames.add(null, "1 . bvi           ifc");
+        cfgIfc.ifaceNames.add(null, "1 . bundle        ifc");
+        cfgIfc.ifaceNames.add(null, "1 . tunnel        ifc");
+        cfgIfc.ifaceNames.add(null, "1 . hairpin       ifc");
+        cfgIfc.ifaceNames.add(null, "1 . atm           ifc");
+        cfgIfc.ifaceNames.add(null, "1 . arcnet        ifc");
+        cfgIfc.ifaceNames.add(null, "1 . infiniband    ifc");
+        cfgIfc.ifaceNames.add(null, "1 . ethernet      ifc");
+        cfgIfc.ifaceNames.add(null, "1 . serial        ifc");
+        cfgIfc.ifaceNames.add(null, "1 . cellular      ifc");
+        cfgIfc.ifaceNames.add(null, "1 . wireless      ifc");
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
         cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
         cfgLin.linedefF = createFilter(cfgLin.linedefL);

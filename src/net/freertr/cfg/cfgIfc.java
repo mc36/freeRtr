@@ -1955,6 +1955,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public static tabGen<userFilter> nocloneF;
 
     /**
+     * interface names
+     */
+    public static userHelping ifaceNames;
+
+    /**
      * convert interface name to type
      *
      * @param s name of interface
@@ -2548,23 +2553,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         String b = s.substring(0, p);
         s = s.substring(p, s.length());
-        userHelping hl = new userHelping();
-        hl.add(null, "1 . loopback     ifc");
-        hl.add(null, "1 . null         ifc");
-        hl.add(null, "1 . template     ifc");
-        hl.add(null, "1 . dialer       ifc");
-        hl.add(null, "1 . sdn          ifc");
-        hl.add(null, "1 . pwether      ifc");
-        hl.add(null, "1 . virtualppp   ifc");
-        hl.add(null, "1 . access       ifc");
-        hl.add(null, "1 . bvi          ifc");
-        hl.add(null, "1 . bundle       ifc");
-        hl.add(null, "1 . tunnel       ifc");
-        hl.add(null, "1 . hairpin      ifc");
-        for (int i = 0; i < verCore.ifaces.length; i++) {
-            hl.add(null, "1 . " + verCore.ifaces[i] + " ifc");
-        }
-        b = hl.repairLine(b).trim();
+        b = ifaceNames.repairLine(b).trim();
         if (b.length() < 1) {
             return "";
         }

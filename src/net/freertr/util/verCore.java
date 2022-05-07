@@ -89,9 +89,4 @@ public class verCore {
         " ##   ##      #####   #####   ##     ##  ##"
     };
 
-    /**
-     * interface names
-     */
-    public final static String[] ifaces = {"atm", "arcnet", "infiniband", "ethernet", "serial", "cellular", "wireless"};
-
 }
