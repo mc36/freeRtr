@@ -312,6 +312,12 @@ public class rtrIsisLevel implements Runnable {
         if (buf != null) {
             typLenVal tlv = rtrIsis.getTlv();
             packHolder pck = new packHolder(true, true);
+            if (purge) {
+                advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
+                pck.merge2end();
+                lsp.bufDat = pck.getCopy();
+                lsp.generateCheckSum();
+            }
             int siz = lsp.writeData(pck, 0);
             pck.msbPutW(2, 0); // lifetime
             pck.msbPutW(16, 0); // checksum
