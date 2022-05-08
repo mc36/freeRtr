@@ -287,6 +287,13 @@ public class rtrIsisLevel implements Runnable {
         return i;
     }
 
+    private void updateAuthLsp(rtrIsisLsp lsp, int pos, byte[] buf) {
+        if ((pos + buf.length) > lsp.bufDat.length) {
+            return;
+        }
+        bits.byteCopy(buf, 0, lsp.bufDat, pos, buf.length);
+    }
+
     /**
      * advertise one lsp
      *
@@ -346,14 +353,10 @@ public class rtrIsisLevel implements Runnable {
             buf = getAuthen(pck, typ, pos);
             pos -= rtrIsisLsp.headSize;
             pos += 2;
-            if ((pos + buf.length) > lsp.bufDat.length) {
-                logger.error("error updating auth in level" + level);
-                return;
-            }
-            bits.byteCopy(buf, 0, lsp.bufDat, pos, buf.length);
+            updateAuthLsp(lsp, pos, buf);
             if (cntnt && (old != null)) {
                 old = old.copyBytes(true);
-                bits.byteCopy(buf, 0, old.bufDat, pos, buf.length);
+                updateAuthLsp(old, pos, buf);
             }
         }
         if (cntnt) {
