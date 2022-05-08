@@ -552,7 +552,7 @@ public class userUpgrade {
         }
         cons.debugRes("running upgrade script");
         pipeLine pl = new pipeLine(32768, false);
-        pipeSide loc = pl.getSide();
+        pl.getSide();
         pipeSide pip = pl.getSide();
         pip.setTime(120000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;

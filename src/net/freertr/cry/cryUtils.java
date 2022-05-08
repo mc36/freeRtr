@@ -77,13 +77,16 @@ public class cryUtils {
      */
     public static boolean hashFile(cryHashGeneric hsh, File src) {
         long pos = 0;
-        long siz = 0;
+        long siz = -1;
         RandomAccessFile fr;
         try {
             fr = new RandomAccessFile(src, "r");
-            siz = fr.length();
         } catch (Exception e) {
             return true;
+        }
+        try {
+            siz = fr.length();
+        } catch (Exception e) {
         }
         for (; pos < siz;) {
             final int max = 8192;
@@ -97,7 +100,8 @@ public class cryUtils {
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
-                return true;
+                siz = -1;
+                break;
             }
             hsh.update(buf);
         }
@@ -106,7 +110,7 @@ public class cryUtils {
         } catch (Exception e) {
             return true;
         }
-        return false;
+        return siz < 0;
     }
 
     /**

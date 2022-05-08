@@ -50,8 +50,6 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      */
     public logFil fileHandle;
 
-    private long started;
-
     /**
      * create instance
      *

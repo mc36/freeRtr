@@ -1066,6 +1066,8 @@ public class ipFwdTab {
                         case local:
                         case remote:
                             continue;
+                        default:
+                            break;
                     }
                     tabL.del(ntry);
                 }
