@@ -2404,6 +2404,14 @@ class servP4langConn implements Runnable {
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            lower.msgsGot++;
+            if (lower.apiStatRx != null) {
+                servP4langMsg m = new servP4langMsg(s);
+                m = lower.apiStatRx.add(m);
+                if (m != null) {
+                    m.cnt++;
+                }
+            }
             if (s.equals("portname")) {
                 int i = bits.str2num(cmd.word());
                 s = cmd.getRemaining().replaceAll(" ", "_");
@@ -2470,9 +2478,9 @@ class servP4langConn implements Runnable {
             if (debugger.servP4langRx) {
                 logger.debug("rx: " + s);
             }
-            lower.msgsGot++;
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            lower.msgsGot++;
             if (lower.apiStatRx != null) {
                 servP4langMsg m = new servP4langMsg(s);
                 m = lower.apiStatRx.add(m);
