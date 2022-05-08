@@ -314,7 +314,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[4|6].*! no segrout",
         "router bgp[4|6].*! no bier",
         "router bgp[4|6].*! graceful-restart 60000",
-        "router bgp[4|6].*! no listen",
         "router bgp[4|6].*! no nexthop route-map",
         "router bgp[4|6].*! no nexthop route-policy",
         "router bgp[4|6].*! no nexthop prefix-list",

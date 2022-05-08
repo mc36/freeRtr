@@ -1,4 +1,3 @@
-multiple listen stanzas for bgp listen
 backplane header in the dataplanes with bridge_id, vrf_id and nexthop_id
 sho run server
 allow command to be a substring of an other

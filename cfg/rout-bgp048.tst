@@ -28,7 +28,10 @@ int eth3
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff::
  exit
-access-list all
+access-list a1
+ deny all any all any all
+ exit
+access-list a2
  permit all any all any all
  exit
 router bgp4 1
@@ -39,7 +42,8 @@ router bgp4 1
  router-id 4.4.4.1
  temp p remote-as 2
  temp p override-peer-as-out
- listen all p
+ listen a1 p
+ listen a2 p
  red conn
  exit
 router bgp6 1
@@ -50,7 +54,8 @@ router bgp6 1
  router-id 6.6.6.1
  temp p remote-as 2
  temp p override-peer-as-out
- listen all p
+ listen a1 p
+ listen a2 p
  red conn
  exit
 !

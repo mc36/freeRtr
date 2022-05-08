@@ -180,19 +180,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int groupMax;
 
     /**
-     * listen template
+     * listen configurations
      */
-    public rtrBgpTemp lstnTmp;
-
-    /**
-     * listen interface
-     */
-    public ipFwdIface lstnIfc;
-
-    /**
-     * listen access list
-     */
-    public tabListing<tabAceslstN<addrIP>, addrIP> lstnAcl;
+    public tabGen<rtrBgpLstn> lstns = new tabGen<rtrBgpLstn>();
 
     /**
      * list of dynamic neighbors
@@ -1413,13 +1403,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return false if success, true if error
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
-        if (lstnAcl == null) {
-            return true;
+        rtrBgpLstn lstn = null;
+        for (int i = 0; i < lstns.size(); i++) {
+            rtrBgpLstn ntry = lstns.get(i);
+            if (!ntry.acl.matches(id)) {
+                continue;
+            }
+            lstn = ntry;
+            break;
         }
-        if (lstnTmp == null) {
-            return true;
-        }
-        if (!lstnAcl.matches(id)) {
+        if (lstn == null) {
             return true;
         }
         rtrBgpNeigh ntry = new rtrBgpNeigh(this);
@@ -1430,8 +1423,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (neighs.find(ntry) != null) {
             return true;
         }
-        ntry.copyFrom(lstnTmp);
-        ntry.template = lstnTmp;
+        ntry.copyFrom(lstn.temp);
+        ntry.template = lstn.temp;
         if (ntry.fallOver) {
             ntry.sendingIfc = ipFwdTab.findSendingIface(fwdCore, ntry.peerAddr);
         }
@@ -2315,8 +2308,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpMrt ntry = dmps.get(i);
             ntry.fileHandle.close();
         }
-        if (lstnTmp != null) {
-            tcpCore.listenStop(lstnIfc, port, null, 0);
+        for (int i = 0; i < lstns.size(); i++) {
+            rtrBgpLstn ntry = lstns.get(i);
+            tcpCore.listenStop(ntry.iface, port, null, 0);
         }
         for (int i = lstnNei.size() - 1; i >= 0; i--) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -2546,10 +2540,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < temps.size(); i++) {
             temps.get(i).getConfig(l, beg, filter);
         }
-        if (lstnTmp == null) {
-            l.add(beg + "no listen");
-        } else {
-            l.add(beg + "listen " + lstnAcl.listName + " " + lstnTmp.tempName);
+        for (int i = 0; i < lstns.size(); i++) {
+            lstns.get(i).getConfig(l, beg);
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -3290,33 +3282,35 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("listen")) {
-            tcpCore.listenStop(lstnIfc, port, null, 0);
-            if (negated) {
-                lstnAcl = null;
-                lstnTmp = null;
-                lstnIfc = null;
-                return false;
-            }
+            rtrBgpLstn ntry = new rtrBgpLstn();
             cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
             if (acl == null) {
                 cmd.error("no such acl");
                 return true;
             }
-            lstnTmp = findTemp(cmd.word());
-            if (lstnTmp == null) {
+            ntry.acl = acl.aceslst;
+            rtrBgpLstn old = lstns.del(ntry);
+            if (old != null) {
+                tcpCore.listenStop(old.iface, port, null, 0);
+            }
+            if (negated) {
+                return false;
+            }
+            ntry.temp = findTemp(cmd.word());
+            if (ntry.temp == null) {
                 cmd.error("no such template");
                 return true;
             }
-            lstnIfc = null;
-            if (lstnTmp.srcIface != null) {
+            ntry.iface = null;
+            if (ntry.temp.srcIface != null) {
                 if (afiUni == rtrBgpUtil.safiIp4uni) {
-                    lstnIfc = lstnTmp.srcIface.fwdIf4;
+                    ntry.iface = ntry.temp.srcIface.fwdIf4;
                 } else {
-                    lstnIfc = lstnTmp.srcIface.fwdIf6;
+                    ntry.iface = ntry.temp.srcIface.fwdIf6;
                 }
             }
-            lstnAcl = acl.aceslst;
-            tcpCore.streamListen(this, new pipeLine(lstnTmp.bufferSize, false), lstnIfc, port, null, 0, "bgp", lstnTmp.passwd, lstnTmp.ttlSecurity);
+            lstns.put(ntry);
+            tcpCore.streamListen(this, new pipeLine(ntry.temp.bufferSize, false), ntry.iface, port, null, 0, "bgp", ntry.temp.passwd, ntry.temp.ttlSecurity);
             return false;
         }
         if (s.equals("template")) {
