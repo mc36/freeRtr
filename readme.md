@@ -58,3 +58,10 @@ there is no build system in use, but you'll find shell scripts:
 ## contributing
 
 feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc.
+
+## additional information
+
+* [docs.freertr.org](http://docs.freertr.org/)
+* [rare.freertr.org](http://rare.freertr.org/)
+* [demo.freertr.org](http://demo.freertr.org/)
+* [blog.freertr.org](http://blog.freertr.org/)
