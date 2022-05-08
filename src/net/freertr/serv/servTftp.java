@@ -11,6 +11,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFlash;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
@@ -167,7 +168,8 @@ class servTftpConn implements Runnable {
         if (debugger.servTftpTraf) {
             logger.debug("rx " + pckTft.dump());
         }
-        File fh = new File(lower.rootFolder + uniResLoc.normalizePath("" + pckTft.nam));
+        String a = lower.rootFolder + uniResLoc.normalizePath("" + pckTft.nam);
+        File fh = new File(a);
         boolean red;
         switch (pckTft.typ) {
             case packTftp.msgRead:
@@ -190,10 +192,7 @@ class servTftpConn implements Runnable {
                 break;
             case packTftp.msgWrite:
                 red = false;
-                try {
-                    fh.createNewFile();
-                } catch (Exception e) {
-                }
+                userFlash.mkfile(a);
                 if (!fh.exists()) {
                     sendError(1, "file not exists");
                     return;

@@ -310,9 +310,6 @@ class servFtpDoer implements Runnable {
     }
 
     public String getRelPath(String s, boolean real) {
-        if (!s.endsWith("/")) {
-            s = s + "/";
-        }
         if (s.startsWith("/")) {
             s = "/" + uniResLoc.normalizePath(s);
         } else {
@@ -385,11 +382,16 @@ class servFtpDoer implements Runnable {
         RandomAccessFile fr;
         try {
             fr = new RandomAccessFile(f, "r");
-            fr.seek(pos);
         } catch (Exception e) {
             return true;
         }
-        long siz = f.length();
+        long siz;
+        try {
+            fr.seek(pos);
+            siz = f.length();
+        } catch (Exception e) {
+            siz = -1;
+        }
         for (; pos < siz;) {
             final int max = 8192;
             long rndl = siz - pos;
@@ -402,7 +404,8 @@ class servFtpDoer implements Runnable {
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
-                return false;
+                siz = -1;
+                break;
             }
             if (data.morePut(buf, 0, rndi) < rndi) {
                 try {
@@ -416,14 +419,10 @@ class servFtpDoer implements Runnable {
             fr.close();
         } catch (Exception e) {
         }
-        return false;
+        return siz < 0;
     }
 
     public boolean recvOneFile(File f, long pos) {
-        try {
-            f.createNewFile();
-        } catch (Exception e) {
-        }
         if (!f.exists()) {
             doLine("550 not exists");
             return false;
@@ -440,9 +439,14 @@ class servFtpDoer implements Runnable {
         RandomAccessFile fr;
         try {
             fr = new RandomAccessFile(f, "rw");
-            fr.seek(pos);
         } catch (Exception e) {
             return true;
+        }
+        boolean res = false;
+        try {
+            fr.seek(pos);
+        } catch (Exception e) {
+            res = true;
         }
         for (;;) {
             final int max = 8192;
@@ -454,14 +458,15 @@ class servFtpDoer implements Runnable {
             try {
                 fr.write(buf, 0, siz);
             } catch (Exception ex) {
-                return true;
+                res = true;
+                break;
             }
         }
         try {
             fr.close();
         } catch (Exception e) {
         }
-        return false;
+        return res;
     }
 
     public String getOldInfo(File f) {
@@ -601,13 +606,13 @@ class servFtpDoer implements Runnable {
             return false;
         }
         if (a.equals("cdup")) {
-            path = getRelPath("..", false);
+            path = getRelPath("../", false);
             doLine("250 moved up one level");
             return false;
         }
         if (a.equals("cwd")) {
-            a = getRelPath(cmd.getRemaining(), false);
-            File f = new File(getRelPath(a, true));
+            a = getRelPath(cmd.getRemaining() + "/", false);
+            File f = new File(getRelPath(a + "/", true));
             if (!f.isDirectory()) {
                 doLine("550 no such file or directory");
                 return false;
@@ -906,6 +911,7 @@ class servFtpDoer implements Runnable {
             }
             a = getRelPath(cmd.getRemaining(), false);
             a = getRelPath(a, true);
+            userFlash.mkfile(a);
             sendResult(recvOneFile(new File(a), restartFrom));
             restartFrom = 0;
             conn.closer(0x22);
@@ -919,7 +925,14 @@ class servFtpDoer implements Runnable {
             a = getRelPath(cmd.getRemaining(), false);
             a = getRelPath(a, true);
             File f = new File(a);
-            sendResult(recvOneFile(f, f.length()));
+            long siz = 0;
+            try {
+                siz = f.length();
+            } catch (Exception e) {
+                doLine("550 not found");
+                return false;
+            }
+            sendResult(recvOneFile(f, siz));
             conn.closer(0x22);
             return false;
         }

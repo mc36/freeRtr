@@ -175,12 +175,15 @@ class servGopherConn implements Runnable {
 
     private boolean sendOneFile(String s) {
         RandomAccessFile fr;
-        long siz;
+        long siz = -1;
         try {
             fr = new RandomAccessFile(s, "r");
-            siz = fr.length();
         } catch (Exception e) {
             return true;
+        }
+        try {
+            siz = fr.length();
+        } catch (Exception e) {
         }
         for (long pos = 0; pos < siz;) {
             final int max = 8192;
@@ -194,7 +197,7 @@ class servGopherConn implements Runnable {
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
-                return false;
+                break;
             }
             if (pipe.morePut(buf, 0, rndi) < rndi) {
                 try {
@@ -208,7 +211,7 @@ class servGopherConn implements Runnable {
             fr.close();
         } catch (Exception e) {
         }
-        return false;
+        return siz < 0;
     }
 
     private boolean sendOneDir(String s, String p) {

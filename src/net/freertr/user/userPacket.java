@@ -317,17 +317,19 @@ public class userPacket {
                 cmd.error("no such peer");
                 return null;
             }
-            RandomAccessFile fs;
-            RandomAccessFile ft;
+            RandomAccessFile fs = null;
+            RandomAccessFile ft = null;
             try {
                 a = cmd.word();
                 cmd.error("opening source " + a);
                 fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+            }
+            try {
                 a = cmd.word();
                 cmd.error("opening target " + a);
                 ft = new RandomAccessFile(new File(a), "rw");
             } catch (Exception e) {
-                return null;
             }
             addrIP sip = new addrIP();
             sip.fromString(cmd.word());
@@ -344,7 +346,7 @@ public class userPacket {
                 try {
                     fp = fs.getFilePointer();
                 } catch (Exception e) {
-                    return null;
+                    break;
                 }
                 int i = readMrt(pck, fs);
                 if (i == 1) {
@@ -391,11 +393,14 @@ public class userPacket {
                     fs.read(buf);
                     ft.write(buf);
                 } catch (Exception e) {
-                    return null;
+                    break;
                 }
             }
             try {
                 fs.close();
+            } catch (Exception e) {
+            }
+            try {
                 ft.close();
             } catch (Exception e) {
             }
