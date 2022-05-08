@@ -431,12 +431,23 @@ class prtRedunIfc implements ifcUp {
     public boolean doFile(String fn, String rfn) {
         logger.info("syncing " + fn + " as " + rfn);
         RandomAccessFile fr;
-        long siz;
+        long siz = -1;
         try {
             fr = new RandomAccessFile(fn, "r");
-            siz = fr.length();
         } catch (Exception e) {
             logger.error("unable to open file");
+            return true;
+        }
+        try {
+            siz = fr.length();
+        } catch (Exception e) {
+            logger.error("unable to get file size");
+        }
+        if (siz < 0) {
+            try {
+                fr.close();
+            } catch (Exception e) {
+            }
             return true;
         }
         if (doRetry(packRedundancy.typFilBeg, new packHolder(true, true))) {
@@ -458,7 +469,8 @@ class prtRedunIfc implements ifcUp {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
                 logger.error("unable to read file");
-                return true;
+                siz = -1;
+                break;
             }
             packHolder pck = new packHolder(true, true);
             pck.msbPutD(0, (int) pos);
@@ -479,6 +491,9 @@ class prtRedunIfc implements ifcUp {
             fr.close();
         } catch (Exception e) {
             logger.error("unable to close file");
+            return true;
+        }
+        if (siz < 0) {
             return true;
         }
         packHolder pck = new packHolder(true, true);
