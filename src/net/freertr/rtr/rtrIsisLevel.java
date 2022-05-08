@@ -292,8 +292,9 @@ public class rtrIsisLevel implements Runnable {
      *
      * @param lsp lsp to advertise
      * @param purge set true to purge it out
+     * @param cntnt check content
      */
-    protected synchronized void generateLsp(rtrIsisLsp lsp, boolean purge) {
+    protected synchronized void generateLsp(rtrIsisLsp lsp, boolean purge, boolean cntnt) {
         if (purge) {
             if (lsp.getTimeRemain(true) < 1) {
                 return;
@@ -344,8 +345,20 @@ public class rtrIsisLevel implements Runnable {
             }
             buf = getAuthen(pck, typ, pos);
             pos -= rtrIsisLsp.headSize;
-            if ((pos + buf.length) <= lsp.bufDat.length) {
-                bits.byteCopy(buf, 0, lsp.bufDat, pos + 2, buf.length);
+            pos += 2;
+            if ((pos + buf.length) > lsp.bufDat.length) {
+                logger.error("error updating auth in level" + level);
+                return;
+            }
+            bits.byteCopy(buf, 0, lsp.bufDat, pos, buf.length);
+            if (cntnt && (old != null)) {
+                old = old.copyBytes(true);
+                bits.byteCopy(buf, 0, old.bufDat, pos, buf.length);
+            }
+        }
+        if (cntnt) {
+            if (!lsp.contentDiffers(old)) {
+                return;
             }
         }
         if (debugger.rtrIsisEvnt) {
@@ -377,7 +390,7 @@ public class rtrIsisLevel implements Runnable {
             if (ntry.getTimeRemain(true) < 1) {
                 continue;
             }
-            generateLsp(ntry, true);
+            generateLsp(ntry, true, false);
             done++;
         }
         for (int i = 0; i < need2adv.size(); i++) {
@@ -385,10 +398,7 @@ public class rtrIsisLevel implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.contentDiffers(lsps.find(ntry))) {
-                continue;
-            }
-            generateLsp(ntry, false);
+            generateLsp(ntry, false, true);
             done++;
         }
         if (done > 0) {
@@ -448,7 +458,7 @@ public class rtrIsisLevel implements Runnable {
             if (need2adv.find(ntry) == null) {
                 continue;
             }
-            generateLsp(ntry, false);
+            generateLsp(ntry, false, false);
             done++;
         }
         if (done > 0) {

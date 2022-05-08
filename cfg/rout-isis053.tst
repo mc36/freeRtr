@@ -82,10 +82,12 @@ access-list test6
  exit
 router isis4 1
  vrf v1
+ net 48.4444.0000.2222.00
  red conn
  exit
 router isis6 1
  vrf v1
+ net 48.6666.0000.2222.00
  red conn
  exit
 int lo0

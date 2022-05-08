@@ -223,8 +223,9 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      *
      * @param lsa lsa to advertise
      * @param purge set true to purge it out
+     * @param cntnt check content
      */
-    protected synchronized void generateLsa(rtrOspf6lsa lsa, boolean purge) {
+    protected synchronized void generateLsa(rtrOspf6lsa lsa, boolean purge, boolean cntnt) {
         long tim = bits.getTime();
         if (purge) {
             tim -= rtrOspf6lsa.lsaMaxAge;
@@ -239,6 +240,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             lsa.sequence = 0x80000001;
         } else {
             lsa.sequence = old.sequence + 1;
+        }
+        if (cntnt) {
+            if (!lsa.contentDiffers(old)) {
+                return;
+            }
         }
         if (debugger.rtrOspf6evnt) {
             logger.debug("generate lsa " + lsa);
@@ -266,7 +272,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (need2adv.find(ntry) != null) {
                 continue;
             }
-            generateLsa(ntry, true);
+            generateLsa(ntry, true, false);
             done++;
         }
         for (int i = 0; i < need2adv.size(); i++) {
@@ -274,10 +280,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (!ntry.contentDiffers(lsas.find(ntry))) {
-                continue;
-            }
-            generateLsa(ntry, false);
+            generateLsa(ntry, false, true);
             done++;
         }
         if (done > 0) {
@@ -341,7 +344,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (need2adv.find(ntry) == null) {
                 continue;
             }
-            generateLsa(ntry, false);
+            generateLsa(ntry, false, false);
             done++;
         }
         if (done > 0) {
