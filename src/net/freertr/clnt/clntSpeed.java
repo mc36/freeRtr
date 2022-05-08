@@ -49,7 +49,6 @@ public class clntSpeed {
      * @param cmd command to use
      */
     public static void smllClnt(cmds cmd) {
-        userTerminal t = new userTerminal(cmd.pipe);
         String a = cmd.word();
         addrIP trg = userTerminal.justResolv(a, 0);
         if (trg == null) {

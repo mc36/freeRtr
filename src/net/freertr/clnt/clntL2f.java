@@ -339,6 +339,9 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
         if (wait4msg(pckBin, packL2f.typOpen)) {
             return;
         }
+        if (pckRx.key != keyLoc) {
+            return;
+        }
         int keep = 0;
         for (;;) {
             if (conn.txBytesFree() < 0) {

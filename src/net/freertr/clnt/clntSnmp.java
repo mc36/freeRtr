@@ -1,7 +1,6 @@
 package net.freertr.clnt;
 
 import net.freertr.addr.addrIP;
-import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryAsn1;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSnmp;
@@ -82,11 +81,10 @@ public class clntSnmp {
         if (trg == null) {
             return true;
         }
-        clntProxy prx = cfgAll.getClntPrx(null);
-        if (prx == null) {
+        if (proxy == null) {
             return true;
         }
-        pipeSide pipe = prx.doConnect(servGeneric.protoUdp, trg, packSnmp.port, "snmp");
+        pipeSide pipe = proxy.doConnect(servGeneric.protoUdp, trg, packSnmp.port, "snmp");
         if (pipe == null) {
             return true;
         }

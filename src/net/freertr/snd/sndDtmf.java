@@ -24,11 +24,11 @@ public class sndDtmf extends sndDft {
         {'*', '0', '#', 'd'}
     };
 
-    private final static int[] busy = {480, 620};
+    //private final static int[] busy = {480, 620};
 
-    private final static int[] ringback = {440, 480};
+    //private final static int[] ringback = {440, 480};
 
-    private final static int[] dialTone = {350, 440};
+    //private final static int[] dialTone = {350, 440};
 
     private static int detectWinner(int[] sen) {
         int bn = 0;

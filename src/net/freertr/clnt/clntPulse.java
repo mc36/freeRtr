@@ -2,7 +2,6 @@ package net.freertr.clnt;
 
 import java.util.List;
 import net.freertr.addr.addrEmpty;
-import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrType;
@@ -85,8 +84,6 @@ public class clntPulse implements Runnable, ifcDn {
     private pipeSide pipe;
 
     private boolean good;
-
-    private addrIP trg;
 
     private String cookie;
 
