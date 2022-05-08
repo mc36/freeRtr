@@ -759,6 +759,9 @@ public class rtrIsisLevel implements Runnable {
         if (debugger.rtrIsisEvnt) {
             logger.debug("generate lsps in level" + level);
         }
+        if (lower.routerID.isFilled(0)) {
+            return;
+        }
         need2adv.clear();
         packHolder pck = new packHolder(true, true);
         byte[] buf = getAuthen(new packHolder(true, true), 0, 0);
