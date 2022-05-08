@@ -28,11 +28,7 @@ public class packRtp {
 
     private int packTx;
 
-    private int packRx;
-
     private int byteTx;
-
-    private int byteRx;
 
     /**
      * create connection
@@ -159,8 +155,6 @@ public class packRtp {
         if (i < 1) {
             return pipeLine.tryLater;
         }
-        packRx++;
-        byteRx += i;
         return i;
     }
 

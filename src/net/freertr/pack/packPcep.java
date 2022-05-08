@@ -538,12 +538,18 @@ public class packPcep {
     }
 
     private void createEro() {
+        if (ero == null) {
+            return;
+        }
         pck2.clear();
         tabHop.createHops(pck2, ero);
         putObj(otpEro);
     }
 
     private void createRro() {
+        if (rro == null) {
+            return;
+        }
         pck2.clear();
         tabHop.createHops(pck2, rro);
         putObj(otpRro);
@@ -569,6 +575,7 @@ public class packPcep {
             return;
         }
         createEro();
+        createRro();
     }
 
     /**
