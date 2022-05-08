@@ -1414,6 +1414,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (lstn == null) {
             return true;
         }
+        id.changeSecurity(lstn.temp.passwd, lstn.temp.ttlSecurity);
         rtrBgpNeigh ntry = new rtrBgpNeigh(this);
         ntry.peerAddr = id.peerAddr.copyBytes();
         ntry.localIfc = id.iface;

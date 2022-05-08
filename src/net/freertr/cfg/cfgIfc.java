@@ -162,7 +162,6 @@ import net.freertr.util.counter;
 import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.verCore;
 
 /**
  * one interface configuration

@@ -94,7 +94,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     /**
      * password if applicable
      */
-    public final String passwd;
+    public String passwd;
 
     /**
      * hardware counter
@@ -210,6 +210,17 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
 
     public String toString() {
         return name + " " + iface + " " + portLoc + " -> " + peerAddr + " " + portRem;
+    }
+
+    /**
+     * change security properties
+     *
+     * @param pwd password if applicable
+     * @param ttl time to live
+     */
+    public void changeSecurity(String pwd, int ttl) {
+        passwd = pwd;
+        sendTTL = ttl;
     }
 
     /**
