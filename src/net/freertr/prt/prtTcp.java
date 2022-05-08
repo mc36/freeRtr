@@ -692,7 +692,6 @@ public class prtTcp extends prtGen {
      * @return false if success, true if error
      */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
-        prtTcpConn pr = (prtTcpConn) clnt.proto;
         int len = pck.dataSize();
         return pck.pipeSend(clnt.pipeClient, 0, len, 1) != len;
     }

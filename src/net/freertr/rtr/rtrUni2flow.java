@@ -203,11 +203,6 @@ public class rtrUni2flow extends ipRtr {
      */
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
-        boolean negated = false;
-        if (s.equals("no")) {
-            s = cmd.word();
-            negated = true;
-        }
         if (s.equals("distance")) {
             distance = bits.str2num(cmd.word());
             return false;

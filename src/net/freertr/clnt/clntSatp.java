@@ -121,15 +121,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
 
     private cryEncrGeneric cphrTx;
 
-    private int seqRx;
-
     private int seqTx;
-
-    private int timRx;
-
-    private int timTx;
-
-    private int endptRx;
 
     private int endptTx;
 
@@ -355,9 +347,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
             conn.setClosing();
         }
         conn = null;
-        seqRx = 0;
         seqTx = 0;
-        timTx = (int) (bits.getTime() / 1000);
     }
 
     /**
@@ -451,8 +441,8 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
             cntr.drop(pck, counter.reasons.badSum);
             return false;
         }
-        seqRx = pck.msbGetD(0);
-        endptRx = pck.msbGetD(4);
+        //int seqRx = pck.msbGetD(0);
+        //int endptRx = pck.msbGetD(4);
         pck.getSkip(8);
         if ((pck.dataSize() % cphrSiz) != 0) {
             logger.info("got bad padding from " + target);

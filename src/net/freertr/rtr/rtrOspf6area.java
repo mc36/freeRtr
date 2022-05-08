@@ -969,7 +969,6 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         if (!srv6ena) {
             return;
         }
-        int seq = 1;
         for (int i = 0; i < lower.srv6.size(); i++) {
             packHolder pck = rtrOspfSr.srv6loc(lower.srv6.get(i), 0);
             if (pck == null) {

@@ -88,7 +88,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
             return true;
         }
         pck.setDataSize(i);
-        int pckSeq = pck.msbGetW(2);
+        //int pckSeq = pck.msbGetW(2);
         pck.getSkip(4);
         long tim = bits.getTime();
         boolean ipv4 = conn.peerAddr.isIPv4();
@@ -114,9 +114,9 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
                 i -= addrIPv6.size;
                 orig.fromIPv6addr(a6);
             }
-            int ttl = pck.getByte(0);
+            //int ttl = pck.getByte(0);
             int hop = pck.getByte(1);
-            int msgSeq = pck.msbGetW(2);
+            //int msgSeq = pck.msbGetW(2);
             pck.getSkip(4);
             if (i < 0) {
                 logger.info("bad length " + conn);
