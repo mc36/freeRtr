@@ -69,8 +69,8 @@ def _processEntryFromControlPlane(
     except gc.BfruntimeRpcException as e:
         (str_key, str_data) = _formatErrMessage(key_field_list, data_field_list)
         err_msg = (
-            "dataplane-say entry failed to program entry for table %s with Key[%s] Data[%s]\n"
-            % (tbl_name, str_key, str_data)
+            "dataplane-say entry failed to program %s entry for table %s with Key[%s] Data[%s]\n"
+            % (op_type, tbl_name, str_key, str_data)
         )
         logger.warning(err_msg)
         self.file_w.write(err_msg)
@@ -79,8 +79,8 @@ def _processEntryFromControlPlane(
     except grpc.RpcError as e:
         (str_key, str_data) = _formatErrMessage(key_field_list, data_field_list)
         err_msg = (
-            "dataplane-say entry failed to program entry via GRPC for table %s with Key[%s] Data[%s]\n"
-            % (tbl_name, str_key, str_data)
+            "dataplane-say entry failed to program %s entry via GRPC for table %s with Key[%s] Data[%s]\n"
+            % (op_type, tbl_name, str_key, str_data)
         )
         logger.warning(err_msg)
         self.file_w.write(err_msg)

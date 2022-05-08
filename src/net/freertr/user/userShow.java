@@ -949,19 +949,23 @@ public class userShow {
                 rdr.putStrTab(srv.getShowGen());
                 return null;
             }
-            if (a.equals("api")) {
-                rdr.putStrTab(srv.getShowApi());
+            if (a.equals("api-tx")) {
+                rdr.putStrTab(srv.getShowApiTx());
+                return null;
+            }
+            if (a.equals("api-rx")) {
+                rdr.putStrTab(srv.getShowApiRx());
                 return null;
             }
             if (a.equals("frontpanel")) {
                 rdr.putStrTab(srv.getShowFront());
                 return null;
             }
-            if (a.equals("sent-interface")) {
+            if (a.equals("done-interface")) {
                 rdr.putStrTab(srv.getShowIfaces());
                 return null;
             }
-            if (a.equals("sent-neighbor")) {
+            if (a.equals("done-neighbor")) {
                 rdr.putStrTab(srv.getShowNeighs());
                 return null;
             }

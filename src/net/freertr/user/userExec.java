@@ -1184,10 +1184,11 @@ public class userExec {
         hl.add(null, "2 3      p4lang                  p4lang protocol information");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
         hl.add(null, "4 .          status              current status");
-        hl.add(null, "4 .          api                 api message statistics");
+        hl.add(null, "4 .          api-tx              transmitted api message statistics");
+        hl.add(null, "4 .          api-rx              received api message statistics");
         hl.add(null, "4 .          frontpanel          front panel information");
-        hl.add(null, "4 .          sent-interface      exported interfaces");
-        hl.add(null, "4 .          sent-neighbor       exported neighbors");
+        hl.add(null, "4 .          done-interface      exported interfaces");
+        hl.add(null, "4 .          done-neighbor       exported neighbors");
         hl.add(null, "4 5          port-counters       dataplane counters");
         hl.add(null, "5 .            <name:ifc>        name of interface");
         hl.add(null, "2 3      ppp                     ppp protocol information");

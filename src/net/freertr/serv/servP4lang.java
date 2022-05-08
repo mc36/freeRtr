@@ -270,9 +270,14 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     protected int msgsGot;
 
     /**
-     * message statistics
+     * transmitted message statistics
      */
-    protected tabGen<servP4langMsg> apiStat;
+    protected tabGen<servP4langMsg> apiStatTx;
+
+    /**
+     * received message statistics
+     */
+    protected tabGen<servP4langMsg> apiStatRx;
 
     private ifcDn intercon;
 
@@ -302,7 +307,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         l.add(beg + "buffer " + bufSiz);
-        cmds.cfgLine(l, apiStat == null, beg, "api-stat", "");
+        cmds.cfgLine(l, apiStatTx == null, beg, "api-stat", "");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
             l.add(beg + "export-vrf " + ntry.vrf.name + " " + ntry.id);
@@ -423,7 +428,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return false;
         }
         if (s.equals("api-stat")) {
-            apiStat = new tabGen<servP4langMsg>();
+            apiStatTx = new tabGen<servP4langMsg>();
+            apiStatRx = new tabGen<servP4langMsg>();
             return false;
         }
         if (s.equals("export-socket")) {
@@ -551,7 +557,8 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             return false;
         }
         if (s.equals("api-stat")) {
-            apiStat = null;
+            apiStatTx = null;
+            apiStatRx = null;
             return false;
         }
         if (s.equals("export-socket")) {
@@ -696,7 +703,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
         conn.pipe.linePut(a + " ");
         msgsSent++;
-        if (apiStat == null) {
+        if (apiStatTx == null) {
             return;
         }
         int i = a.indexOf(" ");
@@ -704,7 +711,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             a = a.substring(0, i);
         }
         servP4langMsg m = new servP4langMsg(a);
-        m = apiStat.add(m);
+        m = apiStatTx.add(m);
         if (m == null) {
             return;
         }
@@ -838,20 +845,33 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         return res;
     }
 
+    private userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
+        if (tab == null) {
+            return null;
+        }
+        userFormat res = new userFormat("|", "message|count");
+        for (int i = 0; i < tab.size(); i++) {
+            res.add("" + tab.get(i));
+        }
+        return res;
+    }
+
     /**
      * get api show
      *
      * @return show
      */
-    public userFormat getShowApi() {
-        if (apiStat == null) {
-            return null;
-        }
-        userFormat res = new userFormat("|", "message|count");
-        for (int i = 0; i < apiStat.size(); i++) {
-            res.add("" + apiStat.get(i));
-        }
-        return res;
+    public userFormat getShowApiTx() {
+        return dumpApiStats(apiStatTx);
+    }
+
+    /**
+     * get api show
+     *
+     * @return show
+     */
+    public userFormat getShowApiRx() {
+        return dumpApiStats(apiStatRx);
     }
 
     /**
@@ -2453,6 +2473,13 @@ class servP4langConn implements Runnable {
             lower.msgsGot++;
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
+            if (lower.apiStatRx != null) {
+                servP4langMsg m = new servP4langMsg(s);
+                m = lower.apiStatRx.add(m);
+                if (m != null) {
+                    m.cnt++;
+                }
+            }
             if (s.equals("state")) {
                 servP4langIfc ntry = lower.findIfc(bits.str2num(cmd.word()));
                 if (ntry == null) {
