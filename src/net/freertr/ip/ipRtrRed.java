@@ -2,8 +2,6 @@ package net.freertr.ip;
 
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
-import net.freertr.pack.packHolder;
-import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabIntUpdater;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -44,11 +42,6 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
      * route policy
      */
     public tabListing<tabRtrplcN, addrIP> rouplc;
-
-    /**
-     * access list
-     */
-    public tabListing<tabAceslstN<addrIP>, addrIP> acl;
 
     /**
      * metric
@@ -118,21 +111,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
                 ntry = ntry.copyBytes(tabRoute.addType.notyet);
                 ntry.best.tag = tag.update(ntry.best.tag);
             }
-            if (acl == null) {
-                tabRoute.addUpdatedEntry(mod, trg, afi, 0, ntry, true, roumap, rouplc, prflst);
-                continue;
-            }
-            ntry = tabRoute.doUpdateEntry(afi, 0, ntry, roumap, rouplc, prflst);
-            if (ntry == null) {
-                continue;
-            }
-            packHolder pck = new packHolder(false, false);
-            pck.IPsrc.setAddr(ntry.prefix.network);
-            pck.IPtrg.setAddr(ntry.prefix.mask);
-            if (!acl.matches(false, false, pck)) {
-                continue;
-            }
-            trg.add(mod, ntry, false, true);
+            tabRoute.addUpdatedEntry(mod, trg, afi, 0, ntry, true, roumap, rouplc, prflst);
         }
     }
 

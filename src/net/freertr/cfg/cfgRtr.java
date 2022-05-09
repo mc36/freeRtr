@@ -988,9 +988,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (red.rouplc != null) {
             a += " route-policy " + red.rouplc.listName;
         }
-        if (red.acl != null) {
-            a += " access-list " + red.acl.listName;
-        }
         if (red.ecmp) {
             a += " ecmp";
         }
@@ -1141,14 +1138,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                     return null;
                 }
                 red.rouplc = ntry.rouplc;
-                continue;
-            }
-            if (s.equals("access-list")) {
-                cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
-                if (ntry == null) {
-                    return null;
-                }
-                red.acl = ntry.aceslst;
                 continue;
             }
             return null;
@@ -1877,8 +1866,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:rpl>      name of route policy");
         l.add(null, (p + 4) + " " + (p + 5) + "         prefix-list       filter prefixes on importing");
         l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:pl>       name of prefix list");
-        l.add(null, (p + 4) + " " + (p + 5) + "         access-list       filter prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:acl>      name of access list");
         l.add(null, (p + 4) + " " + (p + 5) + "         metric            set metric");
         l.add(null, (p + 5) + " " + (p + 6) + "           set             set value to a specific value");
         l.add(null, (p + 6) + " " + (p + 4) + ",.           <num>         value");
