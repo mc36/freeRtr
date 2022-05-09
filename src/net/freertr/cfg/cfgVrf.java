@@ -287,6 +287,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public final static String[] defaultL = {
         "vrf definition .*! no description",
         "vrf definition .*! rd 0:0",
+        "vrf definition .*! update4interval 0",
+        "vrf definition .*! update6interval 0",
         "vrf definition .*! rt4import",
         "vrf definition .*! rt4export",
         "vrf definition .*! rt6import",
@@ -631,6 +633,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         for (int i = 0; i < fwd4.rtImp.size(); i++) {
             s += " " + tabRouteUtil.rd2string(fwd4.rtImp.get(i));
         }
+        l.add(cmds.tabulator + "update4interval " + fwd4.updateInterval);
+        l.add(cmds.tabulator + "update6interval " + fwd6.updateInterval);
         l.add(cmds.tabulator + "rt4import" + s);
         s = "";
         for (int i = 0; i < fwd4.rtExp.size(); i++) {
@@ -745,6 +749,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 2,.   [text]           text describing this vrf");
         l.add(null, "1 2  rename              rename this vrf");
         l.add(null, "2 .    <str>             set new name of vrf");
+        l.add(null, "1 2  update4interval     specify time between table calculation");
+        l.add(null, "2 .    <num>             time in ms");
+        l.add(null, "1 2  update6interval     specify time between table calculation");
+        l.add(null, "2 .    <num>             time in ms");
         l.add(null, "1 2  rd                  specify route distinguisher");
         l.add(null, "2 .    <rd>              rd in ASnum:IDnum format");
         l.add(null, "1 2  rt-both             specify route target");
@@ -916,6 +924,14 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.rtExp = res;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("update4interval")) {
+            fwd4.updateInterval = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("update6interval")) {
+            fwd6.updateInterval = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("rt4import")) {
@@ -1366,6 +1382,14 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.rtExp = new ArrayList<Long>();
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("update4interval")) {
+            fwd4.updateInterval = 0;
+            return;
+        }
+        if (a.equals("update6interval")) {
+            fwd6.updateInterval = 0;
             return;
         }
         if (a.equals("rt4import")) {

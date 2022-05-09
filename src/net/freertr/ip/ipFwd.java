@@ -71,6 +71,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public final int vrfNum;
 
     /**
+     * delay between updates
+     */
+    public int updateInterval;
+
+    /**
      * number of updates
      */
     public int updateCount;
@@ -2484,6 +2489,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                     break;
                 }
                 ipFwdTab.updateEverything(this);
+                if (updateInterval < 1) {
+                    continue;
+                }
+                bits.sleep(updateInterval);
             }
             untriggeredRecomputation -= 1;
             if (debugger.ipFwdEvnt) {
