@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.5.9-cur, done by cs@nop.
--;-;-;2022-05-09 18:02:31, took 00:10:38, with 80 workers, on 2876 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2022-05-09 18:14:31, took 00:08:38, with 80 workers, on 2878 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.org/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -2804,6 +2804,8 @@ http://sources.freertr.org/cfg/rout-redist35.tst;rout-redist35.tst;success;redis
 http://sources.freertr.org/cfg/rout-redist36.tst;rout-redist36.tst;success;redistribution filtering with prefixlist in routepolicy
 http://sources.freertr.org/cfg/rout-redist37.tst;rout-redist37.tst;success;redistribution filtering with accesslist in routemap
 http://sources.freertr.org/cfg/rout-redist38.tst;rout-redist38.tst;success;redistribution filtering with accesslist in routepolicy
+http://sources.freertr.org/cfg/rout-redist39.tst;rout-redist39.tst;success;redistribution filtering with routepolicy in routemap
+http://sources.freertr.org/cfg/rout-redist40.tst;rout-redist40.tst;success;redistribution filtering with routemap in routepolicy
 http://sources.freertr.org/cfg/rout-rip01.tst;rout-rip01.tst;success;rip on one subnet
 http://sources.freertr.org/cfg/rout-rip02.tst;rout-rip02.tst;success;rip in chain
 http://sources.freertr.org/cfg/rout-rip03.tst;rout-rip03.tst;success;rip ingress route filtering with prefixlist

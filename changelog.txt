@@ -13238,3 +13238,6 @@ qc pass: redistribution filtering with prefixlist in routemap
 qc pass: redistribution filtering with prefixlist in routepolicy
 qc pass: redistribution filtering with accesslist in routemap
 qc pass: redistribution filtering with accesslist in routepolicy
+---------------------------------- 2022-05-09 18:05:52 22.5.9
+qc pass: redistribution filtering with routepolicy in routemap
+qc pass: redistribution filtering with routemap in routepolicy
