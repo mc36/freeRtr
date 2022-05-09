@@ -61,12 +61,12 @@ access-list p6
  permit all any all any all
  exit
 route-policy h4
- if access p4
+ if access-list p4
   pass
  enif
  exit
 route-policy h6
- if access p6
+ if access-list p6
   pass
  enif
  exit

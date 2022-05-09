@@ -61,12 +61,12 @@ prefix-list p6
  permit ::/0 le 128
  exit
 route-policy h4
- if prefix p4
+ if prefix-list p4
   pass
  enif
  exit
 route-policy h6
- if prefix p6
+ if prefix-list p6
   pass
  enif
  exit

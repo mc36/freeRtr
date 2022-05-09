@@ -1,4 +1,4 @@
-description redistribution filtering with prefixlist in routemap
+description redistribution filtering with routemap in routepolicy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -52,47 +52,55 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-prefix-list p4
- deny 2.2.2.8/29 le 32
- permit 0.0.0.0/0 le 32
+route-map p4
+ sequence 10 act deny
+  match network 2.2.2.8/29 le 32
+ sequence 20 act perm
+  match network 0.0.0.0/0 le 32
  exit
-prefix-list p6
- deny 4321::10/124 le 128
- permit ::/0 le 128
+route-map p6
+ sequence 10 act deny
+  match network 4321::10/124 le 128
+ sequence 20 act perm
+  match network ::/0 le 128
  exit
-route-map h4
- match prefix-list p4
+route-policy h4
+ if route-map p4
+  pass
+ enif
  exit
-route-map h6
- match prefix-list p6
+route-policy h6
+ if route-map p6
+  pass
+ enif
  exit
 router isis4 1
  vrf v1
  net 48.4444.1111.2222.00
  is-type level2
- red conn route-map h4
- red isis4 2 route-map h4
+ red conn route-policy h4
+ red isis4 2 route-policy h4
  exit
 router isis6 1
  vrf v1
  net 48.6666.1111.2222.00
  is-type level2
- red conn route-map h6
- red isis6 2 route-map h6
+ red conn route-policy h6
+ red isis6 2 route-policy h6
  exit
 router isis4 2
  vrf v1
  net 48.4444.2222.2222.00
  is-type level2
- red conn route-map h4
- red isis4 1 route-map h4
+ red conn route-policy h4
+ red isis4 1 route-policy h4
  exit
 router isis6 2
  vrf v1
  net 48.6666.2222.2222.00
  is-type level2
- red conn route-map h6
- red isis6 1 route-map h6
+ red conn route-policy h6
+ red isis6 1 route-policy h6
  exit
 int lo1
  vrf for v1

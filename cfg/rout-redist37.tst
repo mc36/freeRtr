@@ -61,10 +61,10 @@ access-list p6
  permit all any all any all
  exit
 route-map h4
- match access p4
+ match access-list p4
  exit
 route-map h6
- match access p6
+ match access-list p6
  exit
 router isis4 1
  vrf v1

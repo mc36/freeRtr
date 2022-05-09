@@ -1,4 +1,4 @@
-description redistribution filtering with prefixlist in routemap
+description redistribution filtering with routepolicy in routemap
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -52,19 +52,25 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-prefix-list p4
- deny 2.2.2.8/29 le 32
- permit 0.0.0.0/0 le 32
+route-policy p4
+ if network 2.2.2.8/29 le 32
+  drop
+ else
+  pass
+ enif
  exit
-prefix-list p6
- deny 4321::10/124 le 128
- permit ::/0 le 128
+route-policy p6
+ if network 4321::10/124 le 128
+  drop
+ else
+  pass
+ enif
  exit
 route-map h4
- match prefix-list p4
+ match route-policy p4
  exit
 route-map h6
- match prefix-list p6
+ match route-policy p6
  exit
 router isis4 1
  vrf v1
