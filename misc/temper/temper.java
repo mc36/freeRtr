@@ -134,6 +134,11 @@ public class temper implements Runnable {
     protected String logFile = "temper.log";
 
     /**
+     * script file
+     */
+    protected String scrFile = "temper.sh";
+
+    /**
      * door codes
      */
     protected List<temperCode> doorCode = new ArrayList<temperCode>();
@@ -231,7 +236,7 @@ public class temper implements Runnable {
         try {
             Runtime rtm = Runtime.getRuntime();
             String[] cmd = new String[2];
-            cmd[0] = "./tempset.sh";
+            cmd[0] = scrFile;
             cmd[1] = val + "";
             Process prc = rtm.exec(cmd);
             prc.waitFor();
@@ -352,6 +357,10 @@ public class temper implements Runnable {
             s = s.substring(o + 1, s.length()).trim();
             if (a.equals("mode")) {
                 cooling = s.equals("cooling");
+                continue;
+            }
+            if (a.equals("script")) {
+                scrFile = s;
                 continue;
             }
             if (a.equals("needed")) {
@@ -597,7 +606,12 @@ public class temper implements Runnable {
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, since " + temperUtil.time2str(tzdata, timeNeeded) + ", " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
-            a = "heating: " + currValue + ", since " + temperUtil.time2str(tzdata, timeHeating) + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
+            if (cooling) {
+                a = "cooling: ";
+            } else {
+                a = "heating: ";
+            }
+            a += currValue + ", since " + temperUtil.time2str(tzdata, timeHeating) + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
             buf.write(a.getBytes());
