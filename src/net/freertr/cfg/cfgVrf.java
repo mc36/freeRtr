@@ -152,16 +152,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
     public prtTcp tcp6;
 
     /**
-     * ipv4 label filter
-     */
-    public cfgPrfxlst label4fltr = null;
-
-    /**
-     * ipv6 label filter
-     */
-    public cfgPrfxlst label6fltr = null;
-
-    /**
      * ipv4 label value
      */
     public int label4comm = 0;
@@ -180,106 +170,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
      * ipv6 interface value
      */
     public int iface6start = 0;
-
-    /**
-     * ipv4 import list
-     */
-    public cfgPrfxlst import4list = null;
-
-    /**
-     * ipv6 import list
-     */
-    public cfgPrfxlst import6list = null;
-
-    /**
-     * ipv4 export list
-     */
-    public cfgPrfxlst export4list = null;
-
-    /**
-     * ipv6 export list
-     */
-    public cfgPrfxlst export6list = null;
-
-    /**
-     * ipv4 import map
-     */
-    public cfgRoump import4map = null;
-
-    /**
-     * ipv6 import map
-     */
-    public cfgRoump import6map = null;
-
-    /**
-     * ipv4 export map
-     */
-    public cfgRoump export4map = null;
-
-    /**
-     * ipv6 export map
-     */
-    public cfgRoump export6map = null;
-
-    /**
-     * ipv4 import policy
-     */
-    public cfgRouplc import4pol = null;
-
-    /**
-     * ipv6 import policy
-     */
-    public cfgRouplc import6pol = null;
-
-    /**
-     * ipv4 export policy
-     */
-    public cfgRouplc export4pol = null;
-
-    /**
-     * ipv6 export policy
-     */
-    public cfgRouplc export6pol = null;
-
-    /**
-     * ipv4 packet filter
-     */
-    public cfgAceslst packet4fltr = null;
-
-    /**
-     * ipv6 packet filter
-     */
-    public cfgAceslst packet6fltr = null;
-
-    /**
-     * ipv4 dapp
-     */
-    public cfgPlymp dapp4 = null;
-
-    /**
-     * ipv6 dapp
-     */
-    public cfgPlymp dapp6 = null;
-
-    /**
-     * ipv4 receive copp
-     */
-    public cfgPlymp copp4in = null;
-
-    /**
-     * ipv4 transmit copp
-     */
-    public cfgPlymp copp4out = null;
-
-    /**
-     * ipv6 receive copp
-     */
-    public cfgPlymp copp6in = null;
-
-    /**
-     * ipv6 transmit copp
-     */
-    public cfgPlymp copp6out = null;
 
     /**
      * defaults text
@@ -667,28 +557,28 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "unreach6interval " + fwd6.unreachInt);
         cmds.cfgLine(l, !fwd4.ruinPmtuD, cmds.tabulator, "punish4pmtud", "");
         cmds.cfgLine(l, !fwd6.ruinPmtuD, cmds.tabulator, "punish6pmtud", "");
-        cmds.cfgLine(l, label4fltr == null, cmds.tabulator, "label4filter", "" + label4fltr);
-        cmds.cfgLine(l, label6fltr == null, cmds.tabulator, "label6filter", "" + label6fltr);
-        cmds.cfgLine(l, import4list == null, cmds.tabulator, "import4list", "" + import4list);
-        cmds.cfgLine(l, import6list == null, cmds.tabulator, "import6list", "" + import6list);
-        cmds.cfgLine(l, export4list == null, cmds.tabulator, "export4list", "" + export4list);
-        cmds.cfgLine(l, export6list == null, cmds.tabulator, "export6list", "" + export6list);
-        cmds.cfgLine(l, import4map == null, cmds.tabulator, "import4map", "" + import4map);
-        cmds.cfgLine(l, import6map == null, cmds.tabulator, "import6map", "" + import6map);
-        cmds.cfgLine(l, export4map == null, cmds.tabulator, "export4map", "" + export4map);
-        cmds.cfgLine(l, export6map == null, cmds.tabulator, "export6map", "" + export6map);
-        cmds.cfgLine(l, import4pol == null, cmds.tabulator, "import4policy", "" + import4pol);
-        cmds.cfgLine(l, import6pol == null, cmds.tabulator, "import6policy", "" + import6pol);
-        cmds.cfgLine(l, export4pol == null, cmds.tabulator, "export4policy", "" + export4pol);
-        cmds.cfgLine(l, export6pol == null, cmds.tabulator, "export6policy", "" + export6pol);
-        cmds.cfgLine(l, dapp4 == null, cmds.tabulator, "dapp4", "" + dapp4);
-        cmds.cfgLine(l, dapp6 == null, cmds.tabulator, "dapp6", "" + dapp6);
-        cmds.cfgLine(l, copp4in == null, cmds.tabulator, "copp4in", "" + copp4in);
-        cmds.cfgLine(l, copp4out == null, cmds.tabulator, "copp4out", "" + copp4out);
-        cmds.cfgLine(l, copp6in == null, cmds.tabulator, "copp6in", "" + copp6in);
-        cmds.cfgLine(l, copp6out == null, cmds.tabulator, "copp6out", "" + copp6out);
-        cmds.cfgLine(l, packet4fltr == null, cmds.tabulator, "packet4filter", "" + packet4fltr);
-        cmds.cfgLine(l, packet6fltr == null, cmds.tabulator, "packet6filter", "" + packet6fltr);
+        cmds.cfgLine(l, fwd4.labelFilter == null, cmds.tabulator, "label4filter", "" + fwd4.labelFilter);
+        cmds.cfgLine(l, fwd6.labelFilter == null, cmds.tabulator, "label6filter", "" + fwd6.labelFilter);
+        cmds.cfgLine(l, fwd4.importList == null, cmds.tabulator, "import4list", "" + fwd4.importList);
+        cmds.cfgLine(l, fwd6.importList == null, cmds.tabulator, "import6list", "" + fwd6.importList);
+        cmds.cfgLine(l, fwd4.exportList == null, cmds.tabulator, "export4list", "" + fwd4.exportList);
+        cmds.cfgLine(l, fwd6.exportList == null, cmds.tabulator, "export6list", "" + fwd6.exportList);
+        cmds.cfgLine(l, fwd4.importMap == null, cmds.tabulator, "import4map", "" + fwd4.importMap);
+        cmds.cfgLine(l, fwd6.importMap == null, cmds.tabulator, "import6map", "" + fwd6.importMap);
+        cmds.cfgLine(l, fwd4.exportMap == null, cmds.tabulator, "export4map", "" + fwd4.exportMap);
+        cmds.cfgLine(l, fwd6.exportMap == null, cmds.tabulator, "export6map", "" + fwd6.exportMap);
+        cmds.cfgLine(l, fwd4.importPol == null, cmds.tabulator, "import4policy", "" + fwd4.importPol);
+        cmds.cfgLine(l, fwd6.importPol == null, cmds.tabulator, "import6policy", "" + fwd6.importPol);
+        cmds.cfgLine(l, fwd4.exportPol == null, cmds.tabulator, "export4policy", "" + fwd4.exportPol);
+        cmds.cfgLine(l, fwd6.exportPol == null, cmds.tabulator, "export6policy", "" + fwd6.exportPol);
+        cmds.cfgLine(l, fwd4.dapp == null, cmds.tabulator, "dapp4", "" + fwd4.dapp);
+        cmds.cfgLine(l, fwd6.dapp == null, cmds.tabulator, "dapp6", "" + fwd6.dapp);
+        cmds.cfgLine(l, fwd4.coppIn == null, cmds.tabulator, "copp4in", "" + fwd4.coppIn);
+        cmds.cfgLine(l, fwd4.coppOut == null, cmds.tabulator, "copp4out", "" + fwd4.coppOut);
+        cmds.cfgLine(l, fwd6.coppIn == null, cmds.tabulator, "copp6in", "" + fwd6.coppIn);
+        cmds.cfgLine(l, fwd6.coppOut == null, cmds.tabulator, "copp6out", "" + fwd6.coppOut);
+        cmds.cfgLine(l, fwd4.packetFilter == null, cmds.tabulator, "packet4filter", "" + fwd4.packetFilter);
+        cmds.cfgLine(l, fwd6.packetFilter == null, cmds.tabulator, "packet6filter", "" + fwd6.packetFilter);
         cmds.cfgLine(l, !fwd4.mdt, cmds.tabulator, "mdt4", "");
         cmds.cfgLine(l, !fwd6.mdt, cmds.tabulator, "mdt6", "");
         l.add(cmds.tabulator + "incremental4 " + fwd4.incrLimit);
@@ -1098,152 +988,152 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("label4filter")) {
-            label4fltr = cfgAll.prfxFind(cmd.word(), false);
-            if (label4fltr == null) {
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
                 cmd.error("no such prefix list");
                 return;
             }
-            fwd4.labelFilter = label4fltr.prflst;
+            fwd4.labelFilter = pfx.prflst;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("label6filter")) {
-            label6fltr = cfgAll.prfxFind(cmd.word(), false);
-            if (label6fltr == null) {
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
                 cmd.error("no such prefix list");
                 return;
             }
-            fwd6.labelFilter = label6fltr.prflst;
+            fwd6.labelFilter = pfx.prflst;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("import4list")) {
-            import4list = cfgAll.prfxFind(cmd.word(), false);
-            if (import4list == null) {
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
                 cmd.error("no such prefix list");
                 return;
             }
-            fwd4.importList = import4list.prflst;
+            fwd4.importList = pfx.prflst;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("import6list")) {
-            import6list = cfgAll.prfxFind(cmd.word(), false);
-            if (import6list == null) {
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
                 cmd.error("no such prefix list");
                 return;
             }
-            fwd6.importList = import6list.prflst;
+            fwd6.importList = pfx.prflst;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("export4list")) {
-            export4list = cfgAll.prfxFind(cmd.word(), false);
-            if (export4list == null) {
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
                 cmd.error("no such prefix list");
                 return;
             }
-            fwd4.exportList = export4list.prflst;
+            fwd4.exportList = pfx.prflst;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("export6list")) {
-            export6list = cfgAll.prfxFind(cmd.word(), false);
-            if (export6list == null) {
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
                 cmd.error("no such prefix list");
                 return;
             }
-            fwd6.exportList = export6list.prflst;
+            fwd6.exportList = pfx.prflst;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("import4map")) {
-            import4map = cfgAll.rtmpFind(cmd.word(), false);
-            if (import4map == null) {
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
                 cmd.error("no such route map");
                 return;
             }
-            fwd4.importMap = import4map.roumap;
+            fwd4.importMap = rm.roumap;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("import6map")) {
-            import6map = cfgAll.rtmpFind(cmd.word(), false);
-            if (import6map == null) {
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
                 cmd.error("no such route map");
                 return;
             }
-            fwd6.importMap = import6map.roumap;
+            fwd6.importMap = rm.roumap;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("export4map")) {
-            export4map = cfgAll.rtmpFind(cmd.word(), false);
-            if (export4map == null) {
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
                 cmd.error("no such route map");
                 return;
             }
-            fwd4.exportMap = export4map.roumap;
+            fwd4.exportMap = rm.roumap;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("export6map")) {
-            export6map = cfgAll.rtmpFind(cmd.word(), false);
-            if (export6map == null) {
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
                 cmd.error("no such route map");
                 return;
             }
-            fwd6.exportMap = export6map.roumap;
+            fwd6.exportMap = rm.roumap;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("import4policy")) {
-            import4pol = cfgAll.rtplFind(cmd.word(), false);
-            if (import4pol == null) {
+            cfgRouplc rpl = cfgAll.rtplFind(cmd.word(), false);
+            if (rpl == null) {
                 cmd.error("no such route policy");
                 return;
             }
-            fwd4.importPol = import4pol.rouplc;
+            fwd4.importPol = rpl.rouplc;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("import6policy")) {
-            import6pol = cfgAll.rtplFind(cmd.word(), false);
-            if (import6pol == null) {
+            cfgRouplc rpl = cfgAll.rtplFind(cmd.word(), false);
+            if (rpl == null) {
                 cmd.error("no such route policy");
                 return;
             }
-            fwd6.importPol = import6pol.rouplc;
+            fwd6.importPol = rpl.rouplc;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("export4policy")) {
-            export4pol = cfgAll.rtplFind(cmd.word(), false);
-            if (export4pol == null) {
+            cfgRouplc rpl = cfgAll.rtplFind(cmd.word(), false);
+            if (rpl == null) {
                 cmd.error("no such route policy");
                 return;
             }
-            fwd4.exportPol = export4pol.rouplc;
+            fwd4.exportPol = rpl.rouplc;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("export6policy")) {
-            export6pol = cfgAll.rtplFind(cmd.word(), false);
-            if (export6pol == null) {
+            cfgRouplc rpl = cfgAll.rtplFind(cmd.word(), false);
+            if (rpl == null) {
                 cmd.error("no such route policy");
                 return;
             }
-            fwd6.exportPol = export6pol.rouplc;
+            fwd6.exportPol = rpl.rouplc;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("dapp4")) {
-            dapp4 = cfgAll.plmpFind(cmd.word(), false);
-            if (dapp4 == null) {
+            cfgPlymp pm = cfgAll.plmpFind(cmd.word(), false);
+            if (pm == null) {
                 cmd.error("no such policy map");
                 return;
             }
-            tabQos wrkr = tabQos.convertPolicy(dapp4.plcmap);
+            tabQos wrkr = tabQos.convertPolicy(pm.plcmap);
             if (wrkr == null) {
                 cmd.error("error applying policy map");
                 return;
@@ -1252,12 +1142,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("dapp6")) {
-            dapp6 = cfgAll.plmpFind(cmd.word(), false);
-            if (dapp6 == null) {
+            cfgPlymp pm = cfgAll.plmpFind(cmd.word(), false);
+            if (pm == null) {
                 cmd.error("no such policy map");
                 return;
             }
-            tabQos wrkr = tabQos.convertPolicy(dapp6.plcmap);
+            tabQos wrkr = tabQos.convertPolicy(pm.plcmap);
             if (wrkr == null) {
                 cmd.error("error applying policy map");
                 return;
@@ -1266,12 +1156,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("copp4in")) {
-            copp4in = cfgAll.plmpFind(cmd.word(), false);
-            if (copp4in == null) {
+            cfgPlymp pm = cfgAll.plmpFind(cmd.word(), false);
+            if (pm == null) {
                 cmd.error("no such policy map");
                 return;
             }
-            tabQos wrkr = tabQos.convertPolicy(copp4in.plcmap);
+            tabQos wrkr = tabQos.convertPolicy(pm.plcmap);
             if (wrkr == null) {
                 cmd.error("error applying policy map");
                 return;
@@ -1280,12 +1170,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("copp4out")) {
-            copp4out = cfgAll.plmpFind(cmd.word(), false);
-            if (copp4out == null) {
+            cfgPlymp pm = cfgAll.plmpFind(cmd.word(), false);
+            if (pm == null) {
                 cmd.error("no such policy map");
                 return;
             }
-            tabQos wrkr = tabQos.convertPolicy(copp4out.plcmap);
+            tabQos wrkr = tabQos.convertPolicy(pm.plcmap);
             if (wrkr == null) {
                 cmd.error("error applying policy map");
                 return;
@@ -1294,12 +1184,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("copp6in")) {
-            copp6in = cfgAll.plmpFind(cmd.word(), false);
-            if (copp6in == null) {
+            cfgPlymp pm = cfgAll.plmpFind(cmd.word(), false);
+            if (pm == null) {
                 cmd.error("no such policy map");
                 return;
             }
-            tabQos wrkr = tabQos.convertPolicy(copp6in.plcmap);
+            tabQos wrkr = tabQos.convertPolicy(pm.plcmap);
             if (wrkr == null) {
                 cmd.error("error applying policy map");
                 return;
@@ -1308,12 +1198,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("copp6out")) {
-            copp6out = cfgAll.plmpFind(cmd.word(), false);
-            if (copp6out == null) {
+            cfgPlymp pm = cfgAll.plmpFind(cmd.word(), false);
+            if (pm == null) {
                 cmd.error("no such policy map");
                 return;
             }
-            tabQos wrkr = tabQos.convertPolicy(copp6out.plcmap);
+            tabQos wrkr = tabQos.convertPolicy(pm.plcmap);
             if (wrkr == null) {
                 cmd.error("error applying policy map");
                 return;
@@ -1322,25 +1212,25 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("packet4filter")) {
-            packet4fltr = cfgAll.aclsFind(cmd.word(), false);
-            if (packet4fltr == null) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
                 cmd.error("no such access list");
                 return;
             }
-            packet4fltr.aceslst.myCor = core4;
-            packet4fltr.aceslst.myIcmp = icmp4;
-            fwd4.packetFilter = packet4fltr.aceslst;
+            acl.aceslst.myCor = core4;
+            acl.aceslst.myIcmp = icmp4;
+            fwd4.packetFilter = acl.aceslst;
             return;
         }
         if (a.equals("packet6filter")) {
-            packet6fltr = cfgAll.aclsFind(cmd.word(), false);
-            if (packet6fltr == null) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
                 cmd.error("no such access list");
                 return;
             }
-            packet6fltr.aceslst.myCor = core6;
-            packet6fltr.aceslst.myIcmp = icmp6;
-            fwd6.packetFilter = packet6fltr.aceslst;
+            acl.aceslst.myCor = core6;
+            acl.aceslst.myIcmp = icmp6;
+            fwd6.packetFilter = acl.aceslst;
             return;
         }
         if (a.equals("incremental4")) {
@@ -1524,13 +1414,11 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("label4filter")) {
-            label4fltr = null;
             fwd4.labelFilter = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("label6filter")) {
-            label6fltr = null;
             fwd6.labelFilter = null;
             fwd6.routerStaticChg();
             return;
@@ -1552,114 +1440,94 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("import4list")) {
-            import4list = null;
             fwd4.importList = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("import6list")) {
-            import6list = null;
             fwd6.importList = null;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("export4list")) {
-            export4list = null;
             fwd4.exportList = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("export6list")) {
-            export6list = null;
             fwd6.exportList = null;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("import4map")) {
-            import4map = null;
             fwd4.importMap = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("import6map")) {
-            import6map = null;
             fwd6.importMap = null;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("export4map")) {
-            export4map = null;
             fwd4.exportMap = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("export6map")) {
-            export6map = null;
             fwd6.exportMap = null;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("import4policy")) {
-            import4pol = null;
             fwd4.importPol = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("import6policy")) {
-            import6pol = null;
             fwd6.importPol = null;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("export4policy")) {
-            export4pol = null;
             fwd4.exportPol = null;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("export6policy")) {
-            export6pol = null;
             fwd6.exportPol = null;
             fwd6.routerStaticChg();
             return;
         }
         if (a.equals("dapp4")) {
-            dapp4 = null;
             fwd4.dapp = null;
             return;
         }
         if (a.equals("dapp6")) {
-            dapp6 = null;
             fwd6.dapp = null;
             return;
         }
         if (a.equals("copp4in")) {
-            copp4in = null;
             fwd4.coppIn = null;
             return;
         }
         if (a.equals("copp4out")) {
-            copp4out = null;
             fwd4.coppOut = null;
             return;
         }
         if (a.equals("copp6in")) {
-            copp6in = null;
             fwd6.coppIn = null;
             return;
         }
         if (a.equals("copp6out")) {
-            copp6out = null;
             fwd6.coppOut = null;
             return;
         }
         if (a.equals("packet4filter")) {
-            packet4fltr = null;
             fwd4.packetFilter = null;
             return;
         }
         if (a.equals("packet6filter")) {
-            packet6fltr = null;
             fwd6.packetFilter = null;
             return;
         }
