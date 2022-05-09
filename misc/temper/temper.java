@@ -271,7 +271,14 @@ public class temper implements Runnable {
                 return i;
             }
             if (measDat[0].lastMeasure > measDat[1].lastMeasure) {
-                i |= tempPin;
+                return i | tempPin;
+            }
+            float d = measDat[0].lastMeasure - measDat[1].lastMeasure;
+            if (d < 0) {
+                d = -d;
+            }
+            if (d < tempTol) {
+                return i | tempPin;
             }
             return i;
         }
@@ -672,6 +679,9 @@ public class temper implements Runnable {
             int x = ((i * mx20) / history.size()) + 10;
             g2d.setPaint(Color.black);
             g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
+            if ((l.curr & tempPin) != 0) {
+                g2d.drawRect(x, 10, 1, 1);
+            }
             for (int o = 0; o < l.meas.length; o++) {
                 g2d.setPaint(colors[o]);
                 g2d.drawRect(x, my10 - (int) (((l.meas[o] - tmpMin) * my20) / tmpMax), 1, 1);

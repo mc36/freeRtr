@@ -24,6 +24,11 @@ public class temperHist {
      */
     protected float[] meas;
 
+    /**
+     * current value
+     */
+    protected int curr;
+
     private String line;
 
     public String toString() {
@@ -60,7 +65,7 @@ public class temperHist {
         line = s;
         time = temperUtil.str2num(getWord());
         getWord(); // who
-        getWord(); // curr
+        curr = (int) temperUtil.str2num(getWord());
         need = temperUtil.str2num(getWord());
         getWord(); // meas
         List<Float> res = new ArrayList<Float>();
