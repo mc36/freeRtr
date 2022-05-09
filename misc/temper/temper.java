@@ -99,6 +99,11 @@ public class temper implements Runnable {
     protected String tzdata = "Z";
 
     /**
+     * cooling
+     */
+    protected boolean cooling = false;
+
+    /**
      * reading used
      */
     protected int measUse = -1;
@@ -257,6 +262,19 @@ public class temper implements Runnable {
             measDat[i].doCalc();
         }
         measUse = -1;
+        if (cooling) {
+            int i = currValue & (~tempPin);
+            if ((!measDat[0].isWorking) || (!measDat[1].isWorking)) {
+                return i;
+            }
+            if (measDat[0].lastMeasure < lastNeeded) {
+                return i;
+            }
+            if (measDat[0].lastMeasure > measDat[1].lastMeasure) {
+                i |= tempPin;
+            }
+            return i;
+        }
         boolean win = false;
         for (int i = 0; i < measDat.length; i++) {
             if (!measDat[i].isWorking) {
@@ -294,8 +312,6 @@ public class temper implements Runnable {
      */
     public void doInit() {
         readConfig();
-        measDat[0].getValue();
-        lastNeeded = measDat[0].lastMeasure;
         timeNeeded = temperUtil.getTime();
         timeHeating = timeNeeded;
         lastSetter = "boot";
@@ -327,6 +343,14 @@ public class temper implements Runnable {
             }
             String a = s.substring(0, o).trim().toLowerCase();
             s = s.substring(o + 1, s.length()).trim();
+            if (a.equals("mode")) {
+                cooling = s.equals("cooling");
+                continue;
+            }
+            if (a.equals("needed")) {
+                lastNeeded = temperUtil.str2num(s);
+                continue;
+            }
             if (a.equals("tzdata")) {
                 tzdata = s;
                 continue;
