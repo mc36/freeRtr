@@ -13233,3 +13233,8 @@ todo: multiple listen stanzas for bgp listen
 todo: backplane header in the dataplanes with bridge_id, vrf_id and nexthop_id
 ---------------------------------- 2022-05-08 08:49:15 22.5.8
 no todo: multiple listen stanzas for bgp listen
+---------------------------------- 2022-05-09 17:17:48 22.5.9
+qc pass: redistribution filtering with prefixlist in routemap
+qc pass: redistribution filtering with prefixlist in routepolicy
+qc pass: redistribution filtering with accesslist in routemap
+qc pass: redistribution filtering with accesslist in routepolicy
