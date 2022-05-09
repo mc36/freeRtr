@@ -153,6 +153,9 @@ public class temperData {
             lastCalc = 0;
             return;
         }
+        if (lower.windowTol < 0) {
+            return;
+        }
         if (timeWindow > 0) {
             isWindow = true;
             lastCalc = 0;
