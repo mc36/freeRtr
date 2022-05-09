@@ -204,6 +204,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 .     privateas           match private asn");
         l.add(null, "2 3     tracker             match tracker state");
         l.add(null, "3 .       <name:trk>        name of tracker");
+        l.add(null, "2 3     access-list         match access list");
+        l.add(null, "3 .       <name:acl>        name of access list");
         l.add(null, "2 3     prefix-list         match prefix list");
         l.add(null, "3 .       <name:pl>         name of prefix list");
         l.add(null, "2 3     route-map           match route map");
@@ -413,6 +415,16 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         if (a.equals("tracker")) {
             ntry.ifMode = tabRtrplcN.ifType.track;
             ntry.strVal = cmd.word();
+            return;
+        }
+        if (a.equals("access-list")) {
+            ntry.ifMode = tabRtrplcN.ifType.aceslst;
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            ntry.aceslst = acl.aceslst;
             return;
         }
         if (a.equals("prefix-list")) {

@@ -46,6 +46,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
     public final static String[] defaultL = {
         "route-map .*! sequence .* description ",
         "route-map .*! sequence .* tcldel",
+        "route-map .*! sequence .* no match access-list",
         "route-map .*! sequence .* no match prefix-list",
         "route-map .*! sequence .* no match route-map",
         "route-map .*! sequence .* no match route-policy",
@@ -271,6 +272,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 .     privateas           match private asn");
         l.add(null, "2 3     tracker             match tracker state");
         l.add(null, "3 .       <name:trk>        name of tracker");
+        l.add(null, "2 3     access-list         match access list");
+        l.add(null, "3 .       <name:acl>        name of access list");
         l.add(null, "2 3     prefix-list         match prefix list");
         l.add(null, "3 .       <name:pl>         name of prefix list");
         l.add(null, "2 3     route-map           match route map");
@@ -548,6 +551,15 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("tracker")) {
                 ntry.trackMatch = cmd.word();
+                return;
+            }
+            if (a.equals("access-list")) {
+                cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+                if (acl == null) {
+                    cmd.error("no such access list");
+                    return;
+                }
+                ntry.aceslstMatch = acl.aceslst;
                 return;
             }
             if (a.equals("prefix-list")) {
@@ -947,6 +959,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("network")) {
                 ntry.networkMatch = null;
+                return;
+            }
+            if (a.equals("access-list")) {
+                ntry.aceslstMatch = null;
                 return;
             }
             if (a.equals("prefix-list")) {

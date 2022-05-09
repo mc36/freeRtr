@@ -244,6 +244,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         privas,
         /**
+         * access list
+         */
+        aceslst,
+        /**
          * prefix list
          */
         prfxlst,
@@ -403,6 +407,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
      * network matcher
      */
     public tabPrfxlstN networkMatch;
+
+    /**
+     * access list matcher
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> aceslst;
 
     /**
      * prefix list matcher
@@ -566,6 +575,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "tracker " + strVal;
             case privas:
                 return "privateas";
+            case aceslst:
+                return "access-list " + aceslst;
             case prfxlst:
                 return "prefix-list " + prfxlst;
             case roumap:
@@ -704,6 +715,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
                 i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
+            case aceslst:
+                packHolder pck = new packHolder(false, false);
+                pck.IPsrc.setAddr(net.prefix.network);
+                pck.IPtrg.setAddr(net.prefix.mask);
+                return aceslst.matches(false, false, pck);
             case prfxlst:
                 return prfxlst.matches(afi, asn, net.prefix);
             case roumap:

@@ -47,6 +47,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabPrfxlstN networkMatch;
 
     /**
+     * access list matcher
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> aceslstMatch;
+
+    /**
      * prefix list matcher
      */
     public tabListing<tabPrfxlstN, addrIP> prfxlstMatch;
@@ -388,6 +393,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 l.add(beg + "tcladd " + script.get(i));
             }
         }
+        cmds.cfgLine(l, aceslstMatch == null, beg, "match access-list", "" + aceslstMatch);
         cmds.cfgLine(l, prfxlstMatch == null, beg, "match prefix-list", "" + prfxlstMatch);
         cmds.cfgLine(l, roumapMatch == null, beg, "match route-map", "" + roumapMatch);
         cmds.cfgLine(l, rouplcMatch == null, beg, "match route-policy", "" + rouplcMatch);
@@ -719,6 +725,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 if (tabRouteUtil.findLrgList(net.best.lrgComm, lrgCommMatch.get(i)) < 0) {
                     return false;
                 }
+            }
+        }
+        if (aceslstMatch != null) {
+            packHolder pck = new packHolder(false, false);
+            pck.IPsrc.setAddr(net.prefix.network);
+            pck.IPtrg.setAddr(net.prefix.mask);
+            if (!aceslstMatch.matches(false, false, pck)) {
+                return false;
             }
         }
         if (prfxlstMatch != null) {
