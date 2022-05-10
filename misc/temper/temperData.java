@@ -110,7 +110,7 @@ public class temperData {
         myPri = (int) temperUtil.str2num(nam.substring(0, i));
         nam = nam.substring(i + 1, nam.length());
         i = nam.indexOf(";");
-        myNam = nam.substring(1, i);
+        myNam = nam.substring(0, i);
         myUrl = nam.substring(i + 1, nam.length());
         lastMeasure = 20;
         lastWindow = lastMeasure;
@@ -156,6 +156,9 @@ public class temperData {
             return;
         }
         if (!isWorking) {
+            return;
+        }
+        if (myPri < 0) {
             return;
         }
         lastCalc = results.idle;

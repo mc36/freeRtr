@@ -2,3 +2,4 @@ body { background-color: #000000; color: #00FF00; font-size: xx-large; }
 :link { color: #00FFFF }
 :visited { color: #00FFFF }
 :active { color: #00FFFF }
+table, th, td { border: 1px solid }
