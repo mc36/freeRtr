@@ -278,14 +278,16 @@ public class temper implements Runnable {
     }
 
     private int doCalc() {
-        boolean win = false;
+        for (int i = 0; i < measDat.length; i++) {
+            measDat[i].getValue();
+            measDat[i].doCalc();
+        }
         measIn = -1;
         measOut = -1;
         int prioIn = -1;
         int prioOut = -1;
+        boolean win = false;
         for (int i = 0; i < measDat.length; i++) {
-            measDat[i].getValue();
-            measDat[i].doCalc();
             if (!measDat[i].isWorking) {
                 continue;
             }
