@@ -730,7 +730,7 @@ public class temper implements Runnable {
             g2d.setPaint(Color.black);
             g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
             if (l.curr != 0) {
-                g2d.drawRect(x, 5, 1, 1);
+                g2d.drawRect(x, 10, 1, 1);
             }
             for (int o = 0; o < l.meas.length; o++) {
                 g2d.setPaint(colors[o]);
