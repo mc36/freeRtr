@@ -330,12 +330,11 @@ public class rtrOlsr extends ipRtr implements prtServP {
             return true;
         }
         logger.warn("neighbor " + id.peerAddr + " up");
-        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
+        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id, ifc);
         rtrOlsrNeigh old = neighs.add(ntry);
         if (old != null) {
             ntry = old;
         }
-        ntry.iface = ifc;
         ntry.conn = id;
         ntry.iface.neiSeq++;
         if (ifc.bfdTrigger) {
@@ -358,7 +357,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @param id connection
      */
     public void datagramClosed(prtGenConn id) {
-        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
+        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id, null);
         ntry = neighs.del(ntry);
         if (ntry == null) {
             return;
@@ -375,7 +374,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @param id connection
      */
     public void datagramWork(prtGenConn id) {
-        rtrOlsrNeigh nei = new rtrOlsrNeigh(id);
+        rtrOlsrNeigh nei = new rtrOlsrNeigh(id, null);
         nei = neighs.find(nei);
         if (nei != null) {
             if (nei.doWork()) {
@@ -414,7 +413,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @return return false if successful, true if error happened
      */
     public boolean datagramState(prtGenConn id, state.states stat) {
-        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
+        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id, null);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             return false;
@@ -431,7 +430,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * @return false if success, true if error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id);
+        rtrOlsrNeigh ntry = new rtrOlsrNeigh(id, null);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             id.setClosing();
@@ -508,23 +507,21 @@ public class rtrOlsr extends ipRtr implements prtServP {
      * stop work
      */
     public void routerCloseNow() {
-        rtrOlsrIface ntryi = new rtrOlsrIface(null, null);
         for (int i = ifaces.size() - 1; i >= 0; i--) {
-            ntryi = ifaces.get(i);
-            if (ntryi == null) {
+            rtrOlsrIface ntry = ifaces.get(i);
+            if (ntry == null) {
                 continue;
             }
-            ifaces.del(ntryi);
-            ntryi.unregister2udp();
+            ifaces.del(ntry);
+            ntry.unregister2udp();
         }
-        rtrOlsrNeigh ntryn = new rtrOlsrNeigh(null);
         for (int i = neighs.size() - 1; i >= 0; i--) {
-            ntryn = neighs.get(i);
-            if (ntryn == null) {
+            rtrOlsrNeigh ntry = neighs.get(i);
+            if (ntry == null) {
                 continue;
             }
-            neighs.del(ntryn);
-            ntryn.unregister2udp();
+            neighs.del(ntry);
+            ntry.unregister2udp();
         }
         fwdCore.routerDel(this);
     }

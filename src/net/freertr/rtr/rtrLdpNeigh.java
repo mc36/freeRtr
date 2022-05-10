@@ -945,7 +945,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
 
 class rtrLdpNeighRx implements Runnable {
 
-    private rtrLdpNeigh lower;
+    private final rtrLdpNeigh lower;
 
     public rtrLdpNeighRx(rtrLdpNeigh parent) {
         lower = parent;

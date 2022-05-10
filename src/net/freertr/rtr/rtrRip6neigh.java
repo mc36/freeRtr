@@ -28,7 +28,7 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
     /**
      * rip interface this neighbor belongs to
      */
-    protected rtrRip6iface iface;
+    protected final rtrRip6iface iface;
 
     /**
      * udp connection for this neighbor
@@ -44,9 +44,11 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
      * create one neighbor
      *
      * @param id connection handler
+     * @param ifc current interface
      */
-    public rtrRip6neigh(prtGenConn id) {
+    public rtrRip6neigh(prtGenConn id, rtrRip6iface ifc) {
         conn = id;
+        iface = ifc;
         learned = new tabRoute<addrIP>("rip");
         upTime = bits.getTime();
     }

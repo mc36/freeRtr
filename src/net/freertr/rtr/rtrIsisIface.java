@@ -1640,7 +1640,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
 
 class rtrIsisIfaceHello extends TimerTask {
 
-    private rtrIsisIface lower;
+    private final rtrIsisIface lower;
 
     public rtrIsisIfaceHello(rtrIsisIface parent) {
         lower = parent;

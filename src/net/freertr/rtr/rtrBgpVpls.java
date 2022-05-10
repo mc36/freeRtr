@@ -63,7 +63,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      */
     public boolean adverted;
 
-    private rtrBgp parent;
+    private final rtrBgp parent;
 
     private tabGen<rtrBgpVplsPeer> peers = new tabGen<rtrBgpVplsPeer>();
 

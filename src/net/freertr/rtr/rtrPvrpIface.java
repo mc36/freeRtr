@@ -246,7 +246,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     /**
      * the lower layer
      */
-    protected rtrPvrp lower;
+    protected final rtrPvrp lower;
 
     /**
      * list of neighbors

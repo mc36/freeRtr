@@ -133,7 +133,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
     /**
      * the lower layer
      */
-    protected rtrBabel lower;
+    protected final rtrBabel lower;
 
     /**
      * sequence number

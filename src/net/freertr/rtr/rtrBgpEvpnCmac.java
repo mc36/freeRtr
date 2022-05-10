@@ -14,7 +14,7 @@ import net.freertr.util.state;
  */
 public class rtrBgpEvpnCmac implements ifcUp {
 
-    private rtrBgpEvpn parent;
+    private final rtrBgpEvpn parent;
 
     /**
      * counter

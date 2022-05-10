@@ -28,7 +28,7 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
     /**
      * olsr interface this neighbor belongs to
      */
-    protected rtrOlsrIface iface;
+    protected final rtrOlsrIface iface;
 
     /**
      * udp connection for this neighbor
@@ -44,9 +44,11 @@ public class rtrOlsrNeigh implements rtrBfdClnt, Comparator<rtrOlsrNeigh> {
      * create one neighbor
      *
      * @param id current connection
+     * @param ifc current interface
      */
-    public rtrOlsrNeigh(prtGenConn id) {
+    public rtrOlsrNeigh(prtGenConn id, rtrOlsrIface ifc) {
         conn = id;
+        iface = ifc;
         learned = new tabRoute<addrIP>("olsr");
         upTime = bits.getTime();
     }

@@ -27,9 +27,9 @@ public class rtrSrhIface implements ipPrt {
      */
     public final static int rouType = 4;
 
-    private ipFwd fwdCore;
+    private final ipFwd fwdCore;
 
-    private ipFwdIface iface;
+    private final ipFwdIface iface;
 
     private counter cntr = new counter();
 

@@ -478,7 +478,7 @@ class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh>, rtrBfdClnt {
 
 class rtrVrrpIfaceHello extends TimerTask {
 
-    private rtrVrrpIface lower;
+    private final rtrVrrpIface lower;
 
     public rtrVrrpIfaceHello(rtrVrrpIface parent) {
         lower = parent;

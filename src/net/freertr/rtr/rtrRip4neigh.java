@@ -28,7 +28,7 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
     /**
      * rip interface this neighbor belongs to
      */
-    protected rtrRip4iface iface;
+    protected final rtrRip4iface iface;
 
     /**
      * udp connection for this neighbor
@@ -44,9 +44,11 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
      * create one neighbor
      *
      * @param id current connection
+     * @param ifc current interface
      */
-    public rtrRip4neigh(prtGenConn id) {
+    public rtrRip4neigh(prtGenConn id, rtrRip4iface ifc) {
         conn = id;
+        iface = ifc;
         learned = new tabRoute<addrIP>("rip");
         upTime = bits.getTime();
     }

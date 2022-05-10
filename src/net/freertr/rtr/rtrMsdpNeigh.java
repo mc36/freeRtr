@@ -124,7 +124,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
 
     private pipeSide pipe;
 
-    private rtrMsdp parent;
+    private final rtrMsdp parent;
 
     private boolean need2run;
 
@@ -493,7 +493,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
 
 class rtrMsdpNeighTx implements Runnable {
 
-    public rtrMsdpNeigh lower;
+    public final rtrMsdpNeigh lower;
 
     public rtrMsdpNeighTx(rtrMsdpNeigh prnt) {
         lower = prnt;

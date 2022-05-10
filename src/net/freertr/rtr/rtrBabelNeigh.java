@@ -30,7 +30,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
     /**
      * babel interface this neighbor belongs to
      */
-    protected rtrBabelIface iface;
+    protected final rtrBabelIface iface;
 
     /**
      * udp connection for this neighbor
@@ -46,9 +46,11 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
      * create one neighbor
      *
      * @param id current connection
+     * @param ifc current interface
      */
-    public rtrBabelNeigh(prtGenConn id) {
+    public rtrBabelNeigh(prtGenConn id, rtrBabelIface ifc) {
         conn = id;
+        iface = ifc;
         learned = new tabRoute<addrIP>("babel");
         upTime = bits.getTime();
     }

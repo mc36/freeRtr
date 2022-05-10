@@ -154,7 +154,7 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
     /**
      * the lower layer
      */
-    protected rtrRip6 lower;
+    protected final rtrRip6 lower;
 
     /**
      * create one instance

@@ -208,7 +208,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     /**
      * the lower layer
      */
-    protected rtrLsrp lower;
+    protected final rtrLsrp lower;
 
     /**
      * list of neighbors

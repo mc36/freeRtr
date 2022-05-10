@@ -80,7 +80,7 @@ public class rtrBgpEvpnPeer implements ifcDn, Comparator<rtrBgpEvpnPeer> {
     /**
      * upper layer
      */
-    protected rtrBgpEvpn parent;
+    protected final rtrBgpEvpn parent;
 
     /**
      * create new instance

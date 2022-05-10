@@ -130,7 +130,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
     /**
      * the lower layer
      */
-    protected rtrEigrp lower;
+    protected final rtrEigrp lower;
 
     /**
      * list of neighbors
@@ -720,7 +720,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
 
 class rtrEigrpIfaceHello extends TimerTask {
 
-    private rtrEigrpIface lower;
+    private final rtrEigrpIface lower;
 
     public rtrEigrpIfaceHello(rtrEigrpIface parent) {
         lower = parent;

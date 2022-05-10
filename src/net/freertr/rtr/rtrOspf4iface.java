@@ -1416,7 +1416,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
 
 class rtrOspf4ifaceHello extends TimerTask {
 
-    private rtrOspf4iface lower;
+    private final rtrOspf4iface lower;
 
     public rtrOspf4ifaceHello(rtrOspf4iface parent) {
         lower = parent;

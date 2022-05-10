@@ -30,7 +30,7 @@ public class rtrBgpRpki implements Comparator<rtrBgpRpki>, Runnable {
 
     private int session;
 
-    private rtrBgp lower;
+    private final rtrBgp lower;
 
     /**
      * name of monitor

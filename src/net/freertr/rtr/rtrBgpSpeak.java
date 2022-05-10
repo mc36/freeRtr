@@ -49,9 +49,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected pipeSide pipe;
 
-    private rtrBgp parent;
+    private final rtrBgp parent;
 
-    private rtrBgpNeigh neigh;
+    private final rtrBgpNeigh neigh;
 
     /**
      * ready to advertise

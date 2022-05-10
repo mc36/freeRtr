@@ -324,12 +324,11 @@ public class rtrBabel extends ipRtr implements prtServP {
             return true;
         }
         logger.warn("neighbor " + id.peerAddr + " up");
-        rtrBabelNeigh ntry = new rtrBabelNeigh(id);
+        rtrBabelNeigh ntry = new rtrBabelNeigh(id, ifc);
         rtrBabelNeigh old = neighs.add(ntry);
         if (old != null) {
             ntry = old;
         }
-        ntry.iface = ifc;
         ntry.conn = id;
         if (ifc.bfdTrigger) {
             ifc.iface.bfdAdd(id.peerAddr, ntry, "babel");
@@ -351,7 +350,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      * @param id connection
      */
     public void datagramClosed(prtGenConn id) {
-        rtrBabelNeigh ntry = new rtrBabelNeigh(id);
+        rtrBabelNeigh ntry = new rtrBabelNeigh(id, null);
         ntry = neighs.del(ntry);
         if (ntry == null) {
             return;
@@ -367,7 +366,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      * @param id connection
      */
     public void datagramWork(prtGenConn id) {
-        rtrBabelNeigh nei = new rtrBabelNeigh(id);
+        rtrBabelNeigh nei = new rtrBabelNeigh(id, null);
         nei = neighs.find(nei);
         if (nei != null) {
             if (nei.doWork()) {
@@ -409,7 +408,7 @@ public class rtrBabel extends ipRtr implements prtServP {
         if (stat == state.states.up) {
             return false;
         }
-        rtrBabelNeigh ntry = new rtrBabelNeigh(id);
+        rtrBabelNeigh ntry = new rtrBabelNeigh(id, null);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             return false;
@@ -426,7 +425,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      * @return false if success, true if error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        rtrBabelNeigh ntry = new rtrBabelNeigh(id);
+        rtrBabelNeigh ntry = new rtrBabelNeigh(id, null);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             id.setClosing();
@@ -503,23 +502,21 @@ public class rtrBabel extends ipRtr implements prtServP {
      * stop work
      */
     public void routerCloseNow() {
-        rtrBabelIface ntryi = new rtrBabelIface(null, null);
         for (int i = ifaces.size() - 1; i >= 0; i--) {
-            ntryi = ifaces.get(i);
-            if (ntryi == null) {
+            rtrBabelIface ntry = ifaces.get(i);
+            if (ntry == null) {
                 continue;
             }
-            ifaces.del(ntryi);
-            ntryi.unregister2udp();
+            ifaces.del(ntry);
+            ntry.unregister2udp();
         }
-        rtrBabelNeigh ntryn = new rtrBabelNeigh(null);
         for (int i = neighs.size() - 1; i >= 0; i--) {
-            ntryn = neighs.get(i);
-            if (ntryn == null) {
+            rtrBabelNeigh ntry = neighs.get(i);
+            if (ntry == null) {
                 continue;
             }
-            neighs.del(ntryn);
-            ntryn.unregister2udp();
+            neighs.del(ntry);
+            ntry.unregister2udp();
         }
         fwdCore.routerDel(this);
     }

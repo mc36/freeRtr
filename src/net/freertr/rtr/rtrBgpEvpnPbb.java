@@ -16,7 +16,7 @@ import net.freertr.util.state;
  */
 public class rtrBgpEvpnPbb implements ifcUp {
 
-    private rtrBgp parent;
+    private final rtrBgp parent;
 
     /**
      * counter

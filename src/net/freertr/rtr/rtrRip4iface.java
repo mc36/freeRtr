@@ -161,7 +161,7 @@ public class rtrRip4iface implements Comparator<rtrRip4iface> {
     /**
      * the lower layer
      */
-    protected rtrRip4 lower;
+    protected final rtrRip4 lower;
 
     /**
      * create one instance

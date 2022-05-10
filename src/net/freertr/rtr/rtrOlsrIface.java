@@ -156,7 +156,7 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
     /**
      * the lower layer
      */
-    protected rtrOlsr lower;
+    protected final rtrOlsr lower;
 
     /**
      * packet sequence number

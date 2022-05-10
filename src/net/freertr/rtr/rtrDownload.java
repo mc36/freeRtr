@@ -456,7 +456,7 @@ public class rtrDownload extends ipRtr {
 
 class rtrDownloadTimer extends TimerTask {
 
-    private rtrDownload lower;
+    private final rtrDownload lower;
 
     public rtrDownloadTimer(rtrDownload parent) {
         lower = parent;

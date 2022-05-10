@@ -241,12 +241,11 @@ public class rtrRip4 extends ipRtr implements prtServP {
             return true;
         }
         logger.warn("neighbor " + id.peerAddr + " up");
-        rtrRip4neigh ntry = new rtrRip4neigh(id);
+        rtrRip4neigh ntry = new rtrRip4neigh(id, ifc);
         rtrRip4neigh old = neighs.add(ntry);
         if (old != null) {
             ntry = old;
         }
-        ntry.iface = ifc;
         ntry.conn = id;
         if (ifc.bfdTrigger) {
             ifc.iface.bfdAdd(id.peerAddr, ntry, "rip");
@@ -268,7 +267,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
      * @param id connection
      */
     public void datagramClosed(prtGenConn id) {
-        rtrRip4neigh ntry = new rtrRip4neigh(id);
+        rtrRip4neigh ntry = new rtrRip4neigh(id, null);
         ntry = neighs.del(ntry);
         if (ntry == null) {
             return;
@@ -284,7 +283,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
      * @param id connection
      */
     public void datagramWork(prtGenConn id) {
-        rtrRip4neigh nei = new rtrRip4neigh(id);
+        rtrRip4neigh nei = new rtrRip4neigh(id, null);
         nei = neighs.find(nei);
         if (nei != null) {
             if (nei.doWork()) {
@@ -326,7 +325,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
         if (stat == state.states.up) {
             return false;
         }
-        rtrRip4neigh ntry = new rtrRip4neigh(id);
+        rtrRip4neigh ntry = new rtrRip4neigh(id, null);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             return false;
@@ -343,7 +342,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
      * @return false on success, true on error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        rtrRip4neigh ntry = new rtrRip4neigh(id);
+        rtrRip4neigh ntry = new rtrRip4neigh(id, null);
         ntry = neighs.find(ntry);
         if (ntry == null) {
             id.setClosing();
@@ -423,23 +422,21 @@ public class rtrRip4 extends ipRtr implements prtServP {
      * stop work
      */
     public void routerCloseNow() {
-        rtrRip4iface ntryi = new rtrRip4iface(null, null);
         for (int i = ifaces.size() - 1; i >= 0; i--) {
-            ntryi = ifaces.get(i);
-            if (ntryi == null) {
+            rtrRip4iface ntry = ifaces.get(i);
+            if (ntry == null) {
                 continue;
             }
-            ifaces.del(ntryi);
-            ntryi.unregister2udp();
+            ifaces.del(ntry);
+            ntry.unregister2udp();
         }
-        rtrRip4neigh ntryn = new rtrRip4neigh(null);
         for (int i = neighs.size() - 1; i >= 0; i--) {
-            ntryn = neighs.get(i);
-            if (ntryn == null) {
+            rtrRip4neigh ntry = neighs.get(i);
+            if (ntry == null) {
                 continue;
             }
-            neighs.del(ntryn);
-            ntryn.unregister2udp();
+            neighs.del(ntry);
+            ntry.unregister2udp();
         }
         fwdCore.routerDel(this);
     }

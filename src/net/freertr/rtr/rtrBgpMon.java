@@ -21,7 +21,7 @@ import net.freertr.util.typLenVal;
  */
 public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
 
-    private rtrBgp parent;
+    private final rtrBgp parent;
 
     private pipeSide pipe;
 
