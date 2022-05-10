@@ -323,17 +323,20 @@ public class temper implements Runnable {
                 diff = -diff;
             }
             boolean good = false;
+            boolean maybe = (currValue & ventPin) != 0;
             switch (res) {
                 case cool:
                     good = measDat[measIn].lastMeasure > measDat[measOut].lastMeasure;
-                    good |= diff < coolTol;
+                    maybe &= diff < coolTol;
                     break;
                 case heat:
                     good = measDat[measIn].lastMeasure < measDat[measOut].lastMeasure;
-                    good |= diff < heatTol;
+                    maybe &= diff < heatTol;
                     break;
+                default:
+                    return i;
             }
-            if (good) {
+            if (good || maybe) {
                 return i | ventPin;
             }
         }
