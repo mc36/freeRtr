@@ -77,6 +77,8 @@ import net.freertr.serv.servDhcp4;
 import net.freertr.serv.servDhcp6;
 import net.freertr.serv.servDns;
 import net.freertr.serv.servEtherIp;
+import net.freertr.serv.servGenList;
+import net.freertr.serv.servGeneric;
 import net.freertr.serv.servGre;
 import net.freertr.serv.servGtp;
 import net.freertr.serv.servHttp;
@@ -612,6 +614,17 @@ public class userShow {
             }
             if (a.equals("hide")) {
                 rdr.putStrArr(cfgAll.getShRun(getConfigFilter(a, cmd)));
+                return null;
+            }
+            if (a.equals("server")) {
+                a = cmd.word();
+                servGeneric ntry = servGenList.srvFind(a, cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("invalid server");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(ntry.getShRun(filt));
                 return null;
             }
             if (a.equals("router")) {

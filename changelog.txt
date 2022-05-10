@@ -13245,3 +13245,8 @@ qc pass: redistribution filtering with routemap in routepolicy
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
 todo: bgp shadow route reflection
+---------------------------------- 2022-05-10 18:06:28 22.5.10
+no todo: backplane header in the dataplanes with bridge_id, vrf_id and nexthop_id
+todo: backplane/stacking capability
+---------------------------------- 2022-05-10 19:49:37 22.5.10
+no todo: sho run server

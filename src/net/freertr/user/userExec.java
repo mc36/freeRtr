@@ -51,6 +51,7 @@ import net.freertr.prt.prtAccept;
 import net.freertr.prt.prtGen;
 import net.freertr.prt.prtRedun;
 import net.freertr.rtr.rtrBgpParam;
+import net.freertr.serv.servGenList;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -264,8 +265,8 @@ public class userExec {
         hl.add(null, "5 .            <addr>               address of original next hop");
         hl.add(null, "3 4        just-protocol            unicast routing table by source");
         hl.add(null, "4 5          <name:vrf>             name of routing table");
-        cfgRtr.getRouterList(hl, "5 .", "");
-        cfgRtr.getRouterList(hl, 3, "");
+        cfgRtr.getRouterList(hl, "5 .", " to filter");
+        cfgRtr.getRouterList(hl, 3, " to filter");
         hl.add(null, "6 .            <num>                process id");
         hl.add(null, "3 4        ecmp                     unicast routing table ecmp");
         hl.add(null, "4 .          <name:vrf>             name of routing table");
@@ -1094,8 +1095,10 @@ public class userExec {
         hl.add(null, "4 5,.        <name:ifc>          name of interface");
         hl.add(null, "5 5,.          all               do not hide defaults");
         hl.add(null, "5 5,.          hide              hide passwords");
+        hl.add(null, "3 4        server                specified server process");
+        servGenList.srvHelp(hl, 4, " to show");
         hl.add(null, "3 4        router                specified router process");
-        cfgRtr.getRouterList(hl, 2, "");
+        cfgRtr.getRouterList(hl, 2, " to show");
         hl.add(null, "5 6,.          <num>             process id");
         hl.add(null, "6 6,.            all             do not hide defaults");
         hl.add(null, "6 6,.            hide            hide passwords");
@@ -1232,7 +1235,7 @@ public class userExec {
         hl.add(null, "4 5,.        <name:vrf>          name of routing table");
         hl.add(null, "5 .            [addr]            prefix to view");
         hl.add(null, "2 3      router                  routing protocol information");
-        cfgRtr.getRouterList(hl, 1, "");
+        cfgRtr.getRouterList(hl, 1, " to show");
         hl.add(null, "4 5          <num>               process id");
         hl.add(null, "5 6            redisted          advertised routes");
         hl.add(null, "5 6            computed          computed routes");
@@ -1449,7 +1452,7 @@ public class userExec {
         hl.add(null, "3 4        size                       specify payload size");
         hl.add(null, "4 3,.        <num>                    byte count");
         hl.add(null, "3 4        router                     lookup intermediate hops");
-        cfgRtr.getRouterList(hl, 2, "");
+        cfgRtr.getRouterList(hl, 2, " to use");
         hl.add(null, "5 3,.          <num>                  process id");
         hl.add(null, "3 3,.      lookup                     lookup intermediate hops");
         hl.add(null, "1 2    ping                           send echo request");
@@ -1791,7 +1794,7 @@ public class userExec {
         hl.add(null, "3 4        <name:ifc>                 name of interface");
         hl.add(null, "4 .          <addr>                   address of host");
         hl.add(null, ".2 3     mrtfilter                    filter mrt file using filters of a peer");
-        cfgRtr.getRouterList(hl, 1, "");
+        cfgRtr.getRouterList(hl, 1, " to filter with");
         hl.add(null, ".4 5         <num>                    process number");
         hl.add(null, ".5 6           <addr>                 peer address");
         hl.add(null, ".6 7             <file>               source mrt file");
@@ -1799,7 +1802,7 @@ public class userExec {
         hl.add(null, ".8 9                 <addr>           source peer");
         hl.add(null, ".9 .                   <addr>         target peer");
         hl.add(null, ".2 3     mrt2self                     replay mrt as if got from a peer");
-        cfgRtr.getRouterList(hl, 1, "");
+        cfgRtr.getRouterList(hl, 1, " to replay to");
         hl.add(null, ".4 5         <num>                    process number");
         hl.add(null, ".5 6           <addr>                 peer address");
         hl.add(null, ".6 7             <file>               mrt file");

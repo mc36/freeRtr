@@ -366,7 +366,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add(null, "2 3      <name:acl>              access list on peer name");
         l.add(null, "3 4        rx                    process received packets");
         l.add(null, "3 4        tx                    process transmitted packets");
-        cfgRtr.getRouterList(l, 2, "");
+        cfgRtr.getRouterList(l, 2, " to populate");
         l.add(null, "5 6            <num>             process number");
         l.add(null, "6 .              <str>           template name");
         l.add(null, "1 2    neighbor                  parse messages from neighbor");
@@ -374,7 +374,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add(null, "3 4        <addr>                reported address");
         l.add(null, "4 5          rx                  process received packets");
         l.add(null, "4 5          tx                  process transmitted packets");
-        cfgRtr.getRouterList(l, 3, "");
+        cfgRtr.getRouterList(l, 3, " to populate");
         l.add(null, "6 7              <num>           process number");
         l.add(null, "7 .                <addr>        peer address");
     }
