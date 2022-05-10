@@ -244,7 +244,7 @@ public class temper implements Runnable {
     protected String lastSetter = "nobody";
 
     private synchronized void setValue(int val) {
-        val &= (heatPin | doorPin | relayPin);
+        val &= (heatPin | coolPin | ventPin | doorPin | relayPin);
         if (currValue == val) {
             return;
         }
