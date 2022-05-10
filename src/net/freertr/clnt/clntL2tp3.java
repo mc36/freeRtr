@@ -311,10 +311,10 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
             conRem = pckRx.valConnId;
             byte[] res = null;
             if (password != null) {
+                res = autherChap.calcAuthHash(pckRx.valMsgTyp, password, chlng);
                 if (pckRx.valResponse == null) {
                     return;
                 }
-                res = autherChap.calcAuthHash(pckRx.valMsgTyp, password, chlng);
                 if (res.length != pckRx.valResponse.length) {
                     return;
                 }
@@ -348,10 +348,10 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
                 return;
             }
             if (password != null) {
+                res = autherChap.calcAuthHash(pckRx.valMsgTyp, password, chlng);
                 if (pckRx.valResponse == null) {
                     return;
                 }
-                res = autherChap.calcAuthHash(pckRx.valMsgTyp, password, chlng);
                 if (res.length != pckRx.valResponse.length) {
                     return;
                 }

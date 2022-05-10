@@ -345,10 +345,10 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         tunRem = pckRx.valTunId;
         byte[] res = null;
         if (password != null) {
+            res = autherChap.calcAuthHash(pckRx.valMsgTyp, password, chlng);
             if (pckRx.valResponse == null) {
                 return;
             }
-            res = autherChap.calcAuthHash(pckRx.valMsgTyp, password, chlng);
             if (res.length != pckRx.valResponse.length) {
                 return;
             }
