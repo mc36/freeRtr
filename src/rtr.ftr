@@ -2877,6 +2877,8 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: backplane header in the dataplanes with bridge_id, vrf_id and nexthop_id
+todo: backup path support to the spf class
+todo: wcmp support to the spf class
 todo: sho run server
 todo: allow command to be a substring of an other
 todo: quic
@@ -2884,6 +2886,7 @@ todo: update gtp stack to the latest standards
 todo: p4dpdk multiseg rx/tx loop
 todo: nat and pbr config to have reindex
 todo: bridge security from dhcp, slaac, whatever server
+todo: bgp shadow route reflection
 todo: bgp optimal route reflection
 todo: bgp peer autoconfig
 todo: bgp layer2 flowspec

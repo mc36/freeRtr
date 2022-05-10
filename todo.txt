@@ -1,4 +1,6 @@
 backplane header in the dataplanes with bridge_id, vrf_id and nexthop_id
+backup path support to the spf class
+wcmp support to the spf class
 sho run server
 allow command to be a substring of an other
 quic
@@ -6,6 +8,7 @@ update gtp stack to the latest standards
 p4dpdk multiseg rx/tx loop
 nat and pbr config to have reindex
 bridge security from dhcp, slaac, whatever server
+bgp shadow route reflection
 bgp optimal route reflection
 bgp peer autoconfig
 bgp layer2 flowspec

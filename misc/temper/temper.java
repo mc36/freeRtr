@@ -261,6 +261,17 @@ public class temper implements Runnable {
         }
     }
 
+    private int rangeGrace(float a, float b, float t) {
+        a = a - b;
+        if (a < 0) {
+            a = -a;
+        }
+        if (a < t) {
+            return currValue;
+        }
+        return currValue & (~tempPin);
+    }
+
     private int doCalc() {
         for (int i = 0; i < measDat.length; i++) {
             measDat[i].getValue();
@@ -268,24 +279,16 @@ public class temper implements Runnable {
         }
         measUse = -1;
         if (cooling) {
-            int i = currValue & (~tempPin);
             if ((!measDat[0].isWorking) || (!measDat[1].isWorking)) {
-                return i;
+                return currValue & (~tempPin);
             }
             if (measDat[0].lastMeasure < lastNeeded) {
-                return i;
+                return rangeGrace(measDat[0].lastMeasure, lastNeeded, tempTol);
             }
             if (measDat[0].lastMeasure > measDat[1].lastMeasure) {
-                return i | tempPin;
+                return currValue | tempPin;
             }
-            float d = measDat[0].lastMeasure - measDat[1].lastMeasure;
-            if (d < 0) {
-                d = -d;
-            }
-            if (d < tempTol) {
-                return i | tempPin;
-            }
-            return i;
+            return rangeGrace(measDat[0].lastMeasure, measDat[1].lastMeasure, windowTol);
         }
         boolean win = false;
         for (int i = 0; i < measDat.length; i++) {
