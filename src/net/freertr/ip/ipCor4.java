@@ -69,6 +69,13 @@ public class ipCor4 implements ipCor {
     }
 
     public boolean parseIPheader(packHolder pck, boolean chksiz) {
+        addrIPv4 adr = new addrIPv4();
+        pck.getAddr(adr, 12); // source address
+        pck.IPsrc.fromIPv4addr(adr);
+        checkAddrSrc(pck, adr);
+        pck.getAddr(adr, 16); // destination address
+        pck.IPtrg.fromIPv4addr(adr);
+        checkAddrTrg(pck, adr);
         int hdrLen = pck.getByte(0); // version:4 headerLen:4
         if ((hdrLen >>> 4) != protocolVersion) {
             logger.info("got bad version from " + pck.IPsrc);
@@ -97,22 +104,12 @@ public class ipCor4 implements ipCor {
             }
             pck.setDataSize(totLen);
         }
-        addrIPv4 adr = new addrIPv4();
         pck.IPtos = pck.getByte(1); // type of service: dscp:6 unused:2
         pck.IPid = pck.msbGetW(4); // identification
         int flagFrag = pck.msbGetW(6); // res:1 DF:1 MF:1 fragOff:13
         pck.IPttl = pck.getByte(8); // time to live
         pck.IPprt = pck.getByte(9); // protocol
         // int sum = pck.msbGetW(10); // header checksum
-        pck.getAddr(adr, 12); // source address
-        pck.IPsrc.fromIPv4addr(adr);
-        pck.IPlnk = adr.isLinkLocal();
-        pck.getAddr(adr, 16); // destination address
-        pck.IPtrg.fromIPv4addr(adr);
-        pck.IPbrd = adr.isBroadcast();
-        pck.IPmlt = adr.isMulticast();
-        pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk |= adr.isLinkLocal();
         pck.IPdf = ((flagFrag & 0x4000) != 0);
         pck.IPmf = ((flagFrag & 0x2000) != 0);
         pck.IPfrg = (flagFrag & 0x1fff) << 3;

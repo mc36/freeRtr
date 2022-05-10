@@ -99,9 +99,9 @@ public class temper implements Runnable {
     protected String tzdata = "Z";
 
     /**
-     * cooling
+     * venting
      */
-    protected boolean cooling = false;
+    protected boolean venting = false;
 
     /**
      * reading used
@@ -278,7 +278,7 @@ public class temper implements Runnable {
             measDat[i].doCalc();
         }
         measUse = -1;
-        if (cooling) {
+        if (venting) {
             if ((!measDat[0].isWorking) || (!measDat[1].isWorking)) {
                 return currValue & (~tempPin);
             }
@@ -359,7 +359,7 @@ public class temper implements Runnable {
             String a = s.substring(0, o).trim().toLowerCase();
             s = s.substring(o + 1, s.length()).trim();
             if (a.equals("mode")) {
-                cooling = s.equals("cooling");
+                venting = s.equals("venting");
                 continue;
             }
             if (a.equals("script")) {
@@ -609,8 +609,8 @@ public class temper implements Runnable {
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, since " + temperUtil.time2str(tzdata, timeNeeded) + ", " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
-            if (cooling) {
-                a = "cooling: ";
+            if (venting) {
+                a = "venting: ";
             } else {
                 a = "heating: ";
             }

@@ -96,7 +96,14 @@ public class ipCor6 implements ipCor {
     }
 
     public boolean parseIPheader(packHolder pck, boolean chksiz) {
-        int verTos = pck.msbGetW(0); // version:4 tos:8 reserved:4
+        addrIPv6 adr = new addrIPv6();
+        pck.getAddr(adr, 8); // source address
+        pck.IPsrc.fromIPv6addr(adr);
+        checkAddrSrc(pck, adr);
+        pck.getAddr(adr, 24); // destination address
+        pck.IPtrg.fromIPv6addr(adr);
+        checkAddrTrg(pck, adr);
+        int verTos = pck.msbGetW(0); // version:4 tos:8 flwlab:4
         if ((verTos >>> 12) != protocolVersion) {
             logger.info("got bad version from " + pck.IPsrc);
             return true;
@@ -109,20 +116,10 @@ public class ipCor6 implements ipCor {
             }
             pck.setDataSize(totLen);
         }
-        addrIPv6 adr = new addrIPv6();
         pck.IPtos = (verTos >>> 4) & 0xff;
         pck.IPid = pck.msbGetD(0) & 0xfffff; // flow label
         pck.IPprt = pck.getByte(6); // next header
         pck.IPttl = pck.getByte(7); // hop limit
-        pck.getAddr(adr, 8); // source address
-        pck.IPsrc.fromIPv6addr(adr);
-        pck.IPlnk = adr.isLinkLocal();
-        pck.getAddr(adr, 24); // destination address
-        pck.IPtrg.fromIPv6addr(adr);
-        pck.IPbrd = adr.isBroadcast();
-        pck.IPmlt = adr.isMulticast();
-        pck.IPmlr = adr.isRoutedMcast();
-        pck.IPlnk |= adr.isLinkLocal();
         pck.IPsiz = size;
         pck.IPver = protocolVersion;
         pck.IPdf = false;
@@ -188,7 +185,7 @@ public class ipCor6 implements ipCor {
             pck.IPsiz += 8;
             oldPrt = exthdrFragment;
         }
-        pck.msbPutW(0, 0x6000 | ((pck.IPtos & 0xff) << 4) | ((pck.IPid >>> 16) & 0xf)); // version:4 tos:8 reserved:4
+        pck.msbPutW(0, 0x6000 | ((pck.IPtos & 0xff) << 4) | ((pck.IPid >>> 16) & 0xf)); // version:4 tos:8 flwlab:4
         pck.msbPutW(2, pck.IPid); // flow label
         pck.msbPutW(4, pck.dataSize() + pck.IPsiz - size); // total length
         pck.putByte(6, oldPrt); // next header
@@ -221,7 +218,7 @@ public class ipCor6 implements ipCor {
         if (debugger.ipCor6traf) {
             logger.debug("upd src=" + src + " trg=" + trg + " prt=" + prt + " ttl=" + ttl + " tos=" + tos + " len=" + len);
         }
-        int verTos = pck.msbGetW(0); // version:4 tos:8 reserved:4
+        int verTos = pck.msbGetW(0); // version:4 tos:8 flwlab:4
         pck.unMergeBytes(size);
         pck.putSkip(-size);
         if (prt != -1) {
