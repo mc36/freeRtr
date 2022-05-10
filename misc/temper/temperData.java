@@ -12,6 +12,13 @@ import java.net.URLConnection;
 public class temperData {
 
     /**
+     * result codes
+     */
+    public enum results {
+        idle, cool, heat
+    };
+
+    /**
      * parent
      */
     protected final temper lower;
@@ -20,6 +27,11 @@ public class temperData {
      * my number
      */
     protected final int myNum;
+
+    /**
+     * my priority
+     */
+    protected final int myPri;
 
     /**
      * my name
@@ -32,9 +44,9 @@ public class temperData {
     protected final String myUrl;
 
     /**
-     * usable measurement
+     * inside measurement
      */
-    protected final boolean usable;
+    protected final boolean inside;
 
     /**
      * last measured temperature
@@ -79,7 +91,7 @@ public class temperData {
     /**
      * last calculated value
      */
-    protected int lastCalc;
+    protected results lastCalc = results.idle;
 
     /**
      * create instance
@@ -91,8 +103,13 @@ public class temperData {
     protected temperData(temper prnt, int num, String nam) {
         lower = prnt;
         myNum = num;
-        usable = temperUtil.str2num(nam.substring(0, 1)) == 1;
         int i = nam.indexOf(";");
+        inside = nam.substring(0, i).equals("in");
+        nam = nam.substring(i + 1, nam.length());
+        i = nam.indexOf(";");
+        myPri = (int) temperUtil.str2num(nam.substring(0, i));
+        nam = nam.substring(i + 1, nam.length());
+        i = nam.indexOf(";");
         myNam = nam.substring(1, i);
         myUrl = nam.substring(i + 1, nam.length());
         lastMeasure = 20;
@@ -106,8 +123,8 @@ public class temperData {
         try {
             URL testUrl = new URL(myUrl);
             URLConnection testConn = testUrl.openConnection();
-            testConn.setConnectTimeout(5000);
-            testConn.setReadTimeout(5000);
+            testConn.setConnectTimeout(lower.measIotm);
+            testConn.setReadTimeout(lower.measIotm);
             BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
             String testLine = testReader.readLine();
             if (!testReader.readLine().equals("done")) {
@@ -133,53 +150,49 @@ public class temperData {
      * calculate
      */
     protected void doCalc() {
-        isWindow = false;
-        if (!usable) {
-            isWorking = false;
-            return;
-        }
-        isWorking = true;
         long tim = temperUtil.getTime();
-        lastCalc = lower.currValue & lower.tempPin;
-        int old = lastCalc;
-        if (lower.lastNeeded > (lastMeasure + lower.tempTol)) {
-            lastCalc = lower.tempPin;
-        }
-        if (lower.lastNeeded < (lastMeasure - lower.tempTol)) {
-            lastCalc = 0;
-        }
-        if ((tim - timeMeasure) > lower.measTime) {
-            isWorking = false;
-            lastCalc = 0;
+        isWorking = (tim - timeMeasure) < lower.measTime;
+        if (!inside) {
             return;
         }
+        if (!isWorking) {
+            return;
+        }
+        lastCalc = results.idle;
+        if (lower.lastNeeded > (lastMeasure + lower.heatTol)) {
+            lastCalc = results.heat;
+        }
+        if (lower.lastNeeded < (lastMeasure - lower.coolTol)) {
+            lastCalc = results.cool;
+        }
+        isWindow = false;
         if (lower.windowTol < 0) {
             return;
         }
         if (timeWindow > 0) {
             isWindow = true;
-            lastCalc = 0;
-            if (lastMeasure < (lastWindow - lower.windowTol)) {
-                lastWindow = lastMeasure;
-                timeWindow = tim;
-            }
-            if ((tim - timeWindow) < lower.windowMin) {
+            lastCalc = results.idle;
+            if ((tim - timeWindow) < lower.windowTim) {
                 return;
             }
-            if (lastMeasure > (lastWindow + lower.windowTol)) {
-                timeWindow = 0;
-            }
-            if ((tim - timeWindow) > lower.windowMax) {
-                timeWindow = 0;
-            }
+            timeWindow = 0;
             return;
         }
-        if ((old == lower.tempPin) && (lastMeasure < (lastWindow - lower.windowTol))) {
-            isWindow = true;
-            lastCalc = 0;
-            timeWindow = tim;
+        switch (lastCalc) {
+            case heat:
+                isWindow = lastMeasure < (lastWindow - lower.windowTol);
+                break;
+            case cool:
+                isWindow = lastMeasure > (lastWindow + lower.windowTol);
+                break;
+            default:
+                break;
+        }
+        if (!isWindow) {
             return;
         }
+        lastCalc = results.idle;
+        timeWindow = tim;
     }
 
     /**
@@ -197,7 +210,7 @@ public class temperData {
      * @return string
      */
     public String getMeas() {
-        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + isWorking + "</td><td>" + lastCalc + "</td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + isWorking + "</td><td>" + isWindow + "</td><td>" + lastCalc + "</td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
     }
 
 }

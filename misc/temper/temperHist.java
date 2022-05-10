@@ -67,7 +67,8 @@ public class temperHist {
         getWord(); // who
         curr = (int) temperUtil.str2num(getWord());
         need = temperUtil.str2num(getWord());
-        getWord(); // meas
+        getWord(); // meas in
+        getWord(); // meas out
         List<Float> res = new ArrayList<Float>();
         for (; line.length() > 0;) {
             getWord(); // time

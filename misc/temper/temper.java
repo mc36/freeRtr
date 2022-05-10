@@ -94,22 +94,17 @@ public class temper implements Runnable {
     protected temperData measDat[] = new temperData[0];
 
     /**
-     * time zone to use
+     * inside reading used
      */
-    protected String tzdata = "Z";
+    protected int measIn = -1;
 
     /**
-     * venting
+     * outside reading used
      */
-    protected boolean venting = false;
+    protected int measOut = -1;
 
     /**
-     * reading used
-     */
-    protected int measUse = -1;
-
-    /**
-     * current value: 0=standby, 1=heating, 2=door
+     * current value sent
      */
     protected int currValue = 0x10000;
 
@@ -129,6 +124,11 @@ public class temper implements Runnable {
     protected long timeHeating = 0;
 
     /**
+     * time zone to use
+     */
+    protected String tzdata = "Z";
+
+    /**
      * log file
      */
     protected String logFile = "temper.log";
@@ -137,6 +137,81 @@ public class temper implements Runnable {
      * script file
      */
     protected String scrFile = "temper.sh";
+
+    /**
+     * window min time
+     */
+    protected int windowTim = 15 * 60 * 1000;
+
+    /**
+     * measure timeout
+     */
+    protected int measTime = 5 * 60 * 1000;
+
+    /**
+     * measure timeout
+     */
+    protected int measIotm = 5 * 1000;
+
+    /**
+     * measure interval
+     */
+    protected int collTime = 30 * 1000;
+
+    /**
+     * temperature minimum
+     */
+    protected float tempMin = 10;
+
+    /**
+     * temperature maximum
+     */
+    protected float tempMax = 30;
+
+    /**
+     * heat tolerance
+     */
+    protected float heatTol = 0.3F;
+
+    /**
+     * cool tolerance
+     */
+    protected float coolTol = 0.5F;
+
+    /**
+     * window tolerance
+     */
+    protected float windowTol = 0.9F;
+
+    /**
+     * heat pin
+     */
+    protected int heatPin = 0x0;
+
+    /**
+     * cool pin
+     */
+    protected int coolPin = 0x0;
+
+    /**
+     * vent pin
+     */
+    protected int ventPin = 0x0;
+
+    /**
+     * relay pin
+     */
+    protected int relayPin = 0x0;
+
+    /**
+     * door pin
+     */
+    protected int doorPin = 0x0;
+
+    /**
+     * door time
+     */
+    protected int doorTime = 1000;
 
     /**
      * door codes
@@ -164,72 +239,12 @@ public class temper implements Runnable {
     protected int doorCnt = 0;
 
     /**
-     * door time
-     */
-    protected int doorTime = 300;
-
-    /**
-     * door pin
-     */
-    protected int doorPin = 0x2;
-
-    /**
-     * window min time
-     */
-    protected int windowMin = 15 * 60 * 1000;
-
-    /**
-     * window max time
-     */
-    protected int windowMax = 30 * 60 * 1000;
-
-    /**
-     * window tolerance
-     */
-    protected float windowTol = 1;
-
-    /**
-     * measure timeout
-     */
-    protected int measTime = 5 * 60 * 1000;
-
-    /**
-     * measure interval
-     */
-    protected int collTime = 60 * 1000;
-
-    /**
-     * temperature minimum
-     */
-    protected float tempMin = 10;
-
-    /**
-     * temperature maximum
-     */
-    protected float tempMax = 30;
-
-    /**
-     * temperature tolerance
-     */
-    protected float tempTol = 1;
-
-    /**
-     * temperature pin
-     */
-    protected int tempPin = 0x1;
-
-    /**
-     * relay pin
-     */
-    protected int relayPin = 0x0;
-
-    /**
      * last setter peer
      */
     protected String lastSetter = "nobody";
 
     private synchronized void setValue(int val) {
-        val &= (tempPin | doorPin | relayPin);
+        val &= (heatPin | doorPin | relayPin);
         if (currValue == val) {
             return;
         }
@@ -243,7 +258,8 @@ public class temper implements Runnable {
         } catch (Exception e) {
             return;
         }
-        if ((currValue & tempPin) != (val & tempPin)) {
+        int mask = heatPin | coolPin | ventPin;
+        if ((currValue & mask) != (val & mask)) {
             timeHeating = temperUtil.getTime();
             for (int i = 0; i < measDat.length; i++) {
                 measDat[i].setWindow();
@@ -261,54 +277,72 @@ public class temper implements Runnable {
         }
     }
 
-    private int rangeGrace(float a, float b, float t) {
-        a = a - b;
-        if (a < 0) {
-            a = -a;
-        }
-        if (a < t) {
-            return currValue;
-        }
-        return currValue & (~tempPin);
-    }
-
     private int doCalc() {
+        boolean win = false;
+        measIn = -1;
+        measOut = -1;
+        int prioIn = -1;
+        int prioOut = -1;
         for (int i = 0; i < measDat.length; i++) {
             measDat[i].getValue();
             measDat[i].doCalc();
-        }
-        measUse = -1;
-        if (venting) {
-            if ((!measDat[0].isWorking) || (!measDat[1].isWorking)) {
-                return currValue & (~tempPin);
-            }
-            if (measDat[0].lastMeasure < lastNeeded) {
-                return rangeGrace(measDat[0].lastMeasure, lastNeeded, tempTol);
-            }
-            if (measDat[0].lastMeasure > measDat[1].lastMeasure) {
-                return currValue | tempPin;
-            }
-            return rangeGrace(measDat[0].lastMeasure, measDat[1].lastMeasure, windowTol);
-        }
-        boolean win = false;
-        for (int i = 0; i < measDat.length; i++) {
             if (!measDat[i].isWorking) {
                 continue;
             }
-            win |= measDat[i].isWindow;
-            if (measUse >= 0) {
+            if (measDat[i].myPri < 0) {
                 continue;
             }
-            measUse = i;
+            if (measDat[i].inside) {
+                if (prioIn > measDat[i].myPri) {
+                    continue;
+                }
+                measIn = i;
+                prioIn = measDat[i].myPri;
+            } else {
+                if (prioOut > measDat[i].myPri) {
+                    continue;
+                }
+                measOut = i;
+                prioOut = measDat[i].myPri;
+            }
+            win |= measDat[i].isWindow;
         }
-        int i = currValue & (~tempPin);
+        int i = currValue & ~(heatPin | coolPin | ventPin);
         if (win) {
             return i;
         }
-        if (measUse < 0) {
+        if (measIn < 0) {
             return i;
         }
-        return i | measDat[measUse].lastCalc;
+        temperData.results res = measDat[measIn].lastCalc;
+        if ((ventPin != 0) && (measOut >= 0)) {
+            float diff = measDat[measIn].lastMeasure - measDat[measOut].lastMeasure;
+            if (diff < 0) {
+                diff = -diff;
+            }
+            boolean good = false;
+            switch (res) {
+                case cool:
+                    good = measDat[measIn].lastMeasure > measDat[measOut].lastMeasure;
+                    good |= diff < coolTol;
+                    break;
+                case heat:
+                    good = measDat[measIn].lastMeasure < measDat[measOut].lastMeasure;
+                    good |= diff < heatTol;
+                    break;
+            }
+            if (good) {
+                return i | ventPin;
+            }
+        }
+        switch (res) {
+            case cool:
+                return i | coolPin;
+            case heat:
+                return i | heatPin;
+            default:
+                return i;
+        }
     }
 
     private synchronized void writeLog(String who) {
@@ -319,7 +353,7 @@ public class temper implements Runnable {
         for (int i = 0; i < measDat.length; i++) {
             a = a + ";" + measDat[i].getLog();
         }
-        temperUtil.append(logFile, temperUtil.getTime() + ";" + who + ";" + currValue + ";" + lastNeeded + ";" + measUse + a);
+        temperUtil.append(logFile, temperUtil.getTime() + ";" + who + ";" + currValue + ";" + lastNeeded + ";" + measIn + ";" + measOut + a);
     }
 
     /**
@@ -358,10 +392,6 @@ public class temper implements Runnable {
             }
             String a = s.substring(0, o).trim().toLowerCase();
             s = s.substring(o + 1, s.length()).trim();
-            if (a.equals("mode")) {
-                venting = s.equals("venting");
-                continue;
-            }
             if (a.equals("script")) {
                 scrFile = s;
                 continue;
@@ -410,20 +440,28 @@ public class temper implements Runnable {
                 tempMax = temperUtil.str2num(s);
                 continue;
             }
-            if (a.equals("temp-tol")) {
-                tempTol = temperUtil.str2num(s);
+            if (a.equals("heat-tol")) {
+                heatTol = temperUtil.str2num(s);
                 continue;
             }
-            if (a.equals("temp-pin")) {
-                tempPin = (int) temperUtil.str2num(s);
+            if (a.equals("heat-pin")) {
+                heatPin = (int) temperUtil.str2num(s);
                 continue;
             }
-            if (a.equals("win-min")) {
-                windowMin = (int) (temperUtil.str2num(s) * 60 * 1000);
+            if (a.equals("cool-tol")) {
+                coolTol = temperUtil.str2num(s);
                 continue;
             }
-            if (a.equals("win-max")) {
-                windowMax = (int) (temperUtil.str2num(s) * 60 * 1000);
+            if (a.equals("cool-pin")) {
+                coolPin = (int) temperUtil.str2num(s);
+                continue;
+            }
+            if (a.equals("vent-pin")) {
+                ventPin = (int) temperUtil.str2num(s);
+                continue;
+            }
+            if (a.equals("win-tim")) {
+                windowTim = (int) (temperUtil.str2num(s) * 60 * 1000);
                 continue;
             }
             if (a.equals("win-tol")) {
@@ -597,7 +635,7 @@ public class temper implements Runnable {
             a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head><body>";
             buf.write(a.getBytes());
             long tim = temperUtil.getTime();
-            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>err</b></td><td><b>read</b></td><td><b>work</b></td><td><b>res</b></td><td><b>win</b></td><td><b>when</b></td></tr></thead><tbody>";
+            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>err</b></td><td><b>read</b></td><td><b>work</b></td><td><b>win</b></td><td><b>res</b></td><td><b>wtmp</b></td><td><b>wtim</b></td></tr></thead><tbody>";
             buf.write(a.getBytes());
             for (int i = 0; i < measDat.length; i++) {
                 a = measDat[i].getMeas();
@@ -605,16 +643,11 @@ public class temper implements Runnable {
             }
             a = "</tbody></table><br/>";
             buf.write(a.getBytes());
-            a = "tolerance: " + tempTol + " celsius, window: " + windowTol + " celsius, " + temperUtil.timePast(windowMin, 0) + "-" + temperUtil.timePast(windowMax, 0) + "<br/>";
+            a = "tolerance: heatint: " + heatTol + ", cooling: " + coolTol + ", window: " + windowTol + ", time: " + temperUtil.timePast(windowTim, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, since " + temperUtil.time2str(tzdata, timeNeeded) + ", " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
-            if (venting) {
-                a = "venting: ";
-            } else {
-                a = "heating: ";
-            }
-            a += currValue + ", since " + temperUtil.time2str(tzdata, timeHeating) + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measUse + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
+            a = "doing: " + currValue + ", since " + temperUtil.time2str(tzdata, timeHeating) + ", " + temperUtil.timePast(tim, timeHeating) + " ago, using #" + (measIn + 1) + "/#" + (measOut + 1) + " for " + temperUtil.timePast(measTime, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "<form action=\"" + url + "\" method=get>wish: <input type=text name=temp value=\"" + lastNeeded + "\"> celsius (" + tempMin + "-" + tempMax + ")";
             buf.write(a.getBytes());
@@ -696,8 +729,8 @@ public class temper implements Runnable {
             int x = ((i * mx20) / history.size()) + 10;
             g2d.setPaint(Color.black);
             g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
-            if ((l.curr & tempPin) != 0) {
-                g2d.drawRect(x, 10, 1, 1);
+            if (l.curr != 0) {
+                g2d.drawRect(x, 5, 1, 1);
             }
             for (int o = 0; o < l.meas.length; o++) {
                 g2d.setPaint(colors[o]);
