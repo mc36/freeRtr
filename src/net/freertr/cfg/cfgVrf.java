@@ -225,8 +225,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! no packet6filter",
         "vrf definition .*! incremental4 1000",
         "vrf definition .*! incremental6 1000",
-        "!ipv[4|6] nat .* sequence .* timeout 300000",
-        "!ipv[4|6] nat .* sequence .* sessions 0"
+        "!ipv[46] nat .* sequence .* timeout 300000",
+        "!ipv[46] nat .* sequence .* sessions 0"
     };
 
     /**
