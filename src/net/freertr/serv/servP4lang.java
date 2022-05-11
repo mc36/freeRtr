@@ -962,7 +962,7 @@ class servP4langCfg implements ifcUp {
     }
 
     /**
-     * get frontpanel list
+     * get help text
      *
      * @param l where to place
      * @param p starting level
@@ -972,12 +972,12 @@ class servP4langCfg implements ifcUp {
         for (int i = 0; i < fronts.size(); i++) {
             lst.add(fronts.get(i).nam);
         }
-        l.add(null, p + " " + (p + 1) + "  export-vrf                specify vrf to export");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-vrf                specify vrf to export");
         l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
         l.add(null, (p + 2) + " .      <num>                 p4lang vrf number");
-        l.add(null, p + " " + (p + 1) + "  export-bridge             specify bridge to export");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-bridge             specify bridge to export");
         l.add(null, (p + 1) + " .    <num>                   bridge number");
-        l.add(null, p + " " + (p + 1) + "  export-port               specify port to export");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-port               specify port to export");
         l.add(null, (p + 1) + " " + (p + 2) + "    <name:ifc>              interface name");
         l.add(null, (p + 2) + " " + (p + 3) + ",.    dynamic               dynamic port number");
         l.add(lst, (p + 2) + " " + (p + 3) + ",.    <num:loc>             port number");
@@ -985,20 +985,20 @@ class servP4langCfg implements ifcUp {
         l.add(null, (p + 4) + " " + (p + 5) + ",.        <num>             fec, see hw vendor manual");
         l.add(null, (p + 5) + " " + (p + 6) + ",.          <num>           autoneg, see hw vendor manual");
         l.add(null, (p + 6) + " .              <num>         flowctrl, see hw vendor manual");
-        l.add(null, p + " " + (p + 1) + "  export-srv6               specify srv6 to export");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-srv6               specify srv6 to export");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");
-        l.add(null, p + " .  export-socket             specify sockets to be exported");
-        l.add(null, p + " .  api-stat                  count the sent api messages");
-        l.add(null, p + " " + (p + 1) + "  export-copp4              specify copp acl to export");
+        l.add(null, (p + 0) + " .  export-socket             specify sockets to be exported");
+        l.add(null, (p + 0) + " .  api-stat                  count the sent api messages");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-copp4              specify copp acl to export");
         l.add(null, (p + 1) + " .    <name:acl>              acl name");
-        l.add(null, p + " " + (p + 1) + "  export-copp6              specify copp acl to export");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-copp6              specify copp acl to export");
         l.add(null, (p + 1) + " .    <name:acl>              acl name");
-        l.add(null, p + " " + (p + 1) + "  export-interval           specify export interval");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-interval           specify export interval");
         l.add(null, (p + 1) + " .    <num>                   time in ms");
-        l.add(null, p + " " + (p + 1) + "  downlink                  specify downlink for packetin");
+        l.add(null, (p + 0) + " " + (p + 1) + "  downlink                  specify downlink for packetin");
         l.add(null, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
         l.add(null, (p + 2) + " .      <name:ifc>            interface name");
-        l.add(null, p + " " + (p + 1) + "  interconnect              specify port to for packetin");
+        l.add(null, (p + 0) + " " + (p + 1) + "  interconnect              specify port to for packetin");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");
     }
 
