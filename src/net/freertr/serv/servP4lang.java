@@ -2620,11 +2620,7 @@ class servP4langConn implements Runnable {
             s = cmd.word();
             lower.msgsGot++;
             if (lower.apiStatRx != null) {
-                servP4langMsg m = new servP4langMsg(s);
-                m = lower.apiStatRx.add(m);
-                if (m != null) {
-                    m.cnt++;
-                }
+                servP4lang.updateApiStats(lower.apiStatRx, s);
             }
             if (s.equals("state")) {
                 servP4langIfc ntry = lower.findIfc(bits.str2num(cmd.word()));
