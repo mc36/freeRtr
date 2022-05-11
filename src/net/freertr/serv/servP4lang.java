@@ -91,7 +91,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4lang extends servGeneric implements ifcUp, prtServS {
+public class servP4lang extends servGeneric implements prtServS {
 
     /**
      * create instance
@@ -99,10 +99,324 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public servP4lang() {
     }
 
+    private final servP4langCfg dp = new servP4langCfg();
+
     /**
      * port
      */
     public final static int port = 9080;
+
+    /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+
+    /**
+     * defaults text
+     */
+    public final static String[] defaultL = {
+        "server p4lang .*! port " + port,
+        "server p4lang .*! protocol " + proto2string(protoAllStrm),
+        "server p4lang .*! buffer 65536",
+        "server p4lang .*! no api-stat",
+        "server p4lang .*! no export-srv6",
+        "server p4lang .*! no export-copp4",
+        "server p4lang .*! no export-copp6",
+        "server p4lang .*! no export-socket",
+        "server p4lang .*! no interconnect",
+        "server p4lang .*! export-interval 1000"
+    };
+
+    /**
+     * defaults filter
+     */
+    public static tabGen<userFilter> defaultF;
+
+    public tabGen<userFilter> srvDefFlt() {
+        return defaultF;
+    }
+
+    public void srvShRun(String beg, List<String> l, int filter) {
+        l.add(beg + "buffer " + bufSiz);
+        dp.getShowRun(beg, l);
+    }
+
+    public boolean srvCfgStr(cmds cmd) {
+        String s = cmd.word();
+        if (s.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("no")) {
+            s = cmd.word();
+            return dp.doUnConfig(s, cmd);
+        }
+        return dp.doConfig(s, cmd);
+    }
+
+    public void srvHelp(userHelping l) {
+        l.add(null, "1 2  buffer                    set buffer size on connection");
+        l.add(null, "2 .    <num>                   buffer in bytes");
+        dp.getHelpText(l, 1);
+    }
+
+    public String srvName() {
+        return "p4lang";
+    }
+
+    public int srvPort() {
+        return port;
+    }
+
+    public int srvProto() {
+        return protoAllStrm;
+    }
+
+    public boolean srvInit() {
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
+    }
+
+    public boolean srvDeinit() {
+        return genericStop(0);
+    }
+
+    public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        dp.conn.pipe.setClose();
+        dp.notif.wakeup();
+        id.timeout = 120000;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        pipe.lineTx = pipeSide.modTyp.modeLF;
+        dp.remote = id.peerAddr.copyBytes();
+        dp.minBuf = bufSiz / 2;
+        dp.conn = new servP4langConn(pipe, dp);
+        dp.conn.startWork();
+        return false;
+    }
+
+    /**
+     * get generic show
+     *
+     * @return show
+     */
+    public userFormat getShowGen() {
+        return dp.getShowGen();
+    }
+
+    /**
+     * get api show
+     *
+     * @return show
+     */
+    public userFormat getShowApiTx() {
+        return dumpApiStats(dp.apiStatTx);
+    }
+
+    /**
+     * get api show
+     *
+     * @return show
+     */
+    public userFormat getShowApiRx() {
+        return dumpApiStats(dp.apiStatRx);
+    }
+
+    /**
+     * get frontpanel show
+     *
+     * @return show
+     */
+    public userFormat getShowFront() {
+        return dp.getShowFront();
+    }
+
+    /**
+     * get interfaces show
+     *
+     * @return show
+     */
+    public userFormat getShowIfaces() {
+        return dp.getShowIfaces();
+    }
+
+    /**
+     * get neighbor show
+     *
+     * @return show
+     */
+    public userFormat getShowNeighs() {
+        return dp.getShowNeighs();
+    }
+
+    /**
+     * get interfaces show
+     *
+     * @param ifc interface
+     * @return show
+     */
+    public userFormat getShowIface(cfgIfc ifc) {
+        return dp.getShowIface(ifc);
+    }
+
+    /**
+     * do clear
+     */
+    public void doClear() {
+        dp.doClear();
+    }
+
+    /**
+     * send line
+     *
+     * @param a line
+     */
+    public void sendLine(String a) {
+        dp.sendLine(a);;
+    }
+
+    /**
+     * get null label
+     *
+     * @param ntry route entry
+     * @return label
+     */
+    public static int getNullLabel(tabRouteEntry<addrIP> ntry) {
+        if (ntry.prefix.network.isIPv4()) {
+            return ipMpls.labelExp4;
+        } else {
+            return ipMpls.labelExp6;
+        }
+    }
+
+    /**
+     * get label
+     *
+     * @param labs labels
+     * @return label
+     */
+    public static int getLabel(List<Integer> labs) {
+        if (labs == null) {
+            return -1;
+        }
+        if (labs.size() < 1) {
+            return -1;
+        }
+        int i = labs.get(0);
+        if (i != ipMpls.labelImp) {
+            return i;
+        }
+        if (labs.size() < 2) {
+            return ipMpls.labelExp4;
+        }
+        i = labs.get(1);
+        if (i != ipMpls.labelImp) {
+            return i;
+        }
+        return ipMpls.labelExp4;
+    }
+
+    /**
+     * get label
+     *
+     * @param ntry route entry
+     * @return label
+     */
+    public static int getLabel(tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.labelRem == null) {
+            return getNullLabel(ntry);
+        }
+        if (ntry.best.labelRem.size() < 1) {
+            return getNullLabel(ntry);
+        }
+        int i = ntry.best.labelRem.get(0);
+        if (i != ipMpls.labelImp) {
+            return i;
+        }
+        if (ntry.best.labelRem.size() < 2) {
+            return getNullLabel(ntry);
+        }
+        i = ntry.best.labelRem.get(1);
+        if (i != ipMpls.labelImp) {
+            return i;
+        }
+        return getNullLabel(ntry);
+    }
+
+    /**
+     * get bier label
+     *
+     * @param ntry route entry
+     * @param full bitmap
+     * @param sis shift
+     * @return label
+     */
+    public static String getBierLabs(tabLabelBierN ntry, byte[] full, int sis) {
+        byte[] res = ntry.getAndShr(full, sis);
+        if (res == null) {
+            return " 0 0 0 0 0 0 0 0";
+        }
+        if (res.length < 1) {
+            return " 0 0 0 0 0 0 0 0";
+        }
+        String a = "";
+        for (int i = 0; i < res.length; i += 4) {
+            a += " " + bits.msbGetD(res, i);
+        }
+        return a;
+    }
+
+    /**
+     * negate dataplane command
+     *
+     * @param s string to negate
+     * @return negated string
+     */
+    public static String negateOneCommand(String s) {
+        s = s.replaceAll("_add ", "_del ");
+        s = s.replaceAll("_mod ", "_del ");
+        return s;
+    }
+
+    /**
+     * dump api statistics
+     *
+     * @param tab table to dump
+     * @return dump
+     */
+    public static userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
+        if (tab == null) {
+            return null;
+        }
+        userFormat res = new userFormat("|", "message|count|last|ago");
+        for (int i = 0; i < tab.size(); i++) {
+            res.add("" + tab.get(i));
+        }
+        return res;
+    }
+
+    /**
+     * update api statistics
+     *
+     * @param l table to dump
+     * @param a message
+     */
+    public static void updateApiStats(tabGen<servP4langMsg> l, String a) {
+        servP4langMsg m = new servP4langMsg(a);
+        servP4langMsg o = l.add(m);
+        if (o != null) {
+            m = o;
+        }
+        m.cnt++;
+        m.lst = bits.getTime();
+    }
+
+}
+
+class servP4langCfg implements ifcUp {
+
+    /**
+     * current connection
+     */
+    public servP4langConn conn;
 
     /**
      * exported vrfs
@@ -150,163 +464,153 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
     public int expDelay = 1000;
 
     /**
-     * last connection
-     */
-    protected servP4langConn conn = null;
-
-    /**
      * last peer
      */
-    protected addrIP remote = null;
+    public addrIP remote = null;
+
+    /**
+     * minimum buffer size
+     */
+    public int minBuf = 0;
 
     /**
      * last capability
      */
-    protected String capability = null;
+    public String capability = null;
 
     /**
      * last platform
      */
-    protected String platform = null;
+    public String platform = null;
 
     /**
      * last cpuport
      */
-    protected int cpuport;
+    public int cpuport;
 
     /**
      * first dynamic range
      */
-    protected int dynRngBeg = 0x10000;
+    public int dynRngBeg = 0x10000;
 
     /**
      * last dynamic range
      */
-    protected int dynRngEnd = 0x20000;
+    public int dynRngEnd = 0x20000;
 
     /**
      * last front panel
      */
-    protected tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
+    public tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
 
     /**
      * connection start
      */
-    protected long started = 0;
+    public long started = 0;
+
+    /**
+     * connections accepted
+     */
+    public int accepted = 0;
 
     /**
      * interconnection interface
      */
-    protected ifcEthTyp interconn = null;
+    public ifcEthTyp interconn = null;
 
     /**
      * downlink interfaces
      */
-    protected tabGen<servP4langDlnk> downLinks = new tabGen<servP4langDlnk>();
+    public tabGen<servP4langDlnk> downLinks = new tabGen<servP4langDlnk>();
 
     /**
      * counter
      */
-    protected counter cntr = new counter();
+    public counter cntr = new counter();
 
     /**
      * counter
      */
-    protected notifier notif = new notifier();
+    public notifier notif = new notifier();
 
     /**
      * controller text
      */
-    protected List<String> statsTxt;
+    public List<String> statsTxt;
 
     /**
      * controller notifier
      */
-    protected notifier statsNtf;
+    public notifier statsNtf;
 
     /**
      * controller port
      */
-    protected int statsPrt;
+    public int statsPrt;
 
     /**
      * rounds done
      */
-    protected int rndDoneNum;
+    public int rndDoneNum;
 
     /**
      * rounds skiped
      */
-    protected int rndSkipNum;
+    public int rndSkipNum;
 
     /**
      * rounds time
      */
-    protected int rndDoneTime;
+    public int rndDoneTime;
 
     /**
      * rounds time
      */
-    protected long rndDoneLast;
+    public long rndDoneLast;
 
     /**
      * rounds time
      */
-    protected long rndSkipLast;
-
-    /**
-     * buffer size
-     */
-    protected int bufSiz = 65536;
+    public long rndSkipLast;
 
     /**
      * messages sent
      */
-    protected int msgsSent;
+    public int msgsSent;
 
     /**
      * messages got
      */
-    protected int msgsGot;
+    public int msgsGot;
 
     /**
      * transmitted message statistics
      */
-    protected tabGen<servP4langMsg> apiStatTx;
+    public tabGen<servP4langMsg> apiStatTx;
 
     /**
      * received message statistics
      */
-    protected tabGen<servP4langMsg> apiStatRx;
-
-    private ifcDn intercon;
+    public tabGen<servP4langMsg> apiStatRx;
 
     /**
-     * defaults text
+     * interconnect interface
      */
-    public final static String[] defaultL = {
-        "server p4lang .*! port " + port,
-        "server p4lang .*! protocol " + proto2string(protoAllStrm),
-        "server p4lang .*! buffer 65536",
-        "server p4lang .*! no api-stat",
-        "server p4lang .*! no export-srv6",
-        "server p4lang .*! no export-copp4",
-        "server p4lang .*! no export-copp6",
-        "server p4lang .*! no export-socket",
-        "server p4lang .*! no interconnect",
-        "server p4lang .*! export-interval 1000",};
+    public ifcDn intercon;
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
-        return defaultF;
+    public servP4langCfg() {
+        pipeLine pl = new pipeLine(1024, false);
+        pl.setClose();
+        conn = new servP4langConn(pl.getSide(), this);
     }
 
-    public void srvShRun(String beg, List<String> l, int filter) {
-        l.add(beg + "buffer " + bufSiz);
+    /**
+     * get configuration
+     *
+     * @param beg text to prepend
+     * @param l text to append
+     */
+    public void getShowRun(String beg, List<String> l) {
         cmds.cfgLine(l, apiStatTx == null, beg, "api-stat", "");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
@@ -348,12 +652,13 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
     }
 
-    public boolean srvCfgStr(cmds cmd) {
-        String s = cmd.word();
-        if (s.equals("buffer")) {
-            bufSiz = bits.str2num(cmd.word());
-            return false;
-        }
+    /**
+     * do configuration work
+     *
+     * @param s command
+     * @param cmd parameters
+     */
+    public boolean doConfig(String s, cmds cmd) {
         if (s.equals("export-vrf")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
@@ -532,10 +837,16 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
             expIfc.put(ntry);
             return false;
         }
-        if (!s.equals("no")) {
-            return true;
-        }
-        s = cmd.word();
+        return true;
+    }
+
+    /**
+     * do negated configuration
+     *
+     * @param s command
+     * @param cmd parameters
+     */
+    public boolean doUnConfig(String s, cmds cmd) {
         if (s.equals("export-vrf")) {
             cmd.word();
             servP4langVrf ntry = new servP4langVrf(bits.str2num(cmd.word()));
@@ -619,103 +930,184 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    /**
+     * find frontpanel id
+     *
+     * @param ifc interface
+     * @param num number or name to find
+     * @param create allow creation
+     * @return id, -1 if error
+     */
+    public int front2id(cfgIfc ifc, String num, boolean create) {
+        int i = bits.str2num(num);
+        if (num.equals("" + i)) {
+            return i;
+        }
+        if (num.equals("dynamic")) {
+            servP4langIfc res = findIfc(ifc);
+            if (res != null) {
+                return res.id;
+            }
+            if (!create) {
+                return -1;
+            }
+            return getNextDynamic();
+        }
+        servP4langFrnt ntry = new servP4langFrnt(-1, num);
+        ntry = fronts.find(ntry);
+        if (ntry == null) {
+            return -1;
+        }
+        return ntry.id;
+    }
+
+    /**
+     * get frontpanel list
+     *
+     * @param l where to place
+     * @param p starting level
+     */
+    public void getHelpText(userHelping l, int p) {
         List<String> lst = new ArrayList<String>();
         for (int i = 0; i < fronts.size(); i++) {
             lst.add(fronts.get(i).nam);
         }
-        l.add(null, "1 2  buffer                    set buffer size on connection");
-        l.add(null, "2 .    <num>                   buffer in bytes");
-        l.add(null, "1 2  export-vrf                specify vrf to export");
-        l.add(null, "2 3    <name:vrf>              vrf name");
-        l.add(null, "3 .      <num>                 p4lang vrf number");
-        l.add(null, "1 2  export-bridge             specify bridge to export");
-        l.add(null, "2 .    <num>                   bridge number");
-        l.add(null, "1 2  export-port               specify port to export");
-        l.add(null, "2 3    <name:ifc>              interface name");
-        l.add(null, "3 4,.    dynamic               dynamic port number");
-        l.add(lst, "3 4,.    <num:loc>             port number");
-        l.add(null, "4 5,.      <num>               speed in gbps");
-        l.add(null, "5 6,.        <num>             fec, see hw vendor manual");
-        l.add(null, "6 7,.          <num>           autoneg, see hw vendor manual");
-        l.add(null, "7 .              <num>         flowctrl, see hw vendor manual");
-        l.add(null, "1 2  export-srv6               specify srv6 to export");
-        l.add(null, "2 .    <name:ifc>              interface name");
-        l.add(null, "1 .  export-socket             specify sockets to be exported");
-        l.add(null, "1 .  api-stat                  count the sent api messages");
-        l.add(null, "1 2  export-copp4              specify copp acl to export");
-        l.add(null, "2 .    <name:acl>              acl name");
-        l.add(null, "1 2  export-copp6              specify copp acl to export");
-        l.add(null, "2 .    <name:acl>              acl name");
-        l.add(null, "1 2  export-interval           specify export interval");
-        l.add(null, "2 .    <num>                   time in ms");
-        l.add(null, "1 2  downlink                  specify downlink for packetin");
-        l.add(null, "2 3    <num:loc>               port number");
-        l.add(null, "3 .      <name:ifc>            interface name");
-        l.add(null, "1 2  interconnect              specify port to for packetin");
-        l.add(null, "2 .    <name:ifc>              interface name");
-    }
-
-    public String srvName() {
-        return "p4lang";
-    }
-
-    public int srvPort() {
-        return port;
-    }
-
-    public int srvProto() {
-        return protoAllStrm;
-    }
-
-    public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
-    }
-
-    public boolean srvDeinit() {
-        return genericStop(0);
-    }
-
-    public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        if (conn != null) {
-            conn.pipe.setClose();
-            notif.wakeup();
-        }
-        id.timeout = 120000;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        pipe.lineTx = pipeSide.modTyp.modeLF;
-        remote = id.peerAddr.copyBytes();
-        conn = new servP4langConn(pipe, this);
-        return false;
+        l.add(null, p + " " + (p + 1) + "  export-vrf                specify vrf to export");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <num>                 p4lang vrf number");
+        l.add(null, p + " " + (p + 1) + "  export-bridge             specify bridge to export");
+        l.add(null, (p + 1) + " .    <num>                   bridge number");
+        l.add(null, p + " " + (p + 1) + "  export-port               specify port to export");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <name:ifc>              interface name");
+        l.add(null, (p + 2) + " " + (p + 3) + ",.    dynamic               dynamic port number");
+        l.add(lst, (p + 2) + " " + (p + 3) + ",.    <num:loc>             port number");
+        l.add(null, (p + 3) + " " + (p + 4) + ",.      <num>               speed in gbps");
+        l.add(null, (p + 4) + " " + (p + 5) + ",.        <num>             fec, see hw vendor manual");
+        l.add(null, (p + 5) + " " + (p + 6) + ",.          <num>           autoneg, see hw vendor manual");
+        l.add(null, (p + 6) + " .              <num>         flowctrl, see hw vendor manual");
+        l.add(null, p + " " + (p + 1) + "  export-srv6               specify srv6 to export");
+        l.add(null, (p + 1) + " .    <name:ifc>              interface name");
+        l.add(null, p + " .  export-socket             specify sockets to be exported");
+        l.add(null, p + " .  api-stat                  count the sent api messages");
+        l.add(null, p + " " + (p + 1) + "  export-copp4              specify copp acl to export");
+        l.add(null, (p + 1) + " .    <name:acl>              acl name");
+        l.add(null, p + " " + (p + 1) + "  export-copp6              specify copp acl to export");
+        l.add(null, (p + 1) + " .    <name:acl>              acl name");
+        l.add(null, p + " " + (p + 1) + "  export-interval           specify export interval");
+        l.add(null, (p + 1) + " .    <num>                   time in ms");
+        l.add(null, p + " " + (p + 1) + "  downlink                  specify downlink for packetin");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
+        l.add(null, (p + 2) + " .      <name:ifc>            interface name");
+        l.add(null, p + " " + (p + 1) + "  interconnect              specify port to for packetin");
+        l.add(null, (p + 1) + " .    <name:ifc>              interface name");
     }
 
     /**
-     * send line
+     * get generic show
      *
-     * @param a line
+     * @return show
      */
-    public synchronized void sendLine(String a) {
-        if (conn == null) {
-            return;
+    public userFormat getShowGen() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("peer|" + remote);
+        res.add("closed|" + conn);
+        res.add("reconn|" + accepted);
+        res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
+        res.add("for|" + bits.timePast(started));
+        res.add("capability|" + capability);
+        res.add("platform|" + platform);
+        res.add("cpuport|" + cpuport);
+        res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
+        res.add("messages sent|" + msgsSent);
+        res.add("messages got|" + msgsGot);
+        res.add("rounds done|" + rndDoneNum);
+        res.add("last done|" + bits.time2str(cfgAll.timeZoneName, rndDoneLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndDoneLast) + " ago)");
+        res.add("time took|" + rndDoneTime);
+        res.add("rounds skip|" + rndSkipNum);
+        res.add("last skip|" + bits.time2str(cfgAll.timeZoneName, rndSkipLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndSkipLast) + " ago)");
+        return res;
+    }
+
+    /**
+     * get frontpanel show
+     *
+     * @return show
+     */
+    public userFormat getShowFront() {
+        userFormat res = new userFormat("|", "front|name");
+        for (int i = 0; i < fronts.size(); i++) {
+            servP4langFrnt ntry = fronts.get(i);
+            res.add(ntry.id + "|" + ntry.nam);
         }
-        if (debugger.servP4langTx) {
-            logger.debug("tx: " + a);
+        return res;
+    }
+
+    /**
+     * get interfaces show
+     *
+     * @return show
+     */
+    public userFormat getShowIfaces() {
+        userFormat res = new userFormat("|", "sent|name");
+        for (int i = 0; i < expIfc.size(); i++) {
+            servP4langIfc ntry = expIfc.get(i);
+            if (ntry.ifc == null) {
+                res.add(ntry.id + "|brif " + ntry.brif.getIfcName());
+            } else {
+                res.add(ntry.id + "|ifc " + ntry.ifc.name);
+            }
         }
-        conn.pipe.linePut(a + " ");
-        msgsSent++;
-        if (apiStatTx == null) {
-            return;
+        return res;
+    }
+
+    /**
+     * get neighbor show
+     *
+     * @return show
+     */
+    public userFormat getShowNeighs() {
+        userFormat res = new userFormat("|", "neigh|addr|iface");
+        for (int i = 0; i < neighs.size(); i++) {
+            servP4langNei ntry = neighs.get(i);
+            res.add(ntry.id + "|" + ntry.adr + "|" + ntry.iface);
         }
-        int i = a.indexOf(" ");
-        if (i > 0) {
-            a = a.substring(0, i);
+        return res;
+    }
+
+    /**
+     * get interfaces show
+     *
+     * @param ifc interface
+     * @return show
+     */
+    public userFormat getShowIface(cfgIfc ifc) {
+        userFormat res = new userFormat("|", "category|value");
+        servP4langIfc ntry = findIfc(ifc);
+        if (ntry == null) {
+            res.add("error|interface not exported");
+            return res;
         }
-        servP4langMsg m = new servP4langMsg(a);
-        m = apiStatTx.add(m);
-        if (m == null) {
-            return;
+        if (ntry.suppressState()) {
+            res.add("error|not a physical port");
+            return res;
         }
-        m.cnt++;
+        statsTxt = null;
+        statsNtf = new notifier();
+        statsPrt = ntry.id;
+        sendLine("stats " + ntry.id);
+        statsNtf.misleep(5000);
+        List<String> txt = statsTxt;
+        statsTxt = null;
+        statsNtf = null;
+        statsPrt = -4;
+        if (txt == null) {
+            res.add("error|no answer from dataplane");
+            return res;
+        }
+        for (int i = 0; i < txt.size(); i++) {
+            res.add(txt.get(i).replaceAll(" ", "|"));
+        }
+        return res;
     }
 
     /**
@@ -724,7 +1116,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param id id
      * @param pckB binary
      */
-    protected void sendPack(int id, packHolder pckB) {
+    public void sendPack(int id, packHolder pckB) {
         cntr.tx(pckB);
         ifcEther.createETHheader(pckB, false);
         if (intercon == null) {
@@ -814,181 +1206,28 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * do clear
      */
     public void doClear() {
-        if (conn == null) {
-            return;
-        }
         conn.pipe.setClose();
     }
 
     /**
-     * get generic show
+     * send line
      *
-     * @return show
+     * @param a line
      */
-    public userFormat getShowGen() {
-        userFormat res = new userFormat("|", "category|value");
-        res.add("peer|" + remote);
-        res.add("closed|" + conn);
-        res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
-        res.add("for|" + bits.timePast(started));
-        res.add("capability|" + capability);
-        res.add("platform|" + platform);
-        res.add("cpuport|" + cpuport);
-        res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
-        res.add("messages sent|" + msgsSent);
-        res.add("messages got|" + msgsGot);
-        res.add("rounds done|" + rndDoneNum);
-        res.add("last done|" + bits.time2str(cfgAll.timeZoneName, rndDoneLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndDoneLast) + " ago)");
-        res.add("time took|" + rndDoneTime);
-        res.add("rounds skip|" + rndSkipNum);
-        res.add("last skip|" + bits.time2str(cfgAll.timeZoneName, rndSkipLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndSkipLast) + " ago)");
-        return res;
-    }
-
-    private userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
-        if (tab == null) {
-            return null;
+    public synchronized void sendLine(String a) {
+        if (debugger.servP4langTx) {
+            logger.debug("tx: " + a);
         }
-        userFormat res = new userFormat("|", "message|count");
-        for (int i = 0; i < tab.size(); i++) {
-            res.add("" + tab.get(i));
+        conn.pipe.linePut(a + " ");
+        msgsSent++;
+        if (apiStatTx == null) {
+            return;
         }
-        return res;
-    }
-
-    /**
-     * get api show
-     *
-     * @return show
-     */
-    public userFormat getShowApiTx() {
-        return dumpApiStats(apiStatTx);
-    }
-
-    /**
-     * get api show
-     *
-     * @return show
-     */
-    public userFormat getShowApiRx() {
-        return dumpApiStats(apiStatRx);
-    }
-
-    /**
-     * get frontpanel show
-     *
-     * @return show
-     */
-    public userFormat getShowFront() {
-        userFormat res = new userFormat("|", "front|name");
-        for (int i = 0; i < fronts.size(); i++) {
-            servP4langFrnt ntry = fronts.get(i);
-            res.add(ntry.id + "|" + ntry.nam);
+        int i = a.indexOf(" ");
+        if (i > 0) {
+            a = a.substring(0, i);
         }
-        return res;
-    }
-
-    /**
-     * get interfaces show
-     *
-     * @return show
-     */
-    public userFormat getShowIfaces() {
-        userFormat res = new userFormat("|", "sent|name");
-        for (int i = 0; i < expIfc.size(); i++) {
-            servP4langIfc ntry = expIfc.get(i);
-            if (ntry.ifc == null) {
-                res.add(ntry.id + "|brif " + ntry.brif.getIfcName());
-            } else {
-                res.add(ntry.id + "|ifc " + ntry.ifc.name);
-            }
-        }
-        return res;
-    }
-
-    /**
-     * get neighbor show
-     *
-     * @return show
-     */
-    public userFormat getShowNeighs() {
-        userFormat res = new userFormat("|", "neigh|addr|iface");
-        for (int i = 0; i < neighs.size(); i++) {
-            servP4langNei ntry = neighs.get(i);
-            res.add(ntry.id + "|" + ntry.adr + "|" + ntry.iface);
-        }
-        return res;
-    }
-
-    /**
-     * get interfaces show
-     *
-     * @param ifc interface
-     * @return show
-     */
-    public userFormat getShowIface(cfgIfc ifc) {
-        userFormat res = new userFormat("|", "category|value");
-        if (conn == null) {
-            res.add("error|dataplane not connected");
-            return res;
-        }
-        servP4langIfc ntry = findIfc(ifc);
-        if (ntry == null) {
-            res.add("error|interface not exported");
-            return res;
-        }
-        if (ntry.suppressState()) {
-            res.add("error|not a physical port");
-            return res;
-        }
-        statsTxt = null;
-        statsNtf = new notifier();
-        statsPrt = ntry.id;
-        sendLine("stats " + ntry.id);
-        statsNtf.misleep(5000);
-        List<String> txt = statsTxt;
-        statsTxt = null;
-        statsNtf = null;
-        statsPrt = -4;
-        if (txt == null) {
-            res.add("error|no answer from dataplane");
-            return res;
-        }
-        for (int i = 0; i < txt.size(); i++) {
-            res.add(txt.get(i).replaceAll(" ", "|"));
-        }
-        return res;
-    }
-
-    /**
-     * find frontpanel id
-     *
-     * @param ifc interface
-     * @param num number or name to find
-     * @param create allow creation
-     * @return id, -1 if error
-     */
-    protected int front2id(cfgIfc ifc, String num, boolean create) {
-        int i = bits.str2num(num);
-        if (num.equals("" + i)) {
-            return i;
-        }
-        if (num.equals("dynamic")) {
-            servP4langIfc res = findIfc(ifc);
-            if (res != null) {
-                return res.id;
-            }
-            if (!create) {
-                return -1;
-            }
-            return getNextDynamic();
-        }
-        servP4langFrnt ntry = new servP4langFrnt(-1, num);
-        ntry = fronts.find(ntry);
-        if (ntry == null) {
-            return -1;
-        }
-        return ntry.id;
+        servP4lang.updateApiStats(apiStatTx, a);
     }
 
     /**
@@ -996,7 +1235,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      *
      * @return id, -1 if error
      */
-    protected synchronized int getNextDynamic() {
+    public synchronized int getNextDynamic() {
         for (int cnt = 0; cnt < 16; cnt++) {
             int dynRngNxt = bits.random(dynRngBeg, dynRngEnd);
             servP4langIfc ifc = new servP4langIfc(this, dynRngNxt);
@@ -1014,7 +1253,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findIfc(cfgIfc ifc) {
+    public servP4langIfc findIfc(cfgIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1036,7 +1275,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param id id to find
      * @return interface, null if error
      */
-    protected servP4langIfc findIfc(int id) {
+    public servP4langIfc findIfc(int id) {
         servP4langIfc ntry = new servP4langIfc(this, id);
         ntry = expIfc.find(ntry);
         if (ntry == null) {
@@ -1054,7 +1293,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findIfc(ifcEthTyp ifc) {
+    public servP4langIfc findIfc(ifcEthTyp ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1076,7 +1315,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findIfc(tabRouteIface ifc) {
+    public servP4langIfc findIfc(tabRouteIface ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1101,7 +1340,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findIfc(ifcBridgeIfc ifc) {
+    public servP4langIfc findIfc(ifcBridgeIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1123,7 +1362,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findIfc(cfgBrdg ifc) {
+    public servP4langIfc findIfc(cfgBrdg ifc) {
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc old = expIfc.get(i);
             if (old.ifc == null) {
@@ -1145,7 +1384,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findBundl(cfgBndl ifc) {
+    public servP4langIfc findBundl(cfgBndl ifc) {
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc old = expIfc.get(i);
             if (old.ifc == null) {
@@ -1167,7 +1406,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return interface, null if error
      */
-    protected servP4langIfc findDynBr(ifcBridgeIfc ifc) {
+    public servP4langIfc findDynBr(ifcBridgeIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1186,7 +1425,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param fwd forwarder
      * @return vrf, null if error
      */
-    protected servP4langVrf findVrf(ipFwd fwd) {
+    public servP4langVrf findVrf(ipFwd fwd) {
         if (fwd == null) {
             return null;
         }
@@ -1208,7 +1447,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ifc interface
      * @return vrf, null if error
      */
-    protected servP4langVrf findVrf(servP4langIfc ifc) {
+    public servP4langVrf findVrf(servP4langIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1227,7 +1466,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param ntry neighbor
      * @return updated, null if error
      */
-    protected servP4langNei genNeighId(servP4langNei ntry) {
+    public servP4langNei genNeighId(servP4langNei ntry) {
         ntry.need = 1;
         for (int rnd = 0; rnd < 16; rnd++) {
             ntry.id = bits.random(0x1000, 0xfff0);
@@ -1258,7 +1497,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param hop nexthop address
      * @return neighbor, null if error
      */
-    protected servP4langNei findNei(tabRouteIface ifc, addrIP hop) {
+    public servP4langNei findNei(tabRouteIface ifc, addrIP hop) {
         servP4langIfc id = findIfc(ifc);
         if (id == null) {
             return null;
@@ -1279,7 +1518,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param adr nexthop address
      * @return neighbor, null if error
      */
-    protected servP4langNei findHop(ipFwd fwd, addrIP adr) {
+    public servP4langNei findHop(ipFwd fwd, addrIP adr) {
         tabRouteEntry<addrIP> rou = fwd.actualU.route(adr);
         rou = convRou(rou, false);
         if (rou == null) {
@@ -1302,7 +1541,7 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
      * @param nhchk nexthop check
      * @return converted, null if error
      */
-    protected tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
+    public tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
         if (rou == null) {
             return null;
         }
@@ -1359,109 +1598,6 @@ public class servP4lang extends servGeneric implements ifcUp, prtServS {
         }
     }
 
-    /**
-     * get null label
-     *
-     * @param ntry route entry
-     * @return label
-     */
-    protected static int getNullLabel(tabRouteEntry<addrIP> ntry) {
-        if (ntry.prefix.network.isIPv4()) {
-            return ipMpls.labelExp4;
-        } else {
-            return ipMpls.labelExp6;
-        }
-    }
-
-    /**
-     * get label
-     *
-     * @param labs labels
-     * @return label
-     */
-    protected static int getLabel(List<Integer> labs) {
-        if (labs == null) {
-            return -1;
-        }
-        if (labs.size() < 1) {
-            return -1;
-        }
-        int i = labs.get(0);
-        if (i != ipMpls.labelImp) {
-            return i;
-        }
-        if (labs.size() < 2) {
-            return ipMpls.labelExp4;
-        }
-        i = labs.get(1);
-        if (i != ipMpls.labelImp) {
-            return i;
-        }
-        return ipMpls.labelExp4;
-    }
-
-    /**
-     * get label
-     *
-     * @param ntry route entry
-     * @return label
-     */
-    protected static int getLabel(tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.labelRem == null) {
-            return getNullLabel(ntry);
-        }
-        if (ntry.best.labelRem.size() < 1) {
-            return getNullLabel(ntry);
-        }
-        int i = ntry.best.labelRem.get(0);
-        if (i != ipMpls.labelImp) {
-            return i;
-        }
-        if (ntry.best.labelRem.size() < 2) {
-            return getNullLabel(ntry);
-        }
-        i = ntry.best.labelRem.get(1);
-        if (i != ipMpls.labelImp) {
-            return i;
-        }
-        return getNullLabel(ntry);
-    }
-
-    /**
-     * get bier label
-     *
-     * @param ntry route entry
-     * @param full bitmap
-     * @param sis shift
-     * @return label
-     */
-    protected static String getBierLabs(tabLabelBierN ntry, byte[] full, int sis) {
-        byte[] res = ntry.getAndShr(full, sis);
-        if (res == null) {
-            return " 0 0 0 0 0 0 0 0";
-        }
-        if (res.length < 1) {
-            return " 0 0 0 0 0 0 0 0";
-        }
-        String a = "";
-        for (int i = 0; i < res.length; i += 4) {
-            a += " " + bits.msbGetD(res, i);
-        }
-        return a;
-    }
-
-    /**
-     * negate dataplane command
-     *
-     * @param s string to negate
-     * @return negated string
-     */
-    protected static String negateOneCommand(String s) {
-        s = s.replaceAll("_add ", "_del ");
-        s = s.replaceAll("_mod ", "_del ");
-        return s;
-    }
-
 }
 
 class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr<T>> {
@@ -1494,7 +1630,7 @@ class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
 
     public final int id;
 
-    public final servP4lang lower;
+    public final servP4langCfg lower;
 
     public counter cntr = new counter();
 
@@ -1502,7 +1638,7 @@ class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
 
     public ifcEthTyp ifc;
 
-    public servP4langDlnk(servP4lang prnt, int num) {
+    public servP4langDlnk(servP4langCfg prnt, int num) {
         id = num;
         lower = prnt;
     }
@@ -1548,12 +1684,14 @@ class servP4langMsg implements Comparator<servP4langMsg> {
 
     public int cnt;
 
+    public long lst;
+
     public servP4langMsg(String m) {
         msg = m;
     }
 
     public String toString() {
-        return msg + "|" + (cnt + 1);
+        return msg + "|" + cnt + "|" + bits.time2str(cfgAll.timeZoneName, lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(lst);
     }
 
     public int compare(servP4langMsg o1, servP4langMsg o2) {
@@ -1806,7 +1944,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public boolean hidden;
 
-    public final servP4lang lower;
+    public final servP4langCfg lower;
 
     public int id;
 
@@ -1926,7 +2064,7 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public state.states lastState = state.states.up;
 
-    public servP4langIfc(servP4lang p, int i) {
+    public servP4langIfc(servP4langCfg p, int i) {
         id = i;
         lower = p;
     }
@@ -2118,9 +2256,9 @@ class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
 class servP4langConn implements Runnable {
 
-    protected final pipeSide pipe;
+    public final pipeSide pipe;
 
-    private final servP4lang lower;
+    private final servP4langCfg lower;
 
     private int keepalive;
 
@@ -2136,9 +2274,12 @@ class servP4langConn implements Runnable {
 
     private tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
 
-    public servP4langConn(pipeSide pip, servP4lang upper) {
+    public servP4langConn(pipeSide pip, servP4langCfg upper) {
         pipe = pip;
         lower = upper;
+    }
+
+    public void startWork() {
         new Thread(this).start();
     }
 
@@ -2367,6 +2508,7 @@ class servP4langConn implements Runnable {
 
     private boolean doNegot() {
         lower.started = bits.getTime();
+        lower.accepted++;
         lower.neighs.clear();
         for (int i = lower.expIfc.size() - 1; i >= 0; i--) {
             servP4langIfc ntry = lower.expIfc.get(i);
@@ -2406,11 +2548,7 @@ class servP4langConn implements Runnable {
             s = cmd.word();
             lower.msgsGot++;
             if (lower.apiStatRx != null) {
-                servP4langMsg m = new servP4langMsg(s);
-                m = lower.apiStatRx.add(m);
-                if (m != null) {
-                    m.cnt++;
-                }
+                servP4lang.updateApiStats(lower.apiStatRx, s);
             }
             if (s.equals("portname")) {
                 int i = bits.str2num(cmd.word());
@@ -3079,7 +3217,7 @@ class servP4langConn implements Runnable {
     }
 
     private void doExports() {
-        if (pipe.ready2tx() < (lower.bufSiz / 2)) {
+        if (pipe.ready2tx() < lower.minBuf) {
             lower.rndSkipLast = bits.getTime();
             lower.rndSkipNum++;
             return;

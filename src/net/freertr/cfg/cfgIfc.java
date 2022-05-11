@@ -2531,8 +2531,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * normalize one interface name
      *
      * @param s string to normalize
-     * @param subi set true to get subinterface if, false to get main interface
-     * id
      * @return normalized {name,"."+subif}, {"",""} if failed
      */
     public static String[] dissectName(String s) {
