@@ -146,7 +146,7 @@ public class userHwext {
                 continue;
             }
             a = cmd.word();
-            a = cfgIfc.normName(a);
+            a = cfgIfc.dissectName(a)[2];
             if (a.length() < 1) {
                 continue;
             }

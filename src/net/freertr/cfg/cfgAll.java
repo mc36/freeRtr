@@ -1875,7 +1875,7 @@ public class cfgAll {
      * @return descriptor
      */
     public static cfgIfc ifcAdd(String nam, cfgIfc.ifaceType typ, ifcThread thrd, int wrkr) {
-        nam = cfgIfc.normName(nam, false);
+        nam = cfgIfc.dissectName(nam)[0];
         if (thrd != null) {
             thrd.startLoop(wrkr);
         }
@@ -1894,7 +1894,7 @@ public class cfgAll {
      * @return false if successful, true on error
      */
     public static boolean ifcDel(String nam, boolean checks) {
-        nam = cfgIfc.normName(nam);
+        nam = cfgIfc.dissectName(nam)[2];
         if (nam.length() < 1) {
             return true;
         }
@@ -1968,7 +1968,11 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        nam = cfgIfc.normName(nam);
+        String pnm[] = cfgIfc.dissectName(nam);
+        nam = pnm[2];
+        if (nam.length() < 1) {
+            return null;
+        }
         cfgIfc ntry = new cfgIfc(nam);
         if (!create) {
             return ifaces.find(ntry);
@@ -1977,15 +1981,14 @@ public class cfgAll {
         if (prnt != null) {
             return prnt;
         }
-        String pnm = cfgIfc.normName(nam, false);
-        ntry.name = pnm;
+        ntry.name = pnm[0];
         prnt = ifaces.find(ntry);
         if (prnt != null) {
             if (prnt.parent != null) {
                 return null;
             }
             ntry.name = nam;
-            int i = bits.str2num(cfgIfc.normName(nam, true));
+            int i = bits.str2num(pnm[1]);
             if (i < 1) {
                 return null;
             }
@@ -1994,7 +1997,7 @@ public class cfgAll {
             ntry.initSubiface(prnt);
             return ntry;
         }
-        if (!nam.equals(pnm)) {
+        if (!nam.equals(pnm[0])) {
             return null;
         }
         ntry.name = nam;

@@ -565,7 +565,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("interface")) {
-            cfgVdcIfc res = new cfgVdcIfc(cfgIfc.normName(cmd.word(), false), "");
+            cfgVdcIfc res = new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], "");
             res = cfgInit.ifaceLst.find(res);
             if (res == null) {
                 cmd.error("no such interface");
@@ -576,7 +576,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("local")) {
-            a = cfgIfc.normName(cmd.word(), false);
+            a = cfgIfc.dissectName(cmd.word())[0];
             cfgIfc.ifaceType typ = cfgIfc.string2type(a);
             if (typ == null) {
                 cmd.error("bad name");
@@ -610,7 +610,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("connect")) {
-            a = cfgIfc.normName(cmd.word(), false);
+            a = cfgIfc.dissectName(cmd.word())[0];
             if (cfgIfc.string2type(a) == null) {
                 cmd.error("bad name");
                 return;
@@ -783,15 +783,15 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("interface")) {
-            ifaces.del(new cfgVdcIfc(cfgIfc.normName(cmd.word(), false), ""));
+            ifaces.del(new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], ""));
             return;
         }
         if (a.equals("local")) {
-            locals.del(new cfgVdcIfc(cfgIfc.normName(cmd.word(), false), ""));
+            locals.del(new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], ""));
             return;
         }
         if (a.equals("connect")) {
-            delConn(cfgIfc.normName(cmd.word(), false));
+            delConn(cfgIfc.dissectName(cmd.word())[0]);
             return;
         }
         if (a.equals("pci")) {

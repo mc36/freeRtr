@@ -558,7 +558,7 @@ public class cfgInit implements Runnable {
                         prtWatch.ifcAdd(nam, hdr, mac);
                         break;
                     default:
-                        ifaceLst.add(new cfgVdcIfc(cfgIfc.normName(nam, false), old));
+                        ifaceLst.add(new cfgVdcIfc(cfgIfc.dissectName(nam)[0], old));
                         cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr, thrd);
                         ifc.initPhysical();
                         if (debugger.cfgInitHw) {

@@ -2533,61 +2533,45 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param s string to normalize
      * @param subi set true to get subinterface if, false to get main interface
      * id
-     * @return normalized name, "" if failed
+     * @return normalized {name,subif,norm}, {"","",""} if failed
      */
-    public static String normName(String s, boolean subi) {
-        s = s.trim().toLowerCase();
+    public static String[] dissectName(String s) {
+        s = s.toLowerCase();
         int p = s.length();
-        for (int i = 0; i < 10; i++) {
-            int o = s.indexOf("" + i);
-            if (o < 0) {
+        for (int i = 0; i < p; i++) {
+            int o = s.charAt(i);
+            if (o < 0x30) {
                 continue;
             }
-            if (o < p) {
-                p = o;
+            if (o > 0x39) {
+                continue;
             }
+            p = i;
+            break;
         }
         if (p >= s.length()) {
-            return "";
+            return new String[]{"", "", ""};
         }
-        String b = s.substring(0, p);
-        s = s.substring(p, s.length());
+        String b = s.substring(0, p).trim();
+        s = s.substring(p, s.length()).trim();
         b = ifaceNames.repairLine(b).trim();
         if (b.length() < 1) {
-            return "";
+            return new String[]{"", "", ""};
         }
         p = s.indexOf(".");
+        String c;
         if (p < 0) {
             p = bits.str2num(s);
             b += p;
             s = "";
+            c = "";
         } else {
             b += bits.str2num(s.substring(0, p));
             s = s.substring(p + 1, s.length());
+            s = "" + bits.str2num(s);
+            c = ".";
         }
-        if (subi) {
-            return s.trim();
-        } else {
-            return b.trim();
-        }
-    }
-
-    /**
-     * normalize one interface name
-     *
-     * @param nam name to process
-     * @return normalized name, "" if failed
-     */
-    public static String normName(String nam) {
-        String s = normName(nam, true);
-        if (s.length() > 0) {
-            s = "." + s;
-        }
-        nam = normName(nam, false);
-        if (nam.length() < 1) {
-            return "";
-        }
-        return nam + s;
+        return new String[]{b, s, (b + c + s)};
     }
 
     public String toString() {
