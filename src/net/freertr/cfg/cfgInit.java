@@ -1010,7 +1010,9 @@ public class cfgInit implements Runnable {
             int i = s.indexOf("!");
             String c = s.substring(i + 1, s.length());
             s = s.substring(0, i);
-            res.add(new userFilter(s, c, null));
+            userFilter ntry = new userFilter(s, c, null);
+            ntry.optimize4lookup();
+            res.add(ntry);
         }
         return res;
     }
@@ -1023,15 +1025,13 @@ public class cfgInit implements Runnable {
         }
     }
 
-    private static tabGen<userFilter> createFilter(String[] lst,
-            tabGen<userFilter> s1) {
+    private static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
         tabGen<userFilter> r = createFilter(lst);
         addFilters(r, s1);
         return r;
     }
 
-    private static tabGen<userFilter> createFilter(String[] lst,
-            tabGen<userFilter> s1, tabGen<userFilter> s2) {
+    private static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
         tabGen<userFilter> r = createFilter(lst);
         addFilters(r, s1);
         addFilters(r, s2);

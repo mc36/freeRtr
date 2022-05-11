@@ -3,6 +3,8 @@ package net.freertr.user;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.freertr.tab.tabGen;
 import net.freertr.util.cmds;
 import net.freertr.util.extMrkLng;
@@ -34,6 +36,10 @@ public class userFilter implements Comparator<userFilter> {
      * used flag
      */
     public boolean used;
+
+    private Pattern patSec;
+
+    private Pattern patCmd;
 
     /**
      * create new filter
@@ -92,13 +98,32 @@ public class userFilter implements Comparator<userFilter> {
      * @return true if matches, false if not
      */
     public boolean matches(userFilter ntry) {
-        if (!ntry.section.matches(section)) {
+        if (patCmd == null) {
+            if (!ntry.section.matches(section)) {
+                return false;
+            }
+            if (!ntry.command.matches(command)) {
+                return false;
+            }
+            return true;
+        }
+        Matcher m = patSec.matcher(ntry.section);
+        if (!m.matches()) {
             return false;
         }
-        if (!ntry.command.matches(command)) {
+        m = patCmd.matcher(ntry.command);
+        if (!m.matches()) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * compile the regexps for matching
+     */
+    public void optimize4lookup() {
+        patSec = Pattern.compile(section);
+        patCmd = Pattern.compile(command);
     }
 
     /**
