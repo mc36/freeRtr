@@ -236,7 +236,8 @@ public class cfgInit implements Runnable {
     private static boolean jvmSetup = false;
 
     private final static String[] needInit = {
-        "interface .*",
+        //"interface .*",
+        "vrf definition .*",
         "access-list .*",
         "prefix-list .*",
         "policy-map .*",
@@ -244,8 +245,7 @@ public class cfgInit implements Runnable {
         "route-policy .*",
         "proxy-profile .*",
         "vdc definition .*",
-        "vrf definition .*",
-        "aaa .*"
+        //"aaa .*",
     };
 
     private final static String[] needIface = {
