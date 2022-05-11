@@ -483,6 +483,9 @@ public class userConfig {
         l.add(null, "1  2  client                         specify address of name server");
         l.add(null, "2  3    cpuhog                       specify cpuhog parameters");
         l.add(null, "3  .      <num>                      percentage");
+        l.add(null, "2  3    label-range                  specify label range parameters");
+        l.add(null, "3  4      <num>                      beginning");
+        l.add(null, "4  .        <num>                    ending");
         l.add(null, "2  3    ifacestall                   specify interface stall check");
         l.add(null, "3  .      <num>                      timeout in ms");
         l.add(null, "2  3    redundancy                   specify redundancy parameters");
@@ -1240,6 +1243,11 @@ public class userConfig {
                     return;
                 }
                 cfgAll.clientShamer = ntry;
+                return;
+            }
+            if (a.equals("label-range")) {
+                cfgAll.labelRangeBeg = bits.str2num(cmd.word());
+                cfgAll.labelRangeEnd = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("cpuhog")) {

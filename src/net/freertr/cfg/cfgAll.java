@@ -864,6 +864,16 @@ public class cfgAll {
     public static boolean upgradeOwnKey = false;
 
     /**
+     * label range beginning
+     */
+    public static int labelRangeBeg = 0x20;
+
+    /**
+     * label range ending
+     */
+    public static int labelRangeEnd = 0xffff0;
+
+    /**
      * cpu hog check
      */
     public static int cpuhogCheck = 0;
@@ -1106,6 +1116,7 @@ public class cfgAll {
         "!no password-encrypt",
         "!no enable",
         // client
+        "!client label-range 32 1048560",
         "!client cpuhog 0",
         "!client ifacestall 60000",
         "!client redundancy 500 2500 5000",
@@ -3399,6 +3410,7 @@ public class cfgAll {
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));
         l.add("banner encoded " + cryBase64.encodeBytes(banner));
         l.add(cmds.comment);
+        l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
         cmds.cfgLine(l, !logger.logMillis, "", "logging milliseconds", "");
         l.add("logging buffered " + logger.level2string(logger.logBufLev) + " " + logger.getBufSize());
         l.add("logging monitor " + logger.level2string(logger.logPipLev));
@@ -3466,18 +3478,18 @@ public class cfgAll {
         l.add("client icmp4-checksum " + rxtx2string(icmp4ChecksumRx, icmp4ChecksumTx));
         l.add("client icmp6-checksum " + rxtx2string(icmp6ChecksumRx, icmp6ChecksumTx));
         l.add("client udp-checksum " + rxtx2string(udpChecksumRx, udpChecksumTx));
-        l.add("client udp-portrange " + udpRangeMin+" "+ udpRangeMax);
+        l.add("client udp-portrange " + udpRangeMin + " " + udpRangeMax);
         l.add("client tcp-checksum " + rxtx2string(tcpChecksumRx, tcpChecksumTx));
         l.add("client tcp-segments " + tcpMaxSegment);
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
-        l.add("client tcp-portrange " + tcpRangeMin+" "+ tcpRangeMax);
+        l.add("client tcp-portrange " + tcpRangeMin + " " + tcpRangeMax);
         l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
-        l.add("client ludp-portrange " + ludpRangeMin+" "+ ludpRangeMax);
+        l.add("client ludp-portrange " + ludpRangeMin + " " + ludpRangeMax);
         l.add("client dccp-checksum " + rxtx2string(dccpChecksumRx, dccpChecksumTx));
-        l.add("client dccp-portrange " + dccpRangeMin+" "+ dccpRangeMax);
+        l.add("client dccp-portrange " + dccpRangeMin + " " + dccpRangeMax);
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));
-        l.add("client sctp-portrange " + sctpRangeMin+" "+ sctpRangeMax);
+        l.add("client sctp-portrange " + sctpRangeMin + " " + sctpRangeMax);
         String a = "";
         for (int i = 0; i < nameServerAddr.size(); i++) {
             a += " " + nameServerAddr.get(i);

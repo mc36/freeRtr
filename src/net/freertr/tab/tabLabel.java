@@ -81,7 +81,7 @@ public class tabLabel {
      */
     public static tabLabelEntry allocate(int key) {
         for (int retry = 0; retry < 16; retry++) {
-            int i = bits.random(0x20, 0xffff0);
+            int i = bits.random(cfgAll.labelRangeBeg, cfgAll.labelRangeEnd);
             tabLabelEntry ntry = new tabLabelEntry(i);
             if (labels.add(ntry) != null) {
                 continue;
@@ -127,7 +127,7 @@ public class tabLabel {
             return null;
         }
         for (int retry = 0; retry < 32; retry++) {
-            int beg = bits.random(0x20, 0xffff0 - num);
+            int beg = bits.random(cfgAll.labelRangeBeg, cfgAll.labelRangeEnd - num);
             tabLabelEntry[] res = allocBlock(key, beg, num);
             if (res != null) {
                 return res;
