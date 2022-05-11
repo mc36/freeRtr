@@ -1894,7 +1894,8 @@ public class cfgAll {
      * @return false if successful, true on error
      */
     public static boolean ifcDel(String nam, boolean checks) {
-        nam = cfgIfc.dissectName(nam)[2];
+        String pnm[] = cfgIfc.dissectName(nam);
+        nam = pnm[0] + pnm[1];
         if (nam.length() < 1) {
             return true;
         }
@@ -1969,7 +1970,7 @@ public class cfgAll {
             return null;
         }
         String pnm[] = cfgIfc.dissectName(nam);
-        nam = pnm[2];
+        nam = pnm[0] + pnm[1];
         if (nam.length() < 1) {
             return null;
         }
@@ -1988,7 +1989,7 @@ public class cfgAll {
                 return null;
             }
             ntry.name = nam;
-            int i = bits.str2num(pnm[1]);
+            int i = bits.str2num(pnm[1].substring(1, pnm[1].length()));
             if (i < 1) {
                 return null;
             }

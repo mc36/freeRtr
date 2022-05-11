@@ -2533,7 +2533,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param s string to normalize
      * @param subi set true to get subinterface if, false to get main interface
      * id
-     * @return normalized {name,subif,norm}, {"","",""} if failed
+     * @return normalized {name,"."+subif}, {"",""} if failed
      */
     public static String[] dissectName(String s) {
         s = s.toLowerCase();
@@ -2559,19 +2559,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return new String[]{"", "", ""};
         }
         p = s.indexOf(".");
-        String c;
         if (p < 0) {
             p = bits.str2num(s);
             b += p;
-            s = "";
-            c = "";
+            return new String[]{b, ""};
         } else {
             b += bits.str2num(s.substring(0, p));
             s = s.substring(p + 1, s.length());
-            s = "" + bits.str2num(s);
-            c = ".";
+            s = "." + bits.str2num(s);
+            return new String[]{b, s};
         }
-        return new String[]{b, s, (b + c + s)};
     }
 
     public String toString() {

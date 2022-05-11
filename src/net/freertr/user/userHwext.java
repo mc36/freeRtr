@@ -146,7 +146,8 @@ public class userHwext {
                 continue;
             }
             a = cmd.word();
-            a = cfgIfc.dissectName(a)[2];
+            String pnm[] = cfgIfc.dissectName(a);
+            a = pnm[0] + pnm[1];
             if (a.length() < 1) {
                 continue;
             }
