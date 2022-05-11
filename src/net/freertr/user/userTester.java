@@ -65,6 +65,8 @@ public class userTester {
 
     private int paralell = 0;
 
+    private int paragap = 300;
+
     private String persistF = null;
 
     private int persistP = 0;
@@ -414,6 +416,14 @@ public class userTester {
                 paralell = 0;
                 continue;
             }
+            if (s.equals("paragap")) {
+                paragap = bits.str2num(cmd.word());
+                continue;
+            }
+            if (s.equals("noparagap")) {
+                paragap = 1;
+                continue;
+            }
             if (s.equals("slot")) {
                 slot = bits.str2num(cmd.word());
                 continue;
@@ -653,7 +663,7 @@ public class userTester {
         for (int i = 0; i < paralell; i++) {
             workers[i] = getTester(i);
             new userTesterWrk(this, i);
-            bits.sleep(200);
+            bits.sleep(paragap);
         }
         for (; needed.size() > 0;) {
             bits.sleep(1000);
@@ -769,7 +779,7 @@ public class userTester {
         }
         userTesterFtr ftr = needed.get(cur);
         if (ftr.lck.add(1) > 1) {
-            bits.sleep(200);
+            bits.sleep(paragap);
             return;
         }
         workers[slt].stopAll();
