@@ -1586,18 +1586,20 @@ public abstract class rtrBgpParam {
         if ((filter & 1) == 0) {
             return l;
         }
+        l = userFilter.filterText(l, cfgRtr.defaultF);
         if (template == null) {
             return l;
         }
         List<String> t = template.getParamCfg(beg, nei, filter);
         t = userFilter.filterText(t, cfgRtr.defaultF);
-        tabGen<userFilter> f = new tabGen<userFilter>();
         for (int i = 1; i < t.size(); i++) {
             String a = t.get(i);
-            a = a.replaceAll("\\$", ".");
-            f.add(new userFilter("", a, null));
+            int o = l.indexOf(a);
+            if (o < 0) {
+                continue;
+            }
+            l.remove(o);
         }
-        l = userFilter.filterText(l, f);
         return l;
     }
 
