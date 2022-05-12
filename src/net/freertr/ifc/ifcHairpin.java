@@ -52,9 +52,14 @@ public class ifcHairpin {
     public int randBurstP = 0;
 
     /**
-     * burstiness interval
+     * burstiness minimum
      */
-    public int randBurstT = 0;
+    public int randBurstB = 0;
+
+    /**
+     * burstiness maximum
+     */
+    public int randBurstE = 0;
 
     /**
      * reorder probability
@@ -67,9 +72,14 @@ public class ifcHairpin {
     public int randDelayP = 0;
 
     /**
+     * delay minimum
+     */
+    public int randDelayB = 0;
+
+    /**
      * delay maximum
      */
-    public int randDelayT = 0;
+    public int randDelayE = 0;
 
     private ifcHairpinWorker s1;
 
@@ -140,14 +150,16 @@ public class ifcHairpin {
         l.add(null, ".2 .       <num>                    one to this");
         l.add(null, ".1 2     random-burst               specify burstiness probability");
         l.add(null, ".2 3       <num>                    one to this");
-        l.add(null, ".3 .         <num>                  maximum time in ms");
+        l.add(null, ".3 4         <num>                  minimum time in ms");
+        l.add(null, ".4 .           <num>                maximum time in ms");
         l.add(null, ".1 2     random-duplicate           specify duplication probability");
         l.add(null, ".2 .       <num>                    one to this");
         l.add(null, ".1 2     random-reorder             specify reorder probability");
         l.add(null, ".2 .       <num>                    one to this");
         l.add(null, ".1 2     random-delay               specify delay probability");
         l.add(null, ".2 3       <num>                    one to this");
-        l.add(null, ".3 .         <num>                  maximum time in ms");
+        l.add(null, ".3 4         <num>                  minimum time in ms");
+        l.add(null, ".4 .           <num>                maximum time in ms");
     }
 
     /**
@@ -161,10 +173,10 @@ public class ifcHairpin {
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
         l.add(beg + "buffer " + bufSiz);
         l.add(beg + "random-drop " + randDrop);
-        l.add(beg + "random-burst " + randBurstP + " " + randBurstT);
+        l.add(beg + "random-burst " + randBurstP + " " + randBurstB + " " + randBurstE);
         l.add(beg + "random-duplicate " + randDup);
         l.add(beg + "random-reorder " + randReord);
-        l.add(beg + "random-delay " + randDelayP + " " + randDelayT);
+        l.add(beg + "random-delay " + randDelayP + " " + randDelayB + " " + randDelayE);
     }
 
     /**
@@ -199,7 +211,8 @@ public class ifcHairpin {
         }
         if (s.equals("random-burst")) {
             randBurstP = bits.str2num(cmd.word());
-            randBurstT = bits.str2num(cmd.word());
+            randBurstB = bits.str2num(cmd.word());
+            randBurstE = bits.str2num(cmd.word());
             return;
         }
         if (s.equals("random-duplicate")) {
@@ -212,7 +225,8 @@ public class ifcHairpin {
         }
         if (s.equals("random-delay")) {
             randDelayP = bits.str2num(cmd.word());
-            randDelayT = bits.str2num(cmd.word());
+            randDelayB = bits.str2num(cmd.word());
+            randDelayE = bits.str2num(cmd.word());
             return;
         }
         if (!s.equals("no")) {
@@ -234,7 +248,8 @@ public class ifcHairpin {
         }
         if (s.equals("random-burst")) {
             randBurstP = 0;
-            randBurstT = 0;
+            randBurstB = 0;
+            randBurstE = 0;
             return;
         }
         if (s.equals("random-duplicate")) {
@@ -247,7 +262,8 @@ public class ifcHairpin {
         }
         if (s.equals("random-delay")) {
             randDelayP = 0;
-            randDelayT = 0;
+            randDelayB = 0;
+            randDelayE = 0;
             return;
         }
         cmd.badCmd();
@@ -330,7 +346,7 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             }
             if (parent.randBurstP > 0) {
                 if (bits.random(0, parent.randBurstP) == 0) {
-                    bits.sleep(bits.random(1, parent.randBurstT));
+                    bits.sleep(bits.random(parent.randBurstB, parent.randBurstE));
                 }
             }
             int i = queueRx.blockingGet(buf, 0, buf.length);
@@ -361,7 +377,7 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             }
             if (parent.randDelayP > 0) {
                 if (bits.random(0, parent.randDelayP) == 0) {
-                    ifcDelay.recvPack(bits.random(1, parent.randDelayT), upper, pck);
+                    ifcDelay.recvPack(bits.random(parent.randDelayB, parent.randDelayE), upper, pck);
                     continue;
                 }
             }
