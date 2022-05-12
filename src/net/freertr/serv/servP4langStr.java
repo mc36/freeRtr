@@ -13,24 +13,24 @@ public class servP4langStr<T extends Comparator<T>> implements Comparator<servP4
     /**
      * the data
      */
-    public final T data;
+    protected final T data;
 
     /**
      * first storage
      */
-    public int stor1;
+    protected int stor1;
 
     /**
      * second storage
      */
-    public int stor2;
+    protected int stor2;
 
     /**
      * create instance
      *
      * @param dat data to store
      */
-    public servP4langStr(T dat) {
+    protected servP4langStr(T dat) {
         data = dat;
     }
 
@@ -44,7 +44,7 @@ public class servP4langStr<T extends Comparator<T>> implements Comparator<servP4
      * @param l list to check
      * @return true if differs, false if identical
      */
-    public boolean differs(tabGen<servP4langStr<T>> l) {
+    protected boolean differs(tabGen<servP4langStr<T>> l) {
         servP4langStr<T> o = l.find(this);
         if (o == null) {
             return true;

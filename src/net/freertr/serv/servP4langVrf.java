@@ -25,164 +25,164 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     /**
      * vrf id
      */
-    public final int id;
+    protected final int id;
 
     /**
      * vrf handler
      */
-    public cfgVrf vrf;
+    protected cfgVrf vrf;
 
     /**
      * sent multicast
      */
-    public boolean sentMcast;
+    protected boolean sentMcast;
 
     /**
      * sent routes
      */
-    public tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+    protected tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
 
     /**
      * sent routes
      */
-    public tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+    protected tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
 
     /**
      * sent routes
      */
-    public tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
+    protected tabRoute<addrIP> routes4 = new tabRoute<addrIP>("sent");
 
     /**
      * sent routes
      */
-    public tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
+    protected tabRoute<addrIP> routes6 = new tabRoute<addrIP>("sent");
 
     /**
      * sent sockets
      */
-    public tabConnect<addrIP, prtGenServ> udp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+    protected tabConnect<addrIP, prtGenServ> udp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
 
     /**
      * sent sockets
      */
-    public tabConnect<addrIP, prtGenServ> udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+    protected tabConnect<addrIP, prtGenServ> udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
 
     /**
      * sent sockets
      */
-    public tabConnect<addrIP, prtGenServ> tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+    protected tabConnect<addrIP, prtGenServ> tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
 
     /**
      * sent sockets
      */
-    public tabConnect<addrIP, prtGenServ> tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
+    protected tabConnect<addrIP, prtGenServ> tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
 
     /**
      * sent mroutes
      */
-    public tabGen<ipFwdMcast> mroutes4 = new tabGen<ipFwdMcast>();
+    protected tabGen<ipFwdMcast> mroutes4 = new tabGen<ipFwdMcast>();
 
     /**
      * sent mroutes
      */
-    public tabGen<ipFwdMcast> mroutes6 = new tabGen<ipFwdMcast>();
+    protected tabGen<ipFwdMcast> mroutes6 = new tabGen<ipFwdMcast>();
 
     /**
      * sent nat config
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg4;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> natCfg4;
 
     /**
      * sent nat config
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> natCfg6;
 
     /**
      * sent nat config
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg4f;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> natCfg4f;
 
     /**
      * sent nat config
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> natCfg6f;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> natCfg6f;
 
     /**
      * sent pbr config
      */
-    public tabListing<tabPbrN, addrIP> pbrCfg4;
+    protected tabListing<tabPbrN, addrIP> pbrCfg4;
 
     /**
      * sent pbr config
      */
-    public tabListing<tabPbrN, addrIP> pbrCfg6;
+    protected tabListing<tabPbrN, addrIP> pbrCfg6;
 
     /**
      * sent flowspec config
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> flwSpc4;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> flwSpc4;
 
     /**
      * sent flowspec config
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> flwSpc6;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> flwSpc6;
 
     /**
      * sent nat translations
      */
-    public tabGen<tabNatTraN> natTrns4 = new tabGen<tabNatTraN>();
+    protected tabGen<tabNatTraN> natTrns4 = new tabGen<tabNatTraN>();
 
     /**
      * sent nat translations
      */
-    public tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
+    protected tabGen<tabNatTraN> natTrns6 = new tabGen<tabNatTraN>();
 
     /**
      * sent polka indexes
      */
-    public tabGen<servP4langStr<tabIndex<addrIP>>> indexUs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexUs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
 
     /**
      * sent polka indexes
      */
-    public tabGen<servP4langStr<tabIndex<addrIP>>> indexUs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexUs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
 
     /**
      * sent polka indexes
      */
-    public tabGen<tabIndex<addrIP>> indexUd4 = new tabGen<tabIndex<addrIP>>();
+    protected tabGen<tabIndex<addrIP>> indexUd4 = new tabGen<tabIndex<addrIP>>();
 
     /**
      * sent polka indexes
      */
-    public tabGen<tabIndex<addrIP>> indexUd6 = new tabGen<tabIndex<addrIP>>();
+    protected tabGen<tabIndex<addrIP>> indexUd6 = new tabGen<tabIndex<addrIP>>();
 
     /**
      * sent mpolka indexes
      */
-    public tabGen<servP4langStr<tabIndex<addrIP>>> indexCs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexCs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
 
     /**
      * sent mpolka indexes
      */
-    public tabGen<servP4langStr<tabIndex<addrIP>>> indexCs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexCs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
 
     /**
      * sent mpolka indexes
      */
-    public tabGen<tabIndex<addrIP>> indexCd4 = new tabGen<tabIndex<addrIP>>();
+    protected tabGen<tabIndex<addrIP>> indexCd4 = new tabGen<tabIndex<addrIP>>();
 
     /**
      * sent mpolka indexes
      */
-    public tabGen<tabIndex<addrIP>> indexCd6 = new tabGen<tabIndex<addrIP>>();
+    protected tabGen<tabIndex<addrIP>> indexCd6 = new tabGen<tabIndex<addrIP>>();
 
     /**
      * create instance
      *
      * @param i id
      */
-    public servP4langVrf(int i) {
+    protected servP4langVrf(int i) {
         id = i;
     }
 
@@ -199,7 +199,7 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     /**
      * clear tables
      */
-    public void doClear() {
+    protected void doClear() {
         routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
         routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
         routes4 = new tabRoute<addrIP>("sent");

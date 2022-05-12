@@ -15,67 +15,67 @@ public class servP4langNei implements Comparator<servP4langNei> {
     /**
      * peer ip
      */
-    public final addrIP adr;
+    protected final addrIP adr;
 
     /**
      * peer mac
      */
-    public addrMac mac = null;
+    protected addrMac mac = null;
 
     /**
      * peer interface
      */
-    public final servP4langIfc iface;
+    protected final servP4langIfc iface;
 
     /**
      * vrf instance
      */
-    public servP4langVrf vrf;
+    protected servP4langVrf vrf;
 
     /**
      * sent ipsec info
      */
-    public String sentIpsec = "";
+    protected String sentIpsec = "";
 
     /**
      * via neighbor
      */
-    public servP4langNei viaH;
+    protected servP4langNei viaH;
 
     /**
      * via interface
      */
-    public servP4langIfc viaI;
+    protected servP4langIfc viaI;
 
     /**
      * sent nhop info
      */
-    public int sentIgNhop = -1;
+    protected int sentIgNhop = -1;
 
     /**
      * sent interface info
      */
-    public int sentIfc;
+    protected int sentIfc;
 
     /**
      * sent tunnel info
      */
-    public int sentTun;
+    protected int sentTun;
 
     /**
      * neighbor id
      */
-    public int id;
+    protected int id;
 
     /**
      * times used
      */
-    public int need;
+    protected int need;
 
     /**
      * sent encapsulation
      */
-    public String sentEnc;
+    protected String sentEnc;
 
     /**
      * create instance
@@ -83,7 +83,7 @@ public class servP4langNei implements Comparator<servP4langNei> {
      * @param ifc interface
      * @param per peer ip
      */
-    public servP4langNei(servP4langIfc ifc, addrIP per) {
+    protected servP4langNei(servP4langIfc ifc, addrIP per) {
         adr = per;
         iface = ifc;
     }
@@ -107,7 +107,7 @@ public class servP4langNei implements Comparator<servP4langNei> {
      *
      * @return interface
      */
-    public servP4langIfc getVia() {
+    protected servP4langIfc getVia() {
         servP4langNei via = this;
         for (int i = 0; i < 8; i++) {
             if (via.viaH == null) {

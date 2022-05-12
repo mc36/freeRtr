@@ -464,7 +464,7 @@ public class servP4langUtil {
      * @param ntry route entry
      * @return label
      */
-    public static int getNullLabel(tabRouteEntry<addrIP> ntry) {
+    protected static int getNullLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.prefix.network.isIPv4()) {
             return ipMpls.labelExp4;
         } else {
@@ -478,7 +478,7 @@ public class servP4langUtil {
      * @param labs labels
      * @return label
      */
-    public static int getLabel(List<Integer> labs) {
+    protected static int getLabel(List<Integer> labs) {
         if (labs == null) {
             return -1;
         }
@@ -505,7 +505,7 @@ public class servP4langUtil {
      * @param ntry route entry
      * @return label
      */
-    public static int getLabel(tabRouteEntry<addrIP> ntry) {
+    protected static int getLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.best.labelRem == null) {
             return servP4langUtil.getNullLabel(ntry);
         }
@@ -534,7 +534,7 @@ public class servP4langUtil {
      * @param sis shift
      * @return label
      */
-    public static String getBierLabs(tabLabelBierN ntry, byte[] full, int sis) {
+    protected static String getBierLabs(tabLabelBierN ntry, byte[] full, int sis) {
         byte[] res = ntry.getAndShr(full, sis);
         if (res == null) {
             return " 0 0 0 0 0 0 0 0";
@@ -555,7 +555,7 @@ public class servP4langUtil {
      * @param s string to negate
      * @return negated string
      */
-    public static String negateOneCommand(String s) {
+    protected static String negateOneCommand(String s) {
         s = s.replaceAll("_add ", "_del ");
         s = s.replaceAll("_mod ", "_del ");
         return s;
@@ -567,7 +567,7 @@ public class servP4langUtil {
      * @param tab table to dump
      * @return dump
      */
-    public static userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
+    protected static userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
         if (tab == null) {
             return null;
         }
@@ -584,7 +584,7 @@ public class servP4langUtil {
      * @param l table to dump
      * @param a message
      */
-    public static void updateApiStats(tabGen<servP4langMsg> l, String a) {
+    protected static void updateApiStats(tabGen<servP4langMsg> l, String a) {
         servP4langMsg m = new servP4langMsg(a);
         servP4langMsg o = l.add(m);
         if (o != null) {

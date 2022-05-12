@@ -17,34 +17,34 @@ public class servP4langBr implements Comparator<servP4langBr> {
     /**
      * bridge id
      */
-    public final int id;
+    protected final int id;
 
     /**
      * configuration
      */
-    public cfgBrdg br;
+    protected cfgBrdg br;
 
     /**
      * routing bridge
      */
-    public boolean routed;
+    protected boolean routed;
 
     /**
      * exported macs
      */
-    public tabGen<ifcBridgeAdr> macs = new tabGen<ifcBridgeAdr>();
+    protected tabGen<ifcBridgeAdr> macs = new tabGen<ifcBridgeAdr>();
 
     /**
      * exported interfaces
      */
-    public tabGen<ifcBridgeIfc> ifcs = new tabGen<ifcBridgeIfc>();
+    protected tabGen<ifcBridgeIfc> ifcs = new tabGen<ifcBridgeIfc>();
 
     /**
      * create instance
      *
      * @param i id
      */
-    public servP4langBr(int i) {
+    protected servP4langBr(int i) {
         id = i;
     }
 
@@ -64,7 +64,7 @@ public class servP4langBr implements Comparator<servP4langBr> {
      * @param lab label
      * @return true if found, false if not
      */
-    public boolean findIfc(int lab) {
+    protected boolean findIfc(int lab) {
         for (int i = 0; i < ifcs.size(); i++) {
             try {
                 rtrBgpEvpnPeer ifc = (rtrBgpEvpnPeer) ifcs.get(i).lowerIf;
@@ -80,7 +80,7 @@ public class servP4langBr implements Comparator<servP4langBr> {
     /**
      * clear everything
      */
-    public void doClear() {
+    protected void doClear() {
         ifcs = new tabGen<ifcBridgeIfc>();
         macs = new tabGen<ifcBridgeAdr>();
     }

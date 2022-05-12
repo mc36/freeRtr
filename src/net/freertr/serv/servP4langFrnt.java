@@ -12,12 +12,12 @@ public class servP4langFrnt implements Comparator<servP4langFrnt> {
     /**
      * interface id
      */
-    public final int id;
+    protected final int id;
 
     /**
      * name provided
      */
-    public final String nam;
+    protected final String nam;
 
     /**
      * create instance
@@ -25,7 +25,7 @@ public class servP4langFrnt implements Comparator<servP4langFrnt> {
      * @param i id
      * @param n name
      */
-    public servP4langFrnt(int i, String n) {
+    protected servP4langFrnt(int i, String n) {
         id = i;
         nam = n;
     }

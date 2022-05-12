@@ -959,27 +959,27 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("status")) {
-                rdr.putStrTab(srv.getShowGen());
+                rdr.putStrTab(srv.getShow(1));
                 return null;
             }
             if (a.equals("api-tx")) {
-                rdr.putStrTab(srv.getShowApiTx());
+                rdr.putStrTab(srv.getShow(2));
                 return null;
             }
             if (a.equals("api-rx")) {
-                rdr.putStrTab(srv.getShowApiRx());
+                rdr.putStrTab(srv.getShow(3));
                 return null;
             }
             if (a.equals("frontpanel")) {
-                rdr.putStrTab(srv.getShowFront());
+                rdr.putStrTab(srv.getShow(4));
                 return null;
             }
             if (a.equals("done-interface")) {
-                rdr.putStrTab(srv.getShowIfaces());
+                rdr.putStrTab(srv.getShow(5));
                 return null;
             }
             if (a.equals("done-neighbor")) {
-                rdr.putStrTab(srv.getShowNeighs());
+                rdr.putStrTab(srv.getShow(6));
                 return null;
             }
             if (!a.equals("port-counters")) {

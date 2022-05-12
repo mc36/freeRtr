@@ -16,19 +16,19 @@ public class servP4langMsg implements Comparator<servP4langMsg> {
     /**
      * hit count
      */
-    public int cnt;
+    protected int cnt;
 
     /**
      * last time
      */
-    public long lst;
+    protected long lst;
 
     /**
      * create instance
      *
      * @param m message
      */
-    public servP4langMsg(String m) {
+    protected servP4langMsg(String m) {
         msg = m;
     }
 

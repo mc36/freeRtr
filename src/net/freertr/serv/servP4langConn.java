@@ -96,7 +96,7 @@ public class servP4langConn implements Runnable {
      * @param pip pipeline
      * @param upper config
      */
-    public servP4langConn(pipeSide pip, servP4langCfg upper) {
+    protected servP4langConn(pipeSide pip, servP4langCfg upper) {
         pipe = pip;
         lower = upper;
     }
@@ -104,7 +104,7 @@ public class servP4langConn implements Runnable {
     /**
      * start working
      */
-    public void startWork() {
+    protected void startWork() {
         new Thread(this).start();
     }
 
@@ -129,7 +129,7 @@ public class servP4langConn implements Runnable {
 
     private boolean doNegot() {
         lower.started = bits.getTime();
-        lower.accepted++;
+        lower.reconns++;
         lower.neighs.clear();
         for (int i = lower.expIfc.size() - 1; i >= 0; i--) {
             servP4langIfc ntry = lower.expIfc.get(i);
@@ -149,7 +149,7 @@ public class servP4langConn implements Runnable {
         lower.platform = null;
         lower.dynRngBeg = -1;
         lower.dynRngEnd = -2;
-        lower.cpuport = -3;
+        lower.cpuPort = -3;
         lower.statsPrt = -4;
         lower.statsTxt = null;
         lower.statsNtf = null;
@@ -183,7 +183,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (s.equals("cpuport")) {
-                lower.cpuport = bits.str2num(cmd.word());
+                lower.cpuPort = bits.str2num(cmd.word());
                 continue;
             }
             if (s.equals("dynrange")) {

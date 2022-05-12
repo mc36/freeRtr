@@ -27,312 +27,312 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     /**
      * dynamically created
      */
-    public boolean dynamic;
+    protected boolean dynamic;
 
     /**
      * hidden from exports
      */
-    public boolean hidden;
+    protected boolean hidden;
 
     /**
      * config
      */
-    public final servP4langCfg lower;
+    protected final servP4langCfg lower;
 
     /**
      * id
      */
-    public int id;
+    protected int id;
 
     /**
      * speed
      */
-    public int speed;
+    protected int speed;
 
     /**
      * error correction
      */
-    public int errCorr;
+    protected int errCorr;
 
     /**
      * autoneg
      */
-    public int autoNeg;
+    protected int autoNeg;
 
     /**
      * flow control
      */
-    public int flowCtrl;
+    protected int flowCtrl;
 
     /**
      * sent vrf
      */
-    public int sentVrf;
+    protected int sentVrf;
 
     /**
      * sent monitoring
      */
-    public int sentMon;
+    protected int sentMon;
 
     /**
      * sent vlan
      */
-    public int sentVlan;
+    protected int sentVlan;
 
     /**
      * sent bundle
      */
-    public int sentBundle;
+    protected int sentBundle;
 
     /**
      * sent hairpin
      */
-    public int sentHairpin;
+    protected int sentHairpin;
 
     /**
      * sent mtu
      */
-    public int sentMtu;
+    protected int sentMtu;
 
     /**
      * sent pppoe
      */
-    public int sentPppoe;
+    protected int sentPppoe;
 
     /**
      * sent label
      */
-    public int sentLabel;
+    protected int sentLabel;
 
     /**
      * sent polka
      */
-    public int sentPolka;
+    protected int sentPolka;
 
     /**
      * sent mpolka
      */
-    public int sentMpolka;
+    protected int sentMpolka;
 
     /**
      * sent sgt taq
      */
-    public int sentSgtTag;
+    protected int sentSgtTag;
 
     /**
      * sent sgt set
      */
-    public int sentSgtSet;
+    protected int sentSgtSet;
 
     /**
      * sent mss
      */
-    public int sentMss4in;
+    protected int sentMss4in;
 
     /**
      * sent mss
      */
-    public int sentMss4out;
+    protected int sentMss4out;
 
     /**
      * sent mss
      */
-    public int sentMss6in;
+    protected int sentMss6in;
 
     /**
      * sent mss
      */
-    public int sentMss6out;
+    protected int sentMss6out;
 
     /**
      * sent verify
      */
-    public int sentVerify4;
+    protected int sentVerify4;
 
     /**
      * sent verify
      */
-    public int sentVerify6;
+    protected int sentVerify6;
 
     /**
      * sent mpls
      */
-    public int sentMpls;
+    protected int sentMpls;
 
     /**
      * sent nsh
      */
-    public int sentNsh;
+    protected int sentNsh;
 
     /**
      * sent macsec
      */
-    public String sentMacsec;
+    protected String sentMacsec;
 
     /**
      * sent interface state
      */
-    public state.states sentState = state.states.close;
+    protected state.states sentState = state.states.close;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4in1;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4in1;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4out1;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4out1;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6in1;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6in1;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6out1;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6out1;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4in2;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4in2;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4out2;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4out2;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6in2;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6in2;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6out2;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6out2;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4inF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4inF;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4outF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl4outF;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6inF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6inF;
 
     /**
      * sent acl
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6outF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentAcl6outF;
 
     /**
      * sent sessions
      */
-    public tabSession sentInsp4;
+    protected tabSession sentInsp4;
 
     /**
      * sent sessions
      */
-    public tabSession sentInsp6;
+    protected tabSession sentInsp6;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4in;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4in;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4out;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4out;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6in;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6in;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6out;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6out;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4inF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4inF;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos4outF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4outF;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6inF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6inF;
 
     /**
      * sent qos
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> sentQos6outF;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6outF;
 
     /**
      * sent bridge encapsulation
      */
-    public String sentBrTun;
+    protected String sentBrTun;
 
     /**
      * controlling interface
      */
-    public servP4langIfc master;
+    protected servP4langIfc master;
 
     /**
      * member interfaces
      */
-    public List<servP4langIfc> members;
+    protected List<servP4langIfc> members;
 
     /**
      * pppoe headend
      */
-    public servP4langIfc pppoe;
+    protected servP4langIfc pppoe;
 
     /**
      * cloned from
      */
-    public servP4langIfc cloned;
+    protected servP4langIfc cloned;
 
     /**
      * intreface config
      */
-    public cfgIfc ifc;
+    protected cfgIfc ifc;
 
     /**
      * bridge interface
      */
-    public ifcBridgeIfc brif;
+    protected ifcBridgeIfc brif;
 
     /**
      * upper layer
      */
-    public ifcUp upper = new ifcNull();
+    protected ifcUp upper = new ifcNull();
 
     /**
      * counters
      */
-    public counter cntr = new counter();
+    protected counter cntr = new counter();
 
     /**
      * last state
      */
-    public state.states lastState = state.states.up;
+    protected state.states lastState = state.states.up;
 
     /**
      * create instance
@@ -340,7 +340,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param p parent
      * @param i id
      */
-    public servP4langIfc(servP4langCfg p, int i) {
+    protected servP4langIfc(servP4langCfg p, int i) {
         id = i;
         lower = p;
     }
@@ -360,7 +360,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      *
      * @return true if suppression needed
      */
-    public boolean suppressState() {
+    protected boolean suppressState() {
         if (ifc == null) {
             return true;
         }
@@ -370,7 +370,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     /**
      * clear down interface
      */
-    public void tearDown() {
+    protected void tearDown() {
         if (ifc == null) {
             return;
         }
@@ -401,7 +401,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      *
      * @return config
      */
-    public String getCfgLine() {
+    protected String getCfgLine() {
         String a;
         if (dynamic) {
             a = "dynamic";
@@ -420,7 +420,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      *
      * @return interface
      */
-    public servP4langIfc getUcast() {
+    protected servP4langIfc getUcast() {
         if (master == null) {
             return this;
         }
@@ -434,7 +434,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param hop nexthop
      * @return interface
      */
-    public servP4langIfc getMcast(int gid, servP4langNei hop) {
+    protected servP4langIfc getMcast(int gid, servP4langNei hop) {
         servP4langIfc ifc;
         if (master == null) {
             ifc = this;
@@ -458,7 +458,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      *
      * @return mac address
      */
-    public addrMac getMac() {
+    protected addrMac getMac() {
         addrType adr = ifc.ethtyp.getHwAddr();
         if (adr.getSize() != addrMac.size) {
             return new addrMac();
@@ -471,14 +471,14 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      *
      * @return encoding
      */
-    public String getStateEnding() {
+    protected String getStateEnding() {
         return speed + " " + errCorr + " " + autoNeg + " " + flowCtrl;
     }
 
     /**
      * clear sent state
      */
-    public void doClear() {
+    protected void doClear() {
         lastState = state.states.up;
         upper.setState(lastState);
         sentVlan = 0;

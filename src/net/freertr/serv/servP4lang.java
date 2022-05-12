@@ -36,7 +36,7 @@ public class servP4lang extends servGeneric implements prtServS {
     /**
      * buffer size
      */
-    public int bufSiz = 65536;
+    protected int bufSiz = 65536;
 
     /**
      * defaults text
@@ -123,55 +123,26 @@ public class servP4lang extends servGeneric implements prtServS {
     /**
      * get generic show
      *
+     * @param mod mode: 1=generic, 2=apiTx, 3=apiRx, 4=front, 5=ifaces, 6=neighs
      * @return show
      */
-    public userFormat getShowGen() {
-        return dp.getShowGen();
-    }
-
-    /**
-     * get api show
-     *
-     * @return show
-     */
-    public userFormat getShowApiTx() {
-        return servP4langUtil.dumpApiStats(dp.apiStatTx);
-    }
-
-    /**
-     * get api show
-     *
-     * @return show
-     */
-    public userFormat getShowApiRx() {
-        return servP4langUtil.dumpApiStats(dp.apiStatRx);
-    }
-
-    /**
-     * get frontpanel show
-     *
-     * @return show
-     */
-    public userFormat getShowFront() {
-        return dp.getShowFront();
-    }
-
-    /**
-     * get interfaces show
-     *
-     * @return show
-     */
-    public userFormat getShowIfaces() {
-        return dp.getShowIfaces();
-    }
-
-    /**
-     * get neighbor show
-     *
-     * @return show
-     */
-    public userFormat getShowNeighs() {
-        return dp.getShowNeighs();
+    public userFormat getShow(int mod) {
+        switch (mod) {
+            case 1:
+                return dp.getShowGen();
+            case 2:
+                return servP4langUtil.dumpApiStats(dp.apiStatTx);
+            case 3:
+                return servP4langUtil.dumpApiStats(dp.apiStatRx);
+            case 4:
+                return dp.getShowFront();
+            case 5:
+                return dp.getShowIfaces();
+            case 6:
+                return dp.getShowNeighs();
+            default:
+                return null;
+        }
     }
 
     /**

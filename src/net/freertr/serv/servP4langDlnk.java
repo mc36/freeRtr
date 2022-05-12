@@ -19,7 +19,7 @@ public class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
     /**
      * interface id
      */
-    public final int id;
+    protected final int id;
 
     private final servP4langCfg lower;
 
@@ -41,7 +41,7 @@ public class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
      * @param prnt parent
      * @param num interface id
      */
-    public servP4langDlnk(servP4langCfg prnt, int num) {
+    protected servP4langDlnk(servP4langCfg prnt, int num) {
         id = num;
         lower = prnt;
     }

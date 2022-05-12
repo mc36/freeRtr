@@ -49,192 +49,192 @@ public class servP4langCfg implements ifcUp {
     /**
      * current connection
      */
-    public servP4langConn conn;
+    protected servP4langConn conn;
 
     /**
      * exported vrfs
      */
-    public tabGen<servP4langVrf> expVrf = new tabGen<servP4langVrf>();
+    protected tabGen<servP4langVrf> expVrf = new tabGen<servP4langVrf>();
 
     /**
      * export sockets
      */
-    public boolean expSck;
+    protected boolean expSck;
 
     /**
      * exported interfaces
      */
-    public tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
+    protected tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
 
     /**
      * exported neighbors
      */
-    public tabGen<servP4langNei> neighs = new tabGen<servP4langNei>();
+    protected tabGen<servP4langNei> neighs = new tabGen<servP4langNei>();
 
     /**
      * exported srv6
      */
-    public cfgIfc expSrv6 = null;
+    protected cfgIfc expSrv6 = null;
 
     /**
      * exported bridges
      */
-    public tabGen<servP4langBr> expBr = new tabGen<servP4langBr>();
+    protected tabGen<servP4langBr> expBr = new tabGen<servP4langBr>();
 
     /**
      * exported copp
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp4 = null;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> expCopp4 = null;
 
     /**
      * exported copp
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> expCopp6 = null;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> expCopp6 = null;
 
     /**
      * export interval
      */
-    public int expDelay = 1000;
+    protected int expDelay = 1000;
 
     /**
      * last peer
      */
-    public addrIP remote = null;
+    protected addrIP remote = null;
 
     /**
      * minimum buffer size
      */
-    public int minBuf = 0;
+    protected int minBuf = 0;
 
     /**
      * last capability
      */
-    public String capability = null;
+    protected String capability = null;
 
     /**
      * last platform
      */
-    public String platform = null;
+    protected String platform = null;
 
     /**
      * last cpuport
      */
-    public int cpuport;
+    protected int cpuPort;
 
     /**
      * first dynamic range
      */
-    public int dynRngBeg = 0x10000;
+    protected int dynRngBeg = 0x10000;
 
     /**
      * last dynamic range
      */
-    public int dynRngEnd = 0x20000;
+    protected int dynRngEnd = 0x20000;
 
     /**
      * last front panel
      */
-    public tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
+    protected tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
 
     /**
      * connection start
      */
-    public long started = 0;
+    protected long started = 0;
 
     /**
      * connections accepted
      */
-    public int accepted = 0;
+    protected int reconns = 0;
 
     /**
      * interconnection interface
      */
-    public ifcEthTyp interconn = null;
+    protected ifcEthTyp interconn = null;
 
     /**
      * downlink interfaces
      */
-    public tabGen<servP4langDlnk> downLinks = new tabGen<servP4langDlnk>();
+    protected tabGen<servP4langDlnk> downLinks = new tabGen<servP4langDlnk>();
 
     /**
      * counter
      */
-    public counter cntr = new counter();
+    protected counter cntr = new counter();
 
     /**
      * counter
      */
-    public notifier notif = new notifier();
+    protected notifier notif = new notifier();
 
     /**
      * controller text
      */
-    public List<String> statsTxt;
+    protected List<String> statsTxt;
 
     /**
      * controller notifier
      */
-    public notifier statsNtf;
+    protected notifier statsNtf;
 
     /**
      * controller port
      */
-    public int statsPrt;
+    protected int statsPrt;
 
     /**
      * rounds done
      */
-    public int rndDoneNum;
+    protected int rndDoneNum;
 
     /**
      * rounds skiped
      */
-    public int rndSkipNum;
+    protected int rndSkipNum;
 
     /**
      * rounds time
      */
-    public int rndDoneTime;
+    protected int rndDoneTime;
 
     /**
      * rounds time
      */
-    public long rndDoneLast;
+    protected long rndDoneLast;
 
     /**
      * rounds time
      */
-    public long rndSkipLast;
+    protected long rndSkipLast;
 
     /**
      * messages sent
      */
-    public int msgsSent;
+    protected int msgsSent;
 
     /**
      * messages got
      */
-    public int msgsGot;
+    protected int msgsGot;
 
     /**
      * transmitted message statistics
      */
-    public tabGen<servP4langMsg> apiStatTx;
+    protected tabGen<servP4langMsg> apiStatTx;
 
     /**
      * received message statistics
      */
-    public tabGen<servP4langMsg> apiStatRx;
+    protected tabGen<servP4langMsg> apiStatRx;
 
     /**
      * interconnect interface
      */
-    public ifcDn intercon;
+    protected ifcDn intercon;
 
     /**
      * create instance
      */
-    public servP4langCfg() {
+    protected servP4langCfg() {
         pipeLine pl = new pipeLine(1024, false);
         pl.setClose();
         conn = new servP4langConn(pl.getSide(), this);
@@ -246,7 +246,7 @@ public class servP4langCfg implements ifcUp {
      * @param beg text to prepend
      * @param l text to append
      */
-    public void getShowRun(String beg, List<String> l) {
+    protected void getShowRun(String beg, List<String> l) {
         cmds.cfgLine(l, apiStatTx == null, beg, "api-stat", "");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
@@ -295,7 +295,7 @@ public class servP4langCfg implements ifcUp {
      * @param cmd parameters
      * @return false if success, true on error
      */
-    public boolean doConfig(String s, cmds cmd) {
+    protected boolean doConfig(String s, cmds cmd) {
         if (s.equals("export-vrf")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
@@ -484,7 +484,7 @@ public class servP4langCfg implements ifcUp {
      * @param cmd parameters
      * @return false if success, true on error
      */
-    public boolean doUnConfig(String s, cmds cmd) {
+    protected boolean doUnConfig(String s, cmds cmd) {
         if (s.equals("export-vrf")) {
             cmd.word();
             servP4langVrf ntry = new servP4langVrf(bits.str2num(cmd.word()));
@@ -576,7 +576,7 @@ public class servP4langCfg implements ifcUp {
      * @param create allow creation
      * @return id, -1 if error
      */
-    public int front2id(cfgIfc ifc, String num, boolean create) {
+    protected int front2id(cfgIfc ifc, String num, boolean create) {
         int i = bits.str2num(num);
         if (num.equals("" + i)) {
             return i;
@@ -605,7 +605,7 @@ public class servP4langCfg implements ifcUp {
      * @param l where to place
      * @param p starting level
      */
-    public void getHelpText(userHelping l, int p) {
+    protected void getHelpText(userHelping l, int p) {
         List<String> lst = new ArrayList<String>();
         for (int i = 0; i < fronts.size(); i++) {
             lst.add(fronts.get(i).nam);
@@ -645,16 +645,16 @@ public class servP4langCfg implements ifcUp {
      *
      * @return show
      */
-    public userFormat getShowGen() {
+    protected userFormat getShowGen() {
         userFormat res = new userFormat("|", "category|value");
         res.add("peer|" + remote);
         res.add("closed|" + conn.pipe.isClosed());
-        res.add("reconn|" + accepted);
+        res.add("reconn|" + reconns);
         res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
         res.add("for|" + bits.timePast(started));
         res.add("capability|" + capability);
         res.add("platform|" + platform);
-        res.add("cpuport|" + cpuport);
+        res.add("cpuport|" + cpuPort);
         res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
         res.add("messages sent|" + msgsSent);
         res.add("messages got|" + msgsGot);
@@ -671,7 +671,7 @@ public class servP4langCfg implements ifcUp {
      *
      * @return show
      */
-    public userFormat getShowFront() {
+    protected userFormat getShowFront() {
         userFormat res = new userFormat("|", "front|name");
         for (int i = 0; i < fronts.size(); i++) {
             servP4langFrnt ntry = fronts.get(i);
@@ -685,7 +685,7 @@ public class servP4langCfg implements ifcUp {
      *
      * @return show
      */
-    public userFormat getShowIfaces() {
+    protected userFormat getShowIfaces() {
         userFormat res = new userFormat("|", "sent|name");
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
@@ -703,7 +703,7 @@ public class servP4langCfg implements ifcUp {
      *
      * @return show
      */
-    public userFormat getShowNeighs() {
+    protected userFormat getShowNeighs() {
         userFormat res = new userFormat("|", "neigh|addr|iface");
         for (int i = 0; i < neighs.size(); i++) {
             servP4langNei ntry = neighs.get(i);
@@ -718,7 +718,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return show
      */
-    public userFormat getShowIface(cfgIfc ifc) {
+    protected userFormat getShowIface(cfgIfc ifc) {
         userFormat res = new userFormat("|", "category|value");
         servP4langIfc ntry = findIfc(ifc);
         if (ntry == null) {
@@ -754,7 +754,7 @@ public class servP4langCfg implements ifcUp {
      * @param id id
      * @param pckB binary
      */
-    public void sendPack(int id, packHolder pckB) {
+    protected void sendPack(int id, packHolder pckB) {
         cntr.tx(pckB);
         ifcEther.createETHheader(pckB, false);
         if (intercon == null) {
@@ -843,7 +843,7 @@ public class servP4langCfg implements ifcUp {
     /**
      * do clear
      */
-    public void doClear() {
+    protected void doClear() {
         conn.pipe.setClose();
     }
 
@@ -852,7 +852,7 @@ public class servP4langCfg implements ifcUp {
      *
      * @param a line
      */
-    public synchronized void sendLine(String a) {
+    protected synchronized void sendLine(String a) {
         if (debugger.servP4langTx) {
             logger.debug("tx: " + a);
         }
@@ -873,7 +873,7 @@ public class servP4langCfg implements ifcUp {
      *
      * @return id, -1 if error
      */
-    public synchronized int getNextDynamic() {
+    protected synchronized int getNextDynamic() {
         for (int cnt = 0; cnt < 16; cnt++) {
             int dynRngNxt = bits.random(dynRngBeg, dynRngEnd);
             servP4langIfc ifc = new servP4langIfc(this, dynRngNxt);
@@ -891,7 +891,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findIfc(cfgIfc ifc) {
+    protected servP4langIfc findIfc(cfgIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -913,7 +913,7 @@ public class servP4langCfg implements ifcUp {
      * @param id id to find
      * @return interface, null if error
      */
-    public servP4langIfc findIfc(int id) {
+    protected servP4langIfc findIfc(int id) {
         servP4langIfc ntry = new servP4langIfc(this, id);
         ntry = expIfc.find(ntry);
         if (ntry == null) {
@@ -931,7 +931,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findIfc(ifcEthTyp ifc) {
+    protected servP4langIfc findIfc(ifcEthTyp ifc) {
         if (ifc == null) {
             return null;
         }
@@ -953,7 +953,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findIfc(tabRouteIface ifc) {
+    protected servP4langIfc findIfc(tabRouteIface ifc) {
         if (ifc == null) {
             return null;
         }
@@ -978,7 +978,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findIfc(ifcBridgeIfc ifc) {
+    protected servP4langIfc findIfc(ifcBridgeIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1000,7 +1000,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findIfc(cfgBrdg ifc) {
+    protected servP4langIfc findIfc(cfgBrdg ifc) {
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc old = expIfc.get(i);
             if (old.ifc == null) {
@@ -1022,7 +1022,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findBundl(cfgBndl ifc) {
+    protected servP4langIfc findBundl(cfgBndl ifc) {
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc old = expIfc.get(i);
             if (old.ifc == null) {
@@ -1044,7 +1044,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return interface, null if error
      */
-    public servP4langIfc findDynBr(ifcBridgeIfc ifc) {
+    protected servP4langIfc findDynBr(ifcBridgeIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1063,7 +1063,7 @@ public class servP4langCfg implements ifcUp {
      * @param fwd forwarder
      * @return vrf, null if error
      */
-    public servP4langVrf findVrf(ipFwd fwd) {
+    protected servP4langVrf findVrf(ipFwd fwd) {
         if (fwd == null) {
             return null;
         }
@@ -1085,7 +1085,7 @@ public class servP4langCfg implements ifcUp {
      * @param ifc interface
      * @return vrf, null if error
      */
-    public servP4langVrf findVrf(servP4langIfc ifc) {
+    protected servP4langVrf findVrf(servP4langIfc ifc) {
         if (ifc == null) {
             return null;
         }
@@ -1104,7 +1104,7 @@ public class servP4langCfg implements ifcUp {
      * @param ntry neighbor
      * @return updated, null if error
      */
-    public servP4langNei genNeighId(servP4langNei ntry) {
+    protected servP4langNei genNeighId(servP4langNei ntry) {
         ntry.need = 1;
         for (int rnd = 0; rnd < 16; rnd++) {
             ntry.id = bits.random(0x1000, 0xfff0);
@@ -1136,7 +1136,7 @@ public class servP4langCfg implements ifcUp {
      * @param hop nexthop address
      * @return neighbor, null if error
      */
-    public servP4langNei findNei(tabRouteIface ifc, addrIP hop) {
+    protected servP4langNei findNei(tabRouteIface ifc, addrIP hop) {
         servP4langIfc id = findIfc(ifc);
         if (id == null) {
             return null;
@@ -1157,7 +1157,7 @@ public class servP4langCfg implements ifcUp {
      * @param adr nexthop address
      * @return neighbor, null if error
      */
-    public servP4langNei findHop(ipFwd fwd, addrIP adr) {
+    protected servP4langNei findHop(ipFwd fwd, addrIP adr) {
         tabRouteEntry<addrIP> rou = fwd.actualU.route(adr);
         rou = convRou(rou, false);
         if (rou == null) {
@@ -1180,7 +1180,7 @@ public class servP4langCfg implements ifcUp {
      * @param nhchk nexthop check
      * @return converted, null if error
      */
-    public tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
+    protected tabRouteEntry<addrIP> convRou(tabRouteEntry<addrIP> rou, boolean nhchk) {
         if (rou == null) {
             return null;
         }
