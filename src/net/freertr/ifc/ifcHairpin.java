@@ -36,6 +36,41 @@ public class ifcHairpin {
      */
     public int bufSiz = 65536;
 
+    /**
+     * drop probability
+     */
+    public int randDrop = 0;
+
+    /**
+     * duplication probability
+     */
+    public int randDup = 0;
+
+    /**
+     * burstiness probability
+     */
+    public int randBurstP = 0;
+
+    /**
+     * burstiness interval
+     */
+    public int randBurstT = 0;
+
+    /**
+     * reorder probability
+     */
+    public int randReord = 0;
+
+    /**
+     * delay probability
+     */
+    public int randDelayP = 0;
+
+    /**
+     * delay maximum
+     */
+    public int randDelayT = 0;
+
     private ifcHairpinWorker s1;
 
     private ifcHairpinWorker s2;
@@ -46,10 +81,8 @@ public class ifcHairpin {
      * create new instance
      */
     public ifcHairpin() {
-        s1 = new ifcHairpinWorker();
-        s2 = new ifcHairpinWorker();
-        s1.parent = this;
-        s2.parent = this;
+        s1 = new ifcHairpinWorker(this);
+        s2 = new ifcHairpinWorker(this);
         pip = new pipeLine(64 * 1024, true);
         s1.queueRx = pip.getSide();
         s2.queueRx = pip.getSide();
@@ -103,6 +136,18 @@ public class ifcHairpin {
         l.add(null, "1 .     ethernet                    specify type of hairpin");
         l.add(null, "1 2     buffer                      specify buffer size");
         l.add(null, "2 .       <num>                     buffer size in bytes");
+        l.add(null, ".1 2     random-drop                specify packet loss probability");
+        l.add(null, ".2 .       <num>                    one to this");
+        l.add(null, ".1 2     random-burst               specify burstiness probability");
+        l.add(null, ".2 3       <num>                    one to this");
+        l.add(null, ".3 .         <num>                  maximum time in ms");
+        l.add(null, ".1 2     random-duplicate           specify duplication probability");
+        l.add(null, ".2 .       <num>                    one to this");
+        l.add(null, ".1 2     random-reorder             specify reorder probability");
+        l.add(null, ".2 .       <num>                    one to this");
+        l.add(null, ".1 2     random-delay               specify delay probability");
+        l.add(null, ".2 3       <num>                    one to this");
+        l.add(null, ".3 .         <num>                  maximum time in ms");
     }
 
     /**
@@ -115,6 +160,11 @@ public class ifcHairpin {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
         l.add(beg + "buffer " + bufSiz);
+        l.add(beg + "random-drop " + randDrop);
+        l.add(beg + "random-burst " + randBurstP + " " + randBurstT);
+        l.add(beg + "random-duplicate " + randDup);
+        l.add(beg + "random-reorder " + randReord);
+        l.add(beg + "random-delay " + randDelayP + " " + randDelayT);
     }
 
     /**
@@ -143,6 +193,28 @@ public class ifcHairpin {
             old.setClose();
             return;
         }
+        if (s.equals("random-drop")) {
+            randDrop = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random-burst")) {
+            randBurstP = bits.str2num(cmd.word());
+            randBurstT = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random-duplicate")) {
+            randDup = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random-reorder")) {
+            randReord = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random-delay")) {
+            randDelayP = bits.str2num(cmd.word());
+            randDelayT = bits.str2num(cmd.word());
+            return;
+        }
         if (!s.equals("no")) {
             cmd.badCmd();
             return;
@@ -156,6 +228,28 @@ public class ifcHairpin {
             notEther = true;
             return;
         }
+        if (s.equals("random-drop")) {
+            randDrop = 0;
+            return;
+        }
+        if (s.equals("random-burst")) {
+            randBurstP = 0;
+            randBurstT = 0;
+            return;
+        }
+        if (s.equals("random-duplicate")) {
+            randDup = 0;
+            return;
+        }
+        if (s.equals("random-reorder")) {
+            randReord = 0;
+            return;
+        }
+        if (s.equals("random-delay")) {
+            randDelayP = 0;
+            randDelayT = 0;
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -165,7 +259,7 @@ class ifcHairpinWorker implements ifcDn, Runnable {
 
     public boolean need2work = true;
 
-    public ifcHairpin parent;
+    public final ifcHairpin parent;
 
     public pipeSide queueRx;
 
@@ -176,6 +270,10 @@ class ifcHairpinWorker implements ifcDn, Runnable {
     public addrType hwaddr = addrMac.getRandom();
 
     private ifcUp upper = new ifcNull();
+
+    public ifcHairpinWorker(ifcHairpin lower) {
+        parent = lower;
+    }
 
     public counter getCounter() {
         return cntr;
@@ -230,19 +328,56 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             if (!need2work) {
                 break;
             }
+            if (parent.randBurstP > 0) {
+                if (bits.random(0, parent.randBurstP) == 0) {
+                    bits.sleep(bits.random(1, parent.randBurstT));
+                }
+            }
             int i = queueRx.blockingGet(buf, 0, buf.length);
             if (i < 0) {
                 continue;
             }
-            pck.clear();
-            pck.putCopy(buf, 0, 0, i);
-            pck.putSkip(i);
-            pck.merge2beg();
-            if (!parent.notEther) {
-                ifcEther.parseETHheader(pck, false);
+            if (parent.randDrop > 0) {
+                if (bits.random(0, parent.randDrop) == 0) {
+                    continue;
+                }
+            }
+            buf2pck(buf, pck, i);
+            if (parent.randDup > 0) {
+                if (bits.random(0, parent.randDup) == 0) {
+                    upper.recvPack(pck.copyBytes(true, true));
+                }
+            }
+            if (parent.randReord > 0) {
+                if (bits.random(0, parent.randReord) == 0) {
+                    i = queueRx.blockingGet(buf, 0, buf.length);
+                    if (i < 0) {
+                        continue;
+                    }
+                    packHolder pck2 = new packHolder(true, true);
+                    buf2pck(buf, pck2, i);
+                    upper.recvPack(pck2);
+                }
+            }
+            if (parent.randDelayP > 0) {
+                if (bits.random(0, parent.randDelayP) == 0) {
+                    ifcDelay.recvPack(bits.random(1, parent.randDelayT), upper, pck);
+                    continue;
+                }
             }
             upper.recvPack(pck);
         }
+    }
+
+    private void buf2pck(byte[] buf, packHolder pck, int len) {
+        pck.clear();
+        pck.putCopy(buf, 0, 0, len);
+        pck.putSkip(len);
+        pck.merge2beg();
+        if (parent.notEther) {
+            return;
+        }
+        ifcEther.parseETHheader(pck, false);
     }
 
     public void run() {

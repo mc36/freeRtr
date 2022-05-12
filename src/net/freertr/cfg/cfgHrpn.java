@@ -41,6 +41,11 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
     public final static String[] defaultL = {
         "hairpin .*! no description",
         "hairpin .*! ethernet",
+        "hairpin .*! random-drop 0",
+        "hairpin .*! random-burst 0 0",
+        "hairpin .*! random-duplicate 0",
+        "hairpin .*! random-reorder 0",
+        "hairpin .*! random-delay 0 0",
         "hairpin .*! buffer 65536"
     };
 
