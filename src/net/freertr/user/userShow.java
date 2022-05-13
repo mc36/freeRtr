@@ -959,27 +959,27 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("status")) {
-                rdr.putStrTab(srv.getShow(1));
+                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 1));
                 return null;
             }
             if (a.equals("api-tx")) {
-                rdr.putStrTab(srv.getShow(2));
+                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 2));
                 return null;
             }
             if (a.equals("api-rx")) {
-                rdr.putStrTab(srv.getShow(3));
+                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 3));
                 return null;
             }
             if (a.equals("frontpanel")) {
-                rdr.putStrTab(srv.getShow(4));
+                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 4));
                 return null;
             }
             if (a.equals("done-interface")) {
-                rdr.putStrTab(srv.getShow(5));
+                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 5));
                 return null;
             }
             if (a.equals("done-neighbor")) {
-                rdr.putStrTab(srv.getShow(6));
+                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 6));
                 return null;
             }
             if (!a.equals("port-counters")) {
@@ -992,7 +992,7 @@ public class userShow {
                 cmd.error("no such interface");
                 return null;
             }
-            rdr.putStrTab(srv.getShowIface(ifc));
+            rdr.putStrTab(srv.getShowIface(bits.str2num(cmd.word()), ifc));
             return null;
         }
         if (a.equals("bmp")) {

@@ -159,7 +159,7 @@ public class userClear {
                 cmd.error("no such server");
                 return null;
             }
-            srv.doClear();
+            srv.doClear(bits.str2num(cmd.word()));
             return null;
         }
         if (a.equals("bmp")) {

@@ -47,6 +47,11 @@ import net.freertr.util.state;
 public class servP4langCfg implements ifcUp {
 
     /**
+     * my number
+     */
+    protected final int id;
+
+    /**
      * current connection
      */
     protected servP4langConn conn;
@@ -99,7 +104,7 @@ public class servP4langCfg implements ifcUp {
     /**
      * last peer
      */
-    protected addrIP remote = null;
+    protected addrIP remote = new addrIP();
 
     /**
      * minimum buffer size
@@ -233,8 +238,11 @@ public class servP4langCfg implements ifcUp {
 
     /**
      * create instance
+     *
+     * @param i id
      */
-    protected servP4langCfg() {
+    protected servP4langCfg(int i) {
+        id = i;
         pipeLine pl = new pipeLine(1024, false);
         pl.setClose();
         conn = new servP4langConn(pl.getSide(), this);
@@ -244,17 +252,18 @@ public class servP4langCfg implements ifcUp {
      * get configuration
      *
      * @param beg text to prepend
+     * @param mid text to prepend
      * @param l text to append
      */
-    protected void getShowRun(String beg, List<String> l) {
-        cmds.cfgLine(l, apiStatTx == null, beg, "api-stat", "");
+    protected void getShowRun(String beg, String mid, List<String> l) {
+        cmds.cfgLine(l, apiStatTx == null, beg, mid + "api-stat", "");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
-            l.add(beg + "export-vrf " + ntry.vrf.name + " " + ntry.id);
+            l.add(beg + mid + "export-vrf " + ntry.vrf.name + " " + ntry.id);
         }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr ntry = expBr.get(i);
-            l.add(beg + "export-bridge " + ntry.br.num);
+            l.add(beg + mid + "export-bridge " + ntry.br.num);
         }
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
@@ -262,30 +271,41 @@ public class servP4langCfg implements ifcUp {
                 continue;
             }
             String a = ntry.getCfgLine();
-            l.add(beg + "export-port " + a);
+            l.add(beg + mid + "export-port " + a);
         }
         if (expSrv6 == null) {
-            l.add(beg + "no export-srv6");
+            l.add(beg + "no " + mid + "export-srv6");
         } else {
-            l.add(beg + "export-srv6 " + expSrv6.name);
+            l.add(beg + mid + "export-srv6 " + expSrv6.name);
         }
         if (expCopp4 == null) {
-            l.add(beg + "no export-copp4");
+            l.add(beg + "no " + mid + "export-copp4");
         } else {
-            l.add(beg + "export-copp4 " + expCopp4.listName);
+            l.add(beg + mid + "export-copp4 " + expCopp4.listName);
         }
         if (expCopp6 == null) {
-            l.add(beg + "no export-copp6");
+            l.add(beg + "no " + mid + "export-copp6");
         } else {
-            l.add(beg + "export-copp6 " + expCopp6.listName);
+            l.add(beg + mid + "export-copp6 " + expCopp6.listName);
         }
-        cmds.cfgLine(l, !expSck, beg, "export-socket", "");
-        l.add(beg + "export-interval " + expDelay);
-        cmds.cfgLine(l, interconn == null, beg, "interconnect", "" + interconn);
+        cmds.cfgLine(l, !expSck, beg, mid + "export-socket", "");
+        l.add(beg + mid + "export-interval " + expDelay);
+        cmds.cfgLine(l, interconn == null, beg, mid + "interconnect", "" + interconn);
         for (int i = 0; i < downLinks.size(); i++) {
             servP4langDlnk ntry = downLinks.get(i);
-            l.add(beg + "downlink " + ntry.id + " " + ntry.ifc);
+            l.add(beg + mid + "downlink " + ntry.id + " " + ntry.ifc);
         }
+    }
+
+    /**
+     * get configuration
+     *
+     * @param beg text to prepend
+     * @param mid text to prepend
+     * @param l text to append
+     */
+    protected void getShowRun2(String beg, String mid, List<String> l) {
+        l.add(beg + mid + "remote " + remote);
     }
 
     /**
@@ -320,6 +340,18 @@ public class servP4langCfg implements ifcUp {
             ntry.doClear();
             ntry.br = br;
             expBr.put(ntry);
+            return false;
+        }
+        if (s.equals("remote")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                return true;
+            }
+            if (adr.compare(adr, remote) == 0) {
+                return false;
+            }
+            remote = adr;
+            doClear();
             return false;
         }
         if (s.equals("downlink")) {
@@ -610,6 +642,8 @@ public class servP4langCfg implements ifcUp {
         for (int i = 0; i < fronts.size(); i++) {
             lst.add(fronts.get(i).nam);
         }
+        l.add(null, (p + 0) + " " + (p + 1) + "  remote                    address of forwarder");
+        l.add(null, (p + 1) + " .    <addr>                  ip address of client");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-vrf                specify vrf to export");
         l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
         l.add(null, (p + 2) + " .      <num>                 p4lang vrf number");
