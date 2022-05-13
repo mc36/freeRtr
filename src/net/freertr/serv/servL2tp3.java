@@ -507,12 +507,6 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         }
         if (pckRx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
-            synchronized (queue) {
-                if (queue.size() > 0) {
-                    return;
-                }
-            }
-            sendAck();
             return;
         }
         pckRx.parseTLVs(pckBin);

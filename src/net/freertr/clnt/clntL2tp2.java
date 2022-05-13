@@ -114,6 +114,8 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
 
     private boolean working = true;
 
+    private boolean needAck = false;
+
     private prtGenConn conn;
 
     private List<packL2tp2> queue;
@@ -380,6 +382,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
             enQueue(packL2tp2.createICCN(sesRem));
         }
         sendAck();
+        needAck = true;
         for (;;) {
             if (conn.txBytesFree() < 0) {
                 return;
@@ -439,6 +442,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         queue = new ArrayList<packL2tp2>();
         seqRx = 0;
         seqTx = 0;
+        needAck = false;
         tunLoc = 0;
         tunRem = 0;
         sesLoc = 0;
@@ -579,10 +583,8 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         }
         if (pckRx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
-            synchronized (queue) {
-                if (queue.size() > 0) {
-                    return false;
-                }
+            if (!needAck) {
+                return false;
             }
             sendAck();
             return false;

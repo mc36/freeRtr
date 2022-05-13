@@ -114,6 +114,8 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
 
     private boolean working = true;
 
+    private boolean needAck = false;
+
     private ipFwd fwdCor;
 
     private addrIP fwdTrg;
@@ -377,6 +379,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         }
         sendAck();
         enQueue(packL2tp3.createSLI(sesRem, sesLoc));
+        needAck = true;
         for (;;) {
             if (txDoer()) {
                 return;
@@ -443,6 +446,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         conLoc = 0;
         seqRx = 0;
         seqTx = 0;
+        needAck = false;
         keep = 0;
         txed = 0;
         notif = new notifier();
@@ -569,10 +573,8 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         }
         if (pckRx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
-            synchronized (queue) {
-                if (queue.size() > 0) {
-                    return;
-                }
+            if (!needAck) {
+                return;
             }
             sendAck();
             return;

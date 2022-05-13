@@ -258,12 +258,6 @@ public class servL2tp2conn implements Comparator<servL2tp2conn> {
         }
         if (pckRx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
-            synchronized (queue) {
-                if (queue.size() > 0) {
-                    return;
-                }
-            }
-            sendAck();
             return;
         }
         pckRx.parseTLVs(pckBin);
