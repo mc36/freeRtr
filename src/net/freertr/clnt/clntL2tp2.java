@@ -570,16 +570,16 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
             upper.recvPack(pckBin);
             return false;
         }
-        if (pckRx.seqTx != seqRx) {
-            cntr.drop(pckBin, counter.reasons.badRxSeq);
-            return false;
-        }
         synchronized (queue) {
             if ((pckRx.seqRx == ((seqTx + 1) & 0xffff)) && (queue.size() > 0)) {
                 seqTx = (seqTx + 1) & 0xffff;
                 txed = 0;
                 queue.remove(0);
             }
+        }
+        if (pckRx.seqTx != seqRx) {
+            cntr.drop(pckBin, counter.reasons.badRxSeq);
+            return false;
         }
         pckRx.parseTLVs(pckBin);
         cntr.rx(pckBin);
