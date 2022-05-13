@@ -569,6 +569,9 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         }
         if (pckRx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
+            if (queue.size() < 1) {
+                sendAck();
+            }
             return;
         }
         pckRx.parseTLVs(pckBin);
