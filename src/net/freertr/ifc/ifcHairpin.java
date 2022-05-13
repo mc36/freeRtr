@@ -36,51 +36,6 @@ public class ifcHairpin {
      */
     public int bufSiz = 65536;
 
-    /**
-     * drop probability
-     */
-    public int randDrop = 0;
-
-    /**
-     * duplication probability
-     */
-    public int randDup = 0;
-
-    /**
-     * burstiness probability
-     */
-    public int randBurstP = 0;
-
-    /**
-     * burstiness minimum
-     */
-    public int randBurstB = 0;
-
-    /**
-     * burstiness maximum
-     */
-    public int randBurstE = 0;
-
-    /**
-     * reorder probability
-     */
-    public int randReord = 0;
-
-    /**
-     * delay probability
-     */
-    public int randDelayP = 0;
-
-    /**
-     * delay minimum
-     */
-    public int randDelayB = 0;
-
-    /**
-     * delay maximum
-     */
-    public int randDelayE = 0;
-
     private ifcHairpinWorker s1;
 
     private ifcHairpinWorker s2;
@@ -93,7 +48,11 @@ public class ifcHairpin {
     public ifcHairpin() {
         s1 = new ifcHairpinWorker(this);
         s2 = new ifcHairpinWorker(this);
-        pip = new pipeLine(64 * 1024, true);
+        setupBuffer(new pipeLine(64 * 1024, true));
+    }
+
+    private void setupBuffer(pipeLine p) {
+        pip = p;
         s1.queueRx = pip.getSide();
         s2.queueRx = pip.getSide();
         s1.queueTx = s1.queueRx;
@@ -146,17 +105,31 @@ public class ifcHairpin {
         l.add(null, "1 .     ethernet                    specify type of hairpin");
         l.add(null, "1 2     buffer                      specify buffer size");
         l.add(null, "2 .       <num>                     buffer size in bytes");
-        l.add(null, ".1 2    random-drop                 specify packet loss probability");
+        l.add(null, ".1 2    random12drop                specify packet loss probability");
         l.add(null, ".2 .      <num>                     one to this");
-        l.add(null, ".1 2    random-burst                specify burstiness probability");
+        l.add(null, ".1 2    random12burst               specify burstiness probability");
         l.add(null, ".2 3      <num>                     one to this");
         l.add(null, ".3 4        <num>                   minimum time in ms");
         l.add(null, ".4 .          <num>                 maximum time in ms");
-        l.add(null, ".1 2    random-duplicate            specify duplication probability");
+        l.add(null, ".1 2    random12duplicate           specify duplication probability");
         l.add(null, ".2 .      <num>                     one to this");
-        l.add(null, ".1 2    random-reorder              specify reorder probability");
+        l.add(null, ".1 2    random12reorder             specify reorder probability");
         l.add(null, ".2 .      <num>                     one to this");
-        l.add(null, ".1 2    random-delay                specify delay probability");
+        l.add(null, ".1 2    random12delay               specify delay probability");
+        l.add(null, ".2 3      <num>                     one to this");
+        l.add(null, ".3 4        <num>                   minimum time in ms");
+        l.add(null, ".4 .          <num>                 maximum time in ms");
+        l.add(null, ".1 2    random21drop                specify packet loss probability");
+        l.add(null, ".2 .      <num>                     one to this");
+        l.add(null, ".1 2    random21burst               specify burstiness probability");
+        l.add(null, ".2 3      <num>                     one to this");
+        l.add(null, ".3 4        <num>                   minimum time in ms");
+        l.add(null, ".4 .          <num>                 maximum time in ms");
+        l.add(null, ".1 2    random21duplicate           specify duplication probability");
+        l.add(null, ".2 .      <num>                     one to this");
+        l.add(null, ".1 2    random21reorder             specify reorder probability");
+        l.add(null, ".2 .      <num>                     one to this");
+        l.add(null, ".1 2    random21delay               specify delay probability");
         l.add(null, ".2 3      <num>                     one to this");
         l.add(null, ".3 4        <num>                   minimum time in ms");
         l.add(null, ".4 .          <num>                 maximum time in ms");
@@ -172,11 +145,16 @@ public class ifcHairpin {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
         l.add(beg + "buffer " + bufSiz);
-        l.add(beg + "random-drop " + randDrop);
-        l.add(beg + "random-burst " + randBurstP + " " + randBurstB + " " + randBurstE);
-        l.add(beg + "random-duplicate " + randDup);
-        l.add(beg + "random-reorder " + randReord);
-        l.add(beg + "random-delay " + randDelayP + " " + randDelayB + " " + randDelayE);
+        l.add(beg + "random12drop " + s1.randDrop);
+        l.add(beg + "random12burst " + s1.randBurstP + " " + s1.randBurstB + " " + s1.randBurstE);
+        l.add(beg + "random12duplicate " + s1.randDup);
+        l.add(beg + "random12reorder " + s1.randReord);
+        l.add(beg + "random12delay " + s1.randDelayP + " " + s1.randDelayB + " " + s1.randDelayE);
+        l.add(beg + "random21drop " + s2.randDrop);
+        l.add(beg + "random21burst " + s2.randBurstP + " " + s2.randBurstB + " " + s2.randBurstE);
+        l.add(beg + "random21duplicate " + s2.randDup);
+        l.add(beg + "random21reorder " + s2.randReord);
+        l.add(beg + "random21delay " + s2.randDelayP + " " + s2.randDelayB + " " + s2.randDelayE);
     }
 
     /**
@@ -197,36 +175,56 @@ public class ifcHairpin {
         if (s.equals("buffer")) {
             bufSiz = bits.str2num(cmd.word());
             pipeLine old = pip;
-            pip = new pipeLine(bufSiz, true);
-            s1.queueRx = pip.getSide();
-            s2.queueRx = pip.getSide();
-            s1.queueTx = s1.queueRx;
-            s2.queueTx = s2.queueRx;
+            setupBuffer(new pipeLine(bufSiz, true));
             old.setClose();
             return;
         }
-        if (s.equals("random-drop")) {
-            randDrop = bits.str2num(cmd.word());
+        if (s.equals("random12drop")) {
+            s1.randDrop = bits.str2num(cmd.word());
             return;
         }
-        if (s.equals("random-burst")) {
-            randBurstP = bits.str2num(cmd.word());
-            randBurstB = bits.str2num(cmd.word());
-            randBurstE = bits.str2num(cmd.word());
+        if (s.equals("random12burst")) {
+            s1.randBurstP = bits.str2num(cmd.word());
+            s1.randBurstB = bits.str2num(cmd.word());
+            s1.randBurstE = bits.str2num(cmd.word());
             return;
         }
-        if (s.equals("random-duplicate")) {
-            randDup = bits.str2num(cmd.word());
+        if (s.equals("random12duplicate")) {
+            s1.randDup = bits.str2num(cmd.word());
             return;
         }
-        if (s.equals("random-reorder")) {
-            randReord = bits.str2num(cmd.word());
+        if (s.equals("random12reorder")) {
+            s1.randReord = bits.str2num(cmd.word());
             return;
         }
-        if (s.equals("random-delay")) {
-            randDelayP = bits.str2num(cmd.word());
-            randDelayB = bits.str2num(cmd.word());
-            randDelayE = bits.str2num(cmd.word());
+        if (s.equals("random12delay")) {
+            s1.randDelayP = bits.str2num(cmd.word());
+            s1.randDelayB = bits.str2num(cmd.word());
+            s1.randDelayE = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random21drop")) {
+            s2.randDrop = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random21burst")) {
+            s2.randBurstP = bits.str2num(cmd.word());
+            s2.randBurstB = bits.str2num(cmd.word());
+            s2.randBurstE = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random21duplicate")) {
+            s2.randDup = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random21reorder")) {
+            s2.randReord = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("random21delay")) {
+            s2.randDelayP = bits.str2num(cmd.word());
+            s2.randDelayB = bits.str2num(cmd.word());
+            s2.randDelayE = bits.str2num(cmd.word());
             return;
         }
         if (!s.equals("no")) {
@@ -242,28 +240,52 @@ public class ifcHairpin {
             notEther = true;
             return;
         }
-        if (s.equals("random-drop")) {
-            randDrop = 0;
+        if (s.equals("random12drop")) {
+            s1.randDrop = 0;
             return;
         }
-        if (s.equals("random-burst")) {
-            randBurstP = 0;
-            randBurstB = 0;
-            randBurstE = 0;
+        if (s.equals("random12burst")) {
+            s1.randBurstP = 0;
+            s1.randBurstB = 0;
+            s1.randBurstE = 0;
             return;
         }
-        if (s.equals("random-duplicate")) {
-            randDup = 0;
+        if (s.equals("random12duplicate")) {
+            s1.randDup = 0;
             return;
         }
-        if (s.equals("random-reorder")) {
-            randReord = 0;
+        if (s.equals("random12reorder")) {
+            s1.randReord = 0;
             return;
         }
-        if (s.equals("random-delay")) {
-            randDelayP = 0;
-            randDelayB = 0;
-            randDelayE = 0;
+        if (s.equals("random12delay")) {
+            s1.randDelayP = 0;
+            s1.randDelayB = 0;
+            s1.randDelayE = 0;
+            return;
+        }
+        if (s.equals("random21drop")) {
+            s2.randDrop = 0;
+            return;
+        }
+        if (s.equals("random21burst")) {
+            s2.randBurstP = 0;
+            s2.randBurstB = 0;
+            s2.randBurstE = 0;
+            return;
+        }
+        if (s.equals("random21duplicate")) {
+            s2.randDup = 0;
+            return;
+        }
+        if (s.equals("random21reorder")) {
+            s2.randReord = 0;
+            return;
+        }
+        if (s.equals("random21delay")) {
+            s2.randDelayP = 0;
+            s2.randDelayB = 0;
+            s2.randDelayE = 0;
             return;
         }
         cmd.badCmd();
@@ -273,13 +295,70 @@ public class ifcHairpin {
 
 class ifcHairpinWorker implements ifcDn, Runnable {
 
+    /**
+     * need to work
+     */
     public boolean need2work = true;
 
+    /**
+     * parent
+     */
     public final ifcHairpin parent;
 
+    /**
+     * receive side
+     */
     public pipeSide queueRx;
 
+    /**
+     * transmit side
+     */
     public pipeSide queueTx;
+
+    /**
+     * drop probability
+     */
+    public int randDrop = 0;
+
+    /**
+     * duplication probability
+     */
+    public int randDup = 0;
+
+    /**
+     * burstiness probability
+     */
+    public int randBurstP = 0;
+
+    /**
+     * burstiness minimum
+     */
+    public int randBurstB = 0;
+
+    /**
+     * burstiness maximum
+     */
+    public int randBurstE = 0;
+
+    /**
+     * reorder probability
+     */
+    public int randReord = 0;
+
+    /**
+     * delay probability
+     */
+    public int randDelayP = 0;
+
+    /**
+     * delay minimum
+     */
+    public int randDelayB = 0;
+
+    /**
+     * delay maximum
+     */
+    public int randDelayE = 0;
 
     private counter cntr = new counter();
 
@@ -344,28 +423,28 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             if (!need2work) {
                 break;
             }
-            if (parent.randBurstP > 0) {
-                if (bits.random(0, parent.randBurstP) == 0) {
-                    bits.sleep(bits.random(parent.randBurstB, parent.randBurstE));
+            if (randBurstP > 0) {
+                if (bits.random(0, randBurstP) == 0) {
+                    bits.sleep(bits.random(randBurstB, randBurstE));
                 }
             }
             int i = queueRx.blockingGet(buf, 0, buf.length);
             if (i < 0) {
                 continue;
             }
-            if (parent.randDrop > 0) {
-                if (bits.random(0, parent.randDrop) == 0) {
+            if (randDrop > 0) {
+                if (bits.random(0, randDrop) == 0) {
                     continue;
                 }
             }
             buf2pck(buf, pck, i);
-            if (parent.randDup > 0) {
-                if (bits.random(0, parent.randDup) == 0) {
+            if (randDup > 0) {
+                if (bits.random(0, randDup) == 0) {
                     upper.recvPack(pck.copyBytes(true, true));
                 }
             }
-            if (parent.randReord > 0) {
-                if (bits.random(0, parent.randReord) == 0) {
+            if (randReord > 0) {
+                if (bits.random(0, randReord) == 0) {
                     i = queueRx.blockingGet(buf, 0, buf.length);
                     if (i < 0) {
                         continue;
@@ -375,9 +454,9 @@ class ifcHairpinWorker implements ifcDn, Runnable {
                     upper.recvPack(pck2);
                 }
             }
-            if (parent.randDelayP > 0) {
-                if (bits.random(0, parent.randDelayP) == 0) {
-                    ifcDelay.recvPack(bits.random(parent.randDelayB, parent.randDelayE), upper, pck);
+            if (randDelayP > 0) {
+                if (bits.random(0, randDelayP) == 0) {
+                    ifcDelay.recvPack(bits.random(randDelayB, randDelayE), upper, pck);
                     continue;
                 }
             }
