@@ -146,20 +146,20 @@ public class ifcHairpin {
         l.add(null, "1 .     ethernet                    specify type of hairpin");
         l.add(null, "1 2     buffer                      specify buffer size");
         l.add(null, "2 .       <num>                     buffer size in bytes");
-        l.add(null, ".1 2     random-drop                specify packet loss probability");
-        l.add(null, ".2 .       <num>                    one to this");
-        l.add(null, ".1 2     random-burst               specify burstiness probability");
-        l.add(null, ".2 3       <num>                    one to this");
-        l.add(null, ".3 4         <num>                  minimum time in ms");
-        l.add(null, ".4 .           <num>                maximum time in ms");
-        l.add(null, ".1 2     random-duplicate           specify duplication probability");
-        l.add(null, ".2 .       <num>                    one to this");
-        l.add(null, ".1 2     random-reorder             specify reorder probability");
-        l.add(null, ".2 .       <num>                    one to this");
-        l.add(null, ".1 2     random-delay               specify delay probability");
-        l.add(null, ".2 3       <num>                    one to this");
-        l.add(null, ".3 4         <num>                  minimum time in ms");
-        l.add(null, ".4 .           <num>                maximum time in ms");
+        l.add(null, ".1 2    random-drop                 specify packet loss probability");
+        l.add(null, ".2 .      <num>                     one to this");
+        l.add(null, ".1 2    random-burst                specify burstiness probability");
+        l.add(null, ".2 3      <num>                     one to this");
+        l.add(null, ".3 4        <num>                   minimum time in ms");
+        l.add(null, ".4 .          <num>                 maximum time in ms");
+        l.add(null, ".1 2    random-duplicate            specify duplication probability");
+        l.add(null, ".2 .      <num>                     one to this");
+        l.add(null, ".1 2    random-reorder              specify reorder probability");
+        l.add(null, ".2 .      <num>                     one to this");
+        l.add(null, ".1 2    random-delay                specify delay probability");
+        l.add(null, ".2 3      <num>                     one to this");
+        l.add(null, ".3 4        <num>                   minimum time in ms");
+        l.add(null, ".4 .          <num>                 maximum time in ms");
     }
 
     /**
