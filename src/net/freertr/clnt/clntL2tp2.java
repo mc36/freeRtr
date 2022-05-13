@@ -114,8 +114,6 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
 
     private boolean working = true;
 
-    private boolean needAck = false;
-
     private prtGenConn conn;
 
     private List<packL2tp2> queue;
@@ -382,7 +380,6 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
             enQueue(packL2tp2.createICCN(sesRem));
         }
         sendAck();
-        needAck = true;
         for (;;) {
             if (conn.txBytesFree() < 0) {
                 return;
@@ -442,7 +439,6 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         queue = new ArrayList<packL2tp2>();
         seqRx = 0;
         seqTx = 0;
-        needAck = false;
         tunLoc = 0;
         tunRem = 0;
         sesLoc = 0;
@@ -555,18 +551,18 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
      * @return false on success, true on error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pckBin) {
-        pckRx = new packL2tp2();
-        if (pckRx.parseHeader(pckBin)) {
+        packL2tp2 rx = new packL2tp2();
+        if (rx.parseHeader(pckBin)) {
             cntr.drop(pckBin, counter.reasons.badHdr);
             return false;
         }
-        if (pckRx.tunID != tunLoc) {
+        if (rx.tunID != tunLoc) {
             cntr.drop(pckBin, counter.reasons.badID);
             return false;
         }
         keep = 0;
-        if (!pckRx.ctrl) {
-            if (pckRx.sesID != sesLoc) {
+        if (!rx.ctrl) {
+            if (rx.sesID != sesLoc) {
                 cntr.drop(pckBin, counter.reasons.badID);
                 return false;
             }
@@ -575,29 +571,30 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
             return false;
         }
         synchronized (queue) {
-            if ((pckRx.seqRx == ((seqTx + 1) & 0xffff)) && (queue.size() > 0)) {
+            if ((rx.seqRx == ((seqTx + 1) & 0xffff)) && (queue.size() > 0)) {
                 seqTx = (seqTx + 1) & 0xffff;
                 txed = 0;
                 queue.remove(0);
             }
         }
-        if (pckRx.seqTx != seqRx) {
+        rx.parseTLVs(pckBin);
+        if (rx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
-            if (!needAck) {
+            if (rx.valMsgTyp != packL2tp.typHELLO) {
                 return false;
             }
             sendAck();
             return false;
         }
-        pckRx.parseTLVs(pckBin);
         cntr.rx(pckBin);
         if (debugger.clntL2tp2traf) {
-            logger.debug("rx " + pckRx.dump());
+            logger.debug("rx " + rx.dump());
         }
-        if (pckRx.valMsgTyp == packL2tp.typZLB) {
+        if (rx.valMsgTyp == packL2tp.typZLB) {
             return false;
         }
         seqRx = (seqRx + 1) & 0xffff;
+        pckRx = rx;
         notif.wakeup();
         return false;
     }

@@ -505,11 +505,15 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
                 queue.remove(0);
             }
         }
+        pckRx.parseTLVs(pckBin);
         if (pckRx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
+            if (pckRx.valMsgTyp != packL2tp.typHELLO) {
+                return;
+            }
+            sendAck();
             return;
         }
-        pckRx.parseTLVs(pckBin);
         cntr.rx(pckBin);
         if (debugger.servL2tp3traf) {
             logger.debug("rx " + pckRx.dump());

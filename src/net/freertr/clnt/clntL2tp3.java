@@ -114,8 +114,6 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
 
     private boolean working = true;
 
-    private boolean needAck = false;
-
     private ipFwd fwdCor;
 
     private addrIP fwdTrg;
@@ -379,7 +377,6 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         }
         sendAck();
         enQueue(packL2tp3.createSLI(sesRem, sesLoc));
-        needAck = true;
         for (;;) {
             if (txDoer()) {
                 return;
@@ -446,7 +443,6 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         conLoc = 0;
         seqRx = 0;
         seqTx = 0;
-        needAck = false;
         keep = 0;
         txed = 0;
         notif = new notifier();
@@ -544,14 +540,14 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
      * @param pckBin packet
      */
     public void recvPack(ipFwdIface rxIfc, packHolder pckBin) {
-        pckRx = new packL2tp3();
-        if (pckRx.parseHeader(pckBin)) {
+        packL2tp3 rx = new packL2tp3();
+        if (rx.parseHeader(pckBin)) {
             cntr.drop(pckBin, counter.reasons.badHdr);
             return;
         }
         keep = 0;
-        if (!pckRx.ctrl) {
-            if (pckRx.sesID != sesLoc) {
+        if (!rx.ctrl) {
+            if (rx.sesID != sesLoc) {
                 cntr.drop(pckBin, counter.reasons.badID);
                 return;
             }
@@ -565,29 +561,30 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
             return;
         }
         synchronized (queue) {
-            if ((pckRx.seqRx == ((seqTx + 1) & 0xffff)) && (queue.size() > 0)) {
+            if ((rx.seqRx == ((seqTx + 1) & 0xffff)) && (queue.size() > 0)) {
                 seqTx = (seqTx + 1) & 0xffff;
                 txed = 0;
                 queue.remove(0);
             }
         }
-        if (pckRx.seqTx != seqRx) {
+        rx.parseTLVs(pckBin);
+        if (rx.seqTx != seqRx) {
             cntr.drop(pckBin, counter.reasons.badRxSeq);
-            if (!needAck) {
+            if (rx.valMsgTyp != packL2tp.typHELLO) {
                 return;
             }
             sendAck();
             return;
         }
-        pckRx.parseTLVs(pckBin);
         cntr.rx(pckBin);
         if (debugger.clntL2tp3traf) {
-            logger.debug("rx " + pckRx.dump());
+            logger.debug("rx " + rx.dump());
         }
-        if (pckRx.valMsgTyp == packL2tp.typZLB) {
+        if (rx.valMsgTyp == packL2tp.typZLB) {
             return;
         }
         seqRx = (seqRx + 1) & 0xffff;
+        pckRx = rx;
         notif.wakeup();
     }
 
