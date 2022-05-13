@@ -232,7 +232,7 @@ public class userClear {
                 ntry.bridgeHed.delMacs(null);
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -320,7 +320,7 @@ public class userClear {
                 cfgAll.moreInterfaces(6);
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -337,7 +337,7 @@ public class userClear {
                 cfgAll.moreInterfaces(2);
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -353,7 +353,7 @@ public class userClear {
                 cfgAll.moreInterfaces(5);
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -369,7 +369,7 @@ public class userClear {
                 return null;
             }
             String p = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -552,7 +552,7 @@ public class userClear {
             return null;
         }
         if (a.equals("interface")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -567,7 +567,7 @@ public class userClear {
         if (a.equals("ipv4")) {
             a = cmd.word();
             if (a.equals("arp")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -664,7 +664,7 @@ public class userClear {
         if (a.equals("ipv6")) {
             a = cmd.word();
             if (a.equals("neighbor")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;

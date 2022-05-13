@@ -212,7 +212,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
             return;
         }
         if (s.equals("source")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;

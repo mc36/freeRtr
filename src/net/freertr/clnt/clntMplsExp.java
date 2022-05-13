@@ -196,7 +196,7 @@ public class clntMplsExp implements ifcDn {
             if (mtch.fromString(a)) {
                 continue;
             }
-            cfgIfc iface = cfgAll.ifcFind(b, false);
+            cfgIfc iface = cfgAll.ifcFind(b, 0);
             if (iface == null) {
                 continue;
             }

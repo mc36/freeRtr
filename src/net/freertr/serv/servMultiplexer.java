@@ -113,7 +113,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
             if (ntry.vrf == null) {
                 return true;
             }
-            ntry.iface = cfgAll.ifcFind(cmd.word(), false);
+            ntry.iface = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry.iface == null) {
                 return true;
             }

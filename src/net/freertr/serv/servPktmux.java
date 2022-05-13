@@ -87,7 +87,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("cpuport")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;
@@ -98,7 +98,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
             return false;
         }
         if (s.equals("dataport")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;

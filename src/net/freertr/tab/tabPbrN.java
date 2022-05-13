@@ -91,7 +91,7 @@ public class tabPbrN extends tabListingEntry<addrIP> {
                 break;
             }
             if (s.equals("interface")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     continue;
                 }

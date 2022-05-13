@@ -173,7 +173,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * name of this interface
      */
-    public String name = "";
+    public final String name;
 
     /**
      * description of this interface
@@ -2036,8 +2036,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l = userFilter.filterText(l, nocloneF);
         cfgIfc res;
         for (;;) {
-            res = cfgAll.ifcFind("access" + bits.randomD(), true);
-            if (res.cloned != null) {
+            res = cfgAll.ifcFind("access" + bits.randomD(), 2);
+            if (res == null) {
                 continue;
             }
             break;
@@ -2548,13 +2548,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             break;
         }
         if (p >= s.length()) {
-            return new String[]{"", "", ""};
+            return new String[]{"", ""};
         }
         String b = s.substring(0, p).trim();
         s = s.substring(p, s.length()).trim();
         b = ifaceNames.repairLine(b).trim();
         if (b.length() < 1) {
-            return new String[]{"", "", ""};
+            return new String[]{"", ""};
         }
         p = s.indexOf(".");
         if (p < 0) {
@@ -2564,7 +2564,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         } else {
             b += bits.str2num(s.substring(0, p));
             s = s.substring(p + 1, s.length());
-            s = "." + bits.str2num(s);
+            p = bits.str2num(s);
+            if (p < 1) {
+                return new String[]{"", ""};
+            }
+            s = "." + p;
             return new String[]{b, s};
         }
     }
@@ -5154,7 +5158,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public synchronized void setup2ldp(int ver, cmds cmd) {
         clear2ldp(ver);
-        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
             ifc = this;
         }
@@ -6681,7 +6685,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("template")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;
@@ -6741,7 +6745,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("monitor-session")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;
@@ -6813,21 +6817,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("p2poe")) {
             a = cmd.word();
             if (a.equals("client")) {
-                if (setup2pppoeClnt(cfgAll.ifcFind(cmd.word(), false))) {
+                if (setup2pppoeClnt(cfgAll.ifcFind(cmd.word(), 0))) {
                     cmd.error("failed to setup encapsulation");
                     return;
                 }
                 return;
             }
             if (a.equals("server")) {
-                if (setup2pppoeServ(cfgAll.ifcFind(cmd.word(), false), cmd)) {
+                if (setup2pppoeServ(cfgAll.ifcFind(cmd.word(), 0), cmd)) {
                     cmd.error("failed to setup encapsulation");
                     return;
                 }
                 return;
             }
             if (a.equals("relay")) {
-                if (setup2pppoeRely(cfgAll.ifcFind(cmd.word(), false), cmd)) {
+                if (setup2pppoeRely(cfgAll.ifcFind(cmd.word(), 0), cmd)) {
                     cmd.error("failed to setup encapsulation");
                     return;
                 }
@@ -8067,7 +8071,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             addr4changed(addrIPv4.genLinkLocal(), mask4, null);
         }
         if (a.equals("redirection")) {
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return;
@@ -8200,7 +8204,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("redirection")) {
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return;
@@ -8426,7 +8430,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("source")) {
-            cfgIfc i = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc i = cfgAll.ifcFind(cmd.word(), 0);
             if (i == null) {
                 cmd.error("no such interface");
                 return;
@@ -9048,7 +9052,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if (mplsPack == null) {
                 return;
             }
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return;

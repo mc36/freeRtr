@@ -239,7 +239,7 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
                 break;
             }
             if (s.equals("interface")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return;

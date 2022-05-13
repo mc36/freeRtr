@@ -329,7 +329,7 @@ public class servP4langCfg implements ifcUp {
                 return false;
             }
             servP4langDlnk ntry = new servP4langDlnk(this, i);
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;
@@ -341,7 +341,7 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("interconnect")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;
@@ -383,7 +383,7 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("export-srv6")) {
-            expSrv6 = cfgAll.ifcFind(cmd.word(), false);
+            expSrv6 = cfgAll.ifcFind(cmd.word(), 0);
             if (expSrv6 == null) {
                 cmd.error("no such interface");
                 return false;
@@ -391,7 +391,7 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("export-port")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;
@@ -550,7 +550,7 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("export-port")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             int i = front2id(ifc, cmd.word(), false);
             if (i < 0) {
                 cmd.error("no such frontpanel port");

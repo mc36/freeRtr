@@ -611,7 +611,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("interface")) {
             ntry.ifMode = tabRtrplcN.ifType.iface;
-            ntry.ifaceMatch = cfgAll.ifcFind(cmd.getRemaining(), false);
+            ntry.ifaceMatch = cfgAll.ifcFind(cmd.getRemaining(), 0);
             if (ntry.ifaceMatch == null) {
                 cmd.error("invalid action");
                 return;

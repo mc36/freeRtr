@@ -402,7 +402,7 @@ public class ifcBundle implements Runnable, ifcDn {
             return;
         }
         if (s.equals("peering")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;

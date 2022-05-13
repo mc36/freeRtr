@@ -53,7 +53,7 @@ public class clntPcep {
         if (vrf == null) {
             return;
         }
-        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         proxy = clntProxy.makeTemp(vrf, ifc);
     }
 

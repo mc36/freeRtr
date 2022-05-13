@@ -1104,7 +1104,7 @@ public class ipFwdIface extends tabRouteIface {
             return false;
         }
         if (a.equals("unreach-source")) {
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return false;
@@ -1375,7 +1375,7 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             if (a.equals("join-source")) {
-                cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
                 if (ntry == null) {
                     cmd.error("no such interface");
                     return false;

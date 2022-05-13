@@ -187,7 +187,7 @@ public class servOpenflow extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("export-port")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;
@@ -227,7 +227,7 @@ public class servOpenflow extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("export-port")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return false;

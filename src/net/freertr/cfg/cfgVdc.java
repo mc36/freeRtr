@@ -596,7 +596,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             if (!cfgInit.booting) {
                 return;
             }
-            if (cfgAll.ifcFind(a, false) != null) {
+            if (cfgAll.ifcFind(a, 0) != null) {
                 return;
             }
             ntry.port = cfgInit.vdcPortBeg;
@@ -1065,7 +1065,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (int i = 0; i < ifaces.size(); i++) {
             cfgVdcIfc ntry = ifaces.get(i);
             l.add("int " + ntry.line);
-            cfgIfc ifc = cfgAll.ifcFind(ntry.name, false);
+            cfgIfc ifc = cfgAll.ifcFind(ntry.name, 0);
             if (ifc == null) {
                 continue;
             }

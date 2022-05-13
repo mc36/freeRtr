@@ -221,7 +221,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         } else {
             s = cmd.word();
             if (s.equals("interface")) {
-                origTrgIface = cfgAll.ifcFind(cmd.word(), false);
+                origTrgIface = cfgAll.ifcFind(cmd.word(), 0);
                 if (origTrgIface == null) {
                     cmd.error("no such interface");
                     return 1;
@@ -235,7 +235,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         s = cmd.word();
         if (s.equals("interface")) {
-            newSrcIface = cfgAll.ifcFind(cmd.word(), false);
+            newSrcIface = cfgAll.ifcFind(cmd.word(), 0);
             if (newSrcIface == null) {
                 cmd.error("no such interface");
                 return 1;

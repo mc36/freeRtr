@@ -233,7 +233,7 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
                 continue;
             }
             if (a.equals("interface")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return true;

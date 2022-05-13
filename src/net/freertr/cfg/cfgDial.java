@@ -1052,7 +1052,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
         }
         if (a.equals("source")) {
             doShutdown();
-            ifc = cfgAll.ifcFind(cmd.word(), false);
+            ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (negated) {
                 ifc = null;
             }

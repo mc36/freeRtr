@@ -79,7 +79,7 @@ public class servStun extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("clone")) {
-            clnIfc = cfgAll.ifcFind(cmd.word(), false);
+            clnIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (clnIfc == null) {
                 cmd.error("no such interface");
                 return false;

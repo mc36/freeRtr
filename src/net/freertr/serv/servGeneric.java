@@ -1498,7 +1498,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return;
         }
         if (a.equals("interface")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;

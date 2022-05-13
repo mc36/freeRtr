@@ -159,14 +159,14 @@ public class packDnsRes implements Comparator<packDnsRes> {
                 addr.fromIPv6addr(adr6);
                 return false;
             case packDnsRec.typeInt4:
-                iface = cfgAll.ifcFind(cmd.word(), false);
+                iface = cfgAll.ifcFind(cmd.word(), 0);
                 if (iface == null) {
                     cmd.error("no such interface");
                     return true;
                 }
                 return false;
             case packDnsRec.typeInt6:
-                iface = cfgAll.ifcFind(cmd.word(), false);
+                iface = cfgAll.ifcFind(cmd.word(), 0);
                 if (iface == null) {
                     cmd.error("no such interface");
                     return true;

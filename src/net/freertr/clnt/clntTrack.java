@@ -599,7 +599,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                     haveResult(false);
                     return;
                 }
-                cfgIfc ifc = cfgAll.ifcFind(target, false);
+                cfgIfc ifc = cfgAll.ifcFind(target, 0);
                 if (ifc == null) {
                     haveResult(false);
                     return;

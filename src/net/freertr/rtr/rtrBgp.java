@@ -2851,7 +2851,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     other.srv6 = null;
                 } else {
-                    other.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                    other.srv6 = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -2931,7 +2931,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.doer.mvpn = null;
                 } else {
-                    cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), false);
+                    cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -2941,7 +2941,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.doer.srv6 = null;
                 } else {
-                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -3027,7 +3027,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.doer.mvpn = null;
                 } else {
-                    cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), false);
+                    cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -3037,7 +3037,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.doer.srv6 = null;
                 } else {
-                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -3130,7 +3130,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.iface = null;
                 } else {
-                    cur.iface = cfgAll.ifcFind(cmd.word(), false);
+                    cur.iface = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -3177,7 +3177,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.srv6 = null;
                 } else {
-                    cur.srv6 = cfgAll.ifcFind(cmd.word(), false);
+                    cur.srv6 = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();
@@ -3187,7 +3187,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (negated) {
                     cur.iface = null;
                 } else {
-                    cur.iface = cfgAll.ifcFind(cmd.word(), false);
+                    cur.iface = cfgAll.ifcFind(cmd.word(), 0);
                 }
                 needFull.add(1);
                 compute.wakeup();

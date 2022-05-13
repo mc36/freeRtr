@@ -491,7 +491,7 @@ public class userPacket {
             if (vrf == null) {
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 return null;
             }
@@ -565,7 +565,7 @@ public class userPacket {
             if (vrf == null) {
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 return null;
             }
@@ -703,7 +703,7 @@ public class userPacket {
             if (vrf == null) {
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 return null;
             }
@@ -819,7 +819,7 @@ public class userPacket {
             if (vrf == null) {
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 return null;
             }
@@ -1011,7 +1011,7 @@ public class userPacket {
                     return null;
                 }
             } else {
-                ifc = cfgAll.ifcFind(cmd.word(), false);
+                ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1191,7 +1191,7 @@ public class userPacket {
         }
         if (a.equals("capture")) {
             a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1205,7 +1205,7 @@ public class userPacket {
         }
         if (a.equals("monitor")) {
             a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1214,7 +1214,7 @@ public class userPacket {
             boolean oldH = ifc.ethtyp.monHdr;
             a = cmd.word();
             if (a.length() > 0) {
-                cfgIfc trg = cfgAll.ifcFind(a, false);
+                cfgIfc trg = cfgAll.ifcFind(a, 0);
                 if (trg == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1238,7 +1238,7 @@ public class userPacket {
         }
         if (a.equals("buffer")) {
             a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1267,7 +1267,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("wakeup")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1285,7 +1285,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("inject")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1303,7 +1303,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("random")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1330,7 +1330,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("replay")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;

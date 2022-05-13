@@ -187,7 +187,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
             return false;
         }
         if (a.equals("source")) {
-            worker.srcIfc = cfgAll.ifcFind(cmd.word(), false);
+            worker.srcIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (worker.srcIfc == null) {
                 cmd.error("no such interface");
                 return false;

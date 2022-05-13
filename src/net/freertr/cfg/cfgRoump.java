@@ -466,7 +466,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
             if (a.equals("interface")) {
-                ntry.ifaceMatch = cfgAll.ifcFind(cmd.word(), false);
+                ntry.ifaceMatch = cfgAll.ifcFind(cmd.word(), 0);
                 return;
             }
             if (a.equals("nexthop")) {

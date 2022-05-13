@@ -294,7 +294,7 @@ public class userShow {
         }
         if (a.equals("p2poe")) {
             a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -309,7 +309,7 @@ public class userShow {
         }
         if (a.equals("macsec")) {
             a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -417,7 +417,7 @@ public class userShow {
                 userFormat l = new userFormat("|", "name|assigned");
                 for (int i = 0; i < cfgInit.ifaceLst.size(); i++) {
                     cfgVdcIfc ntry = cfgInit.ifaceLst.get(i);
-                    l.add(ntry.name + "|" + (cfgAll.ifcFind(ntry.name, false) == null));
+                    l.add(ntry.name + "|" + (cfgAll.ifcFind(ntry.name, 0) == null));
                 }
                 rdr.putStrTab(l);
                 return null;
@@ -644,7 +644,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("interface")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -930,7 +930,7 @@ public class userShow {
             return null;
         }
         if (a.equals("ppp")) {
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return null;
@@ -987,7 +987,7 @@ public class userShow {
                 return null;
             }
             a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1046,7 +1046,7 @@ public class userShow {
             return null;
         }
         if (a.equals("transproxy")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1065,7 +1065,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("detail")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1089,7 +1089,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("detail")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1113,7 +1113,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("detail")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1137,7 +1137,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("detail")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1226,7 +1226,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("interface")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1464,7 +1464,7 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(3));
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(a, false);
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return null;
@@ -1531,7 +1531,7 @@ public class userShow {
             a = cmd.word();
             if (a.equals("routeid")) {
                 a = cmd.word();
-                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                cfgIfc ntry = cfgAll.ifcFind(a, 0);
                 if (ntry == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1555,7 +1555,7 @@ public class userShow {
                     rdr.putStrTab(lst);
                     return null;
                 }
-                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                cfgIfc ntry = cfgAll.ifcFind(a, 0);
                 if (ntry == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1573,7 +1573,7 @@ public class userShow {
             a = cmd.word();
             if (a.equals("routeid")) {
                 a = cmd.word();
-                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                cfgIfc ntry = cfgAll.ifcFind(a, 0);
                 if (ntry == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1597,7 +1597,7 @@ public class userShow {
                     rdr.putStrTab(lst);
                     return null;
                 }
-                cfgIfc ntry = cfgAll.ifcFind(a, false);
+                cfgIfc ntry = cfgAll.ifcFind(a, 0);
                 if (ntry == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1662,7 +1662,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("inspect")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -1786,7 +1786,7 @@ public class userShow {
                     rdr.putStrTab(cfgAll.getShIntTab(4));
                     return null;
                 }
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -2035,7 +2035,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("arp")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -2133,7 +2133,7 @@ public class userShow {
                     rdr.putStrTab(cfgAll.getShIntTab(5));
                     return null;
                 }
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -2382,7 +2382,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("neighbors")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     cmd.error("no such interface");
                     return null;
@@ -3005,7 +3005,7 @@ public class userShow {
     }
 
     private void doShowIpXtoptalk(int ver) {
-        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
             cmd.error("no such interface");
             return;
@@ -3028,7 +3028,7 @@ public class userShow {
     }
 
     private void doShowIpXinspect(int ver) {
-        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
             cmd.error("no such interface");
             return;
@@ -4526,7 +4526,7 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
             cmd.error("no such interface");
             return;

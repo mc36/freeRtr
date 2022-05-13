@@ -1961,101 +1961,84 @@ public class cfgAll {
      * find one interface
      *
      * @param nam name of this
-     * @param create create new on this name if not found
+     * @param create 0=find, 1=create new on this name if not found, 2=as 1, but
+     * for cloning
      * @return descriptor, null if not found
      */
-    public static cfgIfc ifcFind(String nam, boolean create) {
-        nam = nam.trim();
-        if (nam.length() < 1) {
-            return null;
-        }
+    public static cfgIfc ifcFind(String nam, int create) {
         String pnm[] = cfgIfc.dissectName(nam);
-        nam = pnm[0] + pnm[1];
-        if (nam.length() < 1) {
+        if (pnm[0].length() < 1) {
             return null;
         }
+        nam = pnm[0] + pnm[1];
         cfgIfc ntry = new cfgIfc(nam);
-        if (!create) {
+        if (create < 1) {
             return ifaces.find(ntry);
         }
-        cfgIfc prnt = ifaces.find(ntry);
-        if (prnt != null) {
-            return prnt;
+        cfgIfc old = ifaces.add(ntry);
+        if (old != null) {
+            if (create < 2) {
+                return old;
+            } else {
+                return null;
+            }
         }
-        ntry.name = pnm[0];
-        prnt = ifaces.find(ntry);
-        if (prnt != null) {
-            if (prnt.parent != null) {
+        if (pnm[1].length() > 0) {
+            old = ifaces.find(new cfgIfc(pnm[0]));
+            if (old == null) {
+                ifaces.del(ntry);
                 return null;
             }
-            ntry.name = nam;
-            int i = bits.str2num(pnm[1].substring(1, pnm[1].length()));
-            if (i < 1) {
-                return null;
-            }
-            ntry.vlanNum = i;
-            ifaces.add(ntry);
-            ntry.initSubiface(prnt);
+            ntry.vlanNum = bits.str2num(pnm[1].substring(1, pnm[1].length()));
+            ntry.initSubiface(old);
             return ntry;
         }
-        if (!nam.equals(pnm[0])) {
-            return null;
-        }
-        ntry.name = nam;
         if (nam.startsWith("tunnel")) {
             ntry.type = cfgIfc.ifaceType.tunnel;
-            ifaces.add(ntry);
             ntry.clear2tunnel(false);
             return ntry;
         }
-        if (nam.startsWith("dialer")) {
+         if (nam.startsWith("dialer")) {
             ntry.type = cfgIfc.ifaceType.dialer;
-            ifaces.add(ntry);
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("sdn")) {
             ntry.type = cfgIfc.ifaceType.sdn;
-            ifaces.add(ntry);
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("pwether")) {
             ntry.type = cfgIfc.ifaceType.pweth;
-            ifaces.add(ntry);
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("virtualppp")) {
             ntry.type = cfgIfc.ifaceType.virtppp;
-            ifaces.add(ntry);
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("loopback")) {
             ntry.type = cfgIfc.ifaceType.loopback;
-            ifaces.add(ntry);
             ntry.initLoopback();
             return ntry;
         }
         if (nam.startsWith("null")) {
             ntry.type = cfgIfc.ifaceType.nul;
-            ifaces.add(ntry);
             ntry.initTemplate();
             return ntry;
         }
         if (nam.startsWith("template")) {
             ntry.type = cfgIfc.ifaceType.template;
-            ifaces.add(ntry);
             ntry.initTemplate();
             return ntry;
         }
         if (nam.startsWith("access")) {
             ntry.type = cfgIfc.ifaceType.dialer;
-            ifaces.add(ntry);
             ntry.initPhysical();
             return ntry;
         }
+        ifaces.del(ntry);
         return null;
     }
 

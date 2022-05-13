@@ -353,7 +353,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             return;
         }
         if (a.equals("source")) {
-            worker.srcIfc = cfgAll.ifcFind(cmd.word(), false);
+            worker.srcIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (worker.srcIfc == null) {
                 cmd.error("no such interface");
                 return;

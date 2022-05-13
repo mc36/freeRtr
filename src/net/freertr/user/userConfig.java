@@ -891,7 +891,7 @@ public class userConfig {
             return;
         }
         if (a.equals("interface")) {
-            modeDconfig = cfgAll.ifcFind(cmd.word(), true);
+            modeDconfig = cfgAll.ifcFind(cmd.word(), 1);
             if (modeDconfig == null) {
                 cmd.error("no such interface");
                 return;

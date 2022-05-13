@@ -273,7 +273,7 @@ public class rtrMsdp extends ipRtr {
                 ntry.srcIface = null;
                 return false;
             }
-            ntry.srcIface = cfgAll.ifcFind(cmd.word(), false);
+            ntry.srcIface = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry.srcIface == null) {
                 cmd.error("no such interface");
             }

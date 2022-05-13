@@ -293,7 +293,7 @@ public class userLine {
         if (s.equals("exec")) {
             s = cmd.word();
             if (s.equals("interface")) {
-                execIface = cfgAll.ifcFind(cmd.word(), false);
+                execIface = cfgAll.ifcFind(cmd.word(), 0);
                 if (execIface == null) {
                     return false;
                 }

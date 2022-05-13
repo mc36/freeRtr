@@ -1722,7 +1722,7 @@ public abstract class rtrBgpParam {
                 srcIface = null;
                 return false;
             }
-            srcIface = cfgAll.ifcFind(cmd.word(), false);
+            srcIface = cfgAll.ifcFind(cmd.word(), 0);
             if (srcIface == null) {
                 cmd.error("no such interface");
             }

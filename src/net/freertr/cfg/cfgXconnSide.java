@@ -646,7 +646,7 @@ public class cfgXconnSide {
             cmd.error("no such vrf");
             return;
         }
-        ifc = cfgAll.ifcFind(cmd.word(), false);
+        ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
             cmd.error("no such interface");
             return;

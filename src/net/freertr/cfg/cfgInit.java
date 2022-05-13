@@ -415,7 +415,7 @@ public class cfgInit implements Runnable {
                 continue;
             }
             if (s.equals("hideifc")) {
-                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
                     continue;
                 }

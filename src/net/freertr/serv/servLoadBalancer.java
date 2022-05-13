@@ -116,7 +116,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("source")) {
-            cfgIfc i = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc i = cfgAll.ifcFind(cmd.word(), 0);
             if (i == null) {
                 cmd.error("no such interface");
                 return false;

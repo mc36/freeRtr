@@ -108,7 +108,7 @@ public class servL2tp2 extends servGeneric implements prtServP {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("clone")) {
-            clnIfc = cfgAll.ifcFind(cmd.word(), false);
+            clnIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (clnIfc == null) {
                 cmd.error("no such interface");
                 return false;

@@ -1198,7 +1198,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @return advertisement
      */
     public static ipRtrInt str2advint(cmds cmd) {
-        cfgIfc iface = cfgAll.ifcFind(cmd.word(), false);
+        cfgIfc iface = cfgAll.ifcFind(cmd.word(), 0);
         if (iface == null) {
             return null;
         }

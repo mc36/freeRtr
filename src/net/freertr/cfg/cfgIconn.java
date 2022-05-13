@@ -113,7 +113,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
             return;
         }
         if (s.equals("side1")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;
@@ -123,7 +123,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
             return;
         }
         if (s.equals("side2")) {
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
             if (ifc == null) {
                 cmd.error("no such interface");
                 return;

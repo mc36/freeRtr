@@ -814,7 +814,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("interface")) {
             stop2run();
-            ifaceDialer = cfgAll.ifcFind(cmd.word(), false);
+            ifaceDialer = cfgAll.ifcFind(cmd.word(), 0);
             if (ifaceDialer == null) {
                 cmd.error("no such interface");
                 return;

@@ -88,7 +88,7 @@ public class servMplsIp extends servGeneric implements ipPrt {
             return false;
         }
         if (s.equals("clone")) {
-            tempIfc = cfgAll.ifcFind(cmd.word(), false);
+            tempIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (tempIfc == null) {
                 cmd.error("no such interface");
                 return false;

@@ -722,7 +722,7 @@ public class servHttp extends servGeneric implements prtServS {
                 ntry.allowSstp = null;
                 return false;
             }
-            ntry.allowSstp = cfgAll.ifcFind(cmd.word(), false);
+            ntry.allowSstp = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry.allowSstp == null) {
                 cmd.error("no such interface");
                 return false;
@@ -739,7 +739,7 @@ public class servHttp extends servGeneric implements prtServS {
                 ntry.allowAnyconn = null;
                 return false;
             }
-            ntry.allowAnyconn = cfgAll.ifcFind(cmd.word(), false);
+            ntry.allowAnyconn = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry.allowAnyconn == null) {
                 cmd.error("no such interface");
                 return false;
@@ -756,7 +756,7 @@ public class servHttp extends servGeneric implements prtServS {
                 ntry.allowForti = null;
                 return false;
             }
-            ntry.allowForti = cfgAll.ifcFind(cmd.word(), false);
+            ntry.allowForti = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry.allowForti == null) {
                 cmd.error("no such interface");
                 return false;

@@ -157,7 +157,7 @@ public class servUni2multi extends servGeneric implements prtServP {
                     sourceI = null;
                     return false;
                 }
-                sourceI = cfgAll.ifcFind(cmd.word(), false);
+                sourceI = cfgAll.ifcFind(cmd.word(), 0);
                 if (sourceI == null) {
                     cmd.error("no such interface");
                     return false;

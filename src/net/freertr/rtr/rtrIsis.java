@@ -1255,7 +1255,7 @@ public class rtrIsis extends ipRtr {
             return false;
         }
         if (s.equals("srv6")) {
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return false;
@@ -1335,7 +1335,7 @@ public class rtrIsis extends ipRtr {
             return false;
         }
         if (s.equals("srv6")) {
-            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), false);
+            cfgIfc ntry = cfgAll.ifcFind(cmd.word(), 0);
             if (ntry == null) {
                 cmd.error("no such interface");
                 return false;

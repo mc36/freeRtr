@@ -131,7 +131,7 @@ public class servPckOudp extends servGeneric implements prtServP {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("clone")) {
-            dialIfc = cfgAll.ifcFind(cmd.word(), false);
+            dialIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (dialIfc == null) {
                 cmd.error("no such interface");
                 return false;
