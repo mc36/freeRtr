@@ -959,27 +959,51 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("status")) {
-                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 1));
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 1));
                 return null;
             }
             if (a.equals("api-tx")) {
-                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 2));
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 2));
                 return null;
             }
             if (a.equals("api-rx")) {
-                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 3));
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 3));
                 return null;
             }
             if (a.equals("frontpanel")) {
-                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 4));
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 4));
                 return null;
             }
             if (a.equals("done-interface")) {
-                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 5));
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 5));
                 return null;
             }
             if (a.equals("done-neighbor")) {
-                rdr.putStrTab(srv.getShow(bits.str2num(cmd.word()), 6));
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 6));
+                return null;
+            }
+            if (a.equals("backplane-ports")) {
+                rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 1));
+                return null;
+            }
+            if (a.equals("backplane-spf")) {
+                rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 2));
+                return null;
+            }
+            if (a.equals("backplane-topology")) {
+                rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 3));
+                return null;
+            }
+            if (a.equals("backplane-tree")) {
+                rdr.putStrArr(srv.getShowBp2(bits.str2num(cmd.word()), 1));
+                return null;
+            }
+            if (a.equals("backplane-graph")) {
+                rdr.putStrArr(srv.getShowBp2(bits.str2num(cmd.word()), 2));
+                return null;
+            }
+            if (a.equals("backplane-route")) {
+                doShowRoutes(null, srv.getShowBp3(bits.str2num(cmd.word())), 1);
                 return null;
             }
             if (!a.equals("port-counters")) {

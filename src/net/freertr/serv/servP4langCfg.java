@@ -37,6 +37,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
+import net.freertr.util.shrtPthFrst;
 import net.freertr.util.state;
 
 /**
@@ -45,6 +46,11 @@ import net.freertr.util.state;
  * @author matecsaba
  */
 public class servP4langCfg implements ifcUp {
+
+    /**
+     * parent
+     */
+    protected final servP4lang parent;
 
     /**
      * forwarder number
@@ -162,6 +168,21 @@ public class servP4langCfg implements ifcUp {
     protected tabGen<servP4langDlnk> downLinks = new tabGen<servP4langDlnk>();
 
     /**
+     * backplane interfaces
+     */
+    protected tabGen<servP4langBkpl> backPlanes = new tabGen<servP4langBkpl>();
+
+    /**
+     * backplane spf
+     */
+    protected shrtPthFrst<addrIP> bckplnSpf;
+    
+    /**
+     * backplane routes
+     */
+    protected tabRoute<addrIP> bckplnRou;
+
+    /**
      * counter
      */
     protected counter cntr = new counter();
@@ -239,9 +260,11 @@ public class servP4langCfg implements ifcUp {
     /**
      * create instance
      *
+     * @param lower parent
      * @param i id
      */
-    protected servP4langCfg(int i) {
+    protected servP4langCfg(servP4lang lower, int i) {
+        parent = lower;
         id = i;
         pipeLine pl = new pipeLine(1024, false);
         pl.setClose();
@@ -305,6 +328,10 @@ public class servP4langCfg implements ifcUp {
      * @param l text to append
      */
     protected void getShowRun2(String beg, String mid, List<String> l) {
+        for (int i = 0; i < backPlanes.size(); i++) {
+            servP4langBkpl ntry = backPlanes.get(i);
+            l.add(beg + mid + "backplane " + ntry.id + " " + ntry.metric);
+        }
         l.add(beg + mid + "remote " + remote);
     }
 
@@ -345,13 +372,32 @@ public class servP4langCfg implements ifcUp {
         if (s.equals("remote")) {
             addrIP adr = new addrIP();
             if (adr.fromString(cmd.word())) {
-                return true;
+                cmd.error("bad address");
+                return false;
             }
             if (adr.compare(adr, remote) == 0) {
                 return false;
             }
             remote = adr;
             doClear();
+            return false;
+        }
+        if (s.equals("backplane")) {
+            int i = front2id(null, cmd.word(), false);
+            if (i < 0) {
+                cmd.error("no such frontpanel port");
+                return false;
+            }
+            servP4langIfc ifc = findIfc(i);
+            if (ifc == null) {
+                cmd.error("port not exported");
+                return false;
+            }
+            servP4langBkpl ntry = new servP4langBkpl(this, i);
+            ntry.ifc = ifc.ifc.ethtyp;
+            ntry.ifc.addET(-1, "p4lang", ntry);
+            ntry.ifc.updateET(-1, ntry);
+            backPlanes.add(ntry);
             return false;
         }
         if (s.equals("downlink")) {
@@ -555,6 +601,26 @@ public class servP4langCfg implements ifcUp {
             }
             return false;
         }
+        if (s.equals("backplane")) {
+            int i = front2id(null, cmd.word(), false);
+            if (i < 0) {
+                cmd.error("no such frontpanel port");
+                return false;
+            }
+            servP4langIfc ifc = findIfc(i);
+            if (ifc == null) {
+                cmd.error("port not exported");
+                return false;
+            }
+            servP4langBkpl ntry = new servP4langBkpl(this, i);
+            ntry = backPlanes.del(ntry);
+            if (ntry == null) {
+                cmd.error("no such downlink");
+                return false;
+            }
+            ntry.ifc.delET(-1);
+            return false;
+        }
         if (s.equals("downlink")) {
             int i = front2id(null, cmd.word(), false);
             if (i < 0) {
@@ -567,6 +633,7 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("no such downlink");
                 return false;
             }
+            ntry.ifc.delET(-1);
             return false;
         }
         if (s.equals("interconnect")) {
@@ -670,6 +737,9 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 0) + " " + (p + 1) + "  downlink                  specify downlink for packetin");
         l.add(null, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
         l.add(null, (p + 2) + " .      <name:ifc>            interface name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  backplane                 specify backplane connection");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
+        l.add(null, (p + 2) + " .      <num>                 metric");
         l.add(null, (p + 0) + " " + (p + 1) + "  interconnect              specify port to for packetin");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");
     }

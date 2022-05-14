@@ -30,4 +30,7 @@ public class tabRouteIface implements Comparator<tabRouteIface> {
         return 0;
     }
 
+    public String toString() {
+        return "#" + ifwNum;
+    }
 }

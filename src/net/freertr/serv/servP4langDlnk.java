@@ -4,6 +4,7 @@ import java.util.Comparator;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
+import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.util.counter;
@@ -28,7 +29,7 @@ public class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
     /**
      * interface handler
      */
-    protected ifcDn parent;
+    protected ifcDn parent = new ifcNull();
 
     /**
      * ethertype handler

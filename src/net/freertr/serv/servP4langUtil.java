@@ -39,6 +39,18 @@ public class servP4langUtil {
     }
 
     /**
+     * convert forwarder id to address
+     *
+     * @param i id
+     * @return address
+     */
+    protected static addrIP forwarder2addr(int i) {
+        addrIP adr = new addrIP();
+        bits.msbPutD(adr.getBytes(), 0, i);
+        return adr;
+    }
+
+    /**
      * update nat translation
      *
      * @param cmd commands
