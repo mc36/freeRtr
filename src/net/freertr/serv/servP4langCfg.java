@@ -47,7 +47,7 @@ import net.freertr.util.state;
 public class servP4langCfg implements ifcUp {
 
     /**
-     * my number
+     * forwarder number
      */
     protected final int id;
 
@@ -888,7 +888,7 @@ public class servP4langCfg implements ifcUp {
      */
     protected synchronized void sendLine(String a) {
         if (debugger.servP4langTx) {
-            logger.debug("tx: " + a);
+            logger.debug("fwd" + id + " tx: " + a);
         }
         conn.pipe.linePut(a + " ");
         msgsSent++;

@@ -163,7 +163,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (debugger.servP4langRx) {
-                logger.debug("rx: " + s);
+                logger.debug("fwd" + lower.id + " rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
@@ -235,7 +235,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (debugger.servP4langRx) {
-                logger.debug("rx: " + s);
+                logger.debug("fwd" + lower.id + " rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
