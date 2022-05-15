@@ -1318,6 +1318,10 @@ public class servP4langConn implements Runnable {
         if (br.routed) {
             return;
         }
+        if (!br.sentLab) {
+            lower.sendLine("bridgelabel_add " + br.br.num + " " + br.lab.label);
+            br.sentLab = true;
+        }
         tabGen<ifcBridgeIfc> seenI = new tabGen<ifcBridgeIfc>();
         for (int i = 0;; i++) {
             ifcBridgeIfc ntry = br.br.bridgeHed.getIface(i);
@@ -1450,6 +1454,32 @@ public class servP4langConn implements Runnable {
                     p = "1";
                 }
                 lower.sendLine("routedmac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + nei.id + " " + p);
+                continue;
+            }
+            servP4langCfg oth = lower.parent.findIfc(lower, ntry.ifc);
+            if (oth != null) {
+                servP4langBr obr = oth.expBr.find(br);
+                if (obr == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                tabRouteEntry<addrIP> oru = servP4langUtil.forwarder2route(oth.id);
+                oru = lower.bckplnRou.find(oru);
+                if (oru == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                if (oru.best.iface == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                ifc = lower.findIfc(oru.best.iface.ifwNum);
+                servP4langNei hop = lower.findNei(ifc, oru.best.nextHop);
+                if (hop == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                lower.sendLine("bridgevpls_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + oru.prefix.network + " " + hop.id + " " + lower.parent.bckplnLab[oth.id] + " " + obr.lab.label);
                 continue;
             }
             int l = -1;

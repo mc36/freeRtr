@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -268,6 +269,30 @@ public class servP4lang extends servGeneric implements prtServS {
             return;
         }
         dscvry.startWork();
+    }
+
+    /**
+     * find interface
+     *
+     * @param who querier
+     * @param ifc interface
+     * @return owner, null if error
+     */
+    protected servP4langCfg findIfc(servP4langCfg who, ifcBridgeIfc ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            servP4langCfg ntry = fwds.get(i);
+            if (ntry.id == who.id) {
+                continue;
+            }
+            if (ntry.findIfc(ifc) == null) {
+                continue;
+            }
+            return ntry;
+        }
+        return null;
     }
 
     /**

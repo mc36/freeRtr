@@ -6,6 +6,7 @@ import net.freertr.ifc.ifcBridgeAdr;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.rtr.rtrBgpEvpnPeer;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabLabelEntry;
 
 /**
  * one p4lang bridge
@@ -28,6 +29,16 @@ public class servP4langBr implements Comparator<servP4langBr> {
      * routing bridge
      */
     protected boolean routed;
+
+    /**
+     * label
+     */
+    protected tabLabelEntry lab;
+
+    /**
+     * label sent
+     */
+    protected boolean sentLab;
 
     /**
      * exported macs
@@ -83,6 +94,7 @@ public class servP4langBr implements Comparator<servP4langBr> {
     protected void doClear() {
         ifcs = new tabGen<ifcBridgeIfc>();
         macs = new tabGen<ifcBridgeAdr>();
+        sentLab = false;
     }
 
 }

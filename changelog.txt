@@ -13252,3 +13252,5 @@ todo: backplane/stacking capability
 no todo: sho run server
 ---------------------------------- 2022-05-15 11:12:50 22.5.15
 qc pass: p4lang: routing over backplane
+---------------------------------- 2022-05-15 13:44:40 22.5.15
+qc pass: p4lang: bridging over backplane
