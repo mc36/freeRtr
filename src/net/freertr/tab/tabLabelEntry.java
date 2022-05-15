@@ -326,6 +326,9 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
             case 22:
                 s = "bgp bier";
                 break;
+            case 23:
+                s = "p4lang backplane";
+                break;
             default:
                 s = "unknown";
                 break;

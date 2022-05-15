@@ -51,6 +51,19 @@ public class servP4langUtil {
     }
 
     /**
+     * convert forwarder id to address
+     *
+     * @param i id
+     * @return address
+     */
+    protected static tabRouteEntry<addrIP> forwarder2route(int i) {
+        addrIP adr = forwarder2addr(i);
+        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
+        rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        return rou;
+    }
+
+    /**
      * update nat translation
      *
      * @param cmd commands

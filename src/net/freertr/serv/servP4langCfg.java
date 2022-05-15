@@ -176,7 +176,7 @@ public class servP4langCfg implements ifcUp {
      * backplane spf
      */
     protected shrtPthFrst<addrIP> bckplnSpf;
-    
+
     /**
      * backplane routes
      */
@@ -1231,6 +1231,26 @@ public class servP4langCfg implements ifcUp {
         }
         logger.error("error allocating dynamic neighbor");
         return null;
+    }
+
+    /**
+     * find neighbor
+     *
+     * @param ifc interface
+     * @param hop nexthop address
+     * @return neighbor, null if error
+     */
+    protected servP4langNei findNei(servP4langIfc ifc, addrIP hop) {
+        if (ifc == null) {
+            return null;
+        }
+        servP4langNei ntry = new servP4langNei(ifc, hop);
+        servP4langNei old = neighs.find(ntry);
+        if (old != null) {
+            old.need++;
+            return old;
+        }
+        return genNeighId(ntry);
     }
 
     /**

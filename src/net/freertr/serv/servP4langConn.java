@@ -879,8 +879,8 @@ public class servP4langConn implements Runnable {
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
             doVrf(vrf);
-            doRoutes(true, vrf.id, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
-            doRoutes(false, vrf.id, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
+            doRoutes(true, vrf.id, vrf.vrf.fwd4.commonLabel, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
+            doRoutes(false, vrf.id, vrf.vrf.fwd6.commonLabel, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
             doIndexes("", vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexUd4, vrf.vrf.fwd4.actualU, vrf.indexUs4);
             doIndexes("", vrf.id, vrf.vrf.fwd6.actualIU, vrf.indexUd6, vrf.vrf.fwd6.actualU, vrf.indexUs6);
             doIndexes("m", vrf.id, vrf.vrf.fwd4.actualIC, vrf.indexCd4, vrf.vrf.fwd4.actualU, vrf.indexCs4);
@@ -902,6 +902,9 @@ public class servP4langConn implements Runnable {
             doSockets(true, vrf.id, vrf.vrf.udp6.getProtoNum(), vrf.vrf.udp6.srvrs, vrf.udp6);
             doSockets(false, vrf.id, vrf.vrf.tcp4.getProtoNum(), vrf.vrf.tcp4.srvrs, vrf.tcp4);
             doSockets(true, vrf.id, vrf.vrf.tcp6.getProtoNum(), vrf.vrf.tcp6.srvrs, vrf.tcp6);
+        }
+        for (int i = 0; i < lower.parent.bckplnLab.length; i++) {
+            doLab0(lower.parent.bckplnLab[i], i);
         }
         for (int i = 0; i < tabLabel.labels.size(); i++) {
             doLab1(tabLabel.labels.get(i));
@@ -1204,6 +1207,44 @@ public class servP4langConn implements Runnable {
         } else {
             lower.sendLine("label" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab);
         }
+    }
+
+    private void doLab0(tabLabelEntry ntry, int fwid) {
+        if (ntry == null) {
+            return;
+        }
+        ntry = ntry.copyBytes();
+        tabLabelEntry old = labels.find(ntry);
+        tabRouteEntry<addrIP> rou = servP4langUtil.forwarder2route(fwid);
+        rou = lower.bckplnRou.find(rou);
+        servP4langIfc ifc;
+        if (rou == null) {
+            ntry.pweDel = 0;
+            ntry.nextHop = null;
+            ifc = null;
+        } else {
+            ntry.pweDel = rou.best.iface.ifwNum;
+            ntry.nextHop = rou.best.nextHop.copyBytes();
+            ifc = lower.findIfc(ntry.pweDel);
+        }
+        String act = "add";
+        if (old != null) {
+            if (!old.differs(ntry)) {
+                return;
+            }
+            act = "mod";
+        }
+        if (ntry.nextHop == null) {
+            labels.put(ntry);
+            lower.sendLine("mylabel4_" + act + " " + ntry.label + " 0");
+            return;
+        }
+        servP4langNei hop = lower.findNei(ifc, ntry.nextHop);
+        if (hop == null) {
+            return;
+        }
+        labels.put(ntry);
+        lower.sendLine("label4_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + ntry.label);
     }
 
     private String doNsh3(tabNshEntry ntry, String act) {
@@ -2221,6 +2262,46 @@ public class servP4langConn implements Runnable {
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
         if (ipi == null) {
+            servP4langBkpl bck = lower.backPlanes.find(new servP4langBkpl(lower, ifc.id));
+            if (bck == null) {
+                return;
+            }
+            if (!bck.ready) {
+                return;
+            }
+            servP4langVrf vrf = lower.findVrf(ifc);
+            if (vrf == null) {
+                return;
+            }
+            servP4langIfc oifc = lower.parent.fwds.get(bck.lastFwdr).findIfc(bck.lastPort);
+            if (oifc == null) {
+                return;
+            }
+            servP4langNei ntry = new servP4langNei(ifc, servP4langUtil.forwarder2addr(bck.lastFwdr));
+            ntry.mac = oifc.getMac();
+            servP4langNei old = lower.neighs.find(ntry);
+            boolean added = old == null;
+            if (added) {
+                old = lower.genNeighId(ntry);
+                if (old == null) {
+                    return;
+                }
+            }
+            old.need++;
+            old.vrf = vrf;
+            int outIfc = ifc.id;
+            String act;
+            if (added || (old.mac == null)) {
+                act = "add";
+            } else {
+                act = "mod";
+                if ((ntry.mac.compare(ntry.mac, old.mac) == 0) && (old.sentIfc == outIfc)) {
+                    return;
+                }
+            }
+            old.mac = ntry.mac;
+            old.sentIfc = outIfc;
+            lower.sendLine("neigh4_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
             return;
         }
         servP4langVrf vrf = lower.findVrf(ifc);
@@ -3275,7 +3356,41 @@ public class servP4langConn implements Runnable {
         }
     }
 
-    private void doRoutes(boolean ipv4, int vrf, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store) {
+    private boolean doRemRou(boolean del, String afi, String act, String a, int vrf, tabLabelEntry cml, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> done) {
+        servP4langCfg oth = lower.parent.findIfc(lower, ntry.best.iface);
+        if (oth == null) {
+            return false;
+        }
+        tabRouteEntry<addrIP> oru = servP4langUtil.forwarder2route(oth.id);
+        oru = lower.bckplnRou.find(oru);
+        if (oru == null) {
+            if (del) {
+                done.del(ntry);
+            }
+            return true;
+        }
+        if (oru.best.iface == null) {
+            if (del) {
+                done.del(ntry);
+            }
+            return true;
+        }
+        servP4langIfc ifc = lower.findIfc(oru.best.iface.ifwNum);
+        servP4langNei hop = lower.findNei(ifc, oru.best.nextHop);
+        if (hop == null) {
+            if (del) {
+                done.del(ntry);
+            }
+            return true;
+        }
+        if (!del) {
+            done.add(tabRoute.addType.always, ntry, true, true);
+        }
+        lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + lower.parent.bckplnLab[oth.id] + " " + cml.label);
+        return true;
+    }
+
+    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store) {
         String afi;
         if (ipv4) {
             afi = "4";
@@ -3302,6 +3417,22 @@ public class servP4langConn implements Runnable {
                 }
                 servP4langNei hop = lower.findNei(recur.best.iface, recur.best.nextHop);
                 if (hop == null) {
+                    String a;
+                    if (ipv4) {
+                        a = "" + addrPrefix.ip2ip4(ntry.prefix);
+                    } else {
+                        a = "" + addrPrefix.ip2ip6(ntry.prefix);
+                    }
+                    String act = "add";
+                    if (old != null) {
+                        if (ntry.differs(tabRoute.addType.notyet, old) == 0) {
+                            continue;
+                        }
+                        act = "mod";
+                    }
+                    if (doRemRou(false, afi, act, a, vrf, cml, ntry, done)) {
+                        continue;
+                    }
                     continue;
                 }
                 servP4langStr<tabRouteEntry<addrIP>> str = new servP4langStr<tabRouteEntry<addrIP>>(ntry);
@@ -3357,12 +3488,19 @@ public class servP4langConn implements Runnable {
                 String sif = "-1";
                 if (fif != null) {
                     sif = "" + fif.id;
+                } else {
+                    if (doRemRou(true, afi, act, a, vrf, cml, ntry, done)) {
+                        continue;
+                    }
                 }
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + sif + " " + vrf);
                 continue;
             }
             servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
+                if (doRemRou(true, afi, act, a, vrf, cml, ntry, done)) {
+                    continue;
+                }
                 done.del(ntry);
                 continue;
             }

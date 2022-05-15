@@ -1,7 +1,6 @@
 package net.freertr.serv;
 
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrPrefix;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.util.bits;
@@ -36,9 +35,15 @@ public class servP4langDcvr implements Runnable {
     protected servP4langDcvr(servP4lang prnt) {
         randId = bits.randomD();
         parent = prnt;
-        new Thread(this).start();
     }
 
+    /**
+     * start work
+     */
+    protected void startWork() {
+        new Thread(this).start();
+    }
+    
     /**
      * send keepalives and check if spf needed
      *
@@ -83,12 +88,10 @@ public class servP4langDcvr implements Runnable {
                 addrIP nei = servP4langUtil.forwarder2addr(ntry.lastFwdr);
                 spf.addConn(adr, nei, ntry.metric, true, false, "prt" + ntry.id);
             }
-            tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
-            rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+            tabRouteEntry<addrIP> rou = servP4langUtil.forwarder2route(o);
             spf.addPref(adr, rou, false);
             spf.addIdent(adr, "fwd" + o);
         }
-        spf.topoLog.set(1);
         cur = parent.fwds.get(0);
         cur.bckplnSpf = spf;
         for (int o = 1; o < parent.fwds.size(); o++) {
@@ -96,8 +99,6 @@ public class servP4langDcvr implements Runnable {
         }
         for (int o = 0; o < parent.fwds.size(); o++) {
             cur = parent.fwds.get(o);
-            cur.bckplnSpf.bidir.set(1);
-            cur.bckplnSpf.ecmp.set(1);
             addrIP adr = servP4langUtil.forwarder2addr(o);
             cur.bckplnSpf.doCalc(adr, null);
         }
@@ -115,6 +116,7 @@ public class servP4langDcvr implements Runnable {
             }
             cur.bckplnRou = cur.bckplnSpf.getRoutes(null, 6, null, null);
         }
+        logger.info("recalculated backplane");
     }
 
     public void run() {

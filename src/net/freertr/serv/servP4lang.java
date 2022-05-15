@@ -10,7 +10,10 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
+import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -45,6 +48,11 @@ public class servP4lang extends servGeneric implements prtServS {
      * discovery
      */
     protected servP4langDcvr dscvry;
+
+    /**
+     * backplane
+     */
+    protected tabLabelEntry[] bckplnLab;
 
     /**
      * port
@@ -245,8 +253,10 @@ public class servP4lang extends servGeneric implements prtServS {
     private void restartDiscovery(boolean need) {
         need &= fwds.size() > 1;
         dscvry.need2work = false;
-        if (!need) {
-            return;
+        tabLabel.release(bckplnLab, 23);
+        bckplnLab = tabLabel.allocate(23, fwds.size());
+        for (int i = 0; i < bckplnLab.length; i++) {
+            bckplnLab[i].setFwdDrop(23);
         }
         for (int i = 0; i < fwds.size(); i++) {
             servP4langCfg cur = fwds.get(i);
@@ -254,6 +264,34 @@ public class servP4lang extends servGeneric implements prtServS {
         }
         dscvry = new servP4langDcvr(this);
         dscvry.doCalc();
+        if (!need) {
+            return;
+        }
+        dscvry.startWork();
+    }
+
+    /**
+     * find interface
+     *
+     * @param who querier
+     * @param ifc interface
+     * @return owner, null if error
+     */
+    protected servP4langCfg findIfc(servP4langCfg who, tabRouteIface ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            servP4langCfg ntry = fwds.get(i);
+            if (ntry.id == who.id) {
+                continue;
+            }
+            if (ntry.findIfc(ifc) == null) {
+                continue;
+            }
+            return ntry;
+        }
+        return null;
     }
 
     /**
