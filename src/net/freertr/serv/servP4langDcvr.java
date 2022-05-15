@@ -43,7 +43,7 @@ public class servP4langDcvr implements Runnable {
     protected void startWork() {
         new Thread(this).start();
     }
-    
+
     /**
      * send keepalives and check if spf needed
      *
@@ -116,7 +116,6 @@ public class servP4langDcvr implements Runnable {
             }
             cur.bckplnRou = cur.bckplnSpf.getRoutes(null, 6, null, null);
         }
-        logger.info("recalculated backplane");
     }
 
     public void run() {
@@ -127,6 +126,7 @@ public class servP4langDcvr implements Runnable {
             try {
                 if (doRound()) {
                     doCalc();
+                    logger.info("recalculated backplane");
                 }
             } catch (Exception e) {
                 logger.traceback(e);

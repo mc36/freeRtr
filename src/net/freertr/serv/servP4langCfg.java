@@ -400,6 +400,7 @@ public class servP4langCfg implements ifcUp {
             ntry.ifc = pif.ifc.ethtyp;
             ntry.ifc.addET(-1, "p4lang", ntry);
             ntry.ifc.updateET(-1, ntry);
+            ntry.metric = bits.str2num(cmd.word());
             backPlanes.add(ntry);
             return false;
         }
