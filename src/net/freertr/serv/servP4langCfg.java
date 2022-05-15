@@ -330,7 +330,7 @@ public class servP4langCfg implements ifcUp {
     protected void getShowRun2(String beg, String mid, List<String> l) {
         for (int i = 0; i < backPlanes.size(); i++) {
             servP4langBkpl ntry = backPlanes.get(i);
-            l.add(beg + mid + "backplane " + ntry.id + " " + ntry.metric);
+            l.add(beg + mid + "backplane " + ntry.pi.ifc.name + " " + ntry.metric);
         }
         l.add(beg + mid + "remote " + remote);
     }
@@ -383,18 +383,18 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("backplane")) {
-            int i = front2id(null, cmd.word(), false);
-            if (i < 0) {
-                cmd.error("no such frontpanel port");
+            cfgIfc rif = cfgAll.ifcFind(cmd.word(), 0);
+            if (rif == null) {
+                cmd.error("no such interface");
                 return false;
             }
-            servP4langIfc ifc = findIfc(i);
-            if (ifc == null) {
+            servP4langIfc pif = findIfc(rif.ethtyp);
+            if (pif == null) {
                 cmd.error("port not exported");
                 return false;
             }
-            servP4langBkpl ntry = new servP4langBkpl(this, i);
-            ntry.ifc = ifc.ifc.ethtyp;
+            servP4langBkpl ntry = new servP4langBkpl(this, pif);
+            ntry.ifc = pif.ifc.ethtyp;
             ntry.ifc.addET(-1, "p4lang", ntry);
             ntry.ifc.updateET(-1, ntry);
             backPlanes.add(ntry);
@@ -602,17 +602,17 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("backplane")) {
-            int i = front2id(null, cmd.word(), false);
-            if (i < 0) {
-                cmd.error("no such frontpanel port");
+            cfgIfc rif = cfgAll.ifcFind(cmd.word(), 0);
+            if (rif == null) {
+                cmd.error("no such interface");
                 return false;
             }
-            servP4langIfc ifc = findIfc(i);
-            if (ifc == null) {
+            servP4langIfc pif = findIfc(rif.ethtyp);
+            if (pif == null) {
                 cmd.error("port not exported");
                 return false;
             }
-            servP4langBkpl ntry = new servP4langBkpl(this, i);
+            servP4langBkpl ntry = new servP4langBkpl(this, pif);
             ntry = backPlanes.del(ntry);
             if (ntry == null) {
                 cmd.error("no such downlink");
@@ -735,10 +735,10 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 0) + " " + (p + 1) + "  export-interval           specify export interval");
         l.add(null, (p + 1) + " .    <num>                   time in ms");
         l.add(null, (p + 0) + " " + (p + 1) + "  downlink                  specify downlink for packetin");
-        l.add(null, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
+        l.add(lst, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
         l.add(null, (p + 2) + " .      <name:ifc>            interface name");
         l.add(null, (p + 0) + " " + (p + 1) + "  backplane                 specify backplane connection");
-        l.add(null, (p + 1) + " " + (p + 2) + "    <num:loc>               port number");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <name:ifc>              interface name");
         l.add(null, (p + 2) + " .      <num>                 metric");
         l.add(null, (p + 0) + " " + (p + 1) + "  interconnect              specify port to for packetin");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");

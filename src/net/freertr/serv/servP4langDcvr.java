@@ -85,8 +85,8 @@ public class servP4langDcvr implements Runnable {
                 if (!ntry.ready) {
                     continue;
                 }
-                addrIP nei = servP4langUtil.forwarder2addr(ntry.lastFwdr);
-                spf.addConn(adr, nei, ntry.metric, true, false, "prt" + ntry.id);
+                addrIP nei = servP4langUtil.forwarder2addr(ntry.lastFwdr.id);
+                spf.addConn(adr, nei, ntry.metric, true, false, "prt" + ntry.pi.id);
             }
             tabRouteEntry<addrIP> rou = servP4langUtil.forwarder2route(o);
             spf.addPref(adr, rou, false);
@@ -109,9 +109,9 @@ public class servP4langDcvr implements Runnable {
                 if (!ntry.ready) {
                     continue;
                 }
-                addrIP nei = servP4langUtil.forwarder2addr(ntry.lastFwdr);
+                addrIP nei = servP4langUtil.forwarder2addr(ntry.lastFwdr.id);
                 tabRouteIface ifc = new tabRouteIface();
-                ifc.ifwNum = ntry.id;
+                ifc.ifwNum = ntry.pi.id;
                 cur.bckplnSpf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
             }
             cur.bckplnRou = cur.bckplnSpf.getRoutes(null, 6, null, null);

@@ -29,7 +29,7 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
     /**
      * interface id
      */
-    protected final int id;
+    protected final servP4langIfc pi;
 
     private final servP4langCfg lower;
 
@@ -53,12 +53,12 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
     /**
      * last forwarder
      */
-    protected int lastFwdr;
+    protected servP4langCfg lastFwdr;
 
     /**
      * last portid
      */
-    protected int lastPort;
+    protected servP4langBkpl lastPort;
 
     /**
      * ready to use
@@ -79,22 +79,16 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
      * create instance
      *
      * @param prnt parent
-     * @param num interface id
+     * @param ifc interface
      */
-    protected servP4langBkpl(servP4langCfg prnt, int num) {
-        id = num;
+    protected servP4langBkpl(servP4langCfg prnt, servP4langIfc ifc) {
+        pi = ifc;
         lower = prnt;
         randId = bits.randomD();
     }
 
     public int compare(servP4langBkpl o1, servP4langBkpl o2) {
-        if (o1.id < o2.id) {
-            return -1;
-        }
-        if (o1.id > o2.id) {
-            return +1;
-        }
-        return 0;
+        return o1.pi.compare(o1.pi, o2.pi);
     }
 
     /**
@@ -122,7 +116,7 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
         pck.msbPutD(4, magic2);
         pck.msbPutD(8, lower.parent.dscvry.randId);
         pck.msbPutD(12, lower.id);
-        pck.msbPutD(16, id);
+        pck.msbPutD(16, pi.id);
         pck.msbPutD(20, randId);
         pck.putSkip(ipIfc4arp.size);
         pck.merge2beg();
@@ -155,24 +149,30 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
             logger.info("got invalid cluster on " + ifc);
             return;
         }
-        lastFwdr = pck.msbGetD(12);
-        if (lastFwdr == lower.id) {
+        int i = pck.msbGetD(12);
+        if (i == lower.id) {
             logger.info("got looping packet on " + ifc);
             return;
         }
-        if ((lastFwdr < 0) || (lastFwdr >= lower.parent.fwds.size())) {
+        if ((i < 0) || (i >= lower.parent.fwds.size())) {
             logger.info("got invalid forwarder id on " + ifc);
             return;
         }
-        servP4langCfg peer = lower.parent.fwds.get(lastFwdr);
-        lastPort = pck.msbGetD(16);
-        servP4langBkpl pif = peer.backPlanes.find(new servP4langBkpl(lower, lastPort));
+        lastFwdr = lower.parent.fwds.get(i);
+        i = pck.msbGetD(16);
+        servP4langIfc pif = new servP4langIfc(lastFwdr, i);
+        pif = lastFwdr.expIfc.find(pif);
         if (pif == null) {
             logger.info("got invalid interface id on " + ifc);
             return;
         }
+        lastPort = lastFwdr.backPlanes.find(new servP4langBkpl(lower, pif));
+        if (lastPort == null) {
+            logger.info("got non backplane interface id on " + ifc);
+            return;
+        }
         int lastRand = pck.msbGetD(20);
-        if (pif.randId != lastRand) {
+        if (lastPort.randId != lastRand) {
             logger.info("got invalid random id on " + ifc);
             return;
         }

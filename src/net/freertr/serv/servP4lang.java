@@ -311,7 +311,7 @@ public class servP4lang extends servGeneric implements prtServS {
                 userFormat res = new userFormat("|", "port|metric|ready|remote|iface");
                 for (int i = 0; i < cur.backPlanes.size(); i++) {
                     servP4langBkpl ntry = cur.backPlanes.get(i);
-                    res.add(ntry.id + "|" + ntry.metric + "|" + ntry.ready + "|" + ntry.lastFwdr + "|" + ntry.lastPort);
+                    res.add(ntry.pi + "|" + ntry.metric + "|" + ntry.ready + "|" + ntry.lastFwdr.id + "|" + ntry.lastPort.pi);
                 }
                 return res;
             case 2:
@@ -353,7 +353,7 @@ public class servP4lang extends servGeneric implements prtServS {
      */
     public tabRoute<addrIP> getShowBp3(int fwd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
-            return null;
+            return new tabRoute<addrIP>("no");
         }
         servP4langCfg cur = fwds.get(fwd);
         return cur.bckplnRou;

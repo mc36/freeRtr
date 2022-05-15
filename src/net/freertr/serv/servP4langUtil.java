@@ -46,7 +46,9 @@ public class servP4langUtil {
      */
     protected static addrIP forwarder2addr(int i) {
         addrIP adr = new addrIP();
-        bits.msbPutD(adr.getBytes(), 0, i);
+        byte[] buf = adr.getBytes();
+        bits.msbPutD(buf, 0, 0xfe800bad);
+        bits.msbPutD(buf, buf.length - 4, i + 1);
         return adr;
     }
 

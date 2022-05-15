@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.5.15-cur, done by cs@nop.
--;-;-;2022-05-15 07:35:22, took 00:09:18, with 80 workers, on 2878 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2022-05-15 11:21:04, took 00:08:14, with 80 workers, on 2879 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic.tst;basic.tst;success;dummy test
 http://sources.freertr.org/cfg/conn-amt01.tst;conn-amt01.tst;success;amt over ipv4
@@ -1748,6 +1748,7 @@ http://sources.freertr.org/cfg/p4lang-rout207.tst;p4lang-rout207.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout208.tst;p4lang-rout208.tst;success;p4lang: l3vpn over pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout209.tst;p4lang-rout209.tst;success;p4lang: l3vpn over gre mpls
 http://sources.freertr.org/cfg/p4lang-rout210.tst;p4lang-rout210.tst;success;p4lang: l3vpn over l2tp mpls
+http://sources.freertr.org/cfg/p4lang-rout211.tst;p4lang-rout211.tst;success;p4lang: routing over backplane
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

@@ -2262,7 +2262,7 @@ public class servP4langConn implements Runnable {
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
         if (ipi == null) {
-            servP4langBkpl bck = lower.backPlanes.find(new servP4langBkpl(lower, ifc.id));
+            servP4langBkpl bck = lower.backPlanes.find(new servP4langBkpl(lower, ifc));
             if (bck == null) {
                 return;
             }
@@ -2273,12 +2273,8 @@ public class servP4langConn implements Runnable {
             if (vrf == null) {
                 return;
             }
-            servP4langIfc oifc = lower.parent.fwds.get(bck.lastFwdr).findIfc(bck.lastPort);
-            if (oifc == null) {
-                return;
-            }
-            servP4langNei ntry = new servP4langNei(ifc, servP4langUtil.forwarder2addr(bck.lastFwdr));
-            ntry.mac = oifc.getMac();
+            servP4langNei ntry = new servP4langNei(ifc, servP4langUtil.forwarder2addr(bck.lastFwdr.id));
+            ntry.mac = bck.lastPort.getMac();
             servP4langNei old = lower.neighs.find(ntry);
             boolean added = old == null;
             if (added) {
@@ -2301,7 +2297,7 @@ public class servP4langConn implements Runnable {
             }
             old.mac = ntry.mac;
             old.sentIfc = outIfc;
-            lower.sendLine("neigh4_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
+            lower.sendLine("neigh6_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
             return;
         }
         servP4langVrf vrf = lower.findVrf(ifc);
