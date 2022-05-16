@@ -2749,6 +2749,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showDatabase(5));
             return;
         }
+        if (a.equals("hardware")) {
+            rdr.putStrTab(r.lsrp.showDatabase(6));
+            return;
+        }
         if (a.equals("database")) {
             if (cmd.size() < 1) {
                 rdr.putStrTab(r.lsrp.showDatabase(1));

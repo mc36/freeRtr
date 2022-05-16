@@ -417,6 +417,7 @@ public class userExec {
         hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 .            software             list of software");
+        hl.add(null, "5 .            hardware             list of hardware");
         hl.add(null, "5 .            middleware           list of middleware");
         hl.add(null, "5 .            kernel               list of kernel");
         hl.add(null, "5 6            zone-rev             list of reverse zone");

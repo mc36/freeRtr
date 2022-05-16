@@ -368,7 +368,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * list database
      *
-     * @param mod mode: 1=summary, 2=uptime, 3=software, 4=middleware, 5=kernel
+     * @param mod mode: 1=summary, 2=uptime, 3=software, 4=middleware, 5=kernel, 6=hardware
      * @return list of database
      */
     public userFormat showDatabase(int mod) {
@@ -381,13 +381,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l = new userFormat("|", "id|name|since|uptime|changes|changed");
                 break;
             case 3:
-                l = new userFormat("|", "id|name|hw|software");
+                l = new userFormat("|", "id|name|software");
                 break;
             case 4:
                 l = new userFormat("|", "id|name|middle");
                 break;
             case 5:
                 l = new userFormat("|", "id|name|kernel");
+                break;
+            case 6:
+                l = new userFormat("|", "id|name|hardware");
                 break;
             default:
                 return null;
@@ -405,13 +408,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + bits.time2str(cfgAll.timeZoneName, ntry.since, 3) + "|" + bits.timeDump(ntry.uptime / 1000) + "|" + ntry.changesNum + "|" + bits.timeDump(ntry.changesTim / 1000));
                     break;
                 case 3:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware + "|" + ntry.software);
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.software);
                     break;
                 case 4:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.middleware);
                     break;
                 case 5:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.kernel);
+                    break;
+                case 6:
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware);
                     break;
             }
         }
