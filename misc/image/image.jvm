@@ -15,7 +15,8 @@ select-dis openjdk-14-.*                 #old jvm
 select-dis openjdk-15-.*                 #old jvm
 select-dis openjdk-16-.*                 #old jvm
 select-dis openjdk-17-.*                 #old jvm
-select-one openjdk-18-jdk-headless       #new jvm
+select-dis openjdk-18-.*                 #old jvm
+select-one openjdk-19-jdk-headless       #new jvm
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/
