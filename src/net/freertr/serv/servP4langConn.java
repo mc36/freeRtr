@@ -1182,10 +1182,6 @@ public class servP4langConn implements Runnable {
                 }
             }
         }
-        servP4langNei hop = lower.findNei(ntry.iface, ntry.nextHop);
-        if (hop == null) {
-            return;
-        }
         tabLabelEntry old = labels.find(ntry);
         String act = "add";
         if (old != null) {
@@ -1193,6 +1189,29 @@ public class servP4langConn implements Runnable {
                 return;
             }
             act = "mod";
+        }
+        servP4langNei hop = lower.findNei(ntry.iface, ntry.nextHop);
+        if (hop == null) {
+            servP4langCfg oth = lower.parent.findIfc(lower, ntry.iface);
+            if (oth == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> oru = servP4langUtil.forwarder2route(oth.id);
+            oru = lower.bckplnRou.find(oru);
+            if (oru == null) {
+                return;
+            }
+            if (oru.best.iface == null) {
+                return;
+            }
+            servP4langIfc ifc = lower.findIfc(oru.best.iface.ifwNum);
+            hop = lower.findNei(ifc, oru.best.nextHop);
+            if (hop == null) {
+                return;
+            }
+            labels.put(ntry);
+            lower.sendLine("label4_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + ntry.label);
+            return;
         }
         String afi;
         if (ntry.nextHop.isIPv4()) {
