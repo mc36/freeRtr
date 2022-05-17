@@ -368,11 +368,11 @@ public class ipIfc4arp implements ifcUp {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }
-        if (adr.compare(adr, network.network) <= 0) {
+        if (adr.compare(adr, network.network) < 0) {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }
-        if (adr.compare(adr, network.broadcast) >= 0) {
+        if (adr.compare(adr, network.broadcast) > 0) {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }

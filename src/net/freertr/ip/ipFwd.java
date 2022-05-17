@@ -1190,7 +1190,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ifc.addr = addr.copyBytes();
         ifc.mask = mask;
         ifc.network = new addrPrefix<addrIP>(addr, mask);
-        ifc.point2point = mask >= (addrIP.size * 8 - 1);
         needFull.or(1);
         triggerUpdate.wakeup();
     }
@@ -1207,18 +1206,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (hop == null) {
                 lower.cntr.drop(pck, counter.reasons.badAddr);
                 return;
-            }
-        }
-        if (!lower.point2point) {
-            if (lower.blockBroadcast && (pck.INTupper == 0)) {
-                if (pck.IPtrg.compare(pck.IPtrg, lower.network.network) == 0) {
-                    lower.cntr.drop(pck, counter.reasons.denied);
-                    return;
-                }
-                if (pck.IPtrg.compare(pck.IPtrg, lower.network.broadcast) == 0) {
-                    lower.cntr.drop(pck, counter.reasons.denied);
-                    return;
-                }
             }
         }
         if (lower.blockHost2host && (pck.INTupper == 0)) {

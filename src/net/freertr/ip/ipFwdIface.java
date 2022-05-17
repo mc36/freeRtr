@@ -65,11 +65,6 @@ public class ipFwdIface extends tabRouteIface {
     public ipFwdIface unreachSrc = null;
 
     /**
-     * set true to block directed broadcasts
-     */
-    public boolean blockBroadcast = true;
-
-    /**
      * set true to send multicast as broadcast
      */
     public boolean mcastAsBcast = false;
@@ -310,11 +305,6 @@ public class ipFwdIface extends tabRouteIface {
     public long bandwidth;
 
     /**
-     * point to point link
-     */
-    public boolean point2point;
-
-    /**
      * srh interface handler
      */
     public rtrSrhIface srhCfg;
@@ -475,7 +465,6 @@ public class ipFwdIface extends tabRouteIface {
         l.add("num|" + ifwNum);
         l.add("mtu|" + mtu);
         l.add("bw|" + bits.bandwidth(bandwidth));
-        l.add("p2p|" + point2point);
         l.add("addr|" + addr);
         l.add("mask|" + mask);
         l.add("gate|" + gateAddr);
@@ -526,7 +515,6 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 3     redirection                 send packets out on different interface");
         l.add(null, "3 .       <name:ifc>                name of interface");
         l.add(null, "2 .     resend-packet               enable sending packet out on same interface");
-        l.add(null, "2 .     directed-broadcast          enable forwarding of directed broadcasts");
         l.add(null, "2 .     broadcast-multicast         broadcast the multicast packets");
         l.add(null, "2 .     flowspec-disable            disable flowspec processing");
         l.add(null, "2 .     dapp-disable                disable dapp processing");
@@ -734,7 +722,6 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !mplsPropTtlAllow, cmds.tabulator, beg + "propagate-ttl-allow", "");
         cmds.cfgLine(l, unreachSrc == null, cmds.tabulator, beg + "unreach-source", "" + unreachSrc);
         cmds.cfgLine(l, blockHost2host, cmds.tabulator, beg + "resend-packet", "");
-        cmds.cfgLine(l, blockBroadcast, cmds.tabulator, beg + "directed-broadcast", "");
         cmds.cfgLine(l, !mcastAsBcast, cmds.tabulator, beg + "broadcast-multicast", "");
         cmds.cfgLine(l, !disableFlowspec, cmds.tabulator, beg + "flowspec-disable", "");
         cmds.cfgLine(l, !disableDapp, cmds.tabulator, beg + "dapp-disable", "");
@@ -1131,10 +1118,6 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("broadcast-multicast")) {
             mcastAsBcast = true;
-            return false;
-        }
-        if (a.equals("directed-broadcast")) {
-            blockBroadcast = false;
             return false;
         }
         if (a.equals("verify-source")) {
@@ -1716,10 +1699,6 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("broadcast-multicast")) {
             mcastAsBcast = false;
-            return false;
-        }
-        if (a.equals("directed-broadcast")) {
-            blockBroadcast = true;
             return false;
         }
         if (a.equals("verify-source")) {

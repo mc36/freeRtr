@@ -298,18 +298,18 @@ public class ipIfc6nei implements ifcUp {
             return false;
         }
         if (!adr.isLinkLocal()) {
-            if (adr.compare(adr, network.network) <= 0) {
+            if (adr.compare(adr, network.network) < 0) {
                 putHeader(pck, addrMac.getBroadcast());
                 return false;
             }
-            if (adr.compare(adr, network.broadcast) >= 0) {
+            if (adr.compare(adr, network.broadcast) > 0) {
                 putHeader(pck, addrMac.getBroadcast());
                 return false;
             }
-        }
-        if ((!network.matches(adr)) && (!adr.isLinkLocal())) {
-            cntr.drop(pck, counter.reasons.badTrgAddr);
-            return true;
+            if (!network.matches(adr)) {
+                cntr.drop(pck, counter.reasons.badTrgAddr);
+                return true;
+            }
         }
         cntr.drop(pck, counter.reasons.notInTab);
         icc.createNeighSol(hwaddr, pck, adr, lladdr);

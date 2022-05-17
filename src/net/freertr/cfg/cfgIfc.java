@@ -1510,7 +1510,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[46] resend-packet",
         "interface .*! no ipv[46] dapp-disable",
         "interface .*! no ipv[46] flowspec-disable",
-        "interface .*! no ipv[46] directed-broadcast",
         "interface .*! no ipv[46] broadcast-multicast",
         "interface .*! no ipv[46] verify-source",
         "interface .*! no ipv[46] srh enable",
