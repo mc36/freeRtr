@@ -479,7 +479,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * clear sent state
      */
     protected void doClear() {
-        lastState = state.states.down;
+        if (suppressState()) {
+            lastState = state.states.up;
+        } else {
+            lastState = state.states.down;
+        }
         upper.setState(lastState);
         sentVlan = 0;
         sentBundle = 0;
