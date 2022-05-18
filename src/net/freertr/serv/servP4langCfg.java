@@ -272,6 +272,10 @@ public class servP4langCfg implements ifcUp {
         conn = new servP4langConn(pl.getSide(), this);
     }
 
+    public String toString() {
+        return "p4lang forwarder " + id;
+    }
+
     /**
      * get configuration
      *

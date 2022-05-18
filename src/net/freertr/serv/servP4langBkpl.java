@@ -87,6 +87,10 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
         randId = bits.randomD();
     }
 
+    public String toString() {
+        return "" + pi;
+    }
+
     public int compare(servP4langBkpl o1, servP4langBkpl o2) {
         return o1.pi.compare(o1.pi, o2.pi);
     }
