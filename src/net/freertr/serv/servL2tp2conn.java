@@ -174,7 +174,7 @@ public class servL2tp2conn implements Comparator<servL2tp2conn> {
         synchronized (queue) {
             if (queue.size() < 1) {
                 keep++;
-                if (keep < 5) {
+                if (keep < lower.helloTicks) {
                     return;
                 }
                 keep = 0;
@@ -192,7 +192,7 @@ public class servL2tp2conn implements Comparator<servL2tp2conn> {
         if (debugger.servL2tp2traf) {
             logger.debug("tx " + pckTx.dump());
         }
-        if (txed < 8) {
+        if (txed < lower.retryTicks) {
             return;
         }
         setClosed();

@@ -43,6 +43,16 @@ public class servL2tp2 extends servGeneric implements prtServP {
     public String password;
 
     /**
+     * ticks after send a hello
+     */
+    public int helloTicks = 5;
+
+    /**
+     * ticks after give up retry
+     */
+    public int retryTicks = 8;
+
+    /**
      * list of connections
      */
     public tabGen<servL2tp2conn> conns = new tabGen<servL2tp2conn>();
@@ -53,6 +63,7 @@ public class servL2tp2 extends servGeneric implements prtServP {
     public final static String[] defaultL = {
         "server l2tp2 .*! port " + packL2tp2.port,
         "server l2tp2 .*! protocol " + proto2string(protoAllDgrm),
+        "server l2tp2 .*! timer 5 8",
         "server l2tp2 .*! no password"
     };
 
@@ -97,6 +108,7 @@ public class servL2tp2 extends servGeneric implements prtServP {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        l.add(beg + "timer " + helloTicks + " " + retryTicks);
         if (clnIfc == null) {
             l.add(beg + "no clone");
         } else {
@@ -107,6 +119,11 @@ public class servL2tp2 extends servGeneric implements prtServP {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("timer")) {
+            helloTicks = bits.str2num(cmd.word());
+            retryTicks = bits.str2num(cmd.word());
+            return false;
+        }
         if (s.equals("clone")) {
             clnIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (clnIfc == null) {
@@ -140,6 +157,9 @@ public class servL2tp2 extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  timer                        set timers");
+        l.add(null, "2 3    <num>                      hello ticks");
+        l.add(null, "3 .      <num>                    retry ticks");
         l.add(null, "1 2  clone                        set interface to clone");
         l.add(null, "2 .    <name:ifc>                 name of interface");
         l.add(null, "1 2  password                     set password");

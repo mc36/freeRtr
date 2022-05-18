@@ -1054,6 +1054,26 @@ public class cfgAll {
     public static int sctpRangeMax = 0xf000;
 
     /**
+     * l2tp2 hello ticks
+     */
+    public static int l2tp2hello = 5;
+
+    /**
+     * l2tp2 retry ticks
+     */
+    public static int l2tp2retry = 8;
+
+    /**
+     * l2tp3 hello ticks
+     */
+    public static int l2tp3hello = 5;
+
+    /**
+     * l2tp3 retry ticks
+     */
+    public static int l2tp3retry = 8;
+
+    /**
      * shame texts
      */
     public static servQuote clientShamer;
@@ -1120,6 +1140,8 @@ public class cfgAll {
         "!client cpuhog 0",
         "!client ifacestall 60000",
         "!client redundancy 500 2500 5000",
+        "!client l2tp2-timer 5 8",
+        "!client l2tp3-timer 5 8",
         "!no client bullying",
         "!no client proxy",
         "!no client domain-name",
@@ -3477,6 +3499,8 @@ public class cfgAll {
         l.add("client dccp-portrange " + dccpRangeMin + " " + dccpRangeMax);
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));
         l.add("client sctp-portrange " + sctpRangeMin + " " + sctpRangeMax);
+        l.add("client l2tp2-timer " + l2tp2hello + " " + l2tp2retry);
+        l.add("client l2tp3-timer " + l2tp3hello + " " + l2tp3retry);
         String a = "";
         for (int i = 0; i < nameServerAddr.size(); i++) {
             a += " " + nameServerAddr.get(i);

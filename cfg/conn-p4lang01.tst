@@ -2,11 +2,16 @@ description p4lang demultiplexer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
+int eth2 eth 0000.0000.1111 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
  exit
 int eth1
+ exit
+int eth2
+ vrf for v1
+ ipv4 addr 3.3.3.1 255.255.255.0
  exit
 int sdn1
  vrf for v1
@@ -29,11 +34,19 @@ server p4lang p4
 
 addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
+int eth2 eth 0000.0000.2222 $2b$ $2a$
 !
 vrf def v1
  rd 1:1
  exit
+proxy-profile p1
+ vrf v1
+ exit
 int eth1
+ exit
+int eth2
+ vrf for v1
+ ipv4 addr 3.3.3.2 255.255.255.0
  exit
 hair 1
  exit
@@ -43,6 +56,7 @@ serv pktmux pm
  cpu eth1
  data hair11 1
  data hair21 9
+ control p1 3.3.3.1 9080
  exit
 int hair12
  vrf for v1
@@ -56,6 +70,9 @@ int hair22
  exit
 !
 
+
+r1 tping 100 5 3.3.3.2 vrf v1
+r2 tping 100 5 3.3.3.1 vrf v1
 
 r1 tping 100 5 1.1.1.2 vrf v1
 r2 tping 100 5 1.1.1.1 vrf v1

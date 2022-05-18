@@ -2,8 +2,11 @@ package net.freertr.serv;
 
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgProxy;
+import net.freertr.clnt.clntProxy;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
@@ -19,6 +22,7 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
+import net.freertr.util.logger;
 import net.freertr.util.state;
 
 /**
@@ -48,6 +52,11 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
      * data interfaces
      */
     protected tabGen<servPktmuxPort> ports = new tabGen<servPktmuxPort>();
+
+    /**
+     * control connections
+     */
+    protected tabGen<servPktmuxConn> conns = new tabGen<servPktmuxConn>();
 
     /**
      * counter
@@ -82,6 +91,9 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
         for (int i = 0; i < ports.size(); i++) {
             l.add(beg + "dataport " + ports.get(i));
         }
+        for (int i = 0; i < conns.size(); i++) {
+            l.add(beg + "controller " + conns.get(i));
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -95,6 +107,21 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
             cpuport = ifc.ethtyp;
             cpuport.addET(-1, "pktmux", this);
             cpuport.updateET(-1, this);
+            return false;
+        }
+        if (s.equals("controller")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            servPktmuxConn ntry = new servPktmuxConn(this, prx.proxy, adr, bits.str2num(cmd.word()));
+            if (conns.add(ntry) != null) {
+                return false;
+            }
+            ntry.startWork();
             return false;
         }
         if (s.equals("dataport")) {
@@ -132,6 +159,23 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
             }
             return false;
         }
+        if (s.equals("controller")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            addrIP adr = new addrIP();
+            adr.fromString(cmd.word());
+            servPktmuxConn ntry = new servPktmuxConn(this, prx.proxy, adr, bits.str2num(cmd.word()));
+            ntry = conns.del(ntry);
+            if (ntry == null) {
+                cmd.error("no such controller");
+                return false;
+            }
+            ntry.stopWork();
+            return false;
+        }
         return true;
     }
 
@@ -141,6 +185,10 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
         l.add(null, "1 2  dataport                  specify port to for packetout");
         l.add(null, "2 3    <name:ifc>              interface name");
         l.add(null, "3 .      <num>                 interface number");
+        l.add(null, "1 2  controller                specify controller to connect");
+        l.add(null, "2 3    <name:prx>              proxy to use");
+        l.add(null, "3 4      <addr>                peer address");
+        l.add(null, "4 .        <num>               peer port");
     }
 
     public String srvName() {
@@ -208,6 +256,92 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
 
     public counter getCounter() {
         return cntr;
+    }
+
+}
+
+class servPktmuxConn implements Runnable, Comparator<servPktmuxConn> {
+
+    public final servPktmux lower;
+
+    public final clntProxy proxy;
+
+    public final addrIP addr;
+
+    public final int port;
+
+    private boolean need2work;
+
+    public servPktmuxConn(servPktmux l, clntProxy c, addrIP a, int p) {
+        lower = l;
+        proxy = c;
+        addr = a;
+        port = p;
+    }
+
+    public void startWork() {
+        need2work = true;
+        new Thread(this).start();
+    }
+
+    public void stopWork() {
+        need2work = false;
+    }
+
+    public String toString() {
+        return proxy + " " + addr + " " + port;
+    }
+
+    public int compare(servPktmuxConn o1, servPktmuxConn o2) {
+        if (o1.port < o2.port) {
+            return -1;
+        }
+        if (o1.port > o2.port) {
+            return +1;
+        }
+        return o1.addr.compare(o1.addr, o2.addr);
+    }
+
+    public void doRound() {
+        bits.sleep(1000);
+        pipeSide pipe = proxy.doConnect(servGeneric.protoTcp, addr, port, "pktmux");
+        if (pipe == null) {
+            return;
+        }
+        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.setTime(120000);
+        pipe.linePut("platform pktmux");
+        pipe.linePut("capabilities nohw");
+        for (int i = 0; i < lower.ports.size(); i++) {
+            servPktmuxPort ntry = lower.ports.get(i);
+            pipe.linePut("portname " + ntry.id + " pktmux-port" + ntry.id);
+        }
+        pipe.linePut("dynrange 512 1023");
+        for (int i = 0; i < lower.ports.size(); i++) {
+            servPktmuxPort ntry = lower.ports.get(i);
+            pipe.linePut("state " + ntry.id + " 1");
+        }
+        for (;;) {
+            pipe.lineGet(0x11);
+            if (pipe.isClosed() != 0) {
+                break;
+            }
+        }
+        pipe.setClose();
+    }
+
+    public void run() {
+        try {
+            for (;;) {
+                if (!need2work) {
+                    break;
+                }
+                doRound();
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }

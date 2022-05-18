@@ -488,6 +488,12 @@ public class userConfig {
         l.add(null, "4  .        <num>                    ending");
         l.add(null, "2  3    ifacestall                   specify interface stall check");
         l.add(null, "3  .      <num>                      timeout in ms");
+        l.add(null, "2  3    l2tp2-timer                  specify l2tp2 parameters");
+        l.add(null, "3  4      <num>                      hello after ticks");
+        l.add(null, "4  .        <num>                    retry ticks");
+        l.add(null, "2  3    l2tp3-timer                  specify l2tp3 parameters");
+        l.add(null, "3  4      <num>                      hello after ticks");
+        l.add(null, "4  .        <num>                    retry ticks");
         l.add(null, "2  3    redundancy                   specify redundancy parameters");
         l.add(null, "3  4      <num>                      keepalive in ms");
         l.add(null, "4  5        <num>                    hold time in ms");
@@ -1234,6 +1240,16 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("l2tp2-timer")) {
+                cfgAll.l2tp2hello = bits.str2num(cmd.word());
+                cfgAll.l2tp2retry = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("l2tp3-timer")) {
+                cfgAll.l2tp3hello = bits.str2num(cmd.word());
+                cfgAll.l2tp3retry = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("bullying")) {
                 servQuote ntry = new servQuote();
                 ntry.srvName = cmd.word();

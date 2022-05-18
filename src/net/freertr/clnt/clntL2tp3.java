@@ -463,7 +463,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         synchronized (queue) {
             if (queue.size() < 1) {
                 keep++;
-                if (keep < 15) {
+                if (keep < cfgAll.l2tp3hello) {
                     return false;
                 }
                 keep = 0;
@@ -484,7 +484,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         if (debugger.clntL2tp3traf) {
             logger.debug("tx " + pckTx.dump());
         }
-        if (txed < 8) {
+        if (txed < cfgAll.l2tp3retry) {
             return false;
         }
         return true;

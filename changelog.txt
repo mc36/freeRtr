@@ -13261,3 +13261,8 @@ no qc pass: p4lang downlink
 no qc pass: p4lang demultiplexer
 failed: p4lang demultiplexer
 failed: p4lang downlink
+---------------------------------- 2022-05-18 16:13:14 22.5.18
+no failed: p4lang downlink
+no failed: p4lang demultiplexer
+qc pass: p4lang demultiplexer
+qc pass: p4lang downlink

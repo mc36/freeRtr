@@ -85,6 +85,16 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     public int sendingFLW = -1;
 
     /**
+     * ticks after send a hello
+     */
+    public int helloTicks = 5;
+
+    /**
+     * ticks after give up retry
+     */
+    public int retryTicks = 8;
+
+    /**
      * list of connections
      */
     public tabGen<servL2tp3conn> conns = new tabGen<servL2tp3conn>();
@@ -100,6 +110,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     public final static String[] defaultL = {
         "server l2tp3 .*! port " + packL2tp3.prot,
         "server l2tp3 .*! protocol " + proto2string(protoAllDgrm),
+        "server l2tp3 .*! timer 5 8",
         "server l2tp3 .*! no physical-interface",
         "server l2tp3 .*! no password"
     };
@@ -114,6 +125,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        l.add(beg + "timer " + helloTicks + " " + retryTicks);
         if (dialIfc == null) {
             l.add(beg + "no clone");
         } else {
@@ -130,6 +142,11 @@ public class servL2tp3 extends servGeneric implements ipPrt {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("timer")) {
+            helloTicks = bits.str2num(cmd.word());
+            retryTicks = bits.str2num(cmd.word());
+            return false;
+        }
         if (s.equals("clone")) {
             dialIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (dialIfc == null) {
@@ -183,6 +200,9 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  timer                        set timers");
+        l.add(null, "2 3    <num>                      hello ticks");
+        l.add(null, "3 .      <num>                    retry ticks");
         l.add(null, "1 2  clone                        set interface to clone");
         l.add(null, "2 .    <name:ifc>                 name of interface");
         l.add(null, "1 2  bridge                       set interface to clone");
@@ -457,7 +477,7 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         synchronized (queue) {
             if (queue.size() < 1) {
                 keep++;
-                if (keep < 3) {
+                if (keep < lower.helloTicks) {
                     return;
                 }
                 keep = 0;
@@ -475,7 +495,7 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         if (debugger.servL2tp3traf) {
             logger.debug("tx " + pckTx.dump());
         }
-        if (txed < 8) {
+        if (txed < lower.retryTicks) {
             return;
         }
         need2run = false;

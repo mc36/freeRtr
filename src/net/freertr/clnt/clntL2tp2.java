@@ -494,10 +494,13 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         synchronized (queue) {
             if (queue.size() < 1) {
                 keep++;
-                if (keep < 5) {
+                if (keep < cfgAll.l2tp2hello) {
                     return;
                 }
                 keep = 0;
+                if (sesRem == 0) {
+                    return;
+                }
                 enQueue(packL2tp2.createHELLO());
                 return;
             }
@@ -512,7 +515,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         if (debugger.clntL2tp2traf) {
             logger.debug("tx " + pckTx.dump());
         }
-        if (txed < 8) {
+        if (txed < cfgAll.l2tp2retry) {
             return;
         }
         conn.setClosing();
