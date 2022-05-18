@@ -78,17 +78,35 @@ public class servP4langConn implements Runnable {
 
     private int keepalive;
 
-    private tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
+    /**
+     * exported labels
+     */
+    protected tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
 
-    private tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
+    /**
+     * exported nshs
+     */
+    protected tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
 
-    private tabListing<tabAceslstN<addrIP>, addrIP> copp4;
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4;
 
-    private tabListing<tabAceslstN<addrIP>, addrIP> copp6;
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6;
 
-    private tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
 
-    private tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
 
     /**
      * create instance

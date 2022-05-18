@@ -388,7 +388,8 @@ public class servP4lang extends servGeneric implements prtServS {
      * get generic show
      *
      * @param fwd forwarder
-     * @param mod mode: 1=generic, 2=apiTx, 3=apiRx, 4=front, 5=ifaces, 6=neighs
+     * @param mod mode: 1=generic, 2=apiTx, 3=apiRx, 4=front, 5=ifaces,
+     * 6=neighs, 7=mpls, 8=nsh
      * @return show
      */
     public userFormat getShowGen(int fwd, int mod) {
@@ -409,8 +410,59 @@ public class servP4lang extends servGeneric implements prtServS {
                 return cur.getShowIfaces();
             case 6:
                 return cur.getShowNeighs();
+            case 7:
+                return cur.getShowMpls();
+            case 8:
+                return cur.getShowNsh();
             default:
                 return null;
+        }
+    }
+
+    /**
+     * get route show
+     *
+     * @param bri bridge
+     * @param fwd forwarder
+     * @return show
+     */
+    public userFormat getShowBri(int bri, int fwd) {
+        if ((fwd < 0) || (fwd >= fwds.size())) {
+            return null;
+        }
+        servP4langCfg cur = fwds.get(fwd);
+        servP4langBr ntry = cur.expBr.find(new servP4langBr(bri));
+        if (ntry == null) {
+            return null;
+        }
+        userFormat res = new userFormat("|", "addr|iface|static|time|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
+        for (int i = 0; i < ntry.macs.size(); i++) {
+            res.add("" + ntry.macs.get(i));
+        }
+        return res;
+    }
+
+    /**
+     * get route show
+     *
+     * @param prt protocol
+     * @param vrf vrf
+     * @param fwd forwarder
+     * @return show
+     */
+    public tabRoute<addrIP> getShowRou(int prt, int vrf, int fwd) {
+        if ((fwd < 0) || (fwd >= fwds.size())) {
+            return null;
+        }
+        servP4langCfg cur = fwds.get(fwd);
+        servP4langVrf ntry = cur.expVrf.find(new servP4langVrf(vrf));
+        if (ntry == null) {
+            return null;
+        }
+        if (prt == 4) {
+            return ntry.routes4;
+        } else {
+            return ntry.routes6;
         }
     }
 

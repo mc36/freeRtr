@@ -25,7 +25,9 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
+import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
@@ -807,6 +809,34 @@ public class servP4langCfg implements ifcUp {
             } else {
                 res.add(ntry.id + "|ifc " + ntry.ifc.name);
             }
+        }
+        return res;
+    }
+
+    /**
+     * get mpls show
+     *
+     * @return show
+     */
+    protected userFormat getShowMpls() {
+        userFormat res = new userFormat("|", "label|vrf|iface|hop|label|targets|bytes");
+        for (int i = 0; i < conn.labels.size(); i++) {
+            tabLabelEntry ntry = conn.labels.get(i);
+            res.add(ntry.getList());
+        }
+        return res;
+    }
+
+    /**
+     * get mpls show
+     *
+     * @return show
+     */
+    protected userFormat getShowNsh() {
+        userFormat res = new userFormat("|", "service");
+        for (int i = 0; i < conn.nshs.size(); i++) {
+            tabNshEntry ntry = conn.nshs.get(i);
+            res.add("" + ntry);
         }
         return res;
     }

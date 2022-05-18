@@ -982,6 +982,29 @@ public class userShow {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 6));
                 return null;
             }
+            if (a.equals("done-mpls")) {
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 7));
+                return null;
+            }
+            if (a.equals("done-nsh")) {
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 8));
+                return null;
+            }
+            if (a.equals("done-bridge")) {
+                int i = bits.str2num(cmd.word());
+                rdr.putStrTab(srv.getShowBri(i, bits.str2num(cmd.word())));
+                return null;
+            }
+            if (a.equals("done-route4")) {
+                int i = bits.str2num(cmd.word());
+                doShowRoutes(null, srv.getShowRou(4, i, bits.str2num(cmd.word())), 1);
+                return null;
+            }
+            if (a.equals("done-route6")) {
+                int i = bits.str2num(cmd.word());
+                doShowRoutes(null, srv.getShowRou(6, i, bits.str2num(cmd.word())), 1);
+                return null;
+            }
             if (a.equals("backplane-ports")) {
                 rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 1));
                 return null;
