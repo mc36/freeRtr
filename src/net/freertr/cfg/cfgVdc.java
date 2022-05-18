@@ -914,7 +914,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             if (configFile != null) {
                 s = configFile;
             }
-            cmd = "java " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routercs " + a + " " + s;
+            cmd = version.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routercs " + a + " " + s;
         } else {
             cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -hda " + image1name + " -m " + imageMem;
             if (biosName != null) {

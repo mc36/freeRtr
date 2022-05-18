@@ -249,6 +249,19 @@ public class version {
         return sa;
     }
 
+    /**
+     * get java executable
+     *
+     * @return path of jvms
+     */
+    public static String getJvmExec() {
+        try {
+            return ProcessHandle.current().info().command().get();
+        } catch (Exception e) {
+            return getProp("java.home") + "/bin/java";
+        }
+    }
+
     private static String getJavaVer(String s) {
         String vnd = getProp(s + ".vendor");
         String nam = getProp(s + ".name");
