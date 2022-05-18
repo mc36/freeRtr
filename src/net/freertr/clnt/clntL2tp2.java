@@ -326,7 +326,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         if (conn == null) {
             return;
         }
-        conn.timeout = 120000;
+        conn.timeout = 180000;
         conn.sendFLW = sendingFLW;
         conn.sendTOS = sendingTOS;
         conn.sendTTL = sendingTTL;

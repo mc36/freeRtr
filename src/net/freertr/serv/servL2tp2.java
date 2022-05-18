@@ -187,7 +187,7 @@ public class servL2tp2 extends servGeneric implements prtServP {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        id.timeout = 120000;
+        id.timeout = 180000;
         connFind(id, true);
         return false;
     }
