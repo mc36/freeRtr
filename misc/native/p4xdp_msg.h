@@ -20,6 +20,7 @@ void doStatRound(FILE *commands, int round) {
         prtp = &prt1;
         if (bpf_map_lookup_elem(rx_ports_fd, &i, prtp) != 0) continue;
         i = o;
+        fprintf(commands, "state %i 1\r\n", i);
         fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", i, prt1.pack, prt1.byte, prt2.pack, prt2.byte);
     }
     struct bundle_res bunr;

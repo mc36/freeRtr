@@ -13256,3 +13256,8 @@ qc pass: p4lang: routing over backplane
 qc pass: p4lang: bridging over backplane
 ---------------------------------- 2022-05-16 07:27:38 22.5.16
 no todo: backplane/stacking capability
+---------------------------------- 2022-05-18 14:49:11 22.5.18
+no qc pass: p4lang downlink
+no qc pass: p4lang demultiplexer
+failed: p4lang demultiplexer
+failed: p4lang downlink

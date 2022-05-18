@@ -332,7 +332,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     /**
      * last state
      */
-    protected state.states lastState = state.states.up;
+    protected state.states lastState = state.states.down;
 
     /**
      * create instance
@@ -479,7 +479,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * clear sent state
      */
     protected void doClear() {
-        lastState = state.states.up;
+        lastState = state.states.down;
         upper.setState(lastState);
         sentVlan = 0;
         sentBundle = 0;
