@@ -552,14 +552,31 @@ public class userConfig {
         l.add(null, "2  3    dccp-checksum                set dccp checksum mode");
         l.add(null, "2  3    sctp-checksum                set sctp checksum mode");
         l.add(null, "3  .      both                       both generate and check");
+        l.add(null, "3  .      transmit                   only generate, not check");
         l.add(null, ".3 .      receive                    only check, not generate");
-        l.add(null, ".3 .      transmit                   only generate, not check");
-        l.add(null, ".3 .      none                       not generate nor check");
-        l.add(null, ".2  .    tcp-timestamp               set tcp timestamping");
-        l.add(null, ".2  3    tcp-segments                set tcp segment size");
-        l.add(null, ".3  .      <num>                      bytes");
-        l.add(null, ".2  3    tcp-winscale                set tcp window scale");
-        l.add(null, ".3  .      <num>                      factor");
+        l.add(null, ".3 .      none                       nor generate nor check");
+        l.add(null, "2  .    tcp-timestamp                set tcp timestamping");
+        l.add(null, "2  3    tcp-timer                    set tcp timestamping");
+        l.add(null, "3  4      alive                      set tcp keepalive");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      fin                        set tcp finish");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      syn                        set tcp startup");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      open                       set tcp inactivity");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      close                      set tcp inactivity");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      later                      set tcp retransmit");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      now                        set tcp transmit");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "3  4      max                        set tcp fallback");
+        l.add(null, "4  .        <num>                    ms");
+        l.add(null, "2  3    tcp-segments                 set tcp segment size");
+        l.add(null, "3  .      <num>                      bytes");
+        l.add(null, "2  3    tcp-winscale                 set tcp window scale");
+        l.add(null, "3  .      <num>                      factor");
         l.add(null, "2  3    udp-portrange                set udp client range");
         l.add(null, "3  4      <num>                      lower bound");
         l.add(null, "4  .        <num>                    upper bound");
@@ -1362,6 +1379,43 @@ public class userConfig {
             if (a.equals("udp-portrange")) {
                 cfgAll.udpRangeMin = bits.str2num(cmd.word());
                 cfgAll.udpRangeMax = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("tcp-timer")) {
+                a = cmd.word();
+                if (a.equals("alive")) {
+                    cfgAll.tcpTimeAlive = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("fin")) {
+                    cfgAll.tcpTimeFin = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("syn")) {
+                    cfgAll.tcpTimeSyn = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("open")) {
+                    cfgAll.tcpTimeOpen = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("close")) {
+                    cfgAll.tcpTimeClose = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("later")) {
+                    cfgAll.tcpTimeLater = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("now")) {
+                    cfgAll.tcpTimeNow = bits.str2num(cmd.word());
+                    return;
+                }
+                if (a.equals("max")) {
+                    cfgAll.tcpTimeMax = bits.str2num(cmd.word());
+                    return;
+                }
+                cmd.badCmd();
                 return;
             }
             if (a.equals("tcp-timestamp")) {

@@ -23,26 +23,6 @@ import net.freertr.util.typLenVal;
 public class prtTcp extends prtGen {
 
     /**
-     * timeout while connecting
-     */
-    public int timeoutSyn = 30 * 1000;
-
-    /**
-     * timeout while closing
-     */
-    public int timeoutFin = 45 * 1000;
-
-    /**
-     * timeout while closing with data
-     */
-    public int timeoutClos = 120 * 1000;
-
-    /**
-     * timeout while open
-     */
-    public int timeoutOpen = 300 * 1000;
-
-    /**
      * size of tcp header
      */
     public final static int size = 20;
@@ -617,9 +597,9 @@ public class prtTcp extends prtGen {
         prtTcpConn pr = new prtTcpConn();
         pr.netMax = cfgAll.tcpMaxSegment;
         clnt.proto = pr;
-        clnt.timeout = timeoutSyn;
+        clnt.timeout = cfgAll.tcpTimeSyn;
         clnt.workInterval = 1000;
-        pr.activWait = prtTcpConn.tmNow;
+        pr.activWait = cfgAll.tcpTimeNow;
         pr.activFrcd = true;
         pr.seqLoc = bits.randomD();
         if (cfgAll.tcpTimStmp) {
@@ -665,8 +645,8 @@ public class prtTcp extends prtGen {
             pr.state = prtTcpConn.stClrReq;
             pr.staTim = bits.getTime();
         }
-        clnt.timeout = timeoutClos;
-        pr.activWait = prtTcpConn.tmNow;
+        clnt.timeout = cfgAll.tcpTimeClose;
+        pr.activWait = cfgAll.tcpTimeNow;
         pr.activFrcd = true;
     }
 
@@ -723,12 +703,12 @@ public class prtTcp extends prtGen {
             }
             if (flg == flagSynAck) {
                 if (pr.state != prtTcpConn.stConReq) {
-                    pr.activWait = prtTcpConn.tmLater;
+                    pr.activWait = cfgAll.tcpTimeLater;
                     logger.info("got unwanted synack " + clnt);
                     return;
                 }
                 if (nowAcked != 0) {
-                    pr.activWait = prtTcpConn.tmLater;
+                    pr.activWait = cfgAll.tcpTimeLater;
                     logger.info("bad acknowkedge number in synack " + clnt);
                     return;
                 }
@@ -741,10 +721,10 @@ public class prtTcp extends prtGen {
                 }
                 pr.state = prtTcpConn.stOpened;
                 pr.staTim = bits.getTime();
-                pr.activWait = prtTcpConn.tmNow;
+                pr.activWait = cfgAll.tcpTimeNow;
                 pr.activFrcd = true;
                 clnt.setReady();
-                clnt.timeout = timeoutOpen;
+                clnt.timeout = cfgAll.tcpTimeOpen;
                 return;
             }
             if (spoofCheck(oldBytes)) {
@@ -774,7 +754,7 @@ public class prtTcp extends prtGen {
                         pr.seqLoc++;
                     }
                     logger.info("got future acknowledge number " + clnt);
-                    pr.activWait = prtTcpConn.tmLater;
+                    pr.activWait = cfgAll.tcpTimeLater;
                     nowAcked = 0;
                 }
                 if (nowAcked > 0) {
@@ -799,17 +779,17 @@ public class prtTcp extends prtGen {
                     }
                     pr.state = prtTcpConn.stOpened;
                     pr.staTim = bits.getTime();
-                    pr.activWait = prtTcpConn.tmNow;
+                    pr.activWait = cfgAll.tcpTimeNow;
                     pr.activFrcd = true;
                     clnt.setReady();
-                    clnt.timeout = timeoutOpen;
+                    clnt.timeout = cfgAll.tcpTimeOpen;
                 }
             }
             if (oldBytes < 0) {
                 if (debugger.prtTcpTraf) {
                     logger.debug("got future sequence number");
                 }
-                pr.activWait = prtTcpConn.tmLater;
+                pr.activWait = cfgAll.tcpTimeLater;
                 return;
             }
             if (newBytes > 0) {
@@ -880,10 +860,10 @@ public class prtTcp extends prtGen {
                     clnt.setClosing();
                     pr.state = prtTcpConn.stGotFin;
                     pr.staTim = bits.getTime();
-                    pr.activWait = prtTcpConn.tmNow;
+                    pr.activWait = cfgAll.tcpTimeNow;
                     pr.activFrcd = true;
                     pr.seqRem++;
-                    clnt.timeout = timeoutFin;
+                    clnt.timeout = cfgAll.tcpTimeFin;
                     return;
                 }
                 if (pr.state == prtTcpConn.stClrReq) {
@@ -923,14 +903,14 @@ public class prtTcp extends prtGen {
         int bufSiz = clnt.pipeNetwork.ready2rx();
         if ((!pr.activFrcd) && (bufSiz < 1)) {
             if (clnt.pipeNetwork.isClosed() == 0) {
-                pr.activWait = prtTcpConn.tmAlive;
+                pr.activWait = cfgAll.tcpTimeAlive;
                 return true;
             }
             if (debugger.prtTcpTraf) {
                 logger.debug("closing");
             }
-            clnt.timeout = timeoutFin;
-            pr.activWait = prtTcpConn.tmNow;
+            clnt.timeout = cfgAll.tcpTimeFin;
+            pr.activWait = cfgAll.tcpTimeNow;
             pr.activFrcd = true;
             pr.state = prtTcpConn.stClrReq;
             pr.staTim = bits.getTime();
@@ -941,7 +921,7 @@ public class prtTcp extends prtGen {
             sent = -1;
         }
         pr.activFrcd = false;
-        pr.activWait = prtTcpConn.tmLater;
+        pr.activWait = cfgAll.tcpTimeLater;
         for (;;) {
             int flg = flagPshAck;
             int snd = bufSiz - pr.netOut;
@@ -989,8 +969,8 @@ public class prtTcp extends prtGen {
             return;
         }
         pr.activWait *= 2;
-        if (pr.activWait > prtTcpConn.tmMax) {
-            pr.activWait = prtTcpConn.tmMax;
+        if (pr.activWait > cfgAll.tcpTimeMax) {
+            pr.activWait = cfgAll.tcpTimeMax;
         }
         pr.activLast = curTim;
         pr.activFrcd = false;
@@ -1003,13 +983,13 @@ public class prtTcp extends prtGen {
                 break;
             case prtTcpConn.stClrReq:
                 sendMyPacket(clnt, flagFinAck, 0);
-                if ((curTim - pr.staTim) > prtTcpConn.tmAlive) {
+                if ((curTim - pr.staTim) > cfgAll.tcpTimeAlive) {
                     pr.state = prtTcpConn.stDelete;
                 }
                 break;
             case prtTcpConn.stGotFin:
                 sendMyPacket(clnt, flagFinAck, 0);
-                if ((curTim - pr.staTim) > prtTcpConn.tmAlive) {
+                if ((curTim - pr.staTim) > cfgAll.tcpTimeAlive) {
                     pr.state = prtTcpConn.stDelete;
                 }
                 break;
@@ -1117,26 +1097,6 @@ class prtTcpConn {
      * normal data flow, send ack
      */
     public final static int stOpened = 5;
-
-    /**
-     * keepalive timer
-     */
-    public final static int tmAlive = 60 * 1000;
-
-    /**
-     * delayed timer
-     */
-    public final static int tmLater = 3 * 1000;
-
-    /**
-     * maximum timeout
-     */
-    public final static int tmMax = 8 * 1000;
-
-    /**
-     * now timeout
-     */
-    public final static int tmNow = 100;
 
     /**
      * locker

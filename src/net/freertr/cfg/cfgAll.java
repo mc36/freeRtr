@@ -1014,6 +1014,46 @@ public class cfgAll {
     public static int tcpRangeMax = 0xf000;
 
     /**
+     * keepalive timer
+     */
+    public static int tcpTimeAlive = 60 * 1000;
+
+    /**
+     * timeout while closing
+     */
+    public static int tcpTimeFin = 45 * 1000;
+
+    /**
+     * timeout while connecting
+     */
+    public static int tcpTimeSyn = 30 * 1000;
+
+    /**
+     * timeout while open
+     */
+    public static int tcpTimeOpen = 300 * 1000;
+
+    /**
+     * timeout while closing with data
+     */
+    public static int tcpTimeClose = 120 * 1000;
+
+    /**
+     * delayed timer
+     */
+    public static int tcpTimeLater = 3 * 1000;
+
+    /**
+     * now timeout
+     */
+    public static int tcpTimeNow = 100;
+
+    /**
+     * maximum timeout
+     */
+    public static int tcpTimeMax = 8 * 1000;
+
+    /**
      * dccp checksum tx
      */
     public static boolean dccpChecksumTx = true;
@@ -1189,6 +1229,14 @@ public class cfgAll {
         "!client tcp-segments 1024",
         "!client tcp-winscale 1",
         "!client tcp-timestamp",
+        "!client tcp-timer alive 60000",
+        "!client tcp-timer fin 45000",
+        "!client tcp-timer syn 30000",
+        "!client tcp-timer open 300000",
+        "!client tcp-timer close 120000",
+        "!client tcp-timer later 3000",
+        "!client tcp-timer now 100",
+        "!client tcp-timer max 8000",
         "!client tcp-checksum both",
         "!client tcp-portrange 32768 61440",
         "!client ludp-checksum both",
@@ -2020,7 +2068,7 @@ public class cfgAll {
             ntry.clear2tunnel(false);
             return ntry;
         }
-         if (nam.startsWith("dialer")) {
+        if (nam.startsWith("dialer")) {
             ntry.type = cfgIfc.ifaceType.dialer;
             ntry.initPhysical();
             return ntry;
@@ -3492,6 +3540,14 @@ public class cfgAll {
         l.add("client tcp-segments " + tcpMaxSegment);
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
+        l.add("client tcp-timer alive " + tcpTimeAlive);
+        l.add("client tcp-timer fin " + tcpTimeFin);
+        l.add("client tcp-timer syn " + tcpTimeSyn);
+        l.add("client tcp-timer open " + tcpTimeOpen);
+        l.add("client tcp-timer close " + tcpTimeClose);
+        l.add("client tcp-timer later " + tcpTimeLater);
+        l.add("client tcp-timer now " + tcpTimeNow);
+        l.add("client tcp-timer max " + tcpTimeMax);
         l.add("client tcp-portrange " + tcpRangeMin + " " + tcpRangeMax);
         l.add("client ludp-checksum " + rxtx2string(ludpChecksumRx, ludpChecksumTx));
         l.add("client ludp-portrange " + ludpRangeMin + " " + ludpRangeMax);
