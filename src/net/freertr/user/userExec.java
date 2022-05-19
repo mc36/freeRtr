@@ -929,7 +929,8 @@ public class userExec {
         hl.add(null, "3 .        key                   show some key");
         hl.add(null, "3 .        bug                   show some bug");
         hl.add(null, "2 3      process                 list processes");
-        hl.add(null, "3 .        cpu                   internal router threads");
+        hl.add(null, "3 4,.      cpu                   internal router threads");
+        hl.add(null, "4 .          <num>               thread id");
         hl.add(null, "3 .        external              external processes");
         hl.add(null, "2 .      redundancy              redundancy information");
         hl.add(null, "2 .      name-cache              local dns cache");

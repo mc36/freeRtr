@@ -3,6 +3,7 @@ package net.freertr.util;
 import java.lang.management.CompilationMXBean;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -531,37 +532,53 @@ public class logger {
         logBufLst.clear();
     }
 
-    private static void listThreads(userFormat l, ThreadMXBean m, ThreadGroup g) {
-        if (g == null) {
-            return;
-        }
-        Thread[] ts = new Thread[g.activeCount()];
-        ThreadGroup[] gs = new ThreadGroup[g.activeGroupCount()];
-        g.enumerate(ts, false);
-        g.enumerate(gs, false);
-        String b = g.getName() + "|";
-        for (int i = 0; i < ts.length; i++) {
-            Thread t = ts[i];
-            if (t == null) {
-                continue;
-            }
-            l.add(b + t.getName() + "|" + (m.getThreadUserTime(t.getId()) / 1000000) + "|" + t.getState() + "|" + dumpStackTrace(t.getStackTrace()));
-        }
-        for (int i = 0; i < gs.length; i++) {
-            listThreads(l, m, gs[i]);
-        }
-    }
-
     /**
      * list threads
      *
      * @return list of threads
      */
     public static userFormat listThreads() {
-        ThreadGroup r = Thread.currentThread().getThreadGroup();
-        ThreadMXBean tb = ManagementFactory.getThreadMXBean();
-        userFormat l = new userFormat("|", "grp|name|time|state|stack");
-        listThreads(l, tb, r);
+        ThreadMXBean m = ManagementFactory.getThreadMXBean();
+        ThreadInfo[] t = m.dumpAllThreads(false, false);
+        userFormat l = new userFormat("|", "id|name|time|state|blck|wait|pri|stack");
+        for (int i = 0; i < t.length; i++) {
+            ThreadInfo c = t[i];
+            if (c == null) {
+                continue;
+            }
+            long d = c.getThreadId();
+            l.add(d + "|" + c.getThreadName() + "|" + (m.getThreadUserTime(d) / 1000000) + "|" + c.getThreadState() + "|" + c.getBlockedCount() + "|" + c.getWaitedCount() + "|" + c.getPriority() + "|" + dumpStackTrace(c.getStackTrace()));
+        }
+        return l;
+    }
+
+    /**
+     * list threads
+     *
+     * @param d thread id
+     * @return list of threads
+     */
+    public static userFormat listThreads(long d) {
+        ThreadMXBean m = ManagementFactory.getThreadMXBean();
+        ThreadInfo t = m.getThreadInfo(d, Integer.MAX_VALUE);
+        if (t == null) {
+            return null;
+        }
+        userFormat l = new userFormat("|", "category|value");
+        l.add("id|" + d);
+        l.add("name|" + t.getThreadName());
+        l.add("state|" + t.getThreadState());
+        l.add("priority|" + t.getPriority());
+        l.add("lock name|" + t.getLockName());
+        l.add("lock owner id|" + t.getLockOwnerId());
+        l.add("lock owner name|" + t.getLockOwnerName());
+        l.add("block count|" + t.getBlockedCount());
+        l.add("block time|" + t.getBlockedTime());
+        l.add("waited count|" + t.getWaitedCount());
+        l.add("waited time|" + t.getWaitedTime());
+        l.add("user time|" + m.getThreadUserTime(d));
+        l.add("cpu time|" + m.getThreadCpuTime(d));
+        l.add("stack|" + dumpStackTrace(t.getStackTrace()));
         return l;
     }
 
