@@ -262,7 +262,7 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
         if (conn == null) {
             return;
         }
-        conn.timeout = 120000;
+        conn.timeout = 180000;
         conn.sendFLW = sendingFLW;
         conn.sendTOS = sendingTOS;
         conn.sendTTL = sendingTTL;
@@ -380,7 +380,7 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
     }
 
     private boolean wait4msg(packHolder pck, int typ) {
-        for (int cnt = 0; cnt < 8; cnt++) {
+        for (int cnt = 0; cnt < cfgAll.l2fRetry; cnt++) {
             if (pck != null) {
                 if (cnt > 0) {
                     if (debugger.clntL2fTraf) {
@@ -389,7 +389,7 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
                 }
                 conn.send2net(pck.copyBytes(true, true));
             }
-            notif.sleep(5000);
+            notif.sleep(cfgAll.l2fTimer);
             if (pckRx.type == typ) {
                 return false;
             }

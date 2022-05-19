@@ -488,6 +488,9 @@ public class userConfig {
         l.add(null, "4  .        <num>                    ending");
         l.add(null, "2  3    ifacestall                   specify interface stall check");
         l.add(null, "3  .      <num>                      timeout in ms");
+        l.add(null, "2  3    l2f-timer                    specify l2f parameters");
+        l.add(null, "3  4      <num>                      retransmit in ms");
+        l.add(null, "4  .        <num>                    retry times");
         l.add(null, "2  3    l2tp2-timer                  specify l2tp2 parameters");
         l.add(null, "3  4      <num>                      hello after ticks");
         l.add(null, "4  .        <num>                    retry ticks");
@@ -1257,6 +1260,11 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("l2f-timer")) {
+                cfgAll.l2fTimer = bits.str2num(cmd.word());
+                cfgAll.l2fRetry = bits.str2num(cmd.word());
+                return;
+            }
             if (a.equals("l2tp2-timer")) {
                 cfgAll.l2tp2hello = bits.str2num(cmd.word());
                 cfgAll.l2tp2retry = bits.str2num(cmd.word());

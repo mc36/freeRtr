@@ -1096,6 +1096,16 @@ public class cfgAll {
     /**
      * l2tp2 hello ticks
      */
+    public static int l2fTimer = 5000;
+
+    /**
+     * l2tp2 retry ticks
+     */
+    public static int l2fRetry = 8;
+
+    /**
+     * l2tp2 hello ticks
+     */
     public static int l2tp2hello = 5;
 
     /**
@@ -1180,6 +1190,7 @@ public class cfgAll {
         "!client cpuhog 0",
         "!client ifacestall 60000",
         "!client redundancy 500 2500 5000",
+        "!client l2f-timer 5000 8",
         "!client l2tp2-timer 5 8",
         "!client l2tp3-timer 5 8",
         "!no client bullying",
@@ -3555,6 +3566,7 @@ public class cfgAll {
         l.add("client dccp-portrange " + dccpRangeMin + " " + dccpRangeMax);
         l.add("client sctp-checksum " + rxtx2string(sctpChecksumRx, sctpChecksumTx));
         l.add("client sctp-portrange " + sctpRangeMin + " " + sctpRangeMax);
+        l.add("client l2f-timer " + l2fTimer + " " + l2fRetry);
         l.add("client l2tp2-timer " + l2tp2hello + " " + l2tp2retry);
         l.add("client l2tp3-timer " + l2tp3hello + " " + l2tp3retry);
         String a = "";

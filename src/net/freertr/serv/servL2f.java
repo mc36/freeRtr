@@ -52,6 +52,16 @@ public class servL2f extends servGeneric implements prtServP {
     public String password;
 
     /**
+     * ticks after send a hello
+     */
+    public int helloTicks = 5;
+
+    /**
+     * ticks after give up retry
+     */
+    public int retryTicks = 8;
+
+    /**
      * list of connections
      */
     public tabGen<servL2fConn> conns = new tabGen<servL2fConn>();
@@ -62,6 +72,7 @@ public class servL2f extends servGeneric implements prtServP {
     public final static String[] defaultL = {
         "server l2f .*! port " + packL2f.port,
         "server l2f .*! protocol " + proto2string(protoAllDgrm),
+        "server l2f .*! timer 5 8",
         "server l2f .*! no password"
     };
 
@@ -113,6 +124,7 @@ public class servL2f extends servGeneric implements prtServP {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        l.add(beg + "timer " + helloTicks + " " + retryTicks);
         if (clnIfc == null) {
             l.add(beg + "no clone");
         } else {
@@ -123,6 +135,11 @@ public class servL2f extends servGeneric implements prtServP {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("timer")) {
+            helloTicks = bits.str2num(cmd.word());
+            retryTicks = bits.str2num(cmd.word());
+            return false;
+        }
         if (s.equals("clone")) {
             clnIfc = cfgAll.ifcFind(cmd.word(), 0);
             if (clnIfc == null) {
@@ -156,6 +173,9 @@ public class servL2f extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  timer                        set timers");
+        l.add(null, "2 3    <num>                      hello ticks");
+        l.add(null, "3 .      <num>                    retry ticks");
         l.add(null, "1 2  clone                        set interface to clone");
         l.add(null, "2 .    <name:ifc>                 name of interface");
         l.add(null, "1 2  password                     set password");
@@ -183,7 +203,7 @@ public class servL2f extends servGeneric implements prtServP {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        id.timeout = 120000;
+        id.timeout = 180000;
         connFind(id, true);
         return false;
     }
@@ -389,7 +409,7 @@ class servL2fConn implements Comparator<servL2fConn> {
         packL2f pckTx = new packL2f();
         packHolder pckBin = new packHolder(true, true);
         keep++;
-        if (keep < 5) {
+        if (keep < lower.helloTicks) {
             return;
         }
         pckTx.valResp = new byte[1];
@@ -405,7 +425,7 @@ class servL2fConn implements Comparator<servL2fConn> {
         if (debugger.servL2fTraf) {
             logger.debug("tx " + pckTx.dump());
         }
-        if (txed < 10) {
+        if (txed < lower.retryTicks) {
             return;
         }
         setClosed();
