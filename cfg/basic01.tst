@@ -1,7 +1,6 @@
 description dummy test
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
 vrf def v1
  rd 1:1
