@@ -1,6 +1,6 @@
 #!/bin/sh
-sudo apt update
-sudo apt dist-upgrade
-sudo apt remove apparmor
-sudo apt autoremove
-sudo apt clean
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get remove apparmor
+sudo apt-get autoremove
+sudo apt-get clean

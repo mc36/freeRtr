@@ -1,5 +1,5 @@
 #!/bin/sh
-#sudo apt install psmisc iproute2 net-tools socat tshark iperf gcc git telnet python3-yappi default-jdk-headless default-jre-headless bc
+#sudo apt-get install psmisc iproute2 net-tools socat tshark iperf gcc git telnet python3-yappi default-jdk-headless default-jre-headless bc
 #sudo $SDE/p4studio/install-p4studio-dependencies.sh
 #$SDE/p4studio/p4studio interactive
 #rm -rf $SDE/build
