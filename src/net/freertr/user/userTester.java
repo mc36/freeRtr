@@ -611,7 +611,7 @@ public class userTester {
             String a = persistD.remove(0);
             int i = bits.str2num(persistD.remove(0));
             int o = bits.str2num(persistD.remove(0));
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + o + ",threads=1,sockets=1 -drive file=" + a + " -m " + i;
+            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + o + ",threads=1,sockets=1 -drive file=" + a + ",format=raw,cache=unsafe -m " + i;
             a = persistD.remove(0);
             for (i = 0; i < 8; i++) {
                 int rp = persistP + ((i + 1) * 4);

@@ -916,7 +916,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             }
             cmd = version.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routercs " + a + " " + s;
         } else {
-            cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -hda " + image1name + " -m " + imageMem;
+            cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -drive file=" + image1name + ",format=raw,cache=unsafe -m " + imageMem;
             if (biosName != null) {
                 cmd += " -bios " + biosName;
             }
