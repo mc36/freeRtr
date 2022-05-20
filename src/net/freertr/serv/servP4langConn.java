@@ -1350,13 +1350,30 @@ public class servP4langConn implements Runnable {
         lower.sendLine("portbridge_add " + id + " " + br.br.num);
     }
 
+    private void doBrLab(String act, servP4langBr br, int l) {
+        lower.sendLine("bridgelabel_" + act + " " + br.br.num + " " + l);
+        if (lower.expSrv6 == null) {
+            return;
+        }
+        if (lower.expSrv6.addr6 == null) {
+            return;
+        }
+        servP4langVrf vr = lower.findVrf(lower.expSrv6.vrfFor.fwd6);
+        if (vr == null) {
+            return;
+        }
+        addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
+        bits.msbPutD(adr.getBytes(), 12, l);
+        lower.sendLine("bridgesrv_" + act + " " + br.br.num + " " + vr.id + " " + adr);
+    }
+
     private void doBrdg(servP4langBr br) {
         br.routed = lower.findIfc(br.br) != null;
         if (br.routed) {
             return;
         }
         if (!br.sentLab) {
-            lower.sendLine("bridgelabel_add " + br.br.num + " " + br.lab.label);
+            doBrLab("add", br, br.lab.label);
             br.sentLab = true;
         }
         tabGen<ifcBridgeIfc> seenI = new tabGen<ifcBridgeIfc>();
@@ -1365,6 +1382,7 @@ public class servP4langConn implements Runnable {
             if (ntry == null) {
                 break;
             }
+            seenI.put(ntry);
             int l = -1;
             try {
                 clntMplsPwe ifc = (clntMplsPwe) ntry.lowerIf;
@@ -1385,7 +1403,6 @@ public class servP4langConn implements Runnable {
                 }
             } catch (Exception e) {
             }
-            seenI.put(ntry);
             if (br.ifcs.find(ntry) != null) {
                 continue;
             }
@@ -1417,20 +1434,8 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             br.ifcs.put(ntry);
-            lower.sendLine("bridgelabel_add " + br.br.num + " " + l);
-            if (lower.expSrv6 == null) {
-                continue;
-            }
-            if (lower.expSrv6.addr6 == null) {
-                continue;
-            }
-            servP4langVrf vr = lower.findVrf(lower.expSrv6.vrfFor.fwd6);
-            if (vr == null) {
-                continue;
-            }
-            addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
-            bits.msbPutD(adr.getBytes(), 12, l);
-            lower.sendLine("bridgesrv_add " + br.br.num + " " + vr.id + " " + adr);
+            br.labs.put(new servP4langBrLab(ntry, l));
+            doBrLab("add", br, l);
             continue;
         }
         for (int i = br.ifcs.size() - 1; i >= 0; i--) {
@@ -1439,6 +1444,10 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             br.ifcs.del(ntry);
+            servP4langBrLab lab = br.labs.del(new servP4langBrLab(ntry, 0));
+            if (lab != null) {
+                doBrLab("del", br, lab.lab);
+            }
             servP4langIfc brif = lower.findDynBr(ntry);
             if (brif == null) {
                 continue;

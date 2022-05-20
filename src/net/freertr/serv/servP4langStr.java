@@ -6,6 +6,7 @@ import net.freertr.tab.tabGen;
 /**
  * one p4lang storage extension
  *
+ * @param <T> type to compare
  * @author matecsaba
  */
 public class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr<T>> {

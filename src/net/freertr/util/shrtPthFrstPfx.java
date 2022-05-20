@@ -10,6 +10,7 @@ import net.freertr.addr.addrType;
 /**
  * spf prefix
  *
+ * @param <Ta> type of nodes
  * @author matecsaba
  */
 public class shrtPthFrstPfx<Ta extends addrType> implements Comparator<shrtPthFrstPfx<Ta>> {

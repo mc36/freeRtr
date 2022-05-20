@@ -51,6 +51,11 @@ public class servP4langBr implements Comparator<servP4langBr> {
     protected tabGen<ifcBridgeIfc> ifcs = new tabGen<ifcBridgeIfc>();
 
     /**
+     * exported labels
+     */
+    protected tabGen<servP4langBrLab> labs = new tabGen<servP4langBrLab>();
+
+    /**
      * create instance
      *
      * @param i id
@@ -94,6 +99,7 @@ public class servP4langBr implements Comparator<servP4langBr> {
     protected void doClear() {
         ifcs = new tabGen<ifcBridgeIfc>();
         macs = new tabGen<ifcBridgeAdr>();
+        labs = new tabGen<servP4langBrLab>();
         sentLab = false;
     }
 
