@@ -648,7 +648,7 @@ public class temper implements Runnable {
             }
             a = "</tbody></table><br/>";
             buf.write(a.getBytes());
-            a = "tolerance: heatint: " + heatTol + ", cooling: " + coolTol + ", window: " + windowTol + ", time: " + temperUtil.timePast(windowTim, 0) + "<br/>";
+            a = "tolerance: heating: " + heatTol + ", cooling: " + coolTol + ", window: " + windowTol + ", time: " + temperUtil.timePast(windowTim, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, since " + temperUtil.time2str(tzdata, timeNeeded) + ", " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
