@@ -107,14 +107,14 @@ int main(int argc, char **argv) {
         processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], origS, 0, 0, encrCtx, hashCtx);
     }
     clock_t end = clock();
-    double spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    double spent = (double)(end - begin) / (double)CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
     hexdump(lastB, 0, lastS);
     printf("packets: %li\n", packs);
     printf("bytes: %li\n", bytes);
     printf("time: %f\n", spent);
     double prn = (double)packs / spent;
-    printf("pps: %f, %f mpps\n", prn, prn / 1000000);
+    printf("pps: %f, %f mpps\n", prn, prn / 1000000.0);
     prn = (double)bytes * 8.0 / spent;
-    printf("bps: %f, %f gbps\n", prn, prn / 1000000000);
+    printf("bps: %f, %f gbps\n", prn, prn / 1000000000.0);
 }
