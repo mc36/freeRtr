@@ -49,7 +49,9 @@ int main(int argc, char **argv) {
         sscanf(argv[i], "%hhx", &origD[origS]);
         origS++;
     }
-    printf("codesize: %i\n", (int)((char*)&processCpuPack - (char*)&processDataPacket));
+    *((int*)(&bufC[0])) = 1;
+    printf("code: %i, int=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(int*));
+    if (bufC[0] == 1) printf("lsb\n"); else printf("msb\n");
     printf("rounds: %i\n", count);
     hexdump(origD, 0, origS);
     ports = 1;
