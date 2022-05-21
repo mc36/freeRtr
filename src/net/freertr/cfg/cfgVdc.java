@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
+import net.freertr.auth.authLocal;
 import net.freertr.ifc.ifcUdpInt;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
@@ -150,6 +151,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     protected int initial = 1000;
 
     /**
+     * password key
+     */
+    protected String password;
+
+    /**
      * redundancy priority
      */
     protected int redunPrio;
@@ -242,6 +248,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! mac null",
         "vdc definition .*! cpu null",
         "vdc definition .*! memory 512",
+        "vdc definition .*! no password",
         "vdc definition .*! priority 0",
         "vdc definition .*! cores 1",
         "vdc definition .*! nic e1000",
@@ -285,6 +292,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public cfgVdc copyBytes() {
         cfgVdc n = new cfgVdc(name);
         n.description = description;
+        n.password = password;
         n.redunPrio = redunPrio;
         n.respawn = respawn;
         n.children = children;
@@ -385,6 +393,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  .        <num>                    megabytes");
         l.add(null, "1  2      priority                   specify redundancy priority");
         l.add(null, "2  .        <num>                    priority");
+        l.add(null, "1  2      password                   set password encryption key");
+        l.add(null, "2  .        <str>                    encryption key");
         l.add(null, "1  2      cores                      cpu of vdc");
         l.add(null, "2  .        <num>                    cores");
         l.add(null, "1  2      mac                        mac address base");
@@ -446,6 +456,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "disk4 " + image4name);
         l.add(cmds.tabulator + "cdrom " + cdromName);
         l.add(cmds.tabulator + "memory " + imageMem);
+        cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
         l.add(cmds.tabulator + "priority " + redunPrio);
         l.add(cmds.tabulator + "cores " + imageCpu);
         l.add(cmds.tabulator + "nic " + nicType);
@@ -545,6 +556,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("memory")) {
             imageMem = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("password")) {
+            password = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
         if (a.equals("priority")) {
@@ -764,6 +779,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("memory")) {
             imageMem = 512;
+            return;
+        }
+        if (a.equals("password")) {
+            password = null;
             return;
         }
         if (a.equals("priority")) {
@@ -1050,6 +1069,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("rwpath " + version.getRWpath());
         l.add("port " + beg + " " + end);
         l.add("prio " + redunPrio);
+        addParam(l, "enc", password);
         addParam(l, "jvm", cfgInit.jvmParam);
         addParam(l, "url", cfgAll.upgradeServer);
         addParam(l, "key", cfgAll.upgradePubKey);
