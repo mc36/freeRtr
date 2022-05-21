@@ -529,7 +529,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         }
     }
 
-    public List<String> usrString(String beg) {
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @param filter filter mode
+     * @return string
+     */
+    public List<String> usrString(String beg, int filter) {
         beg += "sequence " + sequence + " ";
         for (int i = 0; i < indent; i++) {
             beg += "  ";

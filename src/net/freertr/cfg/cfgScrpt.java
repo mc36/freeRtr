@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.auth.authLocal;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
@@ -74,6 +75,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
     public int randIni;
 
     /**
+     * hide commands
+     */
+    public boolean hidden = false;
+
+    /**
      * action logging
      */
     public boolean logAct = false;
@@ -130,6 +136,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         "script .*! delay 0",
         "script .*! random-time 0",
         "script .*! random-delay 0",
+        "script .*! no hidden",
         "script .*! no log-actions",
         "script .*! no log-console",
         "script .*! no log-collect",
@@ -177,6 +184,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         l.add(null, "3  4,.        [num]                  increment number");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
+        l.add(null, "1  .      hidden                     hide command");
         l.add(null, "1  .      runnow                     run one round now");
     }
 
@@ -184,6 +192,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("script " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         l.add(cmds.tabulator + "time " + interval);
         l.add(cmds.tabulator + "delay " + initial);
@@ -193,7 +202,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         cmds.cfgLine(l, !logAct, cmds.tabulator, "log-actions", "");
         cmds.cfgLine(l, !logCon, cmds.tabulator, "log-console", "");
         cmds.cfgLine(l, logCol == null, cmds.tabulator, "log-collect", "" + logBuf.getSize(logCol));
-        l.addAll(script.dump(cmds.tabulator));
+        if (hidden) {
+            l.addAll(script.dump(cmds.tabulator, 0x10000 | filter));
+        } else {
+            l.addAll(script.dump(cmds.tabulator, filter));
+        }
         if (working) {
             l.add(cmds.tabulator + "start");
         } else {
@@ -221,6 +234,10 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
                 return;
             }
             name = a;
+            return;
+        }
+        if (a.equals("hidden")) {
+            hidden = true;
             return;
         }
         if (a.equals("random-time")) {
@@ -274,7 +291,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         if (a.equals("sequence")) {
             tabScrptN ntry = new tabScrptN();
             ntry.sequence = bits.str2num(cmd.word());
-            ntry.lin = cmd.getRemaining();
+            ntry.lin = authLocal.passwdDecode(cmd.getRemaining());
             script.del(ntry);
             script.add(ntry);
             return;
@@ -291,6 +308,10 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         a = cmd.word();
         if (a.equals("description")) {
             description = "";
+            return;
+        }
+        if (a.equals("hidden")) {
+            hidden = false;
             return;
         }
         if (a.equals("random-time")) {
@@ -334,7 +355,10 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         return "scrpt";
     }
 
-    private List<String> getText() {
+    /**
+     * get script text
+     */
+    public List<String> getText() {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < script.size(); i++) {
             l.add(script.get(i).lin);

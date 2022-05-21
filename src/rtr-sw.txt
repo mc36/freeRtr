@@ -48,6 +48,7 @@ aaa tacacs tac
 !
 script logger
  sequence 10 exec "test logging info someone from $remote hit the script"
+ sequence 20 puts "just some text"
  stop
  exit
 !
@@ -877,7 +878,7 @@ server http web
  host sid.mchome.nop.hu dirlist readme stats
  host sid.mchome.nop.hu markdown
  host sid.mchome.nop.hu noindex
- host sid.mchome.nop.hu script exec config
+ host sid.mchome.nop.hu script exec config local
  host sid.mchome.nop.hu api exec config
  host sid.mchome.nop.hu websock
  host sid.mchome.nop.hu webdav

@@ -87,7 +87,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("route-policy " + name);
-        l.addAll(rouplc.dump(cmds.tabulator));
+        l.addAll(rouplc.dump(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

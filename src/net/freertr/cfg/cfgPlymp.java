@@ -264,7 +264,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("policy-map " + name);
-        l.addAll(plcmap.dump(cmds.tabulator));
+        l.addAll(plcmap.dump(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

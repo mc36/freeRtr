@@ -299,16 +299,17 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      * dump part of this table
      *
      * @param beg beginning to add to lines
+     * @param filter filter mode
      * @return string showing the table
      */
-    public List<String> dump(String beg) {
+    public List<String> dump(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < entries.size(); i++) {
             Te ntry = entries.get(i);
             if (ntry == null) {
                 continue;
             }
-            List<String> res = ntry.usrString(beg);
+            List<String> res = ntry.usrString(beg, filter);
             if (res.size() > 1) {
                 res.add(beg + cmds.comment);
             }

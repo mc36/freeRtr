@@ -58,7 +58,7 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         if (description != null) {
             l.add(cmds.tabulator + "description " + description);
         }
-        l.addAll(prflst.dump(cmds.tabulator));
+        l.addAll(prflst.dump(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

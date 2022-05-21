@@ -176,9 +176,10 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
      * text representation of this entry
      *
      * @param beg beginning text
+     * @param filter filter mode
      * @return text representation of this entry
      */
-    public abstract List<String> usrString(String beg);
+    public abstract List<String> usrString(String beg, int filter);
 
     /**
      * test if this entry contains a network

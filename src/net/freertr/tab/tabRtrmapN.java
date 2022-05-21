@@ -376,12 +376,13 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     /**
-     * get the config
+     * convert to string
      *
      * @param beg beginning
-     * @return the config
+     * @param filter filter mode
+     * @return string
      */
-    public List<String> usrString(String beg) {
+    public List<String> usrString(String beg, int filter) {
         beg += "sequence " + sequence + " ";
         List<String> l = new ArrayList<String>();
         l.add(beg + "description " + description);

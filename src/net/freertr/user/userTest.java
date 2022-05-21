@@ -213,7 +213,7 @@ public class userTest {
             }
             tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
             res.mergeTwo(acl1, acl2);
-            List<String> lst = res.dump("");
+            List<String> lst = res.dump("", 0);
             for (int i = 0; i < lst.size(); i++) {
                 cmd.pipe.linePut(lst.get(i));
             }

@@ -20,6 +20,7 @@ import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgProxy;
+import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.clnt.clntProxy;
 import net.freertr.cry.cryBase64;
@@ -325,6 +326,9 @@ public class servHttp extends servGeneric implements prtServS {
                 }
                 if ((ntry.allowScript & 4) != 0) {
                     s += " config";
+                }
+                if ((ntry.allowScript & 8) != 0) {
+                    s += " local";
                 }
                 l.add(a + " script" + s);
             }
@@ -669,6 +673,10 @@ public class servHttp extends servGeneric implements prtServS {
                     ntry.allowScript |= 4;
                     continue;
                 }
+                if (a.equals("local")) {
+                    ntry.allowScript |= 8;
+                    continue;
+                }
             }
             return false;
         }
@@ -840,6 +848,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 4,.    script                     allow script running");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
+        l.add(null, "4 4,.      local                    allow scripts defined in configuration");
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
@@ -1553,6 +1562,10 @@ class servHttpConn implements Runnable {
         if (l == null) {
             return true;
         }
+        return sendOneScript(l);
+    }
+
+    private boolean sendOneScript(List<String> l) {
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.setTime(60000);
@@ -1584,7 +1597,7 @@ class servHttpConn implements Runnable {
         pip.linePut(".");
         t.cmdAll();
         pl.setClose();
-        s = pip.strGet(1024 * 1024);
+        String s = pip.strGet(1024 * 1024);
         if (s == null) {
             s = "";
         }
@@ -1924,6 +1937,12 @@ class servHttpConn implements Runnable {
     }
 
     private boolean sendOneFile(String s, String a) {
+        if ((gotHost.allowScript & 8) != 0) {
+            cfgScrpt scr = cfgAll.scrptFind(s, false);
+            if (scr != null) {
+                return sendOneScript(scr.getText());
+            }
+        }
         if ((gotHost.allowMarkdown) && a.equals(".md")) {
             return sendOneMarkdown(s);
         }

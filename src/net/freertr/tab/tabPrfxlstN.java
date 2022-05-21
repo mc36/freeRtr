@@ -116,9 +116,10 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
      * convert to string
      *
      * @param beg beginning
+     * @param filter filter mode
      * @return string
      */
-    public List<String> usrString(String beg) {
+    public List<String> usrString(String beg, int filter) {
         String a;
         if (evaluate != null) {
             a = "evaluate " + tabListingEntry.action2string(action) + " " + evaluate.listName;

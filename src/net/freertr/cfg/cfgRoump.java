@@ -151,7 +151,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("route-map " + name);
-        l.addAll(roumap.dump(cmds.tabulator));
+        l.addAll(roumap.dump(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

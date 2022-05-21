@@ -223,7 +223,14 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         }
     }
 
-    public List<String> usrString(String beg) {
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @param filter filter mode
+     * @return string
+     */
+    public List<String> usrString(String beg, int filter) {
         beg += "sequence " + sequence + " ";
         List<String> l = new ArrayList<String>();
         l.add(beg + "description " + description);

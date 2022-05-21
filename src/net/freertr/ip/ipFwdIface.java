@@ -809,7 +809,7 @@ public class ipFwdIface extends tabRouteIface {
         lower.getL2info(l, cmds.tabulator + beg + "host-static ");
         for (int i = 0; i < pbrCfg.size(); i++) {
             tabPbrN pbr = pbrCfg.get(i);
-            l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr "));
+            l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr ", filter));
         }
         if (srhCfg == null) {
             l.add(cmds.tabulator + "no " + beg + "srh enable");

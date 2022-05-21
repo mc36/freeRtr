@@ -360,9 +360,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * convert to string
      *
      * @param beg beginning
+     * @param filter filter mode
      * @return string
      */
-    public List<String> usrString(String beg) {
+    public List<String> usrString(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         l.add(beg + "sequence " + sequence + " " + this);
         String s = beg + "sequence " + sequence;

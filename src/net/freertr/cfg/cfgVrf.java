@@ -441,17 +441,17 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
     }
 
-    private void addCfgNats(List<String> l, int p, ipFwd f) {
+    private void addCfgNats(List<String> l, int p, ipFwd f, int filter) {
         for (int i = 0; i < f.natCfg.size(); i++) {
             tabNatCfgN nat = f.natCfg.get(i);
-            l.addAll(nat.usrString("ipv" + p + " nat " + name + " "));
+            l.addAll(nat.usrString("ipv" + p + " nat " + name + " ", filter));
         }
     }
 
-    private void addCfgPbrs(List<String> l, int p, ipFwd f) {
+    private void addCfgPbrs(List<String> l, int p, ipFwd f, int filter) {
         for (int i = 0; i < f.pbrCfg.size(); i++) {
             tabPbrN pbr = f.pbrCfg.get(i);
-            l.addAll(pbr.usrString("ipv" + p + " pbr " + name + " "));
+            l.addAll(pbr.usrString("ipv" + p + " pbr " + name + " ", filter));
         }
     }
 
@@ -612,13 +612,13 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(cmds.comment);
         addMroutes(l, 6, fwd6);
         l.add(cmds.comment);
-        addCfgNats(l, 4, fwd4);
+        addCfgNats(l, 4, fwd4, filter);
         l.add(cmds.comment);
-        addCfgNats(l, 6, fwd6);
+        addCfgNats(l, 6, fwd6, filter);
         l.add(cmds.comment);
-        addCfgPbrs(l, 4, fwd4);
+        addCfgPbrs(l, 4, fwd4, filter);
         l.add(cmds.comment);
-        addCfgPbrs(l, 6, fwd6);
+        addCfgPbrs(l, 6, fwd6, filter);
         l.add(cmds.comment);
         addCfgMcast(l, 4, fwd4);
         l.add(cmds.comment);

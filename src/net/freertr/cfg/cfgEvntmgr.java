@@ -103,7 +103,7 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, event == null, cmds.tabulator, "event", event);
         cmds.cfgLine(l, !suppress, cmds.tabulator, "suppress", "");
-        l.addAll(script.dump(cmds.tabulator));
+        l.addAll(script.dump(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

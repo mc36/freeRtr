@@ -46,7 +46,14 @@ public class tabObjprtN<T extends addrType> extends tabListingEntry<T> {
         return "" + port;
     }
 
-    public List<String> usrString(String beg) {
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @param filter filter mode
+     * @return string
+     */
+    public List<String> usrString(String beg, int filter) {
         List<String> l = new ArrayList<String>();
         l.add(beg + "sequence " + sequence + " " + this);
         return l;

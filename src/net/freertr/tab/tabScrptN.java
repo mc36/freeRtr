@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.auth.authLocal;
 import net.freertr.pack.packHolder;
 
 /**
@@ -28,11 +29,16 @@ public class tabScrptN extends tabListingEntry<addrIP> {
      * convert to string
      *
      * @param beg beginning
+     * @param filter filter mode
      * @return string
      */
-    public List<String> usrString(String beg) {
+    public List<String> usrString(String beg, int filter) {
         List<String> l = new ArrayList<String>();
-        l.add(beg + "sequence " + sequence + " " + lin);
+        if ((filter & 0x10000) == 0) {
+            l.add(beg + "sequence " + sequence + " " + lin);
+        } else {
+            l.add(beg + "sequence " + sequence + " " + authLocal.passwdEncode(lin, (filter & 2) != 0));
+        }
         return l;
     }
 

@@ -74,7 +74,7 @@ public class cfgObjprt implements Comparator<cfgObjprt>, cfgGeneric {
         if (description != null) {
             l.add(cmds.tabulator + "description " + description);
         }
-        l.addAll(objgrp.dump(cmds.tabulator));
+        l.addAll(objgrp.dump(cmds.tabulator, filter));
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

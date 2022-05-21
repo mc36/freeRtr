@@ -29,7 +29,14 @@ public class tabAuthlstN extends tabListingEntry<addrIP> {
         return "sequence " + sequence + " " + auth.autName;
     }
 
-    public List<String> usrString(String beg) {
+    /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @param filter filter mode
+     * @return string
+     */
+    public List<String> usrString(String beg, int filter) {
         List<String> lst = new ArrayList<String>();
         lst.add(beg + this);
         return lst;

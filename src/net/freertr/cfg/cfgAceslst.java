@@ -71,7 +71,7 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
             l.add(cmds.tabulator + "hidden");
         }
         if (!hidden) {
-            l.addAll(aceslst.dump(cmds.tabulator));
+            l.addAll(aceslst.dump(cmds.tabulator, filter));
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);

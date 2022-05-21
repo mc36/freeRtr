@@ -40,7 +40,7 @@ public class authList extends authGeneric {
 
     public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
-        l.addAll(methods.dump(cmds.tabulator));
+        l.addAll(methods.dump(cmds.tabulator, filter));
         return l;
     }
 
