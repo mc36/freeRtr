@@ -116,6 +116,9 @@ public class userScript {
      * @param s line to add
      */
     public void addLine(String s) {
+        if (s.startsWith("#")) {
+            return;
+        }
         cmd += ";" + s;
     }
 
