@@ -319,6 +319,9 @@ public class servHttp extends servGeneric implements prtServS {
             if (!ntry.autoIndex) {
                 l.add(a + " noindex");
             }
+            if (ntry.searchScript != null) {
+                l.add(a + " search-script " + ntry.searchScript);
+            }
             if (ntry.allowScript != 0) {
                 String s = "";
                 if ((ntry.allowScript & 2) != 0) {
@@ -326,9 +329,6 @@ public class servHttp extends servGeneric implements prtServS {
                 }
                 if ((ntry.allowScript & 4) != 0) {
                     s += " config";
-                }
-                if ((ntry.allowScript & 8) != 0) {
-                    s += " local";
                 }
                 l.add(a + " script" + s);
             }
@@ -654,6 +654,14 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (a.equals("search-script")) {
+            if (negated) {
+                ntry.searchScript = null;
+                return false;
+            }
+            ntry.searchScript = cmd.word();
+            return false;
+        }
         if (a.equals("script")) {
             if (negated) {
                 ntry.allowScript = 0;
@@ -671,10 +679,6 @@ public class servHttp extends servGeneric implements prtServS {
                 }
                 if (a.equals("config")) {
                     ntry.allowScript |= 4;
-                    continue;
-                }
-                if (a.equals("local")) {
-                    ntry.allowScript |= 8;
                     continue;
                 }
             }
@@ -848,10 +852,11 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 4,.    script                     allow script running");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
-        l.add(null, "4 4,.      local                    allow scripts defined in configuration");
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
+        l.add(null, "3 4      search-script              allow scripts defined in configuration");
+        l.add(null, "4 .        <str>                    prefix");
         l.add(null, "3 .      imagemap                   allow image map processing");
         l.add(null, "3 .      websock                    allow websocket processing");
         l.add(null, "3 .      webdav                     allow webdav processing");
@@ -1065,6 +1070,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      * directory listing allowed
      */
     public int allowList;
+
+    /**
+     * script search allowed
+     */
+    public String searchScript;
 
     /**
      * script running allowed
@@ -1937,8 +1947,8 @@ class servHttpConn implements Runnable {
     }
 
     private boolean sendOneFile(String s, String a) {
-        if ((gotHost.allowScript & 8) != 0) {
-            cfgScrpt scr = cfgAll.scrptFind(s, false);
+        if (gotHost.searchScript != null) {
+            cfgScrpt scr = cfgAll.scrptFind(gotHost.searchScript + s, false);
             if (scr != null) {
                 return sendOneScript(scr.getText());
             }

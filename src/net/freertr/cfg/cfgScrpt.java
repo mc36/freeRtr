@@ -357,6 +357,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
 
     /**
      * get script text
+     * 
+     * @return the script
      */
     public List<String> getText() {
         List<String> l = new ArrayList<String>();
