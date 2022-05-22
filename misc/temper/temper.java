@@ -176,7 +176,12 @@ public class temper implements Runnable {
     /**
      * cool tolerance
      */
-    protected float coolTol = 0.5F;
+    protected float coolTol = 0.2F;
+
+    /**
+     * cool tolerance
+     */
+    protected float ventTol = 0.1F;
 
     /**
      * window tolerance
@@ -318,20 +323,19 @@ public class temper implements Runnable {
         }
         temperData.results res = measDat[measIn].lastCalc;
         if ((ventPin != 0) && (measOut >= 0)) {
+            boolean maybe = (currValue & ventPin) != 0;
             float diff = measDat[measIn].lastMeasure - measDat[measOut].lastMeasure;
             if (diff < 0) {
                 diff = -diff;
             }
-            boolean good = false;
-            boolean maybe = (currValue & ventPin) != 0;
+            maybe &= diff < ventTol;
+            boolean good;
             switch (res) {
                 case cool:
-                    good = measDat[measIn].lastMeasure > measDat[measOut].lastMeasure;
-                    maybe &= diff < coolTol;
+                    good = measDat[measIn].lastMeasure > (measDat[measOut].lastMeasure + coolTol);
                     break;
                 case heat:
-                    good = measDat[measIn].lastMeasure < measDat[measOut].lastMeasure;
-                    maybe &= diff < heatTol;
+                    good = measDat[measIn].lastMeasure < (measDat[measOut].lastMeasure - heatTol);
                     break;
                 default:
                     return i;
@@ -459,6 +463,10 @@ public class temper implements Runnable {
             }
             if (a.equals("cool-pin")) {
                 coolPin = (int) temperUtil.str2num(s);
+                continue;
+            }
+            if (a.equals("vent-tol")) {
+                ventTol = temperUtil.str2num(s);
                 continue;
             }
             if (a.equals("vent-pin")) {
@@ -648,7 +656,7 @@ public class temper implements Runnable {
             }
             a = "</tbody></table><br/>";
             buf.write(a.getBytes());
-            a = "tolerance: heating: " + heatTol + ", cooling: " + coolTol + ", window: " + windowTol + ", time: " + temperUtil.timePast(windowTim, 0) + "<br/>";
+            a = "tolerance: heat " + heatTol + ", cool " + coolTol + ", vent " + ventTol + ", window " + windowTol + ", time " + temperUtil.timePast(windowTim, 0) + "<br/>";
             buf.write(a.getBytes());
             a = "needed: " + lastNeeded + " celsius, since " + temperUtil.time2str(tzdata, timeNeeded) + ", " + temperUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>";
             buf.write(a.getBytes());
@@ -754,7 +762,7 @@ public class temper implements Runnable {
         }
         String a;
         if ((history.get(history.size() - 1).time - history.get(0).time) < (86400 * 3000)) {
-            a = "HH:MM";
+            a = "HH:mm";
         } else {
             a = "MMMdd";
         }
