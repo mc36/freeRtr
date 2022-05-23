@@ -187,7 +187,7 @@ public class temperData {
             histRes = results.heat;
             o = -o;
         }
-        if (o <= (lower.collHist / 3)) {
+        if (o < (lower.collHist / 5)) {
             histRes = results.idle;
         }
         long tim = temperUtil.getTime();
