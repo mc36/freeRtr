@@ -164,6 +164,11 @@ public class temper implements Runnable {
     protected int collHist = 60;
 
     /**
+     * measure discard
+     */
+    protected int collIlde = 5;
+
+    /**
      * temperature minimum
      */
     protected float tempMin = 10;
@@ -493,6 +498,10 @@ public class temper implements Runnable {
             }
             if (a.equals("history")) {
                 collHist = (int) (temperUtil.str2num(s) * 1000);
+                continue;
+            }
+            if (a.equals("idling")) {
+                collIlde = (int) (temperUtil.str2num(s) * 1000);
                 continue;
             }
             if (a.equals("timeout")) {
