@@ -166,7 +166,7 @@ public class temper implements Runnable {
     /**
      * measure discard
      */
-    protected int collIlde = 5;
+    protected Float collIlde = 0.2F;
 
     /**
      * temperature minimum
@@ -350,7 +350,7 @@ public class temper implements Runnable {
                 default:
                     return i;
             }
-            good &= (res != measDat[measOut].histRes) || (measDat[measOut].histRes == temperData.results.idle);
+            good &= (res == measDat[measOut].histRes) || (measDat[measOut].histRes == temperData.results.idle);
             if (good || maybe) {
                 return i | ventPin;
             }
@@ -497,11 +497,11 @@ public class temper implements Runnable {
                 continue;
             }
             if (a.equals("history")) {
-                collHist = (int) (temperUtil.str2num(s) * 1000);
+                collHist = (int) temperUtil.str2num(s);
                 continue;
             }
             if (a.equals("idling")) {
-                collIlde = (int) (temperUtil.str2num(s) * 1000);
+                collIlde = temperUtil.str2num(s);
                 continue;
             }
             if (a.equals("timeout")) {
@@ -548,8 +548,8 @@ public class temper implements Runnable {
     }
 
     private BufferedImage drawHist(List<temperHist> hst, int dot) {
-        float tmpMin = 9999;
-        float tmpMax = -tmpMin;
+        float tmpMin = Float.MAX_VALUE;
+        float tmpMax = Float.MIN_VALUE;
         for (int o = 0; o < hst.size(); o++) {
             temperHist l = hst.get(o);
             tmpMin = Float.min(tmpMin, l.need);

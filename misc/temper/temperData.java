@@ -169,25 +169,27 @@ public class temperData {
      * calculate
      */
     protected void doCalc() {
-        int o = 0;
-        for (int i = 1; i < histDat.size(); i++) {
-            float d = histDat.get(i - 1).meas[0] - histDat.get(i).meas[0];
-            if (d > 0) {
-                o++;
+        float tmpMin = Float.MAX_VALUE;
+        float tmpMax = Float.MIN_VALUE;
+        int posMin = 0;
+        int posMax = 0;
+        for (int i = 0; i < histDat.size(); i++) {
+            Float v = histDat.get(i).meas[0];
+            if (tmpMin > v) {
+                tmpMin = v;
+                posMin = i;
             }
-            if (d < 0) {
-                o--;
+            if (tmpMax < v) {
+                tmpMax = v;
+                posMax = i;
             }
         }
-        histRes = results.idle;
-        if (o > 0) {
+        if (posMin > posMax) {
             histRes = results.cool;
-        }
-        if (o < 0) {
+        } else {
             histRes = results.heat;
-            o = -o;
         }
-        if (o < lower.collIlde) {
+        if ((tmpMax - tmpMin) < lower.collIlde) {
             histRes = results.idle;
         }
         long tim = temperUtil.getTime();
