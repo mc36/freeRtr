@@ -85,4 +85,19 @@ public class temperHist {
         line = null;
     }
 
+    /**
+     * place measurement
+     *
+     * @param t time
+     * @param v value
+     * @param n needed
+     */
+    protected void placeMeas(long t, float v, float n) {
+        meas = new float[1];
+        meas[0] = v;
+        time = t;
+        need = n;
+        curr = 0;
+    }
+
 }

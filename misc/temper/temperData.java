@@ -3,6 +3,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * temperature reading
@@ -57,6 +59,16 @@ public class temperData {
      * time measured temperature
      */
     protected long timeMeasure;
+
+    /**
+     * measurement history
+     */
+    protected List<temperHist> histDat;
+
+    /**
+     * history result
+     */
+    protected results histRes = results.idle;
 
     /**
      * time window temperature
@@ -114,6 +126,7 @@ public class temperData {
         myUrl = nam.substring(i + 1, nam.length());
         lastMeasure = 20;
         lastWindow = lastMeasure;
+        histDat = new ArrayList<temperHist>();
     }
 
     /**
@@ -134,6 +147,12 @@ public class temperData {
             lastMeasure = Float.parseFloat(testLine);
             timeMeasure = temperUtil.getTime();
             fetches++;
+            temperHist ntry = new temperHist();
+            ntry.placeMeas(timeMeasure, lastMeasure, lower.lastNeeded);
+            histDat.add(ntry);
+            for (; histDat.size() > lower.collHist;) {
+                histDat.remove(0);
+            }
         } catch (Exception e) {
             errors++;
         }
@@ -150,6 +169,27 @@ public class temperData {
      * calculate
      */
     protected void doCalc() {
+        int o = 0;
+        for (int i = 1; i < histDat.size(); i++) {
+            float d = histDat.get(i - 1).meas[0] - histDat.get(i).meas[0];
+            if (d > 0) {
+                o++;
+            }
+            if (d < 0) {
+                o--;
+            }
+        }
+        histRes = results.idle;
+        if (o > 0) {
+            histRes = results.cool;
+        }
+        if (o < 0) {
+            histRes = results.heat;
+            o = -o;
+        }
+        if (o <= (lower.collHist / 3)) {
+            histRes = results.idle;
+        }
         long tim = temperUtil.getTime();
         isWorking = (tim - timeMeasure) < lower.measTime;
         if (!inside) {
@@ -213,7 +253,7 @@ public class temperData {
      * @return string
      */
     public String getMeas() {
-        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + isWorking + "</td><td>" + isWindow + "</td><td>" + lastCalc + "</td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myNam + "</td><td>" + lastMeasure + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeMeasure) + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + isWorking + "</td><td>" + isWindow + "</td><td>" + lastCalc + "</td><td><a href=\"" + lower.url + "?temp=" + myNum + "&cmd=history\">" + histRes + "</a></td><td>" + lastWindow + "</td><td>" + temperUtil.timePast(temperUtil.getTime(), timeWindow) + "</td></tr>";
     }
 
 }

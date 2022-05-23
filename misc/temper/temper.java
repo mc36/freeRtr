@@ -159,6 +159,11 @@ public class temper implements Runnable {
     protected int collTime = 30 * 1000;
 
     /**
+     * measure history
+     */
+    protected int collHist = 60;
+
+    /**
      * temperature minimum
      */
     protected float tempMin = 10;
@@ -340,6 +345,7 @@ public class temper implements Runnable {
                 default:
                     return i;
             }
+            good &= (res != measDat[measOut].histRes) || (measDat[measOut].histRes == temperData.results.idle);
             if (good || maybe) {
                 return i | ventPin;
             }
@@ -485,6 +491,10 @@ public class temper implements Runnable {
                 collTime = (int) (temperUtil.str2num(s) * 1000);
                 continue;
             }
+            if (a.equals("history")) {
+                collHist = (int) (temperUtil.str2num(s) * 1000);
+                continue;
+            }
             if (a.equals("timeout")) {
                 measTime = (int) (temperUtil.str2num(s) * 60 * 1000);
                 continue;
@@ -526,6 +536,87 @@ public class temper implements Runnable {
             return cur;
         }
         return null;
+    }
+
+    private BufferedImage drawHist(List<temperHist> hst, int dot) {
+        float tmpMin = 9999;
+        float tmpMax = -tmpMin;
+        for (int o = 0; o < hst.size(); o++) {
+            temperHist l = hst.get(o);
+            tmpMin = Float.min(tmpMin, l.need);
+            tmpMax = Float.max(tmpMax, l.need);
+            for (int i = 0; i < l.meas.length; i++) {
+                float v = l.meas[i];
+                tmpMin = Float.min(tmpMin, v);
+                tmpMax = Float.max(tmpMax, v);
+            }
+        }
+        tmpMax -= tmpMin;
+        final int mx = 1800;
+        final int my = 900;
+        final int mx10 = mx - 10;
+        final int mx20 = mx - 20;
+        final int my1 = my - 1;
+        final int my10 = my - 10;
+        final int my20 = my - 20;
+        final int my30 = my - 30;
+        final int my40 = my - 40;
+        final int my50 = my - 50;
+        BufferedImage img = new BufferedImage(mx, my, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.setBackground(Color.gray);
+        g2d.setFont(new Font("Serif", Font.BOLD, 20));
+        g2d.setPaint(Color.gray);
+        g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
+        g2d.setPaint(Color.black);
+        Color colors[] = {
+            Color.green,
+            Color.red,
+            Color.cyan,
+            Color.magenta,
+            Color.orange,
+            Color.pink,
+            Color.yellow,
+            Color.white,
+            Color.blue,};
+        for (int o = 0; o < hst.size(); o++) {
+            temperHist l = hst.get(o);
+            int x = ((o * mx20) / hst.size()) + 10;
+            g2d.setPaint(Color.black);
+            g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), dot, dot);
+            if (l.curr != 0) {
+                g2d.drawRect(x, 10, dot, dot);
+            }
+            for (int i = 0; i < l.meas.length; i++) {
+                g2d.setPaint(colors[i]);
+                g2d.drawRect(x, my10 - (int) (((l.meas[i] - tmpMin) * my20) / tmpMax), dot, dot);
+            }
+        }
+        for (int i = 0; i < measDat.length; i++) {
+            g2d.setPaint(colors[i]);
+            drawRightAlighed(g2d, mx10, my50 - (i * 20), measDat[i].myNam);
+        }
+        g2d.setPaint(Color.black);
+        drawRightAlighed(g2d, mx10, my30, "needed");
+        for (int i = 20; i < my20; i += 50) {
+            float v = (float) i * tmpMax;
+            v = v / (float) my20;
+            v += tmpMin;
+            String a = v + "       ";
+            g2d.drawString(a.substring(0, 6), 1, my10 - i);
+        }
+        String a;
+        if ((hst.get(hst.size() - 1).time - hst.get(0).time) < (86400 * 3000)) {
+            a = "HH:mm";
+        } else {
+            a = "MMMdd";
+        }
+        for (int i = 0; i < mx20; i += 100) {
+            temperHist l = hst.get((i * hst.size()) / mx20);
+            DateFormat dat = new SimpleDateFormat(a, Locale.US);
+            g2d.drawString(dat.format(new Date((long) l.time)), i + 10, my1);
+        }
+        return img;
     }
 
     /**
@@ -641,6 +732,11 @@ public class temper implements Runnable {
             putStart(buf, "door", "door opened");
             return 1;
         }
+        if (cmd.equals("history")) {
+            temperData cur = measDat[(int) temperUtil.str2num(tmp) - 1];
+            ImageIO.write(drawHist(cur.histDat, 10), "png", buf);
+            return 2;
+        }
         if (!cmd.equals("graph")) {
             rangeCheck();
             String a = "<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>temper</title>";
@@ -648,7 +744,7 @@ public class temper implements Runnable {
             a = "<meta http-equiv=refresh content=\"30;url=" + url + "\"></head><body>";
             buf.write(a.getBytes());
             long tim = temperUtil.getTime();
-            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>err</b></td><td><b>read</b></td><td><b>work</b></td><td><b>win</b></td><td><b>res</b></td><td><b>wtmp</b></td><td><b>wtim</b></td></tr></thead><tbody>";
+            a = "<table><thead><tr><td><b>num</b></td><td><b>name</b></td><td><b>value</b></td><td><b>last</b></td><td><b>err</b></td><td><b>read</b></td><td><b>work</b></td><td><b>win</b></td><td><b>res</b></td><td><b>hst</b></td><td><b>wtmp</b></td><td><b>wtim</b></td></tr></thead><tbody>";
             buf.write(a.getBytes());
             for (int i = 0; i < measDat.length; i++) {
                 a = measDat[i].getMeas();
@@ -693,85 +789,14 @@ public class temper implements Runnable {
         BufferedReader f = new BufferedReader(fr);
         f.readLine();
         List<temperHist> history = new ArrayList<temperHist>();
-        float tmpMin = 9999;
-        float tmpMax = -tmpMin;
         while (f.ready()) {
             String s = f.readLine();
             temperHist l = new temperHist();
             l.parseLine(s);
             history.add(l);
-            tmpMin = Float.min(tmpMin, l.need);
-            tmpMax = Float.max(tmpMax, l.need);
-            for (int i = 0; i < l.meas.length; i++) {
-                float v = l.meas[i];
-                tmpMin = Float.min(tmpMin, v);
-                tmpMax = Float.max(tmpMax, v);
-            }
         }
         f.close();
-        tmpMax -= tmpMin;
-        final int mx = 1800;
-        final int my = 900;
-        final int mx10 = mx - 10;
-        final int mx20 = mx - 20;
-        final int my1 = my - 1;
-        final int my10 = my - 10;
-        final int my20 = my - 20;
-        final int my30 = my - 30;
-        final int my40 = my - 40;
-        final int my50 = my - 50;
-        BufferedImage img = new BufferedImage(mx, my, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = img.createGraphics();
-        g2d.setBackground(Color.gray);
-        g2d.setFont(new Font("Serif", Font.BOLD, 20));
-        g2d.setPaint(Color.gray);
-        g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
-        g2d.setPaint(Color.black);
-        Color colors[] = {
-            Color.blue,
-            Color.green,
-            Color.red,
-            Color.cyan,
-            Color.magenta,
-            Color.orange,
-            Color.pink,
-            Color.white,
-            Color.yellow,};
-        for (int i = 0; i < history.size(); i++) {
-            temperHist l = history.get(i);
-            int x = ((i * mx20) / history.size()) + 10;
-            g2d.setPaint(Color.black);
-            g2d.drawRect(x, my10 - (int) (((l.need - tmpMin) * my20) / tmpMax), 1, 1);
-            if (l.curr != 0) {
-                g2d.drawRect(x, 10, 1, 1);
-            }
-            for (int o = 0; o < l.meas.length; o++) {
-                g2d.setPaint(colors[o]);
-                g2d.drawRect(x, my10 - (int) (((l.meas[o] - tmpMin) * my20) / tmpMax), 1, 1);
-            }
-        }
-        for (int i = 0; i < measDat.length; i++) {
-            g2d.setPaint(colors[i]);
-            drawRightAlighed(g2d, mx10, my50 - (i * 20), measDat[i].myNam);
-        }
-        g2d.setPaint(Color.black);
-        drawRightAlighed(g2d, mx10, my30, "needed");
-        for (int i = 20; i < my20; i += 50) {
-            String a = (tmpMin + ((i * tmpMax) / my20)) + "       ";
-            g2d.drawString(a.substring(0, 6), 1, my10 - i);
-        }
-        String a;
-        if ((history.get(history.size() - 1).time - history.get(0).time) < (86400 * 3000)) {
-            a = "HH:mm";
-        } else {
-            a = "MMMdd";
-        }
-        for (int i = 0; i < mx20; i += 100) {
-            temperHist l = history.get((i * history.size()) / mx20);
-            DateFormat dat = new SimpleDateFormat(a, Locale.US);
-            g2d.drawString(dat.format(new Date((long) l.time)), i + 10, my1);
-        }
-        ImageIO.write(img, "png", buf);
+        ImageIO.write(drawHist(history, 1), "png", buf);
         return 2;
     }
 
