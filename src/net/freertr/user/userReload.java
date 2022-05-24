@@ -20,6 +20,11 @@ public class userReload implements Runnable {
     public final long when;
 
     /**
+     * mode
+     */
+    public final int code;
+
+    /**
      * interval between checks
      */
     public int interval = 60000;
@@ -35,9 +40,15 @@ public class userReload implements Runnable {
     /**
      * schedule reload
      *
+     * @param mod mode: false=warm, true=cold
      * @param tim time
      */
-    public userReload(long tim) {
+    public userReload(boolean mod, long tim) {
+        if (mod) {
+            code = 4;
+        } else {
+            code = 5;
+        }
         when = tim;
         notif = new notifier();
         new Thread(this).start();
@@ -53,7 +64,7 @@ public class userReload implements Runnable {
         if (rel == null) {
             return bits.str2lst("no scheduled reload");
         }
-        return bits.str2lst(bits.timeLeft(rel.when) + " to reload, will happen at " + rel);
+        return bits.str2lst(bits.timeLeft(rel.when) + " to reload, will happen at " + rel + " with code " + rel.code);
     }
 
     /**

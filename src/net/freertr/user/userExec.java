@@ -2030,8 +2030,16 @@ public class userExec {
         hl.add(null, "2 3      at                           reload at a specified time");
         hl.add(null, "3 3,.      <str>                      datetime");
         hl.add(null, "2 .      cancel                       cancel pending reload");
-        hl.add(null, "2 .      cold                         reboot the whole computer");
-        hl.add(null, "2 .      warm                         reboot the router process");
+        hl.add(null, "2 3,.    cold                         reboot the whole computer");
+        hl.add(null, "3 4        in                         reload after a time interval");
+        hl.add(null, "4 .          <num>                    minutes");
+        hl.add(null, "3 4        at                         reload at a specified time");
+        hl.add(null, "4 4,.        <str>                    datetime");
+        hl.add(null, "2 3,.    warm                         reboot the router process");
+        hl.add(null, "3 4        in                         reload after a time interval");
+        hl.add(null, "4 .          <num>                    minutes");
+        hl.add(null, "3 4        at                         reload at a specified time");
+        hl.add(null, "4 4,.        <str>                    datetime");
         hl.add(null, "2 .      force                        reboot the router process without saving");
         hl.add(null, "2 .      peer                         reboot redundant router processes");
         hl.add(null, "2 3      vdc                          reboot virtual device context");
@@ -2742,7 +2750,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("cancel")) {
-                doReload(-1);
+                doReload(false, -1);
                 return cmdRes.command;
             }
             if (a.equals("force")) {
@@ -2756,19 +2764,45 @@ public class userExec {
                 }
             }
             if (a.equals("warm")) {
+                a = cmd.word();
+                if (a.equals("in")) {
+                    doReload(false, bits.getTime() + (bits.str2num(cmd.word()) * 60000));
+                    return cmdRes.command;
+                }
+                if (a.equals("at")) {
+                    doReload(false, bits.str2time(cfgAll.timeZoneName, cmd.getRemaining()));
+                    return cmdRes.command;
+                }
+                if (!a.equals("")) {
+                    cmd.badCmd();
+                    return cmdRes.command;
+                }
                 cfgInit.stopRouter(true, 3, "user requested");
                 return cmdRes.command;
             }
             if (a.equals("cold")) {
+                a = cmd.word();
+                if (a.equals("in")) {
+                    doReload(true, bits.getTime() + (bits.str2num(cmd.word()) * 60000));
+                    return cmdRes.command;
+                }
+                if (a.equals("at")) {
+                    doReload(true, bits.str2time(cfgAll.timeZoneName, cmd.getRemaining()));
+                    return cmdRes.command;
+                }
+                if (!a.equals("")) {
+                    cmd.badCmd();
+                    return cmdRes.command;
+                }
                 cfgInit.stopRouter(true, 4, "user requested");
                 return cmdRes.command;
             }
             if (a.equals("in")) {
-                doReload(bits.getTime() + (bits.str2num(cmd.word()) * 60000));
+                doReload(false, bits.getTime() + (bits.str2num(cmd.word()) * 60000));
                 return cmdRes.command;
             }
             if (a.equals("at")) {
-                doReload(bits.str2time(cfgAll.timeZoneName, cmd.getRemaining()));
+                doReload(false, bits.str2time(cfgAll.timeZoneName, cmd.getRemaining()));
                 return cmdRes.command;
             }
             cmd.badCmd();
@@ -4351,7 +4385,7 @@ public class userExec {
         }
     }
 
-    private void doReload(long at) {
+    private void doReload(boolean mod, long at) {
         if (at >= 0) {
             if (at <= bits.getTime()) {
                 cmd.error("bad time");
@@ -4365,7 +4399,7 @@ public class userExec {
         if (at <= 0) {
             return;
         }
-        cfgAll.reload = new userReload(at);
+        cfgAll.reload = new userReload(mod, at);
     }
 
     private pipeSide getShPipe(boolean col) {
