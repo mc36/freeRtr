@@ -161,7 +161,7 @@ public class temper implements Runnable {
     /**
      * measure history
      */
-    protected int collHist = 80;
+    protected int collHist = 60;
 
     /**
      * measure discard
