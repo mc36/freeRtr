@@ -151,7 +151,7 @@ public class findSongs {
                 continue;
             }
             playerSong res = old.get(o);
-            res.title = ntry.title;
+            ntry.title = res.title;
         }
     }
 
