@@ -1975,7 +1975,8 @@ public class servP4langConn implements Runnable {
             }
         }
         if ((ifc.ifc.bundleHed != null) && (ifc.ifc.bundleIfc == null)) {
-            List<servP4langIfc> prt = new ArrayList<servP4langIfc>();
+            List<servP4langIfc> ap = new ArrayList<servP4langIfc>();
+            List<servP4langIfc> tp = new ArrayList<servP4langIfc>();
             if (ifc.ifc.bundleHed.bundleHed.backup > 0) {
                 ifcBundleIfc sel = ifc.ifc.bundleHed.bundleHed.ifaces.get(ifc.ifc.bundleHed.bundleHed.selected);
                 for (i = 0; i < lower.expIfc.size(); i++) {
@@ -1989,10 +1990,11 @@ public class servP4langConn implements Runnable {
                     if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
                         continue;
                     }
+                    tp.add(ntry);
                     if (ntry.ifc.bundleIfc != sel) {
                         continue;
                     }
-                    prt.add(ntry);
+                    ap.add(ntry);
                 }
             } else {
                 for (i = 0; i < lower.expIfc.size(); i++) {
@@ -2006,13 +2008,14 @@ public class servP4langConn implements Runnable {
                     if (ntry.ifc.bundleHed != ifc.ifc.bundleHed) {
                         continue;
                     }
+                    tp.add(ntry);
                     if (ntry.ifc.ethtyp.getState() != state.states.up) {
                         continue;
                     }
-                    prt.add(ntry);
+                    ap.add(ntry);
                 }
             }
-            ifc.members = prt;
+            ifc.members = ap;
             List<servP4langIfc> vln = new ArrayList<servP4langIfc>();
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
@@ -2024,9 +2027,9 @@ public class servP4langConn implements Runnable {
                 }
                 vln.add(ntry);
             }
-            int o = prt.size();
-            for (i = 0; i < prt.size(); i++) {
-                o += prt.get(i).id;
+            int o = ap.size();
+            for (i = 0; i < ap.size(); i++) {
+                o += ap.get(i).id;
             }
             if (o != ifc.sentBundle) {
                 if (ifc.sentBundle < 1) {
@@ -2037,20 +2040,20 @@ public class servP4langConn implements Runnable {
                 ifc.sentBundle = o;
                 if (o < 1) {
                     a = "del";
-                    prt.add(new servP4langIfc(lower, 0));
+                    ap.add(new servP4langIfc(lower, 0));
                 }
                 for (i = 0; i < 16; i++) {
-                    lower.sendLine("portbundle_" + a + " " + ifc.id + " " + i + " " + prt.get(i % prt.size()).id);
+                    lower.sendLine("portbundle_" + a + " " + ifc.id + " " + i + " " + ap.get(i % ap.size()).id);
                 }
                 String s = "";
-                for (i = 0; i < prt.size(); i++) {
-                    s += " " + prt.get(i).id;
+                for (i = 0; i < ap.size(); i++) {
+                    s += " " + ap.get(i).id;
                 }
                 lower.sendLine("bundlelist_" + a + " " + ifc.id + s);
             }
             if (ifc.sentVlan != vln.size()) {
-                for (o = 0; o < prt.size(); o++) {
-                    servP4langIfc ntry = prt.get(o);
+                for (o = 0; o < tp.size(); o++) {
+                    servP4langIfc ntry = tp.get(o);
                     for (i = 0; i < vln.size(); i++) {
                         servP4langIfc sub = vln.get(i);
                         lower.sendLine("bundlevlan_add " + ntry.id + " " + sub.ifc.vlanNum + " " + sub.id);
