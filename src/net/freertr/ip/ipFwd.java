@@ -2094,8 +2094,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                         }
                     }
                     natT = natC.createEntry(pck, icmpCore);
+                    tabNatTraN natR = natT.reverseEntry();
                     natTrns.add(natT);
-                    natTrns.add(natT.reverseEntry());
+                    natTrns.add(natR);
                     natT.updatePack(pck);
                     natCfg.packUpdate(pck);
                     if (debugger.ipFwdTraf) {
