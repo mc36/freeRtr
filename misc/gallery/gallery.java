@@ -227,7 +227,7 @@ public class gallery {
         for (int o = 0; o < fl.size(); o++) {
             String fn = fl.get(o);
             int i = fn.lastIndexOf(".");
-            String b = fn.substring(i, fn.length());
+            String b = fn.substring(i, fn.length()).toLowerCase() + ".";
             String a = url + "?nam=" + nam + "/" + fn;
             if (imageExt.indexOf(b) < 0) {
                 a = "<td><a href=\"" + a + "&cmd=view\">" + fn + "</td>";
