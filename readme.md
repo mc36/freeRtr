@@ -62,9 +62,8 @@ feel free to reach us on the mailing lists with your patches, ideas, feature req
 
 ## additional information
 
-* [docs.freertr.org](http://docs.freertr.org/)
-* [rare.freertr.org](http://rare.freertr.org/)
-* [demo.freertr.org](http://demo.freertr.org/)
-* [blog.freertr.org](http://blog.freertr.org/)
-* [blog.freertr.org](http://blog.freertr.org/)
 * [freertr@groups.io](mailto:freertr@groups.io)
+* [docs.freertr.org](http://docs.freertr.org/)
+* [demo.freertr.org](http://demo.freertr.org/)
+* [rare.freertr.org](http://rare.freertr.org/)
+* [blog.freertr.org](http://blog.freertr.org/)
