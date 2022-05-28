@@ -350,7 +350,7 @@ public class temper implements Runnable {
                 default:
                     return i;
             }
-            good &= (res == measDat[measOut].histRes) || (measDat[measOut].histRes == temperData.results.idle);
+            //good &= (res == measDat[measOut].histRes) || (measDat[measOut].histRes == temperData.results.idle);
             if (good || maybe) {
                 return i | ventPin;
             }
