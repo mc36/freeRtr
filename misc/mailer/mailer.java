@@ -143,7 +143,7 @@ public class mailer {
             fl.add(fls[i]);
         }
         Collections.sort(fl);
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>mailer</title></head><body><table border=1>".getBytes());
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>mailer</title></head><body><table>".getBytes());
         buf.write("<tr><td><b>from</b></td><td><b>subject</b></td><td><b>date</b></td></tr>".getBytes());
         for (int fn = 0; fn < fl.size(); fn++) {
             String a = fl.get(fn).getName();

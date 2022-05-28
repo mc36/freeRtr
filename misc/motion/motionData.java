@@ -275,7 +275,7 @@ public class motionData implements Runnable {
         for (int i = 0; i < buf2.length; i++) {
             buf2[i] = buf1.get(i);
         }
-        BufferedImage result = ImageIO.read(new ByteArrayInputStream(buf2​));
+        BufferedImage result = ImageIO.read(new ByteArrayInputStream(buf2));
         fetches++;
         imgPos = (imgPos + 1) % imgDat.length;
         imgDat[imgPos] = buf2;

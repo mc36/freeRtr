@@ -14,6 +14,7 @@ echo -n `cd misc/player;./d.sh`
 echo -n `cd misc/temper;./d.sh`
 echo -n `cd misc/trackmap;./d.sh`
 echo -n `cd misc/voice;./d.sh`
+echo -n `cd misc/gallery;./d.sh`
 echo -n `cd misc/mailer;./d.sh`
 echo -n `cd misc/motion;./d.sh`
 echo `cd src;./d.sh`
