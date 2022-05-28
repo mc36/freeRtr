@@ -127,6 +127,11 @@ public class gallery {
     }
 
     /**
+     * extensions
+     */
+    public static final String imageExt = ".jpg.jpeg.png.gif.bmp.";
+
+    /**
      * do one request
      *
      * @param par parameters
@@ -191,22 +196,41 @@ public class gallery {
             fls = new File(album + nam).listFiles();
         } catch (Exception e) {
         }
-        List<File> fl = new ArrayList<File>();
+        List<String> fl = new ArrayList<String>();
+        List<String> dr = new ArrayList<String>();
         for (int i = 0; i < fls.length; i++) {
-            fl.add(fls[i]);
-        }
-        Collections.sort(fl);
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>gallery</title></head><body><table><tr>".getBytes());
-        int don = 0;
-        for (int i = 0; i < fl.size(); i++) {
-            File f = fl.get(i);
-            String fn = f.getName();
-            if (fn.startsWith(".")) {
+            File f = fls[i];
+            String n = f.getName();
+            if (n.startsWith(".")) {
                 continue;
             }
-            String a = url + "?nam=" + nam + "/" + fn;
             if (f.isDirectory()) {
-                a = "<td><a href=\"" + a + "&cmd=browse\">" + fn + "</a></td>";
+                dr.add(n);
+            } else {
+                fl.add(n);
+            }
+        }
+        Collections.sort(dr);
+        Collections.sort(fl);
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>gallery</title></head><body>".getBytes());
+        buf.write("listing of <b>".getBytes());
+        buf.write(nam.getBytes());
+        buf.write("</b><br/>".getBytes());
+        for (int i = 0; i < dr.size(); i++) {
+            String fn = dr.get(i);
+            String a = url + "?nam=" + nam + "/" + fn;
+            a = "<a href=\"" + a + "&cmd=browse\">" + fn + "</a><br/>";
+            buf.write(a.getBytes());
+        }
+        buf.write("<table><tr>".getBytes());
+        int don = 0;
+        for (int o = 0; o < fl.size(); o++) {
+            String fn = fl.get(o);
+            int i = fn.lastIndexOf(".");
+            String b = fn.substring(i, fn.length());
+            String a = url + "?nam=" + nam + "/" + fn;
+            if (imageExt.indexOf(b) < 0) {
+                a = "<td><a href=\"" + a + "&cmd=view\">" + fn + "</td>";
             } else {
                 a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + "&cmd=small\"></td>";
             }
