@@ -73,7 +73,6 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
         if (rte_eth_xstats_get_names_by_id(port, &xstat_nam, 1, &xstat_id) != 1) return;
         *len += snprintf((char*)&buf[*len], 128, "%s %s %li\r\n", (char*)pre, xstat_nam.name, xstat_val);
     }
-    return;
 }
 
 

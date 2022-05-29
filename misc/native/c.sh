@@ -41,6 +41,10 @@ for fn in p4bench; do
   compileFile $fn "" "-lcrypto" ""
   done
 
+for fn in p4udp; do
+  compileFile $fn "" "-lpthread -lcrypto" ""
+  done
+
 for fn in p4emu p4pkt; do
   compileFile $fn "" "-lpthread -lpcap -lcrypto" ""
   done
