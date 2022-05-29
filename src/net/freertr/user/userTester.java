@@ -1039,12 +1039,18 @@ class userTesterPrc {
     }
 
     public void waitFor() {
+        if (shell == null) {
+            return;
+        }
         rdr.debugStat(slot + "/" + name + ": stopping process");
         shell.waitFor();
         pipe.setClose();
     }
 
     public void stopNow() {
+        if (shell == null) {
+            return;
+        }
         if (persistent) {
             return;
         }
@@ -1785,6 +1791,48 @@ class userTesterOne {
                 s = repairHwCfg(s);
                 cfg.add(s);
             }
+            List<addrMac> mcs = new ArrayList<addrMac>();
+            List<Integer> lps = new ArrayList<Integer>();
+            List<Integer> rps = new ArrayList<Integer>();
+            for (int i = 0; i < cfg.size(); i++) {
+                String a = cfg.get(i);
+                cmd = new cmds("hw", a);
+                a = cmd.word();
+                a = cmd.word();
+                a = cmd.word();
+                addrMac mac = new addrMac();
+                mac.fromString(cmd.word());
+                mcs.add(mac);
+                cmd.word();
+                lps.add(bits.str2num(cmd.word()));
+                cmd.word();
+                rps.add(bits.str2num(cmd.word()));
+            }
+            if (img.otherM < 1) {
+                int prt = 30001 + (slot * userTester.portSlot) + procs.size();
+                procs.get(0).putLine("test hwcfg tcp2vrf " + prt + " v9 9080");
+                procs.get(0).doSync();
+                s = img.otherI + " 127.0.0.1 " + prt + " 0 127.0.0.1 127.0.0.1";
+                for (int i = 1; i < lps.size(); i++) {
+                    s += " " + lps.get(i) + " " + rps.get(i);
+                }
+                cfg.add("!" + s);
+                bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
+                userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
+                p.pipe.setTime(5 * 60000);
+                p.syncr = img.otherS;
+                procs.add(p);
+                cfg = new ArrayList<String>();
+                for (;;) {
+                    s = getLin();
+                    if (s.equals("!")) {
+                        break;
+                    }
+                    cfg.add(s);
+                }
+                bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+                return;
+            }
             s = prefix + slot + rn + ".qcow2";
             String f = "auto";
             if (img.otherI.endsWith(".img")) {
@@ -1798,20 +1846,8 @@ class userTesterOne {
             }
             pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + ",backing_fmt=" + f + " " + s, null, true, false, true);
             s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -drive file=" + s + ",format=qcow2,cache=unsafe -m " + img.otherM;
-            for (int i = 0; i < cfg.size(); i++) {
-                String a = cfg.get(i);
-                cmd = new cmds("hw", a);
-                a = cmd.word();
-                a = cmd.word();
-                a = cmd.word();
-                addrMac mac = new addrMac();
-                mac.fromString(cmd.word());
-                cmd.word();
-                int lp = bits.str2num(cmd.word());
-                cmd.word();
-                int rp = bits.str2num(cmd.word());
-                int vl = i + 1;
-                s += " -netdev socket,id=n" + vl + ",udp=:" + rp + ",localaddr=:" + lp + " -device " + img.otherN + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+            for (int i = 0; i < lps.size(); i++) {
+                s += " -netdev socket,id=n" + i + ",udp=:" + rps.get(i) + ",localaddr=:" + lps.get(i) + " -device " + img.otherN + ",netdev=n" + i + ",mac=" + mcs.get(i).toEmuStr();
             }
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
