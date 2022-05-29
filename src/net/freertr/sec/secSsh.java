@@ -474,6 +474,9 @@ public class secSsh implements Runnable {
                 return;
             }
             pg.gexGroupFill();
+            if (pg.difHel == null) {
+                return;
+            }
             pg.gexGroupCreate();
             p.packSend();
             pg.hashBig(pg.difHel.modulus);
