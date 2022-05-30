@@ -1004,7 +1004,7 @@ class userTesterCap {
 
 }
 
-class userTesterPrc {
+class userTesterPrc implements Comparator<userTesterPrc> {
 
     public int slot = 0;
 
@@ -1036,6 +1036,10 @@ class userTesterPrc {
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCR;
         rdr.debugStat(slot + "/" + name + ": starting process");
+    }
+
+    public int compare(userTesterPrc o1, userTesterPrc o2) {
+        return o1.name.compareTo(o2.name);
     }
 
     public void waitFor() {
@@ -1358,7 +1362,7 @@ class userTesterOne {
 
     private String stage = "init";
 
-    private List<userTesterPrc> procs = new ArrayList<userTesterPrc>();
+    private tabGen<userTesterPrc> procs = new tabGen<userTesterPrc>();
 
     private List<String> lineD;
 
@@ -1747,12 +1751,21 @@ class userTesterOne {
                 success();
                 return;
             }
+            userTesterPrc ctP = procs.get(0);
+            String ctV = "v9";
             String rn = cmd.word();
             String ftr = "";
             for (;;) {
                 s = cmd.word();
                 if (s.length() < 1) {
                     break;
+                }
+                if (s.equals("controller")) {
+                    ctP = new userTesterPrc(rdr, slot, cmd.word(), null);
+                    ctP.stopNow();
+                    ctP = procs.find(ctP);
+                    ctV = cmd.word();
+                    continue;
                 }
                 if (s.equals("feature")) {
                     ftr = cmd.getRemaining();
@@ -1810,8 +1823,8 @@ class userTesterOne {
             }
             if (img.otherM < 1) {
                 int prt = 30001 + (slot * userTester.portSlot) + procs.size();
-                procs.get(0).putLine("test hwcfg tcp2vrf " + prt + " v9 9080");
-                procs.get(0).doSync();
+                ctP.putLine("test hwcfg tcp2vrf " + prt + " " + ctV + " 9080");
+                ctP.doSync();
                 s = img.otherI + " 127.0.0.1 " + prt + " 0 127.0.0.1 127.0.0.1";
                 for (int i = 1; i < lps.size(); i++) {
                     s += " " + lps.get(i) + " " + rps.get(i);
