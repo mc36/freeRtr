@@ -155,6 +155,13 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 
+char* getCapas() {
+    return "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp";
+}
+
+
+
+
 int doOneCommand(unsigned char* buf) {
     unsigned char buf2[1024];
     char* arg[128];
@@ -2682,3 +2689,4 @@ int doConsoleCommand(unsigned char*buf) {
     }
     return 0;
 }
+

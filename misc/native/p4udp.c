@@ -96,7 +96,7 @@ void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform %sudp\r\n", platformBase);
-    fprintf(commands, "capabilities %s\r\n", capabilities);
+    fprintf(commands, "capabilities %s\r\n", getCapas());
     for (int i = 0; i < ports; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuport);
     fprintf(commands, "dynrange %i 65535\r\n", maxPorts);

@@ -17,7 +17,16 @@ int cpuport;
 char *ifaceName[maxPorts];
 
 
+
+char* getCapas() {
+    return "nothing";
+}
+
+
 void initIface(int port, char *name) {
+    ifaceName[port] = malloc(strlen(name)+1);
+    if (ifaceName[port] == NULL) err("error allocating memory");
+    strcpy(ifaceName[port], name);
 }
 
 
@@ -32,6 +41,12 @@ int doOneCommand(unsigned char* buf) {
 
 
 void doStatRound(FILE *commands, int round) {
+    if ((round % 10) != 0) return;
+    for (int i = 0; i < ports; i++) {
+        int o = getState(i);
+        fprintf(commands, "state %i %i\r\n", i, o);
+    }
+    fflush(commands);
 }
 
 
@@ -57,4 +72,3 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
     if (prt >= ports) return;
     sendPack(&bufD[preBuff + 2], bufS - 2, prt);
 }
-
