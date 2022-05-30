@@ -5,10 +5,8 @@
 #include <pthread.h>
 #include <arpa/inet.h>
 
-#undef debugging
-#undef basicLoop
 
-#include "p4cns.h"
+#include "p4hdr.h"
 
 
 struct sockaddr_in peers[maxPorts];
@@ -42,10 +40,6 @@ void err(char*buf) {
     exit(1);
 }
 
-
-#include "p4tab.h"
-#include "p4fwd.h"
-#include "p4msg.h"
 
 
 

@@ -7,7 +7,7 @@
 #include <pcap.h>
 
 
-#include "p4cns.h"
+#include "p4hdr.h"
 
 pcap_t *ifacePcap[maxPorts];
 
@@ -42,11 +42,6 @@ void err(char*buf) {
 }
 
 
-
-
-#include "p4tab.h"
-#include "p4fwd.h"
-#include "p4msg.h"
 
 
 pthread_t threadRaw[maxPorts];

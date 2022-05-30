@@ -1,18 +1,7 @@
-#include "utils.h"
-#include "table.h"
-#include "tree.h"
-#include "types.h"
-
-
-#define preBuff 512
-#define minBuff 128
-#define maxBuff 1024
-
-
-int ports = 0;
-int cpuport = 0;
 int punts = 0;
 
+int ports;
+int cpuport;
 char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
 long int packRx[maxPorts];

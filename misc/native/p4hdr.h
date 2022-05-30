@@ -1,0 +1,40 @@
+#include <openssl/conf.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#include <openssl/provider.h>
+#endif
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <openssl/err.h>
+
+#define maxPorts 128
+#define preBuff 512
+#define minBuff 128
+#define maxBuff 1024
+
+extern int ports;
+extern int cpuport;
+extern char *ifaceName[maxPorts];
+
+void err(char*buf);
+void sendPack(unsigned char *bufD, int bufS, int port);
+void setMtu(int port, int mtu);
+void setState(int port, int sta);
+int getState(int port);
+void getStats(int port, unsigned char*buf, unsigned char*pre, int*len);
+
+extern void initIface(int port, char *name);
+extern int initTables();
+extern int hashDataPacket(unsigned char *bufP);
+extern void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
+extern void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
+extern int doOneCommand(unsigned char* buf);
+extern void doStatRound(FILE *commands, int round);
+extern int doConsoleCommand(unsigned char*buf);
+
+#ifdef basicLoop
+#define capabilities "nothing"
+#else
+#define capabilities "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp"
+#endif
+
+#define platformBase "p4emu/openssl/"

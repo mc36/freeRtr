@@ -21,6 +21,12 @@ clang -Wall $MD -c -g -target bpf -I /usr/include/$UM-linux-gnu/ -o$TR/$1.bin $1
 touch -d "2010-01-01 00:00:00" $TR/$1.bin
 }
 
+compileLib()
+{
+echo compiling $1.
+$CC -Wall -c $MD -o$TR/$1.lib $1.c
+}
+
 compileFile()
 {
 echo compiling $1.
@@ -28,6 +34,17 @@ $CC -Wall $MD $4 -o$TR/$1.bin $2 $1.c $3
 strip $TR/$1.bin
 touch -d "2010-01-01 00:00:00" $TR/$1.bin
 }
+
+compilePcap()
+{
+compileFile $1 "" "-lpthread -lpcap -lcrypto $TR/$2.lib" ""
+}
+
+compileDpdk()
+{
+compileFile $1 "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev $TR/$2.lib" "-march=corei7"
+}
+
 
 for fn in p4xdp_pass p4xdp_kern; do
   compileBpf $fn
@@ -37,21 +54,35 @@ for fn in p4xdp_user; do
   compileFile $fn "" "-lpthread -lbpf" ""
   done
 
+for fn in p4lib p4none; do
+  compileLib $fn
+  done
+
 for fn in p4bench; do
-  compileFile $fn "" "-lcrypto" ""
+  compileFile $fn "" "-lcrypto $TR/p4lib.lib" ""
   done
 
 for fn in p4udp; do
-  compileFile $fn "" "-lpthread -lcrypto" ""
+  compileFile $fn "" "-lpthread -lcrypto $TR/p4lib.lib" ""
   done
 
-for fn in p4emu p4pkt; do
-  compileFile $fn "" "-lpthread -lpcap -lcrypto" ""
+for fn in p4emu; do
+  compilePcap $fn "p4lib"
   done
 
-for fn in p4dpdk p4dpdkPkt; do
-  compileFile $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev" "-march=corei7"
+for fn in p4pkt; do
+  compilePcap $fn "p4none"
   done
+
+for fn in p4dpdk; do
+  compileDpdk $fn "p4lib"
+  done
+
+for fn in p4dpdkPkt; do
+  compileDpdk $fn "p4none"
+  done
+
+rm $TR/*.lib
 
 for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" ""

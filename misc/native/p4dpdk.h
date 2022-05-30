@@ -14,7 +14,9 @@
 
 
 
-#include "p4cns.h"
+#include "p4hdr.h"
+#include "utils.h"
+#include "types.h"
 
 
 struct rte_mempool *mbuf_pool[RTE_MAX_NUMA_NODES];
@@ -81,12 +83,6 @@ void err(char*buf) {
     exit(1);
 }
 
-
-
-
-#include "p4tab.h"
-#include "p4fwd.h"
-#include "p4msg.h"
 
 
 int commandSock;

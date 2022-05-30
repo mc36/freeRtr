@@ -1,6 +1,3 @@
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
-
-
 #ifdef debugging
 
 int dropStat[4096];
@@ -37,33 +34,6 @@ void send2cpu(unsigned char *bufD, int bufP, int bufS, int port) {
 }
 
 
-
-
-
-#ifdef basicLoop
-
-
-int hashDataPacket(unsigned char *bufP) {
-    return 0;
-}
-
-
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
-    packRx[port]++;
-    byteRx[port] += bufS;
-    send2cpu(bufD, preBuff + 12, bufS, port);
-}
-
-
-void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
-    packRx[cpuport]++;
-    byteRx[cpuport] += bufS;
-    int prt = get16msb(bufD, preBuff);
-    send2port(&bufD[preBuff + 2], bufS - 2, prt);
-}
-
-
-#else
 
 
 
@@ -2241,6 +2211,3 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
     if (prt < 0) return;
     processDataPacket(bufA, bufB, bufC, bufD, bufS, cpuport, prt, encrCtx, hashCtx);
 }
-
-
-#endif

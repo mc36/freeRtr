@@ -156,7 +156,6 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 int doOneCommand(unsigned char* buf) {
-#ifndef basicLoop
     unsigned char buf2[1024];
     char* arg[128];
     int cnt;
@@ -2193,7 +2192,6 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&mroute6_res->flood, &flood_ntry);
         return 0;
     }
-#endif
     return 0;
 }
 
@@ -2461,7 +2459,6 @@ void doStatRound(FILE *commands, int round) {
         int o = getState(i);
         fprintf(commands, "state %i %i\r\n", i, o);
     }
-#ifndef basicLoop
     for (int i=0; i<bundle_table.size; i++) {
         struct bundle_entry *ntry = table_get(&bundle_table, i);
         fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
@@ -2530,7 +2527,6 @@ void doStatRound(FILE *commands, int round) {
         doStatRound_acl(ntry1, 6, commands);
         if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port, commands);
     }
-#endif
 #ifdef debugging
     for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
         if (dropStat[i] == 0) continue;
@@ -2574,10 +2570,8 @@ void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int, void *
 }
 
 int doConsoleCommand(unsigned char*buf) {
-#ifndef basicLoop
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-#endif
     switch (buf[0]) {
     case 0:
         break;
@@ -2588,7 +2582,6 @@ int doConsoleCommand(unsigned char*buf) {
         printf("h - this help\n");
         printf("x - exit process\n");
         printf("i - interface counters\n");
-#ifndef basicLoop
         printf("p - display portvrf table\n");
         printf("b - display bridge table\n");
         printf("m - display mpls table\n");
@@ -2598,7 +2591,6 @@ int doConsoleCommand(unsigned char*buf) {
         printf("a - display acl table\n");
         printf("q - display qos table\n");
         printf("v - display vlan table\n");
-#endif
         break;
     case 'x':
     case 'X':
@@ -2611,7 +2603,6 @@ int doConsoleCommand(unsigned char*buf) {
             printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
         }
         break;
-#ifndef basicLoop
     case 'm':
     case 'M':
         printf("     label ip        vrf cmd       swap    nexthop\n");
@@ -2685,7 +2676,6 @@ int doConsoleCommand(unsigned char*buf) {
         printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
         doConsoleCommand_ipvX(&vrf2rib6_table, &doConsoleCommand_ipv6);
         break;
-#endif
     default:
         printf("unknown command '%s', try ?\n", buf);
         break;
