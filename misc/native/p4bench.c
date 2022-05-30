@@ -62,8 +62,8 @@ int main(int argc, char **argv) {
     else printf("msb");
     printf(", rounds=%i\n", count);
     hexdump(origD, 0, origS);
-    ports = 1;
-    cpuport = 1;
+    dataPorts = 1;
+    cpuPort = 1;
     initTables();
     FILE * fil =fopen(argv[1], "r");
     if (fil == NULL) err("error opening commands");

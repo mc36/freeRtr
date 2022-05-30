@@ -259,7 +259,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "stats") == 0) {
         i = atoi(arg[1]);
         if (i < 0) return 0;
-        if (i >= ports) return 0;
+        if (i >= dataPorts) return 0;
         portStatsLen = snprintf((char*)&portStatsBuf, 128, "stats_beg %i\r\n", i);
         snprintf((char*)&buf2, 128, "stats_txt %i ", i);
         getStats(i, &portStatsBuf[0], &buf2[0], &portStatsLen);
@@ -270,7 +270,7 @@ int doOneCommand(unsigned char* buf) {
         i = atoi(arg[1]);
         o = atoi(arg[2]);
         if (i < 0) return 0;
-        if (i >= ports) return 0;
+        if (i >= dataPorts) return 0;
         setState(i, o);
         return 0;
     }
@@ -278,7 +278,7 @@ int doOneCommand(unsigned char* buf) {
         i = atoi(arg[1]);
         o = atoi(arg[2]);
         if (i < 0) return 0;
-        if (i >= ports) return 0;
+        if (i >= dataPorts) return 0;
         setMtu(i, o);
         return 0;
     }
@@ -2461,7 +2461,7 @@ void doStatRound(FILE *commands, int round) {
         fflush(commands);
     }
     if ((round % 10) != 0) return;
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
         int o = getState(i);
         fprintf(commands, "state %i %i\r\n", i, o);
@@ -2487,7 +2487,7 @@ void doStatRound(FILE *commands, int round) {
     }
     unsigned char buf[1024];
     unsigned char buf2[1024];
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
@@ -2606,7 +2606,7 @@ int doConsoleCommand(unsigned char*buf) {
     case 'i':
     case 'I':
         printf("                           iface         rx         tx       drop         rx         tx       drop\n");
-        for (int i=0; i<ports; i++) {
+        for (int i=0; i<dataPorts; i++) {
             printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
         }
         break;

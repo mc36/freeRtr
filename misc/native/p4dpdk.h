@@ -132,8 +132,8 @@ void doStatLoop() {
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform %sdpdk\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", getCapas());
-    for (int i = 0; i < ports; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
-    fprintf(commands, "cpuport %i\r\n", cpuport);
+    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange %i 65535\r\n", maxPorts);
     fflush(commands);
     int rnd = 0;
@@ -239,7 +239,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
-                if (port == cpuport) {
+                if (port == cpuPort) {
                     for (i = 0; i < num; i++) {
                         mbuf2mybuf(mbufs[i]);
                         processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
@@ -284,7 +284,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
-                if (port == cpuport) {
+                if (port == cpuPort) {
                     for (i = 0; i < num; i++) {
                         mbuf2mybuf(mbufs[i]);
                         processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
@@ -318,12 +318,12 @@ int main(int argc, char **argv) {
     argc -= ret;
     argv += ret;
 
-    ports = rte_eth_dev_count_avail();
-    if (ports < 2) err("at least 2 ports needed");
+    dataPorts = rte_eth_dev_count_avail();
+    if (dataPorts < 2) err("at least 2 ports needed");
     int cores = rte_lcore_count();
     if (cores < 1) err("at least 1 cores needed");
-    printf("%i cores and %i ports detected...\n", cores, ports);
-    if (ports > maxPorts) ports = maxPorts;
+    printf("%i cores and %i ports detected...\n", cores, dataPorts);
+    if (dataPorts > maxPorts) dataPorts = maxPorts;
 
     if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0] [-9 brstsiz 0] [-10 brstslp 0]...");
     printf("dpdk version: %s\n", rte_version());
@@ -338,8 +338,8 @@ int main(int argc, char **argv) {
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
-    cpuport = atoi(argv[3]);
-    printf("cpu port is #%i of %i...\n", cpuport, ports);
+    cpuPort = atoi(argv[3]);
+    printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
     int port2rx[RTE_MAX_ETHPORTS];
     int port2tx[RTE_MAX_ETHPORTS];
@@ -403,7 +403,7 @@ int main(int argc, char **argv) {
             lcore_conf[t].justProcessor++;
             continue;
         }
-        if (p > ports) continue;
+        if (p >= dataPorts) continue;
         port2rx[p] = r;
         port2tx[p] = t;
     }
@@ -413,7 +413,7 @@ int main(int argc, char **argv) {
         lcore_procs++;
         lcore_conf[i].justProcessor = lcore_procs;
     }
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         int r = port2rx[i];
         int t = port2tx[i];
         lcore_conf[r].rx_list[lcore_conf[r].rx_num] = i;
@@ -431,7 +431,7 @@ int main(int argc, char **argv) {
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-pool%i", i);
         printf("opening mempool on socket %i...\n", i);
-        mbuf_pool[i] = rte_pktmbuf_pool_create((char*)&buf[0], mbuf_num * ports, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), i);
+        mbuf_pool[i] = rte_pktmbuf_pool_create((char*)&buf[0], mbuf_num * dataPorts, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), i);
         if (mbuf_pool[i] == NULL) err("cannot create mbuf pool");
     }
 

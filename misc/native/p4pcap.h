@@ -65,7 +65,7 @@ void doIfaceLoop(int * param) {
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
     if (hashCtx == NULL) err("error getting hash context");
-    if (port == cpuport) {
+    if (port == cpuPort) {
         for (;;) {
             if (fail++ > 1024) break;
             pack = pcap_next(ifacePcap[port], &head);
@@ -112,8 +112,8 @@ void doStatLoop() {
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform %spcap\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", getCapas());
-    for (int i = 0; i < ports; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
-    fprintf(commands, "cpuport %i\r\n", cpuport);
+    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange %i 65535\r\n", maxPorts);
     fflush(commands);
     int rnd = 0;
@@ -151,13 +151,13 @@ void doMainLoop() {
 int main(int argc, char **argv) {
     char errbuf[PCAP_ERRBUF_SIZE + 1];
 
-    ports = 0;
+    dataPorts = 0;
     for (int i = 4; i < argc; i++) {
-        initIface(ports, argv[i]);
-        ports++;
+        initIface(dataPorts, argv[i]);
+        dataPorts++;
     }
-    if (ports < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
-    if (ports > maxPorts) ports = maxPorts;
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
+    if (dataPorts > maxPorts) dataPorts = maxPorts;
     printf("pcap version: %s\n", pcap_lib_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
@@ -170,10 +170,10 @@ int main(int argc, char **argv) {
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
-    cpuport = atoi(argv[3]);
-    printf("cpu port is #%i of %i...\n", cpuport, ports);
+    cpuPort = atoi(argv[3]);
+    printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         printf("opening interface %s\n", ifaceName[i]);
         ifacePcap[i] = pcap_create(ifaceName[i], errbuf);
         if (ifacePcap[i] == NULL) err("unable to open interface");
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
 
-    for (int i=0; i < ports; i++) {
+    for (int i=0; i < dataPorts; i++) {
         if (pthread_create(&threadRaw[i], NULL, (void*) & doIfaceLoop, &ifaceId[i])) err("error creating port thread");
     }
 

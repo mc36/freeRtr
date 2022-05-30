@@ -57,7 +57,7 @@ void doIfaceLoop(int * param) {
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
     if (hashCtx == NULL) err("error getting hash context");
-    if (port == cpuport) {
+    if (port == cpuPort) {
         for (;;) {
             addrLen = sizeof(addrTmp);
             bufS = sizeof(bufD) - preBuff;
@@ -97,8 +97,8 @@ void doStatLoop() {
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform %sudp\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", getCapas());
-    for (int i = 0; i < ports; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
-    fprintf(commands, "cpuport %i\r\n", cpuport);
+    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange %i 65535\r\n", maxPorts);
     fflush(commands);
     int rnd = 0;
@@ -130,17 +130,17 @@ void doMainLoop() {
 
 
 int main(int argc, char **argv) {
-    ports = (argc - 6) / 2;
-    if (ports < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> <lport2> <rport2> ...");
-    if (ports > maxPorts) ports = maxPorts;
+    dataPorts = (argc - 6) / 2;
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> <lport2> <rport2> ...");
+    if (dataPorts > maxPorts) dataPorts = maxPorts;
     struct sockaddr_in addrLoc;
     memset(&addrLoc, 0, sizeof(addrLoc));
     if (inet_aton(argv[4], &addrLoc.sin_addr) == 0) err("bad laddr address");
     addrLoc.sin_family = AF_INET;
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         unsigned char buf[1024];
         sprintf((char*)&buf[0], "port-%i", i);
-        initIface(ports, (char*)&buf[0]);
+        initIface(i, (char*)&buf[0]);
         memset(&peers[i], 0, sizeof(peers[i]));
         if (inet_aton(argv[5], &peers[i].sin_addr) == 0) err("bad raddr address");
         addrLoc.sin_port = htons(atoi(argv[(i*2)+6]));
@@ -160,13 +160,13 @@ int main(int argc, char **argv) {
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addrLoc, sizeof(addrLoc)) < 0) err("failed to connect socket");
-    cpuport = atoi(argv[3]);
-    printf("cpu port is #%i of %i...\n", cpuport, ports);
+    cpuPort = atoi(argv[3]);
+    printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
-    for (int i=0; i < ports; i++) {
+    for (int i=0; i < dataPorts; i++) {
         if (pthread_create(&threadRaw[i], NULL, (void*) & doIfaceLoop, &ifaceId[i])) err("error creating port thread");
     }
     doMainLoop();

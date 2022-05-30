@@ -24,7 +24,7 @@ void warn(char*buf) {
 
 int commandSock;
 int ifaces[maxPorts];
-int ports;
+int dataPorts;
 int prog_fd;
 int cpu_port_fd;
 int rx_ports_fd;
@@ -39,7 +39,7 @@ int vlan_in_fd;
 int vlan_out_fd;
 int pppoes_fd;
 int bridges_fd;
-int cpuport;
+int cpuPort;
 
 
 #include "p4xdp_msg.h"
@@ -64,8 +64,8 @@ void doStatLoop() {
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform p4xdp\r\n");
     fprintf(commands, "capabilities route mpls bundle vlan pppoe eompls bridge vpls evpn\r\n");
-    for (int i = 0; i < ports; i++) fprintf(commands, "portname %i xdp-port%i\r\n", i, ifaces[i]);
-    fprintf(commands, "cpuport %i\r\n", cpuport);
+    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i xdp-port%i\r\n", i, ifaces[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");
     fflush(commands);
     int rnd = 0;
@@ -113,15 +113,15 @@ void doMainLoop() {
 
 
 int main(int argc, char **argv) {
-    ports = 0;
+    dataPorts = 0;
     for (int i = 4; i < argc; i++) {
         printf("opening %s...", argv[i]);
-        ifaces[ports] = if_nametoindex(argv[i]);
-        if (ifaces[ports] == 0) err("error getting interface index");
-        printf(" idx=%i\n", ifaces[ports]);
-        ports++;
+        ifaces[dataPorts] = if_nametoindex(argv[i]);
+        if (ifaces[dataPorts] == 0) err("error getting interface index");
+        printf(" idx=%i\n", ifaces[dataPorts]);
+        dataPorts++;
     }
-    if (ports < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));
@@ -132,8 +132,8 @@ int main(int argc, char **argv) {
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
-    cpuport = atoi(argv[3]);
-    printf("cpu port is #%i of %i...\n", cpuport, ports);
+    cpuPort = atoi(argv[3]);
+    printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
     printf("loading %s...\n", argv[0]);
@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
     bridges_fd = bpf_object__find_map_fd_by_name(bpf_obj, "bridges");
     if (bridges_fd < 0) err("error finding table");
 
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         printf("opening index %i...\n", ifaces[i]);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);
         bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_SKB_MODE);
@@ -179,9 +179,9 @@ int main(int argc, char **argv) {
     }
 
     int o = 0;
-    int p = ifaces[cpuport];
+    int p = ifaces[cpuPort];
     if (bpf_map_update_elem(cpu_port_fd, &o, &p, BPF_ANY) != 0) err("error setting cpuport");
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         printf("initializing index %i...\n", ifaces[i]);
         struct port_res ntry;
         memset(&ntry, 0, sizeof(ntry));

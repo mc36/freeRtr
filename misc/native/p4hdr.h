@@ -11,8 +11,8 @@
 #define minBuff 128
 #define maxBuff 1024
 
-extern int ports;
-extern int cpuport;
+extern int dataPorts;
+extern int cpuPort;
 extern char *ifaceName[maxPorts];
 
 void err(char*buf);

@@ -1,7 +1,7 @@
 int punts = 0;
 
-int ports;
-int cpuport;
+int dataPorts;
+int cpuPort;
 char *ifaceName[maxPorts];
 long int byteRx[maxPorts];
 long int packRx[maxPorts];

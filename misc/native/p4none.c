@@ -12,8 +12,8 @@
 #include "types.h"
 
 
-int ports;
-int cpuport;
+int dataPorts;
+int cpuPort;
 char *ifaceName[maxPorts];
 
 
@@ -42,7 +42,7 @@ int doOneCommand(unsigned char* buf) {
 
 void doStatRound(FILE *commands, int round) {
     if ((round % 10) != 0) return;
-    for (int i = 0; i < ports; i++) {
+    for (int i = 0; i < dataPorts; i++) {
         int o = getState(i);
         fprintf(commands, "state %i %i\r\n", i, o);
     }
@@ -62,13 +62,13 @@ int hashDataPacket(unsigned char *bufP) {
 
 void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     put16msb(bufD, preBuff - 2, port);
-    sendPack(&bufD[preBuff - 2], bufS + 2, cpuport);
+    sendPack(&bufD[preBuff - 2], bufS + 2, cpuPort);
 }
 
 
 void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     int prt = get16msb(bufD, preBuff);
     if (prt < 0) return;
-    if (prt >= ports) return;
+    if (prt >= dataPorts) return;
     sendPack(&bufD[preBuff + 2], bufS - 2, prt);
 }

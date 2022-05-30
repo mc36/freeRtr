@@ -244,15 +244,15 @@ int xdp_router(struct xdp_md *ctx) {
     __builtin_memcpy(macaddr, &bufD[0], sizeof(macaddr));
 
     int tmp = 0;
-    int* cpuport = bpf_map_lookup_elem(&cpu_port, &tmp);
-    if (cpuport == NULL) goto drop;
+    int* cpuPort = bpf_map_lookup_elem(&cpu_port, &tmp);
+    if (cpuPort == NULL) goto drop;
 
     int prt = ctx->ingress_ifindex;
     struct port_res* rxport = bpf_map_lookup_elem(&rx_ports, &prt);
     if (rxport == NULL) goto drop;
     rxport->pack++;
     rxport->byte += bufE - bufD;
-    if (prt == *cpuport) {
+    if (prt == *cpuPort) {
         prt = get16msb(bufD, 0);
         struct port_res* txport = bpf_map_lookup_elem(&tx_ports, &prt);
         if (txport == NULL) goto drop;
@@ -612,7 +612,7 @@ cpu:
     if (bpf_xdp_adjust_head(ctx, -2) != 0) goto drop;
     revalidatePacket(2);
     put16msb(bufD, 0, rxport->idx);
-    return bpf_redirect(*cpuport, 0);
+    return bpf_redirect(*cpuPort, 0);
 drop:
     return XDP_DROP;
 }

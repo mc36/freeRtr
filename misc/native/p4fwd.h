@@ -17,7 +17,7 @@ int dropStat[4096];
 
 void send2port(unsigned char *bufD, int bufS, int port) {
     if (port < 0) return;
-    if (port >= ports) return;
+    if (port >= dataPorts) return;
     sendPack(bufD, bufS, port);
     packTx[port]++;
     byteTx[port] += bufS;
@@ -30,7 +30,7 @@ void send2cpu(unsigned char *bufD, int bufP, int bufS, int port) {
     memmove(&bufD[bufP], &bufD[preBuff], 12);
     bufP -= 2;
     put16msb(bufD, bufP, port);
-    send2port(&bufD[bufP], bufS - bufP + preBuff, cpuport);
+    send2port(&bufD[bufP], bufS - bufP + preBuff, cpuPort);
 }
 
 
@@ -2200,8 +2200,8 @@ cpu:
 
 
 void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
-    packRx[cpuport]++;
-    byteRx[cpuport] += bufS;
+    packRx[cpuPort]++;
+    byteRx[cpuPort] += bufS;
     int prt = get16msb(bufD, preBuff + 0);
     int hash = get32msb(bufD, preBuff + 2) ^ get32msb(bufD, preBuff + 6) ^ get32msb(bufD, preBuff + 10);
     int ethtyp = get16msb(bufD, preBuff + 14);
@@ -2209,5 +2209,5 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
     memmove(&bufC[0], &bufD[preBuff + 2], 12);
     prt = send2subif(prt, NULL, NULL, hash, bufD, &bufP, &bufS, bufC, &ethtyp, -1);
     if (prt < 0) return;
-    processDataPacket(bufA, bufB, bufC, bufD, bufS, cpuport, prt, encrCtx, hashCtx);
+    processDataPacket(bufA, bufB, bufC, bufD, bufS, cpuPort, prt, encrCtx, hashCtx);
 }
