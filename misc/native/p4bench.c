@@ -49,9 +49,9 @@ int main(int argc, char **argv) {
         origS++;
     }
     *((int*)(&bufC[0])) = 1;
-    printf("code: %i, int=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(int*));
-    if (bufC[0] == 1) printf("lsb\n"); else printf("msb\n");
-    printf("rounds: %i\n", count);
+    printf("code=%i, int=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(int*));
+    if (bufC[0] == 1) printf("lsb"); else printf("msb");
+    printf(", rounds=%i\n", count);
     hexdump(origD, 0, origS);
     ports = 1;
     cpuport = 1;
@@ -111,11 +111,9 @@ int main(int argc, char **argv) {
     double spent = (double)(end - begin) / (double)CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
     hexdump(lastB, 0, lastS);
-    printf("packets: %li\n", packs);
-    printf("bytes: %li\n", bytes);
-    printf("time: %f\n", spent);
+    printf("packets=%li, bytes=%li, time=%f\n", packs, bytes, spent);
     double prn = (double)packs / spent;
-    printf("pps: %f, %f mpps\n", prn, prn / 1000000.0);
+    printf("pps=%f, %f mpps\n", prn, prn / 1000000.0);
     prn = (double)bytes * 8.0 / spent;
-    printf("bps: %f, %f gbps\n", prn, prn / 1000000000.0);
+    printf("bps=%f, %f gbps\n", prn, prn / 1000000000.0);
 }

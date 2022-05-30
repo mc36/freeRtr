@@ -85,8 +85,8 @@ void err(char*buf) {
 
 
 #include "p4tab.h"
-#include "p4msg.h"
 #include "p4fwd.h"
+#include "p4msg.h"
 
 
 int commandSock;
