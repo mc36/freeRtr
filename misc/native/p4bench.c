@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         origS++;
     }
     *((int*)(&bufC[0])) = 1;
-    printf("code=%i, int=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(int*));
+    printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
     if (bufC[0] == 1) printf("lsb");
     else printf("msb");
     printf(", rounds=%i\n", count);
