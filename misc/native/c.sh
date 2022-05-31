@@ -23,7 +23,7 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin
 
 compileLib()
 {
-echo compiling $1.
+echo precompiling $1.
 $CC -Wall -c $MD $3 -o$TR/$1.lib $2 $1.c
 touch -d "2010-01-01 00:00:00" $TR/$1.lib
 }
