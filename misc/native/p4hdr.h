@@ -4,7 +4,6 @@
 #endif
 #include <openssl/evp.h>
 #include <openssl/rand.h>
-#include <openssl/err.h>
 
 #define maxPorts 128
 #define preBuff 512
