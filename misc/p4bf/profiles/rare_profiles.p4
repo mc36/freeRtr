@@ -14,6 +14,7 @@
 #include "profile-rawip.p4"
 #include "profile-srv6.p4"
 #include "profile-tor.p4"
+#include "profile-vpls.p4"
 #include "profile-wlc.p4"
 #include "profile-nop-mchome.p4"
 #include "profile-geant-testbed.p4"
