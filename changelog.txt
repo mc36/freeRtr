@@ -13274,3 +13274,6 @@ no qc pass: unnamed
 qc pass: dummy test
 qc pass: interface with slot
 qc pass: subinterface with slot
+---------------------------------- 2022-06-01 07:23:39 22.6.1
+qc pass: p4lang: mpls core over backplane
+qc pass: p4lang: mpls vpn over backplane
