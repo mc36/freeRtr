@@ -3431,8 +3431,8 @@ public class servP4langConn implements Runnable {
         }
     }
 
-    private boolean doRemRou(boolean del, String afi, String act, String a, int vrf, tabLabelEntry cml, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> done) {
-        servP4langCfg oth = lower.parent.findIfc(lower, ntry.best.iface);
+    private boolean doRemRou(boolean del, String afi, String act, String a, int vrf, tabLabelEntry cml, tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> recur, tabRoute<addrIP> done) {
+        servP4langCfg oth = lower.parent.findIfc(lower, recur.best.iface);
         if (oth == null) {
             return false;
         }
@@ -3505,7 +3505,7 @@ public class servP4langConn implements Runnable {
                         }
                         act = "mod";
                     }
-                    if (doRemRou(false, afi, act, a, vrf, cml, ntry, done)) {
+                    if (doRemRou(false, afi, act, a, vrf, cml, ntry, recur, done)) {
                         continue;
                     }
                     continue;
@@ -3564,7 +3564,7 @@ public class servP4langConn implements Runnable {
                 if (fif != null) {
                     sif = "" + fif.id;
                 } else {
-                    if (doRemRou(true, afi, act, a, vrf, cml, ntry, done)) {
+                    if (doRemRou(true, afi, act, a, vrf, cml, ntry, ntry, done)) {
                         continue;
                     }
                 }
@@ -3573,7 +3573,7 @@ public class servP4langConn implements Runnable {
             }
             servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
-                if (doRemRou(true, afi, act, a, vrf, cml, ntry, done)) {
+                if (doRemRou(true, afi, act, a, vrf, cml, ntry, ntry, done)) {
                     continue;
                 }
                 done.del(ntry);
