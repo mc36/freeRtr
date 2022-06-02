@@ -246,7 +246,7 @@ ig_md.mpls0_remove:
 ig_md.mpls1_remove:
             exact;
 ig_md.mpls_encap_decap_sap_type:
-            ternary;
+            exact;
 ig_md.nexthop_id:
             ternary;
         }
@@ -300,13 +300,23 @@ ig_md.nexthop_id:
             (1, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_srv_l3vpn_ipv4_encap();
             (1, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_srv_l3vpn_ipv6_encap();
 #endif
-            (0, 0, 0, 0, 0, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 1, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 0, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 1, _, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 0, 0, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 1, 0, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 0, 0, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 1, 0, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 1, 4, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 1, 4, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 1, 6, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 1, 6, CPU_PORT):act_pkt_send_to_cpu();
 #ifdef HAVE_SRV6
-            (1, 0, 0, 0, 0, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 1, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
+            (1, 0, 0, 0, 0, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 1, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+            (1, 0, 0, 0, 0, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 1, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
 #endif
 #ifdef HAVE_MPLS
             (0, 0, 0, 0, 0, 1, 1, 4, _):act_pkt_mpls_ipv4_decap_0_1();
@@ -326,7 +336,7 @@ ig_md.nexthop_id:
 #endif
         }
 
-        size = 20;
+        size = 32;
         default_action = NoAction();
 
     }

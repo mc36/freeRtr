@@ -32,6 +32,7 @@ cd ~/rare/p4src
 export SDE=/home/mc36/bf-sde-9.9.0
 export SDE_INSTALL=$SDE/install
 rm -rf $SDE/install/bf_router.tofino
+#-b tofino2 -a t2na
 $SDE/install/bin/bf-p4c -I. -I../profiles $@ -Xp4c="--disable-parse-depth-limit" bf_router.p4
 if [ -f bf_router.tofino/pipe/tofino.bin ] ; then
   echo "******* compilation finished successfully *******"
