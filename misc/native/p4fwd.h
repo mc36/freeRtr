@@ -616,8 +616,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
     neigh_res->pack++;
     neigh_res->byte += *bufS;
     int prt = neigh_res->port;
-    memcpy(&bufH[0], &neigh_res->dmac, 6);
-    memcpy(&bufH[6], &neigh_res->smac, 6);
+    memcpy(&bufH[0], &neigh_res->macs, 12);
     if (neigh_res->aclport != prt) {
         if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) doDropper;
     }
@@ -761,8 +760,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             tmpS = bufS - bufP + preBuff + 2;
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
-            memcpy(&bufH[0], &flood_res->dmac, 6);
-            memcpy(&bufH[6], &flood_res->smac, 6);
+            memcpy(&bufH[0], &flood_res->macs, 12);
             tmp = send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         case 2: // mpls
@@ -2039,8 +2037,7 @@ ipv6_tx:
             ethtyp = ETHERTYPE_NSH;
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
-            memcpy(&bufH[0], &nsh_res->dmac, 6);
-            memcpy(&bufH[6], &nsh_res->smac, 6);
+            memcpy(&bufH[0], &nsh_res->macs, 12);
             prt = send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
             if (prt >= 0) goto ethtyp_rx;
             return;

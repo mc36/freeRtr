@@ -94,8 +94,7 @@ struct nsh_entry {
     int port;
     int vrf;
     int trg;
-    unsigned char smac[6];
-    unsigned char dmac[6];
+    unsigned char macs[12];
     long pack;
     long byte;
 };
@@ -329,8 +328,7 @@ struct neigh_entry {
     int port;
     int aclport;
     int session;
-    unsigned char smac[6];
-    unsigned char dmac[6];
+    unsigned char macs[12];
     int sip1;
     int sip2;
     int sip3;
@@ -928,8 +926,7 @@ struct flood_entry {
     int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset
     int lab;
     int src;
-    unsigned char smac[6];
-    unsigned char dmac[6];
+    unsigned char macs[12];
     int bier[8];
 };
 

@@ -384,8 +384,8 @@ int doOneCommand(unsigned char* buf) {
         nsh_ntry.si = atoi(arg[3]);
         nsh_ntry.command = 1;
         nsh_ntry.port = atoi(arg[4]);
-        str2mac(nsh_ntry.smac, arg[5]);
-        str2mac(nsh_ntry.dmac, arg[6]);
+        str2mac(&nsh_ntry.macs[6], arg[5]);
+        str2mac(&nsh_ntry.macs[0], arg[6]);
         nsh_ntry.trg = (atoi(arg[7]) << 8) | atoi(arg[8]);
         if (del == 0) table_del(&nsh_table, &nsh_ntry);
         else table_add(&nsh_table, &nsh_ntry);
@@ -776,8 +776,8 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.vrf = vrf2rib_ntry.vrf;
         neigh_ntry.aclport = neigh_ntry.port = atoi(arg[7]);
         neigh_ntry.command = 1;
-        str2mac(neigh_ntry.dmac, arg[4]);
-        str2mac(neigh_ntry.smac, arg[6]);
+        str2mac(&neigh_ntry.macs[0], arg[4]);
+        str2mac(&neigh_ntry.macs[6], arg[6]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route4_ntry);
         else tree_add(&vrf2rib_res->rou, &route4_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -913,8 +913,8 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.vrf = vrf2rib_ntry.vrf;
         neigh_ntry.aclport = neigh_ntry.port = atoi(arg[7]);
         neigh_ntry.command = 1;
-        str2mac(neigh_ntry.dmac, arg[4]);
-        str2mac(neigh_ntry.smac, arg[6]);
+        str2mac(&neigh_ntry.macs[0], arg[4]);
+        str2mac(&neigh_ntry.macs[6], arg[6]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route6_ntry);
         else tree_add(&vrf2rib_res->rou, &route6_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -1379,8 +1379,8 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.aclport = pppoe_ntry.aclport;
         neigh_ntry.session = pppoe_ntry.session;
         neigh_ntry.command = 2;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[8]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[8]);
         if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
         else table_add(&pppoe_table, &pppoe_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -1397,8 +1397,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 3;
         tun4_ntry.srcPort = 0;
         tun4_ntry.trgPort = 0;
@@ -1426,8 +1426,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 4;
         tun6_ntry.srcPort = 0;
         tun6_ntry.trgPort = 0;
@@ -1449,8 +1449,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 7;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1482,8 +1482,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 8;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1509,8 +1509,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 5;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
@@ -1541,8 +1541,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 6;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
@@ -1567,8 +1567,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 15;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
@@ -1598,8 +1598,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 16;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
@@ -1623,8 +1623,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 17;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
@@ -1655,8 +1655,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 18;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
@@ -1732,8 +1732,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 9;
         tun4_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
         tun4_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[11]);
@@ -1775,8 +1775,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 10;
         tun6_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
         tun6_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[11]);
@@ -1812,8 +1812,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 11;
         tun4_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun4_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
@@ -1856,8 +1856,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 12;
         tun6_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun6_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
@@ -1894,8 +1894,8 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 13;
         tun4_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun4_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
@@ -1926,8 +1926,8 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
         vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
-        str2mac(neigh_ntry.dmac, arg[7]);
-        str2mac(neigh_ntry.smac, arg[9]);
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 14;
         tun6_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun6_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
@@ -1992,8 +1992,8 @@ int doOneCommand(unsigned char* buf) {
         mroute4_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.command = 1;
-        str2mac(flood_ntry.smac, arg[9]);
-        str2mac(flood_ntry.dmac, arg[10]);
+        str2mac(&flood_ntry.macs[6], arg[9]);
+        str2mac(&flood_ntry.macs[0], arg[10]);
         if (del == 0) table_del(&mroute4_res->flood, &flood_ntry);
         else table_add(&mroute4_res->flood, &flood_ntry);
         return 0;
@@ -2015,8 +2015,8 @@ int doOneCommand(unsigned char* buf) {
         mroute6_res->ingr = atoi(arg[6]);
         flood_ntry.trg = atoi(arg[8]);
         flood_ntry.command = 1;
-        str2mac(flood_ntry.smac, arg[9]);
-        str2mac(flood_ntry.dmac, arg[10]);
+        str2mac(&flood_ntry.macs[6], arg[9]);
+        str2mac(&flood_ntry.macs[0], arg[10]);
         if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
         else table_add(&mroute6_res->flood, &flood_ntry);
         return 0;
@@ -2643,8 +2643,8 @@ int doConsoleCommand(unsigned char*buf) {
         printf("        id        vrf       port    aclport              smac              dmac\n");
         for (int i=0; i<neigh_table.size; i++) {
             struct neigh_entry *ntry = table_get(&neigh_table, i);
-            mac2str(ntry->smac, buf2);
-            mac2str(ntry->dmac, buf3);
+            mac2str(&ntry->macs[6], buf2);
+            mac2str(&ntry->macs[0], buf3);
             printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
         }
         break;
