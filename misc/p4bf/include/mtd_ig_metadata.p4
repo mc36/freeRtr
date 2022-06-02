@@ -111,8 +111,7 @@ struct ingress_metadata_t {
     bit <1> mpls_encap_rawip_valid;
     bit <1> mpls_encap_l3vpn_valid;
     bit <1> mpls_encap_l2vpn_valid;
-    bit <1> mpls_encap_xconnect_valid;
-    bit <4> mpls_encap_decap_sap_type;	// service access point type
+    bit <3> mpls_encap_decap_sap_type; // service access point type
 #ifdef HAVE_NAT
     bit<1> natted_ipv4tcp;
     bit<1> natted_ipv4udp;

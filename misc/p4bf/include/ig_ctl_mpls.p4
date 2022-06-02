@@ -153,7 +153,6 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.rpf_iface = ig_md.source_id;
         ig_md.mpls_encap_l2vpn_valid = 1;
         ig_md.mpls_encap_l3vpn_valid = 1;
-        ig_md.mpls_encap_xconnect_valid = 1;
     }
 #endif
 
@@ -185,7 +184,6 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.rpf_iface = ig_md.source_id;
         ig_md.mpls_encap_l2vpn_valid = 1;
         ig_md.mpls_encap_l3vpn_valid = 1;
-        ig_md.mpls_encap_xconnect_valid = 1;
     }
 #endif
 

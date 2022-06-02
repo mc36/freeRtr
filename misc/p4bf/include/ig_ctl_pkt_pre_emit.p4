@@ -176,11 +176,6 @@ control IngressControlPktPreEmit(inout headers hdr,
         _act_pkt_inner_eth_encap();
         _act_pkt_mpls2_encap();
     }
-
-    action act_pkt_mpls_xconnect_encap() {
-        _act_pkt_inner_eth_encap();
-        _act_pkt_mpls2_encap();
-    }
 #endif
 #endif
 
@@ -244,8 +239,6 @@ ig_md.mpls_encap_l3vpn_valid:
             exact;
 ig_md.mpls_encap_l2vpn_valid:
             exact;
-ig_md.mpls_encap_xconnect_valid:
-            exact;
 ig_md.srv_remove:
             exact;
 ig_md.mpls0_remove:
@@ -267,7 +260,6 @@ ig_md.nexthop_id:
             act_pkt_mpls_rawip_ipv6_reencap;
 #ifdef HAVE_BRIDGE
             act_pkt_mpls_l2vpn_encap;
-            act_pkt_mpls_xconnect_encap;
 #endif
 #endif
 #ifdef HAVE_SRV6
@@ -294,44 +286,43 @@ ig_md.nexthop_id:
 
         const entries = {
 #ifdef HAVE_MPLS
-            (0, 1, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_mpls_rawip_ipv4_encap();
-            (0, 1, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_rawip_ipv6_encap();
-            (0, 1, 0, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_rawip_ipv4_reencap();
-            (0, 1, 0, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_rawip_ipv6_reencap();
-            (0, 0, 1, 0, 0, 0, 0, 0, 4, _):act_pkt_mpls_l3vpn_ipv4_encap();
-            (0, 0, 1, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_l3vpn_ipv6_encap();
+            (0, 1, 0, 0, 0, 0, 0, 4, _):act_pkt_mpls_rawip_ipv4_encap();
+            (0, 1, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_rawip_ipv6_encap();
+            (0, 1, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_rawip_ipv4_reencap();
+            (0, 1, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_rawip_ipv6_reencap();
+            (0, 0, 1, 0, 0, 0, 0, 4, _):act_pkt_mpls_l3vpn_ipv4_encap();
+            (0, 0, 1, 0, 0, 0, 0, 6, _):act_pkt_mpls_l3vpn_ipv6_encap();
 #ifdef HAVE_BRIDGE
-            (0, 0, 0, 1, 0, 0, 0, 0, _, _):act_pkt_mpls_l2vpn_encap();
-            (0, 0, 0, 0, 1, 0, 0, 0, _, _):act_pkt_mpls_xconnect_encap();
+            (0, 0, 0, 1, 0, 0, 0, 2, _):act_pkt_mpls_l2vpn_encap();
 #endif
 #endif
 #ifdef HAVE_SRV6
-            (1, 0, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_srv_l3vpn_ipv4_encap();
-            (1, 0, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_srv_l3vpn_ipv6_encap();
+            (1, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_srv_l3vpn_ipv4_encap();
+            (1, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_srv_l3vpn_ipv6_encap();
 #endif
-            (0, 0, 0, 0, 0, 0, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 0, 1, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 1, 0, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 1, 1, _, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 0, 1, _, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 0, _, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 0, 1, 1, _, CPU_PORT):act_pkt_send_to_cpu();
 #ifdef HAVE_SRV6
-            (1, 0, 0, 0, 0, 0, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
+            (1, 0, 0, 0, 0, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
+            (0, 0, 0, 0, 1, 0, 0, _, CPU_PORT):act_pkt_send_to_cpu();
 #endif
 #ifdef HAVE_MPLS
-            (0, 0, 0, 0, 0, 0, 1, 1, 4, _):act_pkt_mpls_ipv4_decap_0_1();
-            (0, 0, 0, 0, 0, 0, 1, 0, 4, _):act_pkt_mpls_ipv4_decap_0();
-            (0, 0, 0, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_ipv4_decap_1();
-            (0, 0, 0, 0, 0, 0, 1, 1, 6, _):act_pkt_mpls_ipv6_decap_0_1();
-            (0, 0, 0, 0, 0, 0, 1, 0, 6, _):act_pkt_mpls_ipv6_decap_0();
-            (0, 0, 0, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_ipv6_decap_1();
+            (0, 0, 0, 0, 0, 1, 1, 4, _):act_pkt_mpls_ipv4_decap_0_1();
+            (0, 0, 0, 0, 0, 1, 0, 4, _):act_pkt_mpls_ipv4_decap_0();
+            (0, 0, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_ipv4_decap_1();
+            (0, 0, 0, 0, 0, 1, 1, 6, _):act_pkt_mpls_ipv6_decap_0_1();
+            (0, 0, 0, 0, 0, 1, 0, 6, _):act_pkt_mpls_ipv6_decap_0();
+            (0, 0, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_ipv6_decap_1();
 #endif
 #ifdef HAVE_SRV6
-            (0, 0, 0, 0, 0, 1, 0, 0, 4, _):act_pkt_srv_ipv4_decap();
-            (0, 0, 0, 0, 0, 1, 0, 0, 6, _):act_pkt_srv_ipv6_decap();
+            (0, 0, 0, 0, 1, 0, 0, 4, _):act_pkt_srv_ipv4_decap();
+            (0, 0, 0, 0, 1, 0, 0, 6, _):act_pkt_srv_ipv6_decap();
 #endif
 #ifdef HAVE_MPLS
-            (0, 0, 0, 0, 0, 0, 0, 0, 1, _):act_pkt_mpls_swap_0();
-            (0, 0, 0, 0, 0, 0, 1, 0, 1, _):act_pkt_mpls_swap_1();
+            (0, 0, 0, 0, 0, 0, 0, 1, _):act_pkt_mpls_swap_0();
+            (0, 0, 0, 0, 0, 1, 0, 1, _):act_pkt_mpls_swap_1();
 #endif
         }
 

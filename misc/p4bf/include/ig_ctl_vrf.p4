@@ -48,7 +48,7 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
         ig_md.mpls_encap_egress_label = tunlab;
         ig_md.mpls_encap_svc_label = svclab;
         ig_md.mpls_encap_decap_sap_type = 2;
-        ig_md.mpls_encap_xconnect_valid = 1;
+        ig_md.mpls_encap_l2vpn_valid = 1;
         ig_md.nexthop_id = target;
     }
 #endif
