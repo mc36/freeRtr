@@ -753,38 +753,38 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         int tmpP = preBuff;
         int tmpE;
         int tmp = -1;
-        int tmp2;
+        int tmpS;
         int index;
         switch (flood_res->command) {
         case 1: // raw ip
             tmpE = ethtyp;
-            tmp2 = bufS - bufP + preBuff + 2;
+            tmpS = bufS - bufP + preBuff + 2;
             put16msb(bufC, preBuff, tmpE);
-            memmove(&bufC[preBuff + 2], &bufD[bufP], tmp2);
+            memmove(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             memmove(&bufH[0], &flood_res->dmac, 6);
             memmove(&bufH[6], &flood_res->smac, 6);
-            tmp = send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE, sgt);
+            tmp = send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         case 2: // mpls
             tmpE = ETHERTYPE_MPLS_UCAST;
-            tmp2 = bufS - bufP + preBuff + 6;
+            tmpS = bufS - bufP + preBuff + 6;
             int tmpL = label | (flood_res->lab << 12);
             put16msb(bufC, preBuff, tmpE);
             put32msb(bufC, preBuff + 2, tmpL);
-            memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);
+            memmove(&bufC[preBuff + 6], &bufD[bufP], tmpS);
             neigh_ntry.id = flood_res->trg;
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
-            tmp2 = bufS - bufP + preBuff + 6;
+            tmpS = bufS - bufP + preBuff + 6;
             tmpL = label | (flood_res->lab << 12);
             put16msb(bufC, preBuff, tmpE);
             put32msb(bufC, preBuff + 2, tmpL);
-            memmove(&bufC[preBuff + 6], &bufD[bufP], tmp2);
+            memmove(&bufC[preBuff + 6], &bufD[bufP], tmpS);
             int o;
             int p;
             bierAnd(bufC, preBuff + 14, flood_res->bier, o, p);
@@ -793,11 +793,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         case 4: // bier set
             tmpE = ETHERTYPE_MPLS_UCAST;
-            tmp2 = bufS - bufP + preBuff + 46;
+            tmpS = bufS - bufP + preBuff + 46;
             tmpL = label | (flood_res->lab << 12);
             put16msb(bufC, preBuff, tmpE);
             put32msb(bufC, preBuff + 2, tmpL);
@@ -825,19 +825,19 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             put32msb(bufC, preBuff + 34, flood_res->bier[5]);
             put32msb(bufC, preBuff + 38, flood_res->bier[6]);
             put32msb(bufC, preBuff + 42, flood_res->bier[7]);
-            memmove(&bufC[preBuff + 46], &bufD[bufP], tmp2);
+            memmove(&bufC[preBuff + 46], &bufD[bufP], tmpS);
             neigh_ntry.id = flood_res->trg;
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmp2, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         default:
             continue;
         }
         if (tmp < 0) continue;
         if (bufB == NULL) continue;
-        processDataPacket(NULL, bufA, bufB, bufC, tmp2, port, tmp, encrCtx, hashCtx);
+        processDataPacket(NULL, bufA, bufB, bufC, tmpS, port, tmp, encrCtx, hashCtx);
     }
 }
 
