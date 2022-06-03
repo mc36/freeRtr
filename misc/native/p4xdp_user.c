@@ -25,7 +25,6 @@ void warn(char*buf) {
 int commandSock;
 int ifaces[maxPorts];
 int dataPorts;
-int prog_fd;
 int cpu_port_fd;
 int rx_ports_fd;
 int tx_ports_fd;
@@ -137,12 +136,13 @@ int main(int argc, char **argv) {
 
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
     printf("loading %s...\n", argv[0]);
-    struct bpf_prog_load_attr prog_load_attr = {
-        .prog_type = BPF_PROG_TYPE_XDP,
-        .file = argv[0],
-    };
-    struct bpf_object *bpf_obj;
-    if (bpf_prog_load_xattr(&prog_load_attr, &bpf_obj, &prog_fd)) err("error loading code");
+
+    struct bpf_object *bpf_obj = bpf_object__open_file(argv[0], NULL);
+    if (bpf_obj == NULL) err("error opening code");
+    struct bpf_program *bpf_prog = bpf_object__next_program(bpf_obj, NULL);
+    bpf_program__set_type(bpf_prog, BPF_PROG_TYPE_XDP);
+    if (bpf_object__load(bpf_obj)) err("error loading code");
+    int prog_fd = bpf_program__fd(bpf_prog);
 
     cpu_port_fd = bpf_object__find_map_fd_by_name(bpf_obj, "cpu_port");
     if (cpu_port_fd < 0) err("error finding table");
@@ -173,9 +173,7 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < dataPorts; i++) {
         printf("opening index %i...\n", ifaces[i]);
-        bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_DRV_MODE);
-        bpf_set_link_xdp_fd(ifaces[i], -1, XDP_FLAGS_SKB_MODE);
-        if (bpf_set_link_xdp_fd(ifaces[i], prog_fd, XDP_FLAGS_DRV_MODE) < 0) err("error attaching code");
+        if (bpf_xdp_attach(ifaces[i], prog_fd, XDP_FLAGS_DRV_MODE, NULL) < 0) err("error attaching code");
     }
 
     int o = 0;
