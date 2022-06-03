@@ -2024,7 +2024,7 @@ public class userExec {
         hl.add(null, "2 3,.    template                     perform image templates");
         hl.add(null, "3 3,.      <str>                      parameter");
         cfgAll.aliasHelps(cfgAlias.aliasType.test, 2, hl);
-        hl.add(null, "1 2    reload                         restart the system");
+        hl.add(null, "1 2,.  reload                         restart the system");
         hl.add(null, "2 3      in                           reload after a time interval");
         hl.add(null, "3 .        <num>                      minutes");
         hl.add(null, "2 3      at                           reload at a specified time");
@@ -2805,7 +2805,11 @@ public class userExec {
                 doReload(false, bits.str2time(cfgAll.timeZoneName, cmd.getRemaining()));
                 return cmdRes.command;
             }
-            cmd.badCmd();
+            if (!a.equals("")) {
+                cmd.badCmd();
+                return cmdRes.command;
+            }
+            cfgInit.stopRouter(true, 3, "user requested");
             return cmdRes.command;
         }
         cmd.badCmd();
