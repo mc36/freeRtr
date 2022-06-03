@@ -493,9 +493,11 @@ public class ipFwdTab {
                     continue;
                 }
             }
-            tabU.optimize4lookup();
-            tabM.optimize4lookup();
-            tabF.optimize4lookup();
+            if (lower.optimize) {
+                tabU.optimize4lookup();
+                tabM.optimize4lookup();
+                tabF.optimize4lookup();
+            }
             tabU.version = rtr.routerRedistedU.version + 1;
             tabM.version = tabU.version;
             tabF.version = tabU.version;
@@ -1235,12 +1237,14 @@ public class ipFwdTab {
             ntry.cntr = old.cntr;
             ntry.hwCntr = old.hwCntr;
         }
-        tabC.optimize4lookup();
-        tabD.optimize4lookup();
-        tabL.optimize4lookup();
-        tabU.optimize4lookup();
-        tabM.optimize4lookup();
-        tabF.optimize4lookup();
+        if (lower.optimize) {
+            tabC.optimize4lookup();
+            tabD.optimize4lookup();
+            tabL.optimize4lookup();
+            tabU.optimize4lookup();
+            tabM.optimize4lookup();
+            tabF.optimize4lookup();
+        }
         tabU.version = lower.actualU.version + 1;
         tabL.version = tabU.version;
         tabC.version = tabU.version;

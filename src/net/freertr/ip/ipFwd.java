@@ -121,6 +121,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public long changeLast;
 
     /**
+     * optimize for lookup
+     */
+    public boolean optimize;
+
+    /**
      * route distinguisher
      */
     public long rd;

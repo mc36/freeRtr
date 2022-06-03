@@ -179,6 +179,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! rd 0:0",
         "vrf definition .*! update4interval 0",
         "vrf definition .*! update6interval 0",
+        "vrf definition .*! no optimize4lookup",
+        "vrf definition .*! no optimize6lookup",
         "vrf definition .*! rt4import",
         "vrf definition .*! rt4export",
         "vrf definition .*! rt6import",
@@ -523,6 +525,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         for (int i = 0; i < fwd4.rtImp.size(); i++) {
             s += " " + tabRouteUtil.rd2string(fwd4.rtImp.get(i));
         }
+        cmds.cfgLine(l, !fwd4.optimize, cmds.tabulator, "optimize4lookup", "");
+        cmds.cfgLine(l, !fwd6.optimize, cmds.tabulator, "optimize6lookup", "");
         l.add(cmds.tabulator + "update4interval " + fwd4.updateInterval);
         l.add(cmds.tabulator + "update6interval " + fwd6.updateInterval);
         l.add(cmds.tabulator + "rt4import" + s);
@@ -639,6 +643,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 2,.   [text]           text describing this vrf");
         l.add(null, "1 2  rename              rename this vrf");
         l.add(null, "2 .    <str>             set new name of vrf");
+        l.add(null, "1 .  optimize4lookup     optimize rib for software lookup");
+        l.add(null, "1 .  optimize6lookup     optimize rib for software lookup");
         l.add(null, "1 2  update4interval     specify time between table calculation");
         l.add(null, "2 .    <num>             time in ms");
         l.add(null, "1 2  update6interval     specify time between table calculation");
@@ -813,6 +819,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd4.rtExp = res;
             fwd6.rtExp = res;
             fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("optimize4lookup")) {
+            fwd4.optimize = true;
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("optimize6lookup")) {
+            fwd6.optimize = true;
             fwd6.routerStaticChg();
             return;
         }
@@ -1271,6 +1287,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd4.rtExp = new ArrayList<Long>();
             fwd6.rtExp = new ArrayList<Long>();
             fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("optimize4lookup")) {
+            fwd4.optimize = false;
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("optimize6lookup")) {
+            fwd6.optimize = false;
             fwd6.routerStaticChg();
             return;
         }
