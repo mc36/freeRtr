@@ -17,6 +17,19 @@ if_speed = {
     'BF_SPEED_400G':              400000000000
 }
 
+## Default 64
+port_range = {
+    'accton_wedge100bf_32x': 32,
+    'accton_wedge100bf_32qs': 32,
+    'accton_as9516_32d': 32,
+    'stordis_bf2556x_1t': 32
+}
+
+## Default 4
+channels_per_port = {
+    'accton_as9516_32d': 8,
+}
+
 def _Exception():
     exc_type, exc_obj, tb = sys.exc_info()
     f = tb.tb_frame
@@ -34,6 +47,7 @@ class BfPorts(Thread):
             self,
             threadID,
             name,
+            platform,
             bfgc,
             sck_file,
             pipe_name,
@@ -47,6 +61,7 @@ class BfPorts(Thread):
         Thread.__init__(self)
         self.threadID = threadID
         self.name = name
+        self.platform = platform
         self.bfgc = bfgc
         self.file = sck_file
         self.die = False
@@ -326,10 +341,9 @@ class BfPorts(Thread):
         ## an empty list of keys is not supported. As a workaround, we
         ## use the $PORT_HDL_INFO table instead and simply iterate
         ## over all connector/channel pairs and pick out those that
-        ## are actually present. Scanning for connectors from 1 to 65
-        ## should cover all current Tofino models.
-        for conn in range(1, 65):
-            for chnl in range(0,4):
+        ## are actually present.
+        for conn in range(1, port_range.get(self.platform, 64) + 1):
+            for chnl in range(0, channels_per_port.get(self.platform, 4)):
                 try:
                     resp = self.bfgc.port_hdl_info_table.entry_get(
                         self.bfgc.target, [

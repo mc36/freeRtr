@@ -108,7 +108,7 @@ if __name__ == "__main__":
             args.no_log_keepalive,
         )
         startThread(bf_forwarder)
-        startThread(BfPorts(bf_ports_id, "bf_ports",
+        startThread(BfPorts(bf_ports_id, "bf_ports", args.platform,
                             bf_ports_c, sckw_file, args.pipe_name, 1, 5,
                             args.snmp, args.ifmibs_dir, args.ifindex))
 

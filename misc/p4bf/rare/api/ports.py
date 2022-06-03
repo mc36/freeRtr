@@ -1,6 +1,7 @@
 from ..bf_gbl_env.cst_env import *
 
 PORT_SPEED = [1, 10, 25, 40, 50, 100]
+PORT_SPEED_T2 = [1, 10, 25, 40, 50, 100, 200, 400]
 
 def managePort(self, platform, mode, port_id, port_speed=10,
                fec=0, autoneg=1, flowctrl=0):
@@ -29,7 +30,8 @@ def managePort(self, platform, mode, port_id, port_speed=10,
                     up=False,
                 )
             else:
-                if port_speed in PORT_SPEED:
+                if ((platform == "accton_as9516_32d" and port_speed in PORT_SPEED_T2) or
+                    port_speed in PORT_SPEED):
                     str_port_speed = "BF_SPEED_%sG" % (port_speed)
                 else:
                     self.controlPlaneMsg("Unsupported port speed: %s" % port_speed)
