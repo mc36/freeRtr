@@ -162,6 +162,7 @@ int main(int argc, char **argv) {
         .file = argv[0],
     };
     struct bpf_object *bpf_obj;
+    int prog_fd;
     if (bpf_prog_load_xattr(&prog_load_attr, &bpf_obj, &prog_fd)) err("error loading code");
 #endif
 
