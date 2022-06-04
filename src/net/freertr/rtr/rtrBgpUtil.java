@@ -2631,6 +2631,9 @@ public class rtrBgpUtil {
         if (ntry.best.stdComm == null) {
             return;
         }
+        if (ntry.best.stdComm.size() < 1) {
+            return;
+        }
         hlp.clear();
         for (int i = 0; i < ntry.best.stdComm.size(); i++) {
             hlp.msbPutD(0, ntry.best.stdComm.get(i));
@@ -2650,6 +2653,9 @@ public class rtrBgpUtil {
         if (ntry.best.extComm == null) {
             return;
         }
+        if (ntry.best.extComm.size() < 1) {
+            return;
+        }
         hlp.clear();
         for (int i = 0; i < ntry.best.extComm.size(); i++) {
             hlp.msbPutQ(0, ntry.best.extComm.get(i));
@@ -2667,6 +2673,9 @@ public class rtrBgpUtil {
      */
     public static void placeLrgComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.lrgComm == null) {
+            return;
+        }
+        if (ntry.best.lrgComm.size() < 1) {
             return;
         }
         hlp.clear();
