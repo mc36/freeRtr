@@ -530,7 +530,7 @@ public class cryCertificate {
     public static boolean isHeaderLine(String a) {
         return a.startsWith("-----");
     }
-    
+
     /**
      * read pem formatted key
      *

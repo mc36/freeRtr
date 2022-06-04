@@ -49,7 +49,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
     private ipMpls mpls = null;
 
     private ifcPolka polka = null;
-    
+
     private ifcMpolka mpolka = null;
 
     /**

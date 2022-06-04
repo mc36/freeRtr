@@ -63,7 +63,7 @@ public class packTls {
      * aead mode
      */
     public boolean aeadMode;
-    
+
     /**
      * connection version
      */

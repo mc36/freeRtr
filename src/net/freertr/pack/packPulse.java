@@ -34,7 +34,7 @@ public class packPulse {
      * authentication beginning
      */
     public final static int authBeg = (vendJunos << 8) + 1;
-    
+
     private final pipeSide pipe;
 
     /**
@@ -232,5 +232,5 @@ public class packPulse {
         pck.getSkip(tlv.valSiz);
         return tlv;
     }
-    
+
 }

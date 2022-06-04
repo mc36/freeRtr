@@ -329,7 +329,7 @@ class userHwpopPrt implements Comparator<userHwpopPrt> {
     public int speed;
 
     public addrMac addr;
-    
+
     public String desc;
 
     public int compare(userHwpopPrt o1, userHwpopPrt o2) {

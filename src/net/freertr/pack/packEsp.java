@@ -97,7 +97,7 @@ public class packEsp implements ipPrt {
     private int sendingTTL = 255;
 
     private int sendingTOS = -1;
-    
+
     private int sendingFLW = -1;
 
     public String toString() {

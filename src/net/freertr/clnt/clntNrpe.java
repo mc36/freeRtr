@@ -36,7 +36,7 @@ public class clntNrpe {
      * timeout
      */
     public int timeout = 60000;
-    
+
     /**
      * result code
      */

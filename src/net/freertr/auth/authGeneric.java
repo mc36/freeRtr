@@ -179,7 +179,7 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      * @return show
      */
     public abstract userFormat getShowSpec();
-    
+
     /**
      * convert to string
      *

@@ -57,7 +57,7 @@ public class authConstant extends authGeneric {
     public authResult authUserNone(String user) {
         return authUserPass(user, "");
     }
-    
+
     public List<String> getShRun(String beg, int filter) {
         return new ArrayList<String>();
     }

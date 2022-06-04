@@ -40,9 +40,9 @@ public class packSshAuth {
      * authentication method
      */
     public String method;
-    
+
     private final packSsh lower;
-    
+
     private final packSshKex keyXchg;
 
     /**
@@ -107,7 +107,7 @@ public class packSshAuth {
         lower.pckDat.clear();
         lower.stringWrite(service);
     }
-    
+
     private void servReqDump(String dir) {
         logger.debug(dir + " service=" + service);
     }
@@ -208,7 +208,7 @@ public class packSshAuth {
             lower.bytesWrite(pkeySign);
         }
     }
-    
+
     private void authReqDump(String dir) {
         logger.debug(dir + " service=" + service + " user=" + username + " method=" + method + " password=" + password + " blob=" + bits.byteDump(pkeyBlob, 0, -1) + " sign=" + bits.byteDump(pkeySign, 0, -1));
     }
@@ -241,7 +241,7 @@ public class packSshAuth {
         lower.stringWrite(password);
         lower.bytesWrite(pkeyBlob);
     }
-    
+
     private void authPkeyDump(String dir) {
         logger.debug(dir + " method=" + password + " blob=" + bits.byteDump(pkeyBlob, 0, -1));
     }
@@ -290,5 +290,5 @@ public class packSshAuth {
         lower.pckDat.putByte(0, 0);
         lower.pckDat.putSkip(1);
     }
-    
+
 }

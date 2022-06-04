@@ -163,7 +163,7 @@ public class ifcIpOnly implements ifcUp, ifcDn {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        pck.msbPutW(0, i); // ethertype                                                                                    
+        pck.msbPutW(0, i); // ethertype
         pck.putSkip(2);
         pck.merge2beg();
         upper.recvPack(pck);
