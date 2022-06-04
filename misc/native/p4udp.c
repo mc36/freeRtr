@@ -131,7 +131,7 @@ void doMainLoop() {
 
 int main(int argc, char **argv) {
     dataPorts = (argc - 6) / 2;
-    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> <lport2> <rport2> ...");
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> [lportN] [rportN]");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
     struct sockaddr_in addrLoc;
     memset(&addrLoc, 0, sizeof(addrLoc));

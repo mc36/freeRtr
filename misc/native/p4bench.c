@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
     processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], origS, encrCtx, hashCtx);
-    if (argc < 3) err("usage: <commands> <count> <byte> [byte]...");
+    if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
     int count = atoi(argv[2]);
     for (int i = 3; i < argc; i++) {
         sscanf(argv[i], "%hhx", &origD[origS]);

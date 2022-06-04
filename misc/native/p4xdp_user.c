@@ -113,25 +113,35 @@ void doMainLoop() {
 
 int main(int argc, char **argv) {
     dataPorts = 0;
-    for (int i = 4; i < argc; i++) {
+    for (int i = 5; i < argc; i++) {
         printf("opening %s...", argv[i]);
         ifaces[dataPorts] = if_nametoindex(argv[i]);
         if (ifaces[dataPorts] == 0) err("error getting interface index");
         printf(" idx=%i\n", ifaces[dataPorts]);
         dataPorts++;
     }
-    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
-    int port = atoi(argv[2]);
+    if (dataPorts < 2) err("using: dp <skb/drv/hw> <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN]");
+    int bpf_flag = 0;
+    if (strcmp(argv[1],"skb") == 0) {
+        bpf_flag = XDP_FLAGS_SKB_MODE;
+    }
+    if (strcmp(argv[1],"drv") == 0) {
+        bpf_flag = XDP_FLAGS_DRV_MODE;
+    }
+    if (strcmp(argv[1],"hw") == 0) {
+        bpf_flag = XDP_FLAGS_HW_MODE;
+    }
+    int port = atoi(argv[3]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));
-    if (inet_aton(argv[1], &addr.sin_addr) == 0) err("bad addr address");
+    if (inet_aton(argv[2], &addr.sin_addr) == 0) err("bad addr address");
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     printf("connecting %s %i.\n", inet_ntoa(addr.sin_addr), port);
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
-    cpuPort = atoi(argv[3]);
+    cpuPort = atoi(argv[4]);
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
@@ -172,8 +182,8 @@ int main(int argc, char **argv) {
     if (bridges_fd < 0) err("error finding table");
 
     for (int i = 0; i < dataPorts; i++) {
-        printf("opening index %i...\n", ifaces[i]);
-        if (bpf_xdp_attach(ifaces[i], prog_fd, XDP_FLAGS_DRV_MODE, NULL) < 0) err("error attaching code");
+        printf("attaching iface %i, prog %i, flag %i...\n", ifaces[i], prog_fd, bpf_flag);
+        if (bpf_xdp_attach(ifaces[i], prog_fd, bpf_flag, NULL) < 0) err("error attaching code");
     }
 
     int o = 0;

@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
         initIface(dataPorts, argv[i]);
         dataPorts++;
     }
-    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN] ...");
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN]");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
     printf("pcap version: %s\n", pcap_lib_version());
     if (initTables() != 0) err("error initializing tables");

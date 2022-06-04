@@ -325,7 +325,7 @@ int main(int argc, char **argv) {
     printf("%i cores and %i ports detected...\n", cores, dataPorts);
     if (dataPorts > maxPorts) dataPorts = maxPorts;
 
-    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0] [-9 brstsiz 0] [-10 brstslp 0]...");
+    if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0] [-9 brstsiz 0] [-10 brstslp 0]");
     printf("dpdk version: %s\n", rte_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
