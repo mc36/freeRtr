@@ -2440,11 +2440,13 @@ public class userConfig {
         l.add(null, "4  .        collect                        just collect");
         l.add(null, "4  5,.      parameters                     session parameters");
         l.add(null, "5  6          timeout                      set timeout");
-        l.add(null, "6  .            <num>                      timeout in ms");
+        l.add(null, "6  5,.          <num>                      timeout in ms");
         l.add(null, "5  6          sessions                     set session limit");
-        l.add(null, "6  .            <num>                      number of sessions");
+        l.add(null, "6  5,.          <num>                      number of sessions");
         l.add(null, "5  6          rate                         specify translation rate");
-        l.add(null, "6  .            <nam:pm>                   name of policy map");
+        l.add(null, "6  5,.          <nam:pm>                   name of policy map");
+        l.add(null, "5  5,.        before                       log on session start");
+        l.add(null, "5  5,.        after                        log on session stop");
         l.add(null, "4  5        export                         collect and export");
         l.add(null, "5  6          <name:prx>                   proxy profile");
         l.add(null, "6  7            <addr>                     target address");

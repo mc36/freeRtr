@@ -92,7 +92,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
         l.add(null, "1 .  mac                          with mac addresses");
         l.add(null, "1 .  before                       log on session start");
         l.add(null, "1 .  after                        log on session stop");
-        l.add(null, "1 .  dropped                      log on session stop");
+        l.add(null, "1 .  dropped                      log on session drop");
         l.add(null, "1 .  drop-rx                      drop sessions ingress");
         l.add(null, "1 .  drop-tx                      drop sessions egress");
         l.add(null, "1 .  drop-frg                     drop fragmented packets");
