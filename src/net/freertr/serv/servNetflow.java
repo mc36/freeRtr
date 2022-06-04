@@ -149,6 +149,10 @@ public class servNetflow extends servGeneric implements prtServS {
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  timeout                      set timeout");
         l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 2  sessions                     set session limit");
+        l.add(null, "2 .    <num>                      number of sessions");
+        l.add(null, "1 2  rate                         specify translation rate");
+        l.add(null, "2 .    <nam:pm>                   name of policy map");
         l.add(null, "1 .  before                       log on session start");
         l.add(null, "1 .  after                        log on session stop");
     }
