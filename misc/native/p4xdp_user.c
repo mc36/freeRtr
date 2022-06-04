@@ -121,6 +121,9 @@ int main(int argc, char **argv) {
         dataPorts++;
     }
     if (dataPorts < 2) err("using: dp <skb/drv/hw> <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN]");
+#if __LIBBPF_CURRENT_VERSION_GEQ(0, 7)
+    printf("libbpf version: %s\n", libbpf_version_string());
+#endif
     int bpf_flag = 0;
     if (strcmp(argv[1],"skb") == 0) {
         bpf_flag = XDP_FLAGS_SKB_MODE;
@@ -146,13 +149,21 @@ int main(int argc, char **argv) {
 
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
     printf("loading %s...\n", argv[0]);
-
+#if __LIBBPF_CURRENT_VERSION_GEQ(0, 7)
     struct bpf_object *bpf_obj = bpf_object__open_file(argv[0], NULL);
     if (bpf_obj == NULL) err("error opening code");
     struct bpf_program *bpf_prog = bpf_object__next_program(bpf_obj, NULL);
     bpf_program__set_type(bpf_prog, BPF_PROG_TYPE_XDP);
     if (bpf_object__load(bpf_obj)) err("error loading code");
     int prog_fd = bpf_program__fd(bpf_prog);
+#else
+    struct bpf_prog_load_attr prog_load_attr = {
+        .prog_type = BPF_PROG_TYPE_XDP,
+        .file = argv[0],
+    };
+    struct bpf_object *bpf_obj;
+    if (bpf_prog_load_xattr(&prog_load_attr, &bpf_obj, &prog_fd)) err("error loading code");
+#endif
 
     cpu_port_fd = bpf_object__find_map_fd_by_name(bpf_obj, "cpu_port");
     if (cpu_port_fd < 0) err("error finding table");
@@ -183,7 +194,11 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < dataPorts; i++) {
         printf("attaching iface %i, prog %i, flag %i...\n", ifaces[i], prog_fd, bpf_flag);
+#if __LIBBPF_CURRENT_VERSION_GEQ(0, 7)
         if (bpf_xdp_attach(ifaces[i], prog_fd, bpf_flag, NULL) < 0) err("error attaching code");
+#else
+        if (bpf_set_link_xdp_fd(ifaces[i], prog_fd, bpf_flag) < 0) err("error attaching code");
+#endif
     }
 
     int o = 0;
