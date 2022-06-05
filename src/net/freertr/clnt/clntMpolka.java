@@ -50,6 +50,11 @@ public class clntMpolka implements Runnable, ifcDn {
     public ipFwd fwdCor;
 
     /**
+     * target
+     */
+    public addrIP target;
+
+    /**
      * ttl value
      */
     public int ttl = 255;
@@ -364,7 +369,7 @@ public class clntMpolka implements Runnable, ifcDn {
             ntry.plk = ntry.ifc.lower.getMpolka();
             if (ntry.plk == null) {
                 if (debugger.clntMpolkaTraf) {
-                    logger.debug("polka not enabled for " + ntry.ifc);
+                    logger.debug("mpolka not enabled for " + ntry.ifc);
                 }
                 continue;
             }
@@ -407,11 +412,44 @@ public class clntMpolka implements Runnable, ifcDn {
             idx = new tabIndex<addrIP>(idx.index, null);
             idx.bitmap = neis;
             ntry.nei.add(idx);
+            ntry.end = (neis & 1) != 0;
             ntry = outs.add(ntry);
             if (ntry == null) {
                 continue;
             }
             ntry.nei.add(idx);
+            ntry.end |= (neis & 1) != 0;
+        }
+        for (int i = 0; i < outs.size(); i++) {
+            clntMpolkaOut ntry = outs.get(i);
+            if (ntry.end) {
+                continue;
+            }
+            tabRouteEntry<addrIP> rou = fwdCor.actualU.route(target);
+            if (rou == null) {
+                if (debugger.clntMpolkaTraf) {
+                    logger.debug("no route for " + target);
+                }
+                continue;
+            }
+            if (rou.best.segrouIdx < 1) {
+                if (debugger.clntMpolkaTraf) {
+                    logger.debug("no index for " + rou);
+                }
+                continue;
+            }
+            tabIndex<addrIP> idx = fwdCor.actualIU.find(new tabIndex<addrIP>(rou.best.segrouIdx, null));
+            if (idx == null) {
+                if (debugger.clntMpolkaTraf) {
+                    logger.debug("no srindex for " + rou);
+                }
+                continue;
+            }
+            idx = new tabIndex<addrIP>(idx.index, null);
+            idx.bitmap = 1;
+            ntry.nei.add(idx);
+            ntry.end = true;
+            ntry = outs.add(ntry);
         }
         if (outs.size() < 1) {
             if (debugger.clntMpolkaTraf) {
@@ -553,6 +591,8 @@ class clntMpolkaOut implements Comparator<clntMpolkaOut> {
     public ifcMpolka plk;
 
     public tabGen<tabIndex<addrIP>> nei;
+
+    public boolean end;
 
     public byte[] rou;
 

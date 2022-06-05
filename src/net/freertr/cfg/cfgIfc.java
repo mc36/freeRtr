@@ -4295,6 +4295,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             case mpolka:
                 tunMpolka = new clntMpolka();
                 tunMpolka.fwdCor = tunVrf.getFwd(tunTrg);
+                tunMpolka.target = tunTrg.copyBytes();
                 tunMpolka.setTargets(tunFQDN);
                 tunFQDN = tunMpolka.getTargets();
                 tunMpolka.ttl = tunTTL;
