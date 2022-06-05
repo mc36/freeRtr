@@ -3687,7 +3687,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (res == null) {
             return;
         }
-        lst.add("peer|" + nei.peerAddr);
+        lst.add("|peer|" + nei.peerAddr);
         lst.add(res.fullDump("" + nei.peerAddr, fwdCore));
     }
 
