@@ -1264,7 +1264,6 @@ public class userPacket {
                 f.close();
             } catch (Exception e) {
             }
-            cmd.error("issue pcapfix -d " + a);
             return null;
         }
         if (a.equals("wakeup")) {
