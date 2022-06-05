@@ -3665,7 +3665,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of routes
      */
     public userFormat getAllRoutes(int safi, tabRouteEntry<addrIP> prf) {
-        userFormat lst = new userFormat("|", "category|value");
+        userFormat lst = new userFormat("|", "id|category|value");
         for (int i = 0; i < neighs.size(); i++) {
             getAllRoutes(lst, neighs.get(i), safi, prf);
         }
@@ -3688,7 +3688,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return;
         }
         lst.add("peer|" + nei.peerAddr);
-        lst.add(res.fullDump(fwdCore));
+        lst.add(res.fullDump("" + nei.peerAddr, fwdCore));
     }
 
     /**

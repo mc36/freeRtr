@@ -485,33 +485,34 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     /**
      * full dump of this prefix
      *
+     * @param beg beginning
      * @param fwd forwarding core to use
      * @return list describes this prefix
      */
-    public userFormat fullDump(ipFwd fwd) {
-        userFormat l = new userFormat("|", "category|value");
+    public userFormat fullDump(String beg, ipFwd fwd) {
+        userFormat lst = new userFormat("|", "id|category|value");
         if (fwd != null) {
-            l.add("vrf|" + fwd.vrfName);
-            l.add("ipver|" + fwd.ipVersion);
+            lst.add(beg + "|vrf|" + fwd.vrfName);
+            lst.add(beg + "|ipver|" + fwd.ipVersion);
         }
-        l.add("rd|" + tabRouteUtil.rd2string(rouDst));
-        l.add("original rd|" + tabRouteUtil.rd2string(oldDst));
-        l.add("prefix|" + prefix);
-        l.add("prefix network|" + prefix.network);
-        l.add("prefix broadcast|" + prefix.broadcast);
-        l.add("prefix wildcard|" + prefix.wildcard);
-        l.add("prefix netmask|" + prefix.mask);
-        l.add("nlri|" + bits.byteDump(nlri, 0, -1));
-        l.add("alternates|" + alts.size());
+        lst.add(beg + "|rd|" + tabRouteUtil.rd2string(rouDst));
+        lst.add(beg + "|original rd|" + tabRouteUtil.rd2string(oldDst));
+        lst.add(beg + "|prefix|" + prefix);
+        lst.add(beg + "|prefix network|" + prefix.network);
+        lst.add(beg + "|prefix broadcast|" + prefix.broadcast);
+        lst.add(beg + "|prefix wildcard|" + prefix.wildcard);
+        lst.add(beg + "|prefix netmask|" + prefix.mask);
+        lst.add(beg + "|nlri|" + bits.byteDump(nlri, 0, -1));
+        lst.add(beg + "|alternates|" + alts.size());
         for (int i = 0; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
-            l.add("alternate #" + i + "|ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
-            ntry.fullDump(l);
+            lst.add(beg + "|alternate #" + i + "|ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
+            ntry.fullDump(lst, beg + " alt" + i + "|");
         }
-        l.add("counter|" + cntr.getShStat());
-        l.add("lastio|" + cntr.getShTraff());
-        l.add("hardware counter|" + counter.getShStat(hwCntr));
-        return l;
+        lst.add(beg + "|counter|" + cntr.getShStat());
+        lst.add(beg + "|lastio|" + cntr.getShTraff());
+        lst.add(beg + "|hardware counter|" + counter.getShStat(hwCntr));
+        return lst;
     }
 
     public int compare(tabRouteEntry<T> o1, tabRouteEntry<T> o2) {

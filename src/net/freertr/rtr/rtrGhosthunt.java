@@ -903,8 +903,8 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         tabRouteAttr.ignoreAttribs(ntry1.best, ign);
         tabRouteAttr.ignoreAttribs(ntry2.best, ign);
-        List<String> dump1 = ntry1.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
-        List<String> dump2 = ntry2.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        List<String> dump1 = ntry1.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
+        List<String> dump2 = ntry2.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
         df.calc(dump1, dump2);
         List<String> res = df.getText(wid, 0);
@@ -926,8 +926,8 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (ntry == null) {
             return null;
         }
-        List<String> dump1 = ntry.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
-        List<String> dump2 = lastAttr.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        List<String> dump1 = ntry.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
+        List<String> dump2 = lastAttr.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
         df.calc(dump1, dump2);
         List<String> res = df.getText(wid, 0);
@@ -944,7 +944,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (lastGhst == null) {
             return null;
         }
-        return lastGhst.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        return lastGhst.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
     }
 
     /**
@@ -956,7 +956,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (lastFond == null) {
             return null;
         }
-        return lastFond.fullDump(fwdCore).formatAll(userFormat.tableMode.normal);
+        return lastFond.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
     }
 
     /**

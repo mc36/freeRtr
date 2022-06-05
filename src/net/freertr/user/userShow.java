@@ -3764,8 +3764,8 @@ public class userShow {
                 cmd.error("not from neighbor 2");
                 return;
             }
-            List<String> dump1 = ntry1.fullDump(r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
-            List<String> dump2 = ntry2.fullDump(r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
+            List<String> dump1 = ntry1.fullDump("", r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
+            List<String> dump2 = ntry2.fullDump("", r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
             int dif = ntry1.differs(tabRoute.addType.alters, ntry2);
             differ df = new differ();
             df.calc(dump1, dump2);
@@ -4746,7 +4746,7 @@ public class userShow {
                 cmd.error("no such prefix");
                 return;
             }
-            rdr.putStrTab(ntry.fullDump(fwd));
+            rdr.putStrTab(ntry.fullDump("", fwd));
             return;
         }
         userFormat l;
