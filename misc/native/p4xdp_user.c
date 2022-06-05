@@ -120,31 +120,31 @@ int main(int argc, char **argv) {
         printf(" idx=%i\n", ifaces[dataPorts]);
         dataPorts++;
     }
-    if (dataPorts < 2) err("using: dp <skb/drv/hw> <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN]");
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <skb/drv/hw> <ifc0> <ifc1> [ifcN]");
 #if __LIBBPF_CURRENT_VERSION_GEQ(0, 7)
     printf("libbpf version: %s\n", libbpf_version_string());
 #endif
     int bpf_flag = 0;
-    if (strcmp(argv[1],"skb") == 0) {
+    if (strcmp(argv[4],"skb") == 0) {
         bpf_flag = XDP_FLAGS_SKB_MODE;
     }
-    if (strcmp(argv[1],"drv") == 0) {
+    if (strcmp(argv[4],"drv") == 0) {
         bpf_flag = XDP_FLAGS_DRV_MODE;
     }
-    if (strcmp(argv[1],"hw") == 0) {
+    if (strcmp(argv[4],"hw") == 0) {
         bpf_flag = XDP_FLAGS_HW_MODE;
     }
-    int port = atoi(argv[3]);
+    int port = atoi(argv[2]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));
-    if (inet_aton(argv[2], &addr.sin_addr) == 0) err("bad addr address");
+    if (inet_aton(argv[1], &addr.sin_addr) == 0) err("bad addr address");
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     printf("connecting %s %i.\n", inet_ntoa(addr.sin_addr), port);
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
     if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
-    cpuPort = atoi(argv[4]);
+    cpuPort = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
     strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
