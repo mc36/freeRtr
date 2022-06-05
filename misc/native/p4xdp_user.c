@@ -11,6 +11,11 @@
 #include <bpf/libbpf.h>
 #include "p4xdp_tab.h"
 
+// hack
+#ifndef __LIBBPF_CURRENT_VERSION_GEQ
+#define __LIBBPF_CURRENT_VERSION_GEQ(major, minor) 0
+#endif
+
 
 void err(char*buf) {
     printf("%s\n", buf);
