@@ -159,6 +159,8 @@ public class gallery {
                 continue;
             }
         }
+        nam = nam.replaceAll("/./", "/");
+        nam = nam.replaceAll("/../", "/");
         if (cmd.equals("view")) {
             buf.write(album.getBytes());
             buf.write(nam.getBytes());
