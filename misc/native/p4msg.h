@@ -177,6 +177,7 @@ int doOneCommand(unsigned char* buf) {
         case 10:
         case 13:
             o = 1;
+            break;
         case ' ':
         case '/':
         case '_':

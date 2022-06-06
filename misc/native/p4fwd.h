@@ -382,7 +382,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS) {
+int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, unsigned char *bufD, int *bufP, int *bufS) {
     int seq = neigh_res->seq;
     neigh_res->seq++;
     *bufP += 2;
@@ -676,12 +676,12 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 13: // wireguard4
-        if (putWireguardHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
+        if (putWireguardHeader(neigh_res, encrCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
         break;
     case 14: // wireguard6
-        if (putWireguardHeader(neigh_res, encrCtx, hashCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
+        if (putWireguardHeader(neigh_res, encrCtx, bufD, &*bufP, &*bufS) != 0) doDropper;
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
@@ -1600,6 +1600,7 @@ ipv4_tx:
             doCpuing;
             doRouted(route4_res, 4);
         }
+        doDropper;
     case ETHERTYPE_IPV6: // ipv6
         if (port2vrf_res == NULL) doDropper;
         if (port2vrf_res->command != 1) doDropper;
@@ -1910,6 +1911,7 @@ ipv6_tx:
             doCpuing;
             doRouted(route6_res, 41);
         }
+        doDropper;
     case ETHERTYPE_PPPOE_DATA: // pppoe
         packPppoe[port]++;
         bytePppoe[port] += bufS;
