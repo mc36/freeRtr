@@ -178,6 +178,7 @@ public class optimizer {
                 return low;
             }
             int mid = ((high - low) / 2) + low;
+            log("currently low=" + low + " mid=" + mid + " high=" + high);
             boolean res;
             if (first) {
                 res = doRound(prof, pars, orig, mid, num2);
@@ -226,7 +227,7 @@ public class optimizer {
         if (!checkString(orig, "$s")) {
             log("*** no second value to optimize ***");
         } else {
-            num2 = doOptimize(prof, pars, orig, true, num1, num2);
+            num2 = doOptimize(prof, pars, orig, false, num1, num2);
             if (num2 < 0) {
                 log("*** unable to find a working value ***");
                 return;
