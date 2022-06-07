@@ -170,11 +170,27 @@ public class optimizer {
         doWrite(prof + ".p4", res);
     }
 
-    private final static int step0 = 256 * 1024;
-
-    private final static int step1 = 1024;
-
-    private final static int step2 = 4096;
+    private static int doOptimize(String prof, String pars, List<String> orig, boolean first, int num1, int num2) {
+        int low = 1024;
+        int high = 1024 * 1024;
+        for (;;) {
+            if ((high - low) < 1024) {
+                return low;
+            }
+            int mid = ((high - low) / 2) + low;
+            boolean res;
+            if (first) {
+                res = doRound(prof, pars, orig, mid, num2);
+            } else {
+                res = doRound(prof, pars, orig, num1, mid);
+            }
+            if (res) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+    }
 
     /**
      * the main
@@ -195,64 +211,26 @@ public class optimizer {
         List<String> orig = doRead(prof + ".tmpl");
         log("read " + orig.size() + " lines from " + prof);
         log("parameters will be " + pars);
-        int num1 = step1;
-        int num2 = step2;
+        int num1 = 1024;
+        int num2 = 1024;
         boolean res;
         if (!checkString(orig, "$p")) {
             log("*** no first value to optimize ***");
         } else {
-            num1 = step0;
-            res = false;
-            for (;;) {
-                if (num1 < step1) {
-                    break;
-                }
-                res = doRound(prof, pars, orig, num1, num2);
-                if (res) {
-                    break;
-                }
-                num1 >>>= 1;
-            }
-            if (!res) {
+            num1 = doOptimize(prof, pars, orig, true, num1, num2);
+            if (num1 < 0) {
                 log("*** unable to find a working value ***");
                 return;
             }
-            for (;;) {
-                num1 += step1;
-                res = doRound(prof, pars, orig, num1, num2);
-                if (!res) {
-                    break;
-                }
-            }
-            num1 -= step1;
         }
         if (!checkString(orig, "$s")) {
             log("*** no second value to optimize ***");
         } else {
-            num2 = step0;
-            res = false;
-            for (;;) {
-                if (num2 < step2) {
-                    break;
-                }
-                res = doRound(prof, pars, orig, num1, num2);
-                if (res) {
-                    break;
-                }
-                num2 >>>= 1;
-            }
-            if (!res) {
+            num2 = doOptimize(prof, pars, orig, true, num1, num2);
+            if (num2 < 0) {
                 log("*** unable to find a working value ***");
                 return;
             }
-            for (;;) {
-                num2 += step2;
-                res = doRound(prof, pars, orig, num1, num2);
-                if (!res) {
-                    break;
-                }
-            }
-            num2 -= step2;
         }
         res = doRound(prof, pars, orig, num1, num2);
         if (!res) {
