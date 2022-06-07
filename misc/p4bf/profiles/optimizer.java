@@ -147,13 +147,13 @@ public class optimizer {
         return res;
     }
 
-    private static boolean doRound(String prof, List<String> orig, int num1, int num2) {
+    private static boolean doRound(String prof, String pars, List<String> orig, int num1, int num2) {
         log("trying with " + num1 + " and " + num2 + " on " + prof);
         doDelete(tempProg + ".tmp");
         List<String> res = doTransform(orig, num1, num2);
         res.add("#include \"bf_router.p4\"");
         doWrite(tempProg + ".p4", res);
-        doExec(System.getenv("SDE_INSTALL") + "/bin/bf-p4c -I. -I../p4src/ -Xp4c=\"--disable-parse-depth-limit\" " + tempProg + ".p4");
+        doExec(System.getenv("SDE_INSTALL") + "/bin/bf-p4c -I. -I../p4src/ " + pars + " " + tempProg + ".p4");
         boolean succ = new File(tempProg + ".tofino/pipe/tofino.bin").exists();
         doWrite(tempProg + ".tmp", "rm -rf " + tempProg + ".tofino");
         doExec("bash " + tempProg + ".tmp");
@@ -183,9 +183,17 @@ public class optimizer {
     public static void main(String[] args) {
         tempProg = "optimizer" + ProcessHandle.current().pid();
         String prof = args[0];
+        String pars = "";
+        for (int i = 1; i < args.length; i++) {
+            pars += " " + args[i];
+        }
+        if (pars.length() > 0) {
+            pars = pars.substring(1, pars.length());
+        }
         prof = prof.substring(0, prof.lastIndexOf("."));
         List<String> orig = doRead(prof + ".tmpl");
         log("read " + orig.size() + " lines from " + prof);
+        log("parameters will be " + pars);
         int num1 = step1;
         int num2 = step2;
         boolean res;
@@ -198,7 +206,7 @@ public class optimizer {
                 if (num1 < step1) {
                     break;
                 }
-                res = doRound(prof, orig, num1, num2);
+                res = doRound(prof, pars, orig, num1, num2);
                 if (res) {
                     break;
                 }
@@ -210,7 +218,7 @@ public class optimizer {
             }
             for (;;) {
                 num1 += step1;
-                res = doRound(prof, orig, num1, num2);
+                res = doRound(prof, pars, orig, num1, num2);
                 if (!res) {
                     break;
                 }
@@ -226,7 +234,7 @@ public class optimizer {
                 if (num2 < step2) {
                     break;
                 }
-                res = doRound(prof, orig, num1, num2);
+                res = doRound(prof, pars, orig, num1, num2);
                 if (res) {
                     break;
                 }
@@ -238,14 +246,14 @@ public class optimizer {
             }
             for (;;) {
                 num2 += step2;
-                res = doRound(prof, orig, num1, num2);
+                res = doRound(prof, pars, orig, num1, num2);
                 if (!res) {
                     break;
                 }
             }
             num2 -= step2;
         }
-        res = doRound(prof, orig, num1, num2);
+        res = doRound(prof, pars, orig, num1, num2);
         if (!res) {
             log("*** profile failed at final verification ***");
             return;

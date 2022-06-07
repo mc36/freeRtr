@@ -5,7 +5,7 @@ ncpus=$(lscpu -J | jq -r '.lscpu[] | select(.field == "CPU(s):") | .data')
 optimize_one () {
     local profile=$(basename --suffix .tmpl $1)
     echo "Starting optimization for $profile"
-    java optimizer $1 >${profile}.log
+    java optimizer $1 -Xp4c="--disable-parse-depth-limit" >${profile}.log
     echo -n "Optimization for $profile finished: "
     tail -1 ${profile}.log
 }
