@@ -155,7 +155,8 @@ public class optimizer {
         doWrite(tempProg + ".p4", res);
         doExec(System.getenv("SDE_INSTALL") + "/bin/bf-p4c -I. -I../p4src/ " + pars + " " + tempProg + ".p4");
         boolean succ = new File(tempProg + ".tofino/pipe/tofino.bin").exists();
-        doWrite(tempProg + ".tmp", "rm -rf " + tempProg + ".tofino");
+        succ |= new File(tempProg + ".tofino2/pipe/tofino2.bin").exists();
+        doWrite(tempProg + ".tmp", "rm -rf " + tempProg + ".tofino*");
         doExec("bash " + tempProg + ".tmp");
         doDelete(tempProg + ".p4");
         log("returning " + succ + " for " + num1 + " and " + num2 + " on " + prof);
