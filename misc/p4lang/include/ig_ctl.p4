@@ -28,6 +28,7 @@ control ig_ctl(inout headers hdr,
     IngressControlPOLKA() ig_ctl_polka;
     IngressControlMPLS() ig_ctl_mpls;
     IngressControlBridge() ig_ctl_bridge;
+    IngressControlFrag() ig_ctl_frag;
     IngressControlIPv4() ig_ctl_ipv4;
     IngressControlIPv6() ig_ctl_ipv6;
     IngressControlIPv4b() ig_ctl_ipv4b;
@@ -45,6 +46,7 @@ control ig_ctl(inout headers hdr,
     IngressControlNAT() ig_ctl_nat;
     IngressControlPBR() ig_ctl_pbr;
     IngressControlQosIn() ig_ctl_qos_in;
+    IngressControlQosOut() ig_ctl_qos_out;
     IngressControlFlowspec() ig_ctl_flowspec;
     IngressControlMcast() ig_ctl_mcast;
     IngressControlOutPort() ig_ctl_outport;
@@ -75,10 +77,13 @@ control ig_ctl(inout headers hdr,
         ig_ctl_pppoe.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_sgt.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
+        ig_ctl_frag.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_acl_in.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         if (ig_md.dropping == 2) {
@@ -90,12 +95,14 @@ control ig_ctl(inout headers hdr,
         }
         ig_ctl_qos_in.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_vrf.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv4c.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv6c.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_arp.apply(hdr,ig_md,ig_intr_md);
@@ -112,6 +119,7 @@ control ig_ctl(inout headers hdr,
         }
         ig_ctl_flowspec.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);
@@ -122,6 +130,10 @@ control ig_ctl(inout headers hdr,
             ig_md.punting = 1;
             return;
         }
+        if (ig_md.dropping == 2) {
+            mark_to_drop(ig_intr_md);
+            return;
+        }
         ig_ctl_pbr.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv4.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv6.apply(hdr,ig_md,ig_intr_md);
@@ -130,6 +142,10 @@ control ig_ctl(inout headers hdr,
         ig_ctl_ipv6b.apply(hdr,ig_md,ig_intr_md);
         if ( ig_md.nexthop_id == CPU_PORT) {
             ig_ctl_tunnel.apply(hdr,ig_md,ig_intr_md);
+            if (ig_md.dropping == 1) {
+                mark_to_drop(ig_intr_md);
+                return;
+            }
             if (ig_md.need_recir == 1) {
                 if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
                 if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
@@ -139,6 +155,7 @@ control ig_ctl(inout headers hdr,
             }
             ig_ctl_mcast.apply(hdr,ig_md,ig_intr_md);
             if (ig_md.dropping == 1) {
+                mark_to_drop(ig_intr_md);
                 return;
             }
             if (ig_md.need_clone == 1) {
@@ -150,6 +167,7 @@ control ig_ctl(inout headers hdr,
             }
             ig_ctl_copp.apply(hdr,ig_md,ig_intr_md);
             if (ig_md.dropping == 1) {
+                mark_to_drop(ig_intr_md);
                 return;
             }
             if (hdr.pppoeB.isValid() && hdr.eth5.isValid() && hdr.eth6.isValid()) {
@@ -174,6 +192,11 @@ control ig_ctl(inout headers hdr,
             hdr.cpu.port = ig_md.ingress_id;
             ig_intr_md.egress_spec = CPU_PORT;
             ig_md.punting = 1;
+            return;
+        }
+        ig_ctl_qos_out.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_rewrites.apply(hdr,ig_md,ig_intr_md);

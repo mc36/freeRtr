@@ -188,6 +188,7 @@ ig_md.sec_grp_id:
     }
 
     apply {
+        ig_md.natted = 0;
         if (ig_md.ipv4_valid==1)  {
             if (!tbl_ipv4_nat_trns.apply().hit) {
                 tbl_ipv4_nat_cfg.apply();
@@ -197,6 +198,9 @@ ig_md.sec_grp_id:
             if (!tbl_ipv6_nat_trns.apply().hit) {
                 tbl_ipv6_nat_cfg.apply();
             }
+        }
+        if ((ig_md.natted != 0) && (ig_md.layer3_frag != 0)) {
+            ig_md.dropping = 2;
         }
     }
 }

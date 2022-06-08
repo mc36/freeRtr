@@ -28,14 +28,14 @@ control IngressControlFlowspec(inout headers hdr,
 
     action act4_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
-        ig_md.dropping = 0;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
     action act4_permit(SubIntId_t metid) {
         ig_md.meter_id = metid;
         policer4.execute_meter((bit<32>)metid, ig_md.meter_res);
         if (ig_md.meter_res == 0) {
-            ig_md.dropping = 0;
+            ig_md.dropping = (bit<2>)ig_md.layer3_frag;
         } else {
             ig_md.dropping = 1;
         }
@@ -43,14 +43,14 @@ control IngressControlFlowspec(inout headers hdr,
 
     action act6_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
-        ig_md.dropping = 0;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
     action act6_permit(SubIntId_t metid) {
         ig_md.meter_id = metid;
         policer6.execute_meter((bit<32>)metid, ig_md.meter_res);
         if (ig_md.meter_res == 0) {
-            ig_md.dropping = 0;
+            ig_md.dropping = (bit<2>)ig_md.layer3_frag;
         } else {
             ig_md.dropping = 1;
         }

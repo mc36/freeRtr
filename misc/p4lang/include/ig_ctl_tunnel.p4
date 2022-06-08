@@ -169,6 +169,10 @@ ig_md.layer4_dstprt:
 
         if (ig_md.need_recir == 0) return;
 
+        if (ig_md.layer3_frag != 0) {
+            ig_md.dropping = 1;
+        }
+
         hdr.vxlan.setInvalid();
         hdr.l2tp.setInvalid();
         hdr.amt.setInvalid();

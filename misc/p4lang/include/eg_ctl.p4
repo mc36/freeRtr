@@ -27,7 +27,6 @@ control eg_ctl(
 
     EgressControlMcast() eg_ctl_mcast;
     EgressControlNexthop() eg_ctl_nexthop;
-    EgressControlQosOut() eg_ctl_qos_out;
     EgressControlSgt() eg_ctl_sgt;
     EgressControlVlanOut() eg_ctl_vlan_out;
     EgressControlHairpin() eg_ctl_hairpin;
@@ -59,11 +58,6 @@ control eg_ctl(
 
         eg_ctl_nexthop.apply(hdr,eg_md,eg_intr_md);
 
-        eg_ctl_qos_out.apply(hdr,eg_md,eg_intr_md);
-        if (eg_md.dropping == 1) {
-            mark_to_drop(eg_intr_md);
-            return;
-        }
         eg_ctl_vlan_out.apply(hdr,eg_md,eg_intr_md);
         eg_ctl_hairpin.apply(hdr,eg_md,eg_intr_md);
 

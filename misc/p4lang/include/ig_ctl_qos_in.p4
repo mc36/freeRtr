@@ -27,14 +27,14 @@ control IngressControlQosIn(inout headers hdr,
 
     action act_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
-        ig_md.dropping = 0;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
     action act_permit(SubIntId_t metid) {
         ig_md.meter_id = metid;
         policer.execute_meter((bit<32>)metid, ig_md.meter_res);
         if (ig_md.meter_res == 0) {
-            ig_md.dropping = 0;
+            ig_md.dropping = (bit<2>)ig_md.layer3_frag;
         } else {
             ig_md.dropping = 1;
         }

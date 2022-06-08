@@ -64,6 +64,7 @@ struct ingress_metadata_t {
     bit<1>  arp_valid;
     bit<1>  ipv4_valid;
     bit<1>  ipv6_valid;
+    bit<1>  layer3_frag;
     layer4_port_t  layer4_srcprt;
     layer4_port_t  layer4_dstprt;
     bit<16> sec_grp_id;

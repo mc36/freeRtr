@@ -2310,19 +2310,19 @@ def writeInQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, p
 
 
 def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
-    matches={"eg_md.aclport_id": port}
+    matches={"ig_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
-    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
     add2dictIfNot(matches, "hdr.ipv4.diffserv",ts,tsm,0)
     add2dictIfNot(matches, "hdr.ipv4.identification",fl,flm,0)
-    add2dictIfNot(matches, "eg_md.sec_grp_id",gr,grm,0)
+    add2dictIfNot(matches, "ig_md.sec_grp_id",gr,grm,0)
     table_entry = p4info_helper.buildTableEntry(
-        table_name="eg_ctl.eg_ctl_qos_out.tbl_ipv4_qos",
+        table_name="ig_ctl.ig_ctl_qos_out.tbl_ipv4_qos",
         match_fields=matches,
-        action_name="eg_ctl.eg_ctl_qos_out.act_"+act,
+        action_name="ig_ctl.ig_ctl_qos_out.act_"+act,
         priority=65535-pri,
         action_params={
             "metid": (meter+1),
@@ -2336,19 +2336,19 @@ def writeOutQosRules4(delete, p4info_helper, ingress_sw, port, meter, pri, act, 
 
 
 def writeOutQosRules6(delete, p4info_helper, ingress_sw, port, meter, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
-    matches={"eg_md.aclport_id": port}
+    matches={"ig_md.aclport_id": port}
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
-    add2dictIfNot(matches, "eg_md.layer4_srcprt",sp,spm,0)
-    add2dictIfNot(matches, "eg_md.layer4_dstprt",dp,dpm,0)
+    add2dictIfNot(matches, "ig_md.layer4_srcprt",sp,spm,0)
+    add2dictIfNot(matches, "ig_md.layer4_dstprt",dp,dpm,0)
     add2dictIfNot(matches, "hdr.ipv6.traffic_class",ts,tsm,0)
     add2dictIfNot(matches, "hdr.ipv6.flow_label",fl,flm,0)
-    add2dictIfNot(matches, "eg_md.sec_grp_id",gr,grm,0)
+    add2dictIfNot(matches, "ig_md.sec_grp_id",gr,grm,0)
     table_entry = p4info_helper.buildTableEntry(
-        table_name="eg_ctl.eg_ctl_qos_out.tbl_ipv6_qos",
+        table_name="ig_ctl.ig_ctl_qos_out.tbl_ipv6_qos",
         match_fields=matches,
-        action_name="eg_ctl.eg_ctl_qos_out.act_"+act,
+        action_name="ig_ctl.ig_ctl_qos_out.act_"+act,
         priority=65535-pri,
         action_params={
             "metid": (meter+1),
@@ -2367,7 +2367,7 @@ def writeInQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
         ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
 def writeOutQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
-    metid = p4info_helper.get_meters_id("eg_ctl.eg_ctl_qos_out.policer")
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_out.policer")
     if delete != 3:
         ingress_sw.WriteMeter(metid, (meter+1), bytes, bytes)
 
