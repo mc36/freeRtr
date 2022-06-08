@@ -74,6 +74,7 @@
 #include "include/ig_ctl_pkt_pre_emit.p4"
 #include "include/ig_ctl_vlan_in.p4"
 #include "include/ig_ctl_sgt.p4"
+#include "include/ig_ctl_frag.p4"
 #include "include/ig_ctl_acl_in.p4"
 #include "include/ig_ctl_acl_out.p4"
 #include "include/ig_ctl_vrf.p4"

@@ -41,6 +41,7 @@ control IngressControlAclIn(inout headers hdr, inout ingress_metadata_t ig_md,
 
     action act_permit4() {
         acl4.count();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
     action act_deny6() {
@@ -50,6 +51,7 @@ control IngressControlAclIn(inout headers hdr, inout ingress_metadata_t ig_md,
 
     action act_permit6() {
         acl6.count();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
 #ifdef HAVE_RACL
@@ -72,10 +74,12 @@ control IngressControlAclIn(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_INSPECT
     action act_insp4() {
         insp4.count();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
     action act_insp6() {
         insp6.count();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 

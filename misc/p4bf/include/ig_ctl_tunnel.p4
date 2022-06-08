@@ -53,6 +53,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.gre.setInvalid();
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 
@@ -75,6 +76,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.cpu.port = port;
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
     action act_tunnel_ip6ip(SubIntId_t port) {
@@ -91,6 +93,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.cpu.port = port;
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 
@@ -100,6 +103,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
     action act_tunnel_l2tp(SubIntId_t port) {
         l2tp_hit = port;
         ig_md.source_id = port;
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 
@@ -122,6 +126,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.udp.setInvalid();
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 
@@ -143,6 +148,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.udp.setInvalid();
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 
@@ -151,6 +157,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
     action act_tunnel_gtp(SubIntId_t port) {
         ig_md.source_id = port;
         gtp_hit = port;
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 

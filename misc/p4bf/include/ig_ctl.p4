@@ -61,6 +61,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_BRIDGE
     IngressControlBridge()ig_ctl_bridge;
 #endif
+#ifdef NEED_FRAG
+    IngressControlFrag()ig_ctl_frag;
+#endif
     IngressControlIPv4()ig_ctl_ipv4;
     IngressControlIPv6()ig_ctl_ipv6;
 #ifdef HAVE_SRV6
@@ -133,6 +136,11 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_SGT
             ig_ctl_sgt.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+
+
+#ifdef NEED_FRAG
+        ig_ctl_frag.apply(hdr, ig_md, ig_intr_md);
 #endif
 
 #ifdef HAVE_INACL

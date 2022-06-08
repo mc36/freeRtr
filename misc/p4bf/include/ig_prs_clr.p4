@@ -88,6 +88,9 @@ ig_md.natted_ipv6udp = 0;
 ig_md.arp_valid = 0;
 ig_md.ipv4_valid = 0;
 ig_md.ipv6_valid = 0;
+#ifdef NEED_FRAG
+ig_md.layer3_frag = 0;
+#endif
 ig_md.layer4_srcprt = 0;
 ig_md.layer4_dstprt = 0;
 ig_md.srv_encap_l3vpn_valid = 0;

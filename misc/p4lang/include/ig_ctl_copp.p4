@@ -29,7 +29,7 @@ control IngressControlCoPP(inout headers hdr,
     }
 
     action act_permit() {
-        ig_md.dropping = 0;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
 

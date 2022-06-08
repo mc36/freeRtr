@@ -72,4 +72,39 @@
 
 
 
+#undef NEED_FRAG
+
+#ifdef HAVE_INACL
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_OUTACL
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_INQOS
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_OUTQOS
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_FLOWSPEC
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_NAT
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_TUN
+#define NEED_FRAG
+#endif
+
+#ifdef HAVE_COPP
+#define NEED_FRAG
+#endif
+
+
 #endif // _NEEDS_P4_
