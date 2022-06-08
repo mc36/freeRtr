@@ -28,12 +28,16 @@ control IngressControlQosOut(inout headers hdr, inout ingress_metadata_t ig_md,
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
 
     action act_deny() {
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act_permit(SubIntId_t metid) {
         ig_md.outqos_id = metid;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
 

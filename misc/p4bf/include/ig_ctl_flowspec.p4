@@ -32,24 +32,32 @@ control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md
 
     action act4_deny() {
         stats4.count();
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act4_permit(SubIntId_t metid) {
         stats4.count();
         ig_md.flowspec_id = metid;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act6_deny() {
         stats6.count();
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act6_permit(SubIntId_t metid) {
         stats6.count();
         ig_md.flowspec_id = metid;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
 

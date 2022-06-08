@@ -61,7 +61,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_BRIDGE
     IngressControlBridge()ig_ctl_bridge;
 #endif
-#ifdef NEED_FRAG
+#ifdef HAVE_FRAG
     IngressControlFrag()ig_ctl_frag;
 #endif
     IngressControlIPv4()ig_ctl_ipv4;
@@ -120,6 +120,10 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
         if (hdr.ipv6.isValid()) ig_md.pktlen = hdr.ipv6.payload_len + 40;
 #endif
 
+#ifdef HAVE_FRAG
+        ig_ctl_frag.apply(hdr, ig_md, ig_intr_md);
+#endif
+
         ig_ctl_vlan_in.apply(hdr, ig_md, ig_intr_md);
 
         if (ig_intr_md.ingress_port == CPU_PORT) {
@@ -138,10 +142,6 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_sgt.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 
-
-#ifdef NEED_FRAG
-        ig_ctl_frag.apply(hdr, ig_md, ig_intr_md);
-#endif
 
 #ifdef HAVE_INACL
             ig_ctl_acl_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);

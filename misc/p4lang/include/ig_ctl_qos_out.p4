@@ -18,8 +18,8 @@
 #define _IG_CTL_Qos_out_P4_
 
 control IngressControlQosOut(inout headers hdr,
-                            inout ingress_metadata_t ig_md,
-                            inout standard_metadata_t ig_intr_md) {
+                             inout ingress_metadata_t ig_md,
+                             inout standard_metadata_t ig_intr_md) {
 
     meter((MAX_PORT+1), MeterType.bytes) policer;
     direct_counter(CounterType.packets_and_bytes) stats4;

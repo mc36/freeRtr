@@ -102,7 +102,7 @@ struct ingress_metadata_t {
     bit <1> arp_valid;
     bit <1> ipv4_valid;
     bit <1> ipv6_valid;
-#ifdef NEED_FRAG
+#ifdef HAVE_FRAG
     bit <3> layer3_frag;
 #endif
     layer4_port_t layer4_srcprt;

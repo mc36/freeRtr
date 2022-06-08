@@ -31,7 +31,9 @@ control IngressControlCoPP(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 
     action act_permit() {
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
 

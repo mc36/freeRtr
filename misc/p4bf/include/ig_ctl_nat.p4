@@ -21,23 +21,27 @@
 #ifdef HAVE_NAT
 
 control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
-                               in ingress_intrinsic_metadata_t ig_intr_md,
-                               inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-                               inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
+                          in ingress_intrinsic_metadata_t ig_intr_md,
+                          inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
+                          inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
     DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats4;
     DirectCounter< bit<64> > (CounterType_t.PACKETS_AND_BYTES) stats6;
 
     action act_deny() {
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act_permit() {
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         ig_md.nexthop_id = CPU_PORT;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
 
@@ -51,7 +55,9 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
         ig_md.natted_ipv4udp = 1;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act_rewrite_ipv4prt6(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
@@ -64,7 +70,9 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
         ig_md.natted_ipv4tcp = 1;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act_rewrite_ipv6prt17(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
@@ -77,7 +85,9 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
         ig_md.natted_ipv6udp = 1;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     action act_rewrite_ipv6prt6(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
@@ -90,7 +100,9 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
         ig_md.natted_ipv6tcp = 1;
-        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
     }
 
     table tbl_ipv4_nat_trns {
