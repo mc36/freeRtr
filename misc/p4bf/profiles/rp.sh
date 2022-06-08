@@ -21,7 +21,6 @@ for fn in *.tmpl ; do
 done
 wait
 echo "##undef _TABLE_SIZE_P4_" > rare_profiles.p4
-for fn in *.p4 ; do
-    [ $fn == rare_profiles.p4 ] && continue
+for fn in profile-*.p4 ; do
     echo "#include \"$fn\"" >> rare_profiles.p4
 done
