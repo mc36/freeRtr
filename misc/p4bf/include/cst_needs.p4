@@ -106,5 +106,8 @@
 #define NEED_FRAG
 #endif
 
+#ifdef HAVE_PBR
+#define NEED_FRAG
+#endif
 
 #endif // _NEEDS_P4_

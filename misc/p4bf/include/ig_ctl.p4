@@ -163,10 +163,10 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_flowspec.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_NAT
-            ig_ctl_nat.apply(hdr,ig_md,ig_intr_md);
+            ig_ctl_nat.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_PBR
-            ig_ctl_pbr.apply(hdr,ig_md,ig_intr_md);
+            ig_ctl_pbr.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_BRIDGE
             ig_ctl_bridge.apply(hdr, ig_md, ig_intr_md);

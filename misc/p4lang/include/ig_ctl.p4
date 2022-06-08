@@ -135,6 +135,10 @@ control ig_ctl(inout headers hdr,
             return;
         }
         ig_ctl_pbr.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
+            return;
+        }
         ig_ctl_ipv4.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_ipv6.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_bridge.apply(hdr,ig_md,ig_intr_md);

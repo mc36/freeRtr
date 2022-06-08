@@ -20,15 +20,19 @@
 #ifdef HAVE_PBR
 
 control IngressControlPBR(inout headers hdr, inout ingress_metadata_t ig_md,
-                          in ingress_intrinsic_metadata_t ig_intr_md)
+                               in ingress_intrinsic_metadata_t ig_intr_md,
+                               inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
+                               inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
 
     action act_normal() {
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
     action act_setvrf(switch_vrf_t vrf_id) {
         ig_md.vrf = vrf_id;
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
     action act_sethop(switch_vrf_t vrf_id, NextHopId_t nexthop_id) {
@@ -36,6 +40,7 @@ control IngressControlPBR(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.nexthop_id = nexthop_id;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 
 #ifdef HAVE_MPLS
@@ -48,6 +53,7 @@ control IngressControlPBR(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.nexthop_id = nexthop_id;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 
@@ -61,6 +67,7 @@ control IngressControlPBR(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.nexthop_id = nexthop_id;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_dprsr_md.drop_ctl = ig_md.layer3_frag;
     }
 #endif
 

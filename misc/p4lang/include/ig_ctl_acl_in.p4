@@ -158,14 +158,12 @@ ig_md.layer4_dstprt:
 
     apply {
         if (ig_md.ipv4_valid==1)  {
-            tbl_ipv4_insp.apply();
-            if (ig_md.dropping == 0) return;
+            if (tbl_ipv4_insp.apply().hit) return;
             ig_md.dropping = 0;
             tbl_ipv4_acl.apply();
         }
         if (ig_md.ipv6_valid==1)  {
-            tbl_ipv6_insp.apply();
-            if (ig_md.dropping == 0) return;
+            if (tbl_ipv6_insp.apply().hit) return;
             ig_md.dropping = 0;
             tbl_ipv6_acl.apply();
         }

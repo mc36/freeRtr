@@ -25,10 +25,12 @@ control IngressControlPBR(inout headers hdr,
     direct_counter(CounterType.packets_and_bytes) stats6;
 
     action act_normal() {
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
     action act_setvrf(switch_vrf_t vrf_id) {
         ig_md.vrf = vrf_id;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
     action act_sethop(switch_vrf_t vrf_id, NextHopId_t nexthop_id) {
@@ -36,6 +38,7 @@ control IngressControlPBR(inout headers hdr,
         ig_md.nexthop_id = nexthop_id;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
     action act_setlabel(switch_vrf_t vrf_id, NextHopId_t nexthop_id, label_t label_val) {
@@ -49,6 +52,7 @@ control IngressControlPBR(inout headers hdr,
         ig_md.nexthop_id = nexthop_id;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+        ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
 
