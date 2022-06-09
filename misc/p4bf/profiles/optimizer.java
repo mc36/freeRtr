@@ -171,7 +171,7 @@ public class optimizer {
     }
 
     private static int doOptimize(String prof, String pars, List<String> orig, boolean first, int num1, int num2) {
-        int low = 1024;
+        int low = 0;
         int high = 1024 * 1024;
         for (;;) {
             if ((high - low) < 1024) {
