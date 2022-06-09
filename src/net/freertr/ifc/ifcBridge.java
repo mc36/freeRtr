@@ -272,7 +272,7 @@ public class ifcBridge implements ifcDn {
         if (learned == null) {
             return null;
         }
-        userFormat lst = new userFormat("|", "addr|iface|static|time|tx|rx|drop|tx|rx|drop", "3|3packet|3byte");
+        userFormat lst = new userFormat("|", "addr|iface|static|time|tx|rx|drop|tx|rx|drop", "4|3packet|3byte");
         for (int i = 0; i < learned.size(); i++) {
             lst.add("" + learned.get(i));
         }
