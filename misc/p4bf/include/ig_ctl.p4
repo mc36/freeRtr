@@ -127,6 +127,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_ctl_vlan_in.apply(hdr, ig_md, ig_intr_md);
 
         if (ig_intr_md.ingress_port == CPU_PORT) {
+            ig_md.saw_rsvp = 1;
             ig_tm_md.ucast_egress_port = (PortId_t)hdr.cpu.port;
             ig_tm_md.bypass_egress = 1;
             hdr.cpu.setInvalid();
@@ -195,6 +196,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_pkt_pre_emit.apply(hdr, ig_md, ig_intr_md, ig_tm_md);
 
             if (ig_md.nexthop_id == CPU_PORT) {
+                ig_md.saw_rsvp = 1;
 #ifdef HAVE_TUN
                 ig_ctl_tunnel.apply(hdr,ig_md,ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
