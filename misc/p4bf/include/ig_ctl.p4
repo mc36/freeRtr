@@ -26,6 +26,8 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_NOHW
 
+    IngressControlVlanIn()ig_ctl_vlan_in;
+
     apply {
         if (ig_intr_md.ingress_port == CPU_PORT) {
             ig_tm_md.ucast_egress_port =(PortId_t) hdr.cpu.port;
@@ -34,7 +36,7 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
         } else {
             hdr.cpu.setValid();
             hdr.cpu._padding = 0;
-            hdr.cpu.port = ig_intr_md.ingress_port;
+            hdr.cpu.port = (SubIntId_t) ig_intr_md.ingress_port;
             ig_tm_md.ucast_egress_port = CPU_PORT;
             ig_tm_md.bypass_egress = 1;
         }

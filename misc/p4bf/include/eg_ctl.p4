@@ -26,6 +26,8 @@ control eg_ctl(
 {
 #ifdef HAVE_NOHW
 
+    EgressControlVlanOut() eg_ctl_vlan_out;
+
     apply {
     }
 
