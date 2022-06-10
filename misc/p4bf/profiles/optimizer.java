@@ -147,7 +147,7 @@ public class optimizer {
         return res;
     }
 
-    private static boolean doRound(String prof, String pars, List<String> orig, int num1, int num2) {
+    private static boolean doCompile(String prof, String pars, List<String> orig, int num1, int num2) {
         log("trying with " + num1 + " and " + num2 + " on " + prof);
         doDelete(tempProg + ".tmp");
         List<String> res = doTransform(orig, num1, num2);
@@ -181,9 +181,9 @@ public class optimizer {
             log("currently low=" + low + " mid=" + mid + " high=" + high);
             boolean res;
             if (first) {
-                res = doRound(prof, pars, orig, mid, num2);
+                res = doCompile(prof, pars, orig, mid, num2);
             } else {
-                res = doRound(prof, pars, orig, num1, mid);
+                res = doCompile(prof, pars, orig, num1, mid);
             }
             if (res) {
                 low = mid;
@@ -193,35 +193,17 @@ public class optimizer {
         }
     }
 
-    /**
-     * the main
-     *
-     * @param args arguments
-     */
-    public static void main(String[] args) {
-        tempProg = "optimizer" + ProcessHandle.current().pid();
-        String prof = args[0];
-        String pars = "";
-        for (int i = 1; i < args.length; i++) {
-            pars += " " + args[i];
-        }
-        if (pars.length() > 0) {
-            pars = pars.substring(1, pars.length());
-        }
-        prof = prof.substring(0, prof.lastIndexOf("."));
-        List<String> orig = doRead(prof + ".tmpl");
-        log("read " + orig.size() + " lines from " + prof);
-        log("parameters will be " + pars);
+    private static int[] doParam(String prof, String pars, List<String> orig) {
+        log("optimizing for " + pars);
         int num1 = 1024;
         int num2 = 1024;
-        boolean res;
         if (!checkString(orig, "$p")) {
             log("*** no first value to optimize ***");
         } else {
             num1 = doOptimize(prof, pars, orig, true, num1, num2);
             if (num1 < 0) {
-                log("*** unable to find a working value ***");
-                return;
+                log("*** unable to find a working first value ***");
+                return null;
             }
         }
         if (!checkString(orig, "$s")) {
@@ -229,16 +211,48 @@ public class optimizer {
         } else {
             num2 = doOptimize(prof, pars, orig, false, num1, num2);
             if (num2 < 0) {
-                log("*** unable to find a working value ***");
-                return;
+                log("*** unable to find a working second value ***");
+                return null;
             }
         }
-        res = doRound(prof, pars, orig, num1, num2);
-        if (!res) {
-            log("*** profile failed at final verification ***");
+        int[] res = {num1, num2};
+        return res;
+    }
+
+    /**
+     * the main
+     *
+     * @param args arguments
+     */
+    public static void main(String[] args) {
+        tempProg = "optimizer" + ProcessHandle.current().pid();
+        String prof = args[1];
+        List<String> pars = doRead(args[1]);
+        log("read " + pars.size() + " lines from " + prof);
+        prof = args[0];
+        prof = prof.substring(0, prof.lastIndexOf("."));
+        List<String> orig = doRead(prof + ".tmpl");
+        log("read " + orig.size() + " lines from " + prof);
+        int nums[] = doParam(prof, pars.get(0), orig);
+        if (nums == null) {
             return;
         }
-        doFinal(prof, orig, num1, num2);
+        for (int i = 0; i < pars.size(); i++) {
+            if (doCompile(prof, pars.get(i), orig, nums[0], nums[1])) {
+                continue;
+            }
+            int res[] = doParam(prof, pars.get(i), orig);
+            if (res == null) {
+                return;
+            }
+            if (res[0] < nums[0]) {
+                nums[0] = res[0];
+            }
+            if (res[1] < nums[1]) {
+                nums[1] = res[1];
+            }
+        }
+        doFinal(prof, orig, nums[0], nums[1]);
         log("*** working profile generated successfully ***");
     }
 
