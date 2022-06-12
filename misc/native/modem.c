@@ -184,9 +184,6 @@ int doOneCmd(char *cmdFul) {
         case 460800:
             i = B460800;
             break;
-        case 576000:
-            i = B576000;
-            break;
         default:
             return 1;
         }
