@@ -3154,7 +3154,7 @@ def writeMbierRouteRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, di
         action_params={
             "hop": hopid,
             "label": outlab,
-            "bfir": bfir, 
+            "bfir": bfir,
             "bs0": bs0,
             "bs1": bs1,
             "bs2": bs2,

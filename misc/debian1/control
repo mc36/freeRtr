@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9.20160709~),
 	       default-jdk,
 	       javahelper,
 	       dh-sysuser
-Maintainer: Jean-Rémy Buchs <jrb0001@692b8c32.de>
+Maintainer: Jean-Remy Buchs <jrb0001@692b8c32.de>
 Standards-Version: 4.1.4
 
 Package: freerouter
