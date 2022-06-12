@@ -4,7 +4,10 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <tuntap.h>
+
 #include "utils.h"
 
 struct sockaddr_in addrLoc;

@@ -4,12 +4,15 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <linux/if_ether.h>
 #include <linux/if.h>
 #include <linux/if_packet.h>
 #include <linux/if_tun.h>
 #include <sys/ioctl.h>
 #include <sys/fcntl.h>
+
 #include "utils.h"
 
 char *ifaceName;

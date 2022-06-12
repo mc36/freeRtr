@@ -4,6 +4,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>

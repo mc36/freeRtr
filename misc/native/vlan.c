@@ -4,6 +4,9 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
 #include "utils.h"
 #include "types.h"
 

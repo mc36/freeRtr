@@ -4,6 +4,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <linux/if_ether.h>
 #include <linux/if.h>
 #include <linux/if_packet.h>
