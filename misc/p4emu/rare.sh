@@ -1,5 +1,5 @@
 #!/bin/sh
-apt-get install sudo mc curl wget git make default-jdk-headless default-jre-headless bc
+apt-get install sudo mc curl wget git make default-jdk-headless default-jre-headless bc jq
 bash <(curl -L https://nixos.org/nix/install) --daemon </dev/null
 echo onie_machine=model > /etc/machine.conf
 cat >> /etc/nix/nix.conf << EOF
