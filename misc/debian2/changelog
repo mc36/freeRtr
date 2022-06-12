@@ -1,12 +1,12 @@
 freerouter (0~nightly) unstable; urgency=medium
 
-  * corrected changelog format 
+  * corrected changelog format
 
  -- Frederic LOUI <fl@mp.ls>  Sun, 12 Apr 2020 22:51:56 +0000
 
 freerouter (nightly) unstable; urgency=medium
 
-  * Switched to nightly versioning 
+  * Switched to nightly versioning
 
  -- Frederic LOUI <fl@mp.ls>  Sun, 12 Apr 2020 20:53:01 +0000
 

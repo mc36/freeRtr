@@ -195,16 +195,17 @@ public class findSongs {
         cm[0] = "ffprobe";
         cm[1] = sng.file;
         playerUtil.put("--> song " + cm[1] + " <--");
-        Process prc;
+        playerLyric res;
         try {
             Runtime rtm = Runtime.getRuntime();
-            prc = rtm.exec(cm);
+            Process prc = rtm.exec(cm);
+            res = playerUtil.doRead(prc.getErrorStream());
             prc.waitFor();
+            prc.destroy();
         } catch (Exception e) {
             playerUtil.put("failed to exec!");
             return true;
         }
-        playerLyric res = playerUtil.doRead(prc.getErrorStream());
         if (res == null) {
             playerUtil.put("failed to fetch!");
             return true;

@@ -36,11 +36,11 @@ import sal_services_pb2_grpc
 
 PROGRAM_NAME = os.path.basename(sys.argv[0])
 log_level = logging.WARNING
-logger = logging.getLogger(PROGRAM_NAME)      
+logger = logging.getLogger(PROGRAM_NAME)
 
 SAL_PORT_ID = {
                 0:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8,
-                12:9, 13:10, 14:11, 15:12, 
+                12:9, 13:10, 14:11, 15:12,
                 28:13, 29:14, 30:15, 31:16
                 }
 

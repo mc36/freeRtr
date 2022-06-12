@@ -6,7 +6,7 @@ PORT_SPEED_T2 = [1, 10, 25, 40, 50, 100, 200, 400]
 def managePort(self, platform, mode, port_id, port_speed=10,
                fec=0, autoneg=1, flowctrl=0):
     method_name = inspect.currentframe().f_code.co_name
-    
+
     if mode == 1:
         if self._checkParamCoherence(port_speed, fec, autoneg, flowctrl) == False:
             self.controlPlaneMsg(
@@ -84,12 +84,12 @@ def managePort(self, platform, mode, port_id, port_speed=10,
         else:
             logger.warning("Port[%s] added", port_id)
             self.active_ports[port_id] = True
-            
+
     elif mode == 3:
         if port_id not in self.active_ports:
             self.controlPlaneMsg("Attempting to delete inactive port [%s]" % port_id)
             return
-            
+
         try:
             if platform == "stordis_bf2556x_1t" and port_id in SAL_PORT_ID:
                 sal_port = SAL_PORT_ID[port_id]

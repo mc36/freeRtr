@@ -363,8 +363,12 @@ public class playerUtil {
         playerLyric res = new playerLyric();
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            while (rd.ready()) {
-                res.add(rd.readLine());
+            for (;;) {
+                String a = rd.readLine();
+                if (a == null) {
+                    break;
+                }
+                res.add(a);
             }
             rd.close();
             is.close();

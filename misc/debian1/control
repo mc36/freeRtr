@@ -18,13 +18,13 @@ Recommends: freerouter-native
 Description: free, open source router os process
  it speaks routing protocols, and (re)encapsulates packets on interfaces
  since it handles packets itself, it is independent of underlaying os
- capabilities (optionally, it can export forwarding tables through 
- openflow to external switch) since it is an unprivilegized process, it 
+ capabilities (optionally, it can export forwarding tables through
+ openflow to external switch) since it is an unprivilegized process, it
  receives and sends packets through sockets there are external, privileged
  processes that place traffic to these sockets (it means that internet can
- be used as backplane for router processes) the command line tries to 
+ be used as backplane for router processes) the command line tries to
  mimic the industry standards with one exception: no global routing table:
- every routed interface must be in a virtual routing table positive side 
+ every routed interface must be in a virtual routing table positive side
  effect: there are no vrf-awareness questions
 
 Package: freerouter-native

@@ -1,5 +1,5 @@
 from ..bf_gbl_env.var_env import *
-from ..bf_rt_rare import BfRtRare  
+from ..bf_rt_rare import BfRtRare
 
 class RareApi(BfRtRare):
 
@@ -8,9 +8,9 @@ class RareApi(BfRtRare):
         self.file_w=None
 
     from .bierlabel4 import writeBierLabelRules
-    #from .bierlabel6 import 
+    #from .bierlabel6 import
     from .bierlabloc4 import writeBierLabLocRules
-    #from .bierlabloc6 import 
+    #from .bierlabloc6 import
     from .bridgelabel import writeBrlabRules
     from .bridgemac import writeBrmacRules
     from .bridgepckoudp4 import writePckoudp4rules
@@ -24,9 +24,9 @@ class RareApi(BfRtRare):
     from .copp6 import writeCopp6Rules
     from .cpulabel import writeCpuMplsRules
     from .duplabel4 import writeDupLabelRules
-    #from .duplabel6 import 
+    #from .duplabel6 import
     from .duplabloc4 import writeDupLabLocRules
-    #from .duplabloc6 import 
+    #from .duplabloc6 import
     from .flowspec4 import writeFlowspec4Rules
     from .flowspec6 import writeFlowspec6Rules
     from .gre4 import writeGre4rules
@@ -46,13 +46,13 @@ class RareApi(BfRtRare):
     from .gtp4 import writeGtp4rules
     from .gtp6 import writeGtp6rules
     from .label4 import writeMplsRules
-    #from .label6 import 
+    #from .label6 import
     from .labroute4 import writeGlobRules4
     from .labroute6 import writeGlobRules6
     from .mbierroute4 import writeMbierRouteRules
-    #from .mbierroute6 import 
+    #from .mbierroute6 import
     from .mlabroute4 import writeMlabRouteRules
-    #from .mlabroute6 import 
+    #from .mlabroute6 import
     from .mlocal4 import writeMlocal4rules
     from .mlocal6 import writeMlocal6rules
     from .mroute4 import writeMroute4rules
@@ -61,7 +61,7 @@ class RareApi(BfRtRare):
     from .myaddr4 import writeMyaddrRules4
     from .myaddr6 import writeMyaddrRules6
     from .mylabel4 import writeMyMplsRules
-    #from .mylabel6 import 
+    #from .mylabel6 import
     from .mysrv4 import writeMySrv4rules
     from .mysrv6 import writeMySrv6rules
     from .natcfg4 import writeNatCfgRules4
@@ -106,7 +106,7 @@ class RareApi(BfRtRare):
     from .state import setPortAdmStatus
     from .ports import managePort
     from .unlabel4 import writeUnMplsRules
-    #from .unlabel6 import 
+    #from .unlabel6 import
     from .vpnroute4 import writeVpnRules4
     from .vpnroute6 import writeVpnRules6
     from .xconnect import writeXconnRules

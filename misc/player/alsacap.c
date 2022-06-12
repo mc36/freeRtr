@@ -1,12 +1,12 @@
 /*
  * ALSA parameter test program
- * 
+ *
  * Copyright (c) 2007 Volker Schatz (alsacap at the domain volkerschatz.com)
- * 
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies. 
- * 
+ * copyright notice and this permission notice appear in all copies.
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
@@ -354,7 +354,7 @@ void testconfig(snd_pcm_stream_t stream, const char *device, const int *hwpars)
   err= snd_pcm_hw_params_any(pcm, pars);
   tc_errcheck(err, "initialising hardware parameters");
   for( count= 0; hwpars[count]!=HWP_END; count += 2 )
-    
+
     switch(hwpars[count])
     {
       case HWP_RATE:param= hwpars[count+1];

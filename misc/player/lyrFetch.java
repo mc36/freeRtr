@@ -71,16 +71,17 @@ public class lyrFetch {
             playerUtil.put("no title!");
             return 1;
         }
-        Process prc;
+        playerLyric res;
         try {
             Runtime rtm = Runtime.getRuntime();
-            prc = rtm.exec(cm);
+            Process prc = rtm.exec(cm);
+            res = playerUtil.doRead(prc.getInputStream());
             prc.waitFor();
+            prc.destroy();
         } catch (Exception e) {
             playerUtil.put("failed to exec!");
             return 2;
         }
-        playerLyric res = playerUtil.doRead(prc.getInputStream());
         if (res == null) {
             playerUtil.put("failed to download!");
             return 2;

@@ -2,7 +2,7 @@
 
 # Prace routing aktualizalo a login node-okra.
 # Naponta egyszer-ketszer a cronbol futtatjuk.
-# 
+#
 # v1.0  2017-07-05 kissg@niif.hu
 # v1.1  2017-07-05 kissg@niif.hu: a sajat halozatunkra nem kell route-olni
 # v1.01 2017-07-06 kissg@niif.hu: a 3-as Bash-hez kicsit rontani kellett rajta

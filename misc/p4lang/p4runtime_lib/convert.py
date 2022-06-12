@@ -84,7 +84,7 @@ def encode(x, bitwidth):
         else:
             # Assume that the string is already encoded
             encoded_bytes = x
-            # using encode IPV6 
+            # using encode IPV6
             # encoded_bytes = encodeIPv6(x)
     elif type(x) == int:
         encoded_bytes = encodeNum(x, bitwidth)
