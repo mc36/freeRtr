@@ -10,4 +10,5 @@ EOF
 sudo systemctl restart nix-daemon
 git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-nix.git
 make install
+nix-store --add-fixed sha256 bf-sde-9.7.2.tgz
 sudo /nix/var/nix/profiles/RARE/bin/release-manager --activate
