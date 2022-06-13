@@ -237,20 +237,17 @@ public class optimizer {
         if (nums == null) {
             return;
         }
-        for (int i = 0; i < pars.size(); i++) {
+        for (int i = 0;;) {
+            if (i >= pars.size()) {
+                break;
+            }
             if (doCompile(prof, pars.get(i), orig, nums[0], nums[1])) {
+                i++;
                 continue;
             }
-            int res[] = doParam(prof, pars.get(i), orig);
-            if (res == null) {
-                return;
-            }
-            if (res[0] < nums[0]) {
-                nums[0] = res[0];
-            }
-            if (res[1] < nums[1]) {
-                nums[1] = res[1];
-            }
+            nums[0] -= nums[0] / 100;
+            nums[1] -= nums[1] / 100;
+            i = 0;
         }
         doFinal(prof, orig, nums[0], nums[1]);
         log("*** working profile generated successfully ***");

@@ -85,8 +85,17 @@
 /* Fall-through for the Tofino software emulation (Tofino model). It
    doesn't emulate the CPU PCIe port, use the CPU Eth port instead. */
 
+#if __TARGET_TOFINO__ == 2
+
+#define CPU_PORT 2
+#define RECIR_PORT 1
+
+#else
+
 #define CPU_PORT 64
 #define RECIR_PORT 68
+
+#endif
 
 #endif
 
