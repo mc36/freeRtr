@@ -91,6 +91,7 @@ control IngressControlIPv6b(inout headers hdr,
         hdr.mpls0.setValid();
         hdr.mpls0.label = egress_label;
         hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+        hdr.mpls0.bos = 0;
         /*
          * MPLS VPN
          */

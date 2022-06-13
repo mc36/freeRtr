@@ -52,6 +52,7 @@ control IngressControlVRF(inout headers hdr,
         hdr.mpls0.setValid();
         hdr.mpls0.label = tunlab;
         hdr.mpls0.ttl = 255;
+        hdr.mpls0.bos = 0;
         hdr.mpls1.setValid();
         hdr.mpls1.label = svclab;
         hdr.mpls1.ttl = 255;

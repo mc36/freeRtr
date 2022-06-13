@@ -129,6 +129,7 @@ hdr.ethernet.src_mac_addr:
         hdr.mpls0.setValid();
         hdr.mpls0.label = lab_tun;
         hdr.mpls0.ttl = 255;
+        hdr.mpls0.bos = 0;
         hdr.mpls1.setValid();
         hdr.mpls1.label = lab_svc;
         hdr.mpls1.ttl = 255;
