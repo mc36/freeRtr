@@ -385,6 +385,12 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     public void sendL2info(addrType l2info, addrIP nexthop) {
+        if (neiCache == null) {
+            return;
+        }
+        packHolder pck = new packHolder(true, true);
+        icc.createNeighAdv(l2info, pck, addrIPv6.getAllNodes(), nexthop.toIPv6(), false);
+        sendProto(pck, pck.IPtrg);
     }
 
     public addrType getL2info() {
