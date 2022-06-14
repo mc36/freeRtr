@@ -493,7 +493,6 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
 }
 
 
-#ifndef HAVE_NOCRYPTO
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
@@ -511,6 +510,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     }
     if (encrCtx == NULL) return 0;
     if (port2vrf_res->mcscEthtyp == 0) return 0;
+#ifndef HAVE_NOCRYPTO
     port2vrf_res->mcscPackTx++;
     port2vrf_res->mcscByteTx += *bufS;
     int seq = port2vrf_res->mcscSeqTx++;
@@ -565,8 +565,10 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     bufD[*bufP + 3] = 0; // sl
     put32msb(bufD, *bufP + 4, seq);
     return 0;
-}
+#else
+    return 1;
 #endif
+}
 
 
 #define putMacAddr                                  \
@@ -576,9 +578,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
-#ifndef HAVE_NOCRYPTO
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
-#endif
     struct vlan_entry vlan_ntry;
     struct bundle_entry bundle_ntry;
     struct vlan_entry *vlan_res;
@@ -596,9 +596,7 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
         vlan_res->pack++;
         vlan_res->byte += *bufS;
         *ethtyp = ETHERTYPE_VLAN;
-#ifndef HAVE_NOCRYPTO
         if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
-#endif
     }
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
@@ -621,9 +619,7 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
         *bufP = preBuff + 12;
         return prt;
     }
-#ifndef HAVE_NOCRYPTO
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
-#endif
     putMacAddr;
     send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
     return -1;
@@ -638,9 +634,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
     int prt = neigh_res->port;
     memcpy(&bufH[0], &neigh_res->macs, 12);
     if (neigh_res->aclport != prt) {
-#ifndef HAVE_NOCRYPTO
         if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) doDropper;
-#endif
     }
     switch (neigh_res->command) {
     case 1: // raw ip
