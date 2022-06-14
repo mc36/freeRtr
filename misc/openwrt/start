@@ -1,0 +1,5 @@
+#!/bin/sh
+while (true); do
+  sleep 1
+  /usr/sbin/p4emu.bin $@
+  done

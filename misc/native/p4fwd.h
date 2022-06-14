@@ -1,4 +1,4 @@
-#ifdef debugging
+#ifdef HAVE_DEBUG
 
 int dropStat[4096];
 
@@ -383,6 +383,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, unsigned char *bufD, int *bufP, int *bufS) {
+#ifndef HAVE_NOCRYPTO
     int seq = neigh_res->seq;
     neigh_res->seq++;
     *bufP += 2;
@@ -410,10 +411,14 @@ int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, u
     put32lsb(bufD, *bufP + 8, seq);
     put32lsb(bufD, *bufP + 12, 0);
     return 0;
+#else
+    return 1;
+#endif
 }
 
 
 int putOpenvpnHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS) {
+#ifndef HAVE_NOCRYPTO
     int seq = neigh_res->seq;
     neigh_res->seq++;
     *bufP += 2;
@@ -442,10 +447,14 @@ int putOpenvpnHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP
     size_t sizt = preBuff;
     if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP], &sizt) != 1) return 1;
     return 0;
+#else
+    return 1;
+#endif
 }
 
 
 int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, int ethtyp) {
+#ifndef HAVE_NOCRYPTO
     int seq = neigh_res->seq;
     neigh_res->seq++;
     int tmp = *bufS - *bufP + preBuff;
@@ -478,9 +487,13 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
     if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
     *bufS += neigh_res->hashBlkLen;
     return 0;
+#else
+    return 1;
+#endif
 }
 
 
+#ifndef HAVE_NOCRYPTO
 int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
@@ -553,6 +566,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     put32msb(bufD, *bufP + 4, seq);
     return 0;
 }
+#endif
 
 
 #define putMacAddr                                  \
@@ -562,7 +576,9 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
+#ifndef HAVE_NOCRYPTO
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
+#endif
     struct vlan_entry vlan_ntry;
     struct bundle_entry bundle_ntry;
     struct vlan_entry *vlan_res;
@@ -580,7 +596,9 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
         vlan_res->pack++;
         vlan_res->byte += *bufS;
         *ethtyp = ETHERTYPE_VLAN;
+#ifndef HAVE_NOCRYPTO
         if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
+#endif
     }
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
@@ -603,7 +621,9 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
         *bufP = preBuff + 12;
         return prt;
     }
+#ifndef HAVE_NOCRYPTO
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) return -1;
+#endif
     putMacAddr;
     send2port(&bufD[*bufP], *bufS - *bufP + preBuff, prt);
     return -1;
@@ -618,7 +638,9 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
     int prt = neigh_res->port;
     memcpy(&bufH[0], &neigh_res->macs, 12);
     if (neigh_res->aclport != prt) {
+#ifndef HAVE_NOCRYPTO
         if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) doDropper;
+#endif
     }
     switch (neigh_res->command) {
     case 1: // raw ip
@@ -1135,6 +1157,7 @@ ethtyp_rx:
         goto etyped_rx;
     }
     port2vrf_res = table_get(&port2vrf_table, index);
+#ifndef HAVE_NOCRYPTO
     if (port2vrf_res->mcscEthtyp != 0) {
         port2vrf_res->mcscPackRx++;
         port2vrf_res->mcscByteRx += bufS;
@@ -1188,6 +1211,7 @@ ethtyp_rx:
         port2vrf_res->mcscPackOk++;
         port2vrf_res->mcscByteOk += bufS;
     }
+#endif
     if (port2vrf_res->sgtTag != 0) {
         if (ethtyp != ETHERTYPE_SGT) doDropper;
         if (get32msb(bufD, bufP + 0) != 0x01010001) doDropper;

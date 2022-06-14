@@ -1061,6 +1061,7 @@ int initTables() {
     table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
     table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
+#ifndef HAVE_NOCRYPTO
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
     if (OSSL_PROVIDER_load(NULL, "legacy") == NULL) return 1;
@@ -1070,5 +1071,6 @@ int initTables() {
     OpenSSL_add_all_digests();
     OpenSSL_add_all_algorithms();
     RAND_poll();
+#endif
     return 0;
 }

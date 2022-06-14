@@ -10,6 +10,7 @@ void mac2str(unsigned char *src, unsigned char *dst) {
 }
 
 
+
 int str2key(char *str, unsigned char *key) {
     unsigned char buf[4];
     int s = 0;
@@ -25,6 +26,7 @@ int str2key(char *str, unsigned char *key) {
 }
 
 
+#ifndef HAVE_NOCRYPTO
 const EVP_CIPHER* getEncrAlg(char *buf) {
     if (strcmp(buf, "none") == 0) return EVP_enc_null();
     if (strcmp(buf, "des") == 0) return EVP_des_cbc();
@@ -64,6 +66,7 @@ EVP_PKEY* getHashKey(unsigned char* key, int len) {
         return EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, key, len);
     }
 }
+#endif
 
 
 long readRate(char**arg) {
@@ -1686,6 +1689,7 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) port2vrf_res->sgtSet = -1;
         return 0;
     }
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "macsec") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
@@ -1723,6 +1727,8 @@ int doOneCommand(unsigned char* buf) {
         if (del == 0) port2vrf_res->mcscEthtyp = 0;
         return 0;
     }
+#endif
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "ipsec4") == 0) {
         neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -1760,6 +1766,8 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
+#endif
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "ipsec6") == 0) {
         neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -1803,6 +1811,8 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
+#endif
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "openvpn4") == 0) {
         neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -1841,6 +1851,8 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
+#endif
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "openvpn6") == 0) {
         neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -1885,6 +1897,8 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
+#endif
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "wireguard4") == 0) {
         neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -1911,6 +1925,8 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
+#endif
+#ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "wireguard6") == 0) {
         neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -1943,6 +1959,7 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
+#endif
     if (strcmp(arg[0], "monitor") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
@@ -2535,7 +2552,7 @@ void doStatRound(FILE *commands, int round) {
         doStatRound_acl(ntry1, 6, commands);
         if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port, commands);
     }
-#ifdef debugging
+#ifdef HAVE_DEBUG
     for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
         if (dropStat[i] == 0) continue;
         fprintf(commands, "dataplane-say debugging hit line %i with %i packets\r\n", i, dropStat[i]);
