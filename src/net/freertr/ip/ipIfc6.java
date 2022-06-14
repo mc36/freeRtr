@@ -390,7 +390,13 @@ public class ipIfc6 implements ipIfc, ifcUp {
         }
         packHolder pck = new packHolder(true, true);
         icc.createNeighAdv(l2info, pck, addrIPv6.getAllNodes(), nexthop.toIPv6(), false);
-        sendProto(pck, pck.IPtrg);
+        if (createETHheader(pck, pck.IPtrg, type)) {
+            cntr.drop(pck, counter.reasons.notInTab);
+            return;
+        }
+        pck.ETHsrc.setAddr(l2info);
+        cntr.tx(pck);
+        lower.sendPack(pck);
     }
 
     public addrType getL2info() {
