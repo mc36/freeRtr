@@ -411,6 +411,19 @@ public class ipIfc4arp implements ifcUp {
         if (gratoitous > 2) {
             sendArpPack(new packHolder(true, true), opcodeARPreq,
                     addrMac.getBroadcast(), ipaddr, hwaddr, ipaddr);
+            if (upper.ifcHdr != null) {
+                for (int i = 0;; i++) {
+                    addrIP adr = upper.ifcHdr.adrGetIp(i);
+                    if (adr == null) {
+                        break;
+                    }
+                    addrMac mac = upper.ifcHdr.adrGetMac(i);
+                    if (mac == null) {
+                        break;
+                    }
+                    sendARPheader(mac, adr.toIPv4());
+                }
+            }
             gratoitous = 0;
         }
         currTim = bits.getTime();

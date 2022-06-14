@@ -484,6 +484,19 @@ public class ipIfc6 implements ipIfc, ifcUp {
      */
     public void sendAdverts() {
         packHolder pck = new packHolder(true, true);
+        if (ifcHdr != null) {
+            for (int i = 0;; i++) {
+                addrIP adr = ifcHdr.adrGetIp(i);
+                if (adr == null) {
+                    break;
+                }
+                addrMac mac = ifcHdr.adrGetMac(i);
+                if (mac == null) {
+                    break;
+                }
+                sendL2info(mac, adr);
+            }
+        }
         addrType hwa = lower.getHwAddr();
         icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), false);
         sendProto(pck, pck.IPtrg);

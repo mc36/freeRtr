@@ -2157,6 +2157,34 @@ public class ipFwdIface extends tabRouteIface {
     }
 
     /**
+     * get one mapping
+     *
+     * @param i id
+     * @return ip, null if not found
+     */
+    public addrIP adrGetIp(int i) {
+        ipFwdIfaceAddr ntry = adrs.get(i);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry.ip.copyBytes();
+    }
+
+    /**
+     * get one mapping
+     *
+     * @param i id
+     * @return mac, null if not found
+     */
+    public addrMac adrGetMac(int i) {
+        ipFwdIfaceAddr ntry = adrs.get(i);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry.mac.copyBytes();
+    }
+
+    /**
      * inform that just acquired one address
      *
      * @param ip l3 address
