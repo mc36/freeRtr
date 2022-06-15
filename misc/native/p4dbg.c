@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#undef HAVE_DEBUG
+#define HAVE_DEBUG
 //#undef HAVE_NOCRYPTO
 
 #include "p4hdr.h"

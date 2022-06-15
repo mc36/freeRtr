@@ -1,2 +1,3 @@
 all:
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4emu.bin $^ $(LDLIBS) -DHAVE_NOCRYPTO p4pcap.c p4full.c -lpthread -lpcap
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4dbg.bin $^ $(LDLIBS) -DHAVE_NOCRYPTO p4pcap.c p4dbg.c -lpthread -lpcap

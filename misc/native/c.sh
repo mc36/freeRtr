@@ -54,7 +54,7 @@ for fn in p4xdp_user; do
   compileFile $fn "" "-lpthread -lbpf" ""
   done
 
-for fn in p4full p4none p4pcap; do
+for fn in p4full p4dbg p4none p4pcap; do
   compileLib $fn "" ""
   done
 
@@ -66,9 +66,13 @@ dpkdLibs="-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte
 
 linkTwoLibs "p4emu" "p4pcap" "p4full" "-lpthread -lpcap -lcrypto"
 
+linkTwoLibs "p4dbg" "p4pcap" "p4dbg" "-lpthread -lpcap -lcrypto"
+
 linkTwoLibs "p4pkt" "p4pcap" "p4none" "-lpthread -lpcap -lcrypto"
 
 linkTwoLibs "p4dpdk" "p4dpdk" "p4full" "$dpkdLibs"
+
+linkTwoLibs "p4dpdkDbg" "p4dpdk" "p4dbg" "$dpkdLibs"
 
 linkTwoLibs "p4dpdkPkt" "p4dpdk" "p4none" "$dpkdLibs"
 
