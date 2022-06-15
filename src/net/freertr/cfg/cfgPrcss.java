@@ -214,6 +214,10 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         l.add(null, "2  .        <str>                    set new name of process");
         l.add(null, "1  2      exec                       set external binary to use");
         l.add(null, "2  2,.      <str>                    name of image");
+        l.add(null, "1  2      program                    set external binary to use");
+        l.add(null, "2  .        <str>                    name of image");
+        l.add(null, "1  2      parameter                  set parameters to use on the binary");
+        l.add(null, "2  2,.      <str>                    name of image");
         l.add(null, "1  2      final                      set final long parameter");
         l.add(null, "2  2,.      <str>                    parameter");
         l.add(null, "1  2      user                       set user to use");
@@ -295,6 +299,27 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
         }
         if (a.equals("description")) {
             description = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("parameter")) {
+            if (execName == null) {
+                cmd.error("no exec specified");
+                return;
+            }
+            a = cmd.getRemaining();
+            cmd = new cmds("old", execName);
+            execName = (cmd.word() + " " + a).trim();
+            return;
+        }
+        if (a.equals("program")) {
+            if (execName == null) {
+                cmd.error("no exec specified");
+                return;
+            }
+            a = cmd.word();
+            cmd = new cmds("old", execName);
+            cmd.word();
+            execName = (a + " " + cmd.getRemaining()).trim();
             return;
         }
         if (a.equals("exec")) {
