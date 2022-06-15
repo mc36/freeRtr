@@ -8,6 +8,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgPlymp;
 import net.freertr.cfg.cfgPrfxlst;
@@ -3129,9 +3130,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (s.equals("update-source")) {
                 if (negated) {
                     cur.iface = null;
-                } else {
-                    cur.iface = cfgAll.ifcFind(cmd.word(), 0);
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
                 }
+                cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
+                if (res == null) {
+                    cmd.error("no such interface");
+                }
+                if (res.vrfFor != vrfCore) {
+                    cmd.error("in other vrf");
+                    return false;
+                }
+                cur.iface = res;
                 needFull.add(1);
                 compute.wakeup();
                 return false;
@@ -3186,9 +3197,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (s.equals("update-source")) {
                 if (negated) {
                     cur.iface = null;
-                } else {
-                    cur.iface = cfgAll.ifcFind(cmd.word(), 0);
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
                 }
+                cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
+                if (res == null) {
+                    cmd.error("no such interface");
+                }
+                if (res.vrfFor != vrfCore) {
+                    cmd.error("in other vrf");
+                    return false;
+                }
+                cur.iface = res;
                 needFull.add(1);
                 compute.wakeup();
                 return false;

@@ -1722,10 +1722,15 @@ public abstract class rtrBgpParam {
                 srcIface = null;
                 return false;
             }
-            srcIface = cfgAll.ifcFind(cmd.word(), 0);
-            if (srcIface == null) {
+            cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
+            if (res == null) {
                 cmd.error("no such interface");
             }
+            if (res.vrfFor != lower.vrfCore) {
+                cmd.error("in other vrf");
+                return false;
+            }
+            srcIface = res;
             return false;
         }
         if (s.equals("other-address")) {

@@ -30,7 +30,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
     /**
      * peer address
      */
-    public addrIP peer = new addrIP();
+    public final addrIP peer = new addrIP();
 
     /**
      * remote description

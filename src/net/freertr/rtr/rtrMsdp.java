@@ -6,6 +6,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
@@ -273,10 +274,20 @@ public class rtrMsdp extends ipRtr {
                 ntry.srcIface = null;
                 return false;
             }
-            ntry.srcIface = cfgAll.ifcFind(cmd.word(), 0);
-            if (ntry.srcIface == null) {
+            cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
+            if (res == null) {
                 cmd.error("no such interface");
+                return false;
             }
+            if (res.vrfFor == null) {
+                cmd.error("not in vrf");
+                return false;
+            }
+            if (res.vrfFor.getFwd(ntry.peer) != fwdCore) {
+                cmd.error("in other vrf");
+                return false;
+            }
+            ntry.srcIface = res;
             return false;
         }
         if (s.equals("password")) {
@@ -373,7 +384,7 @@ public class rtrMsdp extends ipRtr {
      */
     public rtrMsdpNeigh findPeer(addrIP adr) {
         rtrMsdpNeigh nei = new rtrMsdpNeigh(this);
-        nei.peer = adr.copyBytes();
+        nei.peer.setAddr(adr);
         return neighs.find(nei);
     }
 
