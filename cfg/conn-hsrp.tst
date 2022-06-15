@@ -109,10 +109,10 @@ r1 tping 100 5 4321::2 vrf v1
 r1 tping 0 5 2.2.2.3 vrf v1
 r1 tping 0 5 4321::3 vrf v1
 
-r1 send conf t
-r1 send int eth1
-r1 send shut
-r1 send end
+r2 send conf t
+r2 send int eth1
+r2 send shut
+r2 send end
 
 r1 tping 0 5 2.2.2.2 vrf v1
 r1 tping 0 5 4321::2 vrf v1
