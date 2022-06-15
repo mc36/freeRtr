@@ -39,6 +39,17 @@ public class servP4langUtil {
     }
 
     /**
+     * convert forwarder id to interface
+     *
+     * @param p parent
+     * @param i id
+     * @return interface
+     */
+    protected static servP4langIfc forwarder2iface(servP4langCfg p, int i) {
+        return new servP4langIfc(p, -1 - i);
+    }
+
+    /**
      * convert forwarder id to address
      *
      * @param i id
