@@ -352,6 +352,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 fwdCore.echoRcvd++;
                 int i = pck.IPtos;
                 int o = pck.IPid;
+                boolean p = pck.IPdf;
                 pck.ICMPtc = icmpEchoRep;
                 addrIP adr = pck.IPsrc.copyBytes();
                 pck.IPsrc.setAddr(rxIfc.addr);
@@ -360,6 +361,7 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 pck.putStart();
                 pck.IPtos = i;
                 pck.IPid = o;
+                pck.IPdf = p;
                 pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(size);
                 createICMPheader(pck);

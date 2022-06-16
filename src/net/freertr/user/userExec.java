@@ -1493,6 +1493,7 @@ public class userExec {
         hl.add(null, "3 3,.      lookup                     lookup intermediate hops");
         hl.add(null, "1 2    ping                           send echo request");
         hl.add(null, "2 3,.    <host>                       name of host");
+        hl.add(null, "3 3,.      df                         specify dont fragment");
         hl.add(null, "3 3,.      multi                      wait for multiple responses");
         hl.add(null, "3 3,.      detail                     specify detail mode");
         hl.add(null, "3 4        data                       specify data to send");
@@ -3523,7 +3524,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, ttl, sgt, tos, flow, data, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, false, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 continue;
             }
@@ -3560,10 +3561,15 @@ public class userExec {
         boolean detail = false;
         boolean sweep = false;
         boolean multi = false;
+        boolean dntfrg = false;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
+            }
+            if (a.equals("df")) {
+                dntfrg = true;
+                continue;
             }
             if (a.equals("multi")) {
                 multi = true;
@@ -3662,7 +3668,7 @@ public class userExec {
         int tosMax = 0;
         int tosSum = 0;
         long timBeg = bits.getTime();
-        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
@@ -3680,7 +3686,7 @@ public class userExec {
                 break;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, ttl, sgt, tos, flow, data, multi);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, dntfrg, ttl, sgt, tos, flow, data, multi);
             if (ping == null) {
                 lost++;
                 if (detail) {
