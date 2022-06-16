@@ -2559,11 +2559,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (p >= 0) {
             String q = s.substring(0, p);
             int i = bits.str2num(q);
+            if (i < 0) {
+                return new String[]{"", ""};
+            }
             if (!q.equals("" + i)) {
                 return new String[]{"", ""};
             }
             s = s.substring(p + 1, s.length());
-            b = b + i + "/";
+            b += i + "/";
         }
         p = s.indexOf(".");
         if (p < 0) {
@@ -2571,18 +2574,31 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if (p < 0) {
                 return new String[]{"", ""};
             }
-            b += p;
-            return new String[]{b, ""};
-        } else {
-            b += bits.str2num(s.substring(0, p));
-            s = s.substring(p + 1, s.length());
-            p = bits.str2num(s);
-            if (p < 1) {
+            if (!s.equals("" + p)) {
                 return new String[]{"", ""};
             }
-            s = "." + p;
-            return new String[]{b, s};
+            b += p;
+            return new String[]{b, ""};
         }
+        String q = s.substring(0, p);
+        s = s.substring(p + 1, s.length());
+        p = bits.str2num(q);
+        if (p < 0) {
+            return new String[]{"", ""};
+        }
+        if (!q.equals("" + p)) {
+            return new String[]{"", ""};
+        }
+        b += p;
+        p = bits.str2num(s);
+        if (p < 1) {
+            return new String[]{"", ""};
+        }
+        if (!s.equals("" + p)) {
+            return new String[]{"", ""};
+        }
+        s = "." + p;
+        return new String[]{b, s};
     }
 
     public String toString() {
