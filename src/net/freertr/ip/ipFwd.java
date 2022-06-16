@@ -1596,7 +1596,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         if (pck.IPdf) {
-            cntrL.drop(pck, counter.reasons.fragment);
+            ipCore.createIPheader(pck);
+            doDrop(pck, iface, counter.reasons.fragment);
             return;
         }
         packHolder snd = new packHolder(true, true);
