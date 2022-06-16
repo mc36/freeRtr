@@ -299,6 +299,7 @@ public abstract class ifcVlan implements ifcUp {
         }
         ifc.setParent(ntry);
         setFilter(false);
+        setState(lower.getState());
         return ntry;
     }
 
