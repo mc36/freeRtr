@@ -343,6 +343,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     public void sendMpls(packHolder pck, addrIP nexthop) {
         if (mpls == null) {
+            logger.info("protocol not enabled");
             return;
         }
         if (createETHheader(pck, nexthop, ipMpls.typeU)) {
@@ -354,6 +355,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     public void sendPolka(packHolder pck, addrIP nexthop) {
         if (polka == null) {
+            logger.info("protocol not enabled");
             return;
         }
         ifcPolka.createPolkaHeader(pck);
@@ -366,6 +368,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
     public void sendMpolka(packHolder pck, addrIP nexthop) {
         if (mpolka == null) {
+            logger.info("protocol not enabled");
             return;
         }
         ifcMpolka.createMpolkaHeader(pck);

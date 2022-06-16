@@ -14,6 +14,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.user.userFormat;
 import net.freertr.util.counter;
+import net.freertr.util.logger;
 import net.freertr.util.state;
 
 /**
@@ -242,6 +243,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
 
     public void sendMpls(packHolder pck, addrIP nexthop) {
         if (mpls == null) {
+            logger.info("protocol not enabled");
             return;
         }
         if (createETHheader(pck, nexthop, ipMpls.typeU)) {
@@ -253,6 +255,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
 
     public void sendPolka(packHolder pck, addrIP nexthop) {
         if (polka == null) {
+            logger.info("protocol not enabled");
             return;
         }
         ifcPolka.createPolkaHeader(pck);
@@ -265,6 +268,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
 
     public void sendMpolka(packHolder pck, addrIP nexthop) {
         if (mpolka == null) {
+            logger.info("protocol not enabled");
             return;
         }
         ifcMpolka.createMpolkaHeader(pck);
