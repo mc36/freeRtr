@@ -11,6 +11,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPpp;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
@@ -552,7 +553,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
                 return;
             }
             if (pwType == packLdpPwe.pwtPpp) {
-                pckBin.msbPutW(0, 0xff03);
+                pckBin.msbPutW(0, ifcPpp.preamble);
                 pckBin.putSkip(2);
                 pckBin.merge2beg();
             }

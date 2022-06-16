@@ -1182,8 +1182,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * @param proto protocol number
      */
     public void putAddrCtrlProto(packHolder pck, int proto) {
-        pck.putByte(0, 0xff); // address
-        pck.putByte(1, 0x03); // control
+        pck.msbPutW(0, preamble);
         pck.msbPutW(2, proto); // protocol
         pck.putSkip(size);
         pck.merge2beg();
@@ -1457,8 +1456,14 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        // int addr = pck.getByte(0); // address
-        // int ctrl = pck.getByte(1); // control
+        if (pck.dataSize() < size) {
+            cntr.drop(pck, counter.reasons.tooSmall);
+            return;
+        }
+        if (pck.msbGetW(0) != preamble) {
+            cntr.drop(pck, counter.reasons.badHdr);
+            return;
+        }
         int prot = pck.msbGetW(2); // protocol
         pck.getSkip(size);
         if (prot == fragType) {

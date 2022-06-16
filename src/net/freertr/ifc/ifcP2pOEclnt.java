@@ -328,8 +328,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
             }
             cntr.rx(pck);
             pck.putStart();
-            pck.putByte(0, 0xff);
-            pck.putByte(1, 0x03);
+            pck.msbPutW(0, ifcPpp.preamble);
             pck.putSkip(2);
             pck.merge2beg();
             upper.recvPack(pck);

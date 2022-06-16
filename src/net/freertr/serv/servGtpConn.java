@@ -2,6 +2,7 @@ package net.freertr.serv;
 
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
+import net.freertr.ifc.ifcPpp;
 import net.freertr.pack.packGtp;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
@@ -219,7 +220,7 @@ public class servGtpConn implements Comparator<servGtpConn> {
                 return;
             }
             if (ses.ifc.ppp != null) {
-                pck.msbPutW(0, 0xff03); // address + control
+                pck.msbPutW(0, ifcPpp.preamble);
                 pck.putSkip(2);
                 pck.merge2beg();
             }

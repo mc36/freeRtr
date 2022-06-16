@@ -8,6 +8,7 @@ import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPpp;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packGtp;
@@ -543,7 +544,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
                     return false;
                 }
                 if (cfger.ppp != null) {
-                    pck.msbPutW(0, 0xff03); // address + control
+                    pck.msbPutW(0, ifcPpp.preamble);
                     pck.putSkip(2);
                     pck.merge2beg();
                 } else {

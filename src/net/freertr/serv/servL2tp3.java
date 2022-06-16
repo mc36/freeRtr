@@ -14,6 +14,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPpp;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
@@ -744,7 +745,7 @@ class servL2tp3sess implements ifcDn, Comparator<servL2tp3sess> {
 
     public void doRecv(packHolder pck) {
         if (pwType == packLdpPwe.pwtPpp) {
-            pck.msbPutW(0, 0xff03);
+            pck.msbPutW(0, ifcPpp.preamble);
             pck.putSkip(2);
             pck.merge2beg();
         }

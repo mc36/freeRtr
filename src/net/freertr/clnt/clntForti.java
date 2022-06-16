@@ -5,6 +5,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPpp;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packForti;
 import net.freertr.pack.packHolder;
@@ -271,7 +272,7 @@ public class clntForti implements Runnable, ifcDn {
             if (debugger.clntFortiTraf) {
                 logger.debug("rx " + pckB.dump());
             }
-            pckB.msbPutW(0, 0xff03);
+            pckB.msbPutW(0, ifcPpp.preamble);
             pckB.putSkip(2);
             pckB.merge2beg();
             upper.recvPack(pckB);

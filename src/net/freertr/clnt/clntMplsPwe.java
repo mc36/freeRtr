@@ -7,6 +7,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcPpp;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
@@ -323,7 +324,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
     private byte[] getL2append() {
         if (pwType == packLdpPwe.pwtPpp) {
             byte[] buf = new byte[2];
-            bits.msbPutW(buf, 0, 0xff03);
+            bits.msbPutW(buf, 0, ifcPpp.preamble);
             return buf;
         }
         return null;

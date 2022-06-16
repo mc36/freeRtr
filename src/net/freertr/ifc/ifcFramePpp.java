@@ -25,11 +25,6 @@ public class ifcFramePpp implements ifcUp, ifcDn {
     public final static int frmType = 0x3cf;
 
     /**
-     * type of ppp header
-     */
-    public final static int pppType = 0xff03;
-
-    /**
      * size of headers
      */
     public final static int size = 2;
@@ -176,7 +171,7 @@ public class ifcFramePpp implements ifcUp, ifcDn {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        pck.msbPutW(0, pppType);
+        pck.msbPutW(0, ifcPpp.preamble);
         pck.putSkip(size);
         pck.merge2beg();
         upper.recvPack(pck);
