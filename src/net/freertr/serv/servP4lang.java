@@ -388,7 +388,6 @@ public class servP4lang extends servGeneric implements prtServS {
     /**
      * get generic show
      *
-     * @param fwd forwarder
      * @param mod mode: 1=dataplanes
      * @return show
      */

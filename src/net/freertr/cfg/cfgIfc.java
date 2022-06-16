@@ -2557,14 +2557,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         p = s.indexOf("/");
         if (p >= 0) {
-            int i = bits.str2num(s.substring(0, p));
-            s = s.substring(p + 1, s.length());
-            if (i < 0) {
+            String q = s.substring(0, p);
+            int i = bits.str2num(q);
+            if (!q.equals("" + i)) {
                 return new String[]{"", ""};
             }
-            if (i > 0) {
-                b = b + i + "/";
-            }
+            s = s.substring(p + 1, s.length());
+            b = b + i + "/";
         }
         p = s.indexOf(".");
         if (p < 0) {
