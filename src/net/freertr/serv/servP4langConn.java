@@ -142,6 +142,7 @@ public class servP4langConn implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+        logger.error("neighbor " + lower.remote + " down");
         pipe.setClose();
     }
 
@@ -999,6 +1000,9 @@ public class servP4langConn implements Runnable {
         old.mac = ntry.mac;
         old.sentIfc = outIfc;
         lower.sendLine("neigh6_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
+        outIfc = ifc.getUcast().id;
+        lower.sendLine("nhop2port_" + act + " " + old.id + " " + ifc.id + " " + outIfc);
+        old.sentIgNhop = outIfc;
     }
 
     private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
@@ -2341,6 +2345,9 @@ public class servP4langConn implements Runnable {
     }
 
     private void doNeighs(servP4langNei ntry) {
+        if (ntry.iface.id < 0) {
+            return;
+        }
         if (ntry.need < 1) {
             lower.neighs.del(ntry);
             if (ntry.sentIgNhop >= 0) {

@@ -91,6 +91,7 @@ public class servP4lang extends servGeneric implements prtServS {
         "server p4lang .*! no export-socket",
         "server p4lang .*! no interconnect",
         "server p4lang .*! export-interval 1000",
+        "server p4lang .*! no forwarder .* name",
         "server p4lang .*! no forwarder .* api-stat",
         "server p4lang .*! no forwarder .* export-srv6",
         "server p4lang .*! no forwarder .* export-copp4",
@@ -382,6 +383,27 @@ public class servP4lang extends servGeneric implements prtServS {
         }
         servP4langCfg cur = fwds.get(fwd);
         return cur.bckplnRou;
+    }
+
+    /**
+     * get generic show
+     *
+     * @param fwd forwarder
+     * @param mod mode: 1=dataplanes
+     * @return show
+     */
+    public userFormat getShowGen(int mod) {
+        switch (mod) {
+            case 1:
+                userFormat res = new userFormat("|", "fwd|cls|addr|name");
+                for (int i = 0; i < fwds.size(); i++) {
+                    servP4langCfg ntry = fwds.get(i);
+                    res.add(i + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.remote + "|" + ntry.descr);
+                }
+                return res;
+            default:
+                return null;
+        }
     }
 
     /**

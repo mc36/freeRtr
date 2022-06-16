@@ -116,6 +116,11 @@ public class servP4langCfg implements ifcUp {
     protected addrIP remote = new addrIP();
 
     /**
+     * description
+     */
+    protected String descr;
+
+    /**
      * minimum buffer size
      */
     protected int minBuf = 0;
@@ -340,6 +345,7 @@ public class servP4langCfg implements ifcUp {
             l.add(beg + mid + "backplane " + ntry.pi.ifc.name + " " + ntry.metric);
         }
         l.add(beg + mid + "remote " + remote);
+        cmds.cfgLine(l, descr == null, beg, mid + "name", descr);
     }
 
     /**
@@ -376,6 +382,10 @@ public class servP4langCfg implements ifcUp {
             ntry.lab = tabLabel.allocate(24);
             ntry.lab.setFwdDrop(24);
             expBr.put(ntry);
+            return false;
+        }
+        if (s.equals("name")) {
+            descr = cmd.getRemaining();
             return false;
         }
         if (s.equals("remote")) {
@@ -585,6 +595,10 @@ public class servP4langCfg implements ifcUp {
             ntry.vrf.fwd6.tableChanged = null;
             return false;
         }
+        if (s.equals("name")) {
+            descr = null;
+            return false;
+        }
         if (s.equals("export-copp4")) {
             expCopp4 = null;
             return false;
@@ -722,6 +736,8 @@ public class servP4langCfg implements ifcUp {
         }
         l.add(null, (p + 0) + " " + (p + 1) + "  remote                    address of forwarder");
         l.add(null, (p + 1) + " .    <addr>                  ip address of client");
+        l.add(null, (p + 0) + " " + (p + 1) + "  name                      name of forwarder");
+        l.add(null, (p + 1) + " " + (p + 1) + ",.  <str>                   description of forwarders");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-vrf                specify vrf to export");
         l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
         l.add(null, (p + 2) + " .      <num>                 p4lang vrf number");

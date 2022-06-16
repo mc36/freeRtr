@@ -963,6 +963,10 @@ public class userShow {
                 return null;
             }
             a = cmd.word();
+            if (a.equals("dataplanes")) {
+                rdr.putStrTab(srv.getShowGen(1));
+                return null;
+            }
             if (a.equals("status")) {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 1));
                 return null;
