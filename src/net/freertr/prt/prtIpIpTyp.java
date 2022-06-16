@@ -30,8 +30,6 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
 
     private ifcUp upper = new ifcNull();
 
-    private state.states lastState = state.states.up;
-
     /**
      * get counter
      *
@@ -104,7 +102,11 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
      * @return state
      */
     public state.states getState() {
-        return lastState;
+        state.states st = ip4.getState();
+        if (st != state.states.up) {
+            return st;
+        }
+        return ip6.getState();
     }
 
     /**
@@ -129,7 +131,6 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
      * @param stat state
      */
     public void setState(state.states stat) {
-        lastState = stat;
         cntr.stateChange(stat);
         upper.setState(stat);
     }

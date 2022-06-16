@@ -14,11 +14,6 @@ import net.freertr.util.state;
 public class ifcRaw implements ifcUp, ifcDn {
 
     /**
-     * last known state
-     */
-    public state.states lastState = state.states.up;
-
-    /**
      * counter of this interface
      */
     public counter cntr = new counter();
@@ -62,11 +57,11 @@ public class ifcRaw implements ifcUp, ifcDn {
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
-        setState(lastState);
+        setState(lower.getState());
     }
 
     public state.states getState() {
-        return lastState;
+        return lower.getState();
     }
 
     public void setFilter(boolean promisc) {
@@ -84,6 +79,7 @@ public class ifcRaw implements ifcUp, ifcDn {
 
     public void setState(state.states stat) {
         stat = state.toForceable(stat);
+        upper.setState(stat);
     }
 
     public int getMTUsize() {
@@ -100,19 +96,11 @@ public class ifcRaw implements ifcUp, ifcDn {
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (lastState != state.states.up) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
         upper.recvPack(pck);
     }
 
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
-        if (lastState != state.states.up) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
         lower.sendPack(pck);
     }
 

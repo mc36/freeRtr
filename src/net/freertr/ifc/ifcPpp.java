@@ -168,6 +168,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public final static int size = 4;
 
     /**
+     * address, control
+     */
+    public final static int preamble = 0xff03;
+
+    /**
      * type of fragment header
      */
     public final static int fragType = 0x003d;
