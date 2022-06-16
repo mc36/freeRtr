@@ -34,11 +34,6 @@ public class ifcFrameRfc implements ifcUp, ifcDn {
     public final static int size = 2;
 
     /**
-     * last known state
-     */
-    public state.states lastState = state.states.down;
-
-    /**
      * counter of this interface
      */
     public counter cntr = new counter();
@@ -102,7 +97,7 @@ public class ifcFrameRfc implements ifcUp, ifcDn {
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
-        setState(lastState);
+        setState(lower.getState());
     }
 
     /**
@@ -111,7 +106,7 @@ public class ifcFrameRfc implements ifcUp, ifcDn {
      * @return state
      */
     public state.states getState() {
-        return lastState;
+        return lower.getState();
     }
 
     /**
@@ -138,7 +133,6 @@ public class ifcFrameRfc implements ifcUp, ifcDn {
      */
     public void setState(state.states stat) {
         stat = state.toForceable(stat);
-        lastState = stat;
         upper.setState(stat);
     }
 

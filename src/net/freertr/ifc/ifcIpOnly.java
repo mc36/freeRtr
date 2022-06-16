@@ -14,11 +14,6 @@ import net.freertr.util.state;
 public class ifcIpOnly implements ifcUp, ifcDn {
 
     /**
-     * last known state
-     */
-    public state.states lastState = state.states.up;
-
-    /**
      * counter of this interface
      */
     public counter cntr = new counter();
@@ -81,7 +76,7 @@ public class ifcIpOnly implements ifcUp, ifcDn {
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
-        setState(lastState);
+        setState(lower.getState());
     }
 
     /**
@@ -90,7 +85,7 @@ public class ifcIpOnly implements ifcUp, ifcDn {
      * @return state
      */
     public state.states getState() {
-        return lastState;
+        return lower.getState();
     }
 
     /**
@@ -123,6 +118,7 @@ public class ifcIpOnly implements ifcUp, ifcDn {
      */
     public void setState(state.states stat) {
         stat = state.toForceable(stat);
+        upper.setState(stat);
     }
 
     /**
@@ -154,10 +150,6 @@ public class ifcIpOnly implements ifcUp, ifcDn {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (lastState != state.states.up) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
         int i = ifcEther.guessEtherType(pck);
         if (i < 0) {
             cntr.drop(pck, counter.reasons.badHdr);
@@ -176,10 +168,6 @@ public class ifcIpOnly implements ifcUp, ifcDn {
      */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
-        if (lastState != state.states.up) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
         if (ifcEther.stripEtherType(pck)) {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
