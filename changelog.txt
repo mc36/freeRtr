@@ -13284,3 +13284,5 @@ todo: configurable netflow parameters
 no todo: pcapng format for packet captures
 ---------------------------------- 2022-06-04 21:19:25 22.6.4
 no todo: configurable netflow parameters
+---------------------------------- 2022-06-16 12:16:09 22.6.16
+no todo: bridge security from dhcp, slaac, whatever server
