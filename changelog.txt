@@ -13286,3 +13286,6 @@ no todo: pcapng format for packet captures
 no todo: configurable netflow parameters
 ---------------------------------- 2022-06-16 12:16:09 22.6.16
 no todo: bridge security from dhcp, slaac, whatever server
+---------------------------------- 2022-06-16 17:21:15 22.6.16
+qc pass: dhcp with arp/nd security
+qc pass: secure arp/nd

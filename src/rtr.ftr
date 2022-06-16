@@ -61,6 +61,7 @@ qc pass: ethernet tunneling with capwap
 qc pass: vlan tunneling with capwap
 qc pass: tunnel interface with capwap
 qc pass: dhcp
+qc pass: dhcp with arp/nd security
 qc pass: dlsw over ipv4
 qc pass: dlsw over ipv6
 qc pass: dlsw over loopback
@@ -115,6 +116,7 @@ qc pass: monitor session over tunnel
 qc pass: monitor session over pwhe
 qc pass: verify source with ethernet encapsulation
 qc pass: loose verify source with ethernet encapsulation
+qc pass: secure arp/nd
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback
