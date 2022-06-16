@@ -122,7 +122,9 @@ public class ifcLossDet {
      * @return false on success, true on error
      */
     public synchronized boolean doDecode(packHolder pck) {
-        if (pck.msbGetW(0) != type) {
+        int typ = pck.msbGetW(0);
+        if (typ != type) {
+            logger.info("bad type (" + bits.toHexW(typ) + ")");
             return true;
         }
         if (pck.dataSize() < size) {

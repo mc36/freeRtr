@@ -4,6 +4,7 @@ import net.freertr.addr.addrEmpty;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
@@ -97,8 +98,10 @@ public class ifcSgt {
      * @return false on success, true on error
      */
     public boolean doDecode(packHolder pck) {
-        if (pck.msbGetW(0) != type) {
+        int typ = pck.msbGetW(0);
+        if (typ != type) {
             if (optional < 0) {
+                logger.info("bad type (" + bits.toHexW(typ) + ")" );
                 return true;
             }
             pck.SGTid = optional;
