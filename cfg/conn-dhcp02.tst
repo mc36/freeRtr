@@ -59,6 +59,6 @@ int eth1
 
 
 r2 tping 100 20 1.1.1.1 vrf v1
-!r2 tping 100 20 1234::1 vrf v1
+r2 tping 100 20 1234::1 vrf v1
 r2 tping 100 5 4.4.4.4 vrf v1
-!r2 tping 100 5 4444::4 vrf v1
+r2 tping 100 5 4444::4 vrf v1

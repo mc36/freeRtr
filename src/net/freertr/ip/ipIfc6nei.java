@@ -208,9 +208,6 @@ public class ipIfc6nei implements ifcUp {
             return true;
         }
         pck.getSkip(siz);
-        if (!neiCacheDynamic) {
-            return false;
-        }
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -229,6 +226,13 @@ public class ipIfc6nei implements ifcUp {
             ntry.time = currTim;
             if (pck.ICMPtc == ipIcmp6.icmpRtrAdv) {
                 ntry.router = true;
+            }
+            if (neiCacheDynamic) {
+                addEntry(ntry);
+                continue;
+            }
+            if (!adrI.isLinkLocal()) {
+                continue;
             }
             addEntry(ntry);
         }
