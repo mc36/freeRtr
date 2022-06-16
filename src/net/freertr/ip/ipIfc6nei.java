@@ -29,6 +29,11 @@ import net.freertr.util.typLenVal;
 public class ipIfc6nei implements ifcUp {
 
     /**
+     * neighbor cache dynamic
+     */
+    public boolean neiCacheDynamic = true;
+
+    /**
      * neighbor cache timeout
      */
     public int neiCacheTimeout = ipIfcLoop.defaultCacheTime;
@@ -203,6 +208,9 @@ public class ipIfc6nei implements ifcUp {
             return true;
         }
         pck.getSkip(siz);
+        if (!neiCacheDynamic) {
+            return false;
+        }
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;

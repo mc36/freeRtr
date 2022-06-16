@@ -738,6 +738,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (mtuCheckTx) {
             if ((pck.dataSize() - 2) > getMTUsize()) {
+                logger.info("oversized (" + pck.dataSize() + ") tx on " + name);
                 cntr.drop(pck, counter.reasons.fragment);
                 return;
             }
@@ -829,6 +830,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         cntr.rx(pck);
         if (mtuCheckRx) {
             if ((pck.dataSize() - 2) > getMTUsize()) {
+                logger.info("oversized (" + pck.dataSize() + ") rx on " + name);
                 cntr.drop(pck, counter.reasons.fragment);
                 return;
             }

@@ -171,6 +171,20 @@ public class ipIfc6 implements ipIfc, ifcUp {
         return neiCache.getShCache();
     }
 
+    public boolean getCacheDynmc() {
+        if (neiCache == null) {
+            return true;
+        }
+        return neiCache.neiCacheDynamic;
+    }
+
+    public void setCacheDynmc(boolean ena) {
+        if (neiCache == null) {
+            return;
+        }
+        neiCache.neiCacheDynamic = ena;
+    }
+
     public int getCacheTimer() {
         if (neiCache == null) {
             return ipIfcLoop.defaultCacheTime;

@@ -186,6 +186,13 @@ public class ipIfcLoop implements ipIfc {
     public void setLinkLocalAddr(addrIP adr) {
     }
 
+    public boolean getCacheDynmc() {
+        return true;
+    }
+
+    public void setCacheDynmc(boolean ena) {
+    }
+
     public userFormat getShCache() {
         return null;
     }

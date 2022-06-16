@@ -39,6 +39,11 @@ public class ipIfc4arp implements ifcUp {
     public final static int size = 28;
 
     /**
+     * arp cache dynamic
+     */
+    public boolean arpCacheDynamic = true;
+
+    /**
      * arp cache timeout
      */
     public int arpCacheTimeout = ipIfcLoop.defaultCacheTime;
@@ -278,11 +283,13 @@ public class ipIfc4arp implements ifcUp {
             logger.info("ipv4 address conflict with " + gotSH + " at " + lower);
             return;
         }
-        ipIfc4arpEntry ntry = new ipIfc4arpEntry();
-        ntry.ip = gotSP;
-        ntry.mac = gotSH;
-        ntry.time = currTim;
-        addEntry(ntry);
+        if (arpCacheDynamic) {
+            ipIfc4arpEntry ntry = new ipIfc4arpEntry();
+            ntry.ip = gotSP;
+            ntry.mac = gotSH;
+            ntry.time = currTim;
+            addEntry(ntry);
+        }
         if (gotOP != opcodeARPreq) {
             cntr.drop(pck, counter.reasons.badCod);
             return;

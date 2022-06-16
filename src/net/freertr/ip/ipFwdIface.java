@@ -596,6 +596,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 3     host-static                 set static next hop cache entry");
         l.add(null, "3 4       <addr>                    ip address");
         l.add(null, "4 .         <addr>                  mac address");
+        l.add(null, "2 .     host-learn                  allow next hop learn");
         l.add(null, "2 3,.   host-watch                  monitor next hop changes");
         l.add(null, "3 4       appear                    script on appearance");
         l.add(null, "4 3,.       <name:scr>              name of script");
@@ -803,6 +804,7 @@ public class ipFwdIface extends tabRouteIface {
             a += " include-policy " + autRouRoupol.listName;
         }
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
+        cmds.cfgLine(l, !lower.getCacheDynmc(), cmds.tabulator, beg + "host-learn", "");
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         l.add(cmds.tabulator + beg + "host-retry " + lower.getCacheRetry());
@@ -977,6 +979,10 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             answerFilter = ntry.aceslst;
+            return false;
+        }
+        if (a.equals("host-learn")) {
+            lower.setCacheDynmc(true);
             return false;
         }
         if (a.equals("host-watch")) {
@@ -1638,6 +1644,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("proxy-filter")) {
             answerFilter = null;
+            return false;
+        }
+        if (a.equals("host-learn")) {
+            lower.setCacheDynmc(false);
             return false;
         }
         if (a.equals("host-watch")) {

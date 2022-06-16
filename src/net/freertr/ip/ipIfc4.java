@@ -355,6 +355,20 @@ public class ipIfc4 implements ipIfc, ifcUp {
         return arpCache.getShCache();
     }
 
+    public boolean getCacheDynmc() {
+        if (arpCache == null) {
+            return true;
+        }
+        return arpCache.arpCacheDynamic;
+    }
+
+    public void setCacheDynmc(boolean ena) {
+        if (arpCache == null) {
+            return;
+        }
+        arpCache.arpCacheDynamic = ena;
+    }
+
     public int getCacheTimer() {
         if (arpCache == null) {
             return ipIfcLoop.defaultCacheTime;

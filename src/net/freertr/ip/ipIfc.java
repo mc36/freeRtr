@@ -212,6 +212,20 @@ public interface ipIfc {
     public userFormat getShCache();
 
     /**
+     * get cache dynamic
+     *
+     * @return enabled
+     */
+    public boolean getCacheDynmc();
+
+    /**
+     * get cache dynamic
+     *
+     * @param ena enable
+     */
+    public void setCacheDynmc(boolean ena);
+
+    /**
      * get cache timeout
      *
      * @return result
