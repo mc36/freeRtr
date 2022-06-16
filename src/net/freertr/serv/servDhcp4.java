@@ -495,15 +495,15 @@ public class servDhcp4 extends servGeneric implements prtServS {
 
     private synchronized boolean sendPack(packDhcp4 pckd, servDhcp4bind ntry) {
         addrIP adr = new addrIP();
+        adr.fromIPv4addr(ntry.ip);
+        srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
         if (pckd.bootpBroadcast) {
             adr.fromIPv4addr(addrIPv4.getBroadcast());
-        } else {
-            adr.fromIPv4addr(ntry.ip);
+            srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
         }
         if (debugger.servDhcp4traf) {
             logger.debug("tx " + adr + " " + pckd);
         }
-        srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
         pipeSide pip = srvVrf.udp4.streamConnect(new pipeLine(32768, true), srvIface.fwdIf4, packDhcp4.portSnum, adr, packDhcp4.portCnum, srvName(), null, -1);
         if (pip == null) {
             return true;
