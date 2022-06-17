@@ -743,13 +743,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
-        if (lastState != state.states.up) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
-        if (forcedDN != 0) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
+        if (!forcedUP) {
+            if (lastState != state.states.up) {
+                cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
+            if (forcedDN != 0) {
+                cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
         }
         pck.INTsent++;
         if (pck.INTsent > loopMax) {
@@ -857,13 +859,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (sgtSet >= 0) {
             pck.SGTid = sgtSet;
         }
-        if (lastState != state.states.up) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
-        if (forcedDN != 0) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
+        if (!forcedUP) {
+            if (lastState != state.states.up) {
+                cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
+            if (forcedDN != 0) {
+                cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
         }
         if (logFile != null) {
             packHolder mon = applyMonitor(pck, 1, false);
