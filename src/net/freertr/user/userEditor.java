@@ -371,6 +371,9 @@ public class userEditor {
             return;
         }
         curX--;
+        if (curX >= buffer.get(curY).length()) {
+            return;
+        }
         if (curX < 0) {
             curY--;
             if (curY < 0) {
