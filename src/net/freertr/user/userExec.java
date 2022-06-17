@@ -1493,7 +1493,7 @@ public class userExec {
         hl.add(null, "3 3,.      lookup                     lookup intermediate hops");
         hl.add(null, "1 2    ping                           send echo request");
         hl.add(null, "2 3,.    <host>                       name of host");
-        hl.add(null, "3 3,.      df                         specify dont fragment");
+        hl.add(null, "3 3,.      dontfrag                   specify dont fragment");
         hl.add(null, "3 3,.      multi                      wait for multiple responses");
         hl.add(null, "3 3,.      detail                     specify detail mode");
         hl.add(null, "3 4        data                       specify data to send");
@@ -3567,7 +3567,7 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("df")) {
+            if (a.equals("dontfrag")) {
                 dntfrg = true;
                 continue;
             }
