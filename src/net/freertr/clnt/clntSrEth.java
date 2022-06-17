@@ -73,6 +73,11 @@ public class clntSrEth implements Runnable, ipPrt, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
@@ -201,6 +206,9 @@ public class clntSrEth implements Runnable, ipPrt, ifcDn {
         }
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
+        }
+        if (sendingDFN >= 0) {
+            pck.IPdf = (sendingDFN == 1);
         }
         if (sendingFLW >= 0) {
             pck.IPid = sendingFLW;

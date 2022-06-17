@@ -81,6 +81,11 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     public int sendingTOS = -1;
 
     /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
@@ -462,6 +467,9 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         }
         if (lower.sendingTOS >= 0) {
             pck.IPtos = lower.sendingTOS;
+        }
+        if (lower.sendingDFN >= 0) {
+            pck.IPdf = (lower.sendingDFN == 1);
         }
         if (lower.sendingFLW >= 0) {
             pck.IPid = lower.sendingFLW;

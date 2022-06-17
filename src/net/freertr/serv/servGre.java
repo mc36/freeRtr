@@ -40,6 +40,26 @@ public class servGre extends servGeneric implements ipPrt {
     public cfgIfc tempIfc;
 
     /**
+     * sending ttl value, -1 means maps out
+     */
+    public int sendingTTL = 255;
+
+    /**
+     * sending tos value, -1 means maps out
+     */
+    public int sendingTOS = -1;
+
+    /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
      * list of connections
      */
     public tabGen<servGreConn> conns = new tabGen<servGreConn>();
@@ -285,6 +305,10 @@ class servGreConn implements Runnable, Comparator<servGreConn> {
 
     public void doStartup() {
         worker.setEndpoints(iface, peer, false);
+        worker.sendingFLW = lower.sendingFLW;
+        worker.sendingTOS = lower.sendingTOS;
+        worker.sendingTTL = lower.sendingTTL;
+        worker.sendingDFN = lower.sendingDFN;
         acesIfc = lower.tempIfc.cloneStart(worker);
         worker.setUpper(acesIfc.ethtyp);
         acesIfc.ethtyp.setState(state.states.up);

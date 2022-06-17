@@ -54,6 +54,11 @@ public class clntSrExt implements ifcDn {
     public int ttl = 255;
 
     /**
+     * df value, -1 means maps out
+     */
+    public int dfn = 255;
+
+    /**
      * flow value, -1 means maps out
      */
     public int flw = -1;
@@ -157,6 +162,9 @@ public class clntSrExt implements ifcDn {
         }
         if (tos >= 0) {
             pck.IPtos = tos;
+        }
+        if (dfn >= 0) {
+            pck.IPdf = (dfn == 1);
         }
         if (flw >= 0) {
             pck.IPid = flw;

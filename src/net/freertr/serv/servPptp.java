@@ -58,6 +58,11 @@ public class servPptp extends servGeneric implements ipPrt, prtServS {
     public int sendingTOS = -1;
 
     /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
@@ -488,6 +493,9 @@ class servPptpConn implements Runnable, Comparator<servPptpConn> {
         }
         if (lower.sendingTOS >= 0) {
             pck.IPtos = lower.sendingTOS;
+        }
+        if (lower.sendingDFN >= 0) {
+            pck.IPdf = (lower.sendingDFN == 1);
         }
         if (lower.sendingFLW >= 0) {
             pck.IPid = lower.sendingFLW;
