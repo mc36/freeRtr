@@ -557,6 +557,7 @@ public class prtSctp extends prtGen {
         pck.IPalrt = -1;
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
+        pck.IPdf = clnt.sendDFN == 1;
         pck.IPid = clnt.sendFLW;
         fwdCore.protoPack(clnt.iface, null, pck);
     }

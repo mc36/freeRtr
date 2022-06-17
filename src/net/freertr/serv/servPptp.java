@@ -495,7 +495,7 @@ class servPptpConn implements Runnable, Comparator<servPptpConn> {
             pck.IPtos = lower.sendingTOS;
         }
         if (lower.sendingDFN >= 0) {
-            pck.IPdf = (lower.sendingDFN == 1);
+            pck.IPdf = lower.sendingDFN == 1;
         }
         if (lower.sendingFLW >= 0) {
             pck.IPid = lower.sendingFLW;

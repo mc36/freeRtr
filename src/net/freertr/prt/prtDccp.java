@@ -434,6 +434,7 @@ public class prtDccp extends prtGen {
         pr.updateSeq();
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
+        pck.IPdf = clnt.sendDFN == 1;
         pck.IPid = clnt.sendFLW;
         pck.TCPmss = 0;
         pr.setSeq(pck);
@@ -497,6 +498,7 @@ public class prtDccp extends prtGen {
         pck.TCPmss = opt.length;
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
+        pck.IPdf = clnt.sendDFN == 1;
         pck.IPid = clnt.sendFLW;
         pr.setSeq(pck);
         pck.TCPflg = typ << 1;

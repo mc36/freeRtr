@@ -209,7 +209,7 @@ public class clntErspan implements Runnable, ipPrt, ifcDn {
             pckBin.IPtos = sendingTOS;
         }
         if (sendingDFN >= 0) {
-            pckBin.IPdf = (sendingDFN == 1);
+            pckBin.IPdf = sendingDFN == 1;
         }
         if (sendingFLW >= 0) {
             pckBin.IPid = sendingFLW;

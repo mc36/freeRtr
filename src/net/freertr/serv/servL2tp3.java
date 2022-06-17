@@ -469,7 +469,7 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
             pck.IPtos = lower.sendingTOS;
         }
         if (lower.sendingDFN >= 0) {
-            pck.IPdf = (lower.sendingDFN == 1);
+            pck.IPdf = lower.sendingDFN == 1;
         }
         if (lower.sendingFLW >= 0) {
             pck.IPid = lower.sendingFLW;

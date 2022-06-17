@@ -109,6 +109,11 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
@@ -371,6 +376,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         }
         conn.timeout = 120000;
         conn.sendTOS = sendingTOS;
+        conn.sendDFN = sendingDFN;
         conn.sendFLW = sendingFLW;
         conn.sendTTL = sendingTTL;
         for (;;) {

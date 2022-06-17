@@ -166,6 +166,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         conn.timeout = 120000;
         conn.sendFLW = lower.sendingFLW;
         conn.sendTOS = lower.sendingTOS;
+        conn.sendDFN = lower.sendingDFN;
         conn.sendTTL = lower.sendingTTL;
     }
 

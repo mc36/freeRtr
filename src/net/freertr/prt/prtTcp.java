@@ -546,6 +546,7 @@ public class prtTcp extends prtGen {
             pck.IPalrt = -1;
             pck.IPttl = clnt.sendTTL;
             pck.IPtos = clnt.sendTOS;
+            pck.IPdf = clnt.sendDFN == 1;
             pck.IPid = clnt.sendFLW;
             if ((flg & flagSYN) != 0) {
                 pck.TCPseq--;

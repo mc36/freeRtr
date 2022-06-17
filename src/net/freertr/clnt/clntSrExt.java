@@ -164,7 +164,7 @@ public class clntSrExt implements ifcDn {
             pck.IPtos = tos;
         }
         if (dfn >= 0) {
-            pck.IPdf = (dfn == 1);
+            pck.IPdf = dfn == 1;
         }
         if (flw >= 0) {
             pck.IPid = flw;

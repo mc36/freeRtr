@@ -42,6 +42,11 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     public int sendTOS = -1;
 
     /**
+     * sending df
+     */
+    public int sendDFN = -1;
+
+    /**
      * sending flow
      */
     public int sendFLW = -1;

@@ -98,6 +98,8 @@ public class packEsp implements ipPrt {
 
     private int sendingTOS = -1;
 
+    private int sendingDFN = -1;
+
     private int sendingFLW = -1;
 
     public String toString() {
@@ -123,12 +125,14 @@ public class packEsp implements ipPrt {
      * @param tos sending tos
      * @param ttl sending ttl
      * @param flw sending flow
+     * @param dfn sending df
      */
-    public void lowerSetup(ipFwd fwd, ipFwdIface ifc, addrIP trg, int tos, int ttl, int flw) {
+    public void lowerSetup(ipFwd fwd, ipFwdIface ifc, addrIP trg, int tos, int ttl, int flw, int dfn) {
         forwarder = fwd;
         fwdIface = ifc;
         peerAddr = trg.copyBytes();
         sendingTOS = tos;
+        sendingDFN = dfn;
         sendingTTL = ttl;
         sendingFLW = flw;
     }
@@ -362,6 +366,9 @@ public class packEsp implements ipPrt {
         }
         if (sendingTOS >= 0) {
             pck.IPtos = sendingTOS;
+        }
+        if (sendingDFN >= 0) {
+            pck.IPdf = sendingDFN == 1;
         }
         if (sendingFLW >= 0) {
             pck.IPid = sendingFLW;

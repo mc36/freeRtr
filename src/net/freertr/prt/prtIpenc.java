@@ -274,7 +274,7 @@ public class prtIpenc implements ipPrt, ifcDn {
             pck.IPtos = sendingTOS;
         }
         if (sendingDFN >= 0) {
-            pck.IPdf = (sendingDFN == 1);
+            pck.IPdf = sendingDFN == 1;
         }
         if (sendingFLW >= 0) {
             pck.IPid = sendingFLW;

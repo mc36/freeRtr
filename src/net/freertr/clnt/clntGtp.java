@@ -98,6 +98,11 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
@@ -338,6 +343,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         connD.timeout = 120000;
         connD.sendFLW = sendingFLW;
         connD.sendTOS = sendingTOS;
+        connD.sendDFN = sendingDFN;
         connD.sendTTL = sendingTTL;
         packGtp gtp = new packGtp();
         gtp.seqNum = seqCtr++;

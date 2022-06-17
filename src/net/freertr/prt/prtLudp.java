@@ -251,6 +251,7 @@ public class prtLudp extends prtGen {
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
+        pck.IPdf = clnt.sendDFN == 1;
         pck.IPid = clnt.sendFLW;
         createLUDPheader(pck);
         fwdCore.protoPack(clnt.iface, null, pck);

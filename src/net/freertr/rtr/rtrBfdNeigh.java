@@ -142,6 +142,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
         connTx.workInterval = 10000;
         connTx.sendTTL = 255;
         connTx.sendTOS = 0;
+        connTx.sendDFN = 0;
         connTx.sendFLW = 0;
         need2run = true;
         myDisc = bits.randomD();

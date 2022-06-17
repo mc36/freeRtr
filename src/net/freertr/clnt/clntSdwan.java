@@ -111,6 +111,11 @@ public class clntSdwan implements Runnable, ifcDn {
     public int sendingTOS = -1;
 
     /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
      * sending flow value, -1 means maps out
      */
     public int sendingFLW = -1;
