@@ -487,6 +487,8 @@ public class prtTcp extends prtGen {
         pck.IPsrc.setAddr(src.IPtrg);
         pck.IPtrg.setAddr(src.IPsrc);
         pck.IPdf = false;
+        pck.IPfrg = 0;
+        pck.IPalrt = -1;
         pck.IPttl = -1;
         pck.IPtos = -1;
         pck.IPid = -1;
@@ -540,6 +542,8 @@ public class prtTcp extends prtGen {
             pck.IPsrc.setAddr(clnt.iface.addr);
             pck.IPtrg.setAddr(clnt.peerAddr);
             pck.IPdf = false;
+            pck.IPfrg = 0;
+            pck.IPalrt = -1;
             pck.IPttl = clnt.sendTTL;
             pck.IPtos = clnt.sendTOS;
             pck.IPid = clnt.sendFLW;

@@ -1256,6 +1256,8 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
      */
     protected void packSend(packHolder pck, rtrOspf4area area, boolean justDR, int typ) {
         pck.IPdf = false;
+        pck.IPfrg = 0;
+        pck.IPalrt = -1;
         pck.IPttl = 255;
         pck.IPtos = 0;
         pck.IPid = 0;

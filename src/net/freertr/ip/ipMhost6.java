@@ -104,6 +104,7 @@ public class ipMhost6 extends ipMhost {
 
     public void updateHeader(ipFwdIface rxIfc, packHolder pck, boolean query) {
         pck.IPdf = false;
+        pck.IPfrg = 0;
         pck.IPttl = 1;
         pck.IPtos = 0;
         pck.IPid = 0;

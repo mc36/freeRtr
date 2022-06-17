@@ -154,6 +154,7 @@ public class ipMhost4 extends ipMhost {
         pck.putSkip(siz);
         pck.merge2beg();
         pck.IPdf = false;
+        pck.IPfrg = 0;
         pck.IPttl = 1;
         pck.IPtos = 0;
         pck.IPid = 0;

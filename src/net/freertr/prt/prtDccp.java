@@ -317,6 +317,8 @@ public class prtDccp extends prtGen {
         pck.IPsrc.setAddr(src.IPtrg);
         pck.IPtrg.setAddr(src.IPsrc);
         pck.IPdf = false;
+        pck.IPfrg = 0;
+        pck.IPalrt = -1;
         pck.IPttl = -1;
         pck.IPtos = -1;
         pck.IPid = -1;

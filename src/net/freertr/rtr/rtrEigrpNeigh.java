@@ -204,6 +204,8 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
     protected void packSend(packHolder pck) {
         pck.merge2beg();
         pck.IPdf = false;
+        pck.IPfrg = 0;
+        pck.IPalrt = -1;
         pck.IPttl = 255;
         pck.IPtos = 0;
         pck.IPid = 0;

@@ -291,6 +291,8 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
      */
     protected void packSend(packHolder pck, int typ) {
         pck.IPdf = false;
+        pck.IPfrg = 0;
+        pck.IPalrt = -1;
         pck.IPttl = 255;
         pck.IPtos = 0;
         pck.IPid = 0;

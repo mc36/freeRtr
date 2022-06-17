@@ -1168,7 +1168,6 @@ public class packHolder {
         IPttl = -1;
         IPtos = -1;
         IPid = -1;
-        IPdf = false;
         IPmlt = false;
         IPmlr = false;
         IPbrd = false;
