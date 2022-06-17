@@ -47,6 +47,31 @@ public class servL2f extends servGeneric implements prtServP {
     public cfgIfc clnIfc;
 
     /**
+     * sending ttl value, -1 means maps out
+     */
+    public int sendingTTL = 255;
+
+    /**
+     * sending tos value, -1 means maps out
+     */
+    public int sendingTOS = -1;
+
+    /**
+     * sending df value, -1 means maps out
+     */
+    public int sendingDFN = -1;
+
+    /**
+     * sending flow value, -1 means maps out
+     */
+    public int sendingFLW = -1;
+
+    /**
+     * timeout
+     */
+    public int timeout = 120000;
+
+    /**
      * password
      */
     public String password;
@@ -203,7 +228,11 @@ public class servL2f extends servGeneric implements prtServP {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        id.timeout = 180000;
+        id.timeout = timeout;
+        id.sendTTL = sendingTTL;
+        id.sendTOS = sendingTOS;
+        id.sendDFN = sendingDFN;
+        id.sendFLW = sendingFLW;
         connFind(id, true);
         return false;
     }
