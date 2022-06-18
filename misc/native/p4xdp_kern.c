@@ -245,6 +245,7 @@ int xdp_router(struct xdp_md *ctx) {
     unsigned char* bufD;
     revalidatePacket(18);
     unsigned char macaddr[6 + 6];
+    revalidatePacket(sizeof(macaddr) + 2);
     __builtin_memcpy(macaddr, &bufD[0], sizeof(macaddr));
 
     int tmp = 0;
