@@ -508,6 +508,14 @@ public class userTester {
                 mem = 0;
                 continue;
             }
+            if (s.equals("param")) {
+                jvp = " " + cmd.word() + " " + jvp;
+                continue;
+            }
+            if (s.equals("noparam")) {
+                jvp = "";
+                continue;
+            }
         }
         String s = "-Xmx" + mem + "m";
         if (mem < 1) {
@@ -2047,8 +2055,12 @@ class userTesterOne {
                 }
                 cfg = userFilter.section2text(secs, false);
             }
+            s = jvm;
+            s = s.replaceAll("%fn%", fileName);
+            s = s.replaceAll("%rn%", rn);
+            s = s + " router" + window + " " + prefix + slot + rn + "-";
+            cfg.add(0, "!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
-            s = jvm + " router" + window + " " + prefix + slot + rn + "-";
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             if (write) {
