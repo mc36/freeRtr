@@ -14,15 +14,15 @@
 
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY);
-    __type(key, int);
-    __type(value, int);
+    __type(key, __u32);
+    __type(value, __u32);
     __uint(max_entries, 2);
 } cpu_port SEC(".maps");
 
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct port_res);
     __uint(max_entries, maxPorts);
 } tx_ports SEC(".maps");
@@ -30,7 +30,7 @@ struct {
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct port_res);
     __uint(max_entries, maxPorts);
 } rx_ports SEC(".maps");
@@ -38,7 +38,7 @@ struct {
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct vrfp_res);
     __uint(max_entries, maxPorts);
 } vrf_port SEC(".maps");
@@ -46,7 +46,7 @@ struct {
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct neigh_res);
     __uint(max_entries, 512);
 } neighs SEC(".maps");
@@ -72,7 +72,7 @@ struct {
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct label_res);
     __uint(max_entries, 1024);
 } labels SEC(".maps");
@@ -80,7 +80,7 @@ struct {
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct bundle_res);
     __uint(max_entries, 256);
 } bundles SEC(".maps");
@@ -89,14 +89,14 @@ struct {
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, struct vlan_key);
-    __type(value, int);
+    __type(value, __u32);
     __uint(max_entries, 512);
 } vlan_in SEC(".maps");
 
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __type(key, int);
+    __type(key, __u32);
     __type(value, struct vlan_res);
     __uint(max_entries, 512);
 } vlan_out SEC(".maps");
@@ -105,7 +105,7 @@ struct {
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __type(key, struct pppoe_key);
-    __type(value, int);
+    __type(value, __u32);
     __uint(max_entries, 128);
 } pppoes SEC(".maps");
 
@@ -121,9 +121,9 @@ struct {
 
 
 #define revalidatePacket(size)                                      \
-    bufE = (unsigned char*)(long)ctx->data_end;                     \
-    bufD = (unsigned char*)(long)ctx->data;                         \
-    if ((size + bufD) > bufE) goto drop;
+    bufE = (__u8*)(__u64)ctx->data_end;                             \
+    bufD = (__u8*)(__u64)ctx->data;                                 \
+    if (((__u64)bufD + (__u64)size) > (__u64)bufE) goto drop;
 
 
 
@@ -239,20 +239,19 @@ struct {
 
 
 SEC("p4xdp_router")
-int xdp_router(struct xdp_md *ctx) {
+__u32 xdp_router(struct xdp_md *ctx) {
 
-    unsigned char* bufE;
-    unsigned char* bufD;
-    revalidatePacket(18);
-    unsigned char macaddr[6 + 6];
-    revalidatePacket(sizeof(macaddr) + 2);
+    __u8* bufE;
+    __u8* bufD;
+    __u8 macaddr[6 + 6];
+    revalidatePacket(sizeof(macaddr) + 8);
     __builtin_memcpy(macaddr, &bufD[0], sizeof(macaddr));
 
-    int tmp = 0;
-    int* cpuPort = bpf_map_lookup_elem(&cpu_port, &tmp);
+    __u32 tmp = 0;
+    __u32* cpuPort = bpf_map_lookup_elem(&cpu_port, &tmp);
     if (cpuPort == NULL) goto drop;
 
-    int prt = ctx->ingress_ifindex;
+    __u32 prt = ctx->ingress_ifindex;
     struct port_res* rxport = bpf_map_lookup_elem(&rx_ports, &prt);
     if (rxport == NULL) goto drop;
     rxport->pack++;
@@ -268,9 +267,9 @@ int xdp_router(struct xdp_md *ctx) {
     }
     prt = rxport->idx;
 
-    int ethtyp = get16msb(bufD, sizeof(macaddr));
-    int bufP = sizeof(macaddr) + 2;
-    int hash = get32msb(macaddr, 0);
+    __u32 ethtyp = get16msb(bufD, sizeof(macaddr));
+    __u32 bufP = sizeof(macaddr) + 2;
+    __u32 hash = get32msb(macaddr, 0);
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
 
@@ -281,7 +280,7 @@ int xdp_router(struct xdp_md *ctx) {
         bufP += 2;
         ethtyp = get16msb(bufD, bufP);
         bufP += 2;
-        int* res = bpf_map_lookup_elem(&vlan_in, &vlnk);
+        __u32* res = bpf_map_lookup_elem(&vlan_in, &vlnk);
         if (res == NULL) goto drop;
         prt = *res;
     }
@@ -292,7 +291,7 @@ int xdp_router(struct xdp_md *ctx) {
         struct pppoe_key pppk;
         pppk.port = prt;
         pppk.sess = get16msb(bufD, bufP + 2);
-        int* res = bpf_map_lookup_elem(&pppoes, &pppk);
+        __u32* res = bpf_map_lookup_elem(&pppoes, &pppk);
         if (res == NULL) goto drop;
         prt = *res;
         ethtyp = get16msb(bufD, bufP + 6);
@@ -320,8 +319,8 @@ int xdp_router(struct xdp_md *ctx) {
     if (vrfp == NULL) goto drop;
     vrfp->pack++;
     vrfp->byte += bufE - bufD;
-    int neik = 0;
-    int ttl = 0;
+    __u32 neik = 0;
+    __u32 ttl = 0;
 
     switch (vrfp->cmd) {
     case 1:
@@ -354,7 +353,7 @@ int xdp_router(struct xdp_md *ctx) {
     case ETHERTYPE_MPLS_UCAST:
         if (vrfp->mpls == 0) goto drop;
         revalidatePacket(bufP + 12);
-        int label;
+        __u32 label;
         struct label_res* resm;
         readMpls();
         switch (resm->cmd) {
@@ -608,7 +607,7 @@ subif_tx:
 
 punt:
     tmp = 1;
-    int* remain = bpf_map_lookup_elem(&cpu_port, &tmp);
+    __u32* remain = bpf_map_lookup_elem(&cpu_port, &tmp);
     if (remain == NULL) goto drop;
     (*remain)--;
     if (*remain < 1) goto drop;

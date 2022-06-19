@@ -1,11 +1,11 @@
-void str2mac(unsigned char *dst, char *src) {
+void str2mac(__u8 *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
 }
 
 
 void doStatRound(FILE *commands, int round) {
-    int i = 1;
-    int o = 10;
+    __u32 i = 1;
+    __u32 o = 10;
     if (bpf_map_update_elem(cpu_port_fd, &i, &o, BPF_ANY) != 0) err("error setting cpuport");
     if ((round % 10) != 0) return;
     struct port_res prt1;
@@ -21,7 +21,7 @@ void doStatRound(FILE *commands, int round) {
         if (bpf_map_lookup_elem(rx_ports_fd, &i, prtp) != 0) continue;
         i = o;
         fprintf(commands, "state %i 1\r\n", i);
-        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", i, prt1.pack, prt1.byte, prt2.pack, prt2.byte);
+        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", i, (long)prt1.pack, (long)prt1.byte, (long)prt2.pack, (long)prt2.byte);
     }
     struct bundle_res bunr;
     i = -1;
@@ -30,7 +30,7 @@ void doStatRound(FILE *commands, int round) {
         i = o;
         struct bundle_res* bunp = &bunr;
         if (bpf_map_lookup_elem(bundles_fd, &i, bunp) != 0) continue;
-        fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", i, bunp->pack, bunp->byte);
+        fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", i, (long)bunp->pack, (long)bunp->byte);
     }
     if ((round % 150) != 0) {
         fflush(commands);
@@ -43,7 +43,7 @@ void doStatRound(FILE *commands, int round) {
         i = o;
         struct label_res* labp = &labr;
         if (bpf_map_lookup_elem(labels_fd, &i, labp) != 0) continue;
-        fprintf(commands, "mpls_cnt %i %li %li\r\n", i, labp->pack, labp->byte);
+        fprintf(commands, "mpls_cnt %i %li %li\r\n", i, (long)labp->pack, (long)labp->byte);
     }
     fflush(commands);
 }
@@ -55,8 +55,8 @@ int doOneCommand(unsigned char* buf) {
     int cnt;
     cnt = 0;
     arg[0] = (char*)&buf[0];
-    int i = 0;
-    int o = 0;
+    __u32 i = 0;
+    __u32 o = 0;
     for (;;) {
         if (cnt >= 128) break;
         switch (buf[i]) {
@@ -415,19 +415,19 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "portbundle") == 0) {
-        int p = atoi(arg[2]);
+        o = atoi(arg[2]);
         if (del == 0) {
-            if (bpf_map_delete_elem(bundles_fd, &p) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(bundles_fd, &o) != 0) warn("error removing entry");
             return 0;
         }
         struct bundle_res bunn;
         memset(&bunn, 0, sizeof(bunn));
         struct bundle_res* bunr = &bunn;
-        bpf_map_update_elem(bundles_fd, &p, &bunn, BPF_NOEXIST);
-        if (bpf_map_lookup_elem(bundles_fd, &p, bunr) != 0) err("error getting entry");
+        bpf_map_update_elem(bundles_fd, &o, &bunn, BPF_NOEXIST);
+        if (bpf_map_lookup_elem(bundles_fd, &o, bunr) != 0) err("error getting entry");
         i = atoi(arg[3]);
         bunr->out[i] = atoi(arg[4]);
-        if (bpf_map_update_elem(bundles_fd, &p, bunr, BPF_ANY) != 0) warn("error setting entry");
+        if (bpf_map_update_elem(bundles_fd, &o, bunr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
     if (strcmp(arg[0], "portvlan") == 0) {

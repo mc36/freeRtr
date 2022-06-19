@@ -209,10 +209,10 @@ int main(int argc, char **argv) {
 #endif
     }
 
-    int o = 0;
-    int p = ifaces[cpuPort];
+    __u32 o = 0;
+    __u32 p = ifaces[cpuPort];
     if (bpf_map_update_elem(cpu_port_fd, &o, &p, BPF_ANY) != 0) err("error setting cpuport");
-    for (int i = 0; i < dataPorts; i++) {
+    for (__u32 i = 0; i < dataPorts; i++) {
         printf("initializing index %i...\n", ifaces[i]);
         struct port_res ntry;
         memset(&ntry, 0, sizeof(ntry));

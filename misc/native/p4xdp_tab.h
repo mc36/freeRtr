@@ -1,21 +1,21 @@
 #define maxPorts 128
 
 struct port_res {
-    int idx;
-    long byte;
-    long pack;
+    __u32 idx;
+    __u64 byte;
+    __u64 pack;
 };
 
 struct vrfp_res {
-    int cmd; // 1=route, 2=bridge, 3=xconn
-    int vrf;
-    int brdg;
-    int hop;
-    int label1;
-    int label2;
-    int mpls;
-    long pack;
-    long byte;
+    __u32 cmd; // 1=route, 2=bridge, 3=xconn
+    __u32 vrf;
+    __u32 brdg;
+    __u32 hop;
+    __u32 label1;
+    __u32 label2;
+    __u32 mpls;
+    __u64 pack;
+    __u64 byte;
 };
 
 #define routes_bits (sizeof(__u32) * 8)
@@ -23,84 +23,84 @@ struct vrfp_res {
 struct route4_key {
     __u32 bits;
     __u32 vrf;
-    unsigned char addr[4];
+    __u8 addr[4];
 };
 
 struct route6_key {
     __u32 bits;
     __u32 vrf;
-    unsigned char addr[16];
+    __u8 addr[16];
 };
 
 struct routes_res {
-    int cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2
-    int hop;
-    int label1;
-    int label2;
-    long pack;
-    long byte;
+    __u32 cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2
+    __u32 hop;
+    __u32 label1;
+    __u32 label2;
+    __u64 pack;
+    __u64 byte;
 };
 
 struct neigh_res {
-    int cmd; // 1=rawip, 2=pppoe
-    unsigned char dmac[6];
-    unsigned char smac[6];
-    int port;
-    int sess;
-    long pack;
-    long byte;
+    __u32 cmd; // 1=rawip, 2=pppoe
+    __u8 dmac[6];
+    __u8 smac[6];
+    __u32 port;
+    __u32 sess;
+    __u64 pack;
+    __u64 byte;
 };
 
 struct label_res {
-    int cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls
-    int ver;
-    int hop;
-    int vrf;
-    int swap;
-    int brdg;
-    int port;
-    long pack;
-    long byte;
+    __u32 cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls
+    __u32 ver;
+    __u32 hop;
+    __u32 vrf;
+    __u32 swap;
+    __u32 brdg;
+    __u32 port;
+    __u64 pack;
+    __u64 byte;
 };
 
 struct bundle_res {
-    int out[16];
-    long pack;
-    long byte;
+    __u32 out[16];
+    __u64 pack;
+    __u64 byte;
 };
 
 struct vlan_key {
-    int port;
-    int vlan;
+    __u32 port;
+    __u32 vlan;
 };
 
 struct vlan_res {
-    int port;
-    int vlan;
-    long pack;
-    long byte;
+    __u32 port;
+    __u32 vlan;
+    __u64 pack;
+    __u64 byte;
 };
 
 struct pppoe_key {
-    int port;
-    int sess;
+    __u32 port;
+    __u32 sess;
 };
 
 struct bridge_key {
-    int id;
-    unsigned char mac[6];
-    unsigned char pad1;
-    unsigned char pad2;
+    __u32 id;
+    __u8 mac[6];
+    __u8 pad1;
+    __u8 pad2;
 };
 
 struct bridge_res {
-    int cmd; // 1=port, 2=vpls
-    int port;
-    int hop;
-    int label1;
-    int label2;
-    long packRx;
-    long byteRx;
-    long packTx;
-    long byteTx;
+    __u32 cmd; // 1=port, 2=vpls
+    __u32 port;
+    __u32 hop;
+    __u32 label1;
+    __u32 label2;
+    __u64 packRx;
+    __u64 byteRx;
+    __u64 packTx;
+    __u64 byteTx;
 };
