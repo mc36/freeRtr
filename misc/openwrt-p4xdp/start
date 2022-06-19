@@ -1,4 +1,5 @@
 #!/bin/sh
+ulimit -l 1024000
 while (true); do
   sleep 1
   /usr/sbin/p4xdp_user.bin $@

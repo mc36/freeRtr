@@ -409,8 +409,15 @@ public class servP4langCfg implements ifcUp {
             }
             servP4langIfc pif = findIfc(rif.ethtyp);
             if (pif == null) {
-                cmd.error("port not exported");
-                return false;
+                if (rif.vlanNum == 0) {
+                    cmd.error("port not exported");
+                    return false;
+                }
+                pif = conn.doSubif(rif);
+                if (pif == null) {
+                    cmd.error("parent not exported");
+                    return false;
+                }
             }
             servP4langBkpl ntry = new servP4langBkpl(this, pif);
             ntry.ifc = pif.ifc.ethtyp;

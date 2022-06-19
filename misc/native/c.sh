@@ -18,6 +18,7 @@ compileBpf()
 {
 echo compiling $1.
 clang -Wall $MD -c -g -target bpf -I /usr/include/$UM-linux-gnu/ -o$TR/$1.bin $1.c
+llvm-strip -d $TR/$1.bin
 touch -d "2010-01-01 00:00:00" $TR/$1.bin
 }
 
