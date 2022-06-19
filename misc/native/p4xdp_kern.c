@@ -610,7 +610,7 @@ subif_tx:
         revalidatePacket(sizeof(macaddr));
         __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
         bufO = sizeof(macaddr) + 2;
-        if (tmp == 1) break;
+        if (tmp != 2) break;
     }
 
     struct port_res* txport = bpf_map_lookup_elem(&tx_ports, &prt);
