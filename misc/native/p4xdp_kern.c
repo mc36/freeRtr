@@ -271,7 +271,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
 
-    for (int rounds = 0; rounds < 8; rounds++) {
+    for (int rounds = 0; rounds < 3; rounds++) {
 
         __u32 bufP = bufO;
         revalidatePacket(bufP);
@@ -289,7 +289,6 @@ __u32 xdp_router(struct xdp_md *ctx) {
             if (res == NULL) goto drop;
             prt = *res;
             bufO = bufP;
-            continue;
         }
 
         switch (ethtyp) {
@@ -319,7 +318,6 @@ __u32 xdp_router(struct xdp_md *ctx) {
             put16msb(bufD, bufP - 2, ethtyp);
             prt = *res;
             bufO = bufP;
-            continue;
             break;
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
