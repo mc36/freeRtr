@@ -414,6 +414,20 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "hairpin") == 0) {
+        struct bundle_res bunn;
+        memset(&bunn, 0, sizeof(bunn));
+        o = atoi(arg[2]);
+        bunn.cmd = 2;
+        __u32 p = atoi(arg[3]);
+        for (int i = 0; i < 16; i++) bunn.out[i] = p;
+        if (del == 0) {
+            if (bpf_map_delete_elem(bundles_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(bundles_fd, &o, &bunn, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "portbundle") == 0) {
         o = atoi(arg[2]);
         if (del == 0) {
@@ -427,6 +441,7 @@ int doOneCommand(unsigned char* buf) {
         if (bpf_map_lookup_elem(bundles_fd, &o, bunr) != 0) err("error getting entry");
         i = atoi(arg[3]);
         bunr->out[i] = atoi(arg[4]);
+        bunr->cmd = 1;
         if (bpf_map_update_elem(bundles_fd, &o, bunr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }

@@ -64,6 +64,7 @@ struct label_res {
 };
 
 struct bundle_res {
+    __u32 cmd; // 1=bundle, 2=hairpin
     __u32 out[16];
     __u64 pack;
     __u64 byte;
