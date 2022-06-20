@@ -240,7 +240,7 @@ struct {
 
 
 #define doRound(round) {                                            \
-    __u32 bufP = bufO;                                              \
+    __s32 bufP = bufO;                                              \
     revalidatePacket(bufP);                                         \
     __u32 ethtyp = get16msb(bufD, bufP - 2);                        \
     if (ethtyp == ETHERTYPE_VLAN) {                                 \
@@ -292,7 +292,7 @@ struct {
     vrfp->pack++;                                                   \
     vrfp->byte += bufE - bufD;                                      \
     __u32 neik = 0;                                                 \
-    __u32 ttl = 0;                                                  \
+    __s32 ttl = 0;                                                  \
     switch (vrfp->cmd) {                                            \
     case 1:                                                         \
         break;                                                      \
@@ -563,7 +563,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
         return bpf_redirect(txport->idx, 0);
     }
     prt = rxport->idx;
-    __u32 bufO = sizeof(macaddr) + 2;
+    __s32 bufO = sizeof(macaddr) + 2;
     __u32 hash = get32msb(macaddr, 0);
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
