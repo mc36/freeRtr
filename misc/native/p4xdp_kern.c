@@ -436,15 +436,15 @@ ipv6_rx:
 bridge_rx:
         {}
         struct bridge_key brdk;
-        __builtin_memcpy(brdk.mac, &macaddr[6], sizeof(brdk.mac));
+        __builtin_memcpy(brdk.mac, &macaddr[6], 6);
         brdk.id = tmp;
-        brdk.pad1 = 0;
-        brdk.pad2 = 0;
+        brdk.mac[6] = 0;
+        brdk.mac[7] = 0;
         struct bridge_res* brdr = bpf_map_lookup_elem(&bridges, &brdk);
         if (brdr == NULL) goto cpu;
         brdr->packRx++;
         brdr->byteRx += bufE - bufD;
-        __builtin_memcpy(brdk.mac, &macaddr[0], sizeof(brdk.mac));
+        __builtin_memcpy(brdk.mac, &macaddr[0], 6);
         brdr = bpf_map_lookup_elem(&bridges, &brdk);
         if (brdr == NULL) goto cpu;
         brdr->packTx++;

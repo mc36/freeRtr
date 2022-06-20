@@ -89,9 +89,7 @@ struct pppoe_key {
 
 struct bridge_key {
     __u32 id;
-    __u8 mac[6];
-    __u8 pad1;
-    __u8 pad2;
+    __u8 mac[8];
 };
 
 struct bridge_res {
