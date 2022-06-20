@@ -258,6 +258,12 @@ public class userHwext {
                 String ifn = null;
                 switch (dpt) {
                     case p4dpdk:
+                        hwd.add("#modprobe uio_pci_generic");
+                        hwd.add("echo 128 > /proc/sys/vm/nr_hugepages");
+                        hwd.add("modprobe vfio-pci");
+                        for (i = 0; i < ifp.size(); i++) {
+                            hwd.add("dpdk-devbind.py -b vfio-pci " + ifp.get(i));
+                        }
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
@@ -267,7 +273,7 @@ public class userHwext {
                             a += " --vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
                         }
                         hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " --vdev=net_af_packet" + ifl.size() + ",iface=veth0b -- 127.0.0.1 " + servP4lang.port + " " + ifl.size());
-                        res = ", please enable nic bindings in " + hwdn;
+                        res = ", please verify nic bindings in " + hwdn;
                         break;
                     case p4emu:
                         ifn = "veth0a";
