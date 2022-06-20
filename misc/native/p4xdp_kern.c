@@ -588,8 +588,8 @@ punt:
     tmp = 1;
     __u32* remain = bpf_map_lookup_elem(&cpu_port, &tmp);
     if (remain == NULL) goto drop;
-    (*remain)--;
     if (*remain < 1) goto drop;
+    (*remain)--;
 cpu:
     bufO -= sizeof(macaddr);
     bufO -= 4;
