@@ -1,6 +1,10 @@
 #!/bin/sh
-ulimit -l 1024000
+b=$@
+shift 4
+for a in $@ ; do ifconfig $a promisc up ; done
+ulimit -l 65536
+echo 1 > /proc/sys/net/core/bpf_jit_enable
 while (true); do
   sleep 1
-  /usr/sbin/p4xdp_user.bin $@
+  /usr/sbin/p4xdp_user.bin $b
   done
