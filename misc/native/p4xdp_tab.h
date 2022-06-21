@@ -14,8 +14,12 @@ struct vrfp_res {
     __u32 label1;
     __u32 label2;
     __u32 mpls;
-    __u64 pack;
-    __u64 byte;
+    __s32 sgtSet;
+    __u32 sgtTag;
+    __u64 packRx;
+    __u64 byteRx;
+    __u64 packTx;
+    __u64 byteTx;
 };
 
 #define routes_bits (sizeof(__u32) * 8)

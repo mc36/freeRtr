@@ -49,6 +49,7 @@ void doStatRound(FILE *commands, int round) {
 }
 
 
+
 int doOneCommand(unsigned char* buf) {
     unsigned char buf2[1024];
     char* arg[128];
@@ -83,6 +84,8 @@ int doOneCommand(unsigned char* buf) {
     if (del != 0) del = 1;
     struct vrfp_res vrfp;
     memset(&vrfp, 0, sizeof(vrfp));
+    vrfp.sgtSet = -1;
+    struct vrfp_res* vrfr = &vrfp;
     struct neigh_res neir;
     memset(&neir, 0, sizeof(neir));
     struct route4_key rou4;
@@ -99,50 +102,62 @@ int doOneCommand(unsigned char* buf) {
     memset(&brdr, 0, sizeof(brdr));
     if (strcmp(arg[0], "portvrf") == 0) {
         i = atoi(arg[2]);
-        vrfp.cmd = 1;
-        vrfp.vrf = atoi(arg[3]);
-        if (del == 0) {
-            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
-        } else {
-            if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
-        }
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->cmd = 1;
+        vrfr->vrf = atoi(arg[3]);
+        if (del == 0) vrfr->cmd = 0;
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
+    if (strcmp(arg[0], "sgtset") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->sgtSet = atoi(arg[3]);
+        if (del == 0) vrfr->sgtSet = -1;
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
+    if (strcmp(arg[0], "sgttag") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        if (del == 0) vrfr->sgtTag = 0;
+        else vrfr->sgtTag = 1;
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
     if (strcmp(arg[0], "mplspack") == 0) {
         i = atoi(arg[2]);
-        struct vrfp_res* vrfr = &vrfp;
-        if (bpf_map_lookup_elem(vrf_port_fd, &i, vrfr) != 0) return 0;
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
         vrfr->mpls = atoi(arg[3]);
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {
-        vrfp.cmd = 3;
         i = atoi(arg[2]);
-        vrfp.hop = atoi(arg[4]);
-        vrfp.label1 = atoi(arg[5]);
-        vrfp.label2 = atoi(arg[7]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->cmd = 3;
+        vrfr->hop = atoi(arg[4]);
+        vrfr->label1 = atoi(arg[5]);
+        vrfr->label2 = atoi(arg[7]);
         o = atoi(arg[6]);
         labr.port = i;
         labr.cmd= 4;
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         if (del == 0) {
-            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+            vrfr->cmd = 0;
             if (bpf_map_delete_elem(labels_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(labels_fd, &o, &labr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "portbridge") == 0) {
-        vrfp.cmd = 2;
         i = atoi(arg[2]);
-        vrfp.brdg = atoi(arg[3]);
-        if (del == 0) {
-            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
-        } else {
-            if (bpf_map_update_elem(vrf_port_fd, &i, &vrfp, BPF_ANY) != 0) warn("error setting entry");
-        }
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->cmd = 2;
+        vrfr->brdg = atoi(arg[3]);
+        if (del == 0) vrfr->cmd = 0;
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
     if (strcmp(arg[0], "bridgemac") == 0) {

@@ -272,6 +272,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     __u32 hash = get32msb(macaddr, 0);
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
+    __u32 sgt = 0;
 
 #pragma clang loop unroll(full)
     for (__u32 rounds = 0; rounds < 3; rounds++) {
@@ -315,6 +316,9 @@ __u32 xdp_router(struct xdp_md *ctx) {
             case PPPTYPE_IPV6:
                 ethtyp = ETHERTYPE_IPV6;
                 break;
+            case PPPTYPE_SGT:
+                ethtyp = ETHERTYPE_SGT;
+                break;
             default:
                 goto drop;
             }
@@ -328,8 +332,21 @@ __u32 xdp_router(struct xdp_md *ctx) {
 
         struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
         if (vrfp == NULL) goto drop;
-        vrfp->pack++;
-        vrfp->byte += bufE - bufD;
+        vrfp->packRx++;
+        vrfp->byteRx += bufE - bufD;
+
+        if (vrfp->sgtTag != 0) {
+            revalidatePacket(bufP + 12);
+            if (ethtyp != ETHERTYPE_SGT) goto drop;
+            if (get32msb(bufD, bufP + 0) != 0x01010001) goto drop;
+            sgt = get16msb(bufD, bufP + 4);
+            ethtyp = get16msb(bufD, bufP + 6);
+            bufP += 8;
+        }
+        if (vrfp->sgtSet >= 0) {
+            sgt = vrfp->sgtSet;
+        }
+
         __u32 neik = 0;
         __s32 ttl = 0;
         switch (vrfp->cmd) {
@@ -503,6 +520,9 @@ ethtyp_tx:
             case ETHERTYPE_IPV6:
                 ethtyp = PPPTYPE_IPV6;
                 break;
+            case ETHERTYPE_SGT:
+                ethtyp = PPPTYPE_SGT;
+                break;
             default:
                 goto drop;
             }
@@ -525,6 +545,22 @@ ethtyp_tx:
         }
 
 subif_tx:
+        vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
+        if (vrfp == NULL) goto vlan_tx;
+        vrfp->packTx++;
+        vrfp->byteTx += bufE - bufD;
+        if (vrfp->sgtTag == 0) goto vlan_tx;
+        bufP -= 2 * sizeof(macaddr);
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+        bufP = 2 * sizeof(macaddr);
+        revalidatePacket(3 * sizeof(macaddr));
+        bufP -= 8;
+        put16msb(bufD, bufP + 2, 0x0101);
+        put16msb(bufD, bufP + 4, 0x0001);
+        put16msb(bufD, bufP + 6, sgt);
+        ethtyp = ETHERTYPE_SGT;
+        put16msb(bufD, bufP + 0, ethtyp);
+vlan_tx:
         {}
         struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
         if (vlnr != NULL) {
