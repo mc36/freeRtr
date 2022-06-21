@@ -30,7 +30,8 @@ void warn(char*buf) {
 
 
 int commandSock;
-int ifaces[maxPorts];
+int ifaceId[maxPorts];
+char *ifaceName[maxPorts];
 int dataPorts;
 int cpu_port_fd;
 int rx_ports_fd;
@@ -69,8 +70,8 @@ void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform p4xdp\r\n");
-    fprintf(commands, "capabilities route mpls bundle vlan pppoe eompls bridge vpls evpn\r\n");
-    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i xdp-port%i\r\n", i, ifaces[i]);
+    fprintf(commands, "capabilities route mpls bundle vlan pppoe eompls bridge vpls evpn hairpin sgt\r\n");
+    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");
     fflush(commands);
@@ -121,10 +122,14 @@ void doMainLoop() {
 int main(int argc, char **argv) {
     dataPorts = 0;
     for (int i = 5; i < argc; i++) {
-        printf("opening %s...", argv[i]);
-        ifaces[dataPorts] = if_nametoindex(argv[i]);
-        if (ifaces[dataPorts] == 0) err("error getting interface index");
-        printf(" idx=%i\n", ifaces[dataPorts]);
+        char*name = argv[i];
+        printf("opening %s...", name);
+        ifaceName[dataPorts] = malloc(strlen(name)+1);
+        if (ifaceName[dataPorts] == NULL) err("error allocating memory");
+        strcpy(ifaceName[dataPorts], name);
+        ifaceId[dataPorts] = if_nametoindex(name);
+        if (ifaceId[dataPorts] == 0) err("error getting interface index");
+        printf(" idx=%i\n", ifaceId[dataPorts]);
         dataPorts++;
     }
     if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <skb/drv/hw> <ifc0> <ifc1> [ifcN]");
@@ -201,24 +206,24 @@ int main(int argc, char **argv) {
     if (bridges_fd < 0) err("error finding table");
 
     for (int i = 0; i < dataPorts; i++) {
-        printf("attaching iface %i, prog %i, flag %i...\n", ifaces[i], prog_fd, bpf_flag);
+        printf("attaching iface %i, prog %i, flag %i...\n", ifaceId[i], prog_fd, bpf_flag);
 #if __LIBBPF_CURRENT_VERSION_GEQ(0, 7)
-        if (bpf_xdp_attach(ifaces[i], prog_fd, bpf_flag, NULL) < 0) err("error attaching code");
+        if (bpf_xdp_attach(ifaceId[i], prog_fd, bpf_flag, NULL) < 0) err("error attaching code");
 #else
-        if (bpf_set_link_xdp_fd(ifaces[i], prog_fd, bpf_flag) < 0) err("error attaching code");
+        if (bpf_set_link_xdp_fd(ifaceId[i], prog_fd, bpf_flag) < 0) err("error attaching code");
 #endif
     }
 
     __u32 o = 0;
-    __u32 p = ifaces[cpuPort];
+    __u32 p = ifaceId[cpuPort];
     if (bpf_map_update_elem(cpu_port_fd, &o, &p, BPF_ANY) != 0) err("error setting cpuport");
     for (__u32 i = 0; i < dataPorts; i++) {
-        printf("initializing index %i...\n", ifaces[i]);
+        printf("initializing index %i...\n", ifaceId[i]);
         struct port_res ntry;
         memset(&ntry, 0, sizeof(ntry));
-        ntry.idx = ifaces[i];
+        ntry.idx = ifaceId[i];
         if (bpf_map_update_elem(tx_ports_fd, &i, &ntry, BPF_ANY) != 0) err("error setting txport");
-        o = ifaces[i];
+        o = ifaceId[i];
         ntry.idx = i;
         if (bpf_map_update_elem(rx_ports_fd, &o, &ntry, BPF_ANY) != 0) err("error setting rxport");
     }
