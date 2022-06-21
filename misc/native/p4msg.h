@@ -208,6 +208,8 @@ int doOneCommand(unsigned char* buf) {
     memset(&mpls_ntry, 0, sizeof(mpls_ntry));
     struct port2vrf_entry *port2vrf_res;
     struct port2vrf_entry port2vrf_ntry;
+    port2vrf_ntry.sgtSet = -1;
+    port2vrf_ntry.monTarget = -1;
     memset(&port2vrf_ntry, 0, sizeof(port2vrf_ntry));
     struct vrf2rib_entry *vrf2rib_res;
     struct vrf2rib_entry vrf2rib_ntry;
