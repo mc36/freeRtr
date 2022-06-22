@@ -274,7 +274,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
 
-#pragma clang loop unroll(full)
+#pragma unroll
     for (__u32 rounds = 0; rounds < 3; rounds++) {
 
         __s32 bufP = bufO;
