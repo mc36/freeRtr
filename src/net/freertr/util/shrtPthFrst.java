@@ -219,6 +219,9 @@ public class shrtPthFrst<Ta extends addrType> {
      */
     public shrtPthFrst<Ta> copyBytes() {
         shrtPthFrst<Ta> res = new shrtPthFrst<Ta>(this);
+        res.bidir.set(bidir.get());
+        res.hops.set(hops.get());
+        res.ecmp.set(ecmp.get());
         for (int o = 0; o < nodes.size(); o++) {
             shrtPthFrstNode<Ta> nod = nodes.get(o);
             for (int i = 0; i < nod.conn.size(); i++) {

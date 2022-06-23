@@ -94,6 +94,7 @@ public class servP4langDcvr implements Runnable {
         }
         cur = parent.fwds.get(0);
         cur.bckplnSpf = spf;
+        spf.bidir.set(1);
         for (int o = 1; o < parent.fwds.size(); o++) {
             parent.fwds.get(o).bckplnSpf = spf.copyBytes();
         }
