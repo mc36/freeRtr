@@ -3,6 +3,7 @@ package net.freertr.serv;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.pipe.pipeLine;
@@ -394,10 +395,10 @@ public class servP4lang extends servGeneric implements prtServS {
     public userFormat getShowGen(int mod) {
         switch (mod) {
             case 1:
-                userFormat res = new userFormat("|", "fwd|cls|addr|name");
+                userFormat res = new userFormat("|", "fwd|addr|name|clsd|recon|ago|since");
                 for (int i = 0; i < fwds.size(); i++) {
                     servP4langCfg ntry = fwds.get(i);
-                    res.add(i + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.remote + "|" + ntry.descr);
+                    res.add(i + "|" + ntry.remote + "|" + ntry.descr + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.reconns + "|" + bits.timePast(ntry.started) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.started + cfgAll.timeServerOffset, 3));
                 }
                 return res;
             default:
