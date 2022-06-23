@@ -1752,6 +1752,8 @@ qc pass: p4lang: routing over backplane
 qc pass: p4lang: bridging over backplane
 qc pass: p4lang: mpls core over backplane
 qc pass: p4lang: mpls vpn over backplane
+qc pass: p4lang: local connect
+qc pass: p4lang: vlan local connect
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

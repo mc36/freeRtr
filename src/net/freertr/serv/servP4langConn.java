@@ -8,6 +8,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIconn;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntPckOudp;
@@ -938,6 +939,9 @@ public class servP4langConn implements Runnable {
         for (int i = nshs.size() - 1; i >= 0; i--) {
             doNsh2(nshs.get(i));
         }
+        for (int i = 0; i < cfgAll.iconnects.size(); i++) {
+            doLocon(cfgAll.iconnects.get(i));
+        }
         for (int i = lower.neighs.size() - 1; i >= 0; i--) {
             doNeighs(lower.neighs.get(i));
         }
@@ -1003,6 +1007,26 @@ public class servP4langConn implements Runnable {
         outIfc = ifc.getUcast().id;
         lower.sendLine("nhop2port_" + act + " " + old.id + " " + ifc.id + " " + outIfc);
         old.sentIgNhop = outIfc;
+    }
+
+    private void doLocon(cfgIconn ntry) {
+        if (ntry == null) {
+            return;
+        }
+        servP4langIfc ifc1 = lower.findIfc(ntry.side1);
+        if (ifc1 == null) {
+            return;
+        }
+        servP4langIfc ifc2 = lower.findIfc(ntry.side2);
+        if (ifc2 == null) {
+            return;
+        }
+        if ((ifc1.sentVrf == -3) && (ifc2.sentVrf == -3)) {
+            return;
+        }
+        lower.sendLine("loconnect_add " + ifc1.id + " " + ifc2.id);
+        ifc1.sentVrf = -3;
+        ifc2.sentVrf = -3;
     }
 
     private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {

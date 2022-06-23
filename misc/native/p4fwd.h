@@ -1265,8 +1265,7 @@ bridgevpls_rx:
             bufP -= 2;
             switch (bridge_res->command) {
             case 1: // port
-                prt = bridge_res->port;
-                prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+                prt = send2subif(bridge_res->port, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
                 if (prt >= 0) goto ethtyp_rx;
                 return;
             case 2: // vpls
@@ -1428,8 +1427,7 @@ neigh_tx:
         case 4: // xconn
             memcpy(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
-            prt = mpls_res->port;
-            prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            prt = send2subif(mpls_res->port, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
             if (prt >= 0) goto ethtyp_rx;
             return;
         case 5: // vpls
