@@ -503,8 +503,7 @@ ethtyp_tx:
         if (neir == NULL) goto punt;
         neir->pack++;
         neir->byte += bufE - bufD;
-        __builtin_memcpy(&macaddr[0], neir->dmac, sizeof(neir->dmac));
-        __builtin_memcpy(&macaddr[6], neir->smac, sizeof(neir->smac));
+        __builtin_memcpy(&macaddr[0], neir->macs, sizeof(neir->macs));
         prt = neir->port;
         switch (neir->cmd) {
         case 1:

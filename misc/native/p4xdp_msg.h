@@ -206,8 +206,8 @@ int doOneCommand(unsigned char* buf) {
         rou4.bits = routes_bits + (sizeof(rou4.addr) * 8);
         rour.cmd = 1;
         i = rour.hop = atoi(arg[2]);
-        str2mac(neir.dmac, arg[4]);
-        str2mac(neir.smac, arg[6]);
+        str2mac(&neir.macs[0], arg[4]);
+        str2mac(&neir.macs[6], arg[6]);
         neir.port = atoi(arg[7]);
         neir.cmd = 1;
         if (del == 0) {
@@ -226,8 +226,8 @@ int doOneCommand(unsigned char* buf) {
         rou6.bits = routes_bits + (sizeof(rou6.addr) * 8);
         rour.cmd = 1;
         i = rour.hop = atoi(arg[2]);
-        str2mac(neir.dmac, arg[4]);
-        str2mac(neir.smac, arg[6]);
+        str2mac(&neir.macs[0], arg[4]);
+        str2mac(&neir.macs[6], arg[6]);
         neir.port = atoi(arg[7]);
         neir.cmd = 1;
         if (del == 0) {
@@ -503,8 +503,8 @@ int doOneCommand(unsigned char* buf) {
         neir.port = pppoe.port;
         neir.sess = pppoe.sess;
         neir.cmd = 2;
-        str2mac(neir.dmac, arg[7]);
-        str2mac(neir.smac, arg[8]);
+        str2mac(&neir.macs[0], arg[7]);
+        str2mac(&neir.macs[6], arg[8]);
         if (del == 0) {
             if (bpf_map_delete_elem(pppoes_fd, &pppoe) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");

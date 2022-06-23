@@ -47,8 +47,7 @@ struct routes_res {
 
 struct neigh_res {
     __u32 cmd; // 1=rawip, 2=pppoe
-    __u8 dmac[6];
-    __u8 smac[6];
+    __u8 macs[12];
     __u32 port;
     __u32 sess;
     __u64 pack;
