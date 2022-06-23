@@ -350,12 +350,12 @@ __u32 xdp_router(struct xdp_md *ctx) {
         __u32 neik = 0;
         __s32 ttl = 0;
         switch (vrfp->cmd) {
-        case 1:
+        case 1: // route
             break;
-        case 2:
+        case 2: // bridge
             tmp = vrfp->brdg;
             goto bridge_rx;
-        case 3:
+        case 3: // xconn
             bufP -= 2;
             bufP -= 12;
             bufP -= 2 * sizeof(macaddr);
@@ -372,6 +372,11 @@ __u32 xdp_router(struct xdp_md *ctx) {
             put32msb(bufD, bufP, ttl);
             neik = vrfp->hop;
             goto ethtyp_tx;
+        case 4: // loconn
+            prt = vrfp->label1;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            goto subif_tx;
         default:
             goto drop;
         }
