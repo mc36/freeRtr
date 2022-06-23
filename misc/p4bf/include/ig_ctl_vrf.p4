@@ -57,7 +57,7 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
 #endif
 
 #ifdef HAVE_LOCONN
-     action act_set_loconn (SubIntId_t port) {
+    action act_set_loconn (SubIntId_t port) {
         ig_md.vrf = 0;
 #ifdef HAVE_POLKA
         ig_md.polka_valid = 0;
@@ -76,7 +76,7 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
         ig_md.bridge_id = 0;
 #endif
         ig_md.target_id = port;
-     }
+    }
 #endif
 
 #ifdef HAVE_BRIDGE
