@@ -1030,6 +1030,39 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
         ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
+def writeLoconnRules(delete, p4info_helper, ingress_sw, port, target):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
+        match_fields={
+            "ig_md.source_id": port
+        },
+        action_name="ig_ctl.ig_ctl_vrf.act_set_loconn",
+        action_params={
+            "port": target,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
+        match_fields={
+            "ig_md.source_id": target
+        },
+        action_name="ig_ctl.ig_ctl_vrf.act_set_loconn",
+        action_params={
+            "port": port,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeBrprtRules(delete, p4info_helper, ingress_sw, port, bridge):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
@@ -3184,7 +3217,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
-    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn\r\n");
     for x in range(0, 10):
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)
@@ -3489,6 +3522,10 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "xconnect":
             writeXconnRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+
+        if cmds[0] == "loconnect":
+            writeLoconnRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
         if cmds[0] == "portbridge":
