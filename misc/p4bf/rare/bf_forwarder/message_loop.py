@@ -244,6 +244,14 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "loconnect":
+            self.writeLoconnRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+            )
+            continue
+
         if cmds[0] == "portbridge":
             self.writeBrprtRules(
                 mode,

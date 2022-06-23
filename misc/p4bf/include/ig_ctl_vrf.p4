@@ -45,12 +45,38 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
         ig_md.arp_valid = 0;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+#ifdef HAVE_BRIDGE
+        ig_md.bridge_id = 0;
+#endif
         ig_md.mpls_encap_egress_label = tunlab;
         ig_md.mpls_encap_svc_label = svclab;
         ig_md.mpls_encap_decap_sap_type = 2;
         ig_md.mpls_encap_l2vpn_valid = 1;
         ig_md.nexthop_id = target;
     }
+#endif
+
+#ifdef HAVE_LOCONN
+     action act_set_loconn (SubIntId_t port) {
+        ig_md.vrf = 0;
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+#ifdef HAVE_BRIDGE
+        ig_md.bridge_id = 0;
+#endif
+        ig_md.target_id = port;
+     }
 #endif
 
 #ifdef HAVE_BRIDGE
@@ -68,6 +94,9 @@ ig_md.source_id:
             act_set_vrf;
 #ifdef HAVE_MPLS
             act_set_mpls_xconn_encap;
+#endif
+#ifdef HAVE_LOCONN
+            act_set_loconn;
 #endif
 #ifdef HAVE_BRIDGE
             act_set_bridge;
