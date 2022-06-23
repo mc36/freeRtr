@@ -159,7 +159,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp";
+    return "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn";
 }
 
 
@@ -453,6 +453,25 @@ int doOneCommand(unsigned char* buf) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
         port2vrf_res->nsh = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "loconnect") == 0) {
+        i = atoi(arg[2]);
+        o = atoi(arg[3]);
+        port2vrf_ntry.port = i;
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->command = 4;
+        port2vrf_res->bridge = 0;
+        port2vrf_res->vrf = 0;
+        port2vrf_res->label1 = o;
+        if (del == 0) port2vrf_res->command = 0;
+        port2vrf_ntry.port = o;
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->command = 4;
+        port2vrf_res->bridge = 0;
+        port2vrf_res->vrf = 0;
+        port2vrf_res->label1 = i;
+        if (del == 0) port2vrf_res->command = 0;
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {

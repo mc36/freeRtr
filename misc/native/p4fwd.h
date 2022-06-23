@@ -1228,10 +1228,122 @@ ethtyp_rx:
         }
     }
     if (ethtyp != ETHERTYPE_ROUTEDMAC) switch (port2vrf_res->command) {
-        case 2:
-            goto bridge_rx;
-        case 3:
-            goto xconn_rx;
+        case 2: // bridge
+            bridge_ntry.id = port2vrf_res->bridge;
+            memcpy(&bufH[0], &bufD[preBuff], 12);
+            tmp = get16msb(bufD, bufP - 2);
+            switch (tmp) {
+            case ETHERTYPE_IPV4: // ipv4
+                bufT = bufD[bufP + 0] & 0xf;
+                bufT = bufP + (bufT << 2);
+                acl4_ntry.protV = bufD[bufP + 9];
+                update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
+                break;
+            case ETHERTYPE_IPV6: // ipv6
+                bufT = bufP + 40;
+                acl6_ntry.protV = bufD[bufP + 6];
+                update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
+                break;
+            }
+bridgevpls_rx:
+            bridge_ntry.mac1 = get16msb(bufH, 6);
+            bridge_ntry.mac2 = get32msb(bufH, 8);
+            hash ^= bridge_ntry.mac1 ^ bridge_ntry.mac2;
+            index = table_find(&bridge_table, &bridge_ntry);
+            if (index < 0) doCpuing;
+            bridge_res = table_get(&bridge_table, index);
+            bridge_res->packRx++;
+            bridge_res->byteRx += bufS;
+            bridge_ntry.mac1 = get16msb(bufH, 0);
+            bridge_ntry.mac2 = get32msb(bufH, 2);
+            hash ^= bridge_ntry.mac1 ^ bridge_ntry.mac2;
+            index = table_find(&bridge_table, &bridge_ntry);
+            if (index < 0) doCpuing;
+            bridge_res = table_get(&bridge_table, index);
+            bridge_res->packTx++;
+            bridge_res->byteTx += bufS;
+            bufP -= 2;
+            switch (bridge_res->command) {
+            case 1: // port
+                prt = bridge_res->port;
+                prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+                if (prt >= 0) goto ethtyp_rx;
+                return;
+            case 2: // vpls
+                bufP -= 12;
+                memcpy(&bufD[bufP], &bufH[0], 12);
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                bufP -= 4;
+                label = 0x1ff | (bridge_res->label2 << 12);
+                put32msb(bufD, bufP, label);
+                bufP -= 4;
+                label = 0xff | (bridge_res->label1 << 12);
+                put32msb(bufD, bufP, label);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto ethtyp_tx;
+            case 3: // routed
+                bufP -= 12;
+                memcpy(&bufD[bufP], &bufH[0], 12);
+                ethtyp = ETHERTYPE_ROUTEDMAC;
+                neigh_ntry.id = bridge_res->nexthop;
+                goto ethtyp_tx;
+            case 4: // vxlan4
+                putVxlanHeader;
+                putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
+                putIpv4header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->trgAddr1);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 5: // vxlan6
+                putVxlanHeader;
+                putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
+                putIpv6header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 6: // pckoudp4
+                putPckoudpHeader;
+                putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
+                putIpv4header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->trgAddr1);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 7: // pckoudp6
+                putPckoudpHeader;
+                putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
+                putIpv6header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 8: // srv4
+                putPckoudpHeader;
+                putIpv4header(bufP, bufS, ethtyp, 143, bridge_res->srcAddr1, bridge_res->trgAddr1);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 9: // srv6
+                putPckoudpHeader;
+                putIpv6header(bufP, bufS, ethtyp, 143, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            default:
+                return;
+            }
+        case 3: // xconn
+            memcpy(&bufH[0], &bufD[preBuff], 12);
+            bufP -= 2;
+            bufP -= 12;
+            memcpy(&bufD[bufP], &bufH[0], 12);
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            bufP -= 4;
+            label = 0x1ff | (port2vrf_res->label2 << 12);
+            put32msb(bufD, bufP, label);
+            bufP -= 4;
+            label = 0xff | (port2vrf_res->label1 << 12);
+            put32msb(bufD, bufP, label);
+            neigh_ntry.id = port2vrf_res->nexthop;
+            goto ethtyp_tx;
+        case 4: // loconn
+            bufP -= 2;
+            memcpy(&bufH[0], &bufD[preBuff], 12);
+            prt = send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            if (prt >= 0) goto ethtyp_rx;
+            return;
         }
 etyped_rx:
     if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
@@ -2078,117 +2190,6 @@ ipv6_tx:
             return;
         }
         return;
-xconn_rx:
-        memcpy(&bufH[0], &bufD[preBuff], 12);
-        bufP -= 2;
-        bufP -= 12;
-        memcpy(&bufD[bufP], &bufH[0], 12);
-        ethtyp = ETHERTYPE_MPLS_UCAST;
-        bufP -= 4;
-        label = 0x1ff | (port2vrf_res->label2 << 12);
-        put32msb(bufD, bufP, label);
-        bufP -= 4;
-        label = 0xff | (port2vrf_res->label1 << 12);
-        put32msb(bufD, bufP, label);
-        neigh_ntry.id = port2vrf_res->nexthop;
-        goto ethtyp_tx;
-bridge_rx:
-        bridge_ntry.id = port2vrf_res->bridge;
-        memcpy(&bufH[0], &bufD[preBuff], 12);
-        tmp = get16msb(bufD, bufP - 2);
-        switch (tmp) {
-        case ETHERTYPE_IPV4: // ipv4
-            bufT = bufD[bufP + 0] & 0xf;
-            bufT = bufP + (bufT << 2);
-            acl4_ntry.protV = bufD[bufP + 9];
-            update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
-            break;
-        case ETHERTYPE_IPV6: // ipv6
-            bufT = bufP + 40;
-            acl6_ntry.protV = bufD[bufP + 6];
-            update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
-            break;
-        }
-        goto bridgevpls_rx;
-bridgevpls_rx:
-        bridge_ntry.mac1 = get16msb(bufH, 6);
-        bridge_ntry.mac2 = get32msb(bufH, 8);
-        hash ^= bridge_ntry.mac1 ^ bridge_ntry.mac2;
-        index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) doCpuing;
-        bridge_res = table_get(&bridge_table, index);
-        bridge_res->packRx++;
-        bridge_res->byteRx += bufS;
-        bridge_ntry.mac1 = get16msb(bufH, 0);
-        bridge_ntry.mac2 = get32msb(bufH, 2);
-        hash ^= bridge_ntry.mac1 ^ bridge_ntry.mac2;
-        index = table_find(&bridge_table, &bridge_ntry);
-        if (index < 0) doCpuing;
-        bridge_res = table_get(&bridge_table, index);
-        bridge_res->packTx++;
-        bridge_res->byteTx += bufS;
-        bufP -= 2;
-        switch (bridge_res->command) {
-        case 1: // port
-            prt = bridge_res->port;
-            prt = send2subif(prt, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
-            if (prt >= 0) goto ethtyp_rx;
-            return;
-        case 2: // vpls
-            bufP -= 12;
-            memcpy(&bufD[bufP], &bufH[0], 12);
-            ethtyp = ETHERTYPE_MPLS_UCAST;
-            bufP -= 4;
-            label = 0x1ff | (bridge_res->label2 << 12);
-            put32msb(bufD, bufP, label);
-            bufP -= 4;
-            label = 0xff | (bridge_res->label1 << 12);
-            put32msb(bufD, bufP, label);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto ethtyp_tx;
-        case 3: // routed
-            bufP -= 12;
-            memcpy(&bufD[bufP], &bufH[0], 12);
-            ethtyp = ETHERTYPE_ROUTEDMAC;
-            neigh_ntry.id = bridge_res->nexthop;
-            goto ethtyp_tx;
-        case 4: // vxlan4
-            putVxlanHeader;
-            putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
-            putIpv4header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 5: // vxlan6
-            putVxlanHeader;
-            putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
-            putIpv6header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 6: // pckoudp4
-            putPckoudpHeader;
-            putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
-            putIpv4header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 7: // pckoudp6
-            putPckoudpHeader;
-            putUdpHeader(bufP, bufS, bridge_res->srcPort, bridge_res->trgPort);
-            putIpv6header(bufP, bufS, ethtyp, 17, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 8: // srv4
-            putPckoudpHeader;
-            putIpv4header(bufP, bufS, ethtyp, 143, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 9: // srv6
-            putPckoudpHeader;
-            putIpv6header(bufP, bufS, ethtyp, 143, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        default:
-            return;
-        }
     case ETHERTYPE_ARP: // arp
         doCpuing;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl

@@ -142,7 +142,7 @@ int mpls_compare(void *ptr1, void *ptr2) {
 
 struct port2vrf_entry {
     int port;
-    int command;    // 1=vrf, 2=bridge, 3=xconn
+    int command;    // 1=vrf, 2=bridge, 3=xconn, 4=loconn
     int vrf;
     int bridge;
     int nexthop;
