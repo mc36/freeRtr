@@ -473,12 +473,12 @@ public class servP4lang extends servGeneric implements prtServS {
      */
     public tabRoute<addrIP> getShowRou(int prt, int vrf, int fwd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
-            return null;
+            return new tabRoute<addrIP>("empty");
         }
         servP4langCfg cur = fwds.get(fwd);
         servP4langVrf ntry = cur.expVrf.find(new servP4langVrf(vrf));
         if (ntry == null) {
-            return null;
+            return new tabRoute<addrIP>("empty");
         }
         if (prt == 4) {
             return ntry.routes4;

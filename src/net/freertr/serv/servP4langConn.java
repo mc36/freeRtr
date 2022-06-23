@@ -2177,15 +2177,15 @@ public class servP4langConn implements Runnable {
             if (ifc.ifc.xconn.pwom == null) {
                 return false;
             }
-            int lr = ifc.ifc.xconn.pwom.getLabelRem();
-            if (lr < 0) {
-                return false;
-            }
-            if ((ifc.sentVrf == -1) && (lr == ifc.sentLabel)) {
-                return false;
-            }
             int ll = ifc.ifc.xconn.pwom.getLabelLoc();
             if (ll < 0) {
+                return false;
+            }
+            if ((ifc.sentVrf == -1) && (ll == ifc.sentLabel)) {
+                return false;
+            }
+            int lr = ifc.ifc.xconn.pwom.getLabelRem();
+            if (lr < 0) {
                 return false;
             }
             ipFwd ofwd = ifc.ifc.xconn.vrf.getFwd(ifc.ifc.xconn.adr);
@@ -2206,7 +2206,7 @@ public class servP4langConn implements Runnable {
                 return false;
             }
             lower.sendLine("xconnect_" + a + " " + ifc.id + " " + ifc.ifc.xconn.adr + " " + hop.id + " " + servP4langUtil.getLabel(ntry) + " " + ll + " " + lr);
-            ifc.sentLabel = lr;
+            ifc.sentLabel = ll;
             ifc.sentVrf = -1;
             return false;
         }
