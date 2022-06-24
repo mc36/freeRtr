@@ -107,7 +107,7 @@ int lo1
  router olsr6 1 ena
  exit
 route-map rm1
- set metric add 200
+ set metric +200
  exit
 int eth1
  vrf for v1

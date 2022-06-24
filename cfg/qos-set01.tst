@@ -25,7 +25,7 @@ vrf def v1
 policy-map p1
  seq 10 act trans
   match length 300-500
-  set qos set 12345
+  set qos 12345
  seq 20 act trans
  exit
 policy-map p2

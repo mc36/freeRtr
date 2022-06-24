@@ -234,7 +234,7 @@ int bvi1
  mpls enable
  exit
 route-map rm1
- set metric set 1000
+ set metric 1000
  exit
 router bgp4 1
  vrf v1
@@ -377,7 +377,7 @@ r4 tping 100 60 9994::3 vrf v4
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set metric set 3000
+r3 send set metric 3000
 r3 send end
 r3 send clear ipv4 route v4
 r3 send clear ipv6 route v4
@@ -412,7 +412,7 @@ r4 tping 0 60 9994::3 vrf v4
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set metric set 5000
+r3 send set metric 5000
 r3 send end
 r3 send clear ipv4 route v4
 r3 send clear ipv6 route v4
@@ -447,7 +447,7 @@ r4 tping 100 60 9994::3 vrf v4
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set metric set 1000
+r3 send set metric 1000
 r3 send end
 r3 send clear ipv4 route v4
 r3 send clear ipv6 route v4

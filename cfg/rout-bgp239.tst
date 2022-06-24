@@ -71,7 +71,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-policy rm1
- set locpref set 1234
+ set locpref 1234
  pass
  exit
 router bgp4 1

@@ -130,7 +130,7 @@ int bvi1
  ipv6 addr 1234:1::3 ffff:ffff::
  exit
 route-map rm1
- set origin set 0
+ set origin 0
  exit
 router bgp4 1
  vrf v1
@@ -226,7 +226,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set origin set 2
+r3 send set origin 2
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -261,7 +261,7 @@ r4 tping 0 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set origin set 1
+r3 send set origin 1
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -296,7 +296,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set origin set 0
+r3 send set origin 0
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1

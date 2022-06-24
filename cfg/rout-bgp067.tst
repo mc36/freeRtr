@@ -31,7 +31,7 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
 route-map rm1
- set locpref set 1234
+ set locpref 1234
  exit
 router bgp4 1
  vrf v1
@@ -131,7 +131,7 @@ int eth1
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
 route-map rm1
- set locpref set 4321
+ set locpref 4321
  exit
 router bgp4 1
  vrf v1

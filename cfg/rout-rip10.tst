@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set tag set 1234
+ set tag 1234
  exit
 router rip4 1
  vrf v1
@@ -54,7 +54,7 @@ int lo0
 route-map rm1
  sequence 10 act perm
   match tag 1234
-  set metric add 9
+  set metric +9
  sequence 20 act perm
  exit
 int eth1
@@ -88,7 +88,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set tag set 1234
+ set tag 1234
  exit
 router rip4 1
  vrf v1

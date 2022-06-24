@@ -86,7 +86,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set origin set 111
+ set origin 111
  exit
 prefix-list p4
  sequence 10 deny 2.2.2.222/32

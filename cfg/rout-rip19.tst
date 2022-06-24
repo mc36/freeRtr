@@ -93,7 +93,7 @@ router rip6 1
  vrf v1
  exit
 route-policy rm1
- set metric add 9
+ set metric +9
  pass
  exit
 int lo0

@@ -49,7 +49,7 @@ int lo0
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 route-map rm1
- set metric add 9
+ set metric +9
  exit
 int eth1
  vrf for v1

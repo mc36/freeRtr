@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set tag set 1234
+ set tag 1234
  exit
 router pvrp4 1
  vrf v1
@@ -87,7 +87,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set tag set 1234
+ set tag 1234
  exit
 router pvrp4 1
  vrf v1

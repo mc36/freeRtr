@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set metric set 1000
+ set metric 1000
  exit
 router isis4 1
  vrf v1
@@ -150,7 +150,7 @@ r3 tping 100 20 4321::2 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
-r1 send set metric set 3000
+r1 send set metric 3000
 r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
@@ -170,7 +170,7 @@ r3 tping 100 20 4321::2 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
-r1 send set metric set 5000
+r1 send set metric 5000
 r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1

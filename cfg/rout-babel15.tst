@@ -113,7 +113,7 @@ int lo1
  router babel6 1 ena
  exit
 route-map rm1
- set metric add 40000
+ set metric +40000
  exit
 int eth1
  vrf for v1

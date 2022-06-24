@@ -59,7 +59,7 @@ router pvrp6 1
  red conn
  exit
 route-policy rm1
- set metric add 100
+ set metric +100
  pass
  exit
 int lo1

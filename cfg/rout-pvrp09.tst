@@ -15,7 +15,7 @@ router pvrp6 1
  router 6.6.6.1
  exit
 route-policy rm1
- set metric add 100
+ set metric +100
  pass
  exit
 int lo1

@@ -93,7 +93,7 @@ router rip6 1
  vrf v1
  exit
 route-map rm1
- set metric add 9
+ set metric +9
  exit
 int lo0
  vrf for v1

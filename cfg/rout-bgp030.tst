@@ -31,8 +31,8 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
 route-map rm1
- set origin set 1
- set metric set 4321
+ set origin 1
+ set metric 4321
  exit
 router bgp4 1
  vrf v1
@@ -128,8 +128,8 @@ int eth1
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
 route-map rm1
- set origin set 2
- set metric set 1234
+ set origin 2
+ set metric 1234
  exit
 router bgp4 1
  vrf v1

@@ -70,9 +70,9 @@ vrf def v1
 policy-map p1
  seq 10 act trans
   match length 300-500
-  set sgt set 123
+  set sgt 123
  seq 20 act trans
-  set sgt set 122
+  set sgt 122
  exit
 int eth1
  sgt ena

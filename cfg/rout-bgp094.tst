@@ -75,7 +75,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-map rm1
- set bandwidth set 8888
+ set bandwidth 8888
  exit
 router bgp4 1
  vrf v1

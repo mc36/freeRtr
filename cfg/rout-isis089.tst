@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set metric set 10
+ set metric 10
  exit
 router isis4 1
  vrf v1
@@ -90,7 +90,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set metric set 20
+ set metric 20
  exit
 router isis4 1
  vrf v1
@@ -172,7 +172,7 @@ r2 tping 0 40 2.2.2.101 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
-r1 send set metric set 30
+r1 send set metric 30
 r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
@@ -217,7 +217,7 @@ r2 tping 0 40 2.2.2.103 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
-r1 send set metric set 10
+r1 send set metric 10
 r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1

@@ -32,7 +32,7 @@ int eth1
  exit
 route-map rm1
  set aspath 1234
- set origin set 1
+ set origin 1
  exit
 router bgp4 1
  vrf v1
@@ -135,7 +135,7 @@ int eth1
  exit
 route-map rm1
  set aspath 1234 1234 1234
- set origin set 2
+ set origin 2
  exit
 router bgp4 1
  vrf v1

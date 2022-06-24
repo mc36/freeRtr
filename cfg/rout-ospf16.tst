@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set metric set 50
+ set metric 50
  exit
 router ospf4 1
  vrf v1

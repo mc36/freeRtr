@@ -15,7 +15,7 @@ router pvrp6 1
  router 6.6.6.1
  exit
 route-map rm1
- set metric add 100
+ set metric +100
  exit
 int lo1
  vrf for v1

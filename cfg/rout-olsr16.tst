@@ -65,7 +65,7 @@ int lo0
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 route-policy rm1
- set metric add 200
+ set metric +200
  pass
  exit
 int eth1

@@ -81,7 +81,7 @@ prefix-list p6
  sequence 20 permit ::/0 le 128
  exit
 route-map rm1
- set locpref set 1234
+ set locpref 1234
  exit
 server rpki r
  vrf v1

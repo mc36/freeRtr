@@ -31,9 +31,9 @@ vrf def v1
 policy-map p1
  seq 10 act trans
   match length 300-500
-  set dscp set 12
+  set dscp 12
  seq 20 act trans
-  set dscp set 11
+  set dscp 11
  exit
 int eth1
  vrf for v1

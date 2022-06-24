@@ -71,7 +71,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-policy rm1
- set bandwidth set 8888
+ set bandwidth 8888
  pass
  exit
 router bgp4 1

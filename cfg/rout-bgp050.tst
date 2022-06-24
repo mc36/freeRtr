@@ -71,7 +71,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-map rm1
- set aigp set 1234
+ set aigp 1234
  exit
 router bgp4 1
  vrf v1

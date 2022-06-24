@@ -130,7 +130,7 @@ int bvi1
  ipv6 addr 1234:1::3 ffff:ffff::
  exit
 route-map rm1
- set locpref set 1000
+ set locpref 1000
  exit
 router bgp4 1
  vrf v1
@@ -225,7 +225,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set locpref set 3000
+r3 send set locpref 3000
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -260,7 +260,7 @@ r4 tping 0 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set locpref set 5000
+r3 send set locpref 5000
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -295,7 +295,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set locpref set 1000
+r3 send set locpref 1000
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1

@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 route-map rm1
- set metric set 100
+ set metric 100
  exit
 router isis4 1
  vrf v1

@@ -31,9 +31,9 @@ vrf def v1
 policy-map p1
  seq 10 act trans
   match length 300-500
-  set prec set 4
+  set prec 4
  seq 20 act trans
-  set prec set 5
+  set prec 5
  exit
 int eth1
  vrf for v1

@@ -9,12 +9,12 @@ vrf def v1
 router isis4 1
  vrf v1
  net 22.4444.0000.1111.00
- red conn metric set 1000
+ red conn metric 1000
  exit
 router isis6 1
  vrf v1
  net 22.6666.0000.1111.00
- red conn metric set 1000
+ red conn metric 1000
  exit
 int lo1
  vrf for v1
@@ -82,10 +82,10 @@ r2 tping 100 20 4321::1 vrf v1
 
 r1 send conf t
 r1 send router isis4 1
-r1 send red conn metric set 3000
+r1 send red conn metric 3000
 r1 send exit
 r1 send router isis6 1
-r1 send red conn metric set 3000
+r1 send red conn metric 3000
 r1 send exit
 r1 send end
 
@@ -96,10 +96,10 @@ r2 tping 0 20 4321::1 vrf v1
 
 r1 send conf t
 r1 send router isis4 1
-r1 send red conn metric set 5000
+r1 send red conn metric 5000
 r1 send exit
 r1 send router isis6 1
-r1 send red conn metric set 5000
+r1 send red conn metric 5000
 r1 send exit
 r1 send end
 

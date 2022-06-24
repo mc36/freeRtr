@@ -39,7 +39,19 @@ public class tabIntUpdater {
         /**
          * subtract
          */
-        suber
+        suber,
+        /**
+         * and
+         */
+        ander,
+        /**
+         * or
+         */
+        orer,
+        /**
+         * xor
+         */
+        xorer,
     }
 
     /**
@@ -63,6 +75,12 @@ public class tabIntUpdater {
                 return i + value;
             case suber:
                 return i - value;
+            case ander:
+                return i & value;
+            case orer:
+                return i | value;
+            case xorer:
+                return i ^ value;
             default:
                 return i;
         }
@@ -88,28 +106,38 @@ public class tabIntUpdater {
             set2unchange();
             return false;
         }
-        int i = s.indexOf(" ");
-        if (i < 0) {
-            return true;
+        s = s.trim();
+        if (s.length() < 1) {
+            return false;
         }
-        String a = s.substring(0, i).trim().toLowerCase();
-        i = bits.str2num(s.substring(i + 1, s.length()).trim());
-        if (a.equals("set")) {
+        value = bits.str2num(s.substring(1, s.length()));
+        if (s.startsWith("=")) {
             action = actionType.setter;
-            value = i;
             return false;
         }
-        if (a.equals("add")) {
+        if (s.startsWith("+")) {
             action = actionType.adder;
-            value = i;
             return false;
         }
-        if (a.equals("sub")) {
+        if (s.startsWith("-")) {
             action = actionType.suber;
-            value = i;
             return false;
         }
-        return true;
+        if (s.startsWith("&")) {
+            action = actionType.ander;
+            return false;
+        }
+        if (s.startsWith("|")) {
+            action = actionType.orer;
+            return false;
+        }
+        if (s.startsWith("^")) {
+            action = actionType.xorer;
+            return false;
+        }
+        value = bits.str2num(s);
+        action = actionType.setter;
+        return false;
     }
 
     public String toString() {
@@ -117,11 +145,17 @@ public class tabIntUpdater {
             case nothing:
                 return "leave";
             case setter:
-                return "set " + value;
+                return "" + value;
             case adder:
-                return "add " + value;
+                return "+" + value;
             case suber:
-                return "sub " + value;
+                return "-" + value;
+            case ander:
+                return "&" + value;
+            case orer:
+                return "|" + value;
+            case xorer:
+                return "^" + value;
             default:
                 return "unknown";
         }
