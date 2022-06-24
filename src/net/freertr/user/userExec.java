@@ -1804,7 +1804,7 @@ public class userExec {
         hl.add(null, "3 4,.      <name:ifc>                 name of interface");
         hl.add(null, "4 .          [name:ifc]               name of target interface");
         hl.add(null, ".2 3      p4lang                      p4lang protocol api testing");
-        hl.add(cfgAll.dmnP4lang.listServers(), ".3 4,.      <name:loc>            server name");
+        hl.add(cfgAll.dmnP4lang.listServers(), ".3 4        <name:loc>            server name");
         hl.add(null, ".4 5          <num>                   forwarder number");
         hl.add(null, ".5 5,.          <str>                 string to send");
         hl.add(null, ".2 3     udpflood                     flood packets");
