@@ -162,9 +162,9 @@ int lo0
 policy-map p1
  seq 10 act trans
   match length 300-500
-  set sgt set 4444
+  set sgt 4444
  seq 20 act trans
-  set sgt set 3333
+  set sgt 3333
  exit
 int eth1
  sgt ena
