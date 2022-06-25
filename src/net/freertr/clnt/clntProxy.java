@@ -85,6 +85,16 @@ public class clntProxy {
     public int secProto = 0;
 
     /**
+     * ttl
+     */
+    public int tim2liv = -1;
+
+    /**
+     * tos
+     */
+    public int typOsrv = -1;
+
+    /**
      * proxy protocol to use
      */
     public proxyType prxProto = proxyType.local;
@@ -287,7 +297,7 @@ public class clntProxy {
                 default:
                     return null;
             }
-            pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, cName, null, -1, -1);
+            pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, cName, null, tim2liv, typOsrv);
             if (pip == null) {
                 return null;
             }

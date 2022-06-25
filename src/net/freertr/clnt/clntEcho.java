@@ -67,7 +67,7 @@ public class clntEcho implements Runnable {
     /**
      * tos
      */
-    public int typOsvc = 0;
+    public int typOsrv = 0;
 
     /**
      * data pattern
@@ -83,7 +83,7 @@ public class clntEcho implements Runnable {
 
     public void run() {
         try {
-            pipeSide pip = udp.streamConnect(new pipeLine(65536, true), src, 0, trg, servEchoS.port, "echo", null, tim2liv, typOsvc);
+            pipeSide pip = udp.streamConnect(new pipeLine(65536, true), src, 0, trg, servEchoS.port, "echo", null, tim2liv, typOsrv);
             if (pip == null) {
                 return;
             }

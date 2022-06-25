@@ -770,7 +770,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                     haveResult(false);
                     break;
                 }
-                pipeSide pipe = tcp.streamConnect(new pipeLine(65536, false), fwdIfc, 0, fwdTrg, size, "track", null, -1, -1);
+                pipeSide pipe = tcp.streamConnect(new pipeLine(65536, false), fwdIfc, 0, fwdTrg, size, "track", null, tim2liv, typOsrv);
                 if (pipe == null) {
                     haveResult(false);
                     break;
@@ -800,6 +800,8 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                 ech.udp = udpCor;
                 ech.src = fwdIfc;
                 ech.trg = fwdTrg;
+                ech.tim2liv = tim2liv;
+                ech.typOsrv = typOsrv;
                 ech.doWork();
                 ech.notif.sleep(timeout);
                 if (ech.notif.totalNotifies() < 1) {
@@ -814,6 +816,8 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                 twm.udp = udpCor;
                 twm.src = fwdIfc;
                 twm.trg = fwdTrg;
+                twm.tim2liv = tim2liv;
+                twm.typOsrv = typOsrv;
                 twm.doWork();
                 twm.notif.sleep(timeout);
                 if (twm.notif.totalNotifies() < 1) {

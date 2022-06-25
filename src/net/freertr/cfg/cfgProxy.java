@@ -49,6 +49,8 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         "proxy-profile .*! no password",
         "proxy-profile .*! no recursive",
         "proxy-profile .*! no vrf",
+        "proxy-profile .*! no tos",
+        "proxy-profile .*! no ttl",
         "proxy-profile .*! no source",
         "proxy-profile .*! no target",
         "proxy-profile .*! no port",
@@ -110,6 +112,10 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "2 .    <str>                        name or address");
         l.add(null, "1 2  port                           specify port of proxy");
         l.add(null, "2 .    <num>                        port number");
+        l.add(null, "1 2  tos                            specify tos value");
+        l.add(null, "2 .    <num>                        value");
+        l.add(null, "1 2  ttl                            specify ttl value");
+        l.add(null, "2 .    <num>                        value");
         l.add(null, "1 2  prefer                         prefer ip protocol");
         l.add(null, "2 .    none                         default");
         l.add(null, "2 .    ipv4                         ipv4");
@@ -150,6 +156,8 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         }
         cmds.cfgLine(l, proxy.target == null, cmds.tabulator, "target", proxy.target);
         cmds.cfgLine(l, proxy.port == 0, cmds.tabulator, "port", "" + proxy.port);
+        cmds.cfgLine(l, proxy.typOsrv < 0, cmds.tabulator, "tos", "" + proxy.typOsrv);
+        cmds.cfgLine(l, proxy.tim2liv < 0, cmds.tabulator, "ttl", "" + proxy.tim2liv);
         String a;
         if (proxy.prefer == 0) {
             a = "none";
@@ -228,6 +236,14 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
             proxy.port = bits.str2num(cmd.getRemaining());
             return;
         }
+        if (s.equals("tos")) {
+            proxy.typOsrv = bits.str2num(cmd.getRemaining());
+            return;
+        }
+        if (s.equals("ttl")) {
+            proxy.tim2liv = bits.str2num(cmd.getRemaining());
+            return;
+        }
         if (s.equals("recursive")) {
             cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
             if (prx == null) {
@@ -289,6 +305,14 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         }
         if (s.equals("target")) {
             proxy.target = null;
+            return;
+        }
+        if (s.equals("tos")) {
+            proxy.typOsrv = -1;
+            return;
+        }
+        if (s.equals("ttl")) {
+            proxy.tim2liv = -1;
             return;
         }
         if (s.equals("port")) {
