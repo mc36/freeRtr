@@ -555,7 +555,7 @@ public class prtTcp extends prtGen {
                 if (pck.IPtos < 0) {
                     pck.IPtos = 0;
                 }
-                pck.IPtos |= 2;
+                pck.IPtos = (pck.IPtos & 0xfc) | 0x02;
                 if (pr.ecnRx) {
                     pck.TCPflg |= flagECE;
                 }
