@@ -298,7 +298,7 @@ public class tabQos {
         int p = cls.entry.flowSet.update(pck.IPid);
         switch (pck.ETHtype) {
             case ipIfc4.type:
-                int i = cls.entry.updateTos(pck.IPtos);
+                int i = cls.entry.updateTos(pck.IPtos, cls);
                 if ((pck.IPtos == i) && (pck.IPttl == o) && (pck.IPid == p)) {
                     return;
                 }
@@ -307,7 +307,7 @@ public class tabQos {
                 pck.getSkip(-2);
                 return;
             case ipIfc6.type:
-                i = cls.entry.updateTos(pck.IPtos);
+                i = cls.entry.updateTos(pck.IPtos, cls);
                 if ((pck.IPtos == i) && (pck.IPttl == o) && (pck.IPid == p)) {
                     return;
                 }

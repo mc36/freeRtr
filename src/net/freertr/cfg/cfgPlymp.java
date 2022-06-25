@@ -68,6 +68,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         "policy-map .*! sequence .* time-interval 0",
         "policy-map .*! sequence .* queue-limit 0",
         "policy-map .*! sequence .* no random-detect",
+        "policy-map .*! sequence .* mark-ecn 0",
         "policy-map .*! sequence .* no service-policy",
         "policy-map .*! sequence .* no log"
     };
@@ -213,6 +214,8 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "1 2   time-interval         specify time interval");
         l.add(null, "2 .     <num>               milliseconds");
         l.add(null, "1 .   random-detect         set random drop on queue full");
+        l.add(null, "1 2   mark-ecn              mark packets with ecn");
+        l.add(null, "2 .     <num>               divistor");
         l.add(null, "1 .   log                   set logging on match");
     }
 
@@ -296,6 +299,11 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         if (a.equals("random-detect")) {
             tabPlcmapN ntry = getCurr();
             ntry.randomDetect = true;
+            return;
+        }
+        if (a.equals("mark-ecn")) {
+            tabPlcmapN ntry = getCurr();
+            ntry.markEcn = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("log")) {
@@ -518,6 +526,11 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         if (a.equals("random-detect")) {
             tabPlcmapN ntry = getCurr();
             ntry.randomDetect = false;
+            return;
+        }
+        if (a.equals("mark-ecn")) {
+            tabPlcmapN ntry = getCurr();
+            ntry.markEcn = 0;
             return;
         }
         if (a.equals("log")) {

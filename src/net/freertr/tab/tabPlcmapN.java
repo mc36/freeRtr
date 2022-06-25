@@ -161,6 +161,11 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
     public boolean randomDetect;
 
     /**
+     * mark packets on queue full
+     */
+    public int markEcn;
+
+    /**
      * child policy
      */
     public tabListing<tabPlcmapN, addrIP> child;
@@ -266,6 +271,7 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         l.add(beg + "exceed-rate " + exceedRate * 8);
         l.add(beg + "time-interval " + interval);
         l.add(beg + "queue-limit " + queues);
+        l.add(beg + "mark-ecn " + markEcn);
         cmds.cfgLine(l, !randomDetect, beg, "random-detect", "");
         cmds.cfgLine(l, !logMatch, beg, "log", "");
         if (child == null) {
@@ -341,13 +347,23 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
      * update tos
      *
      * @param i old tos
+     * @param c class to use
      * @return new tos
      */
-    public int updateTos(int i) {
+    public int updateTos(int i, tabQosN c) {
         i = tosSet.update(i);
         i = (i & 0x03) | (dscpSet.update(i >>> 2) << 2);
         i = (i & 0x1f) | (precedenceSet.update(i >>> 5) << 5);
-        return i;
+        if (markEcn < 1) {
+            return i;
+        }
+        if ((i & 3) == 0) {
+            return i;
+        }
+        if (c.packets.size() < (c.getQueues() / markEcn)) {
+            return i;
+        }
+        return i | 3;
     }
 
 }
