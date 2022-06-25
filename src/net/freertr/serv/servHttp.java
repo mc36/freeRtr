@@ -1463,7 +1463,7 @@ class servHttpConn implements Runnable {
             sendRespError(502, "bad target hostname");
             return false;
         }
-        pipeSide pip = prx.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
+        pipeSide pip = prx.proxy.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
         if (pip == null) {
             sendRespError(502, "failed to connect");
             return false;

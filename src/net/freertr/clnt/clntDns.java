@@ -158,7 +158,7 @@ public class clntDns {
         query.recDsrd = true;
         query.result = packDns.resultSuccess;
         for (int retry = 0; retry < 3; retry++) {
-            pipeSide conn = curPrx.doConnect(servGeneric.protoUdp, srv, packDns.portNum, "dns");
+            pipeSide conn = curPrx.proxy.doConnect(servGeneric.protoUdp, srv, packDns.portNum, "dns");
             if (conn == null) {
                 continue;
             }
@@ -300,7 +300,7 @@ public class clntDns {
         query.opcode = packDns.opcodeQuery;
         query.recDsrd = true;
         query.result = packDns.resultSuccess;
-        pipeSide conn = curPrx.doConnect(servGeneric.protoTcp, srv, packDns.portNum, "dns");
+        pipeSide conn = curPrx.proxy.doConnect(servGeneric.protoTcp, srv, packDns.portNum, "dns");
         if (conn == null) {
             return null;
         }

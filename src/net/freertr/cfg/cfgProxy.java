@@ -303,19 +303,6 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
     }
 
     /**
-     * open one connection
-     *
-     * @param proto protocol to use from servGeneric
-     * @param addr target address
-     * @param port target port
-     * @param name client name
-     * @return pipeline, null on error
-     */
-    public pipeSide doConnect(int proto, addrIP addr, int port, String name) {
-        return proxy.doConnect(proto, addr, port, name);
-    }
-
-    /**
      * get vrf
      *
      * @return vrf
