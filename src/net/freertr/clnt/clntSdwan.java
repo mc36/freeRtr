@@ -368,7 +368,7 @@ public class clntSdwan implements Runnable, ifcDn {
         if (debugger.clntSdwanTraf) {
             logger.debug("connecting " + trg);
         }
-        conn = tcpCor.streamConnect(new pipeLine(65536, false), fwdIfc, 0, trg, ctrlPort, "sdwan", null, -1);
+        conn = tcpCor.streamConnect(new pipeLine(65536, false), fwdIfc, 0, trg, ctrlPort, "sdwan", null, -1, -1);
         if (conn == null) {
             logger.error("unable to connect " + trg);
             return;

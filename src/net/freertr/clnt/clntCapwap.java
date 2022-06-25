@@ -225,7 +225,7 @@ public class clntCapwap implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, packCapwap.port, trg, packCapwap.port, "capwap", null, -1);
+        conn = udp.packetConnect(this, fwdIfc, packCapwap.port, trg, packCapwap.port, "capwap", null, -1, -1);
         if (conn == null) {
             return;
         }

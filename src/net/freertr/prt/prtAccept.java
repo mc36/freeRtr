@@ -68,8 +68,9 @@ public class prtAccept implements prtServS {
      * @param name name of server
      * @param pwd password
      * @param ttl time to live
+     * @param tos type of service
      */
-    public prtAccept(prtGen prot, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl) {
+    public prtAccept(prtGen prot, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
         pr = prot;
         li = locI;
         lp = locP;
@@ -79,7 +80,7 @@ public class prtAccept implements prtServS {
             ra = remA.copyBytes();
         }
         rp = remP;
-        pr.streamListen(this, pip, li, lp, ra, rp, name, pwd, ttl);
+        pr.streamListen(this, pip, li, lp, ra, rp, name, pwd, ttl, tos);
     }
 
     /**

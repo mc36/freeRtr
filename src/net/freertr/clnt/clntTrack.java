@@ -770,7 +770,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                     haveResult(false);
                     break;
                 }
-                pipeSide pipe = tcp.streamConnect(new pipeLine(65536, false), fwdIfc, 0, fwdTrg, size, "track", null, -1);
+                pipeSide pipe = tcp.streamConnect(new pipeLine(65536, false), fwdIfc, 0, fwdTrg, size, "track", null, -1, -1);
                 if (pipe == null) {
                     haveResult(false);
                     break;

@@ -44,8 +44,8 @@ public class packRtp {
     public boolean startConnect(prtGen handler, pipeLine sample, ipFwdIface locI, int locP, addrIP remA, int remP) {
         locP &= 0xffffe;
         remP &= 0xffffe;
-        connData = handler.streamConnect(sample, locI, locP, remA, remP, "rtp", null, -1);
-        connCtrl = handler.streamConnect(sample, locI, locP + 1, remA, remP + 1, "rtcp", null, -1);
+        connData = handler.streamConnect(sample, locI, locP, remA, remP, "rtp", null, -1, -1);
+        connCtrl = handler.streamConnect(sample, locI, locP + 1, remA, remP + 1, "rtcp", null, -1, -1);
         if ((connData == null) || (connCtrl == null)) {
             setClose();
             return true;

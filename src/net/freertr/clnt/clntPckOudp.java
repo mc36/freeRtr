@@ -287,7 +287,7 @@ public class clntPckOudp implements Runnable, prtServP, ifcDn {
         if (prtL == 0) {
             prtL = prtR;
         }
-        conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "pckOudp", null, -1);
+        conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "pckOudp", null, -1, -1);
         if (conn == null) {
             return;
         }

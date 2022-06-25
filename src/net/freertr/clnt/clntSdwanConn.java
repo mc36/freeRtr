@@ -158,7 +158,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         if (conn != null) {
             conn.setClosing();
         }
-        conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.dataPort, addr, port, "sdwan", null, -1);
+        conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.dataPort, addr, port, "sdwan", null, -1, -1);
         if (conn == null) {
             logger.error("failed to connect " + addr + " " + port);
             return;

@@ -361,7 +361,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (trgIface != null) {
             ifc = trgIface.getFwdIfc(trgAddr);
         }
-        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), null, -1);
+        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), null, -1, -1);
         if (con2 == null) {
             return true;
         }

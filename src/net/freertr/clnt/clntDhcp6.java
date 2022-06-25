@@ -221,12 +221,12 @@ public class clntDhcp6 implements prtServP {
     }
 
     private void socketBind() {
-        if (lower.packetListen(this, iface, packDhcp6.portCnum, null, packDhcp6.portSnum, "dhcp6c", null, -1)) {
+        if (lower.packetListen(this, iface, packDhcp6.portCnum, null, packDhcp6.portSnum, "dhcp6c", null, -1, -1)) {
             logger.info("failed to bind");
         }
         addrIP adr = new addrIP();
         adr.fromString("ff02::1:2");
-        sender = lower.packetConnect(this, iface, packDhcp6.portCnum, adr, packDhcp6.portSnum, "dhcp6c", null, -1);
+        sender = lower.packetConnect(this, iface, packDhcp6.portCnum, adr, packDhcp6.portSnum, "dhcp6c", null, -1, -1);
         if (sender == null) {
             logger.info("failed to connect");
         } else {

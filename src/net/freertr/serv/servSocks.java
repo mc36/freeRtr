@@ -285,7 +285,7 @@ public class servSocks extends servGeneric implements prtServS {
         if (trgIface != null) {
             ifc = trgIface.getFwdIfc(trgAddr);
         }
-        pipeSide con2 = prt.streamConnect(new pipeLine(65536, true), ifc, 0, trgAddr, trgPort, srvName(), null, -1);
+        pipeSide con2 = prt.streamConnect(new pipeLine(65536, true), ifc, 0, trgAddr, trgPort, srvName(), null, -1, -1);
         con2.setTime(trgTimeout);
         con2.wait4ready(trgTimeout);
         pipeConnect.connect(con1, con2, true);

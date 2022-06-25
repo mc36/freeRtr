@@ -368,7 +368,7 @@ public class secIsakmp implements ifcDn, ifcUp {
             return true;
         }
         if (pipe == null) {
-            pipe = fwdUdp.streamConnect(new pipeLine(32768, true), fwdIfc, packIsakmp.port, remoteAddr, packIsakmp.port, "isakmp", null, -1);
+            pipe = fwdUdp.streamConnect(new pipeLine(32768, true), fwdIfc, packIsakmp.port, remoteAddr, packIsakmp.port, "isakmp", null, -1, -1);
             clearState();
         }
         if (pipe == null) {

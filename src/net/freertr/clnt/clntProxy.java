@@ -287,7 +287,7 @@ public class clntProxy {
                 default:
                     return null;
             }
-            pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, cName, null, -1);
+            pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, cName, null, -1, -1);
             if (pip == null) {
                 return null;
             }

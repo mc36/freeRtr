@@ -215,9 +215,9 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         }
         bits.sleep(bits.random(1000, 5000));
         if (peer.compare(peer, usedIfc.addr) > 0) {
-            pipe = parent.tcpCore.streamConnect(new pipeLine(65536, false), usedIfc, 0, peer, rtrMsdp.port, "msdp", passwd, -1);
+            pipe = parent.tcpCore.streamConnect(new pipeLine(65536, false), usedIfc, 0, peer, rtrMsdp.port, "msdp", passwd, -1, -1);
         } else {
-            prtAccept ac = new prtAccept(parent.tcpCore, new pipeLine(65536, false), usedIfc, rtrMsdp.port, peer, 0, "msdp", passwd, -1);
+            prtAccept ac = new prtAccept(parent.tcpCore, new pipeLine(65536, false), usedIfc, rtrMsdp.port, peer, 0, "msdp", passwd, -1, -1);
             ac.wait4conn(30000);
             pipe = ac.getConn(true);
         }

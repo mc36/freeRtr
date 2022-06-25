@@ -504,7 +504,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         if (debugger.servDhcp4traf) {
             logger.debug("tx " + adr + " " + pckd);
         }
-        pipeSide pip = srvVrf.udp4.streamConnect(new pipeLine(32768, true), srvIface.fwdIf4, packDhcp4.portSnum, adr, packDhcp4.portCnum, srvName(), null, -1);
+        pipeSide pip = srvVrf.udp4.streamConnect(new pipeLine(32768, true), srvIface.fwdIf4, packDhcp4.portSnum, adr, packDhcp4.portCnum, srvName(), null, -1, -1);
         if (pip == null) {
             return true;
         }

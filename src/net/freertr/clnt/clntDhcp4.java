@@ -206,12 +206,12 @@ public class clntDhcp4 implements prtServP {
     }
 
     private void socketBind() {
-        if (lower.packetListen(this, iface, packDhcp4.portCnum, null, packDhcp4.portSnum, "dhcp4c", null, -1)) {
+        if (lower.packetListen(this, iface, packDhcp4.portCnum, null, packDhcp4.portSnum, "dhcp4c", null, -1, -1)) {
             logger.info("failed to bind");
         }
         addrIP adr = new addrIP();
         adr.fromIPv4addr(addrIPv4.getBroadcast());
-        sender = lower.packetConnect(this, iface, packDhcp4.portCnum, adr, packDhcp4.portSnum, "dhcp4c", null, -1);
+        sender = lower.packetConnect(this, iface, packDhcp4.portCnum, adr, packDhcp4.portSnum, "dhcp4c", null, -1, -1);
         if (sender == null) {
             logger.info("failed to connect");
         } else {

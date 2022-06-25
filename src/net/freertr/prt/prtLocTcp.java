@@ -135,7 +135,7 @@ public class prtLocTcp implements Runnable {
             logger.warn("not stream server on port " + port);
             return true;
         }
-        prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, new ipFwdIface(-1, new ipIfcLoop()), port, srcA, srcP, "local:" + srv.name, null, -1);
+        prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, new ipFwdIface(-1, new ipIfcLoop()), port, srcA, srcP, "local:" + srv.name, null, -1, -1);
         pipeLine pipeHandler = pipeLine.doClone(srv.sample, false);
         pipeSide pipeNetwork = pipeHandler.getSide();
         pipeSide pipeClient = pipeHandler.getSide();

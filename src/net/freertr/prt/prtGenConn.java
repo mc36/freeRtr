@@ -168,8 +168,9 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      * @param nam name of client
      * @param pwd password if applicable
      * @param ttl time to live
+     * @param tos type of service
      */
-    protected prtGenConn(prtGen low, prtServP upP, prtServS upS, pipeLine pip, boolean dir, ipFwdIface ifc, int prtL, addrIP adrR, int prtR, String nam, String pwd, int ttl) {
+    protected prtGenConn(prtGen low, prtServP upP, prtServS upS, pipeLine pip, boolean dir, ipFwdIface ifc, int prtL, addrIP adrR, int prtR, String nam, String pwd, int ttl, int tos) {
         int prt = low.getProtoNum();
         if ((pip == null) && (prt == prtTcp.protoNum)) {
             pip = new pipeLine(65536, false);
@@ -177,6 +178,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         iface = ifc;
         passwd = pwd;
         sendTTL = ttl;
+        sendTOS = tos;
         portLoc = prtL;
         portRem = prtR;
         peerAddr = adrR.copyBytes();

@@ -196,13 +196,13 @@ public class rtrHsrpIface implements prtServP {
         }
         packHsrp pck = genPackHolder();
         int prt = pck.getPortNum();
-        conn = udp.packetConnect(this, ifc, prt, pck.genIpAddr(), prt, "hsrp", null, -1);
+        conn = udp.packetConnect(this, ifc, prt, pck.genIpAddr(), prt, "hsrp", null, -1, -1);
         if (conn == null) {
             return;
         }
         conn.timeout = 0;
         conn.workInterval = hello;
-        udp.packetListen(this, ifc, genPackHolder().getPortNum(), null, 0, "hsrp", null, -1);
+        udp.packetListen(this, ifc, genPackHolder().getPortNum(), null, 0, "hsrp", null, -1, -1);
         resetState();
     }
 

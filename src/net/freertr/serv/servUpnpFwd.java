@@ -175,7 +175,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
                 return;
             }
             logger.info("reconnecting " + target);
-            trgt = udp.streamConnect(new pipeLine(32768, true), ifc, 0, target, srvPort, srvName(), null, -1);
+            trgt = udp.streamConnect(new pipeLine(32768, true), ifc, 0, target, srvPort, srvName(), null, -1, -1);
             if (trgt == null) {
                 return;
             }

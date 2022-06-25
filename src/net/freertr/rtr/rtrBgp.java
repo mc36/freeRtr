@@ -3331,7 +3331,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 }
             }
             lstns.put(ntry);
-            tcpCore.streamListen(this, new pipeLine(ntry.temp.bufferSize, false), ntry.iface, port, null, 0, "bgp", ntry.temp.passwd, ntry.temp.ttlSecurity);
+            tcpCore.streamListen(this, new pipeLine(ntry.temp.bufferSize, false), ntry.iface, port, null, 0, "bgp", ntry.temp.passwd, ntry.temp.ttlSecurity, -1);
             return false;
         }
         if (s.equals("template")) {

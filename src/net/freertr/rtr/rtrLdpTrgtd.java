@@ -117,7 +117,7 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
 
     public void run() {
         try {
-            conn = udp.streamConnect(new pipeLine(65536, true), ifc, packLdp.port, peer, packLdp.port, "ldp", null, -1);
+            conn = udp.streamConnect(new pipeLine(65536, true), ifc, packLdp.port, peer, packLdp.port, "ldp", null, -1, -1);
             if (conn == null) {
                 ip.ldpTargetDel(this);
                 return;

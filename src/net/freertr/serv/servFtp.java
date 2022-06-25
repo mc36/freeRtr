@@ -791,7 +791,7 @@ class servFtpDoer implements Runnable {
             adr.fromIPv4addr(adr4);
             i = bits.msbGetW(buf, 4);
             prtTcp t = lower.srvVrf.getTcp(adr);
-            pipeSide p = t.streamConnect(new pipeLine(32768, false), null, 0, adr, i, lower.srvName(), null, -1);
+            pipeSide p = t.streamConnect(new pipeLine(32768, false), null, 0, adr, i, lower.srvName(), null, -1, -1);
             conn.closer(2);
             conn.adder(lower, null, p);
             doLine("220 connecting " + adr + " " + i);
@@ -808,7 +808,7 @@ class servFtpDoer implements Runnable {
             adr.fromString(cmd.word("|"));
             int i = bits.str2num(cmd.word("|"));
             prtTcp t = lower.srvVrf.getTcp(adr);
-            pipeSide p = t.streamConnect(new pipeLine(32768, false), null, 0, adr, i, lower.srvName(), null, -1);
+            pipeSide p = t.streamConnect(new pipeLine(32768, false), null, 0, adr, i, lower.srvName(), null, -1, -1);
             conn.closer(2);
             conn.adder(lower, null, p);
             doLine("220 connecting " + adr + " " + i);

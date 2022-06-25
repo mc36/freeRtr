@@ -62,6 +62,11 @@ public class prtGenServ implements tabConnectLower {
      */
     public int ttl;
 
+    /**
+     * tos to use
+     */
+    public int tos;
+
     public String toString() {
         return name + " " + iface + " " + locP;
     }

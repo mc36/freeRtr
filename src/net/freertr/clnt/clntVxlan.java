@@ -299,9 +299,9 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
         if (wildcard) {
-            udp.packetListen(this, fwdIfc, packVxlan.port, trg, 0, "vxlan", null, -1);
+            udp.packetListen(this, fwdIfc, packVxlan.port, trg, 0, "vxlan", null, -1, -1);
         }
-        conn = udp.packetConnect(this, fwdIfc, packVxlan.port, trg, packVxlan.port, "vxlan", null, -1);
+        conn = udp.packetConnect(this, fwdIfc, packVxlan.port, trg, packVxlan.port, "vxlan", null, -1, -1);
         if (conn == null) {
             return;
         }
