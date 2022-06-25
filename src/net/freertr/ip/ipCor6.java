@@ -2,6 +2,7 @@ package net.freertr.ip;
 
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv6;
+import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -18,16 +19,6 @@ public class ipCor6 implements ipCor {
      */
     public ipCor6() {
     }
-
-    /**
-     * default sending ttl value
-     */
-    public int sendingTTL = 255;
-
-    /**
-     * default sending tos value
-     */
-    public int sendingTOS = 0;
 
     /**
      * size of ipv6 header
@@ -153,10 +144,10 @@ public class ipCor6 implements ipCor {
 
     public void createIPheader(packHolder pck) {
         if (pck.IPttl <= 0) {
-            pck.IPttl = sendingTTL;
+            pck.IPttl = cfgAll.ipv6sendingTTL;
         }
         if (pck.IPtos < 0) {
-            pck.IPtos = sendingTOS;
+            pck.IPtos = cfgAll.ipv6sendingTOS;
         }
         if (pck.IPid < 0) {
             pck.IPid = (pck.UDPsrc ^ pck.UDPtrg ^ pck.IPprt) & 0xffff;

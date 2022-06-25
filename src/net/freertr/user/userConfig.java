@@ -546,6 +546,14 @@ public class userConfig {
         l.add(null, "2  .    password-stars               type stars in passwords");
         l.add(null, "2  .    prefer-ipv6                  prefer ipv6 for domains");
         l.add(null, "2  .    prefer-ipv4                  prefer ipv4 for domains");
+        l.add(null, "2  3    ipv4-tos                     set ipv4 default tos");
+        l.add(null, "3  .      <num>                      value");
+        l.add(null, "2  3    ipv4-ttl                     set ipv4 default ttl");
+        l.add(null, "3  .      <num>                      value");
+        l.add(null, "2  3    ipv6-tos                     set ipv6 default tos");
+        l.add(null, "3  .      <num>                      value");
+        l.add(null, "2  3    ipv6-ttl                     set ipv6 default ttl");
+        l.add(null, "3  .      <num>                      value");
         l.add(null, "2  3    ipv4-checksum                set ipv4 checksum mode");
         l.add(null, "2  3    icmp4-checksum               set icmp4 checksum mode");
         l.add(null, "2  3    icmp6-checksum               set icmp6 checksum mode");
@@ -1359,6 +1367,22 @@ public class userConfig {
             }
             if (a.equals("prefer-ipv4")) {
                 cfgAll.preferIpv6 = false;
+                return;
+            }
+            if (a.equals("ipv4-tos")) {
+                cfgAll.ipv4sendingTOS = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("ipv4-ttl")) {
+                cfgAll.ipv4sendingTTL = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("ipv6-tos")) {
+                cfgAll.ipv6sendingTOS = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("ipv6-ttl")) {
+                cfgAll.ipv6sendingTTL = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("ipv4-checksum")) {

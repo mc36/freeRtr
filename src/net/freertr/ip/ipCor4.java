@@ -21,16 +21,6 @@ public class ipCor4 implements ipCor {
     }
 
     /**
-     * default sending ttl value
-     */
-    public int sendingTTL = 255;
-
-    /**
-     * default sending tos value
-     */
-    public int sendingTOS = 0;
-
-    /**
      * size of ipv4 header
      */
     public final static int size = 20;
@@ -128,10 +118,10 @@ public class ipCor4 implements ipCor {
 
     public void createIPheader(packHolder pck) {
         if (pck.IPttl <= 0) {
-            pck.IPttl = sendingTTL;
+            pck.IPttl = cfgAll.ipv4sendingTTL;
         }
         if (pck.IPtos < 0) {
-            pck.IPtos = sendingTOS;
+            pck.IPtos = cfgAll.ipv4sendingTOS;
         }
         if (pck.IPid < 0) {
             pck.IPid = (nextPackIDval++) & 0xffff;

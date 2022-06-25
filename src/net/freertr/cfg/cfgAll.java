@@ -909,6 +909,26 @@ public class cfgAll {
     public static clntProxy ftpProxy;
 
     /**
+     * ipv4 sending ttl value
+     */
+    public static int ipv4sendingTTL = 255;
+
+    /**
+     * ipv4 sending tos value
+     */
+    public static int ipv4sendingTOS = 0;
+
+    /**
+     * ipv6 sending ttl value
+     */
+    public static int ipv6sendingTTL = 255;
+
+    /**
+     * ipv6 sending tos value
+     */
+    public static int ipv6sendingTOS = 0;
+
+    /**
      * ipv4 checksum tx
      */
     public static boolean ipv4ChecksumTx = true;
@@ -1237,6 +1257,10 @@ public class cfgAll {
         "!client graceful-reload",
         "!client ftp-passive",
         "!no client ftp-proxy",
+        "!client ipv4-tos 0",
+        "!client ipv4-ttl 255",
+        "!client ipv6-tos 0",
+        "!client ipv6-ttl 255",
         "!client ipv4-checksum both",
         "!client icmp4-checksum both",
         "!client icmp6-checksum both",
@@ -3548,6 +3572,10 @@ public class cfgAll {
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
         cmds.cfgLine(l, whoisProxy == null, "", "client whois-proxy", "" + whoisProxy);
         cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
+        l.add("client ipv4-tos " + ipv4sendingTOS);
+        l.add("client ipv4-ttl " + ipv4sendingTTL);
+        l.add("client ipv6-tos " + ipv6sendingTOS);
+        l.add("client ipv6-ttl " + ipv6sendingTTL);
         l.add("client ipv4-checksum " + rxtx2string(ipv4ChecksumRx, ipv4ChecksumTx));
         l.add("client icmp4-checksum " + rxtx2string(icmp4ChecksumRx, icmp4ChecksumTx));
         l.add("client icmp6-checksum " + rxtx2string(icmp6ChecksumRx, icmp6ChecksumTx));
