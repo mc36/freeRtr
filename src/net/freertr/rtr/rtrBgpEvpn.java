@@ -658,6 +658,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
             if (nei == null) {
                 continue;
             }
+            if (nei.peer == null) {
+                continue;
+            }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.sfiUnicast, 0, ntry, true, null, null, parent.routerAutoMesh);
