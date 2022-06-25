@@ -144,6 +144,16 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     public boolean connectedCheck = true;
 
     /**
+     * tos used to send
+     */
+    public int sendingTos = -1;
+
+    /**
+     * ttl used to send
+     */
+    public int sendingTtl = -1;
+
+    /**
      * authentication string
      */
     public String authentication = null;
@@ -415,6 +425,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         cmds.cfgLine(l, !authenDisable, cmds.tabulator, beg + "disable-password", "");
+        l.add(cmds.tabulator + beg + "sending-tos " + sendingTos);
+        l.add(cmds.tabulator + beg + "sending-ttl " + sendingTtl);
         l.add(cmds.tabulator + beg + "distance " + distance);
         l.add(cmds.tabulator + beg + "metric-in " + metricIn);
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
@@ -467,6 +479,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "4 .         suppress-prefix             do not advertise interface");
         l.add(null, "4 .         unsuppress-prefix           do advertise interface");
         l.add(null, "4 .         verify-source               check source address of updates");
+        l.add(null, "4 5         sending-tos                 tos used for sending");
+        l.add(null, "5 .           <num>                     value");
+        l.add(null, "4 5         sending-ttl                 ttl used for sending");
+        l.add(null, "5 .           <num>                     value");
         l.add(null, "4 5         encryption                  select encryption method");
         l.add(null, "5 6           ssh                       select secure shell");
         l.add(null, "5 6           tls                       select transport layer security");
@@ -586,6 +602,14 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             int siz = bits.str2num(cmd.word());
             dumpFile.rotate(bck, siz, tim, 0);
             dumpFile.open(true);
+            return;
+        }
+        if (a.equals("sending-tos")) {
+            sendingTos = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("sending-ttl")) {
+            sendingTtl = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("verify-source")) {
@@ -841,6 +865,14 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             } catch (Exception e) {
             }
             dumpFile = null;
+            return;
+        }
+        if (a.equals("sending-tos")) {
+            sendingTos = -1;
+            return;
+        }
+        if (a.equals("sending-ttl")) {
+            sendingTtl = -1;
             return;
         }
         if (a.equals("verify-source")) {
