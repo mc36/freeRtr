@@ -559,6 +559,7 @@ public class userConfig {
         l.add(null, ".3 .      receive                    only check, not generate");
         l.add(null, ".3 .      none                       nor generate nor check");
         l.add(null, "2  .    tcp-timestamp                set tcp timestamping");
+        l.add(null, "2  .    tcp-ecn                      set tcp ecn");
         l.add(null, "2  3    tcp-timer                    set tcp timestamping");
         l.add(null, "3  4      alive                      set tcp keepalive");
         l.add(null, "4  .        <num>                    ms");
@@ -1426,6 +1427,10 @@ public class userConfig {
                 cmd.badCmd();
                 return;
             }
+            if (a.equals("tcp-ecn")) {
+                cfgAll.tcpEcn = true;
+                return;
+            }
             if (a.equals("tcp-timestamp")) {
                 cfgAll.tcpTimStmp = true;
                 return;
@@ -2080,6 +2085,10 @@ public class userConfig {
             }
             if (a.equals("password-stars")) {
                 cfgAll.passwdStars = false;
+                return;
+            }
+            if (a.equals("tcp-ecn")) {
+                cfgAll.tcpEcn = false;
                 return;
             }
             if (a.equals("tcp-timestamp")) {

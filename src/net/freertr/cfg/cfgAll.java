@@ -991,7 +991,12 @@ public class cfgAll {
     /**
      * tcp timestamps
      */
-    public static boolean tcpTimStmp = true;
+    public static boolean tcpTimStmp = false;
+
+    /**
+     * tcp ecn
+     */
+    public static boolean tcpEcn = false;
 
     /**
      * tcp checksum tx
@@ -1239,7 +1244,8 @@ public class cfgAll {
         "!client udp-portrange 32768 61440",
         "!client tcp-segments 1024",
         "!client tcp-winscale 1",
-        "!client tcp-timestamp",
+        "!no client tcp-timestamp",
+        "!no client tcp-ecn",
         "!client tcp-timer alive 60000",
         "!client tcp-timer fin 45000",
         "!client tcp-timer syn 30000",
@@ -3551,6 +3557,7 @@ public class cfgAll {
         l.add("client tcp-segments " + tcpMaxSegment);
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
+        cmds.cfgLine(l, !tcpEcn, "", "client tcp-ecn", "");
         l.add("client tcp-timer alive " + tcpTimeAlive);
         l.add("client tcp-timer fin " + tcpTimeFin);
         l.add("client tcp-timer syn " + tcpTimeSyn);

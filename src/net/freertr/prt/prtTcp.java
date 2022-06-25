@@ -73,6 +73,11 @@ public class prtTcp extends prtGen {
     public final static int flagCWR = 0x80;
 
     /**
+     * congestion nonce sum
+     */
+    public final static int flagNS = 0x100;
+
+    /**
      * syn ack
      */
     public final static int flagSynAck = flagSYN | flagACK;
@@ -152,7 +157,7 @@ public class prtTcp extends prtGen {
         return bits.bit2str(i, flagFIN, "fin") + " " + bits.bit2str(i, flagSYN, "syn") + " "
                 + bits.bit2str(i, flagRST, "rst") + " " + bits.bit2str(i, flagACK, "ack") + " " + bits.bit2str(i, flagPSH, "psh")
                 + " " + bits.bit2str(i, flagURG, "urg") + " " + bits.bit2str(i, flagECE, "ece") + " "
-                + bits.bit2str(i, flagCWR, "cwr");
+                + bits.bit2str(i, flagCWR, "cwr") + " " + bits.bit2str(i, flagNS, "ns");
     }
 
     private static typLenVal getTCPoption(packHolder pck) {
@@ -546,6 +551,18 @@ public class prtTcp extends prtGen {
             pck.IPalrt = -1;
             pck.IPttl = clnt.sendTTL;
             pck.IPtos = clnt.sendTOS;
+            if (pr.ecnTx) {
+                if (pck.IPtos < 0) {
+                    pck.IPtos = 0;
+                }
+                pck.IPtos |= 2;
+                if (pr.ecnRx) {
+                    pck.TCPflg |= flagECE;
+                }
+                if (pr.ecnRe) {
+                    pck.TCPflg |= flagCWR;
+                }
+            }
             pck.IPdf = clnt.sendDFN == 1;
             pck.IPid = clnt.sendFLW;
             if ((flg & flagSYN) != 0) {
@@ -618,6 +635,7 @@ public class prtTcp extends prtGen {
         if (pck.TCPtsV == 0) {
             pr.tmstmpTx = 0;
         }
+        pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
         pr.state = prtTcpConn.stGotSyn;
         pr.seqRem = pck.TCPseq + 1;
         if ((pck.TCPflg & flagSynFinRst) == flagSYN) {
@@ -702,6 +720,11 @@ public class prtTcp extends prtGen {
             if (pr.tmstmpTx != 0) {
                 pr.tmstmpRx = pck.TCPtsV;
             }
+            if (pr.ecnTx) {
+                pr.ecnRx &= (pck.TCPflg & flagCWR) == 0;
+                pr.ecnRx |= (pck.IPtos & 3) == 3;
+                pr.ecnRe = (pck.TCPflg & flagECE) != 0;
+            }
             if ((flg & flagSynFin) == flagSynFin) {
                 logger.info("got both syn fin " + clnt);
                 return;
@@ -724,6 +747,7 @@ public class prtTcp extends prtGen {
                 if (pck.TCPtsE == 0) {
                     pr.tmstmpTx = 0;
                 }
+                pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
                 pr.state = prtTcpConn.stOpened;
                 pr.staTim = bits.getTime();
                 pr.activWait = cfgAll.tcpTimeNow;
@@ -981,10 +1005,18 @@ public class prtTcp extends prtGen {
         pr.activFrcd = false;
         switch (pr.state) {
             case prtTcpConn.stGotSyn:
-                sendMyPacket(clnt, flagSynAck, 0);
+                if (pr.ecnTx) {
+                    sendMyPacket(clnt, flagSynAck | flagECE, 0);
+                } else {
+                    sendMyPacket(clnt, flagSynAck, 0);
+                }
                 break;
             case prtTcpConn.stConReq:
-                sendMyPacket(clnt, flagSYN, 0);
+                if (cfgAll.tcpEcn) {
+                    sendMyPacket(clnt, flagSYN | flagECE | flagCWR, 0);
+                } else {
+                    sendMyPacket(clnt, flagSYN, 0);
+                }
                 break;
             case prtTcpConn.stClrReq:
                 sendMyPacket(clnt, flagFinAck, 0);
@@ -1167,6 +1199,21 @@ class prtTcpConn {
      * timestamp received
      */
     protected int tmstmpRx;
+
+    /**
+     * ecn base
+     */
+    protected boolean ecnTx;
+
+    /**
+     * ecn received
+     */
+    protected boolean ecnRx;
+
+    /**
+     * ece received
+     */
+    protected boolean ecnRe;
 
     public String toString() {
         switch (state) {
