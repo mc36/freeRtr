@@ -224,10 +224,12 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      *
      * @param pwd password if applicable
      * @param ttl time to live
+     * @param tos type of service
      */
-    public void changeSecurity(String pwd, int ttl) {
+    public void changeSecurity(String pwd, int ttl, int tos) {
         passwd = pwd;
         sendTTL = ttl;
+        sendTOS = tos;
     }
 
     /**

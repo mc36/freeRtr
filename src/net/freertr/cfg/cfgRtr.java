@@ -324,6 +324,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! (template|neighbor) .* connection-mode both",
         "router bgp[46] .*! (template|neighbor) .* buffer-size 65536",
         "router bgp[46] .*! (template|neighbor) .* ttl-security -1",
+        "router bgp[46] .*! (template|neighbor) .* tos-value -1",
         "router bgp[46] .*! (template|neighbor) .* role disabled",
         "router bgp[46] .*! (template|neighbor) .* additional-path-rx",
         "router bgp[46] .*! (template|neighbor) .* additional-path-tx",

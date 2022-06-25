@@ -263,6 +263,11 @@ public abstract class rtrBgpParam {
     public int ttlSecurity;
 
     /**
+     * tos value
+     */
+    public int tosValue;
+
+    /**
      * additional path receive(1) mode
      */
     public int addpathRmode;
@@ -901,6 +906,7 @@ public abstract class rtrBgpParam {
         socketMode = 3;
         bufferSize = 65536;
         ttlSecurity = -1;
+        tosValue = -1;
         leakRole = -1;
         passwd = null;
         capaNego = true;
@@ -962,6 +968,7 @@ public abstract class rtrBgpParam {
         socketMode = src.socketMode;
         bufferSize = src.bufferSize;
         ttlSecurity = src.ttlSecurity;
+        tosValue = src.tosValue;
         addpathRmode = src.addpathRmode;
         addpathTmode = src.addpathTmode;
         sendDefRou = src.sendDefRou;
@@ -1271,6 +1278,8 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     bytes in buffer");
         l.add(null, "3  4       ttl-security                sending ttl value");
         l.add(null, "4  .         <num>                     ttl value");
+        l.add(null, "3  4       tos-value                   sending tos value");
+        l.add(null, "4  .         <num>                     tos value");
         l.add(null, "3  4       egress-engineering          set egress engineering");
         l.add(null, "4  .         <num>                     index value");
         l.add(null, "3  4       role                        leak prevention role");
@@ -1466,6 +1475,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, compressMode == 0, beg, nei + "compression", s);
         l.add(beg + nei + "buffer-size " + bufferSize);
         l.add(beg + nei + "ttl-security " + ttlSecurity);
+        l.add(beg + nei + "tos-value " + tosValue);
         l.add(beg + nei + "additional-path-rx" + mask2string(addpathRmode));
         l.add(beg + nei + "additional-path-tx" + mask2string(addpathTmode));
         cmds.cfgLine(l, !shutdown, beg, nei + "shutdown", "");
@@ -1912,6 +1922,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("ttl-security")) {
             ttlSecurity = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("tos-value")) {
+            tosValue = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("buffer-size")) {

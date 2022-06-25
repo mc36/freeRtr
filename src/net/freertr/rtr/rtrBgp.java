@@ -1415,7 +1415,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (lstn == null) {
             return true;
         }
-        id.changeSecurity(lstn.temp.passwd, lstn.temp.ttlSecurity);
+        id.changeSecurity(lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
         rtrBgpNeigh ntry = new rtrBgpNeigh(this);
         ntry.peerAddr = id.peerAddr.copyBytes();
         ntry.localIfc = id.iface;
@@ -3331,7 +3331,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 }
             }
             lstns.put(ntry);
-            tcpCore.streamListen(this, new pipeLine(ntry.temp.bufferSize, false), ntry.iface, port, null, 0, "bgp", ntry.temp.passwd, ntry.temp.ttlSecurity, -1);
+            tcpCore.streamListen(this, new pipeLine(ntry.temp.bufferSize, false), ntry.iface, port, null, 0, "bgp", ntry.temp.passwd, ntry.temp.ttlSecurity, ntry.temp.tosValue);
             return false;
         }
         if (s.equals("template")) {
