@@ -18,31 +18,31 @@ compileBpf()
 {
 echo compiling $1.
 clang -Wall $MD -c -g -target bpf -I /usr/include/$UM-linux-gnu/ -o$TR/$1.bin $1.c
-llvm-strip -d $TR/$1.bin
-touch -d "2010-01-01 00:00:00" $TR/$1.bin
+llvm-strip -d $TR/$1.bin || true
+touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 compileLib()
 {
 echo precompiling $1.
 $CC -Wall -c $MD $3 -o$TR/$1.lib $2 $1.c
-touch -d "2010-01-01 00:00:00" $TR/$1.lib
+touch -d "2010-01-01 00:00:00" $TR/$1.lib || true
 }
 
 linkTwoLibs()
 {
 echo linking $1.
 $CC -Wall $MD -o$TR/$1.bin $TR/$2.lib $TR/$3.lib $4
-strip $TR/$1.bin
-touch -d "2010-01-01 00:00:00" $TR/$1.bin
+strip $TR/$1.bin || true
+touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 compileFile()
 {
 echo compiling $1.
 $CC -Wall $MD $4 -o$TR/$1.bin $2 $1.c $3
-strip $TR/$1.bin
-touch -d "2010-01-01 00:00:00" $TR/$1.bin
+strip $TR/$1.bin || true
+touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 
