@@ -1499,6 +1499,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mpls label4out",
         "interface .*! no mpls label6in",
         "interface .*! no mpls label6out",
+        "interface .*! mpls label4sig discovery 5000 15000",
+        "interface .*! mpls label6sig discovery 5000 15000",
+        "interface .*! mpls label4sig session 60000 180000",
+        "interface .*! mpls label6sig session 60000 180000",
+        "interface .*! mpls label4sig target 10000 90000",
+        "interface .*! mpls label6sig target 10000 90000",
+        "interface .*! mpls label4sig tos -1",
+        "interface .*! mpls label6sig tos -1",
+        "interface .*! mpls label4sig ttl -1",
+        "interface .*! mpls label6sig ttl -1",
         "interface .*! no mpls rsvp4",
         "interface .*! no mpls rsvp6",
         // ip
@@ -6645,6 +6655,34 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       [name:ifc]                name of interface");
         l.add(null, "2 3     ldptarget                   set targeted ldp peer");
         l.add(null, "3 .       <addr>                    address of peer");
+        l.add(null, "2 3     label4sig                   signaling parameters");
+        l.add(null, "3 4       discovery                 discovery timers");
+        l.add(null, "4 5         <num>                   hello in ms");
+        l.add(null, "5 .           <num>                 hold in ms");
+        l.add(null, "3 4       session                   session timers");
+        l.add(null, "4 5         <num>                   hello in ms");
+        l.add(null, "5 .           <num>                 hold in ms");
+        l.add(null, "3 4       target                    target timers");
+        l.add(null, "4 5         <num>                   hello in ms");
+        l.add(null, "5 .           <num>                 hold in ms");
+        l.add(null, "3 4       tos                       tos value");
+        l.add(null, "4 .         <num>                   value");
+        l.add(null, "3 4       ttl                       ttl value");
+        l.add(null, "4 .         <num>                   value");
+        l.add(null, "2 3     label6sig                   signaling parameters");
+        l.add(null, "3 4       discovery                 discovery timers");
+        l.add(null, "4 5         <num>                   hello in ms");
+        l.add(null, "5 .           <num>                 hold in ms");
+        l.add(null, "3 4       session                   session timers");
+        l.add(null, "4 5         <num>                   hello in ms");
+        l.add(null, "5 .           <num>                 hold in ms");
+        l.add(null, "3 4       target                    target timers");
+        l.add(null, "4 5         <num>                   hello in ms");
+        l.add(null, "5 .           <num>                 hold in ms");
+        l.add(null, "3 4       tos                       tos value");
+        l.add(null, "4 .         <num>                   value");
+        l.add(null, "3 4       ttl                       ttl value");
+        l.add(null, "4 .         <num>                   value");
         l.add(null, "2 .     label4pop                   advertise php");
         l.add(null, "2 .     label6pop                   advertise php");
         l.add(null, "2 3     label4in                    set label filter");
@@ -9161,66 +9199,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2ldp(6, cmd);
             return;
         }
-        if (s.equals("label4pop")) {
-            if (mplsLdp4 == null) {
-                return;
-            }
-            mplsLdp4.labelPop = true;
+        if (s.startsWith("label4")) {
+            rtrLdpIface.doConfig(mplsLdp4, s, cmd);
             return;
         }
-        if (s.equals("label6pop")) {
-            if (mplsLdp6 == null) {
-                return;
-            }
-            mplsLdp6.labelPop = true;
-            return;
-        }
-        if (s.equals("label4in")) {
-            if (mplsLdp4 == null) {
-                return;
-            }
-            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
-            if (res == null) {
-                cmd.error("no such prefix list");
-                return;
-            }
-            mplsLdp4.filterIn = res.prflst;
-            return;
-        }
-        if (s.equals("label4out")) {
-            if (mplsLdp4 == null) {
-                return;
-            }
-            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
-            if (res == null) {
-                cmd.error("no such prefix list");
-                return;
-            }
-            mplsLdp4.filterOut = res.prflst;
-            return;
-        }
-        if (s.equals("label6in")) {
-            if (mplsLdp6 == null) {
-                return;
-            }
-            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
-            if (res == null) {
-                cmd.error("no such prefix list");
-                return;
-            }
-            mplsLdp6.filterIn = res.prflst;
-            return;
-        }
-        if (s.equals("label6out")) {
-            if (mplsLdp6 == null) {
-                return;
-            }
-            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
-            if (res == null) {
-                cmd.error("no such prefix list");
-                return;
-            }
-            mplsLdp6.filterOut = res.prflst;
+        if (s.startsWith("label6")) {
+            rtrLdpIface.doConfig(mplsLdp6, s, cmd);
             return;
         }
         if (s.equals("ldptarget")) {
@@ -9323,46 +9307,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             clear2ldp(6);
             return;
         }
-        if (s.equals("label4pop")) {
-            if (mplsLdp4 == null) {
-                return;
-            }
-            mplsLdp4.labelPop = false;
+        if (s.startsWith("label4")) {
+            rtrLdpIface.unConfig(mplsLdp4, s, cmd);
             return;
         }
-        if (s.equals("label6pop")) {
-            if (mplsLdp6 == null) {
-                return;
-            }
-            mplsLdp6.labelPop = false;
-            return;
-        }
-        if (s.equals("label4in")) {
-            if (mplsLdp4 == null) {
-                return;
-            }
-            mplsLdp4.filterIn = null;
-            return;
-        }
-        if (s.equals("label4out")) {
-            if (mplsLdp4 == null) {
-                return;
-            }
-            mplsLdp4.filterOut = null;
-            return;
-        }
-        if (s.equals("label6in")) {
-            if (mplsLdp6 == null) {
-                return;
-            }
-            mplsLdp6.filterIn = null;
-            return;
-        }
-        if (s.equals("label6out")) {
-            if (mplsLdp6 == null) {
-                return;
-            }
-            mplsLdp6.filterOut = null;
+        if (s.startsWith("label6")) {
+            rtrLdpIface.unConfig(mplsLdp6, s, cmd);
             return;
         }
         if (s.equals("ldptarget")) {

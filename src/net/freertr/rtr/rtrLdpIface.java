@@ -2,7 +2,9 @@ package net.freertr.rtr;
 
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
@@ -13,6 +15,7 @@ import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -145,6 +148,120 @@ public class rtrLdpIface implements prtServP {
         cmds.cfgLine(l, ldp.filterIn == null, cmds.tabulator, "mpls label" + ver + "in", "" + ldp.filterIn);
         cmds.cfgLine(l, ldp.filterOut == null, cmds.tabulator, "mpls label" + ver + "out", "" + ldp.filterOut);
         cmds.cfgLine(l, !ldp.labelPop, cmds.tabulator, "mpls label" + ver + "pop", "");
+        l.add(cmds.tabulator + "mpls label" + ver + "sig discovery " + ldp.discHelloIntrvl + " " + ldp.discHelloHldtm);
+        l.add(cmds.tabulator + "mpls label" + ver + "sig session " + ldp.sessHelloIntrvl + " " + ldp.sessHelloHldtm);
+        l.add(cmds.tabulator + "mpls label" + ver + "sig target " + ldp.trgtHelloIntrvl + " " + ldp.trgtHelloHldtm);
+        l.add(cmds.tabulator + "mpls label" + ver + "sig tos " + ldp.sessionTOS);
+        l.add(cmds.tabulator + "mpls label" + ver + "sig ttl " + ldp.sessionTTL);
+    }
+
+    /**
+     * get generic config
+     *
+     * @param ldp config source
+     * @param beg command
+     * @param cmd commands
+     */
+    public static void doConfig(rtrLdpIface ldp, String beg, cmds cmd) {
+        if (ldp == null) {
+            cmd.error("not enabled");
+            return;
+        }
+        beg = beg.substring(6, beg.length());
+        if (beg.equals("pop")) {
+            ldp.labelPop = true;
+            return;
+        }
+        if (beg.equals("in")) {
+            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            ldp.filterIn = res.prflst;
+            return;
+        }
+        if (beg.equals("out")) {
+            cfgPrfxlst res = cfgAll.prfxFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            ldp.filterOut = res.prflst;
+            return;
+        }
+        if (!beg.equals("sig")) {
+            cmd.badCmd();
+            return;
+        }
+        beg = cmd.word();
+        if (beg.equals("discovery")) {
+            ldp.discHelloIntrvl = bits.str2num(cmd.word());
+            ldp.discHelloHldtm = bits.str2num(cmd.word());
+            return;
+        }
+        if (beg.equals("session")) {
+            ldp.sessHelloIntrvl = bits.str2num(cmd.word());
+            ldp.sessHelloHldtm = bits.str2num(cmd.word());
+            return;
+        }
+        if (beg.equals("target")) {
+            ldp.trgtHelloIntrvl = bits.str2num(cmd.word());
+            ldp.trgtHelloHldtm = bits.str2num(cmd.word());
+            return;
+        }
+        if (beg.equals("tos")) {
+            ldp.sessionTOS = bits.str2num(cmd.word());
+            return;
+        }
+        if (beg.equals("ttl")) {
+            ldp.sessionTTL = bits.str2num(cmd.word());
+            return;
+        }
+        cmd.badCmd();
+        return;
+    }
+
+    /**
+     * get generic config
+     *
+     * @param ldp config source
+     * @param beg command
+     * @param cmd commands
+     */
+    public static void unConfig(rtrLdpIface ldp, String beg, cmds cmd) {
+        if (ldp == null) {
+            cmd.error("not enabled");
+            return;
+        }
+        beg = beg.substring(6, beg.length());
+        if (beg.equals("pop")) {
+            ldp.labelPop = false;
+            return;
+        }
+        if (beg.equals("in")) {
+            ldp.filterIn = null;
+            return;
+        }
+        if (beg.equals("out")) {
+            ldp.filterOut = null;
+            return;
+        }
+        if (!beg.equals("sig")) {
+            cmd.badCmd();
+            return;
+        }
+        beg = cmd.word();
+        if (beg.equals("tos")) {
+            ldp.sessionTOS = -1;
+            return;
+        }
+        if (beg.equals("ttl")) {
+            ldp.sessionTTL = -1;
+            return;
+        }
+        cmd.badCmd();
+        return;
     }
 
     /**
