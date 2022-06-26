@@ -988,6 +988,8 @@ public class tabRouteUtil {
             case suber:
                 tabRouteUtil.removeIntList(attr.labelRem, setter.value);
                 break;
+            default:
+                break;
         }
     }
 
