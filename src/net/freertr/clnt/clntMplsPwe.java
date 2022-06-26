@@ -15,6 +15,7 @@ import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packLdpPwe;
+import net.freertr.rtr.rtrLdpIface;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.rtr.rtrLdpTrgtd;
 import net.freertr.tab.tabLabel;
@@ -121,6 +122,8 @@ public class clntMplsPwe implements Runnable, ifcDn {
     private addrIP fwdTrg;
 
     private ipFwdIface fwdIfc;
+
+    private rtrLdpIface ldpIfc;
 
     private rtrLdpTrgtd neighT;
 
@@ -346,10 +349,15 @@ public class clntMplsPwe implements Runnable, ifcDn {
         if (fwdIfc == null) {
             return;
         }
+        if (fwdTrg.isIPv4()) {
+            ldpIfc = srcIfc.mplsLdp4;
+        } else {
+            ldpIfc = srcIfc.mplsLdp6;
+        }
         if (debugger.clntPweTraf) {
             logger.debug("starting targeted session");
         }
-        neighT = fwdCor.ldpTargetFind(fwdIfc, null, fwdTrg, true);
+        neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, fwdTrg, true);
         if (neighT == null) {
             return;
         }

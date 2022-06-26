@@ -122,6 +122,16 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     public int sessHelloHldtm;
 
     /**
+     * session ttl to use
+     */
+    public int sessionTTL;
+
+    /**
+     * session tos to use
+     */
+    public int sessionTOS;
+
+    /**
      * source interface
      */
     public ipFwdIface ifc;
@@ -726,14 +736,14 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
                 if (debugger.rtrLdpEvnt) {
                     logger.debug("accepting " + trans);
                 }
-                prtAccept ac = new prtAccept(tcp, new pipeLine(65536, false), ifc, packLdp.port, trans, 0, "ldp", ifc.ldpasFind(trans), -1, -1);
+                prtAccept ac = new prtAccept(tcp, new pipeLine(65536, false), ifc, packLdp.port, trans, 0, "ldp", ifc.ldpasFind(trans), sessionTTL, sessionTOS);
                 ac.wait4conn(30000);
                 conn = ac.getConn(true);
             } else {
                 if (debugger.rtrLdpEvnt) {
                     logger.debug("connecting " + trans);
                 }
-                conn = tcp.streamConnect(new pipeLine(65536, false), ifc, 0, trans, packLdp.port, "ldp", ifc.ldpasFind(trans), -1, -1);
+                conn = tcp.streamConnect(new pipeLine(65536, false), ifc, 0, trans, packLdp.port, "ldp", ifc.ldpasFind(trans), sessionTTL, sessionTOS);
             }
             if (conn == null) {
                 ip.ldpNeighDel(this);

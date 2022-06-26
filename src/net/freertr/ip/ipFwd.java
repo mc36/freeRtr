@@ -791,6 +791,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         }
         ntry.ifc = iface;
         ntry.ip = this;
+        if (ldpi == null) {
+            ldpi = new rtrLdpIface(null, null, null, null, null, null);
+        }
         ntry.ldp = ldpi;
         rtrLdpTrgtd old = ldpTarget.add(ntry);
         if (old != null) {

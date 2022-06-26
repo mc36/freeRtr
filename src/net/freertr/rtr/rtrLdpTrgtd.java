@@ -112,7 +112,7 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
      * keep working
      */
     public void keepWorking() {
-        need2run = rtrLdpIface.trgtHelloIntrvl / 1000;
+        need2run = ldp.trgtHelloIntrvl / 1000;
     }
 
     public void run() {
@@ -122,8 +122,8 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
                 ip.ldpTargetDel(this);
                 return;
             }
-            conn.setTime(rtrLdpIface.trgtHelloHldtm);
-            int run = rtrLdpIface.trgtHelloHldtm;
+            conn.setTime(ldp.trgtHelloHldtm);
+            int run = ldp.trgtHelloHldtm;
             for (;;) {
                 bits.sleep(1000);
                 run += 1000;
@@ -137,7 +137,7 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
                 if (need2run < 0) {
                     break;
                 }
-                if (run > rtrLdpIface.trgtHelloIntrvl) {
+                if (run > ldp.trgtHelloIntrvl) {
                     if (debugger.rtrLdpEvnt) {
                         logger.debug("tx hello " + peer);
                     }
@@ -147,7 +147,7 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
                     pk.lsrID = ifc.addr.toIPv4();
                     pk.transAddr = ifc.addr.copyBytes();
                     pk.msgTyp = packLdp.msgThello;
-                    pk.holdTime = rtrLdpIface.trgtHelloHldtm / 1000;
+                    pk.holdTime = ldp.trgtHelloHldtm / 1000;
                     pk.targeted = true;
                     pk.putHelloParam();
                     pk.putTransAddr();
@@ -185,13 +185,13 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
                 ntry.tcp = tcp;
                 ntry.trans = pk.transAddr;
                 ntry.lsrID = pk.lsrID;
-                ntry.sessHelloHldtm = rtrLdpIface.sessHelloHldtm;
-                ntry.sessHelloIntrvl = rtrLdpIface.sessHelloIntrvl;
-                if (ldp != null) {
-                    ntry.filterIn = ldp.filterIn;
-                    ntry.filterOut = ldp.filterOut;
-                    ntry.labelPop = ldp.labelPop;
-                }
+                ntry.sessHelloHldtm = ldp.sessHelloHldtm;
+                ntry.sessHelloIntrvl = ldp.sessHelloIntrvl;
+                ntry.sessionTTL = ldp.sessionTTL;
+                ntry.sessionTOS = ldp.sessionTOS;
+                ntry.filterIn = ldp.filterIn;
+                ntry.filterOut = ldp.filterOut;
+                ntry.labelPop = ldp.labelPop;
                 ntry.startPeer();
             }
         } catch (Exception e) {

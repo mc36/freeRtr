@@ -29,32 +29,42 @@ public class rtrLdpIface implements prtServP {
     /**
      * discovery hello interval
      */
-    public final static int discHelloIntrvl = 5000;
+    public int discHelloIntrvl = 5000;
 
     /**
      * discovery hello hold time
      */
-    public final static int discHelloHldtm = 15000;
+    public int discHelloHldtm = 15000;
 
     /**
      * targeted hello interval
      */
-    public final static int trgtHelloIntrvl = 10000;
+    public int trgtHelloIntrvl = 10000;
 
     /**
      * targeted hello hold time
      */
-    public final static int trgtHelloHldtm = 90000;
+    public int trgtHelloHldtm = 90000;
 
     /**
      * session hello interval
      */
-    public final static int sessHelloIntrvl = 60000;
+    public int sessHelloIntrvl = 60000;
 
     /**
      * session hello hold time
      */
-    public final static int sessHelloHldtm = 180000;
+    public int sessHelloHldtm = 180000;
+
+    /**
+     * session ttl to use
+     */
+    public int sessionTTL = -1;
+
+    /**
+     * session tos to use
+     */
+    public int sessionTOS = -1;
 
     /**
      * input label filter
@@ -299,6 +309,8 @@ public class rtrLdpIface implements prtServP {
         ntry.lsrID = pk.lsrID;
         ntry.sessHelloHldtm = sessHelloHldtm;
         ntry.sessHelloIntrvl = sessHelloIntrvl;
+        ntry.sessionTTL = sessionTTL;
+        ntry.sessionTOS = sessionTOS;
         ntry.filterIn = filterIn;
         ntry.filterOut = filterOut;
         ntry.labelPop = labelPop;
