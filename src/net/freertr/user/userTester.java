@@ -51,6 +51,8 @@ public class userTester {
      */
     protected final static String chgLogSep = "---------------------------------- ";
 
+    private final static String htmlStyle = "<style>\n body { background-color: black; color: white; }\n table, th, td { border: 1px solid }\n :link { color: white }\n :visited { color: white }\n :active { color: white }\n</style>";
+
     private pipeProgress rdr;
 
     private cmds cmd;
@@ -144,6 +146,165 @@ public class userTester {
     private syncInt traces = new syncInt(0);
 
     private userTesterOne[] workers;
+
+    private String result2string(String s) {
+        if (s.equals("success")) {
+            return "+";
+        } else {
+            return "-";
+        }
+    }
+
+    /**
+     * do the summary work
+     *
+     * @param c command to do
+     */
+    public void doSummary(cmds c) {
+        cmd = c;
+        String target = "rtrp4lang-";
+        path = "./";
+        beg = target;
+        for (;;) {
+            String s = cmd.word();
+            if (s.length() < 1) {
+                break;
+            }
+            if (s.equals("path")) {
+                path = cmd.word();
+                continue;
+            }
+            if (s.equals("begin")) {
+                beg = cmd.word();
+                continue;
+            }
+            if (s.equals("target")) {
+                target = cmd.word();
+                continue;
+            }
+        }
+        List<String> nams = new ArrayList<String>();
+        List<List<String>> lins = new ArrayList<List<String>>();
+        try {
+            File[] fils = new File(path).listFiles();
+            if (fils == null) {
+                return;
+            }
+            for (int i = 0; i < fils.length; i++) {
+                if (fils[i].isDirectory()) {
+                    continue;
+                }
+                String s = fils[i].getName();
+                if (!s.endsWith("-.csv")) {
+                    continue;
+                }
+                if (!s.startsWith(beg)) {
+                    continue;
+                }
+                if (s.matches(discard)) {
+                    continue;
+                }
+                nams.add(s.substring(beg.length(), s.length() - 5));
+                List<String> res = bits.txt2buf(path + s);
+                if (res == null) {
+                    cmd.error("error reading " + s);
+                    continue;
+                }
+                lins.add(res);
+            }
+        } catch (Exception e) {
+            return;
+        }
+        if (lins.size() < 2) {
+            cmd.error("not enough summary found");
+            return;
+        }
+        int o = lins.get(0).size();
+        for (int i = 1; i < lins.size(); i++) {
+            if (lins.get(i).size() != o) {
+                cmd.error("mismatching size in " + beg + nams.get(i));
+                return;
+            }
+        }
+        String a = lins.get(0).get(1);
+        o = a.lastIndexOf(";");
+        releaseN = a.substring(o + 1, a.length());
+        for (int i = 0; i < lins.size(); i++) {
+            List<String> cur = lins.get(i);
+            cur.remove(0);
+            cur.remove(0);
+            cur.remove(0);
+            cur.remove(0);
+        }
+        List<String> url = new ArrayList<String>();
+        List<String> fil = new ArrayList<String>();
+        List<List<String>> res = new ArrayList<List<String>>();
+        List<String> tst = new ArrayList<String>();
+        for (;;) {
+            if (lins.get(0).size() < 1) {
+                break;
+            }
+            c = new cmds("lin", lins.get(0).remove(0));
+            List<String> cur = new ArrayList<String>();
+            url.add(c.word(";"));
+            fil.add(c.word(";"));
+            cur.add(result2string(c.word(";")));
+            tst.add(c.getRemaining());
+            for (int i = 1; i < lins.size(); i++) {
+                c = new cmds("lin", lins.get(i).remove(0));
+                c.word(";");
+                c.word(";");
+                cur.add(result2string(c.word(";")));
+            }
+            res.add(cur);
+        }
+        a = "url;file";
+        for (int i = 0; i < lins.size(); i++) {
+            a += ";" + nams.get(i);
+        }
+        a += ";test";
+        List<String> txt = new ArrayList<String>();
+        txt.add(a);
+        a = "-;-;";
+        for (int i = 0; i < lins.size(); i++) {
+            a += "-;";
+        }
+        a += releaseN;
+        txt.add(a);
+        for (o = 0; o < fil.size(); o++) {
+            a = url.get(o) + ";" + fil.get(o);
+            List<String> cur = res.get(o);
+            for (int i = 0; i < lins.size(); i++) {
+                a += ";" + cur.get(i);
+            }
+            a += ";" + tst.get(o);
+            txt.add(a);
+        }
+        bits.buf2txt(true, txt, target + ".csv");
+        txt = new ArrayList<String>();
+        txt.add(servHttp.htmlHead);
+        txt.add(htmlStyle);
+        txt.add("<title>dataplanes</title></head><body>");
+        txt.add("release: " + releaseN + "<br/>");
+        txt.add("<br/>");
+        a = "<table><thead><tr><td><b>file</b></td>";
+        for (int i = 0; i < lins.size(); i++) {
+            a += "<td><b>" + nams.get(i) + "</b></td>";
+        }
+        a += "<td><b>test</b></td></tr></thead><tbody>";
+        txt.add(a);
+        for (o = 0; o < fil.size(); o++) {
+            a = "<tr><td><a href=\"" + url.get(o) + "\">" + fil.get(o) + "</a></td>";
+            List<String> cur = res.get(o);
+            for (int i = 0; i < lins.size(); i++) {
+                a += "<td>" + cur.get(i) + "</td>";
+            }
+            a += "<td>" + tst.get(o) + "</td></tr>";
+            txt.add(a);
+        }
+        txt.add("</tbody></table></body></html>");
+        bits.buf2txt(true, txt, target + ".html");
+    }
 
     /**
      * do the changelog work
@@ -716,13 +877,8 @@ public class userTester {
             finished.add(ftr);
         }
         txt = new ArrayList<String>();
-        txt.add(servHttp.htmlHead + "<style>");
-        txt.add(" body { background-color: black; color: white; }");
-        txt.add(" table, th, td { border: 1px solid }");
-        txt.add(" :link { color: white }");
-        txt.add(" :visited { color: white }");
-        txt.add(" :active { color: white }");
-        txt.add("</style>");
+        txt.add(servHttp.htmlHead);
+        txt.add(htmlStyle);
         txt.add("<title>tester</title></head><body>");
         txt.add("release: " + releaseN + "<br/>");
         txt.add("tested: " + a + "<br/>");

@@ -768,6 +768,11 @@ public class userTest {
             t.doChanges(cmd);
             return null;
         }
+        if (a.equals("tstsum")) {
+            userTester t = new userTester();
+            t.doSummary(cmd);
+            return null;
+        }
         if (a.equals("template")) {
             userTemplate t = new userTemplate();
             t.doer(cmd);
