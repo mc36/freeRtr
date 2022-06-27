@@ -565,10 +565,11 @@ public class userTester {
             userTesterImg img = others.get(i);
             img.otherD = bits.txt2buf(path + img.otherF);
             img.otherP = " " + img.otherD.remove(0) + " ";
-            img.otherI = img.otherD.remove(0);
-            img.otherM = bits.str2num(img.otherD.remove(0));
-            img.otherC = bits.str2num(img.otherD.remove(0));
-            img.otherN = img.otherD.remove(0);
+            img.otherC1 = img.otherD.remove(0);
+            img.otherC2 = img.otherD.remove(0);
+            img.otherC3 = img.otherD.remove(0);
+            img.otherNS = bits.str2num(img.otherD.remove(0));
+            img.otherNC = img.otherD.remove(0);
             img.otherW = img.otherD.remove(0);
             img.otherS = img.otherD.remove(0);
         }
@@ -701,10 +702,10 @@ public class userTester {
         if (!summary) {
             return;
         }
-        rdr.debugStat("writing summary");
         if (other0 != null) {
             beg += other0 + "-";
         }
+        rdr.debugStat("writing summary " + beg);
         List<String> txt = bits.txt2buf("../todo.txt");
         if (txt == null) {
             txt = new ArrayList<String>();
@@ -913,19 +914,37 @@ class userTesterImg {
 
     public String otherP = null;
 
-    public String otherI = null;
+    public String otherC1 = null;
 
-    public String otherN = null;
+    public String otherC2 = null;
+
+    public String otherC3 = null;
+
+    public int otherNS = 0;
+
+    public String otherNC = null;
 
     public String otherW = null;
 
     public String otherS = null;
 
-    public int otherM = 0;
-
-    public int otherC = 0;
-
     public List<String> otherD = null;
+
+    public String convert(String cmd, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
+        String nc = "";
+        for (int i = otherNS; i < lp.size(); i++) {
+            String a = otherNC;
+            a = a.replaceAll("\\$id\\$", "" + i);
+            a = a.replaceAll("\\$lp\\$", "" + lp.get(i));
+            a = a.replaceAll("\\$rp\\$", "" + rp.get(i));
+            a = a.replaceAll("\\$ad\\$", "" + ad.get(i).toEmuStr());
+            nc += a;
+        }
+        cmd = cmd.replaceAll("\\$nc\\$", nc);
+        cmd = cmd.replaceAll("\\$fn\\$", fn);
+        cmd = cmd.replaceAll("\\$cp\\$", "" + cp);
+        return cmd;
+    }
 
 }
 
@@ -1034,6 +1053,9 @@ class userTesterPrc implements Comparator<userTesterPrc> {
         slot = slt;
         name = nam;
         rdr = reader;
+        if (command == null) {
+            return;
+        }
         pipeLine pl = new pipeLine(32768, false);
         final int tim = 600 * 1000;
         pipe = pl.getSide();
@@ -1234,6 +1256,9 @@ class userTesterPrc implements Comparator<userTesterPrc> {
     }
 
     public void doSync() {
+        if (syncr.length() < 1) {
+            return;
+        }
         String s = syncr + bits.randomD();
         putLine(s);
         for (;;) {
@@ -1759,8 +1784,9 @@ class userTesterOne {
                 success();
                 return;
             }
-            userTesterPrc ctP = procs.get(0);
-            String ctV = "v9";
+            userTesterPrc ctP = null;
+            String ctV = null;
+            int ctL = 30001 + (slot * userTester.portSlot) + procs.size();
             String rn = cmd.word();
             String ftr = "";
             for (;;) {
@@ -1773,6 +1799,7 @@ class userTesterOne {
                     ctP.stopNow();
                     ctP = procs.find(ctP);
                     ctV = cmd.word();
+                    ctV += " " + cmd.word();
                     continue;
                 }
                 if (s.equals("feature")) {
@@ -1829,47 +1856,13 @@ class userTesterOne {
                 cmd.word();
                 rps.add(bits.str2num(cmd.word()));
             }
-            if (img.otherM < 1) {
-                int prt = 30001 + (slot * userTester.portSlot) + procs.size();
-                ctP.putLine("test hwcfg tcp2vrf " + prt + " " + ctV + " 9080");
+            if (ctP != null) {
+                ctP.putLine("test hwcfg tcp2vrf " + ctL + " " + ctV);
                 ctP.doSync();
-                s = img.otherI + " 127.0.0.1 " + prt + " 0 127.0.0.1 127.0.0.1";
-                for (int i = 1; i < lps.size(); i++) {
-                    s += " " + lps.get(i) + " " + rps.get(i);
-                }
-                cfg.add("!" + s);
-                bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
-                userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
-                p.pipe.setTime(5 * 60000);
-                p.syncr = img.otherS;
-                procs.add(p);
-                cfg = new ArrayList<String>();
-                for (;;) {
-                    s = getLin();
-                    if (s.equals("!")) {
-                        break;
-                    }
-                    cfg.add(s);
-                }
-                bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
-                return;
             }
-            s = prefix + slot + rn + ".qcow2";
-            String f = "auto";
-            if (img.otherI.endsWith(".img")) {
-                f = "raw";
-            }
-            if (img.otherI.endsWith(".qcow2")) {
-                f = "qcow2";
-            }
-            if (img.otherI.endsWith(".vmdk")) {
-                f = "vmdk";
-            }
-            pipeShell.exec("qemu-img create -f qcow2 -o backing_file=" + img.otherI + ",backing_fmt=" + f + " " + s, null, true, false, true);
-            s = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + img.otherC + ",threads=1,sockets=1 -drive file=" + s + ",format=qcow2,cache=unsafe -m " + img.otherM;
-            for (int i = 0; i < lps.size(); i++) {
-                s += " -netdev socket,id=n" + i + ",udp=:" + rps.get(i) + ",localaddr=:" + lps.get(i) + " -device " + img.otherN + ",netdev=n" + i + ",mac=" + mcs.get(i).toEmuStr();
-            }
+            pipeShell.exec(img.convert(img.otherC1, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(img.convert(img.otherC2, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            s = img.convert(img.otherC3, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
@@ -1886,6 +1879,9 @@ class userTesterOne {
                 cfg.add(s);
             }
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+            if (img.otherW.length() < 1) {
+                return;
+            }
             int round = 5000;
             rdr.setMax(round);
             for (int rnd = 0; rnd <= round; rnd++) {
