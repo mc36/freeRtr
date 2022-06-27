@@ -47,7 +47,7 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 
 
 
-for fn in p4xdp_pass p4xdp_kern; do
+for fn in p4xdp_pass p4xdp_drop p4xdp_kern; do
   compileBpf $fn
   done
 
