@@ -15,6 +15,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
 import net.freertr.auth.authGeneric;
 import net.freertr.auth.authResult;
+import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
@@ -42,7 +43,9 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.sec.secHttp2;
 import net.freertr.sec.secWebsock;
+import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabListing;
 import net.freertr.user.userConfig;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
@@ -375,6 +378,9 @@ public class servHttp extends servGeneric implements prtServS {
             }
             if (ntry.authenticList != null) {
                 l.add(a + " authentication " + ntry.authenticList.autName);
+            }
+            if (ntry.accessList != null) {
+                l.add(a + " access-class " + ntry.accessList.listName);
             }
         }
     }
@@ -781,6 +787,19 @@ public class servHttp extends servGeneric implements prtServS {
             }
             return false;
         }
+        if (a.equals("access-class")) {
+            if (negated) {
+                ntry.accessList = null;
+                return false;
+            }
+            cfgAceslst lst = cfgAll.aclsFind(cmd.word(), false);
+            if (lst == null) {
+                cmd.error("no such access list");
+                return false;
+            }
+            ntry.accessList = lst.aceslst;
+            return false;
+        }
         if (a.equals("authentication")) {
             if (negated) {
                 ntry.authenticList = null;
@@ -875,6 +894,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 .        <name:ifc>               name of interface");
         l.add(null, "3 4      authentication             require authentication to access");
         l.add(null, "4 .        <name:aaa>               authentication list");
+        l.add(null, "3 4      access-class               require ip to access");
+        l.add(null, "4 .        <name:acl>               access list");
         l.add(null, "3 4      style                      set page style tags");
         l.add(null, "4 4,.      <text>                   text to send");
     }
@@ -1137,6 +1158,11 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
      */
     public authGeneric authenticList;
 
+    /**
+     * access list
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> accessList;
+
     public int compare(servHttpServ o1, servHttpServ o2) {
         return o1.host.toLowerCase().compareTo(o2.host.toLowerCase());
     }
@@ -1242,11 +1268,13 @@ class servHttpServ implements Runnable, Comparator<servHttpServ> {
 
 class servHttpConn implements Runnable {
 
-    protected servHttp lower;
+    protected servHttp lower; // parent
 
-    protected pipeSide pipe;
+    protected pipeSide pipe; // pipe
 
-    protected addrIP peer = new addrIP();
+    protected addrIP peer; // ip
+
+    protected prtGenConn conn; // socket
 
     protected String gotCmd; // command
 
@@ -1282,14 +1310,16 @@ class servHttpConn implements Runnable {
 
     private List<String> headers; // tx headers
 
-    private boolean secured;
+    private boolean secured; // tls port
 
     public servHttpConn(servHttp parent, pipeSide stream, prtGenConn id) {
         lower = parent;
         pipe = stream;
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        peer = new addrIP();
         peer.setAddr(id.peerAddr);
+        conn = id;
         secured = id.portLoc == lower.secondPort;
         new Thread(this).start();
     }
@@ -2489,6 +2519,12 @@ class servHttpConn implements Runnable {
         if (gotHost == null) {
             sendRespError(404, "not found");
             return;
+        }
+        if (gotHost.accessList != null) {
+            if (!gotHost.accessList.matches(conn)) {
+                sendRespError(401, "forbidden");
+                return;
+            }
         }
         gotHost.askNum++;
         gotHost.askTim = bits.getTime();
