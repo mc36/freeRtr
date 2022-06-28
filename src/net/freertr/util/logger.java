@@ -560,7 +560,11 @@ public class logger {
      */
     public static userFormat listThreads(long d) {
         ThreadMXBean m = ManagementFactory.getThreadMXBean();
-        ThreadInfo t = m.getThreadInfo(d, Integer.MAX_VALUE);
+        ThreadInfo t = null;
+        try {
+            t = m.getThreadInfo(d, Integer.MAX_VALUE);
+        } catch (Exception e) {
+        }
         if (t == null) {
             return null;
         }
