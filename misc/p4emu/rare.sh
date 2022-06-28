@@ -2,6 +2,35 @@
 apt-get install sudo mc curl wget git make default-jdk-headless default-jre-headless bc jq
 bash <(curl -L https://nixos.org/nix/install) --daemon </dev/null
 echo onie_machine=model > /etc/machine.conf
+cat >> /etc/freertr/ports.json << EOF
+{
+    "PortToIf": [
+        {
+            "device_port":4,
+            "if":"ens5"
+        },
+        {
+            "device_port":8,
+            "if":"ens6"
+        },
+        {
+            "device_port":12,
+            "if":"ens7"
+        },
+        {
+            "device_port":16,
+            "if":"ens8"
+        }
+    ],
+    "PortToVeth": [
+        {
+            "device_port": 64,
+            "veth1": 250,
+            "veth2": 251
+        }
+    ]
+}
+EOF
 cat >> /etc/nix/nix.conf << EOF
 extra-substituters = https://cache.nixos.org http://p4.cache.nix.net.switch.ch
 trusted-substituters = https://cache.nixos.org http://p4.cache.nix.net.switch.ch
