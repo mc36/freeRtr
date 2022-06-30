@@ -50,6 +50,7 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
         "bridge .*! no block-multicast",
         "bridge .*! no padup-small",
         "bridge .*! mac-age 600000",
+        "bridge .*! mac-limit 0",
         "bridge .*! stp-priority 32768",
         "bridge .*! stp-time 2000 20000 15000"
     };

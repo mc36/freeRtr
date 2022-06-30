@@ -85,6 +85,11 @@ public class ifcBridge implements ifcDn {
     public int grpAgeTime = 3 * 60 * 1000;
 
     /**
+     * limit mac addresses
+     */
+    public int macLimit;
+
+    /**
      * log mac movements
      */
     public boolean macMove;
@@ -370,6 +375,8 @@ public class ifcBridge implements ifcDn {
         l.add(null, "2 2,.     before                    log on session start");
         l.add(null, "2 2,.     after                     log on session stop");
         l.add(null, "1 .     mac-move                    enable mac move logging");
+        l.add(null, "1 2     mac-limit                   limit number of addesses");
+        l.add(null, "2 .       <num>                     maximum");
         l.add(null, "1 .     private-bridge              disable peer communication");
         l.add(null, "1 .     block-unicast               block unknown destination unicast");
         l.add(null, "1 .     block-multicast             block unwanted destination multicast");
@@ -409,6 +416,7 @@ public class ifcBridge implements ifcDn {
         cmds.cfgLine(l, !blockUnicast, beg, "block-unicast", "");
         cmds.cfgLine(l, !blockMulticast, beg, "block-multicast", "");
         cmds.cfgLine(l, !padupSmall, beg, "padup-small", "");
+        l.add(beg + "mac-limit " + macLimit);
         l.add(beg + "mac-age " + macAgeTime);
         l.add(beg + "stp-priority " + stpPrio);
         l.add(beg + "stp-time " + stpHlo + " " + stpAge + " " + stpFwd);
@@ -465,6 +473,10 @@ public class ifcBridge implements ifcDn {
             inspect = new tabSession(true, 180000);
             inspect.fromString(cmd);
             inspect.startTimer();
+            return;
+        }
+        if (a.equals("mac-limit")) {
+            macLimit = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("mac-move")) {
@@ -565,6 +577,10 @@ public class ifcBridge implements ifcDn {
                 inspect.stopTimer();
             }
             inspect = null;
+            return;
+        }
+        if (a.equals("mac-limit")) {
+            macLimit = 0;
             return;
         }
         if (a.equals("mac-move")) {
@@ -996,6 +1012,12 @@ public class ifcBridge implements ifcDn {
             }
             lrn = old;
         } else {
+            if (macLimit > 0) {
+                if (learned.size() > macLimit) {
+                    learned.del(lrn);
+                    return;
+                }
+            }
             if (macMove) {
                 logger.info(pck.ETHsrc + " learned from " + ifc.getIfcName());
             }
