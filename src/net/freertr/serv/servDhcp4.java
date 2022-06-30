@@ -108,9 +108,11 @@ public class servDhcp4 extends servGeneric implements prtServS {
      */
     public tabGen<packDhcpOption> options = new tabGen<packDhcpOption>();
 
-    private Timer purgeTimer;
-
     private List<servDhcp4bind> bindings = new ArrayList<servDhcp4bind>();
+
+    private String bindFile;
+
+    private Timer purgeTimer;
 
     /**
      * defaults text
@@ -121,8 +123,8 @@ public class servDhcp4 extends servGeneric implements prtServS {
         "server dhcp4 .*! boot-server ",
         "server dhcp4 .*! boot-file ",
         "server dhcp4 .*! lease 43200000",
-        "server dhcp4 .*! renew 21600000"
-    };
+        "server dhcp4 .*! renew 21600000",
+        "server dhcp4 .*! no bind-file",};
 
     /**
      * defaults filter
@@ -184,10 +186,31 @@ public class servDhcp4 extends servGeneric implements prtServS {
         for (int o = 0; o < options.size(); o++) {
             l.add(beg + "option " + options.get(o));
         }
+        cmds.cfgLine(l, bindFile == null, beg, "bind-file", bindFile);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("bind-file")) {
+            bindFile = cmd.getRemaining();
+            List<String> res = bits.txt2buf(bindFile);
+            if (res == null) {
+                return false;
+            }
+            long tim = bits.getTime();
+            for (int i = 0; i < res.size(); i++) {
+                servDhcp4bind ntry = new servDhcp4bind();
+                if (ntry.fromString(new cmds("b", res.get(i)))) {
+                    continue;
+                }
+                ntry = findBinding(ntry.mac, 1, ntry.ip);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry.reqd = tim;
+            }
+            return false;
+        }
         if (a.equals("pool")) {
             poolLo = new addrIPv4();
             if (poolLo.fromString(cmd.word())) {
@@ -303,6 +326,10 @@ public class servDhcp4 extends servGeneric implements prtServS {
             return true;
         }
         a = cmd.word();
+        if (a.equals("bind-file")) {
+            bindFile = null;
+            return false;
+        }
         if (a.equals("pool")) {
             poolLo = null;
             poolHi = null;
@@ -361,6 +388,8 @@ public class servDhcp4 extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  bind-file              save bindings");
+        l.add(null, "2 2,.  <str>                file name");
         l.add(null, "1 2  pool                   address pool to use");
         l.add(null, "2 3    <addr>               first address to delegate");
         l.add(null, "3 .      <addr>             last address to delegate");
@@ -609,6 +638,25 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 bindings.remove(i);
             }
         }
+        if (bindFile == null) {
+            return;
+        }
+        List<String> txt = bits.txt2buf(bindFile);
+        if (txt == null) {
+            txt = new ArrayList<String>();
+        }
+        if (txt.size() == bindings.size()) {
+            return;
+        }
+        txt = new ArrayList<String>();
+        synchronized (bindings) {
+            for (int i = 0; i < bindings.size(); i++) {
+                txt.add("" + bindings.get(i));
+            }
+        }
+        if (bits.buf2txt(true, txt, bindFile)) {
+            logger.error("error saving bindings");
+        }
     }
 
     /**
@@ -659,6 +707,18 @@ class servDhcp4bind {
 
     public String toString() {
         return ip + " " + mac;
+    }
+
+    public boolean fromString(cmds cmd) {
+        ip = new addrIPv4();
+        mac = new addrMac();
+        if (ip.fromString(cmd.word())) {
+            return true;
+        }
+        if (mac.fromString(cmd.word())) {
+            return true;
+        }
+        return false;
     }
 
 }
