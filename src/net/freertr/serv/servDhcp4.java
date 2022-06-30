@@ -104,6 +104,11 @@ public class servDhcp4 extends servGeneric implements prtServS {
     public int renew = lease / 2;
 
     /**
+     * remember time
+     */
+    public int remember = 0;
+
+    /**
      * options to add
      */
     public tabGen<packDhcpOption> options = new tabGen<packDhcpOption>();
@@ -124,6 +129,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         "server dhcp4 .*! boot-file ",
         "server dhcp4 .*! lease 43200000",
         "server dhcp4 .*! renew 21600000",
+        "server dhcp4 .*! remember 0",
         "server dhcp4 .*! no bind-file",};
 
     /**
@@ -174,6 +180,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
         l.add(beg + "domain-name " + domNam);
         l.add(beg + "lease " + lease);
         l.add(beg + "renew " + renew);
+        l.add(beg + "remember " + remember);
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
                 servDhcp4bind ntry = bindings.get(i);
@@ -298,6 +305,10 @@ public class servDhcp4 extends servGeneric implements prtServS {
             renew = bits.str2num(cmd.word());
             return false;
         }
+        if (a.equals("remember")) {
+            remember = bits.str2num(cmd.word());
+            return false;
+        }
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             addrIPv4 ip = new addrIPv4();
@@ -370,6 +381,10 @@ public class servDhcp4 extends servGeneric implements prtServS {
             renew = lease / 2;
             return false;
         }
+        if (a.equals("remember")) {
+            remember = 0;
+            return false;
+        }
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             if (mac.fromString(cmd.word())) {
@@ -408,6 +423,8 @@ public class servDhcp4 extends servGeneric implements prtServS {
         l.add(null, "2 .    <num>                lease time in ms");
         l.add(null, "1 2  renew                  renew time to delegate");
         l.add(null, "2 .    <num>                renew time in ms");
+        l.add(null, "1 2  remember               remember time on release");
+        l.add(null, "2 .    <num>                remember time in ms");
         l.add(null, "1 2  netmask                network to delegate");
         l.add(null, "2 .    <mask>               netmask to delegate");
         l.add(null, "1 2  static                 address pool to use");
@@ -469,7 +486,12 @@ public class servDhcp4 extends servGeneric implements prtServS {
                     create--;
                 }
                 if (create == 2) {
-                    bindings.remove(i);
+                    ntry.confed = false;
+                    if (remember < 1) {
+                        bindings.remove(i);
+                    } else {
+                        ntry.reqd = bits.getTime() - lease + remember;
+                    }
                 }
                 return ntry;
             }
