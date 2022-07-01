@@ -4,11 +4,14 @@ struct tree_node {
     unsigned char* value;
 };
 
+struct tree_value {
+    int mask;
+    int addr[];
+};
+
 struct tree_head {
     int reclen;
     struct tree_node* root;
-    int (*masker) (void *);
-    int (*bitter) (void *, int);
 };
 
 int bitVals[] = {
@@ -23,10 +26,8 @@ int bitVals[] = {
 };
 
 
-void tree_init(struct tree_head *tab, int reclen, int masker(void*), int bitter(void*, int)) {
+void tree_init(struct tree_head *tab, int reclen) {
     tab->reclen = reclen;
-    tab->masker = masker;
-    tab->bitter = bitter;
     tab->root = malloc(sizeof(struct tree_node));
     if (tab->root == NULL) err("error allocating memory");
     memset(tab->root, 0, sizeof(struct tree_node));
@@ -34,20 +35,18 @@ void tree_init(struct tree_head *tab, int reclen, int masker(void*), int bitter(
 
 void tree_deinit(struct tree_head *tab) {
     tab->reclen = 0;
-    tab->bitter = NULL;
-    tab->masker = NULL;
     free(tab->root);
     tab->root = NULL;
 }
 
 void* tree_lpm(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
+    struct tree_value* val = ntry;
     void* lst = NULL;
-    int msk = tab->masker(ntry);
     for (int p = 0;; p++) {
         if (cur->value != NULL) lst = cur->value;
-        if (p >= msk) return lst;
-        if (tab->bitter(ntry, p) != 0) {
+        if (p >= val->mask) return lst;
+        if ((val->addr[p / 32] & bitVals[p % 32]) != 0) {
             cur = cur->one;
         } else {
             cur = cur->zero;
@@ -58,9 +57,9 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
 
 void tree_add(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
-    int msk = tab->masker(ntry);
+    struct tree_value* val = ntry;
     for (int p = 0;; p++) {
-        if (p >= msk) {
+        if (p >= val->mask) {
             if (cur->value != NULL) {
                 memcpy(cur->value, ntry, tab->reclen);
                 return;
@@ -71,7 +70,7 @@ void tree_add(struct tree_head *tab, void *ntry) {
             cur->value = nxt;
             return;
         }
-        if (tab->bitter(ntry, p) != 0) {
+        if ((val->addr[p / 32] & bitVals[p % 32]) != 0) {
             if (cur->one != NULL) {
                 cur = cur->one;
                 continue;
@@ -97,16 +96,16 @@ void tree_add(struct tree_head *tab, void *ntry) {
 
 void tree_del(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
-    int msk = tab->masker(ntry);
+    struct tree_value* val = ntry;
     for (int p = 0;; p++) {
-        if (p >= msk) {
+        if (p >= val->mask) {
             void* old = cur->value;
             if (old == NULL) return;
             cur->value = NULL;
             free(old);
             return;
         }
-        if (tab->bitter(ntry, p) != 0) {
+        if ((val->addr[p / 32] & bitVals[p % 32]) != 0) {
             cur = cur->one;
         } else {
             cur = cur->zero;

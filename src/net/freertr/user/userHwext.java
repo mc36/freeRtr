@@ -292,7 +292,8 @@ public class userHwext {
                         userHwdet.setupVeth(hwd, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 2048);
                         userHwdet.setupIface(hwd, "veth0b", 2048);
-                        hwd.add("ip link set " + ifn + " xdpgen obj p4xdp_pass.bin sec p4xdp_pass");
+                        hwd.add("ip link set " + ifn + " xdpgeneric off");
+                        hwd.add("ip link set " + ifn + " xdpgeneric obj p4xdp_pass.bin sec p4xdp_pass");
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);

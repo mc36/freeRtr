@@ -1491,7 +1491,7 @@ ipv4_rx:
         acl4_ntry.tosV = bufD[bufP + 1];
         acl4_ntry.flowV = get16msb(bufD, bufP + 4);
         acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
-        route4_ntry.addr = acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
+        route4_ntry.addr[0] = acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
         route4_ntry.mask = 32;
         hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
         ttl = bufD[bufP + 8] - 1;
@@ -1501,7 +1501,7 @@ ipv4_rx:
         extract_layer4(acl4_ntry);
         update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
         if (port2vrf_res->verify4 > 0) {
-            sroute4_ntry.addr = acl4_ntry.srcAddr;
+            sroute4_ntry.addr[0] = acl4_ntry.srcAddr;
             sroute4_ntry.mask = 32;
             route4_res = tree_lpm(&vrf2rib_res->rou, &sroute4_ntry);
             if (route4_res == NULL) doPunting;
@@ -1585,7 +1585,7 @@ ipv4_flwed:
             nat4_res->pack++;
             nat4_res->byte += bufS;
             acl4_ntry.srcAddr = nat4_res->nSrcAddr;
-            acl4_ntry.trgAddr = route4_ntry.addr = nat4_res->nTrgAddr;
+            acl4_ntry.trgAddr = route4_ntry.addr[0] = nat4_res->nTrgAddr;
             acl4_ntry.srcPortV = nat4_res->nSrcPort;
             acl4_ntry.trgPortV = nat4_res->nTrgPort;
             put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
@@ -1759,10 +1759,10 @@ ipv6_rx:
         acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
         acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
         acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
-        route6_ntry.addr1 = acl6_ntry.trgAddr1 = get32msb(bufD, bufP + 24);
-        route6_ntry.addr2 = acl6_ntry.trgAddr2 = get32msb(bufD, bufP + 28);
-        route6_ntry.addr3 = acl6_ntry.trgAddr3 = get32msb(bufD, bufP + 32);
-        route6_ntry.addr4 = acl6_ntry.trgAddr4 = get32msb(bufD, bufP + 36);
+        route6_ntry.addr[0] = acl6_ntry.trgAddr1 = get32msb(bufD, bufP + 24);
+        route6_ntry.addr[1] = acl6_ntry.trgAddr2 = get32msb(bufD, bufP + 28);
+        route6_ntry.addr[2] = acl6_ntry.trgAddr3 = get32msb(bufD, bufP + 32);
+        route6_ntry.addr[3] = acl6_ntry.trgAddr4 = get32msb(bufD, bufP + 36);
         route6_ntry.mask = 128;
         hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1;
         hash ^= acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2;
@@ -1774,10 +1774,10 @@ ipv6_rx:
         extract_layer4(acl6_ntry);
         update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
         if (port2vrf_res->verify6 > 0) {
-            sroute6_ntry.addr1 = acl6_ntry.srcAddr1;
-            sroute6_ntry.addr2 = acl6_ntry.srcAddr2;
-            sroute6_ntry.addr3 = acl6_ntry.srcAddr3;
-            sroute6_ntry.addr4 = acl6_ntry.srcAddr4;
+            sroute6_ntry.addr[0] = acl6_ntry.srcAddr1;
+            sroute6_ntry.addr[1] = acl6_ntry.srcAddr2;
+            sroute6_ntry.addr[2] = acl6_ntry.srcAddr3;
+            sroute6_ntry.addr[3] = acl6_ntry.srcAddr4;
             sroute6_ntry.mask = 128;
             route6_res = tree_lpm(&vrf2rib_res->rou, &sroute6_ntry);
             if (route6_res == NULL) doPunting;
@@ -1876,10 +1876,10 @@ ipv6_flwed:
             acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
             acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
             acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
-            acl6_ntry.trgAddr1 = route6_ntry.addr1 = nat6_res->nTrgAddr1;
-            acl6_ntry.trgAddr2 = route6_ntry.addr2 = nat6_res->nTrgAddr2;
-            acl6_ntry.trgAddr3 = route6_ntry.addr3 = nat6_res->nTrgAddr3;
-            acl6_ntry.trgAddr4 = route6_ntry.addr4 = nat6_res->nTrgAddr4;
+            acl6_ntry.trgAddr1 = route6_ntry.addr[0] = nat6_res->nTrgAddr1;
+            acl6_ntry.trgAddr2 = route6_ntry.addr[1] = nat6_res->nTrgAddr2;
+            acl6_ntry.trgAddr3 = route6_ntry.addr[2] = nat6_res->nTrgAddr3;
+            acl6_ntry.trgAddr4 = route6_ntry.addr[3] = nat6_res->nTrgAddr4;
             acl6_ntry.srcPortV = nat6_res->nSrcPort;
             acl6_ntry.trgPortV = nat6_res->nTrgPort;
             put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);

@@ -229,7 +229,7 @@ int vrf2rib_compare(void *ptr1, void *ptr2) {
 }
 
 
-struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int masker(void*), int bitter(void*, int), int natter(void *, void *), int tunner(void *, void *), int mcaster(void *, void *)) {
+struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter(void *, void *), int tunner(void *, void *), int mcaster(void *, void *)) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
@@ -237,7 +237,7 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     }
     struct vrf2rib_entry* res = table_get(tab, index);
     struct tree_head *tab2 = &res->rou;
-    if (tab2->reclen != reclen1) tree_init(tab2, reclen1, masker, bitter);
+    if (tab2->reclen != reclen1) tree_init(tab2, reclen1);
     struct table_head *tab3 = &res->nat;
     if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
     tab3 = &res->tun;
@@ -250,13 +250,13 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     return res;
 }
 
-#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), &route4_masker, &route4_bitter, &nat4_compare, &tun4_compare, &mroute4_compare)
-#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), &route6_masker, &route6_bitter, &nat6_compare, &tun6_compare, &mroute6_compare)
+#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), &nat4_compare, &tun4_compare, &mroute4_compare)
+#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), &nat6_compare, &tun6_compare, &mroute6_compare)
 
 
 struct route4_entry {
     int mask;
-    int addr;
+    int addr[1];
     int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6, 6=mysrv4, 7=mysrv6, 8=brsrv, 9=polka, 10=mpolka
     int nexthop;
     int label1;
@@ -271,24 +271,11 @@ struct route4_entry {
     long packRx;
     long byteRx;
 };
-
-int route4_masker(void *ptr) {
-    struct route4_entry *ntry = ptr;
-    return ntry->mask;
-}
-
-int route4_bitter(void *ptr, int pos) {
-    struct route4_entry *ntry = ptr;
-    return ntry->addr & bitVals[pos];
-}
 
 
 struct route6_entry {
     int mask;
-    int addr1;
-    int addr2;
-    int addr3;
-    int addr4;
+    int addr[4];
     int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6, 6=mysrv4, 7=mysrv6, 8=brsrv, 9=polka, 10=mpolka
     int nexthop;
     int label1;
@@ -303,22 +290,6 @@ struct route6_entry {
     long packRx;
     long byteRx;
 };
-
-int route6_masker(void *ptr) {
-    struct route6_entry *ntry = ptr;
-    return ntry->mask;
-}
-
-int route6_bitter(void *ptr, int pos) {
-    struct route6_entry *ntry = ptr;
-    if (pos < 32) return ntry->addr1 & bitVals[pos];
-    pos -= 32;
-    if (pos < 32) return ntry->addr2 & bitVals[pos];
-    pos -= 32;
-    if (pos < 32) return ntry->addr3 & bitVals[pos];
-    pos -= 32;
-    return ntry->addr4 & bitVals[pos];
-}
 
 
 struct neigh_entry {
