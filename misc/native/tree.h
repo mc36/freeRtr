@@ -39,6 +39,8 @@ void tree_deinit(struct tree_head *tab) {
     tab->root = NULL;
 }
 
+#define tree_bit(p) (val->addr[p / 32] & bitVals[p % 32])
+
 void* tree_lpm(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     struct tree_value* val = ntry;
@@ -46,7 +48,7 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
     for (int p = 0;; p++) {
         if (cur->value != NULL) lst = cur->value;
         if (p >= val->mask) return lst;
-        if ((val->addr[p / 32] & bitVals[p % 32]) != 0) {
+        if (tree_bit(p) != 0) {
             cur = cur->one;
         } else {
             cur = cur->zero;
@@ -70,7 +72,7 @@ void tree_add(struct tree_head *tab, void *ntry) {
             cur->value = nxt;
             return;
         }
-        if ((val->addr[p / 32] & bitVals[p % 32]) != 0) {
+        if (tree_bit(p) != 0) {
             if (cur->one != NULL) {
                 cur = cur->one;
                 continue;
@@ -105,7 +107,7 @@ void tree_del(struct tree_head *tab, void *ntry) {
             free(old);
             return;
         }
-        if ((val->addr[p / 32] & bitVals[p % 32]) != 0) {
+        if (tree_bit(p) != 0) {
             cur = cur->one;
         } else {
             cur = cur->zero;
