@@ -35,7 +35,8 @@ jobs:
       name: build cpp
       run: |
         sudo apt-get update
-        sudo apt-get -y install gcc clang libpcap-dev libssl-dev dpdk-dev
+        sudo apt-get -y install gcc clang libpcap-dev libssl-dev dpdk-dev libmnl-dev
+        #libbpf-dev
         cd misc/native
         ./c.sh
 
