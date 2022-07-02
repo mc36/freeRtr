@@ -55,35 +55,31 @@ for fn in p4xdp_user; do
   compileFile $fn "" "-lpthread -lbpf" ""
   done
 
-for fn in p4full p4dbg p4none p4pcap; do
+for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp; do
   compileLib $fn "" ""
   done
 
-for fn in p4dpdk; do
+for fn in p4emu_dpdk; do
   compileLib $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" "-march=corei7"
   done
 
 dpkdLibs="-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
-linkTwoLibs "p4emu" "p4pcap" "p4full" "-lpthread -lpcap -lcrypto"
+linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpthread -lpcap -lcrypto"
 
-linkTwoLibs "p4dbg" "p4pcap" "p4dbg" "-lpthread -lpcap -lcrypto"
+linkTwoLibs "p4dbg" "p4emu_pcap" "p4emu_dbg" "-lpthread -lpcap -lcrypto"
 
-linkTwoLibs "p4pkt" "p4pcap" "p4none" "-lpthread -lpcap -lcrypto"
+linkTwoLibs "p4pkt" "p4emu_pcap" "p4emu_none" "-lpthread -lpcap -lcrypto"
 
-linkTwoLibs "p4dpdk" "p4dpdk" "p4full" "$dpkdLibs"
+linkTwoLibs "p4dpdk" "p4emu_dpdk" "p4emu_full" "$dpkdLibs"
 
-linkTwoLibs "p4dpdkDbg" "p4dpdk" "p4dbg" "$dpkdLibs"
+linkTwoLibs "p4dpdkDbg" "p4emu_dpdk" "p4emu_dbg" "$dpkdLibs"
 
-linkTwoLibs "p4dpdkPkt" "p4dpdk" "p4none" "$dpkdLibs"
+linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "$dpkdLibs"
 
-for fn in p4bench; do
-  compileFile $fn "" "-lcrypto $TR/p4full.lib" ""
-  done
+linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
 
-for fn in p4udp; do
-  compileFile $fn "" "-lpthread -lcrypto $TR/p4full.lib" ""
-  done
+linkTwoLibs "p4udp" "p4emu_udp" "p4emu_full" "-lpthread -lcrypto"
 
 rm $TR/*.lib
 

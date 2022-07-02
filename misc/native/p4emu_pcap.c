@@ -6,22 +6,16 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pcap.h>
 
 
-#include "p4hdr.h"
+#include "p4emu_hdr.h"
 
-
-struct sockaddr_in peers[maxPorts];
-int sockets[maxPorts];
-pthread_t threadRaw[maxPorts];
-int commandSock;
-int ifaceId[maxPorts];
-
+pcap_t *ifacePcap[maxPorts];
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
-    sendto(sockets[port], bufD, bufS, 0, (struct sockaddr *) &peers[port], sizeof(peers[port]));
+    pcap_sendpacket(ifacePcap[port], bufD, bufS);
 }
-
 
 void setMtu(int port, int mtu) {
 }
@@ -35,7 +29,14 @@ int getState(int port) {
 
 
 void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
+    struct pcap_stat stat;
+    if (pcap_stats(ifacePcap[port], &stat) != 0) return;
+    *len += snprintf((char*)&buf[*len], 128, "%s ps_recv %i\r\n", (char*)pre, stat.ps_recv);
+    *len += snprintf((char*)&buf[*len], 128, "%s ps_drop %i\r\n", (char*)pre, stat.ps_drop);
+    *len += snprintf((char*)&buf[*len], 128, "%s ps_ifdrop %i\r\n", (char*)pre, stat.ps_ifdrop);
 }
+
+
 
 void err(char*buf) {
     printf("%s\n", buf);
@@ -45,39 +46,53 @@ void err(char*buf) {
 
 
 
+pthread_t threadRaw[maxPorts];
+int commandSock;
+int ifaceId[maxPorts];
+
+
+
+
 void doIfaceLoop(int * param) {
     int port = *param;
-    int commSock = sockets[port];
     unsigned char bufA[16384];
     unsigned char bufB[16384];
     unsigned char bufC[16384];
     unsigned char bufD[16384];
-    struct sockaddr_in addrTmp;
-    unsigned int addrLen;
+    const unsigned char *pack;
     int bufS;
+    int fail = 0;
+    struct pcap_pkthdr head;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     if (encrCtx == NULL) err("error getting encr context");
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
     if (hashCtx == NULL) err("error getting hash context");
     if (port == cpuPort) {
         for (;;) {
-            addrLen = sizeof(addrTmp);
-            bufS = sizeof(bufD) - preBuff;
-            bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
-            if (bufS < 0) break;
+            if (fail++ > 1024) break;
+            pack = pcap_next(ifacePcap[port], &head);
+            if (pack == NULL) continue;
+            bufS = head.caplen;
+            if (bufS < 1) continue;
+            memcpy(&bufD[preBuff], pack, bufS);
             processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+            fail = 0;
         }
     } else {
         for (;;) {
-            addrLen = sizeof(addrTmp);
-            bufS = sizeof(bufD) - preBuff;
-            bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
-            if (bufS < 0) break;
+            if (fail++ > 1024) break;
+            pack = pcap_next(ifacePcap[port], &head);
+            if (pack == NULL) continue;
+            bufS = head.caplen;
+            if (bufS < 1) continue;
+            memcpy(&bufD[preBuff], pack, bufS);
             processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+            fail = 0;
         }
     }
     err("port thread exited");
 }
+
 
 
 void doSockLoop() {
@@ -97,7 +112,7 @@ void doSockLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
-    fprintf(commands, "platform %sudp\r\n", platformBase);
+    fprintf(commands, "platform %spcap\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", getCapas());
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
@@ -113,8 +128,11 @@ void doStatLoop() {
 }
 
 
+
+
 void doMainLoop() {
     unsigned char buf[1024];
+
     for (;;) {
         printf("> ");
         buf[0] = 0;
@@ -131,45 +149,52 @@ void doMainLoop() {
 
 
 
+
 int main(int argc, char **argv) {
-    dataPorts = (argc - 6) / 2;
-    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> [lportN] [rportN]");
-    if (dataPorts > maxPorts) dataPorts = maxPorts;
-    struct sockaddr_in addrLoc;
-    memset(&addrLoc, 0, sizeof(addrLoc));
-    if (inet_aton(argv[4], &addrLoc.sin_addr) == 0) err("bad laddr address");
-    addrLoc.sin_family = AF_INET;
-    for (int i = 0; i < dataPorts; i++) {
-        unsigned char buf[1024];
-        sprintf((char*)&buf[0], "port-%i", i);
-        initIface(i, (char*)&buf[0]);
-        memset(&peers[i], 0, sizeof(peers[i]));
-        if (inet_aton(argv[5], &peers[i].sin_addr) == 0) err("bad raddr address");
-        addrLoc.sin_port = htons(atoi(argv[(i*2)+6]));
-        peers[i].sin_family = AF_INET;
-        peers[i].sin_port = htons(atoi(argv[(i*2)+7]));
-        if ((sockets[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
-        if (bind(sockets[i], (struct sockaddr *) &addrLoc, sizeof(addrLoc)) < 0) err("failed to bind socket");
-        ifaceId[i] = i;
+    char errbuf[PCAP_ERRBUF_SIZE + 1];
+
+    dataPorts = 0;
+    for (int i = 4; i < argc; i++) {
+        initIface(dataPorts, argv[i]);
+        dataPorts++;
     }
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN]");
+    if (dataPorts > maxPorts) dataPorts = maxPorts;
+    printf("pcap version: %s\n", pcap_lib_version());
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
-    memset(&addrLoc, 0, sizeof(addrLoc));
-    if (inet_aton(argv[1], &addrLoc.sin_addr) == 0) err("bad addr address");
-    addrLoc.sin_family = AF_INET;
-    addrLoc.sin_port = htons(port);
-    printf("connecting %s %i.\n", inet_ntoa(addrLoc.sin_addr), port);
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof (addr));
+    if (inet_aton(argv[1], &addr.sin_addr) == 0) err("bad addr address");
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    printf("connecting %s %i.\n", inet_ntoa(addr.sin_addr), port);
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
-    if(connect(commandSock, (struct sockaddr*)&addrLoc, sizeof(addrLoc)) < 0) err("failed to connect socket");
+    if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
     cpuPort = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
+
+    for (int i = 0; i < dataPorts; i++) {
+        printf("opening interface %s\n", ifaceName[i]);
+        ifacePcap[i] = pcap_create(ifaceName[i], errbuf);
+        if (ifacePcap[i] == NULL) err("unable to open interface");
+        if (pcap_set_snaplen(ifacePcap[i], 65536) < 0) err("unable to set snaplen");
+        if (pcap_set_promisc(ifacePcap[i], 1) < 0) err("unable to set promisc");
+        if (pcap_set_immediate_mode(ifacePcap[i], 1) < 0) err("unable to set immediate");
+        if (pcap_activate(ifacePcap[i]) < 0) err("activation failed");
+        if (pcap_setdirection(ifacePcap[i], PCAP_D_IN) < 0) err("unable to set direction");
+        ifaceId[i] = i;
+    }
+
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
     pthread_t threadStat;
     if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
+
     for (int i=0; i < dataPorts; i++) {
         if (pthread_create(&threadRaw[i], NULL, (void*) & doIfaceLoop, &ifaceId[i])) err("error creating port thread");
     }
+
     doMainLoop();
 }

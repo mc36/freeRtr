@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include "p4hdr.h"
+#include "p4emu_hdr.h"
 
 #include "utils.h"
 #include "table.h"

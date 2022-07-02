@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include <time.h>
 
-#include "p4hdr.h"
+#include "p4emu_hdr.h"
 #include "dump.h"
 
 long packs = 0;
