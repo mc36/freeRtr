@@ -47,12 +47,16 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 
 
 
-for fn in p4xdp_pass p4xdp_drop p4xdp_kern; do
+for fn in p4xdp_pass p4xdp_drop p4xdp_kern p4mnl_kern; do
   compileBpf $fn
   done
 
 for fn in p4xdp_user; do
   compileFile $fn "" "-lpthread -lbpf" ""
+  done
+
+for fn in p4mnl_user; do
+  compileFile $fn "" "-lpthread -lbpf -lmnl" ""
   done
 
 for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp; do

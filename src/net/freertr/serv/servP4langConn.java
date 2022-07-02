@@ -3616,7 +3616,7 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("labroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + servP4langUtil.getLabel(ntry));
                 continue;
             }
-            lower.sendLine("route" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf);
+            lower.sendLine("route" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + hop.iface.id);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = done.get(i);
@@ -3687,7 +3687,7 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("labroute" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + servP4langUtil.getLabel(ntry));
                 continue;
             }
-            lower.sendLine("route" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf);
+            lower.sendLine("route" + afi + "_del " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + hop.iface.id);
         }
     }
 
