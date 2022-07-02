@@ -65,7 +65,7 @@ void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform p4mnl\r\n");
-    fprintf(commands, "capabilities route bridge\r\n");
+    fprintf(commands, "capabilities route\r\n");
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");

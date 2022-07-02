@@ -7,6 +7,7 @@ chmod -x `find . -executable -name "*.txt"` 2> /dev/null
 chmod -x `find . -executable -name "*.p4"` 2> /dev/null
 chmod -x `find . -executable -name "*.py"` 2> /dev/null
 chmod -x `find . -executable -name "*.c"` 2> /dev/null
+chmod -x `find . -executable -name "*.h"` 2> /dev/null
 echo -n `cd misc/android;./d.sh`
 echo -n `cd misc/applet;./d.sh`
 echo -n `cd misc/p4lang;./d.sh`
