@@ -14,6 +14,14 @@ MD="-O3"                                #release
 #p *((struct <type> *)(<addr>))
 mkdir -p $TR
 
+if [ "$UM" = "x86_64" ]; then
+  MF="-march=corei7";
+else
+  MF="";
+fi
+
+echo cc=$CC, mode=$MD, flags=$MF, target=$TR
+
 compileBpf()
 {
 echo compiling $1.
@@ -64,7 +72,7 @@ for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp; do
   done
 
 for fn in p4emu_dpdk; do
-  compileLib $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" "-march=corei7"
+  compileLib $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" $MF
   done
 
 dpkdLibs="-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
