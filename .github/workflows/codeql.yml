@@ -34,9 +34,9 @@ jobs:
     - if: matrix.language == 'cpp'
       name: build cpp
       run: |
-        sudo apt-get update
+        sudo apt-get -y update || true
         for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libmnl-dev ; do
-          sudo apt-get -y install $a
+          sudo apt-get -y install $a || true
           done
         cd misc/native
         ./c.sh
