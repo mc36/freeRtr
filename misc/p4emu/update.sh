@@ -5,6 +5,7 @@ sudo apt-get -t experimental install dpdk dpdk-dev openssl libssl-dev libpcap-de
 sudo apt-get remove apparmor
 sudo apt-get autoremove
 sudo apt-get clean
+rm p4*.bin
 cd ~
 mkdir a
 wget -O a/rtr.zip http://src.mchome.nop.hu/rtr.zip
