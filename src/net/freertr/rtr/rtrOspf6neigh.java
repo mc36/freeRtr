@@ -208,11 +208,13 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
     /**
      * convert status to string
      *
-     * @param i status
      * @return string
      */
-    public static String status2string(int i) {
-        switch (i) {
+    public String status2string() {
+        if (!iface.shouldIpeer(rtrID)) {
+            return "unneeded";
+        }
+        switch (state) {
             case stDown:
                 return "down";
             case stInit:
@@ -222,7 +224,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             case stFull:
                 return "full";
             default:
-                return "unknown=" + i;
+                return "unknown=" + state;
         }
     }
 

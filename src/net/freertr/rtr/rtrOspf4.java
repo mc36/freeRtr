@@ -796,9 +796,9 @@ public class rtrOspf4 extends ipRtr {
                     continue;
                 }
                 if (brief) {
-                    l.add(nei.area.area + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
+                    l.add(nei.area.area + "|" + nei.rtrID + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
                 } else {
-                    l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + rtrOspf4neigh.status2string(nei.state) + "|" + bits.timePast(nei.upTime));
+                    l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
                 }
             }
         }

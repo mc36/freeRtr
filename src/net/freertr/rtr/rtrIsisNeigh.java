@@ -233,11 +233,13 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     /**
      * convert status to string
      *
-     * @param i status
      * @return string
      */
-    public static String status2string(int i) {
-        switch (i) {
+    public String status2string() {
+        if (!iface.shouldIanswer(level.level, rtrID)) {
+            return "unneeded";
+        }
+        switch (peerAdjState) {
             case statDown:
                 return "down";
             case statInit:
@@ -245,7 +247,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             case statUp:
                 return "up";
             default:
-                return "unknown=" + i;
+                return "unknown=" + peerAdjState;
         }
     }
 

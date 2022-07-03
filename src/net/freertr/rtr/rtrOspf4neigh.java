@@ -202,11 +202,13 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
     /**
      * convert status to string
      *
-     * @param i status
      * @return string
      */
-    public static String status2string(int i) {
-        switch (i) {
+    public String status2string() {
+        if (!iface.shouldIpeer(peer)) {
+            return "unneeded";
+        }
+        switch (state) {
             case stDown:
                 return "down";
             case stInit:
@@ -216,7 +218,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             case stFull:
                 return "full";
             default:
-                return "unknown=" + i;
+                return "unknown=" + state;
         }
     }
 

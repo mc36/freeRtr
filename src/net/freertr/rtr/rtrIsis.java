@@ -1888,7 +1888,7 @@ public class rtrIsis extends ipRtr {
         if (brief) {
             l = new userFormat("|", "level|routerid|state|uptime");
         } else {
-            l = new userFormat("|", "interface|mac address|level|routerid|ip address|other address|state|uptime");
+            l = new userFormat("|", "interface|level|routerid|ip address|other address|state|uptime");
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrIsisIface ifc = ifaces.get(o);
@@ -1901,9 +1901,9 @@ public class rtrIsis extends ipRtr {
                     continue;
                 }
                 if (brief) {
-                    l.add(nei.level.level + "|" + nei.rtrID + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
+                    l.add(nei.level.level + "|" + nei.rtrID + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
                 } else {
-                    l.add(ifc.upper + "|" + nei.ethAddr + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + rtrIsisNeigh.status2string(nei.peerAdjState) + "|" + bits.timePast(nei.upTime));
+                    l.add(ifc.upper + "|" + nei.level.level + "|" + nei.rtrID + "|" + nei.ifcAddr + "|" + nei.ofcAddr + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
                 }
             }
         }
