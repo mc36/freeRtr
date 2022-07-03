@@ -20,7 +20,7 @@ else
   MF="";
 fi
 
-echo cc=$CC, mode=$MD, flags=$MF, target=$TR
+echo arch=$UM, cc=$CC, mode=$MD, flag=$MF, out=$TR
 
 compileBpf()
 {
