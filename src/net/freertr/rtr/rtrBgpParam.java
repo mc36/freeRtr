@@ -198,6 +198,11 @@ public abstract class rtrBgpParam {
     public boolean bfdTrigger;
 
     /**
+     * backup of peer
+     */
+    public addrIP backupOf;
+
+    /**
      * soft reconfiguration
      */
     public boolean softReconfig;
@@ -955,6 +960,7 @@ public abstract class rtrBgpParam {
         capaNego = src.capaNego;
         trackNxthop = src.trackNxthop;
         bfdTrigger = src.bfdTrigger;
+        backupOf = src.backupOf;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
         multiLabel = src.multiLabel;
@@ -1332,6 +1338,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       next-hop-unchanged          send next hop unchanged to peer");
         l.add(null, "3  .       next-hop-self               send next hop myself to peer");
         l.add(null, "3  .       next-hop-peer               set next hop to peer address");
+        l.add(null, "3  4       backup-peer                 keep down if an other peer is up");
+        l.add(null, "4  .         <addr>                    other address");
         l.add(null, "3  .       bfd                         enable bfd triggered down");
         l.add(null, "3  4       multiple-labels             advertise multiple labels capability");
         getAfiList(l, "4  4,.", "use", true);
@@ -1495,6 +1503,7 @@ public abstract class rtrBgpParam {
             l.add(beg + nei + "dump " + dump.dumpName);
         }
         cmds.cfgLine(l, otherAdr == null, beg, nei + "other-address", "" + otherAdr);
+        cmds.cfgLine(l, backupOf == null, beg, nei + "backup-peer", "" + backupOf);
         cmds.cfgLine(l, !bfdTrigger, beg, nei + "bfd", "");
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
@@ -1643,6 +1652,14 @@ public abstract class rtrBgpParam {
     public boolean checkShutdown() {
         if (shutdown) {
             return true;
+        }
+        if (backupOf != null) {
+            rtrBgpNeigh per = lower.findPeer(backupOf);
+            if (per != null) {
+                if (per.conn.ready2adv) {
+                    return true;
+                }
+            }
         }
         if (!lower.safeEbgp) {
             return false;
@@ -1808,6 +1825,15 @@ public abstract class rtrBgpParam {
             holdTimer = bits.str2num(cmd.word());
             return false;
         }
+        if (s.equals("backup-peer")) {
+            if (negated) {
+                backupOf = null;
+                return false;
+            }
+            backupOf = new addrIP();
+            backupOf.fromString(cmd.word());
+            return false;
+        }
         if (s.equals("bfd")) {
             bfdTrigger = !negated;
             return false;
@@ -1870,9 +1896,6 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("shutdown")) {
             shutdown = !negated;
-            if (shutdown) {
-                flapBgpConn();
-            }
             return false;
         }
         if (s.equals("connection-mode")) {

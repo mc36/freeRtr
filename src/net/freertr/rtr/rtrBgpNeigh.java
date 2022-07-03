@@ -687,6 +687,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return;
             }
             if (checkShutdown()) {
+                if (conn.txFree() < 1) {
+                    continue;
+                }
+                flapBgpConn();
                 continue;
             }
             if (conn.txFree() >= 0) {

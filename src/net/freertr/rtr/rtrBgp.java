@@ -2595,29 +2595,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("safe-ebgp")) {
             safeEbgp = !negated;
-            if (!safeEbgp) {
-                return false;
-            }
-            for (int i = 0; i < neighs.size(); i++) {
-                rtrBgpNeigh nei = neighs.get(i);
-                if (nei == null) {
-                    continue;
-                }
-                if (!nei.checkShutdown()) {
-                    continue;
-                }
-                nei.flapBgpConn();
-            }
-            for (int i = 0; i < lstnNei.size(); i++) {
-                rtrBgpNeigh nei = lstnNei.get(i);
-                if (nei == null) {
-                    continue;
-                }
-                if (!nei.checkShutdown()) {
-                    continue;
-                }
-                nei.flapBgpConn();
-            }
             return false;
         }
         if (s.equals("address-family")) {
