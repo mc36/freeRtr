@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <inttypes.h>
 #include <dpdk/rte_config.h>
 #include <dpdk/rte_common.h>
 #include <dpdk/rte_version.h>
@@ -60,14 +61,14 @@ int getState(int port) {
 void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
     struct rte_eth_stats stat;
     if (rte_eth_stats_get(port, &stat) != 0) return;
-    *len += snprintf((char*)&buf[*len], 128, "%s ipackets %li\r\n", (char*)pre, stat.ipackets);
-    *len += snprintf((char*)&buf[*len], 128, "%s opackets %li\r\n", (char*)pre, stat.opackets);
-    *len += snprintf((char*)&buf[*len], 128, "%s ibytes %li\r\n", (char*)pre, stat.ibytes);
-    *len += snprintf((char*)&buf[*len], 128, "%s obytes %li\r\n", (char*)pre, stat.obytes);
-    *len += snprintf((char*)&buf[*len], 128, "%s imissed %li\r\n", (char*)pre, stat.imissed);
-    *len += snprintf((char*)&buf[*len], 128, "%s ierrors %li\r\n", (char*)pre, stat.ierrors);
-    *len += snprintf((char*)&buf[*len], 128, "%s oerrors %li\r\n", (char*)pre, stat.oerrors);
-    *len += snprintf((char*)&buf[*len], 128, "%s nombuf %li\r\n", (char*)pre, stat.rx_nombuf);
+    *len += snprintf((char*)&buf[*len], 128, "%s ipackets %" PRIi64 "\r\n", (char*)pre, stat.ipackets);
+    *len += snprintf((char*)&buf[*len], 128, "%s opackets %" PRIi64 "\r\n", (char*)pre, stat.opackets);
+    *len += snprintf((char*)&buf[*len], 128, "%s ibytes %" PRIi64 "\r\n", (char*)pre, stat.ibytes);
+    *len += snprintf((char*)&buf[*len], 128, "%s obytes %" PRIi64 "\r\n", (char*)pre, stat.obytes);
+    *len += snprintf((char*)&buf[*len], 128, "%s imissed %" PRIi64 "\r\n", (char*)pre, stat.imissed);
+    *len += snprintf((char*)&buf[*len], 128, "%s ierrors %" PRIi64 "\r\n", (char*)pre, stat.ierrors);
+    *len += snprintf((char*)&buf[*len], 128, "%s oerrors %" PRIi64 "\r\n", (char*)pre, stat.oerrors);
+    *len += snprintf((char*)&buf[*len], 128, "%s nombuf %" PRIi64 "\r\n", (char*)pre, stat.rx_nombuf);
     for (int i = 0;; i++) {
         uint64_t xstat_id;
         uint64_t xstat_val;
@@ -75,7 +76,7 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
         xstat_id = i;
         if (rte_eth_xstats_get_by_id(port, &xstat_id, &xstat_val, 1) != 1) return;
         if (rte_eth_xstats_get_names_by_id(port, &xstat_nam, 1, &xstat_id) != 1) return;
-        *len += snprintf((char*)&buf[*len], 128, "%s %s %li\r\n", (char*)pre, xstat_nam.name, xstat_val);
+        *len += snprintf((char*)&buf[*len], 128, "%s %s %" PRIi64 "\r\n", (char*)pre, xstat_nam.name, xstat_val);
     }
 }
 

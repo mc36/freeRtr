@@ -125,6 +125,8 @@ public class userTester {
 
     private int postdelay = 0;
 
+    private int oobase = 20001;
+    
     private String jvn = "java";
 
     private String jvp = " XmxZZZm -jar " + version.getFileName();
@@ -520,6 +522,10 @@ public class userTester {
                 postdelay = 0;
                 continue;
             }
+            if (s.equals("oobase")) {
+                oobase = bits.str2num(cmd.word());
+                continue;
+            }
             if (s.equals("restart")) {
                 restart = bits.str2num(cmd.word());
                 continue;
@@ -748,6 +754,7 @@ public class userTester {
             remoteL.fromString(remoteD.remove(0));
             remoteS = remoteD.remove(0);
         }
+        rdr.debugStat("oobase=" + oobase);
         rdr.debugStat("slot=" + slot);
         rdr.debugStat("paralell=" + paralell);
         rdr.debugStat("jvm=" + jvn + jvp);
@@ -994,6 +1001,7 @@ public class userTester {
         lt.predelay = predelay;
         lt.postdelay = postdelay;
         lt.jvm = jvn + jvp;
+        lt.oobase = oobase;
         lt.others = others;
         lt.remoteD = remoteD;
         lt.remoteA = remoteA;
@@ -1517,6 +1525,8 @@ class userTesterOne {
 
     public String jvm;
 
+    public int oobase;
+    
     public List<userTesterCap> capture;
 
     public int persistP;
@@ -2157,7 +2167,7 @@ class userTesterOne {
                 cfg.add(s);
             }
             cfg.add("hwid tester-slot" + slot);
-            cfg.add("tcp2vrf " + (20001 + (slot * userTester.portSlot) + procs.size()) + " tester 23");
+            cfg.add("tcp2vrf " + (oobase + (slot * userTester.portSlot) + procs.size()) + " tester 23");
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();
             cfg.add("");

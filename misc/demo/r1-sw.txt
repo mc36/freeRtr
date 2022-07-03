@@ -1,3 +1,4 @@
+!java -Xmx256m -jar rtr.jar routerc ../binTmp/zzz0r1-
 hostname r1
 logging file debug ../binTmp/zzz0r1-log.run
 vrf definition tester
@@ -13,7 +14,7 @@ proxy-profile p1
  vrf v1
  exit
 server telnet tel
- sec prot tel
+ security protocol tel
  vrf v1
  exit
 int lo0
