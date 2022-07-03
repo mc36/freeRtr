@@ -2436,6 +2436,10 @@ qc pass: vpls/ldp cw over bgp with soft-reconfig
 qc pass: unicast+vpls/ldp cw over bgp
 qc pass: unicast+vpls/ldp cw over bgp with soft-reconfig
 qc pass: unicast+vpls/ldp cw over bgp additional path
+qc pass: ebgp with backup peer
+qc pass: ibgp with backup peer
+qc pass: confed bgp with backup peer
+qc pass: route server bgp with backup peer
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

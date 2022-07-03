@@ -13296,3 +13296,8 @@ qc pass: p4lang: vlan local connect
 todo: test tstmat
 ---------------------------------- 2022-06-27 16:46:12 22.6.27
 no todo: test tstmat
+---------------------------------- 2022-07-03 12:03:44 22.7.3
+qc pass: ebgp with backup peer
+qc pass: ibgp with backup peer
+qc pass: confed bgp with backup peer
+qc pass: route server bgp with backup peer
