@@ -4784,7 +4784,7 @@ public class userShow {
             case 2002:
             case 2005:
             case 9:
-                l = new userFormat("|", "prefix|alts|ecmp|best|proto|source");
+                l = new userFormat("|", "prefix|alts|candid|best|proto|source");
                 break;
             default:
                 return;

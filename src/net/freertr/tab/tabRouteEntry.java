@@ -506,7 +506,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         lst.add(beg + "|alternates|" + alts.size());
         for (int i = 0; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
-            lst.add(beg + "|alternate #" + i + "|ecmp=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
+            lst.add(beg + "|alternate #" + i + "|candidate=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
             ntry.fullDump(lst, beg + " alt" + i + "|");
         }
         lst.add(beg + "|counter|" + cntr.getShStat());
