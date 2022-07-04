@@ -126,7 +126,7 @@ public class userTester {
     private int postdelay = 0;
 
     private int oobase = 20001;
-    
+
     private String jvn = "java";
 
     private String jvp = " XmxZZZm -jar " + version.getFileName();
@@ -1526,7 +1526,7 @@ class userTesterOne {
     public String jvm;
 
     public int oobase;
-    
+
     public List<userTesterCap> capture;
 
     public int persistP;

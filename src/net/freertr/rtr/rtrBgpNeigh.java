@@ -12,6 +12,7 @@ import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
+import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
@@ -736,11 +737,20 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         pipeSide pipe;
         if (tim < 1) {
-            pipe = lower.tcpCore.streamConnect(new pipeLine(bufferSize, false), ifc, 0, peerAddr, rtrBgp.port, "bgp", passwd, ttlSecurity, tosValue);
+            if (proxy2use != null) {
+                pipe = proxy2use.doConnect(servGeneric.protoTcp, proxy2adr, proxy2prt, "bgp");
+            } else {
+                pipe = lower.tcpCore.streamConnect(new pipeLine(bufferSize, false), ifc, 0, peerAddr, rtrBgp.port, "bgp", passwd, ttlSecurity, tosValue);
+            }
         } else {
-            prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(bufferSize, false), ifc, rtrBgp.port, peerAddr, 0, "bgp", passwd, ttlSecurity, tosValue);
-            ac.wait4conn(tim * 1000);
-            pipe = ac.getConn(true);
+            if (proxy2use != null) {
+                pipe = null;
+                bits.sleep(tim);
+            } else {
+                prtAccept ac = new prtAccept(lower.tcpCore, new pipeLine(bufferSize, false), ifc, rtrBgp.port, peerAddr, 0, "bgp", passwd, ttlSecurity, tosValue);
+                ac.wait4conn(tim * 1000);
+                pipe = ac.getConn(true);
+            }
         }
         if (pipe == null) {
             return true;

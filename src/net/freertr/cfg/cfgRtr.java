@@ -335,6 +335,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* compression",
         "router bgp[46] .*! no (template|neighbor) .* bfd",
         "router bgp[46] .*! no (template|neighbor) .* backup-peer",
+        "router bgp[46] .*! no (template|neighbor) .* proxy-profile",
         "router bgp[46] .*! no (template|neighbor) .* fall-over",
         "router bgp[46] .*! no (template|neighbor) .* hostname",
         "router bgp[46] .*! no (template|neighbor) .* unidirection",

@@ -7,9 +7,11 @@ import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.clnt.clntProxy;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -200,7 +202,22 @@ public abstract class rtrBgpParam {
     /**
      * backup of peer
      */
-    public addrIP backupOf;
+    public addrIP backupPeer;
+
+    /**
+     * proxy to use
+     */
+    public clntProxy proxy2use;
+
+    /**
+     * address to use
+     */
+    public addrIP proxy2adr;
+
+    /**
+     * port to use
+     */
+    public int proxy2prt;
 
     /**
      * soft reconfiguration
@@ -960,7 +977,7 @@ public abstract class rtrBgpParam {
         capaNego = src.capaNego;
         trackNxthop = src.trackNxthop;
         bfdTrigger = src.bfdTrigger;
-        backupOf = src.backupOf;
+        backupPeer = src.backupPeer;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
         multiLabel = src.multiLabel;
@@ -1338,6 +1355,10 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       next-hop-unchanged          send next hop unchanged to peer");
         l.add(null, "3  .       next-hop-self               send next hop myself to peer");
         l.add(null, "3  .       next-hop-peer               set next hop to peer address");
+        l.add(null, "3  4       proxy-profile               proxy profile to use");
+        l.add(null, "4  5         <name:prx>                proxy profile name");
+        l.add(null, "5  6           <addr>                  remote address");
+        l.add(null, "6  .             <num>                 remote port");
         l.add(null, "3  4       backup-peer                 keep down if an other peer is up");
         l.add(null, "4  .         <addr>                    other address");
         l.add(null, "3  .       bfd                         enable bfd triggered down");
@@ -1503,7 +1524,8 @@ public abstract class rtrBgpParam {
             l.add(beg + nei + "dump " + dump.dumpName);
         }
         cmds.cfgLine(l, otherAdr == null, beg, nei + "other-address", "" + otherAdr);
-        cmds.cfgLine(l, backupOf == null, beg, nei + "backup-peer", "" + backupOf);
+        cmds.cfgLine(l, backupPeer == null, beg, nei + "backup-peer", "" + backupPeer);
+        cmds.cfgLine(l, proxy2use == null, beg, nei + "proxy-profile", proxy2use + " " + proxy2adr + " " + proxy2prt);
         cmds.cfgLine(l, !bfdTrigger, beg, nei + "bfd", "");
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
@@ -1653,8 +1675,8 @@ public abstract class rtrBgpParam {
         if (shutdown) {
             return true;
         }
-        if (backupOf != null) {
-            rtrBgpNeigh per = lower.findPeer(backupOf);
+        if (backupPeer != null) {
+            rtrBgpNeigh per = lower.findPeer(backupPeer);
             if (per != null) {
                 if (per.conn.ready2adv) {
                     return true;
@@ -1825,13 +1847,31 @@ public abstract class rtrBgpParam {
             holdTimer = bits.str2num(cmd.word());
             return false;
         }
-        if (s.equals("backup-peer")) {
+        if (s.equals("proxy-profile")) {
             if (negated) {
-                backupOf = null;
+                proxy2use = null;
+                proxy2adr = null;
+                proxy2prt = 0;
                 return false;
             }
-            backupOf = new addrIP();
-            backupOf.fromString(cmd.word());
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            proxy2adr = new addrIP();
+            proxy2adr.fromString(cmd.word());
+            proxy2prt = bits.str2num(cmd.word());
+            proxy2use = prx.proxy;
+            return false;
+        }
+        if (s.equals("backup-peer")) {
+            if (negated) {
+                backupPeer = null;
+                return false;
+            }
+            backupPeer = new addrIP();
+            backupPeer.fromString(cmd.word());
             return false;
         }
         if (s.equals("bfd")) {
