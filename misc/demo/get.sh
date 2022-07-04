@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd ../../src
-java -jar rtr.jar test tester demo02 oobase 2001
+./tw.sh demo02 oobase 2001
 cd ../misc/demo
 
 getRtr()

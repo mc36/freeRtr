@@ -33,6 +33,7 @@ int eth2
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
+client proxy p1
 !
 
 addrouter r2
@@ -68,6 +69,7 @@ int eth2
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff::
  exit
+client proxy p1
 !
 
 addrouter r3
@@ -103,6 +105,7 @@ int eth2
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
+client proxy p1
 !
 
 addrouter r4
@@ -138,6 +141,7 @@ int eth2
  ipv4 addr 1.1.1.10 255.255.255.252
  ipv6 addr 1234:3::2 ffff:ffff::
  exit
+client proxy p1
 !
 
 exit
