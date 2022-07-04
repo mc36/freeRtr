@@ -4,6 +4,7 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.ifc.ifcMpolka;
 import net.freertr.ifc.ifcPolka;
@@ -64,6 +65,9 @@ public class ipIfcLoop implements ipIfc {
         addrIP m1 = new addrIP();
         m1.fromIPv4mask(m2);
         ipmask = m1.toNetmask();
+        if (upper == null) {
+            return;
+        }
         upper.ifaceAddr(ifcHdr, ipaddr, ipmask);
     }
 
@@ -76,13 +80,32 @@ public class ipIfcLoop implements ipIfc {
     public void setIPv6addr(addrIPv6 addr, int mask) {
         ipaddr = new addrIP();
         ipaddr.fromIPv6addr(addr);
-        ipmask = mask;
         addrIPv6 m2 = new addrIPv6();
         m2.fromNetmask(mask);
         addrIP m1 = new addrIP();
         m1.fromIPv6mask(m2);
-        int ipm = m1.toNetmask();
-        upper.ifaceAddr(ifcHdr, ipaddr, ipm);
+        ipmask = m1.toNetmask();
+        if (upper == null) {
+            return;
+        }
+        upper.ifaceAddr(ifcHdr, ipaddr, ipmask);
+    }
+
+    /**
+     * create an interface from my address
+     *
+     * @return forwarder interface
+     */
+    public ipFwdIface getFwdIface() {
+        ipFwdIface ifc = new ipFwdIface(-1, this);
+        ifc.addr = new addrIP();
+        ifc.network = new addrPrefix<addrIP>(ipaddr, ipmask);
+        ifc.ready = true;
+        ifc.mtu = 1500;
+        ifc.bandwidth = 100000000;
+        ifc.addr = ipaddr.copyBytes();
+        ifc.mask = ipmask;
+        return ifc;
     }
 
     /**

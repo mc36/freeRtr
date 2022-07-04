@@ -10,7 +10,6 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipIfcLoop;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -135,7 +134,9 @@ public class prtLocTcp implements Runnable {
             logger.warn("not stream server on port " + port);
             return true;
         }
-        prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, new ipFwdIface(-1, new ipIfcLoop()), port, srcA, srcP, "local:" + srv.name, null, -1, -1);
+        ipIfcLoop ipi = new ipIfcLoop();
+        ipi.setIPv4addr(new addrIPv4(), addrIPv4.size * 8);
+        prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, ipi.getFwdIface(), port, srcA, srcP, "local:" + srv.name, null, -1, -1);
         pipeLine pipeHandler = pipeLine.doClone(srv.sample, false);
         pipeSide pipeNetwork = pipeHandler.getSide();
         pipeSide pipeClient = pipeHandler.getSide();
