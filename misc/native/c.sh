@@ -14,10 +14,12 @@ MD="-O3"                                #release
 #p *((struct <type> *)(<addr>))
 mkdir -p $TR
 
+MF=""
 if [ "$UM" = "x86_64" ]; then
-  MF="-march=corei7";
-else
-  MF="";
+  MF="-march=corei7"
+fi
+if [ "$UM" = "i686" ]; then
+  MF="-march=corei7"
 fi
 
 echo arch=$UM, cc=$CC, mode=$MD, flag=$MF, out=$TR
