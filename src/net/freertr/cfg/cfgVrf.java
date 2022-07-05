@@ -191,8 +191,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! propagate6ttl",
         "vrf definition .*! report4labels",
         "vrf definition .*! report6labels",
-        "vrf definition .*! unreach4interval 0 0",
-        "vrf definition .*! unreach6interval 0 0",
+        "vrf definition .*! unreach4rate 0 0",
+        "vrf definition .*! unreach6rate 0 0",
         "vrf definition .*! no punish4pmtud",
         "vrf definition .*! no punish6pmtud",
         "vrf definition .*! no mdt4",
@@ -559,8 +559,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, !fwd6.mplsPropTtl, cmds.tabulator, "propagate6ttl", "");
         cmds.cfgLine(l, !fwd4.mplsExtRep, cmds.tabulator, "report4labels", "");
         cmds.cfgLine(l, !fwd6.mplsExtRep, cmds.tabulator, "report6labels", "");
-        l.add(cmds.tabulator + "unreach4interval " + fwd4.unreachRat + " " + fwd4.unreachInt);
-        l.add(cmds.tabulator + "unreach6interval " + fwd6.unreachRat + " " + fwd6.unreachInt);
+        l.add(cmds.tabulator + "unreach4rate " + fwd4.unreachRat + " " + fwd4.unreachInt);
+        l.add(cmds.tabulator + "unreach6rate " + fwd6.unreachRat + " " + fwd6.unreachInt);
         cmds.cfgLine(l, !fwd4.ruinPmtuD, cmds.tabulator, "punish4pmtud", "");
         cmds.cfgLine(l, !fwd6.ruinPmtuD, cmds.tabulator, "punish6pmtud", "");
         cmds.cfgLine(l, fwd4.labelFilter == null, cmds.tabulator, "label4filter", "" + fwd4.labelFilter);
@@ -677,13 +677,13 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, ".1 . punish-pmtud        send back mtu exceeded if needed");
         l.add(null, ".1 . punish4pmtud        send back mtu exceeded if needed");
         l.add(null, ".1 . punish6pmtud        send back mtu exceeded if needed");
-        l.add(null, "1 2  unreach-interval    rate limit icmp generation");
+        l.add(null, "1 2  unreach-rate        rate limit icmp generation");
         l.add(null, "2 3    <num>             packets allowed");
         l.add(null, "3 .      <num>           millisecs between them");
-        l.add(null, "1 2  unreach4interval    rate limit icmp generation");
+        l.add(null, "1 2  unreach4rate        rate limit icmp generation");
         l.add(null, "2 3    <num>             packets allowed");
         l.add(null, "3 .      <num>           millisecs between them");
-        l.add(null, "1 2  unreach6interval    rate limit icmp generation");
+        l.add(null, "1 2  unreach6rate        rate limit icmp generation");
         l.add(null, "2 3    <num>             packets allowed");
         l.add(null, "3 .      <num>           millisecs between them");
         l.add(null, "1 2  route4limit         maximum ipv4 routes allowed");
@@ -968,7 +968,7 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             tabLabel.release(old, 1);
             return;
         }
-        if (a.equals("unreach-interval")) {
+        if (a.equals("unreach-rate")) {
             int res1 = bits.str2num(cmd.word());
             int res2 = bits.str2num(cmd.word());
             fwd4.unreachRat = res1;
@@ -977,12 +977,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.unreachInt = res2;
             return;
         }
-        if (a.equals("unreach4interval")) {
+        if (a.equals("unreach4rate")) {
             fwd4.unreachRat = bits.str2num(cmd.word());
             fwd4.unreachInt = bits.str2num(cmd.word());
             return;
         }
-        if (a.equals("unreach6interval")) {
+        if (a.equals("unreach6rate")) {
             fwd6.unreachRat = bits.str2num(cmd.word());
             fwd6.unreachInt = bits.str2num(cmd.word());
             return;
@@ -1421,19 +1421,19 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.routerStaticChg();
             return;
         }
-        if (a.equals("unreach-interval")) {
+        if (a.equals("unreach-rate")) {
             fwd4.unreachRat = 0;
             fwd6.unreachRat = 0;
             fwd4.unreachInt = 0;
             fwd6.unreachInt = 0;
             return;
         }
-        if (a.equals("unreach4interval")) {
+        if (a.equals("unreach4rate")) {
             fwd4.unreachRat = 0;
             fwd4.unreachInt = 0;
             return;
         }
-        if (a.equals("unreach6interval")) {
+        if (a.equals("unreach6rate")) {
             fwd6.unreachRat = 0;
             fwd6.unreachInt = 0;
             return;
