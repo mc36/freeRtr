@@ -253,6 +253,11 @@ public class packTlsHndshk {
     public cryHashGeneric paramHsh;
 
     /**
+     * client hello retried
+     */
+    public boolean retriedCH;
+
+    /**
      * hello request
      */
     public final static int typeHeloReq = 0;
@@ -769,14 +774,26 @@ public class packTlsHndshk {
                     if (ecDiffHell.curve == null) {
                         break;
                     }
-                    cryECcurve tmp = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, 2));
-                    if (tmp == null) {
+                    for (int p = 2;;) {
+                        if ((p + 4) > tlv.valSiz) {
+                            break;
+                        }
+                        int s = bits.msbGetW(tlv.valDat, p + 2) + 4;
+                        if ((p + s) > tlv.valSiz) {
+                            break;
+                        }
+                        cryECcurve tmp = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, p));
+                        if (tmp == null) {
+                            p += s;
+                            continue;
+                        }
+                        if (tmp.tls != ecDiffHell.curve.tls) {
+                            p += s;
+                            continue;
+                        }
+                        ecDiffHell.clntPub = cryECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, p + 4);
                         break;
                     }
-                    if (tmp.tls != ecDiffHell.curve.tls) {
-                        break;
-                    }
-                    ecDiffHell.clntPub = cryECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, 6);
                     break;
             }
         }
@@ -800,7 +817,9 @@ public class packTlsHndshk {
         packHolder pck = new packHolder(true, true);
         byte[] buf = new byte[2];
         bits.msbPutW(buf, 0, 8192);
-        tlv.putBytes(pck, 28, buf); // record size limit
+        if (lower.verMax < 0x304) {
+            tlv.putBytes(pck, 28, buf); // record size limit
+        }
         if (client && (servNam != null)) {
             int len = servNam.length();
             buf = new byte[len + 5];
@@ -1058,6 +1077,21 @@ public class packTlsHndshk {
             return true;
         }
         ecDiffHell.servXchg();
+        return false;
+    }
+
+    /**
+     * check if retry needed
+     *
+     * @return false if not, true if yes
+     */
+    public boolean servHelloRetrying() {
+        if (ecDiffHell.curve == null) {
+            return true;
+        }
+        if (ecDiffHell.clntPub == null) {
+            return true;
+        }
         return false;
     }
 
@@ -1746,6 +1780,9 @@ public class packTlsHndshk {
     }
 
     private byte[] calcExchangeSumV13(cryHashGeneric h) {
+        if (!retriedCH) {
+            return calcExchangeSum(h, 0, 0, null, null);
+        }
         int chl = xchgPack.get(0);
         byte[] trf = new byte[4];
         trf[0] = (byte) typeMsgHsh;

@@ -362,6 +362,7 @@ public class secTls implements Runnable {
             if (ph.clntHelloFillEc()) {
                 return null;
             }
+            ph.retriedCH = true;
             ph.clntHelloFill();
             ph.clntHelloCreate();
             ph.headerCreate();
@@ -518,23 +519,26 @@ public class secTls implements Runnable {
             }
         }
         if (ph.maxVer >= 0x304) {
-            if (ph.servHelloFill()) {
-                return null;
-            }
-            ph.servHelloFillRetry();
-            ph.servHelloCreate();
-            ph.headerCreate();
-            p.packSend();
-            p.verCurr = -1;
-            p.packRecv();
-            if (!ph.chgCipherParse()) {
+            if (ph.servHelloRetrying()) {
+                ph.retriedCH = true;
+                if (ph.servHelloFill()) {
+                    return null;
+                }
+                ph.servHelloFillRetry();
+                ph.servHelloCreate();
+                ph.headerCreate();
+                p.packSend();
+                p.verCurr = -1;
                 p.packRecv();
-            }
-            if (ph.headerParse()) {
-                return null;
-            }
-            if (ph.clntHelloParse()) {
-                return null;
+                if (!ph.chgCipherParse()) {
+                    p.packRecv();
+                }
+                if (ph.headerParse()) {
+                    return null;
+                }
+                if (ph.clntHelloParse()) {
+                    return null;
+                }
             }
             if (ph.servHelloFillEc()) {
                 return null;
