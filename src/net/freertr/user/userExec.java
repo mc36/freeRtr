@@ -1097,6 +1097,10 @@ public class userExec {
         hl.add(null, "4 5,.        <name:ifc>          name of interface");
         hl.add(null, "5 5,.          all               do not hide defaults");
         hl.add(null, "5 5,.          hide              hide passwords");
+        hl.add(null, "3 4        vrf                   specified vrf");
+        hl.add(null, "4 5,.        <name:vrf>          name of vrf");
+        hl.add(null, "5 5,.          all               do not hide defaults");
+        hl.add(null, "5 5,.          hide              hide passwords");
         hl.add(null, "3 4        server                specified server process");
         servGenList.srvHelp(hl, 4, " to show");
         hl.add(null, "3 4        router                specified router process");

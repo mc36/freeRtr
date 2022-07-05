@@ -648,6 +648,17 @@ public class userShow {
                 rdr.putStrArr(r.getShRun(filt));
                 return null;
             }
+            if (a.equals("vrf")) {
+                cfgVrf v = cfgAll.vrfFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                rdr.putStrArr(v.getShRun2(filt));
+                return null;
+            }
             if (a.equals("interface")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
