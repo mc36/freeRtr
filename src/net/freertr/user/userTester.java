@@ -1329,6 +1329,10 @@ class userTesterPrc implements Comparator<userTesterPrc> {
         s = s.substring(i + 1, s.length());
         i = s.indexOf("%");
         s = s.substring(0, i);
+        i = s.indexOf(".");
+        if (i >= 0) {
+            s = s.substring(0, i);
+        }
         return bits.str2num(s);
     }
 

@@ -870,6 +870,16 @@ public class bits {
      * @param num number to convert
      * @return converted number
      */
+    public static String toPrecise(float num) {
+        return toPrecise((long) (num * 10));
+    }
+
+    /**
+     * number to string
+     *
+     * @param num number to convert
+     * @return converted number
+     */
     public static String toUser(long num) {
         if (num < 10000) {
             return num + "";

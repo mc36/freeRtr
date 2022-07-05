@@ -3666,15 +3666,9 @@ public class userExec {
         int recv = 0;
         int lost = 0;
         int errs = 0;
-        int timMin = timeout * 10;
-        int timMax = 0;
-        int timSum = 0;
-        int ttlMin = 256;
-        int ttlMax = 0;
-        int ttlSum = 0;
-        int tosMin = 256;
-        int tosMax = 0;
-        int tosSum = 0;
+        userExecStats timS = new userExecStats(0, timeout * 10);
+        userExecStats ttlS = new userExecStats(0, 256);
+        userExecStats tosS = new userExecStats(0, 256);
         long timBeg = bits.getTime();
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi);
         size -= adjustSize(trg);
@@ -3777,27 +3771,9 @@ public class userExec {
                     continue;
                 }
                 recv++;
-                timSum += res.tim;
-                if (res.tim < timMin) {
-                    timMin = res.tim;
-                }
-                if (res.tim > timMax) {
-                    timMax = res.tim;
-                }
-                ttlSum += res.ttl;
-                if (res.ttl < ttlMin) {
-                    ttlMin = res.ttl;
-                }
-                if (res.ttl > ttlMax) {
-                    ttlMax = res.ttl;
-                }
-                tosSum += res.tos;
-                if (res.tos < tosMin) {
-                    tosMin = res.tos;
-                }
-                if (res.tos > tosMax) {
-                    tosMax = res.tos;
-                }
+                timS.val(res.tim);
+                ttlS.val(res.ttl);
+                tosS.val(res.tos);
                 if (detail) {
                     pipe.strPut(res.tim + "ms," + res.ttl + "ttl," + res.tos + "tos@" + res.rtr + " ");
                     continue;
@@ -3809,16 +3785,7 @@ public class userExec {
             }
         }
         pipe.linePut("");
-        int perc = 0;
-        if (recv > 0) {
-            timSum /= recv;
-            ttlSum /= recv;
-            tosSum /= recv;
-        }
-        if (sent > 0) {
-            perc = (recv * 100) / sent;
-        }
-        pipe.linePut("result=" + perc + "%, recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", rtt min/avg/max/sum=" + timMin + "/" + timSum + "/" + timMax + "/" + (bits.getTime() - timBeg) + ", ttl min/avg/max=" + ttlMin + "/" + ttlSum + "/" + ttlMax + ", tos min/avg/max=" + tosMin + "/" + tosSum + "/" + tosMax);
+        pipe.linePut("result=" + bits.percent(recv, sent) + "%, recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", took " + (bits.getTime() - timBeg) + ", min/avg/max/dev rtt=" + timS.res() + ", ttl " + ttlS.res() + ", tos " + tosS.res());
     }
 
     private void doListen() {
@@ -4543,6 +4510,47 @@ public class userExec {
         }
         boolean b = bits.buf2txt(true, old, a);
         cmd.error(doneFail(b));
+    }
+
+}
+
+class userExecStats {
+
+    private long min;
+
+    private long max;
+
+    private long seq;
+
+    private float ak;
+
+    private float qk;
+
+    public userExecStats(int l, int h) {
+        min = h;
+        max = l;
+        seq = 0;
+        ak = 0;
+        qk = 0;
+    }
+
+    public void val(int v) {
+        seq++;
+        if (v < min) {
+            min = v;
+        }
+        if (v > max) {
+            max = v;
+        }
+        float x = v;
+        float ak1 = ak;
+        float qk1 = qk;
+        ak = ak1 + ((x - ak1) / seq);
+        qk = qk1 + ((x - ak1) * (x - ak));
+    }
+
+    public String res() {
+        return min + "/" + bits.toPrecise(ak) + "/" + max + "/" + bits.toPrecise(qk / seq);
     }
 
 }
