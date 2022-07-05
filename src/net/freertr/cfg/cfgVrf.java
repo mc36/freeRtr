@@ -188,12 +188,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! label4mode per-vrf",
         "vrf definition .*! label6mode per-vrf",
         "vrf definition .*! propagate4ttl",
-        "vrf definition .*! report4labels",
-        "vrf definition .*! unreach4interval 0",
-        "vrf definition .*! no punish4pmtud",
         "vrf definition .*! propagate6ttl",
+        "vrf definition .*! report4labels",
         "vrf definition .*! report6labels",
+        "vrf definition .*! unreach4interval 0",
         "vrf definition .*! unreach6interval 0",
+        "vrf definition .*! no punish4pmtud",
         "vrf definition .*! no punish6pmtud",
         "vrf definition .*! no mdt4",
         "vrf definition .*! no mdt6",
@@ -645,8 +645,11 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 2,.   [text]           text describing this vrf");
         l.add(null, "1 2  rename              rename this vrf");
         l.add(null, "2 .    <str>             set new name of vrf");
+        l.add(null, "1 .  optimize-lookup     optimize rib for software lookup");
         l.add(null, "1 .  optimize4lookup     optimize rib for software lookup");
         l.add(null, "1 .  optimize6lookup     optimize rib for software lookup");
+        l.add(null, "1 2  update-interval     specify time between table calculation");
+        l.add(null, "2 .    <num>             time in ms");
         l.add(null, "1 2  update4interval     specify time between table calculation");
         l.add(null, "2 .    <num>             time in ms");
         l.add(null, "1 2  update6interval     specify time between table calculation");
@@ -824,6 +827,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.routerStaticChg();
             return;
         }
+        if (a.equals("optimize-lookup")) {
+            fwd4.optimize = true;
+            fwd6.optimize = true;
+            fwd4.routerStaticChg();
+            return;
+        }
         if (a.equals("optimize4lookup")) {
             fwd4.optimize = true;
             fwd4.routerStaticChg();
@@ -832,6 +841,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("optimize6lookup")) {
             fwd6.optimize = true;
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("update-interval")) {
+            int res = bits.str2num(cmd.word());
+            fwd4.updateInterval = res;
+            fwd6.updateInterval = res;
             return;
         }
         if (a.equals("update4interval")) {
@@ -956,8 +971,26 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.unreachInt = res;
             return;
         }
+        if (a.equals("unreach4interval")) {
+            int res = bits.str2num(cmd.word());
+            fwd4.unreachInt = res;
+            return;
+        }
+        if (a.equals("unreach6interval")) {
+            int res = bits.str2num(cmd.word());
+            fwd6.unreachInt = res;
+            return;
+        }
         if (a.equals("punish-pmtud")) {
             fwd4.ruinPmtuD = true;
+            fwd6.ruinPmtuD = true;
+            return;
+        }
+        if (a.equals("punish4pmtud")) {
+            fwd4.ruinPmtuD = true;
+            return;
+        }
+        if (a.equals("punish6pmtud")) {
             fwd6.ruinPmtuD = true;
             return;
         }
@@ -966,39 +999,21 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.mplsExtRep = true;
             return;
         }
+        if (a.equals("report4labels")) {
+            fwd4.mplsExtRep = true;
+            return;
+        }
+        if (a.equals("report6labels")) {
+            fwd6.mplsExtRep = true;
+            return;
+        }
         if (a.equals("propagate-ttl")) {
             fwd4.mplsPropTtl = true;
             fwd6.mplsPropTtl = true;
             return;
         }
-        if (a.equals("unreach4interval")) {
-            int res = bits.str2num(cmd.word());
-            fwd4.unreachInt = res;
-            return;
-        }
-        if (a.equals("punish4pmtud")) {
-            fwd4.ruinPmtuD = true;
-            return;
-        }
-        if (a.equals("report4labels")) {
-            fwd4.mplsExtRep = true;
-            return;
-        }
         if (a.equals("propagate4ttl")) {
             fwd4.mplsPropTtl = true;
-            return;
-        }
-        if (a.equals("unreach6interval")) {
-            int res = bits.str2num(cmd.word());
-            fwd6.unreachInt = res;
-            return;
-        }
-        if (a.equals("punish6pmtud")) {
-            fwd6.ruinPmtuD = true;
-            return;
-        }
-        if (a.equals("report6labels")) {
-            fwd6.mplsExtRep = true;
             return;
         }
         if (a.equals("propagate6ttl")) {
@@ -1292,6 +1307,12 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.routerStaticChg();
             return;
         }
+        if (a.equals("optimize-lookup")) {
+            fwd4.optimize = false;
+            fwd6.optimize = false;
+            fwd4.routerStaticChg();
+            return;
+        }
         if (a.equals("optimize4lookup")) {
             fwd4.optimize = false;
             fwd4.routerStaticChg();
@@ -1300,6 +1321,11 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("optimize6lookup")) {
             fwd6.optimize = false;
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("update-interval")) {
+            fwd4.updateInterval = 0;
+            fwd6.updateInterval = 0;
             return;
         }
         if (a.equals("update4interval")) {
@@ -1394,8 +1420,24 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.unreachInt = 0;
             return;
         }
+        if (a.equals("unreach4interval")) {
+            fwd4.unreachInt = 0;
+            return;
+        }
+        if (a.equals("unreach6interval")) {
+            fwd6.unreachInt = 0;
+            return;
+        }
         if (a.equals("punish-pmtud")) {
             fwd4.ruinPmtuD = false;
+            fwd6.ruinPmtuD = false;
+            return;
+        }
+        if (a.equals("punish4pmtud")) {
+            fwd4.ruinPmtuD = false;
+            return;
+        }
+        if (a.equals("punish6pmtud")) {
             fwd6.ruinPmtuD = false;
             return;
         }
@@ -1404,37 +1446,21 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.mplsExtRep = false;
             return;
         }
+        if (a.equals("report4labels")) {
+            fwd4.mplsExtRep = false;
+            return;
+        }
+        if (a.equals("report6labels")) {
+            fwd6.mplsExtRep = false;
+            return;
+        }
         if (a.equals("propagate-ttl")) {
             fwd4.mplsPropTtl = false;
             fwd6.mplsPropTtl = false;
             return;
         }
-        if (a.equals("unreach4interval")) {
-            fwd4.unreachInt = 0;
-            return;
-        }
-        if (a.equals("punish4pmtud")) {
-            fwd4.ruinPmtuD = false;
-            return;
-        }
-        if (a.equals("report4labels")) {
-            fwd4.mplsExtRep = false;
-            return;
-        }
         if (a.equals("propagate4ttl")) {
             fwd4.mplsPropTtl = false;
-            return;
-        }
-        if (a.equals("unreach6interval")) {
-            fwd6.unreachInt = 0;
-            return;
-        }
-        if (a.equals("punish6pmtud")) {
-            fwd6.ruinPmtuD = false;
-            return;
-        }
-        if (a.equals("report6labels")) {
-            fwd6.mplsExtRep = false;
             return;
         }
         if (a.equals("propagate6ttl")) {
