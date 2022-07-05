@@ -844,6 +844,9 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
                 }
             }
             if (pipe.isClosed() == 0) {
+                if (sesStart != null) {
+                    logger.info("configuration checkpoint released!");
+                }
                 sesStart = null;
             }
             if (sesStart != null) {
