@@ -504,12 +504,8 @@ public class ipMpls implements ifcUp {
         if (lab.pweIfc != null) {
             return true;
         }
-        if (fwd.unreachInt > 0) {
-            long tim = bits.getTime();
-            if ((tim - fwd.unreachLst) < fwd.unreachInt) {
-                return true;
-            }
-            fwd.unreachLst = tim;
+        if (fwd.checkUnreach()) {
+            return true;
         }
         ipFwdIface ifc = lab.iface;
         if (ifc == null) {

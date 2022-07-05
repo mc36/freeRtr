@@ -361,9 +361,19 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public long unreachLst = 0;
 
     /**
+     * unreachable count
+     */
+    public int unreachCnt = 0;
+
+    /**
      * unreachable interval
      */
     public int unreachInt = 0;
+
+    /**
+     * unreachable rate
+     */
+    public int unreachRat = 0;
 
     /**
      * ruin remote pmtud
@@ -1757,6 +1767,27 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     /**
+     * check unreachable interval
+     *
+     * @return false if good, true if error
+     */
+    public boolean checkUnreach() {
+        if (unreachInt < 1) {
+            return false;
+        }
+        long tim = bits.getTime();
+        if ((tim - unreachLst) > unreachInt) {
+            unreachCnt = 0;
+        }
+        if (unreachCnt >= unreachRat) {
+            return true;
+        }
+        unreachLst = tim;
+        unreachCnt++;
+        return false;
+    }
+
+    /**
      * send unreachable
      *
      * @param pck packet to report
@@ -1765,12 +1796,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void doDrop(packHolder pck, ipFwdIface lower, counter.reasons reason) {
         cntrT.drop(pck, reason);
-        if (unreachInt > 0) {
-            long tim = bits.getTime();
-            if ((tim - unreachLst) < unreachInt) {
-                return;
-            }
-            unreachLst = tim;
+        if (checkUnreach()) {
+            return;
         }
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(reason));
