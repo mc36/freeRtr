@@ -24,6 +24,7 @@ import net.freertr.prt.prtSctp;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.user.userFormat;
+import net.freertr.util.bits;
 import net.freertr.util.counter;
 
 /**
@@ -407,11 +408,10 @@ public class tabQos {
     /**
      * check packet
      *
-     * @param curr current time
      * @param pck packet to process
      * @return false if allowed, true if droping
      */
-    public synchronized boolean checkPacket(long curr, packHolder pck) {
+    public synchronized boolean checkPacket(packHolder pck) {
         pck.getSkip(pck.IPsiz);
         classifyLayer4(pck);
         pck.getSkip(-pck.IPsiz);
@@ -423,7 +423,7 @@ public class tabQos {
         if (cls == null) {
             return true;
         }
-        cls.recUpdateTime(curr);
+        cls.recUpdateTime(bits.getTime());
         if (cls.checkPacket(pck)) {
             cls.cntr.drop(pck, counter.reasons.noBuffer);
             return true;

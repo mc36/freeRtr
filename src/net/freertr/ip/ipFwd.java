@@ -1458,7 +1458,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             asm.clear();
         }
         if (coppIn != null) {
-            if (coppIn.checkPacket(bits.getTime(), pck)) {
+            if (coppIn.checkPacket(pck)) {
                 cntrL.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -1493,7 +1493,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return true;
         }
         if (coppIn != null) {
-            if (coppIn.checkPacket(bits.getTime(), pck)) {
+            if (coppIn.checkPacket(pck)) {
                 cntrL.drop(pck, counter.reasons.noBuffer);
                 return false;
             }
@@ -1589,7 +1589,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if ((iface.fragments < 1) || (pck.dataSize() <= iface.fragments)) {
             ipCore.createIPheader(pck);
             if (coppOut != null) {
-                if (coppOut.checkPacket(bits.getTime(), pck)) {
+                if (coppOut.checkPacket(pck)) {
                     cntrL.drop(pck, counter.reasons.noBuffer);
                     return;
                 }
@@ -1627,7 +1627,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             snd.IPid = idn;
             ipCore.createIPheader(snd);
             if (coppOut != null) {
-                if (coppOut.checkPacket(bits.getTime(), snd)) {
+                if (coppOut.checkPacket(snd)) {
                     cntrL.drop(snd, counter.reasons.noBuffer);
                     return;
                 }
@@ -1787,7 +1787,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         errorSent++;
         ipCore.createIPheader(pck);
         if (coppOut != null) {
-            if (coppOut.checkPacket(bits.getTime(), pck)) {
+            if (coppOut.checkPacket(pck)) {
                 cntrL.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -2054,13 +2054,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if (!rxIfc.disableDapp && (dapp != null)) {
-            if (dapp.checkPacket(bits.getTime(), pck)) {
+            if (dapp.checkPacket(pck)) {
                 cntrT.drop(pck, counter.reasons.noBuffer);
                 return;
             }
         }
         if (!rxIfc.disableFlowspec && (flowspec != null)) {
-            if (flowspec.checkPacket(bits.getTime(), pck)) {
+            if (flowspec.checkPacket(pck)) {
                 cntrT.drop(pck, counter.reasons.noBuffer);
                 return;
             }
@@ -2101,7 +2101,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                         }
                     }
                     if (natC.maxRate != null) {
-                        if (natC.maxRate.checkPacket(bits.getTime(), pck)) {
+                        if (natC.maxRate.checkPacket(pck)) {
                             cntrT.drop(pck, counter.reasons.noBuffer);
                             return;
                         }

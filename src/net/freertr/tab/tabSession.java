@@ -433,6 +433,11 @@ public class tabSession implements Runnable {
         if (pck == null) {
             return sessDrop(ses);
         }
+        if (maxRate != null) {
+            if (maxRate.checkPacket(pck)) {
+                return sessDrop(ses);
+            }
+        }
         if (allowSending && (pck.INTupper != 0)) {
             return sessPass(ses);
         }

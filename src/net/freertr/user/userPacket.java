@@ -983,7 +983,7 @@ public class userPacket {
                 pck.clear();
                 pck.putSkip(bits.random(sz.rangeMin, sz.rangeMax + 1));
                 pck.merge2beg();
-                if (qos.checkPacket(bits.getTime(), pck)) {
+                if (qos.checkPacket(pck)) {
                     continue;
                 }
                 bits.msbPutD(adr.getBytes(), ofs, bits.randomD());
@@ -1065,7 +1065,7 @@ public class userPacket {
                     if (need2stop()) {
                         break;
                     }
-                    if (qos.checkPacket(bits.getTime(), pck)) {
+                    if (qos.checkPacket(pck)) {
                         continue;
                     }
                     fwd.protoPack(fwi, null, pck.copyBytes(true, true));
@@ -1099,7 +1099,7 @@ public class userPacket {
                 if (need2stop()) {
                     break;
                 }
-                if (qos.checkPacket(bits.getTime(), pck)) {
+                if (qos.checkPacket(pck)) {
                     continue;
                 }
                 ifc.ethtyp.doTxPack(pck.copyBytes(true, true));
