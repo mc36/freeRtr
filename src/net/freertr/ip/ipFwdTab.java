@@ -1304,9 +1304,16 @@ public class ipFwdTab {
         if (ntry.rouTab != null) {
             return;
         }
-        ipFwdIface ifc = (ipFwdIface) ntry.iface;
-        ifc.ldpasFind(new addrIP());////////////////
-        prefix.sameFwder(ntry);/////////////////////
+        tabRouteEntry<addrIP> stLb = ((ipFwdIface) ntry.iface).labelsFind(prefix.prefix, ntry.nextHop);
+        if (stLb != null) {
+            tabRouteAttr<addrIP> stBn = stLb.sameFwder(ntry);
+            if (stBn != null) {
+                if (stBn.labelRem != null) {
+                    updateTableRouteLabels(ntry, loc, stBn);
+                }
+                return;
+            }
+        }
         rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.nextHop, false);
         if (nei == null) {
             if (ntry.oldHop == null) {

@@ -5337,48 +5337,54 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * setup static label binding
+     *
+     * @param net prefix
+     * @param nxh address
+     * @param lab label
+     * @param add add or del
+     */
+    public synchronized void setup2statLabel(String net, String nxh, int lab, boolean add) {
+        addrPrefix<addrIP> pfx = addrPrefix.str2ip(net);
+        if (pfx == null) {
+            return;
+        }
+        addrIP hop = new addrIP();
+        if (hop.fromString(nxh)) {
+            return;
+        }
+        ipFwdIface ifc = getFwdIfc(hop);
+        if (ifc == null) {
+            return;
+        }
+        if (add) {
+            ifc.labelsPut(pfx, hop, lab);
+        } else {
+            ifc.labelsDel(pfx, hop);
+        }
+    }
+
+    /**
      * setup ldp password
      *
      * @param trg peer address
      * @param pwd password
+     * @param add add or del
      */
-    public synchronized void setup2ldppwd(String trg, String pwd) {
+    public synchronized void addeLdppwd(String trg, String pwd, boolean add) {
         addrIP adr = new addrIP();
         if (adr.fromString(trg)) {
             return;
         }
-        ipFwdIface ifc;
-        if (adr.isIPv4()) {
-            ifc = fwdIf4;
-        } else {
-            ifc = fwdIf6;
-        }
+        ipFwdIface ifc = getFwdIfc(adr);
         if (ifc == null) {
             return;
         }
-        ifc.ldpasPut(adr, pwd);
-    }
-
-    /**
-     * clear ldp password
-     *
-     * @param trg peer address
-     */
-    public synchronized void clear2ldppwd(String trg) {
-        addrIP adr = new addrIP();
-        if (adr.fromString(trg)) {
-            return;
-        }
-        ipFwdIface ifc;
-        if (adr.isIPv4()) {
-            ifc = fwdIf4;
+        if (add) {
+            ifc.ldpasPut(adr, pwd);
         } else {
-            ifc = fwdIf6;
+            ifc.ldpasDel(adr);
         }
-        if (ifc == null) {
-            return;
-        }
-        ifc.ldpasDel(adr);
     }
 
     /**
@@ -6166,9 +6172,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (fwdIf4 != null) {
             fwdIf4.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
+            fwdIf4.labelsCfg(l, cmds.tabulator + "mpls static-label");
         }
         if (fwdIf6 != null) {
             fwdIf6.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
+            fwdIf6.labelsCfg(l, cmds.tabulator + "mpls static-label");
         }
         if (rtrBabel4hnd != null) {
             s = "router babel4 " + rtrBabel4hnd.number + " ";
@@ -6693,6 +6701,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       <name:pl>                 name of prefix list");
         l.add(null, "2 3     label6out                   set label filter");
         l.add(null, "3 .       <name:pl>                 name of prefix list");
+        l.add(null, "2 3     static-label                static label mapping");
+        l.add(null, "3 4       <addr>                    prefix to bind");
+        l.add(null, "4 5         <addr>                  nexthop to bind");
+        l.add(null, "5 .           <num>                 label");
         l.add(null, "2 3     ldppassword                 set ldp password for peer");
         l.add(null, "3 4       <addr>                    address of peer");
         l.add(null, "4 .         <text>                  password");
@@ -9211,9 +9223,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             setup2ldptrg(cmd.word());
             return;
         }
+        if (s.equals("static-label")) {
+            s = cmd.word();
+            String a = cmd.word();
+            setup2statLabel(s, a, bits.str2num(cmd.word()), true);
+            return;
+        }
         if (s.equals("ldppassword")) {
             s = cmd.word();
-            setup2ldppwd(s, cmd.word());
+            addeLdppwd(s, cmd.word(), true);
             return;
         }
         if (s.equals("rsvp4")) {
@@ -9319,8 +9337,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             clear2ldptrg(cmd.word());
             return;
         }
+        if (s.equals("static-label")) {
+            s = cmd.word();
+            setup2statLabel(s, cmd.word(), 0, false);
+            return;
+        }
         if (s.equals("ldppassword")) {
-            clear2ldppwd(cmd.word());
+            addeLdppwd(cmd.word(), "", false);
             return;
         }
         if (s.equals("rsvp4")) {

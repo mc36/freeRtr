@@ -28,10 +28,13 @@ import net.freertr.rtr.rtrSrhIface;
 import net.freertr.rtr.rtrVrrpIface;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplcN;
@@ -414,9 +417,20 @@ public class ipFwdIface extends tabRouteIface {
      */
     public ipFwdIface otherHandler;
 
+    /**
+     * secondary addresses
+     */
     private final tabGen<ipFwdIfaceAddr> adrs = new tabGen<ipFwdIfaceAddr>();
 
+    /**
+     * ldp passwords
+     */
     private final tabGen<ipFwdIfaceLdpas> ldpas = new tabGen<ipFwdIfaceLdpas>();
+
+    /**
+     * static mpls bindings
+     */
+    public final tabGen<ipFwdIfaceBind> mplStat = new tabGen<ipFwdIfaceBind>();
 
     /**
      * create new instance
@@ -2296,6 +2310,71 @@ public class ipFwdIface extends tabRouteIface {
         ldpas.del(ntry);
     }
 
+    /**
+     * get static label
+     *
+     * @param pfx prefix
+     * @param hop next hop
+     * @return fake route entry, null if not found
+     */
+    public tabRouteEntry<addrIP> labelsFind(addrPrefix<addrIP> pfx, addrIP hop) {
+        ipFwdIfaceBind bnd = new ipFwdIfaceBind();
+        bnd.pfx = pfx;
+        bnd.hop = hop;
+        bnd = mplStat.find(bnd);
+        if (bnd == null) {
+            return null;
+        }
+        tabRouteEntry<addrIP> res = new tabRouteEntry<addrIP>();
+        res.best.iface = this;
+        res.best.nextHop = hop;
+        if (bnd.lab >= 0) {
+            res.best.labelRem = tabLabel.int2labels(bnd.lab);
+        }
+        return res;
+    }
+
+    /**
+     * get config
+     *
+     * @param l list to append
+     * @param beg beginning
+     */
+    public void labelsCfg(List<String> l, String beg) {
+        for (int i = 0; i < mplStat.size(); i++) {
+            ipFwdIfaceBind ntry = mplStat.get(i);
+            l.add(beg + " " + ntry.pfx + " " + ntry.hop + " " + ntry.lab);
+        }
+    }
+
+    /**
+     * get static label
+     *
+     * @param pfx prefix
+     * @param hop next hop
+     * @param lab label
+     */
+    public void labelsPut(addrPrefix<addrIP> pfx, addrIP hop, int lab) {
+        ipFwdIfaceBind bnd = new ipFwdIfaceBind();
+        bnd.pfx = pfx;
+        bnd.hop = hop;
+        bnd.lab = lab;
+        mplStat.put(bnd);
+    }
+
+    /**
+     * remove static label
+     *
+     * @param pfx prefix
+     * @param hop next hop
+     */
+    public void labelsDel(addrPrefix<addrIP> pfx, addrIP hop) {
+        ipFwdIfaceBind bnd = new ipFwdIfaceBind();
+        bnd.pfx = pfx;
+        bnd.hop = hop;
+        mplStat.del(bnd);
+    }
+
 }
 
 class ipFwdIfaceAddr implements Comparator<ipFwdIfaceAddr> {
@@ -2320,6 +2399,24 @@ class ipFwdIfaceLdpas implements Comparator<ipFwdIfaceLdpas> {
 
     public int compare(ipFwdIfaceLdpas o1, ipFwdIfaceLdpas o2) {
         return o1.ip.compare(o1.ip, o2.ip);
+    }
+
+}
+
+class ipFwdIfaceBind implements Comparator<ipFwdIfaceBind> {
+
+    public addrPrefix<addrIP> pfx;
+
+    public addrIP hop;
+
+    public int lab;
+
+    public int compare(ipFwdIfaceBind o1, ipFwdIfaceBind o2) {
+        int i = o1.hop.compare(o1.hop, o2.hop);
+        if (i != 0) {
+            return i;
+        }
+        return pfx.compare(o1.pfx, o2.pfx);
     }
 
 }
