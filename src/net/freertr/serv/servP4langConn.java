@@ -198,6 +198,27 @@ public class servP4langConn implements Runnable {
                 lower.fronts.put(ntry);
                 continue;
             }
+            if (s.equals("fecname")) {
+                int i = bits.str2num(cmd.word());
+                s = cmd.getRemaining().replaceAll(" ", "_");
+                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                lower.fwderrcr.put(ntry);
+                continue;
+            }
+            if (s.equals("anegname")) {
+                int i = bits.str2num(cmd.word());
+                s = cmd.getRemaining().replaceAll(" ", "_");
+                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                lower.autonegs.put(ntry);
+                continue;
+            }
+            if (s.equals("flwctrname")) {
+                int i = bits.str2num(cmd.word());
+                s = cmd.getRemaining().replaceAll(" ", "_");
+                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                lower.flwctrls.put(ntry);
+                continue;
+            }
             if (s.equals("platform")) {
                 lower.platform = cmd.getRemaining();
                 continue;

@@ -990,8 +990,12 @@ public class userShow {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 3));
                 return null;
             }
-            if (a.equals("frontpanel")) {
+            if (a.equals("port-names")) {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 4));
+                return null;
+            }
+            if (a.equals("port-magics")) {
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 9));
                 return null;
             }
             if (a.equals("done-interface")) {

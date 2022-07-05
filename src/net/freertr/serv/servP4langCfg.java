@@ -156,6 +156,21 @@ public class servP4langCfg implements ifcUp {
     protected tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
 
     /**
+     * last fec mapping
+     */
+    protected tabGen<servP4langFrnt> fwderrcr = new tabGen<servP4langFrnt>();
+
+    /**
+     * last autoneg mapping
+     */
+    protected tabGen<servP4langFrnt> autonegs = new tabGen<servP4langFrnt>();
+
+    /**
+     * last flowcontrol mapping
+     */
+    protected tabGen<servP4langFrnt> flwctrls = new tabGen<servP4langFrnt>();
+
+    /**
      * connection start
      */
     protected long started = 0;
@@ -530,9 +545,9 @@ public class servP4langCfg implements ifcUp {
                 }
             }
             ntry.speed = bits.str2num(cmd.word());
-            ntry.errCorr = bits.str2num(cmd.word());
-            ntry.autoNeg = bits.str2num(cmd.word());
-            ntry.flowCtrl = bits.str2num(cmd.word());
+            ntry.errCorr = servP4langFrnt.toNum(fwderrcr, cmd.word(), 0);
+            ntry.autoNeg = servP4langFrnt.toNum(autonegs, cmd.word(), 0);
+            ntry.flowCtrl = servP4langFrnt.toNum(flwctrls, cmd.word(), 0);
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
             if (ifc.vlanNum != 0) {
                 cmd.error("no need to export subinterface");
@@ -708,10 +723,6 @@ public class servP4langCfg implements ifcUp {
      * @return id, -1 if error
      */
     protected int front2id(cfgIfc ifc, String num, boolean create) {
-        int i = bits.str2num(num);
-        if (num.equals("" + i)) {
-            return i;
-        }
         if (num.equals("dynamic")) {
             servP4langIfc res = findIfc(ifc);
             if (res != null) {
@@ -722,12 +733,7 @@ public class servP4langCfg implements ifcUp {
             }
             return getNextDynamic();
         }
-        servP4langFrnt ntry = new servP4langFrnt(-1, num);
-        ntry = fronts.find(ntry);
-        if (ntry == null) {
-            return -1;
-        }
-        return ntry.id;
+        return servP4langFrnt.toNum(fronts, num, -1);
     }
 
     /**
@@ -737,10 +743,7 @@ public class servP4langCfg implements ifcUp {
      * @param p starting level
      */
     protected void getHelpText(userHelping l, int p) {
-        List<String> lst = new ArrayList<String>();
-        for (int i = 0; i < fronts.size(); i++) {
-            lst.add(fronts.get(i).nam);
-        }
+        List<String> lst = servP4langFrnt.toHelp(fronts);
         l.add(null, (p + 0) + " " + (p + 1) + "  remote                    address of forwarder");
         l.add(null, (p + 1) + " .    <addr>                  ip address of client");
         l.add(null, (p + 0) + " " + (p + 1) + "  name                      name of forwarder");
@@ -755,9 +758,9 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 2) + " " + (p + 3) + ",.    dynamic               dynamic port number");
         l.add(lst, (p + 2) + " " + (p + 3) + ",.    <num:loc>             port number");
         l.add(null, (p + 3) + " " + (p + 4) + ",.      <num>               speed in gbps");
-        l.add(null, (p + 4) + " " + (p + 5) + ",.        <num>             fec, see hw vendor manual");
-        l.add(null, (p + 5) + " " + (p + 6) + ",.          <num>           autoneg, see hw vendor manual");
-        l.add(null, (p + 6) + " .              <num>         flowctrl, see hw vendor manual");
+        l.add(servP4langFrnt.toHelp(fwderrcr), (p + 4) + " " + (p + 5) + ",.        <num:loc>         fec, see hw vendor manual");
+        l.add(servP4langFrnt.toHelp(autonegs), (p + 5) + " " + (p + 6) + ",.          <num:loc>       autoneg, see hw vendor manual");
+        l.add(servP4langFrnt.toHelp(flwctrls), (p + 6) + " .              <num:loc>     flowctrl, see hw vendor manual");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-srv6               specify srv6 to export");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");
         l.add(null, (p + 0) + " .  export-socket             specify sockets to be exported");
@@ -811,10 +814,20 @@ public class servP4langCfg implements ifcUp {
      */
     protected userFormat getShowFront() {
         userFormat res = new userFormat("|", "front|name");
-        for (int i = 0; i < fronts.size(); i++) {
-            servP4langFrnt ntry = fronts.get(i);
-            res.add(ntry.id + "|" + ntry.nam);
-        }
+        servP4langFrnt.toShow("", fronts, res);
+        return res;
+    }
+
+    /**
+     * get magic number show
+     *
+     * @return show
+     */
+    protected userFormat getShowMagics() {
+        userFormat res = new userFormat("|", "num|name");
+        servP4langFrnt.toShow("fec", fwderrcr, res);
+        servP4langFrnt.toShow("an", autonegs, res);
+        servP4langFrnt.toShow("flwctl", flwctrls, res);
         return res;
     }
 

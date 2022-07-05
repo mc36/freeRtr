@@ -1212,7 +1212,9 @@ public class userExec {
         hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        api-rx              received api message statistics");
         hl.add(null, "5 .            [num]             forwarder number");
-        hl.add(null, "4 5,.        frontpanel          front panel information");
+        hl.add(null, "4 5,.        port-names          front panel information");
+        hl.add(null, "5 .            [num]             forwarder number");
+        hl.add(null, "4 5,.        port-magics         front port magic values");
         hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        done-interface      exported interfaces");
         hl.add(null, "5 .            [num]             forwarder number");

@@ -411,7 +411,7 @@ public class servP4lang extends servGeneric implements prtServS {
      *
      * @param fwd forwarder
      * @param mod mode: 1=generic, 2=apiTx, 3=apiRx, 4=front, 5=ifaces,
-     * 6=neighs, 7=mpls, 8=nsh
+     * 6=neighs, 7=mpls, 8=nsh, 9=magics
      * @return show
      */
     public userFormat getShowGen(int fwd, int mod) {
@@ -436,6 +436,8 @@ public class servP4lang extends servGeneric implements prtServS {
                 return cur.getShowMpls();
             case 8:
                 return cur.getShowNsh();
+            case 9:
+                return cur.getShowMagics();
             default:
                 return null;
         }
