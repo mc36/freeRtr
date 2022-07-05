@@ -32,7 +32,6 @@ import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;

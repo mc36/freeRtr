@@ -1,6 +1,5 @@
 package net.freertr.serv;
 
-import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
@@ -813,7 +812,7 @@ public class servP4langCfg implements ifcUp {
      * @return show
      */
     protected userFormat getShowFront() {
-        userFormat res = new userFormat("|", "front|name");
+        userFormat res = new userFormat("|", "num|name");
         servP4langFrnt.toShow("", frontnam, res);
         return res;
     }
