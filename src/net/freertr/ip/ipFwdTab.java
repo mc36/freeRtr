@@ -1304,6 +1304,9 @@ public class ipFwdTab {
         if (ntry.rouTab != null) {
             return;
         }
+        ipFwdIface ifc = (ipFwdIface) ntry.iface;
+        ifc.ldpasFind(new addrIP());////////////////
+        prefix.sameFwder(ntry);/////////////////////
         rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.nextHop, false);
         if (nei == null) {
             if (ntry.oldHop == null) {
