@@ -13303,3 +13303,5 @@ qc pass: confed bgp with backup peer
 qc pass: route server bgp with backup peer
 ---------------------------------- 2022-07-05 09:45:37 22.7.5
 todo: mpls static label mapping
+---------------------------------- 2022-07-05 17:41:50 22.7.5
+no todo: mpls static label mapping

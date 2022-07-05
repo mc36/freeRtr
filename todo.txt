@@ -1,4 +1,3 @@
-mpls static label mapping
 backup path support to the spf class
 wcmp support to the spf class
 allow command to be a substring of an other
