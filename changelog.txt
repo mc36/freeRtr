@@ -13305,3 +13305,6 @@ qc pass: route server bgp with backup peer
 todo: mpls static label mapping
 ---------------------------------- 2022-07-05 17:41:50 22.7.5
 no todo: mpls static label mapping
+---------------------------------- 2022-07-05 18:58:51 22.7.5
+qc pass: static labels
+qc pass: static labels with ldp
