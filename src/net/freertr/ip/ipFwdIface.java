@@ -2343,7 +2343,7 @@ public class ipFwdIface extends tabRouteIface {
     public void labelsCfg(List<String> l, String beg) {
         for (int i = 0; i < mplStat.size(); i++) {
             ipFwdIfaceBind ntry = mplStat.get(i);
-            l.add(beg + " " + ntry.pfx + " " + ntry.hop + " " + ntry.lab);
+            l.add(beg + " " + addrPrefix.ip2str(ntry.pfx) + " " + ntry.hop + " " + ntry.lab);
         }
     }
 
