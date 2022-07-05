@@ -153,7 +153,7 @@ public class servP4langCfg implements ifcUp {
     /**
      * last front panel
      */
-    protected tabGen<servP4langFrnt> fronts = new tabGen<servP4langFrnt>();
+    protected tabGen<servP4langFrnt> frontnam = new tabGen<servP4langFrnt>();
 
     /**
      * last fec mapping
@@ -733,7 +733,7 @@ public class servP4langCfg implements ifcUp {
             }
             return getNextDynamic();
         }
-        return servP4langFrnt.toNum(fronts, num, -1);
+        return servP4langFrnt.toNum(frontnam, num, -1);
     }
 
     /**
@@ -743,7 +743,7 @@ public class servP4langCfg implements ifcUp {
      * @param p starting level
      */
     protected void getHelpText(userHelping l, int p) {
-        List<String> lst = servP4langFrnt.toHelp(fronts);
+        List<String> lst = servP4langFrnt.toHelp(frontnam);
         l.add(null, (p + 0) + " " + (p + 1) + "  remote                    address of forwarder");
         l.add(null, (p + 1) + " .    <addr>                  ip address of client");
         l.add(null, (p + 0) + " " + (p + 1) + "  name                      name of forwarder");
@@ -814,7 +814,7 @@ public class servP4langCfg implements ifcUp {
      */
     protected userFormat getShowFront() {
         userFormat res = new userFormat("|", "front|name");
-        servP4langFrnt.toShow("", fronts, res);
+        servP4langFrnt.toShow("", frontnam, res);
         return res;
     }
 

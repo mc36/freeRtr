@@ -173,7 +173,10 @@ public class servP4langConn implements Runnable {
         lower.statsPrt = -4;
         lower.statsTxt = null;
         lower.statsNtf = null;
-        lower.fronts.clear();
+        lower.frontnam.clear();
+        lower.fwderrcr.clear();
+        lower.autonegs.clear();
+        lower.flwctrls.clear();
         for (;;) {
             if (pipe.isClosed() != 0) {
                 return true;
@@ -195,7 +198,7 @@ public class servP4langConn implements Runnable {
                 int i = bits.str2num(cmd.word());
                 s = cmd.getRemaining().replaceAll(" ", "_");
                 servP4langFrnt ntry = new servP4langFrnt(i, s);
-                lower.fronts.put(ntry);
+                lower.frontnam.put(ntry);
                 continue;
             }
             if (s.equals("fecname")) {

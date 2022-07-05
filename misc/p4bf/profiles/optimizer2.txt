@@ -1,2 +1,2 @@
--b tofino2 -a t2na -Xp4c="--disable-parse-depth-limit" -D_WEDGE100BF65X_
--b tofino2 -a t2na -Xp4c="--disable-parse-depth-limit" -D_WEDGE100BF65X_ -DQUAD_PIPE
+-b tofino2 -a t2na -DDUAL_PIPE
+-b tofino2 -a t2na -DQUAD_PIPE
