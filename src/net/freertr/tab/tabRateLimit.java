@@ -31,6 +31,9 @@ public class tabRateLimit {
 
     /**
      * create instance
+     *
+     * @param r allowed rate
+     * @param i interval
      */
     public tabRateLimit(int r, int i) {
         allowd = r;
