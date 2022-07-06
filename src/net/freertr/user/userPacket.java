@@ -8,7 +8,9 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
+import net.freertr.addr.addrType;
 import net.freertr.auth.authGeneric;
 import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgAlias;
@@ -37,6 +39,7 @@ import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
+import net.freertr.ip.ipIfc;
 import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
 import net.freertr.pack.packHolder;
@@ -217,6 +220,101 @@ public class userPacket {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.pckt, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("arping")) {
+            String rem = cmd.word();
+            cfgVrf vrf = cfgAll.getClntVrf();
+            cfgIfc ifc = cfgAll.getClntIfc();
+            int timeout = 1000;
+            int repeat = 5;
+            int proto = 0;
+            int delay = 1000;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("vrf")) {
+                    vrf = cfgAll.vrfFind(cmd.word(), false);
+                    ifc = null;
+                    continue;
+                }
+                if (a.equals("source")) {
+                    ifc = cfgAll.ifcFind(cmd.word(), 0);
+                    continue;
+                }
+                if (a.equals("timeout")) {
+                    timeout = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("delay")) {
+                    delay = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("repeat")) {
+                    repeat = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("ipv4")) {
+                    proto = 4;
+                    continue;
+                }
+                if (a.equals("ipv6")) {
+                    proto = 6;
+                    continue;
+                }
+            }
+            if (vrf == null) {
+                cmd.error("vrf not specified");
+                return null;
+            }
+            if (ifc == null) {
+                cmd.error("source not specified");
+                return null;
+            }
+            userTerminal trm = new userTerminal(cmd.pipe);
+            addrIP trg = trm.resolveAddr(rem, proto);
+            if (trg == null) {
+                return null;
+            }
+            ipIfc ipi;
+            if (trg.isIPv4()) {
+                ipi = ifc.ipIf4;
+            } else {
+                ipi = ifc.ipIf6;
+            }
+            if (ipi == null) {
+                cmd.error("protocol not enabled");
+                return null;
+            }
+            addrIP src = ifc.getLocAddr(trg);
+            if (src == null) {
+                cmd.error("no address configured");
+                return null;
+            }
+            ipFwd fwd = vrf.getFwd(trg);
+            int sent = 0;
+            int recv = 0;
+            long timBeg = bits.getTime();
+            cmd.error("arpinging " + trg + ", src=" + ifc.name + ", vrf=" + vrf.name + ", cnt=" + repeat + ", tim=" + timeout + ", gap=" + delay);
+            for (int i = 0; i < repeat; i++) {
+                if (need2stop()) {
+                    break;
+                }
+                sent++;
+                ipi.updateL2info(2, new addrMac(), trg);
+                fwd.echoSendReq(src, trg, 64, false, 255, 0, 0, 0, 0, false);
+                bits.sleep(delay);
+                addrType res = ipi.getL2info(trg);
+                if (res == null) {
+                    cmd.error("timeout");
+                    continue;
+                }
+                cmd.error("reply from " + res);
+                recv++;
+            }
+            cmd.error("result=" + bits.percent(recv, sent) + "%, recv/sent=" + recv + "/" + sent + ", took " + (bits.getTime() - timBeg));
+            return null;
         }
         if (a.equals("p4lang")) {
             servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
