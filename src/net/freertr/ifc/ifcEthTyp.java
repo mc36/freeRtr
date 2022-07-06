@@ -16,6 +16,7 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabQos;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -80,6 +81,16 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * padding modulo
      */
     public int padupMod = 0;
+
+    /**
+     * ingress rate
+     */
+    public tabRateLimit rateIn;
+
+    /**
+     * egress rate
+     */
+    public tabRateLimit rateOut;
 
     /**
      * ingress qos
@@ -753,6 +764,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
+        if (rateOut != null) {
+            if (rateOut.check(pck.dataSize())) {
+                cntr.drop(pck, counter.reasons.noBuffer);
+                return;
+            }
+        }
         pck.INTsent++;
         if (pck.INTsent > loopMax) {
             loopDrops++;
@@ -837,6 +854,22 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
+        if (!forcedUP) {
+            if (lastState != state.states.up) {
+                cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
+            if (forcedDN != 0) {
+                cntr.drop(pck, counter.reasons.notUp);
+                return;
+            }
+        }
+        if (rateIn != null) {
+            if (rateIn.check(pck.dataSize())) {
+                cntr.drop(pck, counter.reasons.noBuffer);
+                return;
+            }
+        }
         sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
         if (macSec != null) {
             if (macSec.doDecrypt(pck, fromDp)) {
@@ -858,16 +891,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (sgtSet >= 0) {
             pck.SGTid = sgtSet;
-        }
-        if (!forcedUP) {
-            if (lastState != state.states.up) {
-                cntr.drop(pck, counter.reasons.notUp);
-                return;
-            }
-            if (forcedDN != 0) {
-                cntr.drop(pck, counter.reasons.notUp);
-                return;
-            }
         }
         if (logFile != null) {
             packHolder mon = applyMonitor(pck, 1, false);

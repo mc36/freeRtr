@@ -150,6 +150,7 @@ import net.freertr.sec.secIsakmp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabQos;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabSession;
 import net.freertr.user.userFilter;
@@ -1431,6 +1432,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no disable-macsec",
         "interface .*! no disable-sgt",
         "interface .*! no loss-detection",
+        "interface .*! no rate-limit-in",
+        "interface .*! no rate-limit-out",
         "interface .*! no sgt enable",
         "interface .*! no sgt optional",
         "interface .*! no sgt allow-in",
@@ -5972,6 +5975,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, !disableSgt, cmds.tabulator, "disable-sgt", "");
         cmds.cfgLine(l, ethtyp.macSec == null, cmds.tabulator, "macsec", "" + ethtyp.macSec);
         cmds.cfgLine(l, ethtyp.lossDet == null, cmds.tabulator, "loss-detection", "" + ethtyp.lossDet);
+        cmds.cfgLine(l, ethtyp.rateIn == null, cmds.tabulator, "rate-limit-in", "" + ethtyp.rateIn);
+        cmds.cfgLine(l, ethtyp.rateOut == null, cmds.tabulator, "rate-limit-out", "" + ethtyp.rateOut);
         cmds.cfgLine(l, ethtyp.sgtHnd == null, cmds.tabulator, "sgt enable", "");
         if (ethtyp.sgtHnd != null) {
             cmds.cfgLine(l, ethtyp.sgtHnd.optional < 0, cmds.tabulator, "sgt optional", "" + ethtyp.sgtHnd.optional);
@@ -6759,6 +6764,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 3,.     <num>                     value");
         l.add(null, "2 3     forbid-out                  forbid some specific tags");
         l.add(null, "3 3,.     <num>                     value");
+        l.add(null, "1 2   rate-limit-in                 ingress rate limit commands");
+        l.add(null, "2 3     <num>                       bytes per interval");
+        l.add(null, "3 .       <num>                     ms per intervals");
+        l.add(null, "1 2   rate-limit-out                egress rate limit commands");
+        l.add(null, "2 3     <num>                       bytes per interval");
+        l.add(null, "3 .       <num>                     ms per intervals");
         l.add(null, "1 2,. loss-detection                loss detection commands");
         l.add(null, "2 3     <num>                       packet loss to block");
         l.add(null, "3 .       <num>                     time to block");
@@ -7301,6 +7312,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("rate-limit-in")) {
+            int res = bits.str2num(cmd.word());
+            ethtyp.rateIn = new tabRateLimit(res, bits.str2num(cmd.word()));
+            return;
+        }
+        if (a.equals("rate-limit-out")) {
+            int res = bits.str2num(cmd.word());
+            ethtyp.rateOut = new tabRateLimit(res, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("loss-detection")) {
@@ -7912,6 +7933,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             cmd.badCmd();
+            return;
+        }
+        if (a.equals("rate-limit-in")) {
+            ethtyp.rateIn = null;
+            return;
+        }
+        if (a.equals("rate-limit-out")) {
+            ethtyp.rateOut = null;
             return;
         }
         if (a.equals("loss-detection")) {
