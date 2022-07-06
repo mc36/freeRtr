@@ -2894,7 +2894,7 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: ipv4/6 host-rate
 todo: pmtud tool
-todo: interface rate-limit-in/out
+todo: test cases for interface rate-limit-in/out
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
 todo: allow command to be a substring of an other

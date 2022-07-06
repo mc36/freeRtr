@@ -13313,3 +13313,6 @@ todo: ipv4/6 host-rate
 todo: pmtud tool
 ---------------------------------- 2022-07-06 00:03:31 22.7.6
 todo: interface rate-limit-in/out
+---------------------------------- 2022-07-06 07:39:15 22.7.6
+no todo: interface rate-limit-in/out
+todo: test cases for interface rate-limit-in/out
