@@ -44,9 +44,10 @@ public class tabRateLimit {
     /**
      * check unreachable interval
      *
+     * @param inc increment
      * @return false if good, true if error
      */
-    public boolean check() {
+    public boolean check(int inc) {
         long tim = bits.getTime();
         if ((tim - last) > intrvl) {
             done = 0;
@@ -55,7 +56,7 @@ public class tabRateLimit {
             return true;
         }
         last = tim;
-        done++;
+        done += inc;
         return false;
     }
 

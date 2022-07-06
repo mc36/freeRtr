@@ -42,6 +42,7 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRtrmapN;
@@ -124,22 +125,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     /**
      * accesses per interval
      */
-    protected int srvAccRat;
-
-    /**
-     * the interval
-     */
-    protected int srvAccInt;
-
-    /**
-     * last access
-     */
-    protected long srvAccLst;
-
-    /**
-     * accesses per interval
-     */
-    protected int srvAccCnt;
+    protected tabRateLimit srvAccRat;
 
     /**
      * limit on startup
@@ -330,7 +316,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         "server .*! no access-map",
         "server .*! no access-policy",
         "server .*! no access-tracker",
-        "server .*! access-rate 0 0",
+        "server .*! no access-rate",
         "server .*! access-startup 0",
         "server .*! access-total 0",
         "server .*! access-peer 0",
@@ -1038,19 +1024,13 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return true;
             }
         }
-        if (srvAccRat > 0) {
-            long tim = bits.getTime();
-            if ((tim - srvAccLst) > srvAccInt) {
-                srvAccCnt = 0;
-            }
-            if (srvAccCnt >= srvAccRat) {
+        if (srvAccRat != null) {
+            if (srvAccRat.check(1)) {
                 if (srvLogDrop) {
                     logger.info("access rate dropped " + adr + " " + prt);
                 }
                 return true;
             }
-            srvAccLst = tim;
-            srvAccCnt++;
         }
         if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
             return false;
@@ -1416,7 +1396,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             l.add(cmds.tabulator + "no access-tracker");
         }
         cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
-        l.add(cmds.tabulator + "access-rate " + srvAccRat + " " + srvAccInt);
+        cmds.cfgLine(l, srvAccRat == null, cmds.tabulator, "access-rate", "" + srvAccRat);
         l.add(cmds.tabulator + "access-startup " + srvStartup);
         l.add(cmds.tabulator + "access-total " + srvTotLim);
         l.add(cmds.tabulator + "access-peer " + srvPerLim);
@@ -1578,8 +1558,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return;
         }
         if (a.equals("access-rate")) {
-            srvAccRat = bits.str2num(cmd.word());
-            srvAccInt = bits.str2num(cmd.word());
+            int res = bits.str2num(cmd.word());
+            srvAccRat = new tabRateLimit(res, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("access-map")) {
@@ -1742,8 +1722,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             if (a.equals("access-rate")) {
-                srvAccRat = 0;
-                srvAccInt = 0;
+                srvAccRat = null;
                 return;
             }
             if (a.equals("access-map")) {

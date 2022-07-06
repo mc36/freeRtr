@@ -505,7 +505,7 @@ public class ipMpls implements ifcUp {
             return true;
         }
         if (fwd.unreach != null) {
-            if (fwd.unreach.check()) {
+            if (fwd.unreach.check(1)) {
                 return true;
             }
         }

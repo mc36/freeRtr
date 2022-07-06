@@ -1,5 +1,6 @@
 ipv4/6 host-rate
 pmtud tool
+interface rate-limit-in/out
 backup path support to the spf class
 wcmp support to the spf class
 allow command to be a substring of an other

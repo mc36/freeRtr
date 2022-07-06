@@ -1762,7 +1762,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public void doDrop(packHolder pck, ipFwdIface lower, counter.reasons reason) {
         cntrT.drop(pck, reason);
         if (unreach != null) {
-            if (unreach.check()) {
+            if (unreach.check(1)) {
                 return;
             }
         }
