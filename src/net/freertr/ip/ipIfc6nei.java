@@ -13,6 +13,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -39,9 +40,14 @@ public class ipIfc6nei implements ifcUp {
     public int neiCacheTimeout = ipIfcLoop.defaultCacheTime;
 
     /**
-     * arp cache retry
+     * neighbor cache retry
      */
     public int neiCacheRetry = ipIfcLoop.defaultRetryTime;
+
+    /**
+     * neighbor query rate
+     */
+    public tabRateLimit neiQueryRate;
 
     private addrMac hwaddr = new addrMac();
 
@@ -324,6 +330,11 @@ public class ipIfc6nei implements ifcUp {
             }
         }
         cntr.drop(pck, counter.reasons.notInTab);
+        if (neiQueryRate != null) {
+            if (neiQueryRate.check(1)) {
+                return true;
+            }
+        }
         icc.createNeighSol(hwaddr, pck, adr, lladdr);
         pck.msbPutW(0, ipIfc6.type); // ethertype
         pck.putSkip(2);

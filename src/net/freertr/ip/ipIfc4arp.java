@@ -14,6 +14,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -52,6 +53,11 @@ public class ipIfc4arp implements ifcUp {
      * arp cache retry
      */
     public int arpCacheRetry = ipIfcLoop.defaultRetryTime;
+
+    /**
+     * arp query rate
+     */
+    public tabRateLimit arpQueryRate;
 
     private ifcDn lower = new ifcNull();
 
@@ -388,6 +394,11 @@ public class ipIfc4arp implements ifcUp {
             return true;
         }
         cntr.drop(pck, counter.reasons.notInTab);
+        if (arpQueryRate != null) {
+            if (arpQueryRate.check(1)) {
+                return true;
+            }
+        }
         sendArpPack(pck, opcodeARPreq, addrMac.getBroadcast(), adr, hwaddr, ipaddr);
         return true;
     }

@@ -12,6 +12,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.user.userFormat;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
@@ -395,6 +396,20 @@ public class ipIfc4 implements ipIfc, ifcUp {
             return;
         }
         arpCache.arpCacheRetry = tim;
+    }
+
+    public tabRateLimit getCacheRate() {
+        if (arpCache == null) {
+            return null;
+        }
+        return arpCache.arpQueryRate;
+    }
+
+    public void setCacheRate(tabRateLimit rat) {
+        if (arpCache == null) {
+            return;
+        }
+        arpCache.arpQueryRate = rat;
     }
 
     public ifcUp getPeerHdr() {

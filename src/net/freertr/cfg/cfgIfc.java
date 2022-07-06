@@ -1547,6 +1547,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[46] autoroute",
         "interface .*! ipv[46] host-learn",
         "interface .*! no ipv[46] host-watch",
+        "interface .*! no ipv[46] host-rate",
         "interface .*! ipv[46] host-reach 360000",
         "interface .*! ipv[46] host-retry 180000",
         "interface .*! no ipv[46] proxy-remote",

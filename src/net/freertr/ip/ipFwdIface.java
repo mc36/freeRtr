@@ -32,6 +32,7 @@ import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
@@ -606,6 +607,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       <num>                     time in ms");
         l.add(null, "2 3     host-retry                  set next hop cache retry");
         l.add(null, "3 .       <num>                     time in ms");
+        l.add(null, "2 3     host-rate                   set next hop cache query rate");
+        l.add(null, "3 4       <num>                     queries per interval");
+        l.add(null, "4 .         <num>                   inetrval in ms");
         l.add(null, "2 3     host-static                 set static next hop cache entry");
         l.add(null, "3 4       <addr>                    ip address");
         l.add(null, "4 .         <addr>                  mac address");
@@ -819,6 +823,8 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
         cmds.cfgLine(l, !lower.getCacheDynmc(), cmds.tabulator, beg + "host-learn", "");
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
+        tabRateLimit hostRate = lower.getCacheRate();
+        cmds.cfgLine(l, hostRate == null, cmds.tabulator, beg + "host-rate", "" + hostRate);
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         l.add(cmds.tabulator + beg + "host-retry " + lower.getCacheRetry());
         lower.getL2info(l, cmds.tabulator + beg + "host-static ");
@@ -1103,6 +1109,11 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-reach")) {
             lower.setCacheTimer(bits.str2num(cmd.word()));
+            return false;
+        }
+        if (a.equals("host-rate")) {
+            int res = bits.str2num(cmd.word());
+            lower.setCacheRate(new tabRateLimit(res, bits.str2num(cmd.word())));
             return false;
         }
         if (a.equals("host-retry")) {
@@ -1698,6 +1709,10 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-reach")) {
             lower.setCacheTimer(ipIfcLoop.defaultCacheTime);
+            return false;
+        }
+        if (a.equals("host-rate")) {
+            lower.setCacheRate(null);
             return false;
         }
         if (a.equals("host-retry")) {

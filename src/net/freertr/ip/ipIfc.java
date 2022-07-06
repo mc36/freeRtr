@@ -7,6 +7,7 @@ import net.freertr.ifc.ifcMpolka;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.user.userFormat;
 import net.freertr.util.counter;
 import net.freertr.util.state;
@@ -252,6 +253,20 @@ public interface ipIfc {
      * @param tim timeout
      */
     public void setCacheRetry(int tim);
+
+    /**
+     * get cache rate
+     *
+     * @return result
+     */
+    public tabRateLimit getCacheRate();
+
+    /**
+     * set cache rate
+     *
+     * @param rate rate
+     */
+    public void setCacheRate(tabRateLimit rat);
 
     /**
      * get peer handler

@@ -10,6 +10,7 @@ import net.freertr.ifc.ifcMpolka;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.user.userFormat;
 import net.freertr.util.counter;
 import net.freertr.util.state;
@@ -234,6 +235,13 @@ public class ipIfcLoop implements ipIfc {
 
     public void setCacheRetry(int tim) {
         cacheRetry = tim;
+    }
+
+    public tabRateLimit getCacheRate() {
+        return null;
+    }
+
+    public void setCacheRate(tabRateLimit rat) {
     }
 
     public ifcUp getPeerHdr() {
