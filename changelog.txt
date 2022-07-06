@@ -13324,3 +13324,7 @@ no todo: ipv4/6 host-rate
 no todo: arping
 ---------------------------------- 2022-07-06 11:11:16 22.7.6
 no todo: pmtud tool
+---------------------------------- 2022-07-06 17:07:42 22.7.6
+no todo: test cases for interface rate-limit-in/out
+qc pass: qos ingress policer action
+qc pass: qos egress policer action
