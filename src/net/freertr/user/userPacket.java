@@ -37,6 +37,7 @@ import net.freertr.ip.ipCor;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
+import net.freertr.ip.ipFwdEcho;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipIfc;
@@ -220,6 +221,139 @@ public class userPacket {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.pckt, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("pmtud")) {
+            String rem = cmd.word();
+            cfgVrf vrf = cfgAll.getClntVrf();
+            cfgIfc ifc = cfgAll.getClntIfc();
+            int data = 0;
+            int timeout = 1000;
+            int sgt = 0;
+            int tos = 0;
+            int flow = 0;
+            int ttl = 255;
+            int proto = 0;
+            int delay = 1000;
+            int min = 1400;
+            int max = 1600;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("data")) {
+                    data = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("vrf")) {
+                    vrf = cfgAll.vrfFind(cmd.word(), false);
+                    ifc = null;
+                    continue;
+                }
+                if (a.equals("source")) {
+                    ifc = cfgAll.ifcFind(cmd.word(), 0);
+                    continue;
+                }
+                if (a.equals("timeout")) {
+                    timeout = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("delay")) {
+                    delay = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("min")) {
+                    min = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("max")) {
+                    max = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("ttl")) {
+                    ttl = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("sgt")) {
+                    sgt = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("tos")) {
+                    tos = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("flow")) {
+                    flow = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("ipv4")) {
+                    proto = 4;
+                    continue;
+                }
+                if (a.equals("ipv6")) {
+                    proto = 6;
+                    continue;
+                }
+            }
+            if (vrf == null) {
+                cmd.error("vrf not specified");
+                return null;
+            }
+            userTerminal trm = new userTerminal(cmd.pipe);
+            addrIP trg = trm.resolveAddr(rem, proto);
+            if (trg == null) {
+                return null;
+            }
+            addrIP src = null;
+            if (ifc != null) {
+                src = ifc.getLocAddr(trg);
+            }
+            ipFwd fwd = vrf.getFwd(trg);
+            if (timeout < 1) {
+                timeout = 1;
+            }
+            cmd.error("pmduding " + trg + ", src=" + src + ", vrf=" + vrf.name + ", len=" + min + ".." + max + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data);
+            int last = -1;
+            for (;;) {
+                if (need2stop()) {
+                    break;
+                }
+                if ((max - min) < 2) {
+                    break;
+                }
+                int mid = min + ((max - min) / 2);
+                cmd.pipe.strPut("trying (" + min + ".." + max + ") " + mid + " ");
+                int size = mid - userExec.adjustSize(trg);
+                ipFwdEcho ping = fwd.echoSendReq(src, trg, size, true, ttl, sgt, tos, flow, data, false);
+                if (ping == null) {
+                    cmd.error("noroute");
+                    break;
+                }
+                if (ping.notif.totalNotifies() < 1) {
+                    ping.notif.sleep(timeout);
+                }
+                boolean res = false;
+                for (int o = 0; o < ping.res.size(); o++) {
+                    if (ping.res.get(o).err != null) {
+                        continue;
+                    }
+                    res = true;
+                    break;
+                }
+                if (res) {
+                    cmd.pipe.linePut("ok");
+                    min = mid;
+                    last = mid;
+                } else {
+                    cmd.pipe.linePut("bad");
+                    max = mid;
+                }
+                if (delay > 0) {
+                    bits.sleep(delay);
+                }
+            }
+            cmd.error("finished with min=" + min + " max=" + max + " last=" + last);
+            return null;
         }
         if (a.equals("arping")) {
             String rem = cmd.word();

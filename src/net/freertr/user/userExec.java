@@ -1800,6 +1800,32 @@ public class userExec {
         hl.add(null, "2 3      line                         access physical line");
         hl.add(null, "3 .        <name:lin>                 name of line");
         hl.add(null, "1 2    packet                         packet related things");
+        hl.add(null, "2 3      pmtud                        discover available mtu");
+        hl.add(null, "3 4,.      <host>                     name of host");
+        hl.add(null, "4 4,.        ipv4                     specify ipv4 to use");
+        hl.add(null, "4 4,.        ipv6                     specify ipv6 to use");
+        hl.add(null, "4 5          vrf                      specify vrf to use");
+        hl.add(null, "5 4,.          <name:vrf>             name of vrf");
+        hl.add(null, "4 5          source                   specify interface to use");
+        hl.add(null, "5 4,.          <name:ifc>             name of interface");
+        hl.add(null, "4 5          min                      specify minimum size");
+        hl.add(null, "5 4,.          <num>                  byte count");
+        hl.add(null, "4 5          max                      specify maximum size");
+        hl.add(null, "5 4,.          <num>                  byte count");
+        hl.add(null, "4 5          data                     specify data to send");
+        hl.add(null, "5 4,.          <num>                  payload byte");
+        hl.add(null, "4 5          timeout                  specify timeout");
+        hl.add(null, "5 4,.          <num>                  timeout in milliseconds");
+        hl.add(null, "4 5          delay                    specify delay between packets");
+        hl.add(null, "5 4,.          <num>                  timeout in milliseconds");
+        hl.add(null, "4 5          ttl                      specify ttl value");
+        hl.add(null, "5 4,.          <num>                  ttl");
+        hl.add(null, "4 5          tos                      specify tos value");
+        hl.add(null, "5 4,.          <num>                  tos");
+        hl.add(null, "4 5          sgt                      specify sgt value");
+        hl.add(null, "5 4,.          <num>                  sgt");
+        hl.add(null, "4 5          flow                     specify flow value");
+        hl.add(null, "5 4,.          <num>                  flow");
         hl.add(null, ".2 3     arping                       send arp request");
         hl.add(null, ".3 4,.     <host>                     name of host");
         hl.add(null, ".4 4,.       ipv4                     specify ipv4 to use");
@@ -3032,7 +3058,13 @@ public class userExec {
         }
     }
 
-    private static int adjustSize(addrIP adr) {
+    /**
+     * adjust the payload size according the protocol
+     *
+     * @param adr address to check
+     * @return size bytes to subtract
+     */
+    public static int adjustSize(addrIP adr) {
         if (adr.isIPv4()) {
             return ipCor4.size + ipIcmp4.size;
         } else {
