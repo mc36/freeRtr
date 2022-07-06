@@ -27,6 +27,7 @@ import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabQos;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -191,8 +192,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! propagate6ttl",
         "vrf definition .*! report4labels",
         "vrf definition .*! report6labels",
-        "vrf definition .*! unreach4rate 0 0",
-        "vrf definition .*! unreach6rate 0 0",
+        "vrf definition .*! no unreach4rate",
+        "vrf definition .*! no unreach6rate",
         "vrf definition .*! no punish4pmtud",
         "vrf definition .*! no punish6pmtud",
         "vrf definition .*! no mdt4",
@@ -559,10 +560,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, !fwd6.mplsPropTtl, cmds.tabulator, "propagate6ttl", "");
         cmds.cfgLine(l, !fwd4.mplsExtRep, cmds.tabulator, "report4labels", "");
         cmds.cfgLine(l, !fwd6.mplsExtRep, cmds.tabulator, "report6labels", "");
-        l.add(cmds.tabulator + "unreach4rate " + fwd4.unreachRat + " " + fwd4.unreachInt);
-        l.add(cmds.tabulator + "unreach6rate " + fwd6.unreachRat + " " + fwd6.unreachInt);
         cmds.cfgLine(l, !fwd4.ruinPmtuD, cmds.tabulator, "punish4pmtud", "");
         cmds.cfgLine(l, !fwd6.ruinPmtuD, cmds.tabulator, "punish6pmtud", "");
+        cmds.cfgLine(l, fwd4.unreach == null, cmds.tabulator, "unreach4rate", "" + fwd4.unreach);
+        cmds.cfgLine(l, fwd6.unreach == null, cmds.tabulator, "unreach6rate", "" + fwd6.unreach);
         cmds.cfgLine(l, fwd4.labelFilter == null, cmds.tabulator, "label4filter", "" + fwd4.labelFilter);
         cmds.cfgLine(l, fwd6.labelFilter == null, cmds.tabulator, "label6filter", "" + fwd6.labelFilter);
         cmds.cfgLine(l, fwd4.importList == null, cmds.tabulator, "import4list", "" + fwd4.importList);
@@ -971,20 +972,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("unreach-rate")) {
             int res1 = bits.str2num(cmd.word());
             int res2 = bits.str2num(cmd.word());
-            fwd4.unreachRat = res1;
-            fwd6.unreachRat = res1;
-            fwd4.unreachInt = res2;
-            fwd6.unreachInt = res2;
+            fwd4.unreach = new tabRateLimit(res1, res2);
+            fwd6.unreach = new tabRateLimit(res1, res2);
             return;
         }
         if (a.equals("unreach4rate")) {
-            fwd4.unreachRat = bits.str2num(cmd.word());
-            fwd4.unreachInt = bits.str2num(cmd.word());
+            int res = bits.str2num(cmd.word());
+            fwd4.unreach = new tabRateLimit(res, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("unreach6rate")) {
-            fwd6.unreachRat = bits.str2num(cmd.word());
-            fwd6.unreachInt = bits.str2num(cmd.word());
+            int res = bits.str2num(cmd.word());
+            fwd6.unreach = new tabRateLimit(res, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("punish-pmtud")) {
@@ -1422,20 +1421,16 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("unreach-rate")) {
-            fwd4.unreachRat = 0;
-            fwd6.unreachRat = 0;
-            fwd4.unreachInt = 0;
-            fwd6.unreachInt = 0;
+            fwd4.unreach = null;
+            fwd6.unreach = null;
             return;
         }
         if (a.equals("unreach4rate")) {
-            fwd4.unreachRat = 0;
-            fwd4.unreachInt = 0;
+            fwd4.unreach = null;
             return;
         }
         if (a.equals("unreach6rate")) {
-            fwd6.unreachRat = 0;
-            fwd6.unreachInt = 0;
+            fwd6.unreach = null;
             return;
         }
         if (a.equals("punish-pmtud")) {

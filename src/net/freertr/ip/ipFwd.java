@@ -29,6 +29,7 @@ import net.freertr.tab.tabNatTraN;
 import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabQos;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -358,22 +359,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     /**
      * unreachable last
      */
-    public long unreachLst = 0;
-
-    /**
-     * unreachable count
-     */
-    public int unreachCnt = 0;
-
-    /**
-     * unreachable interval
-     */
-    public int unreachInt = 0;
-
-    /**
-     * unreachable rate
-     */
-    public int unreachRat = 0;
+    public tabRateLimit unreach;
 
     /**
      * ruin remote pmtud
@@ -1767,27 +1753,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     }
 
     /**
-     * check unreachable interval
-     *
-     * @return false if good, true if error
-     */
-    public boolean checkUnreach() {
-        if (unreachInt < 1) {
-            return false;
-        }
-        long tim = bits.getTime();
-        if ((tim - unreachLst) > unreachInt) {
-            unreachCnt = 0;
-        }
-        if (unreachCnt >= unreachRat) {
-            return true;
-        }
-        unreachLst = tim;
-        unreachCnt++;
-        return false;
-    }
-
-    /**
      * send unreachable
      *
      * @param pck packet to report
@@ -1796,8 +1761,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public void doDrop(packHolder pck, ipFwdIface lower, counter.reasons reason) {
         cntrT.drop(pck, reason);
-        if (checkUnreach()) {
-            return;
+        if (unreach != null) {
+            if (unreach.check()) {
+                return;
+            }
         }
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(reason));
