@@ -264,7 +264,7 @@ public interface ipIfc {
     /**
      * set cache rate
      *
-     * @param rate rate
+     * @param rat rate
      */
     public void setCacheRate(tabRateLimit rat);
 
