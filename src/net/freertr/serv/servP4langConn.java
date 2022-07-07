@@ -2306,8 +2306,10 @@ public class servP4langConn implements Runnable {
             ifc.sentMss4out = -1;
             ifc.sentMss6in = -1;
             ifc.sentMss6out = -1;
-            ifc.sentPuntBig4 = -1;
-            ifc.sentPuntBig6 = -1;
+            ifc.sentPmtud4in = -1;
+            ifc.sentPmtud6in = -1;
+            ifc.sentPmtud4out = -1;
+            ifc.sentPmtud6out = -1;
             ifc.sentVerify4 = -1;
             ifc.sentVerify6 = -1;
             ifc.sentMpls = -1;
@@ -2316,10 +2318,12 @@ public class servP4langConn implements Runnable {
         i = 0;
         int o = 0;
         int p = 0;
+        int q = 0;
         if (mstr.ifc.fwdIf4 != null) {
             i = mstr.ifc.fwdIf4.tcpMssIn;
             o = mstr.ifc.fwdIf4.tcpMssOut;
-            p = mstr.ifc.fwdIf4.pmtuds;
+            p = mstr.ifc.fwdIf4.pmtudIn;
+            q = mstr.ifc.fwdIf4.pmtudOut;
         }
         if (i != ifc.sentMss4in) {
             lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + i);
@@ -2329,17 +2333,23 @@ public class servP4langConn implements Runnable {
             lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + o);
             ifc.sentMss4out = o;
         }
-        if (p != ifc.sentPuntBig4) {
-            lower.sendLine("puntbig4_" + a + " " + ifc.id + " " + p);
-            ifc.sentPuntBig4 = p;
+        if (p != ifc.sentPmtud4in) {
+            lower.sendLine("pmtud4in_" + a + " " + ifc.id + " " + p);
+            ifc.sentPmtud4in = p;
+        }
+        if (q != ifc.sentPmtud4out) {
+            lower.sendLine("pmtud4out_" + a + " " + ifc.id + " " + q);
+            ifc.sentPmtud4out = q;
         }
         i = 0;
         o = 0;
         p = 0;
+        q = 0;
         if (mstr.ifc.fwdIf6 != null) {
             i = mstr.ifc.fwdIf6.tcpMssIn;
             o = mstr.ifc.fwdIf6.tcpMssOut;
-            p = mstr.ifc.fwdIf6.pmtuds;
+            p = mstr.ifc.fwdIf6.pmtudIn;
+            q = mstr.ifc.fwdIf6.pmtudOut;
         }
         if (i != ifc.sentMss6in) {
             lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + i);
@@ -2349,9 +2359,13 @@ public class servP4langConn implements Runnable {
             lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + o);
             ifc.sentMss6out = o;
         }
-        if (p != ifc.sentPuntBig6) {
-            lower.sendLine("puntbig6_" + a + " " + ifc.id + " " + p);
-            ifc.sentPuntBig6 = p;
+        if (p != ifc.sentPmtud6in) {
+            lower.sendLine("pmtud6in_" + a + " " + ifc.id + " " + p);
+            ifc.sentPmtud6in = p;
+        }
+        if (q != ifc.sentPmtud6out) {
+            lower.sendLine("pmtud6out_" + a + " " + ifc.id + " " + q);
+            ifc.sentPmtud6out = q;
         }
         i = servP4langUtil.getVerifySource(mstr.ifc.fwdIf4);
         if (i != ifc.sentVerify4) {

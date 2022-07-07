@@ -13334,3 +13334,7 @@ qc pass: p4lang: pmtud
 ---------------------------------- 2022-07-07 12:38:52 22.7.7
 qc pass: tcp mss in
 qc pass: tcp mss out
+---------------------------------- 2022-07-07 13:47:14 22.7.7
+no qc pass: pmtud
+qc pass: pmtud out
+qc pass: pmtud in
