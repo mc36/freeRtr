@@ -1,4 +1,4 @@
-description pmtud out
+description pmtud in
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -10,8 +10,8 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- ipv4 pmtud-out 1400
- ipv6 pmtud-out 1400
+ ipv4 pmtud-in 1400
+ ipv6 pmtud-in 1400
  exit
 !
 
@@ -25,8 +25,8 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
- ipv4 pmtud-out 1400
- ipv6 pmtud-out 1400
+ ipv4 pmtud-in 1400
+ ipv6 pmtud-in 1400
  exit
 !
 

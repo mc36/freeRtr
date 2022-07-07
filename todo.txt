@@ -1,6 +1,5 @@
 test acl reports
 test for ttl in ip and mpls, even in p4
-test for p4 tcpmss
 bridge pmtud
 test for bridge pmtud and tcpmss, even in p4
 backup path support to the spf class

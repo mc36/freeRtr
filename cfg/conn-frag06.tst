@@ -1,4 +1,4 @@
-description tcp mss out
+description tcp mss in
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -12,8 +12,8 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- ipv4 tcp-mss-out 1280
- ipv6 tcp-mss-out 1280
+ ipv4 tcp-mss-in 1280
+ ipv6 tcp-mss-in 1280
  exit
 ipv4 pool p4 2.2.2.1 0.0.0.1 254
 int di1
@@ -55,8 +55,8 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
- ipv4 tcp-mss-out 1280
- ipv6 tcp-mss-out 1280
+ ipv4 tcp-mss-in 1280
+ ipv6 tcp-mss-in 1280
  exit
 int di2
  enc ppp
