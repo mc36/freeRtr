@@ -125,6 +125,16 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     protected int sentSgtSet;
 
     /**
+     * sent bigs
+     */
+    protected int sentPuntBig4;
+
+    /**
+     * sent bigs
+     */
+    protected int sentPuntBig6;
+
+    /**
      * sent mss
      */
     protected int sentMss4in;
@@ -503,6 +513,8 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentMss4out = 0;
         sentMss6in = 0;
         sentMss6out = 0;
+        sentPuntBig4 = 0;
+        sentPuntBig6 = 0;
         sentVerify4 = 0;
         sentVerify6 = 0;
         sentMpls = 0;
