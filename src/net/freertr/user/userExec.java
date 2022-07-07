@@ -3840,7 +3840,7 @@ public class userExec {
             }
         }
         pipe.linePut("");
-        pipe.linePut("result=" + bits.percent(recv, sent) + "%, recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", took " + (bits.getTime() - timBeg) + ", min/avg/max/dev rtt=" + timS.res() + ", ttl " + ttlS.res() + ", tos " + tosS.res());
+        pipe.linePut("result=" + bits.percent(recv, sent) + ", recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", took " + (bits.getTime() - timBeg) + ", min/avg/max/dev rtt=" + timS.res() + ", ttl " + ttlS.res() + ", tos " + tosS.res());
     }
 
     private void doListen() {

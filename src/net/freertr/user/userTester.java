@@ -1315,7 +1315,7 @@ class userTesterPrc implements Comparator<userTesterPrc> {
         for (;;) {
             s = getLine();
             if (s == null) {
-                return -1;
+                return -100000000;
             }
             s = s.toLowerCase();
             if (s.startsWith("result=")) {
@@ -1324,7 +1324,7 @@ class userTesterPrc implements Comparator<userTesterPrc> {
         }
         int i = s.indexOf("=");
         if (i < 0) {
-            return -1;
+            return -100000000;
         }
         s = s.substring(i + 1, s.length());
         i = s.indexOf("%");
@@ -1343,9 +1343,6 @@ class userTesterPrc implements Comparator<userTesterPrc> {
         for (int rnd = 0; rnd <= round; rnd++) {
             rdr.setCurr(rnd);
             i = doPing(s);
-            if (i < 0) {
-                return true;
-            }
             bits.buf2txt(false, bits.str2lst("res:" + i + " percent"), getLogName(4));
             if (ned.matches(i)) {
                 return false;

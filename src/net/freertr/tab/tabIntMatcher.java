@@ -108,7 +108,7 @@ public class tabIntMatcher {
             return false;
         }
         int i = s.indexOf("-");
-        if (i >= 0) {
+        if (i > 0) {
             action = actionType.range;
             rangeMin = bits.str2num(s.substring(0, i).trim());
             rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
