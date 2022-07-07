@@ -1234,12 +1234,25 @@ ethtyp_rx:
             tmp = get16msb(bufD, bufP - 2);
             switch (tmp) {
             case ETHERTYPE_IPV4: // ipv4
-                bufT = bufD[bufP + 0] & 0xf;
+                bufT = bufD[bufP + 0] & 0xf; // ihl
+                if (bufT < 5) doDropper;
+                ttl = get16msb(bufD, bufP + 2) + bufP - preBuff; // len
+                if (ttl > bufS) doDropper;
+                bufS = ttl;
+                if (port2vrf_res->puntbig4 > 0) {
+                    if ((bufS - bufP + preBuff) > port2vrf_res->puntbig4) doPunting;
+                }
                 bufT = bufP + (bufT << 2);
                 acl4_ntry.protV = bufD[bufP + 9];
                 update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
                 break;
             case ETHERTYPE_IPV6: // ipv6
+                ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
+                if (ttl > bufS) doDropper;
+                bufS = ttl;
+                if (port2vrf_res->puntbig6 > 0) {
+                    if ((bufS - bufP + preBuff) > port2vrf_res->puntbig6) doPunting;
+                }
                 bufT = bufP + 40;
                 acl6_ntry.protV = bufD[bufP + 6];
                 update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
@@ -1479,16 +1492,16 @@ ipv4_rx:
         if (index < 0) doDropper;
         vrf2rib_res = table_get(&vrf2rib4_table, index);
         if ((bufD[bufP + 0] & 0xf0) != 0x40) doDropper;
-        bufT = bufD[bufP + 0] & 0xf;
+        bufT = bufD[bufP + 0] & 0xf; // ihl
         if (bufT < 5) doDropper;
-        ttl = get16msb(bufD, bufP + 2) + bufP - preBuff;
+        ttl = get16msb(bufD, bufP + 2) + bufP - preBuff; // len
         if (ttl > bufS) doDropper;
         bufS = ttl;
         if (port2vrf_res->puntbig4 > 0) {
             if ((bufS - bufP + preBuff) > port2vrf_res->puntbig4) doPunting;
         }
         bufT = bufP + (bufT << 2);
-        frag = get16msb(bufD, bufP + 6) & 0x3fff;
+        frag = get16msb(bufD, bufP + 6) & 0x3fff; // frags
         acl4_ntry.sgtV = sgt;
         acl4_ntry.protV = bufD[bufP + 9];
         acl4_ntry.tosV = bufD[bufP + 1];
@@ -1743,7 +1756,7 @@ ipv6_rx:
         if (index < 0) doDropper;
         vrf2rib_res = table_get(&vrf2rib6_table, index);
         if ((bufD[bufP + 0] & 0xf0) != 0x60) doDropper;
-        ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff;
+        ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
         if (ttl > bufS) doDropper;
         bufS = ttl;
         if (port2vrf_res->puntbig6 > 0) {
@@ -1754,7 +1767,7 @@ ipv6_rx:
         acl6_ntry.protV = bufD[bufP + 6];
         acl6_ntry.tosV = (get16msb(bufD, bufP + 0) >> 4) & 0xff;
         acl6_ntry.flowV = get32msb(bufD, bufP + 0) & 0xfffff;
-        if (acl6_ntry.protV == 44) {
+        if (acl6_ntry.protV == 44) { // frags
             acl6_ntry.protV = bufD[bufT + 0];
             bufT += 8;
             frag = 1;
