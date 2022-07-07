@@ -1768,6 +1768,8 @@ qc pass: p4lang: pmtud
 qc pass: p4lang: vlan pmtud
 qc pass: p4lang: tcpmss
 qc pass: p4lang: vlan tcpmss
+qc pass: p4lang: bridge tcpmss
+qc pass: p4lang: vlan bridge tcpmss
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

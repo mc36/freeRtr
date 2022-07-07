@@ -13365,3 +13365,6 @@ no todo: bridge pmtud
 qc pass: bridge tcp mss in
 qc pass: bridge tcp mss out
 todo: bridge pmtud, even in p4
+---------------------------------- 2022-07-07 19:51:24 22.7.7
+qc pass: p4lang: bridge tcpmss
+qc pass: p4lang: vlan bridge tcpmss
