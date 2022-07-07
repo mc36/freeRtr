@@ -13355,3 +13355,7 @@ qc pass: p4lang: tcpmss
 qc pass: p4lang: vlan tcpmss
 ---------------------------------- 2022-07-07 15:49:13 22.7.7
 no todo: test acl reports
+---------------------------------- 2022-07-07 16:06:55 22.7.7
+no todo: test for ttl in ip and mpls, even in p4
+qc pass: ip ttl exceed
+qc pass: mpls ttl exceed
