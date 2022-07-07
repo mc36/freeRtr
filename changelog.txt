@@ -13328,3 +13328,6 @@ no todo: pmtud tool
 no todo: test cases for interface rate-limit-in/out
 qc pass: qos ingress policer action
 qc pass: qos egress policer action
+---------------------------------- 2022-07-07 09:03:08 22.7.7
+qc pass: pmtud
+qc pass: p4lang: pmtud
