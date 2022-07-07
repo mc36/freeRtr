@@ -141,6 +141,8 @@ qc pass: tcp mss in
 qc pass: tcp mss out
 qc pass: ip ttl exceed
 qc pass: mpls ttl exceed
+qc pass: bridge tcp mss in
+qc pass: bridge tcp mss out
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
@@ -2904,8 +2906,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: bridge pmtud
-todo: test for bridge pmtud and tcpmss, even in p4
+todo: bridge pmtud, even in p4
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
 todo: allow command to be a substring of an other

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.7.7-cur, done by cs@nop.
--;-;-;2022-07-07 19:18:58, took 00:08:16, with 80 workers, on 2906 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2022-07-07 19:50:14, took 00:09:19, with 80 workers, on 2908 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -145,6 +145,8 @@ http://sources.freertr.org/cfg/conn-frag06.tst;conn-frag06.tst;success;tcp mss i
 http://sources.freertr.org/cfg/conn-frag07.tst;conn-frag07.tst;success;tcp mss out
 http://sources.freertr.org/cfg/conn-frag08.tst;conn-frag08.tst;success;ip ttl exceed
 http://sources.freertr.org/cfg/conn-frag09.tst;conn-frag09.tst;success;mpls ttl exceed
+http://sources.freertr.org/cfg/conn-frag10.tst;conn-frag10.tst;success;bridge tcp mss in
+http://sources.freertr.org/cfg/conn-frag11.tst;conn-frag11.tst;success;bridge tcp mss out
 http://sources.freertr.org/cfg/conn-framerelay01.tst;conn-framerelay01.tst;success;framerelay ansi
 http://sources.freertr.org/cfg/conn-framerelay02.tst;conn-framerelay02.tst;success;framerelay cisco
 http://sources.freertr.org/cfg/conn-framerelay03.tst;conn-framerelay03.tst;success;framerelay q933

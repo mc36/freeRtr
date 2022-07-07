@@ -13359,3 +13359,9 @@ no todo: test acl reports
 no todo: test for ttl in ip and mpls, even in p4
 qc pass: ip ttl exceed
 qc pass: mpls ttl exceed
+---------------------------------- 2022-07-07 19:40:55 22.7.7
+no todo: test for bridge pmtud and tcpmss, even in p4
+no todo: bridge pmtud
+qc pass: bridge tcp mss in
+qc pass: bridge tcp mss out
+todo: bridge pmtud, even in p4
