@@ -1828,13 +1828,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (debugger.ipFwdTraf) {
             logger.debug("rx label=" + lab.label);
         }
-        pck.MPLSttl--;
-        if (pck.MPLSttl < 2) {
-            if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
-                return;
-            }
-        }
         if (lab.nextHop != null) {
+            pck.MPLSttl--;
+            if (pck.MPLSttl < 1) {
+                if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
+                    return;
+                }
+            }
             if ((lab.remoteLab == null) && (!pck.MPLSbottom)) {
                 logger.info("no label for " + lab.label);
                 cntrT.drop(pck, counter.reasons.notInTab);
@@ -1844,6 +1844,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             return;
         }
         if (lab.duplicate != null) {
+            pck.MPLSttl--;
+            if (pck.MPLSttl < 1) {
+                if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
+                    return;
+                }
+            }
             for (int i = 0; i < lab.duplicate.size(); i++) {
                 tabLabelDup ntry = lab.duplicate.get(i);
                 if (ntry == null) {
@@ -1856,6 +1862,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
         }
         if (lab.bier != null) {
+            pck.MPLSttl--;
+            if (pck.MPLSttl < 1) {
+                if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
+                    return;
+                }
+            }
             pck.BIERsi = lab.label - lab.bier.base;
             pck.BIERbsl = lab.bier.bsl;
             if (ipMpls.parseBIERheader(pck)) {
@@ -2254,21 +2266,22 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
-        if (pck.MPLSttl < 2) {
-            doDrop(pck, rxIfc, counter.reasons.ttlExceed, 0);
-            return;
-        }
         if (((from & 1) != 0) && alerted) {
             if (!protoAlert(rxIfc, pck)) {
                 return;
             }
         }
         if (from != 4) {
+            if (pck.MPLSttl < 2) {
+                doDrop(pck, rxIfc, counter.reasons.ttlExceed, 0);
+                return;
+            }
             if ((mplsPropTtl | txIfc.mplsPropTtlAlways) & txIfc.mplsPropTtlAllow) {
                 ipCore.updateIPheader(pck, null, null, -1, pck.MPLSttl - 1, -1, -1, -1);
             } else {
                 ipCore.updateIPheader(pck, null, null, -1, -2, -1, -1, -1);
             }
+            pck.MPLSttl--;
         }
         if (prf.best.rouTyp == tabRouteAttr.routeType.conn) {
             ifaceProto(txIfc, pck, null);
