@@ -1356,6 +1356,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (script.script == null) {
+                    return;
+                }
                 bstun = new clntBstun();
                 bstun.target = target;
                 bstun.proxy = proxy;
@@ -1390,6 +1393,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (script.script == null) {
+                    return;
+                }
                 telnet = new clntTelnet();
                 telnet.target = target;
                 telnet.proxy = proxy;
@@ -1402,6 +1408,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prTls:
                 if (ifaceDialer == null) {
+                    return;
+                }
+                if (script.script == null) {
                     return;
                 }
                 telnet = new clntTelnet();
@@ -1419,6 +1428,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (script.script == null) {
+                    return;
+                }
                 telnet = new clntTelnet();
                 telnet.target = target;
                 telnet.proxy = proxy;
@@ -1434,6 +1446,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prTcp:
                 if (ifaceDialer == null) {
+                    return;
+                }
+                if (script.script == null) {
                     return;
                 }
                 telnet = new clntTelnet();
