@@ -999,9 +999,14 @@ public class cfgAll {
     public static int ludpRangeMax = 0xf000;
 
     /**
+     * tcp minimum segment
+     */
+    public static int tcpSegmentMin = 1024;
+
+    /**
      * tcp maximum segment
      */
-    public static int tcpMaxSegment = 1024;
+    public static int tcpSegmentMax = 1024;
 
     /**
      * tcp window scale
@@ -1266,7 +1271,7 @@ public class cfgAll {
         "!client icmp6-checksum both",
         "!client udp-checksum both",
         "!client udp-portrange 32768 61440",
-        "!client tcp-segments 1024",
+        "!client tcp-segments 1024 1024",
         "!client tcp-winscale 1",
         "!no client tcp-timestamp",
         "!no client tcp-ecn",
@@ -3582,7 +3587,7 @@ public class cfgAll {
         l.add("client udp-checksum " + rxtx2string(udpChecksumRx, udpChecksumTx));
         l.add("client udp-portrange " + udpRangeMin + " " + udpRangeMax);
         l.add("client tcp-checksum " + rxtx2string(tcpChecksumRx, tcpChecksumTx));
-        l.add("client tcp-segments " + tcpMaxSegment);
+        l.add("client tcp-segments " + tcpSegmentMin + " " + tcpSegmentMax);
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
         cmds.cfgLine(l, !tcpEcn, "", "client tcp-ecn", "");

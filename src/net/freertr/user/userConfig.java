@@ -586,7 +586,8 @@ public class userConfig {
         l.add(null, "3  4      max                        set tcp fallback");
         l.add(null, "4  .        <num>                    ms");
         l.add(null, "2  3    tcp-segments                 set tcp segment size");
-        l.add(null, "3  .      <num>                      bytes");
+        l.add(null, "3  4      <num>                      minimum bytes");
+        l.add(null, "4  .        <num>                    maximum bytes");
         l.add(null, "2  3    tcp-winscale                 set tcp window scale");
         l.add(null, "3  .      <num>                      factor");
         l.add(null, "2  3    udp-portrange                set udp client range");
@@ -1460,7 +1461,8 @@ public class userConfig {
                 return;
             }
             if (a.equals("tcp-segments")) {
-                cfgAll.tcpMaxSegment = bits.str2num(cmd.word());
+                cfgAll.tcpSegmentMin = bits.str2num(cmd.word());
+                cfgAll.tcpSegmentMax = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("tcp-winscale")) {

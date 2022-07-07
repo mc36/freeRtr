@@ -240,6 +240,16 @@ public class prtTcp extends prtGen {
         }
     }
 
+    private static int regulateMss(int i) {
+        if (i < cfgAll.tcpSegmentMin) {
+            i = cfgAll.tcpSegmentMin;
+        }
+        if (i > cfgAll.tcpSegmentMax) {
+            i = cfgAll.tcpSegmentMax;
+        }
+        return i;
+    }
+
     /**
      * parse tcp header
      *
@@ -567,7 +577,7 @@ public class prtTcp extends prtGen {
             pck.IPid = clnt.sendFLW;
             if ((flg & flagSYN) != 0) {
                 pck.TCPseq--;
-                pck.TCPmss = cfgAll.tcpMaxSegment;
+                pck.TCPmss = cfgAll.tcpSegmentMax;
                 pck.TCPwsc = cfgAll.tcpWinScale;
             }
             pr.netOut += datSiz;
@@ -617,7 +627,7 @@ public class prtTcp extends prtGen {
         }
         clnt.sendPRT = protoNum;
         prtTcpConn pr = new prtTcpConn();
-        pr.netMax = cfgAll.tcpMaxSegment;
+        pr.netMax = cfgAll.tcpSegmentMin;
         clnt.proto = pr;
         clnt.timeout = cfgAll.tcpTimeSyn;
         clnt.workInterval = 1000;
@@ -635,6 +645,8 @@ public class prtTcp extends prtGen {
         if (pck.TCPtsV == 0) {
             pr.tmstmpTx = 0;
         }
+        pr.segSiz = regulateMss(pck.TCPmss);
+        pr.netMax = pr.segSiz;
         pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
         pr.state = prtTcpConn.stGotSyn;
         pr.seqRem = pck.TCPseq + 1;
@@ -748,6 +760,7 @@ public class prtTcp extends prtGen {
                     pr.tmstmpTx = 0;
                 }
                 pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
+                pr.segSiz = regulateMss(pck.TCPmss);
                 pr.state = prtTcpConn.stOpened;
                 pr.staTim = bits.getTime();
                 pr.activWait = cfgAll.tcpTimeNow;
@@ -797,7 +810,7 @@ public class prtTcp extends prtGen {
                     if (pr.netOut < 0) {
                         pr.netOut = 0;
                     }
-                    pr.netMax += cfgAll.tcpMaxSegment;
+                    pr.netMax += pr.segSiz;
                     if (pr.netMax > maxSegMax) {
                         pr.netMax = maxSegMax;
                     }
@@ -958,8 +971,8 @@ public class prtTcp extends prtGen {
             if (snd > i) {
                 snd = i;
             }
-            if (snd > cfgAll.tcpMaxSegment) {
-                snd = cfgAll.tcpMaxSegment;
+            if (snd > pr.segSiz) {
+                snd = pr.segSiz;
                 flg = flagACK;
             }
             if (pr.netOut > pshNetOut) {
@@ -1032,7 +1045,7 @@ public class prtTcp extends prtGen {
                 break;
             case prtTcpConn.stOpened:
                 sendMyPacket(clnt, flagACK, 0);
-                pr.netMax = cfgAll.tcpMaxSegment;
+                pr.netMax = pr.segSiz;
                 pr.netOut = 0;
                 break;
             case prtTcpConn.stDelete:
@@ -1174,6 +1187,11 @@ class prtTcpConn {
      * remote sequence number
      */
     protected int seqRem;
+
+    /**
+     * maximum segment size
+     */
+    protected int segSiz;
 
     /**
      * bytes sent to remote
