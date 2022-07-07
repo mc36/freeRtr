@@ -152,6 +152,8 @@ struct port2vrf_entry {
     int tcpmss6;
     int verify4;
     int verify6;
+    int puntbig4;
+    int puntbig6;
     int mpls;
     int nsh;
     int monTarget;

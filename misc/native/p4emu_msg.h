@@ -159,7 +159,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn";
+    return "copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn pntbig";
 }
 
 
@@ -441,6 +441,18 @@ int doOneCommand(unsigned char* buf) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
         port2vrf_res->verify6 = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "puntbig4") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->puntbig4 = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "puntbig6") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->puntbig6 = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "mplspack") == 0) {

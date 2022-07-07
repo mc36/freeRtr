@@ -1484,6 +1484,9 @@ ipv4_rx:
         ttl = get16msb(bufD, bufP + 2) + bufP - preBuff;
         if (ttl > bufS) doDropper;
         bufS = ttl;
+        if (port2vrf_res->puntbig4 > 0) {
+            if ((bufS - bufP + preBuff) > port2vrf_res->puntbig4) doPunting;
+        }
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff;
         acl4_ntry.sgtV = sgt;
@@ -1743,6 +1746,9 @@ ipv6_rx:
         ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff;
         if (ttl > bufS) doDropper;
         bufS = ttl;
+        if (port2vrf_res->puntbig6 > 0) {
+            if ((bufS - bufP + preBuff) > port2vrf_res->puntbig6) doPunting;
+        }
         bufT = bufP + 40;
         acl6_ntry.sgtV = sgt;
         acl6_ntry.protV = bufD[bufP + 6];
