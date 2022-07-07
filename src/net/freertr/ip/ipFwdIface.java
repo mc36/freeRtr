@@ -228,9 +228,14 @@ public class ipFwdIface extends tabRouteIface {
     public int fragments;
 
     /**
-     * pmtud payload size
+     * reported pmtud payload size
      */
-    public int pmtuds;
+    public int pmtudIn;
+
+    /**
+     * reported pmtud payload size
+     */
+    public int pmtudOut;
 
     /**
      * reassembly buffer
@@ -517,7 +522,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       <num>                     number of packets");
         l.add(null, "2 3     fragmentation               set up fragmentation");
         l.add(null, "3 .       <num>                     maximum payload size");
-        l.add(null, "2 3     pmtud-reply                 set up pmtud responder");
+        l.add(null, "2 3     pmtud-in                    set up pmtud responder");
+        l.add(null, "3 .       <num>                     maximum payload size");
+        l.add(null, "2 3     pmtud-out                   set up pmtud responder");
         l.add(null, "3 .       <num>                     maximum payload size");
         l.add(null, "2 .     netflow-rx                  netflow received packets");
         l.add(null, "2 .     netflow-tx                  netflow transmitted packets");
@@ -770,7 +777,8 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "reassembly " + reasmBuf.size());
         }
         cmds.cfgLine(l, fragments < 1, cmds.tabulator, beg + "fragmentation", "" + fragments);
-        cmds.cfgLine(l, pmtuds < 1, cmds.tabulator, beg + "pmtud-reply", "" + pmtuds);
+        cmds.cfgLine(l, pmtudIn < 1, cmds.tabulator, beg + "pmtud-in", "" + pmtudIn);
+        cmds.cfgLine(l, pmtudOut < 1, cmds.tabulator, beg + "pmtud-out", "" + pmtudOut);
         cmds.cfgLine(l, !gateCon, cmds.tabulator, beg + "gateway-connected", "");
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
@@ -951,8 +959,12 @@ public class ipFwdIface extends tabRouteIface {
             fragments = bits.str2num(cmd.word()) & (-1 - 7);
             return false;
         }
-        if (a.equals("pmtud-reply")) {
-            pmtuds = bits.str2num(cmd.word());
+        if (a.equals("pmtud-in")) {
+            pmtudIn = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("pmtud-out")) {
+            pmtudOut = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("reassembly")) {
@@ -1630,8 +1642,12 @@ public class ipFwdIface extends tabRouteIface {
             fragments = 0;
             return false;
         }
-        if (a.equals("pmtud-reply")) {
-            pmtuds = 0;
+        if (a.equals("pmtud-in")) {
+            pmtudIn = 0;
+            return false;
+        }
+        if (a.equals("pmtud-out")) {
+            pmtudOut = 0;
             return false;
         }
         if (a.equals("reassembly")) {

@@ -92,7 +92,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      * @param mplsExt add mpls extension
      * @return false on success, true on error
      */
-    public boolean createError(packHolder pck, counter.reasons reason, ipFwdIface ifip, boolean mplsExt) {
+    public boolean createError(packHolder pck, counter.reasons reason, int data, ipFwdIface ifip, boolean mplsExt) {
         final int maxErrorSize = 512;
         if (pck.IPprt == protoNum) {
             pck.getSkip(pck.IPsiz);
@@ -110,7 +110,6 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             return true;
         }
         int typ;
-        int dat = 0;
         switch (reason) {
             case noRoute:
             case noIface:
@@ -128,7 +127,6 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 break;
             case fragment:
                 typ = icmpFragNeed;
-                dat = ifip.pmtuds;
                 break;
             case ttlExceed:
                 typ = icmpTtlXced;
@@ -147,7 +145,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         if (mplsExt) {
             ipFwdEcho.addMplsExt(pck);
         }
-        pck.msbPutD(4, dat); // optional data
+        pck.msbPutD(4, data); // optional data
         createICMPheader(pck);
         return false;
     }

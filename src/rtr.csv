@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.7.7-cur, done by cs@nop.
--;-;-;2022-07-07 11:41:59, took 00:08:32, with 80 workers, on 2898 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2022-07-07 12:53:12, took 00:14:20, with 80 workers, on 2900 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -140,6 +140,8 @@ http://sources.freertr.org/cfg/conn-frag01.tst;conn-frag01.tst;success;fragmenta
 http://sources.freertr.org/cfg/conn-frag02.tst;conn-frag02.tst;success;no fragmentation nor reassembly
 http://sources.freertr.org/cfg/conn-frag03.tst;conn-frag03.tst;success;precise mtu enforcement
 http://sources.freertr.org/cfg/conn-frag04.tst;conn-frag04.tst;success;pmtud
+http://sources.freertr.org/cfg/conn-frag05.tst;conn-frag05.tst;success;tcp mss in
+http://sources.freertr.org/cfg/conn-frag06.tst;conn-frag06.tst;success;tcp mss out
 http://sources.freertr.org/cfg/conn-framerelay01.tst;conn-framerelay01.tst;success;framerelay ansi
 http://sources.freertr.org/cfg/conn-framerelay02.tst;conn-framerelay02.tst;success;framerelay cisco
 http://sources.freertr.org/cfg/conn-framerelay03.tst;conn-framerelay03.tst;success;framerelay q933
@@ -314,6 +316,10 @@ http://sources.freertr.org/cfg/conn-pckoi01.tst;conn-pckoi01.tst;success;pckoip 
 http://sources.freertr.org/cfg/conn-pckoi02.tst;conn-pckoi02.tst;success;pckoip over ipv6
 http://sources.freertr.org/cfg/conn-pckoi03.tst;conn-pckoi03.tst;success;pckoip over pckoip
 http://sources.freertr.org/cfg/conn-pckoi04.tst;conn-pckoi04.tst;success;pckoip over loopback
+http://sources.freertr.org/cfg/conn-pckot01.tst;conn-pckot01.tst;success;ppp with packet over tcp
+http://sources.freertr.org/cfg/conn-pckot02.tst;conn-pckot02.tst;success;ppp with packet over tls
+http://sources.freertr.org/cfg/conn-pckot03.tst;conn-pckot03.tst;success;ppp with packet over txt
+http://sources.freertr.org/cfg/conn-pckot04.tst;conn-pckot04.tst;success;ppp with packet over txtls
 http://sources.freertr.org/cfg/conn-pckou01.tst;conn-pckou01.tst;success;ppp with packet over udp
 http://sources.freertr.org/cfg/conn-pckou02.tst;conn-pckou02.tst;success;ethernet with packet over udp
 http://sources.freertr.org/cfg/conn-pckou03.tst;conn-pckou03.tst;success;hdlc tunneling with packet over udp
@@ -331,11 +337,7 @@ http://sources.freertr.org/cfg/conn-pckou14.tst;conn-pckou14.tst;success;etherne
 http://sources.freertr.org/cfg/conn-pckou15.tst;conn-pckou15.tst;success;interworking with ethernet over packet over udp
 http://sources.freertr.org/cfg/conn-pckou16.tst;conn-pckou16.tst;success;interworking with packet over dtls
 http://sources.freertr.org/cfg/conn-pckou17.tst;conn-pckou17.tst;success;ppp with packet over dtls
-http://sources.freertr.org/cfg/conn-pckou18.tst;conn-pckou18.tst;success;ppp with packet over tcp
-http://sources.freertr.org/cfg/conn-pckou19.tst;conn-pckou19.tst;success;ppp with packet over tls
-http://sources.freertr.org/cfg/conn-pckou20.tst;conn-pckou20.tst;success;ppp with packet over txt
-http://sources.freertr.org/cfg/conn-pckou21.tst;conn-pckou21.tst;success;ppp with packet over txtls
-http://sources.freertr.org/cfg/conn-pckou22.tst;conn-pckou22.tst;success;packet over udp over asymmetric ports
+http://sources.freertr.org/cfg/conn-pckou18.tst;conn-pckou18.tst;success;packet over udp over asymmetric ports
 http://sources.freertr.org/cfg/conn-pim01.tst;conn-pim01.tst;success;pim over ipv4
 http://sources.freertr.org/cfg/conn-pim02.tst;conn-pim02.tst;success;pim over ipv6
 http://sources.freertr.org/cfg/conn-pim03.tst;conn-pim03.tst;success;pim over pim

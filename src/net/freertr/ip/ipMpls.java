@@ -488,9 +488,10 @@ public class ipMpls implements ifcUp {
      * @param pck packet to report
      * @param lab label to report
      * @param res reason code
+     * @param dat reason data
      * @return false if succeed, true if error
      */
-    public static boolean createError(packHolder pck, tabLabelEntry lab, counter.reasons res) {
+    public static boolean createError(packHolder pck, tabLabelEntry lab, counter.reasons res, int dat) {
         ipFwd fwd = lab.forwarder;
         if (fwd == null) {
             return true;
@@ -537,7 +538,7 @@ public class ipMpls implements ifcUp {
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(res));
         }
-        if (fwd.icmpCore.createError(pck, res, ifc, fwd.mplsExtRep)) {
+        if (fwd.icmpCore.createError(pck, res, dat, ifc, fwd.mplsExtRep)) {
             return true;
         }
         fwd.ipCore.createIPheader(pck);

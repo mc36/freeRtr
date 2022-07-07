@@ -187,7 +187,7 @@ public class prtLudp extends prtGen {
 
     protected void connectionRefuse(ipFwdIface ifc, packHolder pck) {
         pck.getSkip(-size - pck.IPsiz);
-        fwdCore.doDrop(pck, ifc, counter.reasons.badPort);
+        fwdCore.doDrop(pck, ifc, counter.reasons.badPort, 0);
     }
 
     /**

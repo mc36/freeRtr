@@ -136,6 +136,8 @@ qc pass: fragmentation and reassembly
 qc pass: no fragmentation nor reassembly
 qc pass: precise mtu enforcement
 qc pass: pmtud
+qc pass: tcp mss in
+qc pass: tcp mss out
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
@@ -310,6 +312,10 @@ qc pass: pckoip over ipv4
 qc pass: pckoip over ipv6
 qc pass: pckoip over pckoip
 qc pass: pckoip over loopback
+qc pass: ppp with packet over tcp
+qc pass: ppp with packet over tls
+qc pass: ppp with packet over txt
+qc pass: ppp with packet over txtls
 qc pass: ppp with packet over udp
 qc pass: ethernet with packet over udp
 qc pass: hdlc tunneling with packet over udp
@@ -327,10 +333,6 @@ qc pass: ethernet over packet over udp
 qc pass: interworking with ethernet over packet over udp
 qc pass: interworking with packet over dtls
 qc pass: ppp with packet over dtls
-qc pass: ppp with packet over tcp
-qc pass: ppp with packet over tls
-qc pass: ppp with packet over txt
-qc pass: ppp with packet over txtls
 qc pass: packet over udp over asymmetric ports
 qc pass: pim over ipv4
 qc pass: pim over ipv6

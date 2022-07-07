@@ -13,7 +13,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.7.7-cur, done by cs@nop.<br/>
-tested: 2022-07-07 11:41:59, took 00:08:32, with 80 workers, on 2898 cases, 0 failed, 0 traces, 1 retries<br/>
+tested: 2022-07-07 12:53:12, took 00:14:20, with 80 workers, on 2900 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -155,6 +155,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag02.tst">conn-frag02.tst</a></td><td>success</td><td>no fragmentation nor reassembly</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag03.tst">conn-frag03.tst</a></td><td>success</td><td>precise mtu enforcement</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag04.tst">conn-frag04.tst</a></td><td>success</td><td>pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-frag05.tst">conn-frag05.tst</a></td><td>success</td><td>tcp mss in</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-frag06.tst">conn-frag06.tst</a></td><td>success</td><td>tcp mss out</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay01.tst">conn-framerelay01.tst</a></td><td>success</td><td>framerelay ansi</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay02.tst">conn-framerelay02.tst</a></td><td>success</td><td>framerelay cisco</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay03.tst">conn-framerelay03.tst</a></td><td>success</td><td>framerelay q933</td></tr>
@@ -329,6 +331,10 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckoi02.tst">conn-pckoi02.tst</a></td><td>success</td><td>pckoip over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckoi03.tst">conn-pckoi03.tst</a></td><td>success</td><td>pckoip over pckoip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckoi04.tst">conn-pckoi04.tst</a></td><td>success</td><td>pckoip over loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot01.tst">conn-pckot01.tst</a></td><td>success</td><td>ppp with packet over tcp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot02.tst">conn-pckot02.tst</a></td><td>success</td><td>ppp with packet over tls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot03.tst">conn-pckot03.tst</a></td><td>success</td><td>ppp with packet over txt</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot04.tst">conn-pckot04.tst</a></td><td>success</td><td>ppp with packet over txtls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou01.tst">conn-pckou01.tst</a></td><td>success</td><td>ppp with packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou02.tst">conn-pckou02.tst</a></td><td>success</td><td>ethernet with packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou03.tst">conn-pckou03.tst</a></td><td>success</td><td>hdlc tunneling with packet over udp</td></tr>
@@ -346,11 +352,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou15.tst">conn-pckou15.tst</a></td><td>success</td><td>interworking with ethernet over packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou16.tst">conn-pckou16.tst</a></td><td>success</td><td>interworking with packet over dtls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou17.tst">conn-pckou17.tst</a></td><td>success</td><td>ppp with packet over dtls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou18.tst">conn-pckou18.tst</a></td><td>success</td><td>ppp with packet over tcp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou19.tst">conn-pckou19.tst</a></td><td>success</td><td>ppp with packet over tls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou20.tst">conn-pckou20.tst</a></td><td>success</td><td>ppp with packet over txt</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou21.tst">conn-pckou21.tst</a></td><td>success</td><td>ppp with packet over txtls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou22.tst">conn-pckou22.tst</a></td><td>success</td><td>packet over udp over asymmetric ports</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou18.tst">conn-pckou18.tst</a></td><td>success</td><td>packet over udp over asymmetric ports</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pim01.tst">conn-pim01.tst</a></td><td>success</td><td>pim over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pim02.tst">conn-pim02.tst</a></td><td>success</td><td>pim over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pim03.tst">conn-pim03.tst</a></td><td>success</td><td>pim over pim</td></tr>

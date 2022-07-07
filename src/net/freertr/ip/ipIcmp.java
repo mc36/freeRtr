@@ -59,11 +59,12 @@ public interface ipIcmp {
      *
      * @param pck packet to update
      * @param reason reason code
+     * @param data reason data
      * @param ifip sending interface
      * @param mplsExt add mpls extension
      * @return false if successful, true on error
      */
-    public boolean createError(packHolder pck, counter.reasons reason, ipFwdIface ifip, boolean mplsExt);
+    public boolean createError(packHolder pck, counter.reasons reason, int data, ipFwdIface ifip, boolean mplsExt);
 
     /**
      * create echo request

@@ -13331,3 +13331,6 @@ qc pass: qos egress policer action
 ---------------------------------- 2022-07-07 09:03:08 22.7.7
 qc pass: pmtud
 qc pass: p4lang: pmtud
+---------------------------------- 2022-07-07 12:38:52 22.7.7
+qc pass: tcp mss in
+qc pass: tcp mss out
