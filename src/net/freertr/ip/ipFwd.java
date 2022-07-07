@@ -1780,7 +1780,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (lower == null) {
             return;
         }
-        if (icmpCore.createError(pck, reason, data, lower, mplsExtRep)) {
+        addrIP src = lower.getUnreachAddr();
+        if (src == null) {
+            return;
+        }
+        if (icmpCore.createError(pck, reason, data, src, mplsExtRep)) {
             return;
         }
         errorSent++;

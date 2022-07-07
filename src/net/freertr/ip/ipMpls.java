@@ -538,7 +538,11 @@ public class ipMpls implements ifcUp {
         if (debugger.ipFwdTraf) {
             logger.debug("drop " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " reason=" + counter.reason2string(res));
         }
-        if (fwd.icmpCore.createError(pck, res, dat, ifc, fwd.mplsExtRep)) {
+        addrIP src = ifc.getUnreachAddr();
+        if (src == null) {
+            return true;
+        }
+        if (fwd.icmpCore.createError(pck, res, dat, src, fwd.mplsExtRep)) {
             return true;
         }
         fwd.ipCore.createIPheader(pck);

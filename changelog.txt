@@ -13338,3 +13338,11 @@ qc pass: tcp mss out
 no qc pass: pmtud
 qc pass: pmtud out
 qc pass: pmtud in
+---------------------------------- 2022-07-07 14:00:43 22.7.7
+qc pass: p4lang: vlan pmtud
+---------------------------------- 2022-07-07 14:26:09 22.7.7
+todo: test acl reports
+todo: test for ttl in ip and mpls, even in p4
+todo: test for p4 tcpmss
+todo: bridge pmtud
+todo: test for bridge pmtud and tcpmss, even in p4

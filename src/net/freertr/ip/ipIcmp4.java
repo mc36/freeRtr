@@ -70,11 +70,12 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      *
      * @param pck packet
      * @param reason reason
-     * @param ifip interface
+     * @param data reason data
+     * @param src source
      * @param mplsExt add mpls extension
      * @return false on success, true on error
      */
-    public boolean createError(packHolder pck, counter.reasons reason, int data, ipFwdIface ifip, boolean mplsExt) {
+    public boolean createError(packHolder pck, counter.reasons reason, int data, addrIP src, boolean mplsExt) {
         final int maxErrorSize = 512;
         if (pck.IPprt == protoNum) {
             pck.getSkip(pck.IPsiz);
@@ -86,10 +87,6 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
             if (pck.ICMPtc != icmpEchoReq) {
                 return true;
             }
-        }
-        addrIP src = ifip.getUnreachAddr();
-        if (src == null) {
-            return true;
         }
         int typ;
         switch (reason) {

@@ -1761,6 +1761,7 @@ qc pass: p4lang: mpls vpn over backplane
 qc pass: p4lang: local connect
 qc pass: p4lang: vlan local connect
 qc pass: p4lang: pmtud
+qc pass: p4lang: vlan pmtud
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -2899,6 +2900,11 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: test acl reports
+todo: test for ttl in ip and mpls, even in p4
+todo: test for p4 tcpmss
+todo: bridge pmtud
+todo: test for bridge pmtud and tcpmss, even in p4
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
 todo: allow command to be a substring of an other
