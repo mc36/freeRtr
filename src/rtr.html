@@ -13,7 +13,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.7.7-cur, done by cs@nop.<br/>
-tested: 2022-07-07 15:20:21, took 00:09:02, with 80 workers, on 2901 cases, 0 failed, 0 traces, 0 retries<br/>
+tested: 2022-07-07 15:31:57, took 00:08:50, with 80 workers, on 2904 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -155,6 +155,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag02.tst">conn-frag02.tst</a></td><td>success</td><td>no fragmentation nor reassembly</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag03.tst">conn-frag03.tst</a></td><td>success</td><td>precise mtu enforcement</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag04.tst">conn-frag04.tst</a></td><td>success</td><td>pmtud in</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-frag05.tst">conn-frag05.tst</a></td><td>success</td><td>pmtud out</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag06.tst">conn-frag06.tst</a></td><td>success</td><td>tcp mss in</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-frag07.tst">conn-frag07.tst</a></td><td>success</td><td>tcp mss out</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay01.tst">conn-framerelay01.tst</a></td><td>success</td><td>framerelay ansi</td></tr>
@@ -1780,6 +1781,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout216.tst">p4lang-rout216.tst</a></td><td>success</td><td>p4lang: vlan local connect</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout217.tst">p4lang-rout217.tst</a></td><td>success</td><td>p4lang: pmtud</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout218.tst">p4lang-rout218.tst</a></td><td>success</td><td>p4lang: vlan pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout219.tst">p4lang-rout219.tst</a></td><td>success</td><td>p4lang: tcpmss</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout220.tst">p4lang-rout220.tst</a></td><td>success</td><td>p4lang: vlan tcpmss</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action01.tst">qos-action01.tst</a></td><td>success</td><td>qos ingress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action02.tst">qos-action02.tst</a></td><td>success</td><td>qos egress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action03.tst">qos-action03.tst</a></td><td>success</td><td>qos ingress drop action</td></tr>

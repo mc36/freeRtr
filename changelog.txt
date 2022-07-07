@@ -13348,3 +13348,8 @@ todo: bridge pmtud
 todo: test for bridge pmtud and tcpmss, even in p4
 ---------------------------------- 2022-07-07 15:11:18 22.7.7
 no qc pass: pmtud out
+---------------------------------- 2022-07-07 15:23:06 22.7.7
+no todo: test for p4 tcpmss
+qc pass: pmtud out
+qc pass: p4lang: tcpmss
+qc pass: p4lang: vlan tcpmss

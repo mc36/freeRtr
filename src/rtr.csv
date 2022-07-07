@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.7.7-cur, done by cs@nop.
--;-;-;2022-07-07 15:20:21, took 00:09:02, with 80 workers, on 2901 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2022-07-07 15:31:57, took 00:08:50, with 80 workers, on 2904 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -140,6 +140,7 @@ http://sources.freertr.org/cfg/conn-frag01.tst;conn-frag01.tst;success;fragmenta
 http://sources.freertr.org/cfg/conn-frag02.tst;conn-frag02.tst;success;no fragmentation nor reassembly
 http://sources.freertr.org/cfg/conn-frag03.tst;conn-frag03.tst;success;precise mtu enforcement
 http://sources.freertr.org/cfg/conn-frag04.tst;conn-frag04.tst;success;pmtud in
+http://sources.freertr.org/cfg/conn-frag05.tst;conn-frag05.tst;success;pmtud out
 http://sources.freertr.org/cfg/conn-frag06.tst;conn-frag06.tst;success;tcp mss in
 http://sources.freertr.org/cfg/conn-frag07.tst;conn-frag07.tst;success;tcp mss out
 http://sources.freertr.org/cfg/conn-framerelay01.tst;conn-framerelay01.tst;success;framerelay ansi
@@ -1765,6 +1766,8 @@ http://sources.freertr.org/cfg/p4lang-rout215.tst;p4lang-rout215.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout216.tst;p4lang-rout216.tst;success;p4lang: vlan local connect
 http://sources.freertr.org/cfg/p4lang-rout217.tst;p4lang-rout217.tst;success;p4lang: pmtud
 http://sources.freertr.org/cfg/p4lang-rout218.tst;p4lang-rout218.tst;success;p4lang: vlan pmtud
+http://sources.freertr.org/cfg/p4lang-rout219.tst;p4lang-rout219.tst;success;p4lang: tcpmss
+http://sources.freertr.org/cfg/p4lang-rout220.tst;p4lang-rout220.tst;success;p4lang: vlan tcpmss
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action
