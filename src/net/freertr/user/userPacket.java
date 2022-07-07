@@ -447,7 +447,7 @@ public class userPacket {
                 cmd.error("reply from " + res);
                 recv++;
             }
-            cmd.error("result=" + bits.percent(recv, sent) + "%, recv/sent=" + recv + "/" + sent + ", took " + (bits.getTime() - timBeg));
+            cmd.error("result=" + bits.percent(recv, sent) + "%, recv/sent/lost=" + recv + "/" + sent + "/" + (sent - recv) + ", took " + (bits.getTime() - timBeg));
             return null;
         }
         if (a.equals("p4lang")) {

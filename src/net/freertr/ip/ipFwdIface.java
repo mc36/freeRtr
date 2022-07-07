@@ -948,7 +948,7 @@ public class ipFwdIface extends tabRouteIface {
             return false;
         }
         if (a.equals("fragmentation")) {
-            fragments = bits.str2num(cmd.word());
+            fragments = bits.str2num(cmd.word()) & (-1 - 7);
             return false;
         }
         if (a.equals("pmtud-reply")) {

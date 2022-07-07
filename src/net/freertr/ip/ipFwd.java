@@ -1405,9 +1405,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 }
                 return;
             }
-            if ((pck.IPfrg + pck.dataSize()) >= packHolder.maxData) {
-                return;
-            }
             int o = -1;
             for (int i = 0; i < lower.reasmBuf.size(); i++) {
                 packHolder asm = lower.reasmBuf.get(i);
@@ -1424,30 +1421,31 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 break;
             }
             if (o < 0) {
+                if (pck.IPfrg != 0) {
+                    return;
+                }
                 lower.reasmNxt = (lower.reasmNxt + 1) % lower.reasmBuf.size();
                 packHolder asm = lower.reasmBuf.get(lower.reasmNxt);
                 asm.copyFrom(pck, true, true);
-                asm.getSkip(pck.IPsiz);
-                asm.putSkip(pck.IPfrg);
-                asm.merge2beg();
-                asm.setDataSize(0);
                 return;
             }
             packHolder asm = lower.reasmBuf.get(o);
+            if (pck.IPfrg != (asm.dataSize() - asm.IPsiz)) {
+                asm.clear();
+                return;
+            }
+            if ((pck.IPfrg + pck.dataSize()) >= packHolder.maxHead) {
+                asm.clear();
+                return;
+            }
+            pck.getSkip(pck.IPsiz);
             byte[] buf = pck.getCopy();
-            asm.putCopy(buf, pck.IPsiz, 0, buf.length - pck.IPsiz);
-            asm.putSkip(buf.length - pck.IPsiz);
-            asm.getSkip(pck.IPfrg);
-            asm.setDataSize(0);
+            asm.putCopy(buf, 0, 0, buf.length);
+            asm.putSkip(buf.length);
             asm.merge2end();
-            asm.getSkip(-pck.IPfrg);
             if (pck.IPmf) {
                 return;
             }
-            asm.putCopy(buf, 0, 0, pck.IPsiz);
-            asm.putSkip(pck.IPsiz);
-            asm.merge2beg();
-            asm.setDataSize(pck.IPfrg + buf.length);
             pck.copyFrom(asm, true, true);
             pck.IPmf = false;
             pck.IPfrg = 0;
@@ -1608,8 +1606,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (len < 1) {
                 break;
             }
-            if (len > iface.fragments) {
-                len = iface.fragments;
+            if (len > buf.length) {
+                len = buf.length;
             }
             pck.getCopy(buf, 0, ofs, len);
             snd.copyFrom(pck, false, false);
