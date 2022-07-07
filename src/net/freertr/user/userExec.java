@@ -1501,6 +1501,7 @@ public class userExec {
         hl.add(null, "2 3,.    <host>                       name of host");
         hl.add(null, "3 3,.      dontfrag                   specify dont fragment");
         hl.add(null, "3 3,.      multi                      wait for multiple responses");
+        hl.add(null, "3 3,.      error                      consider errors in result");
         hl.add(null, "3 3,.      detail                     specify detail mode");
         hl.add(null, "3 4        data                       specify data to send");
         hl.add(null, "4 3,.        <num>                    payload byte");
@@ -3615,6 +3616,7 @@ public class userExec {
         boolean detail = false;
         boolean sweep = false;
         boolean multi = false;
+        boolean error = false;
         boolean dntfrg = false;
         for (;;) {
             String a = cmd.word();
@@ -3627,6 +3629,10 @@ public class userExec {
             }
             if (a.equals("multi")) {
                 multi = true;
+                continue;
+            }
+            if (a.equals("error")) {
+                error = true;
                 continue;
             }
             if (a.equals("sweep")) {
@@ -3782,6 +3788,9 @@ public class userExec {
                 ipFwdEchod res = ping.res.get(o);
                 if (res.err != null) {
                     errs++;
+                    if (error) {
+                        recv--;
+                    }
                     if (detail) {
                         pipe.strPut(res.err + "@" + res.rtr + " ");
                         continue;
