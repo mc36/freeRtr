@@ -1,4 +1,4 @@
-description p4lang: vlan bridge tcpmss
+description p4lang: bridge pmtud
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -39,31 +39,21 @@ bridge 1
  mac-learn
  exit
 int sdn1
- exit
-int sdn1.111
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  exit
 int sdn2
- exit
-int sdn2.111
  bridge-gr 1
- bridge-tcp-mss ipv4in 1280
- bridge-tcp-mss ipv6in 1280
  exit
 int sdn3
- exit
-int sdn3.111
  bridge-gr 1
  exit
 int sdn4
- exit
-int sdn4.111
  bridge-gr 1
- bridge-tcp-mss ipv4in 1280
- bridge-tcp-mss ipv6in 1280
+ bridge-pmtud ipv4in 1400 3.3.3.3
+ bridge-pmtud ipv6in 1400 3333::3
  exit
 server p4lang p4
  interconnect eth2
@@ -79,7 +69,7 @@ ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 !
 
-addother r2 controller r1 v9 9080 feature bridge vlan tcpmss
+addother r2 controller r1 v9 9080 feature bridge pmtud
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -100,7 +90,7 @@ int lo0
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.111
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
@@ -120,28 +110,11 @@ int lo0
  ipv4 addr 2.2.2.104 255.255.255.255
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-vrf def v2
- rd 1:1
- exit
-ipv4 pool p4 2.2.2.1 0.0.0.1 254
-int di1
- enc ppp
- vrf for v2
- ipv4 addr 2.2.2.0 255.255.255.255
- ppp ip4cp local 2.2.2.0
- ipv4 pool p4
- ppp ip4cp open
- exit
-int eth1.111
+int eth1
  vrf for v1
  ipv4 addr 1.1.2.4 255.255.255.0
  ipv6 addr 1234:2::4 ffff:ffff::
  exit
-server pckotcp pou
- clone di1
- vrf v1
- exit
-client tcp-segments 1024 4096
 ipv4 route v1 2.2.2.105 255.255.255.255 1.1.2.5
 ipv4 route v1 2.2.2.106 255.255.255.255 1.1.2.6
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::5
@@ -159,7 +132,7 @@ int lo0
  ipv4 addr 2.2.2.105 255.255.255.255
  ipv6 addr 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.111
+int eth1
  vrf for v1
  ipv4 addr 1.1.2.5 255.255.255.0
  ipv6 addr 1234:2::5 ffff:ffff::
@@ -176,57 +149,16 @@ int eth1 eth 0000.0000.6666 $6b$ $6a$
 vrf def v1
  rd 1:1
  exit
-vrf def v2
- rd 1:1
- exit
-vrf def v3
- rd 1:1
- exit
-proxy-profile p1
- vrf v1
- exit
-prefix-list p1
- permit 0.0.0.0/0
- exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.111
+int eth1
  vrf for v1
  ipv4 addr 1.1.2.6 255.255.255.0
  ipv6 addr 1234:2::6 ffff:ffff::
  exit
-int di2
- enc ppp
- vrf for v2
- ipv4 addr 4.4.4.4 255.255.255.128
- ppp ip4cp open
- ppp ip4cp local 0.0.0.0
- exit
-vpdn di2
- interface di2
- proxy p1
- target 2.2.2.104
- vcid 2554
- prot pckotcp
- exit
-int di3
- enc ppp
- vrf for v3
- ipv4 addr 4.4.4.4 255.255.255.128
- ppp ip4cp open
- ppp ip4cp local 0.0.0.0
- exit
-vpdn di3
- interface di3
- proxy p1
- target 4321::104
- vcid 2554
- prot pckotcp
- exit
-client tcp-segments 1024 4096
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.4
 ipv4 route v1 2.2.2.105 255.255.255.255 1.1.2.5
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::4
@@ -286,8 +218,10 @@ r6 tping 100 10 4321::105 vrf v1 sou lo0
 r6 tping 100 10 2.2.2.106 vrf v1 sou lo0
 r6 tping 100 10 4321::106 vrf v1 sou lo0
 
-r6 tping 100 30 2.2.2.0 vrf v2 siz 3000
-r6 tping 100 30 2.2.2.0 vrf v3 siz 3000
+r6 tping 100 10 2.2.2.104 vrf v1 sou lo0 siz 1400
+r6 tping 100 10 4321::104 vrf v1 sou lo0 siz 1400
+r6 tping -100 10 2.2.2.104 vrf v1 sou lo0 siz 1401 error
+r6 tping -100 10 4321::104 vrf v1 sou lo0 siz 1401 error
 
 r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0
 r1 dping sdn . r6 4321::105 vrf v1 sou lo0

@@ -417,7 +417,9 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
      */
     public void packParse(boolean l3, boolean l4, boolean chksiz, packHolder pck) {
         if (l3) {
-            myCor.parseIPheader(pck, chksiz);
+            if (myCor.parseIPheader(pck, chksiz)) {
+                return;
+            }
         }
         if (l4) {
             pck.getSkip(pck.IPsiz);

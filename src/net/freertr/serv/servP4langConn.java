@@ -2171,6 +2171,8 @@ public class servP4langConn implements Runnable {
             if (!br.routed) {
                 i = ifc.ifc.bridgeIfc.tcp4mssIn;
                 int o = ifc.ifc.bridgeIfc.tcp4mssOut;
+                int p = ifc.ifc.bridgeIfc.pmtud4valIn;
+                int q = ifc.ifc.bridgeIfc.pmtud4valOut;
                 if (i != ifc.sentMss4in) {
                     lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + i);
                     ifc.sentMss4in = i;
@@ -2179,8 +2181,18 @@ public class servP4langConn implements Runnable {
                     lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + o);
                     ifc.sentMss4out = o;
                 }
+                if (p != ifc.sentPmtud4in) {
+                    lower.sendLine("pmtud4in_" + a + " " + ifc.id + " " + p);
+                    ifc.sentPmtud4in = p;
+                }
+                if (q != ifc.sentPmtud4out) {
+                    lower.sendLine("pmtud4out_" + a + " " + ifc.id + " " + p);
+                    ifc.sentPmtud4in = q;
+                }
                 i = ifc.ifc.bridgeIfc.tcp6mssIn;
                 o = ifc.ifc.bridgeIfc.tcp6mssOut;
+                p = ifc.ifc.bridgeIfc.pmtud6valIn;
+                q = ifc.ifc.bridgeIfc.pmtud6valOut;
                 if (i != ifc.sentMss6in) {
                     lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + i);
                     ifc.sentMss6in = i;
@@ -2188,6 +2200,14 @@ public class servP4langConn implements Runnable {
                 if (o != ifc.sentMss6out) {
                     lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + o);
                     ifc.sentMss6out = o;
+                }
+                if (p != ifc.sentPmtud6in) {
+                    lower.sendLine("pmtud6in_" + a + " " + ifc.id + " " + p);
+                    ifc.sentPmtud6in = p;
+                }
+                if (q != ifc.sentPmtud6out) {
+                    lower.sendLine("pmtud6out_" + a + " " + ifc.id + " " + p);
+                    ifc.sentPmtud6in = q;
                 }
                 if (servP4langUtil.needAcl(ifc.sentAcl4in1, ifc.ifc.bridgeIfc.filter4in, null, null, null, ifc.sentAcl4inF)) {
                     sendAcl(0, "inacl4_del " + ifc.id + " ", "", "", "", "", true, false, ifc.sentAcl4inF, null, null, null);
