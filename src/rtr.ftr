@@ -2902,7 +2902,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: test acl reports
 todo: test for ttl in ip and mpls, even in p4
 todo: bridge pmtud
 todo: test for bridge pmtud and tcpmss, even in p4

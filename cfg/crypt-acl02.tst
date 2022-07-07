@@ -1,7 +1,7 @@
 description egress protocol matching access list
 
 addrouter r1
-int eth1 eth 0000.0000.1111 $1a$ $1b$
+int ser1 ser 0000.0000.1111 $1a$ $1b$
 !
 access-list test4
  deny 1 any all any all
@@ -14,7 +14,7 @@ access-list test6
 vrf def v1
  rd 1:1
  exit
-int eth1
+int ser1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234::1 ffff:ffff::
@@ -24,12 +24,12 @@ int eth1
 !
 
 addrouter r2
-int eth1 eth 0000.0000.2222 $1b$ $1a$
+int ser1 ser 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
  exit
-int eth1
+int ser1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234::2 ffff:ffff::
@@ -38,5 +38,5 @@ int eth1
 
 r1 tping 100 5 1.1.1.1 vrf v1
 r1 tping 100 5 1234::1 vrf v1
-r1 tping 0 5 1.1.1.2 vrf v1
-r1 tping 0 5 1234::2 vrf v1
+r1 tping -100 5 1.1.1.2 vrf v1 error
+r1 tping -100 5 1234::2 vrf v1 error
