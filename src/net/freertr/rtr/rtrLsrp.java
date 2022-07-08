@@ -6,6 +6,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
@@ -1002,7 +1003,14 @@ public class rtrLsrp extends ipRtr implements Runnable {
             negated = true;
         }
         if (s.equals("router-id")) {
-            routerID.fromString(cmd.word());
+            s = cmd.word();
+            routerID.fromString(s);
+            cfgIfc ifc = cfgAll.ifcFind(s, 0);
+            if (ifc != null) {
+                if (ifc.addr4 != null) {
+                    routerID.setAddr(ifc.addr4);
+                }
+            }
             if (negated) {
                 routerID = new addrIPv4();
             }

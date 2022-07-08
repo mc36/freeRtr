@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
@@ -355,7 +356,14 @@ public class rtrOspf4 extends ipRtr {
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         if (s.equals("router-id")) {
-            routerID.fromString(cmd.word());
+            s = cmd.word();
+            routerID.fromString(s);
+            cfgIfc ifc = cfgAll.ifcFind(s, 0);
+            if (ifc != null) {
+                if (ifc.addr4 != null) {
+                    routerID.setAddr(ifc.addr4);
+                }
+            }
             genLsas(3);
             return false;
         }

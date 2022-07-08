@@ -4,6 +4,8 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
+import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
@@ -445,7 +447,14 @@ public class rtrEigrp extends ipRtr implements Runnable {
             negated = true;
         }
         if (s.equals("router-id")) {
-            routerID.fromString(cmd.word());
+            s = cmd.word();
+            routerID.fromString(s);
+            cfgIfc ifc = cfgAll.ifcFind(s, 0);
+            if (ifc != null) {
+                if (ifc.addr4 != null) {
+                    routerID.setAddr(ifc.addr4);
+                }
+            }
             if (negated) {
                 routerID = new addrIPv4();
             }

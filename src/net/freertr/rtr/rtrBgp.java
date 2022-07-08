@@ -813,9 +813,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * need full round
      */
     protected final syncInt needFull = new syncInt(0);
-
+    
     private boolean oldAggr;
-
+    
     private boolean need2run;
 
     /**
@@ -1363,7 +1363,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
-
+    
     public void run() {
         for (;;) {
             if (!cfgInit.booting) {
@@ -1503,7 +1503,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return;
         }
     }
-
+    
     private void computeFull() {
         long tim = bits.getTime();
         if (debugger.rtrBgpIncr) {
@@ -1806,7 +1806,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fullTime = (int) (fullLast - tim);
         fullCount++;
     }
-
+    
     private tabRouteEntry<addrIP> computeIncrBest(int afi, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
         if (nei == null) {
             return best;
@@ -1842,14 +1842,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         best.addAlt(ntry.alts);
         return best;
     }
-
+    
     private void computeIncrVersion(tabRouteEntry<addrIP> curr) {
         int ver = compRound.get() + 1;
         for (int i = 0; i < curr.alts.size(); i++) {
             curr.alts.get(i).version = ver;
         }
     }
-
+    
     private void computeIncrEntry(int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
@@ -1945,7 +1945,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             chg.add(tabRoute.addType.always, ntry, false, false);
         }
     }
-
+    
     private int computeIncrUpdate(int afi, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         int res = 0;
         if (don == null) {
@@ -1960,7 +1960,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return res;
     }
-
+    
     private void computeIncrPurge(int ver, tabRoute<addrIP> chg) {
         for (int i = chg.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = chg.get(i);
@@ -1970,7 +1970,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             chg.del(ntry);
         }
     }
-
+    
     private boolean computeIncr() {
         long tim = bits.getTime();
         if (changedCur > incrLimit) {
@@ -2152,7 +2152,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         incrCount++;
         return false;
     }
-
+    
     private tabRouteEntry<addrIP> computeConquerEntry(tabRoute<addrIP> cmp, tabRouteEntry<addrIP> best) {
         if (best.best.nextHop == null) {
             return null;
@@ -2173,7 +2173,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return best;
     }
-
+    
     private void computeConquerTable(tabRoute<addrIP> old, tabRoute<addrIP> cmp) {
         for (int i = 0; i < cmp.size(); i++) {
             tabRouteEntry<addrIP> ntry = cmp.get(i);
@@ -2590,7 +2590,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("router-id")) {
-            routerID.fromString(cmd.word());
+            s = cmd.word();
+            routerID.fromString(s);
+            cfgIfc ifc = cfgAll.ifcFind(s, 0);
+            if (ifc != null) {
+                if (ifc.addr4 != null) {
+                    routerID.setAddr(ifc.addr4);
+                }
+            }
+            if (negated) {
+                routerID = new addrIPv4();
+            }
             return false;
         }
         if (s.equals("safe-ebgp")) {
@@ -3368,7 +3378,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             templateConfig(lstnNei.get(i), temp, cmd, negated);
         }
     }
-
+    
     private void templateConfig(rtrBgpNeigh nei, rtrBgpTemp temp, String cmd, boolean negated) {
         if (nei == null) {
             return;
@@ -3510,7 +3520,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return lstnNei.find(ntry);
     }
-
+    
     private String findPeers(int mod, rtrBgpNeigh ntry) {
         switch (mod) {
             case 1:
@@ -3672,7 +3682,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return lst;
     }
-
+    
     private void getAllRoutes(userFormat lst, rtrBgpNeigh nei, int safi, tabRouteEntry<addrIP> prf) {
         if (nei == null) {
             return;
@@ -3803,7 +3813,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return res;
     }
-
+    
     private void getAsOrigin(tabGen<rtrBgpFlapath> lst, int as) {
         rtrBgpFlapath res = new rtrBgpFlapath();
         res.path = bits.num2str(as);
@@ -3848,7 +3858,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         res.add(shrtPthFrst.graphEnd2);
         return res;
     }
-
+    
     private void getAsGraph(tabGen<rtrBgpFlapath> lst, rtrBgpNeigh nei, int safi) {
         if (nei == null) {
             return;
@@ -3953,7 +3963,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return res;
     }
-
+    
     private void getNhIncons(tabGen<rtrBgpFlap> lst, rtrBgpNeigh nei, int safi) {
         if (nei == null) {
             return;
@@ -4006,7 +4016,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         return res;
     }
-
+    
     private void getAsIncons(tabGen<rtrBgpFlap> lst, rtrBgpNeigh nei, int safi) {
         if (nei == null) {
             return;
@@ -4082,5 +4092,5 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("omvpn table|" + computedMvpo.size() + "|" + changedMvpo.size());
         return l;
     }
-
+    
 }
