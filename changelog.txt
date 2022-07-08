@@ -13377,3 +13377,6 @@ todo: bridge pmtud in p4
 no todo: bridge pmtud in p4
 qc pass: p4lang: bridge pmtud
 qc pass: p4lang: vlan bridge pmtud
+---------------------------------- 2022-07-08 06:14:46 22.7.8
+qc pass: p4lang: ip ttl exceed
+qc pass: p4lang: mpls ttl exceed

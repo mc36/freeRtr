@@ -1774,6 +1774,8 @@ qc pass: p4lang: bridge tcpmss
 qc pass: p4lang: vlan bridge tcpmss
 qc pass: p4lang: bridge pmtud
 qc pass: p4lang: vlan bridge pmtud
+qc pass: p4lang: ip ttl exceed
+qc pass: p4lang: mpls ttl exceed
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
