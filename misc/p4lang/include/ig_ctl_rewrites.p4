@@ -22,11 +22,6 @@ control IngressControlRewrites(inout headers hdr,
                                inout standard_metadata_t ig_intr_md) {
 
 
-    action act_set_drop() {
-        mark_to_drop(ig_intr_md);
-    }
-
-
     apply {
         if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
         if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
@@ -70,23 +65,23 @@ control IngressControlRewrites(inout headers hdr,
         }
 
         if (hdr.nsh.isValid()) {
-            if (hdr.nsh.ttl < 2) act_set_drop();
+            if (hdr.nsh.ttl < 2) ig_md.dropping = 1;
             hdr.nsh.ttl = hdr.nsh.ttl -1;
         }
         if (hdr.polka.isValid()) {
-            if (hdr.polka.ttl < 2) act_set_drop();
+            if (hdr.polka.ttl < 2) ig_md.dropping = 1;
             hdr.polka.ttl = hdr.polka.ttl -1;
         }
         if (hdr.mpls0.isValid()) {
-            if (hdr.mpls0.ttl < 2) act_set_drop();
+            if (hdr.mpls0.ttl < 2) ig_md.dropping = 1;
             hdr.mpls0.ttl = hdr.mpls0.ttl -1;
         }
         if (hdr.ipv4.isValid()) {
-            if (hdr.ipv4.ttl < 2) act_set_drop();
+            if (hdr.ipv4.ttl < 2) ig_md.dropping = 1;
             hdr.ipv4.ttl = hdr.ipv4.ttl -1;
         }
         if (hdr.ipv6.isValid()) {
-            if (hdr.ipv6.hop_limit < 2) act_set_drop();
+            if (hdr.ipv6.hop_limit < 2) ig_md.dropping = 1;
             hdr.ipv6.hop_limit = hdr.ipv6.hop_limit -1;
         }
 

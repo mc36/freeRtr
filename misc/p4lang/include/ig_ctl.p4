@@ -204,6 +204,10 @@ control ig_ctl(inout headers hdr,
             return;
         }
         ig_ctl_rewrites.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
+            return;
+        }
         ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
     }
 }
