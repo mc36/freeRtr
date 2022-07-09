@@ -117,8 +117,6 @@ qc pass: monitor session over pwhe
 qc pass: verify source with ethernet encapsulation
 qc pass: loose verify source with ethernet encapsulation
 qc pass: secure arp/nd
-qc pass: unnamed
-qc pass: unnamed
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback
@@ -147,6 +145,8 @@ qc pass: bridge tcp mss in
 qc pass: bridge tcp mss out
 qc pass: bridge pmtud in
 qc pass: bridge pmtud out
+qc pass: precise mac enforcement
+qc pass: bridge mac enforcement
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
