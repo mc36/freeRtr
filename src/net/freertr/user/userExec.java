@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authGeneric;
 import net.freertr.auth.authLocal;
 import net.freertr.auth.authResult;
@@ -3407,6 +3408,8 @@ public class userExec {
         if (timeout < 1) {
             timeout = 1;
         }
+        ipFwd fwd = vrf.getFwd(trg);
+        tabRouteEntry<addrIP> rou = fwd.actualU.route(trg);
         clntTrace trc = new clntTrace();
         trc.vrf = vrf;
         trc.ifc = ifc;
@@ -3422,6 +3425,9 @@ public class userExec {
             src = ifc.getLocAddr(trg);
         }
         pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", flow=" + flow + ", len=" + len);
+        if (rou != null) {
+            pipe.linePut("via " + addrPrefix.ip2str(rou.prefix) + " " + rou.best.toShRoute().replaceAll("\\|", " "));
+        }
         len -= adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
