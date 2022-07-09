@@ -348,6 +348,9 @@ public class rtrPimIface implements ipPrt {
             fwdCore.protoPack(iface, null, pckBin);
             return;
         }
+        if (ups == null) {
+            return;
+        }
         fwdCore.createIPheader(pckBin);
         pckBin.ETHtype = iface.lower.getEthtyp();
         ipFwdBier clnt = new ipFwdBier(fwdCore, bierTunnel);
