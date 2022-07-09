@@ -34,6 +34,11 @@ import net.freertr.util.state;
 public class ifcEthTyp implements Runnable, ifcUp {
 
     /**
+     * strict mac check
+     */
+    public addrMac macCheck = null;
+
+    /**
      * strict mtu check ingress
      */
     public boolean mtuCheckRx = false;
@@ -749,8 +754,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         if (mtuCheckTx) {
             if ((pck.dataSize() - 2) > getMTUsize()) {
-                logger.info("oversized (" + pck.dataSize() + ") tx on " + name);
-                cntr.drop(pck, counter.reasons.fragment);
+                cntr.drop(pck, counter.reasons.badLen);
                 return;
             }
         }
@@ -849,8 +853,23 @@ public class ifcEthTyp implements Runnable, ifcUp {
         cntr.rx(pck);
         if (mtuCheckRx) {
             if ((pck.dataSize() - 2) > getMTUsize()) {
-                logger.info("oversized (" + pck.dataSize() + ") rx on " + name);
-                cntr.drop(pck, counter.reasons.fragment);
+                cntr.drop(pck, counter.reasons.badLen);
+                return;
+            }
+        }
+        if (macCheck != null) {
+            boolean ok = promiscous;
+            if (!ok) {
+                ok = pck.ETHtrg.isBroadcast();
+            }
+            if (!ok) {
+                ok = pck.ETHtrg.isMulticast();
+            }
+            if (!ok) {
+                ok = pck.ETHtrg.compare(pck.ETHtrg, macCheck) == 0;
+            }
+            if (!ok) {
+                cntr.drop(pck, counter.reasons.noRoute);
                 return;
             }
         }

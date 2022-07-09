@@ -1428,6 +1428,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no udld enable",
         "interface .*! no random",
         "interface .*! enforce-mtu none",
+        "interface .*! no enforce-mac",
         "interface .*! no macsec",
         "interface .*! no disable-macsec",
         "interface .*! no disable-sgt",
@@ -6003,6 +6004,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             s = "both";
         }
         l.add(cmds.tabulator + "enforce-mtu " + s);
+        cmds.cfgLine(l, ethtyp.macCheck == null, cmds.tabulator, "enforce-mac", "");
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
         } else {
@@ -6768,6 +6770,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "4 5         <num>                   maximum packet size");
         l.add(null, "5 6           <num>                 minimum interval");
         l.add(null, "6 .             <num>               maximum interval");
+        l.add(null, "1 .   enforce-mac                   enfore mac on packets");
         l.add(null, "1 2   enforce-mtu                   enfore mtu on packets");
         l.add(null, "2 .     in                          only in ingress");
         l.add(null, "2 .     out                         only in egress");
@@ -7319,6 +7322,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.addET(random.ethtyp, "random", random);
             ethtyp.updateET(random.ethtyp, random);
             random.startWork();
+            return;
+        }
+        if (a.equals("enforce-mac")) {
+            try {
+                ethtyp.macCheck = (addrMac) ethtyp.getHwAddr();
+            } catch (Exception e) {
+            }
             return;
         }
         if (a.equals("enforce-mtu")) {
@@ -7990,6 +8000,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.delET(random.ethtyp);
             random.stopWork();
             random = null;
+            return;
+        }
+        if (a.equals("enforce-mac")) {
+            ethtyp.macCheck = null;
             return;
         }
         if (a.equals("enforce-mtu")) {
