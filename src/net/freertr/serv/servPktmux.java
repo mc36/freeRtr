@@ -105,9 +105,9 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
                 return false;
             }
             cpuport = ifc.ethtyp;
-            cpuport.setFilter(true);
             cpuport.addET(-1, "pktmux", this);
             cpuport.updateET(-1, this);
+            cpuprt.setFilter(true);
             return false;
         }
         if (s.equals("controller")) {
@@ -133,9 +133,9 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
             }
             servPktmuxPort ntry = new servPktmuxPort(this, bits.str2num(cmd.word()));
             ntry.ifc = ifc.ethtyp;
-            ntry.ifc.setFilter(true);
             ntry.ifc.addET(-1, "pktmux", ntry);
             ntry.ifc.updateET(-1, ntry);
+            ntry.parent.setFilter(true);
             ports.add(ntry);
             return false;
         }

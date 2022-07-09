@@ -435,9 +435,9 @@ public class servP4langCfg implements ifcUp {
             }
             servP4langBkpl ntry = new servP4langBkpl(this, pif);
             ntry.ifc = pif.ifc.ethtyp;
-            ntry.ifc.setFilter(true);
             ntry.ifc.addET(-1, "p4lang", ntry);
             ntry.ifc.updateET(-1, ntry);
+            ntry.parent.setFilter(true);
             ntry.metric = bits.str2num(cmd.word());
             backPlanes.add(ntry);
             return false;
@@ -455,9 +455,9 @@ public class servP4langCfg implements ifcUp {
                 return false;
             }
             ntry.ifc = ifc.ethtyp;
-            ntry.ifc.setFilter(true);
             ntry.ifc.addET(-1, "p4lang", ntry);
             ntry.ifc.updateET(-1, ntry);
+            ntry.parent.setFilter(true);
             downLinks.add(ntry);
             return false;
         }
@@ -468,9 +468,9 @@ public class servP4langCfg implements ifcUp {
                 return false;
             }
             interconn = ifc.ethtyp;
-            interconn.setFilter(true);
             interconn.addET(-1, "p4lang", this);
             interconn.updateET(-1, this);
+            interconn.setFilter(true);
             return false;
         }
         if (s.equals("export-copp4")) {
