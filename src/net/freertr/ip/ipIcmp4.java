@@ -79,11 +79,8 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         final int maxErrorSize = 512;
         if (pck.IPprt == protoNum) {
             pck.getSkip(pck.IPsiz);
-            boolean b = parseICMPheader(pck);
+            parseICMPports(pck);
             pck.getSkip(-pck.IPsiz);
-            if (b) {
-                return true;
-            }
             if (pck.ICMPtc != icmpEchoReq) {
                 return true;
             }
