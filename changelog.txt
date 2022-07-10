@@ -13388,3 +13388,8 @@ no qc pass: unnamed
 no qc pass: unnamed
 qc pass: precise mac enforcement
 qc pass: bridge mac enforcement
+---------------------------------- 2022-07-10 18:26:58 22.7.10
+qc pass: unicast+rtfilter over bgp
+qc pass: unicast+rtfilter over bgp with soft-reconfig
+qc pass: unicast+rtfilter over bgp with additional path
+qc pass: unicast+rtfilter over ibgp rr
