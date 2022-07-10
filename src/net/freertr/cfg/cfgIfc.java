@@ -5735,7 +5735,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case 27:
                 counter cntr = ethtyp.getCounter();
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.timePast(cntr.lastChgd) + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3));
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getPromisc() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.timePast(cntr.lastChgd) + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3));
                 break;
             case 28:
                 cntr = ethtyp.getCounter();
@@ -7326,7 +7326,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("enforce-mac")) {
             try {
-                ethtyp.macCheck = (addrMac) ethtyp.getHwAddr();
+                ethtyp.macCheck = (addrMac) ethtyp.getHwAddr().copyBytes();
             } catch (Exception e) {
             }
             return;

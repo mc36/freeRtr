@@ -114,7 +114,7 @@ public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
      */
     public void setParent(ifcDn parent) {
         lowerIf = parent;
-        parent.setFilter(lowerBu.promiscous);
+        parent.setFilter(true);
         lowerBu.propagateState();
     }
 

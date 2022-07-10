@@ -858,18 +858,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (macCheck != null) {
-            boolean ok = promiscous;
+            boolean ok = promiscous || pck.ETHtrg.isBroadcast() || pck.ETHtrg.isMulticast() || (macCheck.compare(macCheck, pck.ETHtrg) == 0);
             if (!ok) {
-                ok = pck.ETHtrg.isBroadcast();
-            }
-            if (!ok) {
-                ok = pck.ETHtrg.isMulticast();
-            }
-            if (!ok) {
-                ok = pck.ETHtrg.compare(pck.ETHtrg, macCheck) == 0;
-            }
-            if (!ok) {
-                cntr.drop(pck, counter.reasons.noRoute);
+                cntr.drop(pck, counter.reasons.badAddr);
                 return;
             }
         }

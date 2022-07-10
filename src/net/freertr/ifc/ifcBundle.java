@@ -91,11 +91,6 @@ public class ifcBundle implements Runnable, ifcDn {
     public int loadBalance;
 
     /**
-     * last promiscous state
-     */
-    protected boolean promiscous;
-
-    /**
      * list of interfaces
      */
     public tabGen<ifcBundleIfc> ifaces;
@@ -156,13 +151,12 @@ public class ifcBundle implements Runnable, ifcDn {
     }
 
     public void setFilter(boolean promisc) {
-        promiscous = promisc;
         for (int i = 0; i < ifaces.size(); i++) {
             ifcBundleIfc ifc = ifaces.get(i);
             if (ifc == null) {
                 continue;
             }
-            ifc.lowerIf.setFilter(promisc);
+            ifc.lowerIf.setFilter(true);
         }
     }
 
