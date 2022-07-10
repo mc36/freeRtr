@@ -6,6 +6,18 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
+vrf def v2
+ rd 1:2
+ rt-both 1:2
+ exit
+vrf def v3
+ rd 1:3
+ rt-both 1:3
+ exit
+vrf def v4
+ rd 1:4
+ rt-both 1:4
+ exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.255
@@ -25,6 +37,12 @@ router bgp4 1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 send-comm both
  neigh 1.1.1.2 soft-reconfig
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
  red conn
  exit
 router bgp6 1
@@ -36,6 +54,12 @@ router bgp6 1
  neigh 1234:1::2 remote-as 2
  neigh 1234:1::2 send-comm both
  neigh 1234:1::2 soft-reconfig
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
  red conn
  exit
 !
@@ -45,6 +69,18 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
+ exit
+vrf def v2
+ rd 1:2
+ rt-both 1:2
+ exit
+vrf def v3
+ rd 1:3
+ rt-both 1:3
+ exit
+vrf def v4
+ rd 1:4
+ rt-both 1:4
  exit
 int lo0
  vrf for v1
@@ -65,6 +101,12 @@ router bgp4 1
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
  neigh 1.1.1.1 soft-reconfig
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
  red conn
  exit
 router bgp6 1
@@ -76,6 +118,12 @@ router bgp6 1
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 send-comm both
  neigh 1234:1::1 soft-reconfig
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
  red conn
  exit
 !

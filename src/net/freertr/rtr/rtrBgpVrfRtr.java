@@ -185,11 +185,12 @@ public class rtrBgpVrfRtr extends ipRtr {
             Long cur = tabRouteUtil.rt2comm(fwd.rtExp.get(i));
             rt.add(cur);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = new addrPrefix<addrIP>(new addrIP(), 96);
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            byte[] buf = ntry.prefix.network.getBytes();
+            addrIP adr = new addrIP();
+            byte[] buf = adr.getBytes();
             bits.msbPutD(buf, 0, parent.localAs);
             bits.msbPutQ(buf, 4, cur);
+            ntry.prefix = new addrPrefix<addrIP>(adr, 96);
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             nRtf.add(tabRoute.addType.always, ntry, false, true);
         }
         if (defRou) {

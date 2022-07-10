@@ -1243,10 +1243,9 @@ public class rtrBgpUtil {
             return ntry;
         }
         if (sfi == sfiRtFltr) {
-            byte[] adr = new byte[addrIP.size];
-            ntry.prefix = new addrPrefix<addrIP>(new addrIP(), i);
-            bits.byteCopy(buf, 0, adr, 0, o);
-            ntry.prefix.network.fromBuf(adr, 0);
+            addrIP adr = new addrIP();
+            adr.fromBuf(buf, 0);
+            ntry.prefix = new addrPrefix<addrIP>(adr, i);
             return ntry;
         }
         switch (safi & afiMask) {
