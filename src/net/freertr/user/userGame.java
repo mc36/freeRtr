@@ -161,7 +161,7 @@ public class userGame {
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
             console.putCls();
-            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts1.fontFiller, font));
+            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts.fontFiller, font));
             console.refresh();
             bits.sleep(5000);
         }
@@ -455,13 +455,13 @@ public class userGame {
             if (a.length() < 1) {
                 txt = version.shLogo(0x08);
             } else {
-                txt = userScreen.fontText(a, " ", userFonts1.fontFiller, userFonts1.fontDefault());
+                txt = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
             }
             doText(txt);
             return;
         }
         if (a.equals("clock")) {
-            doClock(userFonts1.fontDefault());
+            doClock(userFonts.font8x16());
             return;
         }
         if (a.equals("snake")) {
@@ -485,7 +485,7 @@ public class userGame {
             return;
         }
         if (a.equals("image")) {
-            doText(pipeWindow.imageText(new File(cmd.getRemaining()), console.sizX, console.sizY, userFonts1.imageData));
+            doText(pipeWindow.imageText(new File(cmd.getRemaining()), console.sizX, console.sizY, userFonts.imageData));
             return;
         }
         cmd.badCmd();

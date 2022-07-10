@@ -9,7 +9,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
-import net.freertr.user.userFonts1;
+import net.freertr.user.userFonts;
 import net.freertr.user.userHelping;
 import net.freertr.user.userLine;
 import net.freertr.util.bits;
@@ -61,7 +61,7 @@ public class servRfb extends servGeneric implements prtServS {
         pipe.lineTx = pipeSide.modTyp.modeLF;
         pipeLine pl = new pipeLine(65536, false);
         lin.createHandler(pl.getSide(), "" + id, 0);
-        new servRfbConn(pipe, new pipeImage(pl.getSide(), lin.execWidth, lin.execHeight, userFonts1.fontDefault(), userFonts1.colorData));
+        new servRfbConn(pipe, new pipeImage(pl.getSide(), lin.execWidth, lin.execHeight, userFonts.font8x16(), userFonts.colorData));
         return false;
     }
 

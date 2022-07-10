@@ -244,7 +244,7 @@ public class userShow {
             a = cmd.getRemaining();
             List<String> l;
             if (a.length() > 0) {
-                l = userScreen.fontText(a, " ", userFonts1.fontFiller, userFonts1.fontDefault());
+                l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
             } else {
                 l = version.shLogo(0x0e);
             }
@@ -374,7 +374,7 @@ public class userShow {
             List<String> l = new ArrayList<String>();
             long tim = bits.getTime() + cfgAll.timeServerOffset;
             if (a.equals("big")) {
-                l = userScreen.fontText(bits.time2str(cfgAll.timeZoneName, tim, 2), " ", userFonts1.fontFiller, userFonts1.fontDefault());
+                l = userScreen.fontText(bits.time2str(cfgAll.timeZoneName, tim, 2), " ", userFonts.fontFiller, userFonts.font8x16());
                 rdr.putStrArr(l);
                 return null;
             }

@@ -101,7 +101,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userConfig;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
-import net.freertr.user.userFonts1;
+import net.freertr.user.userFonts;
 import net.freertr.user.userHelping;
 import net.freertr.user.userLine;
 import net.freertr.user.userNetconf;
@@ -1094,7 +1094,7 @@ public class cfgInit implements Runnable {
      */
     public static pipeImage doApplet(String url) {
         pipeLine pl = new pipeLine(65536, false);
-        pipeImage img = new pipeImage(pl.getSide(), 80, 25, userFonts1.fontDefault(), userFonts1.colorData);
+        pipeImage img = new pipeImage(pl.getSide(), 80, 25, userFonts.font8x16(), userFonts.colorData);
         pipeSide ps = pl.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1154,7 +1154,7 @@ public class cfgInit implements Runnable {
                 logger.pipeStart(pipCon);
             }
             if (win) {
-                pipWin = pipeWindow.createOne(80, 25, userFonts1.fontDefault(), userFonts1.colorData);
+                pipWin = pipeWindow.createOne(80, 25, userFonts.font8x16(), userFonts.colorData);
                 logger.pipeStart(pipWin);
             }
             if (swN == null) {
