@@ -197,7 +197,7 @@ public class rtrBgpUtil {
     /**
      * route target constrain
      */
-    public final static int sfiRtCnst = 0x84;
+    public final static int sfiRtFltr = 0x84;
 
     /**
      * flow specification
@@ -285,9 +285,14 @@ public class rtrBgpUtil {
     public final static int safiIp6vpnF = afiIpv6 | sfiVpnFlw;
 
     /**
-     * ipv4 mdt address family
+     * nsh address family
      */
     public final static int safiNsh46 = afiNsh | sfiNsh;
+
+    /**
+     * rtfilter address family
+     */
+    public final static int safiRtf46 = afiIpv4 | sfiRtFltr;
 
     /**
      * ipv4 mdt address family
@@ -1237,6 +1242,13 @@ public class rtrBgpUtil {
             ntry.prefix.broadcast.fromBuf(adr, 0);
             return ntry;
         }
+        if (sfi == sfiRtFltr) {
+            byte[] adr = new byte[addrIP.size];
+            ntry.prefix = new addrPrefix<addrIP>(new addrIP(), i);
+            bits.byteCopy(buf, 0, adr, 0, o);
+            ntry.prefix.network.fromBuf(adr, 0);
+            return ntry;
+        }
         switch (safi & afiMask) {
             case afiIpv4:
                 addrIPv4 a4 = new addrIPv4();
@@ -1329,6 +1341,11 @@ public class rtrBgpUtil {
             bits.byteCopy(ntry.prefix.wildcard.getBytes(), 0, buf2, 31, 16);
             bits.byteCopy(ntry.prefix.mask.getBytes(), 0, buf2, 47, 16);
             i = ntry.prefix.network.getBytes()[0] * 8;
+        }
+        if (sfi == sfiRtFltr) {
+            buf2 = new byte[addrIP.size];
+            bits.byteCopy(ntry.prefix.network.getBytes(), 0, buf2, 0, 16);
+            i = ntry.prefix.maskLen;
         }
         int o = (i + 7) / 8;
         byte[] buf1 = new byte[128];
@@ -1569,6 +1586,8 @@ public class rtrBgpUtil {
                 return "ip6vpnF";
             case safiNsh46:
                 return "nsh";
+            case safiRtf46:
+                return "rtfilter";
             case safiIp4mdt:
                 return "mdt4";
             case safiIp6mdt:

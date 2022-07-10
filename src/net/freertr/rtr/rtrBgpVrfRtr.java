@@ -22,6 +22,7 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -176,11 +177,20 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param nMlt multicast table to update
      * @param nFlw flowspec table to update
      * @param nMvpn mvpn table to update
+     * @param nRtf rtfilter table to update
      */
-    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
+    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn, tabRoute<addrIP> nRtf) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtExp.size(); i++) {
-            rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
+            Long cur = tabRouteUtil.rt2comm(fwd.rtExp.get(i));
+            rt.add(cur);
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = new addrPrefix<addrIP>(new addrIP(), 96);
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+            byte[] buf = ntry.prefix.network.getBytes();
+            bits.msbPutD(buf, 0, parent.localAs);
+            bits.msbPutQ(buf, 4, cur);
+            nRtf.add(tabRoute.addType.always, ntry, false, true);
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
