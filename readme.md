@@ -55,6 +55,7 @@ there is no build system in use, but you'll find shell scripts:
 * c.sh to compile
 * r.sh to run
 * t.sh to selftest
+* tw.sh to run a single test and wait for someone to examine the routers at 127.0.0.1:20001
 
 ## contributing
 
