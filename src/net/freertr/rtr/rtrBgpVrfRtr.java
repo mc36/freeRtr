@@ -22,7 +22,6 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userHelping;
-import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -185,11 +184,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             Long cur = tabRouteUtil.rt2comm(fwd.rtExp.get(i));
             rt.add(cur);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            addrIP adr = new addrIP();
-            byte[] buf = adr.getBytes();
-            bits.msbPutD(buf, 0, parent.localAs);
-            bits.msbPutQ(buf, 4, cur);
-            ntry.prefix = new addrPrefix<addrIP>(adr, 96);
+            ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, cur);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             nRtf.add(tabRoute.addType.always, ntry, false, true);
         }

@@ -1107,6 +1107,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         accLnks = new tabRoute<addrIP>("bgp");
         accMvpn = new tabRoute<addrIP>("bgp");
         accMvpo = new tabRoute<addrIP>("bgp");
+        rtfilterUsed = null;
         reachable = false;
         if (sendingIfc != null) {
             ipFwdIface ifc = ipFwdTab.findSendingIface(lower.fwdCore, peerAddr);
@@ -1172,6 +1173,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             accLnks = conn.lrnLnks;
             accMvpn = conn.lrnMvpn;
             accMvpo = conn.lrnMvpo;
+            if (rtfilterOut && ((conn.peerAfis & rtrBgpParam.mskRtf) != 0)) {
+                rtfilterUsed = accRtf;
+            }
             return;
         }
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiUni, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
@@ -1197,6 +1201,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLnks, remoteAs, accLnks, conn.lrnLnks, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpn, remoteAs, accMvpn, conn.lrnMvpn, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, wroumapIn, wroupolIn, null);
+        if (rtfilterOut && ((conn.peerAfis & rtrBgpParam.mskRtf) != 0)) {
+            rtfilterUsed = accRtf;
+        }
         if (dampenPfxs == null) {
             return;
         }

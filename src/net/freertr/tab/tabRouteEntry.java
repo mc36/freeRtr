@@ -289,6 +289,8 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
                     }
                 }
                 return 0;
+            case never:
+                return 0;
             default:
                 return best.differs(other.best);
         }

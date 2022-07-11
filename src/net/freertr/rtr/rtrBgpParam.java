@@ -15,6 +15,7 @@ import net.freertr.clnt.clntProxy;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFilter;
@@ -343,6 +344,21 @@ public abstract class rtrBgpParam {
      * allow peer as advertisement
      */
     public boolean allowAsOut;
+
+    /**
+     * user collected rtfilters
+     */
+    public boolean rtfilterIn;
+
+    /**
+     * honor advertised rtfilters
+     */
+    public boolean rtfilterOut;
+
+    /**
+     * rtfilters in use
+     */
+    public tabRoute<addrIP> rtfilterUsed;
 
     /**
      * transmit advertisement interval
@@ -1015,6 +1031,9 @@ public abstract class rtrBgpParam {
         intVpnClnt = src.intVpnClnt;
         allowAsIn = src.allowAsIn;
         allowAsOut = src.allowAsOut;
+        rtfilterIn = src.rtfilterIn;
+        rtfilterOut = src.rtfilterOut;
+        rtfilterUsed = src.rtfilterUsed;
         advertIntTx = src.advertIntTx;
         advertIntRx = src.advertIntRx;
         serverClnt = src.serverClnt;
@@ -1156,6 +1175,9 @@ public abstract class rtrBgpParam {
         if (allowAsOut != src.allowAsOut) {
             return true;
         }
+        if (rtfilterOut != src.rtfilterOut) {
+            return true;
+        }
         if (removePrivAsOut != src.removePrivAsOut) {
             return true;
         }
@@ -1282,6 +1304,18 @@ public abstract class rtrBgpParam {
                 return true;
             }
         }
+        if (rtfilterUsed == null) {
+            if (src.rtfilterUsed != null) {
+                return true;
+            }
+        } else {
+            if (src.rtfilterUsed == null) {
+                return true;
+            }
+            if (rtfilterUsed.differs(tabRoute.addType.never, src.rtfilterUsed)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -1357,6 +1391,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       internal-vpn-client         preserve attributes from peer");
         l.add(null, "3  .       allow-as-in                 allow my as to relearn from peer");
         l.add(null, "3  .       allow-as-out                allow peer as to advertised out");
+        l.add(null, "3  .       route-target-filter-in      use collected route target filters");
+        l.add(null, "3  .       route-target-filter-out     honor advertised route target filters");
         l.add(null, "3  .       enforce-first-as            discard unprepended aspath from peer");
         l.add(null, "3  .       route-server-client         unmodified attributes to this client");
         l.add(null, "3  .       remove-private-as-out       remove private as to peer");
@@ -1559,6 +1595,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !intVpnClnt, beg, nei + "internal-vpn-client", "");
         cmds.cfgLine(l, !allowAsIn, beg, nei + "allow-as-in", "");
         cmds.cfgLine(l, !allowAsOut, beg, nei + "allow-as-out", "");
+        cmds.cfgLine(l, !rtfilterIn, beg, nei + "route-target-filter-in", "");
+        cmds.cfgLine(l, !rtfilterOut, beg, nei + "route-target-filter-out", "");
         cmds.cfgLine(l, !enforceFirst, beg, nei + "enforce-first-as", "");
         cmds.cfgLine(l, maxPrefixCnt < 1, beg, nei + "maximum-prefix", maxPrefixCnt + " " + maxPrefixPrc);
         cmds.cfgLine(l, (dampenWthd + dampenAnno) < 1, beg, nei + "dampening", dampenWthd + " " + dampenAnno + " " + dampenMinp + " " + dampenMaxp + " " + dampenSupp + " " + dampenReus + " " + dampenHalf);
@@ -2033,6 +2071,14 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("allow-as-out")) {
             allowAsOut = !negated;
+            return false;
+        }
+        if (s.equals("route-target-filter-in")) {
+            rtfilterIn = !negated;
+            return false;
+        }
+        if (s.equals("route-target-filter-out")) {
+            rtfilterOut = !negated;
             return false;
         }
         if (s.equals("enforce-first-as")) {

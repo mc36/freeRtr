@@ -39,6 +39,10 @@ public class tabRoute<T extends addrType> {
          */
         always,
         /**
+         * add never
+         */
+        never,
+        /**
          * add as alternatives
          */
         alters,

@@ -2142,6 +2142,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribedTab(currMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribedTab(currMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribedTab(currLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        if (neigh.rtfilterOut && (currRtf.size() > 0)) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("rtfilter changed");
+            }
+            parent.needFull.add(1);
+        }
         if ((currChg > 0) && (rxReady() < (neigh.bufferSize / 4))) {
             parent.compute.wakeup();
         }
@@ -2536,6 +2542,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
             default:
                 break;
+        }
+        if (neigh.rtfilterIn && ((safi == parent.afiVpnU) || (safi == parent.afiVpoU) || (safi == parent.afiVpnM) || (safi == parent.afiVpoM))) {
+            if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, neigh.remoteAs, parent.computedRtf, true)) {
+                repPolRej++;
+                return true;
+            }
         }
         if (neigh.nxtHopPeer) {
             if ((neigh.otherAdr != null) && ((safi == parent.afiOtrU) || (safi == parent.afiOtrM))) {

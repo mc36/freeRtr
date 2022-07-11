@@ -446,6 +446,54 @@ public class tabRouteUtil {
     }
 
     /**
+     * convert extended community to rtfilter entry
+     *
+     * @param a as number to use
+     * @param i extended community
+     * @return rtfilter route
+     */
+    public static addrPrefix<addrIP> extcomm2rtfilter(int a, long i) {
+        addrIP adr = new addrIP();
+        byte[] buf = adr.getBytes();
+        bits.msbPutD(buf, 0, a);
+        bits.msbPutQ(buf, 4, i);
+        return new addrPrefix<addrIP>(adr, 96);
+    }
+
+    /**
+     * find long in rtfilter table
+     *
+     * @param ext exteneded communities to look up
+     * @param asn as number to use
+     * @param rtf rtfilter to use
+     * @param nhz nexthop must be zero
+     * @return false if found, true if not
+     */
+    public static boolean findRtfilterTab(List<Long> ext, int asn, tabRoute<addrIP> rtf, boolean nhz) {
+        if (ext == null) {
+            return true;
+        }
+        for (int i = 0; i < ext.size(); i++) {
+            Long cur = ext.get(i);
+            if (cur == null) {
+                continue;
+            }
+            addrPrefix<addrIP> prf = extcomm2rtfilter(asn, cur);
+            tabRouteEntry<addrIP> rou = rtf.route(prf.network);
+            if (rou == null) {
+                continue;
+            }
+            if (!nhz) {
+                return false;
+            }
+            if (rou.best.nextHop == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * convert rd to integer
      *
      * @param s string to convert
@@ -551,7 +599,7 @@ public class tabRouteUtil {
         }
         int o = 0;
         for (int i = attr.stdComm.size() - 1; i >= 0; i--) {
-            if (!tabRouteUtil.stdComm2string(attr.stdComm.get(i)).matches(mtch)) {
+            if (!stdComm2string(attr.stdComm.get(i)).matches(mtch)) {
                 continue;
             }
             attr.stdComm.remove(i);
@@ -635,7 +683,7 @@ public class tabRouteUtil {
         }
         int o = 0;
         for (int i = attr.extComm.size() - 1; i >= 0; i--) {
-            if (!tabRouteUtil.extComm2string(attr.extComm.get(i)).matches(mtch)) {
+            if (!extComm2string(attr.extComm.get(i)).matches(mtch)) {
                 continue;
             }
             attr.extComm.remove(i);
@@ -986,7 +1034,7 @@ public class tabRouteUtil {
                 attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.value);
                 break;
             case suber:
-                tabRouteUtil.removeIntList(attr.labelRem, setter.value);
+                removeIntList(attr.labelRem, setter.value);
                 break;
             default:
                 break;
