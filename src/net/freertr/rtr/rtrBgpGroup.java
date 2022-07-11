@@ -683,7 +683,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (intVpnClnt) {
             rtrBgpUtil.decodeAttribSet(ntry);
         }
-        if ((rtfilterUsed != null) && ((afi == lower.afiVpnU) || (afi == lower.afiVpoU) || (afi == lower.afiVpnM) || (afi == lower.afiVpoM))) {
+        if ((rtfilterUsed != null) && shouldRtfilter(afi)) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false)) {
                 return null;
             }
@@ -763,7 +763,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
             rtrBgpUtil.decodeAttribSet(ntry);
         }
-        if ((rtfilterUsed != null) && ((afi == lower.afiVpnU) || (afi == lower.afiVpoU) || (afi == lower.afiVpnM) || (afi == lower.afiVpoM))) {
+        if ((rtfilterUsed != null) && shouldRtfilter(afi)) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false)) {
                 return null;
             }

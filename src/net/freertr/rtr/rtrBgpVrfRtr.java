@@ -181,10 +181,11 @@ public class rtrBgpVrfRtr extends ipRtr {
     public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn, tabRoute<addrIP> nRtf) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtExp.size(); i++) {
-            Long cur = tabRouteUtil.rt2comm(fwd.rtExp.get(i));
-            rt.add(cur);
+            rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
+        }
+        for (int i = 0; i < fwd.rtImp.size(); i++) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, cur);
+            ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             nRtf.add(tabRoute.addType.always, ntry, false, true);
         }

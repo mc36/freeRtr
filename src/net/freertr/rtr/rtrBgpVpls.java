@@ -110,8 +110,9 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      * advertise this vpls
      *
      * @param tab table to use
+     * @param nRtf rtfilter table to update
      */
-    protected void doAdvertise(tabRoute<addrIP> tab) {
+    protected void doAdvertise(tabRoute<addrIP> tab, tabRoute<addrIP> nRtf) {
         adverted = false;
         if (id == 0) {
             return;
@@ -169,6 +170,10 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         ntry.rouDst = bridge.bridgeHed.rd;
         tab.add(tabRoute.addType.better, ntry, true, true);
+        ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp));
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+        nRtf.add(tabRoute.addType.always, ntry, false, true);
         adverted = true;
     }
 

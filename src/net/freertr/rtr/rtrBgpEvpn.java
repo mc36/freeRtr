@@ -218,8 +218,9 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
      * advertise this evpn
      *
      * @param tab table to use
+     * @param nRtf rtfilter table to update
      */
-    protected void doAdvertise(tabRoute<addrIP> tab) {
+    protected void doAdvertise(tabRoute<addrIP> tab, tabRoute<addrIP> nRtf) {
         adverted = false;
         if (id == 0) {
             return;
@@ -357,6 +358,10 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 adverted = true;
                 break;
         }
+        ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp));
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+        nRtf.add(tabRoute.addType.always, ntry, false, true);
     }
 
     /**

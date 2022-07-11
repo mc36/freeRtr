@@ -1628,10 +1628,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ovrfs.get(i).doer.doAdvertise(nVpoU, nVpoM, nVpoF, nMvpo, nRtf);
         }
         for (int i = 0; i < vpls.size(); i++) {
-            vpls.get(i).doAdvertise(nVpls);
+            vpls.get(i).doAdvertise(nVpls, nRtf);
         }
         for (int i = 0; i < evpn.size(); i++) {
-            evpn.get(i).doAdvertise(nEvpn);
+            evpn.get(i).doAdvertise(nEvpn, nRtf);
         }
         origntedOtrU = new tabRoute<addrIP>(nOtrU);
         origntedOtrM = new tabRoute<addrIP>(nOtrM);

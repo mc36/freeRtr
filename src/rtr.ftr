@@ -2472,6 +2472,8 @@ qc pass: unicast+rtfilter over bgp with additional path
 qc pass: unicast+rtfilter over ibgp rr
 qc pass: vpns with ingress rtfilter
 qc pass: vpns with egress rtfilter
+qc pass: othervpns with ingress rtfilter
+qc pass: othervpns with egress rtfilter
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

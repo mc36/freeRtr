@@ -1082,6 +1082,19 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * check if rtfilter needed
+     *
+     * @param afi afi in question
+     * @return true if yes, false if not
+     */
+    public boolean shouldRtfilter(int afi) {
+        return (afi == lower.afiVpnU) || (afi == lower.afiVpoU)
+                || (afi == lower.afiVpnM) || (afi == lower.afiVpoM)
+                || (afi == lower.afiVpnF) || (afi == lower.afiVpoF)
+                || (afi == lower.afiVpls) || (afi == lower.afiEvpn);
+    }
+
+    /**
      * check if same output will produced
      *
      * @param src where to compare

@@ -2543,7 +2543,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             default:
                 break;
         }
-        if (neigh.rtfilterIn && ((safi == parent.afiVpnU) || (safi == parent.afiVpoU) || (safi == parent.afiVpnM) || (safi == parent.afiVpoM))) {
+        if (neigh.rtfilterIn && neigh.shouldRtfilter(safi)) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, neigh.remoteAs, parent.computedRtf, true)) {
                 repPolRej++;
                 return true;
