@@ -1296,6 +1296,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * set group membership
      */
     public void setGroup() {
+        lower.have2reflect |= reflectClnt;
         if (reachable != reachOld) {
             reachOld = reachable;
             reachTim = bits.getTime();
@@ -1340,7 +1341,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         ntry.localAddr = localAddr.copyBytes();
         ntry.localOddr = localOddr.copyBytes();
         lower.groups.add(ntry);
-        lower.have2reflect |= reflectClnt;
     }
 
     /**
