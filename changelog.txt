@@ -13407,3 +13407,6 @@ qc pass: othervpns with egress rtfilter
 ---------------------------------- 2022-07-11 13:15:50 22.7.11
 qc pass: vpls/ldp with ingress rtfilter
 qc pass: vpls/ldp with egress rtfilter
+---------------------------------- 2022-07-11 13:32:48 22.7.11
+qc pass: evpn/pbb with ingress rtfilter
+qc pass: evpn/pbb with egress rtfilter
