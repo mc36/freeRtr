@@ -13396,3 +13396,8 @@ qc pass: unicast+rtfilter over ibgp rr
 ---------------------------------- 2022-07-11 08:11:43 22.7.11
 qc pass: vpns with rtfilter in
 qc pass: vpns with rtfilter out
+---------------------------------- 2022-07-11 08:24:20 22.7.11
+no qc pass: vpns with rtfilter out
+no qc pass: vpns with rtfilter in
+qc pass: vpns with ingress rtfilter
+qc pass: vpns with egress rtfilter
