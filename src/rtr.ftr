@@ -2470,6 +2470,8 @@ qc pass: unicast+rtfilter over bgp
 qc pass: unicast+rtfilter over bgp with soft-reconfig
 qc pass: unicast+rtfilter over bgp with additional path
 qc pass: unicast+rtfilter over ibgp rr
+qc pass: vpns with rtfilter in
+qc pass: vpns with rtfilter out
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

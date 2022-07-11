@@ -13393,3 +13393,6 @@ qc pass: unicast+rtfilter over bgp
 qc pass: unicast+rtfilter over bgp with soft-reconfig
 qc pass: unicast+rtfilter over bgp with additional path
 qc pass: unicast+rtfilter over ibgp rr
+---------------------------------- 2022-07-11 08:11:43 22.7.11
+qc pass: vpns with rtfilter in
+qc pass: vpns with rtfilter out
