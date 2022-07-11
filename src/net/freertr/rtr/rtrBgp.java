@@ -1413,6 +1413,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             bits.sleep(1000);
         }
+        needFull.add(1);
         routerCreateComputed();
         bits.sleep(scanDelay);
         for (;;) {
