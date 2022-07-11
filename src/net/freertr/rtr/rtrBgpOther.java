@@ -265,17 +265,29 @@ public class rtrBgpOther extends ipRtr {
             routerChangedF = null;
             return false;
         }
-        for (int i = 0; i < routerChangedU.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiUnicast, routerChangedU.get(i), routerComputedU, cmpU);
+        tabRoute<addrIP> chgU = routerChangedU;
+        tabRoute<addrIP> chgM = routerChangedM;
+        tabRoute<addrIP> chgF = routerChangedF;
+        if (chgU == null) {
+            chgU = new tabRoute<addrIP>("empty");
         }
-        for (int i = 0; i < routerChangedM.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiMulticast, routerChangedM.get(i), routerComputedM, cmpM);
+        if (chgM == null) {
+            chgM = new tabRoute<addrIP>("empty");
         }
-        for (int i = 0; i < routerChangedF.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, routerChangedF.get(i), routerComputedF, cmpF);
+        if (chgF == null) {
+            chgF = new tabRoute<addrIP>("empty");
+        }
+        for (int i = 0; i < chgU.size(); i++) {
+            doUpdateRoute(rtrBgpUtil.sfiUnicast, chgU.get(i), routerComputedU, cmpU);
+        }
+        for (int i = 0; i < chgM.size(); i++) {
+            doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerComputedM, cmpM);
+        }
+        for (int i = 0; i < chgF.size(); i++) {
+            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, cmpF);
         }
         fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
-        if (flowInst && (routerChangedF.size() > 0)) {
+        if (flowInst && (chgF.size() > 0)) {
             tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
             fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));
             routerComputedF = tabF;
