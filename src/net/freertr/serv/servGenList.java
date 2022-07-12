@@ -235,6 +235,8 @@ public class servGenList<T extends servGeneric> {
         l.add(cfgAll.dmnHoney.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    pop3                         pop3 server" + e);
         l.add(cfgAll.dmnPop3.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
+        l.add(null, p + "  " + (p + 1) + "    imap4                        imap4 server" + e);
+        l.add(cfgAll.dmnImap4.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    smtp                         smtp server" + e);
         l.add(cfgAll.dmnSmtp.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    modem                        modem server" + e);
@@ -416,6 +418,9 @@ class servGenEntry {
         }
         if (typ.equals("pop3")) {
             return new servGenEntry(new servPop3(), cfgAll.dmnPop3);
+        }
+        if (typ.equals("imap4")) {
+            return new servGenEntry(new servImap4(), cfgAll.dmnImap4);
         }
         if (typ.equals("smtp")) {
             return new servGenEntry(new servSmtp(), cfgAll.dmnSmtp);

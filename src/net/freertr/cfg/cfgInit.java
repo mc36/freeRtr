@@ -47,6 +47,7 @@ import net.freertr.serv.servGre;
 import net.freertr.serv.servGtp;
 import net.freertr.serv.servHoneyPot;
 import net.freertr.serv.servHttp;
+import net.freertr.serv.servImap4;
 import net.freertr.serv.servIrc;
 import net.freertr.serv.servIscsi;
 import net.freertr.serv.servL2f;
@@ -904,6 +905,7 @@ public class cfgInit implements Runnable {
         servPckOtxt.defaultF = createFilter(servPckOtxt.defaultL, srvdefsF);
         servPckOudp.defaultF = createFilter(servPckOudp.defaultL, srvdefsF);
         servPop3.defaultF = createFilter(servPop3.defaultL, srvdefsF);
+        servImap4.defaultF = createFilter(servImap4.defaultL, srvdefsF);
         servPptp.defaultF = createFilter(servPptp.defaultL, srvdefsF);
         servQuote.defaultF = createFilter(servQuote.defaultL, srvdefsF);
         servRadius.defaultF = createFilter(servRadius.defaultL, srvdefsF);

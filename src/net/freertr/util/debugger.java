@@ -154,6 +154,11 @@ public class debugger {
     public static boolean servPop3traf = false;
 
     /**
+     * servImap4 traffic
+     */
+    public static boolean servImap4traf = false;
+
+    /**
      * servSmtp traffic
      */
     public static boolean servSmtpTraf = false;
@@ -1047,6 +1052,7 @@ public class debugger {
         l.add(null, "3 .        http              hypertext transfer protocol");
         l.add(null, "3 .        lpd               line printer daemon protocol");
         l.add(null, "3 .        pop3              post office protocol");
+        l.add(null, "3 .        imap4             internet mail access protocol");
         l.add(null, "3 .        smtp              simple mail transfer protocol");
         l.add(null, "3 .        modem             modulator demodulator");
         l.add(null, "3 .        voice             voice script");
@@ -1370,6 +1376,10 @@ public class debugger {
             }
             if (s.equals("pop3")) {
                 servPop3traf = v;
+                return false;
+            }
+            if (s.equals("imap4")) {
+                servImap4traf = v;
                 return false;
             }
             if (s.equals("smtp")) {

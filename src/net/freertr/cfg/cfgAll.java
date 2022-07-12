@@ -41,6 +41,7 @@ import net.freertr.serv.servGre;
 import net.freertr.serv.servGtp;
 import net.freertr.serv.servHoneyPot;
 import net.freertr.serv.servHttp;
+import net.freertr.serv.servImap4;
 import net.freertr.serv.servIrc;
 import net.freertr.serv.servIscsi;
 import net.freertr.serv.servL2f;
@@ -452,6 +453,11 @@ public class cfgAll {
      * pop3 daemons
      */
     public static final servGenList<servPop3> dmnPop3 = new servGenList<servPop3>();
+
+    /**
+     * imap4 daemons
+     */
+    public static final servGenList<servImap4> dmnImap4 = new servGenList<servImap4>();
 
     /**
      * smtp daemons
@@ -3763,6 +3769,7 @@ public class cfgAll {
         dmnLpd.getShRun(l, filter);
         dmnHoney.getShRun(l, filter);
         dmnPop3.getShRun(l, filter);
+        dmnImap4.getShRun(l, filter);
         dmnSmtp.getShRun(l, filter);
         dmnModem.getShRun(l, filter);
         dmnVoice.getShRun(l, filter);
