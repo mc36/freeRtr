@@ -684,7 +684,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             rtrBgpUtil.decodeAttribSet(ntry);
         }
         if ((rtfilterUsed != null) && shouldRtfilter(afi)) {
-            if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false)) {
+            if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false) && tabRouteUtil.findRtfilterTab(ntry.best.extComm, localAs, rtfilterUsed, false)) {
                 return null;
             }
         }
@@ -764,7 +764,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             rtrBgpUtil.decodeAttribSet(ntry);
         }
         if ((rtfilterUsed != null) && shouldRtfilter(afi)) {
-            if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false)) {
+            if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false) && tabRouteUtil.findRtfilterTab(ntry.best.extComm, localAs, rtfilterUsed, false)) {
                 return null;
             }
         }
