@@ -260,7 +260,7 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 lower.expIfc.del(ntry);
-                boolean bckpln = lower.backPlanes.del(new servP4langBkpl(lower, ntry)) != null;
+                servP4langBkpl bckpln = lower.backPlanes.del(new servP4langBkpl(lower, ntry));
                 ntry.id = prt;
                 ntry.speed = bits.str2num(cmd.word());
                 ntry.errCorr = servP4langMgcN.toNum(lower.fwderrcr, cmd.word(), 0);
@@ -268,8 +268,9 @@ public class servP4langConn implements Runnable {
                 ntry.flowCtrl = servP4langMgcN.toNum(lower.flwctrls, cmd.word(), 0);
                 ntry.reinit = null;
                 lower.expIfc.add(ntry);
-                if (bckpln) {
-                    lower.backPlanes.add(new servP4langBkpl(lower, ntry));
+                if (bckpln != null) {
+                    bckpln.pi = ntry;
+                    lower.backPlanes.add(bckpln);
                 }
             }
             if (!ntry.suppressState()) {

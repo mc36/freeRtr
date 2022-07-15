@@ -29,7 +29,7 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
     /**
      * interface id
      */
-    protected final servP4langIfc pi;
+    protected servP4langIfc pi;
 
     private final servP4langCfg lower;
 
