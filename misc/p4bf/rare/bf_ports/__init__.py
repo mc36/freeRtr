@@ -22,7 +22,6 @@ port_range = {
     'accton_wedge100bf_32x': 32,
     'accton_wedge100bf_32qs': 32,
     'accton_as9516_32d': 32,
-    'stordis_bf2556x_1t': 32
 }
 
 ## Default 4
