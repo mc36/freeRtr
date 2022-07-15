@@ -75,6 +75,11 @@ public class servP4langCfg implements ifcUp {
     protected boolean expSck;
 
     /**
+     * use magic names
+     */
+    protected boolean expMgc;
+
+    /**
      * exported interfaces
      */
     protected tabGen<servP4langIfc> expIfc = new tabGen<servP4langIfc>();
@@ -152,22 +157,22 @@ public class servP4langCfg implements ifcUp {
     /**
      * last front panel
      */
-    protected tabGen<servP4langFrnt> frontnam = new tabGen<servP4langFrnt>();
+    protected tabGen<servP4langMgcN> frontnam = new tabGen<servP4langMgcN>();
 
     /**
      * last fec mapping
      */
-    protected tabGen<servP4langFrnt> fwderrcr = new tabGen<servP4langFrnt>();
+    protected tabGen<servP4langMgcN> fwderrcr = new tabGen<servP4langMgcN>();
 
     /**
      * last autoneg mapping
      */
-    protected tabGen<servP4langFrnt> autonegs = new tabGen<servP4langFrnt>();
+    protected tabGen<servP4langMgcN> autonegs = new tabGen<servP4langMgcN>();
 
     /**
      * last flowcontrol mapping
      */
-    protected tabGen<servP4langFrnt> flwctrls = new tabGen<servP4langFrnt>();
+    protected tabGen<servP4langMgcN> flwctrls = new tabGen<servP4langMgcN>();
 
     /**
      * connection start
@@ -305,6 +310,7 @@ public class servP4langCfg implements ifcUp {
      * @param l text to append
      */
     protected void getShowRun(String beg, String mid, List<String> l) {
+        cmds.cfgLine(l, !expMgc, beg, mid + "export-names", "");
         cmds.cfgLine(l, apiStatTx == null, beg, mid + "api-stat", "");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
@@ -314,13 +320,25 @@ public class servP4langCfg implements ifcUp {
             servP4langBr ntry = expBr.get(i);
             l.add(beg + mid + "export-bridge " + ntry.br.num);
         }
+        tabGen<servP4langMgcI> frnt = servP4langMgcI.convTab(frontnam, expMgc);
+        tabGen<servP4langMgcI> errs = servP4langMgcI.convTab(fwderrcr, expMgc);
+        tabGen<servP4langMgcI> aung = servP4langMgcI.convTab(autonegs, expMgc);
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.hidden) {
                 continue;
             }
-            String a = ntry.getCfgLine();
-            l.add(beg + mid + "export-port " + a);
+            String a;
+            if (ntry.dynamic) {
+                a = "dynamic";
+            } else {
+                a = servP4langMgcI.convId(ntry.id, frnt);
+            }
+            a += " " + ntry.speed + " " + servP4langMgcI.convId(ntry.errCorr, errs) + " " + ntry.autoNeg + " " + servP4langMgcI.convId(ntry.flowCtrl, aung);
+            if (ntry.reinit != null) {
+                a = ntry.reinit;
+            }
+            l.add(beg + mid + "export-port " + ntry.ifc.name + " " + a);
         }
         if (expSrv6 == null) {
             l.add(beg + "no " + mid + "export-srv6");
@@ -500,6 +518,10 @@ public class servP4langCfg implements ifcUp {
             expSck = true;
             return false;
         }
+        if (s.equals("export-names")) {
+            expMgc = true;
+            return false;
+        }
         if (s.equals("export-interval")) {
             expDelay = bits.str2num(cmd.word());
             return false;
@@ -518,16 +540,32 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("no such interface");
                 return false;
             }
+            if (ifc.vlanNum != 0) {
+                cmd.error("no need to export subinterface");
+                return false;
+            }
             if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.type != cfgIfc.ifaceType.virtppp) && (ifc.type != cfgIfc.ifaceType.template)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
-            int i = front2id(ifc, cmd.word(), true);
+            s = cmd.word();
+            int i = front2id(ifc, s, true);
             if (i < 0) {
-                cmd.error("no such frontpanel port");
-                return false;
+                if (!expMgc) {
+                    cmd.error("no such frontpanel port");
+                    return false;
+                }
+                i = getNextDynamic();
+                if (i < 0) {
+                    return false;
+                }
+            } else {
+                s = null;
             }
             servP4langIfc ntry = new servP4langIfc(this, i);
+            if (s != null) {
+                ntry.reinit = s + " " + cmd.getRemaining();
+            }
             ntry.ifc = ifc;
             ntry.doClear();
             servP4langIfc old = expIfc.find(ntry);
@@ -547,14 +585,10 @@ public class servP4langCfg implements ifcUp {
                 }
             }
             ntry.speed = bits.str2num(cmd.word());
-            ntry.errCorr = servP4langFrnt.toNum(fwderrcr, cmd.word(), 0);
-            ntry.autoNeg = servP4langFrnt.toNum(autonegs, cmd.word(), 0);
-            ntry.flowCtrl = servP4langFrnt.toNum(flwctrls, cmd.word(), 0);
+            ntry.errCorr = servP4langMgcN.toNum(fwderrcr, cmd.word(), 0);
+            ntry.autoNeg = servP4langMgcN.toNum(autonegs, cmd.word(), 0);
+            ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
             boolean need = ifc.type == cfgIfc.ifaceType.sdn;
-            if (ifc.vlanNum != 0) {
-                cmd.error("no need to export subinterface");
-                return false;
-            }
             ntry.dynamic = !need;
             if (ntry.speed == -1) {
                 switch (ifc.type) {
@@ -636,6 +670,10 @@ public class servP4langCfg implements ifcUp {
             apiStatRx = null;
             return false;
         }
+        if (s.equals("export-names")) {
+            expMgc = false;
+            return false;
+        }
         if (s.equals("export-socket")) {
             expSck = false;
             return false;
@@ -699,18 +737,17 @@ public class servP4langCfg implements ifcUp {
         }
         if (s.equals("export-port")) {
             cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
-            int i = front2id(ifc, cmd.word(), false);
-            if (i < 0) {
-                cmd.error("no such frontpanel port");
+            if (ifc == null) {
+                cmd.error("no such intreface");
                 return false;
             }
-            servP4langIfc ntry = new servP4langIfc(this, i);
-            ntry = expIfc.del(ntry);
-            if (ntry == null) {
+            servP4langIfc pif = findIfc(ifc);
+            if (pif == null) {
                 cmd.error("no such export");
                 return false;
             }
-            ntry.tearDown();
+            expIfc.del(pif);
+            pif.tearDown();
             return false;
         }
         return true;
@@ -735,7 +772,7 @@ public class servP4langCfg implements ifcUp {
             }
             return getNextDynamic();
         }
-        return servP4langFrnt.toNum(frontnam, num, -1);
+        return servP4langMgcN.toNum(frontnam, num, -1);
     }
 
     /**
@@ -745,7 +782,7 @@ public class servP4langCfg implements ifcUp {
      * @param p starting level
      */
     protected void getHelpText(userHelping l, int p) {
-        List<String> lst = servP4langFrnt.toHelp(frontnam);
+        List<String> lst = servP4langMgcN.toHelp(frontnam);
         l.add(null, (p + 0) + " " + (p + 1) + "  remote                    address of forwarder");
         l.add(null, (p + 1) + " .    <addr>                  ip address of client");
         l.add(null, (p + 0) + " " + (p + 1) + "  name                      name of forwarder");
@@ -760,12 +797,13 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 2) + " " + (p + 3) + ",.    dynamic               dynamic port number");
         l.add(lst, (p + 2) + " " + (p + 3) + ",.    <num:loc>             port number");
         l.add(null, (p + 3) + " " + (p + 4) + ",.      <num>               speed in gbps");
-        l.add(servP4langFrnt.toHelp(fwderrcr), (p + 4) + " " + (p + 5) + ",.        <num:loc>         fec, see hw vendor manual");
-        l.add(servP4langFrnt.toHelp(autonegs), (p + 5) + " " + (p + 6) + ",.          <num:loc>       autoneg, see hw vendor manual");
-        l.add(servP4langFrnt.toHelp(flwctrls), (p + 6) + " .              <num:loc>     flowctrl, see hw vendor manual");
+        l.add(servP4langMgcN.toHelp(fwderrcr), (p + 4) + " " + (p + 5) + ",.        <num:loc>         fec, see hw vendor manual");
+        l.add(servP4langMgcN.toHelp(autonegs), (p + 5) + " " + (p + 6) + ",.          <num:loc>       autoneg, see hw vendor manual");
+        l.add(servP4langMgcN.toHelp(flwctrls), (p + 6) + " .              <num:loc>     flowctrl, see hw vendor manual");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-srv6               specify srv6 to export");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");
         l.add(null, (p + 0) + " .  export-socket             specify sockets to be exported");
+        l.add(null, (p + 0) + " .  export-names              specify names to be exported");
         l.add(null, (p + 0) + " .  api-stat                  count the sent api messages");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-copp4              specify copp acl to export");
         l.add(null, (p + 1) + " .    <name:acl>              acl name");
@@ -816,7 +854,7 @@ public class servP4langCfg implements ifcUp {
      */
     protected userFormat getShowFront() {
         userFormat res = new userFormat("|", "num|name");
-        servP4langFrnt.toShow("", frontnam, res);
+        servP4langMgcN.toShow("", frontnam, res);
         return res;
     }
 
@@ -827,9 +865,9 @@ public class servP4langCfg implements ifcUp {
      */
     protected userFormat getShowMagics() {
         userFormat res = new userFormat("|", "num|name");
-        servP4langFrnt.toShow("fec", fwderrcr, res);
-        servP4langFrnt.toShow("an", autonegs, res);
-        servP4langFrnt.toShow("flwctl", flwctrls, res);
+        servP4langMgcN.toShow("fec", fwderrcr, res);
+        servP4langMgcN.toShow("an", autonegs, res);
+        servP4langMgcN.toShow("flwctl", flwctrls, res);
         return res;
     }
 

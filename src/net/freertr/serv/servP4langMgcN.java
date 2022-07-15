@@ -8,11 +8,11 @@ import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 
 /**
- * one p4lang frontpanel port
+ * one p4lang magic by name
  *
  * @author matecsaba
  */
-public class servP4langFrnt implements Comparator<servP4langFrnt> {
+public class servP4langMgcN implements Comparator<servP4langMgcN> {
 
     /**
      * interface id
@@ -30,12 +30,12 @@ public class servP4langFrnt implements Comparator<servP4langFrnt> {
      * @param i id
      * @param n name
      */
-    protected servP4langFrnt(int i, String n) {
+    protected servP4langMgcN(int i, String n) {
         id = i;
         nam = n;
     }
 
-    public int compare(servP4langFrnt o1, servP4langFrnt o2) {
+    public int compare(servP4langMgcN o1, servP4langMgcN o2) {
         return o1.nam.compareTo(o2.nam);
     }
 
@@ -47,12 +47,12 @@ public class servP4langFrnt implements Comparator<servP4langFrnt> {
      * @param inv invalid value
      * @return id, inv if error
      */
-    public static int toNum(tabGen<servP4langFrnt> src, String num, int inv) {
+    public static int toNum(tabGen<servP4langMgcN> src, String num, int inv) {
         int i = bits.str2num(num);
         if (num.equals("" + i)) {
             return i;
         }
-        servP4langFrnt ntry = new servP4langFrnt(inv, num);
+        servP4langMgcN ntry = new servP4langMgcN(inv, num);
         ntry = src.find(ntry);
         if (ntry == null) {
             return inv;
@@ -66,7 +66,7 @@ public class servP4langFrnt implements Comparator<servP4langFrnt> {
      * @param src source list
      * @return converted text
      */
-    public static List<String> toHelp(tabGen<servP4langFrnt> src) {
+    public static List<String> toHelp(tabGen<servP4langMgcN> src) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < src.size(); i++) {
             res.add(src.get(i).nam);
@@ -81,9 +81,9 @@ public class servP4langFrnt implements Comparator<servP4langFrnt> {
      * @param src source list
      * @param trg target list
      */
-    public static void toShow(String beg, tabGen<servP4langFrnt> src, userFormat trg) {
+    public static void toShow(String beg, tabGen<servP4langMgcN> src, userFormat trg) {
         for (int i = 0; i < src.size(); i++) {
-            servP4langFrnt ntry = src.get(i);
+            servP4langMgcN ntry = src.get(i);
             trg.add(beg + ntry.id + "|" + ntry.nam);
         }
     }

@@ -197,28 +197,28 @@ public class servP4langConn implements Runnable {
             if (s.equals("portname")) {
                 int i = bits.str2num(cmd.word());
                 s = cmd.getRemaining().replaceAll(" ", "_");
-                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                servP4langMgcN ntry = new servP4langMgcN(i, s);
                 lower.frontnam.put(ntry);
                 continue;
             }
             if (s.equals("fecname")) {
                 int i = bits.str2num(cmd.word());
                 s = cmd.getRemaining().replaceAll(" ", "_");
-                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                servP4langMgcN ntry = new servP4langMgcN(i, s);
                 lower.fwderrcr.put(ntry);
                 continue;
             }
             if (s.equals("anegname")) {
                 int i = bits.str2num(cmd.word());
                 s = cmd.getRemaining().replaceAll(" ", "_");
-                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                servP4langMgcN ntry = new servP4langMgcN(i, s);
                 lower.autonegs.put(ntry);
                 continue;
             }
             if (s.equals("flwctrname")) {
                 int i = bits.str2num(cmd.word());
                 s = cmd.getRemaining().replaceAll(" ", "_");
-                servP4langFrnt ntry = new servP4langFrnt(i, s);
+                servP4langMgcN ntry = new servP4langMgcN(i, s);
                 lower.flwctrls.put(ntry);
                 continue;
             }
@@ -253,6 +253,21 @@ public class servP4langConn implements Runnable {
         int dynRngNxt = lower.dynRngBeg;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
+            if (ntry.reinit != null) {
+                cmds cmd = new cmds("exp", ntry.reinit);
+                int prt = servP4langMgcN.toNum(lower.frontnam, cmd.word(), -1);
+                if (prt < 0) {
+                    continue;
+                }
+                lower.expIfc.del(ntry);
+                ntry.id = prt;
+                ntry.speed = bits.str2num(cmd.word());
+                ntry.errCorr = servP4langMgcN.toNum(lower.fwderrcr, cmd.word(), 0);
+                ntry.autoNeg = servP4langMgcN.toNum(lower.autonegs, cmd.word(), 0);
+                ntry.flowCtrl = servP4langMgcN.toNum(lower.flwctrls, cmd.word(), 0);
+                ntry.reinit = null;
+                lower.expIfc.add(ntry);
+            }
             if (!ntry.suppressState()) {
                 lower.sendLine("ports_add " + ntry.id + " " + ntry.getStateEnding());
             }

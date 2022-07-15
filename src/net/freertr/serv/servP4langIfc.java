@@ -45,6 +45,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     protected int id;
 
     /**
+     * reinit parameters
+     */
+    protected String reinit;
+
+    /**
      * speed
      */
     protected int speed;
@@ -414,21 +419,6 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
             ifcNull nul = new ifcNull();
             nul.setUpper(ifc.ethtyp);
         }
-    }
-
-    /**
-     * get config line
-     *
-     * @return config
-     */
-    protected String getCfgLine() {
-        String a;
-        if (dynamic) {
-            a = "dynamic";
-        } else {
-            a = "" + id;
-        }
-        return ifc.name + " " + a + " " + speed + " " + errCorr + " " + autoNeg + " " + flowCtrl;
     }
 
     public String toString() {
