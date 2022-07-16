@@ -70,7 +70,7 @@ public class servImap4 extends servGeneric implements prtServS {
         pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        new servImap4doer(this, pipe, id);
+        new servImap4doer(this, pipe);
         return false;
     }
 
@@ -163,18 +163,15 @@ class servImap4doer implements Runnable {
 
     private pipeSide pipe;
 
-    private prtGenConn conn;
-
     private String userN = "";
 
     private boolean authed = false;
 
     private tabGen<servImap4msg> deled = null;
 
-    public servImap4doer(servImap4 parent, pipeSide stream, prtGenConn id) {
+    public servImap4doer(servImap4 parent, pipeSide stream) {
         lower = parent;
         pipe = stream;
-        conn = id;
         new Thread(this).start();
     }
 
