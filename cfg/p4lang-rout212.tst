@@ -137,7 +137,7 @@ int sdn34
 server p4lang p4
  dataplanes 4
  forwarder 1 interconnect eth2
- forwarder 1 export-vrf v1 1
+ forwarder 1 export-vrf v1
  forwarder 1 export-br 1
  forwarder 1 export-port sdn11 1 10
  forwarder 1 export-port sdn12 2 10
@@ -147,7 +147,7 @@ server p4lang p4
  forwarder 1 backplane bun1 1
  forwarder 1 remote 10.11.12.111
  forwarder 2 interconnect eth4
- forwarder 2 export-vrf v1 1
+ forwarder 2 export-vrf v1
  forwarder 2 export-br 1
  forwarder 2 export-port sdn21 1 10
  forwarder 2 export-port sdn22 2 10
@@ -157,7 +157,7 @@ server p4lang p4
  forwarder 2 backplane bun2 1
  forwarder 2 remote 10.12.13.111
  forwarder 3 interconnect eth6
- forwarder 3 export-vrf v1 1
+ forwarder 3 export-vrf v1
  forwarder 3 export-port sdn31 1 10
  forwarder 3 export-port sdn32 2 10
  forwarder 3 export-port sdn33 3 10

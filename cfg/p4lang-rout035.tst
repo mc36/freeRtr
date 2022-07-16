@@ -67,7 +67,7 @@ int hair12.111
  exit
 server p4lang p4
  interconnect eth2
- export-vrf v1 1
+ export-vrf v1
  export-br 1
  export-br 2
  export-port sdn1 1 10

@@ -88,7 +88,7 @@ ipv4 mroute v1 2.2.2.106 255.255.255.255 1.1.4.2
 ipv6 mroute v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 server p4lang p4
  interconnect eth2
- export-vrf v1 1
+ export-vrf v1
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10

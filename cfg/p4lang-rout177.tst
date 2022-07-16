@@ -166,7 +166,7 @@ ipv4 pbr v1 a2b4 v1 next 1.1.11.2
 ipv6 pbr v1 a2b6 v1 next 1234:11::2
 server p4lang p4
  interconnect eth2
- export-vrf v1 1
+ export-vrf v1
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10

@@ -100,8 +100,8 @@ ipv4 mroute v2 0.0.0.0 0.0.0.0 1.1.5.1
 ipv6 mroute v2 :: :: 1234:5::1
 server p4lang p4
  interconnect eth2
- export-vrf v1 1
- export-vrf v2 2
+ export-vrf v1
+ export-vrf v2
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10

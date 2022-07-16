@@ -68,7 +68,7 @@ int sdn4
  exit
 server p4lang p4
  interconnect eth2
- export-vrf v1 1
+ export-vrf v1
  export-port sdn1 1 10
  export-port di1 dynamic
  export-port sdn2 2 10
