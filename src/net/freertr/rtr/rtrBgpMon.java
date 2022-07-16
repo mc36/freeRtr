@@ -145,6 +145,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
                 if (!need2run) {
                     break;
                 }
+                bits.sleep(1000);
             }
         } catch (Exception e) {
             logger.traceback(e);
@@ -222,7 +223,6 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         logger.error("monitor " + monName + " down");
         pipe.setClose();
         pipe = null;
-        bits.sleep(1000);
     }
 
     /**

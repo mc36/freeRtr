@@ -19,30 +19,6 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
-router bgp4 1
- vrf v1
- no safe-ebgp
- address uni
- local-as 1
- router-id 4.4.4.1
- monitor bmp p1 1.1.1.1 17971
- neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 distan 255
- neigh 1.1.1.2 monitor bmp
- red conn
- exit
-router bgp6 1
- vrf v1
- no safe-ebgp
- address uni
- local-as 1
- router-id 6.6.6.1
- monitor bmp p1 1.1.1.1 17971
- neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 distan 255
- neigh 1234:1::2 monitor bmp
- red conn
- exit
 router bgp4 2
  vrf v1
  no safe-ebgp
@@ -66,6 +42,30 @@ server bmp bmp
  neigh 1.1.1.1 1234:1::2 rx bgp6 2 1234:1::2
  port 17971
  vrf v1
+ exit
+router bgp4 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 1
+ router-id 4.4.4.1
+ monitor bmp p1 1.1.1.1 17971
+ neigh 1.1.1.2 remote-as 2
+ neigh 1.1.1.2 distan 255
+ neigh 1.1.1.2 monitor bmp
+ red conn
+ exit
+router bgp6 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 1
+ router-id 6.6.6.1
+ monitor bmp p1 1.1.1.1 17971
+ neigh 1234:1::2 remote-as 2
+ neigh 1234:1::2 distan 255
+ neigh 1234:1::2 monitor bmp
+ red conn
  exit
 !
 
