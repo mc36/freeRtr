@@ -323,6 +323,7 @@ public class servP4langCfg implements ifcUp {
         tabGen<servP4langMgcI> frnt = servP4langMgcI.convTab(frontnam, expMgc);
         tabGen<servP4langMgcI> errs = servP4langMgcI.convTab(fwderrcr, expMgc);
         tabGen<servP4langMgcI> aung = servP4langMgcI.convTab(autonegs, expMgc);
+        tabGen<servP4langMgcI> flwc = servP4langMgcI.convTab(flwctrls, expMgc);
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.hidden) {
@@ -334,7 +335,7 @@ public class servP4langCfg implements ifcUp {
             } else {
                 a = servP4langMgcI.convId(ntry.id, frnt);
             }
-            a += " " + ntry.speed + " " + servP4langMgcI.convId(ntry.errCorr, errs) + " " + ntry.autoNeg + " " + servP4langMgcI.convId(ntry.flowCtrl, aung);
+            a += " " + ntry.speed + " " + servP4langMgcI.convId(ntry.errCorr, errs) + " " + servP4langMgcI.convId(ntry.autoNeg, aung) + " " + servP4langMgcI.convId(ntry.flowCtrl, flwc);
             if (ntry.reinit != null) {
                 a = ntry.reinit;
             }
