@@ -247,7 +247,7 @@ public class userHwext {
                 swc.add(cmds.comment);
                 swc.add("server p4lang " + dpv);
                 for (i = 0; i < vrf.size(); i++) {
-                    swc.add(cmds.tabulator + "export-vrf " + vrf.get(i) + " " + (i + 1));
+                    swc.add(cmds.tabulator + "export-vrf " + vrf.get(i));
                 }
                 for (i = 0; i < ifr.size(); i++) {
                     swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + i);
