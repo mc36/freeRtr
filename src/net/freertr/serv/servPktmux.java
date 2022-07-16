@@ -320,6 +320,8 @@ class servPktmuxConn implements Runnable, Comparator<servPktmuxConn> {
             pipe.linePut("portname " + ntry.id + " pktmux-port" + ntry.id);
         }
         pipe.linePut("dynrange 512 1023");
+        pipe.linePut("vrfrange 1 1023");
+        pipe.linePut("nomore");
         for (int i = 0; i < lower.ports.size(); i++) {
             servPktmuxPort ntry = lower.ports.get(i);
             pipe.linePut("state " + ntry.id + " 1");

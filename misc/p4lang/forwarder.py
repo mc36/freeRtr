@@ -3222,6 +3222,8 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)
     fil.write("dynrange 512 1023\r\n")
+    fil.write("vrfrange 1 1023\r\n")
+    fil.write("nomore\r\n")
     for x in range(0, 15):
         data = "state %i 1\r\n" % (x)
         fil.write(data)

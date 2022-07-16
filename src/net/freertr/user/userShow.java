@@ -998,6 +998,10 @@ public class userShow {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 9));
                 return null;
             }
+            if (a.equals("done-vrf")) {
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 10));
+                return null;
+            }
             if (a.equals("done-interface")) {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 5));
                 return null;

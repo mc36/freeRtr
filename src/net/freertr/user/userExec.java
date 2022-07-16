@@ -1219,6 +1219,8 @@ public class userExec {
         hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        done-interface      exported interfaces");
         hl.add(null, "5 .            [num]             forwarder number");
+        hl.add(null, "4 5,.        done-vrf            exported vrfs");
+        hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        done-neighbor       exported neighbors");
         hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        done-mpls           exported labels");

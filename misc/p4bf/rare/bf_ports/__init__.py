@@ -372,6 +372,8 @@ class BfPorts(Thread):
         self.file.write("anegname 2 on \n")
         self.file.write("flwctrname 0 auto \n")
         self.file.write("dynrange 512 16383 \n")
+        self.file.write("vrfrange 1 1023\r\n")
+        self.file.write("nomore\r\n")
         self.file.flush()
 
     def run(self):

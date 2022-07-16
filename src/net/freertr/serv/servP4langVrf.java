@@ -25,7 +25,7 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     /**
      * vrf id
      */
-    protected final int id;
+    protected int id;
 
     /**
      * vrf handler

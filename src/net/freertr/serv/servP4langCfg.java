@@ -147,12 +147,22 @@ public class servP4langCfg implements ifcUp {
     /**
      * first dynamic range
      */
-    protected int dynRngBeg = 0x10000;
+    protected int ifcRngBeg = 0x10000;
 
     /**
      * last dynamic range
      */
-    protected int dynRngEnd = 0x20000;
+    protected int ifcRngEnd = 0x20000;
+
+    /**
+     * first dynamic range
+     */
+    protected int vrfRngBeg = 0x10000;
+
+    /**
+     * last dynamic range
+     */
+    protected int vrfRngEnd = 0x20000;
 
     /**
      * last front panel
@@ -314,7 +324,7 @@ public class servP4langCfg implements ifcUp {
         cmds.cfgLine(l, apiStatTx == null, beg, mid + "api-stat", "");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
-            l.add(beg + mid + "export-vrf " + ntry.vrf.name + " " + ntry.id);
+            l.add(beg + mid + "export-vrf " + ntry.vrf.name);
         }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr ntry = expBr.get(i);
@@ -395,7 +405,15 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("no such vrf");
                 return false;
             }
-            servP4langVrf ntry = new servP4langVrf(bits.str2num(cmd.word()));
+            if (findVrf(vrf.fwd4) != null) {
+                cmd.error("already exported");
+                return false;
+            }
+            int id = getNextDynVrf();
+            if (id < 0) {
+                return false;
+            }
+            servP4langVrf ntry = new servP4langVrf(id);
             ntry.doClear();
             ntry.vrf = vrf;
             expVrf.put(ntry);
@@ -556,7 +574,7 @@ public class servP4langCfg implements ifcUp {
                     cmd.error("no such frontpanel port");
                     return false;
                 }
-                i = getNextDynamic();
+                i = getNextDynIfc();
                 if (i < 0) {
                     return false;
                 }
@@ -620,7 +638,7 @@ public class servP4langCfg implements ifcUp {
                 sendLine("ports_add " + ntry.id + " " + ntry.getStateEnding());
             }
             if (ntry.dynamic) {
-                int id = getNextDynamic();
+                int id = getNextDynIfc();
                 if (id < 0) {
                     return false;
                 }
@@ -643,13 +661,17 @@ public class servP4langCfg implements ifcUp {
      */
     protected boolean doUnConfig(String s, cmds cmd) {
         if (s.equals("export-vrf")) {
-            cmd.word();
-            servP4langVrf ntry = new servP4langVrf(bits.str2num(cmd.word()));
-            ntry = expVrf.del(ntry);
-            if (ntry == null) {
-                cmd.error("no such export");
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
                 return false;
             }
+            servP4langVrf ntry = findVrf(vrf.fwd4);
+            if (ntry == null) {
+                cmd.error("not exported");
+                return false;
+            }
+            expVrf.del(ntry);
             ntry.vrf.fwd4.tableChanged = null;
             ntry.vrf.fwd6.tableChanged = null;
             return false;
@@ -771,7 +793,7 @@ public class servP4langCfg implements ifcUp {
             if (!create) {
                 return -1;
             }
-            return getNextDynamic();
+            return getNextDynIfc();
         }
         return servP4langMgcN.toNum(frontnam, num, -1);
     }
@@ -789,7 +811,7 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 0) + " " + (p + 1) + "  name                      name of forwarder");
         l.add(null, (p + 1) + " " + (p + 1) + ",.  <str>                   description of forwarders");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-vrf                specify vrf to export");
-        l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
         l.add(null, (p + 2) + " .      <num>                 p4lang vrf number");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-bridge             specify bridge to export");
         l.add(null, (p + 1) + " .    <num>                   bridge number");
@@ -837,7 +859,8 @@ public class servP4langCfg implements ifcUp {
         res.add("capability|" + capability);
         res.add("platform|" + platform);
         res.add("cpuport|" + cpuPort);
-        res.add("dynamicid|" + dynRngBeg + " " + dynRngEnd);
+        res.add("dynamic ifc|" + ifcRngBeg + " " + ifcRngEnd);
+        res.add("dynamic vrf|" + vrfRngBeg + " " + vrfRngEnd);
         res.add("messages sent|" + msgsSent);
         res.add("messages got|" + msgsGot);
         res.add("rounds done|" + rndDoneNum);
@@ -869,6 +892,20 @@ public class servP4langCfg implements ifcUp {
         servP4langMgcN.toShow("fec", fwderrcr, res);
         servP4langMgcN.toShow("an", autonegs, res);
         servP4langMgcN.toShow("flwctl", flwctrls, res);
+        return res;
+    }
+
+    /**
+     * get vrfs show
+     *
+     * @return show
+     */
+    protected userFormat getShowVrfs() {
+        userFormat res = new userFormat("|", "sent|name");
+        for (int i = 0; i < expVrf.size(); i++) {
+            servP4langVrf ntry = expVrf.get(i);
+            res.add(ntry.id + "|ifc " + ntry.vrf.name);
+        }
         return res;
     }
 
@@ -1093,15 +1130,32 @@ public class servP4langCfg implements ifcUp {
      *
      * @return id, -1 if error
      */
-    protected synchronized int getNextDynamic() {
+    protected synchronized int getNextDynIfc() {
         for (int cnt = 0; cnt < 16; cnt++) {
-            int dynRngNxt = bits.random(dynRngBeg, dynRngEnd);
-            servP4langIfc ifc = new servP4langIfc(this, dynRngNxt);
+            int nxt = bits.random(ifcRngBeg, ifcRngEnd);
+            servP4langIfc ifc = new servP4langIfc(this, nxt);
             if (expIfc.find(ifc) == null) {
-                return dynRngNxt;
+                return nxt;
             }
         }
         logger.error("error allocating dynamic interface");
+        return -1;
+    }
+
+    /**
+     * get available subif id
+     *
+     * @return id, -1 if error
+     */
+    protected synchronized int getNextDynVrf() {
+        for (int cnt = 0; cnt < 16; cnt++) {
+            int nxt = bits.random(vrfRngBeg, vrfRngEnd);
+            servP4langVrf vrf = new servP4langVrf(nxt);
+            if (expVrf.find(vrf) == null) {
+                return nxt;
+            }
+        }
+        logger.error("error allocating dynamic vrf");
         return -1;
     }
 

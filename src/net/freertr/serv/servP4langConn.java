@@ -167,8 +167,10 @@ public class servP4langConn implements Runnable {
         }
         lower.capability = null;
         lower.platform = null;
-        lower.dynRngBeg = -1;
-        lower.dynRngEnd = -2;
+        lower.ifcRngBeg = -1;
+        lower.ifcRngEnd = -2;
+        lower.vrfRngBeg = -1;
+        lower.vrfRngEnd = -2;
         lower.cpuPort = -3;
         lower.statsPrt = -4;
         lower.statsTxt = null;
@@ -179,6 +181,7 @@ public class servP4langConn implements Runnable {
         lower.flwctrls.clear();
         for (;;) {
             if (pipe.isClosed() != 0) {
+                logger.info("error negotiating with the dataplane");
                 return true;
             }
             String s = pipe.lineGet(0x11).trim();
@@ -193,6 +196,9 @@ public class servP4langConn implements Runnable {
             lower.msgsGot++;
             if (lower.apiStatRx != null) {
                 servP4langUtil.updateApiStats(lower.apiStatRx, s);
+            }
+            if (s.equals("nomore")) {
+                break;
             }
             if (s.equals("portname")) {
                 int i = bits.str2num(cmd.word());
@@ -231,9 +237,14 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (s.equals("dynrange")) {
-                lower.dynRngBeg = bits.str2num(cmd.word());
-                lower.dynRngEnd = bits.str2num(cmd.word());
-                break;
+                lower.ifcRngBeg = bits.str2num(cmd.word());
+                lower.ifcRngEnd = bits.str2num(cmd.word());
+                continue;
+            }
+            if (s.equals("vrfrange")) {
+                lower.vrfRngBeg = bits.str2num(cmd.word());
+                lower.vrfRngEnd = bits.str2num(cmd.word());
+                continue;
             }
             if (s.equals("capabilities")) {
                 lower.capability = cmd.getRemaining();
@@ -247,10 +258,15 @@ public class servP4langConn implements Runnable {
                 logger.debug("got unneeded report: " + cmd.getOriginal());
             }
         }
-        if (lower.dynRngBeg >= lower.dynRngEnd) {
+        if (lower.ifcRngBeg >= lower.ifcRngEnd) {
+            logger.info("error negotiating interface range");
             return true;
         }
-        int dynRngNxt = lower.dynRngBeg;
+        if (lower.vrfRngBeg >= lower.vrfRngEnd) {
+            logger.info("error negotiating vrf range");
+            return true;
+        }
+        int nxt = lower.ifcRngBeg;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
             if (ntry.reinit != null) {
@@ -279,8 +295,14 @@ public class servP4langConn implements Runnable {
             if (!ntry.dynamic) {
                 continue;
             }
-            ntry.id = dynRngNxt;
-            dynRngNxt++;
+            ntry.id = nxt;
+            nxt++;
+        }
+        nxt = lower.vrfRngBeg;
+        for (int i = 0; i < lower.expVrf.size(); i++) {
+            servP4langVrf ntry = lower.expVrf.get(i);
+            ntry.id = nxt;
+            nxt++;
         }
         logger.warn("neighbor " + lower.remote + " up");
         return false;
@@ -1448,7 +1470,7 @@ public class servP4langConn implements Runnable {
     }
 
     private void addDynBr(servP4langBr br, ifcBridgeIfc ntry, ifcDn ifc) {
-        int id = lower.getNextDynamic();
+        int id = lower.getNextDynIfc();
         if (id < 0) {
             return;
         }
@@ -1833,7 +1855,7 @@ public class servP4langConn implements Runnable {
         if (old == null) {
             return null;
         }
-        int id = lower.getNextDynamic();
+        int id = lower.getNextDynIfc();
         if (id < 0) {
             return null;
         }
@@ -1873,7 +1895,7 @@ public class servP4langConn implements Runnable {
             if (prnt == null) {
                 continue;
             }
-            int id = lower.getNextDynamic();
+            int id = lower.getNextDynIfc();
             if (id < 0) {
                 continue;
             }

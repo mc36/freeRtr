@@ -69,6 +69,8 @@ void doStatLoop() {
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");
+    fprintf(commands, "vrfrange 1 255\r\n");
+    fprintf(commands, "nomore\r\n");
     fflush(commands);
     int rnd = 0;
     for (;;) {
