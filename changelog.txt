@@ -13419,3 +13419,6 @@ qc pass: p4lang: multilink l2tp routing over vlan
 qc pass: p4lang: multilink l2tp mpls over ipv4
 qc pass: p4lang: multilink l2tp mpls over ipv6
 qc pass: p4lang: multilink l2tp mpls over vlan
+---------------------------------- 2022-07-20 18:03:43 22.7.20
+qc pass: p4lang: multilink l2tp routing over bundle
+qc pass: p4lang: multilink l2tp mpls over bundle
