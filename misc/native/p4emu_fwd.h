@@ -211,7 +211,25 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define ppptyp2ethtyp                                           \
+#define ppptyp2ethtyp(ress)                                     \
+    if (ethtyp == PPPTYPE_MULTILINK) {                          \
+        if (ress->reasmB == NULL) doDropper;                    \
+        ethtyp = bufD[bufP + 2];                                \
+        if ((ethtyp & 0x80) != 0) ress->reasmS = 0;             \
+        bufP += 6;                                              \
+        tmp = bufS - bufP + preBuff;                            \
+        if (tmp < 1) doDropper;                                 \
+        if ((ress->reasmS + tmp) > 8192) doDropper;             \
+        memcpy(&ress->reasmB[ress->reasmS], &bufD[bufP], tmp);  \
+        ress->reasmS += tmp;                                    \
+        if ((ethtyp & 0x40) == 0) return;                       \
+        bufP = preBuff;                                         \
+        bufS = ress->reasmS;                                    \
+        memcpy(&bufD[bufP], &ress->reasmB[0], bufS);            \
+        ress->reasmS = 0;                                       \
+        ethtyp = get16msb(bufD, bufP);                          \
+    }                                                           \
+    if ((ethtyp & 0x8000) != 0) doCpuing;                       \
     switch (ethtyp) {                                           \
     case PPPTYPE_MPLS_UCAST:                                    \
         ethtyp = ETHERTYPE_MPLS_UCAST;                          \
@@ -627,8 +645,40 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
 
 
 
-int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
+#define doMlpppBeg                                              \
+    if (bufC == NULL) return -1;                                \
+    put16msb(bufD, *bufP, *ethtyp);                             \
+    rem = *bufS - *bufP + preBuff;                              \
+    pos = 0;                                                    \
+    memcpy(&bufC[pos], &bufD[*bufP], rem);                      \
+    for (;;) {                                                  \
+        *bufS = rem;                                            \
+        if (*bufS > neigh_res->frag) *bufS = neigh_res->frag;   \
+        memcpy(&bufD[preBuff], &bufC[pos], *bufS);              \
+        *bufP = preBuff;                                        \
+        *bufP -= 4;                                             \
+        neigh_res->seq++;                                       \
+        put32msb(bufD, *bufP, neigh_res->seq);                  \
+        rem -= *bufS;                                           \
+        bufD[*bufP] = 0;                                        \
+        if (pos < 1) bufD[*bufP] |= 0x80;                       \
+        if (rem < 1) bufD[*bufP] |= 0x40;                       \
+        pos += *bufS;                                           \
+        *bufP -= 2;                                             \
+        *ethtyp = PPPTYPE_MULTILINK;
+
+
+#define doMlpppEnd                                              \
+    send2subif(neigh_res->port, encrCtx, hashCtx, hash, &*bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt);   \
+    if (rem < 1) break;                                         \
+    }
+
+
+
+int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufC, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     int tmp;
+    int pos;
+    int rem;
     neigh_res->pack++;
     neigh_res->byte += *bufS;
     memcpy(&bufH[0], &neigh_res->macs, 12);
@@ -640,8 +690,14 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         break;
     case 2: // pppoe
         ethtyp2ppptyp(*bufP, *ethtyp);
+        if ((*bufS - *bufP + preBuff) < neigh_res->frag) {
+            putPppoeHeader;
+            break;
+        }
+        doMlpppBeg;
         putPppoeHeader;
-        break;
+        doMlpppEnd;
+        return -1;
     case 3: // gre4
         putGreHeader(*bufP);
         putIpv4header(*bufP, *bufS, *ethtyp, 47, neigh_res->sip1, neigh_res->dip1);
@@ -652,16 +708,32 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
         break;
     case 5: // l2tp4
         ethtyp2ppptyp(*bufP, *ethtyp);
+        if ((*bufS - *bufP + preBuff) < neigh_res->frag) {
+            putL2tpHeader(*bufP, *ethtyp);
+            putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt);
+            putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
+            break;
+        }
+        doMlpppBeg;
         putL2tpHeader(*bufP, *ethtyp);
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv4header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->dip1);
-        break;
+        doMlpppEnd;
+        return -1;
     case 6: // l2tp6
         ethtyp2ppptyp(*bufP, *ethtyp);
+        if ((*bufS - *bufP + preBuff) < neigh_res->frag) {
+            putL2tpHeader(*bufP, *ethtyp);
+            putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt);
+            putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+            break;
+        }
+        doMlpppBeg;
         putL2tpHeader(*bufP, *ethtyp);
         putUdpHeader(*bufP, *bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(*bufP, *bufS, *ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        doMlpppEnd;
+        return -1;
     case 7: // ipip4
         putIpipHeader(*bufP, *ethtyp, tmp);
         putIpv4header(*bufP, *bufS, *ethtyp, tmp, neigh_res->sip1, neigh_res->dip1);
@@ -789,7 +861,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -806,7 +878,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         case 4: // bier set
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -843,7 +915,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
             break;
         default:
             continue;
@@ -882,8 +954,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         bufP += 8;                                                  \
         bufP += 2;                                                  \
         ethtyp = get16msb(bufD, bufP);                              \
-        if ((ethtyp & 0x8000) != 0) doCpuing;                       \
-        ppptyp2ethtyp;                                              \
+        ppptyp2ethtyp(tun_res);                                     \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
     case 3:                                                         \
@@ -1433,7 +1504,7 @@ nethtyp_tx:
             if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
             if (prt >= 0) goto ethtyp_rx;
             return;
         case 4: // xconn
@@ -2071,8 +2142,7 @@ ipv6_tx:
         pppoe_res->byte += bufS;
         bufP += 6;
         ethtyp = get16msb(bufD, bufP);
-        if ((ethtyp & 0x8000) != 0) doCpuing;
-        ppptyp2ethtyp;
+        ppptyp2ethtyp(pppoe_res);
         put16msb(bufD, bufP, ethtyp);
         prt = pppoe_res->aclport;
         goto ethtyp_rx;
@@ -2153,7 +2223,7 @@ ipv6_tx:
             int tmpE = ethtyp;
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);

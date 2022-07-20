@@ -159,7 +159,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn tcpmss pmtud";
+    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn tcpmss pmtud mlppp";
 }
 
 
@@ -1418,6 +1418,9 @@ int doOneCommand(unsigned char* buf) {
         neigh_ntry.command = 2;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[8]);
+        neigh_ntry.frag = atoi(arg[9]);
+        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
+        else if (del != 0) pppoe_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
         else table_add(&pppoe_table, &pppoe_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -1556,6 +1559,9 @@ int doOneCommand(unsigned char* buf) {
         tun4_ntry.trgPort = neigh_ntry.sprt;
         tun4_ntry.prot = 17;
         tun4_ntry.command = 2;
+        neigh_ntry.frag = atoi(arg[13]);
+        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
+        else if (del != 0) tun4_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
@@ -1588,6 +1594,9 @@ int doOneCommand(unsigned char* buf) {
         tun6_ntry.trgPort = neigh_ntry.sprt;
         tun6_ntry.prot = 17;
         tun6_ntry.command = 2;
+        neigh_ntry.frag = atoi(arg[13]);
+        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
+        else if (del != 0) tun6_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);

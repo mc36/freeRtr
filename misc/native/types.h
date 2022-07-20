@@ -21,3 +21,4 @@
 #define PPPTYPE_ROUTEDMAC           0x0031
 #define PPPTYPE_MACSEC              0x0053
 #define PPPTYPE_SGT                 0x004a
+#define PPPTYPE_MULTILINK           0x003d

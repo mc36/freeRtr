@@ -13410,3 +13410,12 @@ qc pass: vpls/ldp with egress rtfilter
 ---------------------------------- 2022-07-11 13:32:48 22.7.11
 qc pass: evpn/pbb with ingress rtfilter
 qc pass: evpn/pbb with egress rtfilter
+---------------------------------- 2022-07-20 15:33:55 22.7.20
+qc pass: p4lang: multilink pppoe routing
+qc pass: p4lang: multilink pppoe mpls
+qc pass: p4lang: multilink l2tp routing over ipv4
+qc pass: p4lang: multilink l2tp routing over ipv6
+qc pass: p4lang: multilink l2tp routing over vlan
+qc pass: p4lang: multilink l2tp mpls over ipv4
+qc pass: p4lang: multilink l2tp mpls over ipv6
+qc pass: p4lang: multilink l2tp mpls over vlan
