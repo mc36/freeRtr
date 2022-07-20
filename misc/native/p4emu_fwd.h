@@ -669,13 +669,14 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
 
 
 #define doMlpppEnd                                              \
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, &*bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt);   \
+    tmp = send2subif(neigh_res->port, encrCtx, hashCtx, hash, &*bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt); \
+    if ((tmp >= 0) && (bufB != NULL)) processDataPacket(NULL, bufA, bufB, bufD, *bufS, port, tmp, encrCtx, hashCtx);    \
     if (rem < 1) break;                                         \
     }
 
 
 
-int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufC, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
+int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt, int port) {
     int tmp;
     int pos;
     int rem;
@@ -861,7 +862,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt, port);
             break;
         case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -878,7 +879,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt, port);
             break;
         case 4: // bier set
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -915,7 +916,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            tmp = send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt, port);
             break;
         default:
             continue;
@@ -1504,7 +1505,7 @@ nethtyp_tx:
             if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt);
+            prt = send2neigh(neigh_res, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt, port);
             if (prt >= 0) goto ethtyp_rx;
             return;
         case 4: // xconn
@@ -2223,7 +2224,7 @@ ipv6_tx:
             int tmpE = ethtyp;
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, &tmpP, &tmpS, bufH, &tmpE, sgt, port);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);
