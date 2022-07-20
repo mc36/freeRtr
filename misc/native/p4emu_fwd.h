@@ -646,7 +646,7 @@ int send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, 
 
 
 #define doMlpppBeg                                              \
-    if (bufC == NULL) return -1;                                \
+    if (bufC == NULL) doDropper;                                \
     put16msb(bufD, *bufP, *ethtyp);                             \
     rem = *bufS - *bufP + preBuff;                              \
     pos = 0;                                                    \
