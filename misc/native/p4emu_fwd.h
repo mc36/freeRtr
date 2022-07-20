@@ -631,9 +631,8 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
     int tmp;
     neigh_res->pack++;
     neigh_res->byte += *bufS;
-    int prt = neigh_res->port;
     memcpy(&bufH[0], &neigh_res->macs, 12);
-    if (neigh_res->aclport != prt) {
+    if (neigh_res->aclport != neigh_res->port) {
         if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt) != 0) doDropper;
     }
     switch (neigh_res->command) {
@@ -724,7 +723,7 @@ int send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CT
     default:
         doDropper;
     }
-    return send2subif(prt, encrCtx, hashCtx, hash, &*bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt);
+    return send2subif(neigh_res->port, encrCtx, hashCtx, hash, &*bufD, &*bufP, &*bufS, bufH, &*ethtyp, sgt);
 drop:
     return -1;
 }
