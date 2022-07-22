@@ -115,6 +115,8 @@ public class servDhcp4 extends servGeneric implements prtServS {
 
     private List<servDhcp4bind> bindings = new ArrayList<servDhcp4bind>();
 
+    private tabGen<servDhcp4bind> forbidden = new tabGen<servDhcp4bind>();
+
     private String bindFile;
 
     private Timer purgeTimer;
@@ -181,6 +183,10 @@ public class servDhcp4 extends servGeneric implements prtServS {
         l.add(beg + "lease " + lease);
         l.add(beg + "renew " + renew);
         l.add(beg + "remember " + remember);
+        for (int i = 0; i < forbidden.size(); i++) {
+            servDhcp4bind ntry = forbidden.get(i);
+            l.add(beg + "forbidden " + ntry.mac);
+        }
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
                 servDhcp4bind ntry = bindings.get(i);
@@ -309,6 +315,16 @@ public class servDhcp4 extends servGeneric implements prtServS {
             remember = bits.str2num(cmd.word());
             return false;
         }
+        if (a.equals("forbidden")) {
+            addrMac mac = new addrMac();
+            if (mac.fromString(cmd.word())) {
+                return true;
+            }
+            servDhcp4bind ntry = new servDhcp4bind();
+            ntry.mac = mac;
+            forbidden.add(ntry);
+            return false;
+        }
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             addrIPv4 ip = new addrIPv4();
@@ -385,6 +401,16 @@ public class servDhcp4 extends servGeneric implements prtServS {
             remember = 0;
             return false;
         }
+        if (a.equals("forbidden")) {
+            addrMac mac = new addrMac();
+            if (mac.fromString(cmd.word())) {
+                return true;
+            }
+            servDhcp4bind ntry = new servDhcp4bind();
+            ntry.mac = mac;
+            forbidden.del(ntry);
+            return false;
+        }
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             if (mac.fromString(cmd.word())) {
@@ -430,6 +456,8 @@ public class servDhcp4 extends servGeneric implements prtServS {
         l.add(null, "1 2  static                 address pool to use");
         l.add(null, "2 3    <addr>               mac address of client");
         l.add(null, "3 .      <addr>             ip address of client");
+        l.add(null, "1 2  forbidden              address pool to use");
+        l.add(null, "2 .    <addr>               mac address of client");
         l.add(null, "1 2  option                 specify custom option");
         l.add(null, "2 3,.  <num>                type of option");
         l.add(null, "3 3,.    <num>              data byte");
@@ -475,11 +503,16 @@ public class servDhcp4 extends servGeneric implements prtServS {
     }
 
     private servDhcp4bind findBinding(addrMac mac, int create, addrIPv4 hint) {
+        servDhcp4bind ntry = new servDhcp4bind();
+        ntry.mac = mac.copyBytes();
+        if (forbidden.find(ntry) != null) {
+            return null;
+        }
         synchronized (bindings) {
-            servDhcp4bind ntry = new servDhcp4bind();
-            Collections.sort(bindings, new servDhcp4bindMac());
+            ntry = new servDhcp4bind();
+            Collections.sort(bindings, new servDhcp4bind());
             ntry.mac = mac.copyBytes();
-            int i = Collections.binarySearch(bindings, ntry, new servDhcp4bindMac());
+            int i = Collections.binarySearch(bindings, ntry, new servDhcp4bind());
             if (i >= 0) {
                 ntry = bindings.get(i);
                 if ((create == 3) && (!ntry.confed)) {
@@ -705,15 +738,7 @@ class servDhcp4bindIp implements Comparator<servDhcp4bind> {
 
 }
 
-class servDhcp4bindMac implements Comparator<servDhcp4bind> {
-
-    public int compare(servDhcp4bind o1, servDhcp4bind o2) {
-        return o1.mac.compare(o1.mac, o2.mac);
-    }
-
-}
-
-class servDhcp4bind {
+class servDhcp4bind implements Comparator<servDhcp4bind> {
 
     public boolean confed = false;
 
@@ -741,6 +766,10 @@ class servDhcp4bind {
             return true;
         }
         return false;
+    }
+
+    public int compare(servDhcp4bind o1, servDhcp4bind o2) {
+        return o1.mac.compare(o1.mac, o2.mac);
     }
 
 }

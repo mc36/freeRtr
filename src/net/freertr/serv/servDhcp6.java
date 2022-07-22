@@ -95,6 +95,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
 
     private List<servDhcp6bind> bindings = new ArrayList<servDhcp6bind>();
 
+    private tabGen<servDhcp6bind> forbidden = new tabGen<servDhcp6bind>();
+
     private String bindFile;
 
     private Timer purgeTimer;
@@ -156,6 +158,10 @@ public class servDhcp6 extends servGeneric implements prtServS {
         l.add(beg + "renew " + renew);
         l.add(beg + "remember " + remember);
         l.add(beg + "preference " + prefer);
+        for (int i = 0; i < forbidden.size(); i++) {
+            servDhcp6bind ntry = forbidden.get(i);
+            l.add(beg + "forbidden " + ntry.mac);
+        }
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
                 servDhcp6bind ntry = bindings.get(i);
@@ -256,6 +262,16 @@ public class servDhcp6 extends servGeneric implements prtServS {
             prefer = bits.str2num(cmd.word());
             return false;
         }
+        if (a.equals("forbidden")) {
+            addrMac mac = new addrMac();
+            if (mac.fromString(cmd.word())) {
+                return true;
+            }
+            servDhcp6bind ntry = new servDhcp6bind();
+            ntry.mac = mac;
+            forbidden.add(ntry);
+            return false;
+        }
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             addrIPv6 ip = new addrIPv6();
@@ -321,6 +337,16 @@ public class servDhcp6 extends servGeneric implements prtServS {
             remember = 0;
             return false;
         }
+        if (a.equals("forbidden")) {
+            addrMac mac = new addrMac();
+            if (mac.fromString(cmd.word())) {
+                return true;
+            }
+            servDhcp6bind ntry = new servDhcp6bind();
+            ntry.mac = mac;
+            forbidden.del(ntry);
+            return false;
+        }
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             if (mac.fromString(cmd.word())) {
@@ -363,6 +389,8 @@ public class servDhcp6 extends servGeneric implements prtServS {
         l.add(null, "1 2  static                 address pool to use");
         l.add(null, "2 3    <addr>               mac address of client");
         l.add(null, "3 .      <addr>             ip address of client");
+        l.add(null, "1 2  forbidden              address pool to use");
+        l.add(null, "2 .    <addr>               mac address of client");
         l.add(null, "1 2  option                 specify custom option");
         l.add(null, "2 3,.  <num>                type of option");
         l.add(null, "3 3,.    <num>              data byte");
@@ -419,12 +447,17 @@ public class servDhcp6 extends servGeneric implements prtServS {
                 hint = null;
             }
         }
+        servDhcp6bind ntry = new servDhcp6bind();
+        ntry.mac = mac.copyBytes();
+        if (forbidden.find(ntry) != null) {
+            return null;
+        }
         synchronized (bindings) {
-            servDhcp6bind ntry = new servDhcp6bind();
-            Collections.sort(bindings, new servDhcp6bindMac());
+            ntry = new servDhcp6bind();
+            Collections.sort(bindings, new servDhcp6bind());
             ntry.mac = mac.copyBytes();
             ntry.ip = hint;
-            int i = Collections.binarySearch(bindings, ntry, new servDhcp6bindMac());
+            int i = Collections.binarySearch(bindings, ntry, new servDhcp6bind());
             if (i < 0) {
                 if (create != 1) {
                     return null;
@@ -616,15 +649,7 @@ class servDhcp6bindIp implements Comparator<servDhcp6bind> {
 
 }
 
-class servDhcp6bindMac implements Comparator<servDhcp6bind> {
-
-    public int compare(servDhcp6bind o1, servDhcp6bind o2) {
-        return o1.mac.compare(o1.mac, o2.mac);
-    }
-
-}
-
-class servDhcp6bind {
+class servDhcp6bind implements Comparator<servDhcp6bind> {
 
     public boolean confed = false;
 
@@ -652,6 +677,10 @@ class servDhcp6bind {
             return true;
         }
         return false;
+    }
+
+    public int compare(servDhcp6bind o1, servDhcp6bind o2) {
+        return o1.mac.compare(o1.mac, o2.mac);
     }
 
 }
