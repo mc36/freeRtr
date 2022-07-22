@@ -1,18 +1,18 @@
 struct table_head {
     int reclen;
+    int cmplen;
     unsigned char *buffer;
     int size;
     int alloc;
-    int (*comparer) (void *, void *);
 };
 
 
 #define table_get(tab, idx)   (void*) ((tab)->buffer + ((idx) * (tab)->reclen))
 
 
-void table_init(struct table_head *tab, int reclen, int comparer(void *, void *)) {
+void table_init(struct table_head *tab, int reclen, int cmplen) {
     tab->reclen = reclen;
-    tab->comparer = comparer;
+    tab->cmplen = cmplen;
     tab->size = 0;
     tab->alloc = 1;
     tab->buffer = malloc(reclen);
@@ -38,7 +38,7 @@ void table_resize(struct table_head *tab, int ned) {
 
 void table_deinit(struct table_head *tab) {
     tab->reclen = 0;
-    tab->comparer = NULL;
+    tab->cmplen = 0;
     tab->size = 0;
     free(tab->buffer);
     tab->buffer = NULL;
@@ -48,11 +48,15 @@ void table_deinit(struct table_head *tab) {
 int table_find(struct table_head *tab, void *ntry) {
     int lower = 0;
     int upper = tab->size - 1;
-    int mid;
-    int cmp;
+    int*entry = (int*)ntry;
     while (lower <= upper) {
-        mid = (lower + upper) >> 1;
-        cmp = tab->comparer(table_get(tab, mid), ntry);
+        int mid = (lower + upper) >> 1;
+        int*curr = (int*)table_get(tab, mid);
+        int cmp = 0;
+        for (int i=0; i < tab->cmplen; i++) {
+            cmp = curr[i] - entry[i];
+            if (cmp != 0) break;
+        }
         if (cmp < 0) {
             lower = mid + 1;
             continue;
@@ -90,7 +94,7 @@ void table_del(struct table_head *tab, void *ntry) {
 }
 
 
-void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab2, int reclen, int comparer(void *, void *)) {
+void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab2, int reclen, int cmplen) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
@@ -99,6 +103,6 @@ void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab
     void *res = table_get(tab, index);
     struct table_head *tab3 = res + ((char*)tab2 - (char*)ntry);
     if (tab3->reclen == reclen) return res;
-    table_init(tab3, reclen, comparer);
+    table_init(tab3, reclen, cmplen);
     return res;
 }

@@ -38,13 +38,6 @@ struct polkaIdx_entry {
     long byte;
 };
 
-int polkaIdx_compare(void *ptr1, void *ptr2) {
-    struct polkaIdx_entry *ntry1 = ptr1;
-    struct polkaIdx_entry *ntry2 = ptr2;
-    if (ntry1->index < ntry2->index) return -1;
-    if (ntry1->index > ntry2->index) return +1;
-    return 0;
-}
 
 
 struct polkaPoly_entry {
@@ -58,13 +51,6 @@ struct table_head polkaPoly_table;
 
 struct table_head mpolkaPoly_table;
 
-int polkaPoly_compare(void *ptr1, void *ptr2) {
-    struct polkaPoly_entry *ntry1 = ptr1;
-    struct polkaPoly_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    return 0;
-}
 
 
 void crc16mktab(int *tab, int poly) {
@@ -101,15 +87,6 @@ struct nsh_entry {
 
 struct table_head nsh_table;
 
-int nsh_compare(void *ptr1, void *ptr2) {
-    struct nsh_entry *ntry1 = ptr1;
-    struct nsh_entry *ntry2 = ptr2;
-    if (ntry1->sp < ntry2->sp) return -1;
-    if (ntry1->sp > ntry2->sp) return +1;
-    if (ntry1->si < ntry2->si) return -1;
-    if (ntry1->si > ntry2->si) return +1;
-    return 0;
-}
 
 
 struct mpls_entry {
@@ -129,16 +106,9 @@ struct mpls_entry {
 
 struct table_head mpls_table;
 
-int mpls_compare(void *ptr1, void *ptr2) {
-    struct mpls_entry *ntry1 = ptr1;
-    struct mpls_entry *ntry2 = ptr2;
-    if (ntry1->label < ntry2->label) return -1;
-    if (ntry1->label > ntry2->label) return +1;
-    return 0;
-}
 
 
-#define mpls_init table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+#define mpls_init table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), 3);
 
 struct port2vrf_entry {
     int port;
@@ -186,13 +156,6 @@ struct port2vrf_entry {
 
 struct table_head port2vrf_table;
 
-int port2vrf_compare(void *ptr1, void *ptr2) {
-    struct port2vrf_entry *ntry1 = ptr1;
-    struct port2vrf_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    return 0;
-}
 
 struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
     int index = table_find(&port2vrf_table, ntry);
@@ -222,16 +185,8 @@ struct table_head vrf2rib4_table;
 
 struct table_head vrf2rib6_table;
 
-int vrf2rib_compare(void *ptr1, void *ptr2) {
-    struct vrf2rib_entry *ntry1 = ptr1;
-    struct vrf2rib_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
-    return 0;
-}
 
-
-struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter(void *, void *), int tunner(void *, void *), int mcaster(void *, void *)) {
+struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter, int tunner, int mcaster) {
     int index = table_find(tab, ntry);
     if (index < 0) {
         table_add(tab, ntry);
@@ -248,12 +203,12 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
     tab3 = &res->plk;
     reclen4 = sizeof(struct polkaIdx_entry);
-    if (tab3->reclen != reclen4) table_init(tab3, reclen4, &polkaIdx_compare);
+    if (tab3->reclen != reclen4) table_init(tab3, reclen4, 1);
     return res;
 }
 
-#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), &nat4_compare, &tun4_compare, &mroute4_compare)
-#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), &nat6_compare, &tun6_compare, &mroute6_compare)
+#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), 5, 5, 2)
+#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), 11, 11, 8)
 
 
 struct route4_entry {
@@ -331,19 +286,11 @@ struct neigh_entry {
 
 struct table_head neigh_table;
 
-int neigh_compare(void *ptr1, void *ptr2) {
-    struct neigh_entry *ntry1 = ptr1;
-    struct neigh_entry *ntry2 = ptr2;
-    if (ntry1->id < ntry2->id) return -1;
-    if (ntry1->id > ntry2->id) return +1;
-    return 0;
-}
-
 
 struct bridge_entry {
     int id;
-    int mac1;
     int mac2;
+    int mac1;
     int command;    // 1=port, 2=vpls, 3=route, 4=vxlan4, 5=vxlan6, 6=pckoudp4, 7=pckoudp6, 8=srv4, 9=srv6
     int port;
     int nexthop;
@@ -368,20 +315,19 @@ struct bridge_entry {
 
 struct table_head bridge_table;
 
-int bridge_compare(void *ptr1, void *ptr2) {
-    struct bridge_entry *ntry1 = ptr1;
-    struct bridge_entry *ntry2 = ptr2;
-    if (ntry1->id < ntry2->id) return -1;
-    if (ntry1->id > ntry2->id) return +1;
-    if (ntry1->mac2 < ntry2->mac2) return -1;
-    if (ntry1->mac2 > ntry2->mac2) return +1;
-    if (ntry1->mac1 < ntry2->mac1) return -1;
-    if (ntry1->mac1 > ntry2->mac1) return +1;
-    return 0;
-}
+
+struct vlanin_entry {
+    int vlan;
+    int port;
+    int id;
+    long pack;
+    long byte;
+};
+
+struct table_head vlanin_table;
 
 
-struct vlan_entry {
+struct vlanout_entry {
     int id;
     int vlan;
     int port;
@@ -389,27 +335,8 @@ struct vlan_entry {
     long byte;
 };
 
-struct table_head vlanin_table;
-
 struct table_head vlanout_table;
 
-int vlanin_compare(void *ptr1, void *ptr2) {
-    struct vlan_entry *ntry1 = ptr1;
-    struct vlan_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    if (ntry1->vlan < ntry2->vlan) return -1;
-    if (ntry1->vlan > ntry2->vlan) return +1;
-    return 0;
-}
-
-int vlanout_compare(void *ptr1, void *ptr2) {
-    struct vlan_entry *ntry1 = ptr1;
-    struct vlan_entry *ntry2 = ptr2;
-    if (ntry1->id < ntry2->id) return -1;
-    if (ntry1->id > ntry2->id) return +1;
-    return 0;
-}
 
 
 struct acls_entry {
@@ -422,16 +349,6 @@ struct acls_entry {
 struct table_head acls4_table;
 
 struct table_head acls6_table;
-
-int acls_compare(void *ptr1, void *ptr2) {
-    struct acls_entry *ntry1 = ptr1;
-    struct acls_entry *ntry2 = ptr2;
-    if (ntry1->dir < ntry2->dir) return -1;
-    if (ntry1->dir > ntry2->dir) return +1;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    return 0;
-}
 
 
 struct acl4_entry {
@@ -461,13 +378,6 @@ struct acl4_entry {
     int sgtM;
 };
 
-int acl4_compare(void *ptr1, void *ptr2) {
-    struct acl4_entry *ntry1 = ptr1;
-    struct acl4_entry *ntry2 = ptr2;
-    if (ntry1->pri < ntry2->pri) return -1;
-    if (ntry1->pri > ntry2->pri) return +1;
-    return 0;
-}
 
 int acl4_matcher(void *ptr1, void *ptr2) {
     struct acl4_entry *ntry1 = ptr1;
@@ -523,13 +433,6 @@ struct acl6_entry {
     int sgtM;
 };
 
-int acl6_compare(void *ptr1, void *ptr2) {
-    struct acl6_entry *ntry1 = ptr1;
-    struct acl6_entry *ntry2 = ptr2;
-    if (ntry1->pri < ntry2->pri) return -1;
-    if (ntry1->pri > ntry2->pri) return +1;
-    return 0;
-}
 
 int acl6_matcher(void *ptr1, void *ptr2) {
     struct acl6_entry *ntry1 = ptr1;
@@ -580,7 +483,7 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
     return res->act;
 }
 
-struct acls_entry* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer(void *, void *), int insper(void *, void *)) {
+struct acls_entry* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer, int insper) {
     int index = table_find(tab, ntry);
     int oidx = index;
     if (index < 0) {
@@ -607,17 +510,17 @@ struct acls_entry* acls_init(struct table_head *tab, struct acls_entry *ntry, in
     return res;
 }
 
-#define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), sizeof(struct insp4_entry), &acl4_compare, &nat4_compare);
-#define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), sizeof(struct insp6_entry), &acl6_compare, &nat6_compare);
+#define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), sizeof(struct insp4_entry), 1, 5);
+#define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), sizeof(struct insp6_entry), 1, 11);
 
 
 
 struct insp4_entry {
-    int prot;
-    int srcAddr;
-    int trgAddr;
     int srcPort;
     int trgPort;
+    int srcAddr;
+    int trgAddr;
+    int prot;
     long packRx;
     long byteRx;
     long packTx;
@@ -625,11 +528,11 @@ struct insp4_entry {
 };
 
 struct nat4_entry {
-    int prot;
-    int oSrcAddr;
-    int oTrgAddr;
     int oSrcPort;
     int oTrgPort;
+    int oSrcAddr;
+    int oTrgAddr;
+    int prot;
     int nSrcAddr;
     int nTrgAddr;
     int nSrcPort;
@@ -640,36 +543,20 @@ struct nat4_entry {
     long byte;
 };
 
-int nat4_compare(void *ptr1, void *ptr2) {
-    struct nat4_entry *ntry1 = ptr1;
-    struct nat4_entry *ntry2 = ptr2;
-    if (ntry1->prot < ntry2->prot) return -1;
-    if (ntry1->prot > ntry2->prot) return +1;
-    if (ntry1->oSrcPort < ntry2->oSrcPort) return -1;
-    if (ntry1->oSrcPort > ntry2->oSrcPort) return +1;
-    if (ntry1->oTrgPort < ntry2->oTrgPort) return -1;
-    if (ntry1->oTrgPort > ntry2->oTrgPort) return +1;
-    if (ntry1->oSrcAddr < ntry2->oSrcAddr) return -1;
-    if (ntry1->oSrcAddr > ntry2->oSrcAddr) return +1;
-    if (ntry1->oTrgAddr < ntry2->oTrgAddr) return -1;
-    if (ntry1->oTrgAddr > ntry2->oTrgAddr) return +1;
-    return 0;
-}
-
 
 
 struct insp6_entry {
-    int prot;
-    int srcAddr1;
-    int srcAddr2;
-    int srcAddr3;
-    int srcAddr4;
-    int trgAddr1;
-    int trgAddr2;
-    int trgAddr3;
-    int trgAddr4;
     int srcPort;
     int trgPort;
+    int srcAddr4;
+    int trgAddr4;
+    int srcAddr3;
+    int trgAddr3;
+    int srcAddr2;
+    int srcAddr1;
+    int trgAddr2;
+    int trgAddr1;
+    int prot;
     long packRx;
     long byteRx;
     long packTx;
@@ -677,17 +564,17 @@ struct insp6_entry {
 };
 
 struct nat6_entry {
-    int prot;
-    int oSrcAddr1;
-    int oSrcAddr2;
-    int oSrcAddr3;
-    int oSrcAddr4;
-    int oTrgAddr1;
-    int oTrgAddr2;
-    int oTrgAddr3;
-    int oTrgAddr4;
     int oSrcPort;
     int oTrgPort;
+    int oSrcAddr4;
+    int oTrgAddr4;
+    int oSrcAddr3;
+    int oTrgAddr3;
+    int oSrcAddr2;
+    int oTrgAddr2;
+    int oSrcAddr1;
+    int oTrgAddr1;
+    int prot;
     int nSrcAddr1;
     int nSrcAddr2;
     int nSrcAddr3;
@@ -704,34 +591,6 @@ struct nat6_entry {
     long byte;
 };
 
-int nat6_compare(void *ptr1, void *ptr2) {
-    struct nat6_entry *ntry1 = ptr1;
-    struct nat6_entry *ntry2 = ptr2;
-    if (ntry1->prot < ntry2->prot) return -1;
-    if (ntry1->prot > ntry2->prot) return +1;
-    if (ntry1->oSrcPort < ntry2->oSrcPort) return -1;
-    if (ntry1->oSrcPort > ntry2->oSrcPort) return +1;
-    if (ntry1->oTrgPort < ntry2->oTrgPort) return -1;
-    if (ntry1->oTrgPort > ntry2->oTrgPort) return +1;
-    if (ntry1->oSrcAddr1 < ntry2->oSrcAddr1) return -1;
-    if (ntry1->oSrcAddr1 > ntry2->oSrcAddr1) return +1;
-    if (ntry1->oSrcAddr2 < ntry2->oSrcAddr2) return -1;
-    if (ntry1->oSrcAddr2 > ntry2->oSrcAddr2) return +1;
-    if (ntry1->oSrcAddr3 < ntry2->oSrcAddr3) return -1;
-    if (ntry1->oSrcAddr3 > ntry2->oSrcAddr3) return +1;
-    if (ntry1->oSrcAddr4 < ntry2->oSrcAddr4) return -1;
-    if (ntry1->oSrcAddr4 > ntry2->oSrcAddr4) return +1;
-    if (ntry1->oTrgAddr1 < ntry2->oTrgAddr1) return -1;
-    if (ntry1->oTrgAddr1 > ntry2->oTrgAddr1) return +1;
-    if (ntry1->oTrgAddr2 < ntry2->oTrgAddr2) return -1;
-    if (ntry1->oTrgAddr2 > ntry2->oTrgAddr2) return +1;
-    if (ntry1->oTrgAddr3 < ntry2->oTrgAddr3) return -1;
-    if (ntry1->oTrgAddr3 > ntry2->oTrgAddr3) return +1;
-    if (ntry1->oTrgAddr4 < ntry2->oTrgAddr4) return -1;
-    if (ntry1->oTrgAddr4 > ntry2->oTrgAddr4) return +1;
-    return 0;
-}
-
 
 struct bundle_entry {
     int id;
@@ -742,14 +601,6 @@ struct bundle_entry {
 };
 
 struct table_head bundle_table;
-
-int bundle_compare(void *ptr1, void *ptr2) {
-    struct bundle_entry *ntry1 = ptr1;
-    struct bundle_entry *ntry2 = ptr2;
-    if (ntry1->id < ntry2->id) return -1;
-    if (ntry1->id > ntry2->id) return +1;
-    return 0;
-}
 
 
 struct pppoe_entry {
@@ -764,23 +615,13 @@ struct pppoe_entry {
 
 struct table_head pppoe_table;
 
-int pppoe_compare(void *ptr1, void *ptr2) {
-    struct pppoe_entry *ntry1 = ptr1;
-    struct pppoe_entry *ntry2 = ptr2;
-    if (ntry1->port < ntry2->port) return -1;
-    if (ntry1->port > ntry2->port) return +1;
-    if (ntry1->session < ntry2->session) return -1;
-    if (ntry1->session > ntry2->session) return +1;
-    return 0;
-}
-
 
 struct tun4_entry {
-    int prot;
-    int srcAddr;
-    int trgAddr;
     int srcPort;
     int trgPort;
+    int srcAddr;
+    int trgAddr;
+    int prot;
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp
     int aclport;
     int spi;
@@ -799,36 +640,20 @@ struct tun4_entry {
     long pack;
     long byte;
 };
-
-int tun4_compare(void *ptr1, void *ptr2) {
-    struct tun4_entry *ntry1 = ptr1;
-    struct tun4_entry *ntry2 = ptr2;
-    if (ntry1->srcPort < ntry2->srcPort) return -1;
-    if (ntry1->srcPort > ntry2->srcPort) return +1;
-    if (ntry1->trgPort < ntry2->trgPort) return -1;
-    if (ntry1->trgPort > ntry2->trgPort) return +1;
-    if (ntry1->srcAddr < ntry2->srcAddr) return -1;
-    if (ntry1->srcAddr > ntry2->srcAddr) return +1;
-    if (ntry1->trgAddr < ntry2->trgAddr) return -1;
-    if (ntry1->trgAddr > ntry2->trgAddr) return +1;
-    if (ntry1->prot < ntry2->prot) return -1;
-    if (ntry1->prot > ntry2->prot) return +1;
-    return 0;
-}
 
 
 struct tun6_entry {
-    int prot;
-    int srcAddr1;
-    int srcAddr2;
-    int srcAddr3;
-    int srcAddr4;
-    int trgAddr1;
-    int trgAddr2;
-    int trgAddr3;
-    int trgAddr4;
     int srcPort;
     int trgPort;
+    int srcAddr4;
+    int trgAddr4;
+    int srcAddr3;
+    int trgAddr3;
+    int srcAddr2;
+    int trgAddr2;
+    int srcAddr1;
+    int trgAddr1;
+    int prot;
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp
     int aclport;
     int spi;
@@ -847,80 +672,28 @@ struct tun6_entry {
     long pack;
     long byte;
 };
-
-int tun6_compare(void *ptr1, void *ptr2) {
-    struct tun6_entry *ntry1 = ptr1;
-    struct tun6_entry *ntry2 = ptr2;
-    if (ntry1->srcPort < ntry2->srcPort) return -1;
-    if (ntry1->srcPort > ntry2->srcPort) return +1;
-    if (ntry1->trgPort < ntry2->trgPort) return -1;
-    if (ntry1->trgPort > ntry2->trgPort) return +1;
-    if (ntry1->srcAddr1 < ntry2->srcAddr1) return -1;
-    if (ntry1->srcAddr1 > ntry2->srcAddr1) return +1;
-    if (ntry1->srcAddr2 < ntry2->srcAddr2) return -1;
-    if (ntry1->srcAddr2 > ntry2->srcAddr2) return +1;
-    if (ntry1->srcAddr3 < ntry2->srcAddr3) return -1;
-    if (ntry1->srcAddr3 > ntry2->srcAddr3) return +1;
-    if (ntry1->srcAddr4 < ntry2->srcAddr4) return -1;
-    if (ntry1->srcAddr4 > ntry2->srcAddr4) return +1;
-    if (ntry1->trgAddr1 < ntry2->trgAddr1) return -1;
-    if (ntry1->trgAddr1 > ntry2->trgAddr1) return +1;
-    if (ntry1->trgAddr2 < ntry2->trgAddr2) return -1;
-    if (ntry1->trgAddr2 > ntry2->trgAddr2) return +1;
-    if (ntry1->trgAddr3 < ntry2->trgAddr3) return -1;
-    if (ntry1->trgAddr3 > ntry2->trgAddr3) return +1;
-    if (ntry1->trgAddr4 < ntry2->trgAddr4) return -1;
-    if (ntry1->trgAddr4 > ntry2->trgAddr4) return +1;
-    if (ntry1->prot < ntry2->prot) return -1;
-    if (ntry1->prot > ntry2->prot) return +1;
-    return 0;
-}
 
 
 struct policer_entry {
     int vrf;
-    int meter;
     int dir; // 1=in, 2=out, 3=flwspc4, 4=flwspc6
+    int meter;
     long allow;
     long avail;
 };
 
 struct table_head policer_table;
 
-int policer_compare(void *ptr1, void *ptr2) {
-    struct policer_entry *ntry1 = ptr1;
-    struct policer_entry *ntry2 = ptr2;
-    if (ntry1->vrf < ntry2->vrf) return -1;
-    if (ntry1->vrf > ntry2->vrf) return +1;
-    if (ntry1->dir < ntry2->dir) return -1;
-    if (ntry1->dir > ntry2->dir) return +1;
-    if (ntry1->meter < ntry2->meter) return -1;
-    if (ntry1->meter > ntry2->meter) return +1;
-    return 0;
-}
-
 
 struct flood_entry {
+    int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset
     int trg;
     int id;
-    int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset
     int lab;
     int src;
     unsigned char macs[12];
     int bier[8];
 };
-
-int flood_compare(void *ptr1, void *ptr2) {
-    struct flood_entry *ntry1 = ptr1;
-    struct flood_entry *ntry2 = ptr2;
-    if (ntry1->command < ntry2->command) return -1;
-    if (ntry1->command > ntry2->command) return +1;
-    if (ntry1->trg < ntry2->trg) return -1;
-    if (ntry1->trg > ntry2->trg) return +1;
-    if (ntry1->id < ntry2->id) return -1;
-    if (ntry1->id > ntry2->id) return +1;
-    return 0;
-}
 
 
 struct mroute4_entry {
@@ -932,16 +705,6 @@ struct mroute4_entry {
     long pack;
     long byte;
 };
-
-int mroute4_compare(void *ptr1, void *ptr2) {
-    struct mroute4_entry *ntry1 = ptr1;
-    struct mroute4_entry *ntry2 = ptr2;
-    if (ntry1->grp < ntry2->grp) return -1;
-    if (ntry1->grp > ntry2->grp) return +1;
-    if (ntry1->src < ntry2->src) return -1;
-    if (ntry1->src > ntry2->src) return +1;
-    return 0;
-}
 
 
 
@@ -961,31 +724,10 @@ struct mroute6_entry {
     long byte;
 };
 
-int mroute6_compare(void *ptr1, void *ptr2) {
-    struct mroute6_entry *ntry1 = ptr1;
-    struct mroute6_entry *ntry2 = ptr2;
-    if (ntry1->grp1 < ntry2->grp1) return -1;
-    if (ntry1->grp1 > ntry2->grp1) return +1;
-    if (ntry1->grp2 < ntry2->grp2) return -1;
-    if (ntry1->grp2 > ntry2->grp2) return +1;
-    if (ntry1->grp3 < ntry2->grp3) return -1;
-    if (ntry1->grp3 > ntry2->grp3) return +1;
-    if (ntry1->grp4 < ntry2->grp4) return -1;
-    if (ntry1->grp4 > ntry2->grp4) return +1;
-    if (ntry1->src1 < ntry2->src1) return -1;
-    if (ntry1->src1 > ntry2->src1) return +1;
-    if (ntry1->src2 < ntry2->src2) return -1;
-    if (ntry1->src2 > ntry2->src2) return +1;
-    if (ntry1->src3 < ntry2->src3) return -1;
-    if (ntry1->src3 > ntry2->src3) return +1;
-    if (ntry1->src4 < ntry2->src4) return -1;
-    if (ntry1->src4 > ntry2->src4) return +1;
-    return 0;
-}
 
 
-#define mcast_init4 table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), &flood_compare);
-#define mcast_init6 table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), &flood_compare);
+#define mcast_init4 table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), 3);
+#define mcast_init6 table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), 3);
 
 
 
@@ -1025,22 +767,22 @@ void initIface(int port, char *name) {
 
 
 int initTables() {
-    table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), &polkaPoly_compare);
-    table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), &polkaPoly_compare);
-    table_init(&nsh_table, sizeof(struct nsh_entry), &nsh_compare);
-    table_init(&mpls_table, sizeof(struct mpls_entry), &mpls_compare);
-    table_init(&port2vrf_table, sizeof(struct port2vrf_entry), &port2vrf_compare);
-    table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), &vrf2rib_compare);
-    table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), &vrf2rib_compare);
-    table_init(&neigh_table, sizeof(struct neigh_entry), &neigh_compare);
-    table_init(&vlanin_table, sizeof(struct vlan_entry), &vlanin_compare);
-    table_init(&vlanout_table, sizeof(struct vlan_entry), &vlanout_compare);
-    table_init(&bridge_table, sizeof(struct bridge_entry), &bridge_compare);
-    table_init(&acls4_table, sizeof(struct acls_entry), &acls_compare);
-    table_init(&acls6_table, sizeof(struct acls_entry), &acls_compare);
-    table_init(&bundle_table, sizeof(struct bundle_entry), &bundle_compare);
-    table_init(&pppoe_table, sizeof(struct pppoe_entry), &pppoe_compare);
-    table_init(&policer_table, sizeof(struct policer_entry), &policer_compare);
+    table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), 1);
+    table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
+    table_init(&nsh_table, sizeof(struct nsh_entry), 2);
+    table_init(&mpls_table, sizeof(struct mpls_entry), 1);
+    table_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
+    table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
+    table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), 1);
+    table_init(&neigh_table, sizeof(struct neigh_entry), 1);
+    table_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
+    table_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
+    table_init(&bridge_table, sizeof(struct bridge_entry), 3);
+    table_init(&acls4_table, sizeof(struct acls_entry), 2);
+    table_init(&acls6_table, sizeof(struct acls_entry), 2);
+    table_init(&bundle_table, sizeof(struct bundle_entry), 1);
+    table_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
+    table_init(&policer_table, sizeof(struct policer_entry), 3);
 #ifndef HAVE_NOCRYPTO
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L

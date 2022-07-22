@@ -597,22 +597,22 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
-    struct vlan_entry vlan_ntry;
+    struct vlanout_entry vlanout_ntry;
     struct bundle_entry bundle_ntry;
-    struct vlan_entry *vlan_res;
+    struct vlanout_entry *vlanout_res;
     struct bundle_entry *bundle_res;
-    vlan_ntry.id = prt;
-    int index = table_find(&vlanout_table, &vlan_ntry);
+    vlanout_ntry.id = prt;
+    int index = table_find(&vlanout_table, &vlanout_ntry);
     if (index >= 0) {
-        vlan_res = table_get(&vlanout_table, index);
-        hash ^= vlan_res->vlan;
+        vlanout_res = table_get(&vlanout_table, index);
+        hash ^= vlanout_res->vlan;
         bufP -= 2;
-        put16msb(bufD, bufP, vlan_res->vlan);
+        put16msb(bufD, bufP, vlanout_res->vlan);
         bufP -= 2;
         put16msb(bufD, bufP, ETHERTYPE_VLAN);
-        prt = vlan_res->port;
-        vlan_res->pack++;
-        vlan_res->byte += bufS;
+        prt = vlanout_res->port;
+        vlanout_res->pack++;
+        vlanout_res->byte += bufS;
         ethtyp = ETHERTYPE_VLAN;
         if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
     }
@@ -1148,7 +1148,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct route4_entry sroute4_ntry;
     struct route6_entry sroute6_ntry;
     struct neigh_entry neigh_ntry;
-    struct vlan_entry vlan_ntry;
+    struct vlanin_entry vlanin_ntry;
     struct bridge_entry bridge_ntry;
     struct acls_entry acls_ntry;
     struct acl4_entry acl4_ntry;
@@ -1172,7 +1172,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct route4_entry *route4_res = NULL;
     struct route6_entry *route6_res = NULL;
     struct neigh_entry *neigh_res = NULL;
-    struct vlan_entry *vlan_res = NULL;
+    struct vlanin_entry *vlanin_res = NULL;
     struct bridge_entry *bridge_res = NULL;
     struct acls_entry *acls_res = NULL;
     struct aclH_entry *aceh_res = NULL;
@@ -1530,15 +1530,15 @@ neigh_tx:
     case ETHERTYPE_VLAN: // dot1q
         packVlan[port]++;
         byteVlan[port] += bufS;
-        vlan_ntry.port = prt;
-        vlan_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
+        vlanin_ntry.port = prt;
+        vlanin_ntry.vlan = get16msb(bufD, bufP) & 0xfff;
         bufP += 2;
-        index = table_find(&vlanin_table, &vlan_ntry);
+        index = table_find(&vlanin_table, &vlanin_ntry);
         if (index < 0) doDropper;
-        vlan_res = table_get(&vlanin_table, index);
-        prt = vlan_res->id;
-        vlan_res->pack++;
-        vlan_res->byte += bufS;
+        vlanin_res = table_get(&vlanin_table, index);
+        prt = vlanin_res->id;
+        vlanin_res->pack++;
+        vlanin_res->byte += bufS;
         goto ethtyp_rx;
     case ETHERTYPE_IPV4: // ipv4
         if (port2vrf_res == NULL) doDropper;
