@@ -13422,3 +13422,6 @@ qc pass: p4lang: multilink l2tp mpls over vlan
 ---------------------------------- 2022-07-20 18:03:43 22.7.20
 qc pass: p4lang: multilink l2tp routing over bundle
 qc pass: p4lang: multilink l2tp mpls over bundle
+---------------------------------- 2022-07-22 15:21:43 22.7.22
+qc pass: dhcp with static allocation
+qc pass: dhcp with excluded address

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.7.22-cur, done by cs@nop.
--;-;-;2022-07-22 15:00:11, took 00:09:42, with 80 workers, on 2940 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2022-07-22 15:30:51, took 00:09:08, with 80 workers, on 2942 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -66,6 +66,8 @@ http://sources.freertr.org/cfg/conn-capwap12.tst;conn-capwap12.tst;success;vlan 
 http://sources.freertr.org/cfg/conn-capwap13.tst;conn-capwap13.tst;success;tunnel interface with capwap
 http://sources.freertr.org/cfg/conn-dhcp01.tst;conn-dhcp01.tst;success;dhcp
 http://sources.freertr.org/cfg/conn-dhcp02.tst;conn-dhcp02.tst;success;dhcp with arp/nd security
+http://sources.freertr.org/cfg/conn-dhcp03.tst;conn-dhcp03.tst;success;dhcp with static allocation
+http://sources.freertr.org/cfg/conn-dhcp04.tst;conn-dhcp04.tst;success;dhcp with excluded address
 http://sources.freertr.org/cfg/conn-dlsw01.tst;conn-dlsw01.tst;success;dlsw over ipv4
 http://sources.freertr.org/cfg/conn-dlsw02.tst;conn-dlsw02.tst;success;dlsw over ipv6
 http://sources.freertr.org/cfg/conn-dlsw03.tst;conn-dlsw03.tst;success;dlsw over loopback
