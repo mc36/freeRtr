@@ -171,20 +171,9 @@ void doMainLoop() {
 
 
 #if RTE_VERSION < RTE_VERSION_NUM(21, 11, 0, 0)
-#define mbuf2mybuf(mbuf)                                        \
-    bufS = rte_pktmbuf_pkt_len(mbuf);                           \
-    bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
-    if ((mbuf->ol_flags & PKT_RX_VLAN_STRIPPED) != 0) {         \
-        memcpy(&bufD[preBuff], bufP, 12);                       \
-        put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);           \
-        put16msb(bufD, preBuff + 14, mbuf->vlan_tci);           \
-        memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);      \
-        bufS += 4;                                              \
-    } else {                                                    \
-        memcpy(&bufD[preBuff], bufP, bufS);                     \
-    }                                                           \
-    rte_pktmbuf_free(mbuf);
-#else
+#define RTE_MBUF_F_RX_VLAN_STRIPPED PKT_RX_VLAN_STRIPPED
+#endif
+
 #define mbuf2mybuf(mbuf)                                        \
     bufS = rte_pktmbuf_pkt_len(mbuf);                           \
     bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
@@ -198,7 +187,6 @@ void doMainLoop() {
         memcpy(&bufD[preBuff], bufP, bufS);                     \
     }                                                           \
     rte_pktmbuf_free(mbuf);
-#endif
 
 
 
