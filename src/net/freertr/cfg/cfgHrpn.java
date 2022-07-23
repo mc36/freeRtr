@@ -46,11 +46,13 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
         "hairpin .*! random12duplicate 0",
         "hairpin .*! random12reorder 0",
         "hairpin .*! random12delay 0 0 0",
+        "hairpin .*! random12corrupt 0",
         "hairpin .*! random21drop 0",
         "hairpin .*! random21burst 0 0 0",
         "hairpin .*! random21duplicate 0",
         "hairpin .*! random21reorder 0",
         "hairpin .*! random21delay 0 0 0",
+        "hairpin .*! random21corrupt 0",
         "hairpin .*! buffer 65536"
     };
 

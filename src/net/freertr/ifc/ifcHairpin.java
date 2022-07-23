@@ -119,6 +119,8 @@ public class ifcHairpin {
         l.add(null, ".2 3      <num>                     one to this");
         l.add(null, ".3 4        <num>                   minimum time in ms");
         l.add(null, ".4 .          <num>                 maximum time in ms");
+        l.add(null, ".1 2    random12corrupt             specify corruption probability");
+        l.add(null, ".2 .      <num>                     one to this");
         l.add(null, ".1 2    random21drop                specify packet loss probability");
         l.add(null, ".2 .      <num>                     one to this");
         l.add(null, ".1 2    random21burst               specify burstiness probability");
@@ -133,6 +135,8 @@ public class ifcHairpin {
         l.add(null, ".2 3      <num>                     one to this");
         l.add(null, ".3 4        <num>                   minimum time in ms");
         l.add(null, ".4 .          <num>                 maximum time in ms");
+        l.add(null, ".1 2    random21corrupt             specify corruption probability");
+        l.add(null, ".2 .      <num>                     one to this");
     }
 
     /**
@@ -145,16 +149,8 @@ public class ifcHairpin {
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, notEther, beg, "ethernet", "");
         l.add(beg + "buffer " + bufSiz);
-        l.add(beg + "random12drop " + s1.randDrop);
-        l.add(beg + "random12burst " + s1.randBurstP + " " + s1.randBurstB + " " + s1.randBurstE);
-        l.add(beg + "random12duplicate " + s1.randDup);
-        l.add(beg + "random12reorder " + s1.randReord);
-        l.add(beg + "random12delay " + s1.randDelayP + " " + s1.randDelayB + " " + s1.randDelayE);
-        l.add(beg + "random21drop " + s2.randDrop);
-        l.add(beg + "random21burst " + s2.randBurstP + " " + s2.randBurstB + " " + s2.randBurstE);
-        l.add(beg + "random21duplicate " + s2.randDup);
-        l.add(beg + "random21reorder " + s2.randReord);
-        l.add(beg + "random21delay " + s2.randDelayP + " " + s2.randDelayB + " " + s2.randDelayE);
+        s1.getCfg(l, beg + "random21");
+        s2.getCfg(l, beg + "random12");
     }
 
     /**
@@ -179,52 +175,44 @@ public class ifcHairpin {
             old.setClose();
             return;
         }
-        if (s.equals("random12drop")) {
-            s1.randDrop = bits.str2num(cmd.word());
-            return;
+        ifcHairpinWorker cs = null;
+        if (s.startsWith("random12")) {
+            cs = s2;
         }
-        if (s.equals("random12burst")) {
-            s1.randBurstP = bits.str2num(cmd.word());
-            s1.randBurstB = bits.str2num(cmd.word());
-            s1.randBurstE = bits.str2num(cmd.word());
-            return;
+        if (s.startsWith("random21")) {
+            cs = s1;
         }
-        if (s.equals("random12duplicate")) {
-            s1.randDup = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random12reorder")) {
-            s1.randReord = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random12delay")) {
-            s1.randDelayP = bits.str2num(cmd.word());
-            s1.randDelayB = bits.str2num(cmd.word());
-            s1.randDelayE = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random21drop")) {
-            s2.randDrop = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random21burst")) {
-            s2.randBurstP = bits.str2num(cmd.word());
-            s2.randBurstB = bits.str2num(cmd.word());
-            s2.randBurstE = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random21duplicate")) {
-            s2.randDup = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random21reorder")) {
-            s2.randReord = bits.str2num(cmd.word());
-            return;
-        }
-        if (s.equals("random21delay")) {
-            s2.randDelayP = bits.str2num(cmd.word());
-            s2.randDelayB = bits.str2num(cmd.word());
-            s2.randDelayE = bits.str2num(cmd.word());
+        if (cs != null) {
+            s = s.substring(8, s.length());
+            if (s.equals("drop")) {
+                cs.randDrop = bits.str2num(cmd.word());
+                return;
+            }
+            if (s.equals("burst")) {
+                cs.randBurstP = bits.str2num(cmd.word());
+                cs.randBurstB = bits.str2num(cmd.word());
+                cs.randBurstE = bits.str2num(cmd.word());
+                return;
+            }
+            if (s.equals("duplicate")) {
+                cs.randDup = bits.str2num(cmd.word());
+                return;
+            }
+            if (s.equals("reorder")) {
+                cs.randReord = bits.str2num(cmd.word());
+                return;
+            }
+            if (s.equals("delay")) {
+                cs.randDelayP = bits.str2num(cmd.word());
+                cs.randDelayB = bits.str2num(cmd.word());
+                cs.randDelayE = bits.str2num(cmd.word());
+                return;
+            }
+            if (s.equals("corrupt")) {
+                cs.randCrrpt = bits.str2num(cmd.word());
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         if (!s.equals("no")) {
@@ -240,52 +228,44 @@ public class ifcHairpin {
             notEther = true;
             return;
         }
-        if (s.equals("random12drop")) {
-            s1.randDrop = 0;
-            return;
+        cs = null;
+        if (s.startsWith("random12")) {
+            cs = s2;
         }
-        if (s.equals("random12burst")) {
-            s1.randBurstP = 0;
-            s1.randBurstB = 0;
-            s1.randBurstE = 0;
-            return;
+        if (s.startsWith("random21")) {
+            cs = s1;
         }
-        if (s.equals("random12duplicate")) {
-            s1.randDup = 0;
-            return;
-        }
-        if (s.equals("random12reorder")) {
-            s1.randReord = 0;
-            return;
-        }
-        if (s.equals("random12delay")) {
-            s1.randDelayP = 0;
-            s1.randDelayB = 0;
-            s1.randDelayE = 0;
-            return;
-        }
-        if (s.equals("random21drop")) {
-            s2.randDrop = 0;
-            return;
-        }
-        if (s.equals("random21burst")) {
-            s2.randBurstP = 0;
-            s2.randBurstB = 0;
-            s2.randBurstE = 0;
-            return;
-        }
-        if (s.equals("random21duplicate")) {
-            s2.randDup = 0;
-            return;
-        }
-        if (s.equals("random21reorder")) {
-            s2.randReord = 0;
-            return;
-        }
-        if (s.equals("random21delay")) {
-            s2.randDelayP = 0;
-            s2.randDelayB = 0;
-            s2.randDelayE = 0;
+        if (cs != null) {
+            s = s.substring(8, s.length());
+            if (s.equals("drop")) {
+                cs.randDrop = 0;
+                return;
+            }
+            if (s.equals("burst")) {
+                cs.randBurstP = 0;
+                cs.randBurstB = 0;
+                cs.randBurstE = 0;
+                return;
+            }
+            if (s.equals("duplicate")) {
+                cs.randDup = 0;
+                return;
+            }
+            if (s.equals("reorder")) {
+                cs.randReord = 0;
+                return;
+            }
+            if (s.equals("delay")) {
+                cs.randDelayP = 0;
+                cs.randDelayB = 0;
+                cs.randDelayE = 0;
+                return;
+            }
+            if (s.equals("corrupt")) {
+                cs.randCrrpt = 0;
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         cmd.badCmd();
@@ -359,6 +339,11 @@ class ifcHairpinWorker implements ifcDn, Runnable {
      * delay maximum
      */
     public int randDelayE = 0;
+
+    /**
+     * corrupt probability
+     */
+    public int randCrrpt = 0;
 
     private counter cntr = new counter();
 
@@ -437,6 +422,11 @@ class ifcHairpinWorker implements ifcDn, Runnable {
                     continue;
                 }
             }
+            if (randCrrpt > 0) {
+                if (bits.random(0, randCrrpt) == 0) {
+                    buf[bits.random(0, i)] += bits.random(0, 255);
+                }
+            }
             buf2pck(buf, pck, i);
             if (randDup > 0) {
                 if (bits.random(0, randDup) == 0) {
@@ -481,6 +471,15 @@ class ifcHairpinWorker implements ifcDn, Runnable {
         } catch (Exception e) {
             logger.exception(e);
         }
+    }
+
+    public void getCfg(List<String> l, String beg) {
+        l.add(beg + "drop " + randDrop);
+        l.add(beg + "burst " + randBurstP + " " + randBurstB + " " + randBurstE);
+        l.add(beg + "duplicate " + randDup);
+        l.add(beg + "reorder " + randReord);
+        l.add(beg + "delay " + randDelayP + " " + randDelayB + " " + randDelayE);
+        l.add(beg + "corrupt " + randCrrpt);
     }
 
 }
