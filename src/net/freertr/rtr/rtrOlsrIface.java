@@ -216,8 +216,8 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
         } else {
             adr.fromString("ff02::6d");
         }
-        lower.udpCore.packetListen(lower, iface, rtrOlsr.port, null, 0, "olsr", null, -1, -1);
-        conn = lower.udpCore.packetConnect(lower, iface, rtrOlsr.port, adr, rtrOlsr.port, "olsr", null, -1, -1);
+        lower.udpCore.packetListen(lower, iface, rtrOlsr.port, null, 0, "olsr", -1, null, -1, -1);
+        conn = lower.udpCore.packetConnect(lower, iface, rtrOlsr.port, adr, rtrOlsr.port, "olsr", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

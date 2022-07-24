@@ -86,7 +86,7 @@ public class clntTwamp implements Runnable {
 
     public void run() {
         try {
-            pipeSide pip = udp.streamConnect(new pipeLine(65536, true), src, 0, trg, packTwamp.port, "twamp", null, tim2liv, typOsrv);
+            pipeSide pip = udp.streamConnect(new pipeLine(65536, true), src, 0, trg, packTwamp.port, "twamp", -1, null, tim2liv, typOsrv);
             if (pip == null) {
                 return;
             }

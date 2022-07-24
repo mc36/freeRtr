@@ -134,7 +134,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
             logger.debug("starting with " + peer);
         }
         upTime = bits.getTime();
-        connTx = iface.udp.packetConnect(iface, iface.ifc, packBfd.portLoc, peer, packBfd.portLoc, "bfd", null, -1, -1);
+        connTx = iface.udp.packetConnect(iface, iface.ifc, packBfd.portLoc, peer, packBfd.portLoc, "bfd", -1, null, -1, -1);
         if (connTx == null) {
             return true;
         }

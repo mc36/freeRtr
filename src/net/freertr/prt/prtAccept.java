@@ -66,11 +66,12 @@ public class prtAccept implements prtServS {
      * @param remA remote address, null means all
      * @param remP remote port, 0 means all
      * @param name name of server
+     * @param kid key id if applicable
      * @param pwd password
      * @param ttl time to live
      * @param tos type of service
      */
-    public prtAccept(prtGen prot, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
+    public prtAccept(prtGen prot, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
         pr = prot;
         li = locI;
         lp = locP;
@@ -80,7 +81,7 @@ public class prtAccept implements prtServS {
             ra = remA.copyBytes();
         }
         rp = remP;
-        pr.streamListen(this, pip, li, lp, ra, rp, name, pwd, ttl, tos);
+        pr.streamListen(this, pip, li, lp, ra, rp, name, kid, pwd, ttl, tos);
     }
 
     /**

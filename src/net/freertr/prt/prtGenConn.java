@@ -97,6 +97,11 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     public int workInterval;
 
     /**
+     * key id
+     */
+    public int keyId;
+
+    /**
      * password if applicable
      */
     public String passwd;
@@ -166,16 +171,18 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      * @param adrR remote address
      * @param prtR remote port
      * @param nam name of client
+     * @param kid key id if applicable
      * @param pwd password if applicable
      * @param ttl time to live
      * @param tos type of service
      */
-    protected prtGenConn(prtGen low, prtServP upP, prtServS upS, pipeLine pip, boolean dir, ipFwdIface ifc, int prtL, addrIP adrR, int prtR, String nam, String pwd, int ttl, int tos) {
+    protected prtGenConn(prtGen low, prtServP upP, prtServS upS, pipeLine pip, boolean dir, ipFwdIface ifc, int prtL, addrIP adrR, int prtR, String nam, int kid, String pwd, int ttl, int tos) {
         int prt = low.getProtoNum();
         if ((pip == null) && (prt == prtTcp.protoNum)) {
             pip = new pipeLine(65536, false);
         }
         iface = ifc;
+        keyId = kid;
         passwd = pwd;
         sendTTL = ttl;
         sendTOS = tos;
@@ -222,11 +229,13 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     /**
      * change security properties
      *
+     * @param kid key id if applicable
      * @param pwd password if applicable
      * @param ttl time to live
      * @param tos type of service
      */
-    public void changeSecurity(String pwd, int ttl, int tos) {
+    public void changeSecurity(int kid, String pwd, int ttl, int tos) {
+        keyId = kid;
         passwd = pwd;
         sendTTL = ttl;
         sendTOS = tos;

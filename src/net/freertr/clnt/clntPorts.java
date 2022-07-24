@@ -59,7 +59,7 @@ public class clntPorts {
             ifc2 = ifc.getFwdIfc(trg);
         }
         prtTcp tcp = vrf.getTcp(trg);
-        pipeSide pip = tcp.streamConnect(new pipeLine(65536, false), ifc2, 0, trg, prt, "portscan", null, -1, -1);
+        pipeSide pip = tcp.streamConnect(new pipeLine(65536, false), ifc2, 0, trg, prt, "portscan", -1, null, -1, -1);
         if (pip == null) {
             return true;
         }

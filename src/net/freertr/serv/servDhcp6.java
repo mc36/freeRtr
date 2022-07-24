@@ -488,7 +488,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
         if (debugger.servDhcp6traf) {
             logger.debug("tx " + adr + " " + pckd);
         }
-        pipeSide pip = srvVrf.udp6.streamConnect(new pipeLine(32768, true), srvIface.fwdIf6, packDhcp6.portSnum, adr, packDhcp6.portCnum, srvName(), null, -1, -1);
+        pipeSide pip = srvVrf.udp6.streamConnect(new pipeLine(32768, true), srvIface.fwdIf6, packDhcp6.portSnum, adr, packDhcp6.portCnum, srvName(), -1, null, -1, -1);
         if (pip == null) {
             return true;
         }

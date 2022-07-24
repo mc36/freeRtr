@@ -225,7 +225,7 @@ public class clntLwapp implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, packLwapp.port, trg, packLwapp.port, "lwapp", null, -1, -1);
+        conn = udp.packetConnect(this, fwdIfc, packLwapp.port, trg, packLwapp.port, "lwapp", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

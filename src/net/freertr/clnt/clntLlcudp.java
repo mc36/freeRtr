@@ -240,7 +240,7 @@ public class clntLlcudp implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, port, trg, port, "llcudp", null, -1, -1);
+        conn = udp.packetConnect(this, fwdIfc, port, trg, port, "llcudp", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

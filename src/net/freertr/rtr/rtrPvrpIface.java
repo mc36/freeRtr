@@ -301,8 +301,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         } else {
             adr.fromString("ff02::227");
         }
-        lower.udpCore.packetListen(this, iface, rtrPvrp.port, null, 0, "pvrp", null, -1, -1);
-        conn = lower.udpCore.packetConnect(this, iface, rtrPvrp.port, adr, rtrPvrp.port, "pvrp", null, -1, -1);
+        lower.udpCore.packetListen(this, iface, rtrPvrp.port, null, 0, "pvrp", -1, null, -1, -1);
+        conn = lower.udpCore.packetConnect(this, iface, rtrPvrp.port, adr, rtrPvrp.port, "pvrp", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

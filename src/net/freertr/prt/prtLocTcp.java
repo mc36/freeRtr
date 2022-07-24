@@ -136,7 +136,7 @@ public class prtLocTcp implements Runnable {
         }
         ipIfcLoop ipi = new ipIfcLoop();
         ipi.setIPv4addr(new addrIPv4(), addrIPv4.size * 8);
-        prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, ipi.getFwdIface(), port, srcA, srcP, "local:" + srv.name, null, -1, -1);
+        prtGenConn conn = new prtGenConn(new prtTcp(), srv.serverP, srv.serverS, srv.sample, true, ipi.getFwdIface(), port, srcA, srcP, "local:" + srv.name, -1, null, -1, -1);
         pipeLine pipeHandler = pipeLine.doClone(srv.sample, false);
         pipeSide pipeNetwork = pipeHandler.getSide();
         pipeSide pipeClient = pipeHandler.getSide();

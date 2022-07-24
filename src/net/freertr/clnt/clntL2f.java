@@ -263,7 +263,7 @@ public class clntL2f implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, 0, trg, srv.srvPort(), srv.srvName(), null, -1, -1);
+        conn = udp.packetConnect(this, fwdIfc, 0, trg, srv.srvPort(), srv.srvName(), -1, null, -1, -1);
         if (conn == null) {
             return;
         }

@@ -206,7 +206,8 @@ public class prtTcp extends prtGen {
                     pck.TCPtsV = bits.msbGetD(tlv.valDat, 0);
                     pck.TCPtsE = bits.msbGetD(tlv.valDat, 4);
                     continue;
-                case 0x13: // md5auth
+                case 0x13: // md5 auth
+                case 0x1d: // auth opt
                     pck.TCPaut = pck.dataSize() - max + tlv.valSiz;
                     continue;
                 default:
@@ -375,7 +376,8 @@ public class prtTcp extends prtGen {
         }
     }
 
-    private static byte[] getTCPpassword(packHolder pck, byte[] pwd) {
+    private static byte[] getTCPpassword(packHolder pck, int kid, byte[] pwd) {
+/////logger.debug("here "+kid);////
         cryHashMd5 h = new cryHashMd5();
         h.init();
         hashOneAddress(h, pck.IPsrc);
@@ -401,9 +403,10 @@ public class prtTcp extends prtGen {
      * create tcp header
      *
      * @param pck packet to update
+     * @param kid key id, if applicable
      * @param pwd password
      */
-    public static void createTCPheader(packHolder pck, String pwd) {
+    public static void createTCPheader(packHolder pck, int kid, String pwd) {
         pck.IPprt = protoNum;
         if (debugger.prtTcpTraf) {
             logger.debug("tx " + pck.UDPsrc + " -> " + pck.UDPtrg + " " + decodeFlags(pck.TCPflg) + " seq=" + pck.TCPseq
@@ -435,7 +438,11 @@ public class prtTcp extends prtGen {
             pck.putByte(1, 1); // nop
             pck.putSkip(2);
             typLenVal tlv = getTCPoption(null);
-            tlv.putBytes(pck, 19, 16, tlv.valDat); // md5
+            if (kid < 0) {
+                tlv.putBytes(pck, 19, 16, tlv.valDat); // md5 auth
+            } else {
+                tlv.putBytes(pck, 19, 16, tlv.valDat); // auth opt
+            }
         }
         int hdrSiz = size + pck.headSize();
         pck.merge2beg();
@@ -462,7 +469,7 @@ public class prtTcp extends prtGen {
         pck.unMergeBytes(hdrSiz);
         pck.putSkip(-hdrSiz);
         pck.msbPutW(16, 0); // checksum
-        byte[] buf = getTCPpassword(pck, pwd.getBytes());
+        byte[] buf = getTCPpassword(pck, kid, pwd.getBytes());
         pck.putCopy(buf, 0, hdrSiz - buf.length, buf.length);
         if (cfgAll.tcpChecksumTx) {
             int i = pck.pseudoIPsum(hdrSiz + pck.dataSize());
@@ -511,7 +518,7 @@ public class prtTcp extends prtGen {
         if ((src.TCPflg & flagFIN) != 0) {
             pck.TCPack++;
         }
-        createTCPheader(pck, null);
+        createTCPheader(pck, -1, null);
         fwdCore.protoPack(ifc, null, pck);
     }
 
@@ -580,7 +587,7 @@ public class prtTcp extends prtGen {
             }
             pr.netOut += datSiz;
         }
-        createTCPheader(pck, clnt.passwd);
+        createTCPheader(pck, clnt.keyId, clnt.passwd);
         fwdCore.protoPack(clnt.iface, null, pck);
         return datSiz;
     }
@@ -732,7 +739,7 @@ public class prtTcp extends prtGen {
                 pck.unMergeBytes(pck.UDPsiz);
                 pck.putSkip(-pck.UDPsiz);
                 pck.msbPutW(16, 0); // checksum
-                byte[] buf1 = getTCPpassword(pck, clnt.passwd.getBytes());
+                byte[] buf1 = getTCPpassword(pck, clnt.keyId, clnt.passwd.getBytes());
                 byte[] buf2 = new byte[buf1.length];
                 pck.getCopy(buf2, 0, -pck.TCPaut, buf1.length);
                 if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {

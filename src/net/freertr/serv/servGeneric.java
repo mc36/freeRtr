@@ -587,60 +587,60 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
         if ((srvProto & protoTcp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.tcp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.tcp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.tcp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.tcp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoUdp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.udp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.udp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.udp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.udp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoLudp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.ludp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.ludp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.ludp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.ludp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoDccp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.dccp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.dccp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.dccp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.dccp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoSctp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.sctp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.sctp4.streamListen(srv, pip, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.sctp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.sctp6.streamListen(srv, pip, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
@@ -676,60 +676,60 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
         if ((srvProto & protoTcp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.tcp4.packetListen(srv, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.tcp4.packetListen(srv, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.tcp6.packetListen(srv, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.tcp6.packetListen(srv, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoUdp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.udp4.packetListen(srv, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.udp4.packetListen(srv, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.udp6.packetListen(srv, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.udp6.packetListen(srv, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoLudp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.ludp4.packetListen(srv, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.ludp4.packetListen(srv, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.ludp6.packetListen(srv, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.ludp6.packetListen(srv, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoDccp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.dccp4.packetListen(srv, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.dccp4.packetListen(srv, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.dccp6.packetListen(srv, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.dccp6.packetListen(srv, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
         }
         if ((srvProto & protoSctp) != 0) {
             if ((srvProto & protoIp4) != 0) {
-                if (srvVrf.sctp4.packetListen(srv, ifc4, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.sctp4.packetListen(srv, ifc4, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }
             if ((srvProto & protoIp6) != 0) {
-                if (srvVrf.sctp6.packetListen(srv, ifc6, prt, null, 0, srvName(), null, -1, -1)) {
+                if (srvVrf.sctp6.packetListen(srv, ifc6, prt, null, 0, srvName(), -1, null, -1, -1)) {
                     return true;
                 }
             }

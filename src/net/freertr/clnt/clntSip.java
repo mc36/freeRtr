@@ -650,15 +650,15 @@ public class clntSip implements Runnable {
         }
         switch (protocol) {
             case 1:
-                conn = udp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1, -1);
+                conn = udp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", -1, null, -1, -1);
                 break;
             case 2:
-                prtAccept ac = new prtAccept(tcp, new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1, -1);
+                prtAccept ac = new prtAccept(tcp, new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", -1, null, -1, -1);
                 ac.wait4conn(30000);
                 conn = ac.getConn(true);
                 break;
             case 3:
-                conn = tcp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", null, -1, -1);
+                conn = tcp.streamConnect(new pipeLine(32768, false), srcFwd, portLoc, trgAdr, portRem, "sip", -1, null, -1, -1);
                 break;
         }
         if (conn == null) {

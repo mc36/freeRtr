@@ -61,6 +61,11 @@ public abstract class rtrBgpParam {
     public rtrBgpTemp template;
 
     /**
+     * key id
+     */
+    public int keyId;
+
+    /**
      * password
      */
     public String passwd;
@@ -958,6 +963,7 @@ public abstract class rtrBgpParam {
         ttlSecurity = -1;
         tosValue = -1;
         leakRole = -1;
+        keyId = -1;
         passwd = null;
         capaNego = true;
         trackNxthop = true;
@@ -988,6 +994,7 @@ public abstract class rtrBgpParam {
         monitor = src.monitor;
         dump = src.dump;
         otherAdr = src.otherAdr;
+        keyId = src.keyId;
         passwd = src.passwd;
         accIgp = src.accIgp;
         traffEng = src.traffEng;
@@ -1342,7 +1349,11 @@ public abstract class rtrBgpParam {
         l.add(null, "4  5,.       <num>                     autonomous system number");
         l.add(null, "5  .           shutdown                connection disabled for this peer");
         l.add(null, "3  4       password                    set session password");
-        l.add(null, "4  .         <text>                    password to use");
+        l.add(null, "4  4,.       <text>                    password to use");
+        l.add(null, "3  4       authen-type                 set authentication type");
+        l.add(null, "4  .         md5                       legacy password option");
+        l.add(null, "4  5         sha1                      ao password with sha1");
+        l.add(null, "5  .           <num>                   key id");
         l.add(null, "3  .       shutdown                    connection disabled for this peer");
         l.add(null, "3  4       description                 describe this neighbor");
         l.add(null, "4  4,.       <str>                     description of neighbor");
@@ -1527,6 +1538,11 @@ public abstract class rtrBgpParam {
         }
         l.add(beg + nei + "remote-as " + bits.num2str(remoteAs));
         cmds.cfgLine(l, description == null, beg, nei + "description", description);
+        if (keyId < 0) {
+            l.add(beg + nei + "authen-type md5");
+        } else {
+            l.add(beg + nei + "authen-type sha1 " + keyId);
+        }
         cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
@@ -1876,6 +1892,17 @@ public abstract class rtrBgpParam {
             if (monitor == null) {
                 cmd.error("no such monitor");
             }
+            return false;
+        }
+        if (s.equals("authen-type")) {
+            keyId = -1;
+            if (negated) {
+                return false;
+            }
+            if (!cmd.word().equals("sha1")) {
+                return false;
+            }
+            keyId = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("password")) {

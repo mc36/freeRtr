@@ -418,7 +418,7 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         if (iface != null) {
             ifc = iface.getFwdIfc(addr);
         }
-        conn = prt.streamConnect(new pipeLine(lower.bufSiz, false), ifc, 0, addr, port, lower.srvName(), null, -1, -1);
+        conn = prt.streamConnect(new pipeLine(lower.bufSiz, false), ifc, 0, addr, port, lower.srvName(), -1, null, -1, -1);
         if (conn == null) {
             return false;
         }

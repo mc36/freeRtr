@@ -215,7 +215,7 @@ public class ipProxy implements ifcUp {
         pck.merge2beg();
         pck.TCPflg = flg;
         pck.TCPwin = 32768;
-        prtTcp.createTCPheader(pck, null);
+        prtTcp.createTCPheader(pck, -1, null);
         pck.merge2beg();
         sendPack(pck);
     }

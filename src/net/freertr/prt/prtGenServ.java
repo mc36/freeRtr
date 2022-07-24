@@ -53,6 +53,11 @@ public class prtGenServ implements tabConnectLower {
     public String name;
 
     /**
+     * key id
+     */
+    public int keyId;
+
+    /**
      * password to use
      */
     public String passwd;

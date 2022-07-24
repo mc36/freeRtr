@@ -328,7 +328,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
         if (prtL == 0) {
             prtL = prtR;
         }
-        conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "satp", null, -1, -1);
+        conn = udp.packetConnect(this, fwdIfc, prtL, trg, prtR, "satp", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

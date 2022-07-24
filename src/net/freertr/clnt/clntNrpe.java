@@ -85,7 +85,7 @@ public class clntNrpe {
         if (ipif == null) {
             ipif = ipFwdTab.findSendingIface(fwd, trg);
         }
-        pipeSide pipe = prt.streamConnect(new pipeLine(65536, false), ipif, 0, trg, packNrpe.portNum, "nrpe", null, -1, -1);
+        pipeSide pipe = prt.streamConnect(new pipeLine(65536, false), ipif, 0, trg, packNrpe.portNum, "nrpe", -1, null, -1, -1);
         if (pipe == null) {
             text.add(check + " CRITICAL failed to connect to " + server);
             return true;

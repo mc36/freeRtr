@@ -222,8 +222,8 @@ public class clntTftp implements prtServS {
         if (ifc == null) {
             return true;
         }
-        udp.streamListen(this, new pipeLine(65536, true), ifc, locprt, adr, 0, "tftpc", null, -1, -1);
-        pipe = udp.streamConnect(new pipeLine(65536, true), ifc, locprt, adr, packTftp.port, "tftpc", null, -1, -1);
+        udp.streamListen(this, new pipeLine(65536, true), ifc, locprt, adr, 0, "tftpc", -1, null, -1, -1);
+        pipe = udp.streamConnect(new pipeLine(65536, true), ifc, locprt, adr, packTftp.port, "tftpc", -1, null, -1, -1);
         return pipe == null;
     }
 

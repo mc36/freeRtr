@@ -82,12 +82,12 @@ public class rtrPtpIface implements Runnable, prtServP {
         if (debugger.rtrPtpEvnt) {
             logger.debug("starting on " + ifc);
         }
-        udp.packetListen(this, ifc, packPtp.portS, null, 0, "ptp", null, -1, -1);
-        udp.packetListen(this, ifc, packPtp.portF, null, 0, "ptp", null, -1, -1);
+        udp.packetListen(this, ifc, packPtp.portS, null, 0, "ptp", -1, null, -1, -1);
+        udp.packetListen(this, ifc, packPtp.portF, null, 0, "ptp", -1, null, -1, -1);
         addrIP peer = new addrIP();
         packPtp.setIP(ifc.addr.isIPv4(), peer);
-        connS = udp.packetConnect(this, ifc, packPtp.portS, peer, packPtp.portS, "ptp", null, -1, -1);
-        connF = udp.packetConnect(this, ifc, packPtp.portF, peer, packPtp.portF, "ptp", null, -1, -1);
+        connS = udp.packetConnect(this, ifc, packPtp.portS, peer, packPtp.portS, "ptp", -1, null, -1, -1);
+        connF = udp.packetConnect(this, ifc, packPtp.portF, peer, packPtp.portF, "ptp", -1, null, -1, -1);
         need2run = true;
         new Thread(this).start();
     }

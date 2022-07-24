@@ -3964,7 +3964,7 @@ public class userExec {
             return;
         }
         pipe.linePut("listening on " + port);
-        prtAccept acc = new prtAccept(prt, new pipeLine(65535, false), ipi, port, rem, 0, "listen", null, -1, -1);
+        prtAccept acc = new prtAccept(prt, new pipeLine(65535, false), ipi, port, rem, 0, "listen", -1, null, -1, -1);
         acc.wait4conn(60000);
         pipeSide conn = acc.getConn(true);
         if (conn == null) {

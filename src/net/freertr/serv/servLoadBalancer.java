@@ -238,7 +238,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         if (originate != null) {
             ifc = originate.getFwdIfc(ntry.addr);
         }
-        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, ntry.addr, ntry.port, srvName(), null, -1, -1);
+        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, ntry.addr, ntry.port, srvName(), -1, null, -1, -1);
         if (con2 == null) {
             ntry.bad = bits.getTime();
             return true;

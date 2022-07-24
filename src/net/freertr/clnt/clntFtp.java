@@ -116,7 +116,7 @@ public class clntFtp implements prtServS {
                 return true;
             }
             if (srvr.isIPv4()) {
-                prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1, -1);
+                prx.vrf.tcp4.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", -1, null, -1, -1);
                 byte[] buf = new byte[6];
                 addrIPv4 adr4 = ifc.addr.toIPv4();
                 adr4.toBuffer(buf, 0);
@@ -129,7 +129,7 @@ public class clntFtp implements prtServS {
                 getLine();
                 return false;
             } else {
-                prx.vrf.tcp6.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", null, -1, -1);
+                prx.vrf.tcp6.streamListen(this, new pipeLine(65536, false), ifc, locprt, null, 0, "ftpc", -1, null, -1, -1);
                 sendLine("EPRT |2|" + ifc.addr.toIPv6() + "|" + locprt);
                 getLine();
                 return false;

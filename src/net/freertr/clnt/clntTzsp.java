@@ -237,7 +237,7 @@ public class clntTzsp implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, port, trg, port, "tzsp", null, -1, -1);
+        conn = udp.packetConnect(this, fwdIfc, port, trg, port, "tzsp", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

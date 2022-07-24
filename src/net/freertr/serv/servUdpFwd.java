@@ -274,7 +274,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
         if (trgIface != null) {
             fwdIfc = trgIface.getFwdIfc(trgAddr);
         }
-        serv = udp.packetConnect(this, fwdIfc, trgPort, trgAddr, trgPort, "udpfwd", null, -1, -1);
+        serv = udp.packetConnect(this, fwdIfc, trgPort, trgAddr, trgPort, "udpfwd", -1, null, -1, -1);
         if (serv == null) {
             return true;
         }

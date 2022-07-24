@@ -119,7 +119,7 @@ public class clntTrace implements prtServP, ipPrt {
         if (proto > 0) {
             return fwd.protoAdd(this, ifc2, trg);
         } else {
-            con = udp.packetConnect(this, ifc2, 0, trg, port, "traceroute", null, -1, -1);
+            con = udp.packetConnect(this, ifc2, 0, trg, port, "traceroute", -1, null, -1, -1);
             return con == null;
         }
     }

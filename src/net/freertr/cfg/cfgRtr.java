@@ -328,6 +328,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! (template|neighbor) .* role disabled",
         "router bgp[46] .*! (template|neighbor) .* additional-path-rx",
         "router bgp[46] .*! (template|neighbor) .* additional-path-tx",
+        "router bgp[46] .*! (template|neighbor) .* authen-type md5",
         "router bgp[46] .*! no (template|neighbor) .* ungroup-remoteas",
         "router bgp[46] .*! no (template|neighbor) .* password",
         "router bgp[46] .*! no (template|neighbor) .* shutdown",

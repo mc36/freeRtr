@@ -209,16 +209,17 @@ public abstract class prtGen implements ipPrt {
      * @param remA remote address, null means all
      * @param remP remote port, 0 means all
      * @param name name of server
+     * @param kid key id if applicable
      * @param pwd password
      * @param ttl time to live
      * @param tos type of service
      * @return false if successful, true if error
      */
-    public boolean packetListen(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
+    public boolean packetListen(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
         if (srv == null) {
             return true;
         }
-        return anybodyListen(srv, null, null, locI, locP, remA, remP, name, pwd, ttl, tos);
+        return anybodyListen(srv, null, null, locI, locP, remA, remP, name, kid, pwd, ttl, tos);
     }
 
     /**
@@ -231,19 +232,20 @@ public abstract class prtGen implements ipPrt {
      * @param remA remote address, null means all
      * @param remP remote port, 0 means all
      * @param name name of server
+     * @param kid key id if applicable
      * @param pwd session password
      * @param ttl time to live
      * @param tos type of service
      * @return false if successful, true if error
      */
-    public boolean streamListen(prtServS srv, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
+    public boolean streamListen(prtServS srv, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
         if (srv == null) {
             return true;
         }
         if (pip == null) {
             return true;
         }
-        return anybodyListen(null, srv, pip, locI, locP, remA, remP, name, pwd, ttl, tos);
+        return anybodyListen(null, srv, pip, locI, locP, remA, remP, name, kid, pwd, ttl, tos);
     }
 
     /**
@@ -275,13 +277,14 @@ public abstract class prtGen implements ipPrt {
      * @param remA remote address
      * @param remP remote port
      * @param name name of connection
+     * @param kid key id if applicable
      * @param pwd session password
      * @param ttl time to live
      * @param tos type of service
      * @return id reference of connection, null means error
      */
-    public prtGenConn packetConnect(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
-        return anybodyConnect(srv, null, null, locI, locP, remA, remP, name, pwd, ttl, tos);
+    public prtGenConn packetConnect(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
+        return anybodyConnect(srv, null, null, locI, locP, remA, remP, name, kid, pwd, ttl, tos);
     }
 
     /**
@@ -293,13 +296,14 @@ public abstract class prtGen implements ipPrt {
      * @param remA remote address
      * @param remP remote port
      * @param name name of connection
+     * @param kid key id if applicable
      * @param pwd password
      * @param ttl time to live
      * @param tos type of service
      * @return pipeline to access the connection, null if error happened
      */
-    public pipeSide streamConnect(pipeLine sample, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
-        prtGenConn cln = anybodyConnect(null, null, sample, locI, locP, remA, remP, name, pwd, ttl, tos);
+    public pipeSide streamConnect(pipeLine sample, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
+        prtGenConn cln = anybodyConnect(null, null, sample, locI, locP, remA, remP, name, kid, pwd, ttl, tos);
         if (cln == null) {
             return null;
         }
@@ -324,7 +328,7 @@ public abstract class prtGen implements ipPrt {
         return false;
     }
 
-    private boolean anybodyListen(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, String pwd, int ttl, int tos) {
+    private boolean anybodyListen(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
         if (locP != 0) {
             if (testPortNumber(locP)) {
                 return true;
@@ -347,6 +351,7 @@ public abstract class prtGen implements ipPrt {
         ntry.locP = locP;
         ntry.name = name;
         ntry.iface = locI;
+        ntry.keyId = kid;
         ntry.passwd = pwd;
         ntry.ttl = ttl;
         ntry.tos = tos;
@@ -356,7 +361,7 @@ public abstract class prtGen implements ipPrt {
         return srvrs.add(locI, remA, locP, remP, ntry, ntry.name);
     }
 
-    private prtGenConn anybodyConnect(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String nam, String pwd, int ttl, int tos) {
+    private prtGenConn anybodyConnect(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String nam, int kid, String pwd, int ttl, int tos) {
         if (testPortNumber(remP)) {
             return null;
         }
@@ -377,7 +382,7 @@ public abstract class prtGen implements ipPrt {
         if (testPortNumber(locP)) {
             return null;
         }
-        prtGenConn cln = new prtGenConn(this, upP, upS, pip, false, locI, locP, remA, remP, nam, pwd, ttl, tos);
+        prtGenConn cln = new prtGenConn(this, upP, upS, pip, false, locI, locP, remA, remP, nam, kid, pwd, ttl, tos);
         if (connectionStart(cln, null)) {
             return null;
         }
@@ -444,7 +449,7 @@ public abstract class prtGen implements ipPrt {
             }
             return null;
         }
-        prtGenConn cln = new prtGenConn(this, srv.serverP, srv.serverS, srv.sample, true, rxIfc, pck.UDPtrg, pck.IPsrc, pck.UDPsrc, srv.name, srv.passwd, srv.ttl, srv.tos);
+        prtGenConn cln = new prtGenConn(this, srv.serverP, srv.serverS, srv.sample, true, rxIfc, pck.UDPtrg, pck.IPsrc, pck.UDPsrc, srv.name, srv.keyId, srv.passwd, srv.ttl, srv.tos);
         if (connectionStart(cln, pck)) {
             cntr.drop(pck, counter.reasons.badHdr);
             cln.deleteImmediately();

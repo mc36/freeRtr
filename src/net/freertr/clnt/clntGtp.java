@@ -330,12 +330,12 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        connC = udp.packetConnect(this, fwdIfc, packGtp.portCtrl, trg, packGtp.portCtrl, "gtpC", null, -1, -1);
+        connC = udp.packetConnect(this, fwdIfc, packGtp.portCtrl, trg, packGtp.portCtrl, "gtpC", -1, null, -1, -1);
         if (connC == null) {
             return;
         }
         connC.timeout = 120000;
-        connD = udp.packetConnect(this, fwdIfc, packGtp.portData, trg, packGtp.portData, "gtpD", null, -1, -1);
+        connD = udp.packetConnect(this, fwdIfc, packGtp.portData, trg, packGtp.portData, "gtpD", -1, null, -1, -1);
         if (connD == null) {
             connC.setClosing();
             return;

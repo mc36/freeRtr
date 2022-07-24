@@ -232,7 +232,7 @@ public class clntUdpGre implements Runnable, prtServP, ifcDn {
         if (srcIfc != null) {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
-        conn = udp.packetConnect(this, fwdIfc, portNum, trg, portNum, "udpgre", null, -1, -1);
+        conn = udp.packetConnect(this, fwdIfc, portNum, trg, portNum, "udpgre", -1, null, -1, -1);
         if (conn == null) {
             return;
         }

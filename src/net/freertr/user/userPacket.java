@@ -502,7 +502,7 @@ public class userPacket {
                 pck.TCPwin = 8192;
                 pck.TCPseq = seq.seq;
                 seq.seq += pck.dataSize();
-                prtTcp.createTCPheader(pck, null);
+                prtTcp.createTCPheader(pck, -1, null);
                 if (pck.IPtrg.isIPv4()) {
                     ic4.createIPheader(pck);
                     i = ipIfc4.type;
@@ -1266,7 +1266,7 @@ public class userPacket {
             }
             tabQos qos = tabQos.convertPolicy(plc.plcmap);
             if (a.equals("tcp")) {
-                prtTcp.createTCPheader(pck, null);
+                prtTcp.createTCPheader(pck, -1, null);
             }
             if (a.equals("udp")) {
                 prtUdp.createUDPheader(pck);
