@@ -206,6 +206,9 @@ public class prtTcp extends prtGen {
                     pck.TCPtsV = bits.msbGetD(tlv.valDat, 0);
                     pck.TCPtsE = bits.msbGetD(tlv.valDat, 4);
                     continue;
+                case 0x13: // md5auth
+                    pck.TCPaut = pck.dataSize() - max + tlv.valSiz;
+                    continue;
                 default:
                     continue;
             }
@@ -373,16 +376,6 @@ public class prtTcp extends prtGen {
     }
 
     private static byte[] getTCPpassword(packHolder pck, byte[] pwd) {
-        int hdr = size + 20;
-        if (pck.TCPmss > 0) {
-            hdr += 4;
-        }
-        if (pck.TCPwsc > 0) {
-            hdr += 4;
-        }
-        if (pck.TCPtsV != 0) {
-            hdr += 12;
-        }
         cryHashMd5 h = new cryHashMd5();
         h.init();
         hashOneAddress(h, pck.IPsrc);
@@ -391,23 +384,14 @@ public class prtTcp extends prtGen {
         if (pck.IPsrc.isIPv4()) {
             buf = new byte[4];
             bits.msbPutW(buf, 0, protoNum);
-            bits.msbPutW(buf, 2, pck.dataSize() + hdr);
+            bits.msbPutW(buf, 2, pck.dataSize() + pck.UDPsiz);
         } else {
             buf = new byte[8];
-            bits.msbPutD(buf, 0, pck.dataSize() + hdr);
+            bits.msbPutD(buf, 0, pck.dataSize() + pck.UDPsiz);
             bits.msbPutD(buf, 4, protoNum);
         }
         h.update(buf);
-        buf = new byte[size];
-        bits.msbPutW(buf, 0, pck.UDPsrc); // source
-        bits.msbPutW(buf, 2, pck.UDPtrg); // target
-        bits.msbPutD(buf, 4, pck.TCPseq); // seq
-        bits.msbPutD(buf, 8, pck.TCPack); // ack
-        bits.msbPutW(buf, 12, (pck.TCPflg & 0xfff) | (hdr << 10)); // flags
-        bits.msbPutW(buf, 14, pck.TCPwin); // window
-        bits.msbPutW(buf, 16, 0); // sum
-        bits.msbPutW(buf, 18, pck.TCPurg); // urgent
-        h.update(buf);
+        pck.hashHead(h, 0, size);
         pck.hashData(h, 0, pck.dataSize());
         h.update(pwd);
         return h.finish();
@@ -424,15 +408,6 @@ public class prtTcp extends prtGen {
         if (debugger.prtTcpTraf) {
             logger.debug("tx " + pck.UDPsrc + " -> " + pck.UDPtrg + " " + decodeFlags(pck.TCPflg) + " seq=" + pck.TCPseq
                     + " data=" + pck.dataSize() + " ack=" + pck.TCPack + " pwd=" + pwd);
-        }
-        if (pwd != null) {
-            typLenVal tlv = getTCPoption(null);
-            byte[] buf = getTCPpassword(pck, pwd.getBytes());
-            bits.byteCopy(buf, 0, tlv.valDat, 0, buf.length);
-            tlv.putBytes(pck, 19, 16, tlv.valDat); // md5
-            pck.putByte(0, 1); // nop
-            pck.putByte(1, 1); // nop
-            pck.putSkip(2);
         }
         if (pck.TCPmss > 0) {
             typLenVal tlv = getTCPoption(null);
@@ -455,6 +430,13 @@ public class prtTcp extends prtGen {
             pck.putByte(0, 1); // nop
             pck.putSkip(1);
         }
+        if (pwd != null) {
+            pck.putByte(0, 1); // nop
+            pck.putByte(1, 1); // nop
+            pck.putSkip(2);
+            typLenVal tlv = getTCPoption(null);
+            tlv.putBytes(pck, 19, 16, tlv.valDat); // md5
+        }
         int hdrSiz = size + pck.headSize();
         pck.merge2beg();
         pck.msbPutW(0, pck.UDPsrc); // source port
@@ -473,7 +455,23 @@ public class prtTcp extends prtGen {
         }
         pck.putSkip(size);
         pck.merge2beg();
-        pck.UDPsiz = size;
+        pck.UDPsiz = hdrSiz;
+        if (pwd == null) {
+            return;
+        }
+        pck.unMergeBytes(hdrSiz);
+        pck.putSkip(-hdrSiz);
+        pck.msbPutW(16, 0); // checksum
+        byte[] buf = getTCPpassword(pck, pwd.getBytes());
+        pck.putCopy(buf, 0, hdrSiz - buf.length, buf.length);
+        if (cfgAll.tcpChecksumTx) {
+            int i = pck.pseudoIPsum(hdrSiz + pck.dataSize());
+            i = pck.putIPsum(0, hdrSiz, i);
+            i = pck.getIPsum(0, pck.dataSize(), i);
+            pck.lsbPutW(16, 0xffff - i); // checksum
+        }
+        pck.putSkip(hdrSiz);
+        pck.merge2beg();
     }
 
     /**
@@ -723,6 +721,26 @@ public class prtTcp extends prtGen {
      */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
+        if (clnt.passwd != null) {
+            if (pck.TCPaut < 0) {
+                if (pr.state != prtTcpConn.stConReq) {
+                    logger.info("got missing authentication " + clnt);
+                    return;
+                }
+            } else {
+                pck.getSkip(-pck.UDPsiz);
+                pck.unMergeBytes(pck.UDPsiz);
+                pck.putSkip(-pck.UDPsiz);
+                pck.msbPutW(16, 0); // checksum
+                byte[] buf1 = getTCPpassword(pck, clnt.passwd.getBytes());
+                byte[] buf2 = new byte[buf1.length];
+                pck.getCopy(buf2, 0, -pck.TCPaut, buf1.length);
+                if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {
+                    logger.info("got invalid authentication " + clnt);
+                    return;
+                }
+            }
+        }
         synchronized (pr.lck) {
             int nowAcked = pck.TCPack - pr.seqLoc; // bytes acked from tx buffer
             int oldBytes = pr.seqRem - pck.TCPseq; // old bytes arrived from past

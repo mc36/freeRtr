@@ -332,6 +332,11 @@ public class packHolder {
     public int TCPwsc;
 
     /**
+     * authentication
+     */
+    public int TCPaut;
+
+    /**
      * payload type
      */
     public int RTPtyp;
@@ -404,6 +409,7 @@ public class packHolder {
         TCPtsV = 0;
         TCPtsE = 0;
         TCPwsc = 0;
+        TCPaut = -1;
         RTPtyp = 0;
         RTPsrc = 0;
     }
@@ -481,6 +487,7 @@ public class packHolder {
         TCPtsV = src.TCPtsV;
         TCPtsE = src.TCPtsE;
         TCPwsc = src.TCPwsc;
+        TCPaut = src.TCPaut;
         RTPtyp = src.RTPtyp;
         RTPsrc = src.RTPsrc;
         if (copyHdr) {
