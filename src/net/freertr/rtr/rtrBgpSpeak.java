@@ -2151,14 +2151,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if ((currChg > 0) && (rxReady() < (neigh.bufferSize / 4))) {
             parent.compute.wakeup();
         }
-        if (neigh.maxPrefixCnt < 1) {
+        if (neigh.maxPrxInCnt < 1) {
             return false;
         }
         int i = getPrefixGot();
-        if (i > ((neigh.maxPrefixCnt * neigh.maxPrefixPrc) / 100)) {
+        if (i > ((neigh.maxPrxInCnt * neigh.maxPrxInPrc) / 100)) {
             logger.info("neighbor " + neigh.peerAddr + " sent " + i + " prefixes");
         }
-        if (i > neigh.maxPrefixCnt) {
+        if (i > neigh.maxPrxInCnt) {
             sendNotify(6, 1);
         }
         return false;

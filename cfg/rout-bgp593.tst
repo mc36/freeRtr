@@ -79,7 +79,7 @@ router bgp4 1
  neigh 2.2.2.3 remote-as 1
  neigh 2.2.2.3 update lo0
  neigh 2.2.2.3 send-comm both
- neigh 2.2.2.3 maximum 5 50
+ neigh 2.2.2.3 maximum-prefix-in 5 50
  neigh 2.2.2.3 route-target-filter-out
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
@@ -96,7 +96,7 @@ router bgp6 1
  neigh 4321::3 remote-as 1
  neigh 4321::3 update lo0
  neigh 4321::3 send-comm both
- neigh 4321::3 maximum 5 50
+ neigh 4321::3 maximum-prefix-in 5 50
  neigh 4321::3 route-target-filter-out
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
@@ -221,7 +221,7 @@ router bgp4 1
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
- neigh 2.2.2.1 maximum 5 50
+ neigh 2.2.2.1 maximum-prefix-in 5 50
  neigh 2.2.2.1 route-target-filter-out
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
@@ -238,7 +238,7 @@ router bgp6 1
  neigh 4321::1 remote-as 1
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
- neigh 4321::1 maximum 5 50
+ neigh 4321::1 maximum-prefix-in 5 50
  neigh 4321::1 route-target-filter-out
  afi-ovrf v2 ena
  afi-ovrf v2 red conn

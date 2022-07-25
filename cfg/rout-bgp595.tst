@@ -76,7 +76,7 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- neigh 2.2.2.2 maximum 5 50
+ neigh 2.2.2.2 maximum-prefix-in 5 50
  neigh 2.2.2.2 route-target-filter-out
  afi-vpls 1:1 bridge 1
  afi-vpls 1:1 update lo0
@@ -93,7 +93,7 @@ router bgp6 1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
- neigh 4321::2 maximum 5 50
+ neigh 4321::2 maximum-prefix-in 5 50
  neigh 4321::2 route-target-filter-out
  afi-vpls 1:1 bridge 2
  afi-vpls 1:1 update lo0
@@ -180,7 +180,7 @@ router bgp4 1
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
- neigh 2.2.2.1 maximum 5 50
+ neigh 2.2.2.1 maximum-prefix-in 5 50
  neigh 2.2.2.1 route-target-filter-out
  afi-vpls 1:1 bridge 1
  afi-vpls 1:1 update lo0
@@ -197,7 +197,7 @@ router bgp6 1
  neigh 4321::1 remote-as 1
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
- neigh 4321::1 maximum 5 50
+ neigh 4321::1 maximum-prefix-in 5 50
  neigh 4321::1 route-target-filter-out
  afi-vpls 1:1 bridge 2
  afi-vpls 1:1 update lo0

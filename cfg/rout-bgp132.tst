@@ -33,7 +33,7 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 maximum 3 50
+ neigh 1.1.1.2 maximum-prefix-in 3 50
  red conn
  exit
 router bgp6 1
@@ -43,7 +43,7 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 maximum 3 50
+ neigh 1234:1::2 maximum-prefix-in 3 50
  red conn
  exit
 !

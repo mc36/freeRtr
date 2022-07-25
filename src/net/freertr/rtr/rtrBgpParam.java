@@ -418,12 +418,22 @@ public abstract class rtrBgpParam {
     /**
      * max prefix count
      */
-    public int maxPrefixCnt;
+    public int maxPrxInCnt;
 
     /**
      * max prefix percent
      */
-    public int maxPrefixPrc;
+    public int maxPrxInPrc;
+
+    /**
+     * max prefix count
+     */
+    public int maxPrxOutCnt;
+
+    /**
+     * max prefix percent
+     */
+    public int maxPrxOutPrc;
 
     /**
      * enforce first as
@@ -1058,8 +1068,10 @@ public abstract class rtrBgpParam {
                 dampenPfxs = new tabGen<rtrBgpDamp>();
             }
         }
-        maxPrefixCnt = src.maxPrefixCnt;
-        maxPrefixPrc = src.maxPrefixPrc;
+        maxPrxInCnt = src.maxPrxInCnt;
+        maxPrxInPrc = src.maxPrxInPrc;
+        maxPrxOutCnt = src.maxPrxOutCnt;
+        maxPrxOutPrc = src.maxPrxOutPrc;
         enforceFirst = src.enforceFirst;
         removePrivAsOut = src.removePrivAsOut;
         removePrivAsIn = src.removePrivAsIn;
@@ -1449,7 +1461,10 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       unidirection                not advertise when receiving");
         l.add(null, "3  .       fall-over                   track outgoing interface");
         l.add(null, "3  .       soft-reconfiguration        enable soft reconfiguration");
-        l.add(null, "3  4       maximum-prefix              maximum number of accepted prefixes");
+        l.add(null, "3  4       maximum-prefix-in           maximum number of accepted prefixes");
+        l.add(null, "4  5         <num>                     prefix count");
+        l.add(null, "5  .           <num>                   warning percent");
+        l.add(null, "3  4       maximum-prefix-out          maximum number of advertised prefixes");
         l.add(null, "4  5         <num>                     prefix count");
         l.add(null, "5  .           <num>                   warning percent");
         l.add(null, "3  4       dampening                   route flap dampening of prefixes");
@@ -1627,7 +1642,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !rtfilterIn, beg, nei + "route-target-filter-in", "");
         cmds.cfgLine(l, !rtfilterOut, beg, nei + "route-target-filter-out", "");
         cmds.cfgLine(l, !enforceFirst, beg, nei + "enforce-first-as", "");
-        cmds.cfgLine(l, maxPrefixCnt < 1, beg, nei + "maximum-prefix", maxPrefixCnt + " " + maxPrefixPrc);
+        cmds.cfgLine(l, maxPrxInCnt < 1, beg, nei + "maximum-prefix-in", maxPrxInCnt + " " + maxPrxInPrc);
+        cmds.cfgLine(l, maxPrxOutCnt < 1, beg, nei + "maximum-prefix-out", maxPrxOutCnt + " " + maxPrxOutPrc);
         cmds.cfgLine(l, (dampenWthd + dampenAnno) < 1, beg, nei + "dampening", dampenWthd + " " + dampenAnno + " " + dampenMinp + " " + dampenMaxp + " " + dampenSupp + " " + dampenReus + " " + dampenHalf);
         cmds.cfgLine(l, !serverClnt, beg, nei + "route-server-client", "");
         cmds.cfgLine(l, !removePrivAsOut, beg, nei + "remove-private-as-out", "");
@@ -2150,14 +2166,24 @@ public abstract class rtrBgpParam {
             dampenPfxs = null;
             return false;
         }
-        if (s.equals("maximum-prefix")) {
-            maxPrefixCnt = bits.str2num(cmd.word());
-            maxPrefixPrc = bits.str2num(cmd.word());
+        if (s.equals("maximum-prefix-in")) {
+            maxPrxInCnt = bits.str2num(cmd.word());
+            maxPrxInPrc = bits.str2num(cmd.word());
             if (!negated) {
                 return false;
             }
-            maxPrefixCnt = 0;
-            maxPrefixPrc = 0;
+            maxPrxInCnt = 0;
+            maxPrxInPrc = 0;
+            return false;
+        }
+        if (s.equals("maximum-prefix-out")) {
+            maxPrxOutCnt = bits.str2num(cmd.word());
+            maxPrxOutPrc = bits.str2num(cmd.word());
+            if (!negated) {
+                return false;
+            }
+            maxPrxOutCnt = 0;
+            maxPrxOutPrc = 0;
             return false;
         }
         if (s.equals("route-server-client")) {

@@ -1040,6 +1040,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             conn.closeNow();
             return;
         }
+        if (maxPrxOutCnt > 0) {
+            int i = conn.getPrefixSent();
+            if (i > ((maxPrxOutCnt * maxPrxOutPrc) / 100)) {
+                logger.info("neighbor " + peerAddr + " got " + i + " prefixes");
+            }
+            if (i > maxPrxOutCnt) {
+                conn.sendNotify(6, 1);
+                return;
+            }
+        }
         int doing = lower.compRound.get();
         if (doing == conn.adversion.get()) {
             return;
