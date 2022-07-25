@@ -2490,6 +2490,7 @@ qc pass: vpls/ldp with ingress rtfilter
 qc pass: vpls/ldp with egress rtfilter
 qc pass: evpn/pbb with ingress rtfilter
 qc pass: evpn/pbb with egress rtfilter
+qc pass: ebgp ao password
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

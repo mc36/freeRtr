@@ -1853,6 +1853,7 @@ public abstract class rtrBgpParam {
             cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
             if (res == null) {
                 cmd.error("no such interface");
+                return false;
             }
             if (res.vrfFor != lower.vrfCore) {
                 cmd.error("in other vrf");
@@ -1879,6 +1880,7 @@ public abstract class rtrBgpParam {
             dump = lower.dmps.find(mon);
             if (dump == null) {
                 cmd.error("no such dump");
+                return false;
             }
             return false;
         }
@@ -1891,6 +1893,7 @@ public abstract class rtrBgpParam {
             monitor = lower.mons.find(mon);
             if (monitor == null) {
                 cmd.error("no such monitor");
+                return false;
             }
             return false;
         }

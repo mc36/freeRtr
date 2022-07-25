@@ -4,7 +4,10 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cry.cryHashGeneric;
+import net.freertr.cry.cryHashHmac;
 import net.freertr.cry.cryHashMd5;
+import net.freertr.cry.cryHashSha1;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
@@ -363,25 +366,23 @@ public class prtTcp extends prtGen {
         pck.merge2beg();
     }
 
-    private static void hashOneAddress(cryHashMd5 md, addrIP adr) {
-        byte[] buf = new byte[128];
+    private static void hashOneAddress(cryHashGeneric md, addrIP adr) {
+        byte[] buf;
         if (adr.isIPv4()) {
+            buf = new byte[addrIPv4.size];
             addrIPv4 adr4 = adr.toIPv4();
             adr4.toBuffer(buf, 0);
-            md.update(buf, 0, addrIPv4.size);
         } else {
+            buf = new byte[addrIPv6.size];
             addrIPv6 adr6 = adr.toIPv6();
             adr6.toBuffer(buf, 0);
-            md.update(buf, 0, addrIPv6.size);
         }
+        md.update(buf);
     }
 
-    private static byte[] getTCPpassword(packHolder pck, int kid, byte[] pwd) {
-/////logger.debug("here "+kid);////
-        cryHashMd5 h = new cryHashMd5();
-        h.init();
-        hashOneAddress(h, pck.IPsrc);
-        hashOneAddress(h, pck.IPtrg);
+    private static void hashPseudoHdr(cryHashGeneric md, packHolder pck) {
+        hashOneAddress(md, pck.IPsrc);
+        hashOneAddress(md, pck.IPtrg);
         byte[] buf;
         if (pck.IPsrc.isIPv4()) {
             buf = new byte[4];
@@ -392,11 +393,62 @@ public class prtTcp extends prtGen {
             bits.msbPutD(buf, 0, pck.dataSize() + pck.UDPsiz);
             bits.msbPutD(buf, 4, protoNum);
         }
-        h.update(buf);
-        pck.hashHead(h, 0, size);
-        pck.hashData(h, 0, pck.dataSize());
-        h.update(pwd);
-        return h.finish();
+        md.update(buf);
+    }
+
+    private static byte[] getTCPkdfRng(addrIP sa, addrIP ta, int sp, int tp, int kid, String pwd, int si, int ti) {
+        if (pwd == null) {
+            return null;
+        }
+        if (kid < 0) {
+            return null;
+        }
+        cryHashHmac h = new cryHashHmac(new cryHashSha1(), pwd.getBytes());
+        h.init();
+        h.update(1); // i
+        h.update("TCP-AO".getBytes()); // label
+        hashOneAddress(h, sa);
+        hashOneAddress(h, ta);
+        byte[] buf = new byte[4];
+        bits.msbPutW(buf, 0, sp);
+        bits.msbPutW(buf, 2, tp);
+        h.update(buf); // src-trg ports
+        bits.msbPutD(buf, 0, si);
+        h.update(buf); // src isn
+        bits.msbPutD(buf, 0, ti);
+        h.update(buf); // trg isn
+        h.update(0); // length
+        h.update(160); // length
+        buf = h.finish();
+        return buf;
+    }
+
+    private static byte[] getTCPpassword(packHolder pck, int kid, String pwd, byte[] tky) {
+        if (kid < 0) {
+            cryHashMd5 h = new cryHashMd5();
+            h.init();
+            hashPseudoHdr(h, pck);
+            pck.hashHead(h, 0, size);
+            pck.hashData(h, 0, pck.dataSize());
+            h.update(pwd.getBytes());
+            return h.finish();
+        }
+        cryHashHmac h = new cryHashHmac(new cryHashSha1(), tky);
+        h.init();
+        h.update(new byte[4]); // sne
+        hashPseudoHdr(h, pck);
+        pck.hashHead(h, 0, pck.UDPsiz - pck.TCPaut); // tcp header
+        h.update(kid); // key id
+        h.update(kid); // key id
+        h.update(new byte[12]); // tcp-ao mac
+        pck.hashHead(h, pck.UDPsiz - pck.TCPaut + 14, pck.TCPaut - 14); // tcp footer
+        pck.hashData(h, 0, pck.dataSize()); // payload
+        byte[] buf = h.finish();
+        byte[] res = new byte[14];
+        res[0] = (byte) kid;
+        res[1] = (byte) kid;
+        bits.byteCopy(buf, 0, res, 2, 12);
+        return res;
     }
 
     /**
@@ -405,8 +457,9 @@ public class prtTcp extends prtGen {
      * @param pck packet to update
      * @param kid key id, if applicable
      * @param pwd password
+     * @param tky traffic key
      */
-    public static void createTCPheader(packHolder pck, int kid, String pwd) {
+    public static void createTCPheader(packHolder pck, int kid, String pwd, byte[] tky) {
         pck.IPprt = protoNum;
         if (debugger.prtTcpTraf) {
             logger.debug("tx " + pck.UDPsrc + " -> " + pck.UDPtrg + " " + decodeFlags(pck.TCPflg) + " seq=" + pck.TCPseq
@@ -434,14 +487,16 @@ public class prtTcp extends prtGen {
             pck.putSkip(1);
         }
         if (pwd != null) {
-            pck.putByte(0, 1); // nop
-            pck.putByte(1, 1); // nop
-            pck.putSkip(2);
             typLenVal tlv = getTCPoption(null);
             if (kid < 0) {
+                pck.putByte(0, 1); // nop
+                pck.putByte(1, 1); // nop
+                pck.putSkip(2);
                 tlv.putBytes(pck, 19, 16, tlv.valDat); // md5 auth
+                pck.TCPaut = 16;
             } else {
-                tlv.putBytes(pck, 19, 16, tlv.valDat); // auth opt
+                tlv.putBytes(pck, 29, 14, tlv.valDat); // auth opt
+                pck.TCPaut = 14;
             }
         }
         int hdrSiz = size + pck.headSize();
@@ -469,7 +524,7 @@ public class prtTcp extends prtGen {
         pck.unMergeBytes(hdrSiz);
         pck.putSkip(-hdrSiz);
         pck.msbPutW(16, 0); // checksum
-        byte[] buf = getTCPpassword(pck, kid, pwd.getBytes());
+        byte[] buf = getTCPpassword(pck, kid, pwd, tky);
         pck.putCopy(buf, 0, hdrSiz - buf.length, buf.length);
         if (cfgAll.tcpChecksumTx) {
             int i = pck.pseudoIPsum(hdrSiz + pck.dataSize());
@@ -518,7 +573,7 @@ public class prtTcp extends prtGen {
         if ((src.TCPflg & flagFIN) != 0) {
             pck.TCPack++;
         }
-        createTCPheader(pck, -1, null);
+        createTCPheader(pck, -1, null, null);
         fwdCore.protoPack(ifc, null, pck);
     }
 
@@ -587,7 +642,7 @@ public class prtTcp extends prtGen {
             }
             pr.netOut += datSiz;
         }
-        createTCPheader(pck, clnt.keyId, clnt.passwd);
+        createTCPheader(pck, clnt.keyId, clnt.passwd, pr.trfKtx);
         fwdCore.protoPack(clnt.iface, null, pck);
         return datSiz;
     }
@@ -644,9 +699,13 @@ public class prtTcp extends prtGen {
         }
         pr.staTim = bits.getTime();
         if (pck == null) {
+            pr.trfKtx = getTCPkdfRng(clnt.iface.addr, clnt.peerAddr, clnt.portLoc, clnt.portRem, clnt.keyId, clnt.passwd, pr.seqLoc - 1, 0);
             pr.state = prtTcpConn.stConReq;
             return false;
         }
+        pr.trfKrx = getTCPkdfRng(clnt.peerAddr, clnt.iface.addr, clnt.portRem, clnt.portLoc, clnt.keyId, clnt.passwd, pck.TCPseq, 0);
+        pr.trfKtx = getTCPkdfRng(clnt.iface.addr, clnt.peerAddr, clnt.portLoc, clnt.portRem, clnt.keyId, clnt.passwd, pr.seqLoc - 1, pck.TCPseq);
+        pr.trfKfx = getTCPkdfRng(clnt.peerAddr, clnt.iface.addr, clnt.portRem, clnt.portLoc, clnt.keyId, clnt.passwd, pck.TCPseq, pr.seqLoc - 1);
         if (pck.TCPtsV == 0) {
             pr.tmstmpTx = 0;
         }
@@ -728,27 +787,31 @@ public class prtTcp extends prtGen {
      */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.proto;
-        if (clnt.passwd != null) {
-            if (pck.TCPaut < 0) {
-                if (pr.state != prtTcpConn.stConReq) {
-                    logger.info("got missing authentication " + clnt);
-                    return;
-                }
-            } else {
-                pck.getSkip(-pck.UDPsiz);
-                pck.unMergeBytes(pck.UDPsiz);
-                pck.putSkip(-pck.UDPsiz);
-                pck.msbPutW(16, 0); // checksum
-                byte[] buf1 = getTCPpassword(pck, clnt.keyId, clnt.passwd.getBytes());
-                byte[] buf2 = new byte[buf1.length];
-                pck.getCopy(buf2, 0, -pck.TCPaut, buf1.length);
-                if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {
-                    logger.info("got invalid authentication " + clnt);
-                    return;
+        synchronized (pr.lck) {
+            if (clnt.passwd != null) {
+                if (pck.TCPaut < 0) {
+                    if ((pr.state != prtTcpConn.stConReq) && ((pck.TCPflg & flagRST) == 0)) {
+                        logger.info("got missing authentication " + clnt);
+                        return;
+                    }
+                } else {
+                    if (pr.state == prtTcpConn.stConReq) {
+                        pr.trfKrx = getTCPkdfRng(clnt.peerAddr, clnt.iface.addr, clnt.portRem, clnt.portLoc, clnt.keyId, clnt.passwd, pck.TCPseq, pr.seqLoc - 1);
+                        pr.trfKfx = getTCPkdfRng(clnt.iface.addr, clnt.peerAddr, clnt.portLoc, clnt.portRem, clnt.keyId, clnt.passwd, pr.seqLoc - 1, pck.TCPseq);
+                    }
+                    pck.getSkip(-pck.UDPsiz);
+                    pck.unMergeBytes(pck.UDPsiz);
+                    pck.putSkip(-pck.UDPsiz);
+                    pck.msbPutW(16, 0); // checksum
+                    byte[] buf1 = getTCPpassword(pck, clnt.keyId, clnt.passwd, pr.trfKrx);
+                    byte[] buf2 = new byte[buf1.length];
+                    pck.getCopy(buf2, 0, -pck.TCPaut, buf1.length);
+                    if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {
+                        logger.info("got invalid authentication " + clnt);
+                        return;
+                    }
                 }
             }
-        }
-        synchronized (pr.lck) {
             int nowAcked = pck.TCPack - pr.seqLoc; // bytes acked from tx buffer
             int oldBytes = pr.seqRem - pck.TCPseq; // old bytes arrived from past
             int packSize = pck.dataSize(); // bytes in packet
@@ -787,6 +850,7 @@ public class prtTcp extends prtGen {
                 pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
                 pr.segSiz = regulateMss(pck.TCPmss);
                 pr.state = prtTcpConn.stOpened;
+                pr.trfKtx = pr.trfKfx;
                 pr.staTim = bits.getTime();
                 pr.activWait = cfgAll.tcpTimeNow;
                 pr.activFrcd = true;
@@ -916,6 +980,7 @@ public class prtTcp extends prtGen {
                     logger.info("got unwanted syn " + clnt);
                     return;
                 }
+                pr.trfKrx = pr.trfKfx;
                 return;
             }
             if ((flg & flagFIN) != 0) {
@@ -1257,6 +1322,21 @@ class prtTcpConn {
      * ece received
      */
     protected boolean ecnRe;
+
+    /**
+     * receive traffic key
+     */
+    protected byte[] trfKrx;
+
+    /**
+     * transmit traffic key
+     */
+    protected byte[] trfKtx;
+
+    /**
+     * final traffic key
+     */
+    protected byte[] trfKfx;
 
     public String toString() {
         switch (state) {
