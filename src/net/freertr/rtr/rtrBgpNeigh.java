@@ -1037,7 +1037,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     private void doAdvert() {
         if ((bits.getTime() - conn.lastRx) > holdTimer) {
             conn.sendNotify(4, 0);
-            conn.closeNow();
             return;
         }
         if (maxPrxOutCnt > 0) {
