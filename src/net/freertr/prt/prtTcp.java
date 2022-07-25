@@ -433,6 +433,9 @@ public class prtTcp extends prtGen {
             h.update(pwd.getBytes());
             return h.finish();
         }
+        if (tky == null) {
+            return null;
+        }
         cryHashHmac h = new cryHashHmac(new cryHashSha1(), tky);
         h.init();
         h.update(new byte[4]); // sne
@@ -525,7 +528,9 @@ public class prtTcp extends prtGen {
         pck.putSkip(-hdrSiz);
         pck.msbPutW(16, 0); // checksum
         byte[] buf = getTCPpassword(pck, kid, pwd, tky);
-        pck.putCopy(buf, 0, hdrSiz - buf.length, buf.length);
+        if (buf != null) {
+            pck.putCopy(buf, 0, hdrSiz - buf.length, buf.length);
+        }
         if (cfgAll.tcpChecksumTx) {
             int i = pck.pseudoIPsum(hdrSiz + pck.dataSize());
             i = pck.putIPsum(0, hdrSiz, i);
@@ -804,12 +809,25 @@ public class prtTcp extends prtGen {
                     pck.putSkip(-pck.UDPsiz);
                     pck.msbPutW(16, 0); // checksum
                     byte[] buf1 = getTCPpassword(pck, clnt.keyId, clnt.passwd, pr.trfKrx);
+                    if (buf1 == null) {
+                        logger.info("got invalid authentication state " + clnt);
+                        return;
+                    }
+                    if (pck.getByte(-pck.TCPaut - 1) != (buf1.length + 2)) {
+                        logger.info("got invalid authentication size " + clnt);
+                        return;
+                    }
                     byte[] buf2 = new byte[buf1.length];
                     pck.getCopy(buf2, 0, -pck.TCPaut, buf1.length);
                     if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) != 0) {
-                        logger.info("got invalid authentication " + clnt);
+                        logger.info("got invalid authentication hash " + clnt);
                         return;
                     }
+                }
+            } else {
+                if (pck.TCPaut >= 0) {
+                    logger.info("got unwanted authentication " + clnt);
+                    return;
                 }
             }
             int nowAcked = pck.TCPack - pr.seqLoc; // bytes acked from tx buffer
