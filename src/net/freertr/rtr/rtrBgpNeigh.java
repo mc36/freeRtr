@@ -1039,16 +1039,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             conn.sendNotify(4, 0);
             return;
         }
-        if (maxPrxOutCnt > 0) {
-            int i = conn.getPrefixSent();
-            if (i > ((maxPrxOutCnt * maxPrxOutPrc) / 100)) {
-                logger.info("neighbor " + peerAddr + " got " + i + " prefixes");
-            }
-            if (i > maxPrxOutCnt) {
-                conn.sendNotify(6, 1);
-                return;
-            }
-        }
         int doing = lower.compRound.get();
         if (doing == conn.adversion.get()) {
             return;
@@ -1073,6 +1063,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             b = advertFull();
         } else {
             b = advertIncr();
+        }
+        if (maxPrxOutCnt > 0) {
+            int i = conn.getPrefixSent();
+            if (i > ((maxPrxOutCnt * maxPrxOutPrc) / 100)) {
+                logger.info("neighbor " + peerAddr + " got " + i + " prefixes");
+            }
+            if (i > maxPrxOutCnt) {
+                conn.sendNotify(6, 1);
+            }
         }
         advs = conn.cntr.packTx - advs;
         if (advs > 0) {
