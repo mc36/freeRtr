@@ -13427,3 +13427,7 @@ qc pass: dhcp with static allocation
 qc pass: dhcp with excluded address
 ---------------------------------- 2022-07-25 07:13:03 22.7.25
 qc pass: ebgp ao password
+---------------------------------- 2022-07-25 08:27:06 22.7.25
+qc pass: interop1: bgp ao authentication
+qc pass: interop2: bgp ao authentication
+qc pass: interop9: bgp ao authentication

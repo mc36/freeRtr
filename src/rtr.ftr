@@ -890,6 +890,7 @@ qc pass: interop1: bgp aigp
 qc pass: interop1: bgp with php labels
 qc pass: interop1: bgp large community
 qc pass: interop1: vpls/ldp cw over bgp
+qc pass: interop1: bgp ao authentication
 qc pass: interop1: dhcp server
 qc pass: interop1: dhcp client
 qc pass: interop1: dns
@@ -1018,6 +1019,7 @@ qc pass: interop2: bgp 6pe
 qc pass: interop2: evpn/vpws over bgp
 qc pass: interop2: bgp aigp
 qc pass: interop2: bgp with php labels
+qc pass: interop2: bgp ao authentication
 qc pass: interop2: eigrp
 qc pass: interop2: eigrp prefix withdraw
 qc pass: interop2: ethernet encapsulation
@@ -1131,6 +1133,7 @@ qc pass: interop9: vpls/bgp over bgp
 qc pass: interop9: bgp extended community
 qc pass: interop9: bgp large community
 qc pass: interop9: bgp with php labels
+qc pass: interop9: bgp ao authentication
 qc pass: interop9: ethernet encapsulation
 qc pass: interop9: dot1q encapsulation
 qc pass: interop9: fragmentation and reassembly
