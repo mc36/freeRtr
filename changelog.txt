@@ -13437,3 +13437,6 @@ qc pass: bgp maximum prefix in
 qc pass: bgp maximum prefix out
 ---------------------------------- 2022-07-26 06:20:36 22.7.26
 qc pass: bgp attribute filtering
+---------------------------------- 2022-07-26 20:00:34 22.7.26
+qc pass: bgp routemap filtering with unknown attribute
+qc pass: bgp routepolicy filtering with unknown attribute
