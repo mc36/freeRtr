@@ -1,7 +1,11 @@
 package net.freertr.tab;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
 
 /**
  * represents one attribute blob
@@ -32,7 +36,30 @@ public class tabRouteBlob implements Comparator<tabRouteBlob> {
     public byte[] data;
 
     public String toString() {
-        return type + ":" + bits.byteDump(data, 0, -1);
+        return type + " " + bits.byteDump(data, 0, -1);
+    }
+
+    /**
+     * convert from string
+     *
+     * @param cmd command to parse
+     */
+    public void fromString(cmds cmd) {
+        type = bits.str2num(cmd.word());
+        flag = rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive;
+        List<Integer> buf = new ArrayList<Integer>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            buf.add(bits.fromHex(a));
+        }
+        data = new byte[buf.size()];
+        for (int i = 0; i < data.length; i++) {
+            int o = buf.get(i);
+            data[i] = (byte) o;
+        }
     }
 
     /**

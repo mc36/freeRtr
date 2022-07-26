@@ -955,18 +955,7 @@ public class userPacket {
                 return null;
             }
             tabRouteBlob blb = new tabRouteBlob();
-            blb.type = bits.str2num(cmd.word());
-            blb.flag = rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive;
-            blb.data = new byte[0];
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                byte[] buf = new byte[1];
-                buf[0] = (byte) bits.fromHex(a);
-                blb.data = bits.byteConcat(blb.data, buf);
-            }
+            blb.fromString(cmd);
             pipeSide strm = null;
             for (;;) {
                 cmd.error("connecting " + trg);
