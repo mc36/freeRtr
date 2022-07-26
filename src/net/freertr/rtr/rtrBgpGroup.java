@@ -13,6 +13,7 @@ import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
@@ -621,8 +622,16 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.tunelTyp = 0;
             ntry.tunelVal = null;
         }
-        if (!unknowns) {
+        if ((unknowns == null) || (ntry.unknown == null)) {
             ntry.unknown = null;
+        } else {
+            for (int i = ntry.unknown.size() - 1; i >= 0; i--) {
+                tabRouteBlob cur = ntry.unknown.get(i);
+                if (unknowns.matches(cur.type)) {
+                    continue;
+                }
+                ntry.unknown.remove(i);
+            }
         }
         if (!attribSet) {
             ntry.attribAs = 0;
