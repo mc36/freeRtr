@@ -102,6 +102,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher pathlenMatch = new tabIntMatcher();
 
     /**
+     * unknown attribute matched
+     */
+    public tabIntMatcher unknownMatch = new tabIntMatcher();
+
+    /**
      * aspath end matched
      */
     public tabIntMatcher asendMatch = new tabIntMatcher();
@@ -461,6 +466,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match locpref " + locPrefMatch);
         l.add(beg + "match validity " + validityMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
+        l.add(beg + "match unknown " + unknownMatch);
         l.add(beg + "match asend " + asendMatch);
         l.add(beg + "match asbeg " + asbegMatch);
         l.add(beg + "match asmid " + asmidMatch);
@@ -604,6 +610,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!pathlenMatch.matches(net.best.asPathLen())) {
+            return false;
+        }
+        if (!unknownMatch.matches(net.best.unkAttrCnt())) {
             return false;
         }
         if (!asendMatch.matches(net.best.asPathEnd())) {

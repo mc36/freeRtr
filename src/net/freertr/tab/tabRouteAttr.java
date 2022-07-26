@@ -1166,6 +1166,18 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * number of unknown attributes
+     *
+     * @return count
+     */
+    public int unkAttrCnt() {
+        if (unknown == null) {
+            return 0;
+        }
+        return unknown.size();
+    }
+
+    /**
      * end of as path
      *
      * @return end of as path, -1 if none

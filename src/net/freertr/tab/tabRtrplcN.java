@@ -292,6 +292,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         pathlen,
         /**
+         * unknown
+         */
+        unknown,
+        /**
          * asend
          */
         asend,
@@ -606,6 +610,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "validity " + intMatch;
             case pathlen:
                 return "pathlen " + intMatch;
+            case unknown:
+                return "unknown " + intMatch;
             case asend:
                 return "asend " + intMatch;
             case asbeg:
@@ -749,6 +755,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.validity);
             case pathlen:
                 return intMatch.matches(net.best.asPathLen());
+            case unknown:
+                return intMatch.matches(net.best.unkAttrCnt());
             case asend:
                 return intMatch.matches(net.best.asPathEnd());
             case asbeg:

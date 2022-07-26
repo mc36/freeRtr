@@ -70,6 +70,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match aigp all",
         "route-map .*! sequence .* match validity all",
         "route-map .*! sequence .* match pathlen all",
+        "route-map .*! sequence .* match unknown all",
         "route-map .*! sequence .* match asend all",
         "route-map .*! sequence .* match asbeg all",
         "route-map .*! sequence .* match asmid all",
@@ -217,6 +218,9 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "3 .       <num>             validity");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     pathlen             match as path length");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     unknown             match number of unknown attributes");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     asend               match as path ending");
@@ -585,6 +589,13 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("pathlen")) {
                 if (ntry.pathlenMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("unknown")) {
+                if (ntry.unknownMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
                 }
@@ -972,6 +983,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("pathlen")) {
                 ntry.pathlenMatch.set2always();
+                return;
+            }
+            if (a.equals("unknown")) {
+                ntry.unknownMatch.set2always();
                 return;
             }
             if (a.equals("asend")) {

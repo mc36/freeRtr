@@ -151,6 +151,9 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     pathlen             match as path length");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     unknown             match number of unknown attributes");
+        l.add(null, "3 .       <num>             length");
+        l.add(null, "3 .       all               any value");
         l.add(null, "2 3     asend               match as path ending");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
@@ -460,6 +463,14 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("pathlen")) {
             ntry.ifMode = tabRtrplcN.ifType.pathlen;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("unknown")) {
+            ntry.ifMode = tabRtrplcN.ifType.unknown;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
