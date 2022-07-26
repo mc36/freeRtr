@@ -1,5 +1,6 @@
 package net.freertr.tab;
 
+import java.util.Comparator;
 import net.freertr.util.bits;
 
 /**
@@ -39,7 +40,11 @@ public class tabIntMatcher {
         /**
          * mask
          */
-        mask
+        mask,
+        /**
+         * list
+         */
+        list
     }
 
     /**
@@ -51,6 +56,11 @@ public class tabIntMatcher {
      * range upper value (inclusive)
      */
     public int rangeMax;
+
+    /**
+     * list of allowed values;
+     */
+    public tabGen<tabIntMatcherVal> allowed;
 
     /**
      * copy the matcher
@@ -81,6 +91,8 @@ public class tabIntMatcher {
                 return ((i >= rangeMin) && (i <= rangeMax));
             case mask:
                 return (i & rangeMax) == rangeMin;
+            case list:
+                return allowed.find(new tabIntMatcherVal(i)) != null;
             default:
                 return false;
         }
@@ -122,6 +134,29 @@ public class tabIntMatcher {
             rangeMin &= rangeMax;
             return false;
         }
+        i = s.indexOf(",");
+        if (i >= 0) {
+            allowed = new tabGen<tabIntMatcherVal>();
+            for (;;) {
+                i = s.indexOf(",");
+                String a;
+                if (i < 0) {
+                    a = s;
+                    s = "";
+                } else {
+                    a = s.substring(0, i);
+                    s = s.substring(i + 1, s.length());
+                }
+                allowed.add(new tabIntMatcherVal(bits.str2num(a)));
+                if (i < 0) {
+                    break;
+                }
+            }
+            action = actionType.list;
+            rangeMin = allowed.get(0).val;
+            rangeMax = allowed.get(allowed.size() - 1).val;
+            return false;
+        }
         action = actionType.xact;
         rangeMin = bits.str2num(s);
         rangeMax = rangeMin;
@@ -149,9 +184,38 @@ public class tabIntMatcher {
                 return rangeMin + "-" + rangeMax;
             case mask:
                 return rangeMin + "&" + rangeMax;
+            case list:
+                String a = "";
+                for (int i = 0; i < allowed.size(); i++) {
+                    a += "," + allowed.get(i).val;
+                }
+                if (a.length() > 0) {
+                    a = a.substring(1, a.length());
+                }
+                return a;
             default:
                 return "unknown";
         }
+    }
+
+}
+
+class tabIntMatcherVal implements Comparator<tabIntMatcherVal> {
+
+    public final int val;
+
+    public tabIntMatcherVal(int i) {
+        val = i;
+    }
+
+    public int compare(tabIntMatcherVal o1, tabIntMatcherVal o2) {
+        if (o1.val < o2.val) {
+            return -1;
+        }
+        if (o1.val > o2.val) {
+            return +1;
+        }
+        return 0;
     }
 
 }
