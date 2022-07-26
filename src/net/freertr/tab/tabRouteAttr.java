@@ -422,6 +422,11 @@ public class tabRouteAttr<T extends addrType> {
     public List<tabLargeComm> lrgComm;
 
     /**
+     * unknown attributes
+     */
+    public List<tabRouteBlob> unknown;
+
+    /**
      * as path sequence
      */
     public List<Integer> pathSeq;
@@ -734,6 +739,14 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else {
             atr.lrgComm = null;
+        }
+        if (unknown != null) {
+            atr.unknown = new ArrayList<tabRouteBlob>();
+            for (int i = 0; i < unknown.size(); i++) {
+                atr.unknown.add(unknown.get(i).copyBytes());
+            }
+        } else {
+            atr.unknown = null;
         }
         atr.protoNum = protoNum;
         atr.rouTyp = rouTyp;
@@ -1054,6 +1067,22 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.lrgComm != null) {
             return 97;
         }
+        if (unknown != null) {
+            if (other.unknown == null) {
+                return 98;
+            }
+            if (unknown.size() != other.unknown.size()) {
+                return 99;
+            }
+            for (int i = 0; i < unknown.size(); i++) {
+                tabRouteBlob cmp = unknown.get(i);
+                if (cmp.compare(cmp, other.unknown.get(i)) != 0) {
+                    return 100;
+                }
+            }
+        } else if (other.unknown != null) {
+            return 101;
+        }
         return 0;
     }
 
@@ -1223,6 +1252,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    stdcomm      ignore standard community");
         hl.add(null, lv + " " + lv + ",.    extcomm      ignore extended community");
         hl.add(null, lv + " " + lv + ",.    lrgcomm      ignore large community");
+        hl.add(null, lv + " " + lv + ",.    unknown      ignore unknown attribute");
         hl.add(null, lv + " " + lv + ",.    sortcomm     sort communities");
         hl.add(null, lv + " " + lv + ",.    lnksta       ignore link state");
         hl.add(null, lv + " " + lv + ",.    aigp         ignore accumulated igp");
@@ -1321,6 +1351,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("empty")) {
             return 0x2000000;
         }
+        if (a.equals("unknown")) {
+            return 0x4000000;
+        }
         return 0;
     }
 
@@ -1412,6 +1445,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((i & 0x2000000) != 0) {
             a += " empty";
+        }
+        if ((i & 0x4000000) != 0) {
+            a += " unknown";
         }
         return a.substring(1, a.length());
     }
@@ -1541,6 +1577,9 @@ public class tabRouteAttr<T extends addrType> {
             ntry.pathSet = tabRouteUtil.nullEmptyList(ntry.pathSet);
             ntry.stdComm = tabRouteUtil.nullEmptyList(ntry.stdComm);
         }
+        if ((ign & 0x4000000) != 0) {
+            ntry.unknown = null;
+        }
     }
 
     /**
@@ -1602,6 +1641,12 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "internal source|" + rouSrc);
         lst.add(beg + "local label|" + labelLoc);
         lst.add(beg + "remote label|" + tabRouteUtil.dumpIntList(labelRem, "", ""));
+        if (unknown == null) {
+            return;
+        }
+        for (int i = 0; i < unknown.size(); i++) {
+            lst.add(beg + "unknown attribute|" + unknown.get(i));
+        }
     }
 
     /**
