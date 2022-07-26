@@ -13431,3 +13431,7 @@ qc pass: ebgp ao password
 qc pass: interop1: bgp ao authentication
 qc pass: interop2: bgp ao authentication
 qc pass: interop9: bgp ao authentication
+---------------------------------- 2022-07-25 22:02:31 22.7.25
+no qc pass: bgp maximum prefix
+qc pass: bgp maximum prefix in
+qc pass: bgp maximum prefix out

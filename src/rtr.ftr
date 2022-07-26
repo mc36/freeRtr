@@ -2027,7 +2027,7 @@ qc pass: bgp change in bandwidth with soft-reconfig
 qc pass: bgp change in standard community with soft-reconfig
 qc pass: bgp change in extended community with soft-reconfig
 qc pass: bgp aggregation
-qc pass: bgp maximum prefix
+qc pass: bgp maximum prefix in
 qc pass: evpn/pbb over ebgp
 qc pass: evpn/pbb over ibgp
 qc pass: evpn/pbb over bgp additional path
@@ -2494,6 +2494,7 @@ qc pass: vpls/ldp with egress rtfilter
 qc pass: evpn/pbb with ingress rtfilter
 qc pass: evpn/pbb with egress rtfilter
 qc pass: ebgp ao password
+qc pass: bgp maximum prefix out
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
