@@ -72,6 +72,9 @@ public class tabIntMatcher {
         r.action = action;
         r.rangeMin = rangeMin;
         r.rangeMax = rangeMax;
+        if (allowed != null) {
+            r.allowed = new tabGen<tabIntMatcherVal>(allowed);
+        }
         return r;
     }
 

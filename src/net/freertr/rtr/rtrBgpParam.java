@@ -13,6 +13,7 @@ import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.clnt.clntProxy;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
@@ -74,6 +75,11 @@ public abstract class rtrBgpParam {
      * remote description
      */
     public String description;
+
+    /**
+     * attribute filter
+     */
+    public tabIntMatcher attribFilter;
 
     /**
      * check neighbor route
@@ -993,6 +999,7 @@ public abstract class rtrBgpParam {
         template = src.template;
         description = src.description;
         fallOver = src.fallOver;
+        attribFilter = src.attribFilter;
         remoteConfed = src.remoteConfed;
         reflectClnt = src.reflectClnt;
         dmzLinkBw = src.dmzLinkBw;
@@ -1460,6 +1467,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       extended-update             advertise extended update capability");
         l.add(null, "3  .       unidirection                not advertise when receiving");
         l.add(null, "3  .       fall-over                   track outgoing interface");
+        l.add(null, "3  4       attribute-filter            filter received attributes");
+        l.add(null, "4  4,.       <num>                     attribute number");
         l.add(null, "3  .       soft-reconfiguration        enable soft reconfiguration");
         l.add(null, "3  4       maximum-prefix-in           maximum number of accepted prefixes");
         l.add(null, "4  5         <num>                     prefix count");
@@ -1634,6 +1643,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !extUpdate, beg, nei + "extended-update", "");
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
+        cmds.cfgLine(l, attribFilter == null, beg, nei + "attribute-filter", "" + attribFilter);
         cmds.cfgLine(l, !sendDefRou, beg, nei + "default-originate", "");
         cmds.cfgLine(l, !sendOtrDefRou, beg, nei + "other-default-originate", "");
         cmds.cfgLine(l, !intVpnClnt, beg, nei + "internal-vpn-client", "");
@@ -2300,6 +2310,15 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("fall-over")) {
             fallOver = !negated;
+            return false;
+        }
+        if (s.equals("attribute-filter")) {
+            if (negated) {
+                attribFilter = null;
+                return false;
+            }
+            attribFilter = new tabIntMatcher();
+            attribFilter.fromString(cmd.word());
             return false;
         }
         if (s.equals("confederation-peer")) {

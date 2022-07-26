@@ -2234,6 +2234,14 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void interpretAttribute(rtrBgpSpeak lower, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (lower != null) {
+            if (lower.neigh.attribFilter != null) {
+                if (lower.neigh.attribFilter.matches(pck.ETHtype)) {
+                    logger.info("filtered attribute " + pck.ETHtype + " from " + lower.neigh.peerAddr + " (" + pck.dump() + ")");
+                    return;
+                }
+            }
+        }
         switch (pck.ETHtype) {
             case attrReachable:
                 if (lower == null) {
