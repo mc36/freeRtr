@@ -954,8 +954,15 @@ public class userPacket {
             if (rmp == null) {
                 return null;
             }
-            tabRouteBlob blb = new tabRouteBlob();
-            blb.fromString(cmd);
+            List<tabRouteBlob> blbs = new ArrayList<tabRouteBlob>();
+            for (;;) {
+                tabRouteBlob blb = new tabRouteBlob();
+                if (blb.fromString(cmd)) {
+                    break;
+                }
+                blbs.add(blb);
+                cmd.error("will send " + blb);
+            }
             pipeSide strm = null;
             for (;;) {
                 cmd.error("connecting " + trg);
@@ -1002,13 +1009,12 @@ public class userPacket {
             pck.merge2beg();
             spk.packSend(pck, rtrBgpUtil.msgOpen);
             spk.sendKeepAlive();
-            cmd.error("sending " + prf + " network with attrib " + blb);
+            cmd.error("sending " + prf + " network");
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.best.unknown = blbs;
             ntry.prefix = prf.copyBytes();
             rmp.roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
             ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
-            ntry.best.unknown = new ArrayList<tabRouteBlob>();
-            ntry.best.unknown.add(blb);
             packHolder tmp = new packHolder(true, true);
             cmd.error("sending update");
             pck.clear();

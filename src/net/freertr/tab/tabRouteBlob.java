@@ -43,14 +43,22 @@ public class tabRouteBlob implements Comparator<tabRouteBlob> {
      * convert from string
      *
      * @param cmd command to parse
+     * @return true if error, false if success
      */
-    public void fromString(cmds cmd) {
-        type = bits.str2num(cmd.word());
+    public boolean fromString(cmds cmd) {
+        String a = cmd.word();
+        if (a.length() < 1) {
+            return true;
+        }
+        type = bits.str2num(a);
         flag = rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive;
         List<Integer> buf = new ArrayList<Integer>();
         for (;;) {
-            String a = cmd.word();
+            a = cmd.word();
             if (a.length() < 1) {
+                break;
+            }
+            if (a.equals(",")) {
                 break;
             }
             buf.add(bits.fromHex(a));
@@ -60,6 +68,7 @@ public class tabRouteBlob implements Comparator<tabRouteBlob> {
             int o = buf.get(i);
             data[i] = (byte) o;
         }
+        return false;
     }
 
     /**
