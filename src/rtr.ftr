@@ -2496,6 +2496,8 @@ qc pass: evpn/pbb with egress rtfilter
 qc pass: ebgp ao password
 qc pass: bgp maximum prefix out
 qc pass: bgp attribute filtering
+qc pass: bgp unknown attribute ingress
+qc pass: bgp unknown attribute egress
 qc pass: bgp routemap filtering with unknown attribute
 qc pass: bgp routepolicy filtering with unknown attribute
 qc pass: eigrp point2point connection

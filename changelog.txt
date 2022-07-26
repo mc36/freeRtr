@@ -13440,3 +13440,6 @@ qc pass: bgp attribute filtering
 ---------------------------------- 2022-07-26 20:00:34 22.7.26
 qc pass: bgp routemap filtering with unknown attribute
 qc pass: bgp routepolicy filtering with unknown attribute
+---------------------------------- 2022-07-26 20:10:37 22.7.26
+qc pass: bgp unknown attribute ingress
+qc pass: bgp unknown attribute egress
