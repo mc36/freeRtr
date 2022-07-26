@@ -466,7 +466,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match locpref " + locPrefMatch);
         l.add(beg + "match validity " + validityMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
-        l.add(beg + "match unknown " + unknownMatch);
+        l.add(beg + "match unknowns " + unknownMatch);
         l.add(beg + "match asend " + asendMatch);
         l.add(beg + "match asbeg " + asbegMatch);
         l.add(beg + "match asmid " + asmidMatch);

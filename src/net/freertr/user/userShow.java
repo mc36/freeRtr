@@ -4151,7 +4151,7 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, res, dsp);
             return;
         }
-        if (a.equals("unknown")) {
+        if (a.equals("unknowns")) {
             a = cmd.getRemaining();
             cmd = new cmds("", "");
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();

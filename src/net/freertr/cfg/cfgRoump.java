@@ -70,7 +70,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match aigp all",
         "route-map .*! sequence .* match validity all",
         "route-map .*! sequence .* match pathlen all",
-        "route-map .*! sequence .* match unknown all",
+        "route-map .*! sequence .* match unknowns all",
         "route-map .*! sequence .* match asend all",
         "route-map .*! sequence .* match asbeg all",
         "route-map .*! sequence .* match asmid all",
@@ -220,7 +220,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     pathlen             match as path length");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
-        l.add(null, "2 3     unknown             match number of unknown attributes");
+        l.add(null, "2 3     unknowns            match number of unknown attributes");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     asend               match as path ending");
@@ -594,7 +594,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
-            if (a.equals("unknown")) {
+            if (a.equals("unknowns")) {
                 if (ntry.unknownMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
@@ -985,7 +985,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.pathlenMatch.set2always();
                 return;
             }
-            if (a.equals("unknown")) {
+            if (a.equals("unknowns")) {
                 ntry.unknownMatch.set2always();
                 return;
             }

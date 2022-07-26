@@ -611,7 +611,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case pathlen:
                 return "pathlen " + intMatch;
             case unknown:
-                return "unknown " + intMatch;
+                return "unknowns " + intMatch;
             case asend:
                 return "asend " + intMatch;
             case asbeg:
