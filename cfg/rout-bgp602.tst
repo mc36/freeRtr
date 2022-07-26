@@ -37,13 +37,13 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 1
  neigh 1.1.1.2 route-reflect
- neigh 1.1.1.2 unknowns-in all
+ neigh 1.1.1.2 unknowns-out all
  neigh 1.1.1.3 remote-as 1
  neigh 1.1.1.3 route-reflect
- neigh 1.1.1.3 unknowns-in all
+ neigh 1.1.1.3 unknowns-out all
  neigh 1.1.1.4 remote-as 1
  neigh 1.1.1.4 route-reflect
- neigh 1.1.1.4 unknowns-in all
+ neigh 1.1.1.4 unknowns-out all
  red conn
  exit
 router bgp6 1
@@ -53,13 +53,13 @@ router bgp6 1
  router-id 6.6.6.1
  neigh 1234::2 remote-as 1
  neigh 1234::2 route-reflect
- neigh 1234::2 unknowns-in all
+ neigh 1234::2 unknowns-out all
  neigh 1234::3 remote-as 1
  neigh 1234::3 route-reflect
- neigh 1234::3 unknowns-in all
+ neigh 1234::3 unknowns-out all
  neigh 1234::4 remote-as 1
  neigh 1234::4 route-reflect
- neigh 1234::4 unknowns-in all
+ neigh 1234::4 unknowns-out all
  red conn
  exit
 !
