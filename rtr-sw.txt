@@ -478,7 +478,8 @@ router bgp4 65535
  template r pmsitun
  template r tunenc
  template r attribset
- template r unknowns all
+ template r unknowns-out all
+ template r unknowns-in all
  template r segrout
  template r bier
  template r role attrib
@@ -534,7 +535,8 @@ router bgp6 65535
  template r pmsitun
  template r tunenc
  template r attribset
- template r unknowns all
+ template r unknowns-out all
+ template r unknowns-in all
  template r segrout
  template r bier
  template r role attrib

@@ -127,9 +127,14 @@ public abstract class rtrBgpParam {
     public boolean attribSet;
 
     /**
+     * receive unknown attributes
+     */
+    public tabIntMatcher unknownsIn;
+
+    /**
      * send unknown attributes
      */
-    public tabIntMatcher unknowns;
+    public tabIntMatcher unknownsOut;
 
     /**
      * send segment routing
@@ -1024,7 +1029,8 @@ public abstract class rtrBgpParam {
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
-        unknowns = src.unknowns;
+        unknownsOut = src.unknownsOut;
+        unknownsIn = src.unknownsIn;
         segRout = src.segRout;
         bier = src.bier;
         egressEng = src.egressEng;
@@ -1190,7 +1196,7 @@ public abstract class rtrBgpParam {
         if (attribSet != src.attribSet) {
             return true;
         }
-        if (unknowns != src.unknowns) {
+        if (unknownsOut != src.unknownsOut) {
             return true;
         }
         if (labelPop != src.labelPop) {
@@ -1437,7 +1443,9 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
-        l.add(null, "3  4       unknowns                    send unknown attributes");
+        l.add(null, "3  4       unknowns-out                send unknown attributes");
+        l.add(null, "4  .         <num>                     allowed attributes");
+        l.add(null, "3  4       unknowns-in                 receive unknown attributes");
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  .       label-pop                   advertise pop label");
         l.add(null, "3  .       segrout                     send segment routing attribute");
@@ -1677,7 +1685,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
-        cmds.cfgLine(l, unknowns == null, beg, nei + "unknowns", "" + unknowns);
+        cmds.cfgLine(l, unknownsOut == null, beg, nei + "unknowns-out", "" + unknownsOut);
+        cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
@@ -2236,13 +2245,22 @@ public abstract class rtrBgpParam {
             attribSet = !negated;
             return false;
         }
-        if (s.equals("unknowns")) {
+        if (s.equals("unknowns-out")) {
             if (negated) {
-                unknowns = null;
+                unknownsOut = null;
                 return false;
             }
-            unknowns = new tabIntMatcher();
-            unknowns.fromString(cmd.word());
+            unknownsOut = new tabIntMatcher();
+            unknownsOut.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("unknowns-in")) {
+            if (negated) {
+                unknownsIn = null;
+                return false;
+            }
+            unknownsIn = new tabIntMatcher();
+            unknownsIn.fromString(cmd.word());
             return false;
         }
         if (s.equals("segrout")) {

@@ -13,7 +13,6 @@ import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
-import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
@@ -622,7 +621,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.tunelTyp = 0;
             ntry.tunelVal = null;
         }
-        tabRouteUtil.removeUnknowns(ntry, unknowns);
+        tabRouteUtil.removeUnknowns(ntry, unknownsOut);
         if (!attribSet) {
             ntry.attribAs = 0;
             ntry.attribVal = null;
@@ -1099,7 +1098,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiLnks, nLnks, cLnks, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpn, nMvpn, cMvpn, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpo, nMvpo, cMvpo, wroumapOut, wroupolOut, null);
-        if (!reflectClnt) {
+        if (peerType != rtrBgpUtil.peerRflct) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), 0);
             nRtf.del(ntry);

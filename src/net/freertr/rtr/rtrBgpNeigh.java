@@ -1304,7 +1304,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * set group membership
      */
     public void setGroup() {
-        lower.have2reflect |= reflectClnt;
+        lower.have2reflect |= peerType == rtrBgpUtil.peerRflct;
         if (reachable != reachOld) {
             reachOld = reachable;
             reachTim = bits.getTime();

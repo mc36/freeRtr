@@ -2123,6 +2123,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.best.nextHop = ntry.best.nextHop;
             prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
         }
+        tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
         addAttribedTab(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
