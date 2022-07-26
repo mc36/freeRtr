@@ -609,6 +609,35 @@ public class tabRouteUtil {
     }
 
     /**
+     * remove from unknown attributes
+     *
+     * @param <T> class of address
+     * @param attr attribute to update
+     * @param mtch match to keep
+     * @return number of occurences removed
+     */
+    public static <T extends addrType> int removeUnknowns(tabRouteAttr<T> attr, tabIntMatcher mtch) {
+        if (attr.unknown == null) {
+            return 0;
+        }
+        if (mtch == null) {
+            int i = attr.unknown.size();
+            attr.unknown = null;
+            return i;
+        }
+        int o = 0;
+        for (int i = attr.unknown.size() - 1; i >= 0; i--) {
+            tabRouteBlob cur = attr.unknown.get(i);
+            if (mtch.matches(cur.type)) {
+                continue;
+            }
+            attr.unknown.remove(i);
+            o++;
+        }
+        return o;
+    }
+
+    /**
      * remove from cluster list
      *
      * @param <T> class of address

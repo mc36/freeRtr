@@ -622,17 +622,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.tunelTyp = 0;
             ntry.tunelVal = null;
         }
-        if ((unknowns == null) || (ntry.unknown == null)) {
-            ntry.unknown = null;
-        } else {
-            for (int i = ntry.unknown.size() - 1; i >= 0; i--) {
-                tabRouteBlob cur = ntry.unknown.get(i);
-                if (unknowns.matches(cur.type)) {
-                    continue;
-                }
-                ntry.unknown.remove(i);
-            }
-        }
+        tabRouteUtil.removeUnknowns(ntry, unknowns);
         if (!attribSet) {
             ntry.attribAs = 0;
             ntry.attribVal = null;

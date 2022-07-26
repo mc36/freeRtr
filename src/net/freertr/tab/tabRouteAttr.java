@@ -1576,6 +1576,7 @@ public class tabRouteAttr<T extends addrType> {
             ntry.pathSeq = tabRouteUtil.nullEmptyList(ntry.pathSeq);
             ntry.pathSet = tabRouteUtil.nullEmptyList(ntry.pathSet);
             ntry.stdComm = tabRouteUtil.nullEmptyList(ntry.stdComm);
+            ntry.unknown = tabRouteUtil.nullEmptyList(ntry.unknown);
         }
         if ((ign & 0x4000000) != 0) {
             ntry.unknown = null;
