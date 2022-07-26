@@ -621,6 +621,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.tunelTyp = 0;
             ntry.tunelVal = null;
         }
+        if (!unknowns) {
+            ntry.unknown = null;
+        }
         if (!attribSet) {
             ntry.attribAs = 0;
             ntry.attribVal = null;

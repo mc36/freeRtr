@@ -127,6 +127,11 @@ public abstract class rtrBgpParam {
     public boolean attribSet;
 
     /**
+     * send unknown attributes
+     */
+    public boolean unknowns;
+
+    /**
      * send segment routing
      */
     public boolean segRout;
@@ -1019,6 +1024,7 @@ public abstract class rtrBgpParam {
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
+        unknowns = src.unknowns;
         segRout = src.segRout;
         bier = src.bier;
         egressEng = src.egressEng;
@@ -1182,6 +1188,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (attribSet != src.attribSet) {
+            return true;
+        }
+        if (unknowns != src.unknowns) {
             return true;
         }
         if (labelPop != src.labelPop) {
@@ -1428,6 +1437,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
+        l.add(null, "3  .       unknowns                    send unknown attributes");
         l.add(null, "3  .       label-pop                   advertise pop label");
         l.add(null, "3  .       segrout                     send segment routing attribute");
         l.add(null, "3  .       bier                        send bier attribute");
@@ -1666,6 +1676,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
+        cmds.cfgLine(l, !unknowns, beg, nei + "unknowns", "");
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
@@ -2222,6 +2233,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("attribset")) {
             attribSet = !negated;
+            return false;
+        }
+        if (s.equals("unknowns")) {
+            unknowns = !negated;
             return false;
         }
         if (s.equals("segrout")) {

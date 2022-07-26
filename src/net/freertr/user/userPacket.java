@@ -69,6 +69,7 @@ import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
@@ -953,13 +954,18 @@ public class userPacket {
             if (rmp == null) {
                 return null;
             }
-            List<Integer> attr = new ArrayList<Integer>();
+            tabRouteBlob blb = new tabRouteBlob();
+            blb.type = bits.str2num(cmd.word());
+            blb.flag = rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive;
+            blb.data = new byte[0];
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
                     break;
                 }
-                attr.add(bits.fromHex(a));
+                byte[] buf = new byte[1];
+                buf[0] = (byte) bits.fromHex(a);
+                blb.data = bits.byteConcat(blb.data, buf);
             }
             pipeSide strm = null;
             for (;;) {
@@ -1007,21 +1013,19 @@ public class userPacket {
             pck.merge2beg();
             spk.packSend(pck, rtrBgpUtil.msgOpen);
             spk.sendKeepAlive();
-            buf = new byte[attr.size()];
-            for (int i = 0; i < buf.length; i++) {
-                buf[i] = (byte) (attr.get(i) & 0xff);
-            }
-            cmd.error("sending " + prf + " network with attrib " + bits.byteDump(buf, 0, -1));
+            cmd.error("sending " + prf + " network with attrib " + blb);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = prf.copyBytes();
             rmp.roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
             ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
+            ntry.best.unknown = new ArrayList<tabRouteBlob>();
+            ntry.best.unknown.add(blb);
             packHolder tmp = new packHolder(true, true);
             cmd.error("sending update");
             pck.clear();
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst, buf);
+            rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst);
             spk.packSend(pck, rtrBgpUtil.msgUpdate);
             cmd.error("waiting");
             for (int o = 1000;; o++) {
@@ -1143,7 +1147,7 @@ public class userPacket {
                 pck.clear();
                 lst.clear();
                 lst.add(ntry);
-                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst, null);
+                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
                 if (need2stop()) {

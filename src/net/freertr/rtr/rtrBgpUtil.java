@@ -12,6 +12,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLargeComm;
+import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
@@ -1994,6 +1995,23 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse unknown attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseUnknown(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (ntry.best.unknown == null) {
+            ntry.best.unknown = new ArrayList<tabRouteBlob>();
+        }
+        tabRouteBlob blb = new tabRouteBlob();
+        blb.type = pck.ETHtype;
+        blb.flag = pck.ETHcos;
+        blb.data = pck.getCopy();
+        ntry.best.unknown.add(blb);
+    }
+
+    /**
      * parse reachable attribute
      *
      * @param lower where to signal
@@ -2221,7 +2239,7 @@ public class rtrBgpUtil {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
-        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, lst, null);
+        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, lst);
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
     }
@@ -2327,9 +2345,11 @@ public class rtrBgpUtil {
                 parseOnlyCust(ntry, pck);
                 break;
             default:
+                parseUnknown(ntry, pck);
                 if (debugger.rtrBgpError) {
                     logger.debug("unknown (" + pck.ETHtype + ") attrib " + pck.dump());
                 }
+                break;
         }
     }
 
@@ -2396,11 +2416,10 @@ public class rtrBgpUtil {
      * @param addpath additional path
      * @param longAS long as number supported
      * @param lst list of prefixes to advertise
-     * @param user user defined attribute
      */
-    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, List<tabRouteEntry<addrIP>> lst, byte[] user) {
+    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
-        placeUser(pck, hlp, user);
+        placeUnknown(pck, hlp, ntry);
         placeOrigin(pck, hlp, ntry);
         placeAsPath(longAS, pck, hlp, ntry);
         placeMetric(pck, hlp, ntry);
@@ -2481,23 +2500,23 @@ public class rtrBgpUtil {
     }
 
     /**
-     * place user defined attribute
+     * place unknown attribute
      *
      * @param trg target packet
      * @param hlp helper packet
-     * @param user attribute value
+     * @param ntry table entry
      */
-    public static void placeUser(packHolder trg, packHolder hlp, byte[] user) {
-        if (user == null) {
+    public static void placeUnknown(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.unknown == null) {
             return;
         }
-        if (user.length < 2) {
-            return;
+        for (int i = 0; i < ntry.best.unknown.size(); i++) {
+            tabRouteBlob blb = ntry.best.unknown.get(i);
+            hlp.clear();
+            hlp.putCopy(blb.data, 0, 0, blb.data.length);
+            hlp.putSkip(blb.data.length);
+            placeAttrib(blb.flag, blb.type, trg, hlp);
         }
-        hlp.clear();
-        hlp.putCopy(user, 1, 0, user.length - 1);
-        hlp.putSkip(user.length - 1);
-        placeAttrib(flagOptional | flagTransitive, user[0], trg, hlp);
     }
 
     /**

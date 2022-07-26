@@ -1985,7 +1985,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             lst.add(wil);
             pckTx.clear();
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
             return;
         }
@@ -1997,7 +1997,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+                rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
             }
             return;
@@ -2015,7 +2015,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst, null);
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
         }
         lst.clear();
