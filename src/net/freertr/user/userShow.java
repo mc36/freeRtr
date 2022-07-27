@@ -1487,6 +1487,18 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(25));
                 return null;
             }
+            if (a.equals("bpratio")) {
+                rdr.putStrTab(cfgAll.getShIntTab(29));
+                return null;
+            }
+            if (a.equals("hwswratio")) {
+                rdr.putStrTab(cfgAll.getShIntTab(30));
+                return null;
+            }
+            if (a.equals("hwswpratio")) {
+                rdr.putStrTab(cfgAll.getShIntTab(31));
+                return null;
+            }
             if (a.equals("traffic")) {
                 rdr.putStrTab(cfgAll.getShIntTab(9));
                 return null;

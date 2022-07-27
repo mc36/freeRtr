@@ -3420,6 +3420,11 @@ public class cfgAll {
             case 28:
                 l = new userFormat("|", "interface|state|input|output|drop");
                 break;
+            case 29:
+            case 30:
+            case 31:
+                l = new userFormat("|", "interface|state|tx|rx|drop");
+                break;
             default:
                 return null;
         }

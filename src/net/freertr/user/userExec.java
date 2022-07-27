@@ -952,6 +952,9 @@ public class userExec {
         hl.add(null, "3 .        summary               summary listing");
         hl.add(null, "3 .        status                status listing");
         hl.add(null, "3 .        lastio                last packet listing");
+        hl.add(null, "3 .        hwswratio             hardware by software bytes");
+        hl.add(null, "3 .        hwswpratio            hardware by software packets");
+        hl.add(null, "3 .        bpratio               byte by packet ratio");
         hl.add(null, "3 .        hwsummary             hardware summary listing");
         hl.add(null, "3 .        swsummary             software summary listing");
         hl.add(null, "3 .        total                 total listing");

@@ -504,6 +504,56 @@ public class counter implements Comparator<counter> {
         return res;
     }
 
+    private static long safeDiv(long a, long b) {
+        if (b == 0) {
+            return 0;
+        }
+        return a / b;
+    }
+
+    /**
+     * divide bytes by packets
+     *
+     * @return resulting values
+     */
+    public counter bpRat() {
+        counter res = new counter();
+        res.byteTx = safeDiv(byteTx, packTx);
+        res.byteRx = safeDiv(byteRx, packRx);
+        res.byteDr = safeDiv(byteDr, packDr);
+        res.stateChg = stateChg;
+        res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
+        return res;
+    }
+
+    /**
+     * divide other by me
+     *
+     * @param oth other
+     * @return resulting values
+     */
+    public counter othRat(counter oth) {
+        if (oth == null) {
+            return null;
+        }
+        counter res = new counter();
+        res.byteTx = safeDiv(oth.byteTx, byteTx);
+        res.byteRx = safeDiv(oth.byteRx, byteRx);
+        res.byteDr = safeDiv(oth.byteDr, byteDr);
+        res.packTx = safeDiv(oth.packTx, packTx);
+        res.packRx = safeDiv(oth.packRx, packRx);
+        res.packDr = safeDiv(oth.packDr, packDr);
+        res.stateChg = stateChg;
+        res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
+        return res;
+    }
+
     /**
      * clear all variables
      */
