@@ -52,9 +52,9 @@ int table_find(struct table_head *tab, void *ntry) {
     while (lower <= upper) {
         int mid = (lower + upper) >> 1;
         int*curr = (int*)table_get(tab, mid);
-        int cmp = 0;
+        long cmp = 0;
         for (int i=0; i < tab->cmplen; i++) {
-            cmp = curr[i] - entry[i];
+            cmp = (long)curr[i] - (long)entry[i];
             if (cmp != 0) break;
         }
         if (cmp < 0) {
