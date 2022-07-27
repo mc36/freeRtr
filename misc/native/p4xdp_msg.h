@@ -175,8 +175,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "bridgemac") == 0) {
         brdk.id = atoi(arg[2]);
-        str2mac(buf2, arg[3]);
-        memcpy(brdk.mac, buf2, sizeof(brdk.mac));
+        str2mac(brdk.mac, arg[3]);
         brdr.port = atoi(arg[4]);
         brdr.cmd = 1;
         if (del == 0) {
@@ -188,8 +187,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "bridgevpls") == 0) {
         brdk.id = atoi(arg[2]);
-        str2mac(buf2, arg[3]);
-        memcpy(brdk.mac, buf2, sizeof(brdk.mac));
+        str2mac(brdk.mac, arg[3]);
         brdr.hop = atoi(arg[5]);
         brdr.label1 = atoi(arg[6]);
         brdr.label2 = atoi(arg[7]);
