@@ -44,10 +44,11 @@ void tree_deinit(struct tree_head *tab) {
 void* tree_lpm(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     struct tree_value* val = ntry;
+    int vlmsk = val->mask;
     void* lst = NULL;
     for (int p = 0;; p++) {
         if (cur->value != NULL) lst = cur->value;
-        if (p >= val->mask) return lst;
+        if (p >= vlmsk) return lst;
         if (tree_bit(p) != 0) {
             cur = cur->one;
         } else {
@@ -60,8 +61,9 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
 void tree_add(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     struct tree_value* val = ntry;
+    int vlmsk = val->mask;
     for (int p = 0;; p++) {
-        if (p >= val->mask) {
+        if (p >= vlmsk) {
             if (cur->value != NULL) {
                 memcpy(cur->value, ntry, tab->reclen);
                 return;
@@ -99,8 +101,9 @@ void tree_add(struct tree_head *tab, void *ntry) {
 void tree_del(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
     struct tree_value* val = ntry;
+    int vlmsk = val->mask;
     for (int p = 0;; p++) {
-        if (p >= val->mask) {
+        if (p >= vlmsk) {
             void* old = cur->value;
             if (old == NULL) return;
             cur->value = NULL;
