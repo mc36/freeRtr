@@ -53,11 +53,18 @@ int table_find(struct table_head *tab, void *ntry) {
     while (lower <= upper) {
         int mid = (lower + upper) >> 1;
         unsigned int*curr = (unsigned int*)table_get(tab, mid);
-        long cmp = (long)*curr - (long)*entry;
-        for (int i = 1;; i++) {
-            if (cmp != 0) break;
-            if (i >= cmpln) return mid;
+        long cmp;
+        for (int i = 0;;) {
+#if UINT_MAX >= ULONG_MAX
+            int val1 = curr[i];
+            int val2 = entry[i];
+            cmp = (val1 > val2) - (val1 < val2);
+#else
             cmp = (long)curr[i] - (long)entry[i];
+#endif
+            if (cmp != 0) break;
+            i++;
+            if (i >= cmpln) return mid;
         }
         if (cmp < 0) {
             lower = mid + 1;
