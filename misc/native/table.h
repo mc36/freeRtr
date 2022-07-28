@@ -48,14 +48,16 @@ void table_deinit(struct table_head *tab) {
 int table_find(struct table_head *tab, void *ntry) {
     int lower = 0;
     int upper = tab->size - 1;
-    unsigned int*entry = (unsigned int*)ntry;
+    int*entry = (int*)ntry;
     int cmpln = tab->cmplen;
     while (lower <= upper) {
         int mid = (lower + upper) >> 1;
-        unsigned int*curr = (unsigned int*)table_get(tab, mid);
-        long cmp = 0;
+        int*curr = (int*)table_get(tab, mid);
+        int cmp = 0;
         for (int i = 0;;) {
-            cmp = (long)curr[i] - (long)entry[i];
+            int a = curr[i];
+            int b = entry[i];
+            cmp = (a > b) - (a < b);
             if (cmp != 0) break;
             i++;
             if (i >= cmpln) return mid;
