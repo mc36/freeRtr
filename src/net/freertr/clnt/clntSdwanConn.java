@@ -147,6 +147,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         if (ifc != null) {
             ifc.cloneStop();
         }
+        lower.udpCor.listenStop(lower.fwdIfc, lower.dataPort, addr, 0);
         if (conn != null) {
             conn.setClosing();
         }
@@ -157,10 +158,25 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
     private void doReconnect() {
         if (conn != null) {
             conn.setClosing();
+            conn = null;
         }
-        conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.dataPort, addr, port, "sdwan", -1, null, -1, -1);
+        if (bits.random(1, 100) < lower.passPerc) {
+            logger.warn("accepting " + addr + " " + port);
+            lower.udpCor.packetListen(this, lower.fwdIfc, lower.dataPort, addr, 0, "sdwan", -1, null, -1, -1);
+            int max = bits.random(10, 30);
+            for (int i = 0; i < max; i++) {
+                bits.sleep(1000);
+                if (conn != null) {
+                    break;
+                }
+            }
+            lower.udpCor.listenStop(lower.fwdIfc, lower.dataPort, addr, 0);
+        } else {
+            logger.warn("reconnecting " + addr + " " + port);
+            conn = lower.udpCor.packetConnect(this, lower.fwdIfc, lower.dataPort, addr, port, "sdwan", -1, null, -1, -1);
+        }
         if (conn == null) {
-            logger.error("failed to connect " + addr + " " + port);
+            logger.error("failed to establish " + addr + " " + port);
             return;
         }
         conn.timeout = 120000;
@@ -279,7 +295,11 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
     }
 
     public boolean datagramAccept(prtGenConn id) {
-        return true;
+        if (conn != null) {
+            return true;
+        }
+        conn = id;
+        return false;
     }
 
     public void datagramReady(prtGenConn id) {
@@ -341,7 +361,10 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
      * @return session id, 0 if no session
      */
     public int getPortRem() {
-        return port;
+        if (conn == null) {
+            return -1;
+        }
+        return conn.portRem;
     }
 
     /**
