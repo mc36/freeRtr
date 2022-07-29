@@ -4,9 +4,9 @@ more about the project at [www.freertr.org](http://www.freertr.org/)
 
 ## dependencies
 
-you'll need an up to date debian sid with a jdk installed.
+you'll need an up to date debian sid with a jdk installed
 
-for native binaries, you'll need clang, dpdk, libpcap, libbpf and libcrypto.
+for native binaries, you'll need clang, dpdk, libpcap, libbpf, libmnl and libcrypto
 
 ## directory structure
 
@@ -14,6 +14,8 @@ the following directories could be found here:
 * src contains the main sources
 * cfg contains the self tests
 * misc contains some smaller subprojects, see below
+
+the following directories will appear here:
 * img vm images used for interop and dataplane testing
 * binDwn packages used for demo vm creation
 * binDsk rootfs used for demo vm creation
@@ -24,11 +26,12 @@ the following directories could be found here:
 
 ## directories under misc folder
 
-* native dpdk and xdp based dataplanes
+* native dpdk, xdp and mnl based dataplanes
 * p4bf tofino based dataplane
 * p4lang bmv2 based dataplane
 * bogon web based bogon originator
 * lookingglass web based looking glass
+* captures script to stream captures
 * sniffer web based packet capture
 * mailer web based mail reader
 * gallery web based album viewer
@@ -56,7 +59,7 @@ there is no build system in use, but you'll find shell scripts:
 * r.sh to run
 * t.sh to selftest
 
-to bring things up quickly, do the following
+as a first start to get your routers up, do the following:
 * cd src
 * ./c.sh
 * ./tw.sh rout-bgp001
