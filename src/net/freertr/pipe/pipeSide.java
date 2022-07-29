@@ -42,6 +42,10 @@ public class pipeSide {
          */
         modeCRorLF,
         /**
+         * a cr or an lf and possibly the other
+         */
+        modeCRtorLF,
+        /**
          * a cr and possibly an lf
          */
         modeCRtryLF,
@@ -103,7 +107,7 @@ public class pipeSide {
      * @param nul value returned on error
      * @return line termination type
      */
-    public static pipeSide.modTyp getType(int buf, pipeSide.modTyp nul) {
+    public static modTyp getType(int buf, modTyp nul) {
         switch (buf) {
             case 13:
                 return modTyp.modeCR;
@@ -770,7 +774,7 @@ public class pipeSide {
         morePut(buf, 0, buf.length);
     }
 
-    private boolean gotOneChar(pipeSide.modTyp last, pipeSide.modTyp curr) {
+    private boolean gotOneChar(modTyp last, modTyp curr) {
         byte[] buf = new byte[4];
         switch (lineRx) {
             case modeCR:
@@ -780,22 +784,38 @@ public class pipeSide {
                 }
                 break;
             case modeCRLF:
-                if ((curr == pipeSide.modTyp.modeLF) && (last == pipeSide.modTyp.modeCR)) {
+                if ((curr == modTyp.modeLF) && (last == modTyp.modeCR)) {
                     return true;
                 }
                 break;
             case modeLFCR:
-                if ((curr == pipeSide.modTyp.modeCR) && (last == pipeSide.modTyp.modeLF)) {
+                if ((curr == modTyp.modeCR) && (last == modTyp.modeLF)) {
                     return true;
                 }
                 break;
             case modeCRorLF:
-                if ((curr == pipeSide.modTyp.modeLF) || (curr == pipeSide.modTyp.modeCR)) {
+                if ((curr == modTyp.modeLF) || (curr == modTyp.modeCR)) {
                     return true;
                 }
                 break;
+            case modeCRtorLF:
+                if ((curr != modTyp.modeLF) && (curr != modTyp.modeCR)) {
+                    break;
+                }
+                if (nonDestructiveGet(buf, 0, 1) != 1) {
+                    return true;
+                }
+                if (curr == modTyp.modeLF) {
+                    curr = modTyp.modeCR;
+                } else {
+                    curr = modTyp.modeLF;
+                }
+                if (getType(buf[0], modTyp.modeNone) == curr) {
+                    nonBlockSkip(1);
+                }
+                return true;
             case modeCRtryLF:
-                if (curr != pipeSide.modTyp.modeCR) {
+                if (curr != modTyp.modeCR) {
                     break;
                 }
                 if (nonDestructiveGet(buf, 0, 1) != 1) {
@@ -831,7 +851,7 @@ public class pipeSide {
      */
     public String lineGet(int editing) {
         String s = "";
-        pipeSide.modTyp last = null;
+        modTyp last = null;
         for (;;) {
             byte[] buf = new byte[4];
             int i;
@@ -847,7 +867,7 @@ public class pipeSide {
                 break;
             }
             int chr = buf[0] & 0xff;
-            pipeSide.modTyp curr = getType(chr, modTyp.modeNone);
+            modTyp curr = getType(chr, modTyp.modeNone);
             if ((curr == modTyp.modeBS) && ((editing & 0x10) != 0)) {
                 i = s.length() - 1;
                 if (i < 0) {

@@ -654,7 +654,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         remote = rem;
         physical = phys;
         pipe.setTime(parent.execTimeOut);
-        pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRtorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         hsh = pip.hashCode();
         since = bits.getTime();
