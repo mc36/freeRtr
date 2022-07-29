@@ -55,7 +55,15 @@ there is no build system in use, but you'll find shell scripts:
 * c.sh to compile
 * r.sh to run
 * t.sh to selftest
-* tw.sh to run a single test and wait for someone to examine the routers at 127.0.0.1:20001
+
+to bring things up quickly, do the following
+* cd src
+* ./c.sh
+* ./tw.sh rout-bgp001
+* telnet 127.0.0.1 20001
+* telnet 127.0.0.1 20002
+* telnet 127.0.0.1 20003
+* telnet 127.0.0.1 20004
 
 ## contributing
 
