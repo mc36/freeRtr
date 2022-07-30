@@ -281,17 +281,31 @@ public class secTelnet {
         }
         for (;;) {
             lower.setTime(userS.getTime());
-            byte[] buf = new byte[1];
-            if (userS.blockingGet(buf, 0, buf.length) != buf.length) {
+            byte[] bufi = new byte[1024];
+            int i = userS.blockingGet(bufi, 0, 1);
+            if (i < 0) {
                 return;
             }
-            int i = buf[0] & 0xff;
-            if (i == secTelnet.cmdIAC) {
-                buf = new byte[2];
-                buf[0] = (byte) secTelnet.cmdIAC;
-                buf[1] = (byte) secTelnet.cmdIAC;
+            int o = userS.nonBlockGet(bufi, i, bufi.length - i);
+            if (o < 0) {
+                o = 0;
             }
-            lower.blockingPut(buf, 0, buf.length);
+            o += i;
+            byte[] bufo = new byte[2048];
+            int p = 0;
+            for (i = 0; i < o; i++) {
+                int q = bufi[i] & 0xff;
+                if (q != cmdIAC) {
+                    bufo[p] = (byte) q;
+                    p++;
+                    continue;
+                }
+                bufo[p] = (byte) cmdIAC;
+                p++;
+                bufo[p] = (byte) cmdIAC;
+                p++;
+            }
+            lower.blockingPut(bufo, 0, p);
         }
     }
 
@@ -369,7 +383,7 @@ public class secTelnet {
             if (i < 0) {
                 return;
             }
-            if (i != secTelnet.cmdIAC) {
+            if (i != cmdIAC) {
                 byte[] buf = new byte[1];
                 buf[0] = (byte) i;
                 userS.blockingPut(buf, 0, buf.length);
@@ -381,12 +395,12 @@ public class secTelnet {
             }
             o = -1;
             switch (i) {
-                case secTelnet.cmdIAC:
+                case cmdIAC:
                     byte[] buf = new byte[1];
-                    buf[0] = (byte) secTelnet.cmdIAC;
+                    buf[0] = (byte) cmdIAC;
                     userS.blockingPut(buf, 0, buf.length);
                     continue;
-                case secTelnet.cmdSB:
+                case cmdSB:
                     o = netRx();
                     if (debugger.secTelnetTraf) {
                         logger.debug("rx opt=" + option2string(o));
@@ -397,18 +411,18 @@ public class secTelnet {
                         if (i < 0) {
                             return;
                         }
-                        if (i != secTelnet.cmdIAC) {
+                        if (i != cmdIAC) {
                             lst.add(i);
                             continue;
                         }
                         i = netRx();
-                        if (i == secTelnet.cmdSE) {
+                        if (i == cmdSE) {
                             break;
                         }
                         lst.add(i);
                     }
                     switch (o) {
-                        case secTelnet.optTerTyp:
+                        case optTerTyp:
                             if (lst.size() < 1) {
                                 break;
                             }
@@ -416,9 +430,9 @@ public class secTelnet {
                                 break;
                             }
                             buf = "\000ansi".getBytes();
-                            netTx(secTelnet.optTerTyp, buf);
+                            netTx(optTerTyp, buf);
                             break;
-                        case secTelnet.optWinSiz:
+                        case optWinSiz:
                             if (lst.size() < 4) {
                                 break;
                             }
@@ -429,16 +443,16 @@ public class secTelnet {
                             break;
                     }
                     continue;
-                case secTelnet.cmdDO:
+                case cmdDO:
                     o = cmdWONT;
                     break;
-                case secTelnet.cmdDONT:
-                    o = secTelnet.cmdWONT;
+                case cmdDONT:
+                    o = cmdWONT;
                     break;
-                case secTelnet.cmdWILL:
+                case cmdWILL:
                     o = cmdDONT;
                     break;
-                case secTelnet.cmdWONT:
+                case cmdWONT:
                     break;
                 default:
                     continue;
