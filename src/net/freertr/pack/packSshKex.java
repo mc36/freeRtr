@@ -3,6 +3,7 @@ package net.freertr.pack;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyDH;
 import net.freertr.cry.cryKeyGeneric;
@@ -317,9 +318,9 @@ public class packSshKex {
      * fill request message
      */
     public void gexReqFill() {
-        modMin = 1024;
-        modBest = 2048;
-        modMax = 4096;
+        modMin = cfgAll.sshGrpMin;
+        modBest = cfgAll.sshGrpMin + ((cfgAll.sshGrpMax - cfgAll.sshGrpMin) / 2);
+        modMax = cfgAll.sshGrpMax;
     }
 
     private void gexReqDump(String dir) {
@@ -348,6 +349,12 @@ public class packSshKex {
      * fill group exchange message
      */
     public void gexGroupFill() {
+        if (modBest < cfgAll.sshGrpMin) {
+            modBest = cfgAll.sshGrpMin;
+        }
+        if (modBest > cfgAll.sshGrpMax) {
+            modBest = cfgAll.sshGrpMax;
+        }
         difHel = cryKeyDH.findGroup(modBest);
     }
 
