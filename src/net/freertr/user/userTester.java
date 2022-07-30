@@ -879,7 +879,7 @@ public class userTester {
             txt = new ArrayList<String>();
         }
         for (int i = 0; i < txt.size(); i++) {
-            userTesterFtr ftr = new userTesterFtr("zzz" + bits.padBeg("" + i, 4, "0"));
+            userTesterFtr ftr = new userTesterFtr("todo" + bits.padBeg("" + i, 4, "0"));
             ftr.ftr = "todo: " + txt.get(i);
             finished.add(ftr);
         }
@@ -1500,7 +1500,7 @@ class userTesterOne {
 
     public static final String path = "../binTmp/";
 
-    public static final String prefix = path + "zzz";
+    public static final String prefix = path + "slot";
 
     public String fileName;
 
