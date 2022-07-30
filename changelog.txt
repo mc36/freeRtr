@@ -13443,3 +13443,6 @@ qc pass: bgp routepolicy filtering with unknown attribute
 ---------------------------------- 2022-07-26 20:10:37 22.7.26
 qc pass: bgp unknown attribute ingress
 qc pass: bgp unknown attribute egress
+---------------------------------- 2022-07-30 21:34:14 22.7.30
+qc pass: ingress fragment matching access list
+qc pass: ingress alert matching access list

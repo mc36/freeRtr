@@ -555,6 +555,8 @@ qc pass: ingress mask matching access list
 qc pass: egress mask matching access list
 qc pass: ingress sgt matching access list
 qc pass: egress sgt matching access list
+qc pass: ingress fragment matching access list
+qc pass: ingress alert matching access list
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
