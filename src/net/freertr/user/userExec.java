@@ -1428,6 +1428,8 @@ public class userExec {
         hl.add(null, "6 5,.            <num>                timeout in milliseconds");
         hl.add(null, "5 6            data                   specify data to send");
         hl.add(null, "6 5,.            <num>                payload byte");
+        hl.add(null, "5 6            alert                  specify alert to send");
+        hl.add(null, "6 5,.            <num>                payload data");
         hl.add(null, "5 6            ttl                    specify ttl value");
         hl.add(null, "6 5,.            <num>                ttl");
         hl.add(null, "5 6            tos                    specify tos value");
@@ -1440,7 +1442,8 @@ public class userExec {
         hl.add(null, "6 5,.            <num>                byte count");
         hl.add(null, "5 6            port                   specify tcp port");
         hl.add(null, "6 5,.            <num>                port number");
-        hl.add(null, "5 .            lookup                 perform reverse lookup to");
+        hl.add(null, "5 5,.          dontfrag               specify dont fragment");
+        hl.add(null, "5 5,.          lookup                 perform reverse lookup to");
         hl.add(null, "1 2    portscan                       scan ports on remote");
         hl.add(null, "2 3,.    <host>                       name of host");
         hl.add(null, "3 3,.      ipv4                       specify ipv4 to use");
@@ -1513,6 +1516,8 @@ public class userExec {
         hl.add(null, "3 3,.      detail                     specify detail mode");
         hl.add(null, "3 4        data                       specify data to send");
         hl.add(null, "4 3,.        <num>                    payload byte");
+        hl.add(null, "3 4        alert                      specify alert to send");
+        hl.add(null, "4 3,.        <num>                    payload data");
         hl.add(null, "3 3,.      ipv4                       specify ipv4 to use");
         hl.add(null, "3 3,.      ipv6                       specify ipv6 to use");
         hl.add(null, "3 4        vrf                        specify vrf to use");
@@ -3494,6 +3499,8 @@ public class userExec {
         int data = 0;
         int len = 64;
         int prt = -1;
+        int alrt = -1;
+        boolean dntfrg = false;
         boolean lok = false;
         for (;;) {
             String a = cmd.word();
@@ -3515,6 +3522,14 @@ public class userExec {
             }
             if (a.equals("data")) {
                 data = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("dontfrag")) {
+                dntfrg = true;
+                continue;
+            }
+            if (a.equals("alert")) {
+                alrt = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("ttl")) {
@@ -3557,7 +3572,7 @@ public class userExec {
         if (ifc != null) {
             src = ifc.getLocAddr(strt);
         }
-        pipe.linePut("scanning " + strt + ", src=" + src + ", vrf=" + vrf.name + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len);
+        pipe.linePut("scanning " + strt + ", src=" + src + ", vrf=" + vrf.name + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len + ", df=" + dntfrg + ", alrt=" + alrt);
         len -= adjustSize(strt);
         for (;;) {
             if (need2stop()) {
@@ -3592,7 +3607,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, false, ttl, sgt, tos, flow, data, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, dntfrg, alrt, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 continue;
             }
@@ -3618,6 +3633,7 @@ public class userExec {
         cfgIfc ifc = cfgAll.getClntIfc();
         int size = 64;
         int data = 0;
+        int alrt = -1;
         int timeout = 1000;
         int repeat = 5;
         int sgt = 0;
@@ -3654,6 +3670,10 @@ public class userExec {
             }
             if (a.equals("data")) {
                 data = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("alert")) {
+                alrt = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("detail")) {
@@ -3735,7 +3755,7 @@ public class userExec {
         userExecStats ttlS = new userExecStats(0, 256);
         userExecStats tosS = new userExecStats(0, 256);
         long timBeg = bits.getTime();
-        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", sweep=" + sweep + ", multi=" + multi);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi);
         size -= adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
@@ -3753,7 +3773,7 @@ public class userExec {
                 break;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, dntfrg, ttl, sgt, tos, flow, data, multi);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, dntfrg, alrt, ttl, sgt, tos, flow, data, multi);
             if (ping == null) {
                 lost++;
                 if (detail) {

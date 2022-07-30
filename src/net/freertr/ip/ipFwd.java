@@ -2362,6 +2362,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param trg target address
      * @param size size of payload
      * @param df dont fragment
+     * @param alrt alert to use
      * @param ttl ttl to use
      * @param sgt sgt to use
      * @param tos tos to use
@@ -2370,7 +2371,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param mul multiple responses
      * @return notifier notified on reply
      */
-    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, boolean df, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int size, boolean df, int alrt, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2418,6 +2419,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.IPid = id;
         pck.IPdf = df;
         pck.SGTid = sgt;
+        pck.IPalrt = alrt;
         pck.INTupper = -1;
         protoPack(ifc, null, pck);
         return ntry;

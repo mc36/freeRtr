@@ -232,6 +232,7 @@ public class userPacket {
             int sgt = 0;
             int tos = 0;
             int flow = 0;
+            int alrt = -1;
             int ttl = 255;
             int proto = 0;
             int delay = 1000;
@@ -244,6 +245,10 @@ public class userPacket {
                 }
                 if (a.equals("data")) {
                     data = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("alert")) {
+                    alrt = bits.str2num(cmd.word());
                     continue;
                 }
                 if (a.equals("vrf")) {
@@ -313,7 +318,7 @@ public class userPacket {
             if (timeout < 1) {
                 timeout = 1;
             }
-            cmd.error("pmduding " + trg + ", src=" + src + ", vrf=" + vrf.name + ", len=" + min + ".." + max + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data);
+            cmd.error("pmduding " + trg + ", src=" + src + ", vrf=" + vrf.name + ", len=" + min + ".." + max + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
             int last = -1;
             for (;;) {
                 if (need2stop()) {
@@ -325,7 +330,7 @@ public class userPacket {
                 int mid = min + ((max - min) / 2);
                 cmd.pipe.strPut("trying (" + min + ".." + max + ") " + mid + " ");
                 int size = mid - userExec.adjustSize(trg);
-                ipFwdEcho ping = fwd.echoSendReq(src, trg, size, true, ttl, sgt, tos, flow, data, false);
+                ipFwdEcho ping = fwd.echoSendReq(src, trg, size, true, alrt, ttl, sgt, tos, flow, data, false);
                 if (ping == null) {
                     cmd.error("noroute");
                     break;
@@ -438,7 +443,7 @@ public class userPacket {
                 }
                 sent++;
                 ipi.updateL2info(2, new addrMac(), trg);
-                fwd.echoSendReq(src, trg, 64, false, 255, 0, 0, 0, 0, false);
+                fwd.echoSendReq(src, trg, 64, false, -1, 255, 0, 0, 0, 0, false);
                 bits.sleep(delay);
                 addrType res = ipi.getL2info(trg);
                 if (res == null) {

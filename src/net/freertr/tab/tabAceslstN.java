@@ -123,6 +123,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
     public boolean frag;
 
     /**
+     * router alert
+     */
+    public boolean alrt;
+
+    /**
      * list to evaluate
      */
     public tabListing<tabAceslstN<T>, T> evaluate;
@@ -168,6 +173,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         len = new tabIntMatcher();
         flag = new tabIntMatcher();
         frag = false;
+        alrt = false;
         srcPort = new tabIntMatcher();
         trgPort = new tabIntMatcher();
     }
@@ -194,6 +200,7 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         r.len = len.copyBytes();
         r.flag = flag.copyBytes();
         r.frag = frag;
+        r.alrt = alrt;
         r.srcPort = srcPort.copyBytes();
         r.trgPort = trgPort.copyBytes();
         r.srcOGnet = srcOGnet;
@@ -251,6 +258,9 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
         if (frag) {
             a += " frag";
+        }
+        if (alrt) {
+            a += " alrt";
         }
         if (logMatch) {
             a += " log";
@@ -399,6 +409,10 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
                 ntry.frag = true;
                 continue;
             }
+            if (a.equals("alrt")) {
+                ntry.alrt = true;
+                continue;
+            }
             if (a.equals("flag")) {
                 if (ntry.flag.fromString(cmd.word())) {
                     return true;
@@ -506,6 +520,11 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
         }
         if (!len.matches(pck.dataSize())) {
             return false;
+        }
+        if (alrt) {
+            if (pck.IPalrt == -1) {
+                return false;
+            }
         }
         if (frag) {
             if (!pck.IPmf && (pck.IPfrg < 1)) {

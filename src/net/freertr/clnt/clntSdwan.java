@@ -64,7 +64,7 @@ public class clntSdwan implements Runnable, ifcDn {
      * randomize source port
      */
     public boolean dataRand = false;
-    
+
     /**
      * passive listen percent
      */
