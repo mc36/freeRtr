@@ -31,6 +31,11 @@ public class userLine {
     }
 
     /**
+     * line defaults filter
+     */
+    public static tabGen<userFilter> linedefF;
+
+    /**
      * interface to use
      */
     public cfgIfc execIface;
@@ -109,6 +114,11 @@ public class userLine {
      * terminate session after command
      */
     public boolean autoHangup = false;
+
+    /**
+     * display hostname
+     */
+    public boolean hostname = true;
 
     /**
      * display banner
@@ -238,6 +248,7 @@ public class userLine {
         lst.add(beg + "exec autocommand " + autoCommand);
         cmds.cfgLine(lst, !autoHangup, beg, "exec autohangup", "");
         cmds.cfgLine(lst, !banner, beg, "exec banner", "");
+        cmds.cfgLine(lst, !hostname, beg, "exec hostname", "");
         cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
         cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
         lst.add(beg + "exec privilege " + promptPrivilege);
@@ -357,6 +368,10 @@ public class userLine {
             }
             if (s.equals("banner")) {
                 banner = true;
+                return false;
+            }
+            if (s.equals("hostname")) {
+                hostname = true;
                 return false;
             }
             if (s.equals("expirity")) {
@@ -495,6 +510,10 @@ public class userLine {
                 banner = false;
                 return false;
             }
+            if (s.equals("hostname")) {
+                hostname = false;
+                return false;
+            }
             if (s.equals("expirity")) {
                 expirity = false;
                 return false;
@@ -577,6 +596,7 @@ public class userLine {
         l.add(null, "2 3    autocommand                  set automatic command");
         l.add(null, "3 3,.    <text>                     autocommand of user");
         l.add(null, "2 .    banner                       display banner");
+        l.add(null, "2 .    hostname                     send hostname");
         l.add(null, "2 .    expirity                     display expirity warnings");
         l.add(null, "2 .    monitor                      display logging information");
         l.add(null, "2 .    autohangup                   disconnect user after autocommand");
@@ -681,6 +701,9 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         }
         pipe.setTime(parent.promptTimeout);
         last = bits.getTime();
+        if (parent.hostname) {
+            userScreen.sendHst(pipe, cfgAll.hostName);
+        }
         if (parent.banner) {
             pipe.blockingPut(cfgAll.banner, 0, cfgAll.banner.length);
         }

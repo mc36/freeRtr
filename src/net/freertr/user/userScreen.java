@@ -427,6 +427,16 @@ public class userScreen {
     }
 
     /**
+     * send hostname
+     *
+     * @param pip pipe to use
+     * @param nam string to send
+     */
+    public static void sendHst(pipeSide pip, String nam) {
+        pip.strPut("\033]0;" + nam + "\007");
+    }
+
+    /**
      * send clear screen
      *
      * @param pip pipeline to use
