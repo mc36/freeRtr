@@ -313,37 +313,12 @@ public class userScreen {
         if (ctr < 0) {
             ctr = 0;
         } else {
-            String a = s.substring(ctr + 1, s.length());
-            s = s.substring(0, ctr);
-            ctr = bits.str2num(a);
-            switch (ctr) {
-                case 2: // shift
-                    ctr = 0x100;
-                    break;
-                case 3: // alt
-                    ctr = 0x400;
-                    break;
-                case 4: // alt+shift
-                    ctr = 0x500;
-                    break;
-                case 5: // ctrl
-                    ctr = 0x200;
-                    break;
-                case 6: // ctrl+shift
-                    ctr = 0x300;
-                    break;
-                case 7: // ctrl+alt
-                    ctr = 0x600;
-                    break;
-                case 8: // cltr+alt+shift
-                    ctr = 0x700;
-                    break;
-                default:
-                    ctr = 0;
-                    break;
-            }
+            int old = ctr;
+            ctr = string2control(s.substring(old + 1, s.length()));
+            s = s.substring(0, old);
         }
         if (s.startsWith("O")) {
+            ctr |= string2control(s.substring(1, s.length()));
             final int[] keys1 = {20, 21, 22, 23, 24};
             switch (i) {
                 case 80:
@@ -357,6 +332,7 @@ public class userScreen {
             }
         }
         if (s.startsWith("[[")) {
+            ctr |= string2control(s.substring(2, s.length()));
             final int[] keys2 = {20, 21, 22, 23, 24};
             switch (i) {
                 case 65:
@@ -423,6 +399,27 @@ public class userScreen {
                 return keys6[i - 11] | 0x8000 | ctr;
             default:
                 return -2;
+        }
+    }
+
+    private static int string2control(String str) {
+        switch (bits.str2num(str)) {
+            case 2: // shift
+                return 0x100;
+            case 3: // alt
+                return 0x400;
+            case 4: // alt+shift
+                return 0x500;
+            case 5: // ctrl
+                return 0x200;
+            case 6: // ctrl+shift
+                return 0x300;
+            case 7: // ctrl+alt
+                return 0x600;
+            case 8: // cltr+alt+shift
+                return 0x700;
+            default:
+                return 0;
         }
     }
 
