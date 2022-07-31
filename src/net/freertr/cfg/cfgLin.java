@@ -59,7 +59,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
         ".*! exec privilege 15",
         ".*! exec autocommand ",
         ".*! exec banner",
-        ".*! exec hostname",
+        ".*! exec title",
         ".*! no exec expirity",
         ".*! no exec monitor",
         ".*! no exec autohangup",
