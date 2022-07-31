@@ -1196,6 +1196,12 @@ public class userReader implements Comparator<String> {
                     case 0x800f: // right
                         cmdRight();
                         break;
+                    case 0x820e: // ctrl+left
+                        cmdBackward();
+                        break;
+                    case 0x820f: // ctrl+right
+                        cmdForward();
+                        break;
                     case 0x800c: // up
                         cmdHistPrev();
                         break;
