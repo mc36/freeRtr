@@ -246,6 +246,12 @@ public class userEditor {
             case 0x800f: // right
                 doKeyRgt();
                 return false;
+            case 0x820e: // left
+                doKeyCtLft();
+                return false;
+            case 0x820f: // right
+                doKeyCtRgt();
+                return false;
             case 0x8014: // f1
                 doKeyF1();
                 return false;
@@ -442,13 +448,15 @@ public class userEditor {
     }
 
     private void doKeyPgDn() {
-        begY += 5;
-        curY += 5;
+        int i = console.sizY / 4;
+        begY += i;
+        curY += i;
     }
 
     private void doKeyPgUp() {
-        begY -= 5;
-        curY -= 5;
+        int i = console.sizY / 4;
+        begY -= i;
+        curY -= i;
     }
 
     private void doKeyLft() {
@@ -462,6 +470,22 @@ public class userEditor {
         curX++;
         if (readOnly) {
             begX++;
+        }
+    }
+
+    private void doKeyCtLft() {
+        int i = console.sizX / 4;
+        curX -= i;
+        if (readOnly) {
+            begX -= i;
+        }
+    }
+
+    private void doKeyCtRgt() {
+        int i = console.sizX / 4;
+        curX += i;
+        if (readOnly) {
+            begX += i;
         }
     }
 
