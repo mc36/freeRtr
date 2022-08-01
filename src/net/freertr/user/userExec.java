@@ -1562,6 +1562,8 @@ public class userExec {
         hl.add(null, "2 .      fire                         view demo");
         hl.add(null, "2 .      life                         view demo");
         hl.add(null, "2 .      antball                      view demo");
+        hl.add(null, "2 3,.    title                        view demo");
+        hl.add(null, "3 3,.      [str]                      text");
         hl.add(null, "2 3,.    text                         view demo");
         hl.add(null, "3 3,.      [str]                      text");
         hl.add(null, "2 3,.    logo                         view demo");

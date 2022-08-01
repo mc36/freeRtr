@@ -441,6 +441,10 @@ public class userGame {
             doKeys();
             return;
         }
+        if (a.equals("title")) {
+            userScreen.sendTit(console.pipe, cmd.getRemaining());
+            return;
+        }
         if (a.equals("text")) {
             a = cmd.getRemaining();
             if (a.length() < 1) {
