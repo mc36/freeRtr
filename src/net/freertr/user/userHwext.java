@@ -140,6 +140,9 @@ public class userHwext {
                 continue;
             }
             String s = cmd.word();
+            if ((i + 1) >= hwc.size()) {
+                continue;
+            }
             cmd = new cmds("ln", hwc.get(i + 1));
             a = cmd.word();
             if (!a.equals("int")) {
