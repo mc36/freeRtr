@@ -1196,6 +1196,35 @@ public class cfgInit implements Runnable {
             }
             return;
         }
+        if (s.startsWith("cfgexec")) {
+            cfgFileSw = args[1];
+            s = "";
+            for (int i = 2; i < args.length; i++) {
+                s += " " + args[i];
+            }
+            pipeSide pip = pipeConsole.create();
+            logger.pipeStart(pip);
+            List<String> logo = version.shLogo(bootLogo);
+            for (int i = 0; i < logo.size(); i++) {
+                pip.linePut(logo.get(i));
+            }
+            List<String> swT = httpGet(cfgFileSw);
+            doInit(null, swT, pip);
+            userLine lin = new userLine();
+            logger.pipeStart(pip);
+            userReader rdr = new userReader(pip, null);
+            pip.settingsPut(pipeSetting.height, 0);
+            userExec exe = new userExec(pip, rdr);
+            exe.privileged = true;
+            s = exe.repairCommand(s);
+            try {
+                exe.executeCommand(s);
+            } catch (Exception e) {
+                logger.exception(e);
+            }
+            stopRouter(true, 1, "finished");
+            return;
+        }
         if (s.equals("show")) {
             s = "";
             for (int i = 0; i < args.length; i++) {
@@ -1271,6 +1300,9 @@ public class cfgInit implements Runnable {
         hlp.add(null, "2 .   <cmd>        command to execute");
         hlp.add(null, "1 2 exec           execute exec command");
         hlp.add(null, "2 .   <cmd>        command to execute");
+        hlp.add(null, "1 2 cfgexec        execute exec command");
+        hlp.add(null, "2 3   <swcfg>      config url");
+        hlp.add(null, "3 .     <cmd>      command to execute");
         List<String> res = hlp.getUsage();
         for (int i = 0; i < res.size(); i++) {
             putln(res.get(i));
