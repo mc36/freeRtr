@@ -204,6 +204,8 @@ class cfgMenuTentry {
 
     public String group;
 
+    public boolean mark;
+
     public cfgMenuTentry(String n, String e) {
         name = n;
         exec = e;
@@ -256,6 +258,9 @@ class cfgMenuTdoer {
         switch (i) {
             case -1: // end
                 return true;
+            case 0x0020: // space
+                doKeySp();
+                return false;
             case 0x0261: // ctrl+a
                 doKeyUp();
                 return false;
@@ -329,23 +334,41 @@ class cfgMenuTdoer {
             return;
         }
         doClear();
-        cfgMenuTentry ent = buf.get(cur);
+        int o = 0;
+        for (int i = 0; i < buf.size(); i++) {
+            cfgMenuTentry ent = buf.get(i);
+            if (!ent.mark) {
+                continue;
+            }
+            ent.mark = false;
+            doExecOne(ent);
+            o++;
+        }
+        if (o < 1) {
+            doExecOne(buf.get(cur));
+        }
+        doClear();
+        doDraw(true);
+    }
+
+    private void doExecOne(cfgMenuTentry ent) {
+        userScreen.sendCol(console.pipe, userScreen.colBrGreen);
+        console.pipe.linePut(ent.group + " - " + ent.name);
+        userScreen.sendCol(console.pipe, userScreen.colWhite);
         userExec exe = new userExec(console.pipe, reader);
         exe.privileged = privileged;
         String s = exe.repairCommand(ent.exec);
-        console.pipe.linePut(ent.group + " - " + ent.name);
         if (console.pipe.settingsGet(pipeSetting.logging, false)) {
             logger.info("command menu:" + s + " from " + console.pipe.settingsGet(pipeSetting.origin, "?"));
         }
         exe.executeCommand(s);
-        doClear();
-        doDraw(true);
     }
 
     private void doKeyF1() {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
         l.add("f10 - exit");
+        l.add("space  - select");
         l.add("ctrl+s - help");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
@@ -382,6 +405,15 @@ class cfgMenuTdoer {
 
     private void doKeyPgUp() {
         cur -= console.sizY / 4;
+    }
+
+    private void doKeySp() {
+        if (cur >= buf.size()) {
+            return;
+        }
+        cfgMenuTentry ent = buf.get(cur);
+        ent.mark = !ent.mark;
+        cur++;
     }
 
     private void doKeyBs() {
@@ -520,9 +552,13 @@ class cfgMenuTdoer {
         if (lin >= buf.size()) {
             return;
         }
-        cfgMenuTentry cur = buf.get(lin);
-        console.putStr(0, ln + 1, bg, fg, false, cur.group);
-        console.putStr(max + 1, ln + 1, bg, fg, false, cur.name);
+        cfgMenuTentry ent = buf.get(lin);
+        console.putStr(0, ln + 1, bg, fg, false, ent.group);
+        console.putStr(max + 3, ln + 1, bg, fg, false, ent.name);
+        if (!ent.mark) {
+            return;
+        }
+        console.putStr(max + 1, ln + 1, bg, fg, false, "*");
     }
 
     private void putFill(int ln, int bg, int fg, int ch) {
