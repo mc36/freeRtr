@@ -483,8 +483,9 @@ class cfgMenuTdoer {
     }
 
     private void doRange() {
-        if (cur >= buf.size()) {
-            cur = buf.size() - 1;
+        int bs = buf.size();
+        if (cur >= bs) {
+            cur = bs - 1;
         }
         if (cur < 0) {
             cur = 0;
@@ -499,8 +500,11 @@ class cfgMenuTdoer {
         if (beg < 0) {
             beg = 0;
         }
-        if (beg > buf.size()) {
-            beg = buf.size();
+        if (beg > bs) {
+            beg = bs;
+        }
+        if ((bs - 2) <= console.sizY) {
+            beg = 0;
         }
     }
 
