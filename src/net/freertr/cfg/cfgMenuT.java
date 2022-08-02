@@ -494,6 +494,10 @@ class cfgMenuTdoer {
         if (beg < i) {
             beg = i;
         }
+        i = bs - console.sizY + 2;
+        if (beg > i) {
+            beg = i;
+        }
         if (beg > cur) {
             beg = cur;
         }
@@ -502,9 +506,6 @@ class cfgMenuTdoer {
         }
         if (beg > bs) {
             beg = bs;
-        }
-        if ((bs - 2) <= console.sizY) {
-            beg = 0;
         }
     }
 
@@ -543,7 +544,7 @@ class cfgMenuTdoer {
         int bg;
         int fg;
         if (lin == cur) {
-            bg = userScreen.colCyan;
+            bg = userScreen.colMagenta;
             fg = userScreen.colBrYellow;
         } else {
             bg = userScreen.colBlack;
