@@ -140,9 +140,9 @@ public class cfgAll {
     public static final tabGen<cfgLin> lines = new tabGen<cfgLin>();
 
     /**
-     * list of enus
+     * list of menus
      */
-    public static final tabGen<cfgMenu> menus = new tabGen<cfgMenu>();
+    public static final tabGen<cfgMenuK> menuk = new tabGen<cfgMenuK>();
 
     /**
      * list of bridges
@@ -2255,9 +2255,9 @@ public class cfgAll {
      * @param nam name of line
      * @return descriptor
      */
-    public static cfgMenu menuDel(String nam) {
-        cfgMenu ntry = new cfgMenu(nam);
-        return menus.del(ntry);
+    public static cfgMenuK menuKdel(String nam) {
+        cfgMenuK ntry = new cfgMenuK(nam);
+        return menuk.del(ntry);
     }
 
     /**
@@ -2267,21 +2267,21 @@ public class cfgAll {
      * @param create create if needed
      * @return descriptor, null if not found
      */
-    public static cfgMenu menuFind(String nam, boolean create) {
+    public static cfgMenuK menuKfind(String nam, boolean create) {
         nam = nam.trim();
         if (nam.length() < 1) {
             return null;
         }
-        cfgMenu ntry = new cfgMenu(nam);
-        ntry = menus.find(ntry);
+        cfgMenuK ntry = new cfgMenuK(nam);
+        ntry = menuk.find(ntry);
         if (!create) {
             return ntry;
         }
         if (ntry != null) {
             return ntry;
         }
-        ntry = new cfgMenu(nam);
-        menus.add(ntry);
+        ntry = new cfgMenuK(nam);
+        menuk.add(ntry);
         return ntry;
     }
 
@@ -3706,7 +3706,7 @@ public class cfgAll {
         servGenList.listGetRun(l, authers, filter);
         servGenList.listGetRun(l, chats, filter);
         servGenList.listGetRun(l, sessns, filter);
-        servGenList.listGetRun(l, menus, filter);
+        servGenList.listGetRun(l, menuk, filter);
         servGenList.listGetRun(l, schedulers, filter);
         servGenList.listGetRun(l, scripts, filter);
         servGenList.listGetRun(l, ip4pool, filter);

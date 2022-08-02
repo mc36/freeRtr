@@ -25,7 +25,7 @@ import net.freertr.cfg.cfgHrpn;
 import net.freertr.cfg.cfgIconn;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgKey;
-import net.freertr.cfg.cfgMenu;
+import net.freertr.cfg.cfgMenuK;
 import net.freertr.cfg.cfgMtrack;
 import net.freertr.cfg.cfgObjnet;
 import net.freertr.cfg.cfgObjprt;
@@ -836,7 +836,8 @@ public class userConfig {
         l.add(null, "1  2  connect                        define one interface cross connection");
         l.add(null, "2  .    <name:cnn>                   name of connection");
         l.add(null, "1  2  menu                           define one menu");
-        l.add(null, "2  .    <name:mnu>                   name of menu");
+        l.add(null, "2  3    key                          letter based");
+        l.add(null, "3  .      <name:mnk>                 name of menu");
         l.add(null, "1  2  server                         create new or update existing server process");
         servGenList.srvHelp(l, 2, " to configure");
     }
@@ -1239,12 +1240,17 @@ public class userConfig {
             return;
         }
         if (a.equals("menu")) {
-            modeDconfig = cfgAll.menuFind(cmd.word(), true);
-            if (modeDconfig == null) {
-                cmd.error("invalid menu name");
+            a = cmd.word();
+            if (a.equals("key")) {
+                modeDconfig = cfgAll.menuKfind(cmd.word(), true);
+                if (modeDconfig == null) {
+                    cmd.error("invalid menu name");
+                    return;
+                }
+                modeV = modes.config;
                 return;
             }
-            modeV = modes.config;
+            cmd.badCmd();
             return;
         }
         if (a.equals("aaa")) {
@@ -2079,11 +2085,16 @@ public class userConfig {
             return;
         }
         if (a.equals("menu")) {
-            cfgMenu prf = cfgAll.menuDel(cmd.word());
-            if (prf == null) {
-                cmd.error("no such menu");
+            a = cmd.word();
+            if (a.equals("key")) {
+                cfgMenuK prf = cfgAll.menuKdel(cmd.word());
+                if (prf == null) {
+                    cmd.error("no such menu");
+                    return;
+                }
                 return;
             }
+            cmd.badCmd();
             return;
         }
         if (a.equals("server")) {

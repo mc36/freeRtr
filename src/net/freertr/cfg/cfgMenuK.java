@@ -10,11 +10,11 @@ import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
 /**
- * one menu configuration
+ * one key based menu configuration
  *
  * @author matecsaba
  */
-public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
+public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
 
     /**
      * defaults text
@@ -47,14 +47,14 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
     /**
      * letters of menu
      */
-    public tabGen<cfgMenuEntry> letter = new tabGen<cfgMenuEntry>();
+    public tabGen<cfgMenuKentry> letter = new tabGen<cfgMenuKentry>();
 
     /**
      * create new instance
      *
      * @param s name of menu
      */
-    public cfgMenu(String s) {
+    public cfgMenuK(String s) {
         name = s;
     }
 
@@ -74,11 +74,11 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
-        l.add("menu " + name);
+        l.add("menu key " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !ignoreCase, cmds.tabulator, "ignore-case", "");
         for (int i = 0; i < letter.size(); i++) {
-            cfgMenuEntry ntry = letter.get(i);
+            cfgMenuKentry ntry = letter.get(i);
             l.add(cmds.tabulator + "letter " + ntry.name + " command " + ntry.command);
             l.add(cmds.tabulator + "letter " + ntry.name + " text " + ntry.text);
         }
@@ -111,7 +111,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         }
         if (a.equals("rename")) {
             a = cmd.word();
-            cfgMenu v = cfgAll.menuFind(a, false);
+            cfgMenuK v = cfgAll.menuKfind(a, false);
             if (v != null) {
                 cmd.error("already exists");
                 return;
@@ -124,9 +124,9 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
             return;
         }
         a = cmd.word();
-        cfgMenuEntry ntry = letter.find(new cfgMenuEntry(a));
+        cfgMenuKentry ntry = letter.find(new cfgMenuKentry(a));
         if (ntry == null) {
-            ntry = new cfgMenuEntry(a);
+            ntry = new cfgMenuKentry(a);
             letter.put(ntry);
         }
         a = cmd.word();
@@ -148,7 +148,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
     }
 
     public String getPrompt() {
-        return "menu";
+        return "menuk";
     }
 
     /**
@@ -171,7 +171,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
     public String getKeys() {
         String s = "";
         for (int i = 0; i < letter.size(); i++) {
-            cfgMenuEntry ntry = letter.get(i);
+            cfgMenuKentry ntry = letter.get(i);
             String a = ntry.name;
             if (ignoreCase) {
                 s += a.toLowerCase() + a.toUpperCase();
@@ -193,7 +193,7 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
             s = s.toLowerCase();
         }
         for (int i = 0; i < letter.size(); i++) {
-            cfgMenuEntry ntry = letter.get(i);
+            cfgMenuKentry ntry = letter.get(i);
             String a = ntry.name;
             if (ignoreCase) {
                 a = a.toLowerCase();
@@ -205,13 +205,13 @@ public class cfgMenu implements Comparator<cfgMenu>, cfgGeneric {
         return null;
     }
 
-    public int compare(cfgMenu o1, cfgMenu o2) {
+    public int compare(cfgMenuK o1, cfgMenuK o2) {
         return o1.name.compareTo(o2.name);
     }
 
 }
 
-class cfgMenuEntry implements Comparator<cfgMenuEntry> {
+class cfgMenuKentry implements Comparator<cfgMenuKentry> {
 
     public String name;
 
@@ -219,7 +219,7 @@ class cfgMenuEntry implements Comparator<cfgMenuEntry> {
 
     public String text;
 
-    public cfgMenuEntry(String s) {
+    public cfgMenuKentry(String s) {
         name = s;
         command = "";
         text = "";
@@ -229,7 +229,7 @@ class cfgMenuEntry implements Comparator<cfgMenuEntry> {
         return name + " - " + text;
     }
 
-    public int compare(cfgMenuEntry o1, cfgMenuEntry o2) {
+    public int compare(cfgMenuKentry o1, cfgMenuKentry o2) {
         return o1.name.compareTo(o2.name);
     }
 

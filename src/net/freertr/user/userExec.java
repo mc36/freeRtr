@@ -14,7 +14,7 @@ import net.freertr.cfg.cfgChat;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgLin;
-import net.freertr.cfg.cfgMenu;
+import net.freertr.cfg.cfgMenuK;
 import net.freertr.cfg.cfgPrcss;
 import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRtr;
@@ -1390,7 +1390,8 @@ public class userExec {
         hl.add(null, "1 .    gpsemu                         start gps emulation session");
         hl.add(null, "1 .    gpstime                        start gps session");
         hl.add(null, "1 2    menu                           start menu session");
-        hl.add(null, "2 .      <name:mnu>                   name of menu");
+        hl.add(null, "2 3      key                          letter based");
+        hl.add(null, "3 .        <name:mnk>                 name of menu");
         hl.add(null, "1 2    terminal                       terminal specific parameters");
         hl.add(null, "2 2      no                           negate a parameter");
         hl.add(null, "2 3      width                        set terminal width");
@@ -2285,7 +2286,12 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("menu")) {
-            doMenu();
+            a = cmd.word();
+            if (a.equals("key")) {
+                doMenuK();
+                return cmdRes.command;
+            }
+            cmd.badCmd();
             return cmdRes.command;
         }
         if (a.equals("portscan")) {
@@ -2970,9 +2976,9 @@ public class userExec {
         cfg.executeCommand(a);
     }
 
-    private void doMenu() {
+    private void doMenuK() {
         String a = cmd.word();
-        cfgMenu ntry = cfgAll.menuFind(a, false);
+        cfgMenuK ntry = cfgAll.menuKfind(a, false);
         if (ntry == null) {
             cmd.error("no such menu");
             return;

@@ -810,7 +810,7 @@ public class cfgInit implements Runnable {
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
         cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
         cfgLin.linedefF = createFilter(cfgLin.linedefL);
-        cfgMenu.defaultF = createFilter(cfgMenu.defaultL);
+        cfgMenuK.defaultF = createFilter(cfgMenuK.defaultL);
         cfgAll.defaultF = createFilter(cfgAll.defaultL);
         cfgIpsec.defaultF = createFilter(cfgIpsec.defaultL);
         cfgAuther.defaultF = createFilter(cfgAuther.defaultL);

@@ -1,4 +1,4 @@
 #!/bin/sh
-stty raw < /dev/tty
+stty raw -echo < /dev/tty
 java -Xmx128g -jar rtr.jar routerc ../rtr-
-stty cooked < /dev/tty
+stty cooked echo < /dev/tty
