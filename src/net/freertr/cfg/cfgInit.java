@@ -1210,7 +1210,6 @@ public class cfgInit implements Runnable {
             }
             List<String> swT = httpGet(cfgFileSw);
             doInit(null, swT, pip);
-            userLine lin = new userLine();
             logger.pipeStart(pip);
             userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
