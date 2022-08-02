@@ -140,9 +140,14 @@ public class cfgAll {
     public static final tabGen<cfgLin> lines = new tabGen<cfgLin>();
 
     /**
-     * list of menus
+     * list of key menus
      */
     public static final tabGen<cfgMenuK> menuk = new tabGen<cfgMenuK>();
+
+    /**
+     * list of tui menus
+     */
+    public static final tabGen<cfgMenuT> menut = new tabGen<cfgMenuT>();
 
     /**
      * list of bridges
@@ -2250,7 +2255,7 @@ public class cfgAll {
     }
 
     /**
-     * add one physical line
+     * add one menu
      *
      * @param nam name of line
      * @return descriptor
@@ -2261,7 +2266,7 @@ public class cfgAll {
     }
 
     /**
-     * find one line
+     * find one menu
      *
      * @param nam name of this
      * @param create create if needed
@@ -2282,6 +2287,42 @@ public class cfgAll {
         }
         ntry = new cfgMenuK(nam);
         menuk.add(ntry);
+        return ntry;
+    }
+
+    /**
+     * add one menu
+     *
+     * @param nam name of line
+     * @return descriptor
+     */
+    public static cfgMenuT menuTdel(String nam) {
+        cfgMenuT ntry = new cfgMenuT(nam);
+        return menut.del(ntry);
+    }
+
+    /**
+     * find one menu
+     *
+     * @param nam name of this
+     * @param create create if needed
+     * @return descriptor, null if not found
+     */
+    public static cfgMenuT menuTfind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgMenuT ntry = new cfgMenuT(nam);
+        ntry = menut.find(ntry);
+        if (!create) {
+            return ntry;
+        }
+        if (ntry != null) {
+            return ntry;
+        }
+        ntry = new cfgMenuT(nam);
+        menut.add(ntry);
         return ntry;
     }
 
@@ -3707,6 +3748,7 @@ public class cfgAll {
         servGenList.listGetRun(l, chats, filter);
         servGenList.listGetRun(l, sessns, filter);
         servGenList.listGetRun(l, menuk, filter);
+        servGenList.listGetRun(l, menut, filter);
         servGenList.listGetRun(l, schedulers, filter);
         servGenList.listGetRun(l, scripts, filter);
         servGenList.listGetRun(l, ip4pool, filter);

@@ -15,6 +15,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgLin;
 import net.freertr.cfg.cfgMenuK;
+import net.freertr.cfg.cfgMenuT;
 import net.freertr.cfg.cfgPrcss;
 import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRtr;
@@ -1392,6 +1393,8 @@ public class userExec {
         hl.add(null, "1 2    menu                           start menu session");
         hl.add(null, "2 3      key                          letter based");
         hl.add(null, "3 .        <name:mnk>                 name of menu");
+        hl.add(null, "2 3      tui                          tui based");
+        hl.add(null, "3 .        <name:mnt>                 name of menu");
         hl.add(null, "1 2    terminal                       terminal specific parameters");
         hl.add(null, "2 2      no                           negate a parameter");
         hl.add(null, "2 3      width                        set terminal width");
@@ -2291,6 +2294,10 @@ public class userExec {
                 doMenuK();
                 return cmdRes.command;
             }
+            if (a.equals("tui")) {
+                doMenuT();
+                return cmdRes.command;
+            }
             cmd.badCmd();
             return cmdRes.command;
         }
@@ -3000,6 +3007,16 @@ public class userExec {
             logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
         }
         exe.executeCommand(s);
+    }
+
+    private void doMenuT() {
+        String a = cmd.word();
+        cfgMenuT ntry = cfgAll.menuTfind(a, false);
+        if (ntry == null) {
+            cmd.error("no such menu");
+            return;
+        }
+        ntry.doMenu(pipe, reader, privileged);
     }
 
     private void doPortscan() {

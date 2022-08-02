@@ -26,6 +26,7 @@ import net.freertr.cfg.cfgIconn;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgMenuK;
+import net.freertr.cfg.cfgMenuT;
 import net.freertr.cfg.cfgMtrack;
 import net.freertr.cfg.cfgObjnet;
 import net.freertr.cfg.cfgObjprt;
@@ -838,6 +839,8 @@ public class userConfig {
         l.add(null, "1  2  menu                           define one menu");
         l.add(null, "2  3    key                          letter based");
         l.add(null, "3  .      <name:mnk>                 name of menu");
+        l.add(null, "2  3    tui                          tui based");
+        l.add(null, "3  .      <name:mnt>                 name of menu");
         l.add(null, "1  2  server                         create new or update existing server process");
         servGenList.srvHelp(l, 2, " to configure");
     }
@@ -1243,6 +1246,15 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("key")) {
                 modeDconfig = cfgAll.menuKfind(cmd.word(), true);
+                if (modeDconfig == null) {
+                    cmd.error("invalid menu name");
+                    return;
+                }
+                modeV = modes.config;
+                return;
+            }
+            if (a.equals("tui")) {
+                modeDconfig = cfgAll.menuTfind(cmd.word(), true);
                 if (modeDconfig == null) {
                     cmd.error("invalid menu name");
                     return;
@@ -2088,6 +2100,14 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("key")) {
                 cfgMenuK prf = cfgAll.menuKdel(cmd.word());
+                if (prf == null) {
+                    cmd.error("no such menu");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("tui")) {
+                cfgMenuT prf = cfgAll.menuTdel(cmd.word());
                 if (prf == null) {
                     cmd.error("no such menu");
                     return;

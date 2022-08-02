@@ -17,6 +17,7 @@ import net.freertr.cfg.cfgIpsec;
 import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgLin;
 import net.freertr.cfg.cfgMenuK;
+import net.freertr.cfg.cfgMenuT;
 import net.freertr.cfg.cfgMtrack;
 import net.freertr.cfg.cfgObjnet;
 import net.freertr.cfg.cfgObjprt;
@@ -448,6 +449,18 @@ public class userHelping {
         if (a.equals("mnk")) {
             for (i = 0; i < cfgAll.menuk.size(); i++) {
                 cfgMenuK ntry = cfgAll.menuk.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("mnt")) {
+            for (i = 0; i < cfgAll.menut.size(); i++) {
+                cfgMenuT ntry = cfgAll.menut.get(i);
                 if (ntry == null) {
                     continue;
                 }

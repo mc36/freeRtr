@@ -20,8 +20,8 @@ public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "menu .*! no description",
-        "menu .*! no ignore-case"
+        "menu key .*! no description",
+        "menu key .*! no ignore-case"
     };
 
     /**
@@ -58,6 +58,10 @@ public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
         name = s;
     }
 
+    public int compare(cfgMenuK o1, cfgMenuK o2) {
+        return o1.name.compareTo(o2.name);
+    }
+
     public void getHelp(userHelping l) {
         l.add(null, "1 3,. description                   specify description");
         l.add(null, "3 3,.   <str>                       text");
@@ -88,7 +92,6 @@ public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
             return l;
         }
         return userFilter.filterText(l, defaultF);
-
     }
 
     public void doCfgStr(cmds cmd) {
@@ -203,10 +206,6 @@ public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
             }
         }
         return null;
-    }
-
-    public int compare(cfgMenuK o1, cfgMenuK o2) {
-        return o1.name.compareTo(o2.name);
     }
 
 }
