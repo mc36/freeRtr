@@ -619,6 +619,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             iface.cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
+        iface.iface.lower.createETHheader(new packHolder(true, true), ifcAddr, 0);
+        if (iface.oface != null) {
+            iface.oface.lower.createETHheader(new packHolder(true, true), ofcAddr, 0);
+        }
         if (oldAdjSt == peerAdjState) {
             return;
         }

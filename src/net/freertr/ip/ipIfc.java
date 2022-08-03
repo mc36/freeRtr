@@ -35,6 +35,16 @@ public interface ipIfc {
     public void setFilter(boolean promisc);
 
     /**
+     * update ethernet header
+     *
+     * @param pck packet to update
+     * @param nexthop nexthop to query for
+     * @param typ ethertype to insert
+     * @return true on error, false on success
+     */
+    public boolean createETHheader(packHolder pck, addrIP nexthop, int typ);
+
+    /**
      * forward raw protocol packet
      *
      * @param pck packet to send

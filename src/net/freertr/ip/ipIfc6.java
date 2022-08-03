@@ -330,7 +330,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
         resetTimer(true);
     }
 
-    private boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
+    public boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
         pck.msbPutW(0, typ);
         pck.putSkip(2);
         pck.merge2beg();

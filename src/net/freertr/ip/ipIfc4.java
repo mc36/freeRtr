@@ -197,7 +197,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
         upper.ifaceAddr(ifcHdr, ipaddr, ipm);
     }
 
-    private boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
+    public boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
         pck.msbPutW(0, typ);
         pck.putSkip(2);
         pck.merge2beg();

@@ -363,8 +363,11 @@ public class userPacket {
         }
         if (a.equals("arping")) {
             String rem = cmd.word();
-            cfgVrf vrf = cfgAll.getClntVrf();
-            cfgIfc ifc = cfgAll.getClntIfc();
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
             int timeout = 1000;
             int repeat = 5;
             int proto = 0;
@@ -373,15 +376,6 @@ public class userPacket {
                 a = cmd.word();
                 if (a.length() < 1) {
                     break;
-                }
-                if (a.equals("vrf")) {
-                    vrf = cfgAll.vrfFind(cmd.word(), false);
-                    ifc = null;
-                    continue;
-                }
-                if (a.equals("source")) {
-                    ifc = cfgAll.ifcFind(cmd.word(), 0);
-                    continue;
                 }
                 if (a.equals("timeout")) {
                     timeout = bits.str2num(cmd.word());
@@ -404,14 +398,6 @@ public class userPacket {
                     continue;
                 }
             }
-            if (vrf == null) {
-                cmd.error("vrf not specified");
-                return null;
-            }
-            if (ifc == null) {
-                cmd.error("source not specified");
-                return null;
-            }
             userTerminal trm = new userTerminal(cmd.pipe);
             addrIP trg = trm.resolveAddr(rem, proto);
             if (trg == null) {
@@ -432,18 +418,17 @@ public class userPacket {
                 cmd.error("no address configured");
                 return null;
             }
-            ipFwd fwd = vrf.getFwd(trg);
             int sent = 0;
             int recv = 0;
             long timBeg = bits.getTime();
-            cmd.error("arpinging " + trg + ", src=" + ifc.name + ", vrf=" + vrf.name + ", cnt=" + repeat + ", tim=" + timeout + ", gap=" + delay);
+            cmd.error("arpinging " + trg + ", src=" + ifc.name + ", cnt=" + repeat + ", tim=" + timeout + ", gap=" + delay);
             for (int i = 0; i < repeat; i++) {
                 if (need2stop()) {
                     break;
                 }
                 sent++;
                 ipi.updateL2info(2, new addrMac(), trg);
-                fwd.echoSendReq(src, trg, 64, false, -1, 255, 0, 0, 0, 0, false);
+                ipi.createETHheader(new packHolder(true, true), trg, 0);
                 bits.sleep(delay);
                 addrType res = ipi.getL2info(trg);
                 if (res == null) {

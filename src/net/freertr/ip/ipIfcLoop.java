@@ -123,6 +123,10 @@ public class ipIfcLoop implements ipIfc {
     public void setFilter(boolean promisc) {
     }
 
+    public boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
+        return true;
+    }
+
     public void sendProto(packHolder pck, addrIP nexthop) {
         cntr.rx(pck);
     }
