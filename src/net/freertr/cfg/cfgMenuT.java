@@ -291,6 +291,9 @@ class cfgMenuTdoer {
                 return true;
             case 0x0263: // ctrl+c
                 return true;
+            case 0x0276: // ctrl+v
+                doKeyF3();
+                return false;
             case 0x0277: // ctrl+w
                 doKeyClr();
                 return false;
@@ -320,6 +323,9 @@ class cfgMenuTdoer {
                 return false;
             case 0x8014: // f1
                 doKeyF1();
+                return false;
+            case 0x8016: // f3
+                doKeyF3();
                 return false;
             case 0x801d: // f10
                 return true;
@@ -367,9 +373,11 @@ class cfgMenuTdoer {
     private void doKeyF1() {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
+        l.add("f3 - view command");
         l.add("f10 - exit");
         l.add("space  - select");
         l.add("ctrl+s - help");
+        l.add("ctrl+v - view command");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+w - erase filter");
@@ -381,6 +389,17 @@ class cfgMenuTdoer {
         l.add("ctrl+x - exit");
         l.add("ctrl+c - exit");
         console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+    }
+
+    private void doKeyF3() {
+        if (!privileged) {
+            return;
+        }
+        if (cur > buf.size()) {
+            return;
+        }
+        cfgMenuTentry ent = buf.get(cur);
+        console.askUser("command to execute", userScreen.colBlue, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ent.exec);
     }
 
     private void doKeyUp() {

@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     try:
 
-        ## The beta version of the APS BSP for 9.9.0 does not include
+        ## The beta version of the APS BSP for 9.9+ does not include
         ## the SAL. In that case, start bf_switchd regularly.
         if args.platform == "stordis_bf2556x_1t" and 'SalGrpcClient' in locals():
             # start TOFINO via SAL GRPC client

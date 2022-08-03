@@ -2,6 +2,7 @@
 #sudo apt-get install psmisc iproute2 net-tools socat tshark iperf gcc git telnet python3-yappi default-jdk-headless default-jre-headless bc jq
 #sudo $SDE/p4studio/install-p4studio-dependencies.sh
 #$SDE/p4studio/p4studio interactive
+#$SDE/p4studio/p4studio profile apply ~/p4studio.yaml
 #rm -rf $SDE/build
 #rm -rf $SDE/packages
 #rm -rf $SDE/install/p4i
@@ -29,7 +30,7 @@
 #fallocate -d p4bf.img
 #
 cd ~/rare/p4src
-export SDE=/home/mc36/bf-sde-9.9.0
+export SDE=/home/mc36/bf-sde-9.9.1
 export SDE_INSTALL=$SDE/install
 rm -rf $SDE/install/bf_router.tofino
 #-b tofino2 -a t2na
