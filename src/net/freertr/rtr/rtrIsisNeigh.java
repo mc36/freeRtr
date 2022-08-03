@@ -620,7 +620,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             return;
         }
         iface.iface.lower.createETHheader(new packHolder(true, true), ifcAddr, 0);
-        if (iface.oface != null) {
+        if (iface.otherEna) {
             iface.oface.lower.createETHheader(new packHolder(true, true), ofcAddr, 0);
         }
         if (oldAdjSt == peerAdjState) {
