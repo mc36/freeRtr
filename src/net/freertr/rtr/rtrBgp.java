@@ -1476,7 +1476,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.updatePeer();
         rtrBgpNeigh res = lstnNei.put(ntry);
         if (res != null) {
-            res.socketMode = 5;
             res.stopNow();
         }
         ntry.conn = new rtrBgpSpeak(this, ntry, pipe);

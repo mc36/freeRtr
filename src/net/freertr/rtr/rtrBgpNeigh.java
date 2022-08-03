@@ -729,10 +729,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     openConn(bits.random(2, 15));
                     break;
                 case 4: // dynamic
-                    lower.lstnNei.del(this);
+                    if (lower.lstnNei.find(this) == this) {
+                        lower.lstnNei.del(this);
+                    }
                     stopNow();
                     return;
-                case 5: // deleted dynamic
+                case 5: // replay
                     return;
             }
         }
