@@ -12,7 +12,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * eigrp neighbor
@@ -290,7 +290,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
             return;
         }
         rxSeq++;
-        typLenVal tlv = rtrEigrp.getTlv();
+        encTlv tlv = rtrEigrp.getTlv();
         int cnt = 0;
         for (;;) {
             if (tlv.getBytes(pck)) {
@@ -508,7 +508,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         }
     }
 
-    private void readExtern(tabRouteEntry<addrIP> ntry, typLenVal tlv, int ofs) {
+    private void readExtern(tabRouteEntry<addrIP> ntry, encTlv tlv, int ofs) {
         addrIPv4 a4 = new addrIPv4();
         a4.fromBuf(tlv.valDat, ofs);
         ntry.best.aggrRtr = new addrIP();
@@ -517,7 +517,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         ntry.best.tag = bits.msbGetD(tlv.valDat, ofs + 8);
     }
 
-    private boolean readMetric(tabRouteEntry<addrIP> ntry, typLenVal tlv, int ofs) {
+    private boolean readMetric(tabRouteEntry<addrIP> ntry, encTlv tlv, int ofs) {
         int dly = bits.msbGetD(tlv.valDat, ofs + 0);
         int bwd = bits.msbGetD(tlv.valDat, ofs + 4);
         if (dly != -1) {
@@ -561,7 +561,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         if (debugger.rtrEigrpTraf) {
             logger.debug("prefix " + ntry);
         }
-        typLenVal tlv = rtrEigrp.getTlv();
+        encTlv tlv = rtrEigrp.getTlv();
         packHolder pck = new packHolder(true, true);
         boolean ipv4 = ntry.prefix.network.isIPv4();
         if (ntry.best.aggrRtr != null) {

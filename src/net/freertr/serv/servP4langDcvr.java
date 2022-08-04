@@ -5,7 +5,7 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
 
 /**
@@ -76,7 +76,7 @@ public class servP4langDcvr implements Runnable {
      */
     protected void doCalc() {
         servP4langCfg cur = parent.fwds.get(0);
-        shrtPthFrst<addrIP> spf = new shrtPthFrst<addrIP>(cur.bckplnSpf);
+        spfWork<addrIP> spf = new spfWork<addrIP>(cur.bckplnSpf);
         for (int o = 0; o < parent.fwds.size(); o++) {
             cur = parent.fwds.get(o);
             addrIP adr = servP4langUtil.forwarder2addr(o);

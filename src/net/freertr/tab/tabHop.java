@@ -7,7 +7,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * one explicit route hop
@@ -67,7 +67,7 @@ public class tabHop {
      * @param tlv tlv to use
      * @return false on success, true on error
      */
-    public boolean fromTvl(typLenVal tlv) {
+    public boolean fromTvl(encTlv tlv) {
         strict = (tlv.valTyp & 0x80) == 0;
         switch (tlv.valTyp & 0x7f) {
             case 1: // ipv4
@@ -111,7 +111,7 @@ public class tabHop {
      *
      * @param tlv tlv to use
      */
-    public void toTlv(typLenVal tlv) {
+    public void toTlv(encTlv tlv) {
         if (label != 0) {
             if (adr.isIPv4()) {
                 tlv.valDat[0] = 0x10; // nai type
@@ -158,8 +158,8 @@ public class tabHop {
      *
      * @return tlv
      */
-    public static typLenVal getTlv() {
-        return new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    public static encTlv getTlv() {
+        return new encTlv(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
     }
 
     /**
@@ -169,7 +169,7 @@ public class tabHop {
      * @return list of hops, null on error
      */
     public static List<tabHop> parseHops(packHolder pck) {
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         List<tabHop> lst = new ArrayList<tabHop>();
         for (;;) {
             if (tlv.getBytes(pck)) {
@@ -191,7 +191,7 @@ public class tabHop {
      * @param lst list of hops
      */
     public static void createHops(packHolder pck, List<tabHop> lst) {
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         for (int i = 0; i < lst.size(); i++) {
             tabHop ntry = lst.get(i);
             if (ntry == null) {

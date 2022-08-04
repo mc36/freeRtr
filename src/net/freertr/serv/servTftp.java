@@ -9,6 +9,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFlash;
@@ -16,7 +17,6 @@ import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * trivial file transfer protocol (rfc1350) server
@@ -73,7 +73,7 @@ public class servTftp extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("path")) {
-            rootFolder = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            rootFolder = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (s.equals("readonly")) {
@@ -168,7 +168,7 @@ class servTftpConn implements Runnable {
         if (debugger.servTftpTraf) {
             logger.debug("rx " + pckTft.dump());
         }
-        String a = lower.rootFolder + uniResLoc.normalizePath("" + pckTft.nam);
+        String a = lower.rootFolder + encUrl.normalizePath("" + pckTft.nam);
         File fh = new File(a);
         boolean red;
         switch (pckTft.typ) {

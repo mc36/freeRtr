@@ -54,7 +54,7 @@ import net.freertr.clnt.clntIrc;
 import net.freertr.clnt.clntNetflow;
 import net.freertr.clnt.clntNtp;
 import net.freertr.clnt.clntSyslog;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
@@ -879,7 +879,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("encoded")) {
-                cfgAll.banner = cryBase64.decodeBytes(cmd.getRemaining());
+                cfgAll.banner = encBase64.decodeBytes(cmd.getRemaining());
                 if (cfgAll.banner == null) {
                     cfgAll.banner = new byte[0];
                 }

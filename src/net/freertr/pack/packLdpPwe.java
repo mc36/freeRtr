@@ -6,7 +6,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * pseudo wire over mpls (rfc4447) fec
@@ -141,7 +141,7 @@ public class packLdpPwe implements Comparator<packLdpPwe> {
      */
     public final static int iprVccv = 12;
 
-    private typLenVal tlv = new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    private encTlv tlv = new encTlv(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
 
     /**
      * convert type to string

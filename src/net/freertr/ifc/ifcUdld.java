@@ -16,7 +16,7 @@ import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * unidirectional link detection (rfc5171) protocol
@@ -150,8 +150,8 @@ public class ifcUdld implements ifcUp {
         return "udld on " + lower;
     }
 
-    private typLenVal getTlv() {
-        return new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
+    private encTlv getTlv() {
+        return new encTlv(0, 16, 16, 16, 1, 4, 4, 1, 0, 512, true);
     }
 
     /**
@@ -177,7 +177,7 @@ public class ifcUdld implements ifcUp {
         nei.serNum = "";
         nei.portId = "";
         pck.getSkip(4);
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -267,7 +267,7 @@ public class ifcUdld implements ifcUp {
         keepTimer.schedule(task, 500, advertiseInterval);
     }
 
-    private boolean findMyself(typLenVal tlv) {
+    private boolean findMyself(encTlv tlv) {
         int m = bits.msbGetD(tlv.valDat, 0);
         int p = 4;
         for (int i = 0; i < m; i++) {
@@ -337,7 +337,7 @@ public class ifcUdld implements ifcUp {
         }
         txSeq++;
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         pck.ETHtrg.fromString("0100:0ccc:cccc");
         if (hwadr.getSize() == addrMac.size) {
             pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);

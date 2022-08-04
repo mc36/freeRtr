@@ -11,7 +11,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ling aggregation control protocol (ieee 802.3ad) handler
@@ -85,8 +85,8 @@ public class ifcLacp implements ifcUp, Runnable {
         return "lacp on " + lower;
     }
 
-    private typLenVal getTlv() {
-        return new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    private encTlv getTlv() {
+        return new encTlv(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
     }
 
     public void recvPack(packHolder pck) {
@@ -103,7 +103,7 @@ public class ifcLacp implements ifcUp, Runnable {
         if (debugger.ifcLacpEvnt) {
             logger.debug("received packet");
         }
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -147,7 +147,7 @@ public class ifcLacp implements ifcUp, Runnable {
                 logger.debug("sending packet");
             }
             packHolder pck = new packHolder(true, true);
-            typLenVal tlv = getTlv();
+            encTlv tlv = getTlv();
             pck.ETHtrg.fromString("0180:c200:0002");
             if (hwadr.getSize() == addrMac.size) {
                 pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);

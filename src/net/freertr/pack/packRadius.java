@@ -8,7 +8,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * remote authentication dialin user (rfc2865) packet
@@ -1763,7 +1763,7 @@ public class packRadius {
      */
     public int valWlaBnd = -1;
 
-    private typLenVal tlv = new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    private encTlv tlv = new encTlv(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
 
     /**
      * convert code to string

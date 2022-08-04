@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.auth.authLocal;
 import net.freertr.clnt.clntTrack;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
@@ -320,7 +320,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             return;
         }
         if (a.equals("pubkey")) {
-            worker.pubkey = cryBase64.decodeBytes(cmd.getRemaining());
+            worker.pubkey = encBase64.decodeBytes(cmd.getRemaining());
             return;
         }
         if (a.equals("security")) {

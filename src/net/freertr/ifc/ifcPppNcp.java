@@ -5,7 +5,7 @@ import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * one network control protocol for ppp
@@ -474,8 +474,8 @@ public abstract class ifcPppNcp {
      *
      * @return tlv
      */
-    protected typLenVal getTlv() {
-        return new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    protected encTlv getTlv() {
+        return new encTlv(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
     }
 
     /**
@@ -488,7 +488,7 @@ public abstract class ifcPppNcp {
         packHolder rej = new packHolder(true, true);
         Object config = getOneConfig(false);
         int siz = pck.dataSize();
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -524,7 +524,7 @@ public abstract class ifcPppNcp {
         lst.merge2beg();
         packHolder res = new packHolder(true, true);
         int siz = src.dataSize();
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(lst)) {
                 break;
@@ -595,7 +595,7 @@ public abstract class ifcPppNcp {
      * @param tlv tlv to use
      * @return false if successful, true if reject needed
      */
-    public abstract boolean readOption(Object config, typLenVal tlv);
+    public abstract boolean readOption(Object config, encTlv tlv);
 
     /**
      * write options

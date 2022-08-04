@@ -1,7 +1,7 @@
 package net.freertr.pack;
 
 import net.freertr.pipe.pipeSide;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * pulse protocol
@@ -214,8 +214,8 @@ public class packPulse {
      * @param pck packet to receive
      * @return tlv, null if error
      */
-    public static typLenVal getAvp(packHolder pck) {
-        typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    public static encTlv getAvp(packHolder pck) {
+        encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
         if (pck.dataSize() < 12) {
             return null;
         }

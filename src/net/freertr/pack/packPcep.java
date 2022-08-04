@@ -7,7 +7,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabHop;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * path computation element protocol (rfc5440) packet
@@ -256,7 +256,7 @@ public class packPcep {
 
     private packHolder pck2 = new packHolder(true, true);
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 4, 0, 512, true);
+    private encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 4, 0, 512, true);
 
     public String toString() {
         String a;

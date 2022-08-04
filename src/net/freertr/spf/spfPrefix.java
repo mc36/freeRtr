@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.spf;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,7 +13,7 @@ import net.freertr.addr.addrType;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstPfx<Ta extends addrType> implements Comparator<shrtPthFrstPfx<Ta>> {
+public class spfPrefix<Ta extends addrType> implements Comparator<spfPrefix<Ta>> {
 
     /**
      * prefix
@@ -23,14 +23,14 @@ public class shrtPthFrstPfx<Ta extends addrType> implements Comparator<shrtPthFr
     /**
      * nodes
      */
-    protected final List<shrtPthFrstNode<Ta>> nodes = new ArrayList<shrtPthFrstNode<Ta>>();
+    protected final List<spfNode<Ta>> nodes = new ArrayList<spfNode<Ta>>();
 
     /**
      * create instance
      *
      * @param pfx prefix
      */
-    public shrtPthFrstPfx(addrPrefix<addrIP> pfx) {
+    public spfPrefix(addrPrefix<addrIP> pfx) {
         prefix = pfx;
     }
 
@@ -42,7 +42,7 @@ public class shrtPthFrstPfx<Ta extends addrType> implements Comparator<shrtPthFr
         return addrPrefix.ip2str(prefix) + "|" + a;
     }
 
-    public int compare(shrtPthFrstPfx<Ta> o1, shrtPthFrstPfx<Ta> o2) {
+    public int compare(spfPrefix<Ta> o1, spfPrefix<Ta> o2) {
         return o1.prefix.compare(o1.prefix, o2.prefix);
     }
 

@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encAsn1;
 import net.freertr.pack.packHolder;
 
 /**
@@ -299,14 +300,14 @@ public class cryCertEntity {
         oid[0] = 0x55;
         oid[1] = 0x04;
         oid[2] = (byte) typ;
-        cryAsn1.writeObjectId(p1, oid);
-        cryAsn1 a = new cryAsn1();
+        encAsn1.writeObjectId(p1, oid);
+        encAsn1 a = new encAsn1();
         a.buf = val.getBytes();
-        a.tag = cryAsn1.tagPrintableString;
+        a.tag = encAsn1.tagPrintableString;
         a.tagWrite(p1);
         p1.merge2end();
-        cryAsn1.writeSequence(p2, p1);
-        cryAsn1.writeSet(pck, p2);
+        encAsn1.writeSequence(p2, p1);
+        encAsn1.writeSet(pck, p2);
     }
 
     /**
@@ -382,25 +383,25 @@ public class cryCertEntity {
             if (pck.dataSize() < 1) {
                 break;
             }
-            cryAsn1 a = new cryAsn1();
+            encAsn1 a = new encAsn1();
             if (a.tagRead(pck)) {
                 return true;
             }
-            if ((!a.cnst) || (a.tag != cryAsn1.tagSet)) {
+            if ((!a.cnst) || (a.tag != encAsn1.tagSet)) {
                 return true;
             }
             packHolder p = a.getPack();
             if (a.tagRead(p)) {
                 return true;
             }
-            if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+            if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
                 return true;
             }
             p = a.getPack();
             if (a.tagRead(p)) {
                 return true;
             }
-            if ((a.cnst) || (a.tag != cryAsn1.tagObjectID)) {
+            if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
                 return true;
             }
             if (a.buf.length != 3) {
@@ -420,9 +421,9 @@ public class cryCertEntity {
                 return true;
             }
             switch (a.tag) {
-                case cryAsn1.tagPrintableString:
-                case cryAsn1.tagUTF8string:
-                case cryAsn1.tagGeneralString:
+                case encAsn1.tagPrintableString:
+                case encAsn1.tagUTF8string:
+                case encAsn1.tagGeneralString:
                     break;
                 default:
                     return true;

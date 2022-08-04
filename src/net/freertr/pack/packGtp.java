@@ -5,7 +5,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * gprs tunneling protocol (3gpp29060) packet
@@ -163,7 +163,7 @@ public class packGtp {
     /**
      * tlv parser
      */
-    public typLenVal tlv = new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
+    public encTlv tlv = new encTlv(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
 
     /**
      * protocol type

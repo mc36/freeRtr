@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryHashSha2512;
 import net.freertr.cry.cryHashSha3512;
@@ -16,10 +16,10 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
+import net.freertr.enc.encUrl;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
 
@@ -336,7 +336,7 @@ public class userUpgrade {
      */
     protected static void doAutoRevert() {
         String tmp = version.getRWpath() + "rev" + bits.randomD() + ".tmp";
-        uniResLoc url = uniResLoc.parseOne(cfgAll.upgradeServer + myFileName());
+        encUrl url = encUrl.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
         boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp));
@@ -387,7 +387,7 @@ public class userUpgrade {
         }
         cons.debugStat("downloading version info");
         String tmp = version.getRWpath() + "upg" + bits.randomD() + ".tmp";
-        uniResLoc url = uniResLoc.parseOne(server + myFileName());
+        encUrl url = encUrl.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));
@@ -615,7 +615,7 @@ public class userUpgrade {
             userFlash.copy(loc, loc + bakExt, true);
         }
         cons.debugStat("downloading " + loc);
-        uniResLoc url = uniResLoc.parseOne(rem);
+        encUrl url = encUrl.parseOne(rem);
         userFlash.delete(tmp);
         userFlash.doReceive(cmd.pipe, url, new File(tmp));
         cons.debugStat("upgrading " + loc);
@@ -852,7 +852,7 @@ class userUpgradeBlob {
         if (!sum.equals(getSum(1))) {
             return "checksum invalid!";
         }
-        byte[] buf = cryBase64.decodeBytes(sign);
+        byte[] buf = encBase64.decodeBytes(sign);
         if (buf == null) {
             return "error decoding signature!";
         }
@@ -900,7 +900,7 @@ class userUpgradeBlob {
 
     public void doSign(cryKeyRSA k) {
         time = bits.getTime();
-        sign = cryBase64.encodeBytes(k.tlsSigning(0, new cryHashSha3512(), getSum(0).getBytes()));
+        sign = encBase64.encodeBytes(k.tlsSigning(0, new cryHashSha3512(), getSum(0).getBytes()));
     }
 
 }

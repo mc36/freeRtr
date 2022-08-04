@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encBase64;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -283,7 +284,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      * @return false on success, true on error
      */
     public boolean pemReadStr(String s, boolean justPub) {
-        byte[] buf = cryBase64.decodeBytes(s);
+        byte[] buf = encBase64.decodeBytes(s);
         if (buf == null) {
             return true;
         }
@@ -351,7 +352,7 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      */
     public String pemWriteStr(boolean justPub) {
         byte[] buf = asn1WriteBuf(justPub);
-        return cryBase64.encodeBytes(buf, 0, buf.length);
+        return encBase64.encodeBytes(buf, 0, buf.length);
     }
 
     /**

@@ -5,7 +5,7 @@ import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
@@ -164,7 +164,7 @@ class servPckOtxtConn implements Runnable, ifcDn {
                 if (s.length() < 1) {
                     continue;
                 }
-                byte[] buf = cryBase64.decodeBytes(s);
+                byte[] buf = encBase64.decodeBytes(s);
                 if (buf == null) {
                     continue;
                 }
@@ -220,7 +220,7 @@ class servPckOtxtConn implements Runnable, ifcDn {
 
     public void sendPack(packHolder pck) {
         pck.putDefaults();
-        pipe.linePut(cryBase64.encodeBytes(pck.getCopy()));
+        pipe.linePut(encBase64.encodeBytes(pck.getCopy()));
     }
 
 }

@@ -6,7 +6,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospfv2 lsa dumper
@@ -266,7 +266,7 @@ public class rtrOspfDump {
                 dumpElsa(l, pck);
                 break;
             case rtrOspf6lsa.lsaSegRoutV6:
-                typLenVal tlv = rtrOspfTe.getTlvHandler();
+                encTlv tlv = rtrOspfTe.getTlvHandler();
                 for (;;) {
                     if (tlv.getBytes(pck)) {
                         break;
@@ -288,7 +288,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpElsa(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -392,7 +392,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpTeLsa(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -615,7 +615,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpRiLsa(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -679,7 +679,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpPrfLsa(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -704,7 +704,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpPrfLsa2(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -730,7 +730,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpLnkLsa(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -756,7 +756,7 @@ public class rtrOspfDump {
     }
 
     private static void dumpLnkLsa2(List<String> l, packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;

@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.spf;
 
 import net.freertr.addr.addrType;
 
@@ -8,12 +8,12 @@ import net.freertr.addr.addrType;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstConn<Ta extends addrType> {
+public class spfConn<Ta extends addrType> {
 
     /**
      * create instance
      */
-    public shrtPthFrstConn() {
+    public spfConn() {
     }
 
     /**
@@ -39,6 +39,6 @@ public class shrtPthFrstConn<Ta extends addrType> {
     /**
      * target
      */
-    protected shrtPthFrstNode<Ta> target;
+    protected spfNode<Ta> target;
 
 }

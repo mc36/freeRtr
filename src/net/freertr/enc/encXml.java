@@ -1,14 +1,15 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.util.bits;
 
 /**
  * extensible markup language
  *
  * @author matecsaba
  */
-public class extMrkLng {
+public class encXml {
 
     /**
      * header string
@@ -43,12 +44,12 @@ public class extMrkLng {
     /**
      * elements
      */
-    public List<extMrkLngEntry> data;
+    public List<encXmlEntry> data;
 
     /**
      * clear new instance
      */
-    public extMrkLng() {
+    public encXml() {
         clear();
     }
 
@@ -83,7 +84,7 @@ public class extMrkLng {
      * clear all data
      */
     public void clear() {
-        data = new ArrayList<extMrkLngEntry>();
+        data = new ArrayList<encXmlEntry>();
         orig = "";
     }
 
@@ -92,7 +93,7 @@ public class extMrkLng {
      *
      * @param src original xml to copy
      */
-    public void copyBytes(extMrkLng src) {
+    public void copyBytes(encXml src) {
         clear();
         orig = "" + src.orig;
         for (int i = 0; i < src.data.size(); i++) {
@@ -141,7 +142,7 @@ public class extMrkLng {
         orig = "" + s;
         s = bits.trimE(s);
         String path = "";
-        extMrkLngEntry prnt = null;
+        encXmlEntry prnt = null;
         for (;;) {
             s = bits.trimB(s);
             if (s.length() < 1) {
@@ -159,13 +160,13 @@ public class extMrkLng {
                     continue;
                 }
                 if (data.size() > 0) {
-                    extMrkLngEntry ntry = data.get(data.size() - 1);
+                    encXmlEntry ntry = data.get(data.size() - 1);
                     if (ntry.name.equals(path)) {
                         ntry.value += a;
                         continue;
                     }
                 }
-                data.add(new extMrkLngEntry(prnt, path, "", a));
+                data.add(new encXmlEntry(prnt, path, "", a));
                 continue;
             }
             i = s.indexOf(">");
@@ -206,16 +207,16 @@ public class extMrkLng {
                     prnt = prnt.parent;
                 }
                 if (prnt == null) {
-                    data.add(new extMrkLngEntry(prnt, path, "", ""));
+                    data.add(new encXmlEntry(prnt, path, "", ""));
                 } else {
-                    data.add(new extMrkLngEntry(prnt.parent, prnt.name, "", ""));
+                    data.add(new encXmlEntry(prnt.parent, prnt.name, "", ""));
                 }
                 continue;
             }
             if (closed.indexOf("|" + a + "|") >= 0) {
                 nb = true;
             }
-            extMrkLngEntry curr = new extMrkLngEntry(prnt, path + "/" + a, b, "");
+            encXmlEntry curr = new encXmlEntry(prnt, path + "/" + a, b, "");
             data.add(curr);
             if (nb) {
                 if (prnt == null) {
@@ -223,13 +224,13 @@ public class extMrkLng {
                 } else {
                     curr = prnt.parent;
                 }
-                data.add(new extMrkLngEntry(curr, path, "", ""));
+                data.add(new encXmlEntry(curr, path, "", ""));
                 continue;
             }
             path += "/" + a;
             prnt = curr;
         }
-        data.add(new extMrkLngEntry(null, "", "", ""));
+        data.add(new encXmlEntry(null, "", "", ""));
         return false;
     }
 
@@ -292,7 +293,7 @@ public class extMrkLng {
         List<String> lst = new ArrayList<String>();
         String path = "";
         for (int pos = 0; pos < data.size(); pos++) {
-            extMrkLngEntry ntry = data.get(pos);
+            encXmlEntry ntry = data.get(pos);
             lst.add(getMove(path, ntry.name, ntry.param) + ntry.value);
             path = ntry.name;
         }
@@ -333,8 +334,8 @@ public class extMrkLng {
      * @param xml string to convert
      * @return converted xml
      */
-    public static extMrkLng parseOne(String xml) {
-        extMrkLng res = new extMrkLng();
+    public static encXml parseOne(String xml) {
+        encXml res = new encXml();
         res.fromString(xml);
         return res;
     }
@@ -358,7 +359,7 @@ public class extMrkLng {
         String txt = "";
         List<Integer> lnk = new ArrayList<Integer>();
         for (int num = 0; num < data.size(); num++) {
-            extMrkLngEntry ntry = data.get(num);
+            encXmlEntry ntry = data.get(num);
             String str = ntry.value.trim();
             String tag = "/" + ntry.name.trim().toLowerCase().replaceAll(" ", "") + "/";
             if (tag.indexOf("/script/") > 0) {
@@ -427,7 +428,7 @@ public class extMrkLng {
                 pos = num;
             }
             if (tag.equals("meta")) {
-                List<extMrkLngEntry> lst = decodeParams(ntry.param);
+                List<encXmlEntry> lst = decodeParams(ntry.param);
                 int i = findParam(lst, "|http-equiv|");
                 if (i < 0) {
                     continue;
@@ -439,7 +440,7 @@ public class extMrkLng {
                 pos = num;
             }
             if (tag.equals("input") || tag.equals("button") || tag.equals("select")) {
-                List<extMrkLngEntry> lst = decodeParams(ntry.param);
+                List<encXmlEntry> lst = decodeParams(ntry.param);
                 int i = findParam(lst, "|type|");
                 String a;
                 if (i < 0) {
@@ -535,9 +536,9 @@ public class extMrkLng {
      * @param str string to parse
      * @return list of parameter values
      */
-    public static List<extMrkLngEntry> decodeParams(String str) {
+    public static List<encXmlEntry> decodeParams(String str) {
         str = str.trim();
-        List<extMrkLngEntry> res = new ArrayList<extMrkLngEntry>();
+        List<encXmlEntry> res = new ArrayList<encXmlEntry>();
         for (;;) {
             if (str.length() < 1) {
                 break;
@@ -556,7 +557,7 @@ public class extMrkLng {
             String a = str.substring(0, i).trim();
             str = str.substring(i, str.length()).trim();
             if (!str.startsWith("=")) {
-                res.add(new extMrkLngEntry(null, a, "", ""));
+                res.add(new encXmlEntry(null, a, "", ""));
                 continue;
             }
             str = str.substring(1, str.length()).trim();
@@ -573,7 +574,7 @@ public class extMrkLng {
             str = str + " ";
             b = str.substring(0, i);
             str = str.substring(i + 1, str.length()).trim();
-            res.add(new extMrkLngEntry(null, a, "", b));
+            res.add(new encXmlEntry(null, a, "", b));
         }
         return res;
     }
@@ -584,10 +585,10 @@ public class extMrkLng {
      * @param lst list of parameters
      * @return encoded string
      */
-    public static String encodeParams(List<extMrkLngEntry> lst) {
+    public static String encodeParams(List<encXmlEntry> lst) {
         String str = "";
         for (int i = 0; i < lst.size(); i++) {
-            extMrkLngEntry ntry = lst.get(i);
+            encXmlEntry ntry = lst.get(i);
             str = str + " " + ntry.name + "=\"" + ntry.value + "\"";
         }
         return str;
@@ -600,7 +601,7 @@ public class extMrkLng {
      * @param ned text to find
      * @return index, -1 if not found
      */
-    public static int findParam(List<extMrkLngEntry> lst, String ned) {
+    public static int findParam(List<encXmlEntry> lst, String ned) {
         for (int i = 0; i < lst.size(); i++) {
             if (ned.indexOf("|" + lst.get(i).name.trim().toLowerCase() + "|") >= 0) {
                 return i;

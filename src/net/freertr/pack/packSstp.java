@@ -2,7 +2,7 @@ package net.freertr.pack;
 
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * secure socket tunneling protocol
@@ -118,7 +118,7 @@ public class packSstp {
 
     private final pipeSide pipe;
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 1024, true);
+    private encTlv tlv = new encTlv(0, 16, 16, 16, 1, 4, 4, 1, 0, 1024, true);
 
     /**
      * convert type to string

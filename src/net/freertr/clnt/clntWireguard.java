@@ -6,7 +6,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryECcurve25519;
 import net.freertr.cry.cryEncrChacha20poly1305;
 import net.freertr.cry.cryHashBlake2s;
@@ -345,13 +345,13 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     private void workDoer() {
         int i = preshared.indexOf("=") + 1;
         locPriv = new cryECcurve25519();
-        locPriv.locPriv = cryBase64.decodeBytes(preshared.substring(0, i));
+        locPriv.locPriv = encBase64.decodeBytes(preshared.substring(0, i));
         locPriv.calcCommon();
         locPub = locPriv.common;
         String a = preshared.substring(i, preshared.length());
         i = a.indexOf("=") + 1;
-        remPub = cryBase64.decodeBytes(a.substring(0, i));
-        quantum = cryBase64.decodeBytes(a.substring(i, a.length()));
+        remPub = encBase64.decodeBytes(a.substring(0, i));
+        quantum = encBase64.decodeBytes(a.substring(i, a.length()));
         if (quantum.length < 1) {
             quantum = new byte[32];
         }

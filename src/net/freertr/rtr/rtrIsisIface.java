@@ -24,7 +24,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis interface
@@ -1400,7 +1400,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (buf == null) {
             return;
         }
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         int siz = pck.headSize();
         tlv.putBytes(pck, rtrIsisLsp.tlvAuthen, buf);
         buf = lev.getAuthen(pck, typ, siz);
@@ -1411,7 +1411,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
 
     private void writeLspList(packHolder pck, tabGen<rtrIsisLsp> l) {
         packHolder p = new packHolder(true, true);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         for (int i = 0; i < l.size(); i++) {
             rtrIsisLsp lsp = l.get(i);
             if (debugger.rtrIsisTraf) {
@@ -1484,7 +1484,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         pck.msbPutW(9, 0); // pdu length
         pck.putByte(11, circuitID); // local circuit id
         pck.putSkip(12);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         int i = rtrIsisNeigh.statDown;
         int crc = 0;
         addrIsis adr = new addrIsis();
@@ -1527,7 +1527,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         pck.putAddr(12, getDisAddr(lev)); // dis address
         pck.putByte(18, getDisCirc(lev)); // dis circuit
         pck.putSkip(19);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         int i = 0;
         for (int o = 0; o < neighs.size(); o++) {
             rtrIsisNeigh ntry = neighs.get(o);
@@ -1552,7 +1552,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     }
 
     private void writeHelloTlvs(packHolder pck, int typ) {
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.putBytes(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst(otherEna));
         if (lower.multiTopo) {
             tlv.putBytes(pck, rtrIsisLsp.tlvMultiTopo, lower.getMTopoLst(otherEna, 0));

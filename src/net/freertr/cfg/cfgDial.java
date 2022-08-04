@@ -10,6 +10,7 @@ import net.freertr.pack.packSip;
 import net.freertr.snd.sndCodec;
 import net.freertr.snd.sndCodecG711aLaw;
 import net.freertr.snd.sndCodecG711uLaw;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -17,7 +18,6 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * one dial peer configuration
@@ -372,7 +372,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     }
 
     private String stripAddr(String a) {
-        a = uniResLoc.fromEmail(a);
+        a = encUrl.fromEmail(a);
         int i = a.indexOf(";");
         if (i >= 0) {
             return a.substring(0, i).trim();

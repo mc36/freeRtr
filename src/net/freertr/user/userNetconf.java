@@ -10,8 +10,8 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.extMrkLngEntry;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encXmlEntry;
 import net.freertr.util.logger;
 import net.freertr.util.verCore;
 
@@ -157,31 +157,31 @@ public class userNetconf {
      */
     public boolean doHello() {
         currVer = 10;
-        extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry(null, "/hello", "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.0"));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.1"));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:writable-running:1.0"));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
-        x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
+        encXml x = new encXml();
+        x.data.add(new encXmlEntry(null, "/hello", "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.0"));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:base:1.1"));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:writable-running:1.0"));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", "urn:ietf:params:netconf:capability:startup:1.0"));
+        x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
         for (int i = 0; i < cfgAll.sensors.size(); i++) {
             cfgSensor ntry = cfgAll.sensors.get(i);
-            x.data.add(new extMrkLngEntry(null, "/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
-            x.data.add(new extMrkLngEntry(null, "/hello/capabilities", "", ""));
+            x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
+            x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
         }
-        x.data.add(new extMrkLngEntry(null, "/hello/session-id", "", "" + sessId));
-        x.data.add(new extMrkLngEntry(null, "/hello", "", ""));
+        x.data.add(new encXmlEntry(null, "/hello/session-id", "", "" + sessId));
+        x.data.add(new encXmlEntry(null, "/hello", "", ""));
         doSend(x);
         x = doRead();
         if (x == null) {
             return true;
         }
         for (int i = 0; i < x.data.size(); i++) {
-            extMrkLngEntry ntry = x.data.get(i);
+            encXmlEntry ntry = x.data.get(i);
             String a = getName(ntry, false);
             if (!a.equals("/?xml/hello/capabilities/capability")) {
                 continue;
@@ -197,13 +197,13 @@ public class userNetconf {
         return false;
     }
 
-    private void addError(extMrkLng rep, String path, String msg) {
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-type", "", "application"));
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-tag", "", "invalid-value"));
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-severity", "", "error"));
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-path", "", path));
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply/rpc-error/error-message", "", msg));
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+    private void addError(encXml rep, String path, String msg) {
+        rep.data.add(new encXmlEntry(null, "/rpc-reply/rpc-error/error-type", "", "application"));
+        rep.data.add(new encXmlEntry(null, "/rpc-reply/rpc-error/error-tag", "", "invalid-value"));
+        rep.data.add(new encXmlEntry(null, "/rpc-reply/rpc-error/error-severity", "", "error"));
+        rep.data.add(new encXmlEntry(null, "/rpc-reply/rpc-error/error-path", "", path));
+        rep.data.add(new encXmlEntry(null, "/rpc-reply/rpc-error/error-message", "", msg));
+        rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
     }
 
     /**
@@ -212,12 +212,12 @@ public class userNetconf {
      * @param req request
      * @return response, null if error
      */
-    public extMrkLng doRequest(extMrkLng req) {
-        extMrkLng rep = new extMrkLng();
+    public encXml doRequest(encXml req) {
+        encXml rep = new encXml();
         String rpc = null;
         int mod = 1;
         for (int p = 0; p < (req.data.size() - 1); p++) {
-            extMrkLngEntry ntry = req.data.get(p);
+            encXmlEntry ntry = req.data.get(p);
             String a = getName(ntry, false);
             if ((rpc == null) && (a.equals("/?xml/rpc"))) {
                 rpc = ntry.param;
@@ -269,8 +269,8 @@ public class userNetconf {
                     addError(rep, n, a);
                     continue;
                 }
-                rep.data.add(new extMrkLngEntry(null, "/rpc-reply/ok", "", ""));
-                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+                rep.data.add(new encXmlEntry(null, "/rpc-reply/ok", "", ""));
+                rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith(getConfig)) {
@@ -279,7 +279,7 @@ public class userNetconf {
                 n = a.substring(getConfig.length(), a.length());
                 List<userFilter> res = new ArrayList<userFilter>();
                 for (; n.length() > 0;) {
-                    a = extMrkLng.unescId(n).replaceAll("/", " ");
+                    a = encXml.unescId(n).replaceAll("/", " ");
                     res = userFilter.getSection(sec, a.trim(), false, false, false);
                     if (res.size() > 0) {
                         break;
@@ -296,7 +296,7 @@ public class userNetconf {
                     continue;
                 }
                 userFilter.section2xml(rep, "/rpc-reply/data/config" + n, res);
-                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+                rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith(getFilter)) {
@@ -305,17 +305,17 @@ public class userNetconf {
                     addError(rep, a, "no such sensor");
                     continue;
                 }
-                rep.data.add(new extMrkLngEntry(null, replyData, "", ""));
+                rep.data.add(new encXmlEntry(null, replyData, "", ""));
                 a = tl.path;
                 int o = a.indexOf("/");
-                rep.data.add(new extMrkLngEntry(null, replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
+                rep.data.add(new encXmlEntry(null, replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
                 tl.getReportNetConf(rep, replyData + "/");
-                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+                rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
             if (a.startsWith("/?xml/rpc/close-session")) {
-                rep.data.add(new extMrkLngEntry(null, "/rpc-reply/ok", "", ""));
-                rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+                rep.data.add(new encXmlEntry(null, "/rpc-reply/ok", "", ""));
+                rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
                 need2run = false;
                 continue;
             }
@@ -323,8 +323,8 @@ public class userNetconf {
         if (rpc == null) {
             rpc = "";
         }
-        rep.data.add(0, new extMrkLngEntry(null, "/rpc-reply", rpc, ""));
-        rep.data.add(new extMrkLngEntry(null, "/rpc-reply", "", ""));
+        rep.data.add(0, new encXmlEntry(null, "/rpc-reply", rpc, ""));
+        rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
         return rep;
     }
 
@@ -338,7 +338,7 @@ public class userNetconf {
         return null;
     }
 
-    private static String getName(extMrkLngEntry ntry, boolean unesc) {
+    private static String getName(encXmlEntry ntry, boolean unesc) {
         String a;
         if (unesc) {
             a = ntry.getUnesc();
@@ -348,7 +348,7 @@ public class userNetconf {
         return a.replaceAll("/nc:", "/");
     }
 
-    private static void dumpXml(cmds cmd, extMrkLng x) {
+    private static void dumpXml(cmds cmd, encXml x) {
         List<String> l = x.show();
         for (int i = 0; i < l.size(); i++) {
             cmd.error(l.get(i));
@@ -360,7 +360,7 @@ public class userNetconf {
      *
      * @return request, null if error
      */
-    public extMrkLng doRead() {
+    public encXml doRead() {
         String s = "";
         if (currVer < 11) {
             for (;;) {
@@ -415,7 +415,7 @@ public class userNetconf {
                 s += a.replaceAll("\r", "\n");
             }
         }
-        extMrkLng x = new extMrkLng();
+        encXml x = new encXml();
         if (x.fromString(s)) {
             return null;
         }
@@ -438,10 +438,10 @@ public class userNetconf {
      *
      * @param x xml
      */
-    public void doSend(extMrkLng x) {
+    public void doSend(encXml x) {
         pipeSide.modTyp sav = conn.lineTx;
         conn.lineTx = pipeSide.modTyp.modeLF;
-        doSend(extMrkLng.header);
+        doSend(encXml.header);
         if (form) {
             List<String> l = x.toXMLlst();
             for (int i = 0; i < l.size(); i++) {
@@ -463,9 +463,9 @@ public class userNetconf {
      * do work
      */
     public void doClose() {
-        extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry(null, "/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
-        x.data.add(new extMrkLngEntry(null, "/rpc/close-session", "", ""));
+        encXml x = new encXml();
+        x.data.add(new encXmlEntry(null, "/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
+        x.data.add(new encXmlEntry(null, "/rpc/close-session", "", ""));
         doSend(x);
         doRead();
     }
@@ -481,7 +481,7 @@ public class userNetconf {
             if (!need2run) {
                 break;
             }
-            extMrkLng x = doRead();
+            encXml x = doRead();
             if (x == null) {
                 break;
             }
@@ -500,11 +500,11 @@ public class userNetconf {
      * @return true on error, false on success
      */
     public boolean doClient(cmds cmd, String mod, String path, String ns) {
-        extMrkLng x = new extMrkLng();
-        x.data.add(new extMrkLngEntry(null, "/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
+        encXml x = new encXml();
+        x.data.add(new encXmlEntry(null, "/rpc", namespace + " message-id=\"" + bits.randomD() + "\"", ""));
         int i = path.indexOf("/");
-        x.data.add(new extMrkLngEntry(null, "/rpc/" + mod + "/" + path.substring(0, i), "xmlns=\"" + ns + "\"", ""));
-        x.data.add(new extMrkLngEntry(null, "/rpc/" + mod + "/" + path, "", ""));
+        x.data.add(new encXmlEntry(null, "/rpc/" + mod + "/" + path.substring(0, i), "xmlns=\"" + ns + "\"", ""));
+        x.data.add(new encXmlEntry(null, "/rpc/" + mod + "/" + path, "", ""));
         cmd.error("request");
         dumpXml(cmd, x);
         doSend(x);

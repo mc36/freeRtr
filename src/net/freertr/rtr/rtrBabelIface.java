@@ -26,7 +26,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * babel2 interface
@@ -438,7 +438,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
     }
 
     private void createBabelHello(packHolder pck) {
-        typLenVal tlv = rtrBabel.getTlv();
+        encTlv tlv = rtrBabel.getTlv();
         bits.msbPutW(tlv.valDat, 0, 0); // reserved
         bits.msbPutW(tlv.valDat, 2, seqno); // sequence number
         bits.msbPutW(tlv.valDat, 4, updateTimer / 10); // interval
@@ -446,7 +446,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
     }
 
     private void createBabelIhu(rtrBabelNeigh ntry, packHolder pck) {
-        typLenVal tlv = rtrBabel.getTlv();
+        encTlv tlv = rtrBabel.getTlv();
         bits.putByte(tlv.valDat, 1, 0); // reserved
         bits.msbPutW(tlv.valDat, 2, metricIn); // rxcost
         bits.msbPutW(tlv.valDat, 4, updateTimer / 10); // interval
@@ -473,7 +473,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
     }
 
     private void createBabelUpdate(tabRouteEntry<addrIP> ntry, addrEui last, packHolder pck) {
-        typLenVal tlv = rtrBabel.getTlv();
+        encTlv tlv = rtrBabel.getTlv();
         if (ntry.best.aggrRtr == null) {
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv6addr(lower.routerID.toIPv6(null));

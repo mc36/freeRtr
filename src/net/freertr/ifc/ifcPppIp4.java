@@ -4,7 +4,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.ip.ipIfc4;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ipv4 control protocol (rfc1332) for ppp
@@ -201,7 +201,7 @@ public class ifcPppIp4 extends ifcPppNcp {
      * @param tlv tlv
      * @return false on success, true on error
      */
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         ifcPppIp4conf cfg = (ifcPppIp4conf) config;
         switch (tlv.valTyp) {
             case optionAddres:
@@ -244,7 +244,7 @@ public class ifcPppIp4 extends ifcPppNcp {
      */
     public void writeOptions(packHolder pck, Object data) {
         ifcPppIp4conf dat = (ifcPppIp4conf) data;
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.compress > 0) {
             bits.msbPutW(buf, 0, dat.compress);

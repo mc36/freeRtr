@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.spf;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,7 +14,7 @@ import net.freertr.tab.tabRoute;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthFrstNode<Ta>> {
+public class spfNode<Ta extends addrType> implements Comparator<spfNode<Ta>> {
 
     /**
      * node id
@@ -39,22 +39,22 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
     /**
      * connections
      */
-    protected List<shrtPthFrstConn<Ta>> conn = new ArrayList<shrtPthFrstConn<Ta>>();
+    protected List<spfConn<Ta>> conn = new ArrayList<spfConn<Ta>>();
 
     /**
      * best uplink
      */
-    protected shrtPthFrstRes<Ta> uplink;
+    protected spfResult<Ta> uplink;
 
     /**
      * uplinks
      */
-    protected List<shrtPthFrstRes<Ta>> uplinks;
+    protected List<spfResult<Ta>> uplinks;
 
     /**
      * result
      */
-    protected List<shrtPthFrstRes<Ta>> result;
+    protected List<spfResult<Ta>> result;
 
     /**
      * fixed metric prefixes
@@ -104,18 +104,18 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
     /**
      * bier nodes behind
      */
-    protected tabGen<shrtPthFrstIdx> brLst = new tabGen<shrtPthFrstIdx>();
+    protected tabGen<spfIndex> brLst = new tabGen<spfIndex>();
 
     /**
      * create new instance
      *
      * @param nam node id
      */
-    public shrtPthFrstNode(Ta nam) {
+    public spfNode(Ta nam) {
         name = nam;
     }
 
-    public int compare(shrtPthFrstNode<Ta> o1, shrtPthFrstNode<Ta> o2) {
+    public int compare(spfNode<Ta> o1, spfNode<Ta> o2) {
         return o1.name.compare(o1.name, o2.name);
     }
 
@@ -126,11 +126,11 @@ public class shrtPthFrstNode<Ta extends addrType> implements Comparator<shrtPthF
      * @param met required metric
      * @return connection, null if not found
      */
-    protected shrtPthFrstConn<Ta> findConn(shrtPthFrstNode<Ta> peer, int met) {
-        shrtPthFrstConn<Ta> best = null;
+    protected spfConn<Ta> findConn(spfNode<Ta> peer, int met) {
+        spfConn<Ta> best = null;
         int diff = Integer.MAX_VALUE;
         for (int i = 0; i < conn.size(); i++) {
-            shrtPthFrstConn<Ta> ntry = conn.get(i);
+            spfConn<Ta> ntry = conn.get(i);
             if (peer.compare(peer, ntry.target) != 0) {
                 continue;
             }

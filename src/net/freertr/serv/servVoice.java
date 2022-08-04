@@ -14,6 +14,7 @@ import net.freertr.snd.sndCodec;
 import net.freertr.snd.sndCodecG711aLaw;
 import net.freertr.snd.sndCodecG711uLaw;
 import net.freertr.snd.sndScript;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -22,7 +23,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * voice server
@@ -185,7 +185,7 @@ class servVoiceDoer implements Runnable {
     }
 
     public String getContact() {
-        return "<sip:voice@" + uniResLoc.addr2str(conn.iface.addr, conn.portLoc) + ">";
+        return "<sip:voice@" + encUrl.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
     public sndCodec getCodec() {
@@ -248,8 +248,8 @@ class servVoiceDoer implements Runnable {
                 pipeC.setTime(120000);
                 pipeC.lineTx = pipeSide.modTyp.modeCRLF;
                 pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
-                pipeC.linePut("from=" + uniResLoc.fromEmail(packSip.removeTag(rx.headerGet("From", 1))));
-                pipeC.linePut("to=" + uniResLoc.fromEmail(packSip.removeTag(rx.headerGet("To", 1))));
+                pipeC.linePut("from=" + encUrl.fromEmail(packSip.removeTag(rx.headerGet("From", 1))));
+                pipeC.linePut("to=" + encUrl.fromEmail(packSip.removeTag(rx.headerGet("To", 1))));
                 for (int i = 0; i < rx.content.size(); i++) {
                     pipeC.linePut("text=" + rx.content.get(i));
                 }
@@ -422,7 +422,7 @@ class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
         String src = callInv.headerGet("From", 1);
         String trg = callInv.headerGet("To", 1);
         String cid = callInv.headerGet("Call-Id", 1);
-        String cnt = uniResLoc.fromEmail(callInv.headerGet("Contact", 1));
+        String cnt = encUrl.fromEmail(callInv.headerGet("Contact", 1));
         tx.makeReq("BYE", cnt, trg, src, lower.getContact(), via, cid, csq + 1, 0);
         if (debugger.servVoiceTraf) {
             tx.dump("tx");
@@ -451,7 +451,7 @@ class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
             pipeC.setTime(120000);
             pipeC.lineTx = pipeSide.modTyp.modeCRLF;
             pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
-            new sndScript(pipeC, lower.getCodec(), data, uniResLoc.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), uniResLoc.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
+            new sndScript(pipeC, lower.getCodec(), data, encUrl.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), encUrl.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
             pipeS.setTime(120000);
             pipeS.lineTx = pipeSide.modTyp.modeCRLF;
             pipeS.lineRx = pipeSide.modTyp.modeCRorLF;

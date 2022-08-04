@@ -2,18 +2,18 @@ package net.freertr.sec;
 
 import net.freertr.addr.addrIP;
 import net.freertr.clnt.clntProxy;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryHashSha1;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
 import net.freertr.serv.servHttp;
+import net.freertr.enc.encUrl;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * websocket (rfc6455) protocol
@@ -98,7 +98,7 @@ public class secWebsock {
         h.init();
         h.update(s.trim().getBytes());
         h.update(hashGuid.getBytes());
-        return cryBase64.encodeBytes(h.finish());
+        return encBase64.encodeBytes(h.finish());
     }
 
     /**
@@ -151,7 +151,7 @@ public class secWebsock {
      * @param prt protocol
      * @return pipe if success, null on error
      */
-    public final static pipeSide doConnect(clntProxy prx, byte[] pubkey, uniResLoc trg, String prt) {
+    public final static pipeSide doConnect(clntProxy prx, byte[] pubkey, encUrl trg, String prt) {
         addrIP adr = userTerminal.justResolv(trg.server, prx.prefer);
         if (adr == null) {
             return null;
@@ -179,7 +179,7 @@ public class secWebsock {
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
         }
-        pipe.linePut("Sec-WebSocket-Key: " + cryBase64.encodeBytes(buf));
+        pipe.linePut("Sec-WebSocket-Key: " + encBase64.encodeBytes(buf));
         pipe.linePut("Origin: http://" + trg.server + "/");
         pipe.linePut("Sec-WebSocket-Protocol: " + prt);
         pipe.linePut("Sec-WebSocket-Version: 13");

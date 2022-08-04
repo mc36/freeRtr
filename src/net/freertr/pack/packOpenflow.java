@@ -8,7 +8,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * openflow packet
@@ -830,8 +830,8 @@ public class packOpenflow {
      *
      * @return matcher
      */
-    public typLenVal getMatchTlv() {
-        return new typLenVal(0, 24, 24, 8, 1, 0, 4, 1, 0, 512, true);
+    public encTlv getMatchTlv() {
+        return new encTlv(0, 24, 24, 8, 1, 0, 4, 1, 0, 512, true);
     }
 
     /**
@@ -840,8 +840,8 @@ public class packOpenflow {
      * @param pck packet to read
      * @return matcher
      */
-    public typLenVal getMatchTlv(packHolder pck) {
-        typLenVal tlv = getMatchTlv();
+    public encTlv getMatchTlv(packHolder pck) {
+        encTlv tlv = getMatchTlv();
         if (tlv.getBytes(pck)) {
             return null;
         }
@@ -853,8 +853,8 @@ public class packOpenflow {
      *
      * @return action
      */
-    public typLenVal getActionTlv() {
-        return new typLenVal(0, 16, 16, 16, 1, 4, 4, 8, 4, 512, true);
+    public encTlv getActionTlv() {
+        return new encTlv(0, 16, 16, 16, 1, 4, 4, 8, 4, 512, true);
     }
 
     /**
@@ -863,8 +863,8 @@ public class packOpenflow {
      * @param prt port
      * @return action
      */
-    public typLenVal getActionOutput(int prt) {
-        typLenVal tlv = getActionTlv();
+    public encTlv getActionOutput(int prt) {
+        encTlv tlv = getActionTlv();
         tlv.valTyp = actionOutput;
         tlv.valSiz = 12;
         bits.msbPutD(tlv.valDat, 0, prt);
@@ -878,8 +878,8 @@ public class packOpenflow {
      * @param grp group
      * @return action
      */
-    public typLenVal getActionGroup(int grp) {
-        typLenVal tlv = getActionTlv();
+    public encTlv getActionGroup(int grp) {
+        encTlv tlv = getActionTlv();
         tlv.valTyp = actionGroup;
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, grp);
@@ -893,8 +893,8 @@ public class packOpenflow {
      * @param typ ethertype
      * @return action
      */
-    public typLenVal getActionPush(int cmd, int typ) {
-        typLenVal tlv = getActionTlv();
+    public encTlv getActionPush(int cmd, int typ) {
+        encTlv tlv = getActionTlv();
         tlv.valTyp = cmd;
         tlv.valSiz = 4;
         bits.msbPutW(tlv.valDat, 0, typ);
@@ -908,8 +908,8 @@ public class packOpenflow {
      * @param val value
      * @return action
      */
-    public typLenVal getActionTtl(int cmd, int val) {
-        typLenVal tlv = getActionTlv();
+    public encTlv getActionTtl(int cmd, int val) {
+        encTlv tlv = getActionTlv();
         tlv.valTyp = cmd;
         tlv.valSiz = 4;
         tlv.valDat[0] = (byte) (val & 0xff);
@@ -922,9 +922,9 @@ public class packOpenflow {
      * @param pck sets
      * @return action
      */
-    public typLenVal getActionSetField(packHolder pck) {
+    public encTlv getActionSetField(packHolder pck) {
         pck.merge2beg();
-        typLenVal tlv = getActionTlv();
+        encTlv tlv = getActionTlv();
         tlv.valTyp = actionField;
         tlv.valSiz = pck.dataSize();
         pck.getCopy(tlv.valDat, 0, 0, tlv.valSiz);
@@ -954,7 +954,7 @@ public class packOpenflow {
         mtch.putSkip(buf.length);
         mtch.merge2beg();
         for (;;) {
-            typLenVal tlv = getMatchTlv(mtch);
+            encTlv tlv = getMatchTlv(mtch);
             if (tlv == null) {
                 return -1;
             }
@@ -973,7 +973,7 @@ public class packOpenflow {
      */
     public void createPckOut(packHolder pck, int prt) {
         type = typPackOut;
-        typLenVal tlv = getActionOutput(prt);
+        encTlv tlv = getActionOutput(prt);
         int i = pck.dataSize();
         tlv.putThis(pck);
         pck.merge2beg();
@@ -1078,7 +1078,7 @@ public class packOpenflow {
      * @param pck packet to append
      * @param tlvs actions
      */
-    public void createInstrAct(packHolder pck, List<typLenVal> tlvs) {
+    public void createInstrAct(packHolder pck, List<encTlv> tlvs) {
         int o = 8;
         for (int i = 0; i < tlvs.size(); i++) {
             o += tlvs.get(i).valSiz + 4;
@@ -1098,7 +1098,7 @@ public class packOpenflow {
      * @param pck packet to append
      * @param tlvs actions
      */
-    public void createBucketAct(packHolder pck, List<typLenVal> tlvs) {
+    public void createBucketAct(packHolder pck, List<encTlv> tlvs) {
         int o = 16;
         for (int i = 0; i < tlvs.size(); i++) {
             o += tlvs.get(i).valSiz + 4;
@@ -1121,7 +1121,7 @@ public class packOpenflow {
      * @param prt port number
      */
     public void createMatchPort(packHolder pck, int prt) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchPortLog;
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, prt);
@@ -1135,7 +1135,7 @@ public class packOpenflow {
      * @param typ ethertype
      */
     public void createMatchEthTyp(packHolder pck, int typ) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchEthTyp;
         tlv.valSiz = 2;
         bits.msbPutW(tlv.valDat, 0, typ);
@@ -1150,7 +1150,7 @@ public class packOpenflow {
      * @param msk mask, -1 if none
      */
     public void createMatchVlan(packHolder pck, int id, int msk) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchVlanId;
         tlv.valSiz = 2;
         bits.msbPutW(tlv.valDat, 0, id);
@@ -1170,7 +1170,7 @@ public class packOpenflow {
      * @param msk mask mac, null if none
      */
     public void createMatchMac(packHolder pck, boolean src, addrMac adr, addrMac msk) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         if (src) {
             tlv.valTyp = matchEthSrc;
         } else {
@@ -1195,7 +1195,7 @@ public class packOpenflow {
      * @param msk mask mac, null if none
      */
     public void createMatchIpv4(packHolder pck, boolean src, addrIP adr, addrIP msk) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         if (src) {
             tlv.valTyp = matchIp4src;
         } else {
@@ -1220,7 +1220,7 @@ public class packOpenflow {
      * @param msk mask mac, null if none
      */
     public void createMatchIpv6(packHolder pck, boolean src, addrIP adr, addrIP msk) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         if (src) {
             tlv.valTyp = matchIp6src;
         } else {
@@ -1243,7 +1243,7 @@ public class packOpenflow {
      * @param lab label
      */
     public void createMatchMplsLab(packHolder pck, int lab) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchMplsLab;
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, lab);
@@ -1257,7 +1257,7 @@ public class packOpenflow {
      * @param bottom true if bottom, false if not
      */
     public void createMatchMplsBos(packHolder pck, boolean bottom) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchMplsBos;
         tlv.valSiz = 1;
         if (bottom) {
@@ -1275,7 +1275,7 @@ public class packOpenflow {
      * @param prt protocol
      */
     public void createMatchProto(packHolder pck, int prt) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchIpProto;
         tlv.valSiz = 1;
         tlv.valDat[0] = (byte) prt;
@@ -1289,7 +1289,7 @@ public class packOpenflow {
      * @param dscp dscp
      */
     public void createMatchDscp(packHolder pck, int dscp) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchIpDscp;
         tlv.valSiz = 1;
         tlv.valDat[0] = (byte) dscp;
@@ -1303,7 +1303,7 @@ public class packOpenflow {
      * @param ecn ecn
      */
     public void createMatchEcn(packHolder pck, int ecn) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         tlv.valTyp = matchIpEcn;
         tlv.valSiz = 1;
         tlv.valDat[0] = (byte) ecn;
@@ -1318,7 +1318,7 @@ public class packOpenflow {
      * @param prt port to match
      */
     public void createMatchTcp(packHolder pck, boolean src, int prt) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         if (src) {
             tlv.valTyp = matchTcpSrc;
         } else {
@@ -1337,7 +1337,7 @@ public class packOpenflow {
      * @param prt port to match
      */
     public void createMatchUdp(packHolder pck, boolean src, int prt) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         if (src) {
             tlv.valTyp = matchUdpSrc;
         } else {
@@ -1356,7 +1356,7 @@ public class packOpenflow {
      * @param prt port to match
      */
     public void createMatchSctp(packHolder pck, boolean src, int prt) {
-        typLenVal tlv = getMatchTlv();
+        encTlv tlv = getMatchTlv();
         if (src) {
             tlv.valTyp = matchSctpSrc;
         } else {

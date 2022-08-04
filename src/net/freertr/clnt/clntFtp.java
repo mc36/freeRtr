@@ -17,12 +17,12 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.serv.servFtp;
 import net.freertr.serv.servGeneric;
+import net.freertr.enc.encUrl;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * file transfer protocol (rfc959) client
@@ -95,7 +95,7 @@ public class clntFtp implements prtServS {
         return s;
     }
 
-    private void setAnonymFtp(uniResLoc src) {
+    private void setAnonymFtp(encUrl src) {
         if (src.username.length() > 0) {
             return;
         }
@@ -182,7 +182,7 @@ public class clntFtp implements prtServS {
         return data == null;
     }
 
-    private boolean doRslvCnn(uniResLoc src) {
+    private boolean doRslvCnn(encUrl src) {
         prx = cfgAll.getClntPrx(cfgAll.ftpProxy);
         if (prx == null) {
             return true;
@@ -208,7 +208,7 @@ public class clntFtp implements prtServS {
      * @param trg target
      * @return result code
      */
-    public boolean download(uniResLoc src, File trg) {
+    public boolean download(encUrl src, File trg) {
         setAnonymFtp(src);
         if (doRslvCnn(src)) {
             return true;
@@ -287,7 +287,7 @@ public class clntFtp implements prtServS {
      * @param src target
      * @return result code
      */
-    public boolean upload(uniResLoc trg, File src) {
+    public boolean upload(encUrl trg, File src) {
         setAnonymFtp(trg);
         if (doRslvCnn(trg)) {
             return true;

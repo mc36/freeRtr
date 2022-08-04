@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.util.bits;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.extMrkLngEntry;
-import net.freertr.util.uniResLoc;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encXmlEntry;
+import net.freertr.enc.encUrl;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
 
@@ -25,7 +25,7 @@ public class userBrowser {
 
     private String oldurl;
 
-    private extMrkLng xml;
+    private encXml xml;
 
     private List<String> txt;
 
@@ -196,7 +196,7 @@ public class userBrowser {
 
     private String doRead() {
         doChg2txt();
-        xml = new extMrkLng();
+        xml = new encXml();
         xml.setup2html();
         txt = new ArrayList<String>();
         lnk = new ArrayList<List<Integer>>();
@@ -204,7 +204,7 @@ public class userBrowser {
         curX = 0;
         curY = 0;
         userFlash.delete(tempFile);
-        if (userFlash.doReceive(console.pipe, uniResLoc.parseOne(url), new File(tempFile))) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(url), new File(tempFile))) {
             return "error downloading";
         }
         console.pipe.linePut("reading");
@@ -378,7 +378,7 @@ public class userBrowser {
         return i;
     }
 
-    private extMrkLngEntry getEntryDat() {
+    private encXmlEntry getEntryDat() {
         int i = getEntryNum();
         if (i < 0) {
             return null;
@@ -386,14 +386,14 @@ public class userBrowser {
         return xml.data.get(i);
     }
 
-    private uniResLoc doUrl(String s) {
-        uniResLoc n = uniResLoc.parseOne(s);
+    private encUrl doUrl(String s) {
+        encUrl n = encUrl.parseOne(s);
         if (!s.startsWith("/") && (n.proto.length() > 0)) {
             return n;
         }
-        uniResLoc o = uniResLoc.parseOne(url);
+        encUrl o = encUrl.parseOne(url);
         if (s.startsWith("/")) {
-            n = uniResLoc.parseOne("url://a.b" + s);
+            n = encUrl.parseOne("url://a.b" + s);
             o.filPath = n.filPath;
         } else {
             o.filPath = o.filPath + n.filPath;
@@ -406,7 +406,7 @@ public class userBrowser {
     }
 
     private String getLink() {
-        extMrkLngEntry ntry = getEntryDat();
+        encXmlEntry ntry = getEntryDat();
         if (ntry == null) {
             return null;
         }
@@ -442,8 +442,8 @@ public class userBrowser {
         if (b == null) {
             return null;
         }
-        List<extMrkLngEntry> lst = extMrkLng.decodeParams(ntry.param);
-        int i = extMrkLng.findParam(lst, b);
+        List<encXmlEntry> lst = encXml.decodeParams(ntry.param);
+        int i = encXml.findParam(lst, b);
         if (i < 0) {
             return null;
         }
@@ -541,7 +541,7 @@ public class userBrowser {
             return;
         }
         doChg2txt();
-        if (userFlash.doReceive(console.pipe, uniResLoc.parseOne(s), new File(b))) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(b))) {
             console.pipe.linePut("error downloading");
             userScreen.getKey(console.pipe);
         }
@@ -595,11 +595,11 @@ public class userBrowser {
         if (pos < 0) {
             return;
         }
-        extMrkLngEntry ntry = xml.data.get(pos);
+        encXmlEntry ntry = xml.data.get(pos);
         String a = ntry.getTag().trim().toLowerCase();
         if (a.equals("textarea") || a.equals("select")) {
-            List<extMrkLngEntry> lst = extMrkLng.decodeParams(ntry.param);
-            int i = extMrkLng.findParam(lst, "|name|");
+            List<encXmlEntry> lst = encXml.decodeParams(ntry.param);
+            int i = encXml.findParam(lst, "|name|");
             if (i < 0) {
                 a = "";
             } else {
@@ -615,26 +615,26 @@ public class userBrowser {
         if (!(a.equals("input") || a.equals("button"))) {
             return;
         }
-        List<extMrkLngEntry> lst = extMrkLng.decodeParams(ntry.param);
-        int i = extMrkLng.findParam(lst, "|type|");
+        List<encXmlEntry> lst = encXml.decodeParams(ntry.param);
+        int i = encXml.findParam(lst, "|type|");
         if (i < 0) {
             a = "unknown";
         } else {
             a = lst.get(i).value.trim().toLowerCase();
         }
         if (!a.equals("submit")) {
-            i = extMrkLng.findParam(lst, "|name|");
+            i = encXml.findParam(lst, "|name|");
             if (i < 0) {
                 a = "";
             } else {
                 a = lst.get(i).value;
             }
-            i = extMrkLng.findParam(lst, "|value|");
+            i = encXml.findParam(lst, "|value|");
             String b;
-            extMrkLngEntry rec;
+            encXmlEntry rec;
             if (i < 0) {
                 b = "";
-                rec = new extMrkLngEntry(null, "value", "", "");
+                rec = new encXmlEntry(null, "value", "", "");
                 lst.add(rec);
             } else {
                 rec = lst.get(i);
@@ -644,7 +644,7 @@ public class userBrowser {
                 return;
             }
             rec.value = b;
-            ntry.param = extMrkLng.encodeParams(lst);
+            ntry.param = encXml.encodeParams(lst);
             return;
         }
         a = ntry.name;
@@ -669,21 +669,21 @@ public class userBrowser {
             }
         }
         ntry = xml.data.get(bg);
-        lst = extMrkLng.decodeParams(ntry.param);
-        i = extMrkLng.findParam(lst, "|action|");
+        lst = encXml.decodeParams(ntry.param);
+        i = encXml.findParam(lst, "|action|");
         if (i < 0) {
             a = url;
         } else {
             a = lst.get(i).value;
         }
-        uniResLoc res = doUrl(a);
+        encUrl res = doUrl(a);
         res.param.clear();
         for (int ps = bg; ps < ed; ps++) {
             ntry = xml.data.get(ps);
             a = ntry.getTag().trim().toLowerCase();
             if (a.equals("textarea") || a.equals("select")) {
-                lst = extMrkLng.decodeParams(ntry.param);
-                i = extMrkLng.findParam(lst, "|name|");
+                lst = encXml.decodeParams(ntry.param);
+                i = encXml.findParam(lst, "|name|");
                 if (i < 0) {
                     continue;
                 }
@@ -693,8 +693,8 @@ public class userBrowser {
             if (!(a.equals("input") || a.equals("button"))) {
                 continue;
             }
-            lst = extMrkLng.decodeParams(ntry.param);
-            i = extMrkLng.findParam(lst, "|type|");
+            lst = encXml.decodeParams(ntry.param);
+            i = encXml.findParam(lst, "|type|");
             if (i < 0) {
                 a = "unknown";
             } else {
@@ -703,12 +703,12 @@ public class userBrowser {
             if (a.equals("submit") && (pos != ps)) {
                 continue;
             }
-            i = extMrkLng.findParam(lst, "|name|");
+            i = encXml.findParam(lst, "|name|");
             if (i < 0) {
                 continue;
             }
             a = lst.get(i).value;
-            i = extMrkLng.findParam(lst, "|value|");
+            i = encXml.findParam(lst, "|value|");
             if (i < 0) {
                 continue;
             }

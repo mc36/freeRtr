@@ -4,7 +4,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospf router information
@@ -141,7 +141,7 @@ public class rtrOspfRi {
      * @param te traffic engineering
      */
     public static void putCapa(packHolder pck, boolean te) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valTyp = typInfCapa;
         tlv.valSiz = 4;
         int i = capStub | capPpLan;
@@ -158,7 +158,7 @@ public class rtrOspfRi {
      * @param pck packet to update
      */
     public static void putHstnam(packHolder pck) {
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.putStr(pck, typHstnam, cfgAll.hostName);
     }
 
@@ -168,7 +168,7 @@ public class rtrOspfRi {
      * @param tlv tlv to read
      * @return hostname, null if nothing
      */
-    public static String getHstnam(typLenVal tlv) {
+    public static String getHstnam(encTlv tlv) {
         if (tlv.valTyp != typHstnam) {
             return null;
         }

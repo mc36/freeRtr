@@ -17,13 +17,13 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.uniResLoc;
 
 /**
  * hypertext transfer protocol (rfc2616) server
@@ -410,7 +410,7 @@ public class servHttp extends servGeneric implements prtServS {
                 hosts.del(ntry);
                 return false;
             }
-            ntry.path = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            ntry.path = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (a.equals("style")) {
@@ -690,7 +690,7 @@ public class servHttp extends servGeneric implements prtServS {
                 return false;
             }
             ntry.backupCount = bits.str2num(cmd.word());
-            ntry.backupPath = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            ntry.backupPath = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (a.equals("sstp")) {

@@ -13,7 +13,7 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * babel2 neighbor
@@ -76,7 +76,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
         return o1.conn.peerAddr.compare(o1.conn.peerAddr, o2.conn.peerAddr);
     }
 
-    private addrPrefix<addrIP> getPrefix(typLenVal tlv, int ofs, int ae, int len) {
+    private addrPrefix<addrIP> getPrefix(encTlv tlv, int ofs, int ae, int len) {
         switch (ae) {
             case 1: // ipv4
                 addrIPv4 a4 = new addrIPv4();
@@ -116,7 +116,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
             return true;
         }
         pck.setDataSize(i);
-        typLenVal tlv = rtrBabel.getTlv();
+        encTlv tlv = rtrBabel.getTlv();
         addrIP rtrid = new addrIP();
         long tim = bits.getTime();
         for (;;) {

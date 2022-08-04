@@ -1,18 +1,19 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import net.freertr.pack.packHolder;
+import net.freertr.util.bits;
 
 /**
  * protobuf entry
  *
  * @author matecsaba
  */
-public class protoBufEntry {
+public class encPrtbufEntry {
 
     /**
      * create instance
      */
-    public protoBufEntry() {
+    public encPrtbufEntry() {
     }
 
     /**
@@ -80,7 +81,7 @@ public class protoBufEntry {
      * @param pb protobuf to update
      * @return true on error, false on success
      */
-    public boolean getProtobuf(protoBuf pb) {
+    public boolean getProtobuf(encPrtbuf pb) {
         packHolder pck = new packHolder(true, true);
         getPacket(pck);
         return pb.fromPacket(pck);
@@ -118,8 +119,8 @@ public class protoBufEntry {
      *
      * @return copy
      */
-    public protoBufEntry copyBytes() {
-        protoBufEntry res = new protoBufEntry();
+    public encPrtbufEntry copyBytes() {
+        encPrtbufEntry res = new encPrtbufEntry();
         res.num = num;
         res.typ = typ;
         res.val = val;

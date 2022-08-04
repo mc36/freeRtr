@@ -28,7 +28,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
 import net.freertr.util.state.states;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * eigrp interface
@@ -679,7 +679,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
             return;
         }
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrEigrp.getTlv();
+        encTlv tlv = rtrEigrp.getTlv();
         tlv.valDat[0] = (byte) lower.k1;
         tlv.valDat[1] = (byte) lower.k2;
         tlv.valDat[2] = (byte) lower.k3;

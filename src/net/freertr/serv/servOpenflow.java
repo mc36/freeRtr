@@ -43,7 +43,7 @@ import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * openflow server
@@ -782,7 +782,7 @@ class servOpenflowTx implements Runnable {
                 if (ifc.ifo.id == servOpenflow.tabGrp) {
                     continue;
                 }
-                List<typLenVal> tlvs = new ArrayList<typLenVal>();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
                 pckT.clear();
                 pckO.createMatchMac(pckT, true, (addrMac) ifc.ifo.ifc.ethtyp.getHwAddr(), null);
                 tlvs.add(pckO.getActionSetField(pckT));
@@ -821,7 +821,7 @@ class servOpenflowTx implements Runnable {
                 if (ic.ifc.bridgeIfc.blocked) {
                     continue;
                 }
-                List<typLenVal> tlvs = new ArrayList<typLenVal>();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
                 tlvs.add(pckO.getActionOutput(ic.id));
                 pckO.createBucketAct(pckB, tlvs);
                 pckB.merge2end();
@@ -885,7 +885,7 @@ class servOpenflowTx implements Runnable {
                 if (mac == null) {
                     continue;
                 }
-                List<typLenVal> tlvs = new ArrayList<typLenVal>();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
                 pckT.clear();
                 pckO.createMatchMac(pckT, true, (addrMac) ifc.ifo.ifc.ethtyp.getHwAddr(), null);
                 tlvs.add(pckO.getActionSetField(pckT));
@@ -911,7 +911,7 @@ class servOpenflowTx implements Runnable {
         pckO.createMatchPort(pckB, ifc.id);
         pckB.merge2beg();
         ntry.match = pckB.getCopy();
-        List<typLenVal> tlvs = new ArrayList<typLenVal>();
+        List<encTlv> tlvs = new ArrayList<encTlv>();
         tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
         pckB.clear();
         pckO.createInstrAct(pckB, tlvs);
@@ -968,7 +968,7 @@ class servOpenflowTx implements Runnable {
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
             pckB.clear();
-            List<typLenVal> tlvs = new ArrayList<typLenVal>();
+            List<encTlv> tlvs = new ArrayList<encTlv>();
             tlvs.add(pckO.getActionGroup(cook));
             pckO.createInstrAct(pckB, tlvs);
             pckB.merge2beg();
@@ -1012,7 +1012,7 @@ class servOpenflowTx implements Runnable {
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
                 pckB.clear();
-                List<typLenVal> tlvs = new ArrayList<typLenVal>();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
                 tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
                 pckO.createInstrAct(pckB, tlvs);
                 pckB.merge2beg();
@@ -1053,7 +1053,7 @@ class servOpenflowTx implements Runnable {
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
                 pckB.clear();
-                tlvs = new ArrayList<typLenVal>();
+                tlvs = new ArrayList<encTlv>();
                 tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
                 pckO.createInstrAct(pckB, tlvs);
                 pckB.merge2beg();
@@ -1079,7 +1079,7 @@ class servOpenflowTx implements Runnable {
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
                 pckB.clear();
-                tlvs = new ArrayList<typLenVal>();
+                tlvs = new ArrayList<encTlv>();
                 tlvs.add(pckO.getActionGroup(ic.cook));
                 pckO.createInstrAct(pckB, tlvs);
                 pckB.merge2beg();
@@ -1104,7 +1104,7 @@ class servOpenflowTx implements Runnable {
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
             pckB.clear();
-            List<typLenVal> tlvs = new ArrayList<typLenVal>();
+            List<encTlv> tlvs = new ArrayList<encTlv>();
             tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
             pckO.createInstrAct(pckB, tlvs);
             pckB.merge2beg();
@@ -1145,7 +1145,7 @@ class servOpenflowTx implements Runnable {
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
                 pckB.clear();
-                tlvs = new ArrayList<typLenVal>();
+                tlvs = new ArrayList<encTlv>();
                 tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
                 pckO.createInstrAct(pckB, tlvs);
                 pckB.merge2beg();
@@ -1187,7 +1187,7 @@ class servOpenflowTx implements Runnable {
         }
         pckB.merge2beg();
         ntry.match = pckB.getCopy();
-        List<typLenVal> tlvs = new ArrayList<typLenVal>();
+        List<encTlv> tlvs = new ArrayList<encTlv>();
         tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
         pckB.clear();
         pckO.createInstrAct(pckB, tlvs);
@@ -1267,7 +1267,7 @@ class servOpenflowTx implements Runnable {
             }
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
-            List<typLenVal> tlvs = new ArrayList<typLenVal>();
+            List<encTlv> tlvs = new ArrayList<encTlv>();
             pckB.clear();
             pckO.createMatchMac(pckB, true, (addrMac) ifc.ifo.ifc.ethtyp.getHwAddr(), null);
             tlvs.add(pckO.getActionSetField(pckB));
@@ -1333,7 +1333,7 @@ class servOpenflowTx implements Runnable {
                 }
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
-                List<typLenVal> tlvs = new ArrayList<typLenVal>();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
                 pckB.clear();
                 pckO.createMatchMac(pckB, true, (addrMac) ifc.ifo.ifc.ethtyp.getHwAddr(), null);
                 tlvs.add(pckO.getActionSetField(pckB));
@@ -1378,7 +1378,7 @@ class servOpenflowTx implements Runnable {
         }
         pckB.merge2beg();
         ntry.match = pckB.getCopy();
-        List<typLenVal> tlvs = new ArrayList<typLenVal>();
+        List<encTlv> tlvs = new ArrayList<encTlv>();
         tlvs.add(pckO.getActionPush(packOpenflow.actionMplsPop, typ));
         pckB.clear();
         pckO.createInstrAct(pckB, tlvs);
@@ -1394,7 +1394,7 @@ class servOpenflowTx implements Runnable {
         pckO.createMatchMplsLab(pckB, lab.label);
         pckB.merge2beg();
         ntry.match = pckB.getCopy();
-        List<typLenVal> tlvs = new ArrayList<typLenVal>();
+        List<encTlv> tlvs = new ArrayList<encTlv>();
         tlvs.add(pckO.getActionOutput(packOpenflow.cntrlPort));
         pckB.clear();
         pckO.createInstrAct(pckB, tlvs);
@@ -1459,7 +1459,7 @@ class servOpenflowTx implements Runnable {
                 pckO.createMatchMplsLab(pckB, lab.label);
                 pckB.merge2beg();
                 ntry.match = pckB.getCopy();
-                List<typLenVal> tlvs = new ArrayList<typLenVal>();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
                 tlvs.add(pckO.getActionGroup(cook));
                 pckB.clear();
                 pckO.createInstrAct(pckB, tlvs);
@@ -1508,7 +1508,7 @@ class servOpenflowTx implements Runnable {
             pckO.createMatchMplsBos(pckB, true);
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
-            List<typLenVal> tlvs = new ArrayList<typLenVal>();
+            List<encTlv> tlvs = new ArrayList<encTlv>();
             pckB.clear();
             pckO.createMatchMac(pckB, true, macL, null);
             tlvs.add(pckO.getActionSetField(pckB));
@@ -1540,7 +1540,7 @@ class servOpenflowTx implements Runnable {
             pckO.createMatchMplsLab(pckB, lab.label);
             pckB.merge2beg();
             ntry.match = pckB.getCopy();
-            tlvs = new ArrayList<typLenVal>();
+            tlvs = new ArrayList<encTlv>();
             pckB.clear();
             pckO.createMatchMac(pckB, true, macL, null);
             tlvs.add(pckO.getActionSetField(pckB));

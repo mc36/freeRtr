@@ -4,7 +4,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrMac;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * dynamic host config protocol (rfc2131) packet
@@ -219,7 +219,7 @@ public class packDhcp4 {
      */
     public addrIPv4 dhcpDns2srv;
 
-    private typLenVal tlv = new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    private encTlv tlv = new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
 
     private static int hwType = 1;
 

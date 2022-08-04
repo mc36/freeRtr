@@ -7,10 +7,10 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntHttp;
 import net.freertr.pipe.pipeSide;
 import net.freertr.snd.sndCodec;
+import net.freertr.enc.encUrl;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -568,7 +568,7 @@ public class packSip {
     public void makeReq(String cmd, String url, String src, String trg, String cntc, String via, String cid, int seq, int expr) {
         clear();
         if (url == null) {
-            url = uniResLoc.fromEmail(trg);
+            url = encUrl.fromEmail(trg);
         }
         command = cmd + " " + url + " SIP/2.0";
         header.add("Max-Forwards: 70");

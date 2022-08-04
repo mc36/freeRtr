@@ -11,7 +11,7 @@ import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * label distribution protocol (rfc5036) packet
@@ -46,7 +46,7 @@ public class packLdp {
      */
     public counter cntr;
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    private encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
 
     /**
      * label switch id

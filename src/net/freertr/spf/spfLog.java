@@ -1,18 +1,19 @@
-package net.freertr.util;
+package net.freertr.spf;
 
 import net.freertr.cfg.cfgAll;
+import net.freertr.util.bits;
 
 /**
  * spf log
  *
  * @author matecsaba
  */
-public class shrtPthFrstLog {
+public class spfLog {
 
     /**
      * create instance
      */
-    public shrtPthFrstLog() {
+    public spfLog() {
     }
 
     /**

@@ -7,7 +7,7 @@ import net.freertr.addr.addrEui;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryEncrCTRaes;
 import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryHashGeneric;
@@ -69,7 +69,7 @@ public class authLocal extends authGeneric {
         if (hide) {
             return passwdBeg + removedEnd;
         }
-        return passwdBeg + cryBase64.encodeString(str);
+        return passwdBeg + encBase64.encodeString(str);
     }
 
     /**
@@ -114,7 +114,7 @@ public class authLocal extends authGeneric {
         buf2 = new byte[i - (buf1.length % i)];
         buf1 = bits.byteConcat(buf1, buf2);
         c.update(buf1, 0, buf1.length);
-        return cryptoBeg + cryBase64.encodeBytes(buf1);
+        return cryptoBeg + encBase64.encodeBytes(buf1);
     }
 
     /**
@@ -129,7 +129,7 @@ public class authLocal extends authGeneric {
         }
         if (str.startsWith(passwdBeg)) {
             str = str.substring(passwdBeg.length(), str.length());
-            str = cryBase64.decodeString(str);
+            str = encBase64.decodeString(str);
             return str;
         }
         if (!str.startsWith(cryptoBeg)) {
@@ -160,7 +160,7 @@ public class authLocal extends authGeneric {
         buf1 = new byte[i];
         bits.byteCopy(buf2, 0, buf1, 0, i);
         c.init(buf3, buf1, false);
-        buf1 = cryBase64.decodeBytes(str);
+        buf1 = encBase64.decodeBytes(str);
         if (buf1 == null) {
             return null;
         }
@@ -219,7 +219,7 @@ public class authLocal extends authGeneric {
     public static byte[] secretDecode(String s) {
         if (s.startsWith(secretBeg)) {
             s = s.substring(5, s.length());
-            return cryBase64.decodeBytes(s);
+            return encBase64.decodeBytes(s);
         }
         byte[] buf = new byte[32 + bits.random(0, 16)];
         for (int i = 1; i < buf.length; i++) {
@@ -243,7 +243,7 @@ public class authLocal extends authGeneric {
         if (hide) {
             return secretBeg + removedEnd;
         }
-        return secretBeg + cryBase64.encodeBytes(sec);
+        return secretBeg + encBase64.encodeBytes(sec);
     }
 
     /**
@@ -743,7 +743,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
             lst.add(beg + "otpseed " + authLocal.passwdEncode(new String(otpseed), (filter & 2) != 0));
         }
         if (pubkey != null) {
-            lst.add(beg + "pubkey " + cryBase64.encodeBytes(pubkey));
+            lst.add(beg + "pubkey " + encBase64.encodeBytes(pubkey));
         }
         if (autoHangup) {
             lst.add(beg + "autohangup");
@@ -812,7 +812,7 @@ class authLocalEntry implements Comparator<authLocalEntry> {
                 pubkey = null;
                 return false;
             }
-            pubkey = cryBase64.decodeBytes(cmd.getRemaining());
+            pubkey = encBase64.decodeBytes(cmd.getRemaining());
             return false;
         }
         if (s.equals("otpseed")) {

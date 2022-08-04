@@ -18,7 +18,7 @@ import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 import net.freertr.util.version;
 
 /**
@@ -162,8 +162,8 @@ public class ifcLldp implements ifcUp {
         return "lldp on " + lower;
     }
 
-    private typLenVal getTvl() {
-        return new typLenVal(0, 7, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    private encTlv getTvl() {
+        return new encTlv(0, 7, 8, 8, 1, 0, 2, 1, 0, 512, true);
     }
 
     /**
@@ -183,7 +183,7 @@ public class ifcLldp implements ifcUp {
         nei.sysName = "";
         addrIPv4 a4 = new addrIPv4();
         addrIPv6 a6 = new addrIPv6();
-        typLenVal tlv = getTvl();
+        encTlv tlv = getTvl();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -315,7 +315,7 @@ public class ifcLldp implements ifcUp {
         keepTimer.schedule(task, 500, advertiseInterval);
     }
 
-    private void putAddr(packHolder pck, typLenVal tlv, int typ, addrType adr) {
+    private void putAddr(packHolder pck, encTlv tlv, int typ, addrType adr) {
         if (adr == null) {
             return;
         }
@@ -336,7 +336,7 @@ public class ifcLldp implements ifcUp {
      * send advertisement
      */
     protected void sendAdvert() {
-        typLenVal tlv = getTvl();
+        encTlv tlv = getTvl();
         long tim = bits.getTime();
         for (int i = neighs.size(); i >= 0; i--) {
             ifcLldpNeigh nei = neighs.get(i);

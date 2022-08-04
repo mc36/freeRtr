@@ -7,8 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.freertr.tab.tabGen;
 import net.freertr.util.cmds;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.extMrkLngEntry;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encXmlEntry;
 
 /**
  * config filter entry
@@ -182,7 +182,7 @@ public class userFilter implements Comparator<userFilter> {
      * @param beg begin
      * @param sec section
      */
-    public static void section2xml(extMrkLng rep, String beg, List<userFilter> sec) {
+    public static void section2xml(encXml rep, String beg, List<userFilter> sec) {
         for (int i = 0; i < sec.size(); i++) {
             userFilter cur = sec.get(i);
             String a = cur.command.trim();
@@ -199,11 +199,11 @@ public class userFilter implements Comparator<userFilter> {
                 if (a.length() < 1) {
                     break;
                 }
-                a = "/" + extMrkLng.escId(a);
+                a = "/" + encXml.escId(a);
                 s += a;
             }
-            rep.data.add(new extMrkLngEntry(null, s, "", ""));
-            rep.data.add(new extMrkLngEntry(null, beg, "", ""));
+            rep.data.add(new encXmlEntry(null, s, "", ""));
+            rep.data.add(new encXmlEntry(null, beg, "", ""));
         }
     }
 

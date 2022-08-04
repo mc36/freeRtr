@@ -13,7 +13,7 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userUpgrade;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 
 /**
  * lsrp data
@@ -659,7 +659,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param spf calcer
      * @param dist distance
      */
-    protected void put2spf(shrtPthFrst<addrIPv4> spf, int dist) {
+    protected void put2spf(spfWork<addrIPv4> spf, int dist) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
             String a;

@@ -8,10 +8,10 @@ import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryHashCrc32;
 import net.freertr.pipe.pipeSide;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -118,7 +118,7 @@ public class userVM {
     public userVM(pipeSide cons, boolean fio, String dir) {
         console = cons;
         allowFileIO = fio;
-        currDir = "/" + uniResLoc.normalizePath(dir + "/");
+        currDir = "/" + encUrl.normalizePath(dir + "/");
         regs = new int[8];
     }
 
@@ -408,7 +408,7 @@ public class userVM {
      * @throws Exception on error
      */
     public void doLoad(String name, String param) throws Exception {
-        name = "/" + uniResLoc.normalizePath(name);
+        name = "/" + encUrl.normalizePath(name);
         nam = name;
         par = param;
         RandomAccessFile f = new RandomAccessFile(rootDir + name, "r");
@@ -970,7 +970,7 @@ public class userVM {
                     return 0;
                 }
                 a = fromDos(getPascii(regs[reg_src]));
-                a = "/" + uniResLoc.normalizePath(a + "/");
+                a = "/" + encUrl.normalizePath(a + "/");
                 if (!new File(rootDir + a).isDirectory()) {
                     return 0;
                 }

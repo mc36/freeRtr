@@ -12,7 +12,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ppp over ethernet (rfc2516) protocol relay handler
@@ -148,7 +148,7 @@ public class ifcP2pOErely implements ifcUp {
         if (debugger.ifcP2pOErely) {
             logger.debug("rx " + packPppOE.code2string(poe.cod) + " sess=" + poe.ses);
         }
-        typLenVal tlv = new typLenVal(packPppOE.tlv);
+        encTlv tlv = new encTlv(packPppOE.tlv);
         byte[] host = null;
         for (;;) {
             if (tlv.getBytes(pck)) {

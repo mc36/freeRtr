@@ -12,7 +12,7 @@ import net.freertr.serv.servGeneric;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * bgp monitor protocol
@@ -124,8 +124,8 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
      *
      * @return tlv
      */
-    public static typLenVal getTlv() {
-        return new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    public static encTlv getTlv() {
+        return new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
     }
 
     /**
@@ -163,7 +163,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pck.msbPutD(0, 5); // number of counters
         pck.putSkip(4);
         pck.merge2end();
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, nei.conn.repPolRej);
         tlv.putBytes(pck, 0); // policy reject

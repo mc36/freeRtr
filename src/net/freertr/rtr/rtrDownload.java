@@ -19,6 +19,7 @@ import net.freertr.ip.ipRtr;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
@@ -29,7 +30,6 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -215,7 +215,7 @@ public class rtrDownload extends ipRtr {
         pip.setTime(120000);
         String tmp = version.getRWpath() + "rou" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
-        if (userFlash.doReceive(pip, uniResLoc.parseOne(url), new File(tmp))) {
+        if (userFlash.doReceive(pip, encUrl.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);
             return;
         }

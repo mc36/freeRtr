@@ -25,7 +25,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.syncInt;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * bgp4 speaker
@@ -1619,7 +1619,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (pck.dataSize() < 1) {
                 break;
             }
-            typLenVal tlv = rtrBgpUtil.getCapabilityTlv(peerExtOpen);
+            encTlv tlv = rtrBgpUtil.getCapabilityTlv(peerExtOpen);
             if (tlv.getBytes(pck)) {
                 break;
             }

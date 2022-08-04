@@ -19,7 +19,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * stateless address autoconfiguration client
@@ -242,7 +242,7 @@ public class clntSlaac implements Runnable, ipPrt {
         }
         pck.getSkip(ipIcmp6.size);
         pck.getSkip(8);
-        typLenVal tlv = ipIcmp6.getTLVreader();
+        encTlv tlv = ipIcmp6.getTLVreader();
         if (debugger.clntSlaacTraf) {
             logger.debug("got advertisement");
         }

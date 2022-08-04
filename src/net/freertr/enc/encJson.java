@@ -1,14 +1,15 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.util.bits;
 
 /**
  * json handler
  *
  * @author matecsaba
  */
-public class jasOn {
+public class encJson {
 
     /**
      * original string
@@ -18,12 +19,12 @@ public class jasOn {
     /**
      * elements
      */
-    public List<jasOnEntry> data;
+    public List<encJsonEntry> data;
 
     /**
      * clear new instance
      */
-    public jasOn() {
+    public encJson() {
         clear();
     }
 
@@ -31,7 +32,7 @@ public class jasOn {
      * clear all data
      */
     public void clear() {
-        data = new ArrayList<jasOnEntry>();
+        data = new ArrayList<encJsonEntry>();
         orig = "";
     }
 
@@ -40,7 +41,7 @@ public class jasOn {
      *
      * @param src original xml to copy
      */
-    public void copyBytes(jasOn src) {
+    public void copyBytes(encJson src) {
         clear();
         orig = "" + src.orig;
         for (int i = 0; i < src.data.size(); i++) {
@@ -84,7 +85,7 @@ public class jasOn {
                     cur += a;
                     continue;
                 }
-                jasOnEntry ntry = new jasOnEntry();
+                encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
                 ntry.value = s.substring(0, i);
                 s = s.substring(i + 1, s.length());
@@ -93,7 +94,7 @@ public class jasOn {
                 continue;
             }
             if (a.equals("{")) {
-                jasOnEntry ntry = new jasOnEntry();
+                encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
                 ntry.value = "" + cur;
                 if (cur.length() > 0) {
@@ -104,7 +105,7 @@ public class jasOn {
                 continue;
             }
             if (a.equals("}")) {
-                jasOnEntry ntry = new jasOnEntry();
+                encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
                 ntry.value = "" + cur;
                 if (cur.length() > 0) {
@@ -116,7 +117,7 @@ public class jasOn {
             }
             cur += a;
         }
-        jasOnEntry ntry = new jasOnEntry();
+        encJsonEntry ntry = new encJsonEntry();
         ntry.level = lev;
         ntry.value = "" + cur;
         if (cur.length() > 0) {
@@ -131,8 +132,8 @@ public class jasOn {
      * @param js string to convert
      * @return converted json
      */
-    public static jasOn parseOne(String js) {
-        jasOn res = new jasOn();
+    public static encJson parseOne(String js) {
+        encJson res = new encJson();
         res.fromString(js);
         return res;
     }
@@ -145,9 +146,9 @@ public class jasOn {
     public String toJSONstr() {
         List<String> lst = toJSONlst();
         String res = "";
-        jasOnEntry old = new jasOnEntry();
+        encJsonEntry old = new encJsonEntry();
         for (int i = 0; i < lst.size(); i++) {
-            jasOnEntry ntry = data.get(i);
+            encJsonEntry ntry = data.get(i);
             res += bits.padEnd("", ntry.level - old.level, "{");
             res += bits.padEnd("", old.level - ntry.level, "}");
             res += "\"" + ntry.value + "\"";
@@ -165,7 +166,7 @@ public class jasOn {
     public List<String> toJSONlst() {
         List<String> lst = new ArrayList<String>();
         for (int pos = 0; pos < data.size(); pos++) {
-            jasOnEntry ntry = data.get(pos);
+            encJsonEntry ntry = data.get(pos);
             lst.add(ntry.level + "," + ntry.value);
         }
         return lst;

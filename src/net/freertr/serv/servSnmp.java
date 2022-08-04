@@ -6,7 +6,7 @@ import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgInit;
-import net.freertr.cry.cryAsn1;
+import net.freertr.enc.encAsn1;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSnmp;
 import net.freertr.pipe.pipeLine;
@@ -165,9 +165,9 @@ public class servSnmp extends servGeneric implements prtServS {
         pck.errIdx = 0;
         pck.errStat = 0;
         for (int i = 0; i < pck.res.size(); i++) {
-            cryAsn1 cur = pck.res.get(i);
+            encAsn1 cur = pck.res.get(i);
             int typ = pck.type;
-            String oid = cryAsn1.oid2str(cur.oid);
+            String oid = encAsn1.oid2str(cur.oid);
             switch (typ) {
                 case packSnmp.typGetNext:
                 case packSnmp.typGetBulk:
@@ -177,7 +177,7 @@ public class servSnmp extends servGeneric implements prtServS {
                         pck.errIdx = i + 1;
                         continue;
                     }
-                    cur.oid = cryAsn1.str2oid(oid);
+                    cur.oid = encAsn1.str2oid(oid);
                     typ = packSnmp.typGetReq;
                     break;
                 default:

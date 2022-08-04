@@ -6,7 +6,7 @@ import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis segment routing
@@ -64,8 +64,8 @@ public class rtrIsisSr {
      * @param lower lower layer to use
      * @return tlv generated
      */
-    protected static typLenVal putBase(rtrIsis lower) {
-        typLenVal tlv = rtrIsis.getTlv();
+    protected static encTlv putBase(rtrIsis lower) {
+        encTlv tlv = rtrIsis.getTlv();
         lower.traffEngID.toIPv4().toBuffer(tlv.valDat, 0); // addr
         tlv.valDat[4] = 0; // flags
         tlv.valDat[5] = typSrCapa; // type
@@ -93,7 +93,7 @@ public class rtrIsisSr {
      * @param tlv data
      * @return base, -1 if not found
      */
-    protected static int getBase(typLenVal tlv) {
+    protected static int getBase(encTlv tlv) {
         if (tlv.valTyp != rtrIsisLsp.tlvRouterCapa) {
             return -1;
         }
@@ -120,7 +120,7 @@ public class rtrIsisSr {
      */
     protected static byte[] putPref(int idx, boolean pop, boolean red, boolean nod) {
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valDat[0] = 0;
         if (!pop) {
             tlv.valDat[0] |= 0x20; // no-php
@@ -146,7 +146,7 @@ public class rtrIsisSr {
      * @param tlv data
      * @param prf prefix
      */
-    protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
+    protected static void getPref(encTlv tlv, tabRouteEntry<addrIP> prf) {
         if (tlv.valTyp != typPrfSeg) {
             return;
         }
@@ -174,7 +174,7 @@ public class rtrIsisSr {
      */
     protected static byte[] putAdj(boolean ip4, int lab) {
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valDat[0] = 0x30; // local, value
         if (!ip4) {
             tlv.valDat[0] |= 0x80; // address family
@@ -194,8 +194,8 @@ public class rtrIsisSr {
      * @param lower lower layer to use
      * @return tlv generated
      */
-    protected static typLenVal srv6base(rtrIsis lower) {
-        typLenVal tlv = rtrIsis.getTlv();
+    protected static encTlv srv6base(rtrIsis lower) {
+        encTlv tlv = rtrIsis.getTlv();
         lower.traffEngID.toIPv4().toBuffer(tlv.valDat, 0); // addr
         tlv.valDat[4] = 0; // flags
         tlv.valDat[5] = typSrv6capa; // subtlv type
@@ -213,14 +213,14 @@ public class rtrIsisSr {
      * @param met metric
      * @return tlv generated
      */
-    protected static typLenVal srv6loc(cfgIfc ifc, int met) {
+    protected static encTlv srv6loc(cfgIfc ifc, int met) {
         if (ifc == null) {
             return null;
         }
         if (ifc.addr6 == null) {
             return null;
         }
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valTyp = rtrIsisLsp.tlvSegRoutV6;
         bits.msbPutW(tlv.valDat, 0, 0); // mtid
         bits.msbPutD(tlv.valDat, 2, met); // metric

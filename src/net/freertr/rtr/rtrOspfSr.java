@@ -7,7 +7,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospf segment routing
@@ -59,7 +59,7 @@ public class rtrOspfSr {
         if (lab == null) {
             return;
         }
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valDat[0] = 0; // algo
         tlv.valTyp = rtrOspfRi.typSrAlgo;
         tlv.valSiz = 1;
@@ -79,7 +79,7 @@ public class rtrOspfSr {
      * @param tlv data
      * @return base, -1 if not found
      */
-    protected static int getBase(typLenVal tlv) {
+    protected static int getBase(encTlv tlv) {
         if (tlv.valTyp != rtrOspfRi.typSrBase) {
             return -1;
         }
@@ -101,7 +101,7 @@ public class rtrOspfSr {
      */
     protected static byte[] putPref(int idx, boolean pop) {
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valDat[0] = 0;
         if (!pop) {
             tlv.valDat[0] |= 0x40; // no-php
@@ -123,7 +123,7 @@ public class rtrOspfSr {
      * @param tlv data
      * @param prf prefix
      */
-    protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
+    protected static void getPref(encTlv tlv, tabRouteEntry<addrIP> prf) {
         if (tlv.valTyp != prfPrfSid) {
             return;
         }
@@ -150,7 +150,7 @@ public class rtrOspfSr {
      */
     protected static byte[] putAdj(int lab) {
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valDat[0] = 0x60; // local value
         tlv.valDat[1] = 0; // reserved
         tlv.valDat[2] = 0; // mtid
@@ -171,7 +171,7 @@ public class rtrOspfSr {
      */
     protected static byte[] putRem(addrIPv4 adr) {
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         adr.toBuffer(tlv.valDat, 0);
         tlv.valTyp = lnkRemote;
         tlv.valSiz = 4;
@@ -195,7 +195,7 @@ public class rtrOspfSr {
             return null;
         }
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valTyp = 1;
         tlv.valDat[0] = 1; // route type
         tlv.valDat[1] = 0; // algo

@@ -39,7 +39,7 @@ import net.freertr.clnt.clntTelnet;
 import net.freertr.clnt.clntTzsp;
 import net.freertr.clnt.clntUti;
 import net.freertr.clnt.clntVxlan;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
@@ -676,7 +676,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (pubkey == null) {
             l.add(cmds.tabulator + "no pubkey");
         } else {
-            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(pubkey));
+            l.add(cmds.tabulator + "pubkey " + encBase64.encodeBytes(pubkey));
         }
         cmds.cfgLine(l, target == null, cmds.tabulator, "target", target);
         cmds.cfgLine(l, username == null, cmds.tabulator, "username", username);
@@ -933,7 +933,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             return;
         }
         if (s.equals("pubkey")) {
-            pubkey = cryBase64.decodeBytes(cmd.getRemaining());
+            pubkey = encBase64.decodeBytes(cmd.getRemaining());
             return;
         }
         if (s.equals("username")) {

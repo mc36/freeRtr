@@ -1,7 +1,7 @@
 package net.freertr.clnt;
 
 import net.freertr.addr.addrIP;
-import net.freertr.cry.cryAsn1;
+import net.freertr.enc.encAsn1;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSnmp;
 import net.freertr.pipe.pipeDiscard;
@@ -94,8 +94,8 @@ public class clntSnmp {
         pckDat.version = 1;
         pckDat.type = cmd;
         pckDat.community = community;
-        cryAsn1 cur = new cryAsn1();
-        cur.oid = cryAsn1.str2oid(oid);
+        encAsn1 cur = new encAsn1();
+        cur.oid = encAsn1.str2oid(oid);
         pckDat.res.add(cur);
         pckDat.reqId = bits.randomW();
         if (pckDat.createPacket(pckBin)) {

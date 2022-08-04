@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import net.freertr.pack.packHolder;
 
@@ -67,19 +68,19 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public boolean privReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
-        modulus = cryAsn1.readBigInt(pck);
+        modulus = encAsn1.readBigInt(pck);
         if (modulus == null) {
             return true;
         }
-        group = cryAsn1.readBigInt(pck);
+        group = encAsn1.readBigInt(pck);
         if (group == null) {
             return true;
         }
@@ -88,9 +89,9 @@ public class cryKeyDH extends cryKeyGeneric {
 
     public void privWriter(packHolder pck) {
         packHolder p = new packHolder(true, true);
-        cryAsn1.writeBigInt(p, modulus);
-        cryAsn1.writeBigInt(p, group);
-        cryAsn1.writeSequence(pck, p);
+        encAsn1.writeBigInt(p, modulus);
+        encAsn1.writeBigInt(p, group);
+        encAsn1.writeSequence(pck, p);
     }
 
     public boolean keyMake(String nam) {

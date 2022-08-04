@@ -22,10 +22,10 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis level
@@ -212,7 +212,7 @@ public class rtrIsisLevel implements Runnable {
     /**
      * last spf
      */
-    protected shrtPthFrst<rtrIsisLevelSpf> lastSpf;
+    protected spfWork<rtrIsisLevelSpf> lastSpf;
 
     /**
      * segment routing usage
@@ -239,7 +239,7 @@ public class rtrIsisLevel implements Runnable {
      * @param lev level number
      */
     public rtrIsisLevel(rtrIsis parent, int lev) {
-        lastSpf = new shrtPthFrst<rtrIsisLevelSpf>(null);
+        lastSpf = new spfWork<rtrIsisLevelSpf>(null);
         lower = parent;
         level = lev;
         lsps = new tabGen<rtrIsisLsp>();
@@ -318,7 +318,7 @@ public class rtrIsisLevel implements Runnable {
         }
         byte[] buf = getAuthen(new packHolder(true, true), 0, 0);
         if (buf != null) {
-            typLenVal tlv = rtrIsis.getTlv();
+            encTlv tlv = rtrIsis.getTlv();
             packHolder pck = new packHolder(true, true);
             if (purge) {
                 advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
@@ -534,7 +534,7 @@ public class rtrIsisLevel implements Runnable {
         }
     }
 
-    private void advertiseTlv(packHolder pck, typLenVal tlv) {
+    private void advertiseTlv(packHolder pck, encTlv tlv) {
         if ((pck.headSize() + tlv.valSiz) > maxLspSize) {
             advertiseLsp(pck);
             pck.setDataSize(0);
@@ -548,7 +548,7 @@ public class rtrIsisLevel implements Runnable {
     }
 
     private void advertiseTlv(packHolder pck, int typ, byte[] buf) {
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valDat = buf;
         tlv.valSiz = buf.length;
         tlv.valTyp = typ;
@@ -810,7 +810,7 @@ public class rtrIsisLevel implements Runnable {
         if (srv6ena) {
             advertiseTlv(pck, rtrIsisSr.srv6base(lower));
             for (int i = 0; i < lower.srv6.size(); i++) {
-                typLenVal tlv = rtrIsisSr.srv6loc(lower.srv6.get(i), 0);
+                encTlv tlv = rtrIsisSr.srv6loc(lower.srv6.get(i), 0);
                 if (tlv == null) {
                     continue;
                 }
@@ -845,7 +845,7 @@ public class rtrIsisLevel implements Runnable {
         } else {
             segrouUsd = null;
         }
-        shrtPthFrst<rtrIsisLevelSpf> spf = new shrtPthFrst<rtrIsisLevelSpf>(lastSpf);
+        spfWork<rtrIsisLevelSpf> spf = new spfWork<rtrIsisLevelSpf>(lastSpf);
         boolean needAttach = (!lower.haveNeighbor(2)) && attachedAlw;
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp lsp = lsps.get(i);
@@ -870,7 +870,7 @@ public class rtrIsisLevel implements Runnable {
                 pref.best.rouSrc = 6;
                 spf.addOpref(src, pref, false);
             }
-            typLenVal tlv = rtrIsis.getTlv();
+            encTlv tlv = rtrIsis.getTlv();
             for (;;) {
                 if (tlv.getBytes(pck)) {
                     break;

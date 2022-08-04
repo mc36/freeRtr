@@ -56,7 +56,7 @@ import net.freertr.serv.servP4lang;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.extMrkLng;
+import net.freertr.enc.encXml;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
@@ -431,7 +431,7 @@ public class userClear {
                 return null;
             }
             if (a.equals("xml")) {
-                extMrkLng xml = new extMrkLng();
+                encXml xml = new encXml();
                 exp.getReportNetConf(xml, "/");
                 bits.buf2txt(true, xml.toXMLlst(), cmd.getRemaining());
                 return null;

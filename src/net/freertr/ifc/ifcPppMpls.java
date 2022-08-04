@@ -2,7 +2,7 @@ package net.freertr.ifc;
 
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * multiprotocol label switching control protocol (rfc3032) for ppp
@@ -114,7 +114,7 @@ public class ifcPppMpls extends ifcPppNcp {
      * @param tlv tlv
      * @return false on success, true on error
      */
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         return true;
     }
 

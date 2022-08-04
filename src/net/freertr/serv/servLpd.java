@@ -7,6 +7,7 @@ import net.freertr.pipe.pipeShell;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFlash;
@@ -15,7 +16,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * line printer daemon protocol (rfc1179) server
@@ -98,11 +98,11 @@ public class servLpd extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("path")) {
-            spoolPath = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            spoolPath = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (s.equals("script")) {
-            printScript = "/" + uniResLoc.normalizePath(cmd.word());
+            printScript = "/" + encUrl.normalizePath(cmd.word());
             return false;
         }
         if (s.equals("keep")) {

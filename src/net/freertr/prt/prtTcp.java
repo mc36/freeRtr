@@ -16,7 +16,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * handle tcp (rfc793) connections
@@ -163,8 +163,8 @@ public class prtTcp extends prtGen {
                 + bits.bit2str(i, flagCWR, "cwr") + " " + bits.bit2str(i, flagNS, "ns");
     }
 
-    private static typLenVal getTCPoption(packHolder pck) {
-        typLenVal tlv = new typLenVal(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
+    private static encTlv getTCPoption(packHolder pck) {
+        encTlv tlv = new encTlv(0, 8, 8, 8, 1, 2, 2, 1, 0, 512, true);
         if (pck == null) {
             return tlv;
         }
@@ -187,7 +187,7 @@ public class prtTcp extends prtGen {
 
     private static boolean parseTCPoptions(packHolder pck, int max) {
         for (; pck.dataSize() > max;) {
-            typLenVal tlv = getTCPoption(pck);
+            encTlv tlv = getTCPoption(pck);
             if (tlv == null) {
                 break;
             }
@@ -222,7 +222,7 @@ public class prtTcp extends prtGen {
 
     private static void replaceMSSoption(packHolder pck) {
         for (;;) {
-            typLenVal tlv = getTCPoption(pck);
+            encTlv tlv = getTCPoption(pck);
             if (tlv == null) {
                 break;
             }
@@ -469,7 +469,7 @@ public class prtTcp extends prtGen {
                     + " data=" + pck.dataSize() + " ack=" + pck.TCPack + " pwd=" + pwd);
         }
         if (pck.TCPmss > 0) {
-            typLenVal tlv = getTCPoption(null);
+            encTlv tlv = getTCPoption(null);
             bits.msbPutW(tlv.valDat, 0, pck.TCPmss);
             tlv.putBytes(pck, 2, 2, tlv.valDat); // mss
         }
@@ -477,20 +477,20 @@ public class prtTcp extends prtGen {
             pck.putByte(0, 1); // nop
             pck.putByte(1, 1); // nop
             pck.putSkip(2);
-            typLenVal tlv = getTCPoption(null);
+            encTlv tlv = getTCPoption(null);
             bits.msbPutD(tlv.valDat, 0, pck.TCPtsV);
             bits.msbPutD(tlv.valDat, 4, pck.TCPtsE);
             tlv.putBytes(pck, 8, 8, tlv.valDat); // timestamp
         }
         if (pck.TCPwsc > 0) {
-            typLenVal tlv = getTCPoption(null);
+            encTlv tlv = getTCPoption(null);
             tlv.valDat[0] = (byte) pck.TCPwsc;
             tlv.putBytes(pck, 3, 1, tlv.valDat); // win scale
             pck.putByte(0, 1); // nop
             pck.putSkip(1);
         }
         if (pwd != null) {
-            typLenVal tlv = getTCPoption(null);
+            encTlv tlv = getTCPoption(null);
             if (kid < 0) {
                 pck.putByte(0, 1); // nop
                 pck.putByte(1, 1); // nop

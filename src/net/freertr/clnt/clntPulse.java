@@ -18,12 +18,12 @@ import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.extMrkLngEntry;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encXmlEntry;
+import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
-import net.freertr.util.uniResLoc;
+import net.freertr.enc.encTlv;
 import net.freertr.util.version;
 
 /**
@@ -87,7 +87,7 @@ public class clntPulse implements Runnable, ifcDn {
 
     private String cookie;
 
-    private uniResLoc url;
+    private encUrl url;
 
     private addrIPv4 addr4;
 
@@ -237,7 +237,7 @@ public class clntPulse implements Runnable, ifcDn {
 
     private void parseAvps(packHolder pckBin) {
         for (;;) {
-            typLenVal tlv = packPulse.getAvp(pckBin);
+            encTlv tlv = packPulse.getAvp(pckBin);
             if (tlv == null) {
                 break;
             }
@@ -280,7 +280,7 @@ public class clntPulse implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        url = uniResLoc.parseOne(target);
+        url = encUrl.parseOne(target);
         clntHttp cln = new clntHttp(null, proxy, pubkey, debugger.clntPulseTraf);
         if (cln.doConnect(url)) {
             return;
@@ -307,26 +307,26 @@ public class clntPulse implements Runnable, ifcDn {
         if (buf == null) {
             return;
         }
-        extMrkLng xml = new extMrkLng();
+        encXml xml = new encXml();
         xml.setup2html();
         if (xml.fromString(buf)) {
             return;
         }
         String realm = null;
         for (int o = 0; o < xml.data.size(); o++) {
-            extMrkLngEntry ntry = xml.data.get(o);
+            encXmlEntry ntry = xml.data.get(o);
             if (!ntry.name.endsWith("/form/input")) {
                 continue;
             }
-            List<extMrkLngEntry> lst = extMrkLng.decodeParams(ntry.param);
-            int i = extMrkLng.findParam(lst, "|name|");
+            List<encXmlEntry> lst = encXml.decodeParams(ntry.param);
+            int i = encXml.findParam(lst, "|name|");
             if (i < 0) {
                 continue;
             }
             if (!lst.get(i).value.trim().toLowerCase().equals("realm")) {
                 continue;
             }
-            i = extMrkLng.findParam(lst, "|value|");
+            i = encXml.findParam(lst, "|value|");
             if (i < 0) {
                 continue;
             }
@@ -341,7 +341,7 @@ public class clntPulse implements Runnable, ifcDn {
         }
         url.filName = "login";
         url.filExt = ".cgi";
-        String s = "tz_offset=60&username=" + uniResLoc.percentEncode(username) + "&password=" + uniResLoc.percentEncode(password) + "&realm=" + uniResLoc.percentEncode(realm) + "&btnSubmit=Sign+In";
+        String s = "tz_offset=60&username=" + encUrl.percentEncode(username) + "&password=" + encUrl.percentEncode(password) + "&realm=" + encUrl.percentEncode(realm) + "&btnSubmit=Sign+In";
         cln.sendLine("POST /" + url.toPathName() + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);
@@ -352,7 +352,7 @@ public class clntPulse implements Runnable, ifcDn {
         cln.doHeaders(url);
         cln.doBody();
         cln.cleanUp();
-        int i = extMrkLng.findParam(cln.cookies, "|dsid|");
+        int i = encXml.findParam(cln.cookies, "|dsid|");
         if (i < 0) {
             return;
         }
@@ -361,7 +361,7 @@ public class clntPulse implements Runnable, ifcDn {
         if (cln.doConnect(url)) {
             return;
         }
-        url = uniResLoc.parseOne(target);
+        url = encUrl.parseOne(target);
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);

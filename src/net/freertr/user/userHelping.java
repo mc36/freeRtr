@@ -45,7 +45,7 @@ import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.extMrkLng;
+import net.freertr.enc.encXml;
 import net.freertr.util.verCore;
 
 /**
@@ -1096,7 +1096,7 @@ public class userHelping {
             }
             if (nxt.size() < 1) {
                 if (ntry.variable) {
-                    dat.add(id + "leaf " + extMrkLng.value + vn + " {");
+                    dat.add(id + "leaf " + encXml.value + vn + " {");
                     dat.add(id + "  description \"" + ntry.description + "\";");
                     dat.add(id + "  type string;");
                     dat.add(id + "}");
@@ -1112,7 +1112,7 @@ public class userHelping {
                 dat.add(id + "container " + vn + " {");
                 dat.add(id + "  description \"" + ntry.description + "\";");
                 if (b) {
-                    dat.add(id + "  leaf " + extMrkLng.ignore + " {");
+                    dat.add(id + "  leaf " + encXml.ignore + " {");
                     dat.add(id + "    description \"" + ntry.description + "\";");
                     dat.add(id + "    type empty;");
                     dat.add(id + "  }");
@@ -1123,14 +1123,14 @@ public class userHelping {
                 dat.add(id + "}");
                 continue;
             }
-            dat.add(id + "list " + extMrkLng.ignore + o + " {");
-            dat.add(id + "  key \"" + extMrkLng.value + o + "\";");
-            dat.add(id + "  leaf " + extMrkLng.value + o + " {");
+            dat.add(id + "list " + encXml.ignore + o + " {");
+            dat.add(id + "  key \"" + encXml.value + o + "\";");
+            dat.add(id + "  leaf " + encXml.value + o + " {");
             dat.add(id + "    description \"" + ntry.description + "\";");
             dat.add(id + "    type string;");
             dat.add(id + "  }");
             if (b) {
-                dat.add(id + "  leaf " + extMrkLng.ignore + " {");
+                dat.add(id + "  leaf " + encXml.ignore + " {");
                 dat.add(id + "    description \"" + ntry.description + "\";");
                 dat.add(id + "    type empty;");
                 dat.add(id + "  }");
@@ -1241,7 +1241,7 @@ public class userHelping {
                 break;
             }
             String a = cp.word("/");
-            a = extMrkLng.escId(a);
+            a = encXml.escId(a);
             res.add(id + "container " + a + " {");
             id += "  ";
         }

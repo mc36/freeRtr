@@ -16,10 +16,10 @@ import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLng;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -81,7 +81,7 @@ public class clntAnyconn implements Runnable, ifcDn {
 
     private boolean good;
 
-    private uniResLoc url;
+    private encUrl url;
 
     private String cookie1; // webvpncontext
 
@@ -237,12 +237,12 @@ public class clntAnyconn implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        url = uniResLoc.parseOne(target);
+        url = encUrl.parseOne(target);
         clntHttp cln = new clntHttp(null, proxy, pubkey, debugger.clntAnyconnTraf);
         if (cln.doConnect(url)) {
             return;
         }
-        String cntx = extMrkLng.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true) + "</group-access></config-auth>";
+        String cntx = encXml.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true) + "</group-access></config-auth>";
         cln.sendLine("POST " + url.toURL(false, false, false) + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);
@@ -254,7 +254,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         cln.doHeaders(url);
         cln.doBody();
         cln.cleanUp();
-        int i = extMrkLng.findParam(cln.cookies, "|webvpncontext|");
+        int i = encXml.findParam(cln.cookies, "|webvpncontext|");
         if (i < 0) {
             return;
         }
@@ -263,7 +263,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (cln.doConnect(url)) {
             return;
         }
-        cntx = "username=" + uniResLoc.percentEncode(username) + "&password=" + uniResLoc.percentEncode(password);
+        cntx = "username=" + encUrl.percentEncode(username) + "&password=" + encUrl.percentEncode(password);
         cln.sendLine("POST " + url.toURL(false, false, false) + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);
@@ -281,7 +281,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         cln.doHeaders(url);
         cln.doBody();
         pipe = cln.pipe;
-        i = extMrkLng.findParam(cln.cookies, "|webvpn|");
+        i = encXml.findParam(cln.cookies, "|webvpn|");
         if (i < 0) {
             return;
         }
@@ -297,13 +297,13 @@ public class clntAnyconn implements Runnable, ifcDn {
         cln.sendLine("X-cstp-address-type: ipv6,ipv4");
         cln.sendLine("");
         cln.doHeaders(url);
-        i = extMrkLng.findParam(cln.headers, "|x-cstp-address|");
+        i = encXml.findParam(cln.headers, "|x-cstp-address|");
         if (i >= 0) {
             String s = cln.headers.get(i).value;
             addr4 = new addrIP();
             addr4.fromString(s);
         }
-        i = extMrkLng.findParam(cln.headers, "|x-cstp-address-ip6|");
+        i = encXml.findParam(cln.headers, "|x-cstp-address-ip6|");
         if (i >= 0) {
             String s = cln.headers.get(i).value;
             i = s.indexOf("/");

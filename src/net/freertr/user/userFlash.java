@@ -22,10 +22,10 @@ import net.freertr.cry.cryHashSha3256;
 import net.freertr.cry.cryHashSha3512;
 import net.freertr.cry.cryUtils;
 import net.freertr.pipe.pipeSide;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.uniResLoc;
 
 /**
  * flash handler
@@ -114,12 +114,12 @@ public class userFlash {
         }
         if (a.equals("receive")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(doReceive(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a))));
+            cmd.error(userExec.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a))));
             return null;
         }
         if (a.equals("transmit")) {
             a = cmd.word();
-            doSend(pip, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+            doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a));
             return null;
         }
         if (a.equals("archive")) {
@@ -824,7 +824,7 @@ public class userFlash {
      * @param f file to write to
      * @return result, false on success, true on error
      */
-    public static boolean doReceive(pipeSide pipe, uniResLoc url, File f) {
+    public static boolean doReceive(pipeSide pipe, encUrl url, File f) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("http")) {
             clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
@@ -860,7 +860,7 @@ public class userFlash {
      * @param url url to get
      * @param f file to write to
      */
-    public static void doSend(pipeSide pipe, uniResLoc url, File f) {
+    public static void doSend(pipeSide pipe, encUrl url, File f) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("mailto")) {
             clntSmtp c = new clntSmtp(pipe);

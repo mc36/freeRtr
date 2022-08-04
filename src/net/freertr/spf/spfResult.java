@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.spf;
 
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
@@ -11,12 +11,12 @@ import net.freertr.tab.tabRouteIface;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrstRes<Ta extends addrType> implements Comparator<shrtPthFrstRes<Ta>> {
+public class spfResult<Ta extends addrType> implements Comparator<spfResult<Ta>> {
 
     /**
      * node handle
      */
-    protected shrtPthFrstNode<Ta> nodeH;
+    protected spfNode<Ta> nodeH;
 
     /**
      * node address
@@ -64,13 +64,13 @@ public class shrtPthFrstRes<Ta extends addrType> implements Comparator<shrtPthFr
      * @param nam node
      * @param hp hops
      */
-    public shrtPthFrstRes(shrtPthFrstNode<Ta> nam, int hp) {
+    public spfResult(spfNode<Ta> nam, int hp) {
         nodeH = nam;
         nodeA = nam.name;
         hops = hp;
     }
 
-    public int compare(shrtPthFrstRes<Ta> o1, shrtPthFrstRes<Ta> o2) {
+    public int compare(spfResult<Ta> o1, spfResult<Ta> o2) {
         if (o1.hops < o2.hops) {
             return -1;
         }

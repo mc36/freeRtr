@@ -14,6 +14,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFlash;
@@ -22,7 +23,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * post office protocol 3 (rfc1939) server
@@ -113,7 +113,7 @@ public class servPop3 extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("path")) {
-            mailFolders = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            mailFolders = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (!s.equals("no")) {

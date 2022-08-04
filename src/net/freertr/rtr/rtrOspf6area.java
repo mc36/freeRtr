@@ -19,10 +19,10 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospfv3 area
@@ -139,7 +139,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     /**
      * last spf
      */
-    protected shrtPthFrst<rtrOspf6areaSpf> lastSpf;
+    protected spfWork<rtrOspf6areaSpf> lastSpf;
 
     private final rtrOspf6 lower;
 
@@ -156,7 +156,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * @param num area number
      */
     public rtrOspf6area(rtrOspf6 parent, int num) {
-        lastSpf = new shrtPthFrst<rtrOspf6areaSpf>(null);
+        lastSpf = new spfWork<rtrOspf6areaSpf>(null);
         lower = parent;
         area = num;
         lsas = new tabGen<rtrOspf6lsa>();
@@ -596,7 +596,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             return;
         }
         rtrOspfTe.putGenTlv1(pck, nei == null);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valTyp = rtrOspfTe.typNeighId;
         tlv.valSiz = 8;
         if (nei == null) {
@@ -688,7 +688,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         advertiseLsa(lsa, seq, pck);
     }
 
-    private tabRouteEntry<addrIP> parseEprfTlv(typLenVal tlv) {
+    private tabRouteEntry<addrIP> parseEprfTlv(encTlv tlv) {
         if ((tlv.valTyp != rtrOspf6lsa.tlvPrefix) && (tlv.valTyp != rtrOspf6lsa.tlvInterPrf)) {
             return null;
         }
@@ -1002,7 +1002,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             logger.debug("calculate spf on area " + area);
         }
         long tim = bits.getTime() - rtrOspf6lsa.lsaMaxAge + 1;
-        shrtPthFrst<rtrOspf6areaSpf> spf = new shrtPthFrst<rtrOspf6areaSpf>(lastSpf);
+        spfWork<rtrOspf6areaSpf> spf = new spfWork<rtrOspf6areaSpf>(lastSpf);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf6lsa ntry = lsas.get(i);
             if (ntry == null) {
@@ -1133,7 +1133,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     }
                     break;
                 case rtrOspf6lsa.lsaRtrInfo:
-                    typLenVal tlv = rtrOspfTe.getTlvHandler();
+                    encTlv tlv = rtrOspfTe.getTlvHandler();
                     for (;;) {
                         if (tlv.getBytes(pck)) {
                             break;

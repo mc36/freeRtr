@@ -64,6 +64,7 @@ import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.sec.secWebsock;
 import net.freertr.serv.servGeneric;
 import net.freertr.serv.servP4lang;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
@@ -75,7 +76,6 @@ import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
-import net.freertr.util.uniResLoc;
 
 /**
  * process packet commands
@@ -1586,7 +1586,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("websock")) {
-            uniResLoc url = new uniResLoc();
+            encUrl url = new encUrl();
             if (url.fromString(cmd.word())) {
                 cmd.error("bad url");
                 return null;

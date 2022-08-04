@@ -14,6 +14,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.snd.sndConnect;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -21,7 +22,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * session initiation protocol (rfc3261) server
@@ -239,11 +239,11 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
     }
 
     private String getPeerContact() {
-        return uniResLoc.addr2str(conn.peerAddr, conn.portRem);
+        return encUrl.addr2str(conn.peerAddr, conn.portRem);
     }
 
     private String getMyContact() {
-        return "<sip:pbx@" + uniResLoc.addr2str(conn.iface.addr, conn.portLoc) + ">";
+        return "<sip:pbx@" + encUrl.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
     private String getMyVia() {
@@ -253,7 +253,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
         } else {
             a = "TCP";
         }
-        return "SIP/2.0/" + a + " " + uniResLoc.addr2str(conn.iface.addr, conn.portLoc);
+        return "SIP/2.0/" + a + " " + encUrl.addr2str(conn.iface.addr, conn.portLoc);
     }
 
     public void run() {
@@ -328,9 +328,9 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 continue;
             }
             a = a.substring(0, i).trim().toLowerCase();
-            uniResLoc url = uniResLoc.parseOne("null://");
+            encUrl url = encUrl.parseOne("null://");
             if (a.equals("register") || a.equals("subscribe")) {
-                url.fromString(uniResLoc.fromEmail(trg));
+                url.fromString(encUrl.fromEmail(trg));
                 user = url.username.toLowerCase();
                 packSip tx = new packSip(pipe);
                 tx.makeOk(rx, null, 120);
@@ -357,7 +357,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
                 trg = a;
                 a = "";
             }
-            url.fromString(uniResLoc.fromEmail(trg));
+            url.fromString(encUrl.fromEmail(trg));
             servSipDoer clnt = lower.findClient(url.username);
             if (clnt != null) {
                 if (compare(clnt, this) == 0) {
@@ -461,7 +461,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             if (cid.length() < 1) {
                 cid = "" + bits.randomD();
             }
-            String cnt = uniResLoc.fromEmail(getMyContact());
+            String cnt = encUrl.fromEmail(getMyContact());
             tx.makeNumeric("100 trying", rx, getMyContact());
             if (debugger.servSipTraf) {
                 tx.dump("tx");

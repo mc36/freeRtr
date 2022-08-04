@@ -1,11 +1,11 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 /**
  * json entry
  *
  * @author matecsaba
  */
-public class jasOnEntry {
+public class encJsonEntry {
 
     /**
      * level
@@ -23,7 +23,7 @@ public class jasOnEntry {
      * @param n level
      * @param v value
      */
-    public jasOnEntry(int n, String v) {
+    public encJsonEntry(int n, String v) {
         level = n;
         value = v;
     }
@@ -31,7 +31,7 @@ public class jasOnEntry {
     /**
      * create instance
      */
-    public jasOnEntry() {
+    public encJsonEntry() {
         clear();
     }
 
@@ -40,8 +40,8 @@ public class jasOnEntry {
      *
      * @return instance
      */
-    public jasOnEntry copyBytes() {
-        jasOnEntry ntry = new jasOnEntry();
+    public encJsonEntry copyBytes() {
+        encJsonEntry ntry = new encJsonEntry();
         ntry.level = level;
         ntry.value = "" + value;
         return ntry;

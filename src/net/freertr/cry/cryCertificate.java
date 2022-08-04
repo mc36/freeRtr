@@ -1,5 +1,7 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encBase64;
+import net.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -264,7 +266,7 @@ public class cryCertificate {
      */
     public final static int typEcDssSha512 = 0x3006;
 
-    private static boolean compareOid(cryAsn1 a, final int[] oid) {
+    private static boolean compareOid(encAsn1 a, final int[] oid) {
         if (a.buf.length != oid.length) {
             return false;
         }
@@ -282,8 +284,8 @@ public class cryCertificate {
      * @param a oid to decode
      * @return type
      */
-    public static int objid2int(cryAsn1 a) {
-        if ((a.cnst) || (a.tag != cryAsn1.tagObjectID)) {
+    public static int objid2int(encAsn1 a) {
+        if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return 0;
         }
         if (compareOid(a, oidRsaEncrypt)) {
@@ -515,7 +517,7 @@ public class cryCertificate {
      * @return false on success, true on error
      */
     public boolean pemReadStr(String s) {
-        byte[] buf = cryBase64.decodeBytes(s);
+        byte[] buf = encBase64.decodeBytes(s);
         if (buf == null) {
             return true;
         }
@@ -584,7 +586,7 @@ public class cryCertificate {
      */
     public String pemWriteStr() {
         byte[] buf = asn1WriteBuf();
-        return cryBase64.encodeBytes(buf, 0, buf.length);
+        return encBase64.encodeBytes(buf, 0, buf.length);
     }
 
     /**
@@ -636,10 +638,10 @@ public class cryCertificate {
         p2.putByte(0, 0);
         p2.putSkip(1);
         p2.merge2beg();
-        cryAsn1.writeSequence(p1, binCont);
-        cryAsn1.writeSequence(p1, binAlgo);
-        cryAsn1.writeBitString(p1, p2);
-        cryAsn1.writeSequence(pck, p1);
+        encAsn1.writeSequence(p1, binCont);
+        encAsn1.writeSequence(p1, binAlgo);
+        encAsn1.writeBitString(p1, p2);
+        encAsn1.writeSequence(pck, p1);
     }
 
     /**
@@ -649,32 +651,32 @@ public class cryCertificate {
      * @return false on success, true on error
      */
     public boolean asn1reader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         binCont = a.getPack();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         binAlgo = a.getPack();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
         binSign = a.getPack();
@@ -697,14 +699,14 @@ public class cryCertificate {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagEoc)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagEoc)) {
             return true;
         }
         packHolder p = a.getPack();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagInteger)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagInteger)) {
             return true;
         }
         if (a.getBigInt().intValue() != 2) {
@@ -713,14 +715,14 @@ public class cryCertificate {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagInteger)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagInteger)) {
             return true;
         }
         serNum = a.getBigInt();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
@@ -733,7 +735,7 @@ public class cryCertificate {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         issuer = new cryCertEntity();
@@ -743,7 +745,7 @@ public class cryCertificate {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
@@ -758,7 +760,7 @@ public class cryCertificate {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         subject = new cryCertEntity();
@@ -816,7 +818,7 @@ public class cryCertificate {
     }
 
     private void addDate(packHolder pck, long tim) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putUTCtime(tim);
         a.tagWrite(pck);
         pck.merge2end();
@@ -828,23 +830,23 @@ public class cryCertificate {
     public void createCont() {
         binCont = new packHolder(true, true);
         packHolder p1 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, new BigInteger("2"));
-        cryAsn1.writeEoc(binCont, p1);
-        cryAsn1.writeBigInt(binCont, serNum);
+        encAsn1.writeBigInt(p1, new BigInteger("2"));
+        encAsn1.writeEoc(binCont, p1);
+        encAsn1.writeBigInt(binCont, serNum);
         p1.clear();
-        cryAsn1.writeObjectId(p1, int2objId(decAlgo));
-        cryAsn1.writeNull(p1);
-        cryAsn1.writeSequence(binCont, p1);
+        encAsn1.writeObjectId(p1, int2objId(decAlgo));
+        encAsn1.writeNull(p1);
+        encAsn1.writeSequence(binCont, p1);
         p1.clear();
         issuer.asn1writer(p1);
-        cryAsn1.writeSequence(binCont, p1);
+        encAsn1.writeSequence(binCont, p1);
         p1.clear();
         addDate(p1, validBeg);
         addDate(p1, validEnd);
-        cryAsn1.writeSequence(binCont, p1);
+        encAsn1.writeSequence(binCont, p1);
         p1.clear();
         subject.asn1writer(p1);
-        cryAsn1.writeSequence(binCont, p1);
+        encAsn1.writeSequence(binCont, p1);
         key.certWriter(binCont);
     }
 
@@ -864,8 +866,8 @@ public class cryCertificate {
             decAlgo = typEcDssSha256;
         }
         binAlgo = new packHolder(true, true);
-        cryAsn1.writeObjectId(binAlgo, int2objId(decAlgo));
-        cryAsn1.writeNull(binAlgo);
+        encAsn1.writeObjectId(binAlgo, int2objId(decAlgo));
+        encAsn1.writeNull(binAlgo);
     }
 
     /**
@@ -873,7 +875,7 @@ public class cryCertificate {
      */
     public void selfSign() {
         binSign = new packHolder(true, true);
-        cryAsn1.writeSequence(binSign, binCont);
+        encAsn1.writeSequence(binSign, binCont);
         byte[] buf = signData(binSign.getCopy());
         binSign.clear();
         binSign.putCopy(buf, 0, 0, buf.length);
@@ -899,7 +901,7 @@ public class cryCertificate {
      */
     public static boolean testClientCert(cryCertificate clnt, cryCertificate ca) {
         packHolder p = new packHolder(true, true);
-        cryAsn1.writeSequence(p, clnt.binCont);
+        encAsn1.writeSequence(p, clnt.binCont);
         return ca.verifyData(p.getCopy(), clnt.binSign.getCopy());
     }
 

@@ -7,8 +7,8 @@ import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.extMrkLngEntry;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encXmlEntry;
 import net.freertr.util.logger;
 
 /**
@@ -49,12 +49,12 @@ public class userXml {
      * @param req request
      * @return response, null if error
      */
-    public extMrkLng doRequest(extMrkLng req) {
-        extMrkLng rep = new extMrkLng();
-        rep.data.add(new extMrkLngEntry(null, "/Response", "", ""));
-        rep.data.add(new extMrkLngEntry(null, "/Response/CLI", "MajorVersion=\"1\" MinorVersion=\"0\"", ""));
+    public encXml doRequest(encXml req) {
+        encXml rep = new encXml();
+        rep.data.add(new encXmlEntry(null, "/Response", "", ""));
+        rep.data.add(new encXmlEntry(null, "/Response/CLI", "MajorVersion=\"1\" MinorVersion=\"0\"", ""));
         for (int i = 0; i < req.data.size(); i++) {
-            extMrkLngEntry ntry = req.data.get(i);
+            encXmlEntry ntry = req.data.get(i);
             if (ntry.name.equals("/?xml/Request/CLI/Exec")) {
                 cmds cmd = new cmds("xml", ntry.value);
                 String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
@@ -85,13 +85,13 @@ public class userXml {
                     if (s == null) {
                         continue;
                     }
-                    rep.data.add(new extMrkLngEntry(null, "/Response/CLI/Exec", "", r + s));
+                    rep.data.add(new encXmlEntry(null, "/Response/CLI/Exec", "", r + s));
                 }
                 continue;
             }
             if (ntry.name.equals("/?xml/Request/CLI/Configuration")) {
                 if (!privi) {
-                    rep.data.add(new extMrkLngEntry(null, "/Response/CLI/Configuration", "", "not enough privileges"));
+                    rep.data.add(new encXmlEntry(null, "/Response/CLI/Configuration", "", "not enough privileges"));
                     continue;
                 }
                 cmds cmd = new cmds("xml", ntry.value);
@@ -128,12 +128,12 @@ public class userXml {
                 if (a == null) {
                     a = "";
                 }
-                rep.data.add(new extMrkLngEntry(null, "/Response/CLI/Configuration", "", a));
+                rep.data.add(new encXmlEntry(null, "/Response/CLI/Configuration", "", a));
                 continue;
             }
         }
-        rep.data.add(new extMrkLngEntry(null, "/Response/CLI", "", ""));
-        rep.data.add(new extMrkLngEntry(null, "/Response", "", ""));
+        rep.data.add(new encXmlEntry(null, "/Response/CLI", "", ""));
+        rep.data.add(new encXmlEntry(null, "/Response", "", ""));
         return rep;
     }
 
@@ -142,7 +142,7 @@ public class userXml {
      *
      * @return request, null if error
      */
-    public extMrkLng doRead() {
+    public encXml doRead() {
         List<String> l = new ArrayList<String>();
         for (;;) {
             if (conn.isClosed() != 0) {
@@ -163,7 +163,7 @@ public class userXml {
                 break;
             }
         }
-        extMrkLng x = new extMrkLng();
+        encXml x = new encXml();
         if (x.fromString(l, "\n")) {
             return null;
         }
@@ -175,16 +175,16 @@ public class userXml {
      *
      * @param x xml
      */
-    public void doSend(extMrkLng x) {
+    public void doSend(encXml x) {
         if (debugger.userXmlEvnt) {
             logger.debug("tx: " + x.toXMLstr());
         }
         if (!form) {
-            conn.linePut(extMrkLng.header + "\n" + x.toXMLstr());
+            conn.linePut(encXml.header + "\n" + x.toXMLstr());
             conn.strPut(prompt);
             return;
         }
-        conn.linePut(extMrkLng.header);
+        conn.linePut(encXml.header);
         List<String> r = x.toXMLlst();
         for (int i = 0; i < r.size(); i++) {
             conn.linePut(r.get(i));
@@ -198,13 +198,13 @@ public class userXml {
     public void doWork() {
         conn.strPut(prompt);
         for (;;) {
-            extMrkLng x = doRead();
+            encXml x = doRead();
             if (x == null) {
                 break;
             }
             x = doRequest(x);
             if (x == null) {
-                conn.linePut(extMrkLng.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"1\" ErrorMsg=\"request error\"><ResultSummary ErrorCount=\"0\"/></Response>");
+                conn.linePut(encXml.header + "\n<Response MajorVersion=\"1\" MinorVersion=\"0\" ErrorCode=\"1\" ErrorMsg=\"request error\"><ResultSummary ErrorCount=\"0\"/></Response>");
                 conn.strPut(prompt);
                 continue;
             }

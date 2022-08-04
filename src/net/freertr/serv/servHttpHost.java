@@ -9,13 +9,13 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.clnt.clntProxy;
 import net.freertr.pipe.pipeSide;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -253,7 +253,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
             logger.debug("startup");
         }
         bits.sleep(1000);
-        uniResLoc srvUrl = uniResLoc.parseOne(streamT);
+        encUrl srvUrl = encUrl.parseOne(streamT);
         addrIP adr = userTerminal.justResolv(srvUrl.server, streamP.prefer);
         if (adr == null) {
             return;

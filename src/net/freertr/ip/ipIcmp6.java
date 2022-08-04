@@ -11,7 +11,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ipv6 icmp (rfc2463) packet handler
@@ -42,15 +42,15 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
 
     private ipCor6 ipCore = new ipCor6();
 
-    private typLenVal tlv = getTLVreader();
+    private encTlv tlv = getTLVreader();
 
     /**
      * get type length value handler
      *
      * @return tlv handler
      */
-    public static typLenVal getTLVreader() {
-        return new typLenVal(0, 8, 8, 8, 8, 2, 2, 1, 0, 512, true);
+    public static encTlv getTLVreader() {
+        return new encTlv(0, 8, 8, 8, 8, 2, 2, 1, 0, 512, true);
     }
 
     /**

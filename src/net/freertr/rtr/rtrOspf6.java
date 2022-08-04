@@ -32,7 +32,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
 
 /**
@@ -1049,7 +1049,7 @@ public class rtrOspf6 extends ipRtr {
         if (ara == null) {
             return new ArrayList<String>();
         }
-        shrtPthFrst<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
+        spfWork<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
         rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
@@ -1069,7 +1069,7 @@ public class rtrOspf6 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        shrtPthFrst<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
+        spfWork<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
         rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);

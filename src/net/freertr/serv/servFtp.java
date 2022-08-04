@@ -15,6 +15,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.prt.prtTcp;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFlash;
@@ -23,7 +24,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * file transfer protocol (rfc959) server
@@ -135,7 +135,7 @@ public class servFtp extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("path")) {
-            rootFolder = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            rootFolder = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (s.equals("readonly")) {
@@ -311,9 +311,9 @@ class servFtpDoer implements Runnable {
 
     public String getRelPath(String s, boolean real) {
         if (s.startsWith("/")) {
-            s = "/" + uniResLoc.normalizePath(s);
+            s = "/" + encUrl.normalizePath(s);
         } else {
-            s = "/" + uniResLoc.normalizePath(path + s);
+            s = "/" + encUrl.normalizePath(path + s);
         }
         if (real) {
             s = lower.rootFolder + s.substring(1, s.length());

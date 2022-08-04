@@ -6,7 +6,7 @@ import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospf bier
@@ -41,7 +41,7 @@ public class rtrOspfBr {
             return new byte[0];
         }
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valDat[0] = 0; // subdomain
         tlv.valDat[1] = 0; // mtid
         bits.msbPutW(tlv.valDat, 2, idx); // bfr id
@@ -65,7 +65,7 @@ public class rtrOspfBr {
      * @param tlv data
      * @param prf prefix
      */
-    protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
+    protected static void getPref(encTlv tlv, tabRouteEntry<addrIP> prf) {
         if (tlv.valTyp != typBierInfo) {
             return;
         }

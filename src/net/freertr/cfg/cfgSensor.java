@@ -18,13 +18,13 @@ import net.freertr.user.userReader;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.extMrkLngEntry;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encXmlEntry;
 import net.freertr.util.history;
 import net.freertr.util.logFil;
 import net.freertr.util.logger;
-import net.freertr.util.protoBuf;
-import net.freertr.util.protoBufEntry;
+import net.freertr.enc.encPrtbuf;
+import net.freertr.enc.encPrtbufEntry;
 import net.freertr.util.verCore;
 
 /**
@@ -620,25 +620,25 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     }
 
     private void doMetricKvGpb(packHolder pck2, packHolder pck3, int typ, String nam, String val) {
-        protoBuf pb2 = new protoBuf();
-        pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, nam.getBytes());
+        encPrtbuf pb2 = new encPrtbuf();
+        pb2.putField(servStreamingMdt.fnName, encPrtbufEntry.tpBuf, nam.getBytes());
         switch (typ) {
             case servStreamingMdt.fnByte:
-                pb2.putField(typ, protoBufEntry.tpBuf, val.getBytes());
+                pb2.putField(typ, encPrtbufEntry.tpBuf, val.getBytes());
                 break;
             case servStreamingMdt.fnString:
-                pb2.putField(typ, protoBufEntry.tpBuf, val.getBytes());
+                pb2.putField(typ, encPrtbufEntry.tpBuf, val.getBytes());
                 break;
             case servStreamingMdt.fnBool:
-                pb2.putField(typ, protoBufEntry.tpInt, bits.str2num(val));
+                pb2.putField(typ, encPrtbufEntry.tpInt, bits.str2num(val));
                 break;
             case servStreamingMdt.fnUint32:
             case servStreamingMdt.fnUint64:
-                pb2.putField(typ, protoBufEntry.tpInt, bits.str2long(val));
+                pb2.putField(typ, encPrtbufEntry.tpInt, bits.str2long(val));
                 break;
             case servStreamingMdt.fnSint32:
             case servStreamingMdt.fnSint64:
-                pb2.putField(typ, protoBufEntry.tpInt, protoBuf.toZigzag(bits.str2long(val)));
+                pb2.putField(typ, encPrtbufEntry.tpInt, encPrtbuf.toZigzag(bits.str2long(val)));
                 break;
             case servStreamingMdt.fnDouble:
                 double d;
@@ -647,7 +647,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 } catch (Exception e) {
                     return;
                 }
-                pb2.putField(typ, protoBufEntry.tpInt, Double.doubleToLongBits(d));
+                pb2.putField(typ, encPrtbufEntry.tpInt, Double.doubleToLongBits(d));
                 break;
             case servStreamingMdt.fnFloat:
                 float f;
@@ -656,7 +656,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
                 } catch (Exception e) {
                     return;
                 }
-                pb2.putField(typ, protoBufEntry.tpInt, Float.floatToIntBits(f));
+                pb2.putField(typ, encPrtbufEntry.tpInt, Float.floatToIntBits(f));
                 break;
             default:
                 return;
@@ -664,13 +664,13 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         pck3.clear();
         pb2.toPacket(pck3);
         pb2.clear();
-        pb2.putField(servStreamingMdt.fnFields, protoBufEntry.tpBuf, pck3.getCopy());
+        pb2.putField(servStreamingMdt.fnFields, encPrtbufEntry.tpBuf, pck3.getCopy());
         pb2.toPacket(pck2);
         pb2.clear();
     }
 
-    private void doMetricNetConf(extMrkLng res, String nam, String val) {
-        res.data.add(new extMrkLngEntry(null, nam, "", val));
+    private void doMetricNetConf(encXml res, String nam, String val) {
+        res.data.add(new encXmlEntry(null, nam, "", val));
     }
 
     private List<String> doSplitLine(String a) {
@@ -707,7 +707,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         if (namC >= cls) {
             return null;
         }
-        protoBuf pb = new protoBuf();
+        encPrtbuf pb = new encPrtbuf();
         a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
             a = asep;
@@ -720,11 +720,11 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         packHolder pck1 = new packHolder(true, true);
         packHolder pck2 = new packHolder(true, true);
         packHolder pck3 = new packHolder(true, true);
-        pb.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, keyN.getBytes());
-        pb.putField(servStreamingMdt.fnString, protoBufEntry.tpBuf, a.getBytes());
+        pb.putField(servStreamingMdt.fnName, encPrtbufEntry.tpBuf, keyN.getBytes());
+        pb.putField(servStreamingMdt.fnString, encPrtbufEntry.tpBuf, a.getBytes());
         pb.toPacket(pck1);
         pb.clear();
-        pb.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, servStreamingMdt.nmDat.getBytes());
+        pb.putField(servStreamingMdt.fnName, encPrtbufEntry.tpBuf, servStreamingMdt.nmDat.getBytes());
         pb.toPacket(pck2);
         pb.clear();
         for (int o = 0; o < cols.size(); o++) {
@@ -745,14 +745,14 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             doMetricKvGpb(pck2, pck3, cc.typ, cc.nam + cc.splL, a.substring(0, i));
             doMetricKvGpb(pck2, pck3, cc.typ, cc.nam + cc.splR, a.substring(i + cc.splS.length(), a.length()));
         }
-        protoBuf pb2 = new protoBuf();
-        pb2.putField(servStreamingMdt.fnName, protoBufEntry.tpBuf, servStreamingMdt.nmKey.getBytes());
-        pb2.putField(servStreamingMdt.fnFields, protoBufEntry.tpBuf, pck1.getCopy());
+        encPrtbuf pb2 = new encPrtbuf();
+        pb2.putField(servStreamingMdt.fnName, encPrtbufEntry.tpBuf, servStreamingMdt.nmKey.getBytes());
+        pb2.putField(servStreamingMdt.fnFields, encPrtbufEntry.tpBuf, pck1.getCopy());
         pck3.clear();
         pb2.toPacket(pck3);
         pb2.clear();
-        pb.putField(servStreamingMdt.fnFields, protoBufEntry.tpBuf, pck3.getCopy());
-        pb.putField(servStreamingMdt.fnFields, protoBufEntry.tpBuf, pck2.getCopy());
+        pb.putField(servStreamingMdt.fnFields, encPrtbufEntry.tpBuf, pck3.getCopy());
+        pb.putField(servStreamingMdt.fnFields, encPrtbufEntry.tpBuf, pck2.getCopy());
         pck3.clear();
         pb.toPacket(pck3);
         return pck3;
@@ -846,7 +846,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         }
     }
 
-    private void doLineNetConf(extMrkLng res, String beg, String a) {
+    private void doLineNetConf(encXml res, String beg, String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
         if (namC >= cls) {
@@ -861,7 +861,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             a = a + cl.get(acol);
         }
         a = doReplaces(a, reps);
-        res.data.add(new extMrkLngEntry(null, beg + keyP + "/" + keyN, "", a));
+        res.data.add(new encXmlEntry(null, beg + keyP + "/" + keyN, "", a));
         for (int o = 0; o < cols.size(); o++) {
             cfgSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
@@ -884,7 +884,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         if (i < 0) {
             i = keyP.length();
         }
-        res.data.add(new extMrkLngEntry(null, beg + keyP.substring(0, i), "", ""));
+        res.data.add(new encXmlEntry(null, beg + keyP.substring(0, i), "", ""));
     }
 
     private void doLineProm(List<String> lst, List<String> smt, String a) {
@@ -974,12 +974,12 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             res.remove(0);
         }
         packHolder pck = new packHolder(true, true);
-        protoBuf pb = new protoBuf();
-        pb.putField(servStreamingMdt.rpStart, protoBufEntry.tpInt, last);
-        pb.putField(servStreamingMdt.rpTime, protoBufEntry.tpInt, last);
-        pb.putField(servStreamingMdt.rpNodeStr, protoBufEntry.tpBuf, cfgAll.hostName.getBytes());
-        pb.putField(servStreamingMdt.rpSubsStr, protoBufEntry.tpBuf, name.getBytes());
-        pb.putField(servStreamingMdt.rpEnc, protoBufEntry.tpBuf, (prefix + ":" + path).getBytes());
+        encPrtbuf pb = new encPrtbuf();
+        pb.putField(servStreamingMdt.rpStart, encPrtbufEntry.tpInt, last);
+        pb.putField(servStreamingMdt.rpTime, encPrtbufEntry.tpInt, last);
+        pb.putField(servStreamingMdt.rpNodeStr, encPrtbufEntry.tpBuf, cfgAll.hostName.getBytes());
+        pb.putField(servStreamingMdt.rpSubsStr, encPrtbufEntry.tpBuf, name.getBytes());
+        pb.putField(servStreamingMdt.rpEnc, encPrtbufEntry.tpBuf, (prefix + ":" + path).getBytes());
         pb.toPacket(pck);
         pb.clear();
         for (int i = 0; i < res.size(); i++) {
@@ -987,12 +987,12 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
             if (ln == null) {
                 continue;
             }
-            pb.putField(servStreamingMdt.rpKvgpb, protoBufEntry.tpBuf, ln.getCopy());
+            pb.putField(servStreamingMdt.rpKvgpb, encPrtbufEntry.tpBuf, ln.getCopy());
             pb.toPacket(pck);
             pb.clear();
         }
         long tim = bits.getTime();
-        pb.putField(servStreamingMdt.rpStop, protoBufEntry.tpInt, tim);
+        pb.putField(servStreamingMdt.rpStop, encPrtbufEntry.tpInt, tim);
         pb.toPacket(pck);
         time = (int) (tim - last);
         return pck;
@@ -1004,7 +1004,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
      * @param rep report
      * @param beg beginning
      */
-    public void getReportNetConf(extMrkLng rep, String beg) {
+    public void getReportNetConf(encXml rep, String beg) {
         last = bits.getTime();
         cnt++;
         List<String> res = getResult();
@@ -1214,7 +1214,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         res.addAll(lst);
         res.add("csvwire:" + bits.byteDump(compressReply(lst), 0, -1));
         res.add("netconf:");
-        extMrkLng xml = new extMrkLng();
+        encXml xml = new encXml();
         getReportNetConf(xml, "/");
         lst = xml.show();
         res.addAll(lst);

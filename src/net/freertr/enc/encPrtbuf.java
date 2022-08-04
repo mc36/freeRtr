@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import net.freertr.pack.packHolder;
  *
  * @author matecsaba
  */
-public class protoBuf {
+public class encPrtbuf {
 
     /**
      * original bytes
@@ -19,12 +19,12 @@ public class protoBuf {
     /**
      * elements
      */
-    public List<protoBufEntry> data;
+    public List<encPrtbufEntry> data;
 
     /**
      * clear new instance
      */
-    public protoBuf() {
+    public encPrtbuf() {
         clear();
     }
 
@@ -32,7 +32,7 @@ public class protoBuf {
      * clear all data
      */
     public void clear() {
-        data = new ArrayList<protoBufEntry>();
+        data = new ArrayList<encPrtbufEntry>();
         orig = null;
     }
 
@@ -41,7 +41,7 @@ public class protoBuf {
      *
      * @param src original xml to copy
      */
-    public void copyBytes(protoBuf src) {
+    public void copyBytes(encPrtbuf src) {
         clear();
         orig = src.orig;
         for (int i = 0; i < src.data.size(); i++) {
@@ -56,9 +56,9 @@ public class protoBuf {
      * @param seq sequence number
      * @return field, null if not found
      */
-    public protoBufEntry getField(int num, int seq) {
+    public encPrtbufEntry getField(int num, int seq) {
         for (int i = 0; i < data.size(); i++) {
-            protoBufEntry dat = data.get(i);
+            encPrtbufEntry dat = data.get(i);
             if (dat.num != num) {
                 continue;
             }
@@ -78,7 +78,7 @@ public class protoBuf {
      * @param val value
      */
     public void putField(int num, int typ, long val) {
-        protoBufEntry dat = new protoBufEntry();
+        encPrtbufEntry dat = new encPrtbufEntry();
         dat.num = num;
         dat.typ = typ;
         dat.val = val;
@@ -93,7 +93,7 @@ public class protoBuf {
      * @param val value
      */
     public void putField(int num, int typ, byte[] val) {
-        protoBufEntry dat = new protoBufEntry();
+        encPrtbufEntry dat = new encPrtbufEntry();
         dat.num = num;
         dat.typ = typ;
         dat.dat = val;
@@ -173,27 +173,27 @@ public class protoBuf {
      * @param pck packet to read
      * @return kv pair, null if error happened
      */
-    public static protoBufEntry getKeyValue(packHolder pck) {
+    public static encPrtbufEntry getKeyValue(packHolder pck) {
         if (pck.dataSize() < 1) {
             return null;
         }
-        protoBufEntry res = new protoBufEntry();
+        encPrtbufEntry res = new encPrtbufEntry();
         int hdr = (int) getVarint(pck);
         res.num = hdr >>> 3;
         res.typ = hdr & 7;
         switch (res.typ) {
-            case protoBufEntry.tpInt: // varint
+            case encPrtbufEntry.tpInt: // varint
                 res.val = getVarint(pck);
                 break;
-            case protoBufEntry.tp64b: // 64bit
+            case encPrtbufEntry.tp64b: // 64bit
                 res.val = pck.lsbGetQ(0);
                 pck.getSkip(8);
                 break;
-            case protoBufEntry.tp32b: // 32bit
+            case encPrtbufEntry.tp32b: // 32bit
                 res.val = pck.lsbGetD(0);
                 pck.getSkip(4);
                 break;
-            case protoBufEntry.tpBuf: // length delimited
+            case encPrtbufEntry.tpBuf: // length delimited
                 hdr = (int) getVarint(pck);
                 res.dat = new byte[hdr];
                 pck.getCopy(res.dat, 0, 0, res.dat.length);
@@ -212,21 +212,21 @@ public class protoBuf {
      * @param kv kv pair
      * @return false on success, true on error
      */
-    public static boolean putKeyValue(packHolder pck, protoBufEntry kv) {
+    public static boolean putKeyValue(packHolder pck, encPrtbufEntry kv) {
         putVarint(pck, (kv.num << 3) | kv.typ);
         switch (kv.typ) {
-            case protoBufEntry.tpInt: // varint
+            case encPrtbufEntry.tpInt: // varint
                 putVarint(pck, kv.val);
                 break;
-            case protoBufEntry.tp64b: // 64bit
+            case encPrtbufEntry.tp64b: // 64bit
                 pck.lsbPutQ(0, kv.val);
                 pck.putSkip(8);
                 break;
-            case protoBufEntry.tp32b: // 32bit
+            case encPrtbufEntry.tp32b: // 32bit
                 pck.lsbPutD(0, (int) kv.val);
                 pck.putSkip(4);
                 break;
-            case protoBufEntry.tpBuf: // length delimited
+            case encPrtbufEntry.tpBuf: // length delimited
                 putVarint(pck, kv.dat.length);
                 pck.putCopy(kv.dat, 0, 0, kv.dat.length);
                 pck.putSkip(kv.dat.length);
@@ -247,7 +247,7 @@ public class protoBuf {
         orig = pck;
         int os = pck.dataSize();
         for (;;) {
-            protoBufEntry res = getKeyValue(pck);
+            encPrtbufEntry res = getKeyValue(pck);
             if (res == null) {
                 break;
             }
@@ -266,8 +266,8 @@ public class protoBuf {
      * @param pck string to convert
      * @return converted protobuf
      */
-    public static protoBuf parseOne(packHolder pck) {
-        protoBuf res = new protoBuf();
+    public static encPrtbuf parseOne(packHolder pck) {
+        encPrtbuf res = new encPrtbuf();
         res.fromPacket(pck);
         return res;
     }

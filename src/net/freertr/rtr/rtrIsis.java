@@ -39,9 +39,9 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * intermediate system to intermediate system (rfc1142) protocol
@@ -284,8 +284,8 @@ public class rtrIsis extends ipRtr {
      *
      * @return tlv handler
      */
-    protected static typLenVal getTlv() {
-        return new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    protected static encTlv getTlv() {
+        return new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
     }
 
     /**
@@ -468,7 +468,7 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
-    protected tabGen<addrIP> getAddrIface(boolean other, typLenVal tlv) {
+    protected tabGen<addrIP> getAddrIface(boolean other, encTlv tlv) {
         tabGen<addrIP> l = new tabGen<addrIP>();
         addrIP adr = new addrIP();
         if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
@@ -504,7 +504,7 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @param trg where to save address
      */
-    protected void getAddrIface(boolean other, typLenVal tlv, addrIP trg) {
+    protected void getAddrIface(boolean other, encTlv tlv, addrIP trg) {
         tabGen<addrIP> lst = getAddrIface(other, tlv);
         if (lst == null) {
             return;
@@ -523,8 +523,8 @@ public class rtrIsis extends ipRtr {
      * @param adr address to write
      * @return generated tlv
      */
-    protected typLenVal putAddrIface(boolean other, addrIP adr) {
-        typLenVal tlv = getTlv();
+    protected encTlv putAddrIface(boolean other, addrIP adr) {
+        encTlv tlv = getTlv();
         if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
             addrIPv4 a = adr.toIPv4();
             tlv.valTyp = rtrIsisLsp.tlvIpv4addr;
@@ -539,7 +539,7 @@ public class rtrIsis extends ipRtr {
         return tlv;
     }
 
-    private void getAddrReachS(typLenVal tlv, int pos, int len, tabRouteEntry<addrIP> prf) {
+    private void getAddrReachS(encTlv tlv, int pos, int len, tabRouteEntry<addrIP> prf) {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(tlv.valDat, pos, 0, len);
         pck.putSkip(len);
@@ -558,7 +558,7 @@ public class rtrIsis extends ipRtr {
         }
     }
 
-    private int getAddrReach4(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
+    private int getAddrReach4(encTlv tlv, int pos, tabRouteEntry<addrIP> prf) {
         prf.best.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // prefix length
         if ((i & 0x80) != 0) { // updown bit
@@ -578,7 +578,7 @@ public class rtrIsis extends ipRtr {
         return pos;
     }
 
-    private int getAddrReach6(typLenVal tlv, int pos, tabRouteEntry<addrIP> prf) {
+    private int getAddrReach6(encTlv tlv, int pos, tabRouteEntry<addrIP> prf) {
         prf.best.metric = bits.msbGetD(tlv.valDat, pos + 0); // metric
         int i = bits.getByte(tlv.valDat, pos + 4); // flags
         if ((i & 0x80) != 0) { // updown bit
@@ -607,7 +607,7 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return hostname, null if nothing
      */
-    protected static String getHostname(typLenVal tlv) {
+    protected static String getHostname(encTlv tlv) {
         if (tlv.valTyp != rtrIsisLsp.tlvHostName) {
             return null;
         }
@@ -621,7 +621,7 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
-    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(boolean other, typLenVal tlv) {
+    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(boolean other, encTlv tlv) {
         tabGen<tabRouteEntry<addrIP>> l = new tabGen<tabRouteEntry<addrIP>>();
         if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
             if (multiTopo) {
@@ -703,7 +703,7 @@ public class rtrIsis extends ipRtr {
         return l;
     }
 
-    private void putAddrReach4(typLenVal tlv, int pos, addrPrefix<addrIPv4> prf, boolean down, int met, byte[] subs) {
+    private void putAddrReach4(encTlv tlv, int pos, addrPrefix<addrIPv4> prf, boolean down, int met, byte[] subs) {
         bits.msbPutD(tlv.valDat, pos + 0, met); // metric
         met = prf.maskLen;
         if (down) {
@@ -723,7 +723,7 @@ public class rtrIsis extends ipRtr {
         tlv.valSiz += subs.length + 1;
     }
 
-    private void putAddrReach6(typLenVal tlv, int pos, addrPrefix<addrIPv6> prf, boolean ext, boolean down, int met, byte[] subs) {
+    private void putAddrReach6(encTlv tlv, int pos, addrPrefix<addrIPv6> prf, boolean ext, boolean down, int met, byte[] subs) {
         bits.msbPutD(tlv.valDat, pos + 0, met); // metric
         met = 0;
         if (down) {
@@ -755,7 +755,7 @@ public class rtrIsis extends ipRtr {
      */
     protected byte[] putAddrTag(int tag) {
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valTyp = 1;
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, tag);
@@ -774,10 +774,10 @@ public class rtrIsis extends ipRtr {
      * @param subs subtlvs
      * @return generated tlv
      */
-    protected typLenVal putAddrReach(boolean other, addrPrefix<addrIP> pref, int flg, int met, byte[] subs) {
+    protected encTlv putAddrReach(boolean other, addrPrefix<addrIP> pref, int flg, int met, byte[] subs) {
         final boolean down = (flg & 2) != 0;
         final boolean ext = (flg & 1) != 0;
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
             if (multiTopo) {
                 bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
@@ -820,7 +820,7 @@ public class rtrIsis extends ipRtr {
         return tlv;
     }
 
-    private int getISneighE(typLenVal tlv, int pos, rtrIsisLsp nei) {
+    private int getISneighE(encTlv tlv, int pos, rtrIsisLsp nei) {
         nei.srcID.fromBuf(tlv.valDat, pos + 0); // neighbor id
         nei.nodID = bits.getByte(tlv.valDat, pos + 6); // pseudonode id
         nei.lspNum = bits.msbGetD(tlv.valDat, pos + 7) >>> 8; // metric
@@ -834,7 +834,7 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return neighbors, null if nothing
      */
-    protected tabGen<rtrIsisLsp> getISneigh(typLenVal tlv) {
+    protected tabGen<rtrIsisLsp> getISneigh(encTlv tlv) {
         tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
         if (multiTopo) {
             switch (tlv.valTyp) {
@@ -883,7 +883,7 @@ public class rtrIsis extends ipRtr {
         return l;
     }
 
-    private void putISneighE(typLenVal tlv, int pos, addrIsis nei, int nod, int met, byte[] subs) {
+    private void putISneighE(encTlv tlv, int pos, addrIsis nei, int nod, int met, byte[] subs) {
         nei.toBuffer(tlv.valDat, pos + 0); // neighbor id
         bits.putByte(tlv.valDat, pos + 6, nod); // pseudonode id
         bits.msbPutD(tlv.valDat, pos + 7, (met << 8) | subs.length); // metric
@@ -900,8 +900,8 @@ public class rtrIsis extends ipRtr {
      * @param subs subtlvs
      * @return generated tlv
      */
-    protected typLenVal putISneigh(addrIsis nei, int nod, int met, byte[] subs) {
-        typLenVal tlv = getTlv();
+    protected encTlv putISneigh(addrIsis nei, int nod, int met, byte[] subs) {
+        encTlv tlv = getTlv();
         if (multiTopo) {
             bits.msbPutW(tlv.valDat, 0, getMTopoVal(false));
             putISneighE(tlv, 2, nei, nod, met, subs);
@@ -931,7 +931,7 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return neighbor address, null if nothing
      */
-    protected addrIsis getISalias(typLenVal tlv) {
+    protected addrIsis getISalias(encTlv tlv) {
         if (tlv.valTyp != rtrIsisLsp.tlvIsAlias) {
             return null;
         }
@@ -946,8 +946,8 @@ public class rtrIsis extends ipRtr {
      * @param nei neighbor address
      * @return generated tlv
      */
-    protected typLenVal putISalias(addrIsis nei) {
-        typLenVal tlv = getTlv();
+    protected encTlv putISalias(addrIsis nei) {
+        encTlv tlv = getTlv();
         nei.toBuffer(tlv.valDat, 0); // neighbor id
         bits.putByte(tlv.valDat, 6, 0); // subtlvs
         tlv.valTyp = rtrIsisLsp.tlvIsAlias;
@@ -2106,7 +2106,7 @@ public class rtrIsis extends ipRtr {
      */
     public List<String> showSpfOtherTree(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        shrtPthFrst<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
+        spfWork<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
@@ -2122,7 +2122,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfOtherTopo(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        shrtPthFrst<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
+        spfWork<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);

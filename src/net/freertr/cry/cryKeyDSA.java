@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSsh;
@@ -86,18 +87,18 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean certReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         packHolder p = a.getPack();
@@ -110,22 +111,22 @@ public class cryKeyDSA extends cryKeyGeneric {
         if (a.tagRead(p)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
-        prime = cryAsn1.readBigInt(p);
-        subprime = cryAsn1.readBigInt(p);
-        group = cryAsn1.readBigInt(p);
+        prime = encAsn1.readBigInt(p);
+        subprime = encAsn1.readBigInt(p);
+        group = encAsn1.readBigInt(p);
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
         p = a.getPack();
         p.getSkip(1);
-        pub = cryAsn1.readBigInt(p);
+        pub = encAsn1.readBigInt(p);
         return false;
     }
 
@@ -138,19 +139,19 @@ public class cryKeyDSA extends cryKeyGeneric {
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
         packHolder p3 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, prime);
-        cryAsn1.writeBigInt(p1, subprime);
-        cryAsn1.writeBigInt(p1, group);
-        cryAsn1.writeObjectId(p2, cryCertificate.oidDssEncrypt);
-        cryAsn1.writeSequence(p2, p1);
-        cryAsn1.writeSequence(p3, p2);
+        encAsn1.writeBigInt(p1, prime);
+        encAsn1.writeBigInt(p1, subprime);
+        encAsn1.writeBigInt(p1, group);
+        encAsn1.writeObjectId(p2, cryCertificate.oidDssEncrypt);
+        encAsn1.writeSequence(p2, p1);
+        encAsn1.writeSequence(p3, p2);
         p1 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, pub);
+        encAsn1.writeBigInt(p1, pub);
         p1.putByte(0, 0);
         p1.putSkip(1);
         p1.merge2beg();
-        cryAsn1.writeBitString(p3, p1);
-        cryAsn1.writeSequence(pck, p3);
+        encAsn1.writeBitString(p3, p1);
+        encAsn1.writeSequence(pck, p3);
     }
 
     /**
@@ -160,35 +161,35 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean privReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
-        BigInteger ver = cryAsn1.readBigInt(pck);
+        BigInteger ver = encAsn1.readBigInt(pck);
         if (ver == null) {
             return true;
         }
-        prime = cryAsn1.readBigInt(pck);
+        prime = encAsn1.readBigInt(pck);
         if (prime == null) {
             return true;
         }
-        subprime = cryAsn1.readBigInt(pck);
+        subprime = encAsn1.readBigInt(pck);
         if (subprime == null) {
             return true;
         }
-        group = cryAsn1.readBigInt(pck);
+        group = encAsn1.readBigInt(pck);
         if (group == null) {
             return true;
         }
-        pub = cryAsn1.readBigInt(pck);
+        pub = encAsn1.readBigInt(pck);
         if (pub == null) {
             return true;
         }
-        priv = cryAsn1.readBigInt(pck);
+        priv = encAsn1.readBigInt(pck);
         if (priv == null) {
             return true;
         }
@@ -205,13 +206,13 @@ public class cryKeyDSA extends cryKeyGeneric {
      */
     public void privWriter(packHolder pck) {
         packHolder p = new packHolder(true, true);
-        cryAsn1.writeBigInt(p, BigInteger.ZERO);
-        cryAsn1.writeBigInt(p, prime);
-        cryAsn1.writeBigInt(p, subprime);
-        cryAsn1.writeBigInt(p, group);
-        cryAsn1.writeBigInt(p, pub);
-        cryAsn1.writeBigInt(p, priv);
-        cryAsn1.writeSequence(pck, p);
+        encAsn1.writeBigInt(p, BigInteger.ZERO);
+        encAsn1.writeBigInt(p, prime);
+        encAsn1.writeBigInt(p, subprime);
+        encAsn1.writeBigInt(p, group);
+        encAsn1.writeBigInt(p, pub);
+        encAsn1.writeBigInt(p, priv);
+        encAsn1.writeSequence(pck, p);
     }
 
     public boolean keyMake(String nam) {
@@ -427,16 +428,16 @@ public class cryKeyDSA extends cryKeyGeneric {
         p.putSkip(sign.length);
         p.merge2beg();
         p.getSkip(1);
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
-        sgnR = cryAsn1.readBigInt(p);
-        sgnS = cryAsn1.readBigInt(p);
+        sgnR = encAsn1.readBigInt(p);
+        sgnS = encAsn1.readBigInt(p);
         return doVerify(hash);
     }
 
@@ -450,9 +451,9 @@ public class cryKeyDSA extends cryKeyGeneric {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, sgnR);
-        cryAsn1.writeBigInt(p1, sgnS);
-        cryAsn1.writeSequence(p2, p1);
+        encAsn1.writeBigInt(p1, sgnR);
+        encAsn1.writeBigInt(p1, sgnS);
+        encAsn1.writeSequence(p2, p1);
         p2.putByte(0, 0);
         p2.putSkip(1);
         p2.merge2beg();
@@ -472,16 +473,16 @@ public class cryKeyDSA extends cryKeyGeneric {
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
         p.merge2beg();
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
-        sgnR = cryAsn1.readBigInt(p);
-        sgnS = cryAsn1.readBigInt(p);
+        sgnR = encAsn1.readBigInt(p);
+        sgnS = encAsn1.readBigInt(p);
         return doVerify(hash);
     }
 
@@ -496,9 +497,9 @@ public class cryKeyDSA extends cryKeyGeneric {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, sgnR);
-        cryAsn1.writeBigInt(p1, sgnS);
-        cryAsn1.writeSequence(p2, p1);
+        encAsn1.writeBigInt(p1, sgnR);
+        encAsn1.writeBigInt(p1, sgnS);
+        encAsn1.writeSequence(p2, p1);
         p2.merge2beg();
         return p2.getCopy();
     }

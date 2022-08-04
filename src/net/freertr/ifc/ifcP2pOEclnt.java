@@ -12,7 +12,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ppp over ethernet (rfc2516) protocol client handler
@@ -73,7 +73,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     private Timer keepTimer;
 
-    private typLenVal tlv = new typLenVal(packPppOE.tlv);
+    private encTlv tlv = new encTlv(packPppOE.tlv);
 
     private addrMac hwAddr; // hw address
 

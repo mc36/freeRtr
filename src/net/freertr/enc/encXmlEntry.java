@@ -1,16 +1,16 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 /**
  * xml entry
  *
  * @author matecsaba
  */
-public class extMrkLngEntry {
+public class encXmlEntry {
 
     /**
      * parent
      */
-    public extMrkLngEntry parent;
+    public encXmlEntry parent;
 
     /**
      * name
@@ -35,7 +35,7 @@ public class extMrkLngEntry {
      * @param p parameter
      * @param v value
      */
-    public extMrkLngEntry(extMrkLngEntry pr, String n, String p, String v) {
+    public encXmlEntry(encXmlEntry pr, String n, String p, String v) {
         parent = pr;
         name = n;
         param = p;
@@ -45,7 +45,7 @@ public class extMrkLngEntry {
     /**
      * create instance
      */
-    public extMrkLngEntry() {
+    public encXmlEntry() {
         clear();
     }
 
@@ -54,8 +54,8 @@ public class extMrkLngEntry {
      *
      * @return instance
      */
-    public extMrkLngEntry copyBytes() {
-        extMrkLngEntry ntry = new extMrkLngEntry();
+    public encXmlEntry copyBytes() {
+        encXmlEntry ntry = new encXmlEntry();
         ntry.parent = parent;
         ntry.name = "" + name;
         ntry.param = "" + param;
@@ -105,18 +105,18 @@ public class extMrkLngEntry {
      */
     public String getUnesc() {
         String s = "";
-        extMrkLngEntry cur = this;
+        encXmlEntry cur = this;
         for (; cur != null;) {
             String a = cur.getTag();
-            if (a.startsWith(extMrkLng.value)) {
+            if (a.startsWith(encXml.value)) {
                 a = cur.value;
             }
             cur = cur.parent;
-            if (a.startsWith(extMrkLng.ignore)) {
+            if (a.startsWith(encXml.ignore)) {
                 continue;
             }
-            if (a.startsWith(extMrkLng.escape)) {
-                a = a.substring(extMrkLng.escape.length(), a.length());
+            if (a.startsWith(encXml.escape)) {
+                a = a.substring(encXml.escape.length(), a.length());
             }
             if (a.length() < 1) {
                 continue;

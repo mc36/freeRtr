@@ -12,13 +12,13 @@ import net.freertr.pack.packSstp;
 import net.freertr.pipe.pipeSide;
 import net.freertr.sec.secClient;
 import net.freertr.serv.servGeneric;
+import net.freertr.enc.encUrl;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
 
@@ -224,7 +224,7 @@ public class clntSstp implements Runnable, ifcDn {
         pipe.linePut(s);
     }
 
-    private void sendAuth(uniResLoc url) {
+    private void sendAuth(encUrl url) {
         String s = clntHttp.getAuthor(url.username, url.password);
         if (s == null) {
             return;
@@ -241,7 +241,7 @@ public class clntSstp implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        uniResLoc url = uniResLoc.parseOne(target + "sra_{BA195980-CD49-458b-9E23-C84EE0ADCD75}/");
+        encUrl url = encUrl.parseOne(target + "sra_{BA195980-CD49-458b-9E23-C84EE0ADCD75}/");
         if (debugger.clntSstpTraf) {
             logger.debug("resolving " + url.dump());
         }

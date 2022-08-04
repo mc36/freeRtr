@@ -2,7 +2,7 @@ package net.freertr.rtr;
 
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospf traffic engineering
@@ -234,8 +234,8 @@ public class rtrOspfTe {
      *
      * @return tlv handler
      */
-    public static typLenVal getTlvHandler() {
-        return new typLenVal(0, 16, 16, 16, 1, 0, 4, 4, 0, 1024, true);
+    public static encTlv getTlvHandler() {
+        return new encTlv(0, 16, 16, 16, 1, 0, 4, 4, 0, 1024, true);
     }
 
     /**
@@ -245,7 +245,7 @@ public class rtrOspfTe {
      * @param brd broadcast
      */
     public static void putGenTlv1(packHolder pck, boolean brd) {
-        typLenVal tlv = getTlvHandler();
+        encTlv tlv = getTlvHandler();
         tlv.valTyp = typLnkTyp;
         tlv.valSiz = 1;
         if (brd) {
@@ -266,7 +266,7 @@ public class rtrOspfTe {
      * @param srl srlg
      */
     public static void putGenTlv2(packHolder pck, int met, long bwd, int aff, int srl) {
-        typLenVal tlv = getTlvHandler();
+        encTlv tlv = getTlvHandler();
         int bw = Float.floatToIntBits(bwd / 8);
         tlv.valTyp = typMetric;
         tlv.valSiz = 4;

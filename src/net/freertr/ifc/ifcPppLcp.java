@@ -10,7 +10,7 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * line control protocol for ppp
@@ -270,7 +270,7 @@ public class ifcPppLcp extends ifcPppNcp {
      * @param tlv tlv
      * @return false on success, true on error
      */
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         ifcPppLcpConf cfg = (ifcPppLcpConf) config;
         switch (tlv.valTyp) {
             case optionMRU:
@@ -320,7 +320,7 @@ public class ifcPppLcp extends ifcPppNcp {
      */
     public void writeOptions(packHolder pck, Object data) {
         ifcPppLcpConf dat = (ifcPppLcpConf) data;
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.mru > 0) {
             bits.msbPutW(buf, 0, dat.mru);

@@ -17,8 +17,8 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.util.protoBuf;
-import net.freertr.util.protoBufEntry;
+import net.freertr.enc.encPrtbuf;
+import net.freertr.enc.encPrtbufEntry;
 
 /**
  * streaming telemetry server
@@ -420,20 +420,20 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
         return o1.peer.compare(o1.peer, o2.peer);
     }
 
-    private protoBufEntry getSubfld(protoBuf pb, int seq) {
+    private encPrtbufEntry getSubfld(encPrtbuf pb, int seq) {
         return pb.getField(servStreamingMdt.fnFields, seq); // telemetry field
     }
 
-    private String getName(protoBuf pb) {
-        protoBufEntry res = pb.getField(servStreamingMdt.fnName, 0); // name
+    private String getName(encPrtbuf pb) {
+        encPrtbufEntry res = pb.getField(servStreamingMdt.fnName, 0); // name
         if (res == null) {
             return null;
         }
         return res.getString();
     }
 
-    private String getValue(protoBuf pb) {
-        protoBufEntry res = pb.getField(servStreamingMdt.fnByte, 0); // bytes
+    private String getValue(encPrtbuf pb) {
+        encPrtbufEntry res = pb.getField(servStreamingMdt.fnByte, 0); // bytes
         if (res != null) {
             return bits.byteDump(res.dat, 0, -1);
         }
@@ -455,11 +455,11 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
         }
         res = pb.getField(servStreamingMdt.fnSint32, 0); // sint32
         if (res != null) {
-            return "" + protoBuf.fromZigzag(res.val);
+            return "" + encPrtbuf.fromZigzag(res.val);
         }
         res = pb.getField(servStreamingMdt.fnSint64, 0); // sint64
         if (res != null) {
-            return "" + protoBuf.fromZigzag(res.val);
+            return "" + encPrtbuf.fromZigzag(res.val);
         }
         res = pb.getField(servStreamingMdt.fnDouble, 0); // double
         if (res != null) {
@@ -472,26 +472,26 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
         return null;
     }
 
-    private String parseKeys(packHolder pck, protoBuf pb) {
-        protoBufEntry res = getSubfld(pb, 0);
+    private String parseKeys(packHolder pck, encPrtbuf pb) {
+        encPrtbufEntry res = getSubfld(pb, 0);
         pck.clear();
         res.getPacket(pck);
-        protoBuf pb2 = new protoBuf();
+        encPrtbuf pb2 = new encPrtbuf();
         if (pb2.fromPacket(pck)) {
             return null;
         }
         return getName(pb2) + "=" + getValue(pb2);
     }
 
-    private void parseContent(packHolder pck, protoBuf pb, List<servTelemetryMeas> meas) {
+    private void parseContent(packHolder pck, encPrtbuf pb, List<servTelemetryMeas> meas) {
         for (int i = 0;; i++) {
-            protoBufEntry res = getSubfld(pb, i);
+            encPrtbufEntry res = getSubfld(pb, i);
             if (res == null) {
                 break;
             }
             pck.clear();
             res.getPacket(pck);
-            protoBuf pb2 = new protoBuf();
+            encPrtbuf pb2 = new encPrtbuf();
             if (pb2.fromPacket(pck)) {
                 continue;
             }
@@ -510,15 +510,15 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
         }
     }
 
-    private servTelemetrySens parseEntry(String path, packHolder pck, protoBufEntry res) {
+    private servTelemetrySens parseEntry(String path, packHolder pck, encPrtbufEntry res) {
         pck.clear();
         res.getPacket(pck);
-        protoBuf pb = new protoBuf();
+        encPrtbuf pb = new encPrtbuf();
         if (pb.fromPacket(pck)) {
             return null;
         }
         String key = null;
-        protoBuf cnt = null;
+        encPrtbuf cnt = null;
         for (int i = 0;; i++) {
             res = getSubfld(pb, i);
             if (res == null) {
@@ -526,7 +526,7 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
             }
             pck.clear();
             res.getPacket(pck);
-            protoBuf pb2 = new protoBuf();
+            encPrtbuf pb2 = new encPrtbuf();
             if (pb2.fromPacket(pck)) {
                 continue;
             }
@@ -564,8 +564,8 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
         try {
             packHolder pck = new packHolder(true, true);
             packStreamingMdt pckPb = new packStreamingMdt(conn, pck);
-            protoBuf pb = new protoBuf();
-            protoBufEntry res;
+            encPrtbuf pb = new encPrtbuf();
+            encPrtbufEntry res;
             for (;;) {
                 if (pckPb.recvPack()) {
                     break;

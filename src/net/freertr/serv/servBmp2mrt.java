@@ -34,7 +34,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logFil;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * bgp monitoring (rfc7854) protocol to multi-threaded routing (rfc6396) toolkit
@@ -493,7 +493,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public void gotCounts(int as, addrIP src, addrIP spk, packHolder dat) {
         servBmp2mrtStat stat = getStat(spk, src, 2, as);
-        typLenVal tlv = rtrBgpMon.getTlv();
+        encTlv tlv = rtrBgpMon.getTlv();
         stat.repPack++;
         stat.repByte += dat.dataSize();
         stat.repLast = bits.getTime();

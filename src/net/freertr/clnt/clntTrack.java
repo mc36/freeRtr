@@ -12,7 +12,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgTime;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
 import net.freertr.ip.ipFwdIface;
@@ -358,7 +358,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         if (pubkey == null) {
             l.add(cmds.tabulator + "no pubkey");
         } else {
-            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(pubkey));
+            l.add(cmds.tabulator + "pubkey " + encBase64.encodeBytes(pubkey));
         }
         cmds.cfgLine(l, secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(secProto));
         if (chats != null) {

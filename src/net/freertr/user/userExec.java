@@ -29,7 +29,7 @@ import net.freertr.clnt.clntPorts;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntTrace;
 import net.freertr.clnt.clntWhois;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -55,6 +55,7 @@ import net.freertr.prt.prtRedun;
 import net.freertr.rtr.rtrBgpParam;
 import net.freertr.serv.servGenList;
 import net.freertr.serv.servGeneric;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
@@ -62,7 +63,6 @@ import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.differ;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -2031,7 +2031,7 @@ public class userExec {
         hl.add(null, "3 3,.      <str>                      encoded string");
         hl.add(null, "2 3,.    otppass                      generate password");
         hl.add(null, "3 3,.      <str>                      encoded string");
-        hl.add(null, "2 3,.    asn1parser                   decode asn1 encoded bytes");
+        hl.add(null, "2 3,.    asn1                         decode asn1 encoded bytes");
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    base64                       decode base64 encoded bytes");
         hl.add(null, "3 3,.      <str>                      parameter");
@@ -2042,6 +2042,8 @@ public class userExec {
         hl.add(null, "2 3,.    json                         decode json");
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    protobuf                     decode protobuf");
+        hl.add(null, "3 3,.      <str>                      parameter");
+        hl.add(null, "2 3,.    thrift                       decode thrift");
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    addr                         decode address");
         hl.add(null, "3 3,.      <str>                      parameter");
@@ -2480,7 +2482,7 @@ public class userExec {
             }
             if (a.equals("reload")) {
                 a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
-                boolean dl = userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
                 if (dl) {
@@ -2500,7 +2502,7 @@ public class userExec {
             }
             if (a.equals("overwrite-network")) {
                 a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
-                boolean dl = userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> c2 = bits.txt2buf(a);
                 userFlash.delete(a);
                 if (dl) {
@@ -2522,7 +2524,7 @@ public class userExec {
             }
             if (a.equals("network")) {
                 a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
-                boolean dl = userFlash.doReceive(pipe, uniResLoc.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
                 if (dl) {
@@ -2564,7 +2566,7 @@ public class userExec {
                 }
                 byte[] buf = s.getBytes();
                 cfgAll.banner = buf;
-                s = cryBase64.encodeBytes(buf, 0, buf.length);
+                s = encBase64.encodeBytes(buf, 0, buf.length);
                 cmd.error("banner set as " + s);
                 return null;
             }
@@ -2687,7 +2689,7 @@ public class userExec {
             }
             if (a.equals("network")) {
                 cmd.error("archiving configuration");
-                uniResLoc url = uniResLoc.parseOne(cmd.word());
+                encUrl url = encUrl.parseOne(cmd.word());
                 if (url.server.length() < 1) {
                     url.fromString(cfgAll.configServer);
                     if (cfgAll.configUser != null) {
@@ -4066,7 +4068,7 @@ public class userExec {
                 continue;
             }
             if (a.equals("pubkey")) {
-                pubkey = cryBase64.decodeBytes(cmd.word());
+                pubkey = encBase64.decodeBytes(cmd.word());
                 continue;
             }
             if (a.equals("proxy")) {

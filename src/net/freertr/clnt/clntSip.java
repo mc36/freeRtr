@@ -23,13 +23,13 @@ import net.freertr.snd.sndCodec;
 import net.freertr.snd.sndCodecG711aLaw;
 import net.freertr.snd.sndCodecG711uLaw;
 import net.freertr.snd.sndConnect;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * session initiation protocol (rfc3261) client
@@ -261,7 +261,7 @@ public class clntSip implements Runnable {
      * @return id
      */
     protected String getEndpt() {
-        return "<sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0) + ">";
+        return "<sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0) + ">";
     }
 
     /**
@@ -276,7 +276,7 @@ public class clntSip implements Runnable {
         } else {
             a = "TCP";
         }
-        return "SIP/2.0/" + a + " " + uniResLoc.addr2str(srcFwd.addr, portLoc) + ";rport;branch=" + bits.randomD();
+        return "SIP/2.0/" + a + " " + encUrl.addr2str(srcFwd.addr, portLoc) + ";rport;branch=" + bits.randomD();
     }
 
     /**
@@ -285,7 +285,7 @@ public class clntSip implements Runnable {
      * @return id
      */
     protected String getCont() {
-        return "<sip:" + endpt + "@" + uniResLoc.addr2str(srcFwd.addr, portLoc) + ">";
+        return "<sip:" + endpt + "@" + encUrl.addr2str(srcFwd.addr, portLoc) + ">";
     }
 
     /**
@@ -362,7 +362,7 @@ public class clntSip implements Runnable {
         }
         packSip sip = new packSip(conn);
         seq++;
-        sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
+        sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
         sip.addAuthor("", wau, usr, pwd);
         sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
@@ -383,7 +383,7 @@ public class clntSip implements Runnable {
         }
         packSip sip = new packSip(conn);
         seq++;
-        sip.makeReq("OPTIONS", "sip:" + endpt + "@" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, 0);
+        sip.makeReq("OPTIONS", "sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, 0);
         sip.addAuthor("", wau, usr, pwd);
         sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
@@ -404,7 +404,7 @@ public class clntSip implements Runnable {
         }
         packSip sip = new packSip(conn);
         seq++;
-        sip.makeReq("REGISTER", "sip:" + uniResLoc.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, register / 250);
+        sip.makeReq("REGISTER", "sip:" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, register / 250);
         sip.addAuthor("", wau, usr, pwd);
         sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
@@ -1060,7 +1060,7 @@ class clntSipOut implements Comparator<clntSipOut> {
             return true;
         }
         callTrg = callAck.headerGet("To", 1);
-        callCnt = uniResLoc.fromEmail(callAck.headerGet("Contact", 1));
+        callCnt = encUrl.fromEmail(callAck.headerGet("Contact", 1));
         callAck.makeReq("ACK", null, callSrc, callTrg, lower.getCont(), lower.getVia(), callId, callSeq, 0);
         callAck.addAuthor("", callWauth, lower.usr, lower.pwd);
         callAck.addAuthor("Proxy-", callPauth, lower.usr, lower.pwd);
@@ -1226,7 +1226,7 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
         via = sip.headerGet("Via", 1);
         src = sip.headerGet("From", 1);
         trg = sip.headerGet("To", 1);
-        cnt = uniResLoc.fromEmail(sip.headerGet("Contact", 1));
+        cnt = encUrl.fromEmail(sip.headerGet("Contact", 1));
         sendTry(sip);
         trg = packSip.updateTag(trg);
         sip.headerSet("To", 1, trg);

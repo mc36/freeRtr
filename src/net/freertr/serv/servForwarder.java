@@ -6,7 +6,7 @@ import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
@@ -140,7 +140,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (trgKey == null) {
             l.add(beg + "no target pubkey");
         } else {
-            l.add(beg + "target pubkey " + cryBase64.encodeBytes(trgKey));
+            l.add(beg + "target pubkey " + encBase64.encodeBytes(trgKey));
         }
         cmds.cfgLine(l, trgAddr == null, beg, "target address", "" + trgAddr);
         l.add(beg + "target port " + trgPort);
@@ -169,7 +169,7 @@ public class servForwarder extends servGeneric implements prtServS {
         if (a.equals("target")) {
             a = cmd.word();
             if (a.equals("pubkey")) {
-                trgKey = cryBase64.decodeBytes(cmd.getRemaining());
+                trgKey = encBase64.decodeBytes(cmd.getRemaining());
                 return false;
             }
             if (a.equals("vrf")) {

@@ -11,7 +11,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state.states;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * handle sctp (rfc4960) connections
@@ -46,12 +46,12 @@ public class prtSctp extends prtGen {
     public prtSctp() {
     }
 
-    private static typLenVal getTlv() {
-        return new typLenVal(0, 16, 16, 16, 1, 4, 4, 4, 0, 4096, true);
+    private static encTlv getTlv() {
+        return new encTlv(0, 16, 16, 16, 1, 4, 4, 4, 0, 4096, true);
     }
 
-    private static typLenVal findTlv(packHolder pck, int msk, int typ) {
-        typLenVal tlv = getTlv();
+    private static encTlv findTlv(packHolder pck, int msk, int typ) {
+        encTlv tlv = getTlv();
         int siz = pck.dataSize();
         for (;;) {
             if (tlv.getBytes(pck)) {
@@ -216,7 +216,7 @@ public class prtSctp extends prtGen {
             pr.lastRx = bits.getTime();
             return false;
         }
-        typLenVal tlv = findTlv(pck, prtSctpConn.opcMask, prtSctpConn.opcInitReq);
+        encTlv tlv = findTlv(pck, prtSctpConn.opcMask, prtSctpConn.opcInitReq);
         if (tlv == null) {
             return true;
         }
@@ -235,7 +235,7 @@ public class prtSctp extends prtGen {
             return;
         }
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         tlv.putBytes(pck, prtSctpConn.opcAbort, 0, tlv.valDat);
         pck.merge2beg();
         pck.UDPsrc = src.UDPtrg;
@@ -277,7 +277,7 @@ public class prtSctp extends prtGen {
             logger.debug("work");
         }
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         switch (pr.state) {
             case 1:
                 bits.msbPutD(tlv.valDat, 0, pr.verLoc + pr.verRem);
@@ -362,7 +362,7 @@ public class prtSctp extends prtGen {
         return false;
     }
 
-    private void gotTlv(prtGenConn clnt, prtSctpConn pr, typLenVal tlv) {
+    private void gotTlv(prtGenConn clnt, prtSctpConn pr, encTlv tlv) {
         int i;
         packHolder pck2;
         switch (tlv.valTyp & prtSctpConn.opcMask) {
@@ -413,7 +413,7 @@ public class prtSctp extends prtGen {
                 pck2.putCopy(tlv.valDat, 16, 0, i);
                 pck2.putSkip(i);
                 pck2.merge2beg();
-                typLenVal res = findTlv(pck2, 0xffff, 7);
+                encTlv res = findTlv(pck2, 0xffff, 7);
                 if (res == null) {
                     break;
                 }
@@ -472,7 +472,7 @@ public class prtSctp extends prtGen {
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtSctpConn pr = (prtSctpConn) clnt.proto;
         pr.lastRx = bits.getTime();
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -543,7 +543,7 @@ public class prtSctp extends prtGen {
     private void sendMyPack(prtGenConn clnt, byte[] opt, int typ) {
         prtSctpConn pr = (prtSctpConn) clnt.proto;
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         tlv.putBytes(pck, typ, opt);
         pck.merge2beg();
         pck.UDPsrc = clnt.portLoc;

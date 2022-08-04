@@ -98,6 +98,7 @@ import net.freertr.serv.servUpnpFwd;
 import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userConfig;
 import net.freertr.user.userExec;
@@ -114,7 +115,6 @@ import net.freertr.util.debugger;
 import net.freertr.util.history;
 import net.freertr.util.logBuf;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -300,7 +300,7 @@ public class cfgInit implements Runnable {
         if (url == null) {
             url = "";
         }
-        if (uniResLoc.parseOne(url).proto.length() < 1) {
+        if (encUrl.parseOne(url).proto.length() < 1) {
             return bits.txt2buf(url);
         }
         setupJVM();

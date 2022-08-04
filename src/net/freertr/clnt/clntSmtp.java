@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packText;
 import net.freertr.pipe.pipeDiscard;
@@ -14,11 +14,11 @@ import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
 import net.freertr.serv.servSmtp;
+import net.freertr.enc.encUrl;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -256,10 +256,10 @@ public class clntSmtp implements Runnable {
             if (i < 1) {
                 break;
             }
-            if (i > cryBase64.maxIn) {
-                i = cryBase64.maxIn;
+            if (i > encBase64.maxIn) {
+                i = encBase64.maxIn;
             }
-            body.add(cryBase64.encodeBytes(buf, pos, i));
+            body.add(encBase64.encodeBytes(buf, pos, i));
             pos += i;
         }
     }
@@ -392,7 +392,7 @@ public class clntSmtp implements Runnable {
         }
         serv = cfgAll.mailServerName;
         if (serv == null) {
-            uniResLoc url = new uniResLoc();
+            encUrl url = new encUrl();
             url.fromString("smtp://" + rcpt);
             clntDns clnt = new clntDns();
             clnt.doResolvList(cfgAll.nameServerAddr, url.server, true, packDnsRec.typeMX);
@@ -435,7 +435,7 @@ public class clntSmtp implements Runnable {
             if (getRes(100) != 3) {
                 return "failed to start authentication";
             }
-            sendLine(cryBase64.encodeBytes(buf));
+            sendLine(encBase64.encodeBytes(buf));
             if (getRes(100) != 2) {
                 return "failed to finish authentication";
             }
@@ -554,7 +554,7 @@ public class clntSmtp implements Runnable {
      * @param src target
      * @return result code
      */
-    public String upload(uniResLoc trg, File src) {
+    public String upload(encUrl trg, File src) {
         cons.debugStat("encoding " + src + " to body");
         rcpt = trg.toEmail();
         putHead("file@" + cfgAll.getFqdn(), trg.toEmail(), "" + src);

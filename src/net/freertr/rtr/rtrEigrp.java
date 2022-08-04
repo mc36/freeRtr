@@ -24,7 +24,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * enhanced interior gateway routing (rfc7868) protocol
@@ -148,8 +148,8 @@ public class rtrEigrp extends ipRtr implements Runnable {
      *
      * @return handler
      */
-    protected static typLenVal getTlv() {
-        return new typLenVal(0, 16, 16, 16, 1, 4, 4, 1, 0, 1024, true);
+    protected static encTlv getTlv() {
+        return new encTlv(0, 16, 16, 16, 1, 4, 4, 1, 0, 1024, true);
     }
 
     /**

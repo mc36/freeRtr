@@ -11,13 +11,14 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntSmtp;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packText;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
@@ -30,7 +31,6 @@ import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -240,7 +240,7 @@ public class servSmtp extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("path")) {
-            mailFolders = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            mailFolders = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (!s.equals("no")) {
@@ -366,7 +366,7 @@ public class servSmtp extends servGeneric implements prtServS {
      * @return result
      */
     protected static <T extends servSmtpTrg> T doFinder(tabGen<T> l, T n, String e) {
-        n.email = uniResLoc.fromEmail(e).toLowerCase();
+        n.email = encUrl.fromEmail(e).toLowerCase();
         n = l.find(n);
         if (n == null) {
             return null;
@@ -750,7 +750,7 @@ class servSmtpDoer implements Runnable {
             if (debugger.servSmtpTraf) {
                 logger.debug("auth: " + s);
             }
-            byte[] buf1 = cryBase64.decodeBytes(s);
+            byte[] buf1 = encBase64.decodeBytes(s);
             int o = 0;
             for (int i = 1; i < buf1.length; i++) {
                 if (buf1[i] == 0) {
@@ -856,7 +856,7 @@ class servSmtpDoer implements Runnable {
                     continue;
                 }
             }
-            src = uniResLoc.fromEmail(src);
+            src = encUrl.fromEmail(src);
             doLine("250 " + src + " sender ok");
             return false;
         }
@@ -893,7 +893,7 @@ class servSmtpDoer implements Runnable {
                     continue;
                 }
             }
-            last = uniResLoc.fromEmail(last);
+            last = encUrl.fromEmail(last);
             servSmtpLoc loc = servSmtp.doFinder(lower.locals, new servSmtpLoc(), last);
             if (loc != null) {
                 trgS += last + " ";
@@ -1011,7 +1011,7 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("vrfy")) {
-            String last = uniResLoc.fromEmail(cmd.word());
+            String last = encUrl.fromEmail(cmd.word());
             servSmtpTrg trg = servSmtp.doFinder(lower.locals, new servSmtpLoc(), last);
             if (trg != null) {
                 doLine("250 <" + trg.email + ">");

@@ -16,10 +16,10 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.prt.prtUdp;
+import net.freertr.enc.encUrl;
 import net.freertr.user.userTerminal;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * trivial file transfer protocol (rfc1350) client
@@ -79,7 +79,7 @@ public class clntTftp implements prtServS {
      * @param trg target
      * @return result code
      */
-    public boolean download(uniResLoc src, File trg) {
+    public boolean download(encUrl src, File trg) {
         if (openConn(src.server)) {
             return true;
         }
@@ -142,7 +142,7 @@ public class clntTftp implements prtServS {
      * @param src target
      * @return result code
      */
-    public boolean upload(uniResLoc trg, File src) {
+    public boolean upload(encUrl trg, File src) {
         if (openConn(trg.server)) {
             return true;
         }

@@ -5,7 +5,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis bier
@@ -34,7 +34,7 @@ public class rtrIsisBr {
             return new byte[0];
         }
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valDat[0] = 0; // algorithm
         tlv.valDat[1] = 0; // ipa
         tlv.valDat[2] = 0; // subdomain
@@ -56,7 +56,7 @@ public class rtrIsisBr {
      * @param tlv data
      * @param prf prefix
      */
-    protected static void getPref(typLenVal tlv, tabRouteEntry<addrIP> prf) {
+    protected static void getPref(encTlv tlv, tabRouteEntry<addrIP> prf) {
         if (tlv.valTyp != typBier) {
             return;
         }

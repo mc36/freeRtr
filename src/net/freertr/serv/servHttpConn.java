@@ -14,7 +14,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgTrnsltn;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
@@ -34,10 +34,10 @@ import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLng;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
-import net.freertr.util.markDown;
-import net.freertr.util.uniResLoc;
+import net.freertr.enc.encMarkDown;
 import net.freertr.util.version;
 
 /**
@@ -80,7 +80,7 @@ public class servHttpConn implements Runnable {
     /**
      * got url
      */
-    protected uniResLoc gotUrl;
+    protected encUrl gotUrl;
 
     /**
      * got authentication
@@ -444,7 +444,7 @@ public class servHttpConn implements Runnable {
             return true;
         }
         String rsp = servHttp.htmlHead + getStyle() + "<title>" + s + "</title></head><body>\n";
-        rsp += markDown.md2html(l);
+        rsp += encMarkDown.md2html(l);
         rsp += "</body></html>\n";
         sendTextHeader("200 ok", "text/html", rsp.getBytes());
         return false;
@@ -888,8 +888,8 @@ public class servHttpConn implements Runnable {
         }
         String rsp = servHttp.htmlHead + getStyle() + "<title>dirlist</title></head><body>\n";
         if ((gotHost.allowList & 2) != 0) {
-            rsp += markDown.txt2html(bits.txt2buf(gotHost.path + s + "readme.txt"));
-            rsp += markDown.md2html(bits.txt2buf(gotHost.path + s + "readme.md"));
+            rsp += encMarkDown.txt2html(bits.txt2buf(gotHost.path + s + "readme.txt"));
+            rsp += encMarkDown.md2html(bits.txt2buf(gotHost.path + s + "readme.md"));
         }
         rsp += "<b>directory listing of " + gotHost.host + "/" + s + " at " + cfgAll.getFqdn() + ":</b><br/><br/>\n";
         rsp += "<table><thead><tr><td><b>date</b></td><td><b>size</b></td><td><b>name</b></td></tr></thead><tbody>\n";
@@ -1001,7 +1001,7 @@ public class servHttpConn implements Runnable {
             return null;
         }
         got = got.substring(i, got.length()).trim();
-        got = cryBase64.decodeString(got);
+        got = encBase64.decodeString(got);
         i = got.indexOf(":");
         if (i < 0) {
             return null;
@@ -1029,10 +1029,10 @@ public class servHttpConn implements Runnable {
         if (!debugger.servHttpXml) {
             return;
         }
-        dumpXml(extMrkLng.parseOne(s.replaceAll("\r", "").replaceAll("\n", "")));
+        dumpXml(encXml.parseOne(s.replaceAll("\r", "").replaceAll("\n", "")));
     }
 
-    private void dumpXml(extMrkLng xml) {
+    private void dumpXml(encXml xml) {
         if (!debugger.servHttpXml) {
             return;
         }
@@ -1043,7 +1043,7 @@ public class servHttpConn implements Runnable {
     }
 
     private boolean readRequest() {
-        gotUrl = uniResLoc.parseOne("null://");
+        gotUrl = encUrl.parseOne("null://");
         gotVer = 0;
         gotHead = false;
         gotKeep = false;
@@ -1215,7 +1215,7 @@ public class servHttpConn implements Runnable {
                 continue;
             }
             if (a.equals("host")) {
-                uniResLoc srv = uniResLoc.parseOne("http://" + s + "/");
+                encUrl srv = encUrl.parseOne("http://" + s + "/");
                 gotUrl.server = srv.server;
                 if (gotUrl.port < 0) {
                     gotUrl.port = srv.port;
@@ -1246,7 +1246,7 @@ public class servHttpConn implements Runnable {
         if (gotType.equals("application/x-www-form-urlencoded")) {
             String s = new String(gotBytes);
             gotBytes = new byte[0];
-            uniResLoc srv = uniResLoc.parseOne("http://x/y?" + s);
+            encUrl srv = encUrl.parseOne("http://x/y?" + s);
             gotUrl.param.addAll(srv.param);
         }
         gotUrl.normalizePath();
@@ -1284,7 +1284,7 @@ public class servHttpConn implements Runnable {
         return false;
     }
 
-    private void doTranslate(uniResLoc srvUrl) {
+    private void doTranslate(encUrl srvUrl) {
         if (gotHost.translate == null) {
             return;
         }
@@ -1292,7 +1292,7 @@ public class servHttpConn implements Runnable {
         srvUrl.fromString(a);
     }
 
-    private void doSubconn(uniResLoc srvUrl) {
+    private void doSubconn(encUrl srvUrl) {
         if ((gotHost.subconn & 0x1) == 0) {
             srvUrl.filPath = gotUrl.filPath;
         }
@@ -1385,7 +1385,7 @@ public class servHttpConn implements Runnable {
         }
         if (gotHost.allowForti != null) {
             if (gotUrl.toPathName().equals("remote/logincheck")) {
-                headers.add("Set-Cookie: SVPNCOOKIE=" + cryBase64.encodeString(gotUrl.getParam("username") + "|" + gotUrl.getParam("credential")) + "; path=/; secure; httponly");
+                headers.add("Set-Cookie: SVPNCOOKIE=" + encBase64.encodeString(gotUrl.getParam("username") + "|" + gotUrl.getParam("credential")) + "; path=/; secure; httponly");
                 sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
                 return;
             }
@@ -1411,7 +1411,7 @@ public class servHttpConn implements Runnable {
                 sendRespError(401, "unauthorized");
                 return;
             }
-            a = cryBase64.decodeString(a.substring(i + 1, a.length()));
+            a = encBase64.decodeString(a.substring(i + 1, a.length()));
             if (a == null) {
                 sendRespError(401, "unauthorized");
                 return;
@@ -1477,7 +1477,7 @@ public class servHttpConn implements Runnable {
                 return;
             }
             if (gotUrl.toPathName().equals("1/VPNManifest.xml")) {
-                sendTextHeader("200 ok", "text/xml", (extMrkLng.header + "\n<vpn rev=\"1.0\">\n</vpn>\n").getBytes());
+                sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<vpn rev=\"1.0\">\n</vpn>\n").getBytes());
                 return;
             }
             if (gotUrl.toPathName().equals("1/binaries/update.txt")) {
@@ -1498,7 +1498,7 @@ public class servHttpConn implements Runnable {
             }
             String s = new String(gotBytes);
             gotBytes = new byte[0];
-            uniResLoc srv = uniResLoc.parseOne("http://x/y?" + s);
+            encUrl srv = encUrl.parseOne("http://x/y?" + s);
             gotUrl.param.addAll(srv.param);
             gotUrl.username = gotUrl.getParam("username");
             gotUrl.password = gotUrl.getParam("password");
@@ -1511,12 +1511,12 @@ public class servHttpConn implements Runnable {
             authResult res = gotHost.authenticList.authUserPass(gotUrl.username, gotUrl.password);
             if (res.result != authResult.authSuccessful) {
                 headers.add("X-Transcend-Version: 1");
-                sendTextHeader("200 ok", "text/xml", (extMrkLng.header + "\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>").getBytes());
+                sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>").getBytes());
                 return;
             }
             headers.add("Set-Cookie: webvpn=00@0168430307@00071@3702439125@3326207229@defctx; path=/; Secure");
             headers.add("Set-Cookie: webvpnc=bu:0/&p:t&iu:1/&sh:%s; path=/; Secure");
-            sendTextHeader("200 ok", "text/xml", (extMrkLng.header + "\n<auth id=\"success\"><title>vpn</title><message>success</message><success/></auth>").getBytes());
+            sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"success\"><title>vpn</title><message>success</message><success/></auth>").getBytes());
             return;
         }
         if (gotHost.authenticList != null) {
@@ -1539,13 +1539,13 @@ public class servHttpConn implements Runnable {
         }
         if (gotHost.multiAccT != null) {
             cmds cmd = new cmds("hst", gotHost.multiAccT);
-            List<uniResLoc> urls = new ArrayList<uniResLoc>();
+            List<encUrl> urls = new ArrayList<encUrl>();
             for (;;) {
                 String a = cmd.word();
                 if (a.length() < 1) {
                     break;
                 }
-                uniResLoc srvUrl = uniResLoc.parseOne(a);
+                encUrl srvUrl = encUrl.parseOne(a);
                 doTranslate(srvUrl);
                 doSubconn(srvUrl);
                 urls.add(srvUrl);
@@ -1598,7 +1598,7 @@ public class servHttpConn implements Runnable {
             return;
         }
         if (gotHost.reconnT != null) {
-            uniResLoc srvUrl = uniResLoc.parseOne(gotHost.reconnT);
+            encUrl srvUrl = encUrl.parseOne(gotHost.reconnT);
             doTranslate(srvUrl);
             doSubconn(srvUrl);
             addrIP adr = userTerminal.justResolv(srvUrl.server, gotHost.reconnP.prefer);
@@ -1636,7 +1636,7 @@ public class servHttpConn implements Runnable {
             return;
         }
         if (gotHost.redir != null) {
-            uniResLoc srvUrl = uniResLoc.parseOne(gotHost.redir);
+            encUrl srvUrl = encUrl.parseOne(gotHost.redir);
             doTranslate(srvUrl);
             doSubconn(srvUrl);
             sendFoundAt(srvUrl.toURL(true, true, true));
@@ -1673,7 +1673,7 @@ public class servHttpConn implements Runnable {
             if (a.length() < 1) {
                 a = "<?xml><propfind><allprop>";
             }
-            extMrkLng xml = extMrkLng.parseOne(a);
+            encXml xml = encXml.parseOne(a);
             dumpXml(xml);
             String beg = "/?xml/propfind/prop/";
             boolean typ = false;
@@ -1776,7 +1776,7 @@ public class servHttpConn implements Runnable {
                 sendRespError(405, "not allowed");
                 return;
             }
-            uniResLoc url = uniResLoc.parseOne(gotDstntn);
+            encUrl url = encUrl.parseOne(gotDstntn);
             url.normalizePath();
             if (userFlash.copy(gotHost.path + pn, gotHost.path + url.toPathName(), false)) {
                 sendRespHeader("409 conflict", 0, null);
@@ -1790,7 +1790,7 @@ public class servHttpConn implements Runnable {
                 sendRespError(405, "not allowed");
                 return;
             }
-            uniResLoc url = uniResLoc.parseOne(gotDstntn);
+            encUrl url = encUrl.parseOne(gotDstntn);
             url.normalizePath();
             if (userFlash.rename(gotHost.path + pn, gotHost.path + url.toPathName(), false, false)) {
                 sendRespHeader("409 conflict", 0, null);

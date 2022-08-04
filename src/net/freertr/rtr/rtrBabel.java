@@ -27,7 +27,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * babel routing protocol (rfc6126) version 2
@@ -247,8 +247,8 @@ public class rtrBabel extends ipRtr implements prtServP {
      *
      * @return handler
      */
-    protected static typLenVal getTlv() {
-        return new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    protected static encTlv getTlv() {
+        return new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
     }
 
     /**

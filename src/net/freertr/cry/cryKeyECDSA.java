@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSsh;
@@ -67,36 +68,36 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean privReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
-        BigInteger ver = cryAsn1.readBigInt(pck);
+        BigInteger ver = encAsn1.readBigInt(pck);
         if (ver == null) {
             return true;
         }
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagOctetString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagOctetString)) {
             return true;
         }
         priv = new BigInteger(a.getPack().getCopy());
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagEoc)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagEoc)) {
             return true;
         }
         packHolder p = a.getPack();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagObjectID)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return true;
         }
         curve = cryECcurve.getByOid(a.buf);
@@ -106,14 +107,14 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagBoolean)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagBoolean)) {
             return true;
         }
         p = a.getPack();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
         pub = cryECpoint.fromBytes2(curve, a.buf, 0);
@@ -130,25 +131,25 @@ public class cryKeyECDSA extends cryKeyGeneric {
      */
     public void privWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, BigInteger.ONE);
+        encAsn1.writeBigInt(p1, BigInteger.ONE);
         packHolder p2 = new packHolder(true, true);
         byte[] buf = priv.toByteArray();
         p2.putCopy(buf, 0, 0, buf.length);
         p2.putSkip(buf.length);
         p2.merge2beg();
-        cryAsn1.writeOctString(p1, p2);
+        encAsn1.writeOctString(p1, p2);
         p2.clear();
-        cryAsn1.writeObjectId(p2, curve.oid);
-        cryAsn1.writeEoc(p1, p2);
+        encAsn1.writeObjectId(p2, curve.oid);
+        encAsn1.writeEoc(p1, p2);
         p2.clear();
         packHolder p3 = new packHolder(true, true);
         buf = pub.toBytes2();
         p3.putCopy(buf, 0, 0, buf.length);
         p3.putSkip(buf.length);
         p3.merge2beg();
-        cryAsn1.writeBitString(p2, p3);
-        cryAsn1.writeEoc2(p1, p2);
-        cryAsn1.writeSequence(pck, p1);
+        encAsn1.writeBitString(p2, p3);
+        encAsn1.writeEoc2(p1, p2);
+        encAsn1.writeSequence(pck, p1);
     }
 
     /**
@@ -158,18 +159,18 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean certReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         packHolder p = a.getPack();
@@ -182,7 +183,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (a.tagRead(p)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagObjectID)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return true;
         }
         curve = cryECcurve.getByOid(a.buf);
@@ -192,7 +193,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
         pub = cryECpoint.fromBytes2(curve, a.buf, 1);
@@ -210,17 +211,17 @@ public class cryKeyECDSA extends cryKeyGeneric {
     public void certWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
-        cryAsn1.writeObjectId(p2, cryCertificate.oidEcDssEncrypt);
-        cryAsn1.writeObjectId(p2, curve.oid);
-        cryAsn1.writeSequence(p1, p2);
+        encAsn1.writeObjectId(p2, cryCertificate.oidEcDssEncrypt);
+        encAsn1.writeObjectId(p2, curve.oid);
+        encAsn1.writeSequence(p1, p2);
         p2.clear();
         byte[] buf = pub.toBytes2();
         p2.putByte(0, 0);
         p2.putCopy(buf, 0, 1, buf.length);
         p2.putSkip(buf.length + 1);
         p2.merge2beg();
-        cryAsn1.writeBitString(p1, p2);
-        cryAsn1.writeSequence(pck, p1);
+        encAsn1.writeBitString(p1, p2);
+        encAsn1.writeSequence(pck, p1);
     }
 
     public boolean keyMake(String nam) {
@@ -422,16 +423,16 @@ public class cryKeyECDSA extends cryKeyGeneric {
         p.putSkip(sign.length);
         p.merge2beg();
         p.getSkip(1);
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
-        sgnR = cryAsn1.readBigInt(p);
-        sgnS = cryAsn1.readBigInt(p);
+        sgnR = encAsn1.readBigInt(p);
+        sgnS = encAsn1.readBigInt(p);
         return doVerify(hash);
     }
 
@@ -445,9 +446,9 @@ public class cryKeyECDSA extends cryKeyGeneric {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, sgnR);
-        cryAsn1.writeBigInt(p1, sgnS);
-        cryAsn1.writeSequence(p2, p1);
+        encAsn1.writeBigInt(p1, sgnR);
+        encAsn1.writeBigInt(p1, sgnS);
+        encAsn1.writeSequence(p2, p1);
         p2.putByte(0, 0);
         p2.putSkip(1);
         p2.merge2beg();
@@ -467,16 +468,16 @@ public class cryKeyECDSA extends cryKeyGeneric {
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
         p.merge2beg();
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(p)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         p = a.getPack();
-        sgnR = cryAsn1.readBigInt(p);
-        sgnS = cryAsn1.readBigInt(p);
+        sgnR = encAsn1.readBigInt(p);
+        sgnS = encAsn1.readBigInt(p);
         return doVerify(hash);
     }
 
@@ -491,9 +492,9 @@ public class cryKeyECDSA extends cryKeyGeneric {
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
-        cryAsn1.writeBigInt(p1, sgnR);
-        cryAsn1.writeBigInt(p1, sgnS);
-        cryAsn1.writeSequence(p2, p1);
+        encAsn1.writeBigInt(p1, sgnR);
+        encAsn1.writeBigInt(p1, sgnS);
+        encAsn1.writeSequence(p2, p1);
         p2.merge2beg();
         return p2.getCopy();
     }

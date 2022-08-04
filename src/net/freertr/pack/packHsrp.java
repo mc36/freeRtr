@@ -5,7 +5,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrMac;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * hot standby router protocol (rfc2281) packet
@@ -135,7 +135,7 @@ public class packHsrp {
      */
     public static final int tlvAuthClr = 3;
 
-    private typLenVal tlv = new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+    private encTlv tlv = new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
 
     public String toString() {
         return "ver=" + version + " ip4=" + ipv4 + " opc=" + opcod + " stat=" + state2string(state) + " helo=" + hello + " hold=" + hold + " pri=" + priority + " grp=" + group + " virt=" + virtual + " auth=" + authen + " id=" + ident;

@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.auth.authLocal;
 import net.freertr.clnt.clntProxy;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
@@ -132,7 +132,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         if (proxy.pubkey == null) {
             l.add(cmds.tabulator + "no pubkey");
         } else {
-            l.add(cmds.tabulator + "pubkey " + cryBase64.encodeBytes(proxy.pubkey));
+            l.add(cmds.tabulator + "pubkey " + encBase64.encodeBytes(proxy.pubkey));
         }
         cmds.cfgLine(l, proxy.secProto == 0, cmds.tabulator, "security", servGeneric.proto2string(proxy.secProto));
         cmds.cfgLine(l, proxy.username == null, cmds.tabulator, "username", proxy.username);
@@ -197,7 +197,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
             return;
         }
         if (s.equals("pubkey")) {
-            proxy.pubkey = cryBase64.decodeBytes(cmd.getRemaining());
+            proxy.pubkey = encBase64.decodeBytes(cmd.getRemaining());
             return;
         }
         if (s.equals("username")) {

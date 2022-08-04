@@ -8,7 +8,7 @@ import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
 import net.freertr.tab.tabHop;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * resource reservation protocol (rfc2205) packet
@@ -258,7 +258,7 @@ public class packRsvp {
      */
     public static final int typResvConf = 7;
 
-    private typLenVal tlv = new typLenVal(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
+    private encTlv tlv = new encTlv(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
 
     public String toString() {
         return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " assoc=" + assocTyp + "/" + assocAdr + "/" + assocId + "/" + assocGlb + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + tabHop.dumpList(expRout) + " recRou=" + tabHop.dumpList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;

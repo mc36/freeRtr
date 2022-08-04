@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,65 +6,56 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv6;
 import net.freertr.serv.servGeneric;
 import net.freertr.serv.servHttp;
+import net.freertr.util.bits;
 
 /**
  * uniform resource locator (rfc3986)
  *
  * @author matecsaba
  */
-public class uniResLoc {
+public class encUrl {
 
     /**
      * create instance
      */
-    public uniResLoc() {
+    public encUrl() {
     }
-
     /**
      * original string
      */
     public String orig;
-
     /**
      * protocol id
      */
     public String proto;
-
     /**
      * name of user
      */
     public String username;
-
     /**
      * password of user
      */
     public String password;
-
     /**
      * server name
      */
     public String server;
-
     /**
      * server port
      */
     public int port;
-
     /**
      * file path
      */
     public String filPath;
-
     /**
      * file name
      */
     public String filName;
-
     /**
      * file extension
      */
     public String filExt;
-
     /**
      * parameters
      */
@@ -112,7 +103,7 @@ public class uniResLoc {
      *
      * @param src original url to copy
      */
-    public void copyBytes(uniResLoc src) {
+    public void copyBytes(encUrl src) {
         orig = src.orig;
         proto = src.proto;
         server = src.server;
@@ -352,7 +343,7 @@ public class uniResLoc {
      *
      * @param n url to follow
      */
-    public void followLink(uniResLoc n) {
+    public void followLink(encUrl n) {
         if (n.server.length() > 0) {
             copyBytes(n);
             return;
@@ -595,8 +586,8 @@ public class uniResLoc {
      * @param url string to convert
      * @return converted url
      */
-    public static uniResLoc parseOne(String url) {
-        uniResLoc res = new uniResLoc();
+    public static encUrl parseOne(String url) {
+        encUrl res = new encUrl();
         res.fromString(url);
         return res;
     }

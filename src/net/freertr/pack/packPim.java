@@ -10,7 +10,7 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * protocol independent multicast (rfc4601) packet
@@ -130,7 +130,7 @@ public class packPim {
      */
     public final static int tlvJoinAtr = 26;
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    private encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
 
     /**
      * type of message

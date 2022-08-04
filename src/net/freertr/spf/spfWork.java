@@ -1,5 +1,6 @@
-package net.freertr.util;
+package net.freertr.spf;
 
+import net.freertr.enc.encTlv;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
@@ -26,6 +27,10 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFormat;
+import net.freertr.util.bits;
+import net.freertr.util.cmds;
+import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 
 /**
  * dijkstra's shortest path first
@@ -33,7 +38,7 @@ import net.freertr.user.userFormat;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class shrtPthFrst<Ta extends addrType> {
+public class spfWork<Ta extends addrType> {
 
     /**
      * beginning of graph
@@ -60,9 +65,9 @@ public class shrtPthFrst<Ta extends addrType> {
      */
     public final static String graphEnd2 = "EOF";
 
-    private final tabGen<shrtPthFrstNode<Ta>> nodes;
+    private final tabGen<spfNode<Ta>> nodes;
 
-    private final List<shrtPthFrstLog> log = new ArrayList<shrtPthFrstLog>();
+    private final List<spfLog> log = new ArrayList<spfLog>();
 
     private final int count;
 
@@ -74,9 +79,9 @@ public class shrtPthFrst<Ta extends addrType> {
 
     private long tim4;
 
-    private shrtPthFrstNode<Ta> spfRoot;
+    private spfNode<Ta> spfRoot;
 
-    private shrtPthFrst<Ta> prev;
+    private spfWork<Ta> prev;
 
     /**
      * log size
@@ -109,9 +114,9 @@ public class shrtPthFrst<Ta extends addrType> {
      *
      * @param old old spf
      */
-    public shrtPthFrst(shrtPthFrst<Ta> old) {
+    public spfWork(spfWork<Ta> old) {
         tim1 = bits.getTime();
-        nodes = new tabGen<shrtPthFrstNode<Ta>>();
+        nodes = new tabGen<spfNode<Ta>>();
         if (old == null) {
             count = 1;
             logSize = new syncInt(0);
@@ -131,7 +136,7 @@ public class shrtPthFrst<Ta extends addrType> {
         if (topoLog.get() > 0) {
             prev = old;
         }
-        shrtPthFrstLog ntry = new shrtPthFrstLog();
+        spfLog ntry = new spfLog();
         ntry.when = old.tim1;
         ntry.tim = (int) (old.tim4 - old.tim1);
         ntry.unreach = old.listReachablility(false);
@@ -217,15 +222,15 @@ public class shrtPthFrst<Ta extends addrType> {
      *
      * @return copy
      */
-    public shrtPthFrst<Ta> copyBytes() {
-        shrtPthFrst<Ta> res = new shrtPthFrst<Ta>(this);
+    public spfWork<Ta> copyBytes() {
+        spfWork<Ta> res = new spfWork<Ta>(this);
         res.bidir.set(bidir.get());
         res.hops.set(hops.get());
         res.ecmp.set(ecmp.get());
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> nod = nodes.get(o);
+            spfNode<Ta> nod = nodes.get(o);
             for (int i = 0; i < nod.conn.size(); i++) {
-                shrtPthFrstConn<Ta> con = nod.conn.get(i);
+                spfConn<Ta> con = nod.conn.get(i);
                 res.addConn(nod.name, con.target.name, con.metric, con.realHop, con.stub, con.ident);
             }
             for (int i = 0; i < nod.prfAdd.size(); i++) {
@@ -263,18 +268,18 @@ public class shrtPthFrst<Ta extends addrType> {
         if (metric < 0) {
             metric = 0;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(to);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(to);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
-        shrtPthFrstConn<Ta> c = new shrtPthFrstConn<Ta>();
+        spfConn<Ta> c = new spfConn<Ta>();
         c.metric = metric;
         c.target = ntry;
         c.realHop = realHop;
         c.stub = stub;
         c.ident = ident;
-        ntry = new shrtPthFrstNode<Ta>(from);
+        ntry = new spfNode<Ta>(from);
         old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
@@ -293,7 +298,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param oifc other interface number
      */
     public void addNextHop(int met, Ta nod, addrIP hop, tabRouteIface ifc, addrIP ohop, tabRouteIface oifc) {
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
         ntry = nodes.find(ntry);
         if (ntry == null) {
             return;
@@ -312,7 +317,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         if (met < ntry.nxtMet) {
             for (int i = 0; i < ntry.uplinks.size(); i++) {
-                shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
+                spfResult<Ta> upl = ntry.uplinks.get(i);
                 upl.nxtHop = null;
                 upl.iface = null;
                 upl.othHop = null;
@@ -321,7 +326,7 @@ public class shrtPthFrst<Ta extends addrType> {
             ntry.nxtMet = met;
         }
         for (int i = 0; i < ntry.uplinks.size(); i++) {
-            shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
+            spfResult<Ta> upl = ntry.uplinks.get(i);
             if (upl.hops > 1) {
                 continue;
             }
@@ -344,8 +349,8 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param fix fixed metric
      */
     public void addPref(Ta nod, tabRouteEntry<addrIP> rou, boolean fix) {
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -364,8 +369,8 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param fix fixed metric
      */
     public void addOpref(Ta nod, tabRouteEntry<addrIP> rou, boolean fix) {
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -386,8 +391,8 @@ public class shrtPthFrst<Ta extends addrType> {
         if (ident == null) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -404,8 +409,8 @@ public class shrtPthFrst<Ta extends addrType> {
         if (beg < 1) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -425,8 +430,8 @@ public class shrtPthFrst<Ta extends addrType> {
         if (idx < 1) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -445,8 +450,8 @@ public class shrtPthFrst<Ta extends addrType> {
         if (idx < 1) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -484,8 +489,8 @@ public class shrtPthFrst<Ta extends addrType> {
         if (beg < 1) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -505,13 +510,13 @@ public class shrtPthFrst<Ta extends addrType> {
         if (idx < 1) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
         ntry.brIdx = idx;
-        ntry.brLst.add(new shrtPthFrstIdx(idx));
+        ntry.brLst.add(new spfIndex(idx));
     }
 
     /**
@@ -526,13 +531,13 @@ public class shrtPthFrst<Ta extends addrType> {
         if (idx < 1) {
             return;
         }
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(nod);
-        shrtPthFrstNode<Ta> old = nodes.add(ntry);
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
         ntry.brIdx = idx;
-        ntry.brLst.add(new shrtPthFrstIdx(idx));
+        ntry.brLst.add(new spfIndex(idx));
         tabRouteEntry<addrIP> rou;
         rou = ntry.prfFix.find(pref);
         if (rou != null) {
@@ -556,7 +561,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
     }
 
-    private void diffPrefix(shrtPthFrstNode<Ta> nod, tabRoute<addrIP> cl, tabRoute<addrIP> ol) {
+    private void diffPrefix(spfNode<Ta> nod, tabRoute<addrIP> cl, tabRoute<addrIP> ol) {
         for (int i = 0; i < cl.size(); i++) {
             tabRouteEntry<addrIP> cr = cl.get(i);
             tabRouteEntry<addrIP> or = ol.find(cr);
@@ -593,7 +598,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public boolean doCalc(Ta from, Ta to) {
         tim2 = bits.getTime();
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -604,13 +609,13 @@ public class shrtPthFrst<Ta extends addrType> {
             ntry.nxtMet = Integer.MAX_VALUE;
             ntry.visited = false;
         }
-        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(from));
+        spfNode<Ta> ntry = nodes.find(new spfNode<Ta>(from));
         if (ntry == null) {
             prev = null;
             return true;
         }
         spfRoot = ntry;
-        tabGen<shrtPthFrstNode<Ta>> lst = new tabGen<shrtPthFrstNode<Ta>>();
+        tabGen<spfNode<Ta>> lst = new tabGen<spfNode<Ta>>();
         ntry.metric = 0;
         ntry.visited = true;
         lst.add(ntry);
@@ -625,7 +630,7 @@ public class shrtPthFrst<Ta extends addrType> {
             }
             ntry = lst.get(0);
             for (int i = 1; i < lst.size(); i++) {
-                shrtPthFrstNode<Ta> cur = lst.get(i);
+                spfNode<Ta> cur = lst.get(i);
                 if (cur.metric < ntry.metric) {
                     ntry = cur;
                 }
@@ -639,7 +644,7 @@ public class shrtPthFrst<Ta extends addrType> {
             lst.del(ntry);
             ntry.visited = true;
             for (int i = 0; i < ntry.conn.size(); i++) {
-                shrtPthFrstConn<Ta> c = ntry.conn.get(i);
+                spfConn<Ta> c = ntry.conn.get(i);
                 if (c == null) {
                     continue;
                 }
@@ -664,9 +669,9 @@ public class shrtPthFrst<Ta extends addrType> {
                 if (c.realHop) {
                     p++;
                 }
-                shrtPthFrstRes<Ta> upl = new shrtPthFrstRes<Ta>(ntry, p);
+                spfResult<Ta> upl = new spfResult<Ta>(ntry, p);
                 if (c.target.metric != o) {
-                    c.target.uplinks = new ArrayList<shrtPthFrstRes<Ta>>();
+                    c.target.uplinks = new ArrayList<spfResult<Ta>>();
                     c.target.uplinks.add(upl);
                     c.target.uplink = upl;
                     c.target.metric = o;
@@ -700,11 +705,11 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         int mode = topoLog.get();
         for (int o = 0; o < prev.nodes.size(); o++) {
-            shrtPthFrstNode<Ta> cn = prev.nodes.get(o);
+            spfNode<Ta> cn = prev.nodes.get(o);
             if (cn == null) {
                 continue;
             }
-            shrtPthFrstNode<Ta> on = nodes.find(cn);
+            spfNode<Ta> on = nodes.find(cn);
             if (on == null) {
                 if ((mode & 0x1) != 0) {
                     logger.warn("old node " + cn + " disappeared");
@@ -713,11 +718,11 @@ public class shrtPthFrst<Ta extends addrType> {
             }
         }
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> cn = nodes.get(o);
+            spfNode<Ta> cn = nodes.get(o);
             if (cn == null) {
                 continue;
             }
-            shrtPthFrstNode<Ta> on = prev.nodes.find(cn);
+            spfNode<Ta> on = prev.nodes.find(cn);
             if (on == null) {
                 if ((mode & 0x1) != 0) {
                     logger.warn("new node " + cn + " appeared");
@@ -725,11 +730,11 @@ public class shrtPthFrst<Ta extends addrType> {
                 continue;
             }
             for (int i = 0; i < cn.conn.size(); i++) {
-                shrtPthFrstConn<Ta> cc = cn.conn.get(i);
+                spfConn<Ta> cc = cn.conn.get(i);
                 if (cc == null) {
                     continue;
                 }
-                shrtPthFrstConn<Ta> oc = on.findConn(cc.target, cc.metric);
+                spfConn<Ta> oc = on.findConn(cc.target, cc.metric);
                 if (oc == null) {
                     if ((mode & 0x2) != 0) {
                         logger.warn("node " + cn + " established connection to " + cc.target);
@@ -753,11 +758,11 @@ public class shrtPthFrst<Ta extends addrType> {
                 }
             }
             for (int i = 0; i < on.conn.size(); i++) {
-                shrtPthFrstConn<Ta> oc = on.conn.get(i);
+                spfConn<Ta> oc = on.conn.get(i);
                 if (oc == null) {
                     continue;
                 }
-                shrtPthFrstConn<Ta> cc = cn.findConn(oc.target, oc.metric);
+                spfConn<Ta> cc = cn.findConn(oc.target, oc.metric);
                 if (cc == null) {
                     if ((mode & 0x2) != 0) {
                         logger.warn("node " + on + " lost connection to " + oc.target);
@@ -792,36 +797,36 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param which node id
      * @return list of next hops
      */
-    protected List<shrtPthFrstRes<Ta>> findNextHop(Ta which) {
-        List<shrtPthFrstRes<Ta>> res = new ArrayList<shrtPthFrstRes<Ta>>();
-        shrtPthFrstNode<Ta> old = nodes.find(new shrtPthFrstNode<Ta>(which));
+    protected List<spfResult<Ta>> findNextHop(Ta which) {
+        List<spfResult<Ta>> res = new ArrayList<spfResult<Ta>>();
+        spfNode<Ta> old = nodes.find(new spfNode<Ta>(which));
         if (old == null) {
             return res;
         }
         if (old.result != null) {
             return old.result;
         }
-        List<shrtPthFrstRes<Ta>> ned = new ArrayList<shrtPthFrstRes<Ta>>();
-        ned.add(new shrtPthFrstRes<Ta>(old, -1));
+        List<spfResult<Ta>> ned = new ArrayList<spfResult<Ta>>();
+        ned.add(new spfResult<Ta>(old, -1));
         for (;;) {
             if (ned.size() < 1) {
                 break;
             }
-            shrtPthFrstRes<Ta> cur = ned.remove(0);
+            spfResult<Ta> cur = ned.remove(0);
             if (cur.nodeH.uplinks == null) {
                 continue;
             }
             for (int i = 0; i < cur.nodeH.uplinks.size(); i++) {
-                shrtPthFrstRes<Ta> upl = cur.nodeH.uplinks.get(i);
+                spfResult<Ta> upl = cur.nodeH.uplinks.get(i);
                 int hops = cur.hops;
                 if (hops < 0) {
                     hops = upl.hops;
                 }
                 if (upl.iface == null) {
-                    ned.add(new shrtPthFrstRes<Ta>(upl.nodeH, hops));
+                    ned.add(new spfResult<Ta>(upl.nodeH, hops));
                     continue;
                 }
-                shrtPthFrstRes<Ta> out = new shrtPthFrstRes<Ta>(cur.nodeH, hops);
+                spfResult<Ta> out = new spfResult<Ta>(cur.nodeH, hops);
                 out.iface = upl.iface;
                 out.nxtHop = upl.nxtHop;
                 out.oface = upl.oface;
@@ -841,10 +846,10 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param ntry node to query
      * @return segment routing peers
      */
-    protected tabGen<tabIndex<addrIP>> findSegrouPeers(shrtPthFrstNode<Ta> ntry) {
+    protected tabGen<tabIndex<addrIP>> findSegrouPeers(spfNode<Ta> ntry) {
         tabGen<tabIndex<addrIP>> res = new tabGen<tabIndex<addrIP>>();
         for (int i = 0; i < ntry.conn.size(); i++) {
-            shrtPthFrstConn<Ta> con = ntry.conn.get(i);
+            spfConn<Ta> con = ntry.conn.get(i);
             if (con.target.srIdx < 1) {
                 continue;
             }
@@ -860,7 +865,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return metric to node, negative on error
      */
     public int getMetric(Ta which) {
-        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+        spfNode<Ta> ntry = nodes.find(new spfNode<Ta>(which));
         if (ntry == null) {
             return -1;
         }
@@ -874,7 +879,7 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return label, -1=not found
      */
     public int getSegRouB(Ta which) {
-        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+        spfNode<Ta> ntry = nodes.find(new spfNode<Ta>(which));
         if (ntry == null) {
             return -1;
         }
@@ -888,14 +893,14 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return label, -1=not found
      */
     public int getBierB(Ta which) {
-        shrtPthFrstNode<Ta> ntry = nodes.find(new shrtPthFrstNode<Ta>(which));
+        spfNode<Ta> ntry = nodes.find(new spfNode<Ta>(which));
         if (ntry == null) {
             return -1;
         }
         return ntry.brBeg;
     }
 
-    private void doBier(shrtPthFrstNode<Ta> ntry) {
+    private void doBier(spfNode<Ta> ntry) {
         if (ntry.uplink == null) {
             return;
         }
@@ -915,14 +920,14 @@ public class shrtPthFrst<Ta extends addrType> {
     public tabLabelBier getBierI(int base, int bsl) {
         tabLabelBier res = new tabLabelBier(base, bsl);
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
             doBier(ntry);
         }
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -953,7 +958,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listSegRou() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -973,7 +978,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listNoSegRou() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -993,7 +998,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listBier() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1013,7 +1018,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listNoBier() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1034,7 +1039,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public int countReachablility(boolean state) {
         int o = 0;
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1055,7 +1060,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listReachablility(boolean state) {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1075,7 +1080,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listStubs() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1107,7 +1112,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public String listTopoSum() {
         String s = "";
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1124,7 +1129,7 @@ public class shrtPthFrst<Ta extends addrType> {
      */
     public userFormat listTopology(Ta adr) {
         userFormat res = new userFormat("|", "category|value|addition");
-        shrtPthFrstNode<Ta> ntry = new shrtPthFrstNode<Ta>(adr);
+        spfNode<Ta> ntry = new spfNode<Ta>(adr);
         ntry = nodes.find(ntry);
         if (ntry == null) {
             return null;
@@ -1137,7 +1142,7 @@ public class shrtPthFrst<Ta extends addrType> {
         if (ntry.uplinks != null) {
             res.add("uplinks|" + ntry.uplinks.size());
             for (int i = 0; i < ntry.uplinks.size(); i++) {
-                shrtPthFrstRes<Ta> upl = ntry.uplinks.get(i);
+                spfResult<Ta> upl = ntry.uplinks.get(i);
                 res.add("uplinknod|" + upl.nodeH);
                 res.add("uplinkhop|" + upl.hops);
             }
@@ -1145,7 +1150,7 @@ public class shrtPthFrst<Ta extends addrType> {
         if (ntry.result != null) {
             res.add("reaches|" + ntry.result.size());
             for (int i = 0; i < ntry.result.size(); i++) {
-                shrtPthFrstRes<Ta> upl = ntry.result.get(i);
+                spfResult<Ta> upl = ntry.result.get(i);
                 res.add("reachnod|" + upl.nodeH);
                 res.add("reachhop|" + upl.hops);
                 res.add("reachvia|" + upl.nxtHop);
@@ -1162,7 +1167,7 @@ public class shrtPthFrst<Ta extends addrType> {
         res.add("bier|" + ntry.brIdx + " " + ntry.brBeg);
         String a = "";
         for (int i = 0; i < ntry.brLst.size(); i++) {
-            shrtPthFrstIdx idx = ntry.brLst.get(i);
+            spfIndex idx = ntry.brLst.get(i);
             if (idx == null) {
                 continue;
             }
@@ -1170,7 +1175,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         res.add("biers|" + a);
         for (int i = 0; i < ntry.conn.size(); i++) {
-            shrtPthFrstConn<Ta> con = ntry.conn.get(i);
+            spfConn<Ta> con = ntry.conn.get(i);
             if (con == null) {
                 continue;
             }
@@ -1215,7 +1220,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public userFormat listTopology() {
         userFormat res = new userFormat("|", "node|category|value|addition");
         for (int i = 0; i < nodes.size(); i++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(i);
+            spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -1223,7 +1228,7 @@ public class shrtPthFrst<Ta extends addrType> {
             res.add(ntry + "|segrou|" + ntry.srIdx);
             res.add(ntry + "|bier|" + ntry.brIdx);
             for (int o = 0; o < ntry.conn.size(); o++) {
-                shrtPthFrstConn<Ta> con = ntry.conn.get(o);
+                spfConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {
                     continue;
                 }
@@ -1314,10 +1319,10 @@ public class shrtPthFrst<Ta extends addrType> {
         return res;
     }
 
-    private void listTree(List<String> res, shrtPthFrstNode<Ta> ntry, String pref) {
-        List<shrtPthFrstConn<Ta>> down = new ArrayList<shrtPthFrstConn<Ta>>();
+    private void listTree(List<String> res, spfNode<Ta> ntry, String pref) {
+        List<spfConn<Ta>> down = new ArrayList<spfConn<Ta>>();
         for (int i = 0; i < ntry.conn.size(); i++) {
-            shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
+            spfConn<Ta> cur = ntry.conn.get(i);
             if (cur.target.uplink == null) {
                 continue;
             }
@@ -1328,7 +1333,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         res.add(pref + "`--" + ntry);
         for (int i = 0; i < down.size(); i++) {
-            shrtPthFrstConn<Ta> cur = down.get(i);
+            spfConn<Ta> cur = down.get(i);
             String a = (i + 1) == down.size() ? "   " : "  |";
             listTree(res, cur.target, pref + a);
         }
@@ -1349,10 +1354,10 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         res.add(graphBeg2);
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            spfNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
-                shrtPthFrstConn<Ta> cur = ntry.conn.get(i);
+                spfConn<Ta> cur = ntry.conn.get(i);
                 String a;
                 if (noints) {
                     a = "";
@@ -1388,9 +1393,9 @@ public class shrtPthFrst<Ta extends addrType> {
         return res;
     }
 
-    private void listNhIncons(tabGen<shrtPthFrstPfx<Ta>> lst, shrtPthFrstNode<Ta> nod, addrPrefix<addrIP> pfx) {
-        shrtPthFrstPfx<Ta> ntry = new shrtPthFrstPfx<Ta>(pfx);
-        shrtPthFrstPfx<Ta> old = lst.add(ntry);
+    private void listNhIncons(tabGen<spfPrefix<Ta>> lst, spfNode<Ta> nod, addrPrefix<addrIP> pfx) {
+        spfPrefix<Ta> ntry = new spfPrefix<Ta>(pfx);
+        spfPrefix<Ta> old = lst.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -1405,7 +1410,7 @@ public class shrtPthFrst<Ta extends addrType> {
     public userFormat listHostnames() {
         userFormat res = new userFormat("|", "router|name");
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            spfNode<Ta> ntry = nodes.get(o);
             res.add(ntry.name + "|" + ntry.ident);
         }
         return res;
@@ -1418,9 +1423,9 @@ public class shrtPthFrst<Ta extends addrType> {
      * @return text
      */
     public userFormat listNhIncons(tabIntMatcher mtch) {
-        tabGen<shrtPthFrstPfx<Ta>> lst = new tabGen<shrtPthFrstPfx<Ta>>();
+        tabGen<spfPrefix<Ta>> lst = new tabGen<spfPrefix<Ta>>();
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            spfNode<Ta> ntry = nodes.get(o);
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 listNhIncons(lst, ntry, ntry.prfFix.get(i).prefix);
             }
@@ -1436,7 +1441,7 @@ public class shrtPthFrst<Ta extends addrType> {
         }
         userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
-            shrtPthFrstPfx<Ta> ntry = lst.get(i);
+            spfPrefix<Ta> ntry = lst.get(i);
             if (!mtch.matches(ntry.nodes.size())) {
                 continue;
             }
@@ -1454,10 +1459,10 @@ public class shrtPthFrst<Ta extends addrType> {
     public userFormat listMetIncons(tabIntMatcher mtch) {
         userFormat res = new userFormat("|", "source|target|diff");
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(o);
+            spfNode<Ta> ntry = nodes.get(o);
             for (int i = 0; i < ntry.conn.size(); i++) {
-                shrtPthFrstConn<Ta> cn = ntry.conn.get(i);
-                shrtPthFrstConn<Ta> co = cn.target.findConn(ntry, cn.metric);
+                spfConn<Ta> cn = ntry.conn.get(i);
+                spfConn<Ta> co = cn.target.findConn(ntry, cn.metric);
                 if (co == null) {
                     res.add(ntry + "|" + cn.target + "|missing");
                     continue;
@@ -1490,8 +1495,8 @@ public class shrtPthFrst<Ta extends addrType> {
     public tabRoute<addrIP> getRoutes(ipFwd fwdCor, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd) {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(o);
-            List<shrtPthFrstRes<Ta>> hop = findNextHop(ntry.name);
+            spfNode<Ta> ntry = nodes.get(o);
+            List<spfResult<Ta>> hop = findNextHop(ntry.name);
             if (hop.size() < 1) {
                 continue;
             }
@@ -1531,8 +1536,8 @@ public class shrtPthFrst<Ta extends addrType> {
     public tabRoute<addrIP> getOroutes(ipFwd fwdCor, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd) {
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("routes");
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> ntry = nodes.get(o);
-            List<shrtPthFrstRes<Ta>> hop = findNextHop(ntry.name);
+            spfNode<Ta> ntry = nodes.get(o);
+            List<spfResult<Ta>> hop = findNextHop(ntry.name);
             if (hop.size() < 1) {
                 continue;
             }
@@ -1560,11 +1565,11 @@ public class shrtPthFrst<Ta extends addrType> {
         return tab1;
     }
 
-    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, shrtPthFrstNode<Ta> ntry, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd, tabGen<tabIndex<addrIP>> srp, tabRouteEntry<addrIP> rou, List<shrtPthFrstRes<Ta>> hop, boolean other) {
+    private void populateRoute(tabRoute<addrIP> tab1, ipFwd fwdCor, spfNode<Ta> ntry, int fwdKey, tabLabelEntry[] segrouLab, tabGen<tabIndex<addrIP>> segrouUsd, tabGen<tabIndex<addrIP>> srp, tabRouteEntry<addrIP> rou, List<spfResult<Ta>> hop, boolean other) {
         rou.alts.clear();
         boolean srPop = (rou.best.rouSrc & 16) != 0;
         for (int i = 0; i < hop.size(); i++) {
-            shrtPthFrstRes<Ta> upl = hop.get(i);
+            spfResult<Ta> upl = hop.get(i);
             tabRouteAttr<addrIP> res = new tabRouteAttr<addrIP>();
             rou.best.copyBytes(res, false);
             if (!other) {
@@ -1621,7 +1626,7 @@ public class shrtPthFrst<Ta extends addrType> {
         tabIndex.add2table(segrouUsd, sri);
     }
 
-    private void listLinStateHdr(typLenVal tlv, packHolder pck, int prt, int typ) {
+    private void listLinStateHdr(encTlv tlv, packHolder pck, int prt, int typ) {
         pck.clear();
         pck.msbPutW(0, typ); // type
         pck.putByte(2, prt); // protocol
@@ -1629,7 +1634,7 @@ public class shrtPthFrst<Ta extends addrType> {
         pck.putSkip(11);
     }
 
-    private void listLinStateNod(typLenVal tlv, packHolder pck, packHolder hlp, int siz, int asn, addrIPv4 adv, int par, shrtPthFrstNode<Ta> nod, int typ) {
+    private void listLinStateNod(encTlv tlv, packHolder pck, packHolder hlp, int siz, int asn, addrIPv4 adv, int par, spfNode<Ta> nod, int typ) {
         hlp.clear();
         tlv.valSiz = 4;
         tlv.valTyp = 512; // asn
@@ -1652,7 +1657,7 @@ public class shrtPthFrst<Ta extends addrType> {
         pck.merge2end();
     }
 
-    private void listLinStatePrf(tabRoute<addrIP> tab, typLenVal tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    private void listLinStatePrf(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         if (ntry.prefix.network.isIPv4()) {
             rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, hlp, ntry);
@@ -1685,7 +1690,7 @@ public class shrtPthFrst<Ta extends addrType> {
         tab.add(tabRoute.addType.better, rou, true, true);
     }
 
-    private void listLinStateAdd(tabRoute<addrIP> tab, typLenVal tlv, packHolder pck, int met) {
+    private void listLinStateAdd(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, int met) {
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.best.rouSrc = rtrBgpUtil.peerOriginate;
         addrIP adr = new addrIP();
@@ -1713,16 +1718,16 @@ public class shrtPthFrst<Ta extends addrType> {
      * @param siz size of node
      */
     public void listLinkStates(tabRoute<addrIP> tab, int prt, int par, int asn, addrIPv4 adv, int siz) {
-        typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+        encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         for (int o = 0; o < nodes.size(); o++) {
-            shrtPthFrstNode<Ta> nod = nodes.get(o);
+            spfNode<Ta> nod = nodes.get(o);
             listLinStateHdr(tlv, pck, prt, 1);
             listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
             listLinStateAdd(tab, tlv, pck, -1);
             for (int i = 0; i < nod.conn.size(); i++) {
-                shrtPthFrstConn<Ta> con = nod.conn.get(i);
+                spfConn<Ta> con = nod.conn.get(i);
                 listLinStateHdr(tlv, pck, prt, 2);
                 listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
                 listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257); // remote node

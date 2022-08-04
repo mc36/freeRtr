@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import net.freertr.pack.packHolder;
 
@@ -58,11 +59,11 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public boolean privReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagObjectID)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return true;
         }
         curve = cryECcurve.getByOid(a.buf);
@@ -74,7 +75,7 @@ public class cryKeyECDH extends cryKeyGeneric {
 
     public void privWriter(packHolder pck) {
         pck.clear();
-        cryAsn1.writeObjectId(pck, curve.oid);
+        encAsn1.writeObjectId(pck, curve.oid);
     }
 
     public boolean sshReader(byte[] key) {

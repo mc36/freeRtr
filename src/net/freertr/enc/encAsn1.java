@@ -1,4 +1,4 @@
-package net.freertr.cry;
+package net.freertr.enc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -15,12 +15,12 @@ import net.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cryAsn1 {
+public class encAsn1 {
 
     /**
      * create instance
      */
-    public cryAsn1() {
+    public encAsn1() {
     }
 
     /**
@@ -813,14 +813,14 @@ public class cryAsn1 {
      * @return integer readed
      */
     public static BigInteger readBigInt(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return null;
         }
         if (a.cnst) {
             return null;
         }
-        if (a.tag != cryAsn1.tagInteger) {
+        if (a.tag != encAsn1.tagInteger) {
             return null;
         }
         return a.getBigInt();
@@ -833,7 +833,7 @@ public class cryAsn1 {
      * @param src source packet holder
      */
     public static void writeSequence(packHolder trg, packHolder src) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putSequence(src);
         a.tagWrite(trg);
         trg.merge2end();
@@ -846,7 +846,7 @@ public class cryAsn1 {
      * @param src source packet holder
      */
     public static void writeSet(packHolder trg, packHolder src) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putSet(src);
         a.tagWrite(trg);
         trg.merge2end();
@@ -859,7 +859,7 @@ public class cryAsn1 {
      * @param src source packet holder
      */
     public static void writeBitString(packHolder trg, packHolder src) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putBitString(src);
         a.tagWrite(trg);
         trg.merge2end();
@@ -872,7 +872,7 @@ public class cryAsn1 {
      * @param src source packet holder
      */
     public static void writeOctString(packHolder trg, packHolder src) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putOctString(src);
         a.tagWrite(trg);
         trg.merge2end();
@@ -885,7 +885,7 @@ public class cryAsn1 {
      * @param src source packet holder
      */
     public static void writeEoc(packHolder trg, packHolder src) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putEoc(src);
         a.tagWrite(trg);
         trg.merge2end();
@@ -898,7 +898,7 @@ public class cryAsn1 {
      * @param src source packet holder
      */
     public static void writeEoc2(packHolder trg, packHolder src) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putEoc2(src);
         a.tagWrite(trg);
         trg.merge2end();
@@ -911,7 +911,7 @@ public class cryAsn1 {
      * @param b big integer
      */
     public static void writeBigInt(packHolder pck, BigInteger b) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putBigInt(b);
         a.tagWrite(pck);
         pck.merge2end();
@@ -924,7 +924,7 @@ public class cryAsn1 {
      * @param oid object id
      */
     public static void writeObjectId(packHolder pck, int[] oid) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putObjectId(oid);
         a.tagWrite(pck);
         pck.merge2end();
@@ -936,7 +936,7 @@ public class cryAsn1 {
      * @param pck packet holder
      */
     public static void writeNull(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         a.putNull();
         a.tagWrite(pck);
         pck.merge2end();
@@ -951,7 +951,7 @@ public class cryAsn1 {
      */
     public static void dumpPack(List<String> lst, String beg, packHolder p1) {
         for (;;) {
-            cryAsn1 a = new cryAsn1();
+            encAsn1 a = new encAsn1();
             if (a.tagRead(p1)) {
                 break;
             }

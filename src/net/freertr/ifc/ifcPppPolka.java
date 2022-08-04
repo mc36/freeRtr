@@ -1,7 +1,7 @@
 package net.freertr.ifc;
 
 import net.freertr.pack.packHolder;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * polka control protocol (rfc2043) for ppp
@@ -103,7 +103,7 @@ public class ifcPppPolka extends ifcPppNcp {
      * @param tlv tlv
      * @return false on success, true on error
      */
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         return true;
     }
 

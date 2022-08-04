@@ -1,5 +1,6 @@
 package net.freertr.cry;
 
+import net.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packSsh;
@@ -83,18 +84,18 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean certReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         packHolder p = a.getPack();
@@ -107,7 +108,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != cryAsn1.tagBitString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
         pck = a.getPack();
@@ -115,12 +116,12 @@ public class cryKeyRSA extends cryKeyGeneric {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
-        modulus = cryAsn1.readBigInt(pck);
-        pubExp = cryAsn1.readBigInt(pck);
+        modulus = encAsn1.readBigInt(pck);
+        pubExp = encAsn1.readBigInt(pck);
         return false;
     }
 
@@ -128,62 +129,62 @@ public class cryKeyRSA extends cryKeyGeneric {
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);
         packHolder p3 = new packHolder(true, true);
-        cryAsn1.writeObjectId(p1, cryCertificate.oidRsaEncrypt);
-        cryAsn1.writeNull(p1);
-        cryAsn1.writeSequence(p2, p1);
-        cryAsn1.writeBigInt(p3, modulus);
-        cryAsn1.writeBigInt(p3, pubExp);
+        encAsn1.writeObjectId(p1, cryCertificate.oidRsaEncrypt);
+        encAsn1.writeNull(p1);
+        encAsn1.writeSequence(p2, p1);
+        encAsn1.writeBigInt(p3, modulus);
+        encAsn1.writeBigInt(p3, pubExp);
         p1.clear();
-        cryAsn1.writeSequence(p1, p3);
+        encAsn1.writeSequence(p1, p3);
         p1.putByte(0, 0);
         p1.putSkip(1);
         p1.merge2beg();
-        cryAsn1.writeBitString(p2, p1);
-        cryAsn1.writeSequence(pck, p2);
+        encAsn1.writeBitString(p2, p1);
+        encAsn1.writeSequence(pck, p2);
     }
 
     public boolean privReader(packHolder pck) {
-        cryAsn1 a = new cryAsn1();
+        encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != cryAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
         pck = a.getPack();
-        BigInteger ver = cryAsn1.readBigInt(pck);
+        BigInteger ver = encAsn1.readBigInt(pck);
         if (ver == null) {
             return true;
         }
-        modulus = cryAsn1.readBigInt(pck);
+        modulus = encAsn1.readBigInt(pck);
         if (modulus == null) {
             return true;
         }
-        pubExp = cryAsn1.readBigInt(pck);
+        pubExp = encAsn1.readBigInt(pck);
         if (pubExp == null) {
             return true;
         }
-        privExp = cryAsn1.readBigInt(pck);
+        privExp = encAsn1.readBigInt(pck);
         if (privExp == null) {
             return true;
         }
-        prime1 = cryAsn1.readBigInt(pck);
+        prime1 = encAsn1.readBigInt(pck);
         if (prime1 == null) {
             return true;
         }
-        prime2 = cryAsn1.readBigInt(pck);
+        prime2 = encAsn1.readBigInt(pck);
         if (prime2 == null) {
             return true;
         }
-        expon1 = cryAsn1.readBigInt(pck);
+        expon1 = encAsn1.readBigInt(pck);
         if (expon1 == null) {
             return true;
         }
-        expon2 = cryAsn1.readBigInt(pck);
+        expon2 = encAsn1.readBigInt(pck);
         if (expon2 == null) {
             return true;
         }
-        coeff = cryAsn1.readBigInt(pck);
+        coeff = encAsn1.readBigInt(pck);
         if (coeff == null) {
             return true;
         }
@@ -195,16 +196,16 @@ public class cryKeyRSA extends cryKeyGeneric {
 
     public void privWriter(packHolder pck) {
         packHolder p = new packHolder(true, true);
-        cryAsn1.writeBigInt(p, BigInteger.ZERO);
-        cryAsn1.writeBigInt(p, modulus);
-        cryAsn1.writeBigInt(p, pubExp);
-        cryAsn1.writeBigInt(p, privExp);
-        cryAsn1.writeBigInt(p, prime1);
-        cryAsn1.writeBigInt(p, prime2);
-        cryAsn1.writeBigInt(p, expon1);
-        cryAsn1.writeBigInt(p, expon2);
-        cryAsn1.writeBigInt(p, coeff);
-        cryAsn1.writeSequence(pck, p);
+        encAsn1.writeBigInt(p, BigInteger.ZERO);
+        encAsn1.writeBigInt(p, modulus);
+        encAsn1.writeBigInt(p, pubExp);
+        encAsn1.writeBigInt(p, privExp);
+        encAsn1.writeBigInt(p, prime1);
+        encAsn1.writeBigInt(p, prime2);
+        encAsn1.writeBigInt(p, expon1);
+        encAsn1.writeBigInt(p, expon2);
+        encAsn1.writeBigInt(p, coeff);
+        encAsn1.writeSequence(pck, p);
     }
 
     public boolean keyMake(String nam) {

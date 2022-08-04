@@ -39,7 +39,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
 
 /**
@@ -212,7 +212,7 @@ public class servP4langCfg implements ifcUp {
     /**
      * backplane spf
      */
-    protected shrtPthFrst<addrIP> bckplnSpf;
+    protected spfWork<addrIP> bckplnSpf;
 
     /**
      * backplane routes

@@ -28,7 +28,7 @@ import net.freertr.cry.cryUtils;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * transport layer security (rfc5246) handshake packet
@@ -685,7 +685,7 @@ public class packTlsHndshk {
         if (buf == null) {
             return;
         }
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         packHolder pck = new packHolder(true, true);
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
@@ -799,8 +799,8 @@ public class packTlsHndshk {
         }
     }
 
-    private typLenVal getTlv() {
-        return new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+    private encTlv getTlv() {
+        return new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
     }
 
     private byte[] extenList2bytes(List<Integer> lst) {
@@ -813,7 +813,7 @@ public class packTlsHndshk {
     }
 
     private byte[] makeExtensionList(boolean client) {
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         packHolder pck = new packHolder(true, true);
         byte[] buf = new byte[2];
         bits.msbPutW(buf, 0, 8192);

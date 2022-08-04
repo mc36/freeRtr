@@ -18,7 +18,7 @@ import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * bgp4 utilities
@@ -1903,7 +1903,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parsePrefSid(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        typLenVal tlv = getPrefSidTlv();
+        encTlv tlv = getPrefSidTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -1948,7 +1948,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseBier(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        typLenVal tlv = getBierTlv();
+        encTlv tlv = getBierTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -2116,7 +2116,7 @@ public class rtrBgpUtil {
      * @param buf content
      */
     public static void placeCapability(packHolder pck, boolean ext, int typ, byte[] buf) {
-        typLenVal tlv = getCapabilityTlv(ext);
+        encTlv tlv = getCapabilityTlv(ext);
         tlv.valDat[0] = (byte) typ;
         tlv.valDat[1] = (byte) buf.length;
         bits.byteCopy(buf, 0, tlv.valDat, 2, buf.length);
@@ -2131,11 +2131,11 @@ public class rtrBgpUtil {
      * @param ext extended
      * @return tlv
      */
-    public static typLenVal getCapabilityTlv(boolean ext) {
+    public static encTlv getCapabilityTlv(boolean ext) {
         if (ext) {
-            return new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
+            return new encTlv(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
         } else {
-            return new typLenVal(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
+            return new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
         }
     }
 
@@ -2144,8 +2144,8 @@ public class rtrBgpUtil {
      *
      * @return tlv
      */
-    public static typLenVal getPrefSidTlv() {
-        return new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
+    public static encTlv getPrefSidTlv() {
+        return new encTlv(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
     }
 
     /**
@@ -2153,8 +2153,8 @@ public class rtrBgpUtil {
      *
      * @return tlv
      */
-    public static typLenVal getBierTlv() {
-        return new typLenVal(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
+    public static encTlv getBierTlv() {
+        return new encTlv(0, 8, 8, 16, 1, 0, 3, 1, 0, 512, true);
     }
 
     /**
@@ -2887,7 +2887,7 @@ public class rtrBgpUtil {
     public static void placePrefSid(int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         int afi = safi & afiMask;
         hlp.clear();
-        typLenVal tlv = getPrefSidTlv();
+        encTlv tlv = getPrefSidTlv();
         if (ntry.best.segrouIdx != 0) {
             tlv.valDat[0] = 0; // reserved
             bits.msbPutW(tlv.valDat, 1, 0); // flags
@@ -2957,7 +2957,7 @@ public class rtrBgpUtil {
             return;
         }
         hlp.clear();
-        typLenVal tlv = getBierTlv();
+        encTlv tlv = getBierTlv();
         tlv.valDat[0] = 0; // subdomain
         bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx); // bfr id
         tlv.putBytes(hlp, 1, 4, tlv.valDat);

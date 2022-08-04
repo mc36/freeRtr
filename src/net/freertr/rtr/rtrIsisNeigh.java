@@ -19,7 +19,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis neighbor
@@ -490,7 +490,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
 
     private void readHelloTlvs(packHolder pck, int typ) {
         int hdrSiz = msgTyp2headSiz(typ) - 8;
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         int oldAdjSt = peerAdjState;
         peerAdjState = statDown;
         foreignArea = false;
@@ -662,7 +662,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
 
     private tabGen<rtrIsisLsp> readLspList(packHolder pck) {
         tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -706,7 +706,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         byte[] buf = level.getAuthen(new packHolder(true, true), 0, 0);
         if (buf != null) {
             byte[] got = new byte[0];
-            typLenVal tlv = rtrIsis.getTlv();
+            encTlv tlv = rtrIsis.getTlv();
             packHolder p = new packHolder(true, true);
             int siz = lsp.writeData(p, 0);
             p.msbPutW(2, 0); // lifetime

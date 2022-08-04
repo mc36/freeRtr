@@ -21,8 +21,8 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgSensor;
 import net.freertr.cfg.cfgTrnsltn;
-import net.freertr.cry.cryAsn1;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encAsn1;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryEncrCBCaes;
 import net.freertr.cry.cryEncrCBCblowfish;
@@ -100,11 +100,12 @@ import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.extMrkLng;
-import net.freertr.util.jasOn;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encJson;
 import net.freertr.util.logger;
-import net.freertr.util.protoBuf;
-import net.freertr.util.uniResLoc;
+import net.freertr.enc.encPrtbuf;
+import net.freertr.enc.encThrift;
+import net.freertr.enc.encUrl;
 
 /**
  * process test commands
@@ -297,57 +298,69 @@ public class userTest {
             cmd.error(" encoded = '" + a + "'");
             return null;
         }
-        if (a.equals("asn1parser")) {
+        if (a.equals("asn1")) {
             packHolder pck = new packHolder(true, true);
             if (pck.convertFromK12("|0   |" + cmd.getRemaining())) {
                 cmd.error("error in packet");
                 return null;
             }
             cmd.error("data: " + pck.dump());
-            doShow(cryAsn1.dumpPack("", pck));
+            doShow(encAsn1.dumpPack("", pck));
             return null;
         }
         if (a.equals("base64")) {
             a = cmd.getRemaining();
             cmd.error("data: " + a);
-            byte[] b = cryBase64.decodeBytes(a);
+            byte[] b = encBase64.decodeBytes(a);
             if (b == null) {
                 cmd.error("error in data");
                 return null;
             }
             cmd.error("decoded: " + bits.byteDump(b, 0, -1));
-            a = cryBase64.encodeBytes(b);
+            a = encBase64.encodeBytes(b);
             cmd.error("encoded: " + a);
             return null;
         }
         if (a.equals("xml")) {
-            extMrkLng xml = extMrkLng.parseOne(cmd.getRemaining());
+            encXml xml = encXml.parseOne(cmd.getRemaining());
             cmd.error("orig: " + xml.orig);
             cmd.error("done: " + xml.toXMLstr());
             doShow(xml.show());
             return null;
         }
         if (a.equals("json")) {
-            jasOn json = jasOn.parseOne(cmd.getRemaining());
+            encJson json = encJson.parseOne(cmd.getRemaining());
             cmd.error("orig: " + json.orig);
             cmd.error("done: " + json.toJSONstr());
             doShow(json.show());
             return null;
         }
-        if (a.equals("protobuf")) {
-            byte[] buf = cryAsn1.hex2bytes(cmd);
+        if (a.equals("thrift")) {
+            byte[] buf = encAsn1.hex2bytes(cmd);
             packHolder pck = new packHolder(true, true);
             pck.putCopy(buf, 0, 0, buf.length);
             pck.putSkip(buf.length);
             pck.merge2beg();
             cmd.error("orig: " + pck.dump());
-            protoBuf pb = protoBuf.parseOne(pck);
+            encThrift pb = encThrift.parseOne(pck);
+            cmd.error("done: " + pb.toPacket().dump());
+            doShow(pb.show());
+            return null;
+        }
+        if (a.equals("protobuf")) {
+            byte[] buf = encAsn1.hex2bytes(cmd);
+            packHolder pck = new packHolder(true, true);
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            pck.merge2beg();
+            cmd.error("orig: " + pck.dump());
+            encPrtbuf pb = encPrtbuf.parseOne(pck);
             cmd.error("done: " + pb.toPacket().dump());
             doShow(pb.show());
             return null;
         }
         if (a.equals("url")) {
-            uniResLoc url = uniResLoc.parseOne(cmd.getRemaining());
+            encUrl url = encUrl.parseOne(cmd.getRemaining());
             doShow(url.show());
             return null;
         }

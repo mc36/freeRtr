@@ -5,10 +5,10 @@ import java.util.List;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
+import net.freertr.enc.encUrl;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * http2 (rfc7540) protocol
@@ -936,7 +936,7 @@ public class secHttp2 {
                 return null;
             }
             a = a.substring(0, i).trim();
-            uniResLoc url = new uniResLoc();
+            encUrl url = new encUrl();
             if (url.fromString(a)) {
                 return null;
             }

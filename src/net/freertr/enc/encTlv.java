@@ -1,14 +1,15 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import net.freertr.addr.addrType;
 import net.freertr.pack.packHolder;
+import net.freertr.util.bits;
 
 /**
  * type length value handler
  *
  * @author matecsaba
  */
-public class typLenVal {
+public class encTlv {
 
     /**
      * where to store value
@@ -58,7 +59,7 @@ public class typLenVal {
      *
      * @param old clone from
      */
-    public typLenVal(typLenVal old) {
+    public encTlv(encTlv old) {
         valDat = new byte[old.valDat.length];
         msb = old.msb;
         typOfs = old.typOfs;
@@ -91,7 +92,7 @@ public class typLenVal {
      * @param bufSiz byte size of buffer to allocate
      * @param byteOrder bit order, true=msb, false=lsb
      */
-    public typLenVal(int typeBeg, int typeSiz, int sizeBeg, int sizeSiz, int sizeMul, int sizeSub, int headSiz, int paddingSiz, int paddingSub, int bufSiz, boolean byteOrder) {
+    public encTlv(int typeBeg, int typeSiz, int sizeBeg, int sizeSiz, int sizeMul, int sizeSub, int headSiz, int paddingSiz, int paddingSub, int bufSiz, boolean byteOrder) {
         valDat = new byte[bufSiz];
         typOfs = typeBeg / 8;
         lenOfs = sizeBeg / 8;

@@ -5,7 +5,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.cry.cryHashSha1;
@@ -20,9 +20,9 @@ import net.freertr.serv.servGeneric;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLngEntry;
+import net.freertr.enc.encXmlEntry;
+import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -71,12 +71,12 @@ public class clntHttp {
     /**
      * cookies
      */
-    public List<extMrkLngEntry> cookies;
+    public List<encXmlEntry> cookies;
 
     /**
      * cookies
      */
-    public List<extMrkLngEntry> headers;
+    public List<encXmlEntry> headers;
 
     /**
      * get basic authorization line
@@ -95,7 +95,7 @@ public class clntHttp {
         if ((usr.length() + pwd.length()) < 1) {
             return null;
         }
-        String s = cryBase64.encodeString(usr + ":" + pwd);
+        String s = encBase64.encodeString(usr + ":" + pwd);
         return "Authorization: Basic " + s;
     }
 
@@ -279,7 +279,7 @@ public class clntHttp {
         pipe.linePut(s);
     }
 
-    private void sendAuth(uniResLoc url) {
+    private void sendAuth(encUrl url) {
         String s = getAuthor(url.username, url.password);
         if (s == null) {
             return;
@@ -305,7 +305,7 @@ public class clntHttp {
      * @param url url to connect
      * @return false on success, true on error
      */
-    public boolean doConnect(uniResLoc url) {
+    public boolean doConnect(encUrl url) {
         if (pipe != null) {
             pipe.setClose();
         }
@@ -356,12 +356,12 @@ public class clntHttp {
      * @param src url to connect
      * @return false on proceed, true on location
      */
-    public boolean doHeaders(uniResLoc src) {
+    public boolean doHeaders(encUrl src) {
         cntLen = -1;
         chnkd = false;
         kepAliv = false;
-        cookies = new ArrayList<extMrkLngEntry>();
-        headers = new ArrayList<extMrkLngEntry>();
+        cookies = new ArrayList<encXmlEntry>();
+        headers = new ArrayList<encXmlEntry>();
         String loc = null;
         String res = getLine();
         int i = res.indexOf(" ");
@@ -414,9 +414,9 @@ public class clntHttp {
                 }
                 a = s.substring(0, i).trim();
                 s = s.substring(i + 1, s.length()).trim();
-                cookies.add(new extMrkLngEntry(null, a, p, s));
+                cookies.add(new encXmlEntry(null, a, p, s));
             }
-            headers.add(new extMrkLngEntry(null, a, null, s));
+            headers.add(new encXmlEntry(null, a, null, s));
         }
         if (loc == null) {
             return false;
@@ -497,7 +497,7 @@ public class clntHttp {
         return buf;
     }
 
-    private boolean doDown(uniResLoc src, long pos) {
+    private boolean doDown(encUrl src, long pos) {
         try {
             fr.seek(pos);
         } catch (Exception e) {
@@ -572,7 +572,7 @@ public class clntHttp {
      * @param trg target
      * @return result code
      */
-    public boolean download(uniResLoc src, File trg) {
+    public boolean download(encUrl src, File trg) {
         try {
             trg.createNewFile();
             fr = new RandomAccessFile(trg, "rw");
@@ -610,7 +610,7 @@ public class clntHttp {
      * @param src target
      * @return result code
      */
-    public boolean upload(uniResLoc trg, File src) {
+    public boolean upload(encUrl trg, File src) {
         if (doConnect(trg)) {
             return true;
         }

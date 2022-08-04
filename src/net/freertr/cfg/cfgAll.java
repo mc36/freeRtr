@@ -9,7 +9,7 @@ import net.freertr.addr.addrType;
 import net.freertr.auth.authLocal;
 import net.freertr.clnt.clntNtp;
 import net.freertr.clnt.clntProxy;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyGeneric;
@@ -3574,7 +3574,7 @@ public class cfgAll {
         cmds.cfgLine(l, verCore.release, "", "buggy", "");
         cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc, (filter & 2) != 0));
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));
-        l.add("banner encoded " + cryBase64.encodeBytes(banner));
+        l.add("banner encoded " + encBase64.encodeBytes(banner));
         l.add(cmds.comment);
         l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
         cmds.cfgLine(l, !logger.logMillis, "", "logging milliseconds", "");

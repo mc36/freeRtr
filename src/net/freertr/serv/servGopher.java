@@ -7,6 +7,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFlash;
@@ -14,7 +15,6 @@ import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -85,7 +85,7 @@ public class servGopher extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("path")) {
-            rootFolder = "/" + uniResLoc.normalizePath(cmd.word() + "/");
+            rootFolder = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
         if (s.equals("server")) {
@@ -250,11 +250,11 @@ class servGopherConn implements Runnable {
     public void run() {
         try {
             String s = pipe.lineGet(1);
-            s = uniResLoc.normalizePath(s);
+            s = encUrl.normalizePath(s);
             if (debugger.servGopherTraf) {
                 logger.debug("req " + s);
             }
-            uniResLoc u = uniResLoc.parseOne(s);
+            encUrl u = encUrl.parseOne(s);
             String p = lower.rootFolder + s;
             boolean b = true;
             if (u.toFileName().length() > 0) {

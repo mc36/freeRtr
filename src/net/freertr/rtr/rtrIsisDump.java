@@ -10,7 +10,7 @@ import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis lsp dumper
@@ -30,7 +30,7 @@ public class rtrIsisDump {
      */
     public static void dumpLsp(List<String> l, packHolder pck) {
         pck.getSkip(rtrIsisLsp.headSize);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         for (;;) {
             if (tlv.getBytes(pck)) {
                 break;
@@ -323,7 +323,7 @@ public class rtrIsisDump {
         }
     }
 
-    private static void dumpExtIsReach(List<String> l, typLenVal tlv, int ofs) {
+    private static void dumpExtIsReach(List<String> l, encTlv tlv, int ofs) {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(tlv.valDat, ofs, 0, tlv.valSiz - ofs);
         pck.putSkip(tlv.valSiz - ofs);
@@ -435,7 +435,7 @@ public class rtrIsisDump {
         }
     }
 
-    private static void dumpExtAddrReach(List<String> l, typLenVal tlv, int ofs, int len) {
+    private static void dumpExtAddrReach(List<String> l, encTlv tlv, int ofs, int len) {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(tlv.valDat, ofs, 0, len);
         pck.putSkip(len);
@@ -487,7 +487,7 @@ public class rtrIsisDump {
         }
     }
 
-    private static void dumpRtrCapa(List<String> l, typLenVal tlv, int ofs) {
+    private static void dumpRtrCapa(List<String> l, encTlv tlv, int ofs) {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(tlv.valDat, ofs, 0, tlv.valSiz - ofs);
         pck.putSkip(tlv.valSiz - ofs);

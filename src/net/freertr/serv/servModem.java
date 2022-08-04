@@ -13,6 +13,7 @@ import net.freertr.prt.prtServS;
 import net.freertr.snd.sndCodec;
 import net.freertr.snd.sndCodecG711aLaw;
 import net.freertr.snd.sndCodecG711uLaw;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -21,7 +22,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * modulator demodulator server
@@ -179,7 +179,7 @@ class servModemDoer implements Runnable {
     }
 
     public String getContact() {
-        return "<sip:modem@" + uniResLoc.addr2str(conn.iface.addr, conn.portLoc) + ">";
+        return "<sip:modem@" + encUrl.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
     public sndCodec getCodec() {
@@ -359,7 +359,7 @@ class servModemConn implements Runnable, Comparator<servModemConn> {
         String src = callInv.headerGet("From", 1);
         String trg = callInv.headerGet("To", 1);
         String cid = callInv.headerGet("Call-Id", 1);
-        String cnt = uniResLoc.fromEmail(callInv.headerGet("Contact", 1));
+        String cnt = encUrl.fromEmail(callInv.headerGet("Contact", 1));
         tx.makeReq("BYE", cnt, trg, src, lower.getContact(), via, cid, csq + 1, 0);
         if (debugger.servModemTraf) {
             tx.dump("tx");

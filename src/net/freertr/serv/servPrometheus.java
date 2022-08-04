@@ -9,6 +9,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -16,7 +17,6 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 
 /**
  * prometheus server
@@ -234,7 +234,7 @@ class servPrometheusConn implements Runnable {
                 continue;
             }
         }
-        uniResLoc gotUrl = new uniResLoc();
+        encUrl gotUrl = new encUrl();
         int i = gotCmd.toLowerCase().lastIndexOf(" http/");
         if (i > 0) {
             gotCmd = gotCmd.substring(0, i);

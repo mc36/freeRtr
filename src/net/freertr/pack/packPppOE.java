@@ -1,6 +1,6 @@
 package net.freertr.pack;
 
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ppp over ethernet (rfc2516) client protocol handler
@@ -43,7 +43,7 @@ public class packPppOE {
     /**
      * type length value
      */
-    public final static typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 512, true);
+    public final static encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 512, true);
 
     /**
      * data packet

@@ -5,7 +5,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * dynamic host config protocol (rfc3315) packet
@@ -230,7 +230,7 @@ public class packDhcp6 {
      */
     public String bootUrl;
 
-    private typLenVal tlv = new typLenVal(0, 16, 16, 16, 1, 0, 4, 1, 0, 512, true);
+    private encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 512, true);
 
     private static int hwType = 1;
 

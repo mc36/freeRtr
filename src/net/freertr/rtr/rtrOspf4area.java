@@ -18,10 +18,10 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.util.shrtPthFrst;
+import net.freertr.spf.spfWork;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ospfv2 area
@@ -133,7 +133,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
     /**
      * last spf
      */
-    protected shrtPthFrst<addrIPv4> lastSpf;
+    protected spfWork<addrIPv4> lastSpf;
 
     private final rtrOspf4 lower;
 
@@ -150,7 +150,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
      * @param num area number
      */
     public rtrOspf4area(rtrOspf4 parent, int num) {
-        lastSpf = new shrtPthFrst<addrIPv4>(null);
+        lastSpf = new spfWork<addrIPv4>(null);
         lower = parent;
         area = num;
         lsas = new tabGen<rtrOspf4lsa>();
@@ -517,7 +517,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             return;
         }
         rtrOspfTe.putGenTlv1(pck, nei == null);
-        typLenVal tlv = rtrOspfTe.getTlvHandler();
+        encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valTyp = rtrOspfTe.typLnkId;
         tlv.valSiz = addrIPv4.size;
         if (nei == null) {
@@ -589,7 +589,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         return false;
     }
 
-    private tabRouteEntry<addrIP> parsePrfTlv(typLenVal tlv) {
+    private tabRouteEntry<addrIP> parsePrfTlv(encTlv tlv) {
         if (tlv.valTyp != 1) {
             return null;
         }
@@ -882,7 +882,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             logger.debug("calculate spf on area " + area);
         }
         long tim = bits.getTime() - rtrOspf4lsa.lsaMaxAge + 1;
-        shrtPthFrst<addrIPv4> spf = new shrtPthFrst<addrIPv4>(lastSpf);
+        spfWork<addrIPv4> spf = new spfWork<addrIPv4>(lastSpf);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf4lsa ntry = lsas.get(i);
             if (ntry == null) {
@@ -995,7 +995,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     break;
                 case rtrOspf4lsa.lsaOpArea:
                     if (ntry.lsaID.compare(ntry.lsaID, rtrOspfRi.getOpaque()) == 0) {
-                        typLenVal tlv = rtrOspfTe.getTlvHandler();
+                        encTlv tlv = rtrOspfTe.getTlvHandler();
                         for (;;) {
                             if (tlv.getBytes(pck)) {
                                 break;
@@ -1009,7 +1009,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     if (checkPrfLsa(ntry)) {
                         continue;
                     }
-                    typLenVal tlv = rtrOspfTe.getTlvHandler();
+                    encTlv tlv = rtrOspfTe.getTlvHandler();
                     for (;;) {
                         if (tlv.getBytes(pck)) {
                             break;

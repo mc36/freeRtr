@@ -3,7 +3,7 @@ package net.freertr.ifc;
 import net.freertr.addr.addrMac;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * bridging control protocol (rfc3518) for ppp
@@ -178,7 +178,7 @@ public class ifcPppBrdg extends ifcPppNcp {
      * @param tlv tlv
      * @return false on success, true on error
      */
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         ifcPppBrdgConf cfg = (ifcPppBrdgConf) config;
         switch (tlv.valTyp) {
             case optionBriId:
@@ -224,7 +224,7 @@ public class ifcPppBrdg extends ifcPppNcp {
      */
     public void writeOptions(packHolder pck, Object data) {
         ifcPppBrdgConf dat = (ifcPppBrdgConf) data;
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.bridgeId > 0) {
             bits.msbPutW(buf, 0, dat.bridgeId);

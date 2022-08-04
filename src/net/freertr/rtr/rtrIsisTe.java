@@ -7,7 +7,7 @@ import net.freertr.addr.addrIsis;
 import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * isis traffic engineering
@@ -135,8 +135,8 @@ public class rtrIsisTe {
      * @param lower lower layer to use
      * @return tlv generated
      */
-    protected static typLenVal putAddr(rtrIsis lower) {
-        typLenVal tlv = rtrIsis.getTlv();
+    protected static encTlv putAddr(rtrIsis lower) {
+        encTlv tlv = rtrIsis.getTlv();
         if (lower.fwdCore.ipVersion == ipCor4.protocolVersion) {
             addrIPv4 a = lower.traffEngID.toIPv4();
             tlv.valTyp = rtrIsisLsp.tlvIpv4teId;
@@ -162,7 +162,7 @@ public class rtrIsisTe {
     protected static byte[] putSubs(rtrIsis lower, rtrIsisIface ifc, rtrIsisNeigh nei) {
         int bw = Float.floatToIntBits(ifc.teBandwidth / 8);
         packHolder pck = new packHolder(true, true);
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         tlv.valTyp = typAdminGrp;
         tlv.valSiz = 4;
         bits.msbPutD(tlv.valDat, 0, ifc.teAffinity);
@@ -212,11 +212,11 @@ public class rtrIsisTe {
      * @param srlg srlg
      * @return tlv generated
      */
-    protected static typLenVal putSrlg(rtrIsis lower, addrIsis nei, int nod, addrIP loc, addrIP rem, int srlg) {
+    protected static encTlv putSrlg(rtrIsis lower, addrIsis nei, int nod, addrIP loc, addrIP rem, int srlg) {
         if (rem == null) {
             rem = new addrIP();
         }
-        typLenVal tlv = rtrIsis.getTlv();
+        encTlv tlv = rtrIsis.getTlv();
         nei.toBuffer(tlv.valDat, 0);
         bits.putByte(tlv.valDat, 6, nod);
         bits.putByte(tlv.valDat, 7, 1); // flags

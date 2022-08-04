@@ -1,4 +1,4 @@
-package net.freertr.cry;
+package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
  *
  * @author matecsaba
  */
-public class cryBase64 {
+public class encBase64 {
 
-    private cryBase64() {
+    private encBase64() {
     }
 
     /**

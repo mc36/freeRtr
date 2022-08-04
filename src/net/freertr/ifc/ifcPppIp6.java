@@ -4,7 +4,7 @@ import net.freertr.addr.addrEui;
 import net.freertr.ip.ipIfc6;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ipv4 control protocol (rfc2472) for ppp
@@ -102,7 +102,7 @@ public class ifcPppIp6 extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         ifcPppIp6conf cfg = (ifcPppIp6conf) config;
         switch (tlv.valTyp) {
             case optionIntId:
@@ -119,7 +119,7 @@ public class ifcPppIp6 extends ifcPppNcp {
 
     public void writeOptions(packHolder pck, Object data) {
         ifcPppIp6conf dat = (ifcPppIp6conf) data;
-        typLenVal tlv = getTlv();
+        encTlv tlv = getTlv();
         byte[] buf = new byte[128];
         if (dat.compress > 0) {
             bits.msbPutW(buf, 0, dat.compress);

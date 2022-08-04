@@ -2,7 +2,7 @@ package net.freertr.ifc;
 
 import net.freertr.ipx.ipxIface;
 import net.freertr.pack.packHolder;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * ipx (rfc1552) for ppp
@@ -68,7 +68,7 @@ public class ifcPppIpx extends ifcPppNcp {
         return cfg;
     }
 
-    public boolean readOption(Object config, typLenVal tlv) {
+    public boolean readOption(Object config, encTlv tlv) {
         return true;
     }
 

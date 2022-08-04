@@ -11,7 +11,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntEcho;
 import net.freertr.clnt.clntPing;
 import net.freertr.clnt.clntTwamp;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ip.ipMpls;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -419,7 +419,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             for (int i = 0; i < buf.length; i++) {
                 buf[i] = (byte) bits.randomB();
             }
-            String b = cryBase64.encodeBytes(buf);
+            String b = encBase64.encodeBytes(buf);
             sendLn("password-request " + b);
             cmds cmd = recvLn();
             if (cmd == null) {

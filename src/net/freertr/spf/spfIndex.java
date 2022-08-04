@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.spf;
 
 import java.util.Comparator;
 
@@ -7,7 +7,7 @@ import java.util.Comparator;
  *
  * @author matecsaba
  */
-public class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
+public class spfIndex implements Comparator<spfIndex> {
 
     /**
      * value
@@ -19,7 +19,7 @@ public class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
      *
      * @param i index
      */
-    public shrtPthFrstIdx(int i) {
+    public spfIndex(int i) {
         val = i;
     }
 
@@ -36,7 +36,7 @@ public class shrtPthFrstIdx implements Comparator<shrtPthFrstIdx> {
         return val;
     }
 
-    public int compare(shrtPthFrstIdx o1, shrtPthFrstIdx o2) {
+    public int compare(spfIndex o1, spfIndex o2) {
         if (o1.val < o2.val) {
             return -1;
         }

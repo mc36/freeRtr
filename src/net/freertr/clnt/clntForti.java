@@ -14,10 +14,10 @@ import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
-import net.freertr.util.extMrkLng;
+import net.freertr.enc.encXml;
+import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.version;
 
 /**
@@ -81,7 +81,7 @@ public class clntForti implements Runnable, ifcDn {
 
     private String cookie;
 
-    private uniResLoc url;
+    private encUrl url;
 
     /**
      * get hw address
@@ -222,7 +222,7 @@ public class clntForti implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        url = uniResLoc.parseOne(target);
+        url = encUrl.parseOne(target);
         clntHttp cln = new clntHttp(null, proxy, pubkey, debugger.clntFortiTraf);
         if (cln.doConnect(url)) {
             return;
@@ -241,7 +241,7 @@ public class clntForti implements Runnable, ifcDn {
         cln.doHeaders(url);
         cln.doBody();
         cln.cleanUp();
-        int i = extMrkLng.findParam(cln.cookies, "|svpncookie|");
+        int i = encXml.findParam(cln.cookies, "|svpncookie|");
         if (i < 0) {
             return;
         }

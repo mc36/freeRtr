@@ -20,7 +20,7 @@ import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * implements neighbor (rfc2461) cache
@@ -74,7 +74,7 @@ public class ipIfc6nei implements ifcUp {
 
     private ipIcmp6 icc = new ipIcmp6();
 
-    private typLenVal tlv = ipIcmp6.getTLVreader();
+    private encTlv tlv = ipIcmp6.getTLVreader();
 
     /**
      * get counter

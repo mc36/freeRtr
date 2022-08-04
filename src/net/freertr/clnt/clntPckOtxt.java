@@ -3,7 +3,7 @@ package net.freertr.clnt;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
-import net.freertr.cry.cryBase64;
+import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
@@ -207,7 +207,7 @@ public class clntPckOtxt implements Runnable, ifcDn {
             if (s.length() < 1) {
                 continue;
             }
-            byte[] buf = cryBase64.decodeBytes(s);
+            byte[] buf = encBase64.decodeBytes(s);
             if (buf == null) {
                 continue;
             }
@@ -229,7 +229,7 @@ public class clntPckOtxt implements Runnable, ifcDn {
             return;
         }
         pck.putDefaults();
-        pipe.linePut(cryBase64.encodeBytes(pck.getCopy()));
+        pipe.linePut(encBase64.encodeBytes(pck.getCopy()));
     }
 
 }

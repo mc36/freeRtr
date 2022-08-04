@@ -3,7 +3,7 @@ package net.freertr.pack;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrType;
 import net.freertr.util.bits;
-import net.freertr.util.typLenVal;
+import net.freertr.enc.encTlv;
 
 /**
  * layer two tunneling protocol generic part
@@ -671,7 +671,7 @@ public abstract class packL2tp {
     /**
      * type length value handler
      */
-    protected typLenVal tlv = new typLenVal(18, 30, 6, 10, 1, 6, 6, 1, 0, 1024, true);
+    protected encTlv tlv = new encTlv(18, 30, 6, 10, 1, 6, 6, 1, 0, 1024, true);
 
     /**
      * message type

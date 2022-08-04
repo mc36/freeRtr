@@ -1,4 +1,4 @@
-package net.freertr.util;
+package net.freertr.enc;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import java.util.List;
  *
  * @author matecsaba
  */
-public class markDown {
+public class encMarkDown {
 
-    private markDown() {
+    private encMarkDown() {
     }
 
     /**

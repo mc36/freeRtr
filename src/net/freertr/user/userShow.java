@@ -94,6 +94,7 @@ import net.freertr.serv.servSdwan;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servStreamingMdt;
 import net.freertr.serv.servVxlan;
+import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -117,7 +118,6 @@ import net.freertr.util.differ;
 import net.freertr.util.history;
 import net.freertr.util.logBuf;
 import net.freertr.util.logger;
-import net.freertr.util.uniResLoc;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
 
@@ -2677,7 +2677,7 @@ public class userShow {
         for (int i = 0; i < r.size(); i += 2) {
             s = s.replaceAll(r.get(i + 0), r.get(i + 1));
         }
-        return uniResLoc.percentEncode(s);
+        return encUrl.percentEncode(s);
     }
 
     private List<String> getDashRtr(String u, List<String> r) {
