@@ -93,55 +93,214 @@ public class encThrift {
         data.add(encThriftEntry.genField(num, typ, val));
     }
 
+    private static boolean getHead(encThriftEntry elm, packHolder pck) {
+        if (pck.dataSize() < 1) {
+            return true;
+        }
+        elm.typ = pck.getByte(0);
+        elm.num = pck.msbGetW(1);
+        pck.getSkip(3);
+        return false;
+    }
+
+    private static boolean putHead(encThriftEntry elm, packHolder pck) {
+        pck.putByte(0, elm.typ);
+        pck.msbPutW(1, elm.num);
+        pck.putSkip(3);
+        return false;
+    }
+
+    private static boolean getData(encThriftEntry elm, packHolder pck) {
+        switch (elm.typ) {
+            case encThriftEntry.tpI8:
+            case encThriftEntry.tpBool:
+                elm.val = pck.getByte(0);
+                pck.getSkip(1);
+                return false;
+            case encThriftEntry.tpI16:
+                elm.val = pck.msbGetW(0);
+                pck.getSkip(2);
+                return false;
+            case encThriftEntry.tpI32:
+                elm.val = pck.msbGetD(0);
+                pck.getSkip(4);
+                return false;
+            case encThriftEntry.tpI64:
+            case encThriftEntry.tpDbl:
+                elm.val = pck.msbGetQ(0);
+                pck.getSkip(8);
+                return false;
+            case encThriftEntry.tpBin:
+                elm.dat = new byte[pck.msbGetD(0)];
+                pck.getSkip(4);
+                pck.getCopy(elm.dat, 0, 0, elm.dat.length);
+                pck.getSkip(elm.dat.length);
+                return false;
+            case encThriftEntry.tpEnd:
+                pck.getSkip(-2);
+                return false;
+            case encThriftEntry.tpStr:
+                elm.elm = new ArrayList<encThriftEntry>();
+                for (;;) {
+                    encThriftEntry cur = new encThriftEntry();
+                    if (getHead(cur, pck)) {
+                        return true;
+                    }
+                    if (getData(cur, pck)) {
+                        return true;
+                    }
+                    if (cur.typ == encThriftEntry.tpEnd) {
+                        break;
+                    }
+                    elm.elm.add(cur);
+                }
+                return false;
+            case encThriftEntry.tpLst:
+            case encThriftEntry.tpSet:
+                elm.elm = new ArrayList<encThriftEntry>();
+                elm.typV = pck.getByte(0);
+                int len = pck.msbGetD(1);
+                pck.getSkip(5);
+                for (int i = 0; i < len; i++) {
+                    encThriftEntry cur = new encThriftEntry();
+                    cur.typ = elm.typV;
+                    cur.num = i;
+                    if (getData(cur, pck)) {
+                        return true;
+                    }
+                    elm.elm.add(cur);
+                }
+                return false;
+            case encThriftEntry.tpMap:
+                elm.elm = new ArrayList<encThriftEntry>();
+                elm.typK = pck.getByte(0);
+                elm.typV = pck.getByte(1);
+                len = pck.msbGetD(2);
+                pck.getSkip(6);
+                for (int i = 0; i < len; i++) {
+                    encThriftEntry cur = new encThriftEntry();
+                    cur.typ = elm.typK;
+                    cur.num = i;
+                    if (getData(cur, pck)) {
+                        return true;
+                    }
+                    elm.elm.add(cur);
+                    cur = new encThriftEntry();
+                    cur.typ = elm.typV;
+                    cur.num = i;
+                    if (getData(cur, pck)) {
+                        return true;
+                    }
+                    elm.elm.add(cur);
+                }
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    private static boolean putData(encThriftEntry elm, packHolder pck) {
+        switch (elm.typ) {
+            case encThriftEntry.tpI8:
+            case encThriftEntry.tpBool:
+                pck.putByte(0, (int) elm.val);
+                pck.putSkip(1);
+                return false;
+            case encThriftEntry.tpI16:
+                pck.msbPutW(0, (int) elm.val);
+                pck.putSkip(2);
+                return false;
+            case encThriftEntry.tpI32:
+                pck.msbPutD(0, (int) elm.val);
+                pck.putSkip(4);
+                return false;
+            case encThriftEntry.tpI64:
+            case encThriftEntry.tpDbl:
+                pck.msbPutQ(0, elm.val);
+                pck.putSkip(8);
+                return false;
+            case encThriftEntry.tpBin:
+                pck.msbPutD(0, elm.dat.length);
+                pck.putSkip(4);
+                pck.putCopy(elm.dat, 0, 0, elm.dat.length);
+                pck.putSkip(elm.dat.length);
+                return false;
+            case encThriftEntry.tpEnd:
+                pck.putSkip(-2);
+                return false;
+            case encThriftEntry.tpStr:
+                for (int i = 0; i < elm.elm.size(); i++) {
+                    encThriftEntry cur = elm.elm.get(i);
+                    if (putHead(cur, pck)) {
+                        return true;
+                    }
+                    if (putData(cur, pck)) {
+                        return true;
+                    }
+                    pck.merge2end();
+                }
+                pck.putByte(0, encThriftEntry.tpEnd);
+                pck.putSkip(1);
+                return false;
+            case encThriftEntry.tpLst:
+            case encThriftEntry.tpSet:
+                int len = elm.elm.size();
+                pck.putByte(0, elm.typV);
+                pck.msbPutD(1, len);
+                pck.putSkip(5);
+                for (int i = 0; i < len; i++) {
+                    encThriftEntry cur = elm.elm.get(i);
+                    if (cur.typ != elm.typV) {
+                        return true;
+                    }
+                    if (putData(cur, pck)) {
+                        return true;
+                    }
+                    pck.merge2end();
+                }
+                return false;
+            case encThriftEntry.tpMap:
+                len = elm.elm.size() / 2;
+                pck.putByte(0, elm.typK);
+                pck.putByte(1, elm.typV);
+                pck.msbPutD(2, len);
+                pck.putSkip(6);
+                for (int i = 0; i < len; i++) {
+                    encThriftEntry cur = elm.elm.get(i * 2);
+                    if (cur.typ != elm.typK) {
+                        return true;
+                    }
+                    if (putData(cur, pck)) {
+                        return true;
+                    }
+                    cur = elm.elm.get((i * 2) + 1);
+                    if (cur.typ != elm.typV) {
+                        return true;
+                    }
+                    if (putData(cur, pck)) {
+                        return true;
+                    }
+                    pck.merge2end();
+                }
+                return false;
+            default:
+                return true;
+        }
+    }
+
     /**
      * get key value pair
      *
      * @param pck packet to read
-     * @return kv pair, null if error happened
+     * @return element, null if error happened
      */
-    public static encThriftEntry getStruct(packHolder pck) {
-        if (pck.dataSize() < 1) {
+    public static encThriftEntry getEntry(packHolder pck) {
+        encThriftEntry res = new encThriftEntry();
+        if (getHead(res, pck)) {
             return null;
         }
-        encThriftEntry res = new encThriftEntry();
-        res.typ = pck.getByte(0);
-        res.num = pck.msbGetW(1);
-        pck.getSkip(3);
-        switch (res.typ) {
-            case encThriftEntry.tpI8:
-                res.val = pck.getByte(0);
-                pck.getSkip(1);
-                break;
-            case encThriftEntry.tpI16:
-                res.val = pck.msbGetW(0);
-                pck.getSkip(2);
-                break;
-            case encThriftEntry.tpI32:
-                res.val = pck.msbGetD(0);
-                pck.getSkip(4);
-                break;
-            case encThriftEntry.tpI64:
-                res.val = pck.msbGetQ(0);
-                pck.getSkip(8);
-                break;
-            case encThriftEntry.tpBool:
-                res.val = pck.getByte(0);
-                pck.getSkip(1);
-                break;
-            case encThriftEntry.tpDbl:
-                res.val = pck.msbGetQ(0);
-                pck.getSkip(8);
-                break;
-            case encThriftEntry.tpBin:
-                res.dat = new byte[pck.msbGetD(0)];
-                pck.getSkip(4);
-                pck.getCopy(res.dat, 0, 0, res.dat.length);
-                pck.getSkip(res.dat.length);
-                break;
-            case encThriftEntry.tpEnd:
-                break;
-            default:
-                return null;
+        if (getData(res, pck)) {
+            return null;
         }
         return res;
     }
@@ -150,47 +309,14 @@ public class encThrift {
      * get key value pair
      *
      * @param pck packet to read
-     * @param kv kv pair
+     * @param elm element
      * @return false on success, true on error
      */
-    public static boolean putStruct(packHolder pck, encThriftEntry kv) {
-        pck.putByte(0, kv.typ);
-        pck.msbPutW(1, kv.num);
-        switch (kv.typ) {
-            case encThriftEntry.tpI8:
-                pck.putByte(0, (int) kv.val);
-                pck.putSkip(1);
-                break;
-            case encThriftEntry.tpI16:
-                pck.msbPutW(0, (int) kv.val);
-                pck.putSkip(2);
-                break;
-            case encThriftEntry.tpI32:
-                pck.msbPutD(0, (int) kv.val);
-                pck.putSkip(4);
-                break;
-            case encThriftEntry.tpI64:
-                pck.msbPutQ(0, kv.val);
-                pck.putSkip(8);
-                break;
-            case encThriftEntry.tpBool:
-                pck.putByte(0, (int) kv.val);
-                pck.putSkip(1);
-                break;
-            case encThriftEntry.tpDbl:
-                pck.msbPutQ(0, kv.val);
-                pck.putSkip(8);
-                break;
-            case encThriftEntry.tpBin:
-                pck.msbPutD(0, kv.dat.length);
-                pck.putSkip(4);
-                pck.putCopy(kv.dat, 0, 0, kv.dat.length);
-                pck.putSkip(kv.dat.length);
-                break;
-            default:
-                return true;
+    public static boolean putEntry(packHolder pck, encThriftEntry elm) {
+        if (putHead(elm, pck)) {
+            return true;
         }
-        return false;
+        return putData(elm, pck);
     }
 
     /**
@@ -203,7 +329,7 @@ public class encThrift {
         orig = pck;
         int os = pck.dataSize();
         for (;;) {
-            encThriftEntry res = getStruct(pck);
+            encThriftEntry res = getEntry(pck);
             if (res == null) {
                 break;
             }
@@ -235,7 +361,7 @@ public class encThrift {
      */
     public void toPacket(packHolder pck) {
         for (int i = 0; i < data.size(); i++) {
-            putStruct(pck, data.get(i));
+            putEntry(pck, data.get(i));
             pck.merge2end();
         }
     }

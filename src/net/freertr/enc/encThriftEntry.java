@@ -88,6 +88,16 @@ class encThriftEntry {
     public int typ;
 
     /**
+     * key type
+     */
+    public int typK;
+
+    /**
+     * value type
+     */
+    public int typV;
+
+    /**
      * field id
      */
     public int num;
@@ -109,10 +119,17 @@ class encThriftEntry {
 
     public String toString() {
         String a = "num=" + num + " typ=" + typ + " val=";
-        if (dat == null) {
+        if (dat != null) {
+            return a + bits.byteDump(dat, 0, -1);
+        }
+        if (elm == null) {
             return a + val;
         }
-        return a + bits.byteDump(dat, 0, -1);
+        a += "(";
+        for (int i = 0; i < elm.size(); i++) {
+            a += " " + elm.get(i);
+        }
+        return a + ")";
     }
 
     /**
