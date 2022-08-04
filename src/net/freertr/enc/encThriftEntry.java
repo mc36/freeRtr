@@ -2,7 +2,6 @@ package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
 
 /**

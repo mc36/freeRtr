@@ -154,7 +154,43 @@ public class encThrift {
      * @return false on success, true on error
      */
     public static boolean putStruct(packHolder pck, encThriftEntry kv) {
-        return true;///////////
+        pck.putByte(0, kv.typ);
+        pck.msbPutW(1, kv.num);
+        switch (kv.typ) {
+            case encThriftEntry.tpI8:
+                pck.putByte(0, (int) kv.val);
+                pck.putSkip(1);
+                break;
+            case encThriftEntry.tpI16:
+                pck.msbPutW(0, (int) kv.val);
+                pck.putSkip(2);
+                break;
+            case encThriftEntry.tpI32:
+                pck.msbPutD(0, (int) kv.val);
+                pck.putSkip(4);
+                break;
+            case encThriftEntry.tpI64:
+                pck.msbPutQ(0, kv.val);
+                pck.putSkip(8);
+                break;
+            case encThriftEntry.tpBool:
+                pck.putByte(0, (int) kv.val);
+                pck.putSkip(1);
+                break;
+            case encThriftEntry.tpDbl:
+                pck.msbPutQ(0, kv.val);
+                pck.putSkip(8);
+                break;
+            case encThriftEntry.tpBin:
+                pck.msbPutD(0, kv.dat.length);
+                pck.putSkip(4);
+                pck.putCopy(kv.dat, 0, 0, kv.dat.length);
+                pck.putSkip(kv.dat.length);
+                break;
+            default:
+                return true;
+        }
+        return false;
     }
 
     /**
