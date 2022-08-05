@@ -852,6 +852,10 @@ public abstract class rtrBgpParam {
         if ((i & bth) == bth) {
             i -= mskUni;
         }
+        bth = mskUni | mskCtp;
+        if ((i & bth) == bth) {
+            i -= mskUni;
+        }
         bth = mskCtp | mskLab;
         if ((i & bth) == bth) {
             i -= mskCtp;
@@ -860,11 +864,19 @@ public abstract class rtrBgpParam {
         if ((i & bth) == bth) {
             i -= mskOtrU;
         }
+        bth = mskOtrU | mskOtrC;
+        if ((i & bth) == bth) {
+            i -= mskOtrU;
+        }
         bth = mskOtrC | mskOtrL;
         if ((i & bth) == bth) {
             i -= mskOtrC;
         }
         return i;
+    }
+
+    private static int exclusiveBits(int a, int b) {
+        return a;
     }
 
     /**
