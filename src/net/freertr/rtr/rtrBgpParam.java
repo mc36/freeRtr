@@ -848,35 +848,23 @@ public abstract class rtrBgpParam {
                 i |= mskOtrS;
             }
         }
-        int bth = mskUni | mskLab;
-        if ((i & bth) == bth) {
-            i -= mskUni;
-        }
-        bth = mskUni | mskCtp;
-        if ((i & bth) == bth) {
-            i -= mskUni;
-        }
-        bth = mskCtp | mskLab;
-        if ((i & bth) == bth) {
-            i -= mskCtp;
-        }
-        bth = mskOtrU | mskOtrL;
-        if ((i & bth) == bth) {
-            i -= mskOtrU;
-        }
-        bth = mskOtrU | mskOtrC;
-        if ((i & bth) == bth) {
-            i -= mskOtrU;
-        }
-        bth = mskOtrC | mskOtrL;
-        if ((i & bth) == bth) {
-            i -= mskOtrC;
-        }
+        i = exclusiveMsk(i, mskUni, mskLab);
+        i = exclusiveMsk(i, mskUni, mskCtp);
+        i = exclusiveMsk(i, mskLab, mskCtp);
+        i = exclusiveMsk(i, mskOtrU, mskOtrL);
+        i = exclusiveMsk(i, mskOtrU, mskOtrC);
+        i = exclusiveMsk(i, mskOtrL, mskOtrC);
         return i;
     }
 
-    private static int exclusiveBits(int a, int b) {
-        return a;
+    private static int exclusiveMsk(int cur, int bck, int pri) {
+        if ((cur & bck) == 0) {
+            return cur;
+        }
+        if ((cur & pri) == 0) {
+            return cur;
+        }
+        return cur - bck;
     }
 
     /**
