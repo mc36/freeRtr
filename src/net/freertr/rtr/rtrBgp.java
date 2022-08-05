@@ -889,7 +889,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiCtp = rtrBgpUtil.safiIp4ctp;
                 afiMlt = rtrBgpUtil.safiIp4multi;
                 afiOtrL = rtrBgpUtil.safiIp6lab;
-                afiOtrC = rtrBgpUtil.safiIp4ctp;
+                afiOtrC = rtrBgpUtil.safiIp6ctp;
                 afiOtrU = rtrBgpUtil.safiIp6uni;
                 afiOtrM = rtrBgpUtil.safiIp6multi;
                 afiOtrF = rtrBgpUtil.safiIp6flow;
@@ -920,7 +920,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiCtp = rtrBgpUtil.safiIp6ctp;
                 afiMlt = rtrBgpUtil.safiIp6multi;
                 afiOtrL = rtrBgpUtil.safiIp4lab;
-                afiOtrC = rtrBgpUtil.safiIp6ctp;
+                afiOtrC = rtrBgpUtil.safiIp4ctp;
                 afiOtrU = rtrBgpUtil.safiIp4uni;
                 afiOtrM = rtrBgpUtil.safiIp4multi;
                 afiOtrF = rtrBgpUtil.safiIp4flow;

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.8.5-cur, done by cs@nop.
--;-;-;2022-08-05 06:02:44, took 00:08:24, with 80 workers, on 2954 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2022-08-05 07:30:20, took 00:08:38, with 80 workers, on 3018 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1327,6 +1327,8 @@ http://sources.freertr.org/cfg/mpls-sr10.tst;mpls-sr10.tst;success;sr te over mp
 http://sources.freertr.org/cfg/mpls-sr11.tst;mpls-sr11.tst;success;sr te over exthdr
 http://sources.freertr.org/cfg/mpls-sr12.tst;mpls-sr12.tst;success;bgp with php labels over sr
 http://sources.freertr.org/cfg/mpls-sr13.tst;mpls-sr13.tst;success;sr te with pcep
+http://sources.freertr.org/cfg/mpls-sr14.tst;mpls-sr14.tst;success;bgp with ctp over sr
+http://sources.freertr.org/cfg/mpls-sr15.tst;mpls-sr15.tst;success;bgp with php ctp over sr
 http://sources.freertr.org/cfg/mpls-te01.tst;mpls-te01.tst;success;te over ethernet
 http://sources.freertr.org/cfg/mpls-te02.tst;mpls-te02.tst;success;te over ethernet vlan
 http://sources.freertr.org/cfg/mpls-te03.tst;mpls-te03.tst;success;te over ethernet bridge
@@ -2506,6 +2508,66 @@ http://sources.freertr.org/cfg/rout-bgp601.tst;rout-bgp601.tst;success;bgp unkno
 http://sources.freertr.org/cfg/rout-bgp602.tst;rout-bgp602.tst;success;bgp unknown attribute egress
 http://sources.freertr.org/cfg/rout-bgp603.tst;rout-bgp603.tst;success;bgp routemap filtering with unknown attribute
 http://sources.freertr.org/cfg/rout-bgp604.tst;rout-bgp604.tst;success;bgp routepolicy filtering with unknown attribute
+http://sources.freertr.org/cfg/rout-bgp605.tst;rout-bgp605.tst;success;ebgp with ctp
+http://sources.freertr.org/cfg/rout-bgp606.tst;rout-bgp606.tst;success;ibgp with ctp
+http://sources.freertr.org/cfg/rout-bgp607.tst;rout-bgp607.tst;success;bgp additional path with ctp
+http://sources.freertr.org/cfg/rout-bgp608.tst;rout-bgp608.tst;success;ebgp with php ctp
+http://sources.freertr.org/cfg/rout-bgp609.tst;rout-bgp609.tst;success;ibgp with php ctp
+http://sources.freertr.org/cfg/rout-bgp610.tst;rout-bgp610.tst;success;bgp additional path with php ctp
+http://sources.freertr.org/cfg/rout-bgp611.tst;rout-bgp611.tst;success;ibgp rr with ctp
+http://sources.freertr.org/cfg/rout-bgp612.tst;rout-bgp612.tst;success;confed bgp with ctp
+http://sources.freertr.org/cfg/rout-bgp613.tst;rout-bgp613.tst;success;bgp route server with ctp
+http://sources.freertr.org/cfg/rout-bgp614.tst;rout-bgp614.tst;success;bgp soft-reconfig with ctp
+http://sources.freertr.org/cfg/rout-bgp615.tst;rout-bgp615.tst;success;ctp bgp ingress route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-bgp616.tst;rout-bgp616.tst;success;ctp bgp egress route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-bgp617.tst;rout-bgp617.tst;success;ctp bgp ingress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp618.tst;rout-bgp618.tst;success;ctp bgp egress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp619.tst;rout-bgp619.tst;success;ctp bgp ingress route filtering with prefixlist with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp620.tst;rout-bgp620.tst;success;ctp bgp egress route filtering with prefixlist with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp621.tst;rout-bgp621.tst;success;ctp bgp ingress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp622.tst;rout-bgp622.tst;success;ctp bgp egress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp623.tst;rout-bgp623.tst;success;ctp bgp ingress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp624.tst;rout-bgp624.tst;success;ctp bgp egress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp625.tst;rout-bgp625.tst;success;ctp bgp ingress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp626.tst;rout-bgp626.tst;success;ctp bgp egress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp627.tst;rout-bgp627.tst;success;ctp bgp default route
+http://sources.freertr.org/cfg/rout-bgp628.tst;rout-bgp628.tst;success;ctp bgp aggregation
+http://sources.freertr.org/cfg/rout-bgp629.tst;rout-bgp629.tst;success;bgp change in metric with ctp
+http://sources.freertr.org/cfg/rout-bgp630.tst;rout-bgp630.tst;success;ibgp rr prefix movement with ctp
+http://sources.freertr.org/cfg/rout-bgp631.tst;rout-bgp631.tst;success;ibgp rr prefix withdraw with ctp
+http://sources.freertr.org/cfg/rout-bgp632.tst;rout-bgp632.tst;success;unicast+octp over ebgp
+http://sources.freertr.org/cfg/rout-bgp633.tst;rout-bgp633.tst;success;unicast+octp over bgp with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp634.tst;rout-bgp634.tst;success;unicast+octp over bgp with additional path
+http://sources.freertr.org/cfg/rout-bgp635.tst;rout-bgp635.tst;success;unicast+octp over bgp route server
+http://sources.freertr.org/cfg/rout-bgp636.tst;rout-bgp636.tst;success;unicast+octp over ibgp
+http://sources.freertr.org/cfg/rout-bgp637.tst;rout-bgp637.tst;success;unicast+octp over ibgp rr
+http://sources.freertr.org/cfg/rout-bgp638.tst;rout-bgp638.tst;success;unicast+octp over confed bgp
+http://sources.freertr.org/cfg/rout-bgp639.tst;rout-bgp639.tst;success;octp over srv6 over ibgp
+http://sources.freertr.org/cfg/rout-bgp640.tst;rout-bgp640.tst;success;octp over srv6 over ebgp
+http://sources.freertr.org/cfg/rout-bgp641.tst;rout-bgp641.tst;success;octp over srv6 over ibgp rr
+http://sources.freertr.org/cfg/rout-bgp642.tst;rout-bgp642.tst;success;octp over srv6 over confed bgp
+http://sources.freertr.org/cfg/rout-bgp643.tst;rout-bgp643.tst;success;octp over srv6 over bgp route server
+http://sources.freertr.org/cfg/rout-bgp644.tst;rout-bgp644.tst;success;octp over srv6 over bgp with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp645.tst;rout-bgp645.tst;success;octp over srv6 over bgp additional path
+http://sources.freertr.org/cfg/rout-bgp646.tst;rout-bgp646.tst;success;octp bgp default route
+http://sources.freertr.org/cfg/rout-bgp647.tst;rout-bgp647.tst;success;octp bgp ingress route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-bgp648.tst;rout-bgp648.tst;success;octp bgp egress route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-bgp649.tst;rout-bgp649.tst;success;octp bgp ingress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp650.tst;rout-bgp650.tst;success;octp bgp egress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp651.tst;rout-bgp651.tst;success;octp bgp ingress route filtering with prefixlist with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp652.tst;rout-bgp652.tst;success;octp bgp egress route filtering with prefixlist with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp653.tst;rout-bgp653.tst;success;octp bgp ingress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp654.tst;rout-bgp654.tst;success;octp bgp egress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp655.tst;rout-bgp655.tst;success;octp bgp ingress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp656.tst;rout-bgp656.tst;success;octp bgp egress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp657.tst;rout-bgp657.tst;success;octp bgp ingress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp658.tst;rout-bgp658.tst;success;octp bgp egress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp659.tst;rout-bgp659.tst;success;octp bgp aggregation
+http://sources.freertr.org/cfg/rout-bgp660.tst;rout-bgp660.tst;success;octp bgp change in metric
+http://sources.freertr.org/cfg/rout-bgp661.tst;rout-bgp661.tst;success;octp ibgp rr prefix movement
+http://sources.freertr.org/cfg/rout-bgp662.tst;rout-bgp662.tst;success;octp ibgp rr prefix withdraw
+http://sources.freertr.org/cfg/rout-bgp663.tst;rout-bgp663.tst;success;octp ibgp fullmesh prefix withdraw
+http://sources.freertr.org/cfg/rout-bgp664.tst;rout-bgp664.tst;success;olab+octp over ebgp
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain
@@ -2882,6 +2944,8 @@ http://sources.freertr.org/cfg/rout-redist37.tst;rout-redist37.tst;success;redis
 http://sources.freertr.org/cfg/rout-redist38.tst;rout-redist38.tst;success;redistribution filtering with accesslist in routepolicy
 http://sources.freertr.org/cfg/rout-redist39.tst;rout-redist39.tst;success;redistribution filtering with routepolicy in routemap
 http://sources.freertr.org/cfg/rout-redist40.tst;rout-redist40.tst;success;redistribution filtering with routemap in routepolicy
+http://sources.freertr.org/cfg/rout-redist41.tst;rout-redist41.tst;success;redistribution with bgp ctp
+http://sources.freertr.org/cfg/rout-redist42.tst;rout-redist42.tst;success;redistribution with octp bgp
 http://sources.freertr.org/cfg/rout-rip01.tst;rout-rip01.tst;success;rip on one subnet
 http://sources.freertr.org/cfg/rout-rip02.tst;rout-rip02.tst;success;rip in chain
 http://sources.freertr.org/cfg/rout-rip03.tst;rout-rip03.tst;success;rip ingress route filtering with prefixlist
