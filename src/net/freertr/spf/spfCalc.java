@@ -595,7 +595,7 @@ public class spfCalc<Ta extends addrType> {
      * @param to target node, null to every node
      * @return false on success, true on error
      */
-    public boolean doCalc(Ta from, Ta to) {
+    public boolean doWork(Ta from, Ta to) {
         tim2 = bits.getTime();
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);

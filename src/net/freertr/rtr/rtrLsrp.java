@@ -567,7 +567,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doCalc(ned, null);
+        spf.doWork(ned, null);
         return spf.listTree();
     }
 
@@ -581,7 +581,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doCalc(ned, null);
+        spf.doWork(ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }
@@ -777,7 +777,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             ntry.put2spf(spf, distance);
         }
-        spf.doCalc(routerID, null);
+        spf.doWork(routerID, null);
         tabGen<tabIndex<addrIP>> segrouUsd = null;
         if (segrouLab != null) {
             segrouUsd = new tabGen<tabIndex<addrIP>>();
