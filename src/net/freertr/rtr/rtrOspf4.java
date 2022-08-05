@@ -31,7 +31,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 
 /**
@@ -1006,7 +1006,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return new ArrayList<String>();
         }
-        spfWork<addrIPv4> spf = ara.lastSpf.copyBytes();
+        spfCalc<addrIPv4> spf = ara.lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
@@ -1026,7 +1026,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        spfWork<addrIPv4> spf = ara.lastSpf.copyBytes();
+        spfCalc<addrIPv4> spf = ara.lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);

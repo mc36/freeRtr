@@ -22,7 +22,7 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 
 /**
  * p4lang server
@@ -265,7 +265,7 @@ public class servP4lang extends servGeneric implements prtServS {
         }
         for (int i = 0; i < fwds.size(); i++) {
             servP4langCfg cur = fwds.get(i);
-            cur.bckplnSpf = new spfWork<addrIP>(null);
+            cur.bckplnSpf = new spfCalc<addrIP>(null);
         }
         dscvry = new servP4langDcvr(this);
         dscvry.doCalc();

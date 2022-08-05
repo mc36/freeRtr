@@ -18,7 +18,7 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
@@ -133,7 +133,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
     /**
      * last spf
      */
-    protected spfWork<addrIPv4> lastSpf;
+    protected spfCalc<addrIPv4> lastSpf;
 
     private final rtrOspf4 lower;
 
@@ -150,7 +150,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
      * @param num area number
      */
     public rtrOspf4area(rtrOspf4 parent, int num) {
-        lastSpf = new spfWork<addrIPv4>(null);
+        lastSpf = new spfCalc<addrIPv4>(null);
         lower = parent;
         area = num;
         lsas = new tabGen<rtrOspf4lsa>();
@@ -882,7 +882,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             logger.debug("calculate spf on area " + area);
         }
         long tim = bits.getTime() - rtrOspf4lsa.lsaMaxAge + 1;
-        spfWork<addrIPv4> spf = new spfWork<addrIPv4>(lastSpf);
+        spfCalc<addrIPv4> spf = new spfCalc<addrIPv4>(lastSpf);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf4lsa ntry = lsas.get(i);
             if (ntry == null) {

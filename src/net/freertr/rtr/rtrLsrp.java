@@ -40,7 +40,7 @@ import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.util.version;
@@ -205,7 +205,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * last spf
      */
-    protected spfWork<addrIPv4> lastSpf;
+    protected spfCalc<addrIPv4> lastSpf;
 
     private boolean need2run = true;
 
@@ -235,7 +235,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 break;
         }
         database = new tabGen<rtrLsrpData>();
-        lastSpf = new spfWork<addrIPv4>(null);
+        lastSpf = new spfCalc<addrIPv4>(null);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
         new Thread(this).start();
@@ -564,7 +564,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return tree of spf
      */
     public List<String> showSpfOtherTree(cmds cmd) {
-        spfWork<addrIPv4> spf = lastSpf.copyBytes();
+        spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
@@ -578,7 +578,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return log of spf
      */
     public userFormat showSpfOtherTopo(cmds cmd) {
-        spfWork<addrIPv4> spf = lastSpf.copyBytes();
+        spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
@@ -769,7 +769,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             database.del(ntry);
         }
-        spfWork<addrIPv4> spf = new spfWork<addrIPv4>(lastSpf);
+        spfCalc<addrIPv4> spf = new spfCalc<addrIPv4>(lastSpf);
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
             if (ntry == null) {

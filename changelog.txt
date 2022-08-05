@@ -13511,3 +13511,6 @@ qc pass: octp ibgp fullmesh prefix withdraw
 qc pass: olab+octp over ebgp
 qc pass: redistribution with bgp ctp
 qc pass: redistribution with octp bgp
+---------------------------------- 2022-08-05 07:48:52 22.8.5
+qc pass: interop9: bgp with ctp
+qc pass: interop9: bgp with php ctp

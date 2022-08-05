@@ -22,7 +22,7 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
@@ -212,7 +212,7 @@ public class rtrIsisLevel implements Runnable {
     /**
      * last spf
      */
-    protected spfWork<rtrIsisLevelSpf> lastSpf;
+    protected spfCalc<rtrIsisLevelSpf> lastSpf;
 
     /**
      * segment routing usage
@@ -239,7 +239,7 @@ public class rtrIsisLevel implements Runnable {
      * @param lev level number
      */
     public rtrIsisLevel(rtrIsis parent, int lev) {
-        lastSpf = new spfWork<rtrIsisLevelSpf>(null);
+        lastSpf = new spfCalc<rtrIsisLevelSpf>(null);
         lower = parent;
         level = lev;
         lsps = new tabGen<rtrIsisLsp>();
@@ -845,7 +845,7 @@ public class rtrIsisLevel implements Runnable {
         } else {
             segrouUsd = null;
         }
-        spfWork<rtrIsisLevelSpf> spf = new spfWork<rtrIsisLevelSpf>(lastSpf);
+        spfCalc<rtrIsisLevelSpf> spf = new spfCalc<rtrIsisLevelSpf>(lastSpf);
         boolean needAttach = (!lower.haveNeighbor(2)) && attachedAlw;
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp lsp = lsps.get(i);

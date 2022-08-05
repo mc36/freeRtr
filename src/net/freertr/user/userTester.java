@@ -19,7 +19,7 @@ import net.freertr.tab.tabIntMatcher;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.syncInt;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
@@ -1690,9 +1690,9 @@ class userTesterOne {
                 }
             }
         }
-        l.add(spfWork.graphBeg1);
-        l.add(spfWork.graphBeg2);
-        l.add(spfWork.graphBeg3);
+        l.add(spfCalc.graphBeg1);
+        l.add(spfCalc.graphBeg2);
+        l.add(spfCalc.graphBeg3);
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
             l.add("//" + p.name);
@@ -1704,8 +1704,8 @@ class userTesterOne {
                 l.add("  " + p.name + " -- " + c.perP.name + " [weight=10] [taillabel=" + c.ifc + "] [headlabel=" + c.perC.ifc + "]");
             }
         }
-        l.add(spfWork.graphEnd1);
-        l.add(spfWork.graphEnd2);
+        l.add(spfCalc.graphEnd1);
+        l.add(spfCalc.graphEnd2);
         bits.buf2txt(true, l, path + fileName + ".dot");
     }
 

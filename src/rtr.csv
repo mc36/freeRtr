@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.8.5-cur, done by cs@nop.
--;-;-;2022-08-05 07:30:20, took 00:08:38, with 80 workers, on 3018 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2022-08-05 07:57:24, took 00:08:32, with 80 workers, on 3020 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1140,6 +1140,8 @@ http://sources.freertr.org/cfg/intop9-bgp16.tst;intop9-bgp16.tst;success;interop
 http://sources.freertr.org/cfg/intop9-bgp17.tst;intop9-bgp17.tst;success;interop9: bgp large community
 http://sources.freertr.org/cfg/intop9-bgp18.tst;intop9-bgp18.tst;success;interop9: bgp with php labels
 http://sources.freertr.org/cfg/intop9-bgp19.tst;intop9-bgp19.tst;success;interop9: bgp ao authentication
+http://sources.freertr.org/cfg/intop9-bgp20.tst;intop9-bgp20.tst;success;interop9: bgp with ctp
+http://sources.freertr.org/cfg/intop9-bgp21.tst;intop9-bgp21.tst;success;interop9: bgp with php ctp
 http://sources.freertr.org/cfg/intop9-eth01.tst;intop9-eth01.tst;success;interop9: ethernet encapsulation
 http://sources.freertr.org/cfg/intop9-eth02.tst;intop9-eth02.tst;success;interop9: dot1q encapsulation
 http://sources.freertr.org/cfg/intop9-eth03.tst;intop9-eth03.tst;success;interop9: fragmentation and reassembly

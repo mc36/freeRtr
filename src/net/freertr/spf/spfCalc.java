@@ -38,7 +38,7 @@ import net.freertr.util.syncInt;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class spfWork<Ta extends addrType> {
+public class spfCalc<Ta extends addrType> {
 
     /**
      * beginning of graph
@@ -81,7 +81,7 @@ public class spfWork<Ta extends addrType> {
 
     private spfNode<Ta> spfRoot;
 
-    private spfWork<Ta> prev;
+    private spfCalc<Ta> prev;
 
     /**
      * log size
@@ -114,7 +114,7 @@ public class spfWork<Ta extends addrType> {
      *
      * @param old old spf
      */
-    public spfWork(spfWork<Ta> old) {
+    public spfCalc(spfCalc<Ta> old) {
         tim1 = bits.getTime();
         nodes = new tabGen<spfNode<Ta>>();
         if (old == null) {
@@ -222,8 +222,8 @@ public class spfWork<Ta extends addrType> {
      *
      * @return copy
      */
-    public spfWork<Ta> copyBytes() {
-        spfWork<Ta> res = new spfWork<Ta>(this);
+    public spfCalc<Ta> copyBytes() {
+        spfCalc<Ta> res = new spfCalc<Ta>(this);
         res.bidir.set(bidir.get());
         res.hops.set(hops.get());
         res.ecmp.set(ecmp.get());

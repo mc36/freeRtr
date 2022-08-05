@@ -19,7 +19,7 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
@@ -139,7 +139,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
     /**
      * last spf
      */
-    protected spfWork<rtrOspf6areaSpf> lastSpf;
+    protected spfCalc<rtrOspf6areaSpf> lastSpf;
 
     private final rtrOspf6 lower;
 
@@ -156,7 +156,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
      * @param num area number
      */
     public rtrOspf6area(rtrOspf6 parent, int num) {
-        lastSpf = new spfWork<rtrOspf6areaSpf>(null);
+        lastSpf = new spfCalc<rtrOspf6areaSpf>(null);
         lower = parent;
         area = num;
         lsas = new tabGen<rtrOspf6lsa>();
@@ -1002,7 +1002,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             logger.debug("calculate spf on area " + area);
         }
         long tim = bits.getTime() - rtrOspf6lsa.lsaMaxAge + 1;
-        spfWork<rtrOspf6areaSpf> spf = new spfWork<rtrOspf6areaSpf>(lastSpf);
+        spfCalc<rtrOspf6areaSpf> spf = new spfCalc<rtrOspf6areaSpf>(lastSpf);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf6lsa ntry = lsas.get(i);
             if (ntry == null) {

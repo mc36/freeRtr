@@ -59,7 +59,7 @@ public class encUrl {
     /**
      * parameters
      */
-    public List<uniResLocPar> param;
+    public List<encUrlPar> param;
 
     /**
      * address to string
@@ -93,7 +93,7 @@ public class encUrl {
         filPath = "";
         filName = "";
         filExt = "";
-        param = new ArrayList<uniResLocPar>();
+        param = new ArrayList<encUrlPar>();
         username = "";
         password = "";
     }
@@ -231,7 +231,7 @@ public class encUrl {
                 s = pars.substring(0, i);
                 pars = pars.substring(i + 1, pars.length());
             }
-            uniResLocPar ntry = new uniResLocPar();
+            encUrlPar ntry = new encUrlPar();
             i = s.indexOf("=");
             if (i < 0) {
                 ntry.nam = percentUncode(s);
@@ -316,7 +316,7 @@ public class encUrl {
      * @param val value
      */
     public void addParam(String nam, String val) {
-        uniResLocPar ntry = new uniResLocPar();
+        encUrlPar ntry = new encUrlPar();
         ntry.nam = nam;
         ntry.val = val;
         param.add(ntry);
@@ -330,7 +330,7 @@ public class encUrl {
      */
     public String getParam(String nam) {
         for (int i = 0; i < param.size(); i++) {
-            uniResLocPar ntry = param.get(i);
+            encUrlPar ntry = param.get(i);
             if (nam.equals(ntry.nam)) {
                 return ntry.val;
             }
@@ -456,7 +456,7 @@ public class encUrl {
     public String toParams() {
         String c = "";
         for (int i = 0; i < param.size(); i++) {
-            uniResLocPar ntry = param.get(i);
+            encUrlPar ntry = param.get(i);
             c += "&" + percentEncode(ntry.nam) + "=" + percentEncode(ntry.val);
         }
         if (c.length() > 0) {
@@ -594,7 +594,7 @@ public class encUrl {
 
 }
 
-class uniResLocPar {
+class encUrlPar {
 
     public String nam;
 

@@ -1136,6 +1136,8 @@ qc pass: interop9: bgp extended community
 qc pass: interop9: bgp large community
 qc pass: interop9: bgp with php labels
 qc pass: interop9: bgp ao authentication
+qc pass: interop9: bgp with ctp
+qc pass: interop9: bgp with php ctp
 qc pass: interop9: ethernet encapsulation
 qc pass: interop9: dot1q encapsulation
 qc pass: interop9: fragmentation and reassembly

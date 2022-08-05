@@ -54,7 +54,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.syncInt;
 
 /**
@@ -3959,14 +3959,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         o += 2;
         List<String> res = new ArrayList<String>();
-        res.add(spfWork.graphBeg1);
-        res.add(spfWork.graphBeg2);
+        res.add(spfCalc.graphBeg1);
+        res.add(spfCalc.graphBeg2);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapath ntry = lst.get(i);
             res.add(ntry.path + " [weight=" + (o - ntry.count) + "]");
         }
-        res.add(spfWork.graphEnd1);
-        res.add(spfWork.graphEnd2);
+        res.add(spfCalc.graphEnd1);
+        res.add(spfCalc.graphEnd2);
         return res;
     }
 

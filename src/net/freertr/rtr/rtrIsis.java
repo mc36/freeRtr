@@ -39,7 +39,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
-import net.freertr.spf.spfWork;
+import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.enc.encTlv;
 
@@ -2106,7 +2106,7 @@ public class rtrIsis extends ipRtr {
      */
     public List<String> showSpfOtherTree(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        spfWork<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
+        spfCalc<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
@@ -2122,7 +2122,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfOtherTopo(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        spfWork<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
+        spfCalc<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doCalc(ned, null);
