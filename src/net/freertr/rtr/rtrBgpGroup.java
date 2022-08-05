@@ -371,10 +371,16 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiLab) {
             return wilUni;
         }
+        if (safi == lower.afiCtp) {
+            return wilUni;
+        }
         if (safi == lower.afiMlt) {
             return wilMlt;
         }
         if (safi == lower.afiOtrL) {
+            return wilOtrU;
+        }
+        if (safi == lower.afiOtrC) {
             return wilOtrU;
         }
         if (safi == lower.afiOtrU) {
@@ -457,10 +463,16 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiLab) {
             return chgUni;
         }
+        if (safi == lower.afiCtp) {
+            return chgUni;
+        }
         if (safi == lower.afiMlt) {
             return chgMlt;
         }
         if (safi == lower.afiOtrL) {
+            return chgOtrU;
+        }
+        if (safi == lower.afiOtrC) {
             return chgOtrU;
         }
         if (safi == lower.afiOtrU) {
@@ -531,7 +543,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
-        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) == 0))) {
+        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) == 0))) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();
@@ -558,10 +570,10 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         int val = loc.label;
         if (labelPop) {
-            if ((afi == lower.afiUni) && ((addrFams & rtrBgpParam.mskLab) != 0) && (val == lower.fwdCore.commonLabel.label)) {
+            if ((afi == lower.afiUni) && ((addrFams & (rtrBgpParam.mskLab | rtrBgpParam.mskCtp)) != 0) && (val == lower.fwdCore.commonLabel.label)) {
                 val = ipMpls.labelImp;
             }
-            if ((afi == lower.afiOtrU) && ((addrFams & rtrBgpParam.mskOtrL) != 0) && (val == lower.other.fwd.commonLabel.label)) {
+            if ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) != 0) && (val == lower.other.fwd.commonLabel.label)) {
                 val = ipMpls.labelImp;
             }
         }
@@ -895,7 +907,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             nextHopSelf(afi, ntry);
             return ntry;
         }
-        if ((afi != lower.afiUni) || ((addrFams & rtrBgpParam.mskLab) == 0)) {
+        if ((afi != lower.afiUni) || ((addrFams & (rtrBgpParam.mskLab | rtrBgpParam.mskCtp)) == 0)) {
             return ntry;
         }
         for (int i = 0; i < ntry.alts.size(); i++) {

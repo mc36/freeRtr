@@ -186,6 +186,11 @@ public class rtrBgpUtil {
     public final static int sfiSrTe = 0x49;
 
     /**
+     * classful transport plane address family
+     */
+    public final static int sfiClsTrnPl = 0x4c;
+
+    /**
      * vpn unicast address family
      */
     public final static int sfiMplsVpnU = 0x80;
@@ -244,6 +249,16 @@ public class rtrBgpUtil {
      * ipv6 labeled address family
      */
     public final static int safiIp6lab = afiIpv6 | sfiLabeled;
+
+    /**
+     * ipv4 classful transport plane address family
+     */
+    public final static int safiIp4ctp = afiIpv4 | sfiClsTrnPl;
+
+    /**
+     * ipv6 classful transport plane address family
+     */
+    public final static int safiIp6ctp = afiIpv6 | sfiClsTrnPl;
 
     /**
      * ipv4 flowspec address family
@@ -1172,7 +1187,7 @@ public class rtrBgpUtil {
                 pck.getSkip(1);
                 break;
         }
-        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU)) {
+        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU) || (sfi == sfiClsTrnPl)) {
             ntry.best.labelRem = new ArrayList<Integer>();
             for (;;) {
                 if (i < 24) {
@@ -1190,7 +1205,7 @@ public class rtrBgpUtil {
                 }
             }
         }
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
             ntry.rouDst = pck.msbGetQ(0);
             pck.getSkip(8);
             i -= 64;
@@ -1350,7 +1365,7 @@ public class rtrBgpUtil {
         int o = (i + 7) / 8;
         byte[] buf1 = new byte[128];
         int p = 0;
-        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU)) {
+        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU) || (sfi == sfiClsTrnPl)) {
             for (int q = 0; q < ntry.best.labelRem.size(); q++) {
                 bits.msbPutD(buf1, p, ntry.best.labelRem.get(q) << 12);
                 p += 3;
@@ -1358,7 +1373,7 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
@@ -1568,6 +1583,10 @@ public class rtrBgpUtil {
                 return "ip4labeled";
             case safiIp6lab:
                 return "ip6labeled";
+            case safiIp4ctp:
+                return "ip4classful";
+            case safiIp6ctp:
+                return "ip6classful";
             case safiIp4flow:
                 return "ip4flowspec";
             case safiIp6flow:
@@ -2026,7 +2045,7 @@ public class rtrBgpUtil {
         len = pck.dataSize() - len;
         addrIP nextHop = null;
         for (; pck.dataSize() > len;) {
-            if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM)) {
+            if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl)) {
                 pck.getSkip(8); // rd
             }
             addrIP adr;
@@ -3025,14 +3044,14 @@ public class rtrBgpUtil {
             v6nh = !nextHop.isIPv4();
         }
         int i = v6nh ? addrIPv6.size : addrIPv4.size;
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl)) {
             i += 8;
         }
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
         hlp.putByte(3, i);
         hlp.putSkip(4);
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl)) {
             hlp.msbPutQ(0, 0); // rd
             hlp.putSkip(8);
         }

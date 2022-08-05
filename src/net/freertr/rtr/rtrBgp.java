@@ -205,6 +205,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final int afiLab;
 
     /**
+     * classful transport plane afi
+     */
+    protected final int afiCtp;
+
+    /**
      * multicast afi
      */
     protected final int afiMlt;
@@ -213,6 +218,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * other labeled unicast afi
      */
     protected final int afiOtrL;
+
+    /**
+     * other classful transport plane afi
+     */
+    protected final int afiOtrC;
 
     /**
      * other unicast afi
@@ -876,8 +886,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rouTyp = tabRouteAttr.routeType.bgp4;
                 afiUni = rtrBgpUtil.safiIp4uni;
                 afiLab = rtrBgpUtil.safiIp4lab;
+                afiCtp = rtrBgpUtil.safiIp4ctp;
                 afiMlt = rtrBgpUtil.safiIp4multi;
                 afiOtrL = rtrBgpUtil.safiIp6lab;
+                afiOtrC = rtrBgpUtil.safiIp4ctp;
                 afiOtrU = rtrBgpUtil.safiIp6uni;
                 afiOtrM = rtrBgpUtil.safiIp6multi;
                 afiOtrF = rtrBgpUtil.safiIp6flow;
@@ -905,8 +917,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rouTyp = tabRouteAttr.routeType.bgp6;
                 afiUni = rtrBgpUtil.safiIp6uni;
                 afiLab = rtrBgpUtil.safiIp6lab;
+                afiCtp = rtrBgpUtil.safiIp6ctp;
                 afiMlt = rtrBgpUtil.safiIp6multi;
                 afiOtrL = rtrBgpUtil.safiIp4lab;
+                afiOtrC = rtrBgpUtil.safiIp6ctp;
                 afiOtrU = rtrBgpUtil.safiIp4uni;
                 afiOtrM = rtrBgpUtil.safiIp4multi;
                 afiOtrF = rtrBgpUtil.safiIp4flow;
@@ -934,8 +948,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rouTyp = null;
                 afiUni = 0;
                 afiLab = 0;
+                afiCtp = 0;
                 afiMlt = 0;
                 afiOtrL = 0;
+                afiOtrC = 0;
                 afiOtrU = 0;
                 afiOtrM = 0;
                 afiOtrF = 0;
@@ -1011,11 +1027,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiLab) {
             return rtrBgpParam.mskLab;
         }
+        if (safi == afiCtp) {
+            return rtrBgpParam.mskCtp;
+        }
         if (safi == afiMlt) {
             return rtrBgpParam.mskMlt;
         }
         if (safi == afiOtrL) {
             return rtrBgpParam.mskOtrL;
+        }
+        if (safi == afiOtrC) {
+            return rtrBgpParam.mskOtrC;
         }
         if (safi == afiOtrU) {
             return rtrBgpParam.mskOtrU;
@@ -1096,10 +1118,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return afiUni;
             case rtrBgpParam.mskLab:
                 return afiLab;
+            case rtrBgpParam.mskCtp:
+                return afiCtp;
             case rtrBgpParam.mskMlt:
                 return afiMlt;
             case rtrBgpParam.mskOtrL:
                 return afiOtrL;
+            case rtrBgpParam.mskOtrC:
+                return afiOtrC;
             case rtrBgpParam.mskOtrU:
                 return afiOtrU;
             case rtrBgpParam.mskOtrM:
@@ -1162,11 +1188,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if ((mask & rtrBgpParam.mskLab) != 0) {
             safis.add(afiLab);
         }
+        if ((mask & rtrBgpParam.mskCtp) != 0) {
+            safis.add(afiCtp);
+        }
         if ((mask & rtrBgpParam.mskMlt) != 0) {
             safis.add(afiMlt);
         }
         if ((mask & rtrBgpParam.mskOtrL) != 0) {
             safis.add(afiOtrL);
+        }
+        if ((mask & rtrBgpParam.mskOtrC) != 0) {
+            safis.add(afiOtrC);
         }
         if ((mask & rtrBgpParam.mskOtrU) != 0) {
             safis.add(afiOtrU);
@@ -1247,10 +1279,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiLab) {
             return routerComputedU;
         }
+        if (safi == afiCtp) {
+            return routerComputedU;
+        }
         if (safi == afiMlt) {
             return routerComputedM;
         }
         if (safi == afiOtrL) {
+            return computedOtrU;
+        }
+        if (safi == afiOtrC) {
             return computedOtrU;
         }
         if (safi == afiOtrU) {
@@ -1333,10 +1371,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiLab) {
             return changedUni;
         }
+        if (safi == afiCtp) {
+            return changedUni;
+        }
         if (safi == afiMlt) {
             return changedMlt;
         }
         if (safi == afiOtrL) {
+            return changedOtrU;
+        }
+        if (safi == afiOtrC) {
             return changedOtrU;
         }
         if (safi == afiOtrU) {
@@ -1841,6 +1885,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         otherTrigger = (addrFams & rtrBgpParam.mskLab) != 0;
+        otherTrigger |= (addrFams & rtrBgpParam.mskCtp) != 0;
         otherTrigger |= linkStates.size() > 0;
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
@@ -2072,6 +2117,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return true;
             }
             labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
+            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCtp) != 0;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2086,6 +2132,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return true;
             }
             labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
+            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCtp) != 0;
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " purge");

@@ -840,10 +840,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiLab, rtrBgpParam.mskLab, wilUni, conn.advUni)) {
             return true;
         }
+        if (advertFullTable(lower.afiCtp, rtrBgpParam.mskCtp, wilUni, conn.advUni)) {
+            return true;
+        }
         if (advertFullTable(lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, conn.advMlt)) {
             return true;
         }
         if (advertFullTable(lower.afiOtrL, rtrBgpParam.mskOtrL, wilOtrU, conn.advOtrU)) {
+            return true;
+        }
+        if (advertFullTable(lower.afiOtrC, rtrBgpParam.mskOtrC, wilOtrU, conn.advOtrU)) {
             return true;
         }
         if (advertFullTable(lower.afiOtrU, rtrBgpParam.mskOtrU, wilOtrU, conn.advOtrU)) {
@@ -961,10 +967,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiLab, rtrBgpParam.mskLab, wilUni, chgUni, conn.advUni)) {
             return true;
         }
+        if (advertIncrTable(lower.afiCtp, rtrBgpParam.mskCtp, wilUni, chgUni, conn.advUni)) {
+            return true;
+        }
         if (advertIncrTable(lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, chgMlt, conn.advMlt)) {
             return true;
         }
         if (advertIncrTable(lower.afiOtrL, rtrBgpParam.mskOtrL, wilOtrU, chgOtrU, conn.advOtrU)) {
+            return true;
+        }
+        if (advertIncrTable(lower.afiOtrC, rtrBgpParam.mskOtrC, wilOtrU, chgOtrU, conn.advOtrU)) {
             return true;
         }
         if (advertIncrTable(lower.afiOtrU, rtrBgpParam.mskOtrU, wilOtrU, chgOtrU, conn.advOtrU)) {
@@ -1566,10 +1578,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiLab) {
             return accUni;
         }
+        if (safi == lower.afiCtp) {
+            return accUni;
+        }
         if (safi == lower.afiMlt) {
             return accMlt;
         }
         if (safi == lower.afiOtrL) {
+            return accOtrU;
+        }
+        if (safi == lower.afiOtrC) {
             return accOtrU;
         }
         if (safi == lower.afiOtrU) {
@@ -1652,10 +1670,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiLab) {
             return wilUni;
         }
+        if (safi == lower.afiCtp) {
+            return wilUni;
+        }
         if (safi == lower.afiMlt) {
             return wilMlt;
         }
         if (safi == lower.afiOtrL) {
+            return wilOtrU;
+        }
+        if (safi == lower.afiOtrC) {
             return wilOtrU;
         }
         if (safi == lower.afiOtrU) {

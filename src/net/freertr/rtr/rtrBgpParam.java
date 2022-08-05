@@ -722,9 +722,19 @@ public abstract class rtrBgpParam {
     public final static int mskRtf = 0x1000000;
 
     /**
+     * classful transport plane
+     */
+    public final static int mskCtp = 0x2000000;
+
+    /**
+     * other classful transport plane
+     */
+    public final static int mskOtrC = 0x4000000;
+
+    /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrU | mskOtrM | mskOtrF | mskOtrS | mskMspw | mskNsh | mskRtf;
+    public final static int mskAll = mskUni | mskLab | mskCtp | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrC | mskOtrU | mskOtrM | mskOtrF | mskOtrS | mskMspw | mskNsh | mskRtf;
 
     /**
      * string to afi mask
@@ -761,6 +771,9 @@ public abstract class rtrBgpParam {
             }
             if (a.equals("labeled")) {
                 i |= mskLab;
+            }
+            if (a.equals("ctp")) {
+                i |= mskCtp;
             }
             if (a.equals("multicast")) {
                 i |= mskMlt;
@@ -819,6 +832,9 @@ public abstract class rtrBgpParam {
             if (a.equals("olab")) {
                 i |= mskOtrL;
             }
+            if (a.equals("octp")) {
+                i |= mskOtrC;
+            }
             if (a.equals("ouni")) {
                 i |= mskOtrU;
             }
@@ -834,11 +850,19 @@ public abstract class rtrBgpParam {
         }
         int bth = mskUni | mskLab;
         if ((i & bth) == bth) {
-            i -= rtrBgpParam.mskUni;
+            i -= mskUni;
+        }
+        bth = mskCtp | mskLab;
+        if ((i & bth) == bth) {
+            i -= mskCtp;
         }
         bth = mskOtrU | mskOtrL;
         if ((i & bth) == bth) {
-            i -= rtrBgpParam.mskOtrU;
+            i -= mskOtrU;
+        }
+        bth = mskOtrC | mskOtrL;
+        if ((i & bth) == bth) {
+            i -= mskOtrC;
         }
         return i;
     }
@@ -857,11 +881,17 @@ public abstract class rtrBgpParam {
         if ((i & mskLab) != 0) {
             a += " labeled";
         }
+        if ((i & mskCtp) != 0) {
+            a += " ctp";
+        }
         if ((i & mskMlt) != 0) {
             a += " multicast";
         }
         if ((i & mskOtrL) != 0) {
             a += " olab";
+        }
+        if ((i & mskOtrC) != 0) {
+            a += " octp";
         }
         if ((i & mskOtrU) != 0) {
             a += " ouni";
@@ -944,7 +974,9 @@ public abstract class rtrBgpParam {
         }
         hl.add(null, beg + "  unicast       address family to " + end);
         hl.add(null, beg + "  labeled       address family to " + end);
+        hl.add(null, beg + "  ctp           address family to " + end);
         hl.add(null, beg + "  olab          address family to " + end);
+        hl.add(null, beg + "  octp          address family to " + end);
         hl.add(null, beg + "  ouni          address family to " + end);
         hl.add(null, beg + "  omlt          address family to " + end);
         hl.add(null, beg + "  oflw          address family to " + end);
@@ -1886,7 +1918,7 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("address-family")) {
-            addrFams = rtrBgpParam.string2mask(cmd);
+            addrFams = string2mask(cmd);
             if (negated) {
                 addrFams = lower.addrFams;
             }
@@ -2023,28 +2055,28 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("extended-nexthop-current")) {
-            extNextCur = rtrBgpParam.string2mask(cmd);
+            extNextCur = string2mask(cmd);
             if (negated) {
                 extNextCur = 0;
             }
             return false;
         }
         if (s.equals("extended-nexthop-other")) {
-            extNextOtr = rtrBgpParam.string2mask(cmd);
+            extNextOtr = string2mask(cmd);
             if (negated) {
                 extNextOtr = 0;
             }
             return false;
         }
         if (s.equals("multiple-labels")) {
-            multiLabel = rtrBgpParam.string2mask(cmd);
+            multiLabel = string2mask(cmd);
             if (negated) {
                 multiLabel = 0;
             }
             return false;
         }
         if (s.equals("graceful-restart")) {
-            graceRestart = rtrBgpParam.string2mask(cmd);
+            graceRestart = string2mask(cmd);
             if (negated) {
                 graceRestart = 0;
             }
@@ -2136,7 +2168,7 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("additional-path-rx")) {
-            addpathRmode = rtrBgpParam.string2mask(cmd);
+            addpathRmode = string2mask(cmd);
             if (negated) {
                 addpathRmode = 0;
                 return false;
@@ -2144,7 +2176,7 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("additional-path-tx")) {
-            addpathTmode = rtrBgpParam.string2mask(cmd);
+            addpathTmode = string2mask(cmd);
             if (negated) {
                 addpathTmode = 0;
                 return false;
