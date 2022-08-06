@@ -964,11 +964,21 @@ public class userReader implements Comparator<String> {
         curr = part(0, 65536);
     }
 
-    private void cmdInsChr(int ch) {
+    private boolean isTextChar(int ch) {
+        if ((ch & 0xff) != ch) {
+            return true;
+        }
         if (ch < 32) {
-            return;
+            return true;
         }
         if (ch > 127) {
+            return true;
+        }
+        return false;
+    }
+
+    private void cmdInsChr(int ch) {
+        if (isTextChar(ch)) {
             return;
         }
         cmdInsStr("" + ((char) ch));
@@ -1066,6 +1076,127 @@ public class userReader implements Comparator<String> {
         }
         pos = curr.length();
         clear = true;
+    }
+
+    private void doHistFind(boolean sam, int dir, String str) {
+        if (str.length() < 1) {
+            if (sam) {
+                histN = -1;
+            }
+            return;
+        }
+        int old = histN;
+        if (sam) {
+            histN -= dir;
+        }
+        if (histN < 0) {
+            histN = -1;
+        }
+        for (;;) {
+            histN += dir;
+            if (histN < 0) {
+                if (sam) {
+                    histN = -1;
+                } else {
+                    histN = old;
+                }
+                return;
+            }
+            if (histN >= histD.length) {
+                if (sam) {
+                    histN = -1;
+                } else {
+                    histN = old;
+                }
+                return;
+            }
+            if (histD[histN].indexOf(str) >= 0) {
+                return;
+            }
+        }
+    }
+
+    private boolean cmdHistFind() {
+        String oldPrm = prompt;
+        String oldCur = curr;
+        String text = curr;
+        histN = -1;
+        doHistFind(true, +1, text);
+        for (;;) {
+            prompt = "find:" + text + ":";
+            if (histN < 0) {
+                curr = "";
+            } else {
+                curr = histD[histN];
+            }
+            pos = curr.length();
+            beg = 0;
+            rangeCheck();
+            putCurrLine(true);
+            int ch = userScreen.getKey(pipe);
+            switch (ch) {
+                case -1:
+                    if (debugger.userReaderEvnt) {
+                        logger.debug("closed");
+                    }
+                    return true;
+                case 0x8002: // tabulator
+                case 0x8004: // enter
+                    prompt = oldPrm;
+                    return false;
+                case 0x8003: // backspace
+                    if (text.length() < 1) {
+                        break;
+                    }
+                    text = text.substring(0, text.length() - 1);
+                    doHistFind(true, +1, text);
+                    break;
+                case 0x800c: // up
+                    doHistFind(false, +1, text);
+                    break;
+                case 0x800d: // down
+                    doHistFind(false, -1, text);
+                    break;
+                case 0x8016: // f3
+                    doHistFind(false, +1, text);
+                    break;
+                case 0x8017: // f4
+                    doHistFind(false, -1, text);
+                    break;
+                case 0x277: // ctrl + w
+                    text = "";
+                    doHistFind(true, +1, text);
+                    break;
+                case 0x26e: // ctrl + n
+                    doHistFind(false, -1, text);
+                    break;
+                case 0x270: // ctrl + p
+                    doHistFind(false, +1, text);
+                    break;
+                case 0x272: // ctrl + r
+                    cmdRefreshLine();
+                    break;
+                case 0x26c: // ctrl + l
+                    cmdRefreshLine();
+                    break;
+                case 0x8005: // escape
+                case 0x801d: // f10
+                case 0x273: // ctrl + s
+                case 0x263: // ctrl + c
+                case 0x278: // ctrl + x
+                    prompt = oldPrm;
+                    curr = oldCur;
+                    pos = curr.length();
+                    return false;
+                default:
+                    if (isTextChar(ch)) {
+                        break;
+                    }
+                    text += (char) ch;
+                    doHistFind(true, +1, text);
+                    break;
+            }
+        }
     }
 
     private void cmdSwapLetters() {
@@ -1253,6 +1384,12 @@ public class userReader implements Comparator<String> {
                     case 0x272: // ctrl + r
                         cmdRefreshLine();
                         break;
+                    case 0x273: // ctrl + s
+                        if (cmdHistFind()) {
+                            return null;
+                        }
+                        clear = true;
+                        break;
                     case 0x274: // ctrl + t
                         cmdSwapLetters();
                         break;
@@ -1310,9 +1447,6 @@ public class userReader implements Comparator<String> {
                         cmdShowHelp();
                         break;
                     default:
-                        if ((ch & 0xff) != ch) {
-                            break;
-                        }
                         cmdInsChr(ch);
                         break;
                 }
