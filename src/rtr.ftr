@@ -1267,7 +1267,7 @@ qc pass: mpolka over ppp
 qc pass: mpolka over framerelay
 qc pass: mpolka over atmdxi
 qc pass: mpolka over gre
-qc pass: mpolka over ethernet
+qc pass: mpolka over bridge
 qc pass: ppp over mpls
 qc pass: hdlc over mpls
 qc pass: lapb over mpls
@@ -1815,8 +1815,8 @@ qc pass: qos ingress hierarchical action
 qc pass: qos egress hierarchical action
 qc pass: qos ingress pps action
 qc pass: qos egress pps action
-qc pass: qos ingress policer action
-qc pass: qos egress policer action
+qc pass: qos ingress rate limit action
+qc pass: qos egress rate limit action
 qc pass: qos ingress transmit copp
 qc pass: qos egress transmit copp
 qc pass: qos ingress drop copp
@@ -2567,7 +2567,7 @@ qc pass: octp ibgp rr prefix withdraw
 qc pass: octp ibgp fullmesh prefix withdraw
 qc pass: olab+octp over ebgp
 qc pass: bgp routemap rd rewrite
-qc pass: bgp routepolicy filtering with rd
+qc pass: bgp routepolicy rd rewrite
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

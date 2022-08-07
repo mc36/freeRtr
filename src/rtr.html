@@ -13,7 +13,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v22.8.7-cur, done by cs@nop.<br/>
-tested: 2022-08-07 10:25:00, took 00:09:09, with 80 workers, on 3022 cases, 0 failed, 0 traces, 2 retries<br/>
+tested: 2022-08-07 11:02:23, took 00:08:46, with 80 workers, on 3022 cases, 0 failed, 0 traces, 0 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -1286,7 +1286,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-polka18.tst">mpls-polka18.tst</a></td><td>success</td><td>mpolka over framerelay</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-polka19.tst">mpls-polka19.tst</a></td><td>success</td><td>mpolka over atmdxi</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-polka20.tst">mpls-polka20.tst</a></td><td>success</td><td>mpolka over gre</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-polka21.tst">mpls-polka21.tst</a></td><td>success</td><td>mpolka over ethernet</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-polka21.tst">mpls-polka21.tst</a></td><td>success</td><td>mpolka over bridge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-pwe01.tst">mpls-pwe01.tst</a></td><td>success</td><td>ppp over mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-pwe02.tst">mpls-pwe02.tst</a></td><td>success</td><td>hdlc over mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-pwe03.tst">mpls-pwe03.tst</a></td><td>success</td><td>lapb over mpls</td></tr>
@@ -1834,8 +1834,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action14.tst">qos-action14.tst</a></td><td>success</td><td>qos egress hierarchical action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action15.tst">qos-action15.tst</a></td><td>success</td><td>qos ingress pps action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action16.tst">qos-action16.tst</a></td><td>success</td><td>qos egress pps action</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/qos-action17.tst">qos-action17.tst</a></td><td>success</td><td>qos ingress policer action</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/qos-action18.tst">qos-action18.tst</a></td><td>success</td><td>qos egress policer action</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/qos-action17.tst">qos-action17.tst</a></td><td>success</td><td>qos ingress rate limit action</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/qos-action18.tst">qos-action18.tst</a></td><td>success</td><td>qos egress rate limit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-copp01.tst">qos-copp01.tst</a></td><td>success</td><td>qos ingress transmit copp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-copp02.tst">qos-copp02.tst</a></td><td>success</td><td>qos egress transmit copp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-copp03.tst">qos-copp03.tst</a></td><td>success</td><td>qos ingress drop copp</td></tr>
@@ -2586,7 +2586,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp663.tst">rout-bgp663.tst</a></td><td>success</td><td>octp ibgp fullmesh prefix withdraw</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp664.tst">rout-bgp664.tst</a></td><td>success</td><td>olab+octp over ebgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp665.tst">rout-bgp665.tst</a></td><td>success</td><td>bgp routemap rd rewrite</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp666.tst">rout-bgp666.tst</a></td><td>success</td><td>bgp routepolicy filtering with rd</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp666.tst">rout-bgp666.tst</a></td><td>success</td><td>bgp routepolicy rd rewrite</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp01.tst">rout-eigrp01.tst</a></td><td>success</td><td>eigrp point2point connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp02.tst">rout-eigrp02.tst</a></td><td>success</td><td>eigrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp03.tst">rout-eigrp03.tst</a></td><td>success</td><td>eigrp point2point chain</td></tr>

@@ -1,4 +1,6 @@
 #!/bin/sh
+echo scanning for duplicate tests
+cat rtr.ftr | sort | uniq -d
 echo scanning for non-ascii
 find . -type f -exec grep -P "[^\x00-\x7F]" {} \;
 echo scanning for trailing space
