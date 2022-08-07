@@ -13514,3 +13514,6 @@ qc pass: redistribution with octp bgp
 ---------------------------------- 2022-08-05 07:48:52 22.8.5
 qc pass: interop9: bgp with ctp
 qc pass: interop9: bgp with php ctp
+---------------------------------- 2022-08-07 10:15:50 22.8.7
+qc pass: bgp routemap rd rewrite
+qc pass: bgp routepolicy filtering with rd
