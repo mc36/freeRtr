@@ -170,6 +170,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setBier,
         /**
+         * set route distinguisher
+         */
+        setRoudst,
+        /**
          * set routemap
          */
         setRoumap,
@@ -383,6 +387,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     public int intVal = 0;
 
     /**
+     * long value
+     */
+    public long longVal = 0;
+
+    /**
      * integer list
      */
     public List<Integer> intLst;
@@ -396,11 +405,6 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
      * large list
      */
     public List<tabLargeComm> lrgLst;
-
-    /**
-     * route distinguisher matcher
-     */
-    public long rouDstMatch;
 
     /**
      * protocol type matcher
@@ -524,6 +528,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set segrout " + intSet;
             case setBier:
                 return "set bier " + intSet;
+            case setRoudst:
+                return "set rd " + tabRouteUtil.rd2string(longVal);
             case setRoumap:
                 return "set route-map " + roumap;
             case setRouplc:
@@ -573,7 +579,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case lrgcomm:
                 return "lrgcomm " + tabRouteUtil.lrgComms2string(lrgLst);
             case roudst:
-                return "rd " + tabRouteUtil.rd2string(rouDstMatch);
+                return "rd " + tabRouteUtil.rd2string(longVal);
             case network:
                 return "network " + networkMatch;
             case nostdcomm:
@@ -694,7 +700,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 return true;
             case roudst:
-                return rouDstMatch == net.rouDst;
+                return longVal == net.rouDst;
             case network:
                 return networkMatch.matches(afi, asn, net.prefix);
             case nostdcomm:
@@ -918,6 +924,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setRouplc:
                 tabRtrplc.doRpl(afi, asn, net, rouplc, false);
+                return;
+            case setRoudst:
+                net.rouDst = longVal;
                 return;
             default:
                 break;

@@ -237,6 +237,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, ".3 .      <num>             as number to remove");
         l.add(null, ".2 .    firstas             clear first asn");
         l.add(null, "1 2   set                   set values in destination routing protocol");
+        l.add(null, "2 3     rd                  set route distinguisher");
+        l.add(null, "3 .       <str>             rd");
         l.add(null, "2 3     aspath              prepend as path");
         l.add(null, "3 3,.     <num>             as to prepend");
         l.add(null, "2 3     asconfed            prepend as path");
@@ -330,7 +332,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("rd")) {
             ntry.ifMode = tabRtrplcN.ifType.roudst;
-            ntry.rouDstMatch = tabRouteUtil.string2rd(cmd.word());
+            ntry.longVal = tabRouteUtil.string2rd(cmd.word());
             return;
         }
         if (a.equals("network")) {
@@ -745,6 +747,11 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             a = cmd.word();
             tabRtrplcN ntry = getCurr();
             indent();
+            if (a.equals("rd")) {
+                ntry.doMode = tabRtrplcN.doType.setRoudst;
+                ntry.longVal = tabRouteUtil.string2rd(cmd.word());
+                return;
+            }
             if (a.equals("stdcomm")) {
                 ntry.doMode = tabRtrplcN.doType.setStdcomm;
                 ntry.intLst = tabRouteUtil.string2stdComms(cmd.getRemaining());

@@ -95,6 +95,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no clear peeras",
         "route-map .*! sequence .* no clear exactas",
         "route-map .*! sequence .* no clear firstas",
+        "route-map .*! sequence .* no set rd",
         "route-map .*! sequence .* no set route-map",
         "route-map .*! sequence .* no set route-policy",
         "route-map .*! sequence .* no set aspath",
@@ -299,6 +300,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, ".3 .      <num>             as number to remove");
         l.add(null, ".2 .    firstas             clear first asn");
         l.add(null, "1 2   set                   set values in destination routing protocol");
+        l.add(null, "2 3     rd                  set route distinguisher");
+        l.add(null, "3 .       <str>             rd");
         l.add(null, "2 3     aspath              prepend as path");
         l.add(null, "3 3,.     <num>             as to prepend");
         l.add(null, "2 3     asconfed            prepend as path");
@@ -722,6 +725,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("set")) {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
+            if (a.equals("rd")) {
+                ntry.rouDstSet = tabRouteUtil.string2rd(cmd.word());
+                return;
+            }
             if (a.equals("stdcomm")) {
                 ntry.stdCommSet = tabRouteUtil.string2stdComms(cmd.getRemaining());
                 return;
@@ -910,7 +917,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 return;
             }
             if (a.equals("rd")) {
-                ntry.rouDstMatch = 0;
+                ntry.rouDstMatch = -1L;
                 return;
             }
             if (a.equals("network")) {
@@ -1077,6 +1084,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         if (a.equals("set")) {
             a = cmd.word();
             tabRtrmapN ntry = getCurr();
+            if (a.equals("rd")) {
+                ntry.rouDstSet = -1L;
+                return;
+            }
             if (a.equals("stdcomm")) {
                 ntry.stdCommSet = null;
                 return;

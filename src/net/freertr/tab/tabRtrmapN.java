@@ -29,7 +29,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * route distinguisher matcher
      */
-    public long rouDstMatch;
+    public long rouDstMatch = -1L;
+
+    /**
+     * route distinguisher matcher
+     */
+    public long rouDstSet = -1L;
 
     /**
      * afi matcher
@@ -405,7 +410,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, rouplcMatch == null, beg, "match route-policy", "" + rouplcMatch);
         l.add(beg + "match afi " + afiMatch);
         l.add(beg + "match safi " + safiMatch);
-        if (rouDstMatch == 0) {
+        if (rouDstMatch == -1L) {
             l.add(beg + "no match rd");
         } else {
             l.add(beg + "match rd " + tabRouteUtil.rd2string(rouDstMatch));
@@ -493,6 +498,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, !peerasClear, beg, "clear peeras", "");
         cmds.cfgLine(l, exactasClear == 0, beg, "clear exactas", "" + bits.num2str(exactasClear));
         cmds.cfgLine(l, !firstasClear, beg, "clear firstas", "");
+        if (rouDstSet == -1L) {
+            l.add(beg + "no set rd");
+        } else {
+            l.add(beg + "set rd " + tabRouteUtil.rd2string(rouDstSet));
+        }
         cmds.cfgLine(l, roumapSet == null, beg, "set route-map", "" + roumapSet);
         cmds.cfgLine(l, rouplcSet == null, beg, "set route-policy", "" + rouplcSet);
         if (aspathSet == null) {
@@ -546,7 +556,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     }
 
     public boolean matches(int afi, int asn, tabRouteEntry<addrIP> net) {
-        if (rouDstMatch != 0) {
+        if (rouDstMatch != -1L) {
             if (rouDstMatch != net.rouDst) {
                 return false;
             }
@@ -831,6 +841,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             doUpdate(net.alts.get(i), asn);
         }
         net.selectBest();
+        if (rouDstSet != -1L) {
+            net.rouDst = rouDstSet;
+        }
         if (roumapSet != null) {
             roumapSet.update(afi, asn, net, false);
         }
