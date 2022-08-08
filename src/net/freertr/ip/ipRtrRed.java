@@ -59,6 +59,11 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
     public boolean ecmp;
 
     /**
+     * limit
+     */
+    public int limit;
+
+    /**
      * create redistributor
      *
      * @param prot type of protocol
@@ -92,6 +97,7 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
      */
     public void filter(int afi, tabRoute<addrIP> trg, tabRoute<addrIP> src) {
         tabRoute.addType mod = ecmp ? tabRoute.addType.altEcmp : tabRoute.addType.better;
+        int done = 0;
         for (int i = 0; i < src.size(); i++) {
             tabRouteEntry<addrIP> ntry = src.get(i);
             if (ntry == null) {
@@ -111,7 +117,13 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
                 ntry = ntry.copyBytes(tabRoute.addType.notyet);
                 ntry.best.tag = tag.update(ntry.best.tag);
             }
-            tabRoute.addUpdatedEntry(mod, trg, afi, 0, ntry, true, roumap, rouplc, prflst);
+            done += tabRoute.addUpdatedEntry(mod, trg, afi, 0, ntry, true, roumap, rouplc, prflst);
+            if (limit < 1) {
+                continue;
+            }
+            if (done >= limit) {
+                break;
+            }
         }
     }
 

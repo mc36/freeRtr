@@ -901,6 +901,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (num2proc(red.typ)) {
             a += " " + red.num;
         }
+        if (red.limit > 0) {
+            a += " limit " + red.limit;
+        }
         if (red.metric != null) {
             a += " metric " + red.metric;
         }
@@ -1026,6 +1029,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             }
             if (s.equals("ecmp")) {
                 red.ecmp = true;
+                continue;
+            }
+            if (s.equals("limit")) {
+                red.limit = bits.str2num(cmd.word());
                 continue;
             }
             if (s.equals("metric")) {
@@ -1795,6 +1802,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 4) + " " + (p + 5) + "         prefix-list       filter prefixes on importing");
         l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:pl>       name of prefix list");
         l.add(null, (p + 4) + " " + (p + 5) + "         metric            set metric");
+        l.add(null, (p + 5) + " " + (p + 4) + ",.         <num>           value");
+        l.add(null, (p + 4) + " " + (p + 5) + "         limit             limit number of routes to import");
         l.add(null, (p + 5) + " " + (p + 4) + ",.         <num>           value");
         l.add(null, (p + 4) + " " + (p + 5) + "         tag               set tag");
         l.add(null, (p + 5) + " " + (p + 4) + ",.         <num>           value");
