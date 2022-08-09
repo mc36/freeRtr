@@ -45,7 +45,6 @@ rm -rf $MNT/lib/modules
 
 cp ../image/boot.cfg $MNT/syslinux.cfg
 extlinux -i $MNT
-echo -n `cd $MNT/;tar cf $IMG/rtr.upg --exclude=rtr/* *`
 sync
 fstrim -v $MNT
 umount $MNT
