@@ -797,7 +797,6 @@ public class packRsvp {
             bits.putByte(tlv.valDat, 3, len); // name length
             tlv.valSiz = 4;
             tlv.valTyp = 0xcf07;
-            padUpTlv();
         } else {
             bits.msbPutD(tlv.valDat, 0, sessExc); // exclude affinity
             bits.msbPutD(tlv.valDat, 4, sessInc); // include affinity
@@ -811,9 +810,9 @@ public class packRsvp {
         }
         bits.byteCopy(sessNam.getBytes(), 0, tlv.valDat, tlv.valSiz, len); // name
         tlv.valSiz += len;
-        len = 4 - (len % 3);
-        bits.byteFill(tlv.valDat, tlv.valSiz, len, 0);
-        tlv.valSiz += len;
+        tlv.valDat[tlv.valSiz] = 0; // termination
+        tlv.valSiz++;
+        padUpTlv();
         tlv.putThis(pck);
     }
 
