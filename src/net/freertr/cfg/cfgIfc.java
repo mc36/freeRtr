@@ -597,9 +597,29 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public addrIP tunAscAdr = null;
 
     /**
-     * tunnel priority
+     * tunnel setup priority
      */
-    public int tunPri = 7;
+    public int tunPriS = 7;
+
+    /**
+     * tunnel hold priority
+     */
+    public int tunPriH = 7;
+
+    /**
+     * tunnel exclude affinity
+     */
+    public int tunAffE = 0;
+
+    /**
+     * tunnel include affinity
+     */
+    public int tunAffI = 0;
+
+    /**
+     * tunnel must affinity
+     */
+    public int tunAffM = 0;
 
     /**
      * ipsec profile to use
@@ -1934,7 +1954,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! tunnel tos -1",
         "interface .*! tunnel dontfrag -1",
         "interface .*! tunnel ttl 255",
-        "interface .*! tunnel priority 7",
+        "interface .*! tunnel priority 7 7",
+        "interface .*! tunnel affinity 0 0 0",
         "interface .*! no tunnel association",
         "interface .*! no tunnel protection",
         "interface .*! no tunnel domain-name"
@@ -3918,7 +3939,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         tunKey2 = 0;
         tunSum = false;
         tunSeq = false;
-        tunPri = 7;
+        tunPriS = 7;
+        tunPriH = 7;
+        tunAffE = 0;
+        tunAffI = 0;
+        tunAffM = 0;
         tunAscId = 0;
         tunAscId2 = 0;
         tunAscAdr = null;
@@ -4417,8 +4442,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSrMpls.expr = tunTOS;
                 tunSrMpls.entr = tunFLW;
                 tunSrMpls.ttl = tunTTL;
-                tunSrMpls.prioS = tunPri;
-                tunSrMpls.prioH = tunPri;
+                tunSrMpls.prioS = tunPriS;
+                tunSrMpls.prioH = tunPriH;
                 tunSrMpls.bndwdt = ethtyp.getBandwidth();
                 tunSrMpls.setUpper(ethtyp);
                 tunSrMpls.workStart();
@@ -4454,8 +4479,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunSrMpls.expr = tunTOS;
                 tunSrMpls.entr = tunFLW;
                 tunSrMpls.ttl = tunTTL;
-                tunSrMpls.prioS = tunPri;
-                tunSrMpls.prioH = tunPri;
+                tunSrMpls.prioS = tunPriS;
+                tunSrMpls.prioH = tunPriH;
                 tunSrMpls.bndwdt = ethtyp.getBandwidth();
                 tunSrMpls.setUpper(ethtyp);
                 tunSrMpls.workStart();
@@ -4477,8 +4502,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.ascId = tunAscId;
                 tunTeP2p.ascId2 = tunAscId2;
                 tunTeP2p.ascAdr = tunAscAdr;
-                tunTeP2p.prioS = tunPri;
-                tunTeP2p.prioH = tunPri;
+                tunTeP2p.prioS = tunPriS;
+                tunTeP2p.prioH = tunPriH;
                 tunTeP2p.bndwdt = ethtyp.getBandwidth();
                 tunTeP2p.recRou = tunSeq;
                 tunTeP2p.setUpper(ethtyp);
@@ -4498,8 +4523,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.ascId = tunAscId;
                 tunTeP2p.ascId2 = tunAscId2;
                 tunTeP2p.ascAdr = tunAscAdr;
-                tunTeP2p.prioS = tunPri;
-                tunTeP2p.prioH = tunPri;
+                tunTeP2p.prioS = tunPriS;
+                tunTeP2p.prioH = tunPriH;
                 tunTeP2p.bndwdt = ethtyp.getBandwidth();
                 tunTeP2p.recRou = tunSeq;
                 tunTeP2p.setUpper(ethtyp);
@@ -4520,8 +4545,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2mp.expr = tunTOS;
                 tunTeP2mp.entr = tunFLW;
                 tunTeP2mp.ttl = tunTTL;
-                tunTeP2mp.prioS = tunPri;
-                tunTeP2mp.prioH = tunPri;
+                tunTeP2mp.prioS = tunPriS;
+                tunTeP2mp.prioH = tunPriH;
                 tunTeP2mp.bndwdt = ethtyp.getBandwidth();
                 tunTeP2mp.recRou = tunSeq;
                 tunTeP2mp.setUpper(ethtyp);
@@ -4591,7 +4616,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunVxlan.vrf = tunVrf;
                 tunVxlan.srcIfc = tunSrc;
                 tunVxlan.inst = tunKey;
-                tunVxlan.prot = tunPri;
+                tunVxlan.prot = tunPriS;
                 tunVxlan.sendingTOS = tunTOS;
                 tunVxlan.sendingDFN = tunDFN;
                 tunVxlan.sendingFLW = tunFLW;
@@ -5928,7 +5953,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "tunnel dontfrag " + tunDFN);
                 l.add(cmds.tabulator + "tunnel flow " + tunFLW);
                 l.add(cmds.tabulator + "tunnel ttl " + tunTTL);
-                l.add(cmds.tabulator + "tunnel priority " + tunPri);
+                l.add(cmds.tabulator + "tunnel priority " + tunPriS + " " + tunPriH);
+                l.add(cmds.tabulator + "tunnel affinity " + tunAffE + " " + tunAffI + " " + tunAffM);
                 if (tunAscAdr == null) {
                     l.add(cmds.tabulator + "no tunnel association");
                 } else {
@@ -6581,7 +6607,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     ttl                         set time to live, -1 to map out");
         l.add(null, "3 .       <num>                     value of ttl field");
         l.add(null, "2 3     priority                    set tunnel priority");
-        l.add(null, "3 .       <num>                     value of ttl field");
+        l.add(null, "3 4       <num>                     setup priority");
+        l.add(null, "4 .         <num>                   hold priority");
+        l.add(null, "2 3     affinity                    set tunnel affinity");
+        l.add(null, "3 4       <num>                     exclude any");
+        l.add(null, "4 5         <num>                   include any");
+        l.add(null, "5 .           <num>                 include all");
         l.add(null, "2 3     association                 set tunnel association");
         l.add(null, "3 4       <addr>                    source address");
         l.add(null, "4 5,.       <num>                   unique id");
@@ -8693,7 +8724,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("priority")) {
-            tunPri = bits.str2num(cmd.word());
+            tunPriS = bits.str2num(cmd.word());
+            tunPriH = bits.str2num(cmd.word());
+            setup2tunnel();
+            return;
+        }
+        if (a.equals("affinity")) {
+            tunAffE = bits.str2num(cmd.word());
+            tunAffI = bits.str2num(cmd.word());
+            tunAffM = bits.str2num(cmd.word());
             setup2tunnel();
             return;
         }
@@ -8809,7 +8848,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("priority")) {
-            tunPri = 7;
+            tunPriS = 7;
+            tunPriH = 7;
+            setup2tunnel();
+            return;
+        }
+        if (a.equals("affinity")) {
+            tunAffE = 0;
+            tunAffI = 0;
+            tunAffM = 0;
             setup2tunnel();
             return;
         }
