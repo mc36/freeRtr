@@ -4504,6 +4504,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.ascAdr = tunAscAdr;
                 tunTeP2p.prioS = tunPriS;
                 tunTeP2p.prioH = tunPriH;
+                tunTeP2p.affiE = tunAffE;
+                tunTeP2p.affiI = tunAffI;
+                tunTeP2p.affiM = tunAffM;
                 tunTeP2p.bndwdt = ethtyp.getBandwidth();
                 tunTeP2p.recRou = tunSeq;
                 tunTeP2p.setUpper(ethtyp);
@@ -4525,6 +4528,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2p.ascAdr = tunAscAdr;
                 tunTeP2p.prioS = tunPriS;
                 tunTeP2p.prioH = tunPriH;
+                tunTeP2p.affiE = tunAffE;
+                tunTeP2p.affiI = tunAffI;
+                tunTeP2p.affiM = tunAffM;
                 tunTeP2p.bndwdt = ethtyp.getBandwidth();
                 tunTeP2p.recRou = tunSeq;
                 tunTeP2p.setUpper(ethtyp);
@@ -4547,6 +4553,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunTeP2mp.ttl = tunTTL;
                 tunTeP2mp.prioS = tunPriS;
                 tunTeP2mp.prioH = tunPriH;
+                tunTeP2mp.affiE = tunAffE;
+                tunTeP2mp.affiI = tunAffI;
+                tunTeP2mp.affiM = tunAffM;
                 tunTeP2mp.bndwdt = ethtyp.getBandwidth();
                 tunTeP2mp.recRou = tunSeq;
                 tunTeP2mp.setUpper(ethtyp);

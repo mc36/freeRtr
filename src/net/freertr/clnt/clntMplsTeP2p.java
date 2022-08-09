@@ -84,6 +84,21 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
     public int prioH = 7;
 
     /**
+     * exclude affinity
+     */
+    public int affiE = 0;
+
+    /**
+     * include affinity
+     */
+    public int affiI = 0;
+
+    /**
+     * must affinity
+     */
+    public int affiM = 0;
+
+    /**
      * association id
      */
     public int ascId = 0;

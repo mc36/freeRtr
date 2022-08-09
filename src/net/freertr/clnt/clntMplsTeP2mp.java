@@ -73,6 +73,21 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
     public int prioH = 7;
 
     /**
+     * exclude affinity
+     */
+    public int affiE = 0;
+
+    /**
+     * include affinity
+     */
+    public int affiI = 0;
+
+    /**
+     * must affinity
+     */
+    public int affiM = 0;
+
+    /**
      * experimental value, -1 means maps out
      */
     public int expr = -1;
