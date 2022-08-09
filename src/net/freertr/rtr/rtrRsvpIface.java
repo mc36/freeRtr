@@ -229,6 +229,11 @@ public class rtrRsvpIface implements ipPrt {
                 ntry.trgId = pckRvp.sessId;
                 ntry.trgHop = new addrIP();
                 ntry.bwdt = pckRvp.flwSpcPeak;
+                ntry.priS = pckRvp.sessStp;
+                ntry.priH = pckRvp.sessHld;
+                ntry.affE = pckRvp.sessExc;
+                ntry.affI = pckRvp.sessInc;
+                ntry.affM = pckRvp.sessMst;
                 ntry.descr = pckRvp.sessNam;
                 ntry.recRou = pckRvp.recRout != null;
                 ntry.asocTyp = pckRvp.assocTyp;

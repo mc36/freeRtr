@@ -404,6 +404,11 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         }
         trfEng.trgId = bits.randomD();
         trfEng.bwdt = ((float) bndwdt) / 8;
+        trfEng.priS = prioS;
+        trfEng.priH = prioH;
+        trfEng.affE = affiE;
+        trfEng.affI = affiI;
+        trfEng.affM = affiM;
         trfEng.descr = descr;
         trfEng.recRou = recRou;
         if (ascAdr != null) {

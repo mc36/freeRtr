@@ -399,6 +399,11 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
                 trfEng.trgAdr = adr.copyBytes();
                 trfEng.trgId = (srcId << 16) | cur;
                 trfEng.bwdt = ((float) bndwdt) / 8;
+                trfEng.priS = prioS;
+                trfEng.priH = prioH;
+                trfEng.affE = affiE;
+                trfEng.affI = affiI;
+                trfEng.affM = affiM;
                 trfEng.descr = descr;
                 trfEng.recRou = recRou;
                 if (debugger.clntMplsTeTraf) {

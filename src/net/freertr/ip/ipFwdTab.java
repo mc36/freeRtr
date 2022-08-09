@@ -1615,8 +1615,11 @@ public class ipFwdTab {
             pck.assocGlb = ntry.asocGlb;
             pck.assocTyp = ntry.asocTyp;
         }
-        pck.sessHld = 7;
-        pck.sessStp = 7;
+        pck.sessStp = ntry.priS;
+        pck.sessHld = ntry.priH;
+        pck.sessExc = ntry.affE;
+        pck.sessInc = ntry.affI;
+        pck.sessMst = ntry.affM;
         pck.sessFlg = 0x04; // se style
         pck.sessNam = "" + ntry.descr;
         if (ntry.recRou) {

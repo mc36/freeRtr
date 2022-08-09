@@ -104,6 +104,31 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
     public float bwdt;
 
     /**
+     * setup priority
+     */
+    public int priS = 7;
+
+    /**
+     * holding priority
+     */
+    public int priH = 7;
+
+    /**
+     * exclude affinity
+     */
+    public int affE = 0;
+
+    /**
+     * include affinity
+     */
+    public int affI = 0;
+
+    /**
+     * must affinity
+     */
+    public int affM = 0;
+
+    /**
      * record route
      */
     public boolean recRou;
@@ -216,6 +241,8 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         res.add("egress hop|" + trgHop);
         res.add("egress label|" + trgLab);
         res.add("bandwidth|" + bits.bandwidth(((Float) (bwdt * 8)).longValue()));
+        res.add("priority|" + priS + " " + priH);
+        res.add("affinity|" + affE + " " + affI + " " + affM);
         res.add("record route|" + recRou);
         res.add("description|" + descr);
         res.add("association|" + asocTyp + " " + asocAdr + " " + asocId + " " + asocGlb);

@@ -159,6 +159,21 @@ public class packRsvp {
     public int sessHld;
 
     /**
+     * exclude affinity
+     */
+    public int sessExc;
+
+    /**
+     * include affinity
+     */
+    public int sessInc;
+
+    /**
+     * must affinity
+     */
+    public int sessMst;
+
+    /**
      * flags
      */
     public int sessFlg;
@@ -261,7 +276,7 @@ public class packRsvp {
     private encTlv tlv = new encTlv(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
 
     public String toString() {
-        return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " assoc=" + assocTyp + "/" + assocAdr + "/" + assocId + "/" + assocGlb + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + tabHop.dumpList(expRout) + " recRou=" + tabHop.dumpList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;
+        return "ip4=" + isIP4 + " p2mp=" + isP2MP + " typ=" + type2string(typ) + " ttl=" + ttl + " hop=" + hopAdr + "/" + hopId + " sess=" + sessAdr + "/" + sessId + " assoc=" + assocTyp + "/" + assocAdr + "/" + assocId + "/" + assocGlb + " time=" + timeVal + " send=" + sndrAdr + "/" + sndrId + " subgrp=" + sbgrpOrg + "/" + sbgrpId + " subdst=" + subAddr + " req=" + labReq + " flow=" + flwSpcRate + "/" + flwSpcSize + "/" + flwSpcPeak + "/" + flwSpcPlcd + "/" + flwSpcPcks + " prio=" + sessStp + "/" + sessHld + " affi=" + sessExc + "/" + sessInc + "/" + sessMst + " flg=" + sessFlg + " nam=" + sessNam + " hops=" + adsHops + " bndwdth=" + adsBndwdt + " latency=" + adsLtncy + " mtu=" + adsCmtu + " expRou=" + tabHop.dumpList(expRout) + " recRou=" + tabHop.dumpList(recRout) + " err=" + errAdr + "/" + errCod + " style=" + styleVal + " label=" + labelVal;
     }
 
     /**
@@ -743,15 +758,29 @@ public class packRsvp {
      * @return false on success, true on error
      */
     public boolean parseSesAtr(packHolder pck) {
-        if (findTlv(pck, 0xcf07)) {
-            return true;
+        if (!findTlv(pck, 0xcf07)) {
+            sessExc = 0;
+            sessInc = 0;
+            sessMst = 0;
+            sessStp = bits.getByte(tlv.valDat, 0); // setup priority
+            sessHld = bits.getByte(tlv.valDat, 1); // hold priority
+            sessFlg = bits.getByte(tlv.valDat, 2); // flags
+            int len = bits.getByte(tlv.valDat, 3); // name length
+            sessNam = new String(tlv.valDat, 4, len);
+            return false;
         }
-        sessStp = bits.getByte(tlv.valDat, 0); // setup priority
-        sessHld = bits.getByte(tlv.valDat, 1); // hold priority
-        sessFlg = bits.getByte(tlv.valDat, 2); // flags
-        int len = bits.getByte(tlv.valDat, 3); // name length
-        sessNam = new String(tlv.valDat, 4, len);
-        return false;
+        if (!findTlv(pck, 0xcf01)) {
+            sessExc = bits.msbGetD(tlv.valDat, 0); // exclude affinity
+            sessInc = bits.msbGetD(tlv.valDat, 4); // include affinity
+            sessMst = bits.msbGetD(tlv.valDat, 8); // must affinity
+            sessStp = bits.getByte(tlv.valDat, 12); // setup priority
+            sessHld = bits.getByte(tlv.valDat, 13); // hold priority
+            sessFlg = bits.getByte(tlv.valDat, 14); // flags
+            int len = bits.getByte(tlv.valDat, 15); // name length
+            sessNam = new String(tlv.valDat, 16, len);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -761,16 +790,30 @@ public class packRsvp {
      */
     public void createSesAtr(packHolder pck) {
         int len = sessNam.length();
-        bits.putByte(tlv.valDat, 0, sessStp); // setup priority
-        bits.putByte(tlv.valDat, 1, sessHld); // hold priority
-        bits.putByte(tlv.valDat, 2, sessFlg); // hold priority
-        bits.putByte(tlv.valDat, 3, len); // name length
-        bits.byteFill(tlv.valDat, len, 16, 0); // padding
-        bits.byteCopy(sessNam.getBytes(), 0, tlv.valDat, 4, len); // name
-        len += 4 - (len % 3);
-        tlv.valSiz = 4 + len;
-        tlv.valTyp = 0xcf07;
-        padUpTlv();
+        if ((sessExc == 0) && (sessInc == 0) && (sessMst == 0)) {
+            bits.putByte(tlv.valDat, 0, sessStp); // setup priority
+            bits.putByte(tlv.valDat, 1, sessHld); // hold priority
+            bits.putByte(tlv.valDat, 2, sessFlg); // hold priority
+            bits.putByte(tlv.valDat, 3, len); // name length
+            tlv.valSiz = 4;
+            tlv.valTyp = 0xcf07;
+            padUpTlv();
+        } else {
+            bits.msbPutD(tlv.valDat, 0, sessExc); // exclude affinity
+            bits.msbPutD(tlv.valDat, 4, sessInc); // include affinity
+            bits.msbPutD(tlv.valDat, 8, sessMst); // must affinity
+            bits.putByte(tlv.valDat, 12, sessStp); // setup priority
+            bits.putByte(tlv.valDat, 13, sessHld); // hold priority
+            bits.putByte(tlv.valDat, 14, sessFlg); // hold priority
+            bits.putByte(tlv.valDat, 15, len); // name length
+            tlv.valSiz = 16;
+            tlv.valTyp = 0xcf01;
+        }
+        bits.byteCopy(sessNam.getBytes(), 0, tlv.valDat, tlv.valSiz, len); // name
+        tlv.valSiz += len;
+        len = 4 - (len % 3);
+        bits.byteFill(tlv.valDat, tlv.valSiz, len, 0);
+        tlv.valSiz += len;
         tlv.putThis(pck);
     }
 
