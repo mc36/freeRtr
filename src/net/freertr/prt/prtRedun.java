@@ -88,10 +88,10 @@ public class prtRedun implements Runnable {
      */
     public static userFormat doShow() {
         userFormat l = new userFormat("|", "iface|reach|state|prio|uptime|magic|heard");
-        l.add("self|-|" + state + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|" + magic + "|-");
+        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|" + magic + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.name + "|" + ifc.reach + "|" + ifc.last.state + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.last.magic + "|" + bits.timePast(ifc.heard));
+            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.last.magic + "|" + bits.timePast(ifc.heard));
         }
         return l;
     }

@@ -144,6 +144,27 @@ public class packRedundancy {
     }
 
     /**
+     * state to string
+     *
+     * @param i type
+     * @return string
+     */
+    public static String stat2str(int i) {
+        switch (i) {
+            case statInit:
+                return "init";
+            case statSpeak:
+                return "speak";
+            case statStandby:
+                return "standby";
+            case statActive:
+                return "active";
+            default:
+                return "unknown=" + i;
+        }
+    }
+
+    /**
      * parse header
      *
      * @param pck packet to read
@@ -209,7 +230,7 @@ public class packRedundancy {
     }
 
     public String toString() {
-        return "type=" + typ2str(type) + " state=" + state + " magic=" + magic + " peer=" + peer + " priority=" + priority + " uptime=" + uptime;
+        return "type=" + typ2str(type) + " state=" + stat2str(state) + " magic=" + magic + " peer=" + peer + " priority=" + priority + " uptime=" + uptime;
     }
 
 }
