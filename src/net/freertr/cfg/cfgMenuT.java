@@ -530,19 +530,18 @@ class cfgMenuTdoer {
 
     private void doDraw(boolean clr) {
         if (clr) {
+            console.putCls();
             console.refresh();
             for (int i = 0; i < console.sizY; i++) {
                 putFill(i, userScreen.colWhite, userScreen.colBlack, 32);
             }
             console.refresh();
         }
-        console.putCls();
         putHeader();
         putFooter();
         for (int i = 0; i < console.sizY - 2; i++) {
             putLine(i);
         }
-        console.refresh();
         console.putCur(8 + flt.length(), console.sizY - 1);
         console.refresh();
     }
