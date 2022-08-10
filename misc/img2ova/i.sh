@@ -48,3 +48,13 @@ extlinux -i $MNT
 sync
 fstrim -v $MNT
 umount $MNT
+
+cp $IMG/rtr.dsk $IMG/rtr.dsk2
+mount -o loop,offset=1048576 $IMG/rtr.dsk2 $MNT
+rm -rf $MNT/rtr/*
+chattr -i $MNT/ldlin*
+rm -rf $MNT/ldlin*
+echo -n `cd $MNT/;tar cf $IMG/rtr.root *`
+umount $MNT
+rm $IMG/rtr.dsk2
+echo done
