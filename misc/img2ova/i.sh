@@ -3,15 +3,14 @@
 IMG=`cd ../../binImg/;pwd`
 MNT=`cd ../../binMnt/;pwd`
 
-parted -s $IMG/rtr.dsk mklabel msdos
-parted -s $IMG/rtr.dsk mkpart primary fat32 2048s 8191s
-parted -s $IMG/rtr.dsk mkpart primary ext4 8192s 4177920s
-parted -s $IMG/rtr.dsk set 1 esp on
-parted -s $IMG/rtr.dsk set 2 boot on
+sfdisk -q $IMG/rtr.dsk << EOF
+2048 6144 ef
+8192 4169729 83 *
+EOF
 
 dd bs=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=$IMG/rtr.dsk
 dd bs=1K conv=notrunc if=$IMG/rtr.efi of=$IMG/rtr.dsk seek=1024
-mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 1024 -E offset=4194304 -F $IMG/rtr.dsk 1900000
+mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 4096 -E offset=4194304 -F $IMG/rtr.dsk 475000
 mount -o loop,offset=4194304 $IMG/rtr.dsk $MNT
 cp $IMG/rtr.krn $MNT/rtr.krn
 
