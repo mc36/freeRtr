@@ -4,15 +4,15 @@ IMG=`cd ../../binImg/;pwd`
 MNT=`cd ../../binMnt/;pwd`
 
 parted -s $IMG/rtr.dsk mklabel msdos
-parted -s $IMG/rtr.dsk mkpart primary ext4 1MB 2002MB
-parted -s $IMG/rtr.dsk mkpart primary fat32 2042MB 2044MB
-parted -s $IMG/rtr.dsk set 1 boot on
-parted -s $IMG/rtr.dsk set 2 esp on
+parted -s $IMG/rtr.dsk mkpart primary fat32 2048s 8191s
+parted -s $IMG/rtr.dsk mkpart primary ext4 8192s 4177920s
+parted -s $IMG/rtr.dsk set 1 esp on
+parted -s $IMG/rtr.dsk set 2 boot on
 
 dd bs=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=$IMG/rtr.dsk
-dd bs=1K conv=notrunc if=$IMG/rtr.efi of=$IMG/rtr.dsk seek=1993728
-mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 1024 -E offset=1048576 -F $IMG/rtr.dsk 1900000
-mount -o loop,offset=1048576 $IMG/rtr.dsk $MNT
+dd bs=1K conv=notrunc if=$IMG/rtr.efi of=$IMG/rtr.dsk seek=1024
+mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 1024 -E offset=4194304 -F $IMG/rtr.dsk 1900000
+mount -o loop,offset=4194304 $IMG/rtr.dsk $MNT
 cp $IMG/rtr.krn $MNT/rtr.krn
 
 echo -n `cd $MNT/;cpio --quiet -H newc -i <$IMG/rtr.cpio`
