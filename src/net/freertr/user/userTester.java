@@ -1967,6 +1967,7 @@ class userTesterOne {
                     ctP = procs.find(ctP);
                     ctV = cmd.word();
                     ctV += " " + cmd.word();
+                    ctV += " - " + cmd.word();
                     continue;
                 }
                 if (s.equals("feature")) {

@@ -129,7 +129,7 @@ server p4lang p4
  exit
 !
 
-addother r2 controller r1 v9 9080 feature vlan route mroute bier
+addother r2 controller r1 v9 9080 - feature vlan route mroute bier
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$

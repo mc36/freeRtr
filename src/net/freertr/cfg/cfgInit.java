@@ -427,8 +427,9 @@ public class cfgInit implements Runnable {
                 int loc = bits.str2num(cmd.word());
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), true);
                 int rem = bits.str2num(cmd.word());
-                String adr = cmd.word();
-                prtLocTcp.startServer(loc, vrf, rem, adr);
+                String bind = cmd.word();
+                String fake = cmd.word();
+                prtLocTcp.startServer(loc, vrf, rem, bind, fake);
                 continue;
             }
             if (s.equals("prio")) {

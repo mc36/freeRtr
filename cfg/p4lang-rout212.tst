@@ -171,7 +171,7 @@ server p4lang p4
  exit
 !
 
-addother r2 controller r1 v9 9080 feature bundle mpls vpls bridge
+addother r2 controller r1 v9 9080 10.11.12.111 feature bundle mpls vpls bridge
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -181,7 +181,7 @@ int eth6 eth 0000.0000.2222 $6a$ $6b$
 !
 !
 
-addother r3 feature bundle mpls vpls bridge
+addother r3 controller r1 v9 9080 10.12.13.111 feature bundle mpls vpls bridge
 int eth1 eth 0000.0000.3333 $7b$ $7a$
 int eth2 eth 0000.0000.3333 $8a$ $8b$
 int eth3 eth 0000.0000.3333 $9a$ $9b$
@@ -191,7 +191,7 @@ int eth6 eth 0000.0000.3333 $12a$ $12b$
 !
 !
 
-addother r4 feature bundle mpls route
+addother r4 controller r1 v9 9080 10.13.14.111 feature bundle mpls route
 int eth1 eth 0000.0000.4444 $14b$ $14a$
 int eth2 eth 0000.0000.4444 $15a$ $15b$
 int eth3 eth 0000.0000.4444 $5b$ $5a$
@@ -304,10 +304,6 @@ ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::4
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::5
 !
 
-
-r1 tping 100 10 10.11.12.111 vrf v9
-r1 tping 100 10 10.12.13.111 vrf v9
-r1 tping 100 10 10.13.14.111 vrf v9
 
 r5 tping 100 10 1.1.1.3 vrf v1
 r5 tping 100 10 1234::3 vrf v1

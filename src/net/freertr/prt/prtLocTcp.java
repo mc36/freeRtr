@@ -28,6 +28,8 @@ public class prtLocTcp implements Runnable {
 
     private int port;
 
+    private addrIP source;
+
     /**
      * create new listener
      *
@@ -35,12 +37,19 @@ public class prtLocTcp implements Runnable {
      * @param prt protocol to search
      * @param remote vrf port
      * @param bind binding address, empty string if not restricted
+     * @param fake address to fake on connection
      * @throws Exception if something went wrong
      */
-    public prtLocTcp(int local, prtGen prt, int remote, String bind) throws Exception {
+    public prtLocTcp(int local, prtGen prt, int remote, String bind, String fake) throws Exception {
+        if (fake.length() < 2) {
+            source = null;
+        } else {
+            source = new addrIP();
+            source.fromString(fake);
+        }
         InetAddress addr = null;
         InetSocketAddress sadr = null;
-        if (bind.length() < 1) {
+        if (bind.length() < 2) {
             sadr = new InetSocketAddress(local);
         } else {
             addr = InetAddress.getByName(bind);
@@ -60,12 +69,13 @@ public class prtLocTcp implements Runnable {
      * @param loc local port
      * @param vrf vrf to use
      * @param rem remote port
-     * @param adr address to bind to, null if nothing
+     * @param bind address to bind to, null if nothing
+     * @param fake address to fake on connection
      * @return false on success, true on error
      */
-    public static boolean startServer(int loc, cfgVrf vrf, int rem, String adr) {
+    public static boolean startServer(int loc, cfgVrf vrf, int rem, String bind, String fake) {
         try {
-            new prtLocTcp(loc, vrf.tcp4, rem, adr);
+            new prtLocTcp(loc, vrf.tcp4, rem, bind, fake);
             return false;
         } catch (Exception e) {
             logger.traceback(e);
@@ -111,7 +121,12 @@ public class prtLocTcp implements Runnable {
     }
 
     private boolean doAccept(Socket clnt) throws Exception {
-        addrIP srcA = java2addr(clnt.getInetAddress());
+        addrIP srcA;
+        if (source != null) {
+            srcA = source.copyBytes();
+        } else {
+            srcA = java2addr(clnt.getInetAddress());
+        }
         int srcP = clnt.getPort();
         prtGenServ srv = null;
         if (srv == null) {

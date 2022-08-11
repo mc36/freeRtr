@@ -131,7 +131,7 @@ ipv4 mroute v1 2.2.2.106 255.255.255.255 1.1.4.2
 ipv6 mroute v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 feature route mroute bier
+addother r2 controller r1 v9 9080 - feature route mroute bier
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
