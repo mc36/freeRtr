@@ -899,7 +899,7 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=headend\">!multicast streamer!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna!</a><br/>";
+            a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna receiver!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
