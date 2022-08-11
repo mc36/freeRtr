@@ -38,8 +38,9 @@ echo -n `cd $MNT/;find bin/>>filist`
 echo -n `cd $MNT/;find sbin/>>filist`
 echo -n `cd $MNT/;find usr/>>filist`
 echo -n `cd $MNT/;cpio --quiet -H newc -O cpio -o <filist`
-gzip $MNT/cpio
-mv $MNT/cpio.gz $MNT/rtr.ird
+zstd -9 $MNT/cpio
+mv $MNT/cpio.zst $MNT/rtr.ird
+rm $MNT/cpio
 rm -rf $MNT/lib/modules
 
 cp ../image/boot.cfg $MNT/syslinux.cfg
