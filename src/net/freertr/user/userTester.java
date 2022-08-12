@@ -1796,10 +1796,15 @@ class userTesterOne {
             }
             i = bits.str2num(a.substring(0, a.length() - 1)) * 4;
             i += userTester.portBase + (slot * userTester.portSlot);
-            if (a.substring(a.length() - 1, a.length()).equals("b")) {
+            a = a.substring(a.length() - 1, a.length());
+            if (a.equals("b")) {
                 i += 1;
             }
-            s = s + "127.0.0.1 " + i + b;
+            if (a.equals("p")) {
+                s = s + i + b;
+            } else {
+                s = s + "127.0.0.1 " + i + b;
+            }
         }
         return s;
     }
@@ -2077,6 +2082,7 @@ class userTesterOne {
             boolean telnet = true;
             boolean fancy = true;
             boolean extra = false;
+            boolean swcfg = false;
             String source = null;
             List<userTesterRep> reps = new ArrayList<userTesterRep>();
             List<userTesterRep> dels = new ArrayList<userTesterRep>();
@@ -2107,6 +2113,14 @@ class userTesterOne {
                 }
                 if (s.equals("nowrite")) {
                     write = false;
+                    continue;
+                }
+                if (s.equals("swcfg")) {
+                    swcfg = true;
+                    continue;
+                }
+                if (s.equals("noswcfg")) {
+                    swcfg = false;
                     continue;
                 }
                 if (s.equals("fancy")) {
@@ -2218,6 +2232,13 @@ class userTesterOne {
                     secs = userFilter.getSection(secs, del.src, true, true, true);
                 }
                 cfg = userFilter.section2text(secs, false);
+            }
+            if (swcfg) {
+                for (int i = 0; i < cfg.size(); i++) {
+                    s = cfg.get(i);
+                    s = repairHwCfg(s);
+                    cfg.set(i, s);
+                }
             }
             s = jvm;
             s = s.replaceAll("%fn%", fileName);
