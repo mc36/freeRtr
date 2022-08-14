@@ -817,7 +817,7 @@ public class cfgInit implements Runnable {
         cfgIfc.ifaceNames.add(null, "1 . wireless      ifc");
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
         cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
-        cfgLin.linedefF = createFilter(cfgLin.linedefL);
+        userReader.linedefF = createFilter(userReader.linedefL);
         cfgMenuK.defaultF = createFilter(cfgMenuK.defaultL);
         cfgMenuT.defaultF = createFilter(cfgMenuT.defaultL);
         cfgAll.defaultF = createFilter(cfgAll.defaultL);
@@ -848,7 +848,7 @@ public class cfgInit implements Runnable {
         cfgPlymp.defaultF = createFilter(cfgPlymp.defaultL);
         cfgRtr.defaultF = createFilter(cfgRtr.defaultL);
         cfgIfc.defaultF = createFilter(cfgIfc.defaultL);
-        cfgLin.defaultF = createFilter(cfgLin.defaultL, cfgLin.linedefF);
+        cfgLin.defaultF = createFilter(cfgLin.defaultL, userReader.linedefF);
         cfgSched.defaultF = createFilter(cfgSched.defaultL);
         cfgScrpt.defaultF = createFilter(cfgScrpt.defaultL);
         cfgTlmtry.defaultF = createFilter(cfgTlmtry.defaultL);
@@ -860,7 +860,7 @@ public class cfgInit implements Runnable {
         cfgIconn.defaultF = createFilter(cfgIconn.defaultL);
         cfgXconn.defaultF = createFilter(cfgXconn.defaultL);
         tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);
-        servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, cfgLin.linedefF);
+        servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, userReader.linedefF);
         servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
         servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
         servPrometheus.defaultF = createFilter(servPrometheus.defaultL, srvdefsF);
@@ -918,9 +918,9 @@ public class cfgInit implements Runnable {
         servPptp.defaultF = createFilter(servPptp.defaultL, srvdefsF);
         servQuote.defaultF = createFilter(servQuote.defaultL, srvdefsF);
         servRadius.defaultF = createFilter(servRadius.defaultL, srvdefsF);
-        servRfb.defaultF = createFilter(servRfb.defaultL, srvdefsF, cfgLin.linedefF);
-        servModem.defaultF = createFilter(servModem.defaultL, srvdefsF, cfgLin.linedefF);
-        servVoice.defaultF = createFilter(servVoice.defaultL, srvdefsF, cfgLin.linedefF);
+        servRfb.defaultF = createFilter(servRfb.defaultL, srvdefsF, userReader.linedefF);
+        servModem.defaultF = createFilter(servModem.defaultL, srvdefsF, userReader.linedefF);
+        servVoice.defaultF = createFilter(servVoice.defaultL, srvdefsF, userReader.linedefF);
         servSip.defaultF = createFilter(servSip.defaultL, srvdefsF);
         servSmtp.defaultF = createFilter(servSmtp.defaultL, srvdefsF);
         servSnmp.defaultF = createFilter(servSnmp.defaultL, srvdefsF);
@@ -928,10 +928,10 @@ public class cfgInit implements Runnable {
         servStun.defaultF = createFilter(servStun.defaultL, srvdefsF);
         servSyslog.defaultF = createFilter(servSyslog.defaultL, srvdefsF);
         servTacacs.defaultF = createFilter(servTacacs.defaultL, srvdefsF);
-        servTelnet.defaultF = createFilter(servTelnet.defaultL, srvdefsF, cfgLin.linedefF);
+        servTelnet.defaultF = createFilter(servTelnet.defaultL, srvdefsF, userReader.linedefF);
         servTftp.defaultF = createFilter(servTftp.defaultL, srvdefsF);
         servTime.defaultF = createFilter(servTime.defaultL, srvdefsF);
-        servUdptn.defaultF = createFilter(servUdptn.defaultL, srvdefsF, cfgLin.linedefF);
+        servUdptn.defaultF = createFilter(servUdptn.defaultL, srvdefsF, userReader.linedefF);
         List<String> sdefs = new ArrayList<String>();
         for (i = 0; i < cfgAll.defaultF.size(); i++) {
             userFilter ntry = cfgAll.defaultF.get(i);
@@ -1135,6 +1135,7 @@ public class cfgInit implements Runnable {
             s = args[0];
         }
         if (s.startsWith("router")) {
+            boolean det = false;
             boolean con = false;
             boolean win = false;
             boolean add = false;
@@ -1146,16 +1147,24 @@ public class cfgInit implements Runnable {
                     hwN = args[1];
                     swN = args[2];
                     add = true;
+                    continue;
                 }
                 if (a.equals("a")) {
                     hwN = null;
                     swN = args[1];
+                    continue;
                 }
                 if (a.equals("c")) {
                     con = true;
+                    continue;
                 }
                 if (a.equals("w")) {
                     win = true;
+                    continue;
+                }
+                if (a.equals("d")) {
+                    det = true;
+                    continue;
                 }
             }
             pipeSide pipCon = null;
@@ -1193,7 +1202,9 @@ public class cfgInit implements Runnable {
             List<String> swT = httpGet(cfgFileSw);
             doInit(hwT, swT, pipCon);
             if (pipCon != null) {
-                userScreen.updtSiz(pipCon);
+                if (det) {
+                    userScreen.updtSiz(pipCon);
+                }
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;
                 lin.createHandler(pipCon, "console", 2);
@@ -1206,6 +1217,14 @@ public class cfgInit implements Runnable {
             return;
         }
         if (s.startsWith("cfgexec")) {
+            boolean det = false;
+            for (int i = 7; i < s.length(); i++) {
+                String a = "" + s.charAt(i);
+                if (a.equals("d")) {
+                    det = true;
+                    continue;
+                }
+            }
             cfgFileSw = args[1];
             s = "";
             for (int i = 2; i < args.length; i++) {
@@ -1222,6 +1241,9 @@ public class cfgInit implements Runnable {
             logger.pipeStart(pip);
             userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
+            if (det) {
+                userScreen.updtSiz(pip);
+            }
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
             s = exe.repairCommand(s);

@@ -39,50 +39,6 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
     public userLine line = new userLine();
 
     /**
-     * line defaults text
-     */
-    public final static String[] linedefL = {
-        ".*! no exec interface",
-        ".*! exec timeout 300000",
-        ".*! exec width 79",
-        ".*! exec height 24",
-        ".*! exec history 64",
-        ".*! no exec timestamp",
-        ".*! exec colorize normal",
-        ".*! no exec spacetab",
-        ".*! exec tablemode normal",
-        ".*! exec welcome welcome",
-        ".*! exec before before:",
-        ".*! exec ready line ready",
-        ".*! exec bye see you later",
-        ".*! no exec logging",
-        ".*! exec privilege 15",
-        ".*! exec autocommand ",
-        ".*! exec banner",
-        ".*! exec title",
-        ".*! no exec detect",
-        ".*! no exec expirity",
-        ".*! no exec monitor",
-        ".*! no exec autohangup",
-        ".*! login timeout 60000",
-        ".*! login retry 3",
-        ".*! login delay 3000",
-        ".*! login user username:",
-        ".*! login pass password:",
-        ".*! login fail authentication failed",
-        ".*! login activate 13",
-        ".*! login deactivate 65536",
-        ".*! login escape 3",
-        ".*! no login logging",
-        ".*! login last none"
-    };
-
-    /**
-     * line defaults filter
-     */
-    public static tabGen<userFilter> linedefF;
-
-    /**
      * defaults text
      */
     public final static String[] defaultL = {
