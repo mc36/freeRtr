@@ -81,8 +81,8 @@ int eth52
 
 addrouter r3 nowrite
 int eth1 eth 0000.0000.3333 $2b$ $2a$
-int red1 red eth 0000.0000.3333 $5b$ $5a$
-int red2 red eth 0000.0000.3333 $6b$ $6a$
+int eth8 red eth 0000.0000.3333 $5b$ $5a$
+int eth9 red eth 0000.0000.3333 $6b$ $6a$
 prio 20
 !
 vrf def v1
@@ -102,8 +102,8 @@ int eth1
 
 addrouter r4 nowrite
 int eth1 eth 0000.0000.4444 $3b$ $3a$
-int red1 red eth 0000.0000.4444 $7b$ $7a$
-int red2 red eth 0000.0000.4444 $8b$ $8a$
+int eth8 red eth 0000.0000.4444 $7b$ $7a$
+int eth9 red eth 0000.0000.4444 $8b$ $8a$
 prio 10
 !
 vrf def v1
@@ -123,8 +123,8 @@ int eth1
 
 addrouter r5 nowrite
 int eth1 eth 0000.0000.5555 $4b$ $4a$
-int red1 red eth 0000.0000.5555 $9b$ $9a$
-int red2 red eth 0000.0000.5555 $10b$ $10a$
+int eth8 red eth 0000.0000.5555 $9b$ $9a$
+int eth9 red eth 0000.0000.5555 $10b$ $10a$
 !
 vrf def v1
  rd 1:1

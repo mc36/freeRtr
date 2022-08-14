@@ -524,6 +524,13 @@ public class cfgInit implements Runnable {
             if (s.equals("int")) {
                 String old = cmd.getRemaining();
                 String nam = cmd.word();
+                String pnm[] = cfgIfc.dissectName(nam);
+                if (pnm[0].length() < 1) {
+                    continue;
+                }
+                if (pnm[1].length() > 0) {
+                    continue;
+                }
                 s = cmd.word().toLowerCase();
                 int stat = 0;
                 if (s.equals("stat")) {
@@ -560,8 +567,8 @@ public class cfgInit implements Runnable {
                         prtWatch.ifcAdd(nam, hdr, mac);
                         break;
                     default:
-                        ifaceLst.add(new cfgVdcIfc(cfgIfc.dissectName(nam)[0], old));
                         cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr, thrd);
+                        ifaceLst.add(new cfgVdcIfc(ifc.name, old));
                         ifc.initPhysical();
                         if (debugger.cfgInitHw) {
                             logger.debug("iface " + hdr);

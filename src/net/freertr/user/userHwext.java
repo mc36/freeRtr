@@ -127,6 +127,7 @@ public class userHwext {
         hwd.add("### dataplane ###");
         List<String> ifp = new ArrayList<String>();
         List<String> ifl = new ArrayList<String>();
+        List<String> mac = new ArrayList<String>();
         for (i = hwc.size() - 1; i >= 0; i--) {
             cmd = new cmds("ln", hwc.get(i));
             String a = cmd.word();
@@ -150,9 +151,21 @@ public class userHwext {
             }
             a = cmd.word();
             String pnm[] = cfgIfc.dissectName(a);
-            a = pnm[0] + pnm[1];
-            if (a.length() < 1) {
+            if (pnm[0].length() < 1) {
                 continue;
+            }
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    continue;
+                }
+                if (a.equals("eth")) {
+                    break;
+                }
+            }
+            a = cmd.word();
+            if (a.length() < 1) {
+                a = "-";
             }
             hwc.remove(i);
             hwc.remove(i);
@@ -160,7 +173,8 @@ public class userHwext {
                 s = "veth1b";
             }
             ifp.add(0, s);
-            ifl.add(0, a);
+            ifl.add(0, pnm[0]);
+            mac.add(0, a);
         }
         orig.error("found " + ifp.size() + " interfaces");
         if ((dpt != dpTyp.p4sw) && (ifp.size() < 1)) {
@@ -170,6 +184,9 @@ public class userHwext {
         List<String> ifr = new ArrayList<String>();
         for (i = 0; i < ifl.size(); i++) {
             ifr.add("sdn" + (i + 1));
+        }
+        for (i = 0; i < ifl.size(); i++) {
+            orig.error("ifc " + i + ": " + ifr.get(i) + " " + ifl.get(i) + " " + ifp.get(i) + " " + mac.get(i));
         }
         List<String> vrf = new ArrayList<String>();
         for (o = 0; o < swc.size(); o++) {
@@ -182,6 +199,14 @@ public class userHwext {
                 a = a.replaceAll(ifl.get(i), ifr.get(i));
             }
             swc.set(o, a);
+        }
+        orig.error("found " + vrf.size() + " vrfs");
+        if (vrf.size() < 1) {
+            orig.error("no vrfs found");
+            return;
+        }
+        for (i = 0; i < vrf.size(); i++) {
+            orig.error("vrf " + i + ": " + vrf.get(i));
         }
         String dpv = null;
         switch (dpt) {
@@ -198,15 +223,18 @@ public class userHwext {
                 return;
         }
         hwc.add("tcp2vrf 2323 " + dpv + " 23 127.0.0.1");
+        o = 0;
+        for (i = 0; i < ifr.size(); i++) {
+            swc.add(o + 0, "interface " + ifr.get(i));
+            swc.add(o + 1, cmds.tabulator + "macaddr " + mac.get(i));
+            swc.add(o + 2, cmds.tabulator + cmds.finish);
+            o += 3;
+        }
+        swc.add(o, cmds.comment);
         swc.add(cmds.comment);
         swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        for (i = 0; i < ifr.size(); i++) {
-            swc.add("interface " + ifr.get(i));
-            swc.add(cmds.tabulator + cmds.finish);
-            swc.add(cmds.comment);
-        }
         swc.add("server telnet " + dpv);
         swc.add(cmds.tabulator + "security protocol telnet");
         swc.add(cmds.tabulator + "vrf " + dpv);
