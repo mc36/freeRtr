@@ -422,6 +422,75 @@ public class userScreen {
     }
 
     /**
+     * update terminal size
+     *
+     * @param pip pipe to use
+     * @return true on error, false on success
+     */
+    public static boolean updtSiz(pipeSide pip) {
+        int[] res = readSiz(pip);
+        if (res == null) {
+            return true;
+        }
+        userReader.setTermWdt(pip, res[0]);
+        userReader.setTermLen(pip, res[1]);
+        return false;
+    }
+
+    /**
+     * detect terminal size
+     *
+     * @param pip pipe to use
+     * @return null on error, array of x,y on success
+     */
+    public static int[] readSiz(pipeSide pip) {
+        int[] sav = readRep(pip);
+        if (sav == null) {
+            return null;
+        }
+        sendCur(pip, 999, 999);
+        int[] res = readRep(pip);
+        sendCur(pip, sav[0] - 1, sav[1] - 1);
+        return res;
+    }
+
+    private static int[] readRep(pipeSide pip) {
+        pip.strPut("\033[6n");
+        bits.sleep(100);
+        byte[] buf = new byte[512];
+        int i = pip.nonDestructiveGet(buf, 0, buf.length);
+        if (i < 1) {
+            return null;
+        }
+        String a = new String(buf, 0, i);
+        int p = a.indexOf("\033[");
+        if (p < 0) {
+            return null;
+        }
+        a = a.substring(p + 2, a.length());
+        i = a.indexOf("R");
+        if (i < 0) {
+            return null;
+        }
+        a = a.substring(0, i);
+        i = a.indexOf(";");
+        if (i < 0) {
+            return null;
+        }
+        int res[] = new int[2];
+        res[1] = bits.str2num(a.substring(0, i));
+        res[0] = bits.str2num(a.substring(i + 1, a.length()));
+        pip.nonBlockSkip(a.length() + p + 3);
+        if (res[0] < 1) {
+            return null;
+        }
+        if (res[1] < 1) {
+            return null;
+        }
+        return res;
+    }
+
+    /**
      * send terminal title
      *
      * @param pip pipe to use

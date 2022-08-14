@@ -126,6 +126,11 @@ public class userLine {
     public boolean banner = true;
 
     /**
+     * detect terminals
+     */
+    public boolean detect = false;
+
+    /**
      * disconnect warning
      */
     public boolean expirity = false;
@@ -248,6 +253,7 @@ public class userLine {
         lst.add(beg + "exec autocommand " + autoCommand);
         cmds.cfgLine(lst, !autoHangup, beg, "exec autohangup", "");
         cmds.cfgLine(lst, !banner, beg, "exec banner", "");
+        cmds.cfgLine(lst, !detect, beg, "exec detect", "");
         cmds.cfgLine(lst, !title, beg, "exec title", "");
         cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
         cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
@@ -368,6 +374,10 @@ public class userLine {
             }
             if (s.equals("banner")) {
                 banner = true;
+                return false;
+            }
+            if (s.equals("detect")) {
+                detect = true;
                 return false;
             }
             if (s.equals("title")) {
@@ -510,6 +520,10 @@ public class userLine {
                 banner = false;
                 return false;
             }
+            if (s.equals("detect")) {
+                detect = false;
+                return false;
+            }
             if (s.equals("title")) {
                 title = false;
                 return false;
@@ -596,6 +610,7 @@ public class userLine {
         l.add(null, "2 3    autocommand                  set automatic command");
         l.add(null, "3 3,.    <text>                     autocommand of user");
         l.add(null, "2 .    banner                       display banner");
+        l.add(null, "2 .    detect                       detect terminal size");
         l.add(null, "2 .    title                        send hostname");
         l.add(null, "2 .    expirity                     display expirity warnings");
         l.add(null, "2 .    monitor                      display logging information");
@@ -703,6 +718,9 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         last = bits.getTime();
         if (parent.title) {
             userScreen.sendTit(pipe, cfgAll.hostName);
+        }
+        if (parent.detect) {
+            userScreen.updtSiz(pipe);
         }
         if (parent.banner) {
             pipe.blockingPut(cfgAll.banner, 0, cfgAll.banner.length);

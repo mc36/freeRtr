@@ -108,6 +108,7 @@ import net.freertr.user.userHelping;
 import net.freertr.user.userLine;
 import net.freertr.user.userNetconf;
 import net.freertr.user.userReader;
+import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -238,6 +239,7 @@ public class cfgInit implements Runnable {
 
     private final static String[] needInit = {
         //"interface .*",
+        //"aaa .*",
         "vrf definition .*",
         "access-list .*",
         "prefix-list .*",
@@ -245,9 +247,7 @@ public class cfgInit implements Runnable {
         "route-map .*",
         "route-policy .*",
         "proxy-profile .*",
-        "vdc definition .*",
-        //"aaa .*",
-    };
+        "vdc definition .*",};
 
     private final static String[] needIface = {
         "interface .*! vrf forwarding .*",
@@ -1193,6 +1193,7 @@ public class cfgInit implements Runnable {
             List<String> swT = httpGet(cfgFileSw);
             doInit(hwT, swT, pipCon);
             if (pipCon != null) {
+                userScreen.updtSiz(pipCon);
                 userLine lin = new userLine();
                 lin.execTimeOut = 0;
                 lin.createHandler(pipCon, "console", 2);

@@ -1406,6 +1406,7 @@ public class userExec {
         hl.add(null, "2 3      deactivate                   set deactivate character");
         hl.add(null, "3 .        <num>                      ascii code");
         hl.add(null, "2 .      monitor                      log to this terminal");
+        hl.add(null, "2 .      detect                       detect size of terminal");
         hl.add(null, "2 .      timestamps                   put time before each executed command");
         hl.add(null, "2 3      colorize                     sending to ansi terminal");
         hl.add(null, "3 .        normal                     select normal mode");
@@ -4382,6 +4383,10 @@ public class userExec {
 
     private void doTerminal() {
         String a = cmd.word();
+        if (a.equals("detect")) {
+            cmd.error(doneFail(userScreen.updtSiz(pipe)));
+            return;
+        }
         if (a.equals("monitor")) {
             logger.pipeStart(pipe);
             return;
