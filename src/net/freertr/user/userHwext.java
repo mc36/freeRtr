@@ -325,11 +325,11 @@ public class userHwext {
                         userHwdet.setupIface(hwd, "veth0b", 2048);
                         hwd.add("ip link set " + ifn + " xdpgeneric off");
                         hwd.add("ip link set " + ifn + " xdpgeneric obj p4xdp_pass.bin sec p4xdp_pass");
-                        a = "";
+                        a = " skb";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
                         }
-                        hwc.add("proc p4emu " + path + "p4xdp_user.bin skb 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        hwc.add("proc p4emu " + path + "p4xdp_user.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         break;
                     case p4sw:
                         ifn = "ens1";
