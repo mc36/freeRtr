@@ -9,7 +9,7 @@
 ##define HAVE_OUTQOS
 ##define HAVE_PBR
 
-#define PORT_TABLE_SIZE                12288
+#define PORT_TABLE_SIZE                13312
 
 #define BUNDLE_TABLE_SIZE                      128
 
@@ -22,12 +22,12 @@
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256
 
-#define NEXTHOP_TABLE_SIZE             3072
+#define NEXTHOP_TABLE_SIZE             3328
 
 
-#define IPV4_TUNNEL_TABLE_SIZE         3072
-#define IPV6_TUNNEL_TABLE_SIZE         1536
+#define IPV4_TUNNEL_TABLE_SIZE         3328
+#define IPV6_TUNNEL_TABLE_SIZE         1664
 
-#define MAC_TABLE_SIZE                 12288
+#define MAC_TABLE_SIZE                 13312
 #define _TABLE_SIZE_P4_
 #endif

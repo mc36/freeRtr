@@ -27,6 +27,6 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define NSH_TABLE_SIZE                 28672
+#define NSH_TABLE_SIZE                 30720
 #define _TABLE_SIZE_P4_
 #endif

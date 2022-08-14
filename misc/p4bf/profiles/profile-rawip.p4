@@ -13,9 +13,9 @@
 
 #define VLAN_TABLE_SIZE                        512
 
-#define IPV4_LPM_TABLE_SIZE            196608
+#define IPV4_LPM_TABLE_SIZE            217088
 
-#define IPV6_LPM_TABLE_SIZE            49152
+#define IPV6_LPM_TABLE_SIZE            54272
 
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256

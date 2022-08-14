@@ -8,9 +8,9 @@
 
 #define VLAN_TABLE_SIZE                        512
 
-#define IPV4_LPM_TABLE_SIZE            20480
+#define IPV4_LPM_TABLE_SIZE            24576
 
-#define IPV6_LPM_TABLE_SIZE            5120
+#define IPV6_LPM_TABLE_SIZE            6144
 
 #define IPV4_HOST_TABLE_SIZE                   256
 #define IPV6_HOST_TABLE_SIZE                   256
@@ -18,7 +18,7 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define MPLS_TABLE_SIZE                163840
+#define MPLS_TABLE_SIZE                165888
 
 #define IPV4_COPP_TABLE_SIZE                   512
 #define IPV6_COPP_TABLE_SIZE                   256

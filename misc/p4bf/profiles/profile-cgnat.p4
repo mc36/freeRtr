@@ -25,8 +25,8 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define IPV4_NATTRNS_TABLE_SIZE        60416
-#define IPV6_NATTRNS_TABLE_SIZE        60416
+#define IPV4_NATTRNS_TABLE_SIZE        62464
+#define IPV6_NATTRNS_TABLE_SIZE        62464
 
 #define IPV4_NATACL_TABLE_SIZE         256
 #define IPV6_NATACL_TABLE_SIZE         256
