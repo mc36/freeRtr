@@ -1286,8 +1286,16 @@ public class cfgInit implements Runnable {
             }
             return;
         }
-        boolean b = s.equals("exec");
-        if (b || s.equals("test")) {
+        boolean b = s.startsWith("exec");
+        if (b || s.startsWith("test")) {
+            boolean det = false;
+            for (int i = 4; i < s.length(); i++) {
+                String a = "" + s.charAt(i);
+                if (a.equals("d")) {
+                    det = true;
+                    continue;
+                }
+            }
             s = "";
             for (int i = b ? 1 : 0; i < args.length; i++) {
                 s += " " + args[i];
@@ -1296,6 +1304,9 @@ public class cfgInit implements Runnable {
             logger.pipeStart(pip);
             userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
+            if (det) {
+                userScreen.updtSiz(pip);
+            }
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
             s = exe.repairCommand(s);
