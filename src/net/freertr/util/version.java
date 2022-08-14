@@ -78,6 +78,7 @@ public class version {
         "mpeg   video/mpeg",
         "mpg    video/mpeg",
         "mp4    video/mp4",
+        "mkv    video/x-matroska",
         "3gp    video/3gpp",
         "ogv    video/ogg",
         // audio
