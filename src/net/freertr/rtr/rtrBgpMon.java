@@ -254,7 +254,7 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         pck.msbPutD(32, asn); // as
         pck.putAddr(36, rid); // routerid
         pck.msbPutD(40, (int) (tim / 1000)); // seconds
-        pck.msbPutD(44, (int) (tim % 1000)); // microsecs
+        pck.msbPutD(44, 1000 * (int) (tim % 1000)); // microsecs
         pck.putSkip(size);
         pck.merge2beg();
     }

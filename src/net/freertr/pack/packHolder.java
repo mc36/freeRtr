@@ -1082,7 +1082,7 @@ public class packHolder {
         final int siz = dataE - dataO;
         byte[] buf = new byte[hdr + headS + siz];
         bits.msbPutD(buf, 0, (int) (tim / 1000)); // seconds
-        bits.msbPutD(buf, 4, (int) (tim % 1000)); // microsecs
+        bits.msbPutD(buf, 4, 1000 * (int) (tim % 1000)); // microsecs
         bits.msbPutD(buf, 8, buf.length - 16); // included len
         bits.msbPutD(buf, 12, buf.length - 16); // original len
         if (prepend) {

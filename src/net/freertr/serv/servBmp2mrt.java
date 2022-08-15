@@ -906,8 +906,8 @@ class servBmp2mrtConn implements Runnable {
             pck.getAddr(adr, 10);
             int as = pck.msbGetD(26); // asnum
             // pck.getAddr(rtr, 30); // rtrid
-            // int tim = pck.msbGetD(34); // time
-            // int nano = pck.msbGetD(38); // time
+            // int tim = pck.msbGetD(34); // seconds
+            // int tim += pck.msbGetD(38) / 1000; // microsecs
             if ((flg & 0x80) == 0) {
                 adr.fromIPv4addr(adr.toIPv4());
             }

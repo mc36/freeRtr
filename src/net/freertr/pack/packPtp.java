@@ -143,7 +143,7 @@ public class packPtp {
         pck.msbPutQ(32, (int) (tim / 1000)); // seconds
         pck.putByte(32, ctrl); // control
         pck.putByte(33, 0); // message period
-        pck.msbPutD(40, (int) ((tim % 1000) * 1000)); // nanoseconds
+        pck.msbPutD(40, 1000000 * (int) (tim % 1000)); // nanoseconds
         pck.putSkip(size);
         pck.merge2beg();
     }
@@ -178,7 +178,7 @@ public class packPtp {
         clock = pck.msbGetQ(20); // clock
         port = pck.msbGetW(28); // sequence
         offset = (pck.msbGetQ(32) & 0xffffffffffffL) * 1000; // seconds
-        offset += pck.msbGetD(40) / 1000; // nanoseconds
+        offset += pck.msbGetD(40) / 1000000; // nanoseconds
         offset -= tim;
         return false;
     }
