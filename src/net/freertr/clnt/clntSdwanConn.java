@@ -81,6 +81,8 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
 
     private boolean noSgt;
 
+    private int frags;
+
     private boolean need2work = true;
 
     /**
@@ -129,9 +131,15 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
             }
             if (a.equals("nomacsec")) {
                 noMacsec = true;
+                continue;
             }
             if (a.equals("nosgt")) {
                 noSgt = true;
+                continue;
+            }
+            if (a.equals("frag")) {
+                frags = bits.str2num(cmd.word());
+                continue;
             }
         }
     }
@@ -206,6 +214,16 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         if (noSgt) {
             ifc.disableSgt = true;
             ifc.ethtyp.sgtHnd = null;
+        }
+        if ((ifc.ppp != null) && (frags > 0)) {
+            if (ifc.ppp.fragLen > frags) {
+                ifc.ppp.fragLen = frags;
+            }
+        }
+        if ((ifc.frmrly != null) && (frags > 0)) {
+            if (ifc.frmrly.fragLen > frags) {
+                ifc.frmrly.fragLen = frags;
+            }
         }
         new Thread(this).start();
     }

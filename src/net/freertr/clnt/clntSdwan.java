@@ -413,6 +413,16 @@ public class clntSdwan implements Runnable, ifcDn {
         if (clonIfc.disableSgt) {
             a += " nosgt";
         }
+        if (clonIfc.ppp != null) {
+            if (clonIfc.ppp.fragLen > 0) {
+                a += " frag " + clonIfc.ppp.fragLen;
+            }
+        }
+        if (clonIfc.frmrly != null) {
+            if (clonIfc.frmrly.fragLen > 0) {
+                a += " frag " + clonIfc.frmrly.fragLen;
+            }
+        }
         sendLn("myendpoint " + prefer + " " + fwdIfc.addr + " " + dataPort + " " + a);
         sendLn("nomore");
         for (;;) {
