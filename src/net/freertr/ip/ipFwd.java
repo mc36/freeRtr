@@ -1411,6 +1411,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 }
                 return;
             }
+            if (debugger.ipFwdReasm) {
+                logger.debug("reasm " + pck.IPsrc + " -> " + pck.IPtrg + " id=" + pck.IPid + " ofs=" + pck.IPfrg + " mf=" + pck.IPmf);
+            }
             int o = -1;
             for (int i = 0; i < lower.reasmBuf.size(); i++) {
                 packHolder asm = lower.reasmBuf.get(i);
@@ -1607,6 +1610,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         byte[] buf = new byte[iface.fragments];
         int idn = bits.randomW();
         int ofs = 0;
+        if (debugger.ipFwdFrag) {
+            logger.debug("frag " + pck.IPsrc + " -> " + pck.IPtrg + " id=" + idn);
+        }
         for (;;) {
             int len = pck.dataSize() - ofs;
             if (len < 1) {

@@ -764,6 +764,16 @@ public class debugger {
     public static boolean ipFwdTraf = false;
 
     /**
+     * ipFwd reassembly
+     */
+    public static boolean ipFwdReasm = false;
+
+    /**
+     * ipFwd fragmentation
+     */
+    public static boolean ipFwdFrag = false;
+
+    /**
      * ipIcmp4 traffic
      */
     public static boolean ipIcmp4traf = false;
@@ -1187,6 +1197,8 @@ public class debugger {
         l.add(null, "2 3      fwd                 protocol forwarding");
         l.add(null, "3 .        event             forwarding events");
         l.add(null, "3 .        packet            forwarded packets");
+        l.add(null, "3 .        fragmentation     packet fragmentation");
+        l.add(null, "3 .        reassembly        packet reassembly");
         l.add(null, "3 .        srh               source routed packets");
         l.add(null, "2 3      mpls                multiprotocol label switching");
         l.add(null, "3 .        packet            mpls packet processing");
@@ -2032,6 +2044,14 @@ public class debugger {
             }
             if (s.equals("packet")) {
                 ipFwdTraf = v;
+                return false;
+            }
+            if (s.equals("reassembly")) {
+                ipFwdReasm = v;
+                return false;
+            }
+            if (s.equals("fragmentation")) {
+                ipFwdFrag = v;
                 return false;
             }
             if (s.equals("srh")) {
