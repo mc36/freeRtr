@@ -5,6 +5,8 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgProxy;
+import net.freertr.clnt.clntProxy;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
@@ -36,6 +38,11 @@ public class servLoadBalancer extends servGeneric implements prtServS {
      * port number
      */
     public static final int port = 1;
+
+    /**
+     * target proxy
+     */
+    public clntProxy proxy;
 
     /**
      * source interface
@@ -73,6 +80,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server loadbalancer .*! port " + port,
         "server loadbalancer .*! protocol " + proto2string(protoAllStrm),
+        "server loadbalancer .*! no proxy",
         "server loadbalancer .*! no source",
         "server loadbalancer .*! timeout 60000",
         "server loadbalancer .*! buffer 65536",
@@ -89,6 +97,11 @@ public class servLoadBalancer extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
+        if (proxy == null) {
+            l.add(beg + "no proxy");
+        } else {
+            l.add(beg + "proxy " + proxy.name);
+        }
         if (originate == null) {
             l.add(beg + "no source");
         } else {
@@ -113,6 +126,15 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         }
         if (a.equals("buffer")) {
             bufSiz = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("proxy")) {
+            cfgProxy p = cfgAll.proxyFind(cmd.word(), false);
+            if (p == null) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            proxy = p.proxy;
             return false;
         }
         if (a.equals("source")) {
@@ -142,6 +164,10 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             logging = false;
             return false;
         }
+        if (a.equals("proxy")) {
+            proxy = null;
+            return false;
+        }
         if (a.equals("source")) {
             originate = null;
             return false;
@@ -161,6 +187,8 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         l.add(null, "2 .    <num>                      timeout in ms");
         l.add(null, "1 2  buffer                       set buffer size on connection");
         l.add(null, "2 .    <num>                      buffer in bytes");
+        l.add(null, "1 2  proxy                        set proxy to use");
+        l.add(null, "2 .    <name:prx>                 name of proxy");
         l.add(null, "1 2  source                       set source interface");
         l.add(null, "2 .    <name:ifc>                 name of interface");
         l.add(null, "1 2  server                       name of server");
@@ -210,9 +238,6 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         con1.wait4ready(timeOut);
         servLoadBalancerEntry ntry = null;
         int o = servLst.size();
-        if (o < 1) {
-            return true;
-        }
         long p = bits.getTime();
         for (int i = 0; i < o; i++) {
             servNxt = (servNxt + 1) % o;
@@ -228,18 +253,25 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             break;
         }
         if (ntry == null) {
+            logger.warn("no available server found");
             return true;
         }
-        prtGen prt = getProtocol(srvVrf, srvProto, ntry.addr);
-        if (prt == null) {
-            return true;
+        pipeSide con2 = null;
+        if (proxy != null) {
+            con2 = proxy.doConnect(srvProto, ntry.addr, ntry.port, srvName());
+        } else {
+            prtGen prt = getProtocol(srvVrf, srvProto, ntry.addr);
+            if (prt == null) {
+                return true;
+            }
+            ipFwdIface ifc = null;
+            if (originate != null) {
+                ifc = originate.getFwdIfc(ntry.addr);
+            }
+            con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, ntry.addr, ntry.port, srvName(), -1, null, -1, -1);
         }
-        ipFwdIface ifc = null;
-        if (originate != null) {
-            ifc = originate.getFwdIfc(ntry.addr);
-        }
-        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, ntry.addr, ntry.port, srvName(), -1, null, -1, -1);
         if (con2 == null) {
+            logger.warn("server " + ntry.num + " marked bad");
             ntry.bad = bits.getTime();
             return true;
         }

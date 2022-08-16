@@ -5,7 +5,9 @@ import net.freertr.addr.addrIP;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntProxy;
 import net.freertr.enc.encBase64;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeConnect;
@@ -39,6 +41,11 @@ public class servForwarder extends servGeneric implements prtServS {
      * port number
      */
     public static final int port = 1;
+
+    /**
+     * target proxy
+     */
+    public clntProxy trgPrx;
 
     /**
      * target vrf
@@ -106,6 +113,8 @@ public class servForwarder extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server forwarder .*! port " + port,
         "server forwarder .*! protocol " + proto2string(protoAllStrm),
+        "server forwarder .*! no target proxy",
+        "server forwarder .*! no target vrf",
         "server forwarder .*! no target interface",
         "server forwarder .*! no target security",
         "server forwarder .*! no target username",
@@ -127,6 +136,11 @@ public class servForwarder extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
+        if (trgPrx == null) {
+            l.add(beg + "no target proxy");
+        } else {
+            l.add(beg + "target proxy " + trgPrx.name);
+        }
         if (trgVrf == null) {
             l.add(beg + "no target vrf");
         } else {
@@ -170,6 +184,15 @@ public class servForwarder extends servGeneric implements prtServS {
             a = cmd.word();
             if (a.equals("pubkey")) {
                 trgKey = encBase64.decodeBytes(cmd.getRemaining());
+                return false;
+            }
+            if (a.equals("proxy")) {
+                cfgProxy p = cfgAll.proxyFind(cmd.word(), false);
+                if (p == null) {
+                    cmd.error("no such proxy");
+                    return false;
+                }
+                trgPrx = p.proxy;
                 return false;
             }
             if (a.equals("vrf")) {
@@ -235,6 +258,10 @@ public class servForwarder extends servGeneric implements prtServS {
                 trgKey = null;
                 return false;
             }
+            if (a.equals("proxy")) {
+                trgPrx = null;
+                return false;
+            }
             if (a.equals("vrf")) {
                 trgVrf = null;
                 return false;
@@ -279,6 +306,8 @@ public class servForwarder extends servGeneric implements prtServS {
         l.add(null, "1 2  buffer                       set buffer size on connection");
         l.add(null, "2 .    <num>                      buffer in bytes");
         l.add(null, "1 2  target                       set session target");
+        l.add(null, "2 3    proxy                      set proxy to use");
+        l.add(null, "3 .      <name:prx>               name of proxy");
         l.add(null, "2 3    vrf                        set source vrf");
         l.add(null, "3 .      <name:vrf>               name of vrf");
         l.add(null, "2 3    interface                  set source interface");
@@ -347,21 +376,26 @@ public class servForwarder extends servGeneric implements prtServS {
         if (con1.wait4ready(timeOut)) {
             return true;
         }
-        if (trgVrf == null) {
-            return true;
+        pipeSide con2 = null;
+        if (trgPrx != null) {
+            con2 = trgPrx.doConnect(trgProto, trgAddr, trgPort, srvName());
+        } else {
+            if (trgVrf == null) {
+                return true;
+            }
+            if (trgAddr == null) {
+                return true;
+            }
+            prtGen prt = getProtocol(trgVrf, trgProto, trgAddr);
+            if (prt == null) {
+                return true;
+            }
+            ipFwdIface ifc = null;
+            if (trgIface != null) {
+                ifc = trgIface.getFwdIfc(trgAddr);
+            }
+            con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), -1, null, -1, -1);
         }
-        if (trgAddr == null) {
-            return true;
-        }
-        prtGen prt = getProtocol(trgVrf, trgProto, trgAddr);
-        if (prt == null) {
-            return true;
-        }
-        ipFwdIface ifc = null;
-        if (trgIface != null) {
-            ifc = trgIface.getFwdIfc(trgAddr);
-        }
-        pipeSide con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), -1, null, -1, -1);
         if (con2 == null) {
             return true;
         }

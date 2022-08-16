@@ -6,7 +6,9 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntProxy;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
@@ -40,6 +42,11 @@ public class servSocks extends servGeneric implements prtServS {
     public static final int port = 1080;
 
     /**
+     * target proxy
+     */
+    public clntProxy trgPrx;
+
+    /**
      * target vrf
      */
     public cfgVrf trgVrf;
@@ -55,14 +62,27 @@ public class servSocks extends servGeneric implements prtServS {
     public int trgTimeout = 60 * 1000;
 
     /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+
+    /**
+     * logging
+     */
+    public boolean logging = false;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
         "server socks .*! port " + port,
         "server socks .*! protocol " + proto2string(protoAllStrm),
+        "server socks .*! no target proxy",
+        "server socks .*! no target vrf",
         "server socks .*! no target interface",
-        "server socks .*! timeout 60000"
-    };
+        "server socks .*! timeout 60000",
+        "server socks .*! buffer 65536",
+        "server socks .*! no logging",};
 
     /**
      * defaults filter
@@ -74,6 +94,12 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        cmds.cfgLine(l, !logging, beg, "logging", "");
+        if (trgPrx == null) {
+            l.add(beg + "no target proxy");
+        } else {
+            l.add(beg + "target proxy " + trgPrx.name);
+        }
         if (trgVrf == null) {
             l.add(beg + "no target vrf");
         } else {
@@ -85,16 +111,34 @@ public class servSocks extends servGeneric implements prtServS {
             l.add(beg + "target interface " + trgIface.name);
         }
         l.add(beg + "timeout " + trgTimeout);
+        l.add(beg + "buffer " + bufSiz);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("logging")) {
+            logging = true;
+            return false;
+        }
         if (a.equals("timeout")) {
             trgTimeout = bits.str2num(cmd.word());
             return false;
         }
+        if (a.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
+            return false;
+        }
         if (a.equals("target")) {
             a = cmd.word();
+            if (a.equals("proxy")) {
+                cfgProxy p = cfgAll.proxyFind(cmd.word(), false);
+                if (p == null) {
+                    cmd.error("no such proxy");
+                    return false;
+                }
+                trgPrx = p.proxy;
+                return false;
+            }
             if (a.equals("vrf")) {
                 cfgVrf v = cfgAll.vrfFind(cmd.word(), false);
                 if (v == null) {
@@ -119,8 +163,16 @@ public class servSocks extends servGeneric implements prtServS {
             return true;
         }
         a = cmd.word();
+        if (a.equals("logging")) {
+            logging = false;
+            return false;
+        }
         if (a.equals("target")) {
             a = cmd.word();
+            if (a.equals("proxy")) {
+                trgPrx = null;
+                return false;
+            }
             if (a.equals("vrf")) {
                 trgVrf = null;
                 return false;
@@ -135,9 +187,14 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 .  logging                      set logging");
         l.add(null, "1 2  timeout                      set timeout on connection");
         l.add(null, "2 .    <num>                      timeout in ms");
+        l.add(null, "1 2  buffer                       set buffer size on connection");
+        l.add(null, "2 .    <num>                      buffer in bytes");
         l.add(null, "1 2  target                       set session target");
+        l.add(null, "2 3    proxy                      set proxy to use");
+        l.add(null, "3 .      <name:prx>               name of proxy");
         l.add(null, "2 3    vrf                        set source vrf");
         l.add(null, "3 .      <name:vrf>               name of vrf");
         l.add(null, "2 3    interface                  set source interface");
@@ -157,7 +214,7 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(65536, false), 0);
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
 
     public boolean srvDeinit() {
@@ -165,6 +222,9 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        if (logging) {
+            logger.info("connection from " + id.peerAddr);
+        }
         pipe.setTime(10000);
         new servSocksDoer(this, pipe);
         return false;
@@ -179,9 +239,6 @@ public class servSocks extends servGeneric implements prtServS {
     public boolean doConnStart(pipeSide con1) {
         con1.setTime(trgTimeout);
         con1.wait4ready(trgTimeout);
-        if (trgVrf == null) {
-            return true;
-        }
         addrIP trgAddr = new addrIP();
         int trgPort = 0;
         addrIPv4 adr4 = new addrIPv4();
@@ -277,15 +334,29 @@ public class servSocks extends servGeneric implements prtServS {
             default:
                 return true;
         }
-        prtGen prt = getProtocol(trgVrf, protoTcp, trgAddr);
-        if (prt == null) {
+        if (logging) {
+            logger.info("connecting to " + trgAddr + " " + trgPort);
+        }
+        pipeSide con2 = null;
+        if (trgPrx != null) {
+            con2 = trgPrx.doConnect(srvProto, trgAddr, trgPort, srvName());
+        } else {
+            if (trgVrf == null) {
+                return true;
+            }
+            prtGen prt = getProtocol(trgVrf, srvProto, trgAddr);
+            if (prt == null) {
+                return true;
+            }
+            ipFwdIface ifc = null;
+            if (trgIface != null) {
+                ifc = trgIface.getFwdIfc(trgAddr);
+            }
+            con2 = prt.streamConnect(new pipeLine(bufSiz, con1.isBlockMode()), ifc, 0, trgAddr, trgPort, srvName(), -1, null, -1, -1);
+        }
+        if (con2 == null) {
             return true;
         }
-        ipFwdIface ifc = null;
-        if (trgIface != null) {
-            ifc = trgIface.getFwdIfc(trgAddr);
-        }
-        pipeSide con2 = prt.streamConnect(new pipeLine(65536, true), ifc, 0, trgAddr, trgPort, srvName(), -1, null, -1, -1);
         con2.setTime(trgTimeout);
         con2.wait4ready(trgTimeout);
         pipeConnect.connect(con1, con2, true);

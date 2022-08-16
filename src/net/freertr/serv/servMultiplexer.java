@@ -6,7 +6,9 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntProxy;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -109,14 +111,6 @@ public class servMultiplexer extends servGeneric implements prtServS {
             servMultiplexerTrgt ntry = new servMultiplexerTrgt();
             ntry.lower = this;
             ntry.num = bits.str2num(cmd.word());
-            ntry.vrf = cfgAll.vrfFind(cmd.word(), false);
-            if (ntry.vrf == null) {
-                return true;
-            }
-            ntry.iface = cfgAll.ifcFind(cmd.word(), 0);
-            if (ntry.iface == null) {
-                return true;
-            }
             if (ntry.addr.fromString(cmd.word())) {
                 return true;
             }
@@ -125,6 +119,22 @@ public class servMultiplexer extends servGeneric implements prtServS {
                 a = cmd.word();
                 if (a.length() < 1) {
                     break;
+                }
+                if (a.equals("vrf")) {
+                    ntry.vrf = cfgAll.vrfFind(cmd.word(), false);
+                    continue;
+                }
+                if (a.equals("iface")) {
+                    ntry.iface = cfgAll.ifcFind(cmd.word(), 0);
+                    continue;
+                }
+                if (a.equals("proxy")) {
+                    cfgProxy p = cfgAll.proxyFind(cmd.word(), false);
+                    if (p == null) {
+                        continue;
+                    }
+                    ntry.proxy = p.proxy;
+                    continue;
                 }
                 if (a.equals("logging")) {
                     ntry.logging = true;
@@ -184,15 +194,19 @@ public class servMultiplexer extends servGeneric implements prtServS {
         l.add(null, "2 .    <num>                      buffer in bytes");
         l.add(null, "1 2  target                       name of server");
         l.add(null, "2 3    <num>                      number of target");
-        l.add(null, "3 4      <name:vrf>               name of vrf");
-        l.add(null, "4 5        <name:ifc>             name of interface");
-        l.add(null, "5 6          <addr>               address of target");
-        l.add(null, "6 7,.          <port>             port on target");
-        l.add(null, "7 7,.            rx               only rx");
-        l.add(null, "7 7,.            tx               only tx");
-        l.add(null, "7 7,.            logging          set logging");
-        l.add(null, "7 7,.            clear            clear clients on disconnect");
-        l.add(null, "7 7,.            nowait           use nonblocking send");
+        l.add(null, "3 4      <addr>                   address of target");
+        l.add(null, "4 5,.      <port>                 port on target");
+        l.add(null, "5 5,.        rx                   only rx");
+        l.add(null, "5 5,.        tx                   only tx");
+        l.add(null, "5 5,.        logging              set logging");
+        l.add(null, "5 5,.        clear                clear clients on disconnect");
+        l.add(null, "5 5,.        nowait               use nonblocking send");
+        l.add(null, "5 6          vrf                  specify vrf to use");
+        l.add(null, "6 5,.          <name:vrf>         name of vrf");
+        l.add(null, "5 6          iface                specify interface to use");
+        l.add(null, "6 5,.          <name:ifc>         name of interface");
+        l.add(null, "5 6          proxy                specify proxy to use");
+        l.add(null, "6 5,.          <name:prx>         name of proxy");
     }
 
     public String srvName() {
@@ -338,6 +352,8 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
 
     public int num;
 
+    public clntProxy proxy;
+
     public cfgVrf vrf;
 
     public cfgIfc iface;
@@ -379,7 +395,16 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
                 a += " tx";
                 break;
         }
-        return num + " " + vrf.name + " " + iface.name + " " + addr + " " + port + a;
+        if (vrf != null) {
+            a += " vrf " + vrf.name;
+        }
+        if (iface != null) {
+            a += " iface " + iface.name;
+        }
+        if (proxy != null) {
+            a += " proxy " + proxy.name;
+        }
+        return num + " " + addr + " " + port + a;
     }
 
     public int compare(servMultiplexerTrgt o1, servMultiplexerTrgt o2) {
@@ -410,15 +435,20 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         if (!need2run) {
             return true;
         }
-        prtGen prt = servMultiplexer.getProtocol(vrf, lower.srvProto, addr);
-        if (prt == null) {
-            return false;
+        conn = null;
+        if (proxy != null) {
+            conn = proxy.doConnect(lower.srvProto, addr, port, lower.srvName());
+        } else {
+            prtGen prt = servGeneric.getProtocol(vrf, lower.srvProto, addr);
+            if (prt == null) {
+                return false;
+            }
+            ipFwdIface ifc = null;
+            if (iface != null) {
+                ifc = iface.getFwdIfc(addr);
+            }
+            conn = prt.streamConnect(new pipeLine(lower.bufSiz, false), ifc, 0, addr, port, lower.srvName(), -1, null, -1, -1);
         }
-        ipFwdIface ifc = null;
-        if (iface != null) {
-            ifc = iface.getFwdIfc(addr);
-        }
-        conn = prt.streamConnect(new pipeLine(lower.bufSiz, false), ifc, 0, addr, port, lower.srvName(), -1, null, -1, -1);
         if (conn == null) {
             return false;
         }
