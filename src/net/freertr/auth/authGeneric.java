@@ -68,9 +68,19 @@ public abstract class authGeneric implements Comparator<authGeneric> {
     public int sawOk;
 
     /**
-     * last response
+     * last failure response
      */
-    public long sawLast;
+    public long lastFail;
+
+    /**
+     * last error response
+     */
+    public long lastErr;
+
+    /**
+     * last ok response
+     */
+    public long lastOk;
 
     /**
      * authenticate user by username/password
@@ -172,7 +182,6 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      */
     public abstract boolean fromString(cmds cmd);
 
-
     /**
      * get show
      *
@@ -206,11 +215,10 @@ public abstract class authGeneric implements Comparator<authGeneric> {
      * @return show
      */
     public userFormat getShowGlob() {
-        userFormat res = new userFormat("|", "category|value");
-        res.add("ok|" + sawOk);
-        res.add("fail|" + sawFail);
-        res.add("error|" + sawErr);
-        res.add("last|" + bits.time2str(cfgAll.timeZoneName, sawLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(sawLast) + " ago)");
+        userFormat res = new userFormat("|", "reply|times|ago|last");
+        res.add("ok|" + sawOk + "|" + bits.timePast(lastOk) + "|" + bits.time2str(cfgAll.timeZoneName, lastOk + cfgAll.timeServerOffset, 3));
+        res.add("fail|" + sawFail + "|" + bits.timePast(lastFail) + "|" + bits.time2str(cfgAll.timeZoneName, lastFail + cfgAll.timeServerOffset, 3));
+        res.add("error|" + sawErr + "|" + bits.timePast(lastErr) + "|" + bits.time2str(cfgAll.timeZoneName, lastErr + cfgAll.timeServerOffset, 3));
         return res;
     }
 

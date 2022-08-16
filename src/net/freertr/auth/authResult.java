@@ -120,7 +120,6 @@ public class authResult {
         if (lower == null) {
             return;
         }
-        lower.sawLast = bits.getTime();
         if (lower.logPass) {
             nam = nam + "/" + pwd;
         }
@@ -129,18 +128,21 @@ public class authResult {
                 if (lower.logErr) {
                     logger.info("error while authenticating " + nam);
                 }
+                lower.lastErr = bits.getTime();
                 lower.sawErr++;
                 break;
             case authBadUserPass:
                 if (lower.logFail) {
                     logger.info("bad user/pass for " + nam);
                 }
+                lower.lastFail = bits.getTime();
                 lower.sawFail++;
                 break;
             case authSuccessful:
                 if (lower.logOk) {
                     logger.info("successful for " + nam);
                 }
+                lower.lastOk = bits.getTime();
                 lower.sawOk++;
                 break;
         }
