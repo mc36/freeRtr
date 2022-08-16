@@ -370,6 +370,16 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
      * @return session id, 0 if no session
      */
     public int getPortLoc() {
+        if (ifc.ppp != null) {
+            if (ifc.ppp.getState() != state.states.up) {
+                return -1;
+            }
+        }
+        if (ifc.frmrly != null) {
+            if (ifc.frmrly.getState() != state.states.up) {
+                return -1;
+            }
+        }
         return lower.dataPort;
     }
 
