@@ -115,6 +115,10 @@ public class counter implements Comparator<counter> {
          */
         fragment,
         /**
+         * reassembly exceeded
+         */
+        reassembly,
+        /**
          * ttl exceeded
          */
         ttlExceed,
@@ -223,6 +227,8 @@ public class counter implements Comparator<counter> {
                 return "fragmented";
             case ttlExceed:
                 return "ttl exceed";
+            case reassembly:
+                return "reassembly";
             case badProto:
                 return "bad protocol id";
             case badVer:

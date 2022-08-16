@@ -194,8 +194,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! report6labels",
         "vrf definition .*! no unreach4rate",
         "vrf definition .*! no unreach6rate",
-        "vrf definition .*! no punish4pmtud",
-        "vrf definition .*! no punish6pmtud",
         "vrf definition .*! no mdt4",
         "vrf definition .*! no mdt6",
         "vrf definition .*! no label4filter",
@@ -560,8 +558,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, !fwd6.mplsPropTtl, cmds.tabulator, "propagate6ttl", "");
         cmds.cfgLine(l, !fwd4.mplsExtRep, cmds.tabulator, "report4labels", "");
         cmds.cfgLine(l, !fwd6.mplsExtRep, cmds.tabulator, "report6labels", "");
-        cmds.cfgLine(l, !fwd4.ruinPmtuD, cmds.tabulator, "punish4pmtud", "");
-        cmds.cfgLine(l, !fwd6.ruinPmtuD, cmds.tabulator, "punish6pmtud", "");
         cmds.cfgLine(l, fwd4.unreach == null, cmds.tabulator, "unreach4rate", "" + fwd4.unreach);
         cmds.cfgLine(l, fwd6.unreach == null, cmds.tabulator, "unreach6rate", "" + fwd6.unreach);
         cmds.cfgLine(l, fwd4.labelFilter == null, cmds.tabulator, "label4filter", "" + fwd4.labelFilter);
@@ -675,9 +671,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
         l.add(null, "1 2  rt6export           specify route target export");
         l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
-        l.add(null, ".1 . punish-pmtud        send back mtu exceeded if needed");
-        l.add(null, ".1 . punish4pmtud        send back mtu exceeded if needed");
-        l.add(null, ".1 . punish6pmtud        send back mtu exceeded if needed");
         l.add(null, "1 2  unreach-rate        rate limit icmp generation");
         l.add(null, "2 3    <num>             packets allowed");
         l.add(null, "3 .      <num>           millisecs between them");
@@ -984,19 +977,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("unreach6rate")) {
             int res = bits.str2num(cmd.word());
             fwd6.unreach = new tabRateLimit(res, bits.str2num(cmd.word()));
-            return;
-        }
-        if (a.equals("punish-pmtud")) {
-            fwd4.ruinPmtuD = true;
-            fwd6.ruinPmtuD = true;
-            return;
-        }
-        if (a.equals("punish4pmtud")) {
-            fwd4.ruinPmtuD = true;
-            return;
-        }
-        if (a.equals("punish6pmtud")) {
-            fwd6.ruinPmtuD = true;
             return;
         }
         if (a.equals("report-labels")) {
@@ -1431,19 +1411,6 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         if (a.equals("unreach6rate")) {
             fwd6.unreach = null;
-            return;
-        }
-        if (a.equals("punish-pmtud")) {
-            fwd4.ruinPmtuD = false;
-            fwd6.ruinPmtuD = false;
-            return;
-        }
-        if (a.equals("punish4pmtud")) {
-            fwd4.ruinPmtuD = false;
-            return;
-        }
-        if (a.equals("punish6pmtud")) {
-            fwd6.ruinPmtuD = false;
             return;
         }
         if (a.equals("report-labels")) {

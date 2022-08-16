@@ -362,11 +362,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
     public tabRateLimit unreach;
 
     /**
-     * ruin remote pmtud
-     */
-    public boolean ruinPmtuD = false;
-
-    /**
      * label allocation filter
      */
     public tabListing<tabPrfxlstN, addrIP> labelFilter;
@@ -1402,13 +1397,9 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private void protoSend(ipFwdIface lower, packHolder pck) {
         cntrL.rx(pck);
-        if ((pck.IPmf) || (pck.IPfrg != 0)) {
+        if (pck.IPmf || (pck.IPfrg != 0)) {
             if (lower.reasmBuf == null) {
-                if (ruinPmtuD) {
-                    doDrop(pck, lower, counter.reasons.fragment, 0);
-                } else {
-                    lower.cntr.drop(pck, counter.reasons.fragment);
-                }
+                doDrop(pck, lower, counter.reasons.reassembly, 0);
                 return;
             }
             if (debugger.ipFwdReasm) {
@@ -1492,7 +1483,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
 
     private boolean protoAlert(ipFwdIface lower, packHolder pck) {
         cntrL.rx(pck);
-        if ((pck.IPmf) || (pck.IPfrg != 0)) {
+        if (pck.IPmf || (pck.IPfrg != 0)) {
             return true;
         }
         if (coppIn != null) {
@@ -2092,12 +2083,8 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         pck.ETHcos = (pck.IPtos >>> 5) & 7;
         pck.MPLSexp = pck.ETHcos;
         if ((natTrns.size() > 0) || (natCfg.size() > 0)) {
-            if (pck.IPmf) {
-                doDrop(pck, rxIfc, counter.reasons.denied, 0);
-                return;
-            }
-            if (pck.IPfrg > 0) {
-                doDrop(pck, rxIfc, counter.reasons.denied, 0);
+            if (pck.IPmf || (pck.IPfrg != 0)) {
+                doDrop(pck, rxIfc, counter.reasons.reassembly, 0);
                 return;
             }
             natCfg.packParse(false, true, true, pck);

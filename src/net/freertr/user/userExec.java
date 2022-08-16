@@ -3867,6 +3867,9 @@ public class userExec {
                         case fragment:
                             a = "F";
                             break;
+                        case reassembly:
+                            a = "A";
+                            break;
                         case ttlExceed:
                             a = "T";
                             break;

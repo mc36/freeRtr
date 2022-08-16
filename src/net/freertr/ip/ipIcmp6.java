@@ -125,6 +125,9 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             case ttlExceed:
                 typ = icmpTtlXced;
                 break;
+            case reassembly:
+                typ = icmpReasmXced;
+                break;
             default:
                 return true;
         }
@@ -256,6 +259,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 return "tooBig";
             case icmpTtlXced:
                 return "ttlExcd";
+            case icmpReasmXced:
+                return "reassembly";
             case icmpMcastQuery:
                 return "mldQuery";
             case icmpMcastRprt1:
@@ -328,6 +333,11 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      * ttl exceeded
      */
     public final static int icmpTtlXced = 0x0300;
+
+    /**
+     * reassembly exceeded
+     */
+    public final static int icmpReasmXced = 0x0301;
 
     /**
      * multicast listener query
@@ -510,6 +520,10 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             case icmpTtlXced:
                 pck.getSkip(size);
                 fwdCore.errorReport(counter.reasons.ttlExceed, rxIfc, pck);
+                break;
+            case icmpReasmXced:
+                pck.getSkip(size);
+                fwdCore.errorReport(counter.reasons.reassembly, rxIfc, pck);
                 break;
             default:
                 break;

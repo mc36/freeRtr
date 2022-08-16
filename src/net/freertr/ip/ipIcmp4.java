@@ -109,6 +109,9 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
             case ttlExceed:
                 typ = icmpUnreachTtle;
                 break;
+            case reassembly:
+                typ = icmpUnreachReasm;
+                break;
             default:
                 return true;
         }
@@ -229,6 +232,8 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 return "fragNeeded";
             case icmpUnreachTtle:
                 return "ttlExceed";
+            case icmpUnreachReasm:
+                return "reassembly";
             case icmpUnreachFilter:
                 return "prohibited";
             default:
@@ -270,6 +275,11 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      * ttl expired
      */
     public final static int icmpUnreachTtle = 0x0b00;
+
+    /**
+     * reassembly expired
+     */
+    public final static int icmpUnreachReasm = 0x0b01;
 
     /**
      * echo request
@@ -387,6 +397,10 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
             case icmpUnreachTtle:
                 pck.getSkip(size);
                 fwdCore.errorReport(counter.reasons.ttlExceed, rxIfc, pck);
+                break;
+            case icmpUnreachReasm:
+                pck.getSkip(size);
+                fwdCore.errorReport(counter.reasons.reassembly, rxIfc, pck);
                 break;
             case icmpUnreachFilter:
                 pck.getSkip(size);
