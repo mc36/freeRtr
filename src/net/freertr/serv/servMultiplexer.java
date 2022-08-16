@@ -439,6 +439,9 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         if (proxy != null) {
             conn = proxy.doConnect(lower.srvProto, addr, port, lower.srvName());
         } else {
+            if (vrf == null) {
+                return false;
+            }
             prtGen prt = servGeneric.getProtocol(vrf, lower.srvProto, addr);
             if (prt == null) {
                 return false;

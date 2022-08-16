@@ -260,6 +260,9 @@ public class servLoadBalancer extends servGeneric implements prtServS {
         if (proxy != null) {
             con2 = proxy.doConnect(srvProto, ntry.addr, ntry.port, srvName());
         } else {
+            if (srvVrf == null) {
+                return true;
+            }
             prtGen prt = getProtocol(srvVrf, srvProto, ntry.addr);
             if (prt == null) {
                 return true;
