@@ -375,7 +375,8 @@ class cfgMenuTdoer {
         l.add("f1 - help");
         l.add("f3 - view command");
         l.add("f10 - exit");
-        l.add("space  - select");
+        l.add("type - search");
+        l.add("space - select");
         l.add("ctrl+s - help");
         l.add("ctrl+v - view command");
         l.add("ctrl+a - move up");
@@ -555,6 +556,7 @@ class cfgMenuTdoer {
         putFill(console.sizY - 1, userScreen.colBlue, userScreen.colWhite, 32);
         console.putStr(0, console.sizY - 1, userScreen.colBlue, userScreen.colBrWhite, false, (cur + 1) + "/" + buf.size());
         console.putStr(8, console.sizY - 1, userScreen.colBlue, userScreen.colBrWhite, false, flt);
+        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
     }
 
     private void putLine(int ln) {
