@@ -491,6 +491,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param fwd forwarding core to use
      * @return list describes this prefix
      */
+    @SuppressWarnings("unchecked")
     public userFormat fullDump(String beg, ipFwd fwd) {
         userFormat lst = new userFormat("|", "id|category|value");
         if (fwd != null) {
@@ -499,7 +500,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         }
         lst.add(beg + "|rd|" + tabRouteUtil.rd2string(rouDst));
         lst.add(beg + "|original rd|" + tabRouteUtil.rd2string(oldDst));
-        lst.add(beg + "|prefix|" + prefix);
+        try {
+            lst.add(beg + "|prefix|" + addrPrefix.ip2str((addrPrefix<addrIP>) prefix));
+        } catch (Exception e) {
+            lst.add(beg + "|prefix|" + prefix);
+        }
         lst.add(beg + "|prefix network|" + prefix.network);
         lst.add(beg + "|prefix broadcast|" + prefix.broadcast);
         lst.add(beg + "|prefix wildcard|" + prefix.wildcard);
