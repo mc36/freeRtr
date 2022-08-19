@@ -228,13 +228,18 @@ public class gallery {
         int don = 0;
         for (int o = 0; o < fl.size(); o++) {
             String fn = fl.get(o);
+            String b;
             int i = fn.lastIndexOf(".");
-            String b = fn.substring(i, fn.length()).toLowerCase() + ".";
+            if (i < 0) {
+                b = "";
+            } else {
+                b = fn.substring(i, fn.length()).toLowerCase() + ".";
+            }
             String a = url + "?nam=" + nam + "/" + fn;
             if (imageExt.indexOf(b) < 0) {
                 a = "<td><a href=\"" + a + "&cmd=view\">" + fn + "</td>";
             } else {
-                a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + "&cmd=small\"></td>";
+                a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + "&cmd=small\"><br/>" + fn + "</td>";
             }
             buf.write(a.getBytes());
             don++;
