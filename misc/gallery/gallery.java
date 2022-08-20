@@ -1,7 +1,4 @@
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,7 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.imageio.ImageIO;
 
 /**
  * web image gallery
@@ -77,16 +73,6 @@ public class gallery {
     protected String album = "";
 
     /**
-     * max x size
-     */
-    protected int maxX = 200;
-
-    /**
-     * max Y size
-     */
-    protected int maxY = 200;
-
-    /**
      * columns
      */
     protected int cols = 3;
@@ -103,10 +89,9 @@ public class gallery {
             String a = path.substring(0, path.lastIndexOf(".")) + ".cfg";
             BufferedReader f = new BufferedReader(new FileReader(a));
             album = f.readLine();
-            maxX = str2int(f.readLine());
-            maxY = str2int(f.readLine());
             cols = str2int(f.readLine());
             f.close();
+            path = path.substring(0, path.lastIndexOf("/") + 1);
         } catch (Exception e) {
         }
     }
@@ -125,10 +110,23 @@ public class gallery {
         }
     }
 
+    public String getExt(String fn) {
+        int i = fn.lastIndexOf(".");
+        if (i < 0) {
+            return "";
+        }
+        return fn.substring(i, fn.length()).toLowerCase() + ".";
+    }
+
     /**
      * extensions
      */
     public static final String imageExt = ".jpg.jpeg.png.gif.bmp.";
+
+    /**
+     * extensions
+     */
+    public static final String videoExt = ".mp4.mov.";
 
     /**
      * do one request
@@ -169,29 +167,32 @@ public class gallery {
             return "//file//";
         }
         if (cmd.equals("small")) {
-            try {
-                BufferedImage img1 = ImageIO.read(new File(album + nam));
-                int xs = img1.getWidth();
-                int ys = img1.getHeight();
-                float xr = (float) xs / (float) maxX;
-                float yr = (float) ys / (float) maxY;
-                if (xr > yr) {
-                    xs = (int) (xs / xr);
-                    ys = (int) (ys / xr);
-                } else {
-                    xs = (int) (xs / yr);
-                    ys = (int) (ys / yr);
-                }
-                Image img2 = img1.getScaledInstance(xs, ys, BufferedImage.SCALE_FAST);
-                BufferedImage img3 = new BufferedImage(xs, ys, BufferedImage.TYPE_INT_RGB);
-                Graphics2D g2d = img3.createGraphics();
-                g2d.drawImage(img2, 0, 0, null);
-                g2d.dispose();
-                ImageIO.write(img3, "jpg", buf);
-                ImageIO.write(img3, "jpg", new File(album + nam + ".thumbnail"));
-            } catch (Exception e) {
+            buf.write(album.getBytes());
+            buf.write(nam.getBytes());
+            buf.write(".thumb".getBytes());
+            buf.write("\n\n".getBytes());
+            buf.write(".jpg".getBytes());
+            if (new File(album + nam + ".thumb").exists()) {
+                return "//file//";
             }
-            return "jpeg";
+            String a = getExt(nam);
+            String todo[] = null;
+            if (imageExt.indexOf(a) >= 0) {
+                todo = new String[2];
+                todo[0] = path + "thumbImg.sh";
+                todo[1] = album + nam;
+            }
+            if (videoExt.indexOf(a) >= 0) {
+                todo = new String[2];
+                todo[0] = path + "thumbVid.sh";
+                todo[1] = album + nam;
+            }
+            if (todo != null) {
+                Runtime rtm = Runtime.getRuntime();
+                Process prc = rtm.exec(todo);
+                prc.waitFor();
+            }
+            return "//file//";
         }
         File[] fls = new File[0];
         try {
@@ -233,27 +234,17 @@ public class gallery {
             }
             String fn = fl.get(o);
             String a = url + "?nam=" + nam + "/" + fn;
-            if (fl.indexOf(fn + ".thumbnail") >= 0) {
-                a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + ".thumbnail&cmd=view\"><br/>" + fn + "</td>";
+            if (fl.indexOf(fn + ".thumb") >= 0) {
+                a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + ".thumb&cmd=view\"><br/>" + fn + "</td>";
                 buf.write(a.getBytes());
                 don++;
                 continue;
             }
-            String b;
-            int i = fn.lastIndexOf(".");
-            if (i < 0) {
-                b = "";
-            } else {
-                b = fn.substring(i, fn.length()).toLowerCase() + ".";
-            }
-            if (b.equals(".thumbnail.")) {
+            String b = getExt(fn);
+            if (b.equals(".thumb.")) {
                 continue;
             }
-            if (imageExt.indexOf(b) < 0) {
-                a = "<td><a href=\"" + a + "&cmd=view\">" + fn + "</td>";
-            } else {
-                a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + "&cmd=small\"><br/>" + fn + "</td>";
-            }
+            a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + "&cmd=small\"><br/>" + fn + "</td>";
             buf.write(a.getBytes());
             don++;
         }
