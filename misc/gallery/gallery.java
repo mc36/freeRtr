@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -189,6 +188,7 @@ public class gallery {
                 g2d.drawImage(img2, 0, 0, null);
                 g2d.dispose();
                 ImageIO.write(img3, "jpg", buf);
+                ImageIO.write(img3, "jpg", new File(album + nam + ".thumbnail"));
             } catch (Exception e) {
             }
             return "jpeg";
@@ -227,7 +227,18 @@ public class gallery {
         buf.write("<table><tr>".getBytes());
         int don = 0;
         for (int o = 0; o < fl.size(); o++) {
+            if (don >= cols) {
+                buf.write("</tr><tr>".getBytes());
+                don = 0;
+            }
             String fn = fl.get(o);
+            String a = url + "?nam=" + nam + "/" + fn;
+            if (fl.indexOf(fn + ".thumbnail") >= 0) {
+                a = "<td><a href=\"" + a + "&cmd=view\"><img src=\"" + a + ".thumbnail&cmd=view\"><br/>" + fn + "</td>";
+                buf.write(a.getBytes());
+                don++;
+                continue;
+            }
             String b;
             int i = fn.lastIndexOf(".");
             if (i < 0) {
@@ -235,7 +246,9 @@ public class gallery {
             } else {
                 b = fn.substring(i, fn.length()).toLowerCase() + ".";
             }
-            String a = url + "?nam=" + nam + "/" + fn;
+            if (b.equals(".thumbnail.")) {
+                continue;
+            }
             if (imageExt.indexOf(b) < 0) {
                 a = "<td><a href=\"" + a + "&cmd=view\">" + fn + "</td>";
             } else {
@@ -243,11 +256,6 @@ public class gallery {
             }
             buf.write(a.getBytes());
             don++;
-            if (don < cols) {
-                continue;
-            }
-            don = 0;
-            buf.write("</tr><tr>".getBytes());
         }
         buf.write("</tr></table></body></html>".getBytes());
         return "html";
