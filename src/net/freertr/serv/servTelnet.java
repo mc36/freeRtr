@@ -81,6 +81,7 @@ public class servTelnet extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("no")) {
+            a = cmd.word();
             if (a.equals("second-port")) {
                 secondPort = -1;
                 return false;
