@@ -2,6 +2,7 @@ package net.freertr.pack;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryEncrCBCaes;
 import net.freertr.cry.cryEncrCBCblowfish;
 import net.freertr.cry.cryEncrCBCdes;
@@ -214,7 +215,11 @@ public class packSshInit {
      * @return version string
      */
     public static String getLocalVersion() {
-        return "SSH-2.0-" + version.usrAgnt;
+        if (cfgAll.sshAgent == null) {
+            return "SSH-2.0-" + version.usrAgnt;
+        } else {
+            return "SSH-2.0-" + cfgAll.sshAgent;
+        }
     }
 
     /**

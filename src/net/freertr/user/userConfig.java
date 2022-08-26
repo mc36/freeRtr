@@ -617,6 +617,8 @@ public class userConfig {
         l.add(null, "2  3    tls-version                  specify tls version");
         l.add(null, "3  4      <num>                      forced minimum version");
         l.add(null, "4  .        <num>                    forced maximum version");
+        l.add(null, "2  3    ssh-agent                    specify ssh agent to fake");
+        l.add(null, "3  3,.    <str>                      name of faker");
         l.add(null, "2  3    ssh-group                    specify ssh group");
         l.add(null, "3  4      <num>                      forced minimum size");
         l.add(null, "4  .        <num>                    forced maximum size");
@@ -1561,6 +1563,10 @@ public class userConfig {
                 cfgAll.sshGrpMax = bits.str2num(cmd.word());
                 return;
             }
+            if (a.equals("ssh-agent")) {
+                cfgAll.sshAgent = cmd.getRemaining();
+                return;
+            }
             if (a.equals("proxy")) {
                 cfgAll.clientProxy = cfgAll.proxyFind(cmd.word(), false);
                 if (cfgAll.clientProxy == null) {
@@ -2178,6 +2184,10 @@ public class userConfig {
             }
             if (a.equals("ftp-proxy")) {
                 cfgAll.ftpProxy = null;
+                return;
+            }
+            if (a.equals("ssh-agent")) {
+                cfgAll.sshAgent = null;
                 return;
             }
             if (a.equals("proxy")) {

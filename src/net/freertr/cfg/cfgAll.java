@@ -745,6 +745,11 @@ public class cfgAll {
     public static int sshGrpMax = 4096;
 
     /**
+     * user agent to fake
+     */
+    public static String sshAgent = null;
+
+    /**
      * password stars
      */
     public static boolean passwdStars = false;
@@ -1257,6 +1262,7 @@ public class cfgAll {
         "!client access-subnet-ipv6 64",
         "!client tls-version 1 4",
         "!client ssh-group 1024 4096",
+        "!no client ssh-agent",
         "!no client time-server",
         "!no client upgrade-pubkey",
         "!client upgrade-server " + verCore.homeUrl,
@@ -3701,6 +3707,7 @@ public class cfgAll {
         l.add("client access-subnet-ipv6 " + accessSubnet6);
         l.add("client tls-version " + tlsVerMin + " " + tlsVerMax);
         l.add("client ssh-group " + sshGrpMin + " " + sshGrpMax);
+        cmds.cfgLine(l, sshAgent == null, "", "client ssh-agent", sshAgent);
         cmds.cfgLine(l, timeServerName == null, "", "client time-server", "" + timeServerName);
         l.add("client time-zone " + timeZoneName);
         cmds.cfgLine(l, timeProxy == null, "", "client time-proxy", "" + timeProxy);
