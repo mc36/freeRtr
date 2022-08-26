@@ -13529,3 +13529,5 @@ qc pass: bgp routepolicy rd rewrite
 ---------------------------------- 2022-08-08 06:39:37 22.8.8
 qc pass: bgp csc vpn with ctp
 qc pass: redistribution route limit
+---------------------------------- 2022-08-26 06:20:48 22.8.26
+todo: colorful bgp lu implementation accroding to https://www.facebook.com/mc36mc36/posts/pfbid02jN7yrSNcqj1qEwMjJ5nmqaFFP6EN3wzyyMgPBjwgCnoeq5G6NoBSNc5mT5DmrvL4l
