@@ -67,9 +67,10 @@ public class verCore {
         "place on the web: " + homeUrl,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
         "quote1: make the world better",
-        "quote2: if a machine can learn the value of human life, maybe we can too",
-        "quote3: be liberal in what you accept, and conservative in what you send",
-        "quote4: the beer-ware license for selected group of people:",
+        "quote2: keep it stupid simple",
+        "quote3: if a machine can learn the value of human life, maybe we can too",
+        "quote4: be liberal in what you accept, and conservative in what you send",
+        "quote5: the beer-ware license for selected group of people:",
         author + " wrote these files. as long as you retain this notice you",
         "can do whatever you want with this stuff. if we meet some day, and",
         "you think this stuff is worth it, you can buy me a beer in return"
