@@ -491,9 +491,9 @@ int main(int argc, char **argv) {
             port_conf.rxmode.max_rx_pkt_len = maxlen;
         }
 #else
-        maxlen = dev_info.max_rx_pktlen;
+        maxlen = dev_info.max_mtu;
         if (maxlen > mbuf_size) maxlen = mbuf_size;
-        port_conf.rxmode.mtu = maxlen;
+        //port_conf.rxmode.mtu = maxlen;
 #endif
         printf("configuring port: offloads rx=%08x, tx=%08x, pktlen=%i\n", (int)port_conf.rxmode.offloads, (int)port_conf.txmode.offloads, maxlen);
         ret = rte_eth_dev_configure(port, 1, 1, &port_conf);
