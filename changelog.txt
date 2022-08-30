@@ -13535,3 +13535,8 @@ todo: colorful bgp lu implementation accroding to https://www.facebook.com/mc36m
 no todo: p4dpdk multiseg rx/tx loop
 ---------------------------------- 2022-08-30 09:48:27 22.8.30
 todo: todo: allowed v4/v6 range to temper
+---------------------------------- 2022-08-30 11:03:45 22.8.30
+no todo: colorful bgp lu implementation accroding to https://www.facebook.com/mc36mc36/posts/pfbid02jN7yrSNcqj1qEwMjJ5nmqaFFP6EN3wzyyMgPBjwgCnoeq5G6NoBSNc5mT5DmrvL4l
+no todo: todo: allowed v4/v6 range to temper
+todo: allowed v4/v6 range to temper
+todo: colorful bgp lu implementation accroding to https://lists.geant.org/sympa/arc/rare-dev/2022-08/msg00042.html
