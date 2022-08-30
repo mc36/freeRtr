@@ -13533,3 +13533,5 @@ qc pass: redistribution route limit
 todo: colorful bgp lu implementation accroding to https://www.facebook.com/mc36mc36/posts/pfbid02jN7yrSNcqj1qEwMjJ5nmqaFFP6EN3wzyyMgPBjwgCnoeq5G6NoBSNc5mT5DmrvL4l
 ---------------------------------- 2022-08-28 04:17:39 22.8.28
 no todo: p4dpdk multiseg rx/tx loop
+---------------------------------- 2022-08-30 09:48:27 22.8.30
+todo: todo: allowed v4/v6 range to temper

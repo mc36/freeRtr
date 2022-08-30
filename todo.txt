@@ -1,3 +1,4 @@
+todo: allowed v4/v6 range to temper
 colorful bgp lu implementation accroding to https://www.facebook.com/mc36mc36/posts/pfbid02jN7yrSNcqj1qEwMjJ5nmqaFFP6EN3wzyyMgPBjwgCnoeq5G6NoBSNc5mT5DmrvL4l
 backup path support to the spf class
 wcmp support to the spf class
