@@ -13540,3 +13540,6 @@ no todo: colorful bgp lu implementation accroding to https://www.facebook.com/mc
 no todo: todo: allowed v4/v6 range to temper
 todo: allowed v4/v6 range to temper
 todo: colorful bgp lu implementation accroding to https://lists.geant.org/sympa/arc/rare-dev/2022-08/msg00042.html
+---------------------------------- 2022-08-30 18:18:06 22.8.30
+todo: sho ipv4 bgp x flaps
+todo: fix enter in spacetab term behaviour

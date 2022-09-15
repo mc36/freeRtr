@@ -1,6 +1,14 @@
 # freeRouter source tree
 
 more about the project at [www.freertr.org](http://www.freertr.org/)
+you can find the same source tree at various locations, normally all should be the same:
+* http://sources.freertr.org
+* http://github.com/rare-freertr/freeRtr
+
+part os the subdirectories under misc/ are somewhere else too:
+* p4bf/ @ http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
+* p4lang @ http://github.com/rare-freertr/RARE-bmv2
+* maybe alex have an other repo worth donating to the team at githib publicly?
 
 ## dependencies
 
