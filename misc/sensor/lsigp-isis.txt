@@ -75,3 +75,28 @@ skip 0
 column 1 name val
 .
 exit
+
+sensor lsigp4metric
+path lsigp4metric/peer/peer
+prefix freertr-lsigp4metric
+prepend lsigp4_metric_
+command show ipv4 isis 1 metric
+name 0 proto="isis1",ifc=
+key name lsigp4metric/peer
+replace \. _
+column 4 name metric
+.
+exit
+
+sensor lsigp6metric
+path lsigp6metric/peer/peer
+prefix freertr-lsigp6metric
+prepend lsigp6_metric_
+command show ipv6 isis 1 metric
+name 0 proto="isis1",ifc=
+key name lsigp6metric/peer
+replace \. _
+column 4 name metric
+.
+exit
+
