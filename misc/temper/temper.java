@@ -186,7 +186,7 @@ public class temper implements Runnable {
     /**
      * cool tolerance
      */
-    protected float coolTol = 0.5F;
+    protected float coolTol = 0.3F;
 
     /**
      * cool tolerance
@@ -196,7 +196,7 @@ public class temper implements Runnable {
     /**
      * window tolerance
      */
-    protected float windowTol = 0.9F;
+    protected float windowTol = -0.9F;
 
     /**
      * heat pin
