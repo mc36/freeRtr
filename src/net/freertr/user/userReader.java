@@ -1162,6 +1162,9 @@ public class userReader implements Comparator<String> {
     }
 
     private boolean cmdHistFind() {
+        if (1 < 2) {
+            return false;
+        }
         String oldPrm = prompt;
         String oldCur = curr;
         String text = curr;
