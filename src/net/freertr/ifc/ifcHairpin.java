@@ -424,7 +424,7 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             }
             if (randCrrpt > 0) {
                 if (bits.random(0, randCrrpt) == 0) {
-                    buf[bits.random(0, i)] += bits.random(0, 255);
+                    buf[bits.random(0, i)] += (byte) bits.random(0, 255);
                 }
             }
             buf2pck(buf, pck, i);

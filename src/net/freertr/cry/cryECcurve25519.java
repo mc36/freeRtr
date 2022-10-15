@@ -84,7 +84,7 @@ public class cryECcurve25519 {
         for (int i = 0; i < locPriv.length; i++) {
             locPriv[i] = (byte) bits.randomB();
         }
-        locPriv[0] &= 248;
+        locPriv[0] &= (byte) 248;
         locPriv[31] &= 127;
         locPriv[31] |= 64;
     }

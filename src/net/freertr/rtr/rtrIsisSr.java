@@ -126,7 +126,7 @@ public class rtrIsisSr {
             tlv.valDat[0] |= 0x20; // no-php
         }
         if (red) {
-            tlv.valDat[0] |= 0x80; // redistributed
+            tlv.valDat[0] |= (byte) 0x80; // redistributed
         }
         if (nod) {
             tlv.valDat[0] |= 0x40; // node
@@ -177,7 +177,7 @@ public class rtrIsisSr {
         encTlv tlv = rtrIsis.getTlv();
         tlv.valDat[0] = 0x30; // local, value
         if (!ip4) {
-            tlv.valDat[0] |= 0x80; // address family
+            tlv.valDat[0] |= (byte) 0x80; // address family
         }
         tlv.valDat[1] = 0; // weight
         bits.msbPutD(tlv.valDat, 2, lab << 8); // label

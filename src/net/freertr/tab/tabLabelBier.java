@@ -165,7 +165,7 @@ public class tabLabelBier {
         if ((src[ofs] & bits.bitVals[bit]) == 0) {
             return false;
         }
-        src[ofs] &= ~bits.bitVals[bit];
+        src[ofs] &= (byte) (~bits.bitVals[bit]);
         return true;
     }
 

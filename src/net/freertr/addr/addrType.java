@@ -139,7 +139,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @param num bit number
      */
     public void bitSet(int num) {
-        addr[num / 8] |= bitVals[num & 0x7];
+        addr[num / 8] |= (byte) bitVals[num & 0x7];
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @param num bit number
      */
     public void bitClear(int num) {
-        addr[num / 8] &= -bitVals[num & 0x7] - 1;
+        addr[num / 8] &= (byte) (-bitVals[num & 0x7] - 1);
     }
 
     /**
@@ -158,7 +158,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @return bit value
      */
     public boolean bitValue(int num) {
-        return (addr[num / 8] & bitVals[num & 0x7]) != 0;
+        return (addr[num / 8] & (byte) bitVals[num & 0x7]) != 0;
     }
 
     /**

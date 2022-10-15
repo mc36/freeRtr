@@ -604,9 +604,9 @@ public class bits {
         ofs += bit / 8;
         bit &= 7;
         if (val) {
-            buf[ofs] |= bitVals[bit];
+            buf[ofs] |= (byte) bitVals[bit];
         } else {
-            buf[ofs] &= -bitVals[bit] - 1;
+            buf[ofs] &= (byte) (-bitVals[bit] - 1);
         }
     }
 

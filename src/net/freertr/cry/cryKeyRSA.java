@@ -523,7 +523,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         for (int i = 0; i != dbm.length; i++) {
             blk[i] ^= dbm[i];
         }
-        blk[0] &= fbm;
+        blk[0] &= (byte) fbm;
         for (int i = 0; i != blk.length - hash.length - hash.length - 2; i++) {
             if (blk[i] != 0) {
                 return true;
@@ -564,7 +564,7 @@ public class cryKeyRSA extends cryKeyGeneric {
             blk[i] ^= dbm[i];
         }
         bits.byteCopy(h, 0, blk, blk.length - hash.length - 1, hash.length);
-        blk[0] &= 0xff >>> ((blk.length * 8) - embt);
+        blk[0] &= (byte) (0xff >>> ((blk.length * 8) - embt));
         blk[blk.length - 1] = (byte) 0xbc;
         s = new BigInteger(blk);
         s = s.modPow(privExp, modulus);
