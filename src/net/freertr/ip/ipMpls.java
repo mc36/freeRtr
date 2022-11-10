@@ -730,7 +730,15 @@ public class ipMpls implements ifcUp {
             logger.info("no route for index " + id);
             return;
         }
+        if (ntry.best.nextHop == null) {
+            logger.info("no nexthop for index " + id);
+            return;
+        }
         ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
+        if (ifc == null) {
+            logger.info("no iface for index " + id);
+            return;
+        }
         ifc.lower.sendPolka(pck, ntry.best.nextHop);
     }
 
@@ -773,9 +781,17 @@ public class ipMpls implements ifcUp {
             tabRouteEntry<addrIP> ntry = fwd.actualU.find(idx.prefix);
             if (ntry == null) {
                 logger.info("no route for index " + i);
-                return;
+                continue;
+            }
+            if (ntry.best.nextHop == null) {
+                logger.info("no nexthop for index " + id);
+                continue;
             }
             ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
+            if (ifc == null) {
+                logger.info("no iface for index " + id);
+                continue;
+            }
             ifc.lower.sendMpolka(pck.copyBytes(true, true), ntry.best.nextHop);
         }
         if ((id & 1) == 0) {
