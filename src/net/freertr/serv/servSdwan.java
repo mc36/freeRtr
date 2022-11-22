@@ -475,10 +475,10 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         logger.warn("neighbor " + connA + " down");
         lower.conns.del(this);
         connS.setClose();
-        if (addrRel4 && (innerAdr4 != null)) {
+        if (addrRel4 && (innerAdr4 != null) && (lower.pool4 != null)) {
             lower.pool4.addrRelease(innerAdr4);
         }
-        if (addrRel6 && (innerAdr6 != null)) {
+        if (addrRel6 && (innerAdr6 != null) && (lower.pool6 != null)) {
             lower.pool6.addrRelease(innerAdr6);
         }
         lower.sendLn(this, hub, "endpoint_del " + getEndpt());
