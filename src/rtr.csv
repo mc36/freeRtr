@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.11.22-cur, done by cs@nop.
--;-;-;2022-11-22 05:05:14, took 00:08:51, with 80 workers, on 3024 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2022-11-22 05:16:55, took 00:08:39, with 80 workers, on 3024 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
