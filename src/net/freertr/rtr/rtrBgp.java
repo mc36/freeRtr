@@ -1658,6 +1658,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
+            if (ntry == null) {
+                continue;
+            }
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.rouTyp = rouTyp;
             ntry.best.protoNum = rtrNum;
