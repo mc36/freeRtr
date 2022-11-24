@@ -452,6 +452,7 @@ int main(int argc, char **argv) {
         ret = rte_eth_dev_get_name_by_port(port, (char*)&buf[0]);
         if (ret != 0) strcpy((char*)&buf[0], "unknown");
         int sock = rte_eth_dev_socket_id(port);
+        if (sock < 0) sock = 0;
         port2pool[port] = sock;
         printf("opening port %i named %s on socket %i on lcore %i for rx and %i for tx...\n", port, (char*)&buf[0], sock, port2rx[port], port2tx[port]);
         initIface(port, (char*)&buf[0]);
@@ -476,6 +477,7 @@ int main(int argc, char **argv) {
 
         printf("devinfo: pmd=%s, mtu=%i..%i, bufs=%i, pktl=%i, rxque=%o, txque=%i, rxcapa=%08x, txcapa=%08x...\n", dev_info.driver_name, dev_info.min_mtu, dev_info.max_mtu, dev_info.min_rx_bufsize, dev_info.max_rx_pktlen, dev_info.max_rx_queues, dev_info.max_tx_queues, (int)dev_info.rx_offload_capa, (int)dev_info.tx_offload_capa);
 
+#if RTE_VERSION < RTE_VERSION_NUM(22, 11, 0, 0)
         if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) {
             port_conf.txmode.offloads |= DEV_TX_OFFLOAD_MBUF_FAST_FREE;
         }
@@ -485,6 +487,17 @@ int main(int argc, char **argv) {
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_SCATTER) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_SCATTER;
         }
+#else
+        if (dev_info.tx_offload_capa & RTE_ETH_TX_OFFLOAD_MBUF_FAST_FREE) {
+            port_conf.txmode.offloads |= RTE_ETH_TX_OFFLOAD_MBUF_FAST_FREE;
+        }
+        if (dev_info.tx_offload_capa & RTE_ETH_TX_OFFLOAD_MULTI_SEGS) {
+            port_conf.txmode.offloads |= RTE_ETH_TX_OFFLOAD_MULTI_SEGS;
+        }
+        if (dev_info.rx_offload_capa & RTE_ETH_RX_OFFLOAD_SCATTER) {
+            port_conf.rxmode.offloads |= RTE_ETH_RX_OFFLOAD_SCATTER;
+        }
+#endif
 #if RTE_VERSION < RTE_VERSION_NUM(21, 11, 0, 0)
         if (dev_info.rx_offload_capa & DEV_RX_OFFLOAD_JUMBO_FRAME) {
             port_conf.rxmode.offloads |= DEV_RX_OFFLOAD_JUMBO_FRAME;
