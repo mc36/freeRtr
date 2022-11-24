@@ -52,7 +52,11 @@ void setState(int port, int sta) {
 int getState(int port) {
     struct rte_eth_link link;
     if (rte_eth_link_get_nowait(port, &link) != 0) return 1;
+#if RTE_VERSION < RTE_VERSION_NUM(22, 11, 0, 0)
     if (link.link_status == ETH_LINK_UP) return 1;
+#else
+    if (link.link_status == RTE_ETH_LINK_UP) return 1;
+#endif
     return 0;
 }
 
