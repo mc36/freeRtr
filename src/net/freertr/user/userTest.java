@@ -361,6 +361,7 @@ public class userTest {
         }
         if (a.equals("url")) {
             encUrl url = encUrl.parseOne(cmd.getRemaining());
+            url.normalizePath();
             doShow(url.show());
             return null;
         }

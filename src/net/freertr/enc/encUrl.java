@@ -199,6 +199,7 @@ public class encUrl {
             pars = filPath.substring(i + 1, filPath.length());
             filPath = filPath.substring(0, i);
         }
+        filPath = percentUncode(filPath);
         i = filPath.lastIndexOf("/");
         if (i >= 0) {
             filName = filPath.substring(i + 1, filPath.length());
@@ -212,9 +213,6 @@ public class encUrl {
             filExt = filName.substring(i, filName.length());
             filName = filName.substring(0, i);
         }
-        filPath = percentUncode(filPath);
-        filName = percentUncode(filName);
-        filExt = percentUncode(filExt);
         param.clear();
         if (pars.length() < 1) {
             return;
@@ -387,6 +385,9 @@ public class encUrl {
             String a = s.substring(0, i);
             s = s.substring(i + 1, s.length());
             if (a.length() <= 0) {
+                continue;
+            }
+            if (a.equals("")) {
                 continue;
             }
             if (a.equals(".")) {
