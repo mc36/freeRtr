@@ -2,6 +2,7 @@
 #define HAVE_BRIDGE
 #define HAVE_INACL
 #define HAVE_OUTACL
+#define HAVE_LOCONN
 
 #define PORT_TABLE_SIZE                        512
 
