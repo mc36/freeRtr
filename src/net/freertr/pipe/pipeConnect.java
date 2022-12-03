@@ -1,5 +1,6 @@
 package net.freertr.pipe;
 
+import net.freertr.util.bits;
 import net.freertr.util.logger;
 
 /**
@@ -17,17 +18,18 @@ public class pipeConnect {
      * @param close true to close both sides after, false to not
      */
     public static void connect(pipeSide side1, pipeSide side2, boolean close) {
-        new pipeConnectDoer(side1, side2, close);
-        new pipeConnectDoer(side2, side1, close);
+        new pipeConnectDoer(side1, side2, close, 0);
+        new pipeConnectDoer(side2, side1, close, 0);
     }
 
     /**
      * loop back one pipeline
      *
      * @param side pipeline side to loop back
+     * @param delay delay in ms
      */
-    public static void loopback(pipeSide side) {
-        new pipeConnectDoer(side, side, true);
+    public static void loopback(pipeSide side, int delay) {
+        new pipeConnectDoer(side, side, true, delay);
     }
 
     /**
@@ -50,31 +52,34 @@ public class pipeConnect {
         tx.nonBlockPut(buf, 0, siz);
         return false;
     }
-
+    
     private pipeConnect() {
     }
-
+    
 }
 
 class pipeConnectDoer implements Runnable {
-
+    
     private pipeSide rx;
-
+    
     private pipeSide tx;
-
+    
     private int siz;
-
+    
     private boolean cls;
-
-    public pipeConnectDoer(pipeSide recv, pipeSide send, boolean close) {
+    
+    private int del;
+    
+    public pipeConnectDoer(pipeSide recv, pipeSide send, boolean close, int delay) {
         rx = recv;
         tx = send;
         cls = close;
         siz = tx.getBufSize();
         siz = siz - (siz / 16);
+        del = delay;
         new Thread(this).start();
     }
-
+    
     public void run() {
         try {
             rx.setReady();
@@ -83,6 +88,9 @@ class pipeConnectDoer implements Runnable {
                 int i = rx.blockingGet(buf, 0, buf.length);
                 if (i < 0) {
                     break;
+                }
+                if (del > 0) {
+                    bits.sleep(del);
                 }
                 tx.blockingPut(buf, 0, i);
             }
@@ -94,5 +102,5 @@ class pipeConnectDoer implements Runnable {
             tx.setClose();
         }
     }
-
+    
 }
