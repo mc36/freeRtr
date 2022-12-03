@@ -52,24 +52,24 @@ public class pipeConnect {
         tx.nonBlockPut(buf, 0, siz);
         return false;
     }
-    
+
     private pipeConnect() {
     }
-    
+
 }
 
 class pipeConnectDoer implements Runnable {
-    
+
     private pipeSide rx;
-    
+
     private pipeSide tx;
-    
+
     private int siz;
-    
+
     private boolean cls;
-    
+
     private int del;
-    
+
     public pipeConnectDoer(pipeSide recv, pipeSide send, boolean close, int delay) {
         rx = recv;
         tx = send;
@@ -79,7 +79,7 @@ class pipeConnectDoer implements Runnable {
         del = delay;
         new Thread(this).start();
     }
-    
+
     public void run() {
         try {
             rx.setReady();
@@ -102,5 +102,5 @@ class pipeConnectDoer implements Runnable {
             tx.setClose();
         }
     }
-    
+
 }

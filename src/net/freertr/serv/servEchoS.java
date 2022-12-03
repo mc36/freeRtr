@@ -69,6 +69,14 @@ public class servEchoS extends servGeneric implements prtServS {
             delay = bits.str2num(cmd.word());
             return false;
         }
+        if (!a.equals("no")) {
+            return true;
+        }
+        a = cmd.word();
+        if (a.equals("delay")) {
+            delay = 0;
+            return false;
+        }
         return true;
     }
 
