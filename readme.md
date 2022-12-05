@@ -5,7 +5,7 @@ you can find the same source tree at various locations, normally all should be t
 * http://sources.freertr.org
 * http://github.com/rare-freertr/freeRtr
 
-part os the subdirectories under misc/ are somewhere else too:
+part of the subdirectories under misc/ are somewhere else too:
 * p4bf/ @ http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
 * p4lang @ http://github.com/rare-freertr/RARE-bmv2
 * maybe alex have an other repo worth donating to the team at githib publicly?
