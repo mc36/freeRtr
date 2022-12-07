@@ -1070,6 +1070,11 @@ public class cfgAll {
     public static int tcpRangeMax = 0xf000;
 
     /**
+     * worker timer
+     */
+    public static int tcpTimeWork = 1000;
+
+    /**
      * keepalive timer
      */
     public static int tcpTimeAlive = 60 * 1000;
@@ -1303,6 +1308,7 @@ public class cfgAll {
         "!client tcp-winscale 1",
         "!no client tcp-timestamp",
         "!no client tcp-ecn",
+        "!client tcp-timer work 1000",
         "!client tcp-timer alive 60000",
         "!client tcp-timer fin 45000",
         "!client tcp-timer syn 30000",
@@ -3660,6 +3666,7 @@ public class cfgAll {
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
         cmds.cfgLine(l, !tcpEcn, "", "client tcp-ecn", "");
+        l.add("client tcp-timer work " + tcpTimeWork);
         l.add("client tcp-timer alive " + tcpTimeAlive);
         l.add("client tcp-timer fin " + tcpTimeFin);
         l.add("client tcp-timer syn " + tcpTimeSyn);

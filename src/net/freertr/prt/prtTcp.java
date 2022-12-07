@@ -695,7 +695,7 @@ public class prtTcp extends prtGen {
         pr.netMax = cfgAll.tcpSegmentMin;
         clnt.proto = pr;
         clnt.timeout = cfgAll.tcpTimeSyn;
-        clnt.workInterval = 1000;
+        clnt.workInterval = cfgAll.tcpTimeWork;
         pr.activWait = cfgAll.tcpTimeNow;
         pr.activFrcd = true;
         pr.seqLoc = bits.randomD();

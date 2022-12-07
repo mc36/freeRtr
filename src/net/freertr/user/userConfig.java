@@ -570,6 +570,8 @@ public class userConfig {
         l.add(null, "2  .    tcp-timestamp                set tcp timestamping");
         l.add(null, "2  .    tcp-ecn                      set tcp ecn");
         l.add(null, "2  3    tcp-timer                    set tcp timestamping");
+        l.add(null, "3  4      work                       set tcp work");
+        l.add(null, "4  .        <num>                    ms");
         l.add(null, "3  4      alive                      set tcp keepalive");
         l.add(null, "4  .        <num>                    ms");
         l.add(null, "3  4      fin                        set tcp finish");
@@ -1440,6 +1442,10 @@ public class userConfig {
             }
             if (a.equals("tcp-timer")) {
                 a = cmd.word();
+                if (a.equals("work")) {
+                    cfgAll.tcpTimeWork = bits.str2num(cmd.word());
+                    return;
+                }
                 if (a.equals("alive")) {
                     cfgAll.tcpTimeAlive = bits.str2num(cmd.word());
                     return;
