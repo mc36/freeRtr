@@ -16,10 +16,17 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtUdp;
+import net.freertr.spf.spfCalc;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabIntMatcher;
+import net.freertr.tab.tabListing;
+import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -87,6 +94,21 @@ public class rtrRift extends ipRtr implements Runnable {
     public int distance;
 
     /**
+     * ingress prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> prflstIn;
+
+    /**
+     * ingress route map
+     */
+    public tabListing<tabRtrmapN, addrIP> roumapIn;
+
+    /**
+     * ingress route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> roupolIn;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrRiftIface> ifaces;
@@ -95,6 +117,16 @@ public class rtrRift extends ipRtr implements Runnable {
      * tie database
      */
     protected tabGen<rtrRiftTie> ties;
+
+    /**
+     * last north spf
+     */
+    protected spfCalc<rtrRiftTieSpf> lastSpfN;
+
+    /**
+     * last south spf
+     */
+    protected spfCalc<rtrRiftTieSpf> lastSpfS;
 
     /**
      * suppress interface addresses
@@ -147,6 +179,8 @@ public class rtrRift extends ipRtr implements Runnable {
             default:
                 break;
         }
+        lastSpfN = new spfCalc<rtrRiftTieSpf>(null);
+        lastSpfS = new spfCalc<rtrRiftTieSpf>(null);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
         new Thread(this).start();
@@ -319,6 +353,134 @@ public class rtrRift extends ipRtr implements Runnable {
         return l;
     }
 
+    private spfCalc<rtrRiftTieSpf> getSpf(String dir) {
+        if (dir.toLowerCase().startsWith("n")) {
+            return lastSpfN;
+        } else {
+            return lastSpfS;
+        }
+    }
+
+    /**
+     * show spf
+     *
+     * @param dir direction
+     * @return log of spf
+     */
+    public userFormat showSpfStat(String dir) {
+        return getSpf(dir).listStatistics();
+    }
+
+    /**
+     * show topology
+     *
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat showSpfTopo(cmds cmd) {
+        spfCalc<rtrRiftTieSpf> doer = getSpf(cmd.word());
+        if (cmd.size() < 1) {
+            return doer.listTopology();
+        }
+        rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
+        return doer.listTopology(ned);
+    }
+
+    /**
+     * show log
+     *
+     * @param dir direction
+     * @return log of spf
+     */
+    public userFormat showSpfLog(String dir) {
+        return getSpf(dir).listUsages();
+    }
+
+    /**
+     * show tree
+     *
+     * @param dir direction
+     * @return tree of spf
+     */
+    public List<String> showSpfTree(String dir) {
+        return getSpf(dir).listTree();
+    }
+
+    /**
+     * show tree
+     *
+     * @param cmd entry to find
+     * @return tree of spf
+     */
+    public List<String> showSpfOtherTree(cmds cmd) {
+        spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
+        rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
+        spf.doWork(ned, null);
+        return spf.listTree();
+    }
+
+    /**
+     * show topology
+     *
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat showSpfOtherTopo(cmds cmd) {
+        spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
+        rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
+        spf.doWork(ned, null);
+        if (cmd.size() < 1) {
+            return spf.listTopology();
+        }
+        ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
+        return spf.listTopology(ned);
+    }
+
+    /**
+     * show graph
+     *
+     * @param dir direction
+     * @param nocli no cli
+     * @param nonets no nets
+     * @param noints no ints
+     * @return graph of spf
+     */
+    public List<String> showSpfGraph(String dir, boolean nocli, boolean nonets, boolean noints) {
+        return getSpf(dir).listGraphviz(nocli, nonets, noints);
+    }
+
+    /**
+     * show nh inconsistency
+     *
+     * @param dir direction
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNhIncons(String dir, tabIntMatcher mtch) {
+        return getSpf(dir).listNhIncons(mtch);
+    }
+
+    /**
+     * show met inconsistency
+     *
+     * @param dir direction
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showMetIncons(String dir, tabIntMatcher mtch) {
+        return getSpf(dir).listMetIncons(mtch);
+    }
+
+    /**
+     * show hostnames
+     *
+     * @param dir direction
+     * @return names list
+     */
+    public userFormat showHostnames(String dir) {
+        return getSpf(dir).listHostnames();
+    }
+
     /**
      * get ip protocol version
      *
@@ -411,6 +573,166 @@ public class rtrRift extends ipRtr implements Runnable {
             tie.expire = tim + 30000;
             advertTie(tie, true);
         }
+        rou = calcSpf(1);
+        rou.mergeFrom(tabRoute.addType.ecmp, calcSpf(2), tabRouteAttr.distanLim);
+        if (rou.preserveTime(routerComputedU)) {
+            return;
+        }
+        routerComputedU = rou;
+        routerComputedM = new tabRoute<addrIP>("rx");
+        routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = new tabGen<tabIndex<addrIP>>();
+        fwdCore.routerChg(this, false);
+
+    }
+
+    private tabRoute<addrIP> calcSpf(int dir) {
+        spfCalc<rtrRiftTieSpf> spf;
+        if (dir == 1) {
+            spf = new spfCalc<rtrRiftTieSpf>(lastSpfS);
+        } else {
+            spf = new spfCalc<rtrRiftTieSpf>(lastSpfN);
+        }
+        for (int o = 0; o < ties.size(); o++) {
+            rtrRiftTie tie = ties.get(o);
+            if (tie == null) {
+                continue;
+            }
+            if (tie.isExpired()) {
+                continue;
+            }
+            if (tie.direct != dir) {
+                continue;
+            }
+            rtrRiftTieSpf orig = new rtrRiftTieSpf(tie.origin);
+            switch (tie.type) {
+                case 2:
+                    encThriftEntry th1 = tie.elements.getField(1, 0);
+                    if (th1 == null) {
+                        continue;
+                    }
+                    encThriftEntry th2 = th1.getField(5, 0); // hostname
+                    if (th2 != null) {
+                        if (th2.dat != null) {
+                            spf.addIdent(orig, new String(th2.dat));
+                        }
+                    }
+                    th2 = th1.getField(2, 0); // neighbors
+                    if (th2 == null) {
+                        continue;
+                    }
+                    if (th2.elm == null) {
+                        continue;
+                    }
+                    for (int i = (th2.elm.size() / 2) - 1; i >= 0; i--) {
+                        encThriftEntry th3 = th2.elm.get(i * 2);
+                        rtrRiftTieSpf peer = new rtrRiftTieSpf(th3.val);
+                        th3 = th2.elm.get((i * 2) + 1);
+                        encThriftEntry th4 = th3.getField(3, 0);
+                        if (th4 == null) {
+                            continue;
+                        }
+                        int met = (int) th4.val;
+                        spf.addConn(orig, peer, met, true, false, null);
+                    }
+                    break;
+                case 3:
+                    th1 = tie.elements.getField(2, 0);
+                    if (th1 == null) {
+                        continue;
+                    }
+                    th2 = th1.getField(1, 0); // prefixes
+                    if (th2 == null) {
+                        continue;
+                    }
+                    if (th2.elm == null) {
+                        continue;
+                    }
+                    for (int i = (th2.elm.size() / 2) - 1; i >= 0; i--) {
+                        encThriftEntry th3 = th2.elm.get(i * 2);
+                        addrPrefix<addrIP> pfx = null;
+                        encThriftEntry th4 = th3.getField(1, 0); // ipv4
+                        if (th4 != null) {
+                            encThriftEntry th5 = th4.getField(1, 0); // address
+                            if (th5 == null) {
+                                continue;
+                            }
+                            addrIPv4 adr4 = new addrIPv4();
+                            bits.msbPutD(adr4.getBytes(), 0, (int) th5.val);
+                            th5 = th4.getField(2, 0); // mask
+                            if (th5 == null) {
+                                continue;
+                            }
+                            pfx = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(adr4, (int) th5.val));
+                        }
+                        th4 = th3.getField(2, 0); // ipv6
+                        if (th4 != null) {
+                            encThriftEntry th5 = th4.getField(1, 0); // address
+                            if (th5 == null) {
+                                continue;
+                            }
+                            if (th5.dat == null) {
+                                continue;
+                            }
+                            addrIPv6 adr6 = new addrIPv6();
+                            adr6.fromBuf(th5.dat, 0);
+                            th5 = th4.getField(2, 0); // mask
+                            if (th5 == null) {
+                                continue;
+                            }
+                            pfx = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(adr6, (int) th5.val));
+                        }
+                        if (pfx == null) {
+                            continue;
+                        }
+                        th3 = th2.elm.get((i * 2) + 1);
+                        th4 = th3.getField(2, 0);
+                        if (th4 == null) {
+                            continue;
+                        }
+                        int met = (int) th4.val;
+                        int tag = 0;
+                        th4 = th3.getField(3, 0);
+                        if (th4 != null) {
+                            tag = (int) th4.val;
+                        }
+                        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
+                        rou.prefix = pfx;
+                        rou.best.distance = distance;
+                        rou.best.metric = met;
+                        rou.best.tag = tag;
+                        rou.best.rouTyp = routerProtoTyp;
+                        spf.addPref(orig, rou, false);
+                    }
+                    break;
+            }
+        }
+        rtrRiftTieSpf adr = new rtrRiftTieSpf(nodeID);
+        spf.doWork(adr, null);
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrRiftIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
+            if (!ifc.ready) {
+                continue;
+            }
+            bits.msbPutQ(adr.getBytes(), 0, ifc.rtrId);
+            spf.addNextHop(ifc.metric, adr, ifc.peer, ifc.iface, null, null);
+        }
+        tabRoute<addrIP> rou1 = spf.getRoutes(fwdCore, 255, null, null);
+        tabRoute<addrIP> rou2 = new tabRoute<addrIP>("rou");
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, rou2, rou1, true, roumapIn, roupolIn, prflstIn);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, rou2, rou2, fwdCore.commonLabel, null, 0);
+        if (dir == 1) {
+            lastSpfS = spf;
+        } else {
+            lastSpfN = spf;
+        }
+        return rou2;
     }
 
     private void advertTie(rtrRiftTie tie, boolean forced) {
@@ -560,6 +882,24 @@ public class rtrRift extends ipRtr implements Runnable {
         l.add(null, "2 .     <num>                     ms");
         l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
         l.add(null, "1 .   default-originate           advertise default route");
+        l.add(null, "1 .   spf-bidir                   spf bidir check");
+        l.add(null, "1 2,. spf-topolog                 spf topology logging");
+        l.add(null, "2 2,.   noappear                  exclude node (dis)appearance");
+        l.add(null, "2 2,.   noconnect                 exclude link (dis)connection");
+        l.add(null, "2 2,.   noforward                 exclude forward (un)willingness");
+        l.add(null, "2 2,.   noreachable               exclude node (un)reachable");
+        l.add(null, "2 2,.   nometric                  exclude link metric change");
+        l.add(null, "2 2,.   noprefix                  exclude prefix change");
+        l.add(null, "1 .   spf-hops                    spf hops disallow");
+        l.add(null, "1 .   spf-ecmp                    spf ecmp allow");
+        l.add(null, "1 2   spf-log                     spf log size");
+        l.add(null, "2 .     <num>                     number of entries");
+        l.add(null, "1 2   route-map                   process prefixes");
+        l.add(null, "2 .     <name:rm>                 name of route map");
+        l.add(null, "1 2   route-policy                process prefixes");
+        l.add(null, "2 .     <name:rpl>                name of route policy");
+        l.add(null, "1 2   prefix-list                 filter prefixes");
+        l.add(null, "2 .     <name:pl>                 name of prefix list");
     }
 
     /**
@@ -576,6 +916,14 @@ public class rtrRift extends ipRtr implements Runnable {
         l.add(beg + "lifetime " + lifeTime);
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
         cmds.cfgLine(l, !defOrigin, beg, "default-originate", "");
+        l.add(beg + "spf-log " + lastSpfN.logSize);
+        cmds.cfgLine(l, lastSpfN.topoLog.get() == 0, beg, "spf-topolog", lastSpfN.getTopoLogMode());
+        cmds.cfgLine(l, lastSpfN.bidir.get() == 0, beg, "spf-bidir", "");
+        cmds.cfgLine(l, lastSpfN.hops.get() == 0, beg, "spf-hops", "");
+        cmds.cfgLine(l, lastSpfN.ecmp.get() == 0, beg, "spf-ecmp", "");
+        cmds.cfgLine(l, prflstIn == null, beg, "prefix-list", "" + prflstIn);
+        cmds.cfgLine(l, roumapIn == null, beg, "route-map", "" + roumapIn);
+        cmds.cfgLine(l, roupolIn == null, beg, "route-policy", "" + roupolIn);
     }
 
     /**
@@ -617,6 +965,59 @@ public class rtrRift extends ipRtr implements Runnable {
         }
         if (s.equals("default-originate")) {
             defOrigin = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("spf-log")) {
+            s = cmd.word();
+            lastSpfN.logSize.set(bits.str2num(s));
+            lastSpfS.logSize.set(bits.str2num(s));
+            if (negated) {
+                lastSpfN.logSize.set(0);
+                lastSpfS.logSize.set(0);
+            }
+            return false;
+        }
+        if (s.equals("spf-topolog")) {
+            if (negated) {
+                lastSpfN.topoLog.set(0);
+                lastSpfS.topoLog.set(0);
+                return false;
+            }
+            lastSpfN.setTopoLogMode(cmd.copyBytes(false));
+            lastSpfS.setTopoLogMode(cmd.copyBytes(false));
+            return false;
+        }
+        if (s.equals("spf-bidir")) {
+            if (negated) {
+                lastSpfN.bidir.set(0);
+                lastSpfS.bidir.set(0);
+            } else {
+                lastSpfN.bidir.set(1);
+                lastSpfS.bidir.set(1);
+            }
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("spf-hops")) {
+            if (negated) {
+                lastSpfN.hops.set(0);
+                lastSpfS.hops.set(0);
+            } else {
+                lastSpfN.hops.set(1);
+                lastSpfS.hops.set(1);
+            }
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("spf-ecmp")) {
+            if (negated) {
+                lastSpfN.ecmp.set(0);
+                lastSpfS.ecmp.set(0);
+            } else {
+                lastSpfN.ecmp.set(1);
+                lastSpfS.ecmp.set(1);
+            }
             notif.wakeup();
             return false;
         }

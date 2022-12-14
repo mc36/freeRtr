@@ -2932,6 +2932,72 @@ public class userShow {
             rdr.putStrTab(r.rift.showIfaces());
             return;
         }
+        if (a.equals("spf")) {
+            a = cmd.word();
+            rdr.putStrTab(r.rift.showSpfStat(a));
+            rdr.putStrTab(r.rift.showSpfLog(a));
+            return;
+        }
+        if (a.equals("topology")) {
+            rdr.putStrTab(r.rift.showSpfTopo(cmd));
+            return;
+        }
+        if (a.equals("hostnames")) {
+            rdr.putStrTab(r.rift.showHostnames(cmd.word()));
+            return;
+        }
+        if (a.equals("tree")) {
+            rdr.putStrArr(r.rift.showSpfTree(cmd.word()));
+            return;
+        }
+        if (a.equals("othertree")) {
+            rdr.putStrArr(r.rift.showSpfOtherTree(cmd));
+            return;
+        }
+        if (a.equals("othertopology")) {
+            rdr.putStrTab(r.rift.showSpfOtherTopo(cmd));
+            return;
+        }
+        if (a.equals("graph")) {
+            String dir = cmd.word();
+            boolean nocli = false;
+            boolean nonets = false;
+            boolean noints = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("nocli")) {
+                    nocli = true;
+                    continue;
+                }
+                if (a.equals("nonets")) {
+                    nonets = true;
+                    continue;
+                }
+                if (a.equals("noints")) {
+                    noints = true;
+                    continue;
+                }
+            }
+            rdr.putStrArr(r.rift.showSpfGraph(dir, nocli, nonets, noints));
+            return;
+        }
+        if (a.equals("nhinconsistent")) {
+            a = cmd.word();
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.rift.showNhIncons(a, mtch));
+            return;
+        }
+        if (a.equals("lnkinconsistent")) {
+            a = cmd.word();
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.rift.showMetIncons(a, mtch));
+            return;
+        }
         if (a.equals("route")) {
             doShowRoutes(r.rift.fwdCore, r.rift.routerComputedU, 1);
             return;

@@ -1,6 +1,7 @@
 package net.freertr.rtr;
 
 import java.util.Comparator;
+import net.freertr.addr.addrEui;
 import net.freertr.enc.encThriftEntry;
 import net.freertr.util.bits;
 
@@ -27,9 +28,8 @@ public class rtrRiftTie implements Comparator<rtrRiftTie> {
     public long origin;
 
     /**
-     * type, 2=node, 3=prefix, 4=positive disaggregate, 5=negative disaggregate,
-     * 6=pgprefix, 7=keyvalue, 8=external prefix, 9=positive extrenal
-     * disaggregate
+     * type, 2=node, 3=prefix, 4=positiveDisaggregate, 5=negativeDisaggregate,
+     * 6=pgPrefix, 7=keyValue, 8=externalPrefix, 9=positiveExtrenalDisaggregate
      */
     public int type;
 
@@ -47,6 +47,12 @@ public class rtrRiftTie implements Comparator<rtrRiftTie> {
      * elements
      */
     public encThriftEntry elements;
+
+    /**
+     * create instance
+     */
+    public rtrRiftTie() {
+    }
 
     public int compare(rtrRiftTie o1, rtrRiftTie o2) {
         if (o1.direct < o2.direct) {
@@ -139,6 +145,7 @@ public class rtrRiftTie implements Comparator<rtrRiftTie> {
      * get header from thrift
      *
      * @param th1 thrift to read
+     * @return true on error, false on success
      */
     public boolean getHeader(encThriftEntry th1) {
         if (th1 == null) {
@@ -231,6 +238,17 @@ public class rtrRiftTie implements Comparator<rtrRiftTie> {
      */
     public boolean isExpired() {
         return getRemain() < 60;
+    }
+
+    /**
+     * get origin as address
+     *
+     * @return address
+     */
+    public addrEui getOrigin() {
+        addrEui adr = new addrEui();
+        bits.msbPutQ(adr.getBytes(), 0, origin);
+        return adr;
     }
 
 }

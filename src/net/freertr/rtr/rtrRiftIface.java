@@ -19,6 +19,7 @@ import net.freertr.util.cmds;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 import net.freertr.util.state;
 
 /**
@@ -92,6 +93,11 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * tie database
      */
     protected final tabGen<rtrRiftTie> advert;
+
+    /**
+     * notified on route change
+     */
+    protected notifier notif = new notifier();
 
     /**
      * peer ready
@@ -751,6 +757,7 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
                 }
                 advert.put(tie.copyHead());
             }
+            notif.wakeup();
             return false;
         }
         th3 = th2.getField(4, 0);
@@ -787,7 +794,7 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
             if (!need2run) {
                 return;
             }
-            bits.sleep(helloTimer);
+            notif.sleep(helloTimer);
             try {
                 sendLie();
                 if (!ready) {
@@ -817,6 +824,9 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
             logger.debug("stopping peer " + rtrId + " (" + peer + ")");
         }
         ready = false;
+        nonceL = bits.randomW();
+        nonceR = 0;
+        lastHeard = 0;
     }
 
 }
