@@ -9,7 +9,7 @@ import net.freertr.util.bits;
  *
  * @author matecsaba
  */
-class encThriftEntry {
+public class encThriftEntry {
 
     /**
      * create instance
@@ -133,6 +133,31 @@ class encThriftEntry {
     }
 
     /**
+     * convert to string
+     *
+     * @param beg beginning
+     * @return lines of string
+     */
+    public List<String> show(String beg) {
+        List<String> l = new ArrayList<String>();
+        String a = beg + "num=" + num + " typ=" + typ + " val=";
+        if (dat != null) {
+            l.add(a + bits.byteDump(dat, 0, -1));
+            return l;
+        }
+        if (elm == null) {
+            l.add(a + val);
+            return l;
+        }
+        l.add(a + "(");
+        for (int i = 0; i < elm.size(); i++) {
+            l.addAll(elm.get(i).show(beg + "  "));
+        }
+        l.add(beg + ")");
+        return l;
+    }
+
+    /**
      * copy bytes
      *
      * @return copy
@@ -159,6 +184,7 @@ class encThriftEntry {
     /**
      * get field
      *
+     * @param data where from get
      * @param num number
      * @param seq sequence number
      * @return field, null if not found
@@ -183,6 +209,7 @@ class encThriftEntry {
      * @param num number
      * @param typ type
      * @param val value
+     * @return field, null if not found
      */
     protected static encThriftEntry genField(int num, int typ, long val) {
         encThriftEntry dat = new encThriftEntry();
@@ -198,6 +225,7 @@ class encThriftEntry {
      * @param num number
      * @param typ type
      * @param val value
+     * @return field, null if not found
      */
     protected static encThriftEntry genField(int num, int typ, byte[] val) {
         encThriftEntry dat = new encThriftEntry();
@@ -213,6 +241,7 @@ class encThriftEntry {
      * @param num number
      * @param typ type
      * @param val value
+     * @return field, null if not found
      */
     protected static encThriftEntry genField(int num, int typ, List<encThriftEntry> val) {
         encThriftEntry dat = new encThriftEntry();
@@ -277,6 +306,18 @@ class encThriftEntry {
     public void putField(int num, int typ, List<encThriftEntry> val) {
         initElements();
         elm.add(genField(num, typ, val));
+    }
+
+    /**
+     * set field
+     *
+     * @param k type
+     * @param v type
+     */
+    public void putTypKV(int k, int v) {
+        encThriftEntry c = elm.get(elm.size() - 1);
+        c.typK = k;
+        c.typV = v;
     }
 
 }

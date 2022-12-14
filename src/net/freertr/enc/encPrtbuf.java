@@ -195,6 +195,9 @@ public class encPrtbuf {
                 break;
             case encPrtbufEntry.tpBuf: // length delimited
                 hdr = (int) getVarint(pck);
+                if (hdr > pck.dataSize()) {
+                    return null;
+                }
                 res.dat = new byte[hdr];
                 pck.getCopy(res.dat, 0, 0, res.dat.length);
                 pck.getSkip(res.dat.length);

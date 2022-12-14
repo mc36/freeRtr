@@ -102,6 +102,14 @@ public class tabRouteAttr<T extends addrType> {
          */
         isis6,
         /**
+         * ipv4 rift
+         */
+        rift4,
+        /**
+         * ipv6 rift
+         */
+        rift6,
+        /**
          * ipv4 pvrp
          */
         pvrp4,
@@ -566,6 +574,15 @@ public class tabRouteAttr<T extends addrType> {
                     a += " EX";
                 }
                 return "I" + a;
+            case rift4:
+            case rift6:
+                if ((ntry.rouSrc & 2) != 0) {
+                    a += " DA";
+                }
+                if ((ntry.rouSrc & 1) != 0) {
+                    a += " EX";
+                }
+                return "F" + a;
             case pvrp4:
             case pvrp6:
                 if ((ntry.rouSrc & 1) != 0) {

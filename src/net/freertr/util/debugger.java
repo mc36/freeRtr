@@ -10,6 +10,7 @@ import net.freertr.user.userHelping;
  */
 public class debugger {
 
+
     private debugger() {
     }
 
@@ -407,6 +408,16 @@ public class debugger {
      * rtrLdp traffic
      */
     public static boolean rtrLdpTraf = false;
+
+    /**
+     * rtrRift event
+     */
+    public static boolean rtrRiftEvnt = false;
+
+    /**
+     * rtrRift traffic
+     */
+    public static boolean rtrRiftTraf = false;
 
     /**
      * rtrPvrp event
@@ -1113,6 +1124,9 @@ public class debugger {
         l.add(null, "3 4        ldp               label distribution protocol");
         l.add(null, "4 .          event           table events");
         l.add(null, "4 .          traffic         interface packets");
+        l.add(null, "3 4        rift              routing in fat trees");
+        l.add(null, "4 .          event           table events");
+        l.add(null, "4 .          traffic         interface packets");
         l.add(null, "3 4        pvrp              path vector routing protocol");
         l.add(null, "4 .          event           table events");
         l.add(null, "4 .          traffic         interface packets");
@@ -1678,6 +1692,18 @@ public class debugger {
                 }
                 if (s.equals("traffic")) {
                     rtrLdpTraf = v;
+                    return false;
+                }
+                return true;
+            }
+            if (s.equals("rift")) {
+                s = cmd.word();
+                if (s.equals("event")) {
+                    rtrRiftEvnt = v;
+                    return false;
+                }
+                if (s.equals("traffic")) {
+                    rtrRiftTraf = v;
                     return false;
                 }
                 return true;

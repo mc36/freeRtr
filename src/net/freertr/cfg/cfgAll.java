@@ -2905,6 +2905,20 @@ public class cfgAll {
                         }
                     }
                     break;
+                case rift4:
+                    if (ifc.rtrRift4hnd != null) {
+                        if (ifc.rtrRift4hnd.number == ntry.number) {
+                            ifc.clear2router(ifc.rtrRift4hnd);
+                        }
+                    }
+                    break;
+                case rift6:
+                    if (ifc.rtrRift6hnd != null) {
+                        if (ifc.rtrRift6hnd.number == ntry.number) {
+                            ifc.clear2router(ifc.rtrRift6hnd);
+                        }
+                    }
+                    break;
                 case pvrp4:
                     if (ifc.rtrPvrp4hnd != null) {
                         if (ifc.rtrPvrp4hnd.number == ntry.number) {

@@ -1893,6 +1893,10 @@ public class userShow {
                 doShowIpXisis(tabRouteAttr.routeType.isis4);
                 return null;
             }
+            if (a.equals("rift")) {
+                doShowIpXrift(tabRouteAttr.routeType.rift4);
+                return null;
+            }
             if (a.equals("pvrp")) {
                 doShowIpXpvrp(tabRouteAttr.routeType.pvrp4);
                 return null;
@@ -2238,6 +2242,10 @@ public class userShow {
             }
             if (a.equals("isis")) {
                 doShowIpXisis(tabRouteAttr.routeType.isis6);
+                return null;
+            }
+            if (a.equals("rift")) {
+                doShowIpXrift(tabRouteAttr.routeType.rift6);
                 return null;
             }
             if (a.equals("pvrp")) {
@@ -2895,6 +2903,43 @@ public class userShow {
             return;
         }
         cmd.badCmd();
+    }
+
+    private void doShowIpXrift(tabRouteAttr.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        if (r.rift == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
+        String a = cmd.word();
+        if (a.equals("neighbor")) {
+            rdr.putStrTab(r.rift.showNeighs(cmd.word().equals("brief")));
+            return;
+        }
+        if (a.equals("database")) {
+            if (cmd.size() < 1) {
+                rdr.putStrTab(r.rift.showDatabase());
+            } else {
+                rdr.putStrArr(r.rift.showDatabase(cmd));
+            }
+            return;
+        }
+        if (a.equals("interface")) {
+            rdr.putStrTab(r.rift.showIfaces());
+            return;
+        }
+        if (a.equals("route")) {
+            doShowRoutes(r.rift.fwdCore, r.rift.routerComputedU, 1);
+            return;
+        }
+        if (a.equals("originate")) {
+            doShowRoutes(r.rift.fwdCore, r.rift.routerRedistedU, 1);
+            return;
+        }
     }
 
     private void doShowIpXpvrp(tabRouteAttr.routeType afi) {

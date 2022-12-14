@@ -29,6 +29,7 @@ import net.freertr.rtr.rtrOlsr;
 import net.freertr.rtr.rtrOspf4;
 import net.freertr.rtr.rtrOspf6;
 import net.freertr.rtr.rtrPvrp;
+import net.freertr.rtr.rtrRift;
 import net.freertr.rtr.rtrRip4;
 import net.freertr.rtr.rtrRip6;
 import net.freertr.rtr.rtrUni2flow;
@@ -114,6 +115,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     public rtrIsis isis;
 
     /**
+     * rift handler
+     */
+    public rtrRift rift;
+
+    /**
      * pvrp handler
      */
     public rtrPvrp pvrp;
@@ -195,6 +201,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router *
         "router .*! no automesh",
         "router .*! no description",
+        // router rift
+        "router rift[46] .*! no suppress-prefix",
+        "router rift[46] .*! level 24",
+        "router rift[46] .*! distance 100",
+        "router rift[46] .*! lifetime 604800000",
         // router pvrp
         "router pvrp[46] .*! no suppress-prefix",
         "router pvrp[46] .*! no labels",
@@ -530,6 +541,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("isis6")) {
             return tabRouteAttr.routeType.isis6;
         }
+        if (a.equals("rift4")) {
+            return tabRouteAttr.routeType.rift4;
+        }
+        if (a.equals("rift6")) {
+            return tabRouteAttr.routeType.rift6;
+        }
         if (a.equals("pvrp4")) {
             return tabRouteAttr.routeType.pvrp4;
         }
@@ -664,6 +681,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "isis4";
             case isis6:
                 return "isis6";
+            case rift4:
+                return "rift4";
+            case rift6:
+                return "rift6";
             case pvrp4:
                 return "pvrp4";
             case pvrp6:
@@ -1328,6 +1349,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             isis.routerCloseNow();
             isis = null;
         }
+        if (rift != null) {
+            rift.routerCloseNow();
+            rift = null;
+        }
         if (pvrp != null) {
             pvrp.routerCloseNow();
             pvrp = null;
@@ -1413,6 +1438,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case isis4:
             case isis6:
                 return isis;
+            case rift4:
+            case rift6:
+                return rift;
             case pvrp4:
             case pvrp6:
                 return pvrp;
@@ -1519,6 +1547,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case isis6:
                 fwd = vrf.fwd6;
                 isis = new rtrIsis(vrf.fwd6, vrf.fwd4, vrf.udp6, number);
+                break;
+            case rift4:
+                fwd = vrf.fwd4;
+                rift = new rtrRift(vrf.fwd4, vrf.udp4, number);
+                break;
+            case rift6:
+                fwd = vrf.fwd6;
+                rift = new rtrRift(vrf.fwd6, vrf.udp6, number);
                 break;
             case pvrp4:
                 fwd = vrf.fwd4;
@@ -1731,6 +1767,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 2) + " " + (p + 3) + "     ospf6                 open shortest path first" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     isis4                 intermediate system intermediate system" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     isis6                 intermediate system intermediate system" + e);
+        l.add(null, (p + 2) + " " + (p + 3) + "     rift4                 routing in fat trees" + e);
+        l.add(null, (p + 2) + " " + (p + 3) + "     rift6                 routing in fat trees" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     pvrp4                 path vector routing protocol" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     pvrp6                 path vector routing protocol" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     lsrp4                 link state routing protocol" + e);

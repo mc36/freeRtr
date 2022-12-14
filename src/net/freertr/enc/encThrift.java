@@ -131,8 +131,12 @@ public class encThrift {
                 pck.getSkip(8);
                 return false;
             case encThriftEntry.tpBin:
-                elm.dat = new byte[pck.msbGetD(0)];
+                int siz = pck.msbGetD(0);
                 pck.getSkip(4);
+                if (siz > pck.dataSize()) {
+                    return true;
+                }
+                elm.dat = new byte[siz];
                 pck.getCopy(elm.dat, 0, 0, elm.dat.length);
                 pck.getSkip(elm.dat.length);
                 return false;
@@ -385,7 +389,7 @@ public class encThrift {
     public List<String> show() {
         List<String> l = new ArrayList<String>();
         for (int i = 0; i < data.size(); i++) {
-            l.add("" + data.get(i));
+            l.addAll(data.get(i).show(""));
         }
         return l;
     }

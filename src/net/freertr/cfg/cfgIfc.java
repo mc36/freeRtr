@@ -142,6 +142,7 @@ import net.freertr.rtr.rtrOlsrIface;
 import net.freertr.rtr.rtrOspf4iface;
 import net.freertr.rtr.rtrOspf6iface;
 import net.freertr.rtr.rtrPvrpIface;
+import net.freertr.rtr.rtrRiftIface;
 import net.freertr.rtr.rtrRip4iface;
 import net.freertr.rtr.rtrRip6iface;
 import net.freertr.rtr.rtrRsvpIface;
@@ -977,6 +978,26 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public rtrIsisIface rtrIsisIfc;
 
     /**
+     * rift4 routing interface
+     */
+    public rtrRiftIface rtrRift4ifc;
+
+    /**
+     * rift4 routing handler
+     */
+    public cfgRtr rtrRift4hnd;
+
+    /**
+     * rift4 routing interface
+     */
+    public rtrRiftIface rtrRift6ifc;
+
+    /**
+     * rift4 routing handler
+     */
+    public cfgRtr rtrRift6hnd;
+
+    /**
      * pvrp4 routing interface
      */
     public rtrPvrpIface rtrPvrp4ifc;
@@ -1739,6 +1760,15 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! router ospf[46] .* dynamic-skip-min 0",
         "interface .*! router ospf[46] .* dynamic-skip-max 0",
         "interface .*! router ospf[46] .* dynamic-algo minimum",
+        // rift
+        "interface .*! no router rift[46] .* passive",
+        "interface .*! no router rift[46] .* bfd",
+        "interface .*! no router rift[46] .* suppress-prefix",
+        "interface .*! no router rift[46] .* unsuppress-prefix",
+        "interface .*! router rift[46] .* verify-source",
+        "interface .*! router rift[46] .* metric 10",
+        "interface .*! router rift[46] .* hello-time 1000",
+        "interface .*! router rift[46] .* dead-time 3000",
         // pvrp
         "interface .*! router pvrp[46] .* split-horizon",
         "interface .*! no router pvrp[46] .* passive",
@@ -2922,6 +2952,26 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 }
                 rtrIsisHnd = rtr;
                 break;
+            case rift4:
+                if (rtrRift4ifc != null) {
+                    break;
+                }
+                rtrRift4ifc = rtr.rift.addInterface(fwdIf4);
+                if (rtrRift4ifc == null) {
+                    break;
+                }
+                rtrRift4hnd = rtr;
+                break;
+            case rift6:
+                if (rtrRift6ifc != null) {
+                    break;
+                }
+                rtrRift6ifc = rtr.rift.addInterface(fwdIf6);
+                if (rtrRift6ifc == null) {
+                    break;
+                }
+                rtrRift6hnd = rtr;
+                break;
             case pvrp4:
                 if (rtrPvrp4ifc != null) {
                     break;
@@ -3020,6 +3070,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (ip4 || ip6) {
             clear2router(rtrIsisHnd);
+        }
+        if (ip4) {
+            clear2router(rtrRift4hnd);
+        }
+        if (ip6) {
+            clear2router(rtrRift6hnd);
         }
         if (ip4) {
             clear2router(rtrPvrp4hnd);
@@ -3130,6 +3186,22 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 rtrIsisHnd = null;
                 rtrIsisIfc = null;
                 rtr.isis.delInterface(fwdIf6, fwdIf4);
+                return;
+            case rift4:
+                if (rtrRift4hnd == null) {
+                    return;
+                }
+                rtrRift4hnd = null;
+                rtrRift4ifc = null;
+                rtr.rift.delInterface(fwdIf4);
+                return;
+            case rift6:
+                if (rtrRift6hnd == null) {
+                    return;
+                }
+                rtrRift6hnd = null;
+                rtrRift6ifc = null;
+                rtr.rift.delInterface(fwdIf6);
                 return;
             case pvrp4:
                 if (rtrPvrp4hnd == null) {
@@ -6280,6 +6352,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             s = "router isis" + rtrIsisHnd.isis.getProtoVer() + " " + rtrIsisHnd.number + " ";
             rtrIsisIfc.routerGetConfig(l, s, filter);
         }
+        if (rtrRift4hnd != null) {
+            s = "router rift4 " + rtrRift4hnd.number + " ";
+            rtrRift4ifc.routerGetConfig(l, s, filter);
+        }
+        if (rtrRift6hnd != null) {
+            s = "router rift6 " + rtrRift6hnd.number + " ";
+            rtrRift6ifc.routerGetConfig(l, s, filter);
+        }
         if (rtrPvrp4hnd != null) {
             s = "router pvrp4 " + rtrPvrp4hnd.number + " ";
             rtrPvrp4ifc.routerGetConfig(l, s, filter);
@@ -6667,6 +6747,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 3     isis6                       intermediate system intermediate system for ipv6");
         l.add(null, "3 4       <num>                     process id");
         rtrIsisIface.routerGetHelp(l);
+        l.add(null, "2 3     rift4                       routing for fat trees for ipv4");
+        l.add(null, "3 4       <num>                     process id");
+        rtrRiftIface.routerGetHelp(l);
+        l.add(null, "2 3     rift6                       routing for fat trees for ipv6");
+        l.add(null, "3 4       <num>                     process id");
+        rtrRiftIface.routerGetHelp(l);
         l.add(null, "2 3     pvrp4                       path vector routing protocol for ipv4");
         l.add(null, "3 4       <num>                     process id");
         rtrPvrpIface.routerGetHelp(l);
@@ -9043,6 +9129,32 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             rtrIsisIfc.routerDoConfig(a, cmd);
             return;
         }
+        if (o == tabRouteAttr.routeType.rift4) {
+            if (a.equals("enable")) {
+                clear2router(rtrRift4hnd);
+                setup2router(rtr);
+                return;
+            }
+            if (rtrRift4hnd == null) {
+                cmd.error("process not enabled on interface");
+                return;
+            }
+            rtrRift4ifc.routerDoConfig(a, cmd);
+            return;
+        }
+        if (o == tabRouteAttr.routeType.rift6) {
+            if (a.equals("enable")) {
+                clear2router(rtrRift6hnd);
+                setup2router(rtr);
+                return;
+            }
+            if (rtrRift6hnd == null) {
+                cmd.error("process not enabled on interface");
+                return;
+            }
+            rtrRift6ifc.routerDoConfig(a, cmd);
+            return;
+        }
         if (o == tabRouteAttr.routeType.pvrp4) {
             if (a.equals("enable")) {
                 clear2router(rtrPvrp4hnd);
@@ -9239,6 +9351,30 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             rtrIsisIfc.routerUnConfig(a, cmd);
+            return;
+        }
+        if (o == tabRouteAttr.routeType.rift4) {
+            if (rtrRift4hnd == null) {
+                cmd.error("process not enabled on interface");
+                return;
+            }
+            if (a.equals("enable")) {
+                clear2router(rtr);
+                return;
+            }
+            rtrRift4ifc.routerUnConfig(a, cmd);
+            return;
+        }
+        if (o == tabRouteAttr.routeType.rift6) {
+            if (rtrRift6hnd == null) {
+                cmd.error("process not enabled on interface");
+                return;
+            }
+            if (a.equals("enable")) {
+                clear2router(rtr);
+                return;
+            }
+            rtrRift6ifc.routerUnConfig(a, cmd);
             return;
         }
         if (o == tabRouteAttr.routeType.pvrp4) {
