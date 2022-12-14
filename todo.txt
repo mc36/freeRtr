@@ -23,7 +23,6 @@ tcp selective ack
 xot, x75 switching
 ilnp (rfc6740)
 lisp4, lisp6
-rift4, rift6
 l2vpn for isis
 hip (rfc4423)
 more show commands

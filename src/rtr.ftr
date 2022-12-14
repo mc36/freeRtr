@@ -3047,7 +3047,6 @@ todo: tcp selective ack
 todo: xot, x75 switching
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
-todo: rift4, rift6
 todo: l2vpn for isis
 todo: hip (rfc4423)
 todo: more show commands

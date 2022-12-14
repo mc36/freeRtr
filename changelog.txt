@@ -13545,3 +13545,5 @@ todo: sho ipv4 bgp x flaps
 todo: fix enter in spacetab term behaviour
 ---------------------------------- 2022-11-10 06:00:07 22.11.10
 no todo: sho ipv4 bgp x flaps
+---------------------------------- 2022-12-14 22:17:07 22.12.14
+no todo: rift4, rift6
