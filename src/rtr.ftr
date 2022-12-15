@@ -3048,7 +3048,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: allowed v4/v6 range to temper
 todo: colorful bgp lu implementation accroding to https://lists.geant.org/sympa/arc/rare-dev/2022-08/msg00042.html
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
