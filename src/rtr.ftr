@@ -1178,6 +1178,7 @@ qc pass: interop9: ospf md5 authentication
 qc pass: interop9: pppoe client
 qc pass: interop9: pppoe server
 qc pass: interop9: mpls over pppoe
+qc pass: interop9: point2point rift
 qc pass: interop9: rip
 qc pass: bier in chain
 qc pass: bier in star
@@ -2948,6 +2949,29 @@ qc pass: redistribution filtering with routemap in routepolicy
 qc pass: redistribution with bgp ctp
 qc pass: redistribution with octp bgp
 qc pass: redistribution route limit
+qc pass: rift point2point connection
+qc pass: rift point2point chain
+qc pass: rift metric
+qc pass: rift address suppression
+qc pass: rift route filtering with prefixlist
+qc pass: rift route filtering with routemap
+qc pass: rift route filtering with routepolicy
+qc pass: rift tag
+qc pass: rift default route
+qc pass: rift with bfd
+qc pass: rift peer template
+qc pass: rift prefix withdraw
+qc pass: rift change in metric
+qc pass: rift change in tag
+qc pass: rift auto mesh tunnel
+qc pass: rift triangle connection
+qc pass: rift prefix movement
+qc pass: rift autoroute
+qc pass: rift default address suppression
+qc pass: rift address unsuppression
+qc pass: rift over point2point ethernet
+qc pass: rift point2point connection with bidir check
+qc pass: rift ecmp connection
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

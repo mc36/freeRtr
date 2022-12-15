@@ -12,8 +12,8 @@
  :active { color: white }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v22.12.14-cur, done by cs@nop.<br/>
-tested: 2022-12-14 22:25:54, took 00:08:47, with 80 workers, on 3024 cases, 0 failed, 0 traces, 1 retries<br/>
+release: freeRouter v22.12.15-cur, done by cs@nop.<br/>
+tested: 2022-12-15 01:18:55, took 00:09:30, with 80 workers, on 3048 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -1197,6 +1197,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop9-pppoe01.tst">intop9-pppoe01.tst</a></td><td>success</td><td>interop9: pppoe client</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop9-pppoe02.tst">intop9-pppoe02.tst</a></td><td>success</td><td>interop9: pppoe server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop9-pppoe03.tst">intop9-pppoe03.tst</a></td><td>success</td><td>interop9: mpls over pppoe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-rift01.tst">intop9-rift01.tst</a></td><td>success</td><td>interop9: point2point rift</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop9-rip01.tst">intop9-rip01.tst</a></td><td>success</td><td>interop9: rip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-bier01.tst">mpls-bier01.tst</a></td><td>success</td><td>bier in chain</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-bier02.tst">mpls-bier02.tst</a></td><td>success</td><td>bier in star</td></tr>
@@ -2967,6 +2968,29 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-redist41.tst">rout-redist41.tst</a></td><td>success</td><td>redistribution with bgp ctp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-redist42.tst">rout-redist42.tst</a></td><td>success</td><td>redistribution with octp bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-redist43.tst">rout-redist43.tst</a></td><td>success</td><td>redistribution route limit</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift01.tst">rout-rift01.tst</a></td><td>success</td><td>rift point2point connection</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift02.tst">rout-rift02.tst</a></td><td>success</td><td>rift point2point chain</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift03.tst">rout-rift03.tst</a></td><td>success</td><td>rift metric</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift04.tst">rout-rift04.tst</a></td><td>success</td><td>rift address suppression</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift05.tst">rout-rift05.tst</a></td><td>success</td><td>rift route filtering with prefixlist</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift06.tst">rout-rift06.tst</a></td><td>success</td><td>rift route filtering with routemap</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift07.tst">rout-rift07.tst</a></td><td>success</td><td>rift route filtering with routepolicy</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift08.tst">rout-rift08.tst</a></td><td>success</td><td>rift tag</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift09.tst">rout-rift09.tst</a></td><td>success</td><td>rift default route</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift10.tst">rout-rift10.tst</a></td><td>success</td><td>rift with bfd</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift11.tst">rout-rift11.tst</a></td><td>success</td><td>rift peer template</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift12.tst">rout-rift12.tst</a></td><td>success</td><td>rift prefix withdraw</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift13.tst">rout-rift13.tst</a></td><td>success</td><td>rift change in metric</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift14.tst">rout-rift14.tst</a></td><td>success</td><td>rift change in tag</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift15.tst">rout-rift15.tst</a></td><td>success</td><td>rift auto mesh tunnel</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift16.tst">rout-rift16.tst</a></td><td>success</td><td>rift triangle connection</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift17.tst">rout-rift17.tst</a></td><td>success</td><td>rift prefix movement</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift18.tst">rout-rift18.tst</a></td><td>success</td><td>rift autoroute</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift19.tst">rout-rift19.tst</a></td><td>success</td><td>rift default address suppression</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift20.tst">rout-rift20.tst</a></td><td>success</td><td>rift address unsuppression</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift21.tst">rout-rift21.tst</a></td><td>success</td><td>rift over point2point ethernet</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift22.tst">rout-rift22.tst</a></td><td>success</td><td>rift point2point connection with bidir check</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift23.tst">rout-rift23.tst</a></td><td>success</td><td>rift ecmp connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip01.tst">rout-rip01.tst</a></td><td>success</td><td>rip on one subnet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip02.tst">rout-rip02.tst</a></td><td>success</td><td>rip in chain</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip03.tst">rout-rip03.tst</a></td><td>success</td><td>rip ingress route filtering with prefixlist</td></tr>

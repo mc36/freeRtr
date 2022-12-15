@@ -13547,3 +13547,28 @@ todo: fix enter in spacetab term behaviour
 no todo: sho ipv4 bgp x flaps
 ---------------------------------- 2022-12-14 22:17:07 22.12.14
 no todo: rift4, rift6
+---------------------------------- 2022-12-15 01:09:25 22.12.15
+qc pass: interop9: point2point rift
+qc pass: rift point2point connection
+qc pass: rift point2point chain
+qc pass: rift metric
+qc pass: rift address suppression
+qc pass: rift route filtering with prefixlist
+qc pass: rift route filtering with routemap
+qc pass: rift route filtering with routepolicy
+qc pass: rift tag
+qc pass: rift default route
+qc pass: rift with bfd
+qc pass: rift peer template
+qc pass: rift prefix withdraw
+qc pass: rift change in metric
+qc pass: rift change in tag
+qc pass: rift auto mesh tunnel
+qc pass: rift triangle connection
+qc pass: rift prefix movement
+qc pass: rift autoroute
+qc pass: rift default address suppression
+qc pass: rift address unsuppression
+qc pass: rift over point2point ethernet
+qc pass: rift point2point connection with bidir check
+qc pass: rift ecmp connection

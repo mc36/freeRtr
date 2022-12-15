@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v22.12.14-cur, done by cs@nop.
--;-;-;2022-12-14 22:25:54, took 00:08:47, with 80 workers, on 3024 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter v22.12.15-cur, done by cs@nop.
+-;-;-;2022-12-15 01:18:55, took 00:09:30, with 80 workers, on 3048 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1182,6 +1182,7 @@ http://sources.freertr.org/cfg/intop9-ospf14.tst;intop9-ospf14.tst;success;inter
 http://sources.freertr.org/cfg/intop9-pppoe01.tst;intop9-pppoe01.tst;success;interop9: pppoe client
 http://sources.freertr.org/cfg/intop9-pppoe02.tst;intop9-pppoe02.tst;success;interop9: pppoe server
 http://sources.freertr.org/cfg/intop9-pppoe03.tst;intop9-pppoe03.tst;success;interop9: mpls over pppoe
+http://sources.freertr.org/cfg/intop9-rift01.tst;intop9-rift01.tst;success;interop9: point2point rift
 http://sources.freertr.org/cfg/intop9-rip01.tst;intop9-rip01.tst;success;interop9: rip
 http://sources.freertr.org/cfg/mpls-bier01.tst;mpls-bier01.tst;success;bier in chain
 http://sources.freertr.org/cfg/mpls-bier02.tst;mpls-bier02.tst;success;bier in star
@@ -2952,6 +2953,29 @@ http://sources.freertr.org/cfg/rout-redist40.tst;rout-redist40.tst;success;redis
 http://sources.freertr.org/cfg/rout-redist41.tst;rout-redist41.tst;success;redistribution with bgp ctp
 http://sources.freertr.org/cfg/rout-redist42.tst;rout-redist42.tst;success;redistribution with octp bgp
 http://sources.freertr.org/cfg/rout-redist43.tst;rout-redist43.tst;success;redistribution route limit
+http://sources.freertr.org/cfg/rout-rift01.tst;rout-rift01.tst;success;rift point2point connection
+http://sources.freertr.org/cfg/rout-rift02.tst;rout-rift02.tst;success;rift point2point chain
+http://sources.freertr.org/cfg/rout-rift03.tst;rout-rift03.tst;success;rift metric
+http://sources.freertr.org/cfg/rout-rift04.tst;rout-rift04.tst;success;rift address suppression
+http://sources.freertr.org/cfg/rout-rift05.tst;rout-rift05.tst;success;rift route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-rift06.tst;rout-rift06.tst;success;rift route filtering with routemap
+http://sources.freertr.org/cfg/rout-rift07.tst;rout-rift07.tst;success;rift route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-rift08.tst;rout-rift08.tst;success;rift tag
+http://sources.freertr.org/cfg/rout-rift09.tst;rout-rift09.tst;success;rift default route
+http://sources.freertr.org/cfg/rout-rift10.tst;rout-rift10.tst;success;rift with bfd
+http://sources.freertr.org/cfg/rout-rift11.tst;rout-rift11.tst;success;rift peer template
+http://sources.freertr.org/cfg/rout-rift12.tst;rout-rift12.tst;success;rift prefix withdraw
+http://sources.freertr.org/cfg/rout-rift13.tst;rout-rift13.tst;success;rift change in metric
+http://sources.freertr.org/cfg/rout-rift14.tst;rout-rift14.tst;success;rift change in tag
+http://sources.freertr.org/cfg/rout-rift15.tst;rout-rift15.tst;success;rift auto mesh tunnel
+http://sources.freertr.org/cfg/rout-rift16.tst;rout-rift16.tst;success;rift triangle connection
+http://sources.freertr.org/cfg/rout-rift17.tst;rout-rift17.tst;success;rift prefix movement
+http://sources.freertr.org/cfg/rout-rift18.tst;rout-rift18.tst;success;rift autoroute
+http://sources.freertr.org/cfg/rout-rift19.tst;rout-rift19.tst;success;rift default address suppression
+http://sources.freertr.org/cfg/rout-rift20.tst;rout-rift20.tst;success;rift address unsuppression
+http://sources.freertr.org/cfg/rout-rift21.tst;rout-rift21.tst;success;rift over point2point ethernet
+http://sources.freertr.org/cfg/rout-rift22.tst;rout-rift22.tst;success;rift point2point connection with bidir check
+http://sources.freertr.org/cfg/rout-rift23.tst;rout-rift23.tst;success;rift ecmp connection
 http://sources.freertr.org/cfg/rout-rip01.tst;rout-rip01.tst;success;rip on one subnet
 http://sources.freertr.org/cfg/rout-rip02.tst;rout-rip02.tst;success;rip in chain
 http://sources.freertr.org/cfg/rout-rip03.tst;rout-rip03.tst;success;rip ingress route filtering with prefixlist

@@ -7,6 +7,9 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgPrfxlst;
+import net.freertr.cfg.cfgRoump;
+import net.freertr.cfg.cfgRouplc;
 import net.freertr.enc.encThrift;
 import net.freertr.enc.encThriftEntry;
 import net.freertr.ip.ipCor4;
@@ -540,9 +543,11 @@ public class rtrRift extends ipRtr implements Runnable {
             ned.put(createPrefix(1, 2 + i, ntry));
             ned.put(createPrefix(2, 2 + i, ntry));
         }
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
-        ned.put(createPrefix(1, Integer.MAX_VALUE, ntry));
+        if (haveNorthPeer()) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+            ned.put(createPrefix(1, Integer.MAX_VALUE, ntry));
+        }
         long tim = bits.getTime();
         for (int i = 0; i < ned.size(); i++) {
             rtrRiftTie tie = ned.get(i);
@@ -583,7 +588,22 @@ public class rtrRift extends ipRtr implements Runnable {
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwdCore.routerChg(this, false);
+    }
 
+    private boolean haveNorthPeer() {
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrRiftIface ntry = ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (!ntry.ready) {
+                continue;
+            }
+            if (level < ntry.level) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private tabRoute<addrIP> calcSpf(int dir) {
@@ -702,6 +722,7 @@ public class rtrRift extends ipRtr implements Runnable {
                         rou.best.metric = met;
                         rou.best.tag = tag;
                         rou.best.rouTyp = routerProtoTyp;
+                        rou.best.protoNum = routerProcNum;
                         spf.addPref(orig, rou, false);
                     }
                     break;
@@ -743,6 +764,7 @@ public class rtrRift extends ipRtr implements Runnable {
             return;
         }
         tie.sequence = old.sequence + 1;
+        forced |= old.isExpired() != tie.isExpired();
         if (forced) {
             ties.put(tie);
             return;
@@ -1018,6 +1040,51 @@ public class rtrRift extends ipRtr implements Runnable {
                 lastSpfN.ecmp.set(1);
                 lastSpfS.ecmp.set(1);
             }
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("prefix-list")) {
+            if (negated) {
+                prflstIn = null;
+                notif.wakeup();
+                return false;
+            }
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            prflstIn = ntry.prflst;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("route-map")) {
+            if (negated) {
+                roumapIn = null;
+                notif.wakeup();
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            roumapIn = ntry.roumap;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("route-policy")) {
+            if (negated) {
+                roupolIn = null;
+                notif.wakeup();
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            roupolIn = ntry.rouplc;
             notif.wakeup();
             return false;
         }
