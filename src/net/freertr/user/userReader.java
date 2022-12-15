@@ -1162,9 +1162,7 @@ public class userReader implements Comparator<String> {
     }
 
     private boolean cmdHistFind() {
-        if (1 < 2) {
-            return false;
-        }
+        final int width = pipe.settingsGet(pipeSetting.width, 80) - 10;
         String oldPrm = prompt;
         String oldCur = curr;
         String text = curr;
@@ -1237,6 +1235,9 @@ public class userReader implements Comparator<String> {
                     pos = curr.length();
                     return false;
                 default:
+                    if (text.length() > width) {
+                        break;
+                    }
                     if (isTextChar(ch)) {
                         break;
                     }
