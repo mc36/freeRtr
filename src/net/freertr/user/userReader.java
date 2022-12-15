@@ -1364,6 +1364,9 @@ public class userReader implements Comparator<String> {
                         cmdTabulator();
                         break;
                     case 0x8004: // enter
+                        if (spacetab) {
+                            cmdTabulator();
+                        }
                         String s = cmdEnter();
                         if (s == null) {
                             break;
