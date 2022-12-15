@@ -27,5 +27,4 @@ more clear commands
 more interactive tools
 more features with clean implementation
 more randomizers
-x25
 default vrf for show commands

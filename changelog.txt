@@ -13581,3 +13581,5 @@ qc pass: rift inter level chain
 no todo: allowed v4/v6 range to temper
 ---------------------------------- 2022-12-15 16:41:37 22.12.15
 no todo: xot, x75 switching
+---------------------------------- 2022-12-15 17:42:29 22.12.15
+no todo: x25
