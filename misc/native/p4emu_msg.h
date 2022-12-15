@@ -159,7 +159,11 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn tcpmss pmtud mlppp";
+    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
+#ifndef HAVE_NOCRYPTO
+    " macsec ipsec openvpn wireguard"
+#endif
+    ;
 }
 
 

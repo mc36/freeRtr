@@ -94,6 +94,11 @@ public class temper implements Runnable {
     protected temperData measDat[] = new temperData[0];
 
     /**
+     * allowed peers
+     */
+    protected String allowIp;
+
+    /**
      * inside reading used
      */
     protected int measIn = -1;
@@ -512,6 +517,10 @@ public class temper implements Runnable {
                 relayPin = (int) temperUtil.str2num(s);
                 continue;
             }
+            if (a.equals("allowed-ip")) {
+                allowIp = s;
+                continue;
+            }
             if (a.equals("measure")) {
                 m.add(s);
                 continue;
@@ -628,6 +637,17 @@ public class temper implements Runnable {
         return img;
     }
 
+    private boolean checkPeer(ByteArrayOutputStream buf, String peer) throws Exception {
+        if (allowIp == null) {
+            return false;
+        }
+        if (allowIp.indexOf(";" + peer + ";") >= 0) {
+            return false;
+        }
+        putStart(buf, "restricted", "you are not allowed");
+        return true;
+    }
+
     /**
      * do one request
      *
@@ -656,6 +676,9 @@ public class temper implements Runnable {
             }
         }
         if (cmd.equals("heat")) {
+            if (checkPeer(buf, peer)) {
+                return 1;
+            }
             lastNeeded = temperUtil.str2num(tmp);
             timeNeeded = temperUtil.getTime();
             lastSetter = peer;
@@ -677,6 +700,9 @@ public class temper implements Runnable {
             cmd = "relayset";
         }
         if (cmd.equals("relayset")) {
+            if (checkPeer(buf, peer)) {
+                return 1;
+            }
             if (relayPin == 0) {
                 putStart(buf, "relay", "relay not set");
                 return 1;
@@ -688,6 +714,9 @@ public class temper implements Runnable {
             return 1;
         }
         if (cmd.equals("guests")) {
+            if (checkPeer(buf, peer)) {
+                return 1;
+            }
             temperCode res = findCode(tmp);
             if (res == null) {
                 putStart(buf, "door", "invalid code");
@@ -702,6 +731,9 @@ public class temper implements Runnable {
             return 1;
         }
         if (cmd.equals("closed")) {
+            if (checkPeer(buf, peer)) {
+                return 1;
+            }
             temperCode res = findCode(tmp);
             if (res == null) {
                 putStart(buf, "door", "invalid code");
@@ -716,6 +748,9 @@ public class temper implements Runnable {
             return 1;
         }
         if (cmd.equals("door")) {
+            if (checkPeer(buf, peer)) {
+                return 1;
+            }
             temperCode res = findCode(tmp);
             if (res == null) {
                 putStart(buf, "door", "invalid code");
