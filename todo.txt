@@ -18,7 +18,6 @@ parse privilege levels from tacacs
 ldap client, server
 dhcp relay support
 tcp selective ack
-xot, x75 switching
 ilnp (rfc6740)
 lisp4, lisp6
 l2vpn for isis

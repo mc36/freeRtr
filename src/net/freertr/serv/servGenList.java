@@ -217,6 +217,8 @@ public class servGenList<T extends servGeneric> {
         l.add(cfgAll.dmnMultiplexer.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    telnet                       telnet server" + e);
         l.add(cfgAll.dmnTelnet.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
+        l.add(null, p + "  " + (p + 1) + "    xotpad                       xotpad server" + e);
+        l.add(cfgAll.dmnXotpad.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    rfb                          rfb server" + e);
         l.add(cfgAll.dmnRfb.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    udptn                        udptn server" + e);
@@ -391,6 +393,9 @@ class servGenEntry {
         }
         if (typ.equals("telnet")) {
             return new servGenEntry(new servTelnet(), cfgAll.dmnTelnet);
+        }
+        if (typ.equals("xotpad")) {
+            return new servGenEntry(new servXotPad(), cfgAll.dmnXotpad);
         }
         if (typ.equals("rfb")) {
             return new servGenEntry(new servRfb(), cfgAll.dmnRfb);

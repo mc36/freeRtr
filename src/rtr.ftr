@@ -3068,7 +3068,6 @@ todo: parse privilege levels from tacacs
 todo: ldap client, server
 todo: dhcp relay support
 todo: tcp selective ack
-todo: xot, x75 switching
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: l2vpn for isis

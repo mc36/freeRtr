@@ -99,6 +99,7 @@ import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
 import net.freertr.enc.encUrl;
+import net.freertr.serv.servXotPad;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userConfig;
 import net.freertr.user.userExec;
@@ -929,6 +930,7 @@ public class cfgInit implements Runnable {
         servSyslog.defaultF = createFilter(servSyslog.defaultL, srvdefsF);
         servTacacs.defaultF = createFilter(servTacacs.defaultL, srvdefsF);
         servTelnet.defaultF = createFilter(servTelnet.defaultL, srvdefsF, userReader.linedefF);
+        servXotPad.defaultF = createFilter(servXotPad.defaultL, srvdefsF, userReader.linedefF);
         servTftp.defaultF = createFilter(servTftp.defaultL, srvdefsF);
         servTime.defaultF = createFilter(servTime.defaultL, srvdefsF);
         servUdptn.defaultF = createFilter(servUdptn.defaultL, srvdefsF, userReader.linedefF);

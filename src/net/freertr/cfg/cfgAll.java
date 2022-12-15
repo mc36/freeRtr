@@ -92,6 +92,7 @@ import net.freertr.serv.servUpnpFwd;
 import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
+import net.freertr.serv.servXotPad;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabRouteAttr;
@@ -413,6 +414,11 @@ public class cfgAll {
      * telnet daemons
      */
     public static final servGenList<servTelnet> dmnTelnet = new servGenList<servTelnet>();
+
+    /**
+     * xotpad daemons
+     */
+    public static final servGenList<servXotPad> dmnXotpad = new servGenList<servXotPad>();
 
     /**
      * rfb daemons
@@ -3818,6 +3824,7 @@ public class cfgAll {
         servGenList.listGetRun(l, dials, filter);
         servGenList.listGetRun(l, aliases, filter);
         dmnTelnet.getShRun(l, filter);
+        dmnXotpad.getShRun(l, filter);
         dmnUdptn.getShRun(l, filter);
         dmnRfb.getShRun(l, filter);
         dmnEcho.getShRun(l, filter);

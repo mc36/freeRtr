@@ -13579,3 +13579,5 @@ qc pass: rift with bgp linkstate
 qc pass: rift inter level chain
 ---------------------------------- 2022-12-15 11:21:02 22.12.15
 no todo: allowed v4/v6 range to temper
+---------------------------------- 2022-12-15 16:41:37 22.12.15
+no todo: xot, x75 switching
