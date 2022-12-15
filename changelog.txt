@@ -13574,3 +13574,6 @@ qc pass: rift point2point connection with bidir check
 qc pass: rift ecmp connection
 ---------------------------------- 2022-12-15 01:20:12 22.12.15
 no todo: fix enter in spacetab term behaviour
+---------------------------------- 2022-12-15 04:43:48 22.12.15
+qc pass: rift with bgp linkstate
+qc pass: rift inter level chain

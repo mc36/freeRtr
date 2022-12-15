@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.12.15-cur, done by cs@nop.
--;-;-;2022-12-15 04:29:51, took 00:09:08, with 80 workers, on 3048 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2022-12-15 04:53:10, took 00:09:22, with 80 workers, on 3050 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2976,6 +2976,8 @@ http://sources.freertr.org/cfg/rout-rift20.tst;rout-rift20.tst;success;rift addr
 http://sources.freertr.org/cfg/rout-rift21.tst;rout-rift21.tst;success;rift over point2point ethernet
 http://sources.freertr.org/cfg/rout-rift22.tst;rout-rift22.tst;success;rift point2point connection with bidir check
 http://sources.freertr.org/cfg/rout-rift23.tst;rout-rift23.tst;success;rift ecmp connection
+http://sources.freertr.org/cfg/rout-rift24.tst;rout-rift24.tst;success;rift with bgp linkstate
+http://sources.freertr.org/cfg/rout-rift25.tst;rout-rift25.tst;success;rift inter level chain
 http://sources.freertr.org/cfg/rout-rip01.tst;rout-rip01.tst;success;rip on one subnet
 http://sources.freertr.org/cfg/rout-rip02.tst;rout-rip02.tst;success;rip in chain
 http://sources.freertr.org/cfg/rout-rip03.tst;rout-rip03.tst;success;rip ingress route filtering with prefixlist

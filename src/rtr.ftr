@@ -2972,6 +2972,8 @@ qc pass: rift address unsuppression
 qc pass: rift over point2point ethernet
 qc pass: rift point2point connection with bidir check
 qc pass: rift ecmp connection
+qc pass: rift with bgp linkstate
+qc pass: rift inter level chain
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist
