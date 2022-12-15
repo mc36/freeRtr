@@ -1,6 +1,7 @@
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class temperData {
      */
     protected synchronized void getValue() {
         try {
-            URL testUrl = new URL(myUrl);
+            URL testUrl = new URI(myUrl).toURL();
             URLConnection testConn = testUrl.openConnection();
             testConn.setConnectTimeout(lower.measIotm);
             testConn.setReadTimeout(lower.measIotm);

@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
-import java.net.URL;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class temper implements Runnable {
         if (staticTemper == null) {
             staticTemper = new temper();
             staticTemper.path = path.substring(0, path.lastIndexOf("."));
-            staticTemper.url = new URL(url).getPath();
+            staticTemper.url = new URI(url).toURL().getPath();
             staticTemper.doInit();
             new Thread(staticTemper).start();
         }

@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +58,7 @@ public class mailer {
         if (staticMailer == null) {
             staticMailer = new mailer();
             staticMailer.path = path.substring(0, path.lastIndexOf("."));
-            staticMailer.url = new URL(url).getPath();
+            staticMailer.url = new URI(url).toURL().getPath();
             staticMailer.doInit();
         }
         staticMailer.doRequest(par, buf, user);

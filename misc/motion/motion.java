@@ -2,7 +2,7 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class motion {
         if (staticMotion == null) {
             staticMotion = new motion();
             staticMotion.path = path.substring(0, path.lastIndexOf("."));
-            staticMotion.url = new URL(url).getPath();
+            staticMotion.url = new URI(url).toURL().getPath();
             staticMotion.doInit();
         }
         switch (staticMotion.doRequest(par, buf, peer)) {

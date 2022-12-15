@@ -2,7 +2,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +113,7 @@ public class player implements Runnable {
             staticPlayer = new player();
             staticPlayer.path = path.substring(0, path.lastIndexOf("."));
             staticPlayer.urlF = url;
-            staticPlayer.urlR = new URL(url).getPath();
+            staticPlayer.urlR = new URI(url).toURL().getPath();
             staticPlayer.doInit();
             new Thread(staticPlayer).start();
         }

@@ -1,5 +1,6 @@
 package net.freertr.serv;
 
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -670,7 +671,7 @@ public class servHttp extends servGeneric implements prtServS {
                 return false;
             }
             try {
-                URL url = new URL("file://" + ntry.path);
+                URL url = new URI("file://" + ntry.path).toURL();
                 URL[] urls = new URL[1];
                 urls[0] = url;
                 ntry.allowClass = new URLClassLoader(urls);

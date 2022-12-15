@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +52,7 @@ public class gallery {
             throws Exception {
         gallery app = new gallery();
         app.path = path;
-        app.url = new URL(url).getPath();
+        app.url = new URI(url).toURL().getPath();
         app.doInit();
         return app.doRequest(par, buf);
     }

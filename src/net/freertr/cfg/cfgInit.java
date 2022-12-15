@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -306,7 +307,7 @@ public class cfgInit implements Runnable {
         setupJVM();
         try {
             List<String> res = new ArrayList<String>();
-            InputStream strm = new URL(url).openStream();
+            InputStream strm = new URI(url).toURL().openStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(strm));
             while (rd.ready()) {
                 res.add(rd.readLine());

@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -165,7 +166,7 @@ public class playerUtil {
             put("getting " + pat + "...");
         }
         try {
-            playerLyric res = doRead(new URL(pat).openStream());
+            playerLyric res = doRead(new URI(pat).toURL().openStream());
             if (res == null) {
                 return null;
             }

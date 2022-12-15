@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -250,7 +251,7 @@ public class motionData implements Runnable {
     }
 
     private BufferedImage fetchImage() throws Exception {
-        URL testUrl = new URL(myUrl);
+        URL testUrl = new URI(myUrl).toURL();
         URLConnection testConn = testUrl.openConnection();
         testConn.setConnectTimeout(5000);
         testConn.setReadTimeout(5000);
