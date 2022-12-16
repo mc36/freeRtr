@@ -126,7 +126,7 @@ public class gallery {
     /**
      * extensions
      */
-    public static final String videoExt = ".mp4.mov.";
+    public static final String videoExt = ".avi.mp4.mov.";
 
     /**
      * do one request
