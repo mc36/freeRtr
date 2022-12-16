@@ -1,7 +1,7 @@
 package net.freertr.serv;
 
 import java.util.List;
-import net.freertr.pack.packHolder;
+import net.freertr.pack.packXotPad;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -10,9 +10,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.user.userLine;
-import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
 /**
@@ -29,11 +27,6 @@ public class servXotPad extends servGeneric implements prtServS {
     }
 
     /**
-     * port number
-     */
-    public static final int port = 1998;
-
-    /**
      * line handler
      */
     protected userLine lin = new userLine();
@@ -42,7 +35,7 @@ public class servXotPad extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server xotpad .*! port " + port,
+        "server xotpad .*! port " + packXotPad.port,
         "server xotpad .*! no second-port",
         "server xotpad .*! protocol " + proto2string(protoAllStrm)
     };
@@ -78,7 +71,7 @@ public class servXotPad extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return port;
+        return packXotPad.port;
     }
 
     public int srvProto() {
@@ -97,33 +90,25 @@ public class servXotPad extends servGeneric implements prtServS {
 
 class servXotPadRx implements Runnable {
 
-    private final servXotPad lower;
+    public final servXotPad lower;
 
-    private final pipeSide conn;
+    public final packXotPad conn;
 
-    private final pipeLine pl;
+    public final pipeLine pl;
 
-    private final pipeSide psx;
+    public final pipeSide psx;
 
-    private final pipeSide psl;
-
-    private int lci;
-
-    private int seqTx;
-
-    private int seqRx;
-
-    private boolean canTx;
+    public final pipeSide psc;
 
     public servXotPadRx(servXotPad parent, prtGenConn id, pipeSide pipe) {
         lower = parent;
-        conn = pipe;
+        conn = new packXotPad(pipe);
         pl = new pipeLine(32768, false);
         psx = pl.getSide();
-        psl = pl.getSide();
+        psc = pl.getSide();
         psx.setReady();
-        psl.setReady();
-        lower.lin.createHandler(psl, "" + id, 0);
+        psc.setReady();
+        lower.lin.createHandler(psc, "" + id, 0);
     }
 
     public void startWork() {
@@ -133,128 +118,19 @@ class servXotPadRx implements Runnable {
 
     public void stopWork() {
         conn.setClose();
-        psl.setClose();
+        psc.setClose();
         psx.setClose();
         pl.setClose();
-        canTx = true;
-    }
-
-    public packHolder recvPack() {
-        byte[] buf = new byte[4];
-        if (conn.moreGet(buf, 0, buf.length) != buf.length) {
-            return null;
-        }
-        if (bits.msbGetW(buf, 0) != 0) { // version
-            return null;
-        }
-        int len = bits.msbGetW(buf, 2);
-        packHolder pck = new packHolder(true, true);
-        if (pck.pipeRecv(conn, 0, len, 144) != len) {
-            return null;
-        }
-        if (debugger.servXotpadTraf) {
-            logger.debug("rx " + pck.dump());
-        }
-        return pck;
-    }
-
-    public void sendPack(packHolder pck) {
-        if (debugger.servXotpadTraf) {
-            logger.debug("tx " + pck.dump());
-        }
-        pck.merge2end();
-        pck.msbPutW(0, 0); // version
-        pck.msbPutW(2, pck.dataSize());
-        pck.putSkip(4);
-        pck.merge2beg();
-        pck.pipeSend(conn, 0, pck.dataSize(), 2);
-    }
-
-    public void doerRx() {
-        packHolder pck = recvPack();
-        if (pck == null) {
-            return;
-        }
-        if (pck.getByte(0) != 0x10) { // info
-            return;
-        }
-        lci = pck.getByte(1);
-        if (pck.getByte(2) != 0x0b) { // call request
-            return;
-        }
-        pck.clear();
-        pck.putByte(0, 0x10); // info
-        pck.putByte(1, lci);
-        pck.putByte(2, 0x0f); // call connected
-        pck.putByte(3, 0x00); // address length
-        pck.putByte(4, 0x00); // utility length
-        pck.putSkip(5);
-        sendPack(pck);
-        canTx = true;
-        for (;;) {
-            pck = recvPack();
-            if (pck == null) {
-                return;
-            }
-            if (pck.getByte(0) != 0x10) { // info
-                return;
-            }
-            if (lci != pck.getByte(1)) {
-                return;
-            }
-            int typ = pck.getByte(2);
-            if ((typ & 0x1f) == 1) { // receiver ready
-                canTx = true;
-                continue;
-            }
-            if ((typ & 1) != 0) { // data
-                continue;
-            }
-            pck.getSkip(3);
-            pck.pipeSend(psx, 0, pck.dataSize(), 144);
-            pck.clear();
-            pck.putByte(0, 0x10); // info
-            pck.putByte(1, lci);
-            pck.putByte(2, (typ << 4) | 1); // command
-            pck.putSkip(3);
-            sendPack(pck);
-            seqRx = (typ >>> 1) & 7;
-        }
-    }
-
-    public void doerTx() {
-        for (;;) {
-            if (!canTx) {
-                bits.sleep(100);
-                continue;
-            }
-            int len = psx.ready2rx();
-            if (len > 128) {
-                len = 128;
-            }
-            if (len < 1) {
-                len = 1;
-            }
-            byte[] buf = new byte[len];
-            if (psx.moreGet(buf, 0, buf.length) != buf.length) {
-                return;
-            }
-            packHolder pck = new packHolder(true, true);
-            pck.putByte(0, 0x10); // info
-            pck.putByte(1, lci);
-            pck.putByte(2, (seqTx << 1) | (seqRx << 7)); // data
-            pck.putSkip(3);
-            pck.putCopy(buf, 0, 0, buf.length);
-            pck.putSkip(buf.length);
-            sendPack(pck);
-            seqTx = (seqTx + 1) & 7;
-            canTx = false;
-        }
     }
 
     public void run() {
         try {
-            doerRx();
+            if (conn.parseCallReq(conn.recvPack())) {
+                stopWork();
+                return;
+            }
+            conn.sendPack(conn.createCallAcc());
+            conn.doerRx(psx);
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -273,7 +149,7 @@ class servXotPadTx implements Runnable {
 
     public void run() {
         try {
-            lower.doerTx();
+            lower.conn.doerTx(lower.psx);
         } catch (Exception e) {
             logger.traceback(e);
         }

@@ -188,10 +188,6 @@ public class debugger {
      */
     public static boolean servDcpTraf = false;
 
-    /**
-     * servXotpad traffic
-     */
-    public static boolean servXotpadTraf = false;
 
     /**
      * servSdwan traffic
@@ -1061,7 +1057,6 @@ public class debugger {
         l.add(null, "3 .        nrpe              nagios remote plugin");
         l.add(null, "3 .        prometheus        prometheus targets");
         l.add(null, "3 .        dcp               direct connect protocol");
-        l.add(null, "3 .        xotpad            x25 over tcp");
         l.add(null, "3 .        sdwan             sdwan protocol");
         l.add(null, "3 .        pcep              path computation element protocol");
         l.add(null, "3 4        openflow          openflow protocol");
@@ -1435,10 +1430,6 @@ public class debugger {
             }
             if (s.equals("dcp")) {
                 servDcpTraf = v;
-                return false;
-            }
-            if (s.equals("xotpad")) {
-                servXotpadTraf = v;
                 return false;
             }
             if (s.equals("sdwan")) {

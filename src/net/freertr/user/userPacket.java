@@ -31,6 +31,7 @@ import net.freertr.clnt.clntSnmp;
 import net.freertr.clnt.clntSpeed;
 import net.freertr.clnt.clntVconf;
 import net.freertr.clnt.clntVoice;
+import net.freertr.clnt.clntXotPad;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ip.ipCor;
@@ -65,6 +66,7 @@ import net.freertr.sec.secWebsock;
 import net.freertr.serv.servGeneric;
 import net.freertr.serv.servP4lang;
 import net.freertr.enc.encUrl;
+import net.freertr.pack.packXotPad;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
@@ -1583,6 +1585,27 @@ public class userPacket {
             rdr.keyFlush();
             clntSpeed.smllClnt(cmd);
             rdr.keyFlush();
+            return null;
+        }
+        if (a.equals("xotpad")) {
+            addrIP adr = userTerminal.justResolv(cmd.word(), 0);
+            if (adr == null) {
+                cmd.error("bad address");
+                return null;
+            }
+            pipeSide pip = cfgAll.getClntPrx(null).doConnect(servGeneric.protoTcp, adr, packXotPad.port, "xotpad");
+            if (pip == null) {
+                cmd.error("error connecting");
+                return null;
+            }
+            clntXotPad pad = new clntXotPad(pip);
+            String b = cmd.word();
+            if (pad.startWork(b, cmd.word())) {
+                cmd.error("error calling");
+                return null;
+            }
+            pipeTerm trm = new pipeTerm(cmd.pipe, pad.getPipe());
+            trm.doTerm();
             return null;
         }
         if (a.equals("websock")) {
