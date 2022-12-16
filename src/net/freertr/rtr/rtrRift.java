@@ -222,6 +222,26 @@ public class rtrRift extends ipRtr implements Runnable {
     }
 
     /**
+     * list of neighbors
+     *
+     * @return list
+     */
+    public userFormat showMetrics() {
+        userFormat l = new userFormat("|", "interface|address|nodeid|metric|delay");
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrRiftIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            if (!ifc.ready) {
+                continue;
+            }
+            l.add(ifc + "|" + ifc.peer + "|" + ifc.rtrId + "|" + ifc.getMetric() + "|" + ifc.echoParam);
+        }
+        return l;
+    }
+
+    /**
      * delete one interface
      *
      * @param ifc interface to delete
@@ -309,9 +329,9 @@ public class rtrRift extends ipRtr implements Runnable {
     public userFormat showNeighs(boolean brief) {
         userFormat res;
         if (brief) {
-            res = new userFormat("|", "router|name|uptime");
+            res = new userFormat("|", "nodeid|name|uptime");
         } else {
-            res = new userFormat("|", "iface|router|name|peer|uptime");
+            res = new userFormat("|", "iface|nodeid|name|peer|uptime");
         }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrRiftIface ifc = ifaces.get(i);
@@ -742,7 +762,7 @@ public class rtrRift extends ipRtr implements Runnable {
                 continue;
             }
             bits.msbPutQ(adr.getBytes(), 0, ifc.rtrId);
-            spf.addNextHop(ifc.metric, adr, ifc.peer, ifc.iface, null, null);
+            spf.addNextHop(ifc.getMetric(), adr, ifc.peer, ifc.iface, null, null);
         }
         tabRoute<addrIP> rou1 = spf.getRoutes(fwdCore, 255, null, null);
         tabRoute<addrIP> rou2 = new tabRoute<addrIP>("rou");
@@ -836,7 +856,7 @@ public class rtrRift extends ipRtr implements Runnable {
             th2.putField(i, encThriftEntry.tpI64, ifc.rtrId);
             encThriftEntry th3 = new encThriftEntry();
             th3.putField(1, encThriftEntry.tpI8, ifc.level);
-            th3.putField(3, encThriftEntry.tpI32, ifc.metric);
+            th3.putField(3, encThriftEntry.tpI32, ifc.getMetric());
             encThriftEntry th4 = new encThriftEntry();
             th4.putField(1, encThriftEntry.tpI32, ifc.iface.ifwNum);
             th4.putField(2, encThriftEntry.tpI32, ifc.lnkId);

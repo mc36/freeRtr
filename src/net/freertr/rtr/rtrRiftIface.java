@@ -5,12 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntEcho;
+import net.freertr.clnt.clntPing;
+import net.freertr.clnt.clntTwamp;
 import net.freertr.enc.encThrift;
 import net.freertr.enc.encThriftEntry;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
+import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -38,6 +42,21 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * dead interval
      */
     public int deadTimer = 3000;
+
+    /**
+     * echo interval
+     */
+    public int echoTimer;
+
+    /**
+     * echo parameters
+     */
+    public tabAverage echoParam;
+
+    /**
+     * dynamic metric
+     */
+    public int dynamicMetric;
 
     /**
      * default metric
@@ -98,6 +117,11 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * notified on route change
      */
     protected notifier notif = new notifier();
+
+    /**
+     * time echo sent
+     */
+    protected long echoTime;
 
     /**
      * peer ready
@@ -161,6 +185,8 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         lower = parent;
         iface = ifc;
         advert = new tabGen<rtrRiftTie>();
+        echoTimer = 60000;
+        echoParam = new tabAverage(1, 65530);
     }
 
     /**
@@ -199,6 +225,22 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
     }
 
     /**
+     * get peer metric
+     *
+     * @return metric
+     */
+    public int getMetric() {
+        if (!ready) {
+            return metric;
+        }
+        int met = metric;
+        if (dynamicMetric < 1) {
+            return met;
+        }
+        return echoParam.getResult(met);
+    }
+
+    /**
      * list of neighbors
      *
      * @param brief only briefly
@@ -232,6 +274,34 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        String a;
+        switch (dynamicMetric) {
+            case 0:
+                a = "disabled";
+                break;
+            case 1:
+                a = "icmpecho";
+                break;
+            case 2:
+                a = "udpecho";
+                break;
+            case 3:
+                a = "twamp";
+                break;
+            default:
+                a = "unknown=" + dynamicMetric;
+        }
+        cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric mode", a);
+        l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
+        l.add(cmds.tabulator + beg + "dynamic-metric size " + echoParam.buckets);
+        l.add(cmds.tabulator + beg + "dynamic-metric minimum " + echoParam.minimum);
+        l.add(cmds.tabulator + beg + "dynamic-metric maximum " + echoParam.maximum);
+        l.add(cmds.tabulator + beg + "dynamic-metric divisor " + echoParam.divisor);
+        l.add(cmds.tabulator + beg + "dynamic-metric multiply " + echoParam.multiply);
+        l.add(cmds.tabulator + beg + "dynamic-metric ignore " + echoParam.ignorer);
+        l.add(cmds.tabulator + beg + "dynamic-metric skip-min " + echoParam.discardLo);
+        l.add(cmds.tabulator + beg + "dynamic-metric skip-max " + echoParam.discardHi);
+        l.add(cmds.tabulator + beg + "dynamic-metric algo " + echoParam.getAlgoName());
     }
 
     /**
@@ -252,6 +322,40 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dead-time                   time before neighbor down");
         l.add(null, "5 .           <num>                     time in ms");
+        l.add(null, "4 5         dynamic-metric            dynamic peer metric");
+        l.add(null, "5 6           mode                    dynamic peer metric");
+        l.add(null, "6 .             disabled              forbid echo requests");
+        l.add(null, "6 .             icmpecho              icmp echo requests");
+        l.add(null, "6 .             udpecho               udp echo requests");
+        l.add(null, "6 .             twamp                 twamp echo requests");
+        l.add(null, "5 6           time                      measurement interval");
+        l.add(null, "6 .             <num>                   time in ms");
+        l.add(null, "5 6           size                      number of measurement");
+        l.add(null, "6 .             <num>                   number of values");
+        l.add(null, "5 6           minimum                   lowest result");
+        l.add(null, "6 .             <num>                   value");
+        l.add(null, "5 6           maximum                   highest result");
+        l.add(null, "6 .             <num>                   value");
+        l.add(null, "5 6           divisor                   divide result");
+        l.add(null, "6 .             <num>                   value");
+        l.add(null, "5 6           multiply                  multiply result");
+        l.add(null, "6 .             <num>                   value");
+        l.add(null, "5 6           ignore                    ignore small differences");
+        l.add(null, "6 .             <num>                   value");
+        l.add(null, "5 6           skip-min                  discard small measures");
+        l.add(null, "6 .             <num>                   number of values");
+        l.add(null, "5 6           skip-max                  discard big measures");
+        l.add(null, "6 .             <num>                   number of values");
+        l.add(null, "5 6           algo                      calculation to do");
+        l.add(null, "6 .             none                    nothing");
+        l.add(null, "6 .             minimum                 take lowest");
+        l.add(null, "6 .             average                 take average");
+        l.add(null, "6 .             maximum                 take highest");
+        l.add(null, "6 .             summary                 take summary");
+        l.add(null, "6 .             dif-min                 take lowest of differences");
+        l.add(null, "6 .             dif-avg                 take average of differences");
+        l.add(null, "6 .             dif-max                 take highest of differences");
+        l.add(null, "6 .             dif-sum                 take summary of differences");
     }
 
     /**
@@ -261,6 +365,70 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * @param cmd parameters
      */
     public void routerDoConfig(String a, cmds cmd) {
+        if (a.equals("dynamic-metric")) {
+            a = cmd.word();
+            if (a.equals("mode")) {
+                a = cmd.word();
+                dynamicMetric = 0;
+                if (a.equals("disabled")) {
+                    dynamicMetric = 0;
+                }
+                if (a.equals("icmpecho")) {
+                    dynamicMetric = 1;
+                }
+                if (a.equals("udpecho")) {
+                    dynamicMetric = 2;
+                }
+                if (a.equals("twamp")) {
+                    dynamicMetric = 3;
+                }
+                lower.notif.wakeup();
+                return;
+            }
+            if (a.equals("time")) {
+                echoTimer = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("size")) {
+                echoParam.buckets = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("minimum")) {
+                echoParam.minimum = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("maximum")) {
+                echoParam.maximum = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("divisor")) {
+                echoParam.divisor = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("multiply")) {
+                echoParam.multiply = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("ignore")) {
+                echoParam.ignorer = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("skip-min")) {
+                echoParam.discardLo = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("skip-max")) {
+                echoParam.discardHi = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("algo")) {
+                echoParam.string2algo(cmd.word());
+                lower.notif.wakeup();
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = true;
             return;
@@ -301,6 +469,16 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("dynamic-metric")) {
+            a = cmd.word();
+            if (a.equals("mode")) {
+                dynamicMetric = 0;
+                lower.notif.wakeup();
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = false;
             return;
@@ -799,6 +977,38 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
                 sendLie();
                 if (!ready) {
                     continue;
+                }
+                if ((echoTime + echoTimer) < bits.getTime()) {
+                    switch (dynamicMetric) {
+                        case 1:
+                            clntPing png = new clntPing();
+                            png.meas = echoParam;
+                            png.fwd = lower.fwdCore;
+                            png.src = iface;
+                            png.trg = new addrIP();
+                            png.trg = peer;
+                            png.doWork();
+                            break;
+                        case 2:
+                            clntEcho ech = new clntEcho();
+                            ech.meas = echoParam;
+                            ech.udp = lower.udpCore;
+                            ech.src = iface;
+                            ech.trg = new addrIP();
+                            ech.trg = peer;
+                            ech.doWork();
+                            break;
+                        case 3:
+                            clntTwamp twm = new clntTwamp();
+                            twm.meas = echoParam;
+                            twm.udp = lower.udpCore;
+                            twm.src = iface;
+                            twm.trg = new addrIP();
+                            twm.trg = peer;
+                            twm.doWork();
+                            break;
+                    }
+                    echoTime = bits.getTime() - 1;
                 }
                 sendTie();
                 long tim = bits.getTime();

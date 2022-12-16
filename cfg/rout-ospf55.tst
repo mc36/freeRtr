@@ -74,10 +74,10 @@ int eth1
  ipv6 addr 1234::2 ffff::
  router ospf4 1 ena
  router ospf4 1 cost 2
- router ospf4 1 dynamic-met icm
+ router ospf4 1 dynamic-met mod icm
  router ospf6 1 ena
  router ospf6 1 cost 2
- router ospf6 1 dynamic-met icm
+ router ospf6 1 dynamic-met mod icm
  exit
 int eth2
  vrf for v1
@@ -85,10 +85,10 @@ int eth2
  ipv6 addr 1235::2 ffff::
  router ospf4 1 ena
  router ospf4 1 cost 200
- router ospf4 1 dynamic-met icm
+ router ospf4 1 dynamic-met mod icm
  router ospf6 1 ena
  router ospf6 1 cost 200
- router ospf6 1 dynamic-met icm
+ router ospf6 1 dynamic-met mod icm
  exit
 !
 

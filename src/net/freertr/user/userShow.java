@@ -2932,6 +2932,10 @@ public class userShow {
             rdr.putStrTab(r.rift.showIfaces());
             return;
         }
+        if (a.equals("metric")) {
+            rdr.putStrTab(r.rift.showMetrics());
+            return;
+        }
         if (a.equals("spf")) {
             a = cmd.word();
             rdr.putStrTab(r.rift.showSpfStat(a));

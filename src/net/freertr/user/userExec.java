@@ -408,6 +408,7 @@ public class userExec {
         hl.add(null, "7 8                [addr]           entry to view");
         hl.add(null, "8 .                  [num]          entry to view");
         hl.add(null, "5 .            interface            list of interfaces");
+        hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 6            spf                  information about last spf");
         hl.add(null, "6 .              <dir>              north or south spf");
         hl.add(null, "5 6            hostnames            hostnames from database");

@@ -83,14 +83,14 @@ int eth1
  ipv6 addr 1234::2 ffff::
  router isis4 1 ena
  router isis4 1 metric 2
- router isis4 1 dynamic-met twa
+ router isis4 1 dynamic-met mod twa
  exit
 int eth2
  vrf for v1
  ipv6 addr 1234::2 ffff::
  router isis6 1 ena
  router isis6 1 metric 2
- router isis6 1 dynamic-met twa
+ router isis6 1 dynamic-met mod twa
  exit
 int eth3
  vrf for v1
@@ -98,14 +98,14 @@ int eth3
  ipv6 addr 1235::2 ffff::
  router isis4 1 ena
  router isis4 1 metric 200
- router isis4 1 dynamic-met twa
+ router isis4 1 dynamic-met mod twa
  exit
 int eth4
  vrf for v1
  ipv6 addr 1235::2 ffff::
  router isis6 1 ena
  router isis6 1 metric 200
- router isis6 1 dynamic-met twa
+ router isis6 1 dynamic-met mod twa
  exit
 !
 

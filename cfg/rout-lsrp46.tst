@@ -73,10 +73,10 @@ int eth1
  ipv6 addr 1234::2 ffff::
  router lsrp4 1 ena
  router lsrp4 1 metric 2
- router lsrp4 1 dynamic-met udp
+ router lsrp4 1 dynamic-met mod udp
  router lsrp6 1 ena
  router lsrp6 1 metric 2
- router lsrp6 1 dynamic-met udp
+ router lsrp6 1 dynamic-met mod udp
  exit
 int eth2
  vrf for v1
@@ -84,10 +84,10 @@ int eth2
  ipv6 addr 1235::2 ffff::
  router lsrp4 1 ena
  router lsrp4 1 metric 200
- router lsrp4 1 dynamic-met udp
+ router lsrp4 1 dynamic-met mod udp
  router lsrp6 1 ena
  router lsrp6 1 metric 200
- router lsrp6 1 dynamic-met udp
+ router lsrp6 1 dynamic-met mod udp
  exit
 !
 
