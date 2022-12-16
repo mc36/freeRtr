@@ -468,6 +468,7 @@ qc pass: cross connect sep interfaces
 qc pass: cross connect ethernet interfaces
 qc pass: cross connect vlan subinterfaces
 qc pass: cross connect vlan subinterfaces of same interface
+qc pass: xot pad
 qc pass: access class
 qc pass: access map
 qc pass: access policy
@@ -2974,6 +2975,9 @@ qc pass: rift point2point connection with bidir check
 qc pass: rift ecmp connection
 qc pass: rift with bgp linkstate
 qc pass: rift inter level chain
+qc pass: rift dynamic icmp metric
+qc pass: rift dynamic udp metric
+qc pass: rift dynamic twamp metric
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

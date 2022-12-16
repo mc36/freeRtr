@@ -13583,3 +13583,8 @@ no todo: allowed v4/v6 range to temper
 no todo: xot, x75 switching
 ---------------------------------- 2022-12-15 17:42:29 22.12.15
 no todo: x25
+---------------------------------- 2022-12-16 10:02:42 22.12.16
+qc pass: xot pad
+qc pass: rift dynamic icmp metric
+qc pass: rift dynamic udp metric
+qc pass: rift dynamic twamp metric
