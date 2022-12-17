@@ -2015,7 +2015,7 @@ public class userExec {
         hl.add(null, "4 4,.        <str>                    protocols");
         hl.add(null, "2 3      xotpad                       test xotpad client");
         hl.add(null, "3 4        <addr>                     address of server");
-        hl.add(null, "4 5          <str>                    called number");
+        hl.add(null, "4 5,.        <str>                    called number");
         hl.add(null, "5 .            <str>                  calling number");
         hl.add(null, "2 3      netconf                      do netconf commands");
         hl.add(null, "3 4        get                        do a get request");
