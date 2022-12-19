@@ -37,6 +37,7 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int sdn1
+ no autostat
  exit
 int sdn1.111
  vrf for v1
@@ -48,6 +49,7 @@ int sdn1.111
  mpls ldp6
  exit
 int sdn2
+ no autostat
  exit
 int sdn2.111
  vrf for v1
@@ -59,6 +61,7 @@ int sdn2.111
  mpls ldp6
  exit
 int sdn3
+ no autostat
  exit
 int sdn3.111
  vrf for v1
@@ -70,6 +73,7 @@ int sdn3.111
  mpls ldp6
  exit
 int sdn4
+ no autostat
  exit
 int sdn4.111
  vrf for v1

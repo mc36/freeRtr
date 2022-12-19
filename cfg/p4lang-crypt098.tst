@@ -36,6 +36,7 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int sdn1
+ no autostat
  exit
 int sdn1.111
  sgt ena
@@ -45,6 +46,7 @@ int sdn1.111
  ipv6 ena
  exit
 int sdn2
+ no autostat
  sgt ena
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
@@ -52,6 +54,7 @@ int sdn2
  ipv6 ena
  exit
 int sdn3
+ no autostat
  sgt ass 1234
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
@@ -59,6 +62,7 @@ int sdn3
  ipv6 ena
  exit
 int sdn4
+ no autostat
  exit
 int sdn4.222
  sgt ass 4321

@@ -39,6 +39,7 @@ bridge 1
  mac-learn
  exit
 int sdn1
+ no autostat
  exit
 int sdn1.111
  vrf for v1
@@ -47,16 +48,19 @@ int sdn1.111
  ipv6 ena
  exit
 int sdn2
+ no autostat
  exit
 int sdn2.111
  bridge-gr 1
  exit
 int sdn3
+ no autostat
  exit
 int sdn3.111
  bridge-gr 1
  exit
 int sdn4
+ no autostat
  exit
 int sdn4.111
  bridge-gr 1

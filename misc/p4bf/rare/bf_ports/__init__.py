@@ -413,7 +413,7 @@ class BfPorts(Thread):
             logger.warning(
                 "%s - exited with code [%s]" % (self.class_name, _Exception())
             )
-            self.tearDown()
+            #self.tearDown()
 
     def tearDown(self):
         os._exit(0)

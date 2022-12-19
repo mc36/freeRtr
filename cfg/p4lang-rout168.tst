@@ -56,6 +56,7 @@ int lo0
  ipv6 pim bier 1
  exit
 int sdn1
+ no autostat
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -71,6 +72,7 @@ int sdn1
  ipv6 pim bier 1
  exit
 int sdn2
+ no autostat
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
@@ -79,6 +81,7 @@ int sdn2
  ipv6 multi static ff06::1 4321::106
  exit
 int sdn3
+ no autostat
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
@@ -94,6 +97,7 @@ int sdn3
  ipv6 pim bier 1
  exit
 int sdn4
+ no autostat
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::

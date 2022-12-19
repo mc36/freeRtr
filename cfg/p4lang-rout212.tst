@@ -83,9 +83,11 @@ bridge 1
  mac-learn
  exit
 int sdn11
+ no autostat
  bridge-gr 1
  exit
 int sdn12
+ no autostat
  bridge-gr 1
  exit
 int bun1
@@ -93,15 +95,19 @@ int bun1
  mpls ena
  exit
 int sdn13
+ no autostat
  bundle-gr 1
  exit
 int sdn14
+ no autostat
  bundle-gr 1
  exit
 int sdn21
+ no autostat
  bridge-gr 1
  exit
 int sdn22
+ no autostat
  bridge-gr 1
  exit
 int bun2
@@ -109,9 +115,11 @@ int bun2
  mpls ena
  exit
 int sdn23
+ no autostat
  bundle-gr 2
  exit
 int sdn24
+ no autostat
  bundle-gr 2
  exit
 int bun3
@@ -119,9 +127,11 @@ int bun3
  mpls ena
  exit
 int sdn31
+ no autostat
  bundle-gr 3
  exit
 int sdn32
+ no autostat
  bundle-gr 3
  exit
 int bun4
@@ -129,9 +139,11 @@ int bun4
  mpls ena
  exit
 int sdn33
+ no autostat
  bundle-gr 4
  exit
 int sdn34
+ no autostat
  bundle-gr 4
  exit
 server p4lang p4
