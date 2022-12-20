@@ -13588,3 +13588,5 @@ qc pass: xot pad
 qc pass: rift dynamic icmp metric
 qc pass: rift dynamic udp metric
 qc pass: rift dynamic twamp metric
+---------------------------------- 2022-12-20 10:49:45 22.12.20
+todo: mpls inband network telemetry
