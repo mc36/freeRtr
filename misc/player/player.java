@@ -826,6 +826,9 @@ public class player implements Runnable {
             buf.write("queued songs:<br/>".getBytes());
             for (int i = 0; i < nextSong.size(); i++) {
                 int num = nextSong.get(i);
+                if (num >= playlist.size()) {
+                    continue;
+                }
                 playerSong ntry = playlist.get(num);
                 String a = "((<a href=\"" + urlR + "?cmd=dequeue&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
                 buf.write(a.getBytes());
@@ -833,6 +836,9 @@ public class player implements Runnable {
             buf.write("<br/>previous songs:<br/>".getBytes());
             for (int i = pastSong.size() - 1; i >= 0; i--) {
                 int num = pastSong.get(i);
+                if (num >= playlist.size()) {
+                    continue;
+                }
                 playerSong ntry = playlist.get(num);
                 String a = "((<a href=\"" + urlR + "?cmd=play&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
                 buf.write(a.getBytes());
