@@ -13590,3 +13590,6 @@ qc pass: rift dynamic udp metric
 qc pass: rift dynamic twamp metric
 ---------------------------------- 2022-12-20 10:49:45 22.12.20
 todo: mpls inband network telemetry
+---------------------------------- 2022-12-21 14:37:00 22.12.21
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
