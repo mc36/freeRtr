@@ -3000,6 +3000,7 @@ public class cfgAll {
         }
         cfgIfc ifc = ifcAdd(ntry.getIntName(), cfgIfc.ifaceType.bridge, null, 1);
         if (ifc == null) {
+            bridges.del(ntry);
             return null;
         }
         ntry.bridgeHed = new ifcBridge();
@@ -3059,6 +3060,7 @@ public class cfgAll {
         }
         cfgIfc ifc = ifcAdd(ntry.getIntName(), cfgIfc.ifaceType.bundle, null, 1);
         if (ifc == null) {
+            bundles.del(ntry);
             return null;
         }
         ntry.bundleHed = new ifcBundle();
@@ -3119,10 +3121,12 @@ public class cfgAll {
         ntry.hairpinHed = new ifcHairpin();
         cfgIfc ifc1 = ifcAdd(ntry.getIntName(true), cfgIfc.ifaceType.hairpin, null, 1);
         if (ifc1 == null) {
+            hairpins.del(ntry);
             return null;
         }
         cfgIfc ifc2 = ifcAdd(ntry.getIntName(false), cfgIfc.ifaceType.hairpin, null, 1);
         if (ifc2 == null) {
+            hairpins.del(ntry);
             return null;
         }
         ifc1.hairpinHed = ntry;

@@ -617,6 +617,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             ntry.port = cfgInit.vdcPortBeg;
             ifcUdpInt hdr = new ifcUdpInt("127.0.0.1", cfgInit.vdcPortBeg, "127.0.0.1", cfgInit.vdcPortBeg + 1, "-", typ != cfgIfc.ifaceType.ether, false);
             cfgIfc ifc = cfgAll.ifcAdd(a, typ, hdr, 1);
+            if (ifc == null) {
+                return;
+            }
             ifc.initPhysical();
             if (debugger.cfgInitHw) {
                 logger.debug("iface " + hdr);
