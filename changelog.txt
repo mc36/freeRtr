@@ -13598,3 +13598,9 @@ no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
 ---------------------------------- 2022-12-22 11:36:31 22.12.22
 no todo: colorful bgp lu implementation accroding to https://lists.geant.org/sympa/arc/rare-dev/2022-08/msg00042.html
+---------------------------------- 2022-12-22 13:16:57 22.12.22
+qc pass: colors over ebgp
+qc pass: colors over ibgp
+qc pass: other colors over ebgp
+qc pass: other colors over ibgp
+todo: colorful spf class
