@@ -13596,3 +13596,5 @@ failed: dhcp with excluded address
 ---------------------------------- 2022-12-21 15:47:24 22.12.21
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2022-12-22 11:36:31 22.12.22
+no todo: colorful bgp lu implementation accroding to https://lists.geant.org/sympa/arc/rare-dev/2022-08/msg00042.html
