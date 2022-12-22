@@ -569,6 +569,7 @@ public class cfgInit implements Runnable {
                         break;
                     default:
                         cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr, thrd);
+                        if(ifc==null)continue;
                         ifaceLst.add(new cfgVdcIfc(ifc.name, old));
                         ifc.initPhysical();
                         if (debugger.cfgInitHw) {

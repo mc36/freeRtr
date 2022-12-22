@@ -2028,10 +2028,13 @@ public class cfgAll {
      * @param typ type of interface
      * @param thrd interface thread handler
      * @param wrkr worker threads
-     * @return descriptor
+     * @return descriptor, null on error
      */
     public static cfgIfc ifcAdd(String nam, cfgIfc.ifaceType typ, ifcThread thrd, int wrkr) {
         nam = cfgIfc.dissectName(nam)[0];
+        if (nam.length() < 1) {
+            return null;
+        }
         if (thrd != null) {
             thrd.startLoop(wrkr);
         }
@@ -2996,6 +2999,9 @@ public class cfgAll {
             return old;
         }
         cfgIfc ifc = ifcAdd(ntry.getIntName(), cfgIfc.ifaceType.bridge, null, 1);
+        if (ifc == null) {
+            return null;
+        }
         ntry.bridgeHed = new ifcBridge();
         ntry.bridgeHed.doStartup();
         ifc.bridgeHed = ntry;
@@ -3052,6 +3058,9 @@ public class cfgAll {
             return old;
         }
         cfgIfc ifc = ifcAdd(ntry.getIntName(), cfgIfc.ifaceType.bundle, null, 1);
+        if (ifc == null) {
+            return null;
+        }
         ntry.bundleHed = new ifcBundle();
         ntry.bundleHed.doStartup();
         ifc.bundleHed = ntry;
@@ -3109,7 +3118,13 @@ public class cfgAll {
         }
         ntry.hairpinHed = new ifcHairpin();
         cfgIfc ifc1 = ifcAdd(ntry.getIntName(true), cfgIfc.ifaceType.hairpin, null, 1);
+        if (ifc1 == null) {
+            return null;
+        }
         cfgIfc ifc2 = ifcAdd(ntry.getIntName(false), cfgIfc.ifaceType.hairpin, null, 1);
+        if (ifc2 == null) {
+            return null;
+        }
         ifc1.hairpinHed = ntry;
         ifc2.hairpinHed = ntry;
         ifc1.initHairpin(true);
