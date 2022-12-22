@@ -456,14 +456,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      *
      * @param l list to append
      * @param beg1 beginning
+     * @param beg2 beginning
      */
-    public void getConfig(List<String> l, String beg1) {
-        String beg2;
-        if (other) {
-            beg2 = "afi-ovrf ";
-        } else {
-            beg2 = "afi-vrf ";
-        }
+    public void getConfig(List<String> l, String beg1, String beg2) {
         beg2 += vrf.name + " ";
         l.add(beg1 + beg2 + "enable");
         l.add(beg1 + beg2 + "distance " + distance);

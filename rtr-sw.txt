@@ -127,6 +127,14 @@ vrf definition dn42
  mdt6
  exit
 !
+vrf definition niif
+ rd 65535:8512
+ rt4import 65535:8512
+ rt4export 65535:8512
+ rt6import 65535:8512
+ rt6export 65535:8512
+ exit
+!
 vrf definition rtbh
  rd 65535:666
  rt4import 65535:666
@@ -335,15 +343,15 @@ interface template1
  router lsrp4 1 enable
  router lsrp4 1 dump lsrp4.log
  router lsrp4 1 accept-metric
- router lsrp4 1 dynamic-metric mode inband
  router lsrp4 1 bfd
+ router lsrp4 1 dynamic-metric mode inband
  router lsrp4 1 dynamic-metric size 4
  router lsrp4 1 dynamic-metric ignore 2
  router lsrp6 1 enable
  router lsrp6 1 dump lsrp6.log
  router lsrp6 1 accept-metric
- router lsrp6 1 dynamic-metric mode inband
  router lsrp6 1 bfd
+ router lsrp6 1 dynamic-metric mode inband
  router lsrp6 1 dynamic-metric size 4
  router lsrp6 1 dynamic-metric ignore 2
  shutdown
@@ -491,6 +499,7 @@ router bgp4 65535
  afi-vrf dn42 redistribute connected
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
+ afi-vrf niif enable
  afi-vrf rtbh enable
  afi-vrf rtbh redistribute blackhole4 1
  afi-vrf vpn enable
@@ -548,6 +557,7 @@ router bgp6 65535
  afi-vrf dn42 redistribute connected
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
+ afi-vrf niif enable
  afi-vrf rtbh enable
  afi-vrf rtbh redistribute blackhole6 1
  afi-vrf vpn enable
@@ -589,6 +599,19 @@ proxy-profile p4
 proxy-profile p5
  vrf v5
  exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 !
 !
 !
