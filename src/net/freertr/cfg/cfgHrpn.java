@@ -91,7 +91,11 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
      * @return interface name
      */
     public String getIntName(boolean side) {
-        return "hairpin" + name + (side ? "1" : "2");
+        String a = name;
+        if (a.equals("0")) {
+            a = "";
+        }
+        return "hairpin" + a + (side ? "1" : "2");
     }
 
     public List<String> getShRun(int filter) {
