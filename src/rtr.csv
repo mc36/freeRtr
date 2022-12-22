@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.12.22-cur, done by cs@nop.
--;-;-;2022-12-22 14:19:41, took 00:09:18, with 80 workers, on 3058 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2022-12-22 17:38:44, took 00:12:45, with 80 workers, on 3068 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2576,9 +2576,19 @@ http://sources.freertr.org/cfg/rout-bgp665.tst;rout-bgp665.tst;success;bgp route
 http://sources.freertr.org/cfg/rout-bgp666.tst;rout-bgp666.tst;success;bgp routepolicy rd rewrite
 http://sources.freertr.org/cfg/rout-bgp667.tst;rout-bgp667.tst;success;bgp csc vpn with ctp
 http://sources.freertr.org/cfg/rout-bgp668.tst;rout-bgp668.tst;success;colors over ebgp
-http://sources.freertr.org/cfg/rout-bgp669.tst;rout-bgp669.tst;success;colors over ibgp
+http://sources.freertr.org/cfg/rout-bgp669.tst;rout-bgp669.tst;success;other colors over ebgp
 http://sources.freertr.org/cfg/rout-bgp670.tst;rout-bgp670.tst;success;colors over ibgp
 http://sources.freertr.org/cfg/rout-bgp671.tst;rout-bgp671.tst;success;other colors over ibgp
+http://sources.freertr.org/cfg/rout-bgp672.tst;rout-bgp672.tst;success;colors over bgp additional path
+http://sources.freertr.org/cfg/rout-bgp673.tst;rout-bgp673.tst;success;other colors over bgp additional path
+http://sources.freertr.org/cfg/rout-bgp674.tst;rout-bgp674.tst;success;colors over ibgp rr
+http://sources.freertr.org/cfg/rout-bgp675.tst;rout-bgp675.tst;success;other colors over ibgp rr
+http://sources.freertr.org/cfg/rout-bgp676.tst;rout-bgp676.tst;success;colors over confed bgp
+http://sources.freertr.org/cfg/rout-bgp677.tst;rout-bgp677.tst;success;other colors over confed bgp
+http://sources.freertr.org/cfg/rout-bgp678.tst;rout-bgp678.tst;success;colors over bgp route server
+http://sources.freertr.org/cfg/rout-bgp679.tst;rout-bgp679.tst;success;other colors over bgp route server
+http://sources.freertr.org/cfg/rout-bgp680.tst;rout-bgp680.tst;success;colors over bgp with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp681.tst;rout-bgp681.tst;success;other colors over bgp with soft-reconfig
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

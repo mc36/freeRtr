@@ -13607,3 +13607,17 @@ todo: colorful spf class
 ---------------------------------- 2022-12-22 14:10:22 22.12.22
 no qc pass: other colors over ebgp
 qc pass: colors over ibgp
+---------------------------------- 2022-12-22 15:43:36 22.12.22
+no qc pass: colors over ibgp
+qc pass: other colors over ebgp
+qc pass: colors over bgp additional path
+qc pass: other colors over bgp additional path
+qc pass: colors over ibgp rr
+qc pass: other colors over ibgp rr
+qc pass: colors over confed bgp
+qc pass: other colors over confed bgp
+---------------------------------- 2022-12-22 17:25:58 22.12.22
+qc pass: colors over bgp route server
+qc pass: other colors over bgp route server
+qc pass: colors over bgp with soft-reconfig
+qc pass: other colors over bgp with soft-reconfig

@@ -2572,9 +2572,19 @@ qc pass: bgp routemap rd rewrite
 qc pass: bgp routepolicy rd rewrite
 qc pass: bgp csc vpn with ctp
 qc pass: colors over ebgp
-qc pass: colors over ibgp
+qc pass: other colors over ebgp
 qc pass: colors over ibgp
 qc pass: other colors over ibgp
+qc pass: colors over bgp additional path
+qc pass: other colors over bgp additional path
+qc pass: colors over ibgp rr
+qc pass: other colors over ibgp rr
+qc pass: colors over confed bgp
+qc pass: other colors over confed bgp
+qc pass: colors over bgp route server
+qc pass: other colors over bgp route server
+qc pass: colors over bgp with soft-reconfig
+qc pass: other colors over bgp with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

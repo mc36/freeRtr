@@ -5567,6 +5567,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (tunFQDN == null) {
             return;
         }
+        if (tunTrg == null) {
+            return;
+        }
         addrIP adr = userTerminal.justResolv(tunFQDN, 0);
         if (adr == null) {
             return;
