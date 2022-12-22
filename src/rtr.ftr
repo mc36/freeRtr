@@ -2573,7 +2573,7 @@ qc pass: bgp routepolicy rd rewrite
 qc pass: bgp csc vpn with ctp
 qc pass: colors over ebgp
 qc pass: colors over ibgp
-qc pass: other colors over ebgp
+qc pass: colors over ibgp
 qc pass: other colors over ibgp
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection

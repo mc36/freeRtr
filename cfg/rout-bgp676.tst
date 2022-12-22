@@ -1,4 +1,4 @@
-description other colors over ebgp
+description colors over confed bgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -52,36 +52,36 @@ ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 router bgp4 1
  vrf v1
  no safe-ebgp
- address octp
+ address ctp
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.2 remote-as 2
+ neigh 2.2.2.2 confed
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-ctp v2 ena
+ afi-ctp v2 red conn
+ afi-ctp v3 ena
+ afi-ctp v3 red conn
+ afi-ctp v4 ena
+ afi-ctp v4 red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address octp
+ address ctp
  local-as 1
  router-id 6.6.6.1
  neigh 4321::2 remote-as 2
+ neigh 4321::2 confed
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
- afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-ctp v2 ena
+ afi-ctp v2 red conn
+ afi-ctp v3 ena
+ afi-ctp v3 red conn
+ afi-ctp v4 ena
+ afi-ctp v4 red conn
  exit
 !
 
@@ -137,36 +137,36 @@ ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address octp
+ address ctp
  local-as 2
  router-id 4.4.4.2
  neigh 2.2.2.1 remote-as 1
+ neigh 2.2.2.1 confed
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
- afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-ctp v2 ena
+ afi-ctp v2 red conn
+ afi-ctp v3 ena
+ afi-ctp v3 red conn
+ afi-ctp v4 ena
+ afi-ctp v4 red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address octp
+ address ctp
  local-as 2
  router-id 6.6.6.2
  neigh 4321::1 remote-as 1
+ neigh 4321::1 confed
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
- afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-ctp v2 ena
+ afi-ctp v2 red conn
+ afi-ctp v3 ena
+ afi-ctp v3 red conn
+ afi-ctp v4 ena
+ afi-ctp v4 red conn
  exit
 !
 
