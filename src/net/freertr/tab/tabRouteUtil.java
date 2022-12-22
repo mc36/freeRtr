@@ -446,6 +446,16 @@ public class tabRouteUtil {
     }
 
     /**
+     * convert color to extended community
+     *
+     * @param i color
+     * @return extended community
+     */
+    public static long clr2comm(int i) {
+        return (167903232L << 32) | i;
+    }
+
+    /**
      * convert extended community to rtfilter entry
      *
      * @param a as number to use

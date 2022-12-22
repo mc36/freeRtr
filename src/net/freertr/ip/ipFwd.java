@@ -141,6 +141,17 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public List<Long> rtExp = new ArrayList<Long>();
 
+
+    /**
+     * color import
+     */
+    public List<Integer> clrImp = new ArrayList<Integer>();
+
+    /**
+     * color export
+     */
+    public List<Integer> clrExp = new ArrayList<Integer>();
+
     /**
      * multicast distribution tree
      */

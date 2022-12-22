@@ -186,6 +186,10 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         "vrf definition .*! rt4export",
         "vrf definition .*! rt6import",
         "vrf definition .*! rt6export",
+        "vrf definition .*! clr4import",
+        "vrf definition .*! clr4export",
+        "vrf definition .*! clr6import",
+        "vrf definition .*! clr6export",
         "vrf definition .*! label4mode per-vrf",
         "vrf definition .*! label6mode per-vrf",
         "vrf definition .*! propagate4ttl",
@@ -522,14 +526,14 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add("vrf definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         l.add(cmds.tabulator + "rd " + tabRouteUtil.rd2string(fwd4.rd));
-        String s = "";
-        for (int i = 0; i < fwd4.rtImp.size(); i++) {
-            s += " " + tabRouteUtil.rd2string(fwd4.rtImp.get(i));
-        }
         cmds.cfgLine(l, !fwd4.optimize, cmds.tabulator, "optimize4lookup", "");
         cmds.cfgLine(l, !fwd6.optimize, cmds.tabulator, "optimize6lookup", "");
         l.add(cmds.tabulator + "update4interval " + fwd4.updateInterval);
         l.add(cmds.tabulator + "update6interval " + fwd6.updateInterval);
+        String s = "";
+        for (int i = 0; i < fwd4.rtImp.size(); i++) {
+            s += " " + tabRouteUtil.rd2string(fwd4.rtImp.get(i));
+        }
         l.add(cmds.tabulator + "rt4import" + s);
         s = "";
         for (int i = 0; i < fwd4.rtExp.size(); i++) {
@@ -546,6 +550,26 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             s += " " + tabRouteUtil.rd2string(fwd6.rtExp.get(i));
         }
         l.add(cmds.tabulator + "rt6export" + s);
+        s = "";
+        for (int i = 0; i < fwd4.clrImp.size(); i++) {
+            s += " " + fwd4.clrImp.get(i);
+        }
+        l.add(cmds.tabulator + "clr4import" + s);
+        s = "";
+        for (int i = 0; i < fwd4.clrExp.size(); i++) {
+            s += " " + fwd4.clrExp.get(i);
+        }
+        l.add(cmds.tabulator + "clr4export" + s);
+        s = "";
+        for (int i = 0; i < fwd6.clrImp.size(); i++) {
+            s += " " + fwd6.clrImp.get(i);
+        }
+        l.add(cmds.tabulator + "clr6import" + s);
+        s = "";
+        for (int i = 0; i < fwd6.clrExp.size(); i++) {
+            s += " " + fwd6.clrExp.get(i);
+        }
+        l.add(cmds.tabulator + "clr6export" + s);
         l.add(cmds.tabulator + "iface4start " + iface4start);
         l.add(cmds.tabulator + "iface6start " + iface6start);
         l.add(cmds.tabulator + "label4mode " + labmod2string(fwd4.prefixMode));
@@ -671,6 +695,24 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
         l.add(null, "1 2  rt6export           specify route target export");
         l.add(null, "2 2,.  <rt>              rt in ASnum:IDnum format");
+        l.add(null, "1 2  clr-both            specify color");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr-import          specify color import");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr-export          specify color export");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr4both            specify color");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr4import          specify color import");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr4export          specify color export");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr6both            specify color");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr6import          specify color import");
+        l.add(null, "2 2,.  <num>             number");
+        l.add(null, "1 2  clr6export          specify color export");
+        l.add(null, "2 2,.  <num>             number");
         l.add(null, "1 2  unreach-rate        rate limit icmp generation");
         l.add(null, "2 3    <num>             packets allowed");
         l.add(null, "3 .      <num>           millisecs between them");
@@ -776,6 +818,18 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         return res;
     }
 
+    private List<Integer> string2clrs(cmds cmd) {
+        List<Integer> res = new ArrayList<Integer>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            res.add(bits.str2num(a));
+        }
+        return res;
+    }
+
     public synchronized void doCfgStr(cmds cmd) {
         String a = cmd.word();
         if (a.equals("description")) {
@@ -820,6 +874,32 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.rtImp = res;
             fwd4.rtExp = res;
             fwd6.rtExp = res;
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr-import")) {
+            List<Integer> res = string2clrs(cmd);
+            fwd4.clrImp = res;
+            fwd6.clrImp = res;
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr-export")) {
+            List<Integer> res = string2clrs(cmd);
+            fwd4.clrExp = res;
+            fwd6.clrExp = res;
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr-both")) {
+            List<Integer> res = string2clrs(cmd);
+            fwd4.clrImp = res;
+            fwd6.clrImp = res;
+            fwd4.clrExp = res;
+            fwd6.clrExp = res;
             fwd4.routerStaticChg();
             fwd6.routerStaticChg();
             return;
@@ -885,6 +965,40 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             List<Long> res = string2rts(cmd);
             fwd6.rtImp = res;
             fwd6.rtExp = res;
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr4import")) {
+            fwd4.clrImp = string2clrs(cmd);
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr4export")) {
+            fwd4.clrExp = string2clrs(cmd);
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr4both")) {
+            List<Integer> res = string2clrs(cmd);
+            fwd4.clrImp = res;
+            fwd4.clrExp = res;
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr6import")) {
+            fwd6.clrImp = string2clrs(cmd);
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr6export")) {
+            fwd6.clrExp = string2clrs(cmd);
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr6both")) {
+            List<Integer> res = string2clrs(cmd);
+            fwd6.clrImp = res;
+            fwd6.clrExp = res;
             fwd6.routerStaticChg();
             return;
         }
@@ -1292,6 +1406,29 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
             fwd6.routerStaticChg();
             return;
         }
+        if (a.equals("clr-import")) {
+            fwd4.clrImp = new ArrayList<Integer>();
+            fwd6.clrImp = new ArrayList<Integer>();
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr-export")) {
+            fwd4.clrExp = new ArrayList<Integer>();
+            fwd6.clrExp = new ArrayList<Integer>();
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr-both")) {
+            fwd4.clrImp = new ArrayList<Integer>();
+            fwd6.clrImp = new ArrayList<Integer>();
+            fwd4.clrExp = new ArrayList<Integer>();
+            fwd6.clrExp = new ArrayList<Integer>();
+            fwd4.routerStaticChg();
+            fwd6.routerStaticChg();
+            return;
+        }
         if (a.equals("optimize-lookup")) {
             fwd4.optimize = false;
             fwd6.optimize = false;
@@ -1350,6 +1487,38 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         if (a.equals("rt6both")) {
             fwd6.rtImp = new ArrayList<Long>();
             fwd6.rtExp = new ArrayList<Long>();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr4import")) {
+            fwd4.clrImp = new ArrayList<Integer>();
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr4export")) {
+            fwd4.clrExp = new ArrayList<Integer>();
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr4both")) {
+            fwd4.clrImp = new ArrayList<Integer>();
+            fwd4.clrExp = new ArrayList<Integer>();
+            fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr6import")) {
+            fwd6.clrImp = new ArrayList<Integer>();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr6export")) {
+            fwd6.clrExp = new ArrayList<Integer>();
+            fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("clr6both")) {
+            fwd6.clrImp = new ArrayList<Integer>();
+            fwd6.clrExp = new ArrayList<Integer>();
             fwd6.routerStaticChg();
             return;
         }

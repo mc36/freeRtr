@@ -183,6 +183,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         for (int i = 0; i < fwd.rtExp.size(); i++) {
             rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
         }
+        for (int i = 0; i < fwd.clrExp.size(); i++) {
+            rt.add(tabRouteUtil.clr2comm(fwd.clrExp.get(i)));
+        }
         for (int i = 0; i < fwd.rtImp.size(); i++) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
@@ -264,6 +267,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtImp.size(); i++) {
             rt.add(tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
+        }
+        for (int i = 0; i < fwd.clrImp.size(); i++) {
+            rt.add(tabRouteUtil.clr2comm(fwd.clrImp.get(i)));
         }
         return rt;
     }
