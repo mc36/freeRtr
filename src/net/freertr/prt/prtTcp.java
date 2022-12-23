@@ -596,8 +596,6 @@ public class prtTcp extends prtGen {
                 pck.putCopy(buf, pr.netOut, 0, datSiz);
                 pck.putSkip(datSiz);
                 pck.merge2beg();
-            } else {
-                datSiz = 0;
             }
             pck.TCPmss = 0;
             pck.TCPwsc = 0;
@@ -606,6 +604,10 @@ public class prtTcp extends prtGen {
             pck.TCPseq = pr.seqLoc + pr.netOut;
             pck.TCPack = pr.seqRem;
             pck.TCPflg = flg;
+            if (datSiz < 0) {
+                pck.TCPseq--;
+                datSiz = 0;
+            }
             int i = clnt.freeAtServer() - 32;
             if (i < winSizMin) {
                 i = winSizMin;
@@ -1152,7 +1154,7 @@ public class prtTcp extends prtGen {
                 }
                 break;
             case prtTcpConn.stOpened:
-                sendMyPacket(clnt, flagACK, 0);
+                sendMyPacket(clnt, flagACK, -1);
                 pr.netMax = pr.segSiz;
                 pr.netOut = 0;
                 break;
