@@ -348,6 +348,9 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      */
     public static void toShRoute(userFormat l, tabRouteEntry<addrIP> prf) {
         String a = addrPrefix.ip2str(prf.prefix);
+        if (prf.rouDst != 0) {
+            a += " " + tabRouteUtil.rd2string(prf.rouDst);
+        }
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
             l.add(tabRouteAttr.rouTyp2string(attr) + "|" + a + "|" + attr.toShRoute());
