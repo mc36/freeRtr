@@ -6,9 +6,8 @@ you can find the same source tree at various locations, normally all should be t
 * http://github.com/rare-freertr/freeRtr
 
 part of the subdirectories under misc/ are somewhere else too:
-* p4bf/ @ http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
-* p4lang @ http://github.com/rare-freertr/RARE-bmv2
-* maybe alex have an other repo worth donating to the team at githib publicly?
+* p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
+* p4lang at http://github.com/rare-freertr/RARE-bmv2
 
 ## dependencies
 
@@ -34,30 +33,30 @@ the following directories will appear here:
 
 ## directories under misc folder
 
-* native dpdk, xdp and mnl based dataplanes
-* p4bf tofino based dataplane
-* p4lang bmv2 based dataplane
-* bogon web based bogon originator
-* lookingglass web based looking glass
-* captures script to stream captures
-* sniffer web based packet capture
-* mailer web based mail reader
-* gallery web based album viewer
-* motion web based alarm/recorder
-* player web based music player/streamer/receiver
-* temper web based thermostat/controller
-* trackmap web based monitoring
-* voice an answering machine
-* snmp some snmp definitions
-* consistency old style check definitions
-* tests some volumentric generators
-* check some check definitions
-* sensor some sensor definitions
-* prometheus some grafana definitions
-* netconf some yang definitions
-* image demo vm iso creator
-* img2ova demo vm ova creator
-* service install script
+* native: dpdk, xdp, pcap and mnl based dataplanes
+* p4bf: tofino based dataplane
+* p4lang: bmv2 based dataplane
+* bogon: web based bogon originator
+* lookingglass: web based looking glass
+* captures: script to stream captures
+* sniffer: web based packet capture
+* mailer: web based mail reader
+* gallery: web based album viewer
+* motion: web based alarm/recorder
+* player: web based music player/streamer/receiver
+* temper: web based thermostat/controller
+* trackmap: web based monitoring
+* voice: an answering machine
+* snmp: some snmp definitions
+* consistency: old style check definitions
+* tests: some volumentric generators
+* check: some check definitions
+* sensor: some sensor definitions
+* prometheus: some grafana definitions
+* netconf: some yang definitions
+* image: demo vm iso creator
+* img2ova: demo vm ova creator
+* service: install script
 
 ## getting started
 
