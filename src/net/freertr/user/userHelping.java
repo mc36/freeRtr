@@ -678,7 +678,6 @@ public class userHelping {
      * @param levMin minimum level to scan
      * @param levMax maximum level to scan
      * @param levReq required level to collect
-     * @return line numbers meets requirements
      */
     private void collectDirection(userHelpingList d, int lin, boolean skip, int dir, int levMin, int levMax, int levReq) {
         if (skip) {
