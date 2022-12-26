@@ -600,6 +600,7 @@ public class rtrRift extends ipRtr implements Runnable {
         }
         rou = calcSpf(1);
         rou.mergeFrom(tabRoute.addType.ecmp, calcSpf(2), tabRouteAttr.distanLim);
+        rou.setProto(routerProtoTyp, routerProcNum);
         if (rou.preserveTime(routerComputedU)) {
             return;
         }
@@ -741,8 +742,6 @@ public class rtrRift extends ipRtr implements Runnable {
                         rou.best.distance = distance;
                         rou.best.metric = met;
                         rou.best.tag = tag;
-                        rou.best.rouTyp = routerProtoTyp;
-                        rou.best.protoNum = routerProcNum;
                         spf.addPref(orig, rou, false);
                     }
                     break;
