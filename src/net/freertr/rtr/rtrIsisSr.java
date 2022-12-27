@@ -1,5 +1,7 @@
 package net.freertr.rtr;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipCor4;
@@ -49,6 +51,11 @@ public class rtrIsisSr {
     public static final int typSrCapa = 2;
 
     /**
+     * segment routing algorithms
+     */
+    public static final int typSrAlgo = 19;
+
+    /**
      * end segment id
      */
     public static final int typEndSid = 5;
@@ -82,8 +89,18 @@ public class rtrIsisSr {
         tlv.valDat[11] = 1; // type
         tlv.valDat[12] = 3; // length
         bits.msbPutD(tlv.valDat, 13, lower.segrouLab[0].label << 8); // base
+        tlv.valDat[16] = typSrAlgo;
+        tlv.valDat[17] = (byte) (1 + lower.algos.size()); // length
+        tlv.valDat[18] = 0; // algorithm
+        for (int i = 0; i < lower.algos.size(); i++) {
+            rtrAlgo alg = lower.algos.get(i);
+            if (alg == null) {
+                continue;
+            }
+            tlv.valDat[19 + i] = (byte) alg.num;
+        }
         tlv.valTyp = rtrIsisLsp.tlvRouterCapa;
-        tlv.valSiz = 16;
+        tlv.valSiz = 19 + lower.algos.size();
         return tlv;
     }
 
@@ -94,19 +111,33 @@ public class rtrIsisSr {
      * @return base, -1 if not found
      */
     protected static int getBase(encTlv tlv) {
-        if (tlv.valTyp != rtrIsisLsp.tlvRouterCapa) {
+        if (tlv.valTyp != typSrCapa) { // type
             return -1;
         }
-        if (tlv.valDat[5] != typSrCapa) { // type
+        if (tlv.valDat[4] != 1) { // type
             return -1;
         }
-        if (tlv.valDat[11] != 1) { // type
+        if (tlv.valDat[5] != 3) { // length
             return -1;
         }
-        if (tlv.valDat[12] != 3) { // length
-            return -1;
+        return bits.msbGetD(tlv.valDat, 6) >>> 8; // base
+    }
+
+    /**
+     * get algorithms
+     *
+     * @param tlv tlv
+     * @return result, empty if none
+     */
+    protected static List<Integer> getAlgos(encTlv tlv) {
+        List<Integer> res = new ArrayList<Integer>();
+        if (tlv.valTyp != typSrAlgo) {
+            return res;
         }
-        return bits.msbGetD(tlv.valDat, 13) >>> 8; // base
+        for (int i = 0; i < tlv.valSiz; i++) {
+            res.add(bits.getByte(tlv.valDat, i));
+        }
+        return res;
     }
 
     /**

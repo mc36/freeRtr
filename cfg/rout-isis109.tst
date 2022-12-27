@@ -1,7 +1,8 @@
-description ospf flexalgo
+description isis flexalgo
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
+int eth2 eth 0000.0000.1111 $2a$ $2b$
 !
 vrf def v1
  rd 1:1
@@ -9,22 +10,20 @@ vrf def v1
 vrf def v2
  rd 1:1
  exit
-router ospf4 1
+router isis4 1
  vrf v1
- router 4.4.4.1
- flexalgo 128 v2
- area 0 ena
+ net 48.4444.0000.1111.00
  segrout 10
- area 0 segrout
+ both segrout
+ flexalgo 128 v2
  red conn
  exit
-router ospf6 1
+router isis6 1
  vrf v1
- router 6.6.6.1
- flexalgo 128 v2
- area 0 ena
+ net 48.6666.0000.1111.00
  segrout 10
- area 0 segrout
+ both segrout
+ flexalgo 128 v2
  red conn
  exit
 int lo1
@@ -35,14 +34,18 @@ int lo1
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
+ router isis4 1 ena
+ exit
+int eth2
+ vrf for v1
  ipv6 addr 1234::1 ffff::
- router ospf4 1 ena
- router ospf6 1 ena
+ router isis6 1 ena
  exit
 !
 
 addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
+int eth2 eth 0000.0000.2222 $2b$ $2a$
 !
 vrf def v1
  rd 1:1
@@ -50,22 +53,20 @@ vrf def v1
 vrf def v2
  rd 1:1
  exit
-router ospf4 1
+router isis4 1
  vrf v1
- router 4.4.4.2
- flexalgo 128 v2
- area 0 ena
+ net 48.4444.0000.2222.00
  segrout 10
- area 0 segrout
+ both segrout
+ flexalgo 128 v2
  red conn
  exit
-router ospf6 1
+router isis6 1
  vrf v1
- router 6.6.6.2
- flexalgo 128 v2
- area 0 ena
+ net 48.6666.0000.2222.00
  segrout 10
- area 0 segrout
+ both segrout
+ flexalgo 128 v2
  red conn
  exit
 int lo1
@@ -76,9 +77,12 @@ int lo1
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
+ router isis4 1 ena
+ exit
+int eth2
+ vrf for v1
  ipv6 addr 1234::2 ffff::
- router ospf4 1 ena
- router ospf6 1 ena
+ router isis6 1 ena
  exit
 !
 
@@ -88,12 +92,12 @@ r2 tping 100 20 2.2.2.1 vrf v1
 r1 tping 100 20 4321::2 vrf v1
 r2 tping 100 20 4321::1 vrf v1
 
-r2 output show ipv4 ospf 1 nei
-r2 output show ipv6 ospf 1 nei
-r2 output show ipv4 ospf 1 dat 0
-r2 output show ipv6 ospf 1 dat 0
-r2 output show ipv4 ospf 1 tre 0
-r2 output show ipv6 ospf 1 tre 0
+r2 output show ipv4 isis 1 nei
+r2 output show ipv6 isis 1 nei
+r2 output show ipv4 isis 1 dat 2
+r2 output show ipv6 isis 1 dat 2
+r2 output show ipv4 isis 1 tre 2
+r2 output show ipv6 isis 1 tre 2
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1
 r2 output show ipv4 route v2

@@ -15,6 +15,7 @@ import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -161,6 +162,16 @@ public class rtrIsis extends ipRtr {
     protected final int rtrNum;
 
     /**
+     * list of flexalgos
+     */
+    protected tabGen<rtrAlgo> algos;
+
+    /**
+     * list of flexalgos
+     */
+    protected tabGen<rtrAlgo> oalgos;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrIsisIface> ifaces;
@@ -207,6 +218,8 @@ public class rtrIsis extends ipRtr {
         operateLevel = 2;
         maxAreaAddr = 3;
         metricWide = true;
+        algos = new tabGen<rtrAlgo>();
+        oalgos = new tabGen<rtrAlgo>();
         ifaces = new tabGen<rtrIsisIface>();
         srv6 = new tabGen<cfgIfc>();
         rtrNum = id;
@@ -1056,6 +1069,59 @@ public class rtrIsis extends ipRtr {
             other.routerComputedM = tab2;
             other.fwd.routerChg(other, false);
         }
+        for (int o = 0; o < algos.size(); o++) {
+            rtrAlgo alg = algos.get(o);
+            if (alg == null) {
+                continue;
+            }
+            tab1 = new tabRoute<addrIP>("isis");
+            try {
+                tab2 = level1.algos.get(o);
+            } catch (Exception e) {
+                continue;
+            }
+            if (tab2 == null) {
+                continue;
+            }
+            tab1.mergeFrom(tabRoute.addType.ecmp, tab2, tabRouteAttr.distanLim);
+            try {
+                tab2 = level2.algos.get(o);
+            } catch (Exception e) {
+                continue;
+            }
+            if (tab2 == null) {
+                continue;
+            }
+            tab1.mergeFrom(tabRoute.addType.ecmp, tab2, tabRouteAttr.distanLim);
+            alg.vrf.update2ip(tab1);
+            if (!other.enabled) {
+                continue;
+            }
+            alg = oalgos.get(o);
+            if (alg == null) {
+                continue;
+            }
+            tab1 = new tabRoute<addrIP>("isis");
+            try {
+                tab2 = level1.oalgos.get(o);
+            } catch (Exception e) {
+                continue;
+            }
+            if (tab2 == null) {
+                continue;
+            }
+            tab1.mergeFrom(tabRoute.addType.ecmp, tab2, tabRouteAttr.distanLim);
+            try {
+                tab2 = level2.oalgos.get(o);
+            } catch (Exception e) {
+                continue;
+            }
+            if (tab2 == null) {
+                continue;
+            }
+            tab1.mergeFrom(tabRoute.addType.ecmp, tab2, tabRouteAttr.distanLim);
+            alg.vrf.update2ip(tab1);
+        }
     }
 
     /**
@@ -1172,6 +1238,9 @@ public class rtrIsis extends ipRtr {
         l.add(null, "3 .       <name:pl>               name of prefix list");
         l.add(null, "2 3     other-prefix-list-into    filter prefixes into this level");
         l.add(null, "3 .       <name:pl>               name of prefix list");
+        l.add(null, "1 2   flexalgo                    flexalgo parameters");
+        l.add(null, "2 3     <num>                     algorithm id");
+        l.add(null, "3 .       <name:vrf>              vrf to use");
     }
 
     /**
@@ -1201,6 +1270,9 @@ public class rtrIsis extends ipRtr {
         for (int i = 0; i < srv6.size(); i++) {
             l.add(beg + "srv6 " + srv6.get(i).name);
         }
+        for (int i = 0; i < algos.size(); i++) {
+            l.add(beg + "flexalgo " + algos.get(i));
+        }
     }
 
     /**
@@ -1220,6 +1292,24 @@ public class rtrIsis extends ipRtr {
                 areaID = new addrClns();
                 cmd.error("invalid netid");
                 return false;
+            }
+            genLsps(3);
+            return false;
+        }
+        if (s.equals("flexalgo")) {
+            int i = bits.str2num(cmd.word());
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrAlgo alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
+            algos.add(alg);
+            alg.vrf.register2ip();
+            if (other.enabled) {
+                alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd6 : vrf.fwd4, routerProtoTyp, routerProcNum);
+                oalgos.add(alg);
+                alg.vrf.register2ip();
             }
             genLsps(3);
             return false;
@@ -1323,6 +1413,26 @@ public class rtrIsis extends ipRtr {
             return true;
         }
         s = cmd.word();
+        if (s.equals("flexalgo")) {
+            int i = bits.str2num(cmd.word());
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrAlgo alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
+            alg = algos.del(alg);
+            if (alg == null) {
+                return false;
+            }
+            alg.vrf.unregister2ip();
+            if (other.enabled) {
+                alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd6 : vrf.fwd4, routerProtoTyp, routerProcNum);
+                alg = oalgos.del(alg);
+            }
+            genLsps(3);
+            return false;
+        }
         if (s.equals("metric-wide")) {
             metricWide = false;
             multiTopo = false;
@@ -1960,6 +2070,20 @@ public class rtrIsis extends ipRtr {
             }
         }
         return null;
+    }
+
+    /**
+     * list of algorithms
+     *
+     * @param level level number
+     * @return list
+     */
+    public userFormat showAlgorithms(int level) {
+        rtrIsisLevel lev = getLevel(level);
+        if (lev == null) {
+            return null;
+        }
+        return lev.lastSpf.listAlgorithm();
     }
 
     /**

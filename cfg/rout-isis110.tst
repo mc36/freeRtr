@@ -1,4 +1,4 @@
-description ospf flexalgo
+description integrated isis address unsuppression
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,26 +6,15 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-vrf def v2
- rd 1:1
- exit
-router ospf4 1
+router isis4 1
  vrf v1
- router 4.4.4.1
- flexalgo 128 v2
- area 0 ena
- segrout 10
- area 0 segrout
+ net 48.4444.0000.1111.00
  red conn
- exit
-router ospf6 1
- vrf v1
- router 6.6.6.1
- flexalgo 128 v2
- area 0 ena
  segrout 10
- area 0 segrout
- red conn
+ both segrout
+ afi-other enable
+ afi-other red conn
+ flexalgo 128 v2
  exit
 int lo1
  vrf for v1
@@ -36,8 +25,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- router ospf4 1 ena
- router ospf6 1 ena
+ router isis4 1 ena
+ router isis4 1 other-ena
  exit
 !
 
@@ -47,26 +36,15 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 vrf def v1
  rd 1:1
  exit
-vrf def v2
- rd 1:1
- exit
-router ospf4 1
+router isis6 1
  vrf v1
- router 4.4.4.2
- flexalgo 128 v2
- area 0 ena
- segrout 10
- area 0 segrout
+ net 48.6666.0000.2222.00
  red conn
- exit
-router ospf6 1
- vrf v1
- router 6.6.6.2
- flexalgo 128 v2
- area 0 ena
  segrout 10
- area 0 segrout
- red conn
+ both segrout
+ afi-other enable
+ afi-other red conn
+ flexalgo 128 v2
  exit
 int lo1
  vrf for v1
@@ -77,8 +55,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
- router ospf4 1 ena
- router ospf6 1 ena
+ router isis6 1 ena
+ router isis6 1 other-ena
  exit
 !
 
@@ -88,12 +66,12 @@ r2 tping 100 20 2.2.2.1 vrf v1
 r1 tping 100 20 4321::2 vrf v1
 r2 tping 100 20 4321::1 vrf v1
 
-r2 output show ipv4 ospf 1 nei
-r2 output show ipv6 ospf 1 nei
-r2 output show ipv4 ospf 1 dat 0
-r2 output show ipv6 ospf 1 dat 0
-r2 output show ipv4 ospf 1 tre 0
-r2 output show ipv6 ospf 1 tre 0
+r2 output show ipv4 isis 1 nei
+r2 output show ipv6 isis 1 nei
+r2 output show ipv4 isis 1 dat 2
+r2 output show ipv6 isis 1 dat 2
+r2 output show ipv4 isis 1 tre 2
+r2 output show ipv6 isis 1 tre 2
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1
 r2 output show ipv4 route v2

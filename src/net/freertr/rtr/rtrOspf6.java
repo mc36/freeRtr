@@ -254,7 +254,12 @@ public class rtrOspf6 extends ipRtr {
                 if (ntry == null) {
                     continue;
                 }
-                tabRoute<addrIP> tab3 = ntry.algos.get(o);
+                tabRoute<addrIP> tab3;
+                try {
+                    tab3 = ntry.algos.get(o);
+                } catch (Exception e) {
+                    continue;
+                }
                 if (tab3 == null) {
                     continue;
                 }
@@ -639,7 +644,7 @@ public class rtrOspf6 extends ipRtr {
                 cmd.error("no such vrf");
                 return false;
             }
-            rtrAlgo alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
+            rtrAlgo alg = new rtrAlgo(i, vrf.fwd6, routerProtoTyp, routerProcNum);
             alg = algos.del(alg);
             if (alg == null) {
                 return false;

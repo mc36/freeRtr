@@ -1101,7 +1101,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 continue;
             }
             spf = lastSpf.copyBytes();
-            spf.doWork(0, lower.routerID, null);
+            spf.doWork(alg.num, lower.routerID, null);
             for (int i = 0; i < lower.ifaces.size(); i++) {
                 rtrOspf4iface ifc = lower.ifaces.get(i);
                 if (ifc == null) {

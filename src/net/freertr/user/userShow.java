@@ -3112,6 +3112,11 @@ public class userShow {
             }
             return;
         }
+        if (a.equals("flexalgo")) {
+            int i = bits.str2num(cmd.word());
+            rdr.putStrTab(r.isis.showAlgorithms(i));
+            return;
+        }
         if (a.equals("spf")) {
             int i = bits.str2num(cmd.word());
             rdr.putStrTab(r.isis.showSpfStat(i));

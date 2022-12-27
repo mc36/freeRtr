@@ -1239,7 +1239,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 continue;
             }
             spf = lastSpf.copyBytes();
-            spf.doWork(0, new rtrOspf6areaSpf(lower.routerID, 0), null);
+            spf.doWork(alg.num, new rtrOspf6areaSpf(lower.routerID, 0), null);
             for (int i = 0; i < lower.ifaces.size(); i++) {
                 rtrOspf6iface ifc = lower.ifaces.get(i);
                 if (ifc == null) {
