@@ -2718,6 +2718,8 @@ qc pass: isis dynamic icmp metric
 qc pass: isis dynamic udp metric
 qc pass: isis dynamic twamp metric
 qc pass: isis with mpolka
+qc pass: isis flexalgo
+qc pass: integrated isis address unsuppression
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain

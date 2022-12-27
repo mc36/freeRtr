@@ -6,6 +6,9 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
+vrf def v2
+ rd 1:1
+ exit
 router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
@@ -34,6 +37,9 @@ addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
+ rd 1:1
+ exit
+vrf def v2
  rd 1:1
  exit
 router isis6 1

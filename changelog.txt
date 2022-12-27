@@ -13629,3 +13629,6 @@ failed: lsrp database authentication
 qc pass: lsrp flexalgo
 ---------------------------------- 2022-12-27 07:40:59 22.12.27
 qc pass: ospf flexalgo
+---------------------------------- 2022-12-27 11:29:53 22.12.27
+qc pass: isis flexalgo
+qc pass: integrated isis address unsuppression

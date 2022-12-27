@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.12.27-cur, done by cs@nop.
--;-;-;2022-12-27 07:54:02, took 00:13:02, with 80 workers, on 3070 cases, 1 failed, 0 traces, 9 retries
+-;-;-;2022-12-27 11:42:48, took 00:12:55, with 80 workers, on 3072 cases, 1 failed, 2 traces, 7 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2722,6 +2722,8 @@ http://sources.freertr.org/cfg/rout-isis105.tst;rout-isis105.tst;success;isis dy
 http://sources.freertr.org/cfg/rout-isis106.tst;rout-isis106.tst;success;isis dynamic udp metric
 http://sources.freertr.org/cfg/rout-isis107.tst;rout-isis107.tst;success;isis dynamic twamp metric
 http://sources.freertr.org/cfg/rout-isis108.tst;rout-isis108.tst;success;isis with mpolka
+http://sources.freertr.org/cfg/rout-isis109.tst;rout-isis109.tst;success;isis flexalgo
+http://sources.freertr.org/cfg/rout-isis110.tst;rout-isis110.tst;success;integrated isis address unsuppression
 http://sources.freertr.org/cfg/rout-lsrp01.tst;rout-lsrp01.tst;success;lsrp point2point connection
 http://sources.freertr.org/cfg/rout-lsrp02.tst;rout-lsrp02.tst;success;lsrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-lsrp03.tst;rout-lsrp03.tst;success;lsrp point2point chain
