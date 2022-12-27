@@ -2719,7 +2719,7 @@ qc pass: isis dynamic udp metric
 qc pass: isis dynamic twamp metric
 qc pass: isis with mpolka
 qc pass: isis flexalgo
-qc pass: integrated isis address unsuppression
+qc pass: integrated isis flexalgo
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -2760,7 +2760,7 @@ qc pass: lsrp point2multipoint connection with bidir check
 qc pass: lsrp ecmp connection
 qc pass: lsrp with bgp linkstate
 qc pass: lsrp no authentication
-failed: lsrp database authentication
+qc pass: lsrp database authentication
 qc pass: lsrp with strict bfd
 qc pass: lsrp with polka
 qc pass: lsrp dynamic inband metric
