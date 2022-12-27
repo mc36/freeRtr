@@ -1149,7 +1149,7 @@ public class spfCalc<Ta extends addrType> {
      * @return list of algorithm
      */
     public userFormat listAlgorithm() {
-        userFormat res = new userFormat("|", "category|value");
+        userFormat res = new userFormat("|", "node|algos");
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
