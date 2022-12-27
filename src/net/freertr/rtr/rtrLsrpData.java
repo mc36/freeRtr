@@ -234,9 +234,12 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             s += " segroumax=" + segrouMax;
         }
         if ((typ & 0x10000) != 0) {
-            String a = "0";
+            String a = "";
             for (int i = 0; i < flexalgo.size(); i++) {
                 a += "," + flexalgo.get(i);
+            }
+            if (a.length() > 0) {
+                a = a.substring(1, a.length());
             }
             s += " flexalgo=" + a;
         }
