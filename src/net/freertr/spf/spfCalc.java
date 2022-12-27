@@ -245,6 +245,9 @@ public class spfCalc<Ta extends addrType> {
             for (int i = 0; i < nod.othFix.size(); i++) {
                 res.addOpref(nod.name, nod.othFix.get(i), true);
             }
+            for (int i = 0; i < nod.algo.size(); i++) {
+                res.addAlgo(nod.name, nod.algo.get(i));
+            }
             res.addIdent(nod.name, nod.ident);
             res.addSegRouB(nod.name, nod.srBeg);
             res.addSegRouI(nod.name, nod.srIdx);
@@ -379,6 +382,21 @@ public class spfCalc<Ta extends addrType> {
         } else {
             ntry.othAdd.add(tabRoute.addType.ecmp, rou, false, false);
         }
+    }
+
+    /**
+     * add algorithm
+     *
+     * @param nod node to add
+     * @param algo algorithm
+     */
+    public void addAlgo(Ta nod, int algo) {
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.algo.add(algo);
     }
 
     /**
@@ -591,11 +609,12 @@ public class spfCalc<Ta extends addrType> {
     /**
      * find shortest path
      *
+     * @param algo algorithm
      * @param from starting node
      * @param to target node, null to every node
      * @return false on success, true on error
      */
-    public boolean doWork(Ta from, Ta to) {
+    public boolean doWork(int algo, Ta from, Ta to) {
         tim2 = bits.getTime();
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);
@@ -642,6 +661,11 @@ public class spfCalc<Ta extends addrType> {
                 }
             }
             lst.del(ntry);
+            if (algo > 0) {
+                if (ntry.algo.indexOf(algo) < 0) {
+                    continue;
+                }
+            }
             ntry.visited = true;
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> c = ntry.conn.get(i);
@@ -1116,9 +1140,30 @@ public class spfCalc<Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            s += " " + ntry + "," + ntry.visited + "," + ntry.conn.size() + "," + (ntry.prfFix.size() + ntry.prfAdd.size() + ntry.othFix.size() + ntry.othAdd.size());
+            s += " " + ntry + "," + ntry.visited + "," + ntry.algo.size() + "," + ntry.conn.size() + "," + (ntry.prfFix.size() + ntry.prfAdd.size() + ntry.othFix.size() + ntry.othAdd.size());
         }
         return s;
+    }
+
+    /**
+     * list algorithm
+     *
+     * @return list of algorithm
+     */
+    public userFormat listAlgorithm() {
+        userFormat res = new userFormat("|", "category|value");
+        for (int i = 0; i < nodes.size(); i++) {
+            spfNode<Ta> ntry = nodes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            String a = "";
+            for (int o = 0; o < ntry.algo.size(); o++) {
+                a += " " + ntry.algo.get(o);
+            }
+            res.add(ntry.name + "|" + a);
+        }
+        return res;
     }
 
     /**
@@ -1164,6 +1209,9 @@ public class spfCalc<Ta extends addrType> {
         res.add("connections|" + ntry.conn.size());
         res.add("prefixes|" + ntry.prfFix.size() + " " + ntry.prfAdd.size() + " " + ntry.othFix.size() + " " + ntry.othAdd.size());
         res.add("segrout|" + ntry.srIdx + " " + ntry.srBeg);
+        for (int i = 0; i < ntry.algo.size(); i++) {
+            res.add("flexalgo|" + ntry.algo.get(i));
+        }
         res.add("bier|" + ntry.brIdx + " " + ntry.brBeg);
         String a = "";
         for (int i = 0; i < ntry.brLst.size(); i++) {
@@ -1227,6 +1275,9 @@ public class spfCalc<Ta extends addrType> {
             res.add(ntry + "|reach|" + ntry.visited + "|" + ntry.conn.size());
             res.add(ntry + "|segrou|" + ntry.srIdx);
             res.add(ntry + "|bier|" + ntry.brIdx);
+            for (int o = 0; o < ntry.algo.size(); o++) {
+                res.add(ntry + "|flexalgo|" + ntry.algo.get(o));
+            }
             for (int o = 0; o < ntry.conn.size(); o++) {
                 spfConn<Ta> con = ntry.conn.get(o);
                 if (con == null) {

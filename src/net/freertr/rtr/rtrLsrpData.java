@@ -158,6 +158,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      */
     public tabGen<rtrLsrpDataNeigh> neighbor;
 
+    /**
+     * flexible algorithms
+     */
+    public List<Integer> flexalgo;
+
     public int compare(rtrLsrpData o1, rtrLsrpData o2) {
         return o1.rtrId.compare(o1.rtrId, o2.rtrId);
     }
@@ -213,6 +218,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      * @param typ type to use: 0x1=id, 0x2=nam, 0x4=seq, 0x8=time, 0x10=neighs,
      * 0x20=nets, 0x40=sr, 0x80=uptime 0x100=change 0x200=version, 0x400=bier
      * 0x800=toposum, 0x1000=addrs, 0x2000=mgmtip, 0x4000=password, 0x8000=since
+     * 0x10000=algo
      * @return dumped data
      */
     public String dump(int typ) {
@@ -226,6 +232,13 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x40) != 0) {
             s += " segroubeg=" + segrouBeg;
             s += " segroumax=" + segrouMax;
+        }
+        if ((typ & 0x10000) != 0) {
+            String a = "0";
+            for (int i = 0; i < flexalgo.size(); i++) {
+                a += "," + flexalgo.get(i);
+            }
+            s += " flexalgo=" + a;
         }
         if ((typ & 0x400) != 0) {
             s += " bierbeg=" + bierBeg;
@@ -406,6 +419,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         address = new tabGen<rtrLsrpDataAddr>();
         network = new tabRoute<addrIP>("net");
         neighbor = new tabGen<rtrLsrpDataNeigh>();
+        flexalgo = new ArrayList<Integer>();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -428,6 +442,17 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("password")) {
                 password = s;
+                continue;
+            }
+            if (a.equals("flexalgo")) {
+                cmds c = new cmds("alg", s);
+                for (;;) {
+                    a = c.word(",");
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    flexalgo.add(bits.str2num(a));
+                }
                 continue;
             }
             if (a.equals("external")) {
@@ -669,6 +694,9 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 a = ntry.iface;
             }
             spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, a);
+        }
+        for (int i = 0; i < flexalgo.size(); i++) {
+            spf.addAlgo(rtrId, flexalgo.get(i));
         }
         spf.addIdent(rtrId, hostname);
         spf.addSegRouB(rtrId, segrouBeg);

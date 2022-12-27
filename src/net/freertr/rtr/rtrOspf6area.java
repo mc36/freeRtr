@@ -1167,7 +1167,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     break;
             }
         }
-        spf.doWork(new rtrOspf6areaSpf(lower.routerID, 0), null);
+        spf.doWork(0, new rtrOspf6areaSpf(lower.routerID, 0), null);
         if (segrouEna && (lower.segrouLab != null)) {
             segrouUsd = new tabGen<tabIndex<addrIP>>();
         } else {

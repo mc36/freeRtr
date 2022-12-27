@@ -2768,6 +2768,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showNeighs(cmd.word().equals("brief")));
             return;
         }
+        if (a.equals("flexalgo")) {
+            rdr.putStrTab(r.lsrp.showAlgorithms());
+            return;
+        }
         if (a.equals("metric")) {
             rdr.putStrTab(r.lsrp.showMetrics());
             return;

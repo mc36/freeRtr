@@ -11,6 +11,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
+import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
@@ -163,6 +164,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public tabListing<tabRtrplcN, addrIP> roupolIn;
 
     /**
+     * list of flexalgos
+     */
+    protected tabGen<rtrAlgo> algos;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrLsrpIface> ifaces;
@@ -222,6 +228,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         udpCore = udp;
         tcpCore = tcp;
         routerID = new addrIPv4();
+        algos = new tabGen<rtrAlgo>();
         ifaces = new tabGen<rtrLsrpIface>();
         tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
@@ -316,6 +323,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * list of algorithms
+     *
+     * @return list
+     */
+    public userFormat showAlgorithms() {
+        return lastSpf.listAlgorithm();
+    }
+
+    /**
      * list of neighbors
      *
      * @return list
@@ -369,7 +385,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * list database
      *
-     * @param mod mode: 1=summary, 2=uptime, 3=software, 4=middleware, 5=kernel, 6=hardware
+     * @param mod mode: 1=summary, 2=uptime, 3=software, 4=middleware, 5=kernel,
+     * 6=hardware
      * @return list of database
      */
     public userFormat showDatabase(int mod) {
@@ -567,7 +584,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(ned, null);
+        spf.doWork(0, ned, null);
         return spf.listTree();
     }
 
@@ -581,7 +598,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(ned, null);
+        spf.doWork(0, ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }
@@ -734,6 +751,13 @@ public class rtrLsrp extends ipRtr implements Runnable {
             dat.bierLen = bierLen;
             dat.bierBeg = bierLab[0].label;
         }
+        for (int i = 0; i < algos.size(); i++) {
+            rtrAlgo alg = algos.get(i);
+            if (alg == null) {
+                continue;
+            }
+            dat.flexalgo.add(alg.num);
+        }
         long tim = bits.getTime();
         dat.time = tim + lifetime;
         dat.uptime = tim - cfgInit.started;
@@ -777,7 +801,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             ntry.put2spf(spf, distance);
         }
-        spf.doWork(routerID, null);
+        spf.doWork(0, routerID, null);
         tabGen<tabIndex<addrIP>> segrouUsd = null;
         if (segrouLab != null) {
             segrouUsd = new tabGen<tabIndex<addrIP>>();
@@ -870,6 +894,42 @@ public class rtrLsrp extends ipRtr implements Runnable {
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = segrouUsd;
         fwdCore.routerChg(this, false);
+        for (int p = 0; p < algos.size(); p++) {
+            rtrAlgo alg = algos.get(p);
+            if (alg == null) {
+                continue;
+            }
+            spf = lastSpf.copyBytes();
+            spf.doWork(alg.num, routerID, null);
+            for (int o = 0; o < ifaces.size(); o++) {
+                rtrLsrpIface ifc = ifaces.get(o);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                for (int i = 0; i < ifc.neighs.size(); i++) {
+                    rtrLsrpNeigh nei = ifc.neighs.get(i);
+                    if (nei == null) {
+                        continue;
+                    }
+                    if (!nei.isReady()) {
+                        continue;
+                    }
+                    spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, null, null);
+                }
+            }
+            tab1 = spf.getRoutes(fwdCore, -1, null, null);
+            if (debugger.rtrLsrpEvnt) {
+                logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
+                logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));
+            }
+            tab2 = new tabRoute<addrIP>("routes");
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
+            routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, fwdCore.commonLabel, null, 0);
+            alg.vrf.update2ip(tab2);
+        }
     }
 
     /**
@@ -952,6 +1012,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(null, "2 3     <num>                     bitstring length");
         l.add(null, "3 4       <num>                   maximum index");
         l.add(null, "4 .         <num>                 this node index");
+        l.add(null, "1 2   flexalgo                    flexalgo parameters");
+        l.add(null, "2 3     <num>                     algorithm id");
+        l.add(null, "3 .       <name:vrf>              vrf to use");
     }
 
     /**
@@ -987,6 +1050,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
+        for (int i = 0; i < algos.size(); i++) {
+            l.add(beg + "flexalgo " + algos.get(i));
+        }
     }
 
     /**
@@ -1014,6 +1080,30 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (negated) {
                 routerID = new addrIPv4();
             }
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("flexalgo")) {
+            int i = bits.str2num(cmd.word());
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrAlgo alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
+            if (!negated) {
+                algos.add(alg);
+                alg.vrf.register2ip();
+                todo.set(0);
+                notif.wakeup();
+                return false;
+            }
+            alg = algos.del(alg);
+            if (alg == null) {
+                return false;
+            }
+            alg.vrf.unregister2ip();
             todo.set(0);
             notif.wakeup();
             return false;

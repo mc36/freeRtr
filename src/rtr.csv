@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v22.12.27-cur, done by cs@nop.
--;-;-;2022-12-27 04:02:10, took 00:10:03, with 80 workers, on 3068 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2022-12-27 06:05:56, took 00:11:54, with 80 workers, on 3068 cases, 1 failed, 0 traces, 9 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2762,7 +2762,7 @@ http://sources.freertr.org/cfg/rout-lsrp37.tst;rout-lsrp37.tst;success;lsrp poin
 http://sources.freertr.org/cfg/rout-lsrp38.tst;rout-lsrp38.tst;success;lsrp ecmp connection
 http://sources.freertr.org/cfg/rout-lsrp39.tst;rout-lsrp39.tst;success;lsrp with bgp linkstate
 http://sources.freertr.org/cfg/rout-lsrp40.tst;rout-lsrp40.tst;success;lsrp no authentication
-http://sources.freertr.org/cfg/rout-lsrp41.tst;rout-lsrp41.tst;success;lsrp database authentication
+http://sources.freertr.org/cfg/rout-lsrp41.tst;rout-lsrp41.tst;#6-run-r1 tping 100 40 2.2.2.2 vrf v1;lsrp database authentication
 http://sources.freertr.org/cfg/rout-lsrp42.tst;rout-lsrp42.tst;success;lsrp with strict bfd
 http://sources.freertr.org/cfg/rout-lsrp43.tst;rout-lsrp43.tst;success;lsrp with polka
 http://sources.freertr.org/cfg/rout-lsrp44.tst;rout-lsrp44.tst;success;lsrp dynamic inband metric

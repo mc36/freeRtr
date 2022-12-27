@@ -42,6 +42,11 @@ public class spfNode<Ta extends addrType> implements Comparator<spfNode<Ta>> {
     protected List<spfConn<Ta>> conn = new ArrayList<spfConn<Ta>>();
 
     /**
+     * algorithms
+     */
+    protected List<Integer> algo = new ArrayList<Integer>();
+
+    /**
      * best uplink
      */
     protected spfResult<Ta> uplink;

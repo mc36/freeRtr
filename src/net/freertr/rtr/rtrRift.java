@@ -438,7 +438,7 @@ public class rtrRift extends ipRtr implements Runnable {
     public List<String> showSpfOtherTree(cmds cmd) {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
-        spf.doWork(ned, null);
+        spf.doWork(0, ned, null);
         return spf.listTree();
     }
 
@@ -451,7 +451,7 @@ public class rtrRift extends ipRtr implements Runnable {
     public userFormat showSpfOtherTopo(cmds cmd) {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
-        spf.doWork(ned, null);
+        spf.doWork(0, ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }
@@ -748,7 +748,7 @@ public class rtrRift extends ipRtr implements Runnable {
             }
         }
         rtrRiftTieSpf adr = new rtrRiftTieSpf(nodeID);
-        spf.doWork(adr, null);
+        spf.doWork(0, adr, null);
         for (int o = 0; o < ifaces.size(); o++) {
             rtrRiftIface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -763,7 +763,7 @@ public class rtrRift extends ipRtr implements Runnable {
             bits.msbPutQ(adr.getBytes(), 0, ifc.rtrId);
             spf.addNextHop(ifc.getMetric(), adr, ifc.peer, ifc.iface, null, null);
         }
-        tabRoute<addrIP> rou1 = spf.getRoutes(fwdCore, 255, null, null);
+        tabRoute<addrIP> rou1 = spf.getRoutes(fwdCore, -1, null, null);
         tabRoute<addrIP> rou2 = new tabRoute<addrIP>("rou");
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, rou2, rou1, true, roumapIn, roupolIn, prflstIn);
         routerDoAggregates(rtrBgpUtil.sfiUnicast, rou2, rou2, fwdCore.commonLabel, null, 0);

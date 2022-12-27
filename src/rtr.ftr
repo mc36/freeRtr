@@ -2758,7 +2758,7 @@ qc pass: lsrp point2multipoint connection with bidir check
 qc pass: lsrp ecmp connection
 qc pass: lsrp with bgp linkstate
 qc pass: lsrp no authentication
-qc pass: lsrp database authentication
+failed: lsrp database authentication
 qc pass: lsrp with strict bfd
 qc pass: lsrp with polka
 qc pass: lsrp dynamic inband metric
@@ -3066,7 +3066,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: colorful spf class
 todo: mpls inband network telemetry
 todo: backup path support to the spf class
 todo: wcmp support to the spf class

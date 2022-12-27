@@ -460,6 +460,7 @@ public class userExec {
         hl.add(null, "4 5          <num>                  process id");
         hl.add(null, "5 6,.          neighbor             list of neighbors");
         hl.add(null, "6 .              brief              only brief listing");
+        hl.add(null, "5 .            flexalgo             list of algorithms");
         hl.add(null, "5 .            metric               list of metrics");
         hl.add(null, "5 .            interface            list of interfaces");
         hl.add(null, "5 .            software             list of software");

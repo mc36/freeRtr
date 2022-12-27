@@ -13621,3 +13621,7 @@ qc pass: colors over bgp route server
 qc pass: other colors over bgp route server
 qc pass: colors over bgp with soft-reconfig
 qc pass: other colors over bgp with soft-reconfig
+---------------------------------- 2022-12-27 05:54:01 22.12.27
+no todo: colorful spf class
+no qc pass: lsrp database authentication
+failed: lsrp database authentication
