@@ -526,6 +526,8 @@ public class userExec {
         hl.add(null, "6 7,.            <num>              area number");
         hl.add(null, "7 8                [addr]           entry to view");
         hl.add(null, "8 .                  [addr]         entry to view");
+        hl.add(null, "5 6            flexalgo             list of algorithms");
+        hl.add(null, "6 .              <num>              area number");
         hl.add(null, "5 6            spf                  information about last spf");
         hl.add(null, "6 .              <num>              area number");
         hl.add(null, "5 6            hostnames            hostnames from database");

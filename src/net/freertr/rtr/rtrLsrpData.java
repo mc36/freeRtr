@@ -695,9 +695,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             spf.addConn(rtrId, ntry.rtrid, ntry.metric, true, ntry.stub, a);
         }
-        for (int i = 0; i < flexalgo.size(); i++) {
-            spf.addAlgo(rtrId, flexalgo.get(i));
-        }
+        spf.addAlgo(rtrId, flexalgo);
         spf.addIdent(rtrId, hostname);
         spf.addSegRouB(rtrId, segrouBeg);
         spf.addBierB(rtrId, bierBeg);

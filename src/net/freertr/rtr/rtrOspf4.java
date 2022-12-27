@@ -10,6 +10,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
+import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
@@ -112,6 +113,11 @@ public class rtrOspf4 extends ipRtr {
     public final prtUdp udpCore;
 
     /**
+     * list of flexalgos
+     */
+    protected tabGen<rtrAlgo> algos;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrOspf4iface> ifaces;
@@ -141,6 +147,7 @@ public class rtrOspf4 extends ipRtr {
     public rtrOspf4(ipFwd forwarder, prtUdp udp, int id) {
         fwdCore = forwarder;
         udpCore = udp;
+        algos = new tabGen<rtrAlgo>();
         ifaces = new tabGen<rtrOspf4iface>();
         areas = new tabGen<rtrOspf4area>();
         routerID = new addrIPv4();
@@ -229,6 +236,25 @@ public class rtrOspf4 extends ipRtr {
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = tab2;
         fwdCore.routerChg(this, false);
+        for (int o = 0; o < algos.size(); o++) {
+            rtrAlgo alg = algos.get(o);
+            if (alg == null) {
+                continue;
+            }
+            tab1 = new tabRoute<addrIP>("ospf");
+            for (int i = 0; i < areas.size(); i++) {
+                rtrOspf4area ntry = areas.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                tabRoute<addrIP> tab3 = ntry.algos.get(o);
+                if (tab3 == null) {
+                    continue;
+                }
+                tab1.mergeFrom(tabRoute.addType.ecmp, tab3, tabRouteAttr.distanLim);
+            }
+            alg.vrf.update2ip(tab1);
+        }
     }
 
     /**
@@ -301,6 +327,9 @@ public class rtrOspf4 extends ipRtr {
         l.add(null, "2 3     <num>                     intra-area distance");
         l.add(null, "3 4       <num>                   inter-area distance");
         l.add(null, "4 .         <num>                 external distance");
+        l.add(null, "1 2   flexalgo                    flexalgo parameters");
+        l.add(null, "2 3     <num>                     algorithm id");
+        l.add(null, "3 .       <name:vrf>              vrf to use");
     }
 
     /**
@@ -345,6 +374,9 @@ public class rtrOspf4 extends ipRtr {
             cmds.cfgLine(l, ntry.roupolInto == null, beg, s + "route-policy-into", "" + ntry.roupolInto);
         }
         l.add(beg + "distance " + distantInt + " " + distantSum + " " + distantExt);
+        for (int i = 0; i < algos.size(); i++) {
+            l.add(beg + "flexalgo " + algos.get(i));
+        }
     }
 
     /**
@@ -364,6 +396,19 @@ public class rtrOspf4 extends ipRtr {
                     routerID.setAddr(ifc.addr4);
                 }
             }
+            genLsas(3);
+            return false;
+        }
+        if (s.equals("flexalgo")) {
+            int i = bits.str2num(cmd.word());
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrAlgo alg = new rtrAlgo(i, vrf.fwd4, routerProtoTyp, routerProcNum);
+            algos.add(alg);
+            alg.vrf.register2ip();
             genLsas(3);
             return false;
         }
@@ -558,6 +603,22 @@ public class rtrOspf4 extends ipRtr {
             return true;
         }
         s = cmd.word();
+        if (s.equals("flexalgo")) {
+            int i = bits.str2num(cmd.word());
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrAlgo alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
+            alg = algos.del(alg);
+            if (alg == null) {
+                return false;
+            }
+            alg.vrf.unregister2ip();
+            genLsas(3);
+            return false;
+        }
         if (s.equals("segrout")) {
             tabLabel.release(segrouLab, 8);
             segrouLab = null;
@@ -848,6 +909,21 @@ public class rtrOspf4 extends ipRtr {
             l.add(ifc.iface + "|" + ifc.neighs.size());
         }
         return l;
+    }
+
+    /**
+     * list of algorithms
+     *
+     * @param area area number
+     * @return list
+     */
+    public userFormat showAlgorithms(int area) {
+        rtrOspf4area ara = new rtrOspf4area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.lastSpf.listAlgorithm();
     }
 
     /**

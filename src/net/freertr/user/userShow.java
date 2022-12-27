@@ -1932,6 +1932,11 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showIfaces());
                     return null;
                 }
+                if (a.equals("flexalgo")) {
+                    int i = bits.str2num(cmd.word());
+                    rdr.putStrTab(r.ospf4.showAlgorithms(i));
+                    return null;
+                }
                 if (a.equals("database")) {
                     int i = bits.str2num(cmd.word());
                     if (cmd.size() < 1) {
@@ -2281,6 +2286,11 @@ public class userShow {
                 }
                 if (a.equals("interface")) {
                     rdr.putStrTab(r.ospf6.showIfaces());
+                    return null;
+                }
+                if (a.equals("flexalgo")) {
+                    int i = bits.str2num(cmd.word());
+                    rdr.putStrTab(r.ospf6.showAlgorithms(i));
                     return null;
                 }
                 if (a.equals("database")) {

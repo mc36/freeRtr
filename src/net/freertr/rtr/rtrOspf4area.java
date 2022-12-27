@@ -1,6 +1,8 @@
 package net.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
@@ -54,6 +56,11 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
      * computed routes
      */
     protected final tabRoute<addrIP> routes;
+
+    /**
+     * computed routes
+     */
+    protected List<tabRoute<addrIP>> algos;
 
     /**
      * maximum metric area
@@ -759,7 +766,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             rtrOspfRi.putHstnam(pck);
         }
         if (segrouEna && (lower.segrouLab != null)) {
-            rtrOspfSr.putBase(pck, lower.segrouLab);
+            rtrOspfSr.putBase(pck, lower.segrouLab, lower.algos);
         }
         advertiseLsa(rtrOspf4lsa.lsaOpArea, rtrOspfRi.getOpaque(), pck);
     }
@@ -1003,6 +1010,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                             o = rtrOspfSr.getBase(tlv);
                             spf.addSegRouB(ntry.rtrID, o);
                             spf.addIdent(ntry.rtrID, rtrOspfRi.getHstnam(tlv));
+                            spf.addAlgo(ntry.rtrID, rtrOspfSr.getAlgos(tlv));
                         }
                         continue;
                     }
@@ -1086,6 +1094,59 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             logger.debug("reachable:" + spf.listReachablility(true));
         }
         lastSpf = spf;
+        algos = new ArrayList<tabRoute<addrIP>>();
+        for (int p = 0; p < lower.algos.size(); p++) {
+            rtrAlgo alg = lower.algos.get(p);
+            if (alg == null) {
+                continue;
+            }
+            spf = lastSpf.copyBytes();
+            spf.doWork(0, lower.routerID, null);
+            for (int i = 0; i < lower.ifaces.size(); i++) {
+                rtrOspf4iface ifc = lower.ifaces.get(i);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.areas.find(this) == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                if (ifc.needDR()) {
+                    if (ifc.drAddr.isEmpty()) {
+                        continue;
+                    }
+                    addrIP adr = new addrIP();
+                    adr.fromIPv4addr(ifc.drAddr);
+                    spf.addNextHop(ifc.metric, ifc.drAddr, adr, ifc.iface, null, null);
+                }
+                for (int o = 0; o < ifc.neighs.size(); o++) {
+                    rtrOspf4neigh nei = ifc.neighs.get(o);
+                    if (nei == null) {
+                        continue;
+                    }
+                    if (nei.area.area != area) {
+                        continue;
+                    }
+                    if (!nei.seenMyself) {
+                        continue;
+                    }
+                    addrIP adr = new addrIP();
+                    adr.fromIPv4addr(nei.peer);
+                    spf.addNextHop(nei.getMetric(), nei.rtrID, adr, ifc.iface, null, null);
+                }
+            }
+            rs = spf.getRoutes(lower.fwdCore, -1, null, null);
+            if (debugger.rtrOspf4evnt) {
+                logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
+                logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("rou");
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, res, rs, true, roumapFrom, roupolFrom, prflstFrom);
+            lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, res, res, lower.fwdCore.commonLabel, null, 0);
+            algos.add(res);
+        }
         lower.routerCreateComputed();
     }
 

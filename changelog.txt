@@ -13625,3 +13625,5 @@ qc pass: other colors over bgp with soft-reconfig
 no todo: colorful spf class
 no qc pass: lsrp database authentication
 failed: lsrp database authentication
+---------------------------------- 2022-12-27 06:18:45 22.12.27
+qc pass: lsrp flexalgo

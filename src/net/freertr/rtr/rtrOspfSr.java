@@ -1,5 +1,7 @@
 package net.freertr.rtr;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.cfg.cfgIfc;
@@ -8,6 +10,7 @@ import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.enc.encTlv;
+import net.freertr.tab.tabGen;
 
 /**
  * ospf segment routing
@@ -54,15 +57,23 @@ public class rtrOspfSr {
      *
      * @param pck packet to update
      * @param lab labels
+     * @param alg algorithms
      */
-    public static void putBase(packHolder pck, tabLabelEntry[] lab) {
+    public static void putBase(packHolder pck, tabLabelEntry[] lab, tabGen<rtrAlgo> alg) {
         if (lab == null) {
             return;
         }
         encTlv tlv = rtrOspfTe.getTlvHandler();
         tlv.valDat[0] = 0; // algo
         tlv.valTyp = rtrOspfRi.typSrAlgo;
-        tlv.valSiz = 1;
+        tlv.valSiz = 1 + alg.size();
+        for (int i = 0; i < alg.size(); i++) {
+            rtrAlgo a = alg.get(i);
+            if (a == null) {
+                continue;
+            }
+            tlv.valDat[i + 1] = (byte) a.num;
+        }
         tlv.putThis(pck);
         bits.msbPutD(tlv.valDat, 0, lab.length << 8);
         bits.msbPutW(tlv.valDat, 4, 1); // type
@@ -90,6 +101,23 @@ public class rtrOspfSr {
             return -1;
         }
         return bits.msbGetD(tlv.valDat, 8) >>> 8; // base
+    }
+
+    /**
+     * get sr algo
+     *
+     * @param tlv data
+     * @return algo, empty if not found
+     */
+    protected static List<Integer> getAlgos(encTlv tlv) {
+        List<Integer> res = new ArrayList<Integer>();
+        if (tlv.valTyp != rtrOspfRi.typSrAlgo) {
+            return res;
+        }
+        for (int i = 0; i < tlv.valSiz; i++) {
+            res.add(bits.getByte(tlv.valDat, i));
+        }
+        return res;
     }
 
     /**

@@ -245,9 +245,7 @@ public class spfCalc<Ta extends addrType> {
             for (int i = 0; i < nod.othFix.size(); i++) {
                 res.addOpref(nod.name, nod.othFix.get(i), true);
             }
-            for (int i = 0; i < nod.algo.size(); i++) {
-                res.addAlgo(nod.name, nod.algo.get(i));
-            }
+            res.addAlgo(nod.name, nod.algo);
             res.addIdent(nod.name, nod.ident);
             res.addSegRouB(nod.name, nod.srBeg);
             res.addSegRouI(nod.name, nod.srIdx);
@@ -390,13 +388,13 @@ public class spfCalc<Ta extends addrType> {
      * @param nod node to add
      * @param algo algorithm
      */
-    public void addAlgo(Ta nod, int algo) {
+    public void addAlgo(Ta nod, List<Integer> algo) {
         spfNode<Ta> ntry = new spfNode<Ta>(nod);
         spfNode<Ta> old = nodes.add(ntry);
         if (old != null) {
             ntry = old;
         }
-        ntry.algo.add(algo);
+        ntry.algo.addAll(algo);
     }
 
     /**
