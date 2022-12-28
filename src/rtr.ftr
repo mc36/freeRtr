@@ -3082,7 +3082,6 @@ todo: bgp optimal route reflection
 todo: bgp peer autoconfig
 todo: bgp layer2 flowspec
 todo: bgp flowspec v2
-todo: bgp strict bfd mode
 todo: bgp signed path
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh

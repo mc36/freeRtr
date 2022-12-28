@@ -13637,3 +13637,5 @@ no failed: lsrp database authentication
 no qc pass: integrated isis address unsuppression
 qc pass: integrated isis flexalgo
 qc pass: lsrp database authentication
+---------------------------------- 2022-12-28 18:16:18 22.12.28
+no todo: bgp strict bfd mode
