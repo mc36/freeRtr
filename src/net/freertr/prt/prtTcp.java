@@ -1154,7 +1154,7 @@ public class prtTcp extends prtGen {
                 }
                 break;
             case prtTcpConn.stOpened:
-                sendMyPacket(clnt, flagACK, -1);
+                sendMyPacket(clnt, flagACK, cfgAll.tcpKeepalive ? -1 : 0);
                 pr.netMax = pr.segSiz;
                 pr.netOut = 0;
                 break;

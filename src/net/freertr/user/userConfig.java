@@ -569,6 +569,7 @@ public class userConfig {
         l.add(null, ".3 .      none                       nor generate nor check");
         l.add(null, "2  .    tcp-timestamp                set tcp timestamping");
         l.add(null, "2  .    tcp-ecn                      set tcp ecn");
+        l.add(null, "2  .    tcp-keepalive                set tcp keepalive");
         l.add(null, "2  3    tcp-timer                    set tcp timestamping");
         l.add(null, "3  4      work                       set tcp work");
         l.add(null, "4  .        <num>                    ms");
@@ -1485,6 +1486,10 @@ public class userConfig {
                 cfgAll.tcpEcn = true;
                 return;
             }
+            if (a.equals("tcp-keepalive")) {
+                cfgAll.tcpKeepalive = true;
+                return;
+            }
             if (a.equals("tcp-timestamp")) {
                 cfgAll.tcpTimStmp = true;
                 return;
@@ -2166,6 +2171,10 @@ public class userConfig {
             }
             if (a.equals("tcp-ecn")) {
                 cfgAll.tcpEcn = false;
+                return;
+            }
+            if (a.equals("tcp-keepalive")) {
+                cfgAll.tcpKeepalive = false;
                 return;
             }
             if (a.equals("tcp-timestamp")) {
